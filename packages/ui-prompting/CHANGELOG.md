@@ -1,5 +1,43 @@
 # @sap-ux/ui-prompting
 
+## 0.6.7
+
+### Patch Changes
+
+- Updated dependencies [4e6c4d5]
+    - @sap-ux/ui-components@1.27.9
+
+## 0.6.6
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+- Updated dependencies [4d381b7]
+    - @sap-ux/ui-components@1.27.8
+
+## 0.6.5
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [cc1c422]
+    - @sap-ux/ui-components@1.27.7
+
+## 0.6.4
+
+### Patch Changes
+
+- Updated dependencies [5deb976]
+- Updated dependencies [d8a39ce]
+    - @sap-ux/ui-components@1.27.6
+
+## 0.6.3
+
+### Patch Changes
+
+- Updated dependencies [a22d236]
+    - @sap-ux/ui-components@1.27.5
+
 ## 0.6.2
 
 ### Patch Changes

@@ -1,6 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { AppRouterType } from '@sap-ux/adp-tooling';
-import type { ConfigAnswers, FlexUISupportedSystem, CfServicesAnswers, CFApp } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, FlexUICapability, CfServicesAnswers, CFApp } from '@sap-ux/adp-tooling';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * Determines if a credential question should be shown.
@@ -35,33 +36,37 @@ export function showApplicationQuestion(
 /**
  * Determines if an extension project is allowed based on the system and application conditions.
  *
- * @param {ConfigAnswers} answers - The user-provided answers containing application details.
- * @param {FlexUISupportedSystem} flexUISystem - The system type info (e.g., onPremise/UIFlex).
- * @param {boolean} isCloudProject - Whether the system is a cloud-based system.
- * @param {boolean} isApplicationSupported - Whether the selected application is supported.
- * @param {boolean} hasSyncViews - Whether synchronized views exist for the app.
- * @returns {boolean | undefined} True if an extension project is allowed, otherwise false or undefined.
+ * @param params - Function parameters as an object literal.
+ * @param {boolean} params.isApplicationSelected - True if the user has selected an application.
+ * @param {boolean} params.isApplicationSupported - Whether the selected application is supported.
+ * @param {boolean} params.hasSyncViews - Whether synchronized views exist for the app.
+ * @param {AdaptationProjectType|undefined} params.projectType - The project type.
+ * @param {FlexUICapability | undefined} params.flexUICapability - The system type info (e.g., onPremise/UIFlex).
+ * @returns {boolean} True if an extension project is allowed, otherwise false or undefined.
  */
-export function showExtensionProjectQuestion(
-    answers: ConfigAnswers,
-    flexUISystem: FlexUISupportedSystem | undefined,
-    isCloudProject: boolean | undefined,
-    isApplicationSupported: boolean,
-    hasSyncViews: boolean
-): boolean {
-    if (!answers.application) {
+export function showExtensionProjectQuestion({
+    isApplicationSelected,
+    isApplicationSupported,
+    hasSyncViews,
+    projectType,
+    flexUICapability
+}: {
+    isApplicationSelected: boolean;
+    isApplicationSupported: boolean;
+    hasSyncViews: boolean;
+    projectType?: AdaptationProjectType;
+    flexUICapability?: FlexUICapability;
+}): boolean {
+    if (!isApplicationSelected || projectType === AdaptationProjectType.CLOUD_READY) {
         return false;
     }
 
-    if (isCloudProject) {
-        return false;
-    }
-
-    const isOnPremiseAppStudio = !!flexUISystem?.isOnPremise && isAppStudio();
-    const nonFlexOrNonOnPremise = flexUISystem && (!flexUISystem?.isOnPremise || !flexUISystem?.isUIFlex);
+    const isDtaDeploymentSupportedAppStudio = !!flexUICapability?.isDtaFolderDeploymentSupported && isAppStudio();
+    const nonFlexOrNonOnPremise =
+        flexUICapability && (!flexUICapability?.isDtaFolderDeploymentSupported || !flexUICapability?.isUIFlexSupported);
 
     return (
-        isOnPremiseAppStudio &&
+        isDtaDeploymentSupportedAppStudio &&
         (!isApplicationSupported || (isApplicationSupported && (nonFlexOrNonOnPremise || hasSyncViews)))
     );
 }

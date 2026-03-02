@@ -5,22 +5,26 @@ import { useTranslation } from 'react-i18next';
 
 import '../../../../styles/SystemMain.scss';
 
-interface SystemNameProps {
-    systemName?: string;
+interface ConnectionNameProps {
+    connectionName?: string;
     setName: (name: string | undefined) => void;
     setIsDetailsUpdated: (isUpdated: boolean) => void;
 }
 
 /**
- * Renders the system name input field.
+ * Renders the connection name input field.
  *
- * @param props - system name props
- * @param props.systemName - the system name value
- * @param props.setName - function to set the system name
+ * @param props - connection name props
+ * @param props.connectionName - the connection name value
+ * @param props.setName - function to set the connection name
  * @param props.setIsDetailsUpdated - function to set the details updated flag
- * @returns - the system name JSX element
+ * @returns - the connection name JSX element
  */
-export function SystemName({ systemName, setName, setIsDetailsUpdated }: Readonly<SystemNameProps>): ReactElement {
+export function ConnectionName({
+    connectionName,
+    setName,
+    setIsDetailsUpdated
+}: Readonly<ConnectionNameProps>): ReactElement {
     const { t } = useTranslation();
 
     return (
@@ -29,9 +33,9 @@ export function SystemName({ systemName, setName, setIsDetailsUpdated }: Readonl
                 {t('labels.name')} <span className="mandatory-asterisk">*</span>
             </label>
             <UITextInput
-                name="systemName"
-                id="sysName"
-                defaultValue={systemName}
+                name="connectionName"
+                id="connName"
+                value={connectionName}
                 onChange={(e) => {
                     setName((e.target as HTMLInputElement).value);
                     setIsDetailsUpdated(true);

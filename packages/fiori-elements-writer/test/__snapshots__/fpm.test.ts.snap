@@ -225,7 +225,7 @@ server:
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/ext/main/Main.controller.js": Object {
+  "webapp/ext/view/Main.controller.js": Object {
     "contents": "sap.ui.define(
     [
         'sap/fe/core/PageController'
@@ -233,11 +233,11 @@ server:
     function(PageController) {
         'use strict';
 
-        return PageController.extend('fefpmjs.ext.main.Main', {
+        return PageController.extend('fefpmjs.ext.view.Main', {
             /**
              * Called when a controller is instantiated and its View controls (if available) are already created.
              * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-             * @memberOf fefpmjs.ext.main.Main
+             * @memberOf fefpmjs.ext.view.Main
              */
             //  onInit: function () {
             //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
@@ -246,7 +246,7 @@ server:
             /**
              * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
              * (NOT before the first rendering! onInit() is used for that one!).
-             * @memberOf fefpmjs.ext.main.Main
+             * @memberOf fefpmjs.ext.view.Main
              */
             //  onBeforeRendering: function() {
             //
@@ -255,7 +255,7 @@ server:
             /**
              * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
              * This hook is the same one that SAPUI5 controls get after being rendered.
-             * @memberOf fefpmjs.ext.main.Main
+             * @memberOf fefpmjs.ext.view.Main
              */
             //  onAfterRendering: function() {
             //
@@ -263,7 +263,7 @@ server:
 
             /**
              * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-             * @memberOf fefpmjs.ext.main.Main
+             * @memberOf fefpmjs.ext.view.Main
              */
             //  onExit: function() {
             //
@@ -274,9 +274,9 @@ server:
 ",
     "state": "modified",
   },
-  "webapp/ext/main/Main.view.xml": Object {
+  "webapp/ext/view/Main.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
-    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"fefpmjs.ext.main.Main\\">
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"fefpmjs.ext.view.Main\\">
     <Page id=\\"Main\\" title=\\"{i18n>MainTitle}\\">
         <content></content>
     </Page>
@@ -3354,7 +3354,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             \\"settings\\": {
               \\"navigation\\": {},
               \\"contextPath\\": \\"/Booking\\",
-              \\"viewName\\": \\"fefpmjs.ext.main.Main\\"
+              \\"viewName\\": \\"fefpmjs.ext.view.Main\\"
             }
           }
         }
@@ -4029,60 +4029,6 @@ export default class Component extends BaseComponent {
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/ext/main/Main.controller.ts": Object {
-    "contents": "import Controller from \\"sap/fe/core/PageController\\";
-
-/**
- * @namespace fefpmts.ext.main
- */
-export default class Main extends Controller {
-
-    /**
-     * Called when a controller is instantiated and its View controls (if available) are already created.
-     * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-     * @memberOf fefpmts.ext.main.Main
-     */
-    // public onInit(): void {
-    //     super.onInit(); // needs to be called to properly initialize the page controller
-    //}
-
-    /**
-     * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
-     * (NOT before the first rendering! onInit() is used for that one!).
-     * @memberOf fefpmts.ext.main.Main
-     */
-    // public  onBeforeRendering(): void {
-    //
-    //  }
-
-    /**
-     * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
-     * This hook is the same one that SAPUI5 controls get after being rendered.
-     * @memberOf fefpmts.ext.main.Main
-     */
-    // public  onAfterRendering(): void {
-    //
-    //  }
-
-    /**
-     * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-     * @memberOf fefpmts.ext.main.Main
-     */
-    // public onExit(): void {
-    //
-    //  }
-}",
-    "state": "modified",
-  },
-  "webapp/ext/main/Main.view.xml": Object {
-    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
-    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"fefpmts.ext.main.Main\\">
-    <Page id=\\"Main\\" title=\\"{i18n>MainTitle}\\">
-        <content></content>
-    </Page>
-</mvc:View>",
-    "state": "modified",
-  },
   "webapp/ext/sap.fe.d.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
 import Routing from 'sap/fe/core/controllerextensions/Routing';
@@ -4128,6 +4074,60 @@ declare module 'sap/fe/core/PageController' {
 	}
 }
 ",
+    "state": "modified",
+  },
+  "webapp/ext/view/Main.controller.ts": Object {
+    "contents": "import Controller from \\"sap/fe/core/PageController\\";
+
+/**
+ * @namespace fefpmts.ext.view
+ */
+export default class Main extends Controller {
+
+    /**
+     * Called when a controller is instantiated and its View controls (if available) are already created.
+     * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+     * @memberOf fefpmts.ext.view.Main
+     */
+    // public onInit(): void {
+    //     super.onInit(); // needs to be called to properly initialize the page controller
+    //}
+
+    /**
+     * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
+     * (NOT before the first rendering! onInit() is used for that one!).
+     * @memberOf fefpmts.ext.view.Main
+     */
+    // public  onBeforeRendering(): void {
+    //
+    //  }
+
+    /**
+     * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
+     * This hook is the same one that SAPUI5 controls get after being rendered.
+     * @memberOf fefpmts.ext.view.Main
+     */
+    // public  onAfterRendering(): void {
+    //
+    //  }
+
+    /**
+     * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
+     * @memberOf fefpmts.ext.view.Main
+     */
+    // public onExit(): void {
+    //
+    //  }
+}",
+    "state": "modified",
+  },
+  "webapp/ext/view/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"fefpmts.ext.view.Main\\">
+    <Page id=\\"Main\\" title=\\"{i18n>MainTitle}\\">
+        <content></content>
+    </Page>
+</mvc:View>",
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
@@ -7201,7 +7201,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             \\"settings\\": {
               \\"navigation\\": {},
               \\"contextPath\\": \\"/Booking\\",
-              \\"viewName\\": \\"fefpmts.ext.main.Main\\"
+              \\"viewName\\": \\"fefpmts.ext.view.Main\\"
             }
           }
         }

@@ -36,7 +36,18 @@ sap-ux [command] [sub-command] /path/to/project
  */
 function getJsonSpec() {
     const output = execSync('node dist/index.js --generateJsonSpec', { encoding: 'utf8' });
-    return JSON.parse(output);
+
+    // Extract JSON from output, ignoring any non-JSON content (e.g., i18next messages, logger formatting)
+    // Find the first '{' and the last '}' to extract the JSON object
+    const firstBrace = output.indexOf('{');
+    const lastBrace = output.lastIndexOf('}');
+
+    if (firstBrace === -1 || lastBrace === -1) {
+        throw new Error('No JSON object found in CLI output');
+    }
+
+    const jsonString = output.substring(firstBrace, lastBrace + 1);
+    return JSON.parse(jsonString);
 }
 
 /**

@@ -1,15 +1,18 @@
 import React from 'react';
 import type { ReactElement } from 'react';
-import type { BackendSystem, SystemType } from '@sap-ux/store';
-import { CloudSystem } from './CloudSystem';
+import type { BackendSystem, ConnectionType, SystemType } from '@sap-ux/store';
+import { ConnectionName } from './ConnectionName';
+import { ConnectionTypes } from './ConnectionTypes';
 import { OnPremSystem } from './OnPremSystem';
-import { SystemName } from './SystemName';
+import { CloudSystem } from './CloudSystem';
 
 import '../../../../styles/SystemMain.scss';
 
 interface SystemInfoProps {
     systemInfo?: BackendSystem;
+    addNewSapSystem?: boolean;
     setName: (name: string | undefined) => void;
+    setConnectionType: (connType: ConnectionType) => void;
     setUrl: (url: string | undefined) => void;
     setClient: (client: string | undefined) => void;
     setUsername: (username: string) => void;
@@ -23,6 +26,8 @@ interface SystemInfoProps {
  *
  * @param props - system information props
  * @param props.systemInfo - the system information
+ * @param props.addNewSapSystem - flag indicating if a new SAP system is being added
+ * @param props.setConnectionType - function to set the connection type
  * @param props.setName - function to set the system name
  * @param props.setUrl - function to set the URL
  * @param props.setClient - function to set the client
@@ -34,7 +39,9 @@ interface SystemInfoProps {
  */
 export function SystemInfo({
     systemInfo,
+    addNewSapSystem,
     setName,
+    setConnectionType,
     setUrl,
     setClient,
     setUsername,
@@ -43,13 +50,18 @@ export function SystemInfo({
     setIsDetailsValid
 }: Readonly<SystemInfoProps>): ReactElement {
     const systemType = systemInfo?.systemType as SystemType;
-    const showSystemName = systemType === 'OnPrem' || systemType === 'AbapCloud';
-
     return (
         <div>
-            {showSystemName && (
-                <SystemName systemName={systemInfo?.name} setName={setName} setIsDetailsUpdated={setIsDetailsUpdated} />
+            {!!systemType && (
+                <ConnectionName
+                    connectionName={systemInfo?.name}
+                    setName={setName}
+                    setIsDetailsUpdated={setIsDetailsUpdated}
+                />
             )}
+
+            {addNewSapSystem && !!systemType && <ConnectionTypes setConnectionType={setConnectionType} />}
+
             {systemType === 'OnPrem' && (
                 <OnPremSystem
                     systemInfo={systemInfo}
