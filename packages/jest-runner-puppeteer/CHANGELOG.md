@@ -1,5 +1,12 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.2.8
+
+### Patch Changes
+
+- 3fc8c21: fix(deps): update dependency puppeteer-core to v24
+  replace ignoreHTTPSErrors with acceptInsecureCerts after puppeteer v24 upgrade
+
 ## 0.2.7
 
 ### Patch Changes
