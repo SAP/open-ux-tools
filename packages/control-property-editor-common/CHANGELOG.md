@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.7.7
+
+### Patch Changes
+
+- 4f7b796: fix(deps): update dependency ts-jest to v29.4.6
+
 ## 0.7.6
 
 ### Patch Changes
