@@ -92,6 +92,7 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
         );
         return false;
     }
+    /* todo: check if these prerequisites are needed
     if (hasDependency(packageJson, packageName.ESLINT_PLUGIN_FIORI_CUSTOM)) {
         logger?.error(
             `Found ${packageName.ESLINT_PLUGIN_FIORI_CUSTOM} dependency in package.json at path '${packageJsonPath}'. This plugin is not compatible with ESLint version 9. Please remove the dependency and any usage of this plugin in the eslint configuration before running the conversion. You can use the \`add eslint-config\` command after that to add the compatible SAP Fiori tools eslint plugin and create a new eslint.config.mjs file with the flat config.`
@@ -101,6 +102,13 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
     if (!hasDependency(packageJson, packageName.ESLINT_PLUGIN_FIORI_TOOLS)) {
         logger?.error(
             `No ${packageName.ESLINT_PLUGIN_FIORI_TOOLS} dependency found in package.json at path '${packageJsonPath}'.`
+        );
+        return false;
+    }
+    */
+    if (hasDependency(packageJson, '@fxu/fincode')) {
+        logger?.error(
+            `Dependency to '@fxu/fincode' found at path '${basePath}'. Please remove the dependency and any usage of this package before running the conversion.`
         );
         return false;
     }
@@ -245,5 +253,7 @@ async function updatePackageJson(basePath: string, fs: Editor): Promise<void> {
     packageJson.devDependencies ??= {};
     packageJson.devDependencies[packageName.ESLINT] = '^9.0.0';
     packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_TOOLS] = '^9.0.0';
+    //todo: check if we can delete the eslint-plugin-fiori-custom dependency
+    delete packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_CUSTOM];
     fs.writeJSON(packageJsonPath, packageJson);
 }

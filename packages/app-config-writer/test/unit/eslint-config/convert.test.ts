@@ -128,6 +128,7 @@ describe('convertEslintConfig', () => {
             }
         });
 
+        /* todo: re-add these tests once the non-existance of the eslint-plugin-fiori-custom devDependency prerequisite is confirmed
         test('should fail when eslint-plugin-fiori-custom dependency exists', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             // Add eslint-plugin-fiori-custom to package.json in memory
@@ -168,6 +169,7 @@ describe('convertEslintConfig', () => {
                 );
             }
         });
+        */
 
         test('should fail when .eslintrc.json does not exist', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/missing-config');
