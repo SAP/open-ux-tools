@@ -93,7 +93,7 @@
             "get-uri>basic-ftp": "=5.2.0",
             "@puppeteer/browsers>proxy-agent": ">=6.5.0",
             "minimatch@<3.1.5": "^3.1.5",
-            "readdir-glob>minimatch@<5.1.9": "^5.1.9",
+            "readdir-glob>minimatch@<5.1.9": "^9.0.7",
             "@npmcli/map-workspaces>minimatch@<5.1.9": "^5.1.9",
             "glob@=8.1.0>minimatch@<5.1.9": "^5.1.9",
             "folder-hash>minimatch@<7.4.9": "^7.4.9",
