@@ -1,4 +1,4 @@
-import { join } from 'node:path';
+import { join, posix } from 'node:path';
 import * as xpath from 'xpath';
 import type { Editor } from 'mem-fs-editor';
 import {
@@ -445,7 +445,7 @@ function processAction(buildingBlockData: BuildingBlock, context: ProcessingCont
 
         // Check if file name includes .controller
         if (actionConfig.eventHandler.fileName?.includes('.controller')) {
-            // Controller method: use fnName as-is, no core:require needed
+            // Controller method: use fnName as is, no core:require needed
             actionConfig.eventHandler = {
                 fnName: `.${fnName}`
             };
@@ -454,7 +454,7 @@ function processAction(buildingBlockData: BuildingBlock, context: ProcessingCont
             let handlerPath: string | undefined;
             if (actionConfig.eventHandler.fileName) {
                 const path = context.embededAction?.ns?.split('.').join('/');
-                handlerPath = join(path ?? '', actionConfig.eventHandler.fileName);
+                handlerPath = posix.join(path ?? '', actionConfig.eventHandler.fileName);
             }
 
             actionConfig.eventHandler = {
