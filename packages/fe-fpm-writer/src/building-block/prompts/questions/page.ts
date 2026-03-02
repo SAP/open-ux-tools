@@ -34,7 +34,7 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
             }),
             getBuildingBlockIdPrompt(context, t('id.validation') as string, {
                 message: t('id.message') as string,
-                default: 'Page',
+                default: context.generateId('Page'),
                 guiOptions: {
                     mandatory: true
                 }

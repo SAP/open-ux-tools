@@ -6,14 +6,17 @@ import { PromptsType, PromptsAPI, BuildingBlockType } from '../../../src';
 import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
 import type { ChoiceOptions } from 'inquirer';
 import * as projectAccess from '@sap-ux/project-access';
+import { createIdGenerator } from '../../../src/building-block/prompts/utils';
 
 describe('Prompts', () => {
     let fs: Editor;
     const projectPath = join(__dirname, '../sample/building-block/webapp-prompts');
     let promptsAPI: PromptsAPI;
+    let generateId: any;
     beforeEach(async () => {
         fs = create(createStorage());
         promptsAPI = await PromptsAPI.init(projectPath, undefined, fs);
+        generateId = await createIdGenerator(projectPath, fs);
     });
 
     test('Init PromptsApi without fs', async () => {
@@ -234,6 +237,7 @@ describe('Prompts', () => {
             buildingBlockData: {
                 ...baseAnswers.buildingBlockData,
                 buildingBlockType: BuildingBlockType.Table,
+                generateId: generateId,
                 filterBar: 'filterBar',
                 type: 'ResponsiveTable',
                 headerVisible: true,
@@ -245,6 +249,7 @@ describe('Prompts', () => {
             buildingBlockData: {
                 ...baseAnswers.buildingBlockData,
                 buildingBlockType: BuildingBlockType.Chart,
+                generateId,
                 filterBar: 'filterBar',
                 selectionMode: 'testSelectionMode',
                 selectionChange: 'function1'
@@ -255,6 +260,7 @@ describe('Prompts', () => {
             buildingBlockData: {
                 ...baseAnswers.buildingBlockData,
                 buildingBlockType: BuildingBlockType.FilterBar,
+                generateId,
                 filterChanged: 'function1',
                 search: 'function2'
             }
@@ -265,6 +271,7 @@ describe('Prompts', () => {
             buildingBlockData: {
                 ...baseAnswers.buildingBlockData,
                 buildingBlockType: BuildingBlockType.Page,
+                generateId,
                 id: 'TestPage',
                 title: 'Test Page'
             },
@@ -374,9 +381,11 @@ describe('Prompts', () => {
 describe('Prompts - no project', () => {
     let fs: Editor;
     let promptsAPI: PromptsAPI;
+    let generateId: any;
     beforeEach(async () => {
         fs = create(createStorage());
-        promptsAPI = new PromptsAPI(fs, undefined);
+        generateId = await createIdGenerator(undefined, fs);
+        promptsAPI = new PromptsAPI(fs, undefined, undefined, generateId, {});
     });
 
     test('Init PromptsApi without fs, empty project path', async () => {

@@ -10,6 +10,7 @@ import type {
     PromptsGroup,
     ValidationResults
 } from '@sap-ux/ui-prompting';
+import type { IdGeneratorFunction } from '../common/file';
 
 export enum PromptsType {
     FilterBar = 'filter-bar',
@@ -41,6 +42,7 @@ export interface PromptContext {
     project?: Project;
     appPath: string;
     appId: string;
+    generateId: IdGeneratorFunction;
     options?: PromptContextOptions;
 }
 

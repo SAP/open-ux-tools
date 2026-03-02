@@ -1835,7 +1835,7 @@ Object {
       "type": "list",
     },
     Object {
-      "default": "Page",
+      "default": "Page1",
       "guiOptions": Object {
         "mandatory": true,
         "placeholder": "Enter a building block ID",
@@ -1881,6 +1881,7 @@ Object {
   },
   "questions": Array [
     Object {
+      "default": "RichTextEditor",
       "guiOptions": Object {
         "mandatory": true,
         "placeholder": "Enter a building block ID",
@@ -2064,7 +2065,7 @@ Object {
       "validate": [Function],
     },
     Object {
-      "default": "Table",
+      "default": "Table1",
       "guiOptions": Object {
         "groupId": "tableBuildingBlockProperties",
         "mandatory": true,

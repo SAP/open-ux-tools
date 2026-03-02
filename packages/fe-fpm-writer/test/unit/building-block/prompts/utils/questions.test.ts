@@ -23,6 +23,7 @@ import {
 import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types';
 import { bindingContextAbsolute, bindingContextRelative } from '../../../../../src/building-block/types';
 import * as promptHelpers from '../../../../../src/building-block/prompts/utils/prompt-helpers';
+import { createIdGenerator } from '../../../../../src/building-block/prompts/utils';
 
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
@@ -62,6 +63,7 @@ describe('utils - questions', () => {
             fs,
             appId: '',
             appPath: projectFolder,
+            generateId: await createIdGenerator(projectFolder, fs),
             project
         };
     });

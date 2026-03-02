@@ -13,6 +13,7 @@ import { applyEventHandlerConfiguration, contextParameter } from '../common/even
 import type { FilterField } from '../building-block/types';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { getManifest } from '../common/utils';
+import { createIdGenerator } from '../building-block/prompts/utils';
 
 /**
  * Enhances the provided custom filter configuration with default data.
@@ -55,6 +56,7 @@ export async function generateCustomFilter(basePath: string, filterConfig: Custo
         fs = create(createStorage());
     }
     await validateBasePath(basePath, fs);
+    const fnGenerateId = await createIdGenerator(basePath, fs);
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
     const config = enhanceConfig(filterConfig, manifestPath, manifest);
@@ -82,7 +84,7 @@ export async function generateCustomFilter(basePath: string, filterConfig: Custo
     // create a fragment file
     const fragmentPath = join(config.path, `${config.fragmentFile}.fragment.xml`);
     if (!fs.exists(fragmentPath)) {
-        copyTpl(fs, getTemplatePath(`filter/fragment.xml`), fragmentPath, config);
+        copyTpl(fs, getTemplatePath(`filter/fragment.xml`), fragmentPath, config, fnGenerateId);
     }
 
     return fs;

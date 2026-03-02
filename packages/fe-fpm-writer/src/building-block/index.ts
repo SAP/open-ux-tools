@@ -22,7 +22,7 @@ import type { Manifest } from '../common/types';
 import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
-import { detectTabSpacing, extendJSON } from '../common/file';
+import { CONFIG, detectTabSpacing, extendJSON, getRelativeTemplateComponentPath } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getOrAddNamespace } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
@@ -54,9 +54,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 ): Promise<Editor> {
     const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     await validateBasePath(basePath, fs, []);
 
     if (!fs.exists(join(basePath, viewOrFragmentPath))) {
@@ -257,15 +255,18 @@ function getTemplateContent<T extends BuildingBlock>(
     if (!buildingBlockData.id) {
         buildingBlockData.id = PLACEHOLDERS.id;
     }
-    return render(
-        fs.read(templateFilePath),
-        {
-            macrosNamespace: viewDocument ? getOrAddNamespace(viewDocument, 'sap.fe.macros', 'macros') : 'macros',
-            data: buildingBlockData,
-            config: templateConfig
-        },
-        {}
-    );
+    const configKey = getRelativeTemplateComponentPath(templateFilePath);
+    const config = CONFIG[configKey as keyof typeof CONFIG];
+    let context = {
+        macrosNamespace: viewDocument ? getOrAddNamespace(viewDocument, 'sap.fe.macros', 'macros') : 'macros',
+        data: buildingBlockData,
+        config: templateConfig
+    };
+    if (config?.getData) {
+        const additionalContext = config.getData(buildingBlockData.generateId, buildingBlockData as any);
+        context = { ...context, ...additionalContext };
+    }
+    return render(fs.read(templateFilePath), context, {});
 }
 
 /**

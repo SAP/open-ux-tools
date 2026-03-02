@@ -32,7 +32,8 @@ export async function getRichTextEditorBuildingBlockPrompts(
                 message: t('id.message') as string,
                 guiOptions: {
                     mandatory: true
-                }
+                },
+                default: context.generateId('RichTextEditor')
             }),
             getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate') as string, {
                 message: t('viewOrFragmentPath.message') as string,

@@ -80,7 +80,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             }),
             getBuildingBlockIdPrompt(context, t('id.validation') as string, {
                 message: t('id.message') as string,
-                default: defaultAnswers.id,
+                default: context.generateId(defaultAnswers.id),
                 guiOptions: {
                     groupId: groupIds.commonTableBuildingBlockProperties,
                     mandatory: true

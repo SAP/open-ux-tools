@@ -8,9 +8,10 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContentData } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, extendJSON } from '../common/file';
+import { copyTpl, extendJSON, type IdGeneratorFunction } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { getManifest } from '../common/utils';
+import { createIdGenerator } from '../building-block/prompts/utils';
 
 /**
  * Enhances the provided custom field configuration with default data.
@@ -19,9 +20,16 @@ import { getManifest } from '../common/utils';
  * @param {CustomField} data - a custom field configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
+ * @param {(baseId: string) => string} generateId - Function to generate unique IDs for the building block elements.
  * @returns enhanced configuration
  */
-function enhanceConfig(fs: Editor, data: CustomField, manifestPath: string, manifest: Manifest): InternalCustomField {
+function enhanceConfig(
+    fs: Editor,
+    data: CustomField,
+    manifestPath: string,
+    manifest: Manifest,
+    generateId: IdGeneratorFunction
+): InternalCustomField {
     // clone input and set defaults
     const config: CustomField & Partial<InternalCustomField> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
@@ -38,7 +46,7 @@ function enhanceConfig(fs: Editor, data: CustomField, manifestPath: string, mani
     if (config.control) {
         config.content = config.control;
     } else {
-        Object.assign(config, getDefaultFragmentContentData(config.name, config.eventHandler));
+        Object.assign(config, getDefaultFragmentContentData(config.name, generateId, config.eventHandler));
     }
 
     return config as InternalCustomField;
@@ -54,20 +62,20 @@ function enhanceConfig(fs: Editor, data: CustomField, manifestPath: string, mani
  */
 export async function generateCustomField(basePath: string, customField: CustomField, fs?: Editor): Promise<Editor> {
     validateVersion(customField.minUI5Version);
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     await validateBasePath(basePath, fs);
+
+    const generateId = await createIdGenerator(basePath, fs);
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     // merge with defaults
-    const completeField = enhanceConfig(fs, customField, manifestPath, manifest);
+    const completeField = enhanceConfig(fs, customField, manifestPath, manifest, generateId);
 
     // add fragment
     const viewPath = join(completeField.path, `${completeField.fragmentFile ?? completeField.name}.fragment.xml`);
     if (!fs.exists(viewPath)) {
-        copyTpl(fs, getTemplatePath('common/Fragment.xml'), viewPath, completeField);
+        copyTpl(fs, getTemplatePath('common/Fragment.xml'), viewPath, completeField, generateId);
     }
 
     // enhance manifest with field definition
