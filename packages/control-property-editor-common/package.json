@@ -24,7 +24,7 @@
         "@sap-ux/logger": "workspace:*",
         "npm-run-all2": "8.0.4",
         "rimraf": "6.1.3",
-        "ts-jest": "29.4.5"
+        "ts-jest": "29.4.6"
     },
     "engines": {
         "node": ">=20.x"
