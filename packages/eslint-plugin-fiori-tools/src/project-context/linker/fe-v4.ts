@@ -30,6 +30,10 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     entity: MetadataElement;
     sections: Section[];
     lookup: NodeLookup<Table | Section>;
+    header?: {
+        anchorBarVisible?: boolean;
+        visible?: boolean;
+    };
 }
 
 export type FeV4PageType = FeV4ListReport | FeV4ObjectPage;
@@ -219,6 +223,15 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
         } else if (target.name === 'sap.fe.templates.ObjectPage' && entity.structuredType) {
             const sections = collectSections('v4', entity.structuredType, mainService);
 
+            // Extract header configuration
+            const header = target.options?.settings?.content?.header;
+            const headerConfig = header
+                ? {
+                      anchorBarVisible: header.anchorBarVisible,
+                      visible: header.visible
+                  }
+                : undefined;
+
             const page: FeV4ObjectPage = {
                 type: 'object-page',
                 targetName: name,
@@ -227,7 +240,8 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                 entity: entity,
                 configuration: {},
                 sections: [],
-                lookup: {}
+                lookup: {},
+                header: headerConfig
             };
             linkObjectPageSections(page, path, name, sections, target);
             linkedApp.pages.push(page);
@@ -243,6 +257,12 @@ interface Target {
             contextPath?: string;
 
             controlConfiguration?: { [key: string]: TableConfiguration };
+            content?: {
+                header?: {
+                    anchorBarVisible?: boolean;
+                    visible?: boolean;
+                };
+            };
         };
     };
 }

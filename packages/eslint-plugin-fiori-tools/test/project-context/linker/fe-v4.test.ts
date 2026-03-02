@@ -354,4 +354,149 @@ describe('FE V4 Linker', () => {
             });
         });
     });
+
+    describe('header configuration extraction', () => {
+        test('no header configuration', async () => {
+            const context = await setup();
+            const result = runFeV4Linker(context);
+            const page = findObjectPage(result);
+            expect(page.header).toBeUndefined();
+        });
+
+        test('both anchorBarVisible and visible set to false', async () => {
+            const context = await setup({
+                manifestChanges: [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'anchorBarVisible'
+                        ],
+                        value: false
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'visible'
+                        ],
+                        value: false
+                    }
+                ]
+            });
+            const result = runFeV4Linker(context);
+            const page = findObjectPage(result);
+            expect(page.header).toEqual({
+                anchorBarVisible: false,
+                visible: false
+            });
+        });
+
+        test('only anchorBarVisible set to false', async () => {
+            const context = await setup({
+                manifestChanges: [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'anchorBarVisible'
+                        ],
+                        value: false
+                    }
+                ]
+            });
+            const result = runFeV4Linker(context);
+            const page = findObjectPage(result);
+            expect(page.header).toEqual({
+                anchorBarVisible: false,
+                visible: undefined
+            });
+        });
+
+        test('only visible set to true', async () => {
+            const context = await setup({
+                manifestChanges: [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'visible'
+                        ],
+                        value: true
+                    }
+                ]
+            });
+            const result = runFeV4Linker(context);
+            const page = findObjectPage(result);
+            expect(page.header).toEqual({
+                anchorBarVisible: undefined,
+                visible: true
+            });
+        });
+
+        test('anchorBarVisible true and visible false', async () => {
+            const context = await setup({
+                manifestChanges: [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'anchorBarVisible'
+                        ],
+                        value: true
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'visible'
+                        ],
+                        value: false
+                    }
+                ]
+            });
+            const result = runFeV4Linker(context);
+            const page = findObjectPage(result);
+            expect(page.header).toEqual({
+                anchorBarVisible: true,
+                visible: false
+            });
+        });
+    });
 });

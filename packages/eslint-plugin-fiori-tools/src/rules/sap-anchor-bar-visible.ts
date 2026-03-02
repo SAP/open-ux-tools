@@ -12,7 +12,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             recommended: true,
             description:
                 'Anchor Bar Visible should not be set to false in manifest settings for object page headers (except form entry object pages)',
-            url: 'https://ui5.sap.com/#/topic/533f7e7f59854cb08ce8074814ae83c5'
+            url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-anchor-bar-visible.md'
         },
         messages: {
             [ANCHOR_BAR_VISIBLE]:
@@ -33,16 +33,12 @@ const rule: FioriRuleDefinition = createFioriRule({
                     continue;
                 }
                 const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
-                const manifest = parsedApp.manifestObject;
-
-                // Navigate to the target in the manifest
-                const target = manifest['sap.ui5']?.routing?.targets?.[page.targetName];
-                const header = (target as any)?.options?.settings?.content?.header;
-                const anchorBarVisible: unknown = header?.anchorBarVisible;
-                const headerVisible: unknown = header?.visible;
 
                 // Check if anchorBarVisible is set to false
                 // Exception: Form Entry Object Pages can have both visible: false and anchorBarVisible: false
+                const anchorBarVisible = page.header?.anchorBarVisible;
+                const headerVisible = page.header?.visible;
+
                 if (anchorBarVisible === false && headerVisible !== false) {
                     problems.push({
                         type: ANCHOR_BAR_VISIBLE,
