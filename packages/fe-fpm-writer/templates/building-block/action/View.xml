@@ -1,0 +1,30 @@
+<%_ if (!config?.hasAggregation) { _%>
+<<%- macrosNamespace %>:actions>
+<%_ } _%>
+    <<%- config?.aggregationNamespace %>:Action
+        <%_ if (data.embeddedAction?.eventHandler?.fileName) { _%>
+        core:require="{ handler: '<%- data.embeddedAction.eventHandler.fileName %>' }"
+        <%_ } _%>
+        <%_ if (data.id) { _%>
+        id="<%- data.id %>"
+        <%_ } _%>
+        <%_ if (data.actionKey) { _%>
+        key="<%- data.actionKey %>"
+        <%_ } _%>
+        text="<%- data.text %>"
+        <%_ if (data.embeddedAction?.eventHandler?.fnName) { _%>
+        press="<%- data.embeddedAction.eventHandler.fnName %>"
+        <%_ } _%>
+        <%_ if (data.anchor) { _%>
+        anchor="<%- data.anchor %>"
+        <%_ } _%>
+        <%_ if (data.placement) { _%>
+        placement="<%- data.placement %>"
+        <%_ } _%>
+        <%_ if (data.requiresSelection !== undefined) { _%>
+        requiresSelection="<%- data.requiresSelection %>"
+        <%_ } _%>
+    />
+<%_ if (!config?.hasAggregation) { _%>
+</<%- macrosNamespace %>:actions>
+<%_ } _%>

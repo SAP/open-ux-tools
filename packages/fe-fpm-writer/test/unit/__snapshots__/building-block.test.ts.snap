@@ -1,5 +1,533 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`Building Blocks Custom Action building block append new function to existing TypeScript file: generate-multiple-custom-actions-ts 1`] = `
+Object {
+  "generate-multiple-custom-actions-ts/webapp/ext/fragment/HandlerFile.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ */
+export function onFirst(this: ExtensionAPI, ) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}
+
+/**
+ * new action handler.
+ */
+export function onNewAction(this: ExtensionAPI) {
+    MessageToast.show(\\"new action invoked.\\");
+}",
+    "state": "modified",
+  },
+  "generate-multiple-custom-actions-ts/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\">
+                <macros:actions>
+                    <macrosTable:Action core:require=\\"{ handler: 'my/test/App/ext/fragment/HandlerFile' }\\" id=\\"testAction\\" key=\\"newAction\\" text=\\"New Action\\" press=\\"handler.newFunction\\"/>
+                </macros:actions>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-multiple-custom-actions-ts/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Custom Action building block append new function to existing file: generate-custom-action-basic 1`] = `
+Object {
+  "generate-multiple-custom-actions/webapp/ext/fragment/HandlerFile.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onFirst: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    ,
+        newFunction: function() {
+            MessageToast.show(\\"New action invoked.\\");
+        }};
+});
+",
+    "state": "modified",
+  },
+  "generate-multiple-custom-actions/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\">
+                <macros:actions>
+                    <macrosTable:Action core:require=\\"{ handler: 'my/test/App/ext/fragment/HandlerFile' }\\" id=\\"testAction\\" key=\\"newAction\\" text=\\"New Action\\" press=\\"handler.newFunction\\"/>
+                </macros:actions>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-multiple-custom-actions/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Custom Action building block correctly indexes new handlers when parent already has existing handlers: generate-actions-with-existing-handlers 1`] = `
+Object {
+  "generate-actions-with-existing-handlers/webapp/ext/actions/Helper.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
+        onAction1: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "generate-actions-with-existing-handlers/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" core:require=\\"{Existing: 'my/test/App/ext/handlers/Existing', Helper: 'my/test/App/ext/utils/Helper'}\\">
+                <macros:actions>
+                    <macrosTable:Action id=\\"existingAction\\" key=\\"existingAction\\" text=\\"Existing\\" press=\\"Existing.onExisting\\"/>
+                    <macrosTable:Action core:require=\\"{ handler: 'my/test/App/ext/actions/Helper' }\\" id=\\"testAction1\\" key=\\"action1\\" text=\\"Action 1\\" press=\\"handler.onAction1\\"/>
+                    <macrosTable:Action core:require=\\"{ handler: 'my/test/App/ext/other/Existing' }\\" id=\\"testAction2\\" key=\\"action2\\" text=\\"Action 2\\" press=\\"handler.onAction2\\"/>
+                </macros:actions>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-actions-with-existing-handlers/webapp/ext/other/Existing.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
+        onAction2: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "generate-actions-with-existing-handlers/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Custom Action building block generate CustomAction Building blocks: generate-custom-action-basic 1`] = `
+Object {
+  "generate-custom-action-basic/webapp/ext/fragment/ApproveHandlerFile.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
+        onApprove: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "generate-custom-action-basic/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\">
+                <macros:actions>
+                    <macrosTable:Action core:require=\\"{ handler: 'my/test/App/ext/fragment/ApproveHandlerFile' }\\" id=\\"testAction1\\" key=\\"approveAction\\" text=\\"Approve\\" press=\\"handler.onApprove\\" anchor=\\"approveAction\\" placement=\\"After\\" requiresSelection=\\"true\\"/>
+                </macros:actions>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-custom-action-basic/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Custom Action building block generate CustomAction with controller file: generate-custom-action-controller 1`] = `
+Object {
+  "generate-custom-action-controller/webapp/ext/fragment/customView.controller.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
+        controllerAction: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "generate-custom-action-controller/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\">
+                <macros:actions>
+                    <macrosTable:Action id=\\"testActionController\\" key=\\"controllerAction\\" text=\\"Controller Action\\" press=\\".controllerAction\\" requiresSelection=\\"false\\"/>
+                </macros:actions>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-custom-action-controller/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Custom Action building block generate multiple CustomActions building blocks: generate-custom-action-basic 1`] = `
+Object {
+  "generate-multiple-custom-actions/webapp/ext/fragment/my/test/App/ext/handlers/FirstHandler.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
+        onFirst: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "generate-multiple-custom-actions/webapp/ext/fragment/my/test/App/ext/handlers/SecondHandler.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
+        onSecond: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "generate-multiple-custom-actions/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\">
+                <macros:actions>
+                    <macrosTable:Action core:require=\\"{ handler: 'my/test/App/ext/fragment/my/test/App/ext/handlers/FirstHandler' }\\" id=\\"testAction5\\" key=\\"firstAction\\" text=\\"First Action\\" press=\\"handler.onFirst\\" requiresSelection=\\"false\\"/>
+                    <macrosTable:Action core:require=\\"{ handler: 'my/test/App/ext/fragment/my/test/App/ext/handlers/SecondHandler' }\\" id=\\"testAction6\\" key=\\"secondAction\\" text=\\"Second Action\\" press=\\"handler.onSecond\\" anchor=\\"firstAction\\" placement=\\"After\\" requiresSelection=\\"true\\"/>
+                </macros:actions>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-multiple-custom-actions/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Custom Action building block generate typescript CustomAction Building blocks: generate-custom-action-basic-ts 1`] = `
+Object {
+  "generate-custom-action-basic-ts/webapp/ext/fragment/ApproveHandlerFile.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event object provided by the event provider.
+ */
+export function onApprove(this: ExtensionAPI, event: UI5Event) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
+  "generate-custom-action-basic-ts/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\">
+                <macros:actions>
+                    <macrosTable:Action core:require=\\"{ handler: 'my/test/App/ext/fragment/ApproveHandlerFile' }\\" id=\\"testAction1\\" key=\\"approveAction\\" text=\\"Approve\\" press=\\"handler.onApprove\\" anchor=\\"approveAction\\" placement=\\"After\\" requiresSelection=\\"true\\"/>
+                </macros:actions>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-custom-action-basic-ts/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`Building Blocks CustomColumn building block CustomColumn detects macros:columns elements correctly: generate-custom-column-without-macros-columns 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
     <Page title=\\"Main\\">

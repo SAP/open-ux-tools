@@ -16,7 +16,7 @@ export enum BuildingBlockType {
     CustomColumn = 'custom-column',
     RichTextEditor = 'rich-text-editor',
     RichTextEditorButtonGroups = 'rich-text-editor-button-groups',
-    Action = 'action' //todoK
+    Action = 'action'
 }
 
 /**
@@ -444,37 +444,24 @@ export interface CustomColumn extends BuildingBlock {
 /**
  * Building block for adding custom actions to tables.
  * Custom actions can be added to table toolbars and can trigger controller methods or fragments.
- * 
+ *
  * @see https://sapui5.hana.ondemand.com/#/api/sap.fe.macros.table.Action
  * @example
  * // Simple action with event handler
  * <macros:Table id="MyTable" metaPath="@com.sap.vocabularies.UI.v1.LineItem">
  *   <macros:actions>
- *     <macrosTable:Action 
- *       key="approveAction" 
- *       text="Approve" 
+ *     <macrosTable:Action
+ *       key="approveAction"
+ *       text="Approve"
  *       press=".onApprove"
  *       requiresSelection="true"
- *       enabled="{= ${ui>/isEditable}}"
  *       placement="After"
- *       anchor="DataFieldForAction::Service.approve"
  *     />
  *   </macros:actions>
  * </macros:Table>
- * 
- * @example
- * // Action with embedded fragment
- * <macros:Table id="MyTable" metaPath="@com.sap.vocabularies.UI.v1.LineItem">
- *   <macros:actions>
- *     <macrosTable:Action key="customDialog" text="Open Dialog">
- *       <core:Fragment fragmentName="my.app.fragments.CustomDialog" type="XML" />
- *     </macrosTable:Action>
- *   </macros:actions>
- * </macros:Table>
- * 
  * @extends {BuildingBlock}
  */
-export interface CustomAction extends BuildingBlock {
+export interface Action extends BuildingBlock {
     /**
      * Unique identifier of the action.
      */
@@ -488,67 +475,23 @@ export interface CustomAction extends BuildingBlock {
      */
     anchor?: string;
     /**
-     * Determines the shortcut combination to trigger the action.
-     */
-    command?: string;
-    /**
-     * Enables or disables the action.
-     * Can be a boolean or a binding expression that evaluates to boolean.
-     * 
-     * @example true
-     * @example "{= ${status} === 'Draft'}"
-     */
-    enabled?: boolean | string;
-    /**
-     * Determines whether the action requires selecting one item or multiple items.
-     * Allowed values are 'single' and 'multi'.
-     */
-    enableOnSelect?: 'single' | 'multi';
-    /**
-     * Displays the AI Icon on the action button.
-     * 
-     * @default false
-     */
-    isAIOperation?: boolean;
-    /**
-     * Defines the overflow group of the action in the overflow toolbar.
-     */
-    overflowGroup?: number;
-    /**
      * Defines where this action should be placed relative to the defined anchor.
      * Allowed values are 'Before' and 'After'.
      */
     placement?: 'Before' | 'After';
     /**
-     * Defines the priority of the action in the overflow toolbar.
-     */
-    priority?: string;
-    /**
      * Defines if the action requires a selection.
-     * 
+     *
      * @default false
      */
     requiresSelection?: boolean;
     /**
-     * Determines whether the action is visible.
-     * Can be a boolean or a binding expression that evaluates to boolean.
-     * 
-     * @example true
-     * @example "{= ${ui>/isEditable}}"
+     * This allows you to define event handlers, or custom XML elements for the action.
      */
-    visible?: boolean | string;
-    /**
-     * The embedded action configuration (fragment, event handler, custom element).
-     * This allows you to define inline fragments, event handlers, or custom XML elements for the action.
-     */
-    embededAction?: EmbededAction;
+    embeddedAction: EmbeddedAction;
 }
 
-/**
- * Combined type for embedded actions that can include event handlers, fragments, and custom XML elements.
- * Used by CustomAction to support various action configurations.
- */
-export type EmbededAction = EventHandler & CustomFragment & CustomElement;
+export type EmbeddedAction = EventHandler & CustomFragment & CustomElement;
 
 export type EmbededFragment = EventHandler & CustomFragment & CustomElement & FragmentContentData;
 
