@@ -29,7 +29,8 @@ describe('routes', () => {
                     xsappJsonPath: './xs-app.json',
                     authenticationMethod: 'none',
                     allowLocalDir: false,
-                    allowServices: false
+                    allowServices: false,
+                    disableUi5ServerRoutes: true // disable to test only existing routes
                 }),
                 sourcePath: path.join(rootPath, 'webapp')
             });
@@ -49,6 +50,7 @@ describe('routes', () => {
                 effectiveOptions: mergeEffectiveOptions({
                     xsappJsonPath: './xs-app.json',
                     disableWelcomeFile: true,
+                    disableUi5ServerRoutes: true, // disable to test only welcomeFile behavior
                     allowLocalDir: false,
                     allowServices: false
                 }),
@@ -71,7 +73,8 @@ describe('routes', () => {
                     appendAuthRoute: true,
                     authenticationMethod: 'route',
                     allowLocalDir: false,
-                    allowServices: false
+                    allowServices: false,
+                    disableUi5ServerRoutes: true // disable to test only auth route
                 }),
                 sourcePath
             });
@@ -84,6 +87,74 @@ describe('routes', () => {
                 cacheControl: 'no-store',
                 authenticationType: 'xsuaa'
             });
+        });
+
+        test('injects ui5-server auth route by default', () => {
+            jest.spyOn(fs, 'readFileSync').mockReturnValue(JSON.stringify({ routes: [] }));
+            const xsappPath = path.join(rootPath, 'xs-app.json');
+
+            const result = loadAndPrepareXsappConfig({
+                rootPath,
+                xsappJsonPath: xsappPath,
+                effectiveOptions: mergeEffectiveOptions({
+                    xsappJsonPath: './xs-app.json',
+                    allowLocalDir: false,
+                    allowServices: false
+                }),
+                sourcePath: rootPath
+            });
+
+            // Should have only the HTML auth route (no /resources, /test-resources, or catch-all)
+            expect(result.routes).toHaveLength(1);
+            expect(result.routes![0]).toMatchObject({
+                source: String.raw`^/(test|local)/.*\.html.*$`,
+                destination: 'ui5-server',
+                authenticationType: 'xsuaa'
+            });
+        });
+
+        test('does not inject ui5-server routes when disableUi5ServerRoutes is true', () => {
+            jest.spyOn(fs, 'readFileSync').mockReturnValue(JSON.stringify({ routes: [] }));
+            const xsappPath = path.join(rootPath, 'xs-app.json');
+
+            const result = loadAndPrepareXsappConfig({
+                rootPath,
+                xsappJsonPath: xsappPath,
+                effectiveOptions: mergeEffectiveOptions({
+                    xsappJsonPath: './xs-app.json',
+                    disableUi5ServerRoutes: true,
+                    allowLocalDir: false,
+                    allowServices: false
+                }),
+                sourcePath: rootPath
+            });
+
+            expect(result.routes).toHaveLength(0);
+        });
+
+        test('appends ui5-server auth route after existing routes', () => {
+            const xsappContent = {
+                routes: [{ source: '^/backend/(.*)$', destination: 'backend' }]
+            };
+            jest.spyOn(fs, 'readFileSync').mockReturnValue(JSON.stringify(xsappContent));
+            const xsappPath = path.join(rootPath, 'xs-app.json');
+
+            const result = loadAndPrepareXsappConfig({
+                rootPath,
+                xsappJsonPath: xsappPath,
+                effectiveOptions: mergeEffectiveOptions({
+                    xsappJsonPath: './xs-app.json',
+                    allowLocalDir: false,
+                    allowServices: false
+                }),
+                sourcePath: rootPath
+            });
+
+            // Should have 1 existing route + 1 ui5-server auth route
+            expect(result.routes).toHaveLength(2);
+            expect(result.routes![0].destination).toBe('backend');
+            expect(result.routes![1].destination).toBe('ui5-server');
+            expect(result.routes![1].source).toBe(String.raw`^/(test|local)/.*\.html.*$`);
         });
     });
 

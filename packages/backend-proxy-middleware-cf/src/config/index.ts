@@ -25,6 +25,7 @@ export function mergeEffectiveOptions(configuration: BackendProxyMiddlewareCfCon
         rewriteContentTypes: [...DEFAULT_REWRITE_CONTENT_TYPES],
         appendAuthRoute: false,
         disableWelcomeFile: false,
+        disableUi5ServerRoutes: false,
         extensions: [],
         ...configuration
     } as EffectiveOptions;

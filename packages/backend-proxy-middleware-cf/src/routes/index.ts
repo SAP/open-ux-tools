@@ -1,7 +1,26 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { BuildRouteEntriesOptions, PrepareXsappConfigOptions, RouteEntry, XsappConfig } from '../types';
+import type {
+    BuildRouteEntriesOptions,
+    PrepareXsappConfigOptions,
+    RouteEntry,
+    XsappConfig,
+    XsappRoute
+} from '../types';
+
+const UI5_SERVER_DESTINATION = 'ui5-server';
+
+/**
+ * Auth route for HTML pages - triggers XSUAA login.
+ * Only this route is needed; /resources and /test-resources are handled
+ * directly by ui5-proxy-middleware without going through approuter.
+ */
+const UI5_SERVER_AUTH_ROUTE: XsappRoute = {
+    source: String.raw`^/(test|local)/.*\.html.*$`,
+    destination: UI5_SERVER_DESTINATION,
+    authenticationType: 'xsuaa'
+};
 
 /**
  * Load xs-app.json and prepare it for the approuter (filter routes, set auth, optionally append auth route).
@@ -47,6 +66,12 @@ export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): X
         for (const route of xsappConfig.routes) {
             route.authenticationType = 'none';
         }
+    }
+
+    if (!effectiveOptions.disableUi5ServerRoutes) {
+        // Inject only the HTML auth route - /resources and /test-resources
+        // are handled directly by ui5-proxy-middleware without approuter loop
+        xsappConfig.routes.push(UI5_SERVER_AUTH_ROUTE);
     }
 
     return xsappConfig;

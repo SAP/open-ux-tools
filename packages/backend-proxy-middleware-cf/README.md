@@ -33,6 +33,7 @@ pnpm add -D @sap-ux/backend-proxy-middleware-cf
 | `extensions` | `array` | `[]` | Approuter extensions: `{ module: string, parameters?: Record<string, string> }`. Parameters are passed as the 4th argument to extension handlers. |
 | `appendAuthRoute` | `boolean` | `false` | Add a route for HTML pages to trigger XSUAA login when `authenticationMethod` is not `"none"`. |
 | `disableWelcomeFile` | `boolean` | `false` | Disable welcome file handling from `xs-app.json`. |
+| `disableUi5ServerRoutes` | `boolean` | `false` | Disable automatic injection of the `ui5-server` HTML auth route for `/test/*` and `/local/*` pages. |
 
 ## Usage
 

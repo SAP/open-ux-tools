@@ -4,7 +4,7 @@ import path from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { EffectiveOptions } from '../../../src/types';
-import { loadAndApplyEnvOptions } from '../../../src/env';
+import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from '../../../src/env';
 
 jest.mock('node:fs', () => ({
     ...jest.requireActual('node:fs'),
@@ -169,6 +169,88 @@ describe('env', () => {
                     delete process.env.destinations;
                 }
             });
+        });
+    });
+
+    describe('updateUi5ServerDestinationPort', () => {
+        beforeEach(() => {
+            delete process.env.destinations;
+        });
+
+        afterEach(() => {
+            delete process.env.destinations;
+        });
+
+        test('auto-creates ui5-server destination when not configured', () => {
+            const effectiveOptions = {
+                destinations: [{ name: 'backend', url: 'http://localhost:3000' }]
+            } as unknown as EffectiveOptions;
+
+            const result = updateUi5ServerDestinationPort(effectiveOptions, 8080);
+
+            expect(result).toBe(true);
+            // Should have added ui5-server to effectiveOptions
+            expect(effectiveOptions.destinations).toHaveLength(2);
+            expect(effectiveOptions.destinations).toContainEqual({ name: 'ui5-server', url: 'http://localhost:8080' });
+            // Should have added to process.env.destinations
+            expect(process.env.destinations).toBe(
+                JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8080' }])
+            );
+        });
+
+        test('auto-creates ui5-server with empty destinations array', () => {
+            const effectiveOptions = {
+                destinations: []
+            } as unknown as EffectiveOptions;
+
+            const result = updateUi5ServerDestinationPort(effectiveOptions, 8081);
+
+            expect(result).toBe(true);
+            expect(effectiveOptions.destinations).toEqual([{ name: 'ui5-server', url: 'http://localhost:8081' }]);
+            expect(process.env.destinations).toBe(
+                JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8081' }])
+            );
+        });
+
+        test('returns false when port matches existing ui5-server', () => {
+            const effectiveOptions = {
+                destinations: [{ name: 'ui5-server', url: 'http://localhost:8080' }]
+            } as unknown as EffectiveOptions;
+            process.env.destinations = JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8080' }]);
+
+            const result = updateUi5ServerDestinationPort(effectiveOptions, 8080);
+
+            expect(result).toBe(false);
+            expect(effectiveOptions.destinations[0].url).toBe('http://localhost:8080');
+        });
+
+        test('updates destination when port differs from configured', () => {
+            const effectiveOptions = {
+                destinations: [{ name: 'ui5-server', url: 'http://localhost:8080' }]
+            } as unknown as EffectiveOptions;
+            process.env.destinations = JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8080' }]);
+
+            const result = updateUi5ServerDestinationPort(effectiveOptions, 8081);
+
+            expect(result).toBe(true);
+            expect(effectiveOptions.destinations[0].url).toBe('http://localhost:8081');
+            expect(process.env.destinations).toBe(
+                JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8081' }])
+            );
+        });
+
+        test('adds ui5-server to process.env.destinations if not present but in effectiveOptions', () => {
+            const effectiveOptions = {
+                destinations: [{ name: 'ui5-server', url: 'http://localhost:8080' }]
+            } as unknown as EffectiveOptions;
+            process.env.destinations = JSON.stringify([{ name: 'backend', url: 'http://localhost:3000' }]);
+
+            const result = updateUi5ServerDestinationPort(effectiveOptions, 8081);
+
+            expect(result).toBe(true);
+            const envDest = JSON.parse(process.env.destinations!) as { name: string; url: string }[];
+            expect(envDest).toContainEqual({ name: 'backend', url: 'http://localhost:3000' });
+            expect(envDest).toContainEqual({ name: 'ui5-server', url: 'http://localhost:8081' });
         });
     });
 });

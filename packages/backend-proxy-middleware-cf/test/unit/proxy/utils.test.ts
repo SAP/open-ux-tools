@@ -1,4 +1,13 @@
-import { createPathFilter, getMimeInfo, getRequestOrigin, replaceUrl } from '../../../src/proxy/utils';
+import type { IncomingMessage } from 'node:http';
+
+import {
+    createPathFilter,
+    createProxyFilter,
+    getMimeInfo,
+    getRequestOrigin,
+    isRequestFromApprouter,
+    replaceUrl
+} from '../../../src/proxy/utils';
 
 describe('proxy utils', () => {
     describe('replaceUrl', () => {
@@ -63,6 +72,41 @@ describe('proxy utils', () => {
             const filter = createPathFilter(['/login/callback'], [route]);
 
             expect(filter('/other')).toBe(false);
+        });
+    });
+
+    describe('isRequestFromApprouter', () => {
+        test('returns true when x-forwarded-for header is present', () => {
+            const req = { headers: { 'x-forwarded-for': '127.0.0.1' } } as unknown as IncomingMessage;
+            expect(isRequestFromApprouter(req)).toBe(true);
+        });
+
+        test('returns false when x-forwarded-for header is missing', () => {
+            const req = { headers: {} } as unknown as IncomingMessage;
+            expect(isRequestFromApprouter(req)).toBe(false);
+        });
+    });
+
+    describe('createProxyFilter', () => {
+        test('returns true for matching path when not from approuter', () => {
+            const filter = createProxyFilter(['/login/callback'], []);
+            const req = { headers: {} } as unknown as IncomingMessage;
+
+            expect(filter('/login/callback', req)).toBe(true);
+        });
+
+        test('returns false for matching path when request is from approuter', () => {
+            const filter = createProxyFilter(['/login/callback'], []);
+            const req = { headers: { 'x-forwarded-for': '127.0.0.1' } } as unknown as IncomingMessage;
+
+            expect(filter('/login/callback', req)).toBe(false);
+        });
+
+        test('returns false for non-matching path even when not from approuter', () => {
+            const filter = createProxyFilter(['/login/callback'], []);
+            const req = { headers: {} } as unknown as IncomingMessage;
+
+            expect(filter('/other', req)).toBe(false);
         });
     });
 

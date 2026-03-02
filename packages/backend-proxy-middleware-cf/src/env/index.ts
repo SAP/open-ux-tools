@@ -7,6 +7,16 @@ import { buildVcapServicesFromResources, getSpaceGuidFromUi5Yaml, getYamlContent
 
 import type { EffectiveOptions } from '../types';
 
+const UI5_SERVER_DESTINATION = 'ui5-server';
+
+/**
+ * Destination entry as stored in process.env.destinations.
+ */
+interface EnvDestination {
+    name: string;
+    url: string;
+}
+
 /**
  * Load and parse env options JSON file.
  *
@@ -90,4 +100,53 @@ export async function loadAndApplyEnvOptions(
     }
 
     applyToProcessEnv(options);
+}
+
+/**
+ * Ensure the ui5-server destination exists and has the correct port.
+ * If ui5-server doesn't exist in configuration, it will be auto-created.
+ * If it exists but has a different port, it will be updated.
+ *
+ * This enables multi-instance support and removes the need to manually
+ * configure ui5-server in ui5.yaml - it's auto-configured based on the actual port.
+ *
+ * @param effectiveOptions - Merged options containing destinations.
+ * @param actualPort - The actual port detected from the incoming request.
+ * @returns True if destination was created or updated, false if no change needed.
+ */
+export function updateUi5ServerDestinationPort(effectiveOptions: EffectiveOptions, actualPort: number): boolean {
+    const newUrl = `http://localhost:${actualPort}`;
+
+    let ui5ServerDest = effectiveOptions.destinations.find((d) => d.name === UI5_SERVER_DESTINATION);
+
+    if (!ui5ServerDest) {
+        ui5ServerDest = { name: UI5_SERVER_DESTINATION, url: newUrl };
+        effectiveOptions.destinations.push(ui5ServerDest);
+
+        const envDestinations = JSON.parse(process.env.destinations ?? '[]') as EnvDestination[];
+        envDestinations.push({ name: UI5_SERVER_DESTINATION, url: newUrl });
+        process.env.destinations = JSON.stringify(envDestinations);
+
+        return true;
+    }
+
+    const currentUrl = new URL(ui5ServerDest.url);
+    const currentPort = parseInt(currentUrl.port, 10) || 80;
+    if (currentPort === actualPort) {
+        return false;
+    }
+
+    ui5ServerDest.url = newUrl;
+
+    // Surgically update only ui5-server in process.env.destinations
+    const envDestinations = JSON.parse(process.env.destinations ?? '[]') as EnvDestination[];
+    const envUi5ServerDest = envDestinations.find((d) => d.name === UI5_SERVER_DESTINATION);
+    if (envUi5ServerDest) {
+        envUi5ServerDest.url = newUrl;
+    } else {
+        envDestinations.push({ name: UI5_SERVER_DESTINATION, url: newUrl });
+    }
+    process.env.destinations = JSON.stringify(envDestinations);
+
+    return true;
 }

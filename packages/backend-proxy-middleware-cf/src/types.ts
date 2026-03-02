@@ -53,6 +53,8 @@ export interface BackendProxyMiddlewareCfConfig {
     appendAuthRoute?: boolean;
     /** Disable welcome file handling from xs-app.json */
     disableWelcomeFile?: boolean;
+    /** Disable automatic injection of ui5-server routes (resources, test-resources, catch-all) */
+    disableUi5ServerRoutes?: boolean;
 }
 
 /** Effective options with defaults applied. */

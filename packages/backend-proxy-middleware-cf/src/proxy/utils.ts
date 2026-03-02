@@ -26,9 +26,41 @@ export function replaceUrl(text: string, oldUrl: string, newUrl: string): string
  * @returns Filter function (pathname) => boolean.
  */
 export function createPathFilter(customRoutes: string[], routes: RouteEntry[]): (pathname: string) => boolean {
-    return (pathname: string): boolean =>
-        customRoutes.some((r) => new RegExp(String.raw`^${r}(\?.*)?$`).test(pathname)) ||
-        routes.some((route) => route.re.test(pathname));
+    return (pathname: string): boolean => {
+        return (
+            customRoutes.some((r) => new RegExp(String.raw`^${r}(\?.*)?$`).test(pathname)) ||
+            routes.some((route) => route.re.test(pathname))
+        );
+    };
+}
+
+/**
+ * Check if request originated from the approuter (server-to-server).
+ * The approuter adds X-Forwarded-For when proxying to ui5-server.
+ *
+ * @param req - Incoming request.
+ * @returns True if request came from approuter.
+ */
+export function isRequestFromApprouter(req: IncomingMessage): boolean {
+    return !!req.headers['x-forwarded-for'];
+}
+
+/**
+ * Creates a proxy filter that checks both route matching and approuter origin.
+ * Skips proxying when the request comes from the approuter to prevent infinite loops.
+ *
+ * @param customRoutes - Route path patterns (e.g. '/', '/login/callback').
+ * @param routes - Route entries with compiled regex.
+ * @returns Filter function (pathname, req) => boolean for http-proxy-middleware.
+ */
+export function createProxyFilter(
+    customRoutes: string[],
+    routes: RouteEntry[]
+): (pathname: string, req: IncomingMessage) => boolean {
+    const pathFilter = createPathFilter(customRoutes, routes);
+    return (pathname: string, req: IncomingMessage): boolean => {
+        return !isRequestFromApprouter(req) && pathFilter(pathname);
+    };
 }
 
 /**

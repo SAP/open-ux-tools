@@ -17,7 +17,7 @@ type ProxyOnHandlers = {
 
 let capturedInterceptorCallback: InterceptorCallback | null = null;
 let capturedProxyOptions: {
-    pathFilter?: (pathname: string) => boolean;
+    pathFilter?: (pathname: string, req?: { headers?: Record<string, string> }) => boolean;
     target?: string;
     on?: ProxyOnHandlers;
 } | null = null;
@@ -145,10 +145,16 @@ describe('proxy', () => {
             expect(capturedProxyOptions!.target).toBe('http://localhost:5000');
 
             const pathFilter = capturedProxyOptions!.pathFilter!;
-            expect(pathFilter('/')).toBe(true);
-            expect(pathFilter('/login/callback')).toBe(true);
-            expect(pathFilter('/api/foo')).toBe(true);
-            expect(pathFilter('/other')).toBe(false);
+            // Pass mock request without x-forwarded-for header (not from approuter)
+            const mockReq = { headers: {} };
+            expect(pathFilter('/', mockReq)).toBe(true);
+            expect(pathFilter('/login/callback', mockReq)).toBe(true);
+            expect(pathFilter('/api/foo', mockReq)).toBe(true);
+            expect(pathFilter('/other', mockReq)).toBe(false);
+
+            // With x-forwarded-for header (from approuter), should return false to avoid loop
+            const mockReqFromApprouter = { headers: { 'x-forwarded-for': '127.0.0.1' } };
+            expect(pathFilter('/', mockReqFromApprouter)).toBe(false);
         });
 
         test('proxyReq normalizes x-forwarded-proto when it contains a comma', () => {
