@@ -1093,23 +1093,31 @@ export class FlpSandbox {
 
             if (typeof i18nConfig === 'string') {
                 i18nPath = i18nConfig;
-            } else if (typeof i18nConfig === 'object' && i18nConfig !== null && 'bundleUrl' in i18nConfig) {
-                const {
-                    bundleUrl: i18nPathFromConfig,
-                    supportedLocales: locales = [],
-                    fallbackLocale: fallback
-                } = i18nConfig as {
-                    bundleUrl: string;
+            } else if (typeof i18nConfig === 'object' && i18nConfig !== null) {
+                const config = i18nConfig as {
+                    bundleUrl?: string;
+                    bundleName?: string;
                     supportedLocales?: string[];
                     fallbackLocale?: string;
                 };
+                if (config.bundleName) {
+                    // Convert bundleName (e.g., "sap.fe.cap.travel.i18n.i18n") to path
+                    // Remove the app ID prefix and convert dots to slashes
+                    const bundleNameParts = config.bundleName.split('.');
+                    i18nPath = `${bundleNameParts.slice(-2).join('/')}.properties`;
+                } else if (config.bundleUrl) {
+                    i18nPath = config.bundleUrl;
+                }
 
-                i18nPath = i18nPathFromConfig;
-                supportedLocales = locales;
-                fallbackLocale = fallback;
+                supportedLocales = config.supportedLocales || [];
+                fallbackLocale = config.fallbackLocale;
             }
 
-            const requestedLocale = (req.query.locale as string) ?? fallbackLocale ?? '';
+            let requestedLocale = (req.query.locale as string) || fallbackLocale || '';
+
+            if (!requestedLocale && supportedLocales.length > 0) {
+                requestedLocale = supportedLocales[0];
+            }
             const baseFilePath = join(webappPath, i18nPath);
             const filePath = requestedLocale
                 ? baseFilePath.replace('.properties', `_${requestedLocale}.properties`)
