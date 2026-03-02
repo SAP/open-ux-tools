@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 1.35.10
+
+### Patch Changes
+
+- ca2566b: Update fast-xml-parser
+
+    Issue: #37278
+
 ## 1.35.9
 
 ### Patch Changes
