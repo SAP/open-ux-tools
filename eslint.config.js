@@ -301,6 +301,7 @@ module.exports = [
                     'allowAsImport': true
                 }
             ],
+            'import/enforce-node-protocol-usage': ['error', 'always'],
             'jsdoc/require-param-type': 'off',
             'jsdoc/require-returns-type': 'off',
             'prefer-const': [
