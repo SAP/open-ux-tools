@@ -3,6 +3,7 @@ import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { type InboundContent, type Inbound, AdaptationProjectType } from '@sap-ux/axios-extension';
 import {
@@ -109,6 +110,24 @@ export function extractCfBuildTask(ui5Conf: UI5Config): UI5YamlCustomTaskConfigu
     }
 
     return buildTask;
+}
+
+/**
+ * Read space GUID from ui5.yaml customTasks app-variant-bundler-build.space.
+ *
+ * @param {string} rootPath - Project root (where ui5.yaml lives).
+ * @param {ToolsLogger} logger - Optional logger.
+ * @returns {Promise<string | undefined>} Space GUID or undefined if not found.
+ */
+export async function getSpaceGuidFromUi5Yaml(rootPath: string, logger?: ToolsLogger): Promise<string | undefined> {
+    try {
+        const ui5Config = await readUi5Config(rootPath, 'ui5.yaml');
+        const buildTask = extractCfBuildTask(ui5Config);
+        return buildTask?.space;
+    } catch {
+        logger?.warn('Could not read space from ui5.yaml (app-variant-bundler-build).');
+        return undefined;
+    }
 }
 
 /**

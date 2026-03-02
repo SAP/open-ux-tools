@@ -13,7 +13,9 @@ import {
     createServiceInstance,
     getServiceNameByTags,
     createServices,
-    getServiceInstanceKeys
+    getServiceInstanceKeys,
+    getServiceTags,
+    getServiceKeyCredentialsWithTags
 } from '../../../../src/cf/services/api';
 import { initI18n, t } from '../../../../src/i18n';
 import { isLoggedInCf } from '../../../../src/cf/core/auth';
@@ -772,6 +774,134 @@ describe('CF Services API', () => {
                         error: 'Failed to create service key'
                     })
                 })
+            );
+        });
+    });
+
+    describe('getServiceTags', () => {
+        const spaceGuid = 'space-guid-123';
+
+        test('should return tags when service offering is found', async () => {
+            const serviceName = 'xsuaa';
+            const mockResources = [
+                {
+                    name: serviceName,
+                    tags: ['tag1', 'tag2']
+                }
+            ];
+
+            mockRequestCfApi.mockResolvedValue({ resources: mockResources });
+
+            const result = await getServiceTags(spaceGuid, serviceName);
+
+            expect(mockRequestCfApi).toHaveBeenCalledWith(
+                `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}&names=${serviceName}`
+            );
+            expect(result).toEqual(['tag1', 'tag2']);
+        });
+
+        test('should return empty array when service offering has no tags or is not found', async () => {
+            const serviceName = 'unknown';
+
+            mockRequestCfApi.mockResolvedValue({ resources: [{ name: 'other-service', tags: [] }] });
+
+            const result = await getServiceTags(spaceGuid, serviceName);
+
+            expect(result).toEqual([]);
+        });
+
+        test('should return empty array when resources is empty or undefined', async () => {
+            mockRequestCfApi.mockResolvedValue({ resources: [] });
+
+            const result = await getServiceTags('space', 'xsuaa');
+
+            expect(result).toEqual([]);
+        });
+    });
+
+    describe('getServiceKeyCredentialsWithTags', () => {
+        const spaceGuid = 'space-guid-123';
+        const serviceName = 'xsuaa';
+        const serviceInstanceName = 'my-xsuaa';
+        const plan = 'application';
+
+        test('should return credentials with tags when service instance and keys exist', async () => {
+            const mockTags = ['tag1'];
+            const mockCredentials = {
+                clientid: 'client-id',
+                clientsecret: 'secret',
+                url: '/uaa.test',
+                uaa: {
+                    clientid: 'uaa-client',
+                    clientsecret: 'uaa-secret',
+                    url: '/uaa.test'
+                },
+                uri: '/uaa.test',
+                endpoints: {}
+            };
+
+            mockRequestCfApi
+                .mockResolvedValueOnce({ resources: [{ name: serviceName, tags: mockTags }] })
+                .mockResolvedValueOnce({
+                    resources: [{ name: serviceInstanceName, guid: 'instance-guid-123' }]
+                });
+            mockGetServiceKeys.mockResolvedValue([{ credentials: mockCredentials }]);
+
+            const result = await getServiceKeyCredentialsWithTags(
+                spaceGuid,
+                serviceName,
+                serviceInstanceName,
+                plan,
+                mockLogger
+            );
+
+            expect(result).toEqual({
+                label: serviceName,
+                name: serviceInstanceName,
+                tags: mockTags,
+                plan,
+                credentials: { credentials: mockCredentials }
+            });
+            expect(mockRequestCfApi).toHaveBeenCalledTimes(2);
+            expect(mockGetServiceKeys).toHaveBeenCalledWith('instance-guid-123');
+        });
+
+        test('should return null and log error when service instance is not found', async () => {
+            mockRequestCfApi
+                .mockResolvedValueOnce({ resources: [{ name: serviceName, tags: [] }] })
+                .mockResolvedValueOnce({ resources: [] });
+
+            const result = await getServiceKeyCredentialsWithTags(
+                spaceGuid,
+                serviceName,
+                serviceInstanceName,
+                plan,
+                mockLogger
+            );
+
+            expect(result).toBeNull();
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                `Service instance '${serviceInstanceName}' not found, skipping`
+            );
+            expect(mockGetServiceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should return null and log error when getServiceTags or getServiceInstance throws', async () => {
+            mockRequestCfApi.mockRejectedValue(new Error('CF API error'));
+
+            const result = await getServiceKeyCredentialsWithTags(
+                spaceGuid,
+                serviceName,
+                serviceInstanceName,
+                plan,
+                mockLogger
+            );
+
+            expect(result).toBeNull();
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    `Failed to get credentials and tags for service '${serviceName}' (instance: '${serviceInstanceName}'): CF API error`
+                )
             );
         });
     });

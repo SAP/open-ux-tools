@@ -899,6 +899,22 @@ export interface ServiceInstance {
     guid: string;
 }
 
+/**
+ * Service key credentials with tags returned by the CF API.
+ */
+export interface ServiceKeyCredentialsWithTags {
+    label: string;
+    name: string;
+    tags: string[];
+    plan: string;
+    credentials: ServiceKeys | undefined;
+}
+
+export interface AppRouterEnvOptions {
+    'VCAP_SERVICES'?: Record<string, unknown>;
+    destinations?: { name: string; url: string }[];
+}
+
 export interface GetServiceInstanceParams {
     spaceGuids?: string[];
     planNames?: string[];
