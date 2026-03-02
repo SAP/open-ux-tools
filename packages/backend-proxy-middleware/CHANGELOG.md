@@ -1,5 +1,21 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.49
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/axios-extension@1.25.17
+
+## 0.10.48
+
+### Patch Changes
+
+- 27dc09c: export TypeScript types for external usage
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/store@1.5.8
+
 ## 0.10.47
 
 ### Patch Changes

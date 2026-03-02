@@ -1,5 +1,21 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.125
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/inquirer-common@0.11.16
+
+## 0.4.124
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/inquirer-common@0.11.15
+
 ## 0.4.123
 
 ### Patch Changes

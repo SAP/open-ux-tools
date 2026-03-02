@@ -1,5 +1,19 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.98
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.16
+
+## 0.5.97
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/inquirer-common@0.11.15
+
 ## 0.5.96
 
 ### Patch Changes
