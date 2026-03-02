@@ -72,10 +72,10 @@
     "engines": {
         "npm": "please-use-pnpm",
         "yarn": "please-use-pnpm",
-        "pnpm": "8.14.0",
+        "pnpm": "10.30.2",
         "node": ">=20.20.0"
     },
-    "packageManager": "pnpm@8.14.0",
+    "packageManager": "pnpm@10.30.2",
     "pnpm": {
         "overrides": {
             "@sap-ux/vocabularies-types": "0.15.0",
@@ -93,6 +93,14 @@
             "tar@<7.5.9": ">=7.5.9",
             "get-uri>basic-ftp": "=5.2.0",
             "@puppeteer/browsers>proxy-agent": ">=6.5.0"
-        }
+        },
+        "onlyBuiltDependencies": [
+            "sharp",
+            "esbuild",
+            "@swc/core",
+            "@parcel/watcher",
+            "better-sqlite3",
+            "onnxruntime-node"
+        ]
     }
 }
