@@ -131,7 +131,7 @@ export function updateUi5ServerDestinationPort(effectiveOptions: EffectiveOption
     }
 
     const currentUrl = new URL(ui5ServerDest.url);
-    const currentPort = parseInt(currentUrl.port, 10) || 80;
+    const currentPort = Number.parseInt(currentUrl.port, 10) || 80;
     if (currentPort === actualPort) {
         return false;
     }
