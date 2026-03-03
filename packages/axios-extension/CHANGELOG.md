@@ -1,5 +1,19 @@
 # @sap-ux/axios-extension
 
+## 1.25.18
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+
+## 1.25.17
+
+### Patch Changes
+
+- ca2566b: Update fast-xml-parser
+
+    Issue: #37278
+
 ## 1.25.16
 
 ### Patch Changes
