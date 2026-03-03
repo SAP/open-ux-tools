@@ -10,6 +10,7 @@ export enum BuildingBlockType {
     Chart = 'chart',
     CustomFilterField = 'custom-filter-field',
     Field = 'field',
+    Form = 'form',
     Page = 'page',
     Table = 'table',
     CustomColumn = 'custom-column',

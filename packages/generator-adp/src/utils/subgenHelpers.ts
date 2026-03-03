@@ -7,6 +7,7 @@ import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer, Endpoin
 
 import { t } from './i18n';
 import { getExtensionProjectData } from '../app/extension-project';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 /**
  * Parameters required for composing the extension project generator.
  */
@@ -35,6 +36,7 @@ interface DeployGenOptions {
     projectPath: string;
     connectedSystem: string;
     system?: Endpoint;
+    projectType?: AdaptationProjectType;
 }
 
 /**
@@ -97,15 +99,16 @@ export async function addFlpGen(
  * @param {AppWizard} appWizard - Optional AppWizard instance for displaying UI messages
  */
 export async function addDeployGen(
-    { projectName, projectPath, connectedSystem, system }: DeployGenOptions,
+    { projectName, projectPath, connectedSystem, system, projectType }: DeployGenOptions,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
 ): Promise<void> {
     try {
+        const hideIfOnPremise = projectType === AdaptationProjectType.ON_PREMISE;
         const subGenPromptOptions = {
-            ui5AbapRepo: { hideIfOnPremise: true },
-            transportInputChoice: { hideIfOnPremise: true },
+            ui5AbapRepo: { hideIfOnPremise },
+            transportInputChoice: { hideIfOnPremise },
             overwriteAbapConfig: { hide: true },
             packageAutocomplete: {
                 additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
@@ -113,13 +116,14 @@ export async function addDeployGen(
             packageManual: {
                 additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
             },
-            targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: true } }
+            adpProjectType: projectType
         };
 
         const generatorOptions = {
             launchDeployConfigAsSubGenerator: true,
             projectName,
             projectPath,
+            adpProjectType: projectType,
             telemetryData: { appType: 'Fiori Adaptation' },
             appWizard,
             logWrapper: logger,

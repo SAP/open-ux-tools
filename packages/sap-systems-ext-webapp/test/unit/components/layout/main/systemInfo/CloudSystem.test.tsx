@@ -119,7 +119,7 @@ describe('<CloudSystem />', () => {
             <CloudSystem
                 systemInfo={{
                     name: 'btp system',
-                    url: 'https://mock.btp.system',
+                    url: 'https://myaccount.cloud.sap/path',
                     authenticationType: 'reentranceTicket',
                     systemType: 'AbapCloud',
                     connectionType: 'abap_catalog'
@@ -129,11 +129,6 @@ describe('<CloudSystem />', () => {
                 setIsDetailsValid={setIsDetailsValid}
             />
         );
-
-        const input = document.getElementById(`reentranceUrl`);
-        fireEvent.change(input as HTMLElement, {
-            target: { value: 'https://myaccount.cloud.sap/path' }
-        });
 
         await waitFor(() => {
             expect(setIsDetailsValid).toHaveBeenCalledWith(false);

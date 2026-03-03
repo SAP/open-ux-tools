@@ -1,6 +1,7 @@
 import type { CapServiceCdsInfo, CapProjectSettings } from '../cap-config/types';
 import { updateRootPackageJson, updateAppPackageJson } from './package-json';
 import { updateTsConfig } from './tsconfig-and-yaml';
+import { enableCdsUi5Plugin as writeCdsUi5Plugin } from '../cap-config';
 import type { Editor } from 'mem-fs-editor';
 
 /**
@@ -16,6 +17,7 @@ import type { Editor } from 'mem-fs-editor';
  * @param {boolean} capProjectSettings.sapux - Indicates if SAP UX is enabled.
  * @param {boolean} capProjectSettings.enableCdsUi5Plugin - Indicates if cds ui5 plugin should be added (default is true).  The cds ui5 plugin will only be added if the minimum cds version that supports it is present.
  * @param {boolean} capProjectSettings.enableTypescript - Indicates if TypeScript is enabled.
+ * @param {boolean} capProjectSettings.disableRootPackageJsonUpdates - Indicates if updates to the root package.json should be disabled. If true, the root package.json will not be updated with the sapux array or the cds watch scripts.
  * @returns {Promise<void>} A promise that resolves when the updates are applied.
  */
 export async function applyCAPUpdates(
@@ -29,11 +31,19 @@ export async function applyCAPUpdates(
         appId,
         sapux = false,
         enableCdsUi5Plugin = true,
-        enableTypescript = false
+        enableTypescript = false,
+        disableRootPackageJsonUpdates = false
     } = capProjectSettings;
 
-    // update root package.json
-    await updateRootPackageJson(fs, packageName, sapux, capService, appId, enableCdsUi5Plugin);
+    if (disableRootPackageJsonUpdates) {
+        // if root package.json updates are disabled, we will only write the cds ui5 plugin if enabled, but not update scripts or sapux array in the root package.jsonx
+        if (enableCdsUi5Plugin) {
+            await writeCdsUi5Plugin(capService.projectPath, fs);
+        }
+    } else {
+        // update root package.json
+        await updateRootPackageJson(fs, packageName, sapux, capService, appId, enableCdsUi5Plugin);
+    }
 
     if (enableTypescript) {
         // update tsconfig.json if TypeScript is enabled

@@ -9,6 +9,7 @@ import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics
 import { getRecordType } from '../project-context/linker/annotations';
 import type { FeV4ObjectPage, FeV4ListReport, Table } from '../project-context/linker/fe-v4';
 import type { ParsedApp, ParsedService } from '../project-context/parser';
+import { createJsonFixer } from '../language/rule-fixer';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
@@ -99,7 +100,8 @@ const rule: FioriRuleDefinition = createFioriRule({
                 'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration for "{{table}}" table.',
             ['width-including-column-header']:
                 'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width.'
-        }
+        },
+        fixable: 'code'
     },
     check(context) {
         const problems: WidthIncludingColumnHeaderDiagnostic[] = [];
@@ -121,14 +123,15 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJsonVisitorHandler: (context, diagnostic) =>
+    createJsonVisitorHandler: (context, diagnostic, paths) =>
         function report(node: MemberNode): void {
             context.report({
                 node,
                 messageId: 'width-including-column-header-manifest',
                 data: {
                     table: diagnostic.annotation.annotationPath
-                }
+                },
+                fix: createJsonFixer({ context, node, deepestPathResult: paths, value: true })
             });
         },
     createAnnotations(context, validationResult) {

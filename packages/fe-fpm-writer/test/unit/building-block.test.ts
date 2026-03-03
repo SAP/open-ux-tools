@@ -3,7 +3,16 @@ import { promises as fsPromises } from 'node:fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 
-import type { BuildingBlockConfig, Chart, Field, FilterBar, Table, CustomColumn, CustomFilterField } from '../../src';
+import type {
+    BuildingBlockConfig,
+    Chart,
+    Field,
+    FilterBar,
+    Form,
+    Table,
+    CustomColumn,
+    CustomFilterField
+} from '../../src';
 
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
 import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor';
@@ -754,6 +763,235 @@ describe('Building Blocks', () => {
 
             expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
             expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
+        });
+    });
+
+    describe('Form building block', () => {
+        test('generate Form building block with just ID', async () => {
+            const basePath = join(testAppPath, 'generate-form-with-id');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-with-id');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate Form building block with title property', async () => {
+            const basePath = join(testAppPath, 'generate-form-with-title');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                title: 'Test Form Title'
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-with-title');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate Form building block with contextPath and metaPath', async () => {
+            const basePath = join(testAppPath, 'generate-form-with-context-meta-path');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                contextPath: '/TestEntity',
+                metaPath: '@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation',
+                title: 'General Information'
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-with-context-meta-path');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate Form building block with metaPath as object', async () => {
+            const basePath = join(testAppPath, 'generate-form-with-metapath-object');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                title: 'Form with MetaPath Object',
+                metaPath: {
+                    entitySet: 'TestEntitySet',
+                    qualifier: '@com.sap.vocabularies.UI.v1.FieldGroup#Details',
+                    bindingContextType: 'absolute' as BindingContextType
+                }
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-with-metapath-object');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate Form building block with ReferenceFacet annotation', async () => {
+            const basePath = join(testAppPath, 'generate-form-with-reference-facet');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                contextPath: '/TestEntity',
+                metaPath: '@com.sap.vocabularies.UI.v1.ReferenceFacet#FormDetails',
+                title: 'Form Details'
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-with-reference-facet');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate Form building block in xml fragment', async () => {
+            const basePath = join(testAppPath, 'generate-form-in-fragment');
+            const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentContent);
+
+            const buildingBlockData: Form = {
+                id: 'testFormInFragment',
+                buildingBlockType: BuildingBlockType.Form,
+                contextPath: '/TestEntity',
+                metaPath: '@com.sap.vocabularies.UI.v1.FieldGroup#Info',
+                title: 'Fragment Form'
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-in-fragment');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('getSerializedFileContent for Form building block', async () => {
+            const basePath = join(testAppPath, 'get-form-snippet');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                contextPath: '/TestEntity',
+                metaPath: '@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation',
+                title: 'Test Form'
+            };
+
+            const codeSnippet = await getSerializedFileContent<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(codeSnippet.viewOrFragmentPath.content).toBeDefined();
+            expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
+            expect(codeSnippet.manifest).toBeDefined();
+        });
+
+        test('generate Form building block without macros namespace', async () => {
+            const basePath = join(testAppPath, 'generate-form-without-macros-ns');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            const xmlViewContentWithoutMacrosNs = (
+                await fsPromises.readFile(
+                    join('test/unit/sample/building-block/webapp-without-macros-ns-xml-view/ext/main/Main.view.xml'),
+                    'utf-8'
+                )
+            ).toLocaleString();
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), xmlViewContentWithoutMacrosNs);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                title: 'Test Form'
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-without-macros-ns');
+            await writeFilesForDebugging(fs);
         });
     });
 

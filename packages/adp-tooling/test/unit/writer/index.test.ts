@@ -5,6 +5,7 @@ import { generate } from '../../../src';
 import type { AdpWriterConfig } from '../../../src/types';
 import { rimraf } from 'rimraf';
 import { migrate } from '../../../src/writer';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 describe('ADP writer', () => {
     const fs = create(createStorage());
@@ -171,7 +172,8 @@ describe('ADP writer', () => {
                                 id: '@package/name',
                                 toolsId: 'uuidv4',
                                 version: '0.0.1'
-                            }
+                            },
+                            projectType: AdaptationProjectType.CLOUD_READY
                         }
                     }
                 },
@@ -229,7 +231,8 @@ describe('ADP writer', () => {
                                 id: '@package/name',
                                 toolsId: 'uuidv4',
                                 version: '0.0.1'
-                            }
+                            },
+                            projectType: AdaptationProjectType.CLOUD_READY
                         }
                     }
                 },
@@ -268,7 +271,8 @@ describe('ADP writer', () => {
                                 id: '@package/name',
                                 toolsId: 'uuidv4',
                                 version: '0.0.1'
-                            }
+                            },
+                            projectType: AdaptationProjectType.CLOUD_READY
                         }
                     }
                 },
@@ -303,7 +307,8 @@ describe('ADP writer', () => {
                         id: '@package/name',
                         toolsId: 'uuidv4',
                         version: '0.0.1'
-                    }
+                    },
+                    projectType: AdaptationProjectType.ON_PREMISE
                 }
             },
             options: {

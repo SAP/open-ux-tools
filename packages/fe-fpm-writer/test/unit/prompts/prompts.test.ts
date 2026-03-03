@@ -36,6 +36,11 @@ describe('Prompts', () => {
         expect(questionnair).toMatchSnapshot();
     });
 
+    test('getFormBuildingBlockPrompts', async () => {
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Form);
+        expect(questionnair).toMatchSnapshot();
+    });
+
     test('getTableBuildingBlockPrompts', async () => {
         const questionnair = await promptsAPI.getPrompts(PromptsType.Table);
         expect(questionnair).toMatchSnapshot();

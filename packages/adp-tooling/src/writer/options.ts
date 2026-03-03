@@ -20,6 +20,8 @@ import type {
     CustomConfig
 } from '../types';
 import { UI5_CDN_URL } from '../base/constants';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { SupportedProject } from '../source';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
@@ -63,7 +65,7 @@ export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWr
         ]);
     }
 
-    if (config.customConfig?.adp?.environment === 'C') {
+    if (config.customConfig?.adp?.projectType === AdaptationProjectType.CLOUD_READY) {
         const tasks = getAdpCloudCustomTasks(config);
         ui5Config.addCustomTasks(tasks);
     }
@@ -241,10 +243,16 @@ function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }
             url: config.target?.url ?? VSCODE_URL
         };
     } else {
+        const customConfig = config.customConfig?.adp;
+        const isCloudProjectInPrivateCloudSystem =
+            customConfig?.projectType === AdaptationProjectType.CLOUD_READY &&
+            customConfig.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM;
+        const client = isCloudProjectInPrivateCloudSystem ? config.target.client : undefined;
         target = {
             url: config.target.url ?? VSCODE_URL,
             authenticationType: config.target.authenticationType,
-            ignoreCertErrors: false
+            ignoreCertErrors: false,
+            client
         };
     }
 
@@ -378,44 +386,24 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
  * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
  * @param {CfAdpWriterConfig} config - Full project configuration.
  */
-export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, config: CfAdpWriterConfig): void {
+/**
+ * Generate custom middleware configuration (fiori-tools-proxy and fiori-tools-preview only).
+ *
+ * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ */
+export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): void {
     const ui5ConfigOptions: Partial<FioriToolsProxyConfigUI5> = {
         url: UI5_CDN_URL
     };
 
-    const oauthPaths = config.cf?.oauthPaths;
-    const backendUrl = config.cf?.backendUrl;
-    if (oauthPaths && oauthPaths.length > 0 && backendUrl) {
-        ui5Config.addCustomMiddleware([
-            {
-                name: 'backend-proxy-middleware-cf',
-                afterMiddleware: 'compression',
-                configuration: {
-                    url: backendUrl,
-                    paths: oauthPaths
-                }
-            }
-        ]);
-        ui5Config.addFioriToolsProxyMiddleware(
-            {
-                ui5: ui5ConfigOptions,
-                backend: []
-            },
-            'backend-proxy-middleware-cf'
-        );
-    } else {
-        ui5Config.addFioriToolsProxyMiddleware(
-            {
-                ui5: ui5ConfigOptions,
-                backend: []
-            },
-            'compression'
-        );
-    }
+    // Add fiori-tools-appreload for live reload during development
+    ui5Config.addFioriToolsAppReloadMiddleware();
+
+    // Add fiori-tools-preview (for local preview)
     ui5Config.addCustomMiddleware([
         {
             name: 'fiori-tools-preview',
-            afterMiddleware: 'fiori-tools-proxy',
+            afterMiddleware: 'fiori-tools-appreload',
             configuration: {
                 flp: {
                     theme: 'sap_horizon'
@@ -426,4 +414,13 @@ export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, confi
             }
         }
     ]);
+
+    // Add fiori-tools-proxy (for UI5 resources)
+    ui5Config.addFioriToolsProxyMiddleware(
+        {
+            ui5: ui5ConfigOptions,
+            backend: []
+        },
+        'fiori-tools-preview'
+    );
 }

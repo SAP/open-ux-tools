@@ -17,9 +17,7 @@ import { t } from '../i18n';
  * @returns file system reference
  */
 export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     if (logger) {
         LoggerHelper.logger = logger;
     }

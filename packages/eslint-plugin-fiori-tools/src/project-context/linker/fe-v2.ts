@@ -10,10 +10,13 @@ export interface FlexibleColumnLayoutSettings {
     defaultTwoColumnLayoutType: string;
     defaultThreeColumnLayoutType: string;
 }
+
+export type TableColumnVerticalAlignmentValues = 'Bottom' | 'Middle' | 'Top';
 export interface ApplicationSetting {
     createMode: string;
     statePreservationMode: string;
     flexibleColumnLayout: FlexibleColumnLayoutSettings;
+    tableColumnVerticalAlignment: TableColumnVerticalAlignmentValues;
 }
 export interface PageSetting {
     createMode: string;
@@ -312,6 +315,7 @@ interface ManifestPageSettings {
 
 interface ManifestApplicationSettings {
     settings?: {
+        tableColumnVerticalAlignment?: TableColumnVerticalAlignmentValues;
         tableSettings?: TableSettings;
         statePreservationMode?: string;
         flexibleColumnLayout?: FlexibleColumnLayoutSettings;
@@ -592,6 +596,7 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV2App {
     const statePreservationMode = config.settings?.statePreservationMode;
     const twoColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultTwoColumnLayoutType;
     const threeColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultThreeColumnLayoutType;
+    const tableColumnVerticalAlignmentValue = config.settings?.tableColumnVerticalAlignment;
     const linkedApp: LinkedFeV2App = {
         type: 'fe-v2',
         pages: [],
@@ -617,6 +622,11 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV2App {
                     configurationPath: ['sap.ui.generic.app', 'flexibleColumnLayout', 'defaultThreeColumnLayoutType'],
                     valueInFile: threeColumnLayoutValue
                 }
+            },
+            tableColumnVerticalAlignment: {
+                values: ['Bottom', 'Middle', 'Top'],
+                configurationPath: ['sap.ui.generic.app', 'settings', 'tableColumnVerticalAlignment'],
+                valueInFile: tableColumnVerticalAlignmentValue
             }
         }
     };

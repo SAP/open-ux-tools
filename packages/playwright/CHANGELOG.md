@@ -1,5 +1,25 @@
 # @sap-ux-private/playwright
 
+## 0.2.9
+
+### Patch Changes
+
+- 8017bd3: updates for minimatch
+
+    #37169
+
+## 0.2.8
+
+### Patch Changes
+
+- 9072d52: fix(deps): update dependency promisify-child-process to v5
+
+## 0.2.7
+
+### Patch Changes
+
+- 97735d2: fix(deps): update dependency portfinder to v1.0.38
+
 ## 0.2.6
 
 ### Patch Changes

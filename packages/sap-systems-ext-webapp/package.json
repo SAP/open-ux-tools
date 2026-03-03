@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/sap-systems-ext-webapp",
-    "version": "0.0.11",
+    "version": "0.1.4",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -37,17 +37,20 @@
         "@testing-library/jest-dom": "6.9.1",
         "@testing-library/react": "12.1.5",
         "@testing-library/user-event": "14.6.1",
-        "@types/react": "16.14.55",
-        "@types/react-dom": "16.9.24",
-        "@types/react-redux": "7.1.33",
+        "@types/react": "16.14.69",
+        "@types/react-dom": "16.9.25",
+        "@types/react-redux": "7.1.34",
         "esbuild-plugin-alias": "0.2.1",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "jest-scss-transform": "1.0.4",
         "react": "16.14.0",
         "react-dom": "16.14.0",
-        "react-i18next": "15.4.1",
+        "react-i18next": "15.7.4",
         "react-redux": "7.2.9",
         "redux": "4.0.4"
+    },
+    "engines": {
+        "node": ">=20.x"
     },
     "files": [
         "dist/"
