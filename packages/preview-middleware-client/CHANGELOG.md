@@ -1,5 +1,13 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.25
+
+### Patch Changes
+
+- 8017bd3: updates for minimatch
+
+    #37169
+
 ## 0.18.24
 
 ### Patch Changes
