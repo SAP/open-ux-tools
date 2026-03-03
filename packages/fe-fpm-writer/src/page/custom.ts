@@ -18,10 +18,10 @@ import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { coerce, gte, lt } from 'semver';
 import { addExtensionTypes, getManifestPath } from '../common/utils';
-import { copyTpl, extendJSON, type IdGeneratorFunction } from '../common/file';
+import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file';
 import { generateBuildingBlock } from '../building-block';
 import { BuildingBlockType } from '../building-block/types';
-import { augmentXpathWithLocalNames, createIdGenerator } from '../building-block/prompts/utils';
+import { augmentXpathWithLocalNames } from '../building-block/prompts/utils';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../i18n';
 

@@ -72,7 +72,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
             }),
             getBuildingBlockIdPrompt(context, t('id.validation') as string, {
                 message: t('id.message') as string,
-                default: context.generateId(defaultAnswers.id),
+                default: defaultAnswers.id,
                 guiOptions: { groupId: groupIds.commonChartBuildingBlockProperties, mandatory: true }
             }),
             getBindingContextTypePrompt({

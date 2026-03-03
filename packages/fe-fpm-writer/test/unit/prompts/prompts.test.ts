@@ -6,7 +6,7 @@ import { PromptsType, PromptsAPI, BuildingBlockType } from '../../../src';
 import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
 import type { ChoiceOptions } from 'inquirer';
 import * as projectAccess from '@sap-ux/project-access';
-import { createIdGenerator } from '../../../src/building-block/prompts/utils';
+import { createIdGenerator } from '../../../src/common/file';
 
 describe('Prompts', () => {
     let fs: Editor;
@@ -385,7 +385,7 @@ describe('Prompts - no project', () => {
     beforeEach(async () => {
         fs = create(createStorage());
         generateId = await createIdGenerator(undefined, fs);
-        promptsAPI = new PromptsAPI(fs, undefined, undefined, generateId, {});
+        promptsAPI = new PromptsAPI(fs, undefined, undefined, {});
     });
 
     test('Init PromptsApi without fs, empty project path', async () => {

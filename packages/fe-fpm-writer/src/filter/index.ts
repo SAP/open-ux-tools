@@ -8,12 +8,11 @@ import { validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { getTemplatePath } from '../templates';
-import { copyTpl, getJsonSpace } from '../common/file';
+import { copyTpl, getJsonSpace, createIdGenerator } from '../common/file';
 import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
 import type { FilterField } from '../building-block/types';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { getManifest } from '../common/utils';
-import { createIdGenerator } from '../building-block/prompts/utils';
 
 /**
  * Enhances the provided custom filter configuration with default data.

@@ -8,10 +8,9 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContentData } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, extendJSON, type IdGeneratorFunction } from '../common/file';
+import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { getManifest } from '../common/utils';
-import { createIdGenerator } from '../building-block/prompts/utils';
 
 /**
  * Enhances the provided custom field configuration with default data.

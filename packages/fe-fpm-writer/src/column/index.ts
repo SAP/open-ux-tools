@@ -8,11 +8,10 @@ import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults
 import type { Manifest } from '../common/types';
 import { validateVersion, validateBasePath } from '../common/validate';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, extendJSON, type IdGeneratorFunction } from '../common/file';
+import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 import { getManifest } from '../common/utils';
-import { createIdGenerator } from '../building-block/prompts/utils';
 
 /**
  * Get the template folder for the given UI5 version.

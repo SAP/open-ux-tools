@@ -8,11 +8,10 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { CustomElement, Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContentData } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, extendJSON, type IdGeneratorFunction } from '../common/file';
+import { copyTpl, extendJSON, type IdGeneratorFunction, createIdGenerator } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 import { getManifest } from '../common/utils';
-import { createIdGenerator } from '../building-block/prompts/utils';
 
 type CustomSectionUnion = CustomHeaderSection | CustomSection | CustomSubSection;
 

@@ -61,7 +61,7 @@ export async function getFormBuildingBlockPrompts(context: PromptContext): Promi
         }),
         getBuildingBlockIdPrompt(context, t('id.validation') as string, {
             message: t('id.message') as string,
-            default: context.generateId(defaultAnswers.id),
+            default: defaultAnswers.id,
             guiOptions: {
                 groupId: groupIds.commonFormBuildingBlockProperties,
                 mandatory: true

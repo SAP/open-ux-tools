@@ -1,6 +1,8 @@
 import type { CopyOptions, Editor } from 'mem-fs-editor';
 import type { TabInfo } from '../common/types';
 import { sep, normalize } from 'node:path';
+import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
+import { isElementIdAvailable } from '../building-block/prompts/utils';
 
 const CHAR_SPACE = ' ';
 const CHAR_TAB = '\t';
@@ -100,6 +102,85 @@ export const CONFIG = {
         }
     }
 };
+
+/**
+ * Generates a unique element ID that is not already used in any view or fragment file.
+ * Uses an incremental counter for predictable, readable IDs.
+ *
+ * @param fs - The file system object for reading files
+ * @param baseId - The base name for the ID (e.g., 'filterBar', 'chart')
+ * @param filteredFiles - The list of files to check for ID availability
+ * @param validatedIds - A list of IDs that have already been validated in the current session to avoid duplicates
+ * @returns A unique ID that is available across all view and fragment files
+ */
+function generateUniqueElementId(
+    fs: Editor,
+    baseId: string,
+    filteredFiles: string[],
+    validatedIds: string[] = []
+): string {
+    const maxAttempts = 1000;
+
+    if (filteredFiles.every((file) => isElementIdAvailable(fs, file, baseId)) && !validatedIds.includes(baseId)) {
+        return baseId;
+    }
+
+    for (let counter = 1; counter < maxAttempts; counter++) {
+        const candidateId = `${baseId}${counter}`;
+
+        if (
+            filteredFiles.every((file) => isElementIdAvailable(fs, file, candidateId)) &&
+            !validatedIds.includes(candidateId)
+        ) {
+            validatedIds.push(candidateId);
+            return candidateId;
+        }
+    }
+
+    // If we couldn't find an available ID after maxAttempts
+    throw new Error(`Failed to generate unique ID for base '${baseId}' after ${maxAttempts} attempts`);
+}
+
+/**
+ * Retrieves all view and fragment files in the application.
+ *
+ * @param appPath - The root path of the application
+ * @param fs - The file system object for reading files
+ * @returns A list of view and fragment files
+ */
+export async function getFragmentAndViewFiles(appPath: string, fs: Editor): Promise<string[]> {
+    const files = await findFilesByExtension(
+        '.xml',
+        appPath,
+        ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
+        fs
+    );
+
+    const lookupFiles = ['.fragment.xml', '.view.xml'];
+    return files.filter((fileName) => lookupFiles.some((lookupFile) => fileName.endsWith(lookupFile)));
+}
+
+/**
+ * Creates an ID generator function for a given base path and editor.
+ * The generator ensures unique IDs across all fragment and view files in the project.
+ *
+ * @param basePath - Base path of the project
+ * @param fsEditor - mem-fs-editor instance
+ * @returns A function that generates unique IDs based on a base ID string
+ */
+export async function createIdGenerator(
+    basePath: string | undefined,
+    fsEditor: Editor
+): Promise<(baseId: string) => string> {
+    let files: string[] = [];
+    if (basePath) {
+        files = await getFragmentAndViewFiles(basePath, fsEditor);
+    }
+
+    return (baseId: string, validatedIds: string[] = []): string => {
+        return generateUniqueElementId(fsEditor, baseId, files, validatedIds);
+    };
+}
 
 // `noGlob` is supported in `mem-fs-editor` v9,
 // but is missing from `@types/mem-fs-editor` (no v9 typings), so we extend the type here.

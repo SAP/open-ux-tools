@@ -8,10 +8,9 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest, Ui5RoutingTarget, Ui5TargetSettings } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, extendJSON, type IdGeneratorFunction } from '../common/file';
+import { copyTpl, extendJSON, type IdGeneratorFunction, createIdGenerator } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { getManifest } from '../common/utils';
-import { createIdGenerator } from '../building-block/prompts/utils';
 
 /**
  * Merge the new view into the list of existing views (if any).

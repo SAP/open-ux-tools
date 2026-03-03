@@ -67,7 +67,7 @@ export async function getFilterBarBuildingBlockPrompts(
             }),
             getBuildingBlockIdPrompt(context, t('id.validation') as string, {
                 message: t('id.message') as string,
-                default: context.generateId(defaultAnswers.id),
+                default: defaultAnswers.id,
                 guiOptions: { groupId: groupIds.commonFilterBarBuildingBlockProperties, mandatory: true }
             }),
             getBindingContextTypePrompt({

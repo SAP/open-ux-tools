@@ -17,8 +17,6 @@ import { i18nNamespaces, initI18n, translate } from '../i18n';
 import { join } from 'node:path';
 import type { SupportedPrompts, NarrowPrompt, SupportedGeneratorPrompts } from './map';
 import { PromptsQuestionsMap, PromptsGeneratorsMap, PromptsCodePreviewMap } from './map';
-import { createIdGenerator } from '../building-block/prompts/utils';
-import type { IdGeneratorFunction } from '../common/file';
 
 const unsupportedPrompts = (): Prompts<Answers> => ({
     questions: []
@@ -39,22 +37,14 @@ export class PromptsAPI {
      * @param fs the file system object for reading files
      * @param project
      * @param appId app id in CAP project
-     * @param generateId function to generate unique IDs for building block elements
      * @param options additional prompt context options.
      */
-    constructor(
-        fs: Editor,
-        project: Project | undefined,
-        appId = '',
-        generateId: IdGeneratorFunction,
-        options?: PromptContextOptions
-    ) {
+    constructor(fs: Editor, project: Project | undefined, appId = '', options?: PromptContextOptions) {
         this.context = {
             fs,
             project: project,
             appId: appId,
             appPath: project ? join(project.root, appId) : '',
-            generateId,
             options
         };
     }
@@ -77,10 +67,8 @@ export class PromptsAPI {
         fs = fs ?? create(createStorage());
         await initI18n();
         const project = projectPath ? await getProject(projectPath) : undefined;
-        const basePath = project && appId ? join(project.root, appId ?? '') : (project?.root ?? projectPath);
-        const fnGenerateId = await createIdGenerator(basePath, fs);
 
-        return new PromptsAPI(fs, project, appId, fnGenerateId, options);
+        return new PromptsAPI(fs, project, appId, options);
     }
 
     /**
@@ -196,7 +184,7 @@ export class PromptsAPI {
         const generator = PromptsGeneratorsMap.hasOwnProperty(config.type)
             ? PromptsGeneratorsMap[config.type]
             : undefined;
-        config.answers.buildingBlockData = { ...config.answers.buildingBlockData, generateId: this.context.generateId };
+        config.answers.buildingBlockData = { ...config.answers.buildingBlockData };
         return generator?.(this.context.appPath, { ...config.answers }, this.context.fs) ?? this.context.fs;
     }
 
