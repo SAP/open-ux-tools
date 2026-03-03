@@ -360,7 +360,30 @@ describe('FE V4 Linker', () => {
             const context = await setup();
             const result = runFeV4Linker(context);
             const page = findObjectPage(result);
-            expect(page.header).toBeUndefined();
+            expect(page.header.anchorBarVisible.valueInFile).toBeUndefined();
+            expect(page.header.visible.valueInFile).toBeUndefined();
+            expect(page.header.anchorBarVisible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'anchorBarVisible'
+            ]);
+            expect(page.header.visible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'visible'
+            ]);
         });
 
         test('both anchorBarVisible and visible set to false', async () => {
@@ -398,10 +421,19 @@ describe('FE V4 Linker', () => {
             });
             const result = runFeV4Linker(context);
             const page = findObjectPage(result);
-            expect(page.header).toEqual({
-                anchorBarVisible: false,
-                visible: false
-            });
+            expect(page.header.anchorBarVisible.valueInFile).toBe(false);
+            expect(page.header.visible.valueInFile).toBe(false);
+            expect(page.header.anchorBarVisible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'anchorBarVisible'
+            ]);
         });
 
         test('only anchorBarVisible set to false', async () => {
@@ -425,10 +457,19 @@ describe('FE V4 Linker', () => {
             });
             const result = runFeV4Linker(context);
             const page = findObjectPage(result);
-            expect(page.header).toEqual({
-                anchorBarVisible: false,
-                visible: undefined
-            });
+            expect(page.header.anchorBarVisible.valueInFile).toBe(false);
+            expect(page.header.visible.valueInFile).toBeUndefined();
+            expect(page.header.anchorBarVisible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'anchorBarVisible'
+            ]);
         });
 
         test('only visible set to true', async () => {
@@ -452,10 +493,19 @@ describe('FE V4 Linker', () => {
             });
             const result = runFeV4Linker(context);
             const page = findObjectPage(result);
-            expect(page.header).toEqual({
-                anchorBarVisible: undefined,
-                visible: true
-            });
+            expect(page.header.anchorBarVisible.valueInFile).toBeUndefined();
+            expect(page.header.visible.valueInFile).toBe(true);
+            expect(page.header.visible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'visible'
+            ]);
         });
 
         test('anchorBarVisible true and visible false', async () => {
@@ -493,10 +543,30 @@ describe('FE V4 Linker', () => {
             });
             const result = runFeV4Linker(context);
             const page = findObjectPage(result);
-            expect(page.header).toEqual({
-                anchorBarVisible: true,
-                visible: false
-            });
+            expect(page.header.anchorBarVisible.valueInFile).toBe(true);
+            expect(page.header.visible.valueInFile).toBe(false);
+            expect(page.header.anchorBarVisible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'anchorBarVisible'
+            ]);
+            expect(page.header.visible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'visible'
+            ]);
         });
     });
 });

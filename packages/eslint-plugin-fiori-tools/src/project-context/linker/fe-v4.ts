@@ -1,6 +1,6 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { ParsedService } from '../parser';
-import type { LinkerContext, ConfigurationBase } from './types';
+import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
 import { collectTables, collectSections } from './annotations';
@@ -30,9 +30,9 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     entity: MetadataElement;
     sections: Section[];
     lookup: NodeLookup<Table | Section>;
-    header?: {
-        anchorBarVisible?: boolean;
-        visible?: boolean;
+    header: {
+        anchorBarVisible: ConfigurationProperty<boolean>;
+        visible: ConfigurationProperty<boolean>;
     };
 }
 
@@ -223,15 +223,6 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
         } else if (target.name === 'sap.fe.templates.ObjectPage' && entity.structuredType) {
             const sections = collectSections('v4', entity.structuredType, mainService);
 
-            // Extract header configuration
-            const header = target.options?.settings?.content?.header;
-            const headerConfig = header
-                ? {
-                      anchorBarVisible: header.anchorBarVisible,
-                      visible: header.visible
-                  }
-                : undefined;
-
             const page: FeV4ObjectPage = {
                 type: 'object-page',
                 targetName: name,
@@ -241,9 +232,19 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                 configuration: {},
                 sections: [],
                 lookup: {},
-                header: headerConfig
+                header: {
+                    anchorBarVisible: {
+                        values: [true, false],
+                        configurationPath: []
+                    },
+                    visible: {
+                        values: [true, false],
+                        configurationPath: []
+                    }
+                }
             };
             linkObjectPageSections(page, path, name, sections, target);
+            linkObjectPageHeader(page, target);
             linkedApp.pages.push(page);
         }
     }
@@ -475,6 +476,23 @@ function linkObjectPageSections(
         page.lookup[control.type] ??= [];
         (page.lookup[control.type]! as Extract<Section | Table, { type: typeof control.type }>[]).push(control);
     }
+}
+
+/**
+ * Links the object page header configuration for Fiori Elements V4.
+ *
+ * @param page - The object page being linked
+ * @param target - The routing target containing the header configuration
+ */
+function linkObjectPageHeader(page: FeV4ObjectPage, target: Target): void {
+    const header = target.options?.settings?.content?.header;
+    const basePath = ['sap.ui5', 'routing', 'targets', page.targetName, 'options', 'settings', 'content', 'header'];
+
+    page.header.anchorBarVisible.valueInFile = header?.anchorBarVisible;
+    page.header.anchorBarVisible.configurationPath = [...basePath, 'anchorBarVisible'];
+
+    page.header.visible.valueInFile = header?.visible;
+    page.header.visible.configurationPath = [...basePath, 'visible'];
 }
 
 interface PageSettings {

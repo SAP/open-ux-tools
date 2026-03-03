@@ -36,8 +36,8 @@ const rule: FioriRuleDefinition = createFioriRule({
 
                 // Check if anchorBarVisible is set to false
                 // Exception: Form Entry Object Pages can have both visible: false and anchorBarVisible: false
-                const anchorBarVisible = page.header?.anchorBarVisible;
-                const headerVisible = page.header?.visible;
+                const anchorBarVisible = page.header.anchorBarVisible.valueInFile;
+                const headerVisible = page.header.visible.valueInFile;
 
                 if (anchorBarVisible === false && headerVisible !== false) {
                     problems.push({
@@ -46,17 +46,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                         manifest: {
                             uri: parsedApp.manifest.manifestUri,
                             object: parsedApp.manifestObject,
-                            propertyPath: [
-                                'sap.ui5',
-                                'routing',
-                                'targets',
-                                page.targetName,
-                                'options',
-                                'settings',
-                                'content',
-                                'header',
-                                'anchorBarVisible'
-                            ]
+                            propertyPath: page.header.anchorBarVisible.configurationPath
                         }
                     });
                 }
