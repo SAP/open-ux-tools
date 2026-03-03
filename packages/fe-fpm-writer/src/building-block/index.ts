@@ -27,7 +27,8 @@ import {
     createIdGenerator,
     detectTabSpacing,
     extendJSON,
-    getRelativeTemplateComponentPath
+    getRelativeTemplateComponentPath,
+    type TemplateContext
 } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getOrAddNamespace } from './prompts/utils/xml';
@@ -276,7 +277,10 @@ function getTemplateContent<T extends BuildingBlock>(
         config: templateConfig
     };
     if (config?.getData) {
-        const additionalContext = config.getData(buildingBlockData.generateId, buildingBlockData as any);
+        const additionalContext = config.getData(
+            buildingBlockData.generateId,
+            buildingBlockData as Partial<TemplateContext>
+        );
         context = { ...context, ...additionalContext };
     }
     return render(fs.read(templateFilePath), context, {});

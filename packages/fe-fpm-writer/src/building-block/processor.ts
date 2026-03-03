@@ -202,9 +202,9 @@ function processCustomFilterField(buildingBlockData: BuildingBlock, context: Pro
         });
     }
     const configKey = config.templateFile;
-    const additionnalDataConfig = CONFIG[configKey as keyof typeof CONFIG];
-    if (additionnalDataConfig?.getData) {
-        const additionalContext = additionnalDataConfig.getData(buildingBlockData.generateId, buildingBlockData as any);
+    const additionalDataConfig = CONFIG[configKey as keyof typeof CONFIG];
+    if (additionalDataConfig?.getData) {
+        const additionalContext = additionalDataConfig.getData(buildingBlockData.generateId);
         filterConfig = { ...filterConfig, ...additionalContext };
     }
 

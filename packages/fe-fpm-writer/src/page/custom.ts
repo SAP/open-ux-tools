@@ -113,7 +113,7 @@ async function handlePageBuildingBlock(
         return;
     }
 
-    const pageId = await generateId('Page');
+    const pageId = generateId('Page');
     await generateBuildingBlock(
         basePath,
         {
