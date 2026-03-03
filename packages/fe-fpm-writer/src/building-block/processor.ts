@@ -16,7 +16,7 @@ import { getTemplatePath } from '../templates';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
 import { getOrAddNamespace } from './prompts/utils/xml';
-import { CONFIG, getRelativeTemplateComponentPath } from '../common/file';
+import { CONFIG } from '../common/file';
 
 /**
  * Type for embedded fragment data used in building block processing.
