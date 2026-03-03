@@ -18,7 +18,7 @@ jobs:
               with:
                   run_install: true
             - name: Cache pnpm modules
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               env:
                   cache-name: cache-pnpm-modules
               with:
@@ -36,7 +36,7 @@ jobs:
               run: pnpm --filter @sap-ux/ui5-info... build 
             - name: Cache UI5 maintenance versions 
               id: cache-ui5-versions
-              uses: actions/cache/restore@v4
+              uses: actions/cache/restore@v5
               with:
                   path: tests/integration/adaptation-editor/versions.json
                   key: ui5-versions
@@ -55,7 +55,7 @@ jobs:
                   cat versions.json
                   echo "versions=$(cat versions.json)" >> $GITHUB_OUTPUT
             - name: Cache ui5-versions modules
-              uses: actions/cache/save@v4
+              uses: actions/cache/save@v5
               with:
                   path: tests/integration/adaptation-editor/versions.json
                   key: ui5-versions-${{fromJson(steps.current-ui5-versions.outputs.versions)[0]}}

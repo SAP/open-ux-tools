@@ -12,7 +12,7 @@ jobs:
             ui5_versions: ${{ steps.output-ui5-versions.outputs.ui5_versions }}
         steps:
             - name: Read UI5 versions from cache
-              uses: actions/cache/restore@v4
+              uses: actions/cache/restore@v5
               with:
                 path: |
                   tests/integration/adaptation-editor/versions.json
@@ -43,7 +43,7 @@ jobs:
               with:
                   run_install: true
             - name: Cache pnpm modules
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               env:
                   cache-name: cache-pnpm-modules
               with:
@@ -63,7 +63,7 @@ jobs:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Cache playwright browsers
               id: cache-playwright-browsers
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: |
                     ~/.cache/ms-playwright
@@ -72,7 +72,7 @@ jobs:
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chrome
             - name: Read UI5 versions from cache
-              uses: actions/cache/restore@v4
+              uses: actions/cache/restore@v5
               with:
                 path: |
                   tests/integration/adaptation-editor/versions.json
@@ -105,7 +105,7 @@ jobs:
               with:
                   run_install: true
             - name: Cache pnpm modules
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               env:
                   cache-name: cache-pnpm-modules
               with:
