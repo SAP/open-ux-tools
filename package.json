@@ -94,7 +94,7 @@
             "@puppeteer/browsers>proxy-agent": ">=6.5.0",
             "minimatch@<3.1.5": "^3.1.5",
             "readdir-glob>minimatch@<5.1.9": "^5.1.9",
-            "@npmcli/map-workspaces>minimatch@<5.1.9": "^5.1.9",
+            "@npmcli/map-workspaces>minimatch@<5.1.9": "^9.0.7",
             "glob@=8.1.0>minimatch@<5.1.9": "^5.1.9",
             "folder-hash>minimatch@<7.4.9": "^7.4.9",
             "ui5-tooling-modules>minimatch@<7.4.9": "^7.4.9",
