@@ -62,7 +62,7 @@ async function convertEslintConfig(
                     );
                 } else {
                     logger.info(`Executing \`npm install\`.`);
-                    runNpmInstallCommand(basePath);
+                    runNpmInstallCommand(basePath, undefined, { logger });
                 }
             });
         }
