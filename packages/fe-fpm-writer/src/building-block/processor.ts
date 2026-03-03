@@ -584,7 +584,7 @@ export function processBuildingBlock<T extends BuildingBlock>(
 
         updatedAggregationPath = result.updatedAggregationPath;
         hasAggregation = result.hasElement;
-        aggregationNamespace = getOrAddNamespace(xmlDocument, config.namespace.uri, config.namespace.prefix);
+        getOrAddNamespace(xmlDocument, config.namespace.uri, config.namespace.prefix);
     }
 
     return {
