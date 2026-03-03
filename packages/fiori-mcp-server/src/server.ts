@@ -55,11 +55,11 @@ export class FioriFunctionalityServer {
                 version: packageJson.version,
                 icons: [
                     {
-                        src: 'https://raw.githubusercontent.com/SAP/open-ux-tools/main/packages/fiori-mcp-server/src/assets/MCP-SERVER-plain.svg',
+                        src: 'https://raw.githubusercontent.com/SAP/open-ux-tools/main/packages/fiori-mcp-server/assets/icon.svg',
                         mimeType: 'image/svg+xml'
                     },
                     {
-                        src: 'https://raw.githubusercontent.com/SAP/open-ux-tools/main/packages/fiori-mcp-server/src/assets/MCP-SERVER-plain.png',
+                        src: 'https://raw.githubusercontent.com/SAP/open-ux-tools/main/packages/fiori-mcp-server/assets/icon.png',
                         mimeType: 'image/png'
                     }
                 ],
