@@ -72,10 +72,10 @@
     "engines": {
         "npm": "please-use-pnpm",
         "yarn": "please-use-pnpm",
-        "pnpm": "10.30.2",
+        "pnpm": "10.30.3",
         "node": ">=20.20.0"
     },
-    "packageManager": "pnpm@10.30.2",
+    "packageManager": "pnpm@10.30.3",
     "pnpm": {
         "overrides": {
             "@storybook/manager-api>store2": "2.14.4",
