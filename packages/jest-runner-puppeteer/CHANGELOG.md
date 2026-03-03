@@ -1,5 +1,11 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.2.9
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+
 ## 0.2.8
 
 ### Patch Changes
