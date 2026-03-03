@@ -94,8 +94,10 @@ export const CONFIG = {
             const validatedIds: string[] = [];
             buttonGroups.forEach((group, index) => {
                 const id = generateId(`${'ButtonGroup'}`, validatedIds);
-                validatedIds.push(id);
                 ids[index] = group.id ?? id;
+                if (!group.id) {
+                    validatedIds.push(id);
+                }
             });
 
             return { ids };
@@ -132,7 +134,6 @@ function generateUniqueElementId(
             filteredFiles.every((file) => isElementIdAvailable(fs, file, candidateId)) &&
             !validatedIds.includes(candidateId)
         ) {
-            validatedIds.push(candidateId);
             return candidateId;
         }
     }

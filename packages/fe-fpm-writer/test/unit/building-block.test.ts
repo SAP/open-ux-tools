@@ -22,6 +22,7 @@ import { bindingContextAbsolute, type BindingContextType } from '../../src/build
 import { i18nNamespaces, translate } from '../../src/i18n';
 import { Placement } from '../../src/common/types';
 import type { IdGeneratorFunction } from '../../src/common/file';
+import * as fileAccess from '@sap-ux/project-access/dist/file';
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -41,6 +42,7 @@ describe('Building Blocks', () => {
         let item = 0;
         jest.requireActual('mem-fs-editor');
         fs = create(createStorage());
+        jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
         generateId = jest.fn((baseId: string) => {
             if (['Item', 'ButtonGroup'].includes(baseId)) {
                 return `${baseId}${item++}`;

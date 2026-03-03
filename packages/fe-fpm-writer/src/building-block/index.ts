@@ -22,7 +22,13 @@ import type { Manifest } from '../common/types';
 import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
-import { CONFIG, detectTabSpacing, extendJSON, getRelativeTemplateComponentPath } from '../common/file';
+import {
+    CONFIG,
+    createIdGenerator,
+    detectTabSpacing,
+    extendJSON,
+    getRelativeTemplateComponentPath
+} from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getOrAddNamespace } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
@@ -56,6 +62,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     // Validate the base and view paths
     fs ??= create(createStorage());
     await validateBasePath(basePath, fs, []);
+    const fnGenerateId = config.buildingBlockData.generateId ?? (await createIdGenerator(basePath, fs));
 
     if (!fs.exists(join(basePath, viewOrFragmentPath))) {
         throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
@@ -72,7 +79,13 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         hasAggregation,
         aggregationNamespace
     };
-    const templateDocument = getTemplateDocument(processedBuildingBlockData, xmlDocument, fs, manifest, templateConfig);
+    const templateDocument = getTemplateDocument(
+        { ...processedBuildingBlockData, generateId: fnGenerateId },
+        xmlDocument,
+        fs,
+        manifest,
+        templateConfig
+    );
 
     if (
         buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor ||
