@@ -1,5 +1,11 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.1.4
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
 ## 0.1.3
 
 ### Patch Changes

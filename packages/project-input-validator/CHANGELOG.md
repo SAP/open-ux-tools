@@ -1,5 +1,18 @@
 # @sap-ux/project-input-validator
 
+## 0.6.64
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+
+## 0.6.63
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
 ## 0.6.62
 
 ### Patch Changes

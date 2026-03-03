@@ -1,5 +1,38 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.2.14
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/axios-extension@1.25.17
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/adp-tooling@0.18.77
+    - @sap-ux/abap-deploy-config-inquirer@1.7.11
+    - @sap-ux/deploy-config-generator-shared@0.1.100
+    - @sap-ux/fiori-generator-shared@0.13.81
+    - @sap-ux/abap-deploy-config-writer@0.2.83
+
+## 0.2.13
+
+### Patch Changes
+
+- Updated dependencies [0e2d686]
+    - @sap-ux/abap-deploy-config-inquirer@1.7.10
+
+## 0.2.12
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/deploy-config-generator-shared@0.1.99
+    - @sap-ux/abap-deploy-config-inquirer@1.7.9
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/adp-tooling@0.18.76
+    - @sap-ux/ui5-config@0.29.19
+    - @sap-ux/abap-deploy-config-writer@0.2.82
+
 ## 0.2.11
 
 ### Patch Changes

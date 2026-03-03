@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.9
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
 ## 0.7.8
 
 ### Patch Changes

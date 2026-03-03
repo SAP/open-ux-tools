@@ -1,5 +1,19 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.9.59
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+
+## 0.9.58
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/ui5-config@0.29.19
+
 ## 0.9.57
 
 ### Patch Changes
