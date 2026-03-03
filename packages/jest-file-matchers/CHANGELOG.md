@@ -1,5 +1,11 @@
 # @sap-ux/jest-file-matchers
 
+## 0.2.10
+
+### Patch Changes
+
+- b82db06: Direct minimatch version upgrade
+
 ## 0.2.9
 
 ### Patch Changes

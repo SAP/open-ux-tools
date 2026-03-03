@@ -1,7 +1,7 @@
 import type { SystemCommandContext } from '../../../../src/types/system';
 import { PanelManager, type SystemPanel } from '../../../../src/panel';
 import { importSystemCommandHandler } from '../../../../src/commands/system/import';
-import { join } from 'path';
+import { join } from 'node:path';
 import * as utils from '../../../../src/utils';
 import * as vscodeMod from 'vscode';
 import { SystemPanelViewType } from '../../../../src/utils/constants';

@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.42.19
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+
 ## 0.42.18
 
 ### Patch Changes
