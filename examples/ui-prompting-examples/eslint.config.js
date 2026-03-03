@@ -2,15 +2,8 @@ const base = require('../../eslint.config.js');
 const reactPlugin = require('eslint-plugin-react');
 const globals = require('globals');
 // const storybookPlugin = require('eslint-plugin-storybook');
-const { tsParser } = require('typescript-eslint');
-const { parser } = require('typescript-eslint');
 
 module.exports = [
-    {
-        languageOptions: {
-            'parser': tsParser
-        }
-    },
     ...base,
     reactPlugin.configs.flat.recommended,
     // ...storybookPlugin.configs['flat/recommended'],
@@ -20,7 +13,6 @@ module.exports = [
         },
         languageOptions: {
             parserOptions: {
-                parser: tsParser,
                 project: 'tsconfig.eslint.json',
                 tsconfigRootDir: __dirname
             },
