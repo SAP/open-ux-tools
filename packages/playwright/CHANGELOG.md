@@ -1,5 +1,13 @@
 # @sap-ux-private/playwright
 
+## 0.2.9
+
+### Patch Changes
+
+- 8017bd3: updates for minimatch
+
+    #37169
+
 ## 0.2.8
 
 ### Patch Changes
