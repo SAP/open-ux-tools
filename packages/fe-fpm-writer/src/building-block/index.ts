@@ -27,7 +27,8 @@ import {
     createIdGenerator,
     detectTabSpacing,
     extendJSON,
-    getRelativeTemplateComponentPath
+    getRelativeTemplateComponentPath,
+    type TemplateContext
 } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getOrAddNamespace } from './prompts/utils/xml';
@@ -73,7 +74,14 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
     const { updatedAggregationPath, processedBuildingBlockData, hasAggregation, aggregationNamespace } =
-        processBuildingBlock(buildingBlockData, xmlDocument, manifestPath, manifest, aggregationPath, fs);
+        processBuildingBlock(
+            { ...buildingBlockData, generateId: fnGenerateId },
+            xmlDocument,
+            manifestPath,
+            manifest,
+            aggregationPath,
+            fs
+        );
 
     const templateConfig: TemplateConfig = {
         hasAggregation,
@@ -276,7 +284,10 @@ function getTemplateContent<T extends BuildingBlock>(
         config: templateConfig
     };
     if (config?.getData) {
-        const additionalContext = config.getData(buildingBlockData.generateId, buildingBlockData as any);
+        const additionalContext = config.getData(
+            buildingBlockData.generateId,
+            buildingBlockData as Partial<TemplateContext>
+        );
         context = { ...context, ...additionalContext };
     }
     return render(fs.read(templateFilePath), context, {});
