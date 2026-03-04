@@ -74,7 +74,14 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
     const { updatedAggregationPath, processedBuildingBlockData, hasAggregation, aggregationNamespace } =
-        processBuildingBlock(buildingBlockData, xmlDocument, manifestPath, manifest, aggregationPath, fs);
+        processBuildingBlock(
+            { ...buildingBlockData, generateId: fnGenerateId },
+            xmlDocument,
+            manifestPath,
+            manifest,
+            aggregationPath,
+            fs
+        );
 
     const templateConfig: TemplateConfig = {
         hasAggregation,
