@@ -1,5 +1,13 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.40
+
+### Patch Changes
+
+- e773022: fix(deps): update dependency @sap-ai-sdk/foundation-models to v2.8.0
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+    - @sap-ux/store@1.5.9
+
 ## 0.6.39
 
 ### Patch Changes

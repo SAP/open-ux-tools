@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.8.2
+
+### Patch Changes
+
+- 45d4797: fix(deps): update dependency winston-transport to v4.9.0
+
 ## 0.8.1
 
 ### Patch Changes
