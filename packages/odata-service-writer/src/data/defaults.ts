@@ -156,9 +156,16 @@ function setDefaultAnnotationsName(service: OdataService): void {
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose preview settings needs to be set or modified.
  * @param {Editor} fs - the memfs editor instance
+ * @param {boolean} update - whether the service update is running (if true, preserves explicitly set previewSettings.path)
  */
-async function setDefaultPreviewSettings(basePath: string, service: OdataService, fs: Editor): Promise<void> {
+async function setDefaultPreviewSettings(
+    basePath: string,
+    service: OdataService,
+    fs: Editor,
+    update = false
+): Promise<void> {
     service.previewSettings = service.previewSettings ?? {};
+    const explicitPreviewPath = service.previewSettings.path; // Save to detect if it was explicitly set
     service.previewSettings.path =
         service.previewSettings.path ?? `/${service.path?.split('/').find((s: string) => s !== '') ?? ''}`;
     service.previewSettings.url = service.previewSettings.url ?? service.url ?? 'http://localhost';
@@ -177,8 +184,11 @@ async function setDefaultPreviewSettings(basePath: string, service: OdataService
         const ui5Config = await UI5Config.newInstance(yamlContents);
         const backends = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware();
         // There should be only one /sap entry
+        // In update mode, only override if previewSettings.path was not explicitly set
         if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
-            service.previewSettings.path = service.path;
+            if (!update || !explicitPreviewPath) {
+                service.previewSettings.path = service.path;
+            }
         }
     }
 }
@@ -210,5 +220,5 @@ export async function enhanceData(basePath: string, service: OdataService, fs: E
     }
 
     // enhance preview settings with service configuration
-    await setDefaultPreviewSettings(basePath, service, fs);
+    await setDefaultPreviewSettings(basePath, service, fs, update);
 }
