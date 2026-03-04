@@ -1736,6 +1736,93 @@ describe('update', () => {
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
     });
+
+    describe('preview path preservation during sync', () => {
+        it('should preserve custom preview path when updating service', async () => {
+            // Create a proper mock with custom preview path using getSingleServiceMock pattern
+            const customFs = await getSingleServiceMock();
+            const customPreviewPath = '/my-custom-preview';
+            
+            // Modify ui5.yaml to use custom preview path
+            const ui5Config = await UI5Config.newInstance(customFs.read(join(testDir, 'ui5.yaml')));
+            ui5Config.updateBackendToFioriToolsProxyMiddleware({
+                path: '/sap',
+                url: 'https://localhost',
+                pathPrefix: customPreviewPath
+            });
+            customFs.write(join(testDir, 'ui5.yaml'), ui5Config.toString());
+            
+            // Update the service hostname
+            await update(
+                testDir,
+                {
+                    name: 'mainService',
+                    url: 'https://localhost/updated',
+                    path: '/sap',
+                    type: ServiceType.EDMX,
+                    annotations: [
+                        {
+                            technicalName: 'SEPMRA_PROD_MAN',
+                            xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                        }
+                    ] as EdmxAnnotationsInfo[],
+                    metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                    version: OdataVersion.v4,
+                    localAnnotationsName: 'annotation'
+                },
+                customFs
+            );
+            
+            // Verify custom preview path is preserved after hostname change
+            const updatedYaml = customFs.read(join(testDir, 'ui5.yaml'));
+            expect(updatedYaml).toContain('pathPrefix: /my-custom-preview');
+            expect(updatedYaml).toContain('url: https://localhost/updated');
+        });
+
+        it('should preserve different custom preview path when changing both URL and client', async () => {
+            // Start with mock having different custom preview path
+            const customFs = await getSingleServiceMock();
+            const customPath = '/api/preview/custom';
+            
+            // Set up custom preview path
+            const ui5Config = await UI5Config.newInstance(customFs.read(join(testDir, 'ui5.yaml')));
+            ui5Config.updateBackendToFioriToolsProxyMiddleware({
+                path: '/sap',
+                url: 'https://localhost',
+                pathPrefix: customPath,
+                client: '100'
+            });
+            customFs.write(join(testDir, 'ui5.yaml'), ui5Config.toString());
+            
+            // Update service with new URL and client
+            await update(
+                testDir,
+                {
+                    name: 'mainService',
+                    url: 'https://new-backend.example.com',
+                    path: '/sap',
+                    client: '200',
+                    type: ServiceType.EDMX,
+                    annotations: [
+                        {
+                            technicalName: 'SEPMRA_PROD_MAN',
+                            xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                        }
+                    ] as EdmxAnnotationsInfo[],
+                    metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                    version: OdataVersion.v4,
+                    localAnnotationsName: 'annotation'
+                },
+                customFs
+            );
+            
+            // Verify custom preview path is preserved while URL and client are updated
+            const updatedYaml = customFs.read(join(testDir, 'ui5.yaml'));
+            expect(updatedYaml).toContain('pathPrefix: /api/preview/custom');
+            expect(updatedYaml).toContain('url: https://new-backend.example.com');
+            expect(updatedYaml).toContain("client: '200'"); // YAML uses single quotes
+        });
+    });
 });
 
 async function getSingleServiceMock(): Promise<Editor> {

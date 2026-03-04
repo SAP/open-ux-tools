@@ -183,10 +183,23 @@ async function setDefaultPreviewSettings(
         const yamlContents = fs.read(ui5Yamlpath);
         const ui5Config = await UI5Config.newInstance(yamlContents);
         const backends = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware();
-        // There should be only one /sap entry
-        // In update mode, only override if previewSettings.path was not explicitly set
-        if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
-            if (!update || !explicitPreviewPath) {
+        
+        // In update mode, preserve existing backend configuration (especially pathPrefix)
+        if (update) {
+            const existingBackend = backends.find((backend) => backend.path === service.previewSettings?.path);
+            if (existingBackend) {
+                // Preserve pathPrefix if it exists in the backend configuration
+                if (existingBackend.pathPrefix) {
+                    service.previewSettings.pathPrefix = existingBackend.pathPrefix;
+                }
+                // Only override path if it wasn't explicitly set
+                if (!explicitPreviewPath) {
+                    service.previewSettings.path = service.path;
+                }
+            }
+        } else {
+            // For new services, check if /sap path exists
+            if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
                 service.previewSettings.path = service.path;
             }
         }
