@@ -2,6 +2,7 @@ import { join } from 'node:path';
 import { join as joinPosix } from 'node:path/posix';
 import type { ValueListReference } from './types/adapter';
 import { readFile } from 'node:fs/promises';
+import { fileExists } from '@sap-ux/project-access/src/file';
 
 /**
  * Reads the metadata of external services based on the provided definitions and returns a map of the service URI to its metadata content and local file path.
@@ -32,7 +33,8 @@ export async function readExternalServiceMetadata(
                 );
 
                 const metadataPath = join(serviceRoot, `metadata.xml`);
-                const data = await readFile(metadataPath, 'utf-8');
+                const exists = await fileExists(metadataPath);
+                const data = exists ? await readFile(metadataPath, 'utf-8') : '';
                 externalServices.set(value, { data, localFilePath: metadataPath });
             }
         }
