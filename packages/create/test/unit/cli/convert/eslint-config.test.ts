@@ -182,7 +182,11 @@ describe('Test command convert eslint-config', () => {
         expect(cwdSpy).toHaveBeenCalled();
         expect(appConfigWriter.convertEslintConfig).toHaveBeenCalledWith(appRoot, expect.any(Object));
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(runNpmInstallSpy).toHaveBeenCalledWith(appRoot, undefined, expect.objectContaining({ logger: loggerMock }));
+        expect(runNpmInstallSpy).toHaveBeenCalledWith(
+            appRoot,
+            undefined,
+            expect.objectContaining({ logger: loggerMock })
+        );
 
         cwdSpy.mockRestore();
     });
