@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.79
+
+### Patch Changes
+
+- 2d42592: fix: Various fixes for Adaptation Project for Cloud Foundry scenario
+
 ## 0.18.78
 
 ### Patch Changes
