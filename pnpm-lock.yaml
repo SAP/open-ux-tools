@@ -66,8 +66,8 @@ importers:
         specifier: 0.27.2
         version: 0.27.2
       esbuild-sass-plugin:
-        specifier: 3.3.1
-        version: 3.3.1(esbuild@0.27.2)(sass-embedded@1.97.3)
+        specifier: 3.6.0
+        version: 3.6.0(esbuild@0.27.2)(sass-embedded@1.97.3)
       eslint:
         specifier: 9.39.1
         version: 9.39.1
@@ -11944,11 +11944,11 @@ packages:
     peerDependencies:
       esbuild: '>=0.25.0'
 
-  esbuild-sass-plugin@3.3.1:
-    resolution: {integrity: sha512-SnO1ls+d52n6j8gRRpjexXI8MsHEaumS0IdDHaYM29Y6gakzZYMls6i9ql9+AWMSQk/eryndmUpXEgT34QrX1A==}
+  esbuild-sass-plugin@3.6.0:
+    resolution: {integrity: sha512-lzPJQSEXcnj5amBPPib5lBjsDNPzvdMnX+1Rf7eha9BIpLSM5Ad2pi+Rqg5CAlWMduCgLntS2hLAqG7v1fxWGw==}
     peerDependencies:
-      esbuild: '>=0.25.0'
-      sass-embedded: ^1.71.1
+      esbuild: '>=0.27.2'
+      sass-embedded: ^1.97.2
 
   esbuild@0.27.2:
     resolution: {integrity: sha512-HyNQImnsOC7X9PMNaCIeAm4ISCQXs5a5YasTXVliKv4uuBo1dKrG0A+uQS8M5eXjVMnLg3WgXaKvprHlFJQffw==}
@@ -16492,9 +16492,6 @@ packages:
 
   safe-buffer@5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
-
-  safe-identifier@0.4.2:
-    resolution: {integrity: sha512-6pNbSMW6OhAi9j+N8V+U715yBQsaWJ7eyEUaOrawX+isg5ZxhUlV1NipNtgaKHmFGiABwt+ZF04Ii+3Xjkg+8w==}
 
   safe-push-apply@1.0.0:
     resolution: {integrity: sha512-iKE9w/Z7xCzUMIZqdBsp6pEQvwuEebH4vdpjcDWnyzaI6yl6O9FHvVpmGelvEHNsoY6wGblkxR6Zty/h00WiSA==}
@@ -27669,11 +27666,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  esbuild-sass-plugin@3.3.1(esbuild@0.27.2)(sass-embedded@1.97.3):
+  esbuild-sass-plugin@3.6.0(esbuild@0.27.2)(sass-embedded@1.97.3):
     dependencies:
       esbuild: 0.27.2
       resolve: 1.22.11
-      safe-identifier: 0.4.2
       sass: 1.97.3
       sass-embedded: 1.97.3
 
@@ -33707,8 +33703,6 @@ snapshots:
   safe-buffer@5.1.2: {}
 
   safe-buffer@5.2.1: {}
-
-  safe-identifier@0.4.2: {}
 
   safe-push-apply@1.0.0:
     dependencies:
