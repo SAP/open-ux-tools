@@ -1,5 +1,16 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.19.4
+
+### Patch Changes
+
+- 2302698: fix(deps): update dependency @sap-ux/edmx-parser to v0.10.0
+- Updated dependencies [2302698]
+- Updated dependencies [96e9b9e]
+    - @sap-ux/inquirer-common@0.11.18
+    - @sap-ux/axios-extension@1.25.19
+    - @sap-ux/fiori-generator-shared@0.13.82
+
 ## 2.19.3
 
 ### Patch Changes
