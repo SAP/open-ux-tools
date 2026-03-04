@@ -86,7 +86,7 @@ const rule: RuleDefinition = {
     },
     create(context: RuleContext) {
         const sourceCode = context.sourceCode;
-        const customNS = ((context.options[0] as any)?.ns as string[] | undefined) ?? [];
+        const customNS = (context.options[0] as unknown as { ns?: string[] })?.ns ?? [];
         const configuration = {
             'ns': uniquifyArray(
                 [
