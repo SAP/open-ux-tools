@@ -105,6 +105,14 @@ export interface MetadataElementProperties {
      * Only relevant for NavigationProperty kind
      */
     referentialConstraints?: ReferentialConstraint[];
+    /**
+     * Only relevant for NavigationProperty kind
+     */
+    partner?: string;
+    /**
+     * Only relevant for NavigationProperty kind
+     */
+    containsTarget?: boolean;
 }
 
 /**
