@@ -19,6 +19,10 @@ const ruleTester = new RuleTester({
 const TEST_NAME = 'sap-creation-mode-for-table-v4';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
+// Cast rule to any to avoid type incompatibility between FioriRuleDefinition and RuleDefinition
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const rule = createTableRule as any;
+
 // Helper annotations for Object Page sections with tables
 const OBJECT_PAGE_FACETS = {
     filename: V4_ANNOTATIONS_PATH,
@@ -102,7 +106,7 @@ const OBJECT_PAGE_TWO_TABLES = {
 //------------------------------------------------------------------------------
 // FE V4 Tests - Responsive Table / Grid Table
 //------------------------------------------------------------------------------
-ruleTester.run(TEST_NAME, createTableRule, {
+ruleTester.run(TEST_NAME, rule as any, {
     valid: [
         // Object Page - Valid creationMode. InlineCreationRows for ResponsiveTable
         createValidTest(

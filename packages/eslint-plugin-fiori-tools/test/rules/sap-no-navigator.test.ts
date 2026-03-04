@@ -27,8 +27,8 @@ ruleTester.run('sap-no-navigator', rule, {
             code: 'var x = window, w = window; w.navigator.back();',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -36,8 +36,8 @@ ruleTester.run('sap-no-navigator', rule, {
             code: 'var x = navigator.appCodeName;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         }

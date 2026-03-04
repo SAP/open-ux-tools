@@ -66,7 +66,7 @@ const ORIGINAL_ANNOTATIONS = {
 const TEST_NAME = 'sap-width-including-column-header';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-ruleTester.run(TEST_NAME, flexEnabledRule, {
+ruleTester.run(TEST_NAME, flexEnabledRule as any, {
     valid: [
         // Non-manifest files should be ignored
         createValidTest(

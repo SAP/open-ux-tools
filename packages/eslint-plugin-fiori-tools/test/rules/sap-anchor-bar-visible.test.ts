@@ -11,7 +11,7 @@ const ruleTester = new RuleTester({
 const TEST_NAME = 'sap-anchor-bar-visible';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-ruleTester.run(TEST_NAME, anchorBarVisibleRule, {
+ruleTester.run(TEST_NAME, anchorBarVisibleRule as any, {
     valid: [
         createValidTest(
             {

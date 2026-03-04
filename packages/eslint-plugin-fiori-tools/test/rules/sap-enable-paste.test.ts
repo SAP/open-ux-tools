@@ -25,7 +25,7 @@ const FACETSV4 = {
 const TEST_NAME = 'sap-enable-paste';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-ruleTester.run(TEST_NAME, enablePasteRule, {
+ruleTester.run(TEST_NAME, enablePasteRule as any, {
     valid: [
         createValidTest(
             {

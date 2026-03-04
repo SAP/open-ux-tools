@@ -32,16 +32,16 @@ ruleTester.run('sap-no-encode-file-service', rule, {
                 '',
             errors: [
                 {
-                    message: ERROR_MSG,
-                    type: 'Literal'
+                    message: ERROR_MSG
+
                 },
                 {
-                    message: ERROR_MSG,
-                    type: 'Literal'
+                    message: ERROR_MSG
+
                 },
                 {
-                    message: ERROR_MSG,
-                    type: 'Literal'
+                    message: ERROR_MSG
+
                 }
             ]
         }

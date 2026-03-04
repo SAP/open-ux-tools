@@ -23,7 +23,7 @@ const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 //------------------------------------------------------------------------------
 // FE V2 Tests
 //------------------------------------------------------------------------------
-ruleTester.run(TEST_NAME, rule, {
+ruleTester.run(TEST_NAME, rule as any, {
     valid: [
         // Scenario 1: FCL defined + persistence mode (recommended for FCL)
         createValidTest(

@@ -25,7 +25,7 @@ const FACETSV4 = {
 const TEST_NAME = 'sap-enable-export';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-ruleTester.run(TEST_NAME, enableExportRule, {
+ruleTester.run(TEST_NAME, enableExportRule as any, {
     valid: [
         createValidTest(
             {

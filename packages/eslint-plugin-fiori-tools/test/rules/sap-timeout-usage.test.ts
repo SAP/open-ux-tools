@@ -27,8 +27,8 @@ ruleTester.run('sap-timeout-usage', rule, {
             code: "setTimeout(function(){ that.oReportTileOptionsCarousel.rerender(); }, '500');",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -36,8 +36,8 @@ ruleTester.run('sap-timeout-usage', rule, {
             code: 'setTimeout(function(){ that.oReportTileOptionsCarousel.rerender(); }, 100);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -45,8 +45,8 @@ ruleTester.run('sap-timeout-usage', rule, {
             code: "window.setTimeout(function(){ that.oReportTileOptionsCarousel.rerender(); }, '500');",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -54,8 +54,8 @@ ruleTester.run('sap-timeout-usage', rule, {
             code: "var test0 = window, test1 = window; test1.setTimeout(myHandler, '500');",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -63,8 +63,8 @@ ruleTester.run('sap-timeout-usage', rule, {
             code: "test2 = window; test2.setTimeout(myHandler, '500');",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         }

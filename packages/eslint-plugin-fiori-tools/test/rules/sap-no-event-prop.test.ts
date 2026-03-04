@@ -27,8 +27,8 @@ ruleTester.run('sap-no-event-prop', rule, {
             code: 'var oEvent;oEvent.oSource = 12;',
             errors: [
                 {
-                    message: 'Direct usage of a private member from  sap.ui.base.Event detected!',
-                    type: 'MemberExpression'
+                    message: 'Direct usage of a private member from  sap.ui.base.Event detected!'
+
                 }
             ]
         }

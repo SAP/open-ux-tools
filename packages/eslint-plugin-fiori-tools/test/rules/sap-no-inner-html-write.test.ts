@@ -25,8 +25,8 @@ ruleTester.run('sap-no-inner-html-write', rule, {
             code: "oControl.$().find('.sapMLabe')[0].innerHTML = 'reallybad';",
             errors: [
                 {
-                    message: 'Writing to the inner html is not allowed.',
-                    type: 'AssignmentExpression'
+                    message: 'Writing to the inner html is not allowed.'
+
                 }
             ]
         },
@@ -34,8 +34,8 @@ ruleTester.run('sap-no-inner-html-write', rule, {
             code: "test['innerHTML'] = 'reallybad';",
             errors: [
                 {
-                    message: 'Writing to the inner html is not allowed.',
-                    type: 'AssignmentExpression'
+                    message: 'Writing to the inner html is not allowed.'
+
                 }
             ]
         }

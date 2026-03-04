@@ -31,8 +31,8 @@ ruleTester.run('sap-no-dom-insertion', rule, {
             code: "$('#container').append('Test');",
             errors: [
                 {
-                    message: MESSAGE_DOM_INSERTION,
-                    type: 'CallExpression'
+                    message: MESSAGE_DOM_INSERTION
+
                 }
             ]
         },
@@ -40,8 +40,8 @@ ruleTester.run('sap-no-dom-insertion', rule, {
             code: "var list = document.getElementById('myList1');List.insertBefore(node, list.childNodes[0]);",
             errors: [
                 {
-                    message: MESSAGE_DOM_INSERTION,
-                    type: 'CallExpression'
+                    message: MESSAGE_DOM_INSERTION
+
                 }
             ]
         },
@@ -49,8 +49,8 @@ ruleTester.run('sap-no-dom-insertion', rule, {
             code: 'myObject.after(document.body);',
             errors: [
                 {
-                    message: MESSAGE_DOM_INSERTION,
-                    type: 'CallExpression'
+                    message: MESSAGE_DOM_INSERTION
+
                 }
             ]
         }

@@ -77,7 +77,6 @@ const rule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'fiori tools (fiori custom) ESLint rule',
-            category: 'Best Practices',
             recommended: false
         },
         messages: {

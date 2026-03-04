@@ -27,7 +27,7 @@ const FACETSV4 = {
 const TEST_NAME = 'sap-copy-to-clipboard';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-ruleTester.run(TEST_NAME, copyToClipboardRule, {
+ruleTester.run(TEST_NAME, copyToClipboardRule as any, {
     valid: [
         createValidTest(
             {

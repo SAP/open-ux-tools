@@ -8,7 +8,7 @@ const ruleTester = new RuleTester({
     language: '@sap-ux/eslint-plugin-fiori-tools/fiori'
 });
 
-ruleTester.run('sap-flex-enabled', flexEnabledRule, {
+ruleTester.run('sap-flex-enabled', flexEnabledRule as any, {
     valid: [
         {
             name: ' Non-manifest files should be ignored',
