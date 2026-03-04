@@ -306,10 +306,14 @@ export async function createUI5ApplicationPromptOptions(
         },
         [ui5AppInquirerPromptNames.enableVirtualEndpoints]: {
             hide: service.capService?.capType === 'Java'
+        },
+        [ui5AppInquirerPromptNames.enableEslint]: {
+            hide: true,
+            default: true
         }
     };
     const promptOptions = merge(preMergedPromptOpts, promptSettings);
-
+    
     // Configure the prompts which should be hidden behind the advanced option switch
     const advancedPrompts = [
         ui5AppInquirerPromptNames.skipAnnotations,
