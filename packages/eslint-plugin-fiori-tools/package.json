@@ -43,7 +43,7 @@
         "@sap-ux/odata-vocabularies": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.13.1",
+        "@sap-ux/vocabularies-types": "0.15.0",
         "@xml-tools/ast": "5.0.5",
         "@xml-tools/parser": "1.0.11",
         "@humanwhocodes/momoa": "^3.3.9",
