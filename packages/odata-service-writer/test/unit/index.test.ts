@@ -1742,7 +1742,7 @@ describe('update', () => {
             // Create a proper mock with custom preview path using getSingleServiceMock pattern
             const customFs = await getSingleServiceMock();
             const customPreviewPath = '/my-custom-preview';
-            
+
             // Modify ui5.yaml to use custom preview path
             const ui5Config = await UI5Config.newInstance(customFs.read(join(testDir, 'ui5.yaml')));
             ui5Config.updateBackendToFioriToolsProxyMiddleware({
@@ -1751,7 +1751,7 @@ describe('update', () => {
                 pathPrefix: customPreviewPath
             });
             customFs.write(join(testDir, 'ui5.yaml'), ui5Config.toString());
-            
+
             // Update the service hostname
             await update(
                 testDir,
@@ -1772,7 +1772,7 @@ describe('update', () => {
                 },
                 customFs
             );
-            
+
             // Verify custom preview path is preserved after hostname change
             const updatedYaml = customFs.read(join(testDir, 'ui5.yaml'));
             expect(updatedYaml).toContain('pathPrefix: /my-custom-preview');
@@ -1783,7 +1783,7 @@ describe('update', () => {
             // Start with mock having different custom preview path
             const customFs = await getSingleServiceMock();
             const customPath = '/api/preview/custom';
-            
+
             // Set up custom preview path
             const ui5Config = await UI5Config.newInstance(customFs.read(join(testDir, 'ui5.yaml')));
             ui5Config.updateBackendToFioriToolsProxyMiddleware({
@@ -1793,7 +1793,7 @@ describe('update', () => {
                 client: '100'
             });
             customFs.write(join(testDir, 'ui5.yaml'), ui5Config.toString());
-            
+
             // Update service with new URL and client
             await update(
                 testDir,
@@ -1815,7 +1815,7 @@ describe('update', () => {
                 },
                 customFs
             );
-            
+
             // Verify custom preview path is preserved while URL and client are updated
             const updatedYaml = customFs.read(join(testDir, 'ui5.yaml'));
             expect(updatedYaml).toContain('pathPrefix: /api/preview/custom');

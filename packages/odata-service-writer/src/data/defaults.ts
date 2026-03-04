@@ -183,7 +183,7 @@ async function setDefaultPreviewSettings(
         const yamlContents = fs.read(ui5Yamlpath);
         const ui5Config = await UI5Config.newInstance(yamlContents);
         const backends = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware();
-        
+
         // In update mode, preserve existing backend configuration (especially pathPrefix)
         if (update) {
             const existingBackend = backends.find((backend) => backend.path === service.previewSettings?.path);
