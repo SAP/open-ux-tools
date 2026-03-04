@@ -1664,6 +1664,142 @@ Object {
 }
 `;
 
+exports[`Prompts getFormBuildingBlockPrompts 1`] = `
+Object {
+  "groups": Array [
+    Object {
+      "description": Array [
+        "Select the \`View or Fragment File\` where you want to insert the Form building block and provide a \`Building Block ID\` to identify the form.",
+        "Select an \`Entity Set\`, and a \`Field Group Annotation\` you want to use for the Form building block.",
+        "Select an \`Aggregation Path\` to determine where you want the form to appear on the page.",
+        "Provide a \`Form Title\` to be displayed.",
+      ],
+      "id": "formBuildingBlockProperties",
+      "title": "Properties of the Form Building Block",
+    },
+    Object {
+      "description": Array [
+        "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet.",
+      ],
+      "id": "manifestLibraries",
+      "title": "Manifest Libraries",
+    },
+  ],
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "form",
+    },
+  },
+  "questions": Array [
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "aggregationPath",
+        ],
+        "groupId": "formBuildingBlockProperties",
+        "mandatory": true,
+        "placeholder": "Select a view or fragment file",
+        "selectType": "dynamic",
+      },
+      "message": "View or Fragment File",
+      "name": "viewOrFragmentPath",
+      "type": "list",
+      "validate": [Function],
+    },
+    Object {
+      "default": "Form",
+      "guiOptions": Object {
+        "groupId": "formBuildingBlockProperties",
+        "mandatory": true,
+        "placeholder": "Enter a building block ID",
+      },
+      "message": "Building Block ID",
+      "name": "buildingBlockData.id",
+      "type": "input",
+      "validate": [Function],
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+      ],
+      "default": "absolute",
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.metaPath.qualifier",
+        ],
+        "groupId": "formBuildingBlockProperties",
+        "mandatory": true,
+        "selectType": "static",
+      },
+      "message": "Binding Context",
+      "name": "buildingBlockData.metaPath.bindingContextType",
+      "type": "list",
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.metaPath.qualifier",
+        ],
+        "groupId": "formBuildingBlockProperties",
+        "mandatory": true,
+        "placeholder": "Select an entity",
+        "selectType": "dynamic",
+      },
+      "message": "Entity",
+      "name": "buildingBlockData.metaPath.entitySet",
+      "type": "list",
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "groupId": "formBuildingBlockProperties",
+        "hint": "Values are dependent on entity set",
+        "mandatory": true,
+        "placeholder": "Select a FieldGroup annotation path",
+        "selectType": "dynamic",
+      },
+      "message": "FieldGroup Annotation Path",
+      "name": "buildingBlockData.metaPath.qualifier",
+      "type": "list",
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "groupId": "formBuildingBlockProperties",
+        "mandatory": true,
+        "placeholder": "Select an aggregation path",
+        "selectType": "dynamic",
+      },
+      "message": "Aggregation Path",
+      "name": "aggregationPath",
+      "type": "list",
+    },
+    Object {
+      "guiOptions": Object {
+        "groupId": "formBuildingBlockProperties",
+        "mandatory": true,
+        "translationProperties": Object {
+          "annotation": "Title of the Form",
+          "type": "XHED",
+        },
+      },
+      "message": "Form Title",
+      "name": "buildingBlockData.title",
+      "type": "input",
+    },
+  ],
+}
+`;
+
 exports[`Prompts getPageBuildingBlockPrompts 1`] = `
 Object {
   "initialAnswers": Object {

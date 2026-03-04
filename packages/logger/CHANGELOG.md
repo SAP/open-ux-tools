@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.8.1
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+
 ## 0.8.0
 
 ### Minor Changes

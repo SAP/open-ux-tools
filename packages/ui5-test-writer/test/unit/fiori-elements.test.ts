@@ -269,6 +269,16 @@ describe('ui5-test-writer', () => {
             );
         });
 
+        it('generates filter tests for Worklistv4 app', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+            const projectDir = prepareTestFiles('Worklistv4');
+            fs = await generateOPAFiles(projectDir, {}, fs);
+
+            const firstJourneyContent =
+                fs.dump()['test/test-output/Worklistv4/webapp/test/integration/FirstJourney.js'].contents;
+            expect(firstJourneyContent).not.toContain('iCheckFilterField');
+        });
+
         it('generates filter tests for LROPv4 app', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('LROPv4');

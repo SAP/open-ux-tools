@@ -29,7 +29,8 @@ export async function getSystemQuestions(
                 defaultChoice: systemName,
                 destinationFilters: {
                     odata_abap: true
-                }
+                },
+                hideNewSystem: true
             }
         },
         true

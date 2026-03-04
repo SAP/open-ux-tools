@@ -1,5 +1,18 @@
 # @sap-ux/serve-static-middleware
 
+## 0.4.9
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+
+## 0.4.8
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+
 ## 0.4.7
 
 ### Patch Changes

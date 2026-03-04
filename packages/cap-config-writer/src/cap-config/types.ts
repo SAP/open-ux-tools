@@ -54,4 +54,5 @@ export interface CapProjectSettings {
      */
     enableCdsUi5Plugin?: boolean;
     enableTypescript?: boolean;
+    disableRootPackageJsonUpdates?: boolean;
 }

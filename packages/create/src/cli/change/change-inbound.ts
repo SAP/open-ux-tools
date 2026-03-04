@@ -1,9 +1,15 @@
 import type { Command } from 'commander';
 import { getLogger, traceChanges } from '../../tracing';
-import { ChangeType, generateChange, getPromptsForChangeInbound, getVariant } from '@sap-ux/adp-tooling';
+import {
+    ChangeType,
+    generateChange,
+    getPromptsForChangeInbound,
+    getVariant,
+    isCFEnvironment
+} from '@sap-ux/adp-tooling';
 import type { DescriptorVariantContent } from '@sap-ux/adp-tooling';
 import { promptYUIQuestions } from '../../common';
-import { validateAdpProject, validateCloudAdpProject } from '../../validation';
+import { validateAdpAppType, validateCloudAdpProject } from '../../validation';
 
 /**
  * Add a new sub-command to change the inbound of an adaptation project to the given command.
@@ -14,6 +20,7 @@ export function addChangeInboundCommand(cmd: Command): void {
     cmd.command('inbound [path]')
         .description(
             `Replace the inbound FLP configurations of the base application in an adaptation project.\n
+            This command is not supported for Cloud Foundry projects.\n
 Example:
     \`npx --yes @sap-ux/create@latest change inbound\``
         )
@@ -36,7 +43,11 @@ async function changeInbound(basePath: string, simulate: boolean): Promise<void>
             basePath = process.cwd();
         }
 
-        await validateAdpProject(basePath);
+        await validateAdpAppType(basePath);
+        if (await isCFEnvironment(basePath)) {
+            throw new Error('This command is not supported for Cloud Foundry projects.');
+        }
+
         await validateCloudAdpProject(basePath);
         const variant = await getVariant(basePath);
         const change = variant.content.find(

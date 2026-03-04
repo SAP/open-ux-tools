@@ -7283,10 +7283,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -24178,10 +24178,10 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_addtests_cds_typescript 1`] = `
 Object {
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -47844,10 +47844,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -51344,10 +51344,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -54844,10 +54844,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",

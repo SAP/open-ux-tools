@@ -174,10 +174,14 @@ export async function getButtonGroupsChoices(context: PromptContext, answers: An
     const isInitial = !existingButtonGroups || existingButtonGroups.size === 0;
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.richTextEditorButtonGroups.');
 
-    return BUTTON_GROUP_CONFIGS.map((config) => ({
-        name: t(`choices.${config.name}`) as string,
-        value: config.name,
-        hidden: !isInitial && existingButtonGroups.has(config.name),
-        checked: existingButtonGroups.has(config.name)
-    }));
+    return BUTTON_GROUP_CONFIGS.map((config) => {
+        const name = t(`choices.${config.name}`) as string;
+        return {
+            name: name,
+            value: config.name,
+            hidden: !isInitial && existingButtonGroups.has(config.name),
+            checked: existingButtonGroups.has(config.name),
+            title: name
+        };
+    });
 }

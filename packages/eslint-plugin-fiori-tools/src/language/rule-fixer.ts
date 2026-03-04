@@ -258,8 +258,11 @@ function handleDelete<MessageIds extends string, RuleOptions extends unknown[]>(
     const parentObject = findParentObject(context.sourceCode.ast.body, node);
     const parentMembers = parentObject?.members ?? [];
     const nodeIndex = findNodeIndex(parentMembers, startOffset, endOffset);
+    const isOnlyProperty = nodeIndex !== -1 && parentMembers.length === 1;
+    if (isOnlyProperty) {
+        return fixer.replaceText(parentObject, '{}');
+    }
     const isLastProperty = nodeIndex !== -1 && nodeIndex === parentMembers.length - 1;
-
     const lineStartOffset = findLineStart(sourceCode, startOffset);
 
     if (isLastProperty && nodeIndex > 0) {

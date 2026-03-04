@@ -1,4 +1,4 @@
-// Last content update: Wed Dec 03 2025 11:11:43 GMT+0100 (Central European Standard Time)
+// Last content update: Mon Feb 16 2026 12:18:31 GMT+0100 (Central European Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -96,8 +96,14 @@ export default {
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
             '$AppliesTo': ['EntityContainer'],
-            '@Org.OData.Core.V1.Description':
-                'Service supports the continue on error preference. Supports $batch requests. Services that apply the BatchContinueOnErrorSupported term should also specify the ContinueOnErrorSupported property from the BatchSupport term.'
+            '@Org.OData.Core.V1.Description': 'Service supports $batch requests and the `continue-on-error` preference',
+            '@Org.OData.Core.V1.Revisions': [
+                {
+                    'Kind': 'Deprecated',
+                    'Description':
+                        'Deprecated in favor of the [`ContinueOnErrorSupported`](#BatchSupportType) property from the [`BatchSupport`](#BatchSupport) term'
+                }
+            ]
         },
         'IsolationSupported': {
             '$Kind': 'Term',
@@ -462,7 +468,9 @@ export default {
             'ContinueOnErrorSupported': {
                 '$Type': 'Edm.Boolean',
                 '$DefaultValue': false,
-                '@Org.OData.Core.V1.Description': 'Service supports the continue on error preference'
+                '@Org.OData.Core.V1.Description': 'Service supports the `continue-on-error` preference',
+                '@Org.OData.Core.V1.LongDescription':
+                    'When the client specifies the `continue-on-error` preference, the service applies it\n            by processing all requests according to their dependencies, regardless of the format for the $batch request.'
             },
             'ReferencesInRequestBodiesSupported': {
                 '$Type': 'Edm.Boolean',

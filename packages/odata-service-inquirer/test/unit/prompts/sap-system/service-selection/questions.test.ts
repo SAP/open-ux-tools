@@ -841,7 +841,7 @@ describe('Test new system prompt', () => {
         ]);
     });
 
-    test('Should include value help download prompt when showValueHelpDownloadPrompt is true', async () => {
+    test('Should include value help download prompt when hideValueHelpDownloadPrompt is false', async () => {
         const connectValidator = new ConnectionValidator();
         connectionValidatorMock.validity = { authenticated: true, reachable: true };
 
@@ -849,7 +849,7 @@ describe('Test new system prompt', () => {
             connectValidator,
             promptNamespace,
             undefined,
-            true // showValueHelpDownloadPrompt = true
+            false // hideValueHelpDownloadPrompt = false
         );
 
         const valueHelpPrompt = systemServiceQuestions.find(
@@ -860,7 +860,7 @@ describe('Test new system prompt', () => {
         expect(valueHelpPrompt?.type).toBe('confirm');
     });
 
-    test('Should not include value help download prompt when showValueHelpDownloadPrompt is false', async () => {
+    test('Should not include value help download prompt when hideValueHelpDownloadPrompt is true', async () => {
         const connectValidator = new ConnectionValidator();
         connectionValidatorMock.validity = { authenticated: true, reachable: true };
 
@@ -868,7 +868,7 @@ describe('Test new system prompt', () => {
             connectValidator,
             promptNamespace,
             undefined,
-            false // showValueHelpDownloadPrompt = false
+            true // hideValueHelpDownloadPrompt = true
         );
 
         const valueHelpPrompt = systemServiceQuestions.find(

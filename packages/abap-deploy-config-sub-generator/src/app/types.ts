@@ -5,6 +5,7 @@ import type {
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ConnectedSystem } from '@sap-ux/deploy-config-generator-shared';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
+import type { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 export interface AbapDeployConfigOptions extends AbapDeployConfigAnswersInternal {
     /**
@@ -55,6 +56,10 @@ export interface AbapDeployConfigOptions extends AbapDeployConfigAnswersInternal
      * Prompts options for the ABAP deploy config inquirer
      */
     promptOptions?: AbapDeployConfigPromptOptions;
+    /**
+     * The type of the adaptation project.
+     */
+    adpProjectType?: AdaptationProjectType;
 }
 
 export enum DeployProjectType {

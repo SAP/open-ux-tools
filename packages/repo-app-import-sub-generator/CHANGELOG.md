@@ -1,5 +1,579 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.269
+
+### Patch Changes
+
+- Updated dependencies [2302698]
+- Updated dependencies [96e9b9e]
+    - @sap-ux/inquirer-common@0.11.18
+    - @sap-ux/odata-service-inquirer@2.19.4
+    - @sap-ux/axios-extension@1.25.19
+    - @sap-ux/fiori-elements-writer@2.8.88
+    - @sap-ux/fiori-generator-shared@0.13.82
+    - @sap-ux/system-access@0.6.61
+    - @sap-ux/abap-deploy-config-writer@0.2.86
+
+## 0.3.268
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-writer@0.2.85
+- @sap-ux/fiori-elements-writer@2.8.87
+- @sap-ux/launch-config@0.10.72
+- @sap-ux/project-access@1.35.11
+- @sap-ux/odata-service-inquirer@2.19.3
+- @sap-ux/inquirer-common@0.11.17
+- @sap-ux/axios-extension@1.25.18
+- @sap-ux/fiori-generator-shared@0.13.82
+- @sap-ux/project-input-validator@0.6.65
+- @sap-ux/system-access@0.6.60
+
+## 0.3.267
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.86
+- @sap-ux/odata-service-inquirer@2.19.2
+
+## 0.3.266
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.85
+- @sap-ux/odata-service-inquirer@2.19.2
+
+## 0.3.265
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.84
+- @sap-ux/odata-service-inquirer@2.19.2
+
+## 0.3.264
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.83
+- @sap-ux/odata-service-inquirer@2.19.2
+
+## 0.3.263
+
+### Patch Changes
+
+- Updated dependencies [4af92b5]
+    - @sap-ux/axios-extension@1.25.18
+    - @sap-ux/fiori-generator-shared@0.13.81
+    - @sap-ux/odata-service-inquirer@2.19.2
+    - @sap-ux/system-access@0.6.60
+    - @sap-ux/fiori-elements-writer@2.8.82
+    - @sap-ux/abap-deploy-config-writer@0.2.84
+
+## 0.3.262
+
+### Patch Changes
+
+- Updated dependencies [bda1120]
+    - @sap-ux/odata-service-inquirer@2.19.1
+
+## 0.3.261
+
+### Patch Changes
+
+- Updated dependencies [698fd9e]
+    - @sap-ux/odata-service-inquirer@2.19.0
+
+## 0.3.260
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/odata-service-inquirer@2.18.13
+    - @sap-ux/axios-extension@1.25.17
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/fiori-elements-writer@2.8.81
+    - @sap-ux/inquirer-common@0.11.16
+    - @sap-ux/fiori-generator-shared@0.13.81
+    - @sap-ux/system-access@0.6.59
+    - @sap-ux/abap-deploy-config-writer@0.2.83
+    - @sap-ux/launch-config@0.10.71
+    - @sap-ux/project-input-validator@0.6.64
+
+## 0.3.259
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/project-input-validator@0.6.63
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/odata-service-inquirer@2.18.12
+    - @sap-ux/fiori-elements-writer@2.8.80
+    - @sap-ux/inquirer-common@0.11.15
+    - @sap-ux/launch-config@0.10.70
+    - @sap-ux/store@1.5.8
+    - @sap-ux/system-access@0.6.58
+    - @sap-ux/abap-deploy-config-writer@0.2.82
+
+## 0.3.258
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.79
+- @sap-ux/odata-service-inquirer@2.18.11
+
+## 0.3.257
+
+### Patch Changes
+
+- Updated dependencies [fd8de2b]
+- Updated dependencies [c043712]
+- Updated dependencies [b96de78]
+    - @sap-ux/launch-config@0.10.69
+    - @sap-ux/axios-extension@1.25.16
+    - @sap-ux/project-input-validator@0.6.62
+    - @sap-ux/project-access@1.35.9
+    - @sap-ux/fiori-generator-shared@0.13.79
+    - @sap-ux/odata-service-inquirer@2.18.11
+    - @sap-ux/system-access@0.6.57
+    - @sap-ux/abap-deploy-config-writer@0.2.81
+    - @sap-ux/fiori-elements-writer@2.8.78
+    - @sap-ux/inquirer-common@0.11.14
+
+## 0.3.256
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/abap-deploy-config-writer@0.2.80
+    - @sap-ux/axios-extension@1.25.15
+    - @sap-ux/fiori-elements-writer@2.8.77
+    - @sap-ux/fiori-generator-shared@0.13.78
+    - @sap-ux/inquirer-common@0.11.13
+    - @sap-ux/launch-config@0.10.68
+    - @sap-ux/odata-service-inquirer@2.18.10
+    - @sap-ux/project-input-validator@0.6.61
+    - @sap-ux/system-access@0.6.56
+
+## 0.3.255
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-writer@0.2.79
+- @sap-ux/fiori-elements-writer@2.8.76
+- @sap-ux/launch-config@0.10.67
+- @sap-ux/project-access@1.35.7
+- @sap-ux/odata-service-inquirer@2.18.9
+- @sap-ux/inquirer-common@0.11.12
+- @sap-ux/axios-extension@1.25.15
+- @sap-ux/fiori-generator-shared@0.13.77
+- @sap-ux/project-input-validator@0.6.60
+- @sap-ux/system-access@0.6.56
+
+## 0.3.254
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+- Updated dependencies [ff634b0]
+- Updated dependencies [d588c26]
+    - @sap-ux/inquirer-common@0.11.11
+    - @sap-ux/odata-service-inquirer@2.18.8
+    - @sap-ux/feature-toggle@0.3.7
+    - @sap-ux/system-access@0.6.56
+    - @sap-ux/fiori-elements-writer@2.8.75
+    - @sap-ux/axios-extension@1.25.15
+    - @sap-ux/abap-deploy-config-writer@0.2.78
+    - @sap-ux/fiori-generator-shared@0.13.76
+
+## 0.3.253
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/fiori-elements-writer@2.8.74
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/inquirer-common@0.11.10
+    - @sap-ux/launch-config@0.10.66
+    - @sap-ux/odata-service-inquirer@2.18.7
+    - @sap-ux/project-input-validator@0.6.59
+    - @sap-ux/store@1.5.7
+    - @sap-ux/system-access@0.6.55
+    - @sap-ux/abap-deploy-config-writer@0.2.77
+
+## 0.3.252
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/abap-deploy-config-writer@0.2.76
+    - @sap-ux/fiori-elements-writer@2.8.73
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-info@0.13.13
+    - @sap-ux/odata-service-inquirer@2.18.6
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/launch-config@0.10.65
+    - @sap-ux/project-input-validator@0.6.58
+    - @sap-ux/system-access@0.6.54
+
+## 0.3.251
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/odata-service-inquirer@2.18.5
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/fiori-elements-writer@2.8.72
+    - @sap-ux/inquirer-common@0.11.8
+    - @sap-ux/fiori-generator-shared@0.13.74
+    - @sap-ux/system-access@0.6.54
+    - @sap-ux/abap-deploy-config-writer@0.2.75
+    - @sap-ux/launch-config@0.10.64
+    - @sap-ux/project-input-validator@0.6.57
+
+## 0.3.250
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.71
+- @sap-ux/odata-service-inquirer@2.18.4
+
+## 0.3.249
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/odata-service-inquirer@2.18.4
+    - @sap-ux/system-access@0.6.53
+    - @sap-ux/fiori-elements-writer@2.8.70
+    - @sap-ux/abap-deploy-config-writer@0.2.74
+
+## 0.3.248
+
+### Patch Changes
+
+- Updated dependencies [bda7356]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/odata-service-inquirer@2.18.3
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/abap-deploy-config-writer@0.2.73
+    - @sap-ux/fiori-elements-writer@2.8.69
+    - @sap-ux/launch-config@0.10.63
+    - @sap-ux/project-access@1.35.4
+    - @sap-ux/inquirer-common@0.11.6
+    - @sap-ux/project-input-validator@0.6.56
+
+## 0.3.247
+
+### Patch Changes
+
+- Updated dependencies [1a922e7]
+    - @sap-ux/fiori-elements-writer@2.8.68
+    - @sap-ux/odata-service-inquirer@2.18.2
+
+## 0.3.246
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/fiori-generator-shared@0.13.71
+    - @sap-ux/odata-service-inquirer@2.18.2
+    - @sap-ux/system-access@0.6.51
+    - @sap-ux/abap-deploy-config-writer@0.2.72
+    - @sap-ux/inquirer-common@0.11.5
+    - @sap-ux/fiori-elements-writer@2.8.67
+
+## 0.3.245
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/abap-deploy-config-writer@0.2.71
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/fiori-elements-writer@2.8.66
+    - @sap-ux/fiori-generator-shared@0.13.70
+    - @sap-ux/inquirer-common@0.11.4
+    - @sap-ux/launch-config@0.10.62
+    - @sap-ux/odata-service-inquirer@2.18.1
+    - @sap-ux/project-input-validator@0.6.55
+    - @sap-ux/system-access@0.6.50
+
+## 0.3.244
+
+### Patch Changes
+
+- Updated dependencies [bb5eea0]
+    - @sap-ux/odata-service-inquirer@2.18.0
+
+## 0.3.243
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/abap-deploy-config-writer@0.2.70
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/fiori-elements-writer@2.8.65
+    - @sap-ux/fiori-generator-shared@0.13.69
+    - @sap-ux/inquirer-common@0.11.3
+    - @sap-ux/launch-config@0.10.61
+    - @sap-ux/odata-service-inquirer@2.17.3
+    - @sap-ux/project-input-validator@0.6.54
+    - @sap-ux/system-access@0.6.50
+
+## 0.3.242
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/odata-service-inquirer@2.17.2
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/inquirer-common@0.11.2
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/ui5-info@0.13.12
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/system-access@0.6.50
+    - @sap-ux/abap-deploy-config-writer@0.2.69
+    - @sap-ux/fiori-elements-writer@2.8.64
+    - @sap-ux/launch-config@0.10.60
+    - @sap-ux/project-access@1.35.1
+    - @sap-ux/project-input-validator@0.6.53
+
+## 0.3.241
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.63
+- @sap-ux/odata-service-inquirer@2.17.1
+
+## 0.3.240
+
+### Patch Changes
+
+- Updated dependencies [2bffca7]
+    - @sap-ux/fiori-elements-writer@2.8.62
+    - @sap-ux/odata-service-inquirer@2.17.1
+
+## 0.3.239
+
+### Patch Changes
+
+- Updated dependencies [1ad56d1]
+    - @sap-ux/odata-service-inquirer@2.17.1
+    - @sap-ux/inquirer-common@0.11.1
+
+## 0.3.238
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/odata-service-inquirer@2.17.0
+    - @sap-ux/inquirer-common@0.11.0
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/abap-deploy-config-writer@0.2.68
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/fiori-elements-writer@2.8.61
+    - @sap-ux/fiori-generator-shared@0.13.67
+    - @sap-ux/launch-config@0.10.59
+    - @sap-ux/project-input-validator@0.6.52
+    - @sap-ux/system-access@0.6.49
+
+## 0.3.237
+
+### Patch Changes
+
+- Updated dependencies [14e914a]
+    - @sap-ux/odata-service-inquirer@2.16.11
+    - @sap-ux/fiori-elements-writer@2.8.60
+
+## 0.3.236
+
+### Patch Changes
+
+- Updated dependencies [722266d]
+    - @sap-ux/odata-service-inquirer@2.16.10
+
+## 0.3.235
+
+### Patch Changes
+
+- Updated dependencies [ac865af]
+    - @sap-ux/odata-service-inquirer@2.16.9
+
+## 0.3.234
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/abap-deploy-config-writer@0.2.67
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/fiori-elements-writer@2.8.60
+    - @sap-ux/fiori-generator-shared@0.13.66
+    - @sap-ux/launch-config@0.10.58
+    - @sap-ux/odata-service-inquirer@2.16.8
+    - @sap-ux/project-input-validator@0.6.51
+    - @sap-ux/system-access@0.6.49
+    - @sap-ux/inquirer-common@0.10.26
+
+## 0.3.233
+
+### Patch Changes
+
+- Updated dependencies [38e215e]
+- Updated dependencies [9a96150]
+    - @sap-ux/store@1.5.5
+    - @sap-ux/odata-service-inquirer@2.16.7
+    - @sap-ux/fiori-generator-shared@0.13.65
+    - @sap-ux/system-access@0.6.49
+    - @sap-ux/abap-deploy-config-writer@0.2.66
+    - @sap-ux/inquirer-common@0.10.25
+    - @sap-ux/fiori-elements-writer@2.8.59
+
+## 0.3.232
+
+### Patch Changes
+
+- Updated dependencies [83e3b70]
+    - @sap-ux/store@1.5.4
+    - @sap-ux/fiori-generator-shared@0.13.64
+    - @sap-ux/odata-service-inquirer@2.16.6
+    - @sap-ux/system-access@0.6.48
+    - @sap-ux/abap-deploy-config-writer@0.2.65
+    - @sap-ux/inquirer-common@0.10.24
+    - @sap-ux/fiori-elements-writer@2.8.58
+
+## 0.3.231
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/abap-deploy-config-writer@0.2.64
+    - @sap-ux/fiori-elements-writer@2.8.57
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/inquirer-common@0.10.23
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-info@0.13.11
+    - @sap-ux/odata-service-inquirer@2.16.5
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/launch-config@0.10.57
+    - @sap-ux/project-input-validator@0.6.50
+    - @sap-ux/system-access@0.6.47
+
+## 0.3.230
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/odata-service-inquirer@2.16.4
+    - @sap-ux/inquirer-common@0.10.22
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/system-access@0.6.47
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/fiori-elements-writer@2.8.56
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/abap-deploy-config-writer@0.2.63
+    - @sap-ux/fiori-generator-shared@0.13.62
+
+## 0.3.229
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.55
+- @sap-ux/odata-service-inquirer@2.16.3
+
+## 0.3.228
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.54
+- @sap-ux/odata-service-inquirer@2.16.3
+
+## 0.3.227
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/axios-extension@1.25.9
+    - @sap-ux/odata-service-inquirer@2.16.3
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-generator-shared@0.13.61
+    - @sap-ux/system-access@0.6.46
+    - @sap-ux/fiori-elements-writer@2.8.53
+    - @sap-ux/inquirer-common@0.10.21
+    - @sap-ux/abap-deploy-config-writer@0.2.62
+    - @sap-ux/launch-config@0.10.56
+    - @sap-ux/project-input-validator@0.6.49
+
+## 0.3.226
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/abap-deploy-config-writer@0.2.61
+    - @sap-ux/axios-extension@1.25.8
+    - @sap-ux/fiori-elements-writer@2.8.52
+    - @sap-ux/inquirer-common@0.10.20
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/fiori-generator-shared@0.13.60
+    - @sap-ux/odata-service-inquirer@2.16.2
+    - @sap-ux/system-access@0.6.45
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/launch-config@0.10.55
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/store@1.5.3
+    - @sap-ux/ui5-info@0.13.10
+    - @sap-ux/project-input-validator@0.6.48
+
+## 0.3.225
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.51
+- @sap-ux/odata-service-inquirer@2.16.1
+
+## 0.3.224
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/ui5-info@0.13.9
+    - @sap-ux/fiori-elements-writer@2.8.50
+    - @sap-ux/inquirer-common@0.10.19
+    - @sap-ux/odata-service-inquirer@2.16.1
+    - @sap-ux/abap-deploy-config-writer@0.2.60
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/fiori-generator-shared@0.13.59
+    - @sap-ux/launch-config@0.10.54
+    - @sap-ux/project-input-validator@0.6.47
+    - @sap-ux/system-access@0.6.44
+
+## 0.3.223
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.49
+- @sap-ux/odata-service-inquirer@2.16.0
+
 ## 0.3.222
 
 ### Patch Changes

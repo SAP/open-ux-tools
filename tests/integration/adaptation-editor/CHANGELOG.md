@@ -1,5 +1,157 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.60
+
+### Patch Changes
+
+- 451b2f0: fix(deps): update dependency @playwright/test to v1.58.2
+- Updated dependencies [451b2f0]
+    - @sap-ux-private/playwright@0.2.10
+
+## 0.0.59
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+
+## 0.0.58
+
+### Patch Changes
+
+- Updated dependencies [8017bd3]
+    - @sap-ux-private/playwright@0.2.9
+
+## 0.0.57
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+
+## 0.0.56
+
+### Patch Changes
+
+- d732237: fix(deps): update dependency jest-dev-server to v10.1.4
+- Updated dependencies [9072d52]
+    - @sap-ux-private/playwright@0.2.8
+    - @sap-ux/project-access@1.35.9
+
+## 0.0.55
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+
+## 0.0.54
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+
+## 0.0.53
+
+### Patch Changes
+
+- 97735d2: fix(deps): update dependency portfinder to v1.0.38
+- Updated dependencies [97735d2]
+    - @sap-ux-private/playwright@0.2.7
+
+## 0.0.52
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-info@0.13.13
+
+## 0.0.51
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+
+## 0.0.50
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+
+## 0.0.49
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+
+## 0.0.48
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+
+## 0.0.47
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-info@0.13.12
+    - @sap-ux/project-access@1.35.1
+
+## 0.0.46
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+
+## 0.0.45
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+
+## 0.0.44
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-info@0.13.11
+
+## 0.0.43
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+
+## 0.0.42
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/yaml@0.17.4
+    - @sap-ux-private/playwright@0.2.6
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/ui5-info@0.13.10
+
+## 0.0.41
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/ui5-info@0.13.9
+
 ## 0.0.40
 
 ### Patch Changes

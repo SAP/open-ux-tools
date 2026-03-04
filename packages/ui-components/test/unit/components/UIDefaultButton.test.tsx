@@ -31,7 +31,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-button-background)",
               "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 2,
+              "borderRadius": 4,
               "color": "var(--vscode-button-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -112,7 +112,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-button-background)",
               "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 2,
+              "borderRadius": 4,
               "color": "var(--vscode-button-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -193,7 +193,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-button-secondaryBackground)",
               "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 2,
+              "borderRadius": 4,
               "color": "var(--vscode-button-secondaryForeground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -274,7 +274,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-button-background)",
               "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 2,
+              "borderRadius": 4,
               "color": "var(--vscode-button-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -355,7 +355,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-errorForeground)",
               "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 2,
+              "borderRadius": 4,
               "color": "var(--vscode-button-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -436,7 +436,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-errorForeground)",
               "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 2,
+              "borderRadius": 4,
               "color": "var(--vscode-button-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -515,7 +515,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "transparent",
               "borderColor": "transparent",
-              "borderRadius": 2,
+              "borderRadius": 4,
               "color": "var(--vscode-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -597,7 +597,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "transparent",
               "borderColor": "transparent",
-              "borderRadius": 2,
+              "borderRadius": 4,
               "color": "var(--vscode-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,

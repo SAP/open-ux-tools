@@ -138,7 +138,7 @@ class MetadataConverter {
         const oDataVersion = this.metadataService.ODataVersion;
         if (targetKinds.includes('FunctionImport') || targetKinds.includes('ActionImport')) {
             // remark: AVT fills it differently in parseFunctionImport() - but then annotations are not picked up in convertTypes()
-            if (oDataVersion === '4.0') {
+            if (oDataVersion?.startsWith('4')) {
                 const actionImport: RawActionImport = {
                     _type: 'ActionImport',
                     name: element.name,
