@@ -2095,8 +2095,8 @@ importers:
         specifier: workspace:*
         version: link:../cap-config-writer
       '@sap-ux/edmx-parser':
-        specifier: 0.9.8
-        version: 0.9.8
+        specifier: 0.10.0
+        version: 0.10.0
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2514,8 +2514,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.8
-        version: 0.9.8
+        specifier: 0.10.0
+        version: 0.10.0
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2872,8 +2872,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.8
-        version: 0.9.8
+        specifier: 0.10.0
+        version: 0.10.0
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -3178,8 +3178,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.8
-        version: 0.9.8
+        specifier: 0.10.0
+        version: 0.10.0
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -3269,8 +3269,8 @@ importers:
         specifier: 0.10.19
         version: 0.10.19
       '@sap-ux/edmx-parser':
-        specifier: 0.9.8
-        version: 0.9.8
+        specifier: 0.10.0
+        version: 0.10.0
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
@@ -8262,6 +8262,9 @@ packages:
 
   '@sap-ux/cds-odata-annotation-converter@0.7.1':
     resolution: {integrity: sha512-M3TXSCl9u55WYF0I6d1w+kP9vgFEmIOpADOGlymb96RfWzYRI6+rvUYUsaZ1bJpBGiDrq7oF7Nec+7bSD90m9w==}
+
+  '@sap-ux/edmx-parser@0.10.0':
+    resolution: {integrity: sha512-kjOHHpI6ymxb3BLLUKMLpYwhTFC5d0KEGw+xzxNmI7YPnSmY5Qbb5b1Io/LV35jFgyUeRZYNPsxg1PVtYnTdhw==}
 
   '@sap-ux/edmx-parser@0.9.8':
     resolution: {integrity: sha512-GFyrixCHRvPVN07RjJYMQJE9xY2J3EpLuOsOXyAhuAoePqBjbAFuE+lJyyJMmJK3oltDBVDB+dqyA0eMSeCD/A==}
@@ -22900,6 +22903,10 @@ snapshots:
       - '@sap-ux/odata-annotation-core-types'
       - '@sap-ux/project-access'
       - typescript
+
+  '@sap-ux/edmx-parser@0.10.0':
+    dependencies:
+      xml-js: 1.6.11
 
   '@sap-ux/edmx-parser@0.9.8':
     dependencies:
