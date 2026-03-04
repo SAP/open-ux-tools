@@ -6,7 +6,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
 import { WebIDEUsage as WebIDEUsageType, type Destination } from '@sap-ux/btp-utils';
 import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
-import { info } from 'console';
+import { info } from 'node:console';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),

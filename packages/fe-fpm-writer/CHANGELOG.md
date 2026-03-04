@@ -1,5 +1,33 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.0
+
+### Minor Changes
+
+- b1c3f49: Support Custom Action Building Blocks
+
+### Patch Changes
+
+- 2b276ec: chore: address minor post-merge comments for generateControlIdsForGeneratedSnippets
+
+## 0.42.21
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.25
+
+## 0.42.20
+
+### Patch Changes
+
+- efc4ec1: Ensure generated fragments and views use stable control IDs in their initial snippets.
+
+## 0.42.19
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+
 ## 0.42.18
 
 ### Patch Changes

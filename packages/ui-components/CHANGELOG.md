@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.27.10
+
+### Patch Changes
+
+- 88a1f57: fix(deps): update dependency storybook to v8.6.17 [security]
+
 ## 1.27.9
 
 ### Patch Changes

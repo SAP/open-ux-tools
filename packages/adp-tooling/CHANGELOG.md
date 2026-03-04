@@ -1,5 +1,21 @@
 # @sap-ux/adp-tooling
 
+## 0.18.79
+
+### Patch Changes
+
+- 2d42592: fix: Various fixes for Adaptation Project for Cloud Foundry scenario
+
+## 0.18.78
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+- Updated dependencies [4af92b5]
+    - @sap-ux/axios-extension@1.25.18
+    - @sap-ux/odata-service-writer@0.29.28
+    - @sap-ux/system-access@0.6.60
+
 ## 0.18.77
 
 ### Patch Changes
