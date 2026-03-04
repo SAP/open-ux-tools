@@ -82,7 +82,7 @@
         "os-name": "4.0.1",
         "ts-node": "10.9.2",
         "zod": "4.3.6",
-        "@sap-ai-sdk/foundation-models": "2.3.0",
+        "@sap-ai-sdk/foundation-models": "2.8.0",
         "@sap-ai-sdk/langchain": "2.8.0",
         "promptfoo": "0.120.25",
         "@langchain/mcp-adapters": "1.1.3",
