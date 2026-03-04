@@ -1,5 +1,23 @@
 # @sap-ux/control-property-editor
 
+## 0.7.18
+
+### Patch Changes
+
+- 4f7b796: fix(deps): update dependency ts-jest to v29.4.6
+
+## 0.7.17
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
+## 0.7.16
+
+### Patch Changes
+
+- e19516b: fix(deps): update dependency ts-import-plugin to v3
+
 ## 0.7.15
 
 ### Patch Changes

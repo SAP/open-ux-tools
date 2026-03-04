@@ -1,5 +1,22 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.5.8
+
+### Patch Changes
+
+- 88a1f57: fix(deps): update dependency storybook to v8.6.17 [security]
+- Updated dependencies [88a1f57]
+    - @sap-ux/ui-components@1.27.10
+    - @sap-ux/ui-prompting@0.6.8
+
+## 0.5.7
+
+### Patch Changes
+
+- Updated dependencies [4e6c4d5]
+    - @sap-ux/ui-components@1.27.9
+    - @sap-ux/ui-prompting@0.6.7
+
 ## 0.5.6
 
 ### Patch Changes

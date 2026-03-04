@@ -1,5 +1,27 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.37
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.36
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.35
+
+### Patch Changes
+
+- Updated dependencies [6c993f3]
+    - @sap-ux/store@1.5.8
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
 ## 0.6.34
 
 ### Patch Changes

@@ -1,5 +1,43 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.7.12
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+- Updated dependencies [4af92b5]
+    - @sap-ux/axios-extension@1.25.18
+    - @sap-ux/fiori-generator-shared@0.13.81
+    - @sap-ux/system-access@0.6.60
+
+## 1.7.11
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/axios-extension@1.25.17
+    - @sap-ux/inquirer-common@0.11.16
+    - @sap-ux/fiori-generator-shared@0.13.81
+    - @sap-ux/system-access@0.6.59
+
+## 1.7.10
+
+### Patch Changes
+
+- 0e2d686: Improve package validation message for $TMP with lowercase warning
+
+## 1.7.9
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/inquirer-common@0.11.15
+    - @sap-ux/store@1.5.8
+    - @sap-ux/system-access@0.6.58
+    - @sap-ux/ui5-config@0.29.19
+
 ## 1.7.8
 
 ### Patch Changes

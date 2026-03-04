@@ -1,5 +1,23 @@
 # sap-ux-sap-systems-ext
 
+## 0.3.9
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+
+## 0.3.8
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
+## 0.3.7
+
+### Patch Changes
+
+- 89cfeaf: correct error handling and confirmation prompt text
+
 ## 0.3.6
 
 ### Patch Changes

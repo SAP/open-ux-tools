@@ -1,5 +1,52 @@
 # @sap-ux/adp-tooling
 
+## 0.18.79
+
+### Patch Changes
+
+- 2d42592: fix: Various fixes for Adaptation Project for Cloud Foundry scenario
+
+## 0.18.78
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+- Updated dependencies [4af92b5]
+    - @sap-ux/axios-extension@1.25.18
+    - @sap-ux/odata-service-writer@0.29.28
+    - @sap-ux/system-access@0.6.60
+
+## 0.18.77
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/odata-service-writer@0.29.28
+    - @sap-ux/axios-extension@1.25.17
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/inquirer-common@0.11.16
+    - @sap-ux/system-access@0.6.59
+    - @sap-ux/project-input-validator@0.6.64
+
+## 0.18.76
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/project-input-validator@0.6.63
+    - @sap-ux/odata-service-writer@0.29.27
+    - @sap-ux/inquirer-common@0.11.15
+    - @sap-ux/store@1.5.8
+    - @sap-ux/system-access@0.6.58
+    - @sap-ux/ui5-config@0.29.19
+
+## 0.18.75
+
+### Patch Changes
+
+- ed1399d: Fix: Change custom column creation in v4 from addXML to appDescr change
+
 ## 0.18.74
 
 ### Patch Changes

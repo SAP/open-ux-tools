@@ -8,7 +8,7 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest, Ui5RoutingTarget, Ui5TargetSettings } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, extendJSON } from '../common/file';
+import { copyTpl, extendJSON, type IdGeneratorFunction, createIdGenerator } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { getManifest } from '../common/utils';
 
@@ -51,9 +51,16 @@ function mergeViews(config: CustomView & Partial<InternalCustomView>, manifest: 
  * @param {CustomView} data - a custom view configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
+ * @param {IdGeneratorFunction} generateId - Function to generate unique IDs for the building block elements.
  * @returns enhanced configuration
  */
-function enhanceConfig(fs: Editor, data: CustomView, manifestPath: string, manifest: Manifest): InternalCustomView {
+function enhanceConfig(
+    fs: Editor,
+    data: CustomView,
+    manifestPath: string,
+    manifest: Manifest,
+    generateId: IdGeneratorFunction
+): InternalCustomView {
     const config: CustomView & Partial<InternalCustomView> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
 
@@ -72,7 +79,7 @@ function enhanceConfig(fs: Editor, data: CustomView, manifestPath: string, manif
     if (typeof config.control === 'string') {
         config.content = config.control;
     } else {
-        config.content = getDefaultFragmentContent(config.name, config.eventHandler, true);
+        config.content = getDefaultFragmentContent(config.name, generateId, config.eventHandler, true);
     }
 
     return config as InternalCustomView;
@@ -88,15 +95,14 @@ function enhanceConfig(fs: Editor, data: CustomView, manifestPath: string, manif
  */
 export async function generateCustomView(basePath: string, customView: CustomView, fs?: Editor): Promise<Editor> {
     validateVersion(customView.minUI5Version);
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     await validateBasePath(basePath, fs);
 
+    const fnGenerateId = await createIdGenerator(basePath, fs);
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     // merge with defaults
-    const completeView = enhanceConfig(fs, customView, manifestPath, manifest);
+    const completeView = enhanceConfig(fs, customView, manifestPath, manifest, fnGenerateId);
 
     // enhance manifest with view definition
     const filledTemplate = render(fs.read(getTemplatePath('view/manifest.json')), completeView, {});
@@ -110,9 +116,9 @@ export async function generateCustomView(basePath: string, customView: CustomVie
     if (customView.viewUpdate !== false) {
         const viewPath = join(completeView.path, `${completeView.name}.fragment.xml`);
         if (completeView.control === true) {
-            copyTpl(fs, getTemplatePath('view/ext/CustomViewWithTable.xml'), viewPath, completeView);
+            copyTpl(fs, getTemplatePath('view/ext/CustomViewWithTable.xml'), viewPath, completeView, fnGenerateId);
         } else if (!fs.exists(viewPath)) {
-            copyTpl(fs, getTemplatePath('common/Fragment.xml'), viewPath, completeView);
+            copyTpl(fs, getTemplatePath('common/Fragment.xml'), viewPath, completeView, fnGenerateId);
         }
     }
 

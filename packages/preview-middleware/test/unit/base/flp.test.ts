@@ -26,7 +26,9 @@ import connect = require('connect');
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(process.cwd()));
-jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+const getProjectTypeMock = jest
+    .spyOn(projectAccess, 'getProjectType')
+    .mockImplementation(() => Promise.resolve('EDMXBackend'));
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -918,13 +920,20 @@ describe('FlpSandbox', () => {
                 }
             ];
             const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const filePath = join(webappPath, 'i18n', 'i18n.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedFilePath = join(tmpdir(), 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedFilePath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
+                        value: 'new Entry'
+                    })
+                ])
+            );
         });
         test('should handle string i18n path', async () => {
             const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
@@ -932,12 +941,20 @@ describe('FlpSandbox', () => {
             manifest['sap.app'].i18n = 'i18n/custom.properties';
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'custom_de.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedPath = join(tmpdir(), 'i18n', 'custom_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'HELLO',
+                        value: 'Hello World'
+                    })
+                ])
+            );
         });
 
         test('should handle bundleUrl with supported and fallback locales', async () => {
@@ -951,12 +968,20 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
 
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'i18n_de.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'GREETING',
+                        value: 'Hallo Welt'
+                    })
+                ])
+            );
         });
 
         test('should reject unsupported locale', async () => {
@@ -982,12 +1007,139 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
 
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'i18n.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'HELLO',
+                        value: 'Hello World'
+                    })
+                ])
+            );
+        });
+    });
+
+    describe('router with enableCardGenerator for CAP projects', () => {
+        let server!: SuperTest<Test>;
+        const webappPath = join(tmpdir(), 'webapp');
+        const mockCAPUtils = {
+            getProject() {
+                return {
+                    getSourcePath: () => webappPath
+                };
+            }
+        } as unknown as MiddlewareUtils;
+        const mockConfig = {
+            editors: {
+                cardGenerator: {
+                    path: '/test/flpCardGeneratorSandbox.html'
+                }
+            }
+        };
+
+        let mockFsPromisesWriteFile: jest.Mock;
+        let flp: FlpSandbox;
+
+        const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
+            // Set project type to CAPNodejs before initializing
+            getProjectTypeMock.mockImplementation(() => Promise.resolve('CAPNodejs'));
+            flp = new FlpSandbox(mockConfig, mockProject, mockCAPUtils, logger);
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = supertest(app);
+        };
+
+        beforeEach(() => {
+            mockFsPromisesWriteFile = jest.fn();
+            promises.writeFile = mockFsPromisesWriteFile;
+            createPropertiesI18nEntriesMock.mockClear();
+        });
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+            // Reset to default project type
+            getProjectTypeMock.mockImplementation(() => Promise.resolve('EDMXBackend'));
+        });
+
+        test('POST /cards/store with payload for CAP project (CAPNodejs)', async () => {
+            await setupMiddleware(mockConfig as MiddlewareConfig);
+            const projectAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess').mockImplementation(() => {
+                return Promise.resolve({
+                    updateManifestJSON: () => {
+                        return Promise.resolve({});
+                    }
+                }) as unknown as Promise<ApplicationAccess>;
+            });
+            const payload = {
+                floorplan: 'ObjectPage',
+                localPath: 'cards/op/op1',
+                fileName: 'manifest.json',
+                manifests: [
+                    {
+                        type: 'integration',
+                        manifest: {
+                            '_version': '1.15.0',
+                            'sap.card': {
+                                'type': 'Object',
+                                'header': {
+                                    'type': 'Numeric',
+                                    'title': 'Card title'
+                                }
+                            },
+                            'sap.insights': {
+                                'versions': {
+                                    'ui5': '1.120.1-202403281300'
+                                },
+                                'templateName': 'ObjectPage',
+                                'parentAppId': 'sales.order.wd20',
+                                'cardType': 'DT'
+                            }
+                        },
+                        default: true,
+                        entitySet: 'op1'
+                    }
+                ]
+            };
+            const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload);
+            expect(projectAccessMock).toHaveBeenCalled();
+            // For CAP projects, createApplicationAccess should be called with the parent of webappPath
+            expect(projectAccessMock).toHaveBeenCalledWith(path.dirname(webappPath), expect.anything());
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('Files were updated/created');
+        });
+
+        test('POST /editor/i18n with payload for CAP project (CAPNodejs)', async () => {
+            await setupMiddleware(mockConfig as MiddlewareConfig);
+            const newI18nEntry = [
+                {
+                    'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
+                    'value': 'new Entry'
+                }
+            ];
+            const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
+            // For CAP projects, the webappPath should be used directly from getSourcePath()
+            const expectedFilePath = join(webappPath, 'i18n', 'i18n.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedFilePath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
+                        value: 'new Entry'
+                    })
+                ])
+            );
         });
     });
 

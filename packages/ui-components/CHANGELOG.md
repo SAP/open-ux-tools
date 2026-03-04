@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.27.10
+
+### Patch Changes
+
+- 88a1f57: fix(deps): update dependency storybook to v8.6.17 [security]
+
+## 1.27.9
+
+### Patch Changes
+
+- 4e6c4d5: Update of Icons - `SidePanelRight`, `Edit`, `Trash`, `Add`, `Filter`
+
 ## 1.27.8
 
 ### Patch Changes

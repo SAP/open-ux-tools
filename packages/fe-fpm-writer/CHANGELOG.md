@@ -1,5 +1,56 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.0
+
+### Minor Changes
+
+- b1c3f49: Support Custom Action Building Blocks
+
+### Patch Changes
+
+- 2b276ec: chore: address minor post-merge comments for generateControlIdsForGeneratedSnippets
+
+## 0.42.21
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.25
+
+## 0.42.20
+
+### Patch Changes
+
+- efc4ec1: Ensure generated fragments and views use stable control IDs in their initial snippets.
+
+## 0.42.19
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+
+## 0.42.18
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/fiori-annotation-api@0.9.24
+
+## 0.42.17
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/fiori-annotation-api@0.9.23
+
+## 0.42.16
+
+### Patch Changes
+
+- 18c6932: fix: generate custom page files in ext/view folder
+
+    When creating a custom page application via app-gen in CAP projects, the Main.controller.js and Main.view.xml files are now correctly generated in the webapp/ext/view/ folder instead of webapp/ext/[pageName]/ (e.g., ext/main). This aligns the behavior with Page Map and follows Fiori extension folder structure conventions.
+
 ## 0.42.15
 
 ### Patch Changes
