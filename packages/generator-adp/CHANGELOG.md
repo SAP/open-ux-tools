@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.9.18
+
+### Patch Changes
+
+- b0bffc9: feat(generator-adp): Developer taking over Key-User changes using JSON input
+
 ## 0.9.17
 
 ### Patch Changes
