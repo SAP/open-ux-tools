@@ -1,4 +1,4 @@
-import { join } from 'node:path';
+import { join, posix } from 'node:path';
 import * as xpath from 'xpath';
 import type { Editor } from 'mem-fs-editor';
 import {
@@ -8,7 +8,9 @@ import {
     type CustomFilterField,
     type EmbededFragment,
     type RichTextEditorButtonGroups,
-    type ButtonGroupConfig
+    type ButtonGroupConfig,
+    type Action,
+    type EmbeddedAction
 } from './types';
 import type { Manifest, InternalCustomElement } from '../common/types';
 
@@ -22,6 +24,11 @@ import { CONFIG } from '../common/file';
  * Type for embedded fragment data used in building block processing.
  */
 type EmbeddedFragmentData = InternalCustomElement & EmbededFragment;
+
+/**
+ * Type for embedded action data used in building block processing for custom actions.
+ */
+type EmbeddedActionData = InternalCustomElement & EmbeddedAction;
 
 /**
  * Namespace for XML elements.
@@ -41,6 +48,7 @@ interface ProcessingContext {
     embeddedFragment?: EmbeddedFragmentData;
     updatedAggregationPath?: string;
     hasAggregation?: boolean;
+    embeddedAction?: EmbeddedActionData;
 }
 
 /**
@@ -92,6 +100,11 @@ export const BUILDING_BLOCK_CONFIG: Partial<Record<BuildingBlockType, BuildingBl
         aggregationConfig: { aggregationName: 'buttonGroups', elementName: 'ButtonGroup' },
         namespace: { uri: 'sap.fe.macros', prefix: 'macros' },
         processor: processRichTextEditorButtonGroups
+    },
+    [BuildingBlockType.Action]: {
+        aggregationConfig: { aggregationName: 'actions', elementName: 'Action' },
+        namespace: { uri: 'sap.fe.macros.table', prefix: 'macrosTable' },
+        processor: processAction
     }
 };
 
@@ -111,13 +124,14 @@ function getBuildingBlockConfig(buildingBlockType: BuildingBlockType): BuildingB
 }
 
 /**
- * Type guard to check if the building block data is a custom column.
+ * Checks if the building block data matches a specific type.
  *
  * @param {BuildingBlock} data - The building block data to check
- * @returns {boolean} True if the data is a custom column
+ * @param {BuildingBlockType} type - The building block type to check against
+ * @returns {boolean} True if the data matches the specified type
  */
-function isCustomColumn(data: BuildingBlock): data is CustomColumn {
-    return data.buildingBlockType === BuildingBlockType.CustomColumn;
+function isBuildingBlockType<T extends BuildingBlock>(data: BuildingBlock, type: BuildingBlockType): data is T {
+    return data.buildingBlockType === type;
 }
 
 /**
@@ -128,7 +142,7 @@ function isCustomColumn(data: BuildingBlock): data is CustomColumn {
  */
 function processCustomColumn(buildingBlockData: BuildingBlock, context: ProcessingContext): void {
     const { fs, viewPath } = context;
-    if (!isCustomColumn(buildingBlockData)) {
+    if (!isBuildingBlockType<CustomColumn>(buildingBlockData, BuildingBlockType.CustomColumn)) {
         throw new Error('Expected CustomColumn building block data');
     }
 
@@ -156,16 +170,6 @@ function processCustomColumn(buildingBlockData: BuildingBlock, context: Processi
 }
 
 /**
- * Type guard to check if the building block data is a custom filter field.
- *
- * @param {BuildingBlock} data - The building block data to check
- * @returns {boolean} True if the data is a custom filter field
- */
-function isCustomFilterField(data: BuildingBlock): data is CustomFilterField {
-    return data.buildingBlockType === BuildingBlockType.CustomFilterField;
-}
-
-/**
  * Processes custom filter field building block.
  *
  * @param {BuildingBlock} buildingBlockData - The building block data
@@ -173,7 +177,7 @@ function isCustomFilterField(data: BuildingBlock): data is CustomFilterField {
  */
 function processCustomFilterField(buildingBlockData: BuildingBlock, context: ProcessingContext): void {
     const { fs, viewPath, embeddedFragment } = context;
-    if (!isCustomFilterField(buildingBlockData)) {
+    if (!isBuildingBlockType<CustomFilterField>(buildingBlockData, BuildingBlockType.CustomFilterField)) {
         throw new Error('Expected CustomFilterField building block data');
     }
 
@@ -334,24 +338,6 @@ function mergeButtonGroups(
 }
 
 /**
- * Type guard to check if the building block data is a rich text editor button groups.
- *
- * @param {BuildingBlock} data - The building block data to check
- * @returns {boolean} True if the data is a rich text editor button groups
- */
-function isRichTextEditorButtonGroups(data: BuildingBlock): data is RichTextEditorButtonGroups {
-    return data.buildingBlockType === BuildingBlockType.RichTextEditorButtonGroups;
-}
-
-/**
- *
- * @param data
- */
-function isRichTextEditor(data: BuildingBlock): data is RichTextEditorButtonGroups {
-    return data.buildingBlockType === BuildingBlockType.RichTextEditor;
-}
-
-/**
  * Processes rich text editor button groups building block.
  *
  * @param {BuildingBlock} buildingBlockData - The building block data
@@ -359,7 +345,13 @@ function isRichTextEditor(data: BuildingBlock): data is RichTextEditorButtonGrou
  */
 function processRichTextEditorButtonGroups(buildingBlockData: BuildingBlock, context: ProcessingContext): void {
     const { xmlDocument, updatedAggregationPath, hasAggregation } = context;
-    if (!isRichTextEditorButtonGroups(buildingBlockData) && !isRichTextEditor(buildingBlockData)) {
+    if (
+        !isBuildingBlockType<RichTextEditorButtonGroups>(
+            buildingBlockData,
+            BuildingBlockType.RichTextEditorButtonGroups
+        ) &&
+        !isBuildingBlockType<RichTextEditorButtonGroups>(buildingBlockData, BuildingBlockType.RichTextEditor)
+    ) {
         throw new Error('Expected RichTextEditorButtonGroups or RichTextEditor building block data');
     }
 
@@ -442,6 +434,50 @@ function updateAggregationPath(
 }
 
 /**
+ * Processes custom action building block.
+ *
+ * @param buildingBlockData - The building block data
+ * @param context - Processing context
+ */
+function processAction(buildingBlockData: BuildingBlock, context: ProcessingContext): void {
+    const { fs } = context;
+
+    if (!isBuildingBlockType<Action>(buildingBlockData, BuildingBlockType.Action)) {
+        throw new Error('Expected Action building block data');
+    }
+
+    const actionConfig = buildingBlockData.embeddedAction;
+
+    if (typeof actionConfig.eventHandler === 'object') {
+        const processedEventHandler = applyEventHandlerConfiguration(fs, actionConfig, actionConfig.eventHandler, {
+            typescript: actionConfig.typescript
+        });
+
+        const fnName = actionConfig.eventHandler ? actionConfig.eventHandler.fnName : processedEventHandler;
+
+        // Check if file name includes .controller
+        if (actionConfig.eventHandler.fileName?.includes('.controller')) {
+            // Controller method: use fnName as is, no core:require needed
+            actionConfig.eventHandler = {
+                fnName: `.${fnName}`
+            };
+        } else {
+            // Custom handler file: use handler alias with core:require
+            let handlerPath: string | undefined;
+            if (actionConfig.eventHandler.fileName) {
+                const path = context.embeddedAction?.ns?.split('.').join('/');
+                handlerPath = posix.join(path ?? '', actionConfig.eventHandler.fileName);
+            }
+
+            actionConfig.eventHandler = {
+                fnName: `handler.${fnName}`,
+                fileName: handlerPath
+            };
+        }
+    }
+}
+
+/**
  * Processes building block configuration.
  *
  * @param {BuildingBlock} buildingBlockData - The building block data
@@ -483,7 +519,13 @@ export function processBuildingBlock<T extends BuildingBlock>(
         };
     }
 
-    if (isRichTextEditorButtonGroups(buildingBlockData) || isRichTextEditor(buildingBlockData)) {
+    if (
+        isBuildingBlockType<RichTextEditorButtonGroups>(
+            buildingBlockData,
+            BuildingBlockType.RichTextEditorButtonGroups
+        ) ||
+        isBuildingBlockType<RichTextEditorButtonGroups>(buildingBlockData, BuildingBlockType.RichTextEditor)
+    ) {
         const result = updateAggregationPath(
             xmlDocument,
             aggregationPath,
@@ -510,7 +552,8 @@ export function processBuildingBlock<T extends BuildingBlock>(
 
     // Process embedded fragment for types that support it
     if (
-        (isCustomColumn(buildingBlockData) || isCustomFilterField(buildingBlockData)) &&
+        (isBuildingBlockType<CustomColumn>(buildingBlockData, BuildingBlockType.CustomColumn) ||
+            isBuildingBlockType<CustomFilterField>(buildingBlockData, BuildingBlockType.CustomFilterField)) &&
         buildingBlockData.embededFragment
     ) {
         embeddedFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
@@ -534,6 +577,26 @@ export function processBuildingBlock<T extends BuildingBlock>(
         updatedAggregationPath = result.updatedAggregationPath;
         hasAggregation = result.hasElement;
         aggregationNamespace = getOrAddNamespace(xmlDocument, config.namespace.uri, config.namespace.prefix);
+    }
+
+    if (isBuildingBlockType<Action>(buildingBlockData, BuildingBlockType.Action) && buildingBlockData.embeddedAction) {
+        const result = updateAggregationPath(xmlDocument, aggregationPath, {
+            aggregationName: config.aggregationConfig.aggregationName,
+            elementName: config.aggregationConfig.elementName
+        });
+
+        const context: ProcessingContext = {
+            fs,
+            xmlDocument,
+            updatedAggregationPath: result.updatedAggregationPath,
+            hasAggregation: result.hasElement,
+            embeddedAction: setCommonDefaults(buildingBlockData.embeddedAction, manifestPath, manifest)
+        };
+        config.processor(buildingBlockData, context);
+
+        updatedAggregationPath = result.updatedAggregationPath;
+        hasAggregation = result.hasElement;
+        getOrAddNamespace(xmlDocument, config.namespace.uri, config.namespace.prefix);
     }
 
     return {
