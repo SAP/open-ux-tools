@@ -11,7 +11,7 @@ sap.ui.define([
             Given.iStartMyApp();
             <%_ startPages.forEach(function(pageName) { %>
             Then.onThe<%- pageName %>.iSeeThisPage();
-            <%_ if (filterBarItems && filterBarItems.length > 0) { -%>
+            <%_ if (filterBarItems && filterBarItems.length > 0 && !hideFilterBar) { -%>
                 <%_ filterBarItems.forEach(function(item) { _%>
             Then.onThe<%- pageName%>.onFilterBar().iCheckFilterField("<%- item %>");
                 <%_ }); -%>
