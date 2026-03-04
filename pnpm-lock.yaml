@@ -993,8 +993,8 @@ importers:
         specifier: 7.2.2
         version: 7.2.2
       yaml:
-        specifier: 2.2.2
-        version: 2.2.2
+        specifier: 2.8.2
+        version: 2.8.2
 
   packages/backend-proxy-middleware-cf:
     dependencies:
@@ -1909,8 +1909,8 @@ importers:
         specifier: ^8.46.2
         version: 8.49.0(eslint@9.39.1)(typescript@5.9.3)
       yaml:
-        specifier: 2.2.2
-        version: 2.2.2
+        specifier: 2.8.2
+        version: 2.8.2
     devDependencies:
       '@typescript-eslint/rule-tester':
         specifier: 8.46.2
@@ -4040,8 +4040,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       yaml:
-        specifier: 2.3.3
-        version: 2.3.3
+        specifier: 2.8.2
+        version: 2.8.2
     devDependencies:
       dotenv:
         specifier: 16.6.1
@@ -4941,8 +4941,8 @@ importers:
         specifier: 7.2.2
         version: 7.2.2
       yaml:
-        specifier: 2.2.2
-        version: 2.2.2
+        specifier: 2.8.2
+        version: 2.8.2
 
   packages/ui5-test-writer:
     dependencies:
@@ -5030,8 +5030,8 @@ importers:
         specifier: '>=4.17.23'
         version: 4.17.23
       yaml:
-        specifier: 2.2.2
-        version: 2.2.2
+        specifier: 2.8.2
+        version: 2.8.2
     devDependencies:
       '@types/lodash':
         specifier: 4.14.202
@@ -18319,10 +18319,6 @@ packages:
     resolution: {integrity: sha512-CBKFWExMn46Foo4cldiChEzn7S7SRV+wqiluAb6xmueD/fGyRHIhX8m14vVGgeFWjN540nKCNVj6P21eQjgTuA==}
     engines: {node: '>= 14'}
 
-  yaml@2.3.3:
-    resolution: {integrity: sha512-zw0VAJxgeZ6+++/su5AFoqBbZbrEakwu+X0M5HmcwUiBL7AzcuPKjj5we4xfQLp78LkEMpD0cOnUhmgOVy3KdQ==}
-    engines: {node: '>= 14'}
-
   yaml@2.8.2:
     resolution: {integrity: sha512-mplynKqc1C2hTVYxd0PU2xQAc22TI1vShAYGksCCfxbn/dFwnHTNi1bvYsBTkhdUNtGIf5xNOg938rrSSYvS9A==}
     engines: {node: '>= 14.6'}
@@ -29081,7 +29077,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.3
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.13.5(debug@4.4.3))
+      retry-axios: 2.6.0(axios@1.13.5)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -33408,7 +33404,7 @@ snapshots:
 
   ret@0.1.15: {}
 
-  retry-axios@2.6.0(axios@1.13.5(debug@4.4.3)):
+  retry-axios@2.6.0(axios@1.13.5):
     dependencies:
       axios: 1.13.5(debug@4.4.3)
     optional: true
@@ -35748,8 +35744,6 @@ snapshots:
   yaml@1.10.2: {}
 
   yaml@2.2.2: {}
-
-  yaml@2.3.3: {}
 
   yaml@2.8.2: {}
 
