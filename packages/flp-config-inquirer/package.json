@@ -41,7 +41,7 @@
         "lodash": "4.17.23"
     },
     "devDependencies": {
-        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@sap-devx/yeoman-ui-types": "1.22.0",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202",
         "inquirer": "8.2.7"
