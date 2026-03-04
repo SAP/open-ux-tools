@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.0.0
+
+### Major Changes
+
+- c4839f5: update border radius for UI components to improve consistency
+
 ## 1.27.10
 
 ### Patch Changes
