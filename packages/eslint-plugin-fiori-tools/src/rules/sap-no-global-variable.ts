@@ -55,11 +55,12 @@ const rule: RuleDefinition = {
                     const varDecl = asVariableDeclaration(node);
                     if (varDecl) {
                         varDecl.declarations.forEach((declaration: unknown) => {
-                            if (declaration.id?.type === 'Identifier') {
-                                const name = declaration.id.name;
-                                if (!contains(ALLOWED_VARIABLES, name)) {
+                            const decl = declaration as { id?: { type?: string; name?: string } };
+                            if (decl.id?.type === 'Identifier') {
+                                const name = decl.id.name;
+                                if (name && !contains(ALLOWED_VARIABLES, name)) {
                                     context.report({
-                                        node: declaration.id,
+                                        node: decl.id,
                                         messageId: 'globalVariableNotAllowed',
                                         data: { name }
                                     });

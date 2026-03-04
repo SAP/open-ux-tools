@@ -98,17 +98,17 @@ const rule: RuleDefinition = {
                 // Get property list from object expression
                 const propertyList = objectExpr.properties as unknown[];
                 // Go through the properties
-                let property: unknown;
+                let property: { type?: string; key?: unknown; value?: unknown };
                 for (const key in propertyList) {
                     // Check if element is of type we are looking for
                     // all in one if-statement to reach code coverage
                     if (
                         propertyList.hasOwnProperty(key) &&
-                        (property = propertyList[key]) &&
+                        (property = propertyList[key] as { type?: string; key?: unknown; value?: unknown }) &&
                         property.type === T_PROPERTY &&
-                        getLiteralOrIdentifiertName(property.key) === propertyName
+                        getLiteralOrIdentifiertName(property.key as ASTNode) === propertyName
                     ) {
-                        return property.value;
+                        return property.value as ASTNode;
                     }
                 }
             }

@@ -2,7 +2,6 @@ import { readFileSync } from 'node:fs';
 import { join, relative, posix } from 'node:path';
 import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
-import type { RuleDefinition } from '@eslint/core';
 import js from '@eslint/js';
 import babelParser from '@babel/eslint-parser';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';

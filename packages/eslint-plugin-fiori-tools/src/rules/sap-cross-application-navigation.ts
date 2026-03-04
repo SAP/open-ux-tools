@@ -26,7 +26,7 @@ import {
  * @returns True if the node is of the specified type
  */
 function isType(node: ASTNode | undefined, type: string): boolean {
-    return node?.type === type;
+    return (node as { type?: string })?.type === type;
 }
 
 /**
@@ -166,7 +166,7 @@ function isInterestingAssignment(node: ASTNode | undefined): boolean {
  */
 function isValid(node: ASTNode): boolean {
     const callNode = node as { arguments?: unknown[] };
-    if ( callNode.arguments.length > 0) {
+    if (callNode.arguments && callNode.arguments?.length > 0) {
         const target = getProperty(callNode.arguments[0], 'target');
         if (target) {
             // get property target from first argument, get property shellHash from property target

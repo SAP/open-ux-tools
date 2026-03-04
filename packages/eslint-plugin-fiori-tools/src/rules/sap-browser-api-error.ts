@@ -161,13 +161,15 @@ const rule: RuleDefinition = {
          */
         function processDocumentMessage(node: ASTNode, methodName: string): void {
             const parent = asCallExpression(getParent(node));
+            const parentArgs = parent?.arguments;
             if (contains(FORBIDDEN_DOM_INSERTION, methodName)) {
                 if (
                     !(
                         methodName === 'createElement' &&
-                        parent?.arguments?.length > 0 &&
-                        isLiteral(parent.arguments[0]) &&
-                        asLiteral(parent.arguments[0])?.value === 'a'
+                        parentArgs &&
+                        parentArgs.length > 0 &&
+                        isLiteral(parentArgs[0]) &&
+                        asLiteral(parentArgs[0])?.value === 'a'
                     )
                 ) {
                     context.report({ node: node, messageId: 'domInsertion' });
@@ -176,8 +178,9 @@ const rule: RuleDefinition = {
                 context.report({ node: node, messageId: 'domManipulation' });
             } else if (
                 contains(FORBIDDEN_DOCUMENT_USAGE, methodName) &&
-                parent?.arguments?.length !== 0 &&
-                asLiteral(parent.arguments[0])?.value === 'insertBrOnReturn'
+                parentArgs &&
+                parentArgs.length !== 0 &&
+                asLiteral(parentArgs[0])?.value === 'insertBrOnReturn'
             ) {
                 context.report({ node: node, messageId: 'forbiddenDocumentUsage' });
             }
