@@ -54,7 +54,7 @@ async function convertEslintConfig(
         if (!simulate) {
             fs.commit(() => {
                 logger.info(
-                    `ESlint configuration converted. Ensure you delete the old artifacts such as '.eslintrc.json' or '.eslintignore' once you ensured that the conversion was successful.`
+                    `ESlint configuration converted. Ensure the new configuration is working correctly before deleting old configuration files like '.eslintrc.json' or '.eslintignore'.`
                 );
                 if (skipInstall) {
                     logger.info(
