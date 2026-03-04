@@ -6,7 +6,7 @@ import type { AppRouterEnvOptions } from '@sap-ux/adp-tooling';
 import { buildVcapServicesFromResources, getSpaceGuidFromUi5Yaml, getYamlContent } from '@sap-ux/adp-tooling';
 
 import type { EffectiveOptions } from '../types';
-import { UI5_SERVER_DESTINATION } from '../types';
+import { UI5_SERVER_DESTINATION } from '../constants';
 
 /**
  * Destination entry as stored in process.env.destinations.
@@ -102,19 +102,26 @@ export async function loadAndApplyEnvOptions(
 }
 
 /**
- * Ensure the ui5-server destination exists and has the correct port.
+ * Ensure the ui5-server destination exists and has the correct URL.
  * If ui5-server doesn't exist in configuration, it will be auto-created.
  * If it exists but has a different port, it will be updated.
+ * In BAS, the external URL is used instead of localhost so the approuter
+ * builds correct redirect URIs.
  *
  * This enables multi-instance support and removes the need to manually
  * configure ui5-server in ui5.yaml - it's auto-configured based on the actual port.
  *
  * @param effectiveOptions - Merged options containing destinations.
  * @param actualPort - The actual port detected from the incoming request.
+ * @param basExternalUrl - Optional BAS external URL; when set, used as the destination URL.
  * @returns True if destination was created or updated, false if no change needed.
  */
-export function updateUi5ServerDestinationPort(effectiveOptions: EffectiveOptions, actualPort: number): boolean {
-    const newUrl = `http://localhost:${actualPort}`;
+export function updateUi5ServerDestinationPort(
+    effectiveOptions: EffectiveOptions,
+    actualPort: number,
+    basExternalUrl?: URL
+): boolean {
+    const newUrl = basExternalUrl ? basExternalUrl.href : `http://localhost:${actualPort}`;
 
     let ui5ServerDest = effectiveOptions.destinations.find((d) => d.name === UI5_SERVER_DESTINATION);
 

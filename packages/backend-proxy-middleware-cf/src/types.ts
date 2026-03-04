@@ -1,8 +1,5 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
-/** Destination name for the local UI5 server (used in xs-app.json routes and env config). */
-export const UI5_SERVER_DESTINATION = 'ui5-server';
-
 /**
  * Destination configuration for approuter (name must match routes in xs-app.json).
  */
@@ -134,6 +131,8 @@ export interface CreateProxyOptions {
     baseUri: string;
     /** Merged options (debug, rewriteContent, etc.). */
     effectiveOptions: EffectiveOptions;
+    /** External URL for BAS (from exposePort). Overrides x-forwarded-host/proto in proxy requests. */
+    basExternalUrl?: URL;
 }
 
 /**

@@ -252,5 +252,22 @@ describe('env', () => {
             expect(envDest).toContainEqual({ name: 'backend', url: 'http://localhost:3000' });
             expect(envDest).toContainEqual({ name: 'ui5-server', url: 'http://localhost:8081' });
         });
+
+        test('uses BAS external URL when basExternalUrl is provided', () => {
+            const effectiveOptions = {
+                destinations: []
+            } as unknown as EffectiveOptions;
+            const basExternalUrl = new URL('https://port8080-workspaces-xxx.bas.cloud.sap/');
+
+            const result = updateUi5ServerDestinationPort(effectiveOptions, 8080, basExternalUrl);
+
+            expect(result).toBe(true);
+            expect(effectiveOptions.destinations).toEqual([
+                { name: 'ui5-server', url: 'https://port8080-workspaces-xxx.bas.cloud.sap/' }
+            ]);
+            expect(process.env.destinations).toBe(
+                JSON.stringify([{ name: 'ui5-server', url: 'https://port8080-workspaces-xxx.bas.cloud.sap/' }])
+            );
+        });
     });
 });

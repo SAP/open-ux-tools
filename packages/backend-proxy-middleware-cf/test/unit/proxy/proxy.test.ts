@@ -139,15 +139,15 @@ describe('proxy', () => {
             expect(capturedProxyOptions!.target).toBe('http://localhost:5000');
 
             const pathFilter = capturedProxyOptions!.pathFilter!;
-            // Pass mock request without x-forwarded-for header (not from approuter)
+            // Pass mock request without marker header (not from approuter)
             const mockReq = { headers: {} };
             expect(pathFilter('/', mockReq)).toBe(true);
             expect(pathFilter('/login/callback', mockReq)).toBe(true);
             expect(pathFilter('/api/foo', mockReq)).toBe(true);
             expect(pathFilter('/other', mockReq)).toBe(false);
 
-            // With x-forwarded-for header (from approuter), should return false to avoid loop
-            const mockReqFromApprouter = { headers: { 'x-forwarded-for': '127.0.0.1' } };
+            // With marker header (from approuter), should return false to avoid loop
+            const mockReqFromApprouter = { headers: { 'x-backend-proxy-middleware-cf': '1' } };
             expect(pathFilter('/', mockReqFromApprouter)).toBe(false);
         });
 
@@ -258,6 +258,49 @@ describe('proxy', () => {
             const result = await capturedProxyOptions!.on!.proxyRes!(proxyRes, req, res);
 
             expect(result).toBeUndefined();
+        });
+
+        test('proxyReq overrides x-forwarded-host and x-forwarded-proto when basExternalUrl is provided', () => {
+            createProxy(
+                {
+                    customRoutes: [],
+                    routes: [],
+                    baseUri: 'http://localhost:5000',
+                    effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }),
+                    basExternalUrl: new URL('https://port8080-workspaces-xxx.bas.cloud.sap')
+                },
+                logger
+            );
+            const setHeader = jest.fn();
+            const proxyReq = { setHeader };
+            const req = { headers: {} };
+            const res = {};
+
+            capturedProxyOptions!.on!.proxyReq!(proxyReq, req, res);
+
+            expect(setHeader).toHaveBeenCalledWith('x-forwarded-host', 'port8080-workspaces-xxx.bas.cloud.sap');
+            expect(setHeader).toHaveBeenCalledWith('x-forwarded-proto', 'https');
+        });
+
+        test('proxyReq does not override headers when basExternalUrl is not provided', () => {
+            createProxy(
+                {
+                    customRoutes: [],
+                    routes: [],
+                    baseUri: 'http://localhost:5000',
+                    effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' })
+                },
+                logger
+            );
+            const setHeader = jest.fn();
+            const proxyReq = { setHeader };
+            const req = { headers: {} };
+            const res = {};
+
+            capturedProxyOptions!.on!.proxyReq!(proxyReq, req, res);
+
+            expect(setHeader).not.toHaveBeenCalledWith('x-forwarded-host', expect.anything());
+            expect(setHeader).not.toHaveBeenCalledWith('x-forwarded-proto', expect.anything());
         });
     });
 });

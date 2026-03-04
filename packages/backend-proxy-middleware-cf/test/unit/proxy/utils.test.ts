@@ -76,13 +76,18 @@ describe('proxy utils', () => {
     });
 
     describe('isRequestFromApprouter', () => {
-        test('returns true when x-forwarded-for header is present', () => {
-            const req = { headers: { 'x-forwarded-for': '127.0.0.1' } } as unknown as IncomingMessage;
+        test('returns true when marker header is present', () => {
+            const req = { headers: { 'x-backend-proxy-middleware-cf': '1' } } as unknown as IncomingMessage;
             expect(isRequestFromApprouter(req)).toBe(true);
         });
 
-        test('returns false when x-forwarded-for header is missing', () => {
+        test('returns false when marker header is absent', () => {
             const req = { headers: {} } as unknown as IncomingMessage;
+            expect(isRequestFromApprouter(req)).toBe(false);
+        });
+
+        test('returns false when only x-forwarded-for is present (no marker)', () => {
+            const req = { headers: { 'x-forwarded-for': '10.0.0.1' } } as unknown as IncomingMessage;
             expect(isRequestFromApprouter(req)).toBe(false);
         });
     });
@@ -95,9 +100,9 @@ describe('proxy utils', () => {
             expect(filter('/login/callback', req)).toBe(true);
         });
 
-        test('returns false for matching path when request is from approuter', () => {
+        test('returns false for matching path when request has marker header', () => {
             const filter = createProxyFilter(['/login/callback'], []);
-            const req = { headers: { 'x-forwarded-for': '127.0.0.1' } } as unknown as IncomingMessage;
+            const req = { headers: { 'x-backend-proxy-middleware-cf': '1' } } as unknown as IncomingMessage;
 
             expect(filter('/login/callback', req)).toBe(false);
         });
@@ -107,6 +112,22 @@ describe('proxy utils', () => {
             const req = { headers: {} } as unknown as IncomingMessage;
 
             expect(filter('/other', req)).toBe(false);
+        });
+
+        test('allows requests with x-forwarded-for but no marker', () => {
+            const filter = createProxyFilter(['/login/callback'], []);
+            const req = { headers: { 'x-forwarded-for': '10.0.0.1, 127.0.0.1' } } as unknown as IncomingMessage;
+
+            expect(filter('/login/callback', req)).toBe(true);
+        });
+
+        test('blocks requests with marker header even when x-forwarded-for is present', () => {
+            const filter = createProxyFilter(['/login/callback'], []);
+            const req = {
+                headers: { 'x-forwarded-for': '10.0.0.1', 'x-backend-proxy-middleware-cf': '1' }
+            } as unknown as IncomingMessage;
+
+            expect(filter('/login/callback', req)).toBe(false);
         });
     });
 

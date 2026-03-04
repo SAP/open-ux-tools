@@ -2,6 +2,7 @@ import mime from 'mime-types';
 import contentType from 'content-type';
 import type { IncomingMessage } from 'node:http';
 
+import { PROXY_MARKER_HEADER } from '../constants';
 import type { MimeInfo, RouteEntry } from '../types';
 
 /**
@@ -34,13 +35,15 @@ export function createPathFilter(customRoutes: string[], routes: RouteEntry[]): 
 
 /**
  * Check if request originated from the approuter (server-to-server).
- * The approuter adds X-Forwarded-For when proxying to ui5-server.
+ * Detects the custom marker header that was set when the proxy originally
+ * forwarded this request to the approuter. The approuter preserves it
+ * when proxying back to the ui5-server destination.
  *
  * @param req - Incoming request.
  * @returns True if request came from approuter.
  */
 export function isRequestFromApprouter(req: IncomingMessage): boolean {
-    return !!req.headers['x-forwarded-for'];
+    return !!req.headers[PROXY_MARKER_HEADER];
 }
 
 /**

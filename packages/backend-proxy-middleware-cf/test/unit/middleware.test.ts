@@ -7,6 +7,7 @@ import { loadAndApplyEnvOptions } from '../../src/env';
 import { startApprouter } from '../../src/approuter';
 import type { BackendProxyMiddlewareCfConfig } from '../../src/types';
 import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../src/routes';
+import { fetchBasUrlTemplate, resolveBasExternalUrl } from '../../src/bas';
 
 jest.mock('node:fs', () => ({
     ...jest.requireActual('node:fs'),
@@ -40,6 +41,11 @@ jest.mock('../../src/approuter', () => ({
 
 jest.mock('../../src/proxy', () => ({ createProxy: jest.fn() }));
 
+jest.mock('../../src/bas', () => ({
+    fetchBasUrlTemplate: jest.fn().mockResolvedValue(''),
+    resolveBasExternalUrl: jest.fn().mockReturnValue(undefined)
+}));
+
 const createProxyMock = createProxy as jest.Mock;
 const existsSyncMock = fs.existsSync as jest.Mock;
 const nextFreePortMock = nextFreePort as jest.Mock;
@@ -48,6 +54,8 @@ const buildRouteEntriesMock = buildRouteEntries as jest.Mock;
 const loadAndApplyEnvOptionsMock = loadAndApplyEnvOptions as jest.Mock;
 const loadAndPrepareXsappConfigMock = loadAndPrepareXsappConfig as jest.Mock;
 const startApprouterMock = startApprouter as jest.Mock;
+const fetchBasUrlTemplateMock = fetchBasUrlTemplate as jest.Mock;
+const resolveBasExternalUrlMock = resolveBasExternalUrl as jest.Mock;
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports -- middleware is CommonJS
 const middleware = require('../../src/middleware') as (params: {
@@ -76,6 +84,8 @@ describe('middleware', () => {
         buildRouteEntriesMock.mockReturnValue([]);
         loadExtensionsMock.mockReturnValue({ modules: [], routes: [] });
         createProxyMock.mockReturnValue((_req: unknown, _res: unknown, next: () => void) => next());
+        fetchBasUrlTemplateMock.mockResolvedValue('');
+        resolveBasExternalUrlMock.mockReturnValue(undefined);
     });
 
     afterEach(() => {
@@ -269,5 +279,27 @@ describe('middleware', () => {
         // createProxy and startApprouter should only be called once
         expect(createProxyMock).toHaveBeenCalledTimes(1);
         expect(startApprouterMock).toHaveBeenCalledTimes(1);
+    });
+
+    test('should call fetchBasUrlTemplate during setup and pass resolved URL to createProxy', async () => {
+        const basUrl = new URL('https://port8080-workspaces-xxx.bas.cloud.sap/');
+        fetchBasUrlTemplateMock.mockResolvedValue('https://port0-workspaces-xxx.bas.cloud.sap/');
+        resolveBasExternalUrlMock.mockReturnValue(basUrl);
+
+        const handler = await middleware({
+            options: { configuration: { xsappJsonPath: './xs-app.json' } },
+            middlewareUtil: { getProject }
+        });
+
+        expect(fetchBasUrlTemplateMock).toHaveBeenCalledWith(expect.any(Object));
+
+        const mockReq = { socket: { localPort: 8080 } };
+        const mockRes = {};
+        const mockNext = jest.fn();
+        (handler as (req: unknown, res: unknown, next: () => void) => void)(mockReq, mockRes, mockNext);
+
+        expect(resolveBasExternalUrlMock).toHaveBeenCalledWith('https://port0-workspaces-xxx.bas.cloud.sap/', 8080);
+        const [proxyOptions] = createProxyMock.mock.calls[0] as [{ basExternalUrl?: URL }];
+        expect(proxyOptions.basExternalUrl).toBe(basUrl);
     });
 });

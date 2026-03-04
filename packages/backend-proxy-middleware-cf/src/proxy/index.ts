@@ -6,6 +6,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { CreateProxyOptions, EffectiveOptions, RouteEntry } from '../types';
 import { createProxyFilter, getMimeInfo, getRequestOrigin, replaceUrl } from './utils';
+import { PROXY_MARKER_HEADER } from '../constants';
 
 /**
  * Request in proxyReq callback, extended with UI5 server middleware properties.
@@ -76,7 +77,7 @@ export function createResponseInterceptor(
  * @returns Express request handler (the proxy middleware).
  */
 export function createProxy(options: CreateProxyOptions, logger: ToolsLogger): RequestHandler {
-    const { customRoutes, routes, baseUri, effectiveOptions } = options;
+    const { customRoutes, routes, baseUri, effectiveOptions, basExternalUrl } = options;
 
     const intercept = createResponseInterceptor(routes, effectiveOptions);
     const proxyFilter = createProxyFilter(customRoutes, routes);
@@ -91,11 +92,18 @@ export function createProxy(options: CreateProxyOptions, logger: ToolsLogger): R
         xfwd: true,
         on: {
             proxyReq: (proxyReq, req: ProxyReqRequest, res: ProxyReqResponse) => {
+                proxyReq.setHeader(PROXY_MARKER_HEADER, '1');
+
                 const xfp = req.headers['x-forwarded-proto'];
                 if (typeof xfp === 'string' && xfp.includes(',')) {
                     const proto = xfp.split(',')[0];
                     req.headers['x-forwarded-proto'] = proto;
                     proxyReq.setHeader('x-forwarded-proto', proto);
+                }
+
+                if (basExternalUrl) {
+                    proxyReq.setHeader('x-forwarded-host', basExternalUrl.host);
+                    proxyReq.setHeader('x-forwarded-proto', basExternalUrl.protocol.replace(':', ''));
                 }
 
                 if (req['ui5-middleware-index']?.url === '/') {

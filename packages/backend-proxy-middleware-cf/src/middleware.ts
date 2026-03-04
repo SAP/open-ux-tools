@@ -15,6 +15,7 @@ import { nextFreePort } from './utils';
 import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from './env';
 import { buildRouteEntries, loadAndPrepareXsappConfig } from './routes';
 import { startApprouter } from './approuter';
+import { fetchBasUrlTemplate, resolveBasExternalUrl } from './bas';
 
 dotenv.config();
 
@@ -84,19 +85,27 @@ async function backendProxyMiddlewareCf({
         customRoutes.push(logoutEndpoint);
     }
 
+    const basUrlTemplate = await fetchBasUrlTemplate(logger);
+
     let initialized = false;
     let proxyMiddleware: RequestHandler | null = null;
     return function lazyApprouterMiddleware(req: Request, res: Response, next: NextFunction): void {
         if (!initialized) {
             const actualPort = req.socket.localPort ?? 8080;
-            if (updateUi5ServerDestinationPort(effectiveOptions, actualPort)) {
+
+            const basExternalUrl = resolveBasExternalUrl(basUrlTemplate, actualPort);
+            if (basExternalUrl) {
+                logger.info(`BAS detected. External URL: ${basExternalUrl.href}`);
+            }
+
+            if (updateUi5ServerDestinationPort(effectiveOptions, actualPort, basExternalUrl)) {
                 logger.info(`Auto-configured ui5-server destination to port ${actualPort}`);
             }
 
             const routes = buildRouteEntries({ xsappConfig, effectiveOptions, logger });
             startApprouter({ port, xsappConfig, rootPath, modules });
 
-            proxyMiddleware = createProxy({ customRoutes, routes, baseUri, effectiveOptions }, logger);
+            proxyMiddleware = createProxy({ customRoutes, routes, baseUri, effectiveOptions, basExternalUrl }, logger);
             initialized = true;
         }
 
