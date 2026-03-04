@@ -65,7 +65,7 @@
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@types/fs-extra": "9.0.13",
-        "fs-extra": "10.0.0",
+        "fs-extra": "10.1.0",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@vscode-logging/logger": "2.0.8",

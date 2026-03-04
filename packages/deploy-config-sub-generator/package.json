@@ -59,7 +59,7 @@
         "@sap-ux/cf-deploy-config-writer": "workspace:*",
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@sap/mta-lib": "1.7.4",
-        "fs-extra": "10.0.0",
+        "fs-extra": "10.1.0",
         "js-yaml": "4.1.1",
         "memfs": "3.4.13",
         "os-name": "4.0.1",
