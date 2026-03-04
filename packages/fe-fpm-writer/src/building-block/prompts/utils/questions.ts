@@ -3,7 +3,6 @@ import type { Answers } from 'inquirer';
 import { join, relative } from 'node:path';
 import { getAnnotationPathQualifiers } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
-import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { Project } from '@sap-ux/project-access';
 import type {
     InputPromptQuestion,
@@ -17,6 +16,7 @@ import type { BindingContextType } from '../../types';
 import { getFilterBarIdsInFile, getXPathStringsForXmlFile, isElementIdAvailable } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 import { getEntitySetOptions, resolveEntitySetTargets, loadEntitySets } from './prompt-helpers';
+import { getFragmentAndViewFiles } from '../../../common/file';
 
 /* eslint-disable @typescript-eslint/no-floating-promises */
 initI18n();
@@ -116,18 +116,8 @@ export function getViewOrFragmentPathPrompt(
         name: 'viewOrFragmentPath',
         choices: project
             ? async () => {
-                  const files = await findFilesByExtension(
-                      '.xml',
-                      appPath,
-                      ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
-                      fs
-                  );
-                  const lookupFiles = ['.fragment.xml', '.view.xml'];
-                  return transformChoices(
-                      files
-                          .filter((fileName) => lookupFiles.some((lookupFile) => fileName.endsWith(lookupFile)))
-                          .map((file) => relative(appPath, file))
-                  );
+                  const fragmentAndViewFiles = await getFragmentAndViewFiles(appPath, fs);
+                  return transformChoices(fragmentAndViewFiles.map((file) => relative(appPath, file)));
               }
             : [],
         validate: (value: string) => (!project || value ? true : validationErrorMessage),

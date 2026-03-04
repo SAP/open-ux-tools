@@ -19,13 +19,11 @@ import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } fr
 import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
-import {
-    bindingContextAbsolute,
-    bindingContextRelative,
-    type BindingContextType
-} from '../../src/building-block/types';
+import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types';
 import { i18nNamespaces, translate } from '../../src/i18n';
 import { Placement } from '../../src/common/types';
+import type { IdGeneratorFunction } from '../../src/common/file';
+import * as fileAccess from '@sap-ux/project-access/dist/file';
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -36,14 +34,22 @@ describe('Building Blocks', () => {
     const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
     const xmlFragmentFilePath = 'webapp/ext/fragment/custom.fragment.xml';
     const testOutputRoot = join(__dirname, '../test-output/unit/building-block');
-
+    let generateId: IdGeneratorFunction;
     beforeAll(() => {
         clearTestOutput(testOutputRoot);
     });
 
     beforeEach(async () => {
+        let item = 0;
         jest.requireActual('mem-fs-editor');
         fs = create(createStorage());
+        jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
+        generateId = jest.fn((baseId: string) => {
+            if (['Item', 'ButtonGroup'].includes(baseId)) {
+                return `${baseId}${item++}`;
+            }
+            return `${baseId}`;
+        });
         testAppPath = join(testOutputRoot, `${Date.now()}`);
         fs.delete(testAppPath);
         if (!testXmlViewContent) {
@@ -78,6 +84,7 @@ describe('Building Blocks', () => {
                         aggregationPath: 'testAggregation',
                         buildingBlockData: {
                             id: 'testFilterBar',
+                            generateId,
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
                     },
@@ -95,6 +102,7 @@ describe('Building Blocks', () => {
                         viewOrFragmentPath: 'invalidXmlViewFilePath',
                         aggregationPath: 'testAggregation',
                         buildingBlockData: {
+                            generateId,
                             id: 'testFilterBar',
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
@@ -117,6 +125,7 @@ describe('Building Blocks', () => {
                         aggregationPath: 'testAggregation',
                         buildingBlockData: {
                             id: 'testFilterBar',
+                            generateId,
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
                     },
@@ -158,6 +167,7 @@ describe('Building Blocks', () => {
                 aggregationPath: aggregationPath,
                 buildingBlockData: {
                     id: 'testFilterBar',
+                    generateId,
                     buildingBlockType: BuildingBlockType.FilterBar
                 }
             },
@@ -184,6 +194,7 @@ describe('Building Blocks', () => {
                         aggregationPath: aggregationPath,
                         buildingBlockData: {
                             id: 'testFilterBar',
+                            generateId,
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
                     },
@@ -206,6 +217,7 @@ describe('Building Blocks', () => {
                         aggregationPath: 'testAggregationPath',
                         buildingBlockData: {
                             id: 'testFilterBar',
+                            generateId,
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
                     },
@@ -236,6 +248,7 @@ describe('Building Blocks', () => {
                         aggregationPath: aggregationPath,
                         buildingBlockData: {
                             id: 'testFilterBar',
+                            generateId,
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
                     },
@@ -254,6 +267,7 @@ describe('Building Blocks', () => {
                     aggregationPath: 'testAggregationPath',
                     buildingBlockData: {
                         id: 'testFilterBar',
+                        generateId,
                         buildingBlockType: BuildingBlockType.FilterBar
                     }
                 })
@@ -285,6 +299,7 @@ describe('Building Blocks', () => {
             aggregationPath: aggregationPath,
             buildingBlockData: {
                 id: 'testFilterBar',
+                generateId,
                 buildingBlockType: BuildingBlockType.FilterBar
             }
         });
@@ -305,6 +320,7 @@ describe('Building Blocks', () => {
                 aggregationPath: aggregationPath,
                 buildingBlockData: {
                     id: 'testFilterBar',
+                    generateId,
                     buildingBlockType: BuildingBlockType.FilterBar,
                     filterChanged: 'onFilterChanged',
                     search: 'onSearch',
@@ -384,25 +400,29 @@ describe('Building Blocks', () => {
             {
                 buildingBlockData: {
                     id: 'testFilterBar',
-                    buildingBlockType: BuildingBlockType.FilterBar
+                    buildingBlockType: BuildingBlockType.FilterBar,
+                    generateId
                 } as FilterBar
             },
             {
                 buildingBlockData: {
                     id: 'testChart',
-                    buildingBlockType: BuildingBlockType.Chart
+                    buildingBlockType: BuildingBlockType.Chart,
+                    generateId
                 } as Chart
             },
             {
                 buildingBlockData: {
                     id: 'testField',
-                    buildingBlockType: BuildingBlockType.Field
+                    buildingBlockType: BuildingBlockType.Field,
+                    generateId
                 } as Field
             },
             {
                 buildingBlockData: {
                     id: 'testTable',
-                    buildingBlockType: BuildingBlockType.Table
+                    buildingBlockType: BuildingBlockType.Table,
+                    generateId
                 } as Field
             }
         ];
@@ -436,6 +456,7 @@ describe('Building Blocks', () => {
             buildingBlockType: BuildingBlockType.FilterBar,
             contextPath: 'testContextPath',
             metaPath: 'testMetaPath',
+            generateId,
             filterChanged: 'testOnFilterChanged',
             search: 'testOnSearch'
         };
@@ -445,6 +466,7 @@ describe('Building Blocks', () => {
             contextPath: 'testContextPath',
             metaPath: 'testMetaPath',
             filterBar: 'testFilterBar',
+            generateId,
             personalization: 'testPersonalization',
             selectionMode: 'MULTIPLE',
             selectionChange: 'testOnSelectionChange'
@@ -454,6 +476,7 @@ describe('Building Blocks', () => {
             buildingBlockType: BuildingBlockType.Field,
             contextPath: 'testContextPath',
             metaPath: 'testMetaPath',
+            generateId,
             formatOptions: JSON.stringify({ displayMode: 'Value' }).replace(/\"/g, `'`),
             readOnly: true,
             semanticObject: 'testSemanticObject'
@@ -464,6 +487,7 @@ describe('Building Blocks', () => {
             contextPath: 'testContextPath',
             metaPath: 'testMetaPath',
             busy: true,
+            generateId,
             enableAutoColumnWidth: true,
             enableExport: true,
             enableFullScreen: true,
@@ -647,6 +671,7 @@ describe('Building Blocks', () => {
                         aggregationPath,
                         buildingBlockData: {
                             buildingBlockType: testData.buildingBlockData.buildingBlockType,
+                            generateId,
                             id: testData.buildingBlockData.id
                         }
                     },
@@ -670,6 +695,7 @@ describe('Building Blocks', () => {
                     aggregationPath,
                     buildingBlockData: {
                         buildingBlockType: BuildingBlockType.Table,
+                        generateId,
                         id: 'Test'
                     },
                     allowAutoAddDependencyLib: false
@@ -776,6 +802,7 @@ describe('Building Blocks', () => {
 
             const buildingBlockData: Form = {
                 id: 'testForm',
+                generateId,
                 buildingBlockType: BuildingBlockType.Form
             };
 
@@ -802,6 +829,7 @@ describe('Building Blocks', () => {
             const buildingBlockData: Form = {
                 id: 'testForm',
                 buildingBlockType: BuildingBlockType.Form,
+                generateId,
                 title: 'Test Form Title'
             };
 
@@ -828,6 +856,7 @@ describe('Building Blocks', () => {
             const buildingBlockData: Form = {
                 id: 'testForm',
                 buildingBlockType: BuildingBlockType.Form,
+                generateId,
                 contextPath: '/TestEntity',
                 metaPath: '@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation',
                 title: 'General Information'
@@ -856,6 +885,7 @@ describe('Building Blocks', () => {
             const buildingBlockData: Form = {
                 id: 'testForm',
                 buildingBlockType: BuildingBlockType.Form,
+                generateId,
                 title: 'Form with MetaPath Object',
                 metaPath: {
                     entitySet: 'TestEntitySet',
@@ -887,6 +917,7 @@ describe('Building Blocks', () => {
             const buildingBlockData: Form = {
                 id: 'testForm',
                 buildingBlockType: BuildingBlockType.Form,
+                generateId,
                 contextPath: '/TestEntity',
                 metaPath: '@com.sap.vocabularies.UI.v1.ReferenceFacet#FormDetails',
                 title: 'Form Details'
@@ -915,6 +946,7 @@ describe('Building Blocks', () => {
             const buildingBlockData: Form = {
                 id: 'testFormInFragment',
                 buildingBlockType: BuildingBlockType.Form,
+                generateId,
                 contextPath: '/TestEntity',
                 metaPath: '@com.sap.vocabularies.UI.v1.FieldGroup#Info',
                 title: 'Fragment Form'
@@ -943,6 +975,7 @@ describe('Building Blocks', () => {
             const buildingBlockData: Form = {
                 id: 'testForm',
                 buildingBlockType: BuildingBlockType.Form,
+                generateId,
                 contextPath: '/TestEntity',
                 metaPath: '@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation',
                 title: 'Test Form'
@@ -978,6 +1011,7 @@ describe('Building Blocks', () => {
             const buildingBlockData: Form = {
                 id: 'testForm',
                 buildingBlockType: BuildingBlockType.Form,
+                generateId,
                 title: 'Test Form'
             };
 
@@ -1020,6 +1054,7 @@ describe('Building Blocks', () => {
                 allowAutoAddDependencyLib: false,
                 buildingBlockData: {
                     id: 'testFilterBar',
+                    generateId,
                     buildingBlockType: BuildingBlockType.FilterBar
                 }
             },
@@ -1035,7 +1070,8 @@ describe('Building Blocks', () => {
             id: 'testPage',
             buildingBlockType: BuildingBlockType.Page,
             title: 'Test Page Title',
-            description: 'Test Page Description'
+            description: 'Test Page Description',
+            generateId
         };
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
@@ -1061,7 +1097,8 @@ describe('Building Blocks', () => {
             id: 'testPage',
             buildingBlockType: BuildingBlockType.Page,
             title: 'Test Page Title',
-            description: 'Test Page Description'
+            description: 'Test Page Description',
+            generateId
         };
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
@@ -1114,6 +1151,7 @@ describe('Building Blocks', () => {
             const customColumnData: CustomColumn = {
                 id: 'testCustomColumn2',
                 buildingBlockType: BuildingBlockType.CustomColumn,
+                generateId,
                 title: 'CustomColumnTitle2',
                 embededFragment: {
                     folder: 'ext/fragment',
@@ -1168,6 +1206,7 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumn2',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnTitle2',
+                generateId,
                 embededFragment: {
                     folder: 'ext/fragment',
                     typescript: false,
@@ -1208,6 +1247,7 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumn3',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'ExistingFragment',
+                generateId,
                 position: {
                     placement: Placement.After
                 },
@@ -1256,6 +1296,7 @@ describe('Building Blocks', () => {
             const customColumnData: CustomColumn = {
                 id: 'testCustomColumnWithFolder',
                 buildingBlockType: BuildingBlockType.CustomColumn,
+                generateId,
                 title: 'CustomColumnWithFolder',
                 position: {
                     placement: Placement.After
@@ -1303,6 +1344,7 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumnNoFolder',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnNoFolder',
+                generateId,
                 position: {
                     placement: Placement.After
                 },
@@ -1350,6 +1392,7 @@ describe('Building Blocks', () => {
             const customColumnData: CustomColumn = {
                 id: 'testCustomColumnContent',
                 buildingBlockType: BuildingBlockType.CustomColumn,
+                generateId,
                 title: 'CustomColumnContent',
                 position: {
                     placement: Placement.After
@@ -1394,6 +1437,7 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumnFragmentContent',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnFragmentContent',
+                generateId,
                 position: {
                     placement: Placement.After
                 },
@@ -1431,7 +1475,7 @@ describe('Building Blocks', () => {
             const fragmentContent = fs.read(expectedFragmentPath);
             expect(fragmentContent).toContain('Sample Text');
             expect(fragmentContent).toContain('<core:FragmentDefinition');
-            expect(fragmentContent).toContain('<Text text="Sample Text"');
+            expect(fragmentContent).toContain('<Text id="Text" text="Sample Text"');
 
             await writeFilesForDebugging(fs);
         });
@@ -1447,6 +1491,7 @@ describe('Building Blocks', () => {
                 bindingContextType: bindingContextAbsolute,
                 entitySet: 'testEntitySet'
             },
+            generateId,
             targetProperty: 'testProperty'
         };
 
@@ -1489,6 +1534,7 @@ describe('Building Blocks', () => {
                 anchor: 'approveAction',
                 placement: Placement.After,
                 requiresSelection: true,
+                generateId,
                 embeddedAction: {
                     eventHandler: {
                         fnName: 'onApprove',
@@ -1530,6 +1576,7 @@ describe('Building Blocks', () => {
                 actionKey: 'firstAction',
                 text: 'First Action',
                 requiresSelection: false,
+                generateId,
                 embeddedAction: {
                     eventHandler: {
                         fnName: 'onFirst',
@@ -1559,6 +1606,7 @@ describe('Building Blocks', () => {
                 anchor: 'firstAction',
                 placement: Placement.After,
                 requiresSelection: true,
+                generateId,
                 embeddedAction: {
                     eventHandler: {
                         fnName: 'onSecond',
@@ -1593,6 +1641,7 @@ describe('Building Blocks', () => {
                 anchor: 'approveAction',
                 placement: Placement.After,
                 requiresSelection: true,
+                generateId,
                 embeddedAction: {
                     eventHandler: {
                         fnName: 'onApprove',
@@ -1651,6 +1700,7 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.Action,
                 actionKey: 'newAction',
                 text: 'New Action',
+                generateId,
                 embeddedAction: {
                     eventHandler: {
                         fnName: 'newFunction',
@@ -1707,6 +1757,7 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.Action,
                 actionKey: 'newAction',
                 text: 'New Action',
+                generateId,
                 embeddedAction: {
                     eventHandler: {
                         fnName: 'newFunction',
@@ -1765,6 +1816,7 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.Action,
                 actionKey: 'action1',
                 text: 'Action 1',
+                generateId,
                 embeddedAction: {
                     eventHandler: {
                         fnName: 'onAction1',
@@ -1791,6 +1843,7 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.Action,
                 actionKey: 'action2',
                 text: 'Action 2',
+                generateId,
                 embeddedAction: {
                     eventHandler: {
                         fnName: 'onAction2',
@@ -1822,6 +1875,7 @@ describe('Building Blocks', () => {
                 actionKey: 'controllerAction',
                 text: 'Controller Action',
                 requiresSelection: false,
+                generateId,
                 embeddedAction: {
                     eventHandler: {
                         fnName: 'controllerAction',
@@ -1872,6 +1926,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata`;
             const buttonGroupsData = {
                 id: 'RichTextButtonGroups',
+                generateId,
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
                 buttonGroups: [{ name: 'clipboard', buttons: 'cut,copy,paste' }, { name: 'undo' }]
             };
@@ -1906,6 +1961,7 @@ describe('Building Blocks', () => {
             const buttonGroupsData = {
                 id: 'RichTextButtonGroups',
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
                 buttonGroups: [
                     { name: 'font-style', buttons: 'bold,italic,underline' },
                     { name: 'clipboard' },
@@ -1947,6 +2003,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata`;
             const buttonGroupsData = {
                 id: 'RichTextButtonGroups',
+                generateId,
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
                 buttonGroups: [{ name: 'clipboard', visible: true, priority: 10 }, { name: 'undo' }]
             };
@@ -1988,6 +2045,7 @@ describe('Building Blocks', () => {
 
             const buttonGroupsData = {
                 id: 'RichTextButtonGroupsPreserve',
+                generateId,
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
                 buttonGroups: [
                     // User keeps 'clipboard' - no new attributes provided
@@ -2045,6 +2103,7 @@ describe('Building Blocks', () => {
             const complexButtonGroupsData = {
                 id: 'RichTextButtonGroupsComplex',
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
                 buttonGroups: [
                     // Keep 'clipboard' but with modified properties (was visible=false, now true; was priority=15, now 10; remove id)
                     { name: 'clipboard', visible: true, priority: 10 },
@@ -2097,6 +2156,7 @@ describe('Building Blocks', () => {
             const buttonGroupsData = {
                 id: 'RichTextButtonGroupsUnknown',
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
                 buttonGroups: [{ name: 'invalid-button-group' }]
             };
             const basePath = join(testAppPath, 'test-rte-button-groups');
@@ -2121,6 +2181,7 @@ describe('Building Blocks', () => {
             const buttonGroupsData = {
                 id: 'RichTextAllButtonGroups',
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
                 buttonGroups: [
                     { name: 'font-style' },
                     { name: 'font' },
@@ -2183,6 +2244,7 @@ describe('Building Blocks', () => {
             const buttonGroupsDataRTE1 = {
                 id: 'RichTextButtonGroups1',
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
                 buttonGroups: [
                     { name: 'font-style', visible: true, priority: 15, buttons: 'bold,italic,underline' },
                     { name: 'table', visible: true, priority: 8 },
@@ -2207,6 +2269,7 @@ describe('Building Blocks', () => {
             const buttonGroupsDataRTE2 = {
                 id: 'RichTextButtonGroups2',
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
                 buttonGroups: [
                     { name: 'clipboard' },
                     { name: 'text-align', buttons: 'alignleft,aligncenter,alignright,alignjustify' },
@@ -2231,6 +2294,7 @@ describe('Building Blocks', () => {
             const buttonGroupsDataRTE3 = {
                 id: 'RichTextButtonGroups3',
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
                 buttonGroups: [
                     { name: 'font', buttons: 'fontselect,fontsizeselect' },
                     { name: 'styleselect', visible: true, priority: 20 },
@@ -2269,6 +2333,7 @@ describe('Building Blocks', () => {
             const emptyButtonGroups = {
                 id: 'EmptyButtonGroups',
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
                 buttonGroups: []
             };
 
@@ -2293,6 +2358,7 @@ describe('Building Blocks', () => {
         const richTextEditorData = {
             id: 'testRichTextEditor',
             buildingBlockType: BuildingBlockType.RichTextEditor,
+            generateId,
             metaPath: {
                 bindingContextType: bindingContextAbsolute,
                 entitySet: 'testEntitySet'
@@ -2364,6 +2430,7 @@ describe('Building Blocks', () => {
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterField2',
                 buildingBlockType: BuildingBlockType.CustomFilterField,
+                generateId,
                 label: 'Custom Filter Field 2',
                 anchor: 'testAnchor',
                 property: 'testProperty',
@@ -2417,6 +2484,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:FilterBar`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterField2',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field 2',
                 anchor: 'testAnchor',
@@ -2460,6 +2528,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterField3',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Existing Filter Field Fragment',
                 anchor: 'testAnchor',
@@ -2515,6 +2584,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterFieldWithFolder',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field With Folder',
                 anchor: 'testAnchor',
@@ -2567,6 +2637,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterFieldNoFolder',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field No Folder',
                 anchor: 'testAnchor',
@@ -2618,6 +2689,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterFieldContent',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field Content',
                 anchor: 'testAnchor',
@@ -2663,6 +2735,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterFieldFragmentContent',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field Fragment Content',
                 anchor: 'testAnchor',
@@ -2717,6 +2790,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterFieldAllProps',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field All Properties',
                 anchor: 'existingFilterField',
@@ -2775,6 +2849,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'minimalCustomFilterField',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Minimal Filter Field',
                 anchor: 'someAnchor',
@@ -2824,6 +2899,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'customFilterFieldWithEventHandler',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Filter Field With Event Handler',
                 anchor: 'someAnchor',
@@ -2919,6 +2995,7 @@ describe('Building Blocks', () => {
             const wrongTypeBuildingBlock = {
                 id: 'wrongType',
                 buildingBlockType: BuildingBlockType.FilterBar, // Wrong type for CustomColumn processor
+                generateId,
                 label: 'Wrong Type'
             };
 
@@ -2943,6 +3020,7 @@ describe('Building Blocks', () => {
             const wrongTypeBuildingBlock = {
                 id: 'wrongType',
                 buildingBlockType: BuildingBlockType.Chart, // Wrong type for CustomFilterField processor
+                generateId,
                 title: 'Wrong Type'
             };
 
@@ -2968,6 +3046,7 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Test Filter Field',
                 anchor: 'testAnchor',
+                generateId,
                 property: 'testProperty',
                 required: false
             };
@@ -2993,6 +3072,7 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumn',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'Test Column',
+                generateId,
                 embededFragment: {
                     typescript: false,
                     content:
@@ -3030,6 +3110,7 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Test Filter Field',
                 anchor: 'testAnchor',
+                generateId,
                 property: 'testProperty',
                 required: false,
                 filterFieldKey: 'testKey',
@@ -3106,6 +3187,7 @@ describe('Building Blocks', () => {
             const buildingBlockData: CustomFilterField = {
                 id: 'newField',
                 buildingBlockType: BuildingBlockType.CustomFilterField,
+                generateId,
                 label: 'New Field',
                 anchor: 'existingField',
                 property: 'testProperty',
@@ -3150,6 +3232,7 @@ describe('Building Blocks', () => {
 
             const buildingBlockData: CustomFilterField = {
                 id: 'newField',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'New Field',
                 anchor: 'existingField',
@@ -3201,6 +3284,7 @@ describe('Building Blocks', () => {
 
             const buildingBlockDataForFilterBar2: CustomFilterField = {
                 id: 'newFieldInBar2',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'New Field in Bar 2',
                 anchor: 'field2',
@@ -3249,6 +3333,7 @@ describe('Building Blocks', () => {
             const buildingBlockDataForTable2: CustomColumn = {
                 id: 'newColumnInTable2',
                 buildingBlockType: BuildingBlockType.CustomColumn,
+                generateId,
                 title: 'New Column in Table 2',
                 position: { placement: Placement.After },
                 embededFragment: {
@@ -3296,6 +3381,7 @@ describe('Building Blocks', () => {
             const buildingBlockData: CustomFilterField = {
                 id: 'newFieldInBar2',
                 buildingBlockType: BuildingBlockType.CustomFilterField,
+                generateId,
                 label: 'New Field',
                 anchor: 'field2',
                 property: 'testProperty',

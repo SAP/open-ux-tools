@@ -18,6 +18,7 @@ import { getTemplatePath } from '../templates';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
 import { getOrAddNamespace } from './prompts/utils/xml';
+import { CONFIG } from '../common/file';
 
 /**
  * Type for embedded fragment data used in building block processing.
@@ -157,7 +158,11 @@ function processCustomColumn(buildingBlockData: BuildingBlock, context: Processi
         columnConfig.eventHandler = processedEventHandler;
     }
 
-    columnConfig.content = getDefaultFragmentContent('Sample Text', processedEventHandler);
+    columnConfig.content = getDefaultFragmentContent(
+        'Sample Text',
+        buildingBlockData.generateId,
+        processedEventHandler
+    );
     if (viewPath && !fs.exists(viewPath)) {
         fs.copyTpl(getTemplatePath(config.templateFile), viewPath, columnConfig);
     }
@@ -180,7 +185,7 @@ function processCustomFilterField(buildingBlockData: BuildingBlock, context: Pro
     }
     const config = getBuildingBlockConfig(BuildingBlockType.CustomFilterField);
 
-    const filterConfig = {
+    let filterConfig = {
         label: buildingBlockData.label,
         property: buildingBlockData.property,
         required: buildingBlockData.required ?? false,
@@ -198,6 +203,12 @@ function processCustomFilterField(buildingBlockData: BuildingBlock, context: Pro
             typescript: buildingBlockData.embededFragment?.typescript,
             templatePath: 'filter/Controller'
         });
+    }
+    const configKey = config.templateFile;
+    const additionnalDataConfig = CONFIG[configKey as keyof typeof CONFIG];
+    if (additionnalDataConfig?.getData) {
+        const additionalContext = additionnalDataConfig.getData(buildingBlockData.generateId, buildingBlockData as any);
+        filterConfig = { ...filterConfig, ...additionalContext };
     }
 
     if (viewPath && !fs.exists(viewPath)) {
