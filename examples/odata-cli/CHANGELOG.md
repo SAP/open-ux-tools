@@ -1,5 +1,23 @@
 # @sap-ux/odata-cli
 
+## 0.17.44
+
+### Patch Changes
+
+- Updated dependencies [4af92b5]
+    - @sap-ux/axios-extension@1.25.18
+
+## 0.17.43
+
+### Patch Changes
+
+- ca2566b: Update fast-xml-parser
+
+    Issue: #37278
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/axios-extension@1.25.17
+
 ## 0.17.42
 
 ### Patch Changes
