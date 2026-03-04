@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.7.0
+
+### Minor Changes
+
+- 51236d3: Add sap-anchor-bar-visible eslint rule.
+
 ## 9.6.10
 
 ### Patch Changes
