@@ -21,7 +21,7 @@
         "@sap-ux-private/playwright": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/yaml": "workspace:*",
-        "@playwright/test": "1.56.1",
+        "@playwright/test": "1.58.2",
         "adm-zip": "0.5.10",
         "dotenv": "16.6.1",
         "express": "4.22.1",
