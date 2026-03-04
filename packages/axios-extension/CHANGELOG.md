@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.25.19
+
+### Patch Changes
+
+- 96e9b9e: fix(deps): update dependency open to v7.4.2
+
+## 1.25.18
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+
 ## 1.25.17
 
 ### Patch Changes

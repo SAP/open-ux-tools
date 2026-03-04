@@ -1,5 +1,19 @@
 # @sap-ux-private/playwright
 
+## 0.2.10
+
+### Patch Changes
+
+- 451b2f0: fix(deps): update dependency @playwright/test to v1.58.2
+
+## 0.2.9
+
+### Patch Changes
+
+- 8017bd3: updates for minimatch
+
+    #37169
+
 ## 0.2.8
 
 ### Patch Changes

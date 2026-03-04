@@ -275,7 +275,7 @@ export async function writeCfTemplates(
 
     if (!fs.exists(join(basePath, 'xs-security.json'))) {
         fs.copyTpl(join(templatePath, 'cf/xs-security.json'), join(basePath, 'xs-security.json'), {
-            projectName: project.name
+            projectName: project.xsSecurityAppName
         });
     }
 }

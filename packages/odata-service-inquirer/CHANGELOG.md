@@ -1,5 +1,47 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.19.4
+
+### Patch Changes
+
+- 2302698: fix(deps): update dependency @sap-ux/edmx-parser to v0.10.0
+- Updated dependencies [2302698]
+- Updated dependencies [96e9b9e]
+    - @sap-ux/inquirer-common@0.11.18
+    - @sap-ux/axios-extension@1.25.19
+    - @sap-ux/fiori-generator-shared@0.13.82
+
+## 2.19.3
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/telemetry@0.6.83
+- @sap-ux/inquirer-common@0.11.17
+- @sap-ux/axios-extension@1.25.18
+- @sap-ux/fiori-generator-shared@0.13.82
+- @sap-ux/project-input-validator@0.6.65
+
+## 2.19.2
+
+### Patch Changes
+
+- Updated dependencies [4af92b5]
+    - @sap-ux/axios-extension@1.25.18
+    - @sap-ux/fiori-generator-shared@0.13.81
+
+## 2.19.1
+
+### Patch Changes
+
+- bda1120: Adds support for connection path option to system selection for authentication
+
+## 2.19.0
+
+### Minor Changes
+
+- 698fd9e: Display an info message when the responsive table is selected.
+
 ## 2.18.13
 
 ### Patch Changes
