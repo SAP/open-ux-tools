@@ -1,22 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { ApprouterExtension } from '../types';
-
-/** Approuter extension handler: Express-like (req, res, next) with optional 4th params from config */
-export type ExtensionHandler = (req: unknown, res: unknown, next: unknown, params?: Record<string, string>) => void;
-
-/** Extension module shape expected from approuter extensions */
-interface ExtensionModule {
-    insertMiddleware?: Record<string, Array<ExtensionHandler | { path?: string; handler: ExtensionHandler }>>;
-}
-
-/**
- * Loaded extension modules and list of extension routes (paths) they register.
- */
-export interface LoadedExtensions {
-    modules: ExtensionModule[];
-    routes: string[];
-}
+import type { ApprouterExtension, ExtensionHandler, ExtensionModule, LoadedExtensions } from '../types';
 
 /**
  * Create a wrapper that injects parameters as 4th argument for approuter extension handlers.

@@ -138,7 +138,6 @@ export function updateUi5ServerDestinationPort(effectiveOptions: EffectiveOption
 
     ui5ServerDest.url = newUrl;
 
-    // Surgically update only ui5-server in process.env.destinations
     const envDestinations = JSON.parse(process.env.destinations ?? '[]') as EnvDestination[];
     const envUi5ServerDest = envDestinations.find((d) => d.name === UI5_SERVER_DESTINATION);
     if (envUi5ServerDest) {

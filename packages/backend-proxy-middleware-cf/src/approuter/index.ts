@@ -5,7 +5,7 @@ import type { XsappConfig } from '../types';
 /**
  * Options for starting the approuter.
  */
-export interface StartApprouterOptions {
+interface StartApprouterOptions {
     /** Port to run the approuter on. */
     port: number;
     /** Parsed xs-app.json configuration. */

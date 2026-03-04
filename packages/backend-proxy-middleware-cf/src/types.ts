@@ -132,3 +132,23 @@ export interface CreateProxyOptions {
     /** Merged options (debug, rewriteContent, etc.). */
     effectiveOptions: EffectiveOptions;
 }
+
+/**
+ * Approuter extension handler: Express-like (req, res, next) with optional 4th params from config
+ */
+export type ExtensionHandler = (req: unknown, res: unknown, next: unknown, params?: Record<string, string>) => void;
+
+/**
+ * Extension module shape expected from approuter extensions
+ */
+export interface ExtensionModule {
+    insertMiddleware?: Record<string, Array<ExtensionHandler | { path?: string; handler: ExtensionHandler }>>;
+}
+
+/**
+ * Loaded extension modules and list of extension routes (paths) they register.
+ */
+export interface LoadedExtensions {
+    modules: ExtensionModule[];
+    routes: string[];
+}
