@@ -16,7 +16,8 @@ export enum BuildingBlockType {
     Table = 'table',
     CustomColumn = 'custom-column',
     RichTextEditor = 'rich-text-editor',
-    RichTextEditorButtonGroups = 'rich-text-editor-button-groups'
+    RichTextEditorButtonGroups = 'rich-text-editor-button-groups',
+    Action = 'action'
 }
 
 /**
@@ -448,6 +449,58 @@ export interface CustomColumn extends BuildingBlock {
     position?: Position;
     embededFragment?: EmbededFragment;
 }
+
+/**
+ * Building block for adding custom actions to tables.
+ * Custom actions can be added to table toolbars and can trigger controller methods or fragments.
+ *
+ * @see https://sapui5.hana.ondemand.com/#/api/sap.fe.macros.table.Action
+ * @example
+ * // Simple action with event handler
+ * <macros:Table id="MyTable" metaPath="@com.sap.vocabularies.UI.v1.LineItem">
+ *   <macros:actions>
+ *     <macrosTable:Action
+ *       key="approveAction"
+ *       text="Approve"
+ *       press=".onApprove"
+ *       requiresSelection="true"
+ *       placement="After"
+ *     />
+ *   </macros:actions>
+ * </macros:Table>
+ * @extends {BuildingBlock}
+ */
+export interface Action extends BuildingBlock {
+    /**
+     * Unique identifier of the action.
+     */
+    actionKey: string;
+    /**
+     * The text that will be displayed for this action.
+     */
+    text: string;
+    /**
+     * Reference to the key of another action already displayed in the toolbar to properly place this one.
+     */
+    anchor?: string;
+    /**
+     * Defines where this action should be placed relative to the defined anchor.
+     * Allowed values are 'Before' and 'After'.
+     */
+    placement?: 'Before' | 'After';
+    /**
+     * Defines if the action requires a selection.
+     *
+     * @default false
+     */
+    requiresSelection?: boolean;
+    /**
+     * This allows you to define event handlers, or custom XML elements for the action.
+     */
+    embeddedAction: EmbeddedAction;
+}
+
+export type EmbeddedAction = EventHandler & CustomFragment & CustomElement;
 
 export type EmbededFragment = EventHandler & CustomFragment & CustomElement & FragmentContentData;
 

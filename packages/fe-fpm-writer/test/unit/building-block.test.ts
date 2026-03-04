@@ -11,7 +11,8 @@ import type {
     Form,
     Table,
     CustomColumn,
-    CustomFilterField
+    CustomFilterField,
+    Action
 } from '../../src';
 
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
@@ -1477,6 +1478,398 @@ describe('Building Blocks', () => {
             expect(fragmentContent).toContain('<Text id="Text" text="Sample Text"');
 
             await writeFilesForDebugging(fs);
+        });
+    });
+
+    describe('Custom Action building block', () => {
+        const testXmlViewContentWithTable = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:Table id="testTable" metaPath="@com.sap.vocabularies.UI.v1.LineItem">
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>`;
+
+        test('generate CustomAction Building blocks', async () => {
+            const basePath = join(testAppPath, 'generate-custom-action-basic');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+            const customActionData: Action = {
+                id: 'testAction1',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'approveAction',
+                text: 'Approve',
+                anchor: 'approveAction',
+                placement: Placement.After,
+                requiresSelection: true,
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onApprove',
+                        fileName: 'ApproveHandlerFile'
+                    },
+                    name: 'approveAction',
+                    folder: 'ext/fragment'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: customActionData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-action-basic');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate multiple CustomActions building blocks', async () => {
+            const basePath = join(testAppPath, 'generate-multiple-custom-actions');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            // Add first action
+            const firstAction: Action = {
+                id: 'testAction5',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'firstAction',
+                text: 'First Action',
+                requiresSelection: false,
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onFirst',
+                        fileName: 'my/test/App/ext/handlers/FirstHandler'
+                    },
+                    name: 'firstAction',
+                    folder: 'ext/fragment'
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: firstAction
+                },
+                fs
+            );
+
+            // Add second action
+            const secondAction: Action = {
+                id: 'testAction6',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'secondAction',
+                text: 'Second Action',
+                anchor: 'firstAction',
+                placement: Placement.After,
+                requiresSelection: true,
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onSecond',
+                        fileName: 'my/test/App/ext/handlers/SecondHandler'
+                    },
+                    name: 'secondAction',
+                    folder: 'ext/fragment'
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: secondAction
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-action-basic');
+        });
+
+        test('generate typescript CustomAction Building blocks', async () => {
+            const basePath = join(testAppPath, 'generate-custom-action-basic-ts');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+            const customActionData: Action = {
+                id: 'testAction1',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'approveAction',
+                text: 'Approve',
+                anchor: 'approveAction',
+                placement: Placement.After,
+                requiresSelection: true,
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onApprove',
+                        fileName: 'ApproveHandlerFile'
+                    },
+                    name: 'approveAction',
+                    folder: 'ext/fragment',
+                    typescript: true
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: customActionData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-action-basic-ts');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('append new function to existing file', async () => {
+            const handlerFileName = 'HandlerFile';
+            const folder = join('ext', 'fragment');
+            const basePath = join(testAppPath, 'generate-multiple-custom-actions');
+            const handlerPath = join(basePath, 'webapp', folder, `${handlerFileName}.js`);
+
+            // Create existing HandlerFile.js file with initial method
+            fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), handlerPath, {
+                eventHandlerFnName: 'onFirst',
+                ns: 'my.test.App.ext.fragment',
+                parameters: []
+            });
+
+            const initialContent = fs.read(handlerPath);
+
+            // Find position to insert new method (before closing brace of return object)
+            const closingBraceIndex = initialContent.lastIndexOf('}');
+            const insertPosition = initialContent.lastIndexOf('}', closingBraceIndex - 1);
+
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            // Add action that appends to existing HandlerFile.js
+            const customAction: Action = {
+                id: 'testAction',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'newAction',
+                text: 'New Action',
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'newFunction',
+                        fileName: 'HandlerFile',
+                        insertScript: {
+                            fragment:
+                                ',\n        newFunction: function() {\n            MessageToast.show("New action invoked.");\n        }',
+                            position: insertPosition
+                        }
+                    },
+                    name: 'customAction',
+                    folder: 'ext/fragment'
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: customAction
+                },
+                fs
+            );
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-action-basic');
+        });
+
+        test('append new function to existing TypeScript file', async () => {
+            const handlerFileName = 'HandlerFile';
+            const folder = join('ext', 'fragment');
+            const basePath = join(testAppPath, 'generate-multiple-custom-actions-ts');
+            const handlerPath = join(basePath, 'webapp', folder, `${handlerFileName}.ts`);
+
+            // Create existing HandlerFile.ts file with initial method
+            fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.ts'), handlerPath, {
+                eventHandlerFnName: 'onFirst',
+                ns: 'my.test.App.ext.fragment',
+                parameters: []
+            });
+
+            const initialContent = fs.read(handlerPath);
+
+            // Find position to insert new method (after the closing brace of first function)
+            const firstFunctionEnd = initialContent.lastIndexOf('}');
+            const insertPosition = firstFunctionEnd + 1;
+
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            const customAction: Action = {
+                id: 'testAction',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'newAction',
+                text: 'New Action',
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'newFunction',
+                        fileName: 'HandlerFile',
+                        insertScript: {
+                            fragment:
+                                '\n\n/**\n * new action handler.\n */\nexport function onNewAction(this: ExtensionAPI) {\n    MessageToast.show("new action invoked.");\n}',
+                            position: insertPosition
+                        }
+                    },
+                    name: 'customAction',
+                    folder: 'ext/fragment',
+                    typescript: true
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: customAction
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-multiple-custom-actions-ts');
+        });
+
+        test('correctly indexes new handlers when parent already has existing handlers', async () => {
+            const basePath = join(testAppPath, 'generate-actions-with-existing-handlers');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+
+            // Create XML with existing handlers already in core:require
+            const testXmlViewWithExistingHandlers = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros" xmlns:macrosTable="sap.fe.macros.table">
+    <Page title="Main">
+        <content>
+            <macros:Table id="testTable" metaPath="@com.sap.vocabularies.UI.v1.LineItem"
+                core:require="{Existing: 'my/test/App/ext/handlers/Existing', Helper: 'my/test/App/ext/utils/Helper'}">
+                <macros:actions>
+                    <macrosTable:Action id="existingAction" key="existingAction" text="Existing" press="Existing.onExisting"/>
+                </macros:actions>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewWithExistingHandlers);
+
+            // Add new action with handler name "Helper" (already exists with different path)
+            const action1: Action = {
+                id: 'testAction1',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'action1',
+                text: 'Action 1',
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onAction1',
+                        fileName: 'Helper'
+                    },
+                    name: 'action1',
+                    folder: 'ext/actions'
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: action1
+                },
+                fs
+            );
+
+            // Add another action with handler name "Existing" (already exists)
+            const action2: Action = {
+                id: 'testAction2',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'action2',
+                text: 'Action 2',
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onAction2',
+                        fileName: 'Existing'
+                    },
+                    name: 'action2',
+                    folder: 'ext/other'
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: action2
+                },
+                fs
+            );
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-actions-with-existing-handlers');
+        });
+
+        test('generate CustomAction with controller file', async () => {
+            const basePath = join(testAppPath, 'generate-custom-action-controller');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+            const customActionData: Action = {
+                id: 'testActionController',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'controllerAction',
+                generateId,
+                text: 'Controller Action',
+                requiresSelection: false,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'controllerAction',
+                        fileName: 'customView.controller'
+                    },
+                    name: 'controllerAction',
+                    folder: 'ext/fragment'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: customActionData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-action-controller');
         });
     });
 
