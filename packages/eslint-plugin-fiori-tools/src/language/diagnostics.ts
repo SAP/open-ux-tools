@@ -2,6 +2,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser';
 import type { SourceLocation } from '@eslint/core';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
+export const ANCHOR_BAR_VISIBLE = 'sap-anchor-bar-visible';
 export const FLEX_ENABLED = 'sap-flex-enabled';
 export const COPY_TO_CLIPBOARD = 'sap-copy-to-clipboard';
 export const ENABLE_EXPORT = 'sap-enable-export';
@@ -21,7 +22,11 @@ export interface WidthIncludingColumnHeaderDiagnostic {
         reference: AnnotationReference;
     };
 }
-
+export interface AnchorBarVisible {
+    type: typeof ANCHOR_BAR_VISIBLE;
+    pageName: string;
+    manifest: ManifestPropertyDiagnosticData;
+}
 export interface ManifestPropertyDiagnosticData {
     uri: string;
     object: Manifest;
@@ -107,6 +112,7 @@ export interface TableColumnVerticalAlignment {
 
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
+    | AnchorBarVisible
     | FlexEnabled
     | CopyToClipboard
     | CreationModeForTable

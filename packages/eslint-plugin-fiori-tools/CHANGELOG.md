@@ -1,5 +1,34 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.7.0
+
+### Minor Changes
+
+- 51236d3: Add sap-anchor-bar-visible eslint rule.
+
+## 9.6.10
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.25
+- @sap-ux/odata-annotation-core@0.2.16
+- @sap-ux/odata-entity-model@0.3.6
+- @sap-ux/odata-vocabularies@0.4.27
+
+## 9.6.9
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/fiori-annotation-api@0.9.24
+
+## 9.6.8
+
+### Patch Changes
+
+- 562469f: Update the readme with .mjs example for configuration
+
 ## 9.6.7
 
 ### Patch Changes

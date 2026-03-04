@@ -1,5 +1,20 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.25
+
+### Patch Changes
+
+- 8017bd3: updates for minimatch
+
+    #37169
+
+## 0.18.24
+
+### Patch Changes
+
+- Updated dependencies [4f7b796]
+    - @sap-ux-private/control-property-editor-common@0.7.7
+
 ## 0.18.23
 
 ### Patch Changes
