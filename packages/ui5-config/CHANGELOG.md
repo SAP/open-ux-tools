@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.29.20
+
+### Patch Changes
+
+- c09b843: (ADP) Add small refactoring to deployment validatiors and remove the redundant ui5 config hasBuilderKey() method.
+
 ## 0.29.19
 
 ### Patch Changes
