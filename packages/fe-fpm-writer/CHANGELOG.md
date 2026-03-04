@@ -1,5 +1,15 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.0
+
+### Minor Changes
+
+- b1c3f49: Support Custom Action Building Blocks
+
+### Patch Changes
+
+- 2b276ec: chore: address minor post-merge comments for generateControlIdsForGeneratedSnippets
+
 ## 0.42.21
 
 ### Patch Changes
