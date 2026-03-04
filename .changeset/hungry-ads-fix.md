@@ -3,4 +3,4 @@
 '@sap-ux/odata-annotation-core-types': patch
 ---
 
-Include `partner` and `containsTarget` attributes from `NavigationProperty` to converted object of `MetadataElementProperties`
+Include `Partner` and `ContainsTarget` attributes from `NavigationProperty` to converted object of `MetadataElementProperties`
