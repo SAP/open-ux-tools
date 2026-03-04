@@ -1,5 +1,27 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.38
+
+### Patch Changes
+
+- a8f4e03: fix(deps): update dependency @sap-ai-sdk/langchain to v2.8.0
+- 2302698: fix(deps): update dependency @sap-ux/edmx-parser to v0.10.0
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.37
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.36
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
 ## 0.6.35
 
 ### Patch Changes

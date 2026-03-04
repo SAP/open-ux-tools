@@ -32,7 +32,7 @@ export class PromptsAPI {
     private cache: { [N in SupportedPrompts as N['type']]?: Prompts<N['answers']> } = {};
 
     /**
-     * Contructore of prompt API.
+     * Constructor of prompt API.
      *
      * @param fs the file system object for reading files
      * @param project
@@ -64,9 +64,7 @@ export class PromptsAPI {
         fs?: Editor,
         options?: PromptContextOptions
     ): Promise<PromptsAPI> {
-        if (!fs) {
-            fs = create(createStorage());
-        }
+        fs = fs ?? create(createStorage());
         await initI18n();
         const project = projectPath ? await getProject(projectPath) : undefined;
 
@@ -186,7 +184,8 @@ export class PromptsAPI {
         const generator = PromptsGeneratorsMap.hasOwnProperty(config.type)
             ? PromptsGeneratorsMap[config.type]
             : undefined;
-        return generator?.(this.context.appPath, config.answers, this.context.fs) ?? this.context.fs;
+        config.answers.buildingBlockData = { ...config.answers.buildingBlockData };
+        return generator?.(this.context.appPath, { ...config.answers }, this.context.fs) ?? this.context.fs;
     }
 
     /**

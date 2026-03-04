@@ -167,7 +167,8 @@
             "choiceResponsive": "Responsive",
             "choiceTree": "Tree",
             "analyticalTableDefault": "The 'Analytical' table type is chosen by default because the selected entity supports it.",
-            "treeTableDefault": "The 'Tree' table type is chosen by default because the selected entity supports it."
+            "treeTableDefault": "The 'Tree' table type is chosen by default because the selected entity supports it.",
+            "responsiveTableInfo": "Only use the responsive table if the total number of items in the table doesn't exceed 200."
         },
         "hierarchyQualifier": {
             "message": "Hierarchy Qualifier",

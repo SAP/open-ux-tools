@@ -1,5 +1,13 @@
 # Change Log
 
+## 5.3.18
+
+### Patch Changes
+
+- 8017bd3: updates for minimatch
+
+    #37169
+
 ## 5.3.17
 
 ### Patch Changes
