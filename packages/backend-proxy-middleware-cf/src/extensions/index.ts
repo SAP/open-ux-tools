@@ -79,24 +79,25 @@ export function toExtensionModule(
     try {
         const extensionModulePath = require.resolve(extension.module, { paths: [rootPath] });
         // eslint-disable-next-line @typescript-eslint/no-require-imports -- dynamic user extension path
-        const extensionModule = require(extensionModulePath) as ExtensionModule;
-        const insertMiddleware = extensionModule?.insertMiddleware;
+        const originalModule = require(extensionModulePath) as ExtensionModule;
+        const insertMiddleware = originalModule?.insertMiddleware;
 
         if (!insertMiddleware) {
-            return extensionModule;
+            return originalModule;
         }
 
+        // Shallow-copy to avoid mutating the require'd module cache
+        const wrappedMiddleware: ExtensionModule['insertMiddleware'] = {};
         for (const type of Object.keys(insertMiddleware)) {
-            insertMiddleware[type] = insertMiddleware[type].map((module) => {
+            wrappedMiddleware[type] = insertMiddleware[type].map((module) => {
                 if (typeof module === 'function') {
                     return createParametersInjector(module, extension.parameters);
                 }
-                module.handler = createParametersInjector(module.handler, extension.parameters);
-                return module;
+                return { ...module, handler: createParametersInjector(module.handler, extension.parameters) };
             });
         }
 
-        return extensionModule;
+        return { ...originalModule, insertMiddleware: wrappedMiddleware };
     } catch {
         logger.warn(`Failed to resolve extension "${extension.module}". Extension will be ignored.`);
         return undefined;

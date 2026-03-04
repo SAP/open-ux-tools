@@ -26,11 +26,9 @@ export function replaceUrl(text: string, oldUrl: string, newUrl: string): string
  * @returns Filter function (pathname) => boolean.
  */
 export function createPathFilter(customRoutes: string[], routes: RouteEntry[]): (pathname: string) => boolean {
+    const compiledCustomRoutes = customRoutes.map((r) => new RegExp(String.raw`^${r}(\?.*)?$`));
     return (pathname: string): boolean => {
-        return (
-            customRoutes.some((r) => new RegExp(String.raw`^${r}(\?.*)?$`).test(pathname)) ||
-            routes.some((route) => route.re.test(pathname))
-        );
+        return compiledCustomRoutes.some((re) => re.test(pathname)) || routes.some((route) => route.re.test(pathname));
     };
 }
 

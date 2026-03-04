@@ -31,15 +31,11 @@ interface ProxyReqResponse extends ServerResponse {
  *
  * @param routes - Route entries with regex and destination URLs.
  * @param effectiveOptions - Merged options (rewriteContent, rewriteContentTypes, debug).
- * @param _baseUri - Base URI of the approuter (unused, kept for API compatibility).
- * @param _logger - Logger instance (unused, kept for API compatibility).
  * @returns The interceptor function to pass to responseInterceptor().
  */
 export function createResponseInterceptor(
     routes: RouteEntry[],
-    effectiveOptions: EffectiveOptions,
-    _baseUri: string,
-    _logger: ToolsLogger
+    effectiveOptions: EffectiveOptions
 ): ReturnType<typeof responseInterceptor> {
     return responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
         const url = req.url ?? '';
@@ -82,7 +78,7 @@ export function createResponseInterceptor(
 export function createProxy(options: CreateProxyOptions, logger: ToolsLogger): RequestHandler {
     const { customRoutes, routes, baseUri, effectiveOptions } = options;
 
-    const intercept = createResponseInterceptor(routes, effectiveOptions, baseUri, logger);
+    const intercept = createResponseInterceptor(routes, effectiveOptions);
     const proxyFilter = createProxyFilter(customRoutes, routes);
 
     const proxyMiddleware = createProxyMiddleware({

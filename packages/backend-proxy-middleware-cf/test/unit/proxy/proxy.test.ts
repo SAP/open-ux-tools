@@ -35,8 +35,6 @@ jest.mock('http-proxy-middleware', () => ({
 
 describe('proxy', () => {
     describe('createResponseInterceptor', () => {
-        const logger = { info: jest.fn() } as unknown as ToolsLogger;
-
         beforeEach(() => {
             capturedInterceptorCallback = null;
         });
@@ -51,9 +49,7 @@ describe('proxy', () => {
             };
             createResponseInterceptor(
                 [route],
-                mergeEffectiveOptions({ xsappJsonPath: './xs-app.json', rewriteContent: true }),
-                'http://localhost:5000',
-                logger
+                mergeEffectiveOptions({ xsappJsonPath: './xs-app.json', rewriteContent: true })
             );
             expect(capturedInterceptorCallback).not.toBeNull();
 
@@ -93,9 +89,7 @@ describe('proxy', () => {
                     xsappJsonPath: './xs-app.json',
                     rewriteContent: true,
                     rewriteContentTypes: ['text/html']
-                }),
-                'http://localhost:5000',
-                logger
+                })
             );
 
             const setHeader = jest.fn();
