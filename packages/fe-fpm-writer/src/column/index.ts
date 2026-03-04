@@ -8,7 +8,7 @@ import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults
 import type { Manifest } from '../common/types';
 import { validateVersion, validateBasePath } from '../common/validate';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, extendJSON } from '../common/file';
+import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 import { getManifest } from '../common/utils';
@@ -37,13 +37,15 @@ export function getManifestRoot(ui5Version?: string): string {
  * @param {CustomTableColumn} data - a custom column configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
+ * @param {(baseId: string) => string} generateId - Function to generate unique IDs for the building block elements.
  * @returns enhanced configuration
  */
 function enhanceConfig(
     fs: Editor,
     data: CustomTableColumn,
     manifestPath: string,
-    manifest: Manifest
+    manifest: Manifest,
+    generateId: IdGeneratorFunction
 ): InternalCustomTableColumn {
     // clone input and set defaults
     const config: CustomTableColumn & Partial<InternalCustomTableColumn> = { ...data };
@@ -62,7 +64,7 @@ function enhanceConfig(
         config.properties && config.properties.length > 0
             ? `{=%{${config.properties.join("} + ' ' + %{")}}}`
             : 'Sample Text';
-    config.content = config.control || getDefaultFragmentContent(content, config.eventHandler);
+    config.content = config.control || getDefaultFragmentContent(content, generateId, config.eventHandler);
 
     return config as InternalCustomTableColumn;
 }
@@ -81,20 +83,19 @@ export async function generateCustomColumn(
     fs?: Editor
 ): Promise<Editor> {
     validateVersion(customColumn.minUI5Version);
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     await validateBasePath(basePath, fs);
+    const fnGenerateId = await createIdGenerator(basePath, fs);
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     // merge with defaults
-    const completeColumn = enhanceConfig(fs, customColumn, manifestPath, manifest);
+    const completeColumn = enhanceConfig(fs, customColumn, manifestPath, manifest, fnGenerateId);
 
     // add fragment
     const viewPath = join(completeColumn.path, `${completeColumn.fragmentFile ?? completeColumn.name}.fragment.xml`);
     if (completeColumn.control || !fs.exists(viewPath)) {
-        copyTpl(fs, getTemplatePath('common/Fragment.xml'), viewPath, completeColumn);
+        copyTpl(fs, getTemplatePath('common/Fragment.xml'), viewPath, completeColumn, fnGenerateId);
     }
 
     // enhance manifest with column definition

@@ -1,5 +1,28 @@
 # @sap-ux/preview-middleware
 
+## 0.23.139
+
+### Patch Changes
+
+- Updated dependencies [4af92b5]
+    - @sap-ux/adp-tooling@0.18.78
+    - @sap-ux/system-access@0.6.60
+
+## 0.23.138
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/adp-tooling@0.18.77
+    - @sap-ux/system-access@0.6.59
+
+## 0.23.137
+
+### Patch Changes
+
+- b68b558: Fix card generator endpoints using wrong paths for CAP projects.
+
 ## 0.23.136
 
 ### Patch Changes
