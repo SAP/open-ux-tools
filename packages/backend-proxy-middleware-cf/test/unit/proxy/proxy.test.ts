@@ -267,7 +267,7 @@ describe('proxy', () => {
                     routes: [],
                     baseUri: 'http://localhost:5000',
                     effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }),
-                    basExternalUrl: new URL('https://port8080-workspaces-xxx.bas.cloud.sap')
+                    basExternalUrl: new URL('https://port8080-workspaces-xxx')
                 },
                 logger
             );
@@ -278,7 +278,7 @@ describe('proxy', () => {
 
             capturedProxyOptions!.on!.proxyReq!(proxyReq, req, res);
 
-            expect(setHeader).toHaveBeenCalledWith('x-forwarded-host', 'port8080-workspaces-xxx.bas.cloud.sap');
+            expect(setHeader).toHaveBeenCalledWith('x-forwarded-host', 'port8080-workspaces-xxx');
             expect(setHeader).toHaveBeenCalledWith('x-forwarded-proto', 'https');
         });
 

@@ -9,7 +9,7 @@ const BAS_PORT_PLACEHOLDER = 0;
  * The template can later be resolved to the real port with {@link resolveBasExternalUrl}.
  *
  * @param logger - Logger instance.
- * @returns URL template string (e.g. "https://port0-ws-xxx.bas.cloud.sap/"), or empty string when not in BAS.
+ * @returns URL template string, or empty string when not in BAS.
  */
 export async function fetchBasUrlTemplate(logger: ToolsLogger): Promise<string> {
     if (!isAppStudio()) {

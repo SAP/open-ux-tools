@@ -282,8 +282,8 @@ describe('middleware', () => {
     });
 
     test('should call fetchBasUrlTemplate during setup and pass resolved URL to createProxy', async () => {
-        const basUrl = new URL('https://port8080-workspaces-xxx.bas.cloud.sap/');
-        fetchBasUrlTemplateMock.mockResolvedValue('https://port0-workspaces-xxx.bas.cloud.sap/');
+        const basUrl = new URL('https://port8080-workspaces-xxx/');
+        fetchBasUrlTemplateMock.mockResolvedValue('https://port0-workspaces-xxx/');
         resolveBasExternalUrlMock.mockReturnValue(basUrl);
 
         const handler = await middleware({
@@ -298,7 +298,7 @@ describe('middleware', () => {
         const mockNext = jest.fn();
         (handler as (req: unknown, res: unknown, next: () => void) => void)(mockReq, mockRes, mockNext);
 
-        expect(resolveBasExternalUrlMock).toHaveBeenCalledWith('https://port0-workspaces-xxx.bas.cloud.sap/', 8080);
+        expect(resolveBasExternalUrlMock).toHaveBeenCalledWith('https://port0-workspaces-xxx/', 8080);
         const [proxyOptions] = createProxyMock.mock.calls[0] as [{ basExternalUrl?: URL }];
         expect(proxyOptions.basExternalUrl).toBe(basUrl);
     });
