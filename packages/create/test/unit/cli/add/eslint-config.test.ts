@@ -55,7 +55,7 @@ describe('Test command add eslint-config', () => {
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(runNpmInstallSpy).toHaveBeenCalledWith(appRoot);
+        expect(runNpmInstallSpy).toHaveBeenCalledWith(appRoot, undefined, { logger: loggerMock });
     });
 
     test('Test create-fiori add eslint-config <appRoot> --simulate', async () => {
