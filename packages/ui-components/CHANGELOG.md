@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 2.0.0
+
+### Major Changes
+
+- c4839f5: update border radius for UI components to improve consistency
+
+## 1.27.10
+
+### Patch Changes
+
+- 88a1f57: fix(deps): update dependency storybook to v8.6.17 [security]
+
 ## 1.27.9
 
 ### Patch Changes
