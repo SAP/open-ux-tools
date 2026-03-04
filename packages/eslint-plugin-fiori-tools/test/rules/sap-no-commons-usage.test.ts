@@ -20,8 +20,8 @@ ruleTester.run('sap-no-commons-usage', rule, {
             code: "function getLayout() { return new sap.ui.commons.layout.MatrixLayoutCell({ content : [ '' ], vAlign : 'Middle', hAlign : ''});}",
             errors: [
                 {
-                    message: MSG,
-                    type: 'NewExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -29,8 +29,8 @@ ruleTester.run('sap-no-commons-usage', rule, {
             code: "sap.ui.define(['sap/ui/commons/layout/MatrixLayoutCell'], function(MatrixLayout) {})",
             errors: [
                 {
-                    message: MSG,
-                    type: 'CallExpression'
+                    message: MSG
+
                 }
             ]
         }

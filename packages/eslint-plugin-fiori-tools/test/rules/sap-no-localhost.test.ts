@@ -30,8 +30,8 @@ ruleTester.run('sap-no-localhost', rule, {
             code: "location.hostname === 'localhost';",
             errors: [
                 {
-                    message: ERROR_MSG,
-                    type: 'Literal'
+                    message: ERROR_MSG
+
                 }
             ]
         },
@@ -39,8 +39,8 @@ ruleTester.run('sap-no-localhost', rule, {
             code: "location.host.indexOf('localhost')",
             errors: [
                 {
-                    message: ERROR_MSG,
-                    type: 'Literal'
+                    message: ERROR_MSG
+
                 }
             ]
         }

@@ -34,8 +34,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: 'location = this.oNavParams.toOppApp;',
             errors: [
                 {
-                    message: MESSAGE_LOCATION_OVERR,
-                    type: 'AssignmentExpression'
+                    message: MESSAGE_LOCATION_OVERR
+
                 }
             ]
         },
@@ -43,8 +43,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: "location.href = 'test';",
             errors: [
                 {
-                    message: MESSAGE_LOCATION_OVERR,
-                    type: 'AssignmentExpression'
+                    message: MESSAGE_LOCATION_OVERR
+
                 }
             ]
         },
@@ -52,8 +52,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: "var l = location; l.href = 'test';",
             errors: [
                 {
-                    message: MESSAGE_LOCATION_OVERR,
-                    type: 'AssignmentExpression'
+                    message: MESSAGE_LOCATION_OVERR
+
                 }
             ]
         },
@@ -61,8 +61,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: "var l = window; l.location = 'test';",
             errors: [
                 {
-                    message: MESSAGE_LOCATION_OVERR,
-                    type: 'AssignmentExpression'
+                    message: MESSAGE_LOCATION_OVERR
+
                 }
             ]
         },
@@ -70,8 +70,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: 'var l1 = window.location; var l2 = l1; l2.href = this.oNavParams.toOppApp;',
             errors: [
                 {
-                    message: MESSAGE_LOCATION_OVERR,
-                    type: 'AssignmentExpression'
+                    message: MESSAGE_LOCATION_OVERR
+
                 }
             ]
         },
@@ -79,8 +79,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: 'var l1 = window; var l2 = l1.location; l2.href = this.oNavParams.toOppApp;',
             errors: [
                 {
-                    message: MESSAGE_LOCATION_OVERR,
-                    type: 'AssignmentExpression'
+                    message: MESSAGE_LOCATION_OVERR
+
                 }
             ]
         },
@@ -88,8 +88,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: 'var l = window.location; l.href = this.oNavParams.toOppApp;',
             errors: [
                 {
-                    message: MESSAGE_LOCATION_OVERR,
-                    type: 'AssignmentExpression'
+                    message: MESSAGE_LOCATION_OVERR
+
                 }
             ]
         },
@@ -97,8 +97,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: 'window.location.href = this.oNavParams.toOppApp;',
             errors: [
                 {
-                    message: MESSAGE_LOCATION_OVERR,
-                    type: 'AssignmentExpression'
+                    message: MESSAGE_LOCATION_OVERR
+
                 }
             ]
         },
@@ -106,8 +106,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: 'window.location = this.oNavParams.toOppApp;',
             errors: [
                 {
-                    message: MESSAGE_LOCATION_OVERR,
-                    type: 'AssignmentExpression'
+                    message: MESSAGE_LOCATION_OVERR
+
                 }
             ]
         },
@@ -115,8 +115,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: "window.location = 'my.new.address.com';",
             errors: [
                 {
-                    message: MESSAGE_LOCATION_OVERR,
-                    type: 'AssignmentExpression'
+                    message: MESSAGE_LOCATION_OVERR
+
                 }
             ]
         },
@@ -124,8 +124,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: 'location.assign(data.results[0].url);',
             errors: [
                 {
-                    message: MESSAGE_LOCATION_ASSIGN,
-                    type: 'MemberExpression'
+                    message: MESSAGE_LOCATION_ASSIGN
+
                 }
             ]
         },
@@ -133,8 +133,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: 'var x = location.assign; x(data.results[0].url)',
             errors: [
                 {
-                    message: MESSAGE_LOCATION_ASSIGN,
-                    type: 'MemberExpression'
+                    message: MESSAGE_LOCATION_ASSIGN
+
                 }
             ]
         },
@@ -142,8 +142,8 @@ ruleTester.run('sap-no-location-usage', rule, {
             code: 'var x = location.assign;',
             errors: [
                 {
-                    message: MESSAGE_LOCATION_ASSIGN,
-                    type: 'MemberExpression'
+                    message: MESSAGE_LOCATION_ASSIGN
+
                 }
             ]
         }

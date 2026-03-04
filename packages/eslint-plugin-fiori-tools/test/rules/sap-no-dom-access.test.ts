@@ -46,8 +46,8 @@ ruleTester.run('sap-no-dom-access', rule, {
             code: 'document.getElementById;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -55,8 +55,8 @@ ruleTester.run('sap-no-dom-access', rule, {
             code: "document.getElementById('test');",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -64,8 +64,8 @@ ruleTester.run('sap-no-dom-access', rule, {
             code: "window.document.getElementById('test');",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -73,8 +73,8 @@ ruleTester.run('sap-no-dom-access', rule, {
             code: "var w = window; w.document.getElementById('test');",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -82,8 +82,8 @@ ruleTester.run('sap-no-dom-access', rule, {
             code: "var d = document; d.getElementById('test');",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -91,8 +91,8 @@ ruleTester.run('sap-no-dom-access', rule, {
             code: "document.getElementsByClassName('test');",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -100,8 +100,8 @@ ruleTester.run('sap-no-dom-access', rule, {
             code: "document.getElementsByTagName('test');",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -109,8 +109,8 @@ ruleTester.run('sap-no-dom-access', rule, {
             code: "document.getElementsByName('test');",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         }

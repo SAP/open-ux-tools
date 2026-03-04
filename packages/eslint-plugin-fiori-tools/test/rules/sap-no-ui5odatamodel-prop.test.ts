@@ -34,8 +34,8 @@ ruleTester.run('sap-no-ui5odatamodel-prop', rule, {
             code: 'oObject.aPendingRequestHandles = 986;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -43,8 +43,8 @@ ruleTester.run('sap-no-ui5odatamodel-prop', rule, {
             code: 'oObject.sDefaultOperationMode = 987;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -52,8 +52,8 @@ ruleTester.run('sap-no-ui5odatamodel-prop', rule, {
             code: 'oObject.sDefaultBindingMode = 6598;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         }

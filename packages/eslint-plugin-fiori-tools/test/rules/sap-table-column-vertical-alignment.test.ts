@@ -68,7 +68,7 @@ const getManifest = (
     return getManifestAsCode(V2_MANIFEST, manifestChanges);
 };
 
-ruleTester.run(TEST_NAME, rule, {
+ruleTester.run(TEST_NAME, rule as any, {
     valid: [
         createValidTest(
             {

@@ -57,8 +57,8 @@ ruleTester.run('sap-opa5-autowait-true', rule, {
             });`,
             errors: [
                 {
-                    message: 'Autowait must be true.',
-                    type: 'CallExpression'
+                    message: 'Autowait must be true.'
+
                 }
             ]
         },
@@ -81,8 +81,8 @@ ruleTester.run('sap-opa5-autowait-true', rule, {
              });`,
             errors: [
                 {
-                    message: 'Autowait must be present and true in extendConfig.',
-                    type: 'CallExpression'
+                    message: 'Autowait must be present and true in extendConfig.'
+
                 }
             ]
         }

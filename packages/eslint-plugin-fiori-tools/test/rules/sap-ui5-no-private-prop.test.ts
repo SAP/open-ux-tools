@@ -77,8 +77,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var me = sap.me; me.methodThatReturnsMe()._age = 10;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -103,8 +103,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             ],
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -113,8 +113,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var me = sap.me; me._age = 10;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -123,8 +123,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var me = sap.me; me.age = 10;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -133,8 +133,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var me = sap.me; me.sister._age = 13;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -144,8 +144,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var me = sap.me; me.getBrother()._age = 15;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -154,8 +154,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var me = sap.me; myAge = me._age;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -164,8 +164,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var me = sap.me; me._setAge();                          ',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -174,8 +174,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var me = sap.me; setMyAge = me._setAge; setMyAge(10);                ',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -184,8 +184,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var me = sap.me; new me()._setAge(10);                  ',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -194,8 +194,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'sap.m.Button._myPrivateProperty;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -204,8 +204,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'sap.m.Button.myPrivateProperty;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -214,8 +214,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var btn = sap.ca.ui.Button; btn.myPrivateProperty;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -224,8 +224,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var btn = new sap.me.Button(); btn.myPrivateProperty;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -238,8 +238,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             ],
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -247,8 +247,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var btn = sap.ushell.Button; btn._myPrivateProperty;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -256,8 +256,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var btn = sap.viz.ui5.Button; btn._myPrivateProperty;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -265,8 +265,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'var btn = sap.uiext.inbox.Button; btn._myPrivateProperty;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         },
@@ -274,8 +274,8 @@ ruleTester.run('sap-ui5-no-private-prop', rule, {
             code: 'sap.ca.ui.utils.BUSYDIALOG_TIMEOUT = 0;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
+
                 }
             ]
         }

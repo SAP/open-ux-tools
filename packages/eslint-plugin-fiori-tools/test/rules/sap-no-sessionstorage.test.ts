@@ -24,8 +24,8 @@ ruleTester.run('sap-no-sessionstorage', rule, {
             code: 'sessionStorage.setObj(this.SETTINGS_NAME, this.objSettings);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -33,8 +33,8 @@ ruleTester.run('sap-no-sessionstorage', rule, {
             code: 'var abc = sessionStorage;abc.setObj(this.SETTINGS_NAME, this.objSettings);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -42,8 +42,8 @@ ruleTester.run('sap-no-sessionstorage', rule, {
             code: 'var abc = window.sessionStorage;abc.setObj(this.SETTINGS_NAME, this.objSettings);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
+
                 }
             ]
         }

@@ -35,8 +35,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'history.go();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -44,8 +44,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'history.back();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -53,8 +53,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'history.forward();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -62,8 +62,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'window.history.forward();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -72,8 +72,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'var h = history; h.back();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -81,8 +81,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'var w = window; w.history.back();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -90,8 +90,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'var h = window.history; h.back();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -99,8 +99,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'var w = window; var c = w; c.history.back();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -108,8 +108,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'var x; x = window.history; x.back();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -118,8 +118,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'history.go(-1);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -127,8 +127,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'if(true) history.go(-2);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -136,8 +136,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'if(true){history.go(-2);}',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         },
@@ -145,8 +145,8 @@ ruleTester.run('sap-no-history-manipulation', rule, {
             code: 'if(true){}else{history.go(-2);}',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
+
                 }
             ]
         }

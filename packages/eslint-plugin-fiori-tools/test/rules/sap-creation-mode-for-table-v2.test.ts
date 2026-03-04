@@ -14,7 +14,7 @@ const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 //------------------------------------------------------------------------------
 // FE V2 Tests
 //------------------------------------------------------------------------------
-ruleTester.run(TEST_NAME, createTableRule, {
+ruleTester.run(TEST_NAME, createTableRule as any, {
     valid: [
         createValidTest(
             {

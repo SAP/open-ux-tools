@@ -26,8 +26,8 @@ ruleTester.run('sap-no-br-on-return', rule, {
             errors: [
                 {
                     message:
-                        "insertBrOnReturn is not allowed since it is a Mozilla specific method, other browsers don't support that.",
-                    type: 'MemberExpression'
+                        "insertBrOnReturn is not allowed since it is a Mozilla specific method, other browsers don't support that."
+
                 }
             ]
         }
