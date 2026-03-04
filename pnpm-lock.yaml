@@ -895,8 +895,8 @@ importers:
         specifier: '>=4.17.23'
         version: 4.17.23
       open:
-        specifier: 7.0.3
-        version: 7.0.3
+        specifier: 7.4.2
+        version: 7.4.2
       proxy-from-env:
         specifier: 1.1.0
         version: 1.1.0
@@ -15150,8 +15150,8 @@ packages:
     resolution: {integrity: sha512-smsWv2LzFjP03xmvFoJ331ss6h+jixfA4UUV/Bsiyuu4YJPfN+FIQGOIiv4w9/+MoHkfkJ22UIaQWRVFRfH6Vw==}
     engines: {node: '>=20'}
 
-  open@7.0.3:
-    resolution: {integrity: sha512-sP2ru2v0P290WFfv49Ap8MF6PkzGNnGlAwHweB4WR4mr5d2d0woiCluUeJ218w7/+PmoBy9JmYgD5A4mLcWOFA==}
+  open@7.4.2:
+    resolution: {integrity: sha512-MVHddDVweXZF3awtlAS+6pgKLlm/JgxZ90+/NBurBoQctVOOB/zDdVjcyPzQ+0laDGbsWgrRkflI65sQeOgT9Q==}
     engines: {node: '>=8'}
 
   open@8.4.2:
@@ -31873,7 +31873,7 @@ snapshots:
       powershell-utils: 0.1.0
       wsl-utils: 0.3.1
 
-  open@7.0.3:
+  open@7.4.2:
     dependencies:
       is-docker: 2.2.1
       is-wsl: 2.2.0
