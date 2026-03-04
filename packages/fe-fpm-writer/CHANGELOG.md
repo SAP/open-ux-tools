@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.42.21
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.25
+
+## 0.42.20
+
+### Patch Changes
+
+- efc4ec1: Ensure generated fragments and views use stable control IDs in their initial snippets.
+
 ## 0.42.19
 
 ### Patch Changes
