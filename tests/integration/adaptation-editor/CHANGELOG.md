@@ -1,5 +1,19 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.60
+
+### Patch Changes
+
+- 451b2f0: fix(deps): update dependency @playwright/test to v1.58.2
+- Updated dependencies [451b2f0]
+    - @sap-ux-private/playwright@0.2.10
+
+## 0.0.59
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+
 ## 0.0.58
 
 ### Patch Changes

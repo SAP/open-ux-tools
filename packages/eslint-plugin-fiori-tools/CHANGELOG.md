@@ -1,5 +1,24 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.7.2
+
+### Patch Changes
+
+- 4dcf980: fix(deps): update dependency @eslint/config-helpers to v0.5.2
+
+## 9.7.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/fiori-annotation-api@0.9.26
+
+## 9.7.0
+
+### Minor Changes
+
+- 51236d3: Add sap-anchor-bar-visible eslint rule.
+
 ## 9.6.10
 
 ### Patch Changes

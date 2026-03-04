@@ -1,5 +1,28 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.7.14
+
+### Patch Changes
+
+- Updated dependencies [2302698]
+- Updated dependencies [96e9b9e]
+    - @sap-ux/inquirer-common@0.11.18
+    - @sap-ux/axios-extension@1.25.19
+    - @sap-ux/fiori-generator-shared@0.13.82
+    - @sap-ux/system-access@0.6.61
+
+## 1.7.13
+
+### Patch Changes
+
+- c09b843: (ADP) Add small refactoring to deployment validatiors and remove the redundant ui5 config hasBuilderKey() method.
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+    - @sap-ux/inquirer-common@0.11.17
+    - @sap-ux/axios-extension@1.25.18
+    - @sap-ux/fiori-generator-shared@0.13.82
+    - @sap-ux/system-access@0.6.60
+
 ## 1.7.12
 
 ### Patch Changes
