@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.7.2
+
+### Patch Changes
+
+- 4dcf980: fix(deps): update dependency @eslint/config-helpers to v0.5.2
+
 ## 9.7.1
 
 ### Patch Changes
