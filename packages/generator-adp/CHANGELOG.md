@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.15
+
+### Patch Changes
+
+- 2d42592: fix: Various fixes for Adaptation Project for Cloud Foundry scenario
+- Updated dependencies [2d42592]
+    - @sap-ux/adp-tooling@0.18.79
+
 ## 0.9.14
 
 ### Patch Changes
