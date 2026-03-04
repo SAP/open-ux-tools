@@ -5,7 +5,7 @@
     "author": "@SAP/ux-tools-team",
     "private": true,
     "devDependencies": {
-        "@changesets/cli": "2.29.8",
+        "@changesets/cli": "2.30.0",
         "@eslint/eslintrc": "3.3.3",
         "@eslint/js": "9.22.0",
         "@playwright/test": "1.56.1",
