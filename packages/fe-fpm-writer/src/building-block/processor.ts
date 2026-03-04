@@ -434,7 +434,7 @@ function updateAggregationPath(
 }
 
 /**
- * Processes custom action building block.
+ * Processes custom action building blocks.
  *
  * @param buildingBlockData - The building block data
  * @param context - Processing context
