@@ -96,7 +96,7 @@ const rule: RuleDefinition = {
             const objectExpr = asObjectExpression(node);
             if (objectExpr) {
                 // Get property list from object expression
-                const propertyList = objectExpr.properties as unknown[];
+                const propertyList = objectExpr.properties;
                 // Go through the properties
                 let property: { type?: string; key?: unknown; value?: unknown };
                 for (const key in propertyList) {
@@ -106,9 +106,9 @@ const rule: RuleDefinition = {
                         propertyList.hasOwnProperty(key) &&
                         (property = propertyList[key] as { type?: string; key?: unknown; value?: unknown }) &&
                         property.type === T_PROPERTY &&
-                        getLiteralOrIdentifiertName(property.key as ASTNode) === propertyName
+                        getLiteralOrIdentifiertName(property.key) === propertyName
                     ) {
-                        return property.value as ASTNode;
+                        return property.value;
                     }
                 }
             }
