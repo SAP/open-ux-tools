@@ -155,49 +155,6 @@ describe('convertEslintConfig', () => {
             }
         });
 
-        /* todo: re-add these tests once the non-existance of the eslint-plugin-fiori-custom devDependency prerequisite is confirmed
-        test('should fail when eslint-plugin-fiori-custom dependency exists', async () => {
-            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
-            // Add eslint-plugin-fiori-custom to package.json in memory
-            const packageJsonPath = join(basePath, 'package.json');
-            const packageJson = fs.readJSON(packageJsonPath) as Package;
-            packageJson.devDependencies!['eslint-plugin-fiori-custom'] = '^1.0.0';
-            fs.writeJSON(packageJsonPath, packageJson);
-
-            try {
-                await convertEslintConfig(basePath, { logger: loggerMock, fs });
-                fail('Error should have been thrown');
-            } catch (error) {
-                expect(error.message).toContain('The prerequisites are not met');
-                expect(errorMock).toHaveBeenCalledWith(
-                    expect.stringContaining('Found eslint-plugin-fiori-custom dependency')
-                );
-                expect(errorMock).toHaveBeenCalledWith(
-                    expect.stringContaining('This plugin is not compatible with ESLint version 9')
-                );
-            }
-        });
-
-        test('should fail when @sap-ux/eslint-plugin-fiori-tools dependency does not exist', async () => {
-            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
-            // Remove @sap-ux/eslint-plugin-fiori-tools from package.json in memory
-            const packageJsonPath = join(basePath, 'package.json');
-            const packageJson = fs.readJSON(packageJsonPath) as Package;
-            delete packageJson.devDependencies!['@sap-ux/eslint-plugin-fiori-tools'];
-            fs.writeJSON(packageJsonPath, packageJson);
-
-            try {
-                await convertEslintConfig(basePath, { logger: loggerMock, fs });
-                fail('Error should have been thrown');
-            } catch (error) {
-                expect(error.message).toContain('The prerequisites are not met');
-                expect(errorMock).toHaveBeenCalledWith(
-                    expect.stringContaining('No @sap-ux/eslint-plugin-fiori-tools dependency found')
-                );
-            }
-        });
-        */
-
         test('should fail when .eslintrc.json does not exist', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/missing-config');
             // Add eslint and fiori-tools plugin to package.json in memory
@@ -313,6 +270,7 @@ describe('convertEslintConfig', () => {
             const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
 
             const rawExtends = eslintConfig.extends;
+            // eslint-disable-next-line no-nested-ternary
             const extendsArray: string[] = Array.isArray(rawExtends) ? rawExtends : rawExtends ? [rawExtends] : [];
             expect(extendsArray.some((e) => e.includes('@sap-ux/eslint-plugin-fiori-tools'))).toBe(false);
         });
@@ -481,7 +439,7 @@ describe('convertEslintConfig', () => {
             ).length;
             expect(importCount).toBe(1);
 
-            const spreadCount = (firstContent.match(/\.\.\.fioriTools\.configs\['recommended'\]/g) ?? []).length;
+            const spreadCount = (firstContent.match(/\.\.\.fioriTools\.configs\['recommended']/g) ?? []).length;
             expect(spreadCount).toBe(1);
         });
 
@@ -489,9 +447,7 @@ describe('convertEslintConfig', () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            expect(debugMock).toHaveBeenCalledWith(
-                expect.stringContaining('Injected SAP Fiori tools plugin into')
-            );
+            expect(debugMock).toHaveBeenCalledWith(expect.stringContaining('Injected SAP Fiori tools plugin into'));
         });
     });
 
@@ -676,6 +632,7 @@ describe('convertEslintConfig', () => {
             const eslintrcPath = join(basePath, '.eslintrc.json');
             const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
             const rawExtends = eslintConfig.extends;
+            // eslint-disable-next-line no-nested-ternary
             const extendsArray: string[] = Array.isArray(rawExtends) ? rawExtends : rawExtends ? [rawExtends] : [];
             expect(extendsArray.some((e) => e.includes('@sap-ux/eslint-plugin-fiori-tools'))).toBe(false);
             expect(eslintConfig.plugins ?? []).not.toContain('@sap-ux/eslint-plugin-fiori-tools');
