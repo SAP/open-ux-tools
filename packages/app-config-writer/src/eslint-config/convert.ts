@@ -58,8 +58,9 @@ export async function convertEslintConfig(
         throw new Error('The prerequisites are not met. For more information, see the log messages above.');
     }
 
-    await addFioriToolsToExistingConfig(basePath, fs, options.config, logger);
+    await removeFioriToolsFromExistingConfig(basePath, fs, logger);
     await runMigrationCommand(basePath, fs);
+    await injectFioriToolsIntoMigratedConfig(basePath, fs, options.config, logger);
     await updatePackageJson(basePath, fs);
 
     return fs;
@@ -120,20 +121,15 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
 }
 
 /**
- * Adds SAP Fiori tools plugin to existing eslint configuration.
+ * Removes all traces of the SAP Fiori tools plugin from the existing legacy eslint configuration,
+ * so that the migration tool does not attempt to translate it and produce broken output.
  *
  * @param basePath - base path to be used for the conversion
  * @param fs - file system reference
- * @param config - the name of the SAP Fiori tools eslint plugin config to be used
  * @param logger - logger to report info to the user
  * @throws {Error} if the existing .eslintrc.json file is not a valid JSON object
  */
-async function addFioriToolsToExistingConfig(
-    basePath: string,
-    fs: Editor,
-    config = 'recommended',
-    logger?: ToolsLogger
-): Promise<void> {
+async function removeFioriToolsFromExistingConfig(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<void> {
     const eslintrcJsonPath = join(basePath, '.eslintrc.json');
     const eslintrcPath = join(basePath, '.eslintrc');
     const configPath = fs.exists(eslintrcJsonPath) ? eslintrcJsonPath : eslintrcPath;
@@ -143,32 +139,75 @@ async function addFioriToolsToExistingConfig(
         throw new Error(`Existing eslint config at path '${configPath}' is not a valid JSON object.`);
     }
 
-    eslintConfig.plugins ??= [];
-    eslintConfig.extends ??= [];
-
-    if (!eslintConfig.plugins.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)) {
-        eslintConfig.plugins.push(packageName.ESLINT_PLUGIN_FIORI_TOOLS);
+    // Remove fiori-tools from plugins array
+    if (Array.isArray(eslintConfig.plugins)) {
+        eslintConfig.plugins = eslintConfig.plugins.filter(
+            (plugin) => !plugin.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)
+        );
+        if (eslintConfig.plugins.length === 0) {
+            delete eslintConfig.plugins;
+        }
     }
 
-    const fioriConfig = `plugin:${packageName.ESLINT_PLUGIN_FIORI_TOOLS}/${config}`;
-
+    // Remove fiori-tools entries from extends
     if (typeof eslintConfig.extends === 'string') {
-        eslintConfig.extends = eslintConfig.extends.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)
-            ? fioriConfig
-            : [eslintConfig.extends, fioriConfig];
+        if (eslintConfig.extends.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)) {
+            delete eslintConfig.extends;
+        }
     } else if (Array.isArray(eslintConfig.extends)) {
-        const fioriToolsIndex = eslintConfig.extends.findIndex((config) =>
-            config.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)
+        eslintConfig.extends = eslintConfig.extends.filter(
+            (ext) => !ext.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)
         );
-        if (fioriToolsIndex === -1) {
-            eslintConfig.extends.push(fioriConfig);
-        } else {
-            eslintConfig.extends[fioriToolsIndex] = fioriConfig;
+        if (eslintConfig.extends.length === 0) {
+            delete eslintConfig.extends;
         }
     }
 
     fs.writeJSON(configPath, eslintConfig);
-    logger?.debug(`Applied SAP Fiori tools settings to ${configPath}`);
+    logger?.debug(`Removed SAP Fiori tools plugin references from ${configPath}`);
+}
+
+/**
+ * Injects the SAP Fiori tools plugin import and config spread into the migrated flat-config file.
+ *
+ * After the migration tool produces `eslint.config.mjs`, this function:
+ * 1. Prepends `import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';` to the imports section.
+ * 2. Inserts `...fioriTools.configs.recommended` (or the requested config variant) as the last
+ *    element of the exported config array, right before the closing `]);`.
+ *
+ * @param basePath - base path of the project
+ * @param fs - file system reference
+ * @param config - the name of the SAP Fiori tools eslint plugin config to be used
+ * @param logger - logger to report info to the user
+ */
+async function injectFioriToolsIntoMigratedConfig(
+    basePath: string,
+    fs: Editor,
+    config = 'recommended',
+    logger?: ToolsLogger
+): Promise<void> {
+    const migratedConfigPath = join(basePath, 'eslint.config.mjs');
+    let content = fs.read(migratedConfigPath);
+
+    const importStatement = `import fioriTools from '${packageName.ESLINT_PLUGIN_FIORI_TOOLS}';\n`;
+    if (!content.includes(importStatement)) {
+        content = importStatement + content;
+    }
+
+    const lastBracketIndex = content.lastIndexOf(']);');
+    if (lastBracketIndex !== -1) {
+        content =
+            content.slice(0, lastBracketIndex) +
+            `,\n    ...fioriTools.configs['${config}'],\n` +
+            content.slice(lastBracketIndex);
+    } else {
+        throw new Error(
+            'Unexpected format of migrated eslint config. Could not inject the SAP Fiori tools plugin configuration.'
+        );
+    }
+
+    fs.write(migratedConfigPath, content);
+    logger?.debug(`Injected SAP Fiori tools plugin into ${migratedConfigPath}`);
 }
 
 /**

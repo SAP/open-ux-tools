@@ -54,7 +54,7 @@ async function convertEslintConfig(
         if (!simulate) {
             fs.commit(() => {
                 logger.info(
-                    `ESlint configuration converted. Ensure you install the new dependency by executing 'npm install'.`
+                    `ESlint configuration converted. Ensure you delete the old artifacts such as '.eslintrc.json' or '.eslintignore' once you ensured that the conversion was successful.`
                 );
                 if (skipInstall) {
                     logger.info(
