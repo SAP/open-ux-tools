@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.39
+
+### Patch Changes
+
+- afd2fa2: feat: add icon and title to mcp server
+
 ## 0.6.38
 
 ### Patch Changes
