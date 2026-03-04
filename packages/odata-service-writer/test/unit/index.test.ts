@@ -875,6 +875,77 @@ describe('remove', () => {
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(false);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(false);
     });
+
+    describe('Preview settings with client and destination', () => {
+        beforeEach(async () => {
+            fs = create(createStorage());
+            fs.writeJSON(join(testDir, 'webapp/manifest.json'), {
+                'sap.app': { id: 'testappid' }
+            });
+            fs.writeJSON(join(testDir, 'package.json'), {});
+            const ui5Yaml = (await UI5Config.newInstance(''))
+                .addFioriToolsProxyMiddleware({ ui5: {}, backend: [] })
+                .toString();
+            fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
+        });
+
+        it('should copy client to previewSettings when service has client', async () => {
+            const config: OdataService = {
+                url: 'https://localhost',
+                path: '/sap/odata/test',
+                version: OdataVersion.v2,
+                client: '100',
+                metadata: '<edmx:Edmx/>'
+            };
+
+            await generate(testDir, config, fs);
+
+            // Verify client is copied to both backend and previewSettings would have it
+            const yaml = fs.read(join(testDir, 'ui5.yaml'));
+            expect(yaml).toContain("client: '100'");
+        });
+
+        it('should copy destination with instance to previewSettings', async () => {
+            const config: OdataService = {
+                url: 'https://localhost',
+                path: '/sap/odata/test',
+                version: OdataVersion.v2,
+                destination: {
+                    name: 'myDestination',
+                    instance: 'myInstance'
+                },
+                metadata: '<edmx:Edmx/>'
+            };
+
+            await generate(testDir, config, fs);
+
+            // Verify destination and instance are in the yaml
+            const yaml = fs.read(join(testDir, 'ui5.yaml'));
+            expect(yaml).toContain('destination: myDestination');
+            expect(yaml).toContain('destinationInstance: myInstance');
+        });
+
+        it('should handle service with both client and destination instance', async () => {
+            const config: OdataService = {
+                url: 'https://localhost',
+                path: '/sap/odata/test',
+                version: OdataVersion.v2,
+                client: '200',
+                destination: {
+                    name: 'testDest',
+                    instance: 'testInstance'
+                },
+                metadata: '<edmx:Edmx/>'
+            };
+
+            await generate(testDir, config, fs);
+
+            const yaml = fs.read(join(testDir, 'ui5.yaml'));
+            expect(yaml).toContain("client: '200'");
+            expect(yaml).toContain('destination: testDest');
+            expect(yaml).toContain('destinationInstance: testInstance');
+        });
+    });
 });
 
 describe('update', () => {
