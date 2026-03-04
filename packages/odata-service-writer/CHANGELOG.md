@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.30
+
+### Patch Changes
+
+- 2302698: fix(deps): update dependency @sap-ux/edmx-parser to v0.10.0
+
 ## 0.29.29
 
 ### Patch Changes
