@@ -5,7 +5,7 @@ import { DEFAULT_DATASOURCE_NAME } from './constants';
 import type { Manifest } from '@sap-ux/project-access';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import { UI5Config } from '@sap-ux/ui5-config';
+import { UI5Config, type FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 
 /**
  * Sets the default path for a given service.
@@ -151,6 +151,60 @@ function setDefaultAnnotationsName(service: OdataService): void {
 }
 
 /**
+ * Sets client and destination defaults for preview settings.
+ *
+ * @param {OdataService} service - the OData service instance
+ */
+function setClientAndDestinationDefaults(service: OdataService): void {
+    if (service.client && !service.previewSettings?.client) {
+        service.previewSettings!.client = service.client;
+    }
+    if (service.destination && !service.previewSettings?.destination) {
+        service.previewSettings!.destination = service.destination.name;
+        if (service.destination.instance) {
+            service.previewSettings!.destinationInstance = service.destination.instance;
+        }
+    }
+}
+
+/**
+ * Preserves existing backend configuration when updating a service.
+ *
+ * @param {OdataService} service - the OData service instance
+ * @param {FioriToolsProxyConfigBackend[]} backends - existing backend configurations
+ * @param {string | undefined} explicitPreviewPath - explicitly set preview path
+ */
+function preserveExistingBackendConfig(
+    service: OdataService,
+    backends: FioriToolsProxyConfigBackend[],
+    explicitPreviewPath: string | undefined
+): void {
+    const existingBackend = backends.find((backend) => backend.path === service.previewSettings?.path);
+    if (!existingBackend) {
+        return;
+    }
+
+    if (existingBackend.pathPrefix) {
+        service.previewSettings!.pathPrefix = existingBackend.pathPrefix;
+    }
+    if (!explicitPreviewPath) {
+        service.previewSettings!.path = service.path;
+    }
+}
+
+/**
+ * Adjusts preview path for new services if /sap backend exists.
+ *
+ * @param {OdataService} service - the OData service instance
+ * @param {FioriToolsProxyConfigBackend[]} backends - existing backend configurations
+ */
+function adjustPreviewPathForNewService(service: OdataService, backends: FioriToolsProxyConfigBackend[]): void {
+    if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
+        service.previewSettings!.path = service.path;
+    }
+}
+
+/**
  * Sets default preview settings of a given service.
  *
  * @param {string} basePath - the root path of an existing UI5 application
@@ -165,44 +219,26 @@ async function setDefaultPreviewSettings(
     update = false
 ): Promise<void> {
     service.previewSettings = service.previewSettings ?? {};
-    const explicitPreviewPath = service.previewSettings.path; // Save to detect if it was explicitly set
+    const explicitPreviewPath = service.previewSettings.path;
     service.previewSettings.path =
         service.previewSettings.path ?? `/${service.path?.split('/').find((s: string) => s !== '') ?? ''}`;
     service.previewSettings.url = service.previewSettings.url ?? service.url ?? 'http://localhost';
-    if (service.client && !service.previewSettings.client) {
-        service.previewSettings.client = service.client;
-    }
-    if (service.destination && !service.previewSettings.destination) {
-        service.previewSettings.destination = service.destination.name;
-        if (service.destination.instance) {
-            service.previewSettings.destinationInstance = service.destination.instance;
-        }
-    }
-    const ui5Yamlpath = join(basePath, FileName.Ui5Yaml);
-    if (fs.exists(ui5Yamlpath)) {
-        const yamlContents = fs.read(ui5Yamlpath);
-        const ui5Config = await UI5Config.newInstance(yamlContents);
-        const backends = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware();
 
-        // In update mode, preserve existing backend configuration (especially pathPrefix)
-        if (update) {
-            const existingBackend = backends.find((backend) => backend.path === service.previewSettings?.path);
-            if (existingBackend) {
-                // Preserve pathPrefix if it exists in the backend configuration
-                if (existingBackend.pathPrefix) {
-                    service.previewSettings.pathPrefix = existingBackend.pathPrefix;
-                }
-                // Only override path if it wasn't explicitly set
-                if (!explicitPreviewPath) {
-                    service.previewSettings.path = service.path;
-                }
-            }
-        } else {
-            // For new services, check if /sap path exists
-            if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
-                service.previewSettings.path = service.path;
-            }
-        }
+    setClientAndDestinationDefaults(service);
+
+    const ui5Yamlpath = join(basePath, FileName.Ui5Yaml);
+    if (!fs.exists(ui5Yamlpath)) {
+        return;
+    }
+
+    const yamlContents = fs.read(ui5Yamlpath);
+    const ui5Config = await UI5Config.newInstance(yamlContents);
+    const backends = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware();
+
+    if (update) {
+        preserveExistingBackendConfig(service, backends, explicitPreviewPath);
+    } else if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
+        adjustPreviewPathForNewService(service, backends);
     }
 }
 
