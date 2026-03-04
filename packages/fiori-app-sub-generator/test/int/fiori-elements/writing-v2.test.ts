@@ -324,7 +324,8 @@ describe('Generate v2 apps', () => {
 
         const testState: State = cloneDeep({
             project: Object.assign({}, v2Project, {
-                name: testProjectName
+                name: testProjectName,
+                enableEslint: false
             }) as Project,
             floorplan: FloorplanFE.FE_WORKLIST,
             service: {
