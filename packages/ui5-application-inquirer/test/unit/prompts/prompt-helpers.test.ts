@@ -115,9 +115,8 @@ describe('prompt-helpers', () => {
                 name: promptNames.showAdvanced
             }
         };
-        // All prompts returned except enableEslint which is hidden by default
-        expect(hidePrompts(prompts).length).toEqual(13);
-        expect(hidePrompts(prompts)).not.toContainEqual({ name: promptNames.enableEslint });
+        expect(hidePrompts(prompts).length).toEqual(14);
+        expect(hidePrompts(prompts)).toContainEqual({ name: promptNames.enableEslint });
         // Hide prompts that are not applicable for CAP projects
         let filteredPrompts = hidePrompts(prompts, {}, mockCdsInfo);
         expect(filteredPrompts.length).toEqual(12);
@@ -138,7 +137,7 @@ describe('prompt-helpers', () => {
             }
         };
         filteredPrompts = hidePrompts(prompts, promptOpts);
-        expect(filteredPrompts.length).toEqual(10);
+        expect(filteredPrompts.length).toEqual(11);
         expect(filteredPrompts).toEqual(
             expect.not.arrayContaining([{ name: promptNames.addDeployConfig, when: expect.any(Function) }])
         );
@@ -162,7 +161,7 @@ describe('prompt-helpers', () => {
 
         // hide `addDeployConfig` prompt when isCap is false
         filteredPrompts = hidePrompts(prompts, promptOpts, undefined);
-        expect(filteredPrompts.length).toEqual(12);
+        expect(filteredPrompts.length).toEqual(13);
         expect(filteredPrompts).toEqual(
             expect.not.arrayContaining([{ name: promptNames.addDeployConfig, when: expect.any(Function) }])
         );

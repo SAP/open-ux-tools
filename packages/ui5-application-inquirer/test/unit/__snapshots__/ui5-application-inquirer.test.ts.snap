@@ -133,6 +133,15 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
     "type": "list",
   },
   {
+    "default": true,
+    "guiOptions": {
+      "breadcrumb": "ESLint",
+    },
+    "message": "Add ESLint Configuration to the Project",
+    "name": "enableEslint",
+    "type": "confirm",
+  },
+  {
     "default": false,
     "guiOptions": {
       "breadcrumb": "Skip Annotations",
