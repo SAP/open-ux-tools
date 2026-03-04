@@ -52,7 +52,7 @@
         "lodash": "4.17.23",
         "requireindex": "^1.2.0",
         "synckit": "0.11.11",
-        "yaml": "2.2.2",
+        "yaml": "2.8.2",
         "semver": "7.7.4"
     },
     "peerDependencies": {
