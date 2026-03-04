@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.79
+
+### Patch Changes
+
+- 7d643c3: remove Filterbar OPA tests for Worklist app
+
 ## 0.7.78
 
 ### Patch Changes
