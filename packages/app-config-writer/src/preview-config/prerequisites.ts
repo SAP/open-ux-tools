@@ -8,7 +8,7 @@ import {
     hasDependency
 } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { satisfies, valid, validRange, outside } from 'semver';
+import { isLowerThanMinimalVersion } from '../common/package-json';
 
 const packageName = {
     WDIO_QUNIT_SERVICE: 'wdio-qunit-service',
@@ -18,41 +18,6 @@ const packageName = {
     SAP_UX_UI5_MIDDLEWARE_FE_MOCKSERVER: '@sap-ux/ui5-middleware-fe-mockserver',
     SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD: '@sap/grunt-sapui5-bestpractice-build'
 } as const;
-
-/**
- * Check if the version of the given package is lower than the minimal version.
- *
- * @param packageJson - the package.json file content
- * @param dependencyName - the name of the (dev)dependency to check
- * @param minVersionInfo - the minimal version to check against
- * @param mandatory - (default true) if the existence of the dependency is mandatory
- * @returns indicator if the version is lower than the minimal version
- */
-function isLowerThanMinimalVersion(
-    packageJson: Package,
-    dependencyName: string,
-    minVersionInfo: string,
-    mandatory: boolean = true
-): boolean {
-    let versionInfo = packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName];
-    if (!versionInfo) {
-        // In case no dependency is found we assume the minimal version is not met depending on the mandatory flag
-        return mandatory;
-    }
-    if (versionInfo === 'latest') {
-        // In case of 'latest' we know the minimal version is met
-        return false;
-    }
-    if (validRange(versionInfo)) {
-        // In case of a valid range the minimal version must not be outside the range in high direction
-        return outside(minVersionInfo, versionInfo, '>');
-    }
-    if (valid(versionInfo)) {
-        // In case of a valid version we add a prefix to make it a range
-        versionInfo = `<=${versionInfo}`;
-    }
-    return !satisfies(minVersionInfo, versionInfo);
-}
 
 /**
  * Check if the project is a CAP project that uses 'cds-plugin-ui5'.

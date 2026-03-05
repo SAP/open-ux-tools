@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.15.25
+
+### Patch Changes
+
+- 77fe375: feat: add new command to convert eslint config of a project
+- Updated dependencies [77fe375]
+    - @sap-ux/app-config-writer@0.6.114
+
 ## 0.15.24
 
 ### Patch Changes
