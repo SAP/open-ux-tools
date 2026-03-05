@@ -462,9 +462,7 @@ describe('CF Services API', () => {
                 })
             );
 
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                'Service creation failed: Service already exists'
-            );
+            expect(mockLogger.error).toHaveBeenCalledWith('Service creation failed: Service already exists');
         });
 
         test('should handle xs-security.json parsing failure', async () => {
