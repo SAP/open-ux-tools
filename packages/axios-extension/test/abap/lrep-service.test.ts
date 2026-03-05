@@ -160,9 +160,7 @@ describe('LayeredRepositoryService', () => {
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
-                expect(loggerMock.error).toHaveBeenCalledWith(
-                    expect.stringContaining(mockErrorMessage)
-                );
+                expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(mockErrorMessage));
             }
         });
     });

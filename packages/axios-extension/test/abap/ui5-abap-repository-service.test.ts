@@ -52,19 +52,34 @@ describe('Ui5AbapRepositoryService', () => {
         // mock an existing and not existing app
         // Note: encodeURIComponent encodes single quotes as %27, so we need to match the encoded URL
         nock(server)
-            .get((url) => url.includes(`/Repositories(%27${validApp}%27)`) || url.includes(`/Repositories('${validApp}')`))
+            .get(
+                (url) =>
+                    url.includes(`/Repositories(%27${validApp}%27)`) || url.includes(`/Repositories('${validApp}')`)
+            )
             .reply(200, { d: validAppInfo })
             .persist();
         nock(`https://${destination.Name}.dest`)
-            .get((url) => url.includes(`/Repositories(%27NOT_EXISTING_APP%27)`) || url.includes(`/Repositories('NOT_EXISTING_APP')`))
+            .get(
+                (url) =>
+                    url.includes(`/Repositories(%27NOT_EXISTING_APP%27)`) ||
+                    url.includes(`/Repositories('NOT_EXISTING_APP')`)
+            )
             .reply(200, { d: validAppInfo })
             .persist();
         nock(server)
-            .get((url) => url.includes(`/Repositories(%27${notExistingApp}%27)`) || url.includes(`/Repositories('${notExistingApp}')`))
+            .get(
+                (url) =>
+                    url.includes(`/Repositories(%27${notExistingApp}%27)`) ||
+                    url.includes(`/Repositories('${notExistingApp}')`)
+            )
             .reply(404, 'the app does not exist')
             .persist();
         nock(server)
-            .get((url) => url.includes(`/Repositories(%27${restrictedApp}%27)`) || url.includes(`/Repositories('${restrictedApp}')`))
+            .get(
+                (url) =>
+                    url.includes(`/Repositories(%27${restrictedApp}%27)`) ||
+                    url.includes(`/Repositories('${restrictedApp}')`)
+            )
             .reply(401, { d: validAppInfo })
             .persist();
     });
