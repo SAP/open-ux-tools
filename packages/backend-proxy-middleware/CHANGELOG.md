@@ -1,5 +1,14 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.53
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+
 ## 0.10.52
 
 ### Patch Changes

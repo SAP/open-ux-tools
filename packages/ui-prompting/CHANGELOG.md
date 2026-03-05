@@ -1,5 +1,13 @@
 # @sap-ux/ui-prompting
 
+## 0.6.10
+
+### Patch Changes
+
+- 14d8ab3: fix(deps): update dependency babel-loader to v10
+- Updated dependencies [14d8ab3]
+    - @sap-ux/ui-components@2.0.1
+
 ## 0.6.9
 
 ### Patch Changes

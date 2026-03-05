@@ -1,5 +1,15 @@
 # @sap-ux/telemetry
 
+## 0.6.85
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+
 ## 0.6.84
 
 ### Patch Changes
