@@ -2,4 +2,4 @@
 "@sap-ux/axios-extension": patch
 ---
 
-fix(deps): update dependency open to v11
+fix(deps): downgrade dependency open to v8.4.2 (latest CommonJS version)
