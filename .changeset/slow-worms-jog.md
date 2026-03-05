@@ -2,4 +2,4 @@
 '@sap-ux/adp-tooling': patch
 ---
 
-(ADP) Remove the cloudDevAdaptationStatus property from the app filters related to onPrem apps.
+fix: Use the cloudDevAdaptationStatus property in the app filter only for cloud apps.
