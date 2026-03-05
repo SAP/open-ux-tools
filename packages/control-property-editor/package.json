@@ -61,7 +61,7 @@
         "esbuild-plugin-copy": "2.1.1",
         "@esbuild-plugins/node-modules-polyfill": "0.2.2",
         "@sap-ux-private/control-property-editor-common": "workspace:*",
-        "uuid": "11.0.5"
+        "uuid": "13.0.0"
     },
     "engines": {
         "node": ">=20.x"
