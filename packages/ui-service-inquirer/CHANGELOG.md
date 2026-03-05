@@ -1,5 +1,73 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.142
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.21
+- @sap-ux/inquirer-common@0.11.22
+- @sap-ux/odata-service-inquirer@2.19.8
+- @sap-ux/telemetry@0.6.86
+- @sap-ux/abap-deploy-config-inquirer@1.7.18
+
+## 0.2.141
+
+### Patch Changes
+
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+- Updated dependencies [fdd57de]
+    - @sap-ux/telemetry@0.6.85
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/inquirer-common@0.11.21
+    - @sap-ux/odata-service-inquirer@2.19.7
+    - @sap-ux/abap-deploy-config-inquirer@1.7.17
+
+## 0.2.140
+
+### Patch Changes
+
+- @sap-ux/odata-service-inquirer@2.19.6
+- @sap-ux/inquirer-common@0.11.20
+- @sap-ux/abap-deploy-config-inquirer@1.7.16
+
+## 0.2.139
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- Updated dependencies [f5f9a78]
+- Updated dependencies [45d4797]
+    - @sap-ux/abap-deploy-config-inquirer@1.7.15
+    - @sap-ux/inquirer-common@0.11.19
+    - @sap-ux/odata-service-inquirer@2.19.5
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/telemetry@0.6.84
+
+## 0.2.138
+
+### Patch Changes
+
+- Updated dependencies [2302698]
+- Updated dependencies [96e9b9e]
+    - @sap-ux/inquirer-common@0.11.18
+    - @sap-ux/odata-service-inquirer@2.19.4
+    - @sap-ux/axios-extension@1.25.19
+    - @sap-ux/abap-deploy-config-inquirer@1.7.14
+
+## 0.2.137
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/abap-deploy-config-inquirer@1.7.13
+    - @sap-ux/telemetry@0.6.83
+    - @sap-ux/odata-service-inquirer@2.19.3
+    - @sap-ux/inquirer-common@0.11.17
+    - @sap-ux/axios-extension@1.25.18
+
 ## 0.2.136
 
 ### Patch Changes

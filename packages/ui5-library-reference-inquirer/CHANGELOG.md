@@ -1,5 +1,50 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.131
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/inquirer-common@0.11.22
+
+## 0.4.130
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/inquirer-common@0.11.21
+    - @sap-ux/project-access@1.35.12
+
+## 0.4.129
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.20
+
+## 0.4.128
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- Updated dependencies [f5f9a78]
+    - @sap-ux/inquirer-common@0.11.19
+    - @sap-ux/project-access@1.35.11
+
+## 0.4.127
+
+### Patch Changes
+
+- Updated dependencies [2302698]
+    - @sap-ux/inquirer-common@0.11.18
+
+## 0.4.126
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/inquirer-common@0.11.17
+
 ## 0.4.125
 
 ### Patch Changes
