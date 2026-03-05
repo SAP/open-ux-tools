@@ -1,5 +1,13 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.26
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+- fdd57de: fix(deps): update dependency dotenv to v17
+    - @sap-ux/ui5-config@0.29.21
+
 ## 1.6.25
 
 ### Patch Changes

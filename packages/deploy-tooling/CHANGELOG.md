@@ -1,5 +1,17 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.68
+
+### Patch Changes
+
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/inquirer-common@0.11.21
+    - @sap-ux/ui5-config@0.29.21
+    - @sap-ux/system-access@0.6.63
+    - @sap-ux/project-input-validator@0.6.66
+
 ## 0.17.67
 
 ### Patch Changes

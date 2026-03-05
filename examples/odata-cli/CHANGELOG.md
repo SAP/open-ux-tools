@@ -1,5 +1,13 @@
 # @sap-ux/odata-cli
 
+## 0.17.47
+
+### Patch Changes
+
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+
 ## 0.17.46
 
 ### Patch Changes
