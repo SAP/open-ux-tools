@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.0.2
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
 ## 2.0.1
 
 ### Patch Changes
