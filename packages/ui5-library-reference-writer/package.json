@@ -37,9 +37,9 @@
         "mem-fs-editor": "9.4.0"
     },
     "devDependencies": {
-        "@types/fs-extra": "9.0.13",
+        "@types/fs-extra": "11.0.4",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
-        "fs-extra": "10.1.0"
+        "fs-extra": "11.3.4"
     }
 }
