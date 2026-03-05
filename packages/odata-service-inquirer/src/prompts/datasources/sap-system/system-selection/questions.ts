@@ -204,8 +204,9 @@ export async function getSystemConnectionQuestions(
                     promptOptions?.systemSelection?.defaultChoice
                 ); // Recalc to allow default choice to be bound to ref from another prompt
 
-                if (defaultChoiceIndex > -1 && typeof promptOptions?.systemSelection?.defaultChoice === 'object') {
-                    connectPath = promptOptions.systemSelection.defaultChoice.connectPath;
+                // Regardless of finding a match the provided connect path is applied
+                if (typeof promptOptions?.systemSelection?.connectPath === 'object') {
+                    connectPath = promptOptions?.systemSelection.connectPath.value;
                 }
                 return defaultChoiceIndex;
             },
