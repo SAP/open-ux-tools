@@ -5,8 +5,8 @@ import * as parserDep from '@xml-tools/parser';
 import * as astDep from '@xml-tools/ast';
 import * as converterDep from '@sap-ux/xml-odata-annotation-converter';
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
-import { pathToFileURL } from 'url';
-import { join } from 'path';
+import { pathToFileURL } from 'node:url';
+import { join } from 'node:path';
 
 jest.mock('@xml-tools/parser');
 jest.mock('@xml-tools/ast');
