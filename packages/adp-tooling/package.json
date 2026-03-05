@@ -73,7 +73,7 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4",
         "@types/supertest": "2.0.12",
-        "@types/uuid": "10.0.0",
+        "@types/uuid": "11.0.0",
         "adm-zip": "0.5.16",
         "cross-env": "^7.0.3",
         "dotenv": "16.6.1",
