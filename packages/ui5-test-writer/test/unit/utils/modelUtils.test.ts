@@ -10,7 +10,7 @@ import {
     getSelectionFieldItems,
     getFilterFields,
     getTableColumns,
-    getFeatureData
+    getAppFeatures
 } from '../../../src/utils/modelUtils';
 import type { Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
@@ -47,8 +47,8 @@ describe('Test getListReportPage()', () => {
         } as unknown as ApplicationModel;
         const result = getListReportPage(applicationModel);
         expect(result).not.toBeNull();
-        expect(result?.pageKey).toBe('listReport');
-        expect(result?.page).toEqual(listReportPage);
+        expect(result?.name).toBe('listReport');
+        expect(result).toEqual(listReportPage);
     });
 
     test('should return the first ListReport when multiple exist', () => {
@@ -62,8 +62,8 @@ describe('Test getListReportPage()', () => {
             model: {}
         } as unknown as ApplicationModel;
         const result = getListReportPage(applicationModel);
-        expect(result?.pageKey).toBe('firstLR');
-        expect(result?.page).toEqual(firstListReport);
+        expect(result?.name).toBe('firstLR');
+        expect(result).toEqual(firstListReport);
     });
 });
 
@@ -353,7 +353,7 @@ describe('Test getFeatureData()', () => {
         } as unknown as Logger;
 
         // Use a non-existent path to trigger error
-        const result = await getFeatureData('/non-existent-path', undefined, mockLogger);
+        const result = await getAppFeatures('/non-existent-path', undefined, mockLogger);
         expect(result).toEqual({});
         expect(mockLogger.warn).toHaveBeenCalled();
     });
@@ -441,8 +441,7 @@ describe('Test edge cases for better branch coverage', () => {
             model: {}
         } as unknown as ApplicationModel;
         const result = getListReportPage(applicationModel);
-        expect(result?.pageKey).toBe('page3');
-        expect(result?.page.name).toBe('lr');
+        expect(result?.name).toBe('page3');
     });
 
     test('getFilterFields should handle deeply nested missing properties', () => {

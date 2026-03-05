@@ -132,6 +132,7 @@ describe('ui5-test-writer', () => {
     });
 
     describe('generateOPAFiles', () => {
+        const metadata = fs?.read(join(__dirname, '../test-input/metadata.xml')) || '';
         const testApplications = [
             {
                 description: 'Fullscreen LR-OP',
@@ -207,7 +208,7 @@ describe('ui5-test-writer', () => {
 
         it.each(testApplications)('$description', async (config) => {
             const projectDir = prepareTestFiles(config.dirPath);
-            fs = await generateOPAFiles(projectDir, { scriptName: config.scriptName }, fs);
+            fs = await generateOPAFiles(projectDir, { scriptName: config.scriptName }, metadata, fs);
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
@@ -215,7 +216,7 @@ describe('ui5-test-writer', () => {
             const projectDir = prepareTestFiles('Not_Here');
             let error: string | undefined;
             try {
-                fs = await generateOPAFiles(projectDir, {}, fs);
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
             } catch (e) {
                 error = (e as Error).message;
             }
@@ -227,7 +228,7 @@ describe('ui5-test-writer', () => {
             const projectDir = prepareTestFiles('MissingAppId');
             let error: string | undefined;
             try {
-                fs = await generateOPAFiles(projectDir, {}, fs);
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
             } catch (e) {
                 error = (e as Error).message;
             }
@@ -237,7 +238,7 @@ describe('ui5-test-writer', () => {
 
         it('Providing an app ID', async () => {
             const projectDir = prepareTestFiles('MissingAppId');
-            fs = await generateOPAFiles(projectDir, { appID: 'test.ui5-test-writer' }, fs);
+            fs = await generateOPAFiles(projectDir, { appID: 'test.ui5-test-writer' }, metadata, fs);
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
@@ -245,7 +246,7 @@ describe('ui5-test-writer', () => {
             const projectDir = prepareTestFiles('FreeStyle');
             let error: string | undefined;
             try {
-                fs = await generateOPAFiles(projectDir, {}, fs);
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
             } catch (e) {
                 error = (e as Error).message;
             }
@@ -259,7 +260,7 @@ describe('ui5-test-writer', () => {
             const projectDir = prepareTestFiles('ODataV2');
             let error: string | undefined;
             try {
-                fs = await generateOPAFiles(projectDir, {}, fs);
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
             } catch (e) {
                 error = (e as Error).message;
             }
@@ -272,7 +273,7 @@ describe('ui5-test-writer', () => {
         it('generates filter tests for LROPv4 app', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
-            fs = await generateOPAFiles(projectDir, {}, fs);
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
             const firstJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/ListReportJourney.js'].contents;
@@ -282,7 +283,7 @@ describe('ui5-test-writer', () => {
         it('generates column tests for LROPv4 app', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
-            fs = await generateOPAFiles(projectDir, {}, fs);
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
             const firstJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/ListReportJourney.js'].contents;
@@ -296,7 +297,7 @@ describe('ui5-test-writer', () => {
                 warn: jest.fn()
             };
 
-            fs = await generateOPAFiles(projectDir, {}, fs, mockLogger as unknown as Logger);
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs, mockLogger as unknown as Logger);
 
             const firstJourneyContent =
                 fs.dump()['test/test-output/LROPv4NoFilters/webapp/test/integration/ListReportJourney.js'].contents;
@@ -316,7 +317,7 @@ describe('ui5-test-writer', () => {
                 warn: jest.fn()
             };
 
-            fs = await generateOPAFiles(projectDir, {}, fs, mockLogger as unknown as Logger);
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs, mockLogger as unknown as Logger);
 
             const firstJourneyContent =
                 fs.dump()['test/test-output/LROPv4NoColumns/webapp/test/integration/ListReportJourney.js'].contents;
@@ -332,7 +333,7 @@ describe('ui5-test-writer', () => {
         it('generates tests for v4 application with sub object page', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
             const projectDir = prepareTestFiles('LROPv4');
-            fs = await generateOPAFiles(projectDir, {}, fs);
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
             const bookingObjPageJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.js'].contents;

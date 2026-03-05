@@ -1,6 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
-import type { HeaderSectionFeatureData, ObjectPageFeatureData, ObjectPageNavigationParents } from '../types';
+import type { HeaderSectionFeatureData, ObjectPageFeatures, ObjectPageNavigationParents } from '../types';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import {
     type AggregationItem,
@@ -14,34 +14,39 @@ import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
 /**
  * Extracts feature data for object pages from the application model.
  *
- * @param applicationModel - the application model containing page definitions
+ * @param objectPages - the array of object pages extracted from the application model
+ * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
  * @param log - optional logger instance
  * @returns a record of object page feature data
  */
-export async function getObjectPageFeatureData(
-    applicationModel: ApplicationModel,
+export async function getObjectPageFeatures(
+    objectPages: PageWithModelV4[],
+    listReportPageKey?: string,
     log?: Logger
-): Promise<ObjectPageFeatureData[]> {
-    const objectPageFeatureData: ObjectPageFeatureData[] = [];
-    const objectPages = getObjectPages(applicationModel);
-    if (!objectPages || Object.keys(objectPages).length === 0) {
+): Promise<ObjectPageFeatures[]> {
+    const objectPageFeatures: ObjectPageFeatures[] = [];
+    // const objectPages = getObjectPages(applicationModel);
+    if (!objectPages || objectPages.length === 0) {
         log?.warn('Object Pages not found in application model. Dynamic tests will not be generated for Object Pages.');
-        return objectPageFeatureData;
+        return objectPageFeatures;
     }
 
     // attempt to get individual feature data for each object page
-    for (const objectPageKey of Object.keys(objectPages)) {
-        const objectPage = objectPages[objectPageKey];
-        const pageFeatureData: ObjectPageFeatureData = {};
+    for (const objectPage of objectPages) {
+        const pageFeatureData: ObjectPageFeatures = {} as ObjectPageFeatures;
 
-        pageFeatureData.name = objectPageKey;
-        pageFeatureData.navigationParents = getObjectPageNavigationParents(objectPageKey, applicationModel);
+        pageFeatureData.name = objectPage.name!;
+        pageFeatureData.navigationParents = getObjectPageNavigationParents(
+            objectPage.name!,
+            objectPages,
+            listReportPageKey
+        );
         // extract header sections (facets)
         pageFeatureData.headerSections = extractObjectPageHeaderSectionsData(objectPage as PageWithModelV4);
-        objectPageFeatureData.push(pageFeatureData);
+        objectPageFeatures.push(pageFeatureData);
     }
 
-    return objectPageFeatureData;
+    return objectPageFeatures;
 }
 
 /**
@@ -50,12 +55,13 @@ export async function getObjectPageFeatureData(
  * @param applicationModel - The application model containing page definitions.
  * @returns An array of Object Page definitions.
  */
-function getObjectPages(applicationModel: ApplicationModel): { [key: string]: PageWithModelV4 } {
-    const objectPages: { [key: string]: PageWithModelV4 } = {};
+export function getObjectPages(applicationModel: ApplicationModel): PageWithModelV4[] {
+    const objectPages: PageWithModelV4[] = [];
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
         if (page.pageType === PageTypeV4.ObjectPage) {
-            objectPages[pageKey] = page;
+            page.name = pageKey; // store page key as name for later identification
+            objectPages.push(page);
         }
     }
     return objectPages;
@@ -65,25 +71,25 @@ function getObjectPages(applicationModel: ApplicationModel): { [key: string]: Pa
  * Finds parent pages for the object page, and returns their identifiers.
  *
  * @param targetObjectPageKey - key of the target object page
- * @param applicationModel  - the application model containing page definitions
+ * @param objectPages - the array of object pages extracted from the application model
+ * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
  * @returns navigation data including parent page identifiers
  */
 function getObjectPageNavigationParents(
     targetObjectPageKey: string,
-    applicationModel: ApplicationModel
+    objectPages: PageWithModelV4[],
+    listReportPageKey?: string
 ): ObjectPageNavigationParents {
-    const listReportPageKey = getListReportPageKey(applicationModel);
-    const objectPages = getObjectPages(applicationModel);
     const navigationParents: ObjectPageNavigationParents = {
         parentLRName: listReportPageKey ?? '' // app is possibly malformed if no LR found
     };
 
-    Object.keys(objectPages).forEach((objectPageKey) => {
-        const objectPage = objectPages[objectPageKey];
+    objectPages.forEach((objectPage) => {
         const navigationRoutes = getNavigationRoutes(objectPage as PageWithModelV4);
         const routeToTargetOP = navigationRoutes.find((nav) => nav.route === targetObjectPageKey);
         if (routeToTargetOP) {
-            navigationParents.parentOPName = objectPageKey;
+            navigationParents.parentOPName = objectPage.name;
+
             navigationParents.parentOPTableSection = routeToTargetOP.identifier;
         }
     });
@@ -225,21 +231,21 @@ function isFormSection(section: SectionItem): boolean {
     return getAggregations(section)?.form !== undefined;
 }
 
-/**
- * Retrieves the key of the List Report page from the given application model.
- *
- * @param applicationModel - The application model containing page definitions.
- * @returns The key of the List Report page, or null if not found.
- */
-function getListReportPageKey(applicationModel: ApplicationModel): string | null {
-    for (const pageKey in applicationModel.pages) {
-        const page = applicationModel.pages[pageKey];
-        if (page.pageType === PageTypeV4.ListReport) {
-            return pageKey;
-        }
-    }
-    return null;
-}
+// /**
+//  * Retrieves the key of the List Report page from the given application model.
+//  *
+//  * @param applicationModel - The application model containing page definitions.
+//  * @returns The key of the List Report page, or null if not found.
+//  */
+// function getListReportPageKey(applicationModel: ApplicationModel): string | null {
+//     for (const pageKey in applicationModel.pages) {
+//         const page = applicationModel.pages[pageKey];
+//         if (page.pageType === PageTypeV4.ListReport) {
+//             return pageKey;
+//         }
+//     }
+//     return null;
+// }
 
 /**
  * Retrieves navigation targets from the given page model.

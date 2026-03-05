@@ -4930,6 +4930,12 @@ importers:
 
   packages/ui5-test-writer:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.19
+        version: 0.10.19
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -4958,6 +4964,9 @@ importers:
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
         version: link:../jest-file-matchers
+      '@sap-ux/vocabularies-types':
+        specifier: 0.14.5
+        version: 0.14.5
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -12507,6 +12516,12 @@ packages:
       - '@sap-ux/odata-annotation-core-types'
       - '@sap-ux/project-access'
       - typescript
+    dev: false
+
+  /@sap-ux/edmx-parser@0.9.1:
+    resolution: {integrity: sha512-qgDXrJP+WtBbYJdedtCEVyIyKTs2eVcfplE2Mk4AbW8oxU85rqq8h8gNRoQlIUCcXXBJwXeoVlWTvSCF5mF7Rw==}
+    dependencies:
+      xml-js: 1.6.11
     dev: false
 
   /@sap-ux/edmx-parser@0.9.8:
