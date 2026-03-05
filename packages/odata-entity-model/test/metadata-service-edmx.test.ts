@@ -1,4 +1,3 @@
-import { console } from 'inspector';
 import { MetadataService } from '../src';
 import type { MetadataElement, ODataVersionType } from '@sap-ux/odata-annotation-core-types';
 
