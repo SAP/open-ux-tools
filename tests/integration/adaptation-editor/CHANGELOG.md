@@ -1,5 +1,11 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.62
+
+### Patch Changes
+
+- afc03e2: fix(deps): update dependency jest-dev-server to v11
+
 ## 0.0.61
 
 ### Patch Changes
