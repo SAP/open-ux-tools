@@ -646,9 +646,7 @@ async function loadGlobalCdsModule(): Promise<CdsFacade> {
     globalCdsModulePromise =
         globalCdsModulePromise ??
         new Promise<CdsFacade>((resolve, reject) => {
-            return getCdsEnvData().then((data) => {
-                // Handle output of `cds env --json`
-                const home = data['_home_cds-dk'];
+            return getGlobalCdsHomePath().then((home) => {
                 if (home) {
                     // "@sap/cds" module is inside node_modules of "@sap/cds-dk"
                     resolve(loadModuleFromProject<CdsFacade>(join(home, 'node_modules', '@sap', 'cds'), '@sap/cds'));
@@ -700,6 +698,19 @@ async function getCdsEnvData(cwd?: string): Promise<Record<string, string>> {
             reject(error);
         });
     });
+}
+
+/**
+ * Retrieves the global CDS home path from the environment.
+ *
+ * Uses the output of `cds env --json` to determine the location of the global @sap/cds-dk installation.
+ *
+ * @returns {Promise<string | undefined>} The absolute path to the global CDS home directory, or undefined if not found.
+ */
+export async function getGlobalCdsHomePath(): Promise<string | undefined> {
+    const cdsEnvData = await getCdsEnvData();
+    // Handle output of `cds env --json`
+    return cdsEnvData['_home_cds-dk'];
 }
 
 /**
