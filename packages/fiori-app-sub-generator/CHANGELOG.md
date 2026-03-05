@@ -1,5 +1,28 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.90
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- Updated dependencies [f5f9a78]
+- Updated dependencies [ac58145]
+    - @sap-ux/odata-service-inquirer@2.19.5
+    - @sap-ux/ui5-application-inquirer@0.16.41
+    - @sap-ux/fiori-elements-writer@2.8.89
+    - @sap-ux/fiori-freestyle-writer@2.5.66
+    - @sap-ux/odata-service-writer@0.29.31
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/cap-config-writer@0.12.75
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/launch-config@0.10.73
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/telemetry@0.6.84
+    - @sap-ux/ui5-info@0.13.14
+    - @sap-ux/annotation-generator@0.4.34
+
 ## 0.11.89
 
 ### Patch Changes

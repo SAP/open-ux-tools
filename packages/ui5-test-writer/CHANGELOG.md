@@ -1,5 +1,16 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.81
+
+### Patch Changes
+
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+- Updated dependencies [ac58145]
+- Updated dependencies [45d4797]
+    - @sap-ux/ui5-application-writer@1.7.16
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/project-access@1.35.11
+
 ## 0.7.80
 
 ### Patch Changes

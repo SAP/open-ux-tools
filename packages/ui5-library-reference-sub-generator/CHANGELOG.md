@@ -1,5 +1,20 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.128
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- 4fc1fe5: fix(deps): update dependency @jest/types to v30.2.0
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+- Updated dependencies [f5f9a78]
+- Updated dependencies [ac58145]
+    - @sap-ux/ui5-library-reference-inquirer@0.4.128
+    - @sap-ux/ui5-library-reference-writer@0.2.57
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/telemetry@0.6.84
+
 ## 0.1.127
 
 ### Patch Changes
