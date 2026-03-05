@@ -36,7 +36,7 @@
         "applicationinsights": "2.9.8",
         "axios": "1.13.5",
         "performance-now": "2.1.0",
-        "yaml": "2.3.3"
+        "yaml": "2.8.2"
     },
     "devDependencies": {
         "jest-extended": "6.0.0",
