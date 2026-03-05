@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 
 describe('external service loading', () => {
     test('placeholder test', async () => {
+        const accessSpy = jest.spyOn(promises, 'access').mockResolvedValue(undefined);
         const readFileSpy = jest.spyOn(promises, 'readFile').mockResolvedValue('file');
         const data = await readExternalServiceMetadata(
             join(__dirname, 'localService', 'metadata.xml'),
@@ -62,6 +63,7 @@ describe('external service loading', () => {
             'utf-8'
         );
         readFileSpy.mockRestore();
+        accessSpy.mockRestore();
     });
 
     test('external service references', async () => {
