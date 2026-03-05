@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.6.119
+
+### Patch Changes
+
+- 8df3c88: fix: add prerequisite for add eslint config command
+
 ## 0.6.118
 
 ### Patch Changes
