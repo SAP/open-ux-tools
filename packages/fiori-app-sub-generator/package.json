@@ -55,7 +55,7 @@
         "lodash": "4.17.23",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "uuid": "11.0.5",
+        "uuid": "11.1.0",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
