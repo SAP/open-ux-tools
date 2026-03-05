@@ -1,5 +1,61 @@
 # @sap-ux/generator-adp
 
+## 0.9.19
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- 4fc1fe5: fix(deps): update dependency @jest/types to v30.2.0
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+- Updated dependencies [f5f9a78]
+- Updated dependencies [ac58145]
+- Updated dependencies [45d4797]
+    - @sap-ux/adp-tooling@0.18.82
+    - @sap-ux/inquirer-common@0.11.19
+    - @sap-ux/odata-service-writer@0.29.31
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/system-access@0.6.62
+    - @sap-ux/telemetry@0.6.84
+
+## 0.9.18
+
+### Patch Changes
+
+- b0bffc9: feat(generator-adp): Developer taking over Key-User changes using JSON input
+
+## 0.9.17
+
+### Patch Changes
+
+- Updated dependencies [2302698]
+- Updated dependencies [96e9b9e]
+    - @sap-ux/inquirer-common@0.11.18
+    - @sap-ux/odata-service-writer@0.29.30
+    - @sap-ux/axios-extension@1.25.19
+    - @sap-ux/adp-tooling@0.18.81
+    - @sap-ux/fiori-generator-shared@0.13.82
+    - @sap-ux/system-access@0.6.61
+
+## 0.9.16
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/adp-tooling@0.18.80
+    - @sap-ux/odata-service-writer@0.29.29
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/telemetry@0.6.83
+    - @sap-ux/inquirer-common@0.11.17
+    - @sap-ux/axios-extension@1.25.18
+    - @sap-ux/fiori-generator-shared@0.13.82
+    - @sap-ux/project-input-validator@0.6.65
+    - @sap-ux/system-access@0.6.60
+
 ## 0.9.15
 
 ### Patch Changes

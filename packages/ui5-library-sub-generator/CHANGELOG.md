@@ -1,5 +1,34 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.139
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- 4fc1fe5: fix(deps): update dependency @jest/types to v30.2.0
+- Updated dependencies [ac58145]
+    - @sap-ux/ui5-library-writer@0.6.66
+    - @sap-ux/ui5-library-inquirer@0.6.78
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/nodejs-utils@0.2.16
+    - @sap-ux/ui5-info@0.13.14
+
+## 0.1.138
+
+### Patch Changes
+
+- @sap-ux/ui5-library-writer@0.6.65
+- @sap-ux/ui5-library-inquirer@0.6.77
+- @sap-ux/fiori-generator-shared@0.13.82
+
+## 0.1.137
+
+### Patch Changes
+
+- @sap-ux/ui5-library-writer@0.6.65
+- @sap-ux/fiori-generator-shared@0.13.82
+- @sap-ux/ui5-library-inquirer@0.6.76
+
 ## 0.1.136
 
 ### Patch Changes

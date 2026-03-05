@@ -1,5 +1,12 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.5.10
+
+### Patch Changes
+
+- 4b02611: fix(deps): update dependency ws to v8.19.0
+    - @sap-ux/ui-prompting@0.6.9
+
 ## 0.5.9
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.7.19
+
+### Patch Changes
+
+- 0cf8a97: fix(deps): update dependency @ui5/fs to v4
+
 ## 0.7.18
 
 ### Patch Changes
