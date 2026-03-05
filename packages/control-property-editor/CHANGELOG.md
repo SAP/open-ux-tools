@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.7.20
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
 ## 0.7.19
 
 ### Patch Changes

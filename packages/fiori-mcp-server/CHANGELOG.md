@@ -1,5 +1,12 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.41
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
 ## 0.6.40
 
 ### Patch Changes

@@ -1,5 +1,31 @@
 # @sap-ux/generator-adp
 
+## 0.9.22
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+- Updated dependencies [5d458c7]
+    - @sap-ux/adp-tooling@0.18.85
+
+## 0.9.21
+
+### Patch Changes
+
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+- Updated dependencies [83ca0e9]
+- Updated dependencies [fdd57de]
+    - @sap-ux/telemetry@0.6.85
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/inquirer-common@0.11.21
+    - @sap-ux/odata-service-writer@0.29.33
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/adp-tooling@0.18.84
+    - @sap-ux/fiori-generator-shared@0.13.84
+    - @sap-ux/system-access@0.6.63
+    - @sap-ux/project-input-validator@0.6.66
+
 ## 0.9.20
 
 ### Patch Changes

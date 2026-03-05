@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.19
+
+### Patch Changes
+
+- bd95e55: feat: add function to add eslint config from template
+
+## 1.7.18
+
+### Patch Changes
+
+- @sap-ux/ui5-config@0.29.21
+
 ## 1.7.17
 
 ### Patch Changes

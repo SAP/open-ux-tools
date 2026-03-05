@@ -1,5 +1,26 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.103
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-sub-generator@0.2.22
+
+## 0.5.102
+
+### Patch Changes
+
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/inquirer-common@0.11.21
+    - @sap-ux/odata-service-inquirer@2.19.7
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/abap-deploy-config-sub-generator@0.2.21
+    - @sap-ux/fiori-generator-shared@0.13.84
+    - @sap-ux/ui5-config@0.29.21
+    - @sap-ux/deploy-config-generator-shared@0.1.103
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.148
+
 ## 0.5.101
 
 ### Patch Changes

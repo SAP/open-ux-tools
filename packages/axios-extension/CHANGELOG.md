@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.25.21
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+
 ## 1.25.20
 
 ### Patch Changes
