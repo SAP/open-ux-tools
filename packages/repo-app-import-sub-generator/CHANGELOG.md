@@ -1,5 +1,43 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.270
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- 4fc1fe5: fix(deps): update dependency @jest/types to v30.2.0
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+- Updated dependencies [f5f9a78]
+- Updated dependencies [ac58145]
+- Updated dependencies [45d4797]
+    - @sap-ux/inquirer-common@0.11.19
+    - @sap-ux/odata-service-inquirer@2.19.5
+    - @sap-ux/abap-deploy-config-writer@0.2.87
+    - @sap-ux/fiori-elements-writer@2.8.89
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/launch-config@0.10.73
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/system-access@0.6.62
+    - @sap-ux/ui5-info@0.13.14
+
+## 0.3.269
+
+### Patch Changes
+
+- Updated dependencies [2302698]
+- Updated dependencies [96e9b9e]
+    - @sap-ux/inquirer-common@0.11.18
+    - @sap-ux/odata-service-inquirer@2.19.4
+    - @sap-ux/axios-extension@1.25.19
+    - @sap-ux/fiori-elements-writer@2.8.88
+    - @sap-ux/fiori-generator-shared@0.13.82
+    - @sap-ux/system-access@0.6.61
+    - @sap-ux/abap-deploy-config-writer@0.2.86
+
 ## 0.3.268
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.31
+
+### Patch Changes
+
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/ui5-config@0.29.20
+
+## 0.29.30
+
+### Patch Changes
+
+- 2302698: fix(deps): update dependency @sap-ux/edmx-parser to v0.10.0
+
 ## 0.29.29
 
 ### Patch Changes

@@ -1,5 +1,29 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.141
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- Updated dependencies [f5f9a78]
+    - @sap-ux/adp-tooling@0.18.82
+    - @sap-ux/inquirer-common@0.11.19
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/project-access@1.35.11
+
+## 0.4.140
+
+### Patch Changes
+
+- Updated dependencies [2302698]
+- Updated dependencies [96e9b9e]
+    - @sap-ux/inquirer-common@0.11.18
+    - @sap-ux/axios-extension@1.25.19
+    - @sap-ux/adp-tooling@0.18.81
+    - @sap-ux/fiori-generator-shared@0.13.82
+
 ## 0.4.139
 
 ### Patch Changes

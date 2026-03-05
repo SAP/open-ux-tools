@@ -51,4 +51,24 @@ describe('parseJsonInput', () => {
         const jsonString = JSON.stringify(invalidJsonInput);
         expect(parseJsonInput(jsonString, logger)).toBeUndefined();
     });
+
+    it('should return the adp json input with keyUserChanges', () => {
+        const jsonInput: JsonInput = {
+            system: 'system',
+            application: 'application',
+            keyUserChanges: [{ content: { fileName: 'id_123_propertyChange', changeType: 'propertyChange' } }]
+        };
+        const jsonString = JSON.stringify(jsonInput);
+        expect(parseJsonInput(jsonString, logger)).toEqual(jsonInput);
+    });
+
+    it('should return undefined when keyUserChanges is invalid', () => {
+        const invalidJsonInput = {
+            system: 'system',
+            application: 'application',
+            keyUserChanges: 'not an array'
+        };
+        const jsonString = JSON.stringify(invalidJsonInput);
+        expect(parseJsonInput(jsonString, logger)).toBeUndefined();
+    });
 });
