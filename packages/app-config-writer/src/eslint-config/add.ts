@@ -56,7 +56,7 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
     }
     const eslintConfigFilePath = join(basePath, 'eslint.config.mjs');
     if (fs.exists(eslintConfigFilePath)) {
-        logger?.error(`An eslint configuration file already exists at path '${eslintConfigFilePath}'`);
+        logger?.error(`An ESLint configuration file already exists at path '${eslintConfigFilePath}'`);
         return false;
     }
     return true;
