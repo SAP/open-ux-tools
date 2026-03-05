@@ -1,5 +1,11 @@
 # @sap-ux-private/playwright
 
+## 0.2.12
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+
 ## 0.2.11
 
 ### Patch Changes
