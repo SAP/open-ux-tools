@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.22
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+- Updated dependencies [5d458c7]
+    - @sap-ux/adp-tooling@0.18.85
+
 ## 0.9.21
 
 ### Patch Changes
