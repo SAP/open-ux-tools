@@ -1,5 +1,13 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.82
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+- Updated dependencies [5aff25c]
+    - @sap-ux/ui5-application-writer@1.7.17
+
 ## 0.7.81
 
 ### Patch Changes

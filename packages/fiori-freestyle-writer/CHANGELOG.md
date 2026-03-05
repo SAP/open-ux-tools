@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.67
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+- Updated dependencies [5aff25c]
+    - @sap-ux/odata-service-writer@0.29.32
+    - @sap-ux/ui5-application-writer@1.7.17
+    - @sap-ux/ui5-test-writer@0.7.82
+
 ## 2.5.66
 
 ### Patch Changes

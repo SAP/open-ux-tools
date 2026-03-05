@@ -1,5 +1,15 @@
 # @sap-ux/generator-adp
 
+## 0.9.20
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+- Updated dependencies [5aff25c]
+    - @sap-ux/odata-service-writer@0.29.32
+    - @sap-ux/adp-tooling@0.18.83
+    - @sap-ux/inquirer-common@0.11.20
+
 ## 0.9.19
 
 ### Patch Changes
