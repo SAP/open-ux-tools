@@ -1,3 +1,4 @@
+import type { IdGeneratorFunction } from '../common/file';
 import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types';
 
 /**
@@ -71,6 +72,14 @@ export interface BuildingBlock {
      * Defines the relative path of the property in the metamodel, based on the current contextPath.
      */
     metaPath?: string | BuildingBlockMetaPath;
+
+    /**
+     * Generates a unique ID for the building block based on the provided base ID.
+     *
+     * @param baseId - The base ID to generate from, usually related to the building block type.
+     * @returns A unique ID string.
+     */
+    generateId: IdGeneratorFunction;
 }
 
 /**
