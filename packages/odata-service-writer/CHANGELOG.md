@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.32
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+
 ## 0.29.31
 
 ### Patch Changes

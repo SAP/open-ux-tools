@@ -1,5 +1,16 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.271
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+- Updated dependencies [5aff25c]
+    - @sap-ux/abap-deploy-config-writer@0.2.88
+    - @sap-ux/fiori-elements-writer@2.8.90
+    - @sap-ux/odata-service-inquirer@2.19.6
+    - @sap-ux/inquirer-common@0.11.20
+
 ## 0.3.270
 
 ### Patch Changes

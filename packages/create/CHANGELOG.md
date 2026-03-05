@@ -1,5 +1,26 @@
 # @sap-ux/create
 
+## 0.15.26
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux/abap-deploy-config-writer@0.2.88
+    - @sap-ux/odata-service-writer@0.29.32
+    - @sap-ux/adp-tooling@0.18.83
+    - @sap-ux/preview-middleware@0.23.144
+    - @sap-ux/app-config-writer@0.6.115
+    - @sap-ux/flp-config-inquirer@0.4.142
+    - @sap-ux/abap-deploy-config-inquirer@1.7.16
+
+## 0.15.25
+
+### Patch Changes
+
+- 77fe375: feat: add new command to convert eslint config of a project
+- Updated dependencies [77fe375]
+    - @sap-ux/app-config-writer@0.6.114
+
 ## 0.15.24
 
 ### Patch Changes
