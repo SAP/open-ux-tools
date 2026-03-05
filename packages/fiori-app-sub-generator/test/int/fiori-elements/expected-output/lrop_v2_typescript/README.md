@@ -14,7 +14,7 @@
 |**UI5 Theme**<br>sap_belize|
 |**UI5 Version**<br>1.68.0|
 |**Enable TypeScript**<br>True|
-|**Add Eslint configuration**<br>True, see https://www.npmjs.com/package/eslint-plugin-fiori-custom for the eslint rules.|
+|**Add Eslint configuration**<br>False|
 |**Main Entity**<br>SEPMRA_C_PD_Product|
 |**Navigation Entity**<br>to_ProductSalesData|
 

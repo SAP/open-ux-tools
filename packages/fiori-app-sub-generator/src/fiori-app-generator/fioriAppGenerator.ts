@@ -393,9 +393,6 @@ export class FioriAppGenerator extends Generator {
                 `Writing Fiori application files from template took ${Math.round(t2 - t1)} milliseconds.`
             );
 
-            // Enabled by default as part of the generator update, can be disabled by explicitly setting to false
-            project.enableEslint ??= true;
-
             TelemetryHelper.createTelemetryData({
                 Template: t(`floorplans.label.${floorplan}`, {
                     odataVersion: service.version

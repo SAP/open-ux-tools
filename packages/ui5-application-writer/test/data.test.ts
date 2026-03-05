@@ -347,22 +347,7 @@ describe('Setting defaults', () => {
         };
         expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
     });
-
-    it('eslint is enabled by default', async () => {
-        const input: Ui5App = {
-            app: {
-                id: 'test_appId',
-                description: 'Test app',
-                projectType: 'EDMXBackend'
-            },
-            'package': {
-                name: 'test-package-name'
-            }
-        };
-        const result = mergeWithDefaults(input);
-        expect(result.appOptions.eslint).toBe(true);
-    });
-
+    
     it('eslint can be explicitly disabled', async () => {
         const input: Ui5App = {
             app: {

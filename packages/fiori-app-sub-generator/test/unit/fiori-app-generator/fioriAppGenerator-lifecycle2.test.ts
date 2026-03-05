@@ -238,7 +238,6 @@ describe('Test FioriAppGenerator', () => {
                 AppGenSourceType: mockState.service.source,
                 AppGenSapSystemType: 'n/a',
                 AppGenBusinessHubType: undefined,
-                EnableEslint: true,
                 EnableTypeScript: undefined,
                 ToolsId: 'abcd1234',
                 ValueHelpCount: 0
