@@ -47,6 +47,21 @@ describe('generateEslintConfig', () => {
             }
         });
 
+        test('should fail when eslint.config.mjs already exists', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/missing-config');
+            const eslintConfigPath = join(basePath, 'eslint.config.mjs');
+            fs.write(eslintConfigPath, '// existing eslint config');
+            try {
+                await generateEslintConfig(basePath, { logger: loggerMock, fs });
+                fail('Error should have been thrown');
+            } catch (error) {
+                expect(error.message).toContain('The prerequisites are not met');
+                expect(errorMock).toHaveBeenCalledWith(
+                    expect.stringContaining('An eslint configuration file already exists at path')
+                );
+            }
+        });
+
         test('should succeed when prerequisites are met', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/missing-config');
             const result = await generateEslintConfig(basePath, { logger: loggerMock, fs });

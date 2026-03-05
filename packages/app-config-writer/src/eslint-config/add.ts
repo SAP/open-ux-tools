@@ -4,6 +4,7 @@ import { type ToolsLogger } from '@sap-ux/logger';
 import { type Package, hasDependency, FileName } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import { addEslintFeature } from '@sap-ux/ui5-application-writer';
+
 /**
  * Adds eslint configuration to the project.
  *
@@ -47,11 +48,15 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
         logger?.error(`No package.json found at path '${packageJsonPath}'`);
         return false;
     }
-    const eslintExists = hasDependency(packageJson as Package, 'eslint');
-    if (eslintExists) {
+    if (hasDependency(packageJson as Package, 'eslint')) {
         logger?.error(
             `EsLint already exists in this project. Found 'eslint' dependency in package.json at path '${packageJsonPath}'`
         );
+        return false;
+    }
+    const eslintConfigFilePath = join(basePath, 'eslint.config.mjs');
+    if (fs.exists(eslintConfigFilePath)) {
+        logger?.error(`An eslint configuration file already exists at path '${eslintConfigFilePath}'`);
         return false;
     }
     return true;
