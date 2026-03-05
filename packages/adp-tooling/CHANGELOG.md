@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.85
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
 ## 0.18.84
 
 ### Patch Changes
