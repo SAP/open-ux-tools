@@ -1,5 +1,6 @@
 import { MessageType, Prompts, type AppWizard } from '@sap-devx/yeoman-ui-types';
-import type { AbapServiceProvider, ExternalService } from '@sap-ux/axios-extension';
+import type { ExternalService } from '@sap-ux/axios-extension';
+import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import { DefaultLogger, getHostEnvironment, hostEnvironment, LogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
@@ -180,7 +181,11 @@ export class ODataDownloadGenerator extends Generator {
             this.state.updateMainServiceMetadata = promptAnswers[promptNames.updateMainServiceMetadata] as boolean;
             this.state.mainServiceMetadata = odataServiceAnswers.metadata;
 
-            if (odataServiceAnswers.servicePath && odataServiceAnswers.metadata) {
+            if (
+                odataServiceAnswers.servicePath &&
+                odataServiceAnswers.metadata &&
+                odataServiceAnswers.connectedSystem?.serviceProvider instanceof AbapServiceProvider
+            ) {
                 const { questions: valueHelpQuestions, valueHelpData } = getValueHelpSelectionPrompt(
                     odataServiceAnswers.servicePath,
                     odataServiceAnswers.metadata,

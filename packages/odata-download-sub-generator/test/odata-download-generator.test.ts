@@ -1,13 +1,26 @@
 import { MessageType } from '@sap-devx/yeoman-ui-types';
+import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment, LogWrapper } from '@sap-ux/fiori-generator-shared';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { writeExternalServiceMetadata } from '@sap-ux/odata-service-writer';
 import { getMockServerConfig } from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import { ODataDownloadGenerator } from '../src/data-download/odata-download-generator';
 import { getODataDownloaderPrompts, promptNames } from '../src/data-download/prompts/prompts';
 import { getValueHelpSelectionPrompt } from '../src/data-download/prompts/value-help-prompts';
 import { createEntitySetData } from '../src/data-download/utils';
+
+// Create a mock AbapServiceProvider class for instanceof checks
+// Defined inside the factory to avoid hoisting issues
+jest.mock('@sap-ux/axios-extension', () => {
+    class MockAbapServiceProvider {
+        get = jest.fn();
+        fetchExternalServices = jest.fn();
+    }
+    return {
+        AbapServiceProvider: MockAbapServiceProvider
+    };
+});
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     DefaultLogger: {
@@ -249,6 +262,7 @@ describe('ODataDownloadGenerator', () => {
 
         it('should write value help data when available', async () => {
             const mockValueHelpData = [{ path: '/sap/opu/odata4/sap/valuehelp', entities: [] }];
+            const mockServiceProvider = new AbapServiceProvider({} as any);
 
             (createEntitySetData as jest.Mock).mockReturnValue({});
 
@@ -269,7 +283,10 @@ describe('ODataDownloadGenerator', () => {
                     odataQueryResult: { odata: [] },
                     odataServiceAnswers: {
                         servicePath: '/sap/opu/odata4/sap/travel',
-                        metadata: '<metadata/>'
+                        metadata: '<metadata/>',
+                        connectedSystem: {
+                            serviceProvider: mockServiceProvider
+                        }
                     }
                 },
                 questions: []
@@ -297,6 +314,7 @@ describe('ODataDownloadGenerator', () => {
 
         it('should write resolveExternalServiceReferences to ui5-mock.yaml when value help data and mock config exist', async () => {
             const mockValueHelpData = [{ path: '/sap/opu/odata4/sap/valuehelp', entities: [] }];
+            const mockServiceProvider = new AbapServiceProvider({} as any);
 
             (createEntitySetData as jest.Mock).mockReturnValue({});
 
@@ -317,7 +335,10 @@ describe('ODataDownloadGenerator', () => {
                     odataQueryResult: { odata: [] },
                     odataServiceAnswers: {
                         servicePath: '/sap/opu/odata4/sap/travel',
-                        metadata: '<metadata/>'
+                        metadata: '<metadata/>',
+                        connectedSystem: {
+                            serviceProvider: mockServiceProvider
+                        }
                     }
                 },
                 questions: []

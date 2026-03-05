@@ -119,7 +119,8 @@ export async function getODataDownloaderPrompts(): Promise<{
         appAccess: undefined,
         referencedEntities: undefined,
         servicePath: undefined,
-        systemName: { value: undefined, connectPath: undefined },
+        systemName: { value: undefined },
+        connectPath: { value: undefined },
         relatedEntityChoices: {
             choices: [],
             entitySetsFlat: {}
@@ -137,6 +138,7 @@ export async function getODataDownloaderPrompts(): Promise<{
             systemSelection: {
                 includeCloudFoundryAbapEnvChoice: false,
                 defaultChoice: appConfig.systemName,
+                connectPath: appConfig.connectPath,
                 hideNewSystem: true
             },
             serviceSelection: {
@@ -249,7 +251,9 @@ function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[]): In
 
             if (appConfig.systemName) {
                 appConfig.systemName.value = systemName;
-                appConfig.systemName.connectPath = servicePath;
+            }
+            if (appConfig.connectPath) {
+                appConfig.connectPath.value = servicePath;
             }
             return true;
         }
@@ -288,14 +292,10 @@ function getEntitySelectionPrompt(
         message: t('prompts.relatedEntitySelection.message'),
         choices: () => relatedEntityChoices.choices,
         validate: async (selectedEntities, answers: Answers): Promise<boolean | string> => {
-            // Set `checked` to avoid deselection when re-running `default`.
-            selectedEntities.forEach((selectedEntity) => {
-                const selectedEntityChoice = relatedEntityChoices.choices.find(
-                    (entityChoice) => entityChoice.value.fullPath === selectedEntity.fullPath
+            relatedEntityChoices.choices.forEach((entityChoice) => {
+                entityChoice.checked = selectedEntities.some(
+                    (selectedEntity: SelectedEntityAnswer) => selectedEntity.fullPath === entityChoice.value.fullPath
                 );
-                if (selectedEntityChoice) {
-                    selectedEntityChoice.checked = true;
-                }
             });
             if (answers && !answers[promptNames.skipDataDownload]?.[0]) {
                 result = await validateKeysAndFetchData(answers, odataServiceAnswers, appConfig);
@@ -343,6 +343,7 @@ function getResetSelectionPrompt(
         when: () => {
             // System was changed, rebuild choices even if service path is the same, otherwise if service is different
             if (previousSystemName !== appConfig.systemName?.value || appConfig.servicePath !== previousServicePath) {
+                // Entity model is created using backend metadata
                 if (appConfig.referencedEntities?.listEntity) {
                     const entityChoices = createEntityChoices(
                         appConfig.referencedEntities.listEntity,
@@ -352,9 +353,9 @@ function getResetSelectionPrompt(
                         relatedEntityChoices.choices = entityChoices.choices;
                         Object.assign(relatedEntityChoices.entitySetsFlat, entityChoices.entitySetsFlat);
                     }
+                    previousServicePath = appConfig.servicePath;
+                    previousSystemName = appConfig.systemName?.value;
                 }
-                previousServicePath = appConfig.servicePath;
-                previousSystemName = appConfig.systemName?.value;
             }
             return relatedEntityChoices.choices.length > 0;
         },
@@ -431,7 +432,7 @@ function getKeyPrompts(
                     delete keyRef.value;
                 }
 
-                if (keyRef) {
+                if (keyValue && keyRef) {
                     if (keyRef.type === 'Edm.Boolean') {
                         try {
                             keyRef.value = JSON.parse(keyValue);
@@ -494,10 +495,13 @@ function getSkipDataDownloadPrompt(odataServiceAnswers: Partial<OdataServiceAnsw
         name: promptNames.skipDataDownload,
         type: 'checkbox',
         message: t('prompts.skipDataDownload.message'),
+        guiOptions: {
+            hint: t('prompts.skipDataDownload.hint')
+        },
         default: false,
         choices: [
             {
-                name: 'Skip data download',
+                name: t('prompts.skipDataDownload.choiceLabel'),
                 value: 'skipDownload',
                 checked: false
             }
@@ -516,15 +520,18 @@ function getUpdateMainServiceMetadataPrompt(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
     appConfig: AppConfig
 ): ConfirmQuestion {
+    let entityModelResult;
     const question: ConfirmQuestion = {
         when: async () => {
-            // Use this when condition to load the entity data
             if (appConfig.appAccess && appConfig.specification && odataServiceAnswers?.metadata) {
-                appConfig.referencedEntities = await getEntityModel(
+                entityModelResult = await getEntityModel(
                     appConfig.appAccess,
                     appConfig.specification,
                     odataServiceAnswers.metadata
                 );
+                if (typeof entityModelResult === 'object') {
+                    appConfig.referencedEntities = entityModelResult;
+                }
                 return true;
             }
             return false;
@@ -532,7 +539,15 @@ function getUpdateMainServiceMetadataPrompt(
         name: promptNames.updateMainServiceMetadata,
         type: 'confirm',
         message: t('prompts.updateMainServiceMetadata.message'),
-        default: false
+        default: false,
+        additionalMessages: async () => {
+            if (typeof entityModelResult === 'string') {
+                return {
+                    message: entityModelResult,
+                    severity: Severity.error
+                };
+            }
+        }
     };
     return question;
 }

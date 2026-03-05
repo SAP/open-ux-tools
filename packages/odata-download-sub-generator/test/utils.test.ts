@@ -51,6 +51,40 @@ describe('Test utils', () => {
             expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
         });
 
+        test('should create an entity set data map for large odata results', async () => {
+            const odataResult = (
+                JSON.parse(await readFile(join(__dirname, './test-data/odataResult3.json'), 'utf8')) as {
+                    value: unknown[];
+                }
+            ).value;
+            const entitySetData = createEntitySetData(
+                odataResult,
+                {
+                    _BankAddress: 'BankAddress',
+                    _BankIntradayStatementRule: 'BankIntradayStatementRule',
+                    _BankScriptedAddress: 'BankScriptedAddress',
+                    _BankServiceMapping: 'CashBankServiceMapping',
+                    _BusinessPartnerRating: 'BusinessPartnerRating',
+                    _BusinessPartnerUsed: 'BusinessPartnerUsed',
+                    _CompanyCodeUsed: 'CompanyCodeUsed',
+                    _ContactPerson: 'ContactPerson',
+                    _DtaMdmExchFrgnPaytTransac: 'DtaMdmExchFrgnPaytTransac',
+                    _HouseBank: 'CashBankHouseBank',
+                    _NettingBusinessPartner: 'CashBankNettingPartner',
+                    _RelatedBranch: 'CashBankRelatedBranch',
+                    _RiskBusinessPartner: 'RiskBusinessPartner',
+                    _UserContactCardChange: 'UserContactCard',
+                    _UserContactCardCreation: 'UserContactCard'
+                },
+                'CashBank'
+            );
+            const expectedEntitySetData = await readFile(
+                join(__dirname, './test-data/expected-output/test3/entityFileData.json'),
+                'utf8'
+            );
+            expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
+        });
+
         test('should remove duplicate entities at all nesting levels', () => {
             // Simulates OData result similar to Travel with expanded Bookings, where:
             // - Same Airline appears in multiple bookings across different travels

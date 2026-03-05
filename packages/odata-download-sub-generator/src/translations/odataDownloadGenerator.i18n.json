@@ -44,15 +44,20 @@
         },
         "skipDataDownload": {
             "message": "If data download is not required select this option and proceed to Value Help download",
+            "hint": "Use this to temporarily disable live queries when entering multiple inputs and re-enable when ready",
             "labelTrue": "Execute the OData query (data files will be generated on finish)",
             "labelFalse": "Suppress the OData query (prevents multiple queries during selections)",
             "querySuccess": "OData query success. $t(texts.rows, {\"count\": \"{{count}}\") returned. $t(texts.seeLogForDetails)",
             "validation": {
                 "keyRequired": "Please enter at least one key field value to run the odata query"
-            }
+            },
+            "choiceLabel": "Skip data download"
         },
         "updateMainServiceMetadata": {
-            "message": "Update local metadata file from backend (remote service metadata is always used for data download):"
+            "message": "Update local metadata file from backend (remote service metadata is always used for data download):",
+            "validation": {
+                "errorLoadingAppOrMainService": "An error occurred while loading the application. Please correct the issue to proceed: {{- error}}"
+            }
         },
         "valueHelpSelection": {
             "message": "Select Value Help data"

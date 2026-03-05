@@ -6,7 +6,6 @@ import { BackendSystemKey, getService } from '@sap-ux/store';
 import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabularies-types';
 import { FioriElementsVersion, PageTypeV4, type Specification } from '@sap/ux-specification/dist/types/src';
 import type { PagesV4 } from '@sap/ux-specification/dist/types/src/v4';
-import deepmerge from 'deepmerge';
 import { t } from '../utils/i18n';
 import { ODataDownloadGenerator } from './odata-download-generator';
 import type { EntitySetsFlat } from './odata-query';
@@ -14,23 +13,32 @@ import type { Entity, ReferencedEntities, SemanticKeyFilter } from './types';
 import { navPropNameExclusions } from './types';
 
 /**
- * Deep equality check using JSON.stringify.
- * Suitable for OData entities which have consistent key ordering from the server.
+ * Merges entity set data by concatenating arrays and deduplicating using Set for O(n) performance.
  *
- * @param a - The first value to be compared for equality
- * @param b - The second value to be compared for equality
- * @returns Returns true if the JSON string representations of both values are identical, false otherwise
+ * @param target - The target object to merge into
+ * @param source - The source object to merge from
+ * @returns The merged object with deduplicated arrays
  */
-const jsonEqual = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b);
-/**
- * Deepmerge options to merge array properties by removing dups and concatenating.
- */
-const mergeOptions: deepmerge.Options = {
-    arrayMerge: (destArray: unknown[], srcArray: unknown[]) => {
-        const combined = [...destArray, ...srcArray];
-        return combined.filter((item, idx) => combined.findIndex((other) => jsonEqual(item, other)) === idx);
+function mergeEntitySetData(
+    target: { [key: string]: object[] },
+    source: { [key: string]: object[] }
+): { [key: string]: object[] } {
+    for (const key of Object.keys(source)) {
+        if (target[key]) {
+            const seen = new Set(target[key].map((item) => JSON.stringify(item)));
+            for (const item of source[key]) {
+                const itemStr = JSON.stringify(item);
+                if (!seen.has(itemStr)) {
+                    seen.add(itemStr);
+                    target[key].push(item);
+                }
+            }
+        } else {
+            target[key] = source[key];
+        }
     }
-};
+    return target;
+}
 /**
  * Creates an object keyed on entity set name containing expanded results.
  *
@@ -49,25 +57,38 @@ export function createEntitySetData(
         ? (odataResult as Record<string, unknown>[])
         : [odataResult as Record<string, unknown>];
 
+    // Track seen entities using JSON string as key for O(1) lookup
+    // This tracks items added in this call (not from merges - those are handled by mergeEntitySetData)
+    const seenInThisCall: { [key: string]: Set<string> } = {};
+
     // Each entry is of the same entity set data
     odataRestulAsArray.forEach((resultEntry) => {
         Object.entries(entitySetsFlat).forEach(([entityPath, entitySetName]) => {
             // There are nested expanded entities
             if (resultEntry[entityPath]) {
                 const entitySetData = createEntitySetData(resultEntry[entityPath], entitySetsFlat, entitySetName);
-                Object.assign(resultDataByEntitySet, deepmerge(resultDataByEntitySet, entitySetData, mergeOptions));
+                mergeEntitySetData(resultDataByEntitySet, entitySetData);
                 // Since we have assigned the property value to its own entity set property we can remove it from the parent (to prevent dups and file bloat)
                 delete resultEntry[entityPath];
             }
         });
-        if (resultDataByEntitySet[entitySetName]) {
-            // prevent duplicates, this would break the mock data server but can be returned from queries
-            const found = resultDataByEntitySet[entitySetName].find((entity) => jsonEqual(entity, resultEntry));
-            if (!found) {
+
+        // Initialize seen set for this entity set if needed
+        if (!seenInThisCall[entitySetName]) {
+            // Build initial set from any existing data (could be from merges)
+            seenInThisCall[entitySetName] = new Set(
+                (resultDataByEntitySet[entitySetName] ?? []).map((item) => JSON.stringify(item))
+            );
+        }
+
+        const entryStr = JSON.stringify(resultEntry);
+        if (!seenInThisCall[entitySetName].has(entryStr)) {
+            seenInThisCall[entitySetName].add(entryStr);
+            if (resultDataByEntitySet[entitySetName]) {
                 resultDataByEntitySet[entitySetName].push(resultEntry);
+            } else {
+                resultDataByEntitySet[entitySetName] = [resultEntry];
             }
-        } else {
-            resultDataByEntitySet[entitySetName] = [resultEntry];
         }
     });
 

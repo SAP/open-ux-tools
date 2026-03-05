@@ -9,7 +9,7 @@ import { createEntityChoices, getData } from '../../src/data-download/prompts/pr
 import { getEntityModel } from '../../src/data-download/utils';
 import * as odataQueryModule from '../../src/data-download/odata-query';
 import { initI18nODataDownloadGenerator } from '../../src/utils/i18n';
-import type { AppConfig, Entity } from '../../src/data-download/types';
+import type { AppConfig, Entity, ReferencedEntities } from '../../src/data-download/types';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { EntityType } from '@sap-ux/vocabularies-types';
 import { PromptState } from '../../src/data-download/prompt-state';
@@ -429,11 +429,13 @@ describe('Test createEntityChoices', () => {
         }
         // Load the full entity model
         const entityModel = await getEntityModel(appAccess, specResult as Specification, metadata);
-        if (!entityModel) {
-            throw new Error('Expected entity model is undefined');
-        }
+        expect(entityModel).not.toBe(String);
+        expect(entityModel).not.toBe(undefined);
 
-        const entityChoices = createEntityChoices(entityModel.listEntity, entityModel?.pageObjectEntities);
+        const entityChoices = createEntityChoices(
+            (entityModel! as ReferencedEntities).listEntity,
+            (entityModel! as ReferencedEntities)?.pageObjectEntities
+        );
         expect(entityChoices).toMatchSnapshot();
     }, 900000); // Very long spec load time on Windows
 });
