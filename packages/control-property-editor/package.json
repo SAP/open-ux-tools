@@ -3,7 +3,7 @@
     "displayName": "Control Property Editor",
     "description": "Control Property Editor",
     "license": "Apache-2.0",
-    "version": "0.7.18",
+    "version": "0.7.20",
     "main": "dist/app.js",
     "repository": {
         "type": "git",
@@ -61,7 +61,7 @@
         "esbuild-plugin-copy": "2.1.1",
         "@esbuild-plugins/node-modules-polyfill": "0.2.2",
         "@sap-ux-private/control-property-editor-common": "workspace:*",
-        "uuid": "11.0.5"
+        "uuid": "11.1.0"
     },
     "engines": {
         "node": ">=20.x"

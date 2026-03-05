@@ -1,6 +1,6 @@
 {
     "name": "sap-ux-sap-systems-ext",
-    "version": "0.3.9",
+    "version": "0.3.10",
     "displayName": "Connection Manager for SAP Systems",
     "description": "Enables you to store connection information for remote SAP systems.",
     "main": "./dist/extension.js",
@@ -60,7 +60,7 @@
         "@types/normalize-path": "3.0.0",
         "@types/vscode": "1.102.0",
         "@zowe/secrets-for-zowe-sdk": "8.29.4",
-        "cross-env": "7.0.3",
+        "cross-env": "10.1.0",
         "fast-glob": "3.3.1",
         "i18next": "25.8.12",
         "jsonc-parser": "3.3.1",

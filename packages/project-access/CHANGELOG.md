@@ -1,5 +1,12 @@
 # @sap-ux/project-access
 
+## 1.35.12
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+    - @sap-ux/ui5-config@0.29.21
+
 ## 1.35.11
 
 ### Patch Changes

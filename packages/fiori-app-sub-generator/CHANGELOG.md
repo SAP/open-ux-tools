@@ -1,5 +1,74 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.94
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
+## 0.11.93
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.92
+- @sap-ux/fiori-freestyle-writer@2.5.69
+- @sap-ux/odata-service-inquirer@2.19.7
+
+## 0.11.92
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+- Updated dependencies [fdd57de]
+    - @sap-ux/telemetry@0.6.85
+    - @sap-ux/annotation-generator@0.4.35
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/odata-service-inquirer@2.19.7
+    - @sap-ux/odata-service-writer@0.29.33
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/fiori-elements-writer@2.8.91
+    - @sap-ux/fiori-freestyle-writer@2.5.68
+    - @sap-ux/fiori-generator-shared@0.13.84
+    - @sap-ux/cap-config-writer@0.12.76
+    - @sap-ux/ui5-application-inquirer@0.16.43
+    - @sap-ux/launch-config@0.10.74
+
+## 0.11.91
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux/fiori-elements-writer@2.8.90
+    - @sap-ux/fiori-freestyle-writer@2.5.67
+    - @sap-ux/odata-service-writer@0.29.32
+    - @sap-ux/odata-service-inquirer@2.19.6
+    - @sap-ux/ui5-application-inquirer@0.16.42
+
+## 0.11.90
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- Updated dependencies [f5f9a78]
+- Updated dependencies [ac58145]
+    - @sap-ux/odata-service-inquirer@2.19.5
+    - @sap-ux/ui5-application-inquirer@0.16.41
+    - @sap-ux/fiori-elements-writer@2.8.89
+    - @sap-ux/fiori-freestyle-writer@2.5.66
+    - @sap-ux/odata-service-writer@0.29.31
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/cap-config-writer@0.12.75
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/launch-config@0.10.73
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/telemetry@0.6.84
+    - @sap-ux/ui5-info@0.13.14
+    - @sap-ux/annotation-generator@0.4.34
+
 ## 0.11.89
 
 ### Patch Changes

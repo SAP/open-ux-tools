@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 2.0.2
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
+## 2.0.1
+
+### Patch Changes
+
+- 14d8ab3: fix(deps): update dependency babel-loader to v10
+
 ## 2.0.0
 
 ### Major Changes

@@ -1,5 +1,19 @@
 # @sap-ux/axios-extension
 
+## 1.25.21
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+
+## 1.25.20
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/btp-utils@1.1.9
+
 ## 1.25.19
 
 ### Patch Changes

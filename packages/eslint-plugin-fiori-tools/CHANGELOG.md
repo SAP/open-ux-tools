@@ -1,5 +1,25 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.7.4
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- fa74f92: fix(deps): update dependency c8 to v11
+- 83ca0e9: fix(deps): update dependency cross-env to v10
+- Updated dependencies [7c06ef0]
+    - @sap-ux/fiori-annotation-api@0.9.28
+    - @sap-ux/project-access@1.35.12
+
+## 9.7.3
+
+### Patch Changes
+
+- f90fcca: fix(deps): update dependency @eslint/json to v0.14.0
+    - @sap-ux/fiori-annotation-api@0.9.27
+    - @sap-ux/project-access@1.35.11
+
 ## 9.7.2
 
 ### Patch Changes
