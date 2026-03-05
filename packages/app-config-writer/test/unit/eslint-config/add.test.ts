@@ -57,7 +57,7 @@ describe('generateEslintConfig', () => {
             } catch (error) {
                 expect(error.message).toContain('The prerequisites are not met');
                 expect(errorMock).toHaveBeenCalledWith(
-                    expect.stringContaining('An eslint configuration file already exists at path')
+                    expect.stringContaining('An ESLint configuration file already exists at path')
                 );
             }
         });
