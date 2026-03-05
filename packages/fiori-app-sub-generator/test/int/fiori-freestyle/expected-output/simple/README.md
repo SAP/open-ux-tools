@@ -1,7 +1,7 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Feb 25 2026 17:24:23 GMT+0000 (Greenwich Mean Time)|
+|**Generation Date and Time**<br>Thu Dec 04 2025 17:04:42 GMT+0000 (Greenwich Mean Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
 |**Generation Platform**<br>CLI|

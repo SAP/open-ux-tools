@@ -1,10 +1,10 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Feb 25 2026 16:14:28 GMT+0000 (Greenwich Mean Time)|
+|**Generation Date and Time**<br>Thu Dec 04 2025 17:04:52 GMT+0000 (Greenwich Mean Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
-|**App Generator Version**<br>0.11.78|
-|**Generation Platform**<br>Visual Studio Code|
+|**App Generator Version**<br>0.9.7|
+|**Generation Platform**<br>CLI|
 |**Template Used**<br>Basic V2|
 |**Service Type**<br>OData URL|
 |**Service URL**<br>https://ldciuia.wdf.sap.corp:44300//sap/opu/odata/dmo/FLIGHT_C_TRA_V2_TU|

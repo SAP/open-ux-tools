@@ -1,10 +1,10 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Feb 25 2026 16:14:24 GMT+0000 (Greenwich Mean Time)|
+|**Generation Date and Time**<br>Thu Dec 04 2025 17:05:21 GMT+0000 (Greenwich Mean Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
-|**Generation Platform**<br>Visual Studio Code|
+|**Generation Platform**<br>CLI|
 |**Template Used**<br>List Report Page V2|
 |**Service Type**<br>File|
 |**Service URL**<br>N/A|

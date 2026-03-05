@@ -1,7 +1,7 @@
 {
   "generationParameters": {
-    "generationDate": "Wed Feb 25 2026 16:14:28 GMT+0000 (Greenwich Mean Time)",
-    "generatorPlatform": "Visual Studio Code",
+    "generationDate": "Fri Nov 21 2025 14:53:26 GMT+0000 (Greenwich Mean Time)",
+    "generatorPlatform": "CLI",
     "serviceType": "OData URL",
     "metadataFilename": "",
     "serviceUrl": "https://ldciuia.wdf.sap.corp:44300//sap/opu/odata/dmo/FLIGHT_C_TRA_V2_TU",
@@ -14,7 +14,7 @@
     "enableEslint": false,
     "enableTypeScript": false,
     "showMockDataInfo": true,
-    "generatorVersion": "0.11.78",
+    "generatorVersion": "0.8.6",
     "template": "Basic V2",
     "generatorName": "SAP Fiori Application Generator",
     "entityRelatedConfig": [],
