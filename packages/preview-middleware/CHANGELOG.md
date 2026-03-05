@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.23.145
+
+### Patch Changes
+
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+- Updated dependencies [83ca0e9]
+- Updated dependencies [fdd57de]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/adp-tooling@0.18.84
+    - @sap-ux/system-access@0.6.63
+
 ## 0.23.144
 
 ### Patch Changes
