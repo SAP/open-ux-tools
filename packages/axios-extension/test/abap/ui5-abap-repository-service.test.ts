@@ -50,25 +50,27 @@ describe('Ui5AbapRepositoryService', () => {
     beforeAll(() => {
         nock.disableNetConnect();
         // mock an existing and not existing app
+        // Note: encodeURIComponent encodes single quotes as %27, so we need to match the encoded URL
         nock(server)
-            .get((url) => url.startsWith(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')`))
+            .get((url) => url.includes(`/Repositories(%27${validApp}%27)`) || url.includes(`/Repositories('${validApp}')`))
             .reply(200, { d: validAppInfo })
             .persist();
         nock(`https://${destination.Name}.dest`)
-            .get(`${Ui5AbapRepositoryService.PATH}/Repositories('NOT_EXISTING_APP')?saml2=disabled&$format=json`)
+            .get((url) => url.includes(`/Repositories(%27NOT_EXISTING_APP%27)`) || url.includes(`/Repositories('NOT_EXISTING_APP')`))
             .reply(200, { d: validAppInfo })
             .persist();
         nock(server)
-            .get((url) => url.startsWith(`${Ui5AbapRepositoryService.PATH}/Repositories('${notExistingApp}')`))
+            .get((url) => url.includes(`/Repositories(%27${notExistingApp}%27)`) || url.includes(`/Repositories('${notExistingApp}')`))
             .reply(404, 'the app does not exist')
             .persist();
         nock(server)
-            .get(`${Ui5AbapRepositoryService.PATH}/Repositories('${restrictedApp}')?$format=json`)
+            .get((url) => url.includes(`/Repositories(%27${restrictedApp}%27)`) || url.includes(`/Repositories('${restrictedApp}')`))
             .reply(401, { d: validAppInfo })
             .persist();
     });
 
     afterAll(() => {
+        nock.abortPendingRequests();
         nock.cleanAll();
         nock.enableNetConnect();
     });
@@ -402,7 +404,7 @@ describe('Ui5AbapRepositoryService', () => {
         test('failed removal', async () => {
             nock(server)
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`)
-                .replyWithError('Failed');
+                .reply(500, 'Internal Server Error');
             await expect(service.undeploy({ bsp: { name: validApp } })).rejects.toThrow();
         });
 

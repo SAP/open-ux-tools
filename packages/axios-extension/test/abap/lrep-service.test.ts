@@ -28,6 +28,7 @@ describe('LayeredRepositoryService', () => {
     });
 
     afterAll(() => {
+        nock.abortPendingRequests();
         nock.cleanAll();
         nock.enableNetConnect();
     });
@@ -38,6 +39,7 @@ describe('LayeredRepositoryService', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
+        nock.cleanAll();
     });
 
     describe('deploy', () => {
@@ -132,16 +134,7 @@ describe('LayeredRepositoryService', () => {
             expect(response.status).toBe(200);
         });
         test('logError is called when request fails', async () => {
-            const mockAxiosError = {
-                isAxiosError: true,
-                response: {
-                    status: 404,
-                    data: '{ "code": "404", "message": "Not Found" }',
-                    headers: {},
-                    config: {} as any
-                },
-                message: 'Request failed with status code 404'
-            } as AxiosError;
+            const mockErrorMessage = 'Request failed with status code 404';
 
             nock(server)
                 .get((url) => {
@@ -160,7 +153,7 @@ describe('LayeredRepositoryService', () => {
                         config.namespace as string
                     )}&layer=CUSTOMER_BASE&package=${config.package}&changelist=${config.transport}`
                 )
-                .replyWithError(mockAxiosError);
+                .reply(404, 'Not found');
 
             try {
                 await service.deploy(archivePath, config);
@@ -168,7 +161,7 @@ describe('LayeredRepositoryService', () => {
             } catch (error) {
                 expect(error).toBeDefined();
                 expect(loggerMock.error).toHaveBeenCalledWith(
-                    expect.stringContaining(mockAxiosError.message as string)
+                    expect.stringContaining(mockErrorMessage)
                 );
             }
         });
@@ -384,28 +377,19 @@ describe('LayeredRepositoryService', () => {
         });
 
         test('should log response when AxiosError is thrown', async () => {
-            const mockAxiosError = {
-                isAxiosError: true,
-                response: {
-                    status: 500,
-                    data: '{ "code": "500", "message": "Internal Server Error" }',
-                    headers: {},
-                    config: {} as any
-                },
-                message: 'Request failed with status code 500'
-            } as AxiosError;
+            const mockErrorMessage = 'Request failed with status code 500';
 
             nock(server)
                 .get(`${LayeredRepositoryService.PATH}/flex/apps/${encodeURIComponent(appId)}/adaptations/`)
                 .query({ version: '0' })
-                .replyWithError(mockAxiosError);
+                .reply(500, 'Internal Server Error');
 
             try {
                 await service.listAdaptations(appId, '0');
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
-                expect(error.message).toBe(mockAxiosError.message);
+                expect(error.message).toBe(mockErrorMessage);
             }
         });
     });
@@ -436,27 +420,18 @@ describe('LayeredRepositoryService', () => {
         });
 
         test('should log response when AxiosError is thrown', async () => {
-            const mockAxiosError = {
-                isAxiosError: true,
-                response: {
-                    status: 404,
-                    data: '{ "code": "404", "message": "Not Found" }',
-                    headers: {},
-                    config: {} as any
-                },
-                message: 'Request failed with status code 404'
-            } as AxiosError;
+            const mockErrorMessage = 'Request failed with status code 404';
 
             nock(server)
                 .get(`${LayeredRepositoryService.PATH}/flex/keyuserdata/${componentId}?adaptationId=${adaptationId}`)
-                .replyWithError(mockAxiosError);
+                .reply(404, 'Not found');
 
             try {
                 await service.getKeyUserData(componentId, adaptationId);
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
-                expect(error.message).toBe(mockAxiosError.message);
+                expect(error.message).toBe(mockErrorMessage);
             }
         });
     });
@@ -495,28 +470,19 @@ describe('LayeredRepositoryService', () => {
         });
 
         test('should log response when AxiosError is thrown', async () => {
-            const mockAxiosError = {
-                isAxiosError: true,
-                response: {
-                    status: 500,
-                    data: '{ "code": "500", "message": "Internal Server Error" }',
-                    headers: {},
-                    config: {} as any
-                },
-                message: 'Request failed with status code 500'
-            } as AxiosError;
+            const mockErrorMessage = 'Request failed with status code 500';
 
             nock(server)
                 .get(`${LayeredRepositoryService.PATH}/flex/versions/${encodeURIComponent(componentId)}`)
                 .query({ 'sap-language': 'EN', limit: '2' })
-                .replyWithError(mockAxiosError);
+                .reply(500, 'Internal Server Error');
 
             try {
                 await service.getFlexVersions(componentId);
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
-                expect(error.message).toBe(mockAxiosError.message);
+                expect(error.message).toBe(mockErrorMessage);
             }
         });
     });
