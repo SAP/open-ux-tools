@@ -1,5 +1,34 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.2.20
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux/abap-deploy-config-writer@0.2.88
+    - @sap-ux/adp-tooling@0.18.83
+    - @sap-ux/abap-deploy-config-inquirer@1.7.16
+    - @sap-ux/deploy-config-generator-shared@0.1.102
+
+## 0.2.19
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- Updated dependencies [f5f9a78]
+- Updated dependencies [ac58145]
+- Updated dependencies [45d4797]
+    - @sap-ux/abap-deploy-config-inquirer@1.7.15
+    - @sap-ux/adp-tooling@0.18.82
+    - @sap-ux/deploy-config-generator-shared@0.1.102
+    - @sap-ux/abap-deploy-config-writer@0.2.87
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/ui5-config@0.29.20
+
 ## 0.2.18
 
 ### Patch Changes

@@ -1,5 +1,34 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.101
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+    - @sap-ux/abap-deploy-config-sub-generator@0.2.20
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.147
+    - @sap-ux/odata-service-inquirer@2.19.6
+    - @sap-ux/inquirer-common@0.11.20
+    - @sap-ux/deploy-config-generator-shared@0.1.102
+
+## 0.5.100
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+- Updated dependencies [f5f9a78]
+    - @sap-ux/abap-deploy-config-sub-generator@0.2.19
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.146
+    - @sap-ux/deploy-config-generator-shared@0.1.102
+    - @sap-ux/inquirer-common@0.11.19
+    - @sap-ux/odata-service-inquirer@2.19.5
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/ui5-config@0.29.20
+
 ## 0.5.99
 
 ### Patch Changes

@@ -105,7 +105,7 @@ Options:
 
 ## [`add eslint-config`](#add-eslint-config)
 
-Add an `eslint` configuration to a project including the SAP Fiori tools lint plugin (`@sap-ux/eslint-plugin-fiori-tools`).
+Add an ESLint configuration to a project including the SAP Fiori tools lint plugin (`@sap-ux/eslint-plugin-fiori-tools`).
 
 Example:
 
@@ -114,7 +114,8 @@ Example:
 Options:
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
-- `-c, --config <string>` _(required)_ - The name of the SAP Fiori tools eslint plugin configuration to be used (default is `recommended`).
+- `-c, --config <string>` - The name of the SAP Fiori tools eslint plugin configuration to be used. _(default: `recommended`)_
+- `-n, --skip-install` - Skip the `npm install` step.
 
 --------------------------------
 
@@ -144,7 +145,7 @@ Example:
 Options:
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 
@@ -157,7 +158,7 @@ Example:
 `npx --yes @sap-ux/create@latest add cards-editor`
 
 Options:
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -192,7 +193,7 @@ Example:
 
 Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 
@@ -205,7 +206,7 @@ Example:
 `npx --yes @sap-ux/create@latest add html`
 
 Options:
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -233,11 +234,11 @@ Example:
 `npx --yes @sap-ux/create@latest add deploy-config`
 
 Options:
-- `-t, --target <string>` _(required)_ - Target for deployment: ABAP or Cloud Foundry (not yet implemented)
+- `-t, --target <string>` - Target for deployment: ABAP or Cloud Foundry (not yet implemented)
 - `-s, --simulate` - Simulate only. Do not write. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
-- `-b, --base-file <string>` _(required)_ - The base config file of the project. _(default: "ui5.yaml")_
-- `-d, --deploy-file <string>` _(required)_ - The name of the deploy config file to be written. _(default: "ui5-deploy.yaml")_
+- `-b, --base-file <string>` - The base config file of the project. _(default: "ui5.yaml")_
+- `-d, --deploy-file <string>` - The name of the deploy config file to be written. _(default: "ui5-deploy.yaml")_
 
 --------------------------------
 
@@ -250,7 +251,7 @@ Example:
 `npx --yes @sap-ux/create@latest add variants-config`
 
 Options:
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -269,7 +270,7 @@ Example:
 
 Options:
 - `-v, --verbose` - Show verbose information.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 
@@ -279,7 +280,7 @@ Command group for converting existing SAP Fiori applications. A subcommand is re
 
 Usage: `npx --yes @sap-ux/create@latest convert [subcommand] [options]`
 
-The available subcommands are: `preview-config`
+The available subcommands are: `preview-config` and `eslint-config`
 
 
 --------------------------------
@@ -295,9 +296,25 @@ Examples:
 `npx --yes @sap-ux/create@latest convert preview-config`
 
 Options:
-- `-s, --simulate <boolean>` _(required)_ - Simulate only. Do not write.
+- `-s, --simulate <boolean>` - Simulate only. Do not write.
 - `-v, --verbose` - Show verbose information.
-- `-t, --tests <boolean>` _(required)_ - Also, convert test suite and test runners.
+- `-t, --tests <boolean>` - Also, convert test suite and test runners.
+
+--------------------------------
+
+## [`convert eslint-config`](#convert-eslint-config)
+
+Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (ESLint version 9).
+
+Examples:
+
+`npx --yes @sap-ux/create@latest convert eslint-config`
+
+Options:
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+- `-c, --config <string>` - The name of the SAP Fiori tools ESLint plugin configuration to be used. _(default: `recommended`)_
+- `-n, --skip-install` - Skip the `npm install` step.
 
 --------------------------------
 
@@ -349,7 +366,7 @@ Example:
 
 Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 
