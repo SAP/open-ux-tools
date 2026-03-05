@@ -446,6 +446,27 @@ describe('CF Services API', () => {
             );
         });
 
+        test('should handle non-zero exit code from CLI', async () => {
+            mockCFToolsCliExecute.mockResolvedValue({
+                exitCode: 1,
+                stdout: '',
+                stderr: 'Service already exists'
+            });
+
+            await expect(
+                createServiceInstance(plan, serviceInstanceName, serviceName, { logger: mockLogger })
+            ).rejects.toThrow(
+                t('error.failedToCreateServiceInstance', {
+                    serviceInstanceName: serviceInstanceName,
+                    error: 'Service creation failed with code 1: Service already exists'
+                })
+            );
+
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                'Service creation failed: Service already exists'
+            );
+        });
+
         test('should handle xs-security.json parsing failure', async () => {
             mockReadFileSync.mockReturnValue('invalid json content');
 
