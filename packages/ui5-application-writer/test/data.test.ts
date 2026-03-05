@@ -347,7 +347,7 @@ describe('Setting defaults', () => {
         };
         expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
     });
-    
+
     it('eslint can be explicitly disabled', async () => {
         const input: Ui5App = {
             app: {
