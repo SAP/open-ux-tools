@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/telemetry",
-    "version": "0.6.82",
+    "version": "0.6.84",
     "description": "Library for sending usage telemetry data",
     "repository": {
         "type": "git",
@@ -36,13 +36,13 @@
         "applicationinsights": "2.9.8",
         "axios": "1.13.5",
         "performance-now": "2.1.0",
-        "yaml": "2.3.3"
+        "yaml": "2.8.2"
     },
     "devDependencies": {
         "jest-extended": "6.0.0",
         "memfs": "3.4.13",
         "unionfs": "4.4.0",
-        "dotenv": "16.6.1"
+        "dotenv": "17.3.1"
     },
     "files": [
         "dist",

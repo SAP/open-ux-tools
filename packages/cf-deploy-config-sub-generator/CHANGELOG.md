@@ -1,5 +1,51 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.147
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux/cf-deploy-config-writer@0.3.79
+    - @sap-ux/inquirer-common@0.11.20
+    - @sap-ux/cf-deploy-config-inquirer@0.5.102
+    - @sap-ux/deploy-config-generator-shared@0.1.102
+
+## 0.2.146
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- Updated dependencies [f5f9a78]
+- Updated dependencies [ac58145]
+    - @sap-ux/cf-deploy-config-inquirer@0.5.101
+    - @sap-ux/deploy-config-generator-shared@0.1.102
+    - @sap-ux/inquirer-common@0.11.19
+    - @sap-ux/cf-deploy-config-writer@0.3.78
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/project-access@1.35.11
+
+## 0.2.145
+
+### Patch Changes
+
+- Updated dependencies [2302698]
+    - @sap-ux/inquirer-common@0.11.18
+    - @sap-ux/cf-deploy-config-inquirer@0.5.100
+    - @sap-ux/deploy-config-generator-shared@0.1.101
+    - @sap-ux/fiori-generator-shared@0.13.82
+
+## 0.2.144
+
+### Patch Changes
+
+- @sap-ux/cf-deploy-config-writer@0.3.77
+- @sap-ux/project-access@1.35.11
+- @sap-ux/inquirer-common@0.11.17
+- @sap-ux/fiori-generator-shared@0.13.82
+- @sap-ux/cf-deploy-config-inquirer@0.5.99
+- @sap-ux/deploy-config-generator-shared@0.1.101
+
 ## 0.2.143
 
 ### Patch Changes
