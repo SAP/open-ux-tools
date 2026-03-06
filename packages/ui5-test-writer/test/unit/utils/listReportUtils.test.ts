@@ -13,8 +13,8 @@ import {
     getToolBarActionItems
 } from '../../../src/utils/listReportUtils';
 import type { ButtonState } from '../../../src/types';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 describe('Test buildButtonState()', () => {
     test('should return visible false when buttonState is undefined', () => {
