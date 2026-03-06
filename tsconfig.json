@@ -172,6 +172,9 @@
       "path": "packages/odata-annotation-core"
     },
     {
+      "path": "packages/odata-download-sub-generator"
+    },
+    {
       "path": "packages/odata-entity-model"
     },
     {
