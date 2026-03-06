@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import { getMtaServices, isMtaProject, type SystemLookup } from '@sap-ux/adp-tooling';
-import type { CfConfig } from '@sap-ux/adp-tooling';
+import type { CfConfig, getMtaServices, isMtaProject, type SystemLookup } from '@sap-ux/adp-tooling';
 import { validateEmptyString, validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../utils/i18n';
