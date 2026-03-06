@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.35.13
+
+### Patch Changes
+
+- d834713: Export function `getGlobalCdsHomePath` to return the path to the global CDS home directory.
+
 ## 1.35.12
 
 ### Patch Changes
