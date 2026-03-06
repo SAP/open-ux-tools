@@ -2,6 +2,7 @@ import fs from 'node:fs';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getMtaServices, isMtaProject, type SystemLookup } from '@sap-ux/adp-tooling';
+import type { CfConfig } from '@sap-ux/adp-tooling';
 import { validateEmptyString, validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../utils/i18n';
@@ -91,11 +92,20 @@ export async function validateJsonInput(
  *
  * @param {string} value - The value to validate.
  * @param {boolean} isCFLoggedIn - Whether Cloud Foundry is logged in.
+ * @param {CfConfig} cfConfig - The CF configuration.
  * @returns {Promise<string | boolean>} Returns true if the environment is valid, otherwise returns an error message.
  */
-export async function validateEnvironment(value: string, isCFLoggedIn: boolean): Promise<string | boolean> {
+export async function validateEnvironment(
+    value: string,
+    isCFLoggedIn: boolean,
+    cfConfig?: CfConfig
+): Promise<string | boolean> {
     if (value === 'CF' && !isCFLoggedIn) {
         return t('error.cfNotLoggedIn');
+    }
+
+    if (value === 'CF' && isCFLoggedIn && (!cfConfig?.org?.Name || !cfConfig?.space?.Name)) {
+        return t('error.cfOrgSpaceMissing');
     }
 
     return true;
