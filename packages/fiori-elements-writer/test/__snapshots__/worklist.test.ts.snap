@@ -14445,9 +14445,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelList.iSeeThisPage();
-
         });
 
 
@@ -14527,8 +14525,11 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'fewrk2/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"fewrk2/test/integration/FirstJourney\\",
+    \\"fewrk2/test/integration/TravelListJourney\\",
+    \\"fewrk2/test/integration/TravelObjectPageJourney\\",
+    \\"fewrk2/test/integration/BookingObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });

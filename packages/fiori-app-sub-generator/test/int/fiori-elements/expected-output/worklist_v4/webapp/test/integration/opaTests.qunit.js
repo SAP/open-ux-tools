@@ -22,8 +22,11 @@ sap.ui.require(
     "sap/ui/thirdparty/qunit-2",
     "sap/ui/qunit/qunit-junit",
     "sap/ui/qunit/qunit-coverage",
-    'testNameSpace/worklistv4/test/integration/FirstJourney'
-  ], function (QUnit) {
+    "testNameSpace/worklistv4/test/integration/FirstJourney",
+    "testNameSpace/worklistv4/test/integration/TravelListJourney",
+    "testNameSpace/worklistv4/test/integration/TravelObjectPageJourney",
+    "testNameSpace/worklistv4/test/integration/BookingObjectPageJourney",
+], function (QUnit) {
     "use strict";
     QUnit.start();
 });
