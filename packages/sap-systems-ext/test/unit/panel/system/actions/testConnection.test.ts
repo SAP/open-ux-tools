@@ -181,12 +181,15 @@ describe('Test Connection Action', () => {
 
     it('should post message to webview with error messages containing guided answers link', async () => {
         jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
-        const error = {
+        const error: any = {
             message: 'Connection error',
             code: 'CONN_ERR',
-            cause: 'Server is down',
-            response: { status: 500, data: 'Internal Server Error' }
+            response: { status: 500 }
         };
+        // Create circular reference in response.data
+        error.response.data = { error: 'Internal Server Error' };
+        error.response.data.circular = error.response.data;
+
         jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
             v2Request: {
                 count: undefined,

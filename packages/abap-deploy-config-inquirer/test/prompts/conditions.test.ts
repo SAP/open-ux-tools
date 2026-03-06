@@ -193,7 +193,6 @@ describe('Test abap deploy config inquirer conditions', () => {
         };
         PromptState.abapDeployConfig.scp = false;
         expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
-        PromptState.abapDeployConfig.isAbapCloud = false;
         expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
     });
 
@@ -240,7 +239,6 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should not show transport input choice question for onPremise systems', () => {
         PromptState.transportAnswers.transportRequired = false;
-        PromptState.abapDeployConfig.isAbapCloud = false;
         PromptState.abapDeployConfig.scp = false;
         expect(showTransportInputChoice({ hideIfOnPremise: true })).toBe(false);
     });
@@ -270,7 +268,6 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should not show transport list question', () => {
-        PromptState.abapDeployConfig.isAbapCloud = false;
         PromptState.transportAnswers.transportList = [
             { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport' }
         ];

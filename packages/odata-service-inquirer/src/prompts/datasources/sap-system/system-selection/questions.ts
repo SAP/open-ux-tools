@@ -51,14 +51,16 @@ export interface SystemSelectionAnswers extends SystemSelectionCredentialsAnswer
  * @param systemSelection the selected system to validate
  * @param connectionValidator the active connection validator to use for the connection attempt
  * @param requiredOdataVersion the required OData version for the selected system, only the specified version will be used to request a service catalog
- * @param cachedConnectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
+ * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
+ * @param connectPath if specified will be used as the connection endpoint instead of service catalogs
  * @returns the validation result of the selected system connection attempt
  */
 async function validateSystemSelection(
     systemSelection: SystemSelectionAnswerType,
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion,
-    cachedConnectedSystem?: ConnectedSystem
+    cachedConnectedSystem?: ConnectedSystem,
+    connectPath?: string
 ): Promise<ValidationResult> {
     PromptState.reset();
     if (systemSelection.type === 'newSystemChoice' || systemSelection.type === 'cfAbapEnvService') {
@@ -74,7 +76,8 @@ async function validateSystemSelection(
             backendKey,
             connectionValidator,
             requiredOdataVersion,
-            cachedConnectedSystem
+            cachedConnectedSystem,
+            connectPath
         );
     } else if (systemSelection.type === 'destination') {
         // Partial URL destinations will require additional service path prompt input, so we skip the connection validation here by returning true
@@ -87,7 +90,8 @@ async function validateSystemSelection(
         connectValResult = await connectWithDestination(
             systemSelection.system as Destination,
             connectionValidator,
-            requiredOdataVersion
+            requiredOdataVersion,
+            connectPath
         );
     }
     return connectValResult;
@@ -174,6 +178,8 @@ export async function getSystemConnectionQuestions(
         systemChoices,
         promptOptions?.systemSelection?.defaultChoice
     );
+    // Alternative connection path, will override default authentication path (catalog endpoints)
+    let connectPath: string | undefined;
 
     const shouldOnlyShowDefaultChoice =
         promptOptions?.systemSelection?.onlyShowDefaultChoice && promptOptions?.systemSelection?.defaultChoice;
@@ -197,6 +203,10 @@ export async function getSystemConnectionQuestions(
                     systemChoices,
                     promptOptions?.systemSelection?.defaultChoice
                 ); // Recalc to allow default choice to be bound to ref from another prompt
+
+                if (defaultChoiceIndex > -1 && typeof promptOptions?.systemSelection?.defaultChoice === 'object') {
+                    connectPath = promptOptions.systemSelection.defaultChoice.connectPath;
+                }
                 return defaultChoiceIndex;
             },
             validate: async (
@@ -215,7 +225,8 @@ export async function getSystemConnectionQuestions(
                         selectedSystemAnswer,
                         connectionValidator,
                         requiredOdataVersion,
-                        cachedConnectedSystem
+                        cachedConnectedSystem,
+                        connectPath
                     ) ?? false
                 );
             },
@@ -298,7 +309,9 @@ export async function getSystemConnectionQuestions(
                 const connectValResult = await validateSystemSelection(
                     selectedSystem,
                     connectionValidator,
-                    requiredOdataVersion
+                    requiredOdataVersion,
+                    undefined,
+                    connectPath
                 );
                 // An issue occurred with the selected system, there is no need to continue on the CLI, log and exit
                 // Note that for connection authentication errors, the result will be true, the user will be prompted to update their credentials in the next prompt

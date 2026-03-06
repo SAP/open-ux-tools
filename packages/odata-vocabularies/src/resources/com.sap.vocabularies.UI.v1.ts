@@ -1,4 +1,4 @@
-// Last content update: Wed Dec 03 2025 11:11:43 GMT+0100 (Central European Standard Time)
+// Last content update: Mon Feb 16 2026 12:18:31 GMT+0100 (Central European Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -1628,7 +1628,7 @@ export default {
         },
         'Placeholder': {
             '$Kind': 'Term',
-            '$AppliesTo': ['Property', 'Parameter'],
+            '$AppliesTo': ['Property', 'Parameter', 'Record'],
             '@Org.OData.Core.V1.Description':
                 'A short, human-readable text that gives a hint or an example to help the user with data entry',
             '@Org.OData.Core.V1.IsLanguageDependent': true
@@ -1883,6 +1883,7 @@ export default {
                 'com.sap.vocabularies.UI.v1.Hidden',
                 'com.sap.vocabularies.UI.v1.Importance',
                 'com.sap.vocabularies.UI.v1.PartOfPreview',
+                'com.sap.vocabularies.UI.v1.Placeholder',
                 'com.sap.vocabularies.HTML5.v1.CssDefaults',
                 'com.sap.vocabularies.HTML5.v1.RowSpanForDuplicateValues',
                 'com.sap.vocabularies.Common.v1.FieldControl'

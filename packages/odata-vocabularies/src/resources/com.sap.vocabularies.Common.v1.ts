@@ -1,4 +1,4 @@
-// Last content update: Wed Dec 03 2025 11:11:43 GMT+0100 (Central European Standard Time)
+// Last content update: Mon Feb 16 2026 12:18:31 GMT+0100 (Central European Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -1397,8 +1397,9 @@ export default {
             'SourceEntities': {
                 '$Collection': true,
                 '$Type': 'Edm.NavigationPropertyPath',
+                '$Nullable': true,
                 '@Org.OData.Core.V1.Description':
-                    'Changes to one or more of these entities may affect the targets. An empty path means the annotation target.'
+                    'Changes to one or more of these entities may affect the targets. An null value means the annotation target.'
             },
             'SourceEvents': {
                 '$Collection': true,
@@ -1416,8 +1417,9 @@ export default {
             'TargetEntities': {
                 '$Collection': true,
                 '$Type': 'Edm.NavigationPropertyPath',
+                '$Nullable': true,
                 '@Org.OData.Core.V1.Description':
-                    'These entities will be affected if the value of one of the sources changes. All affected entities need to be explicitly listed. An empty path means the annotation target.'
+                    'These entities will be affected if the value of one of the sources changes. All affected entities need to be explicitly listed. A null value means the annotation target.'
             },
             'EffectTypes': {
                 '$Type': 'com.sap.vocabularies.Common.v1.EffectType',
