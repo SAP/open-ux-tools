@@ -1224,7 +1224,13 @@ function serializeUi5Configuration(config: Map<string, string>): string {
  * @param isCloud whether this is a cloud project
  * @param isCloudFoundry whether this is a Cloud Foundry ADP scenario
  */
-function configureRta(rta: RtaConfig | undefined, layer: UI5FlexLayer, variantId: string, isCloud: boolean, isCloudFoundry?: boolean): void {
+function configureRta(
+    rta: RtaConfig | undefined,
+    layer: UI5FlexLayer,
+    variantId: string,
+    isCloud: boolean,
+    isCloudFoundry?: boolean
+): void {
     if (!rta) {
         return;
     }
