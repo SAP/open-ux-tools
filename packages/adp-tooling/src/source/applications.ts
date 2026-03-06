@@ -6,22 +6,31 @@ import type { SourceApplication } from '../types';
 
 type UI5AppFilter = {
     fields: string;
-    readonly ['sap.ui/technology']: 'UI5';
+    readonly ['sap.ui/technology']?: 'UI5';
     readonly ['sap.app/type']: 'application';
 } & Record<string, string>;
 
-const APP_FIELDS =
-    'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName,sap.fiori/cloudDevAdaptationStatus';
+const ONPREM_APP_FIELDS = [
+    'sap.app/id',
+    'sap.app/ach',
+    'sap.fiori/registrationIds',
+    'sap.app/title',
+    'url',
+    'fileType',
+    'repoName'
+];
+
+const CLOUD_APP_FIELDS = [...ONPREM_APP_FIELDS, 'sap.fiori/cloudDevAdaptationStatus'];
 
 const APPS_WITH_DESCR_FILTER: UI5AppFilter = {
-    fields: APP_FIELDS,
+    fields: ONPREM_APP_FIELDS.join(','),
     'sap.ui/technology': 'UI5',
     'sap.app/type': 'application',
     'fileType': 'appdescr'
 };
 
 const APPS_WITH_VARIANT_DESCR_FILTER: UI5AppFilter = {
-    fields: APP_FIELDS,
+    fields: ONPREM_APP_FIELDS.join(','),
     'sap.ui/technology': 'UI5',
     'sap.app/type': 'application',
     'fileType': 'appdescr_variant',
@@ -29,8 +38,7 @@ const APPS_WITH_VARIANT_DESCR_FILTER: UI5AppFilter = {
 };
 
 const CLOUD_ONLY_APPS_FILTER: UI5AppFilter = {
-    fields: APP_FIELDS,
-    'sap.ui/technology': 'UI5',
+    fields: CLOUD_APP_FIELDS.join(','),
     'sap.app/type': 'application',
     'sap.fiori/cloudDevAdaptationStatus': 'released'
 };

@@ -29,6 +29,7 @@ Example:
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
             }
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             await addEslintConfig(path || process.cwd(), !!options.simulate, options.config, !!options.skipInstall);
         });
 }

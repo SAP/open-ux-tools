@@ -181,15 +181,15 @@ async function injectFioriToolsIntoMigratedConfig(
     }
 
     const lastBracketIndex = content.lastIndexOf(']);');
-    if (lastBracketIndex !== -1) {
+    if (lastBracketIndex === -1) {
+        throw new Error(
+            'Unexpected format of migrated eslint config. Could not inject the SAP Fiori tools plugin configuration.'
+        );
+    } else {
         content =
             content.slice(0, lastBracketIndex) +
             `,\n    ...fioriTools.configs['${config}'],\n` +
             content.slice(lastBracketIndex);
-    } else {
-        throw new Error(
-            'Unexpected format of migrated eslint config. Could not inject the SAP Fiori tools plugin configuration.'
-        );
     }
 
     fs.write(migratedConfigPath, content);
