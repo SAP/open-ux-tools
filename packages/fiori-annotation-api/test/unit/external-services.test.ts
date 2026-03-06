@@ -11,6 +11,9 @@ import { PROJECTS } from './projects';
 import { testRead } from './fiori-service.test';
 import type { ValueListReference } from '../../src/types/adapter';
 import { fileURLToPath } from 'node:url';
+import { XMLAnnotationServiceAdapter } from '../../src/xml/adapter';
+import * as avtDependency from '../../src/avt';
+import type { FioriAnnotationService } from '../../src';
 
 describe('external service loading', () => {
     test('placeholder test', async () => {
@@ -66,15 +69,18 @@ describe('external service loading', () => {
         accessSpy.mockRestore();
     });
 
-    test('external service references', async () => {
-        const project = PROJECTS.V4_XML_START;
-        const root = project.root;
-        const fsEditor: Editor = await createFsEditorForProject(root);
-        let path = pathFromUri(project.files.annotations);
-        let content = fsEditor.read(path);
-        let testData = `${content.replace(
-            '</Schema>',
-            `
+    describe('external service references and synchronization', () => {
+        let service: FioriAnnotationService;
+
+        beforeEach(async () => {
+            const project = PROJECTS.V4_XML_START;
+            const root = project.root;
+            const fsEditor: Editor = await createFsEditorForProject(root);
+            let path = pathFromUri(project.files.annotations);
+            let content = fsEditor.read(path);
+            let testData = `${content.replace(
+                '</Schema>',
+                `
                 <Annotations Target="IncidentService.Incidents/priority_code">
                     <Annotation Term="Common.ValueListReferences">
                         <Collection>
@@ -83,15 +89,15 @@ describe('external service loading', () => {
                     </Annotation>
                 </Annotations>
             </Schema>`
-        )}
+            )}
         `;
-        fsEditor.write(path, testData);
+            fsEditor.write(path, testData);
 
-        path = pathFromUri(project.files.metadata);
-        content = fsEditor.read(path);
-        testData = `${content.replace(
-            '</Schema>',
-            `
+            path = pathFromUri(project.files.metadata);
+            content = fsEditor.read(path);
+            testData = `${content.replace(
+                '</Schema>',
+                `
                 <Annotations Target="IncidentService.Incidents/category_code">
                     <Annotation Term="Common.ValueListReferences">
                         <Collection>
@@ -100,19 +106,111 @@ describe('external service loading', () => {
                     </Annotation>
                 </Annotations>
             </Schema>`
-        )}
+            )}
         `;
-        fsEditor.write(path, testData);
+            fsEditor.write(path, testData);
 
-        const service = await testRead(PROJECTS.V4_XML_START.root, [], undefined, fsEditor);
-        const result = service.getExternalServices() as Map<string, ValueListReference[]>;
-        result.forEach((entry) => {
-            entry.forEach((valueListReference) => {
-                valueListReference.location.uri = relative(__dirname, fileURLToPath(valueListReference.location.uri))
-                    .split('\\')
-                    .join('/');
-            });
+            service = await testRead(PROJECTS.V4_XML_START.root, [], undefined, fsEditor);
         });
-        expect(service.getExternalServices()).toMatchSnapshot();
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        test('external service references', async () => {
+            const result = service.getExternalServices() as Map<string, ValueListReference[]>;
+            result.forEach((entry) => {
+                entry.forEach((valueListReference) => {
+                    valueListReference.location.uri = relative(
+                        __dirname,
+                        fileURLToPath(valueListReference.location.uri)
+                    )
+                        .split('\\')
+                        .join('/');
+                });
+            });
+            expect(service.getExternalServices()).toMatchSnapshot();
+        });
+
+        test('synchronize external services', async () => {
+            const syncSpy = jest
+                .spyOn(XMLAnnotationServiceAdapter.prototype, 'syncExternalService')
+                .mockImplementation(() => {});
+            service.syncExternalServices(
+                new Map().set(
+                    "../../../../srvd_f4/dmo/i_priority/0001;ps='srvd-*dmo*sd_incidents_mdsk-0001';va='com.sap.gateway.srvd.dmo.sd_incidents_mdsk.v0001.et-*dmo*c_incidents_mdsk.priority'/$metadata",
+                    {
+                        data: 'dummyData',
+                        localFilePath: 'testFile'
+                    }
+                )
+            );
+            expect(syncSpy).toHaveBeenCalledWith(
+                "../../../../srvd_f4/dmo/i_priority/0001;ps='srvd-*dmo*sd_incidents_mdsk-0001';va='com.sap.gateway.srvd.dmo.sd_incidents_mdsk.v0001.et-*dmo*c_incidents_mdsk.priority'/$metadata",
+                'dummyData',
+                'testFile'
+            );
+        });
+
+        test('get external services schema', async () => {
+            jest.spyOn(XMLAnnotationServiceAdapter.prototype, 'getExternalServices').mockReturnValue([
+                {
+                    compiledService: {
+                        annotationFiles: [
+                            {
+                                uri: 'file:///dummyUri',
+                                type: 'annotation-file',
+                                references: [],
+                                targets: [
+                                    {
+                                        name: 'dummyTarget',
+                                        terms: [],
+                                        type: 'target'
+                                    }
+                                ]
+                            }
+                        ],
+                        odataVersion: '4.0',
+                        metadata: []
+                    },
+                    localFileUri: 'dummyLocalFileUri',
+                    metadataService: service.getMetadataService(),
+                    uri: 'dummyUri'
+                }
+            ]);
+
+            jest.spyOn(avtDependency, 'convertMetadataToAvtSchema').mockReturnValue({
+                annotations: {},
+                name: 'dummyAvtSchema'
+            } as any);
+
+            const mdUseSpy = jest.spyOn(service.getMetadataService(), 'useService');
+
+            const schema = service.getExternalServiceSchema();
+            expect(schema).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "identification": "metadataFile",
+                    "localFileUri": "dummyLocalFileUri",
+                    "references": Array [],
+                    "schema": Object {
+                      "annotations": Object {
+                        "file:///dummyUri": Array [
+                          Object {
+                            "annotations": Array [],
+                            "origins": Array [],
+                            "target": "dummyTarget",
+                          },
+                        ],
+                      },
+                      "name": "dummyAvtSchema",
+                    },
+                    "version": "4.0",
+                  },
+                ]
+            `);
+
+            expect(mdUseSpy).toHaveBeenCalledWith('dummyUri');
+        });
     });
 });

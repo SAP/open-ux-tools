@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`external service loading external service references 1`] = `
+exports[`external service loading external service references and synchronization external service references 1`] = `
 Map {
   "IncidentService.Incidents/category_code" => Array [
     Object {
