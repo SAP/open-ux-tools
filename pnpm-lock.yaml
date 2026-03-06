@@ -3256,6 +3256,9 @@ importers:
 
   packages/odata-service-inquirer:
     dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/annotation-converter':
         specifier: 0.10.21
         version: 0.10.21
@@ -3320,9 +3323,6 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
     devDependencies:
-      '@sap-devx/yeoman-ui-types':
-        specifier: 1.22.0
-        version: 1.22.0
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer

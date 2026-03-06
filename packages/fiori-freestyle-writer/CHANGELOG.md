@@ -1,5 +1,20 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.72
+
+### Patch Changes
+
+- Updated dependencies [3edf6d7]
+    - @sap-ux/odata-service-writer@0.30.0
+
+## 2.5.71
+
+### Patch Changes
+
+- 295cacc: fix: remove sap-no-global-define eslint annotations from testsuite templates
+- Updated dependencies [295cacc]
+    - @sap-ux/ui5-test-writer@0.7.86
+
 ## 2.5.70
 
 ### Patch Changes

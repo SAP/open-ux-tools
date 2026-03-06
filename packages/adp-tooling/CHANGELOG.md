@@ -1,5 +1,19 @@
 # @sap-ux/adp-tooling
 
+## 0.18.89
+
+### Patch Changes
+
+- Updated dependencies [3edf6d7]
+    - @sap-ux/odata-service-writer@0.30.0
+    - @sap-ux/inquirer-common@0.11.23
+
+## 0.18.88
+
+### Patch Changes
+
+- f14a3d1: fix: Use the cloudDevAdaptationStatus property in the app filter only for cloud apps.
+
 ## 0.18.87
 
 ### Patch Changes
