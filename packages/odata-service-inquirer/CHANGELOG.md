@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.19.11
+
+### Patch Changes
+
+- 32d028b: Fixes: create an abap service provider when a connect path is specified
+
 ## 2.19.10
 
 ### Patch Changes
