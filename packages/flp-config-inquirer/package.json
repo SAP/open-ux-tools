@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/flp-config-inquirer",
     "description": "Prompts module that can prompt users for inputs required for FLP configuration",
-    "version": "0.4.134",
+    "version": "0.4.148",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -41,7 +41,7 @@
         "lodash": "4.17.23"
     },
     "devDependencies": {
-        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@sap-devx/yeoman-ui-types": "1.22.0",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202",
         "inquirer": "8.2.7"

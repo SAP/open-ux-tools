@@ -1,5 +1,56 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.41
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.40
+
+### Patch Changes
+
+- e773022: fix(deps): update dependency @sap-ai-sdk/foundation-models to v2.8.0
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+    - @sap-ux/store@1.5.9
+
+## 0.6.39
+
+### Patch Changes
+
+- afd2fa2: feat: add icon and title to mcp server
+
+## 0.6.38
+
+### Patch Changes
+
+- a8f4e03: fix(deps): update dependency @sap-ai-sdk/langchain to v2.8.0
+- 2302698: fix(deps): update dependency @sap-ux/edmx-parser to v0.10.0
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.37
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.36
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.35
+
+### Patch Changes
+
+- Updated dependencies [6c993f3]
+    - @sap-ux/store@1.5.8
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
 ## 0.6.34
 
 ### Patch Changes

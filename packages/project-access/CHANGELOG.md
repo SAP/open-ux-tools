@@ -1,5 +1,33 @@
 # @sap-ux/project-access
 
+## 1.35.13
+
+### Patch Changes
+
+- d834713: Export function `getGlobalCdsHomePath` to return the path to the global CDS home directory.
+
+## 1.35.12
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+    - @sap-ux/ui5-config@0.29.21
+
+## 1.35.11
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+
+## 1.35.10
+
+### Patch Changes
+
+- ca2566b: Update fast-xml-parser
+
+    Issue: #37278
+
 ## 1.35.9
 
 ### Patch Changes

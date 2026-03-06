@@ -1,5 +1,46 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.104
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.85
+
+## 0.1.103
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.84
+
+## 0.1.102
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/nodejs-utils@0.2.16
+
+## 0.1.101
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.82
+
+## 0.1.100
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.81
+
+## 0.1.99
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/fiori-generator-shared@0.13.80
+
 ## 0.1.98
 
 ### Patch Changes

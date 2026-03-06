@@ -1,5 +1,82 @@
 # @sap-ux/environment-check
 
+## 0.18.106
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+
+## 0.18.105
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/axios-extension@1.25.21
+
+## 0.18.104
+
+### Patch Changes
+
+- 5485dd9: fix(deps): update dependency @types/archiver to v7
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.18.103
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/ui5-config@0.29.20
+
+## 0.18.102
+
+### Patch Changes
+
+- Updated dependencies [96e9b9e]
+    - @sap-ux/axios-extension@1.25.19
+
+## 0.18.101
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/axios-extension@1.25.18
+
+## 0.18.100
+
+### Patch Changes
+
+- Updated dependencies [4af92b5]
+    - @sap-ux/axios-extension@1.25.18
+
+## 0.18.99
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/axios-extension@1.25.17
+    - @sap-ux/project-access@1.35.10
+
+## 0.18.98
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/store@1.5.8
+    - @sap-ux/ui5-config@0.29.19
+
 ## 0.18.97
 
 ### Patch Changes
