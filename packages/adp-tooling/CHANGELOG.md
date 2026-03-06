@@ -1,5 +1,47 @@
 # @sap-ux/adp-tooling
 
+## 0.18.87
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+    - @sap-ux/odata-service-writer@0.29.34
+    - @sap-ux/system-access@0.6.64
+
+## 0.18.86
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/inquirer-common@0.11.22
+    - @sap-ux/odata-service-writer@0.29.34
+    - @sap-ux/project-input-validator@0.6.67
+    - @sap-ux/system-access@0.6.63
+
+## 0.18.85
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
+## 0.18.84
+
+### Patch Changes
+
+- 83ca0e9: fix(deps): update dependency cross-env to v10
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/inquirer-common@0.11.21
+    - @sap-ux/odata-service-writer@0.29.33
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+    - @sap-ux/system-access@0.6.63
+    - @sap-ux/project-input-validator@0.6.66
+
 ## 0.18.83
 
 ### Patch Changes
