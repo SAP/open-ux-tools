@@ -1,5 +1,15 @@
 # @sap-ux/inquirer-common
 
+## 0.11.22
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/fiori-generator-shared@0.13.85
+    - @sap-ux/odata-service-writer@0.29.34
+    - @sap-ux/telemetry@0.6.86
+
 ## 0.11.21
 
 ### Patch Changes
