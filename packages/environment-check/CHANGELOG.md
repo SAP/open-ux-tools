@@ -1,5 +1,30 @@
 # @sap-ux/environment-check
 
+## 0.18.106
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+
+## 0.18.105
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/axios-extension@1.25.21
+
+## 0.18.104
+
+### Patch Changes
+
+- 5485dd9: fix(deps): update dependency @types/archiver to v7
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+
 ## 0.18.103
 
 ### Patch Changes

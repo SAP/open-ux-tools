@@ -1,5 +1,38 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.131
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/fiori-generator-shared@0.13.85
+    - @sap-ux/telemetry@0.6.86
+    - @sap-ux/ui5-library-reference-inquirer@0.4.131
+    - @sap-ux/ui5-library-reference-writer@0.2.60
+
+## 0.1.130
+
+### Patch Changes
+
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+- Updated dependencies [fdd57de]
+    - @sap-ux/telemetry@0.6.85
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/fiori-generator-shared@0.13.84
+    - @sap-ux/ui5-library-reference-inquirer@0.4.130
+    - @sap-ux/ui5-library-reference-writer@0.2.59
+
+## 0.1.129
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+- Updated dependencies [5aff25c]
+    - @sap-ux/ui5-library-reference-writer@0.2.58
+    - @sap-ux/ui5-library-reference-inquirer@0.4.129
+
 ## 0.1.128
 
 ### Patch Changes

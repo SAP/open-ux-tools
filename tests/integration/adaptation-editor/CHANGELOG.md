@@ -1,5 +1,29 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.65
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+
+## 0.0.64
+
+### Patch Changes
+
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+    - @sap-ux/yaml@0.17.5
+    - @sap-ux/project-access@1.35.12
+
+## 0.0.63
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux-private/playwright@0.2.12
+
 ## 0.0.62
 
 ### Patch Changes

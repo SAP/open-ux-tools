@@ -1,5 +1,51 @@
 # @sap-ux/app-config-writer
 
+## 0.6.120
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+
+## 0.6.119
+
+### Patch Changes
+
+- 8df3c88: fix: add prerequisite for add eslint config command
+
+## 0.6.118
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/ui5-application-writer@1.7.19
+
+## 0.6.117
+
+### Patch Changes
+
+- Updated dependencies [bd95e55]
+    - @sap-ux/ui5-application-writer@1.7.19
+
+## 0.6.116
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-application-writer@1.7.18
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.6.115
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux/ui5-application-writer@1.7.17
+
 ## 0.6.114
 
 ### Patch Changes

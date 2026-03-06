@@ -1,5 +1,29 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.34
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/mockserver-config-writer@0.9.62
+
+## 0.29.33
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+    - @sap-ux/mockserver-config-writer@0.9.61
+
+## 0.29.32
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+
 ## 0.29.31
 
 ### Patch Changes

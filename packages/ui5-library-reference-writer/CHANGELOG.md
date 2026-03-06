@@ -1,5 +1,26 @@
 # @sap-ux/ui5-library-reference-writer
 
+## 0.2.60
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+
+## 0.2.59
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.2.58
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+
 ## 0.2.57
 
 ### Patch Changes
