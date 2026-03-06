@@ -80,6 +80,15 @@ export function safeCheckActionButtonStates(
     }
 }
 
+/**
+ * Retrieves list report features from the given page model.
+ *
+ * @param pageModel - The tree model containing list report definitions.
+ * @param log - Optional logger instance.
+ * @param metadata - Optional OData metadata XML content.
+ * @param entitySetName - Optional entity set name.
+ * @returns ListReportFeatures object containing various features of the list report.
+ */
 export function getListReportFeatures(
     pageModel: TreeModel,
     log?: Logger,

@@ -276,7 +276,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4/webapp/test/integration/ListReportJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckFilterField');
         });
 
@@ -286,7 +286,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4/webapp/test/integration/ListReportJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckColumns');
         });
 
@@ -300,7 +300,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, {}, metadata, fs, mockLogger as unknown as Logger);
 
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4NoFilters/webapp/test/integration/ListReportJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4NoFilters/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).not.toContain('iCheckFilterField');
             expect(firstJourneyContent).toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(
@@ -320,7 +320,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, {}, metadata, fs, mockLogger as unknown as Logger);
 
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4NoColumns/webapp/test/integration/ListReportJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4NoColumns/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckFilterField');
             expect(firstJourneyContent).not.toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(

@@ -88,6 +88,7 @@ export type ObjectPageFeatures = {
 };
 
 export type ListReportFeatures = {
+    name?: string;
     createButton?: {
         enabled?: boolean | string;
         visible?: boolean;

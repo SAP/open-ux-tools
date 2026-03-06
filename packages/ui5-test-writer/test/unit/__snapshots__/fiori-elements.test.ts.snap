@@ -291,8 +291,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'ui5-test-writer/test/employees/test/integration/myOPATest'
-  ], function (QUnit) {
+    \\"ui5-test-writer/test/employees/test/integration/myOPATest\\",
+    \\"ui5-test-writer/test/employees/test/integration/EmployeesListJourney\\",
+    \\"ui5-test-writer/test/employees/test/integration/EmployeesObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -683,8 +685,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'ui5-test-writer/test/employees/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"ui5-test-writer/test/employees/test/integration/FirstJourney\\",
+    \\"ui5-test-writer/test/employees/test/integration/EmployeesListJourney\\",
+    \\"ui5-test-writer/test/employees/test/integration/EmployeesObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -1052,8 +1056,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'ui5-test-writer/test/employees/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"ui5-test-writer/test/employees/test/integration/FirstJourney\\",
+    \\"ui5-test-writer/test/employees/test/integration/EmployeesListJourney\\",
+    \\"ui5-test-writer/test/employees/test/integration/EmployeesObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -1421,8 +1427,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'ui5-test-writer/test/employees/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"ui5-test-writer/test/employees/test/integration/FirstJourney\\",
+    \\"ui5-test-writer/test/employees/test/integration/EmployeesListJourney\\",
+    \\"ui5-test-writer/test/employees/test/integration/EmployeesObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -1764,8 +1772,9 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'ui5-test-writer/test/employees/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"ui5-test-writer/test/employees/test/integration/FirstJourney\\",
+    \\"ui5-test-writer/test/employees/test/integration/EmployeesListJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -2076,8 +2085,9 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'ui5-test-writer/test/employees/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"ui5-test-writer/test/employees/test/integration/FirstJourney\\",
+    \\"ui5-test-writer/test/employees/test/integration/EmployeesObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -2393,8 +2403,9 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'ui5-test-writer/test/employees/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"ui5-test-writer/test/employees/test/integration/FirstJourney\\",
+    \\"ui5-test-writer/test/employees/test/integration/EmployeesObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -2783,8 +2794,12 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'vesc/demo/employee/project2/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"vesc/demo/employee/project2/test/integration/FirstJourney\\",
+    \\"vesc/demo/employee/project2/test/integration/EmployeesListJourney\\",
+    \\"vesc/demo/employee/project2/test/integration/EmployeesObjectPageJourney\\",
+    \\"vesc/demo/employee/project2/test/integration/PositionsObjectPageJourney\\",
+    \\"vesc/demo/employee/project2/test/integration/TrainingsObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -3239,8 +3254,12 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'vesc/demo/employee/project2/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"vesc/demo/employee/project2/test/integration/FirstJourney\\",
+    \\"vesc/demo/employee/project2/test/integration/EmployeesListJourney\\",
+    \\"vesc/demo/employee/project2/test/integration/EmployeesObjectPageJourney\\",
+    \\"vesc/demo/employee/project2/test/integration/PositionsObjectPageJourney\\",
+    \\"vesc/demo/employee/project2/test/integration/TrainingsObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -3674,8 +3693,11 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'projectservice/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"projectservice/test/integration/FirstJourney\\",
+    \\"projectservice/test/integration/EmployeesListTargetJourney\\",
+    \\"projectservice/test/integration/EmployeesObjectPageTargetJourney\\",
+    \\"projectservice/test/integration/EmployeesCustomPageTargetJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -5486,8 +5508,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'project1/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"project1/test/integration/FirstJourney\\",
+    \\"project1/test/integration/TravelListJourney\\",
+    \\"project1/test/integration/TravelObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -7146,8 +7170,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'project1/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"project1/test/integration/FirstJourney\\",
+    \\"project1/test/integration/TravelListJourney\\",
+    \\"project1/test/integration/TravelObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -8933,8 +8959,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'project1/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"project1/test/integration/FirstJourney\\",
+    \\"project1/test/integration/TravelListJourney\\",
+    \\"project1/test/integration/TravelObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -10726,8 +10754,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'project1/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"project1/test/integration/FirstJourney\\",
+    \\"project1/test/integration/TravelListJourney\\",
+    \\"project1/test/integration/TravelObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -11064,8 +11094,9 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'test/ui5-test-writer/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"test/ui5-test-writer/test/integration/FirstJourney\\",
+    \\"test/ui5-test-writer/test/integration/EmployeesObjectPageJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });

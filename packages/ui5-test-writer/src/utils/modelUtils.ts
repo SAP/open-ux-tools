@@ -97,12 +97,7 @@ export async function getAppFeatures(
     // attempt to get individual feature data
     try {
         if (listReportPage) {
-            featureData.listReport = getListReportFeatures(
-                listReportPage.model,
-                log,
-                metadata,
-                listReportPage.entitySet
-            );
+            featureData.listReport = getListReportFeatures(listReportPage, log, metadata);
         }
         if (objectPages) {
             log?.warn('Extracting Object Page features from application model');
@@ -122,28 +117,31 @@ export async function getAppFeatures(
 /**
  * Gets List Report features from the page model using ux-specification.
  *
- * @param pageModel - the tree model containing List Report definitions
+ * @param listReportPage - the List Report page containing the tree model with feature definitions
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
- * @param entitySetName - optional entity set name for the OPA test generation
  * @returns feature data extracted from the List Report page model
  */
 export function getListReportFeatures(
-    pageModel: TreeModel,
+    listReportPage: PageWithModelV4,
     log?: Logger,
-    metadata?: string,
-    entitySetName?: string
+    metadata?: string
 ): ListReportFeatures {
-    const hasMetadata = metadata && entitySetName;
-    const buttonVisibility = hasMetadata ? safeCheckButtonVisibility(metadata, entitySetName, log) : undefined;
-    const toolbarActions = getToolBarActionNames(pageModel, log);
+    const hasMetadata = metadata && listReportPage.entitySet;
+    const buttonVisibility = hasMetadata
+        ? safeCheckButtonVisibility(metadata, listReportPage.entitySet!, log)
+        : undefined;
+    const toolbarActions = getToolBarActionNames(listReportPage.model, log);
 
     return {
+        name: listReportPage.name,
         createButton: buildButtonState(buttonVisibility?.create),
         deleteButton: buildButtonState(buttonVisibility?.delete),
-        filterBarItems: getFilterFieldNames(pageModel, log),
-        tableColumns: getTableColumnData(pageModel, log),
-        toolBarActions: hasMetadata ? safeCheckActionButtonStates(metadata, entitySetName, toolbarActions, log) : []
+        filterBarItems: getFilterFieldNames(listReportPage.model, log),
+        tableColumns: getTableColumnData(listReportPage.model, log),
+        toolBarActions: hasMetadata
+            ? safeCheckActionButtonStates(metadata, listReportPage.entitySet!, toolbarActions, log)
+            : []
     };
 }
 

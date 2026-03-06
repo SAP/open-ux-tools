@@ -5,7 +5,7 @@ sap.ui.define([
     "use strict";
 
     function journey() {
-        QUnit.module("ListReport journey");
+        QUnit.module("<%- name%>ListReport journey");
 
         opaTest("Start application", function (Given, When, Then) {
             Given.iStartMyApp();
@@ -33,10 +33,10 @@ sap.ui.define([
                 Then.onThe<%- startLR%>.onTable().iCheckDelete({ visible: true });
                 <%_ } _%>
                 <%_ toolBarActions.forEach(function(item) { _%>
-                    <%_ if (item.visible) { _%>
-                    // Then.onThe<%- startLR%>.onTable().iPressAction("<%- item.label %>");
-                    Then.onThe<%- startLR%>.onTable().iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
-                    <%_ } _%>
+                <%_ if (item.visible) { _%>
+                // Then.onThe<%- startLR%>.onTable().iPressAction("<%- item.label %>");
+                Then.onThe<%- startLR%>.onTable().iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+                <%_ } _%>
                 <%_ }); -%>
             <%_ } -%>
             <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>

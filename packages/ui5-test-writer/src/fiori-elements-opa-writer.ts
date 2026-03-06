@@ -340,7 +340,7 @@ export async function generateOPAFiles(
     if (listReport) {
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration/ListReportJourney.js'),
-            join(testOutDirPath, 'integration/ListReportJourney.js'),
+            join(testOutDirPath, `integration/${listReport.name}Journey.js`),
             {
                 ...journeyParams,
                 ...listReport
