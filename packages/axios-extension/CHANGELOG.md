@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.25.22
+
+### Patch Changes
+
+- 2d21925: fix(deps): Update dependency open to v8.4.2 (latest CommonJS version)
+
 ## 1.25.21
 
 ### Patch Changes
