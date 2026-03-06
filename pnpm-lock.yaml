@@ -4441,8 +4441,8 @@ importers:
         specifier: 2.5.1
         version: 2.5.1
       '@sap/subaccount-destination-service-provider':
-        specifier: 2.14.1
-        version: 2.14.1(typescript@5.9.3)
+        specifier: 2.15.0
+        version: 2.15.0(typescript@5.9.3)
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -8282,16 +8282,12 @@ packages:
     resolution: {integrity: sha512-vDEAaukwDG9O+nJHElKtYaLtMS63RLE+KFQMi4mn1/HDiIXb8dUwmj3F4/jceUhrOM11pjIhh6/q73AVcX+yzg==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/logger@0.7.0':
-    resolution: {integrity: sha512-1SoumSMkMCNRbO58IdI0+IwO1JUGq0cBtqZOS/BTbpZhGLaZ8X6Sd2ZkhLVG6eVQC+hn4rGelrnD2L2Bbgjx/A==}
-    engines: {node: '>=20.x'}
-
-  '@sap-ux/logger@0.7.2':
-    resolution: {integrity: sha512-1VrGrFykTa/HMxCFOI674zU+EZQD4EUgDjw21/ua7gTb0PO9tM/NFhuFUsnoXCDQ/3Gg1SMfW/VA1hZ7LjpqGw==}
-    engines: {node: '>=20.x'}
-
   '@sap-ux/logger@0.8.0':
     resolution: {integrity: sha512-GFkFfg8s0y4qRU0nUiQuoCwZCITs+f2t+9HQrNscdSSxKfesPx4aTTVjVjxBbXOKVGwRqind65JULSPrYZy83Q==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/logger@0.8.1':
+    resolution: {integrity: sha512-BPS8/ZODQ7s7r1K4+eo0ynXGk85nio2CBZlT3HdWUT75MwwNAwUeUEpC+SUq/IWVrwBpxHApkyYH+NZYqMRmMw==}
     engines: {node: '>=20.x'}
 
   '@sap-ux/odata-annotation-core-types@0.5.2':
@@ -8320,8 +8316,8 @@ packages:
     resolution: {integrity: sha512-3up+4uvYZJJeJRtMENbuGyrxD0ePfGPr45rfabLrCIJYAgGFaHeWcrgq3dlRjO9w0WdhaBZjy9dYTojx6azVkA==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/store@1.4.0':
-    resolution: {integrity: sha512-YdsVm4x6WZTwayZvDr9cRIjMLHUM4KPbUhBX82uYT2Fa/VK+TdYz/vyTpD9/AQwgOBFPdiuiJdG/uZVMIFziYw==}
+  '@sap-ux/store@1.5.5':
+    resolution: {integrity: sha512-HwHB/CcZ9pFP3RZJvvn61Jjl3Fn4yUCKyYnNfQ26PR+1q/qlLLe65wErMpwCQPa+skhQgJxmwD1Kc5a3yoS92A==}
     engines: {node: '>=20.x'}
 
   '@sap-ux/text-document-utils@0.3.3':
@@ -8380,11 +8376,11 @@ packages:
   '@sap/service-provider-apis@2.5.1':
     resolution: {integrity: sha512-KSZTBxs2PLG8FntD0QXcOF66P0REg6o2/vzhv+xNz35lTbtmvfERhX2wzU1ZqlWIFQ92KQwxqy/T1IuGlWb/1w==}
 
-  '@sap/service-provider-apis@2.7.1':
-    resolution: {integrity: sha512-xdL/m04grQWX0Mai0Gx/kQUgrBhHSfbjxZN6hXdJqKKhfU19HC8+iw/UfVZheGaHgfck7D0oyP/U8yRwGUpnlQ==}
+  '@sap/service-provider-apis@2.8.0':
+    resolution: {integrity: sha512-+IxA43KIdxKt+by6sKwPlLf+WG2yHjQQLWKD4KR2GaHcG+APP7Ak4xn6nK/hWHdjI4wZ3a/r03pkfy8zo4atfQ==}
 
-  '@sap/subaccount-destination-service-provider@2.14.1':
-    resolution: {integrity: sha512-P23fwTlPcaG3Y8s4ykMM+b6KrC59/fldxAFAYub9gge+5BBVp5O+JSogswcBuwXPw6KhuXbvWrKIBR4oc32AIg==}
+  '@sap/subaccount-destination-service-provider@2.15.0':
+    resolution: {integrity: sha512-LakUxgmZ6ZQcr5Ul9hZ9nOhCegYCSE9VYTSv38V4MRkE/pKMW8pXbf3/BSv5Xia+36Fbaia0Ys4mHEdWdvvwXg==}
 
   '@sap/ux-cds-compiler-facade@1.19.0':
     resolution: {integrity: sha512-lPjt+K7Xyxwr0hm3lUW7Lzt3MYMVvbkzhpzDbNpG0guBp4l+8FgXl1/2ZrHoQ8ZjHv6e3YUTWm9ICZkb+7s8Qg==}
@@ -9304,8 +9300,8 @@ packages:
   '@types/node@20.0.0':
     resolution: {integrity: sha512-cD2uPTDnQQCVpmRefonO98/PPijuOnnEy5oytWJFPY1N9aJCz2wJ5kSGWO+zJoed2cY2JxQh6yBuUq4vIn61hw==}
 
-  '@types/node@20.19.35':
-    resolution: {integrity: sha512-Uarfe6J91b9HAUXxjvSOdiO2UPOKLm07Q1oh0JHxoZ1y8HoqxDAu3gVrsrOHeiio0kSsoVBt4wFrKOm0dKxVPQ==}
+  '@types/node@20.19.37':
+    resolution: {integrity: sha512-8kzdPJ3FsNsVIurqBs7oodNnCEVbni9yUEkaHbgptDACOPW04jimGagZ51E6+lXUwJjgnBw+hyko/lkFWCldqw==}
 
   '@types/node@22.19.10':
     resolution: {integrity: sha512-tF5VOugLS/EuDlTBijk0MqABfP8UxgYazTLo3uIn3b4yJgg26QRbVYJYsDtHrjdDUIRfP70+VfhTTc+CE1yskw==}
@@ -9983,10 +9979,6 @@ packages:
   '@zkochan/js-yaml@0.0.7':
     resolution: {integrity: sha512-nrUSn7hzt7J6JWgWGz78ZYI8wj+gdIJdk0Ynjpp8l+trkn58Uqsf6RYrYkEK+3X18EX+TNdtJI0WxAtc+L84SQ==}
     hasBin: true
-
-  '@zowe/secrets-for-zowe-sdk@8.1.2':
-    resolution: {integrity: sha512-cE8rlBADL48wmiQr+fdQdxczW4wLsmv5BQa03QepKiydBBE7TLrG2Anx/F4uZ+sVIZQuN95SHvwkt8VZaTzuyw==}
-    engines: {node: '>=14'}
 
   '@zowe/secrets-for-zowe-sdk@8.29.4':
     resolution: {integrity: sha512-fiRfuEuFNapwhVbN3LJIA2ZgVajNB+QNFN7O7ES/fIYGM612PKcXuvbZUJSlU69IZ8eUF8SP+9OnveK4s+GLgw==}
@@ -13082,6 +13074,14 @@ packages:
       typescript:
         optional: true
 
+  i18next@25.8.0:
+    resolution: {integrity: sha512-urrg4HMFFMQZ2bbKRK7IZ8/CTE7D8H4JRlAwqA2ZwDRFfdd0K/4cdbNNLgfn9mo+I/h9wJu61qJzH7jCFAhUZQ==}
+    peerDependencies:
+      typescript: ^5
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   i18next@25.8.12:
     resolution: {integrity: sha512-hw59RF5QaH9i3l47hTXjeLLtzgVO8OtznlTJZbulmaLbz+itA1hIKWHTEiajY9W2SNPzvL8U5nTBVt7SsOGNRA==}
     peerDependencies:
@@ -13154,6 +13154,9 @@ packages:
 
   immutable@5.1.4:
     resolution: {integrity: sha512-p6u1bG3YSnINT5RQmx/yRZBpenIl30kVxkTLDyHLIMk0gict704Q9n+thfDI7lTRm9vXdDYutVzXhzcThxTnXA==}
+
+  immutable@5.1.5:
+    resolution: {integrity: sha512-t7xcm2siw+hlUM68I+UEOK+z84RzmN59as9DZ7P1l0994DKUWV7UXBMQZVxaoMSRQ+PBZbHCOoBt7a2wxOMt+A==}
 
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
@@ -22878,21 +22881,14 @@ snapshots:
       jsonc-parser: 3.2.0
       vscode-languageserver-textdocument: 1.0.11
 
-  '@sap-ux/logger@0.7.0':
-    dependencies:
-      chalk: 4.1.2
-      lodash: 4.17.23
-      winston: 3.11.0
-      winston-transport: 4.7.0
-
-  '@sap-ux/logger@0.7.2':
-    dependencies:
-      chalk: 4.1.2
-      lodash: 4.17.23
-      winston: 3.11.0
-      winston-transport: 4.7.0
-
   '@sap-ux/logger@0.8.0':
+    dependencies:
+      chalk: 4.1.2
+      lodash: 4.17.23
+      winston: 3.11.0
+      winston-transport: 4.7.0
+
+  '@sap-ux/logger@0.8.1':
     dependencies:
       chalk: 4.1.2
       lodash: 4.17.23
@@ -22947,14 +22943,14 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@sap-ux/store@1.4.0(typescript@5.9.3)':
+  '@sap-ux/store@1.5.5(typescript@5.9.3)':
     dependencies:
-      '@sap-ux/logger': 0.7.2
-      i18next: 25.3.0(typescript@5.9.3)
+      '@sap-ux/logger': 0.8.1
+      i18next: 25.8.0(typescript@5.9.3)
       pluralize: 8.0.0
       reflect-metadata: 0.1.13
     optionalDependencies:
-      '@zowe/secrets-for-zowe-sdk': 8.1.2
+      '@zowe/secrets-for-zowe-sdk': 8.29.4
     transitivePeerDependencies:
       - typescript
 
@@ -23052,7 +23048,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@sap/service-provider-apis@2.7.1':
+  '@sap/service-provider-apis@2.8.0':
     dependencies:
       axios: 1.13.5(debug@4.4.3)
       lodash: 4.17.23
@@ -23060,12 +23056,12 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@sap/subaccount-destination-service-provider@2.14.1(typescript@5.9.3)':
+  '@sap/subaccount-destination-service-provider@2.15.0(typescript@5.9.3)':
     dependencies:
-      '@sap-ux/logger': 0.7.0
-      '@sap-ux/store': 1.4.0(typescript@5.9.3)
+      '@sap-ux/logger': 0.8.1
+      '@sap-ux/store': 1.5.5(typescript@5.9.3)
       '@sap/bas-sdk': 3.13.3
-      '@sap/service-provider-apis': 2.7.1
+      '@sap/service-provider-apis': 2.8.0
       stream-json: 1.9.1
       vkbeautify: 0.99.3
     transitivePeerDependencies:
@@ -24418,7 +24414,7 @@ snapshots:
 
   '@types/node@20.0.0': {}
 
-  '@types/node@20.19.35':
+  '@types/node@20.19.37':
     dependencies:
       undici-types: 6.21.0
 
@@ -25355,9 +25351,6 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  '@zowe/secrets-for-zowe-sdk@8.1.2':
-    optional: true
-
   '@zowe/secrets-for-zowe-sdk@8.29.4': {}
 
   a-sync-waterfall@1.0.1: {}
@@ -25544,7 +25537,7 @@ snapshots:
       '@swc/helpers': 0.5.19
       '@types/command-line-args': 5.2.3
       '@types/command-line-usage': 5.0.4
-      '@types/node': 20.19.35
+      '@types/node': 20.19.37
       command-line-args: 5.2.1
       command-line-usage: 7.0.4
       flatbuffers: 24.12.23
@@ -29008,6 +29001,12 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
+  i18next@25.8.0(typescript@5.9.3):
+    dependencies:
+      '@babel/runtime': 7.28.6
+    optionalDependencies:
+      typescript: 5.9.3
+
   i18next@25.8.12(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.28.6
@@ -29082,6 +29081,8 @@ snapshots:
   immutable@4.3.7: {}
 
   immutable@5.1.4: {}
+
+  immutable@5.1.5: {}
 
   import-fresh@3.3.1:
     dependencies:
@@ -33542,7 +33543,7 @@ snapshots:
     dependencies:
       '@bufbuild/protobuf': 2.11.0
       colorjs.io: 0.5.2
-      immutable: 5.1.4
+      immutable: 5.1.5
       rxjs: 7.8.2
       supports-color: 8.1.1
       sync-child-process: 1.0.2
