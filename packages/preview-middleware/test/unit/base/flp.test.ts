@@ -1556,5 +1556,6 @@ describe('initAdp', () => {
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String));
         expect(flp.rta?.options?.isCloud).toBe(false);
+        expect(flp.rta?.options?.isCloudFoundry).toBe(true);
     });
 });

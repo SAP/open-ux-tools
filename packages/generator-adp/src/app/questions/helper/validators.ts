@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { CfConfig, getMtaServices, isMtaProject, type SystemLookup } from '@sap-ux/adp-tooling';
+import { getMtaServices, isMtaProject } from '@sap-ux/adp-tooling';
+import type { CfConfig, SystemLookup } from '@sap-ux/adp-tooling';
 import { validateEmptyString, validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../utils/i18n';
@@ -156,11 +157,12 @@ export function validateBusinessSolutionName(value: string): string | boolean {
         return validationResult;
     }
 
-    const parts = String(value)
-        .split('.')
-        .filter((p) => p.length > 0);
-    if (parts.length < 2) {
+    if (!/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/.test(value)) {
+        if (/\s/.test(value) || /[^a-zA-Z0-9.]/.test(value)) {
+            return t('error.businessSolutionNameInvalidChars');
+        }
         return t('error.businessSolutionNameInvalid');
     }
+
     return true;
 }

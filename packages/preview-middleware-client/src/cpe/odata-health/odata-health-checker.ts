@@ -141,10 +141,20 @@ export class ODataHealthChecker {
     }
 
     private getServices(): ODataServiceInfo[] {
-        const manifest: Manifest = this.rta.getRootControlInstance().getManifest() as unknown as Manifest;
+        const rootControl = this.rta.getRootControlInstance();
+        const manifest: Manifest = rootControl.getManifest() as unknown as Manifest;
         const dataSources = manifest?.['sap.app']?.dataSources;
-        return Object.values(dataSources ?? {})
-            .filter(this.isOdataService)
-            .map(this.toOdataServiceInfo);
+        const odataServices = Object.values(dataSources ?? {}).filter(this.isOdataService);
+
+        const isCloudFoundry = !!this.rta.getFlexSettings().isCloudFoundry;
+        if (isCloudFoundry) {
+            const manifestObject = rootControl.getManifestObject();
+            return odataServices.map((src) => ({
+                serviceUrl: manifestObject.resolveUri(src.uri),
+                oDataVersion: (src.settings?.odataVersion ?? ODataHealthChecker.DEFAULT_ODATA_VERSION) as ODataVersion
+            }));
+        }
+
+        return odataServices.map(this.toOdataServiceInfo);
     }
 }

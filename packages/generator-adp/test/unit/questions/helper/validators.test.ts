@@ -323,6 +323,11 @@ describe('validateBusinessSolutionName', () => {
         expect(result).toBe(true);
     });
 
+    test('should return true for multi-segment name', () => {
+        const result = validateBusinessSolutionName('com.sap.test');
+        expect(result).toBe(true);
+    });
+
     test('should return error for empty string', () => {
         const result = validateBusinessSolutionName('');
         expect(result).toBe('The input cannot be empty.');
@@ -331,5 +336,15 @@ describe('validateBusinessSolutionName', () => {
     test('should return error for single part name', () => {
         const result = validateBusinessSolutionName('test');
         expect(result).toBe(t('error.businessSolutionNameInvalid'));
+    });
+
+    test('should return error for name with spaces', () => {
+        const result = validateBusinessSolutionName('test. solution');
+        expect(result).toBe(t('error.businessSolutionNameInvalidChars'));
+    });
+
+    test('should return error for name with special characters', () => {
+        const result = validateBusinessSolutionName('test.sol@tion');
+        expect(result).toBe(t('error.businessSolutionNameInvalidChars'));
     });
 });
