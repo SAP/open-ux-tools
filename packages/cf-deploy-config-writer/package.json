@@ -56,7 +56,7 @@
     "memfs": "3.4.13",
     "js-yaml": "3.14.2",
     "fs-extra": "11.3.4",
-    "unionfs": "4.4.0"
+    "unionfs": "4.6.0"
   },
   "peerDependencies": {
     "mta": "^1.0.8"
