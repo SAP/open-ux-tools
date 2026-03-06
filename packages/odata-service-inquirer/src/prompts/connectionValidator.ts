@@ -96,7 +96,7 @@ export class ConnectionValidator {
     private _connectedUserName: string | undefined;
     private _connectedSystemName: string | undefined;
     private _refreshToken: string | undefined;
-    // For the current validated URL connection attempts will ignore cert erro
+    // For the current validated URL connection attempts will ignore cert error
     private _ignoreCertError: boolean | undefined;
     // The endpoint used to probe for access can be an abap catalog endpoint where service listing would be required, or a direct url, typically a service enpoint
     private _connectType: ConnectionType = 'abap_catalog'; // Default to use catalog request to authenticate
