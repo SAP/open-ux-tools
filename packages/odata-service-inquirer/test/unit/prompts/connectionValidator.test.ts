@@ -1038,6 +1038,49 @@ describe('ConnectionValidator', () => {
         });
     });
 
+    test('should use specified servicePath to create system connection with AbapServiceProvider and ODataService', async () => {
+        const servicePath = '/sap/opu/odata/sap/TEST_SERVICE';
+        const mockOdataServiceGet = jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        const createForDestinationSpy = jest.spyOn(axiosExtension, 'createForDestination');
+
+        const connectValidator = new ConnectionValidator();
+        const result = await connectValidator.validateDestination(
+            {
+                Name: 'TEST_DEST',
+                Host: 'https://test-system:443',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'Test destination',
+                WebIDEUsage: 'odata_abap'
+            },
+            undefined,
+            servicePath
+        );
+
+        expect(result).toEqual({ valResult: true });
+
+        // Verify createForDestination was called to create the AbapServiceProvider
+        expect(createForDestinationSpy).toHaveBeenCalledWith(
+            {},
+            expect.objectContaining({
+                Name: 'TEST_DEST',
+                Host: 'https://test-system:443'
+            })
+        );
+
+        // Verify the AbapServiceProvider was created and stored
+        expect(connectValidator.serviceProvider).toBeDefined();
+
+        // Verify the ODataService was created using the servicePath
+        expect(connectValidator.odataService).toBeDefined();
+        expect(mockOdataServiceGet).toHaveBeenCalledWith('');
+
+        // Verify the validated URL includes the servicePath
+        expect(connectValidator.validatedUrl).toEqual('https://test_dest.dest/sap/opu/odata/sap/TEST_SERVICE');
+        expect(connectValidator.destinationUrl).toEqual('https://test-system:443/sap/opu/odata/sap/TEST_SERVICE');
+    });
+
     test('should re-use `connectedSystem` when provided rather than re-authentication', async () => {
         let connectValidator = new ConnectionValidator();
         (connectValidator as any)._validatedUrl = 'https://system1:12345/';

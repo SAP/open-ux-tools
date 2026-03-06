@@ -179,7 +179,7 @@ export async function getSystemConnectionQuestions(
         promptOptions?.systemSelection?.defaultChoice
     );
     // Alternative connection path, will override default authentication path (catalog endpoints)
-    let connectPath: string | undefined;
+    let connectPath = promptOptions?.systemSelection?.connectPath;
 
     const shouldOnlyShowDefaultChoice =
         promptOptions?.systemSelection?.onlyShowDefaultChoice && promptOptions?.systemSelection?.defaultChoice;
@@ -206,7 +206,7 @@ export async function getSystemConnectionQuestions(
 
                 // Regardless of finding a match the provided connect path is applied
                 if (typeof promptOptions?.systemSelection?.connectPath === 'object') {
-                    connectPath = promptOptions?.systemSelection.connectPath.value;
+                    connectPath = promptOptions?.systemSelection.connectPath;
                 }
                 return defaultChoiceIndex;
             },
@@ -227,7 +227,7 @@ export async function getSystemConnectionQuestions(
                         connectionValidator,
                         requiredOdataVersion,
                         cachedConnectedSystem,
-                        connectPath
+                        connectPath?.value
                     ) ?? false
                 );
             },
@@ -312,7 +312,7 @@ export async function getSystemConnectionQuestions(
                     connectionValidator,
                     requiredOdataVersion,
                     undefined,
-                    connectPath
+                    connectPath?.value
                 );
                 // An issue occurred with the selected system, there is no need to continue on the CLI, log and exit
                 // Note that for connection authentication errors, the result will be true, the user will be prompted to update their credentials in the next prompt
