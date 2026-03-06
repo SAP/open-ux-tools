@@ -726,14 +726,13 @@ describe('Test system selection prompts', () => {
 
         // Test with connectPath in defaultChoice object
         const connectPath = '/sap/opu/odata/sap/TEST_SERVICE';
-        const defaultChoiceWithConnectPath = {
-            value: backendSystemReentrance.name,
-            connectPath
+        const defaultChoiceOpt = {
+            value: backendSystemReentrance.name
         };
 
         systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemReentrance);
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator, {
-            [promptNames.systemSelection]: { defaultChoice: defaultChoiceWithConnectPath }
+            [promptNames.systemSelection]: { defaultChoice: defaultChoiceOpt, connectPath: { value: connectPath } }
         });
 
         const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
@@ -770,16 +769,15 @@ describe('Test system selection prompts', () => {
         backendSystems.push(backendSystemReentrance);
 
         const connectPath = '/sap/opu/odata/sap/ANOTHER_SERVICE';
-        const defaultChoiceWithConnectPath = {
-            value: backendSystemReentrance.name,
-            connectPath
+        const defaultChoiceOpt = {
+            value: backendSystemReentrance.name
         };
 
         systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemReentrance);
         validateUrlResultMock = true;
 
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator, {
-            [promptNames.systemSelection]: { defaultChoice: defaultChoiceWithConnectPath }
+            [promptNames.systemSelection]: { defaultChoice: defaultChoiceOpt, connectPath: { value: connectPath } }
         });
 
         // Call default to set the connectPath
