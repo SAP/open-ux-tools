@@ -78,6 +78,7 @@
     "packageManager": "pnpm@10.30.3",
     "pnpm": {
         "overrides": {
+            "@sap-ux/vocabularies-types": "0.15.0",
             "@storybook/manager-api>store2": "2.14.4",
             "@sap-ux/ui5-config>axios": "^1.13.5",
             "@sap/service-provider-apis>axios": "^1.13.5",
