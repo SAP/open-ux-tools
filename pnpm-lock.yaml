@@ -3169,8 +3169,8 @@ importers:
         specifier: 1.16.9
         version: 1.16.9
       '@sap-ux/annotation-converter':
-        specifier: 0.10.19
-        version: 0.10.19
+        specifier: 0.10.21
+        version: 0.10.21
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -3178,8 +3178,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.10.0
+        version: 0.10.0
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -3207,12 +3207,12 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
-      '@sap-ux/vocabularies-types':
-        specifier: 0.14.5
-        version: 0.14.5
       '@sap/ux-specification':
         specifier: 1.142.1
         version: 1.142.1(typescript@5.9.3)
+      '@types/yeoman-generator':
+        specifier: 5.2.14
+        version: 5.2.14
       '@vscode-logging/logger':
         specifier: 2.0.8
         version: 2.0.8
@@ -3235,12 +3235,12 @@ importers:
         specifier: 5.10.0
         version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.13))
     devDependencies:
+      '@sap-ux/vocabularies-types':
+        specifier: 0.15.0
+        version: 0.15.0
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
-      '@types/yeoman-generator':
-        specifier: 5.2.14
-        version: 5.2.14
       rimraf:
         specifier: 6.1.2
         version: 6.1.2
@@ -8321,9 +8321,6 @@ packages:
 
   '@sap-ux/edmx-parser@0.10.0':
     resolution: {integrity: sha512-kjOHHpI6ymxb3BLLUKMLpYwhTFC5d0KEGw+xzxNmI7YPnSmY5Qbb5b1Io/LV35jFgyUeRZYNPsxg1PVtYnTdhw==}
-
-  '@sap-ux/edmx-parser@0.9.1':
-    resolution: {integrity: sha512-qgDXrJP+WtBbYJdedtCEVyIyKTs2eVcfplE2Mk4AbW8oxU85rqq8h8gNRoQlIUCcXXBJwXeoVlWTvSCF5mF7Rw==}
 
   '@sap-ux/edmx-parser@0.9.8':
     resolution: {integrity: sha512-GFyrixCHRvPVN07RjJYMQJE9xY2J3EpLuOsOXyAhuAoePqBjbAFuE+lJyyJMmJK3oltDBVDB+dqyA0eMSeCD/A==}
@@ -22782,10 +22779,6 @@ snapshots:
       - typescript
 
   '@sap-ux/edmx-parser@0.10.0':
-    dependencies:
-      xml-js: 1.6.11
-
-  '@sap-ux/edmx-parser@0.9.1':
     dependencies:
       xml-js: 1.6.11
 

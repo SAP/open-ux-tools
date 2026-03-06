@@ -37,10 +37,10 @@
     ],
     "dependencies": {
         "@sap-devx/yeoman-ui-types": "1.16.9",
-        "@sap-ux/annotation-converter": "0.10.19",
+        "@sap-ux/annotation-converter": "0.10.21",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
-        "@sap-ux/edmx-parser": "0.9.1",
+        "@sap-ux/edmx-parser": "0.10.0",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
@@ -50,8 +50,8 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.14.5",
         "@sap/ux-specification": "1.142.1",
+        "@types/yeoman-generator": "5.2.14",
         "@vscode-logging/logger": "2.0.8",
         "deepmerge": "4.3.1",
         "i18next": "25.8.12",
@@ -61,8 +61,8 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
+        "@sap-ux/vocabularies-types": "0.15.0",
         "@types/inquirer": "8.2.6",
-        "@types/yeoman-generator": "5.2.14",
         "rimraf": "6.1.2"
     },
     "engines": {
