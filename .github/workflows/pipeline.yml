@@ -270,7 +270,7 @@ jobs:
                   echo "EXT_RELEASE_MESSAGE=:package: Extension *${{ env.EXT_PKG }}* v${{ env.EXT_VERSION }} released - <${RELEASE_URL}|View on GitHub>" >> $GITHUB_ENV
             - name: Send Slack notification (published packages)
               if: steps.changesetPublish.outputs.published == 'true'
-              uses: slackapi/slack-github-action@v1.26.0
+              uses: slackapi/slack-github-action@v2.1.1
               with:
                   payload: |
                       {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }
@@ -278,7 +278,7 @@ jobs:
                   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
             - name: Send Slack notification (extension release)
               if: env.EXTENSION_UPDATED == 'true'
-              uses: slackapi/slack-github-action@v1.26.0
+              uses: slackapi/slack-github-action@v2.1.1
               with:
                   payload: |
                       {"text": "${{ env.EXT_RELEASE_MESSAGE }}" }
