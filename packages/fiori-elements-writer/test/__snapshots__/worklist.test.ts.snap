@@ -14482,7 +14482,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"fewrk2\\": \\"../../\\"
+                \\"fewrk2\\": \\"../../\\",
+                \\"fewrk2.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -14565,7 +14566,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('fewrk2') + '/test/flpSandbox.html#fewrk2-tile',
+        launchUrl: sap.ui.require.toUrl('fewrk2/test/test') + '/flpSandbox.html#fewrk2-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
