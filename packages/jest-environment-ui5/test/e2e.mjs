@@ -15,7 +15,7 @@ const MIN_UI5_VERSION = '1.96'; // Version 1.71 is failing due to missing SAPUI5
  * @returns {Promise<Array<{name: string, config: string}>>} Array of version configurations
  */
 async function prepareTestConfigurations() {
-    let availableUI5Versions = await getUI5Versions({
+    const availableUI5Versions = await getUI5Versions({
         includeMaintained: true,
         onlyLatestPatchVersion: true,
         onlyVersionNumbers: true,
