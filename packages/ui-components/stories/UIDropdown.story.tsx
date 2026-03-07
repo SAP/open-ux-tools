@@ -14,7 +14,7 @@ export default { title: 'Dropdowns/Dropdown' };
 
 export const Basic = (): JSX.Element => (
     <div style={{ width: '300px' }}>
-        <UIDropdown options={data} useDropdownAsMenuMinWidth={true} />
+        <UIDropdown options={data} useDropdownAsMenuMinWidth={true} selectedKey="test" placeholder='test' />
     </div>
 );
 
