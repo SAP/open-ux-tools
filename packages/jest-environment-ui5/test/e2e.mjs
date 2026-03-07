@@ -26,7 +26,7 @@ async function prepareTestConfigurations() {
     // If TEST_LATEST is set, filter to only include the latest maintained version
     let maintainedVersions = availableUI5Versions.filter((v) => v.maintained);
     if (process.env.TEST_LATEST === 'true') {
-        let latestVersion = maintainedVersions.find((v) => v.default);
+        const latestVersion = maintainedVersions.find((v) => v.default);
         maintainedVersions = [latestVersion];
     }
 
