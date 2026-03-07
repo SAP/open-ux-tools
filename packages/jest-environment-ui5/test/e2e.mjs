@@ -1,9 +1,9 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import { getUI5Versions } from '@sap-ux/ui5-info';
-import { mkdir, readFile, writeFile } from 'fs/promises';
 import { spawn } from 'node:child_process';
-import { join } from 'path';
-import { fileURLToPath } from 'url';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const FIXTURE_ROOT = join(__dirname, '..', 'test', 'fixtures', 'generated');
