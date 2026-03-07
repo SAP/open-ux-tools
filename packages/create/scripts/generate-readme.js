@@ -1,4 +1,4 @@
-const { execSync } = require('node:child_process');
+const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 
 /**
@@ -35,7 +35,19 @@ sap-ux [command] [sub-command] /path/to/project
  * @returns The parsed JSON specification object.
  */
 function getJsonSpec() {
-    const output = execSync('node dist/index.js --generateJsonSpec', { encoding: 'utf8' });
+    const result = spawnSync('node', ['dist/index.js', '--generateJsonSpec'], {
+        encoding: 'utf8'
+    });
+
+    if (result.error) {
+        throw new Error(`Failed to execute CLI: ${result.error.message}`);
+    }
+
+    if (result.status !== 0) {
+        throw new Error(`CLI process exited with code ${result.status}${result.stderr ? `\nStderr: ${result.stderr}` : ''}`);
+    }
+
+    const output = result.stdout;
 
     // Extract JSON from output, ignoring any non-JSON content (e.g., i18next messages, logger formatting)
     // Find the first '{' and the last '}' to extract the JSON object
@@ -155,7 +167,5 @@ try {
     console.log('✅ README.md generated successfully.');
 } catch (error) {
     console.error('❌ Failed to generate README:', error.message);
-    if (error.stdout) {
-        console.error('CLI Output:', error.stdout);
-    }
+    process.exit(1);
 }
