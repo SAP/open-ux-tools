@@ -51,7 +51,7 @@
         "@types/http-proxy": "^1.17.5",
         "@types/prompts": "2.4.4",
         "@types/proxy-from-env": "1.0.1",
-        "@types/supertest": "2.0.12",
+        "@types/supertest": "7.2.0",
         "express": "4.22.1",
         "connect": "^3.7.0",
         "nock": "13.4.0",
