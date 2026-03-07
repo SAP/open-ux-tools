@@ -2,13 +2,22 @@
  * @file Detect the usage of document.queryCommandSupported with 'insertBrOnReturn' argument
  */
 
-import type { Rule } from 'eslint';
-import { type ASTNode, isIdentifier, isCall, isLiteral, createDocumentBasedRuleVisitors } from '../utils/helpers';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
+import {
+    type ASTNode,
+    isCall,
+    createDocumentBasedRuleVisitors,
+    getParent,
+    asCallExpression,
+    getPropertyName,
+    asLiteral,
+    asMemberExpression
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -22,22 +31,31 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const createVisitors = createDocumentBasedRuleVisitors({
             isInteresting: (node: ASTNode, isDocumentObject: (node: unknown) => boolean): boolean => {
-                return (
-                    isCall((node as any).parent) &&
-                    isDocumentObject((node as any).object) &&
-                    ((isIdentifier((node as any).property) &&
-                        (node as any).property.name === 'queryCommandSupported') ||
-                        (isLiteral((node as any).property) && (node as any).property.value === 'queryCommandSupported'))
-                );
+                const parent = getParent(node);
+                const memberNode = asMemberExpression(node);
+                if (!parent || !memberNode) {
+                    return false;
+                }
+
+                const methodName = getPropertyName(memberNode.property);
+                return isCall(parent) && isDocumentObject(memberNode.object) && methodName === 'queryCommandSupported';
             },
             isValid: (node: ASTNode): boolean => {
-                return (
-                    (node as any).parent.arguments.length === 0 ||
-                    (node as any).parent.arguments[0].value !== 'insertBrOnReturn'
-                );
+                const parent = getParent(node);
+                const parentCall = asCallExpression(parent);
+                if (!parentCall) {
+                    return true;
+                }
+
+                if (parentCall.arguments.length === 0) {
+                    return true;
+                }
+
+                const firstArg = asLiteral(parentCall.arguments[0]);
+                return firstArg?.value !== 'insertBrOnReturn';
             },
             messageId: 'insertBrOnReturn'
         });

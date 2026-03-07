@@ -2,8 +2,15 @@
  * @file Detect the access of the innerHTML property.
  */
 
-import type { Rule } from 'eslint';
-import { type ASTNode, type IdentifierNode, type LiteralNode, isIdentifier, isLiteral } from '../utils/helpers';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
+import {
+    type ASTNode,
+    type IdentifierNode,
+    type LiteralNode,
+    isIdentifier,
+    isLiteral,
+    asMemberExpression
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -32,7 +39,7 @@ function isValid(property: ASTNode): boolean {
     return true;
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -45,13 +52,14 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
         return {
             'MemberExpression'(node: ASTNode): void {
-                if (!isValid((node as any).property)) {
+                const memberExpr = asMemberExpression(node);
+                if (memberExpr && !isValid(memberExpr.property)) {
                     context.report({ node: node, messageId: 'innerHtmlAccess' });
                 }
             }

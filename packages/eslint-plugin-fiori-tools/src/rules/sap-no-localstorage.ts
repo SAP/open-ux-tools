@@ -2,13 +2,13 @@
  * @file detects usage of localstaorage
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import { type ASTNode, createStorageRuleHelpers } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -21,7 +21,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const FORBIDDEN_STORAGE_OBJECT: string[] = [];
         const storageHelpers = createStorageRuleHelpers('localStorage', 'localStorageUsage');
 

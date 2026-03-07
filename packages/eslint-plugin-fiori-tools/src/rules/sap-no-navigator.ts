@@ -2,8 +2,14 @@
  * @file Detect usage of navigator object
  */
 
-import type { Rule } from 'eslint';
-import { type ASTNode } from '../utils/helpers';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
+import {
+    getLiteralOrIdentifierName,
+    type ASTNode,
+    asCallExpression,
+    asMemberExpression,
+    asIdentifier
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -17,7 +23,7 @@ import { type ASTNode } from '../utils/helpers';
  * @returns True if the node is of the specified type
  */
 function isType(node: ASTNode | undefined, type: string): boolean {
-    return node?.type === type;
+    return !!(node && typeof node === 'object' && node !== null && 'type' in node && node.type === type);
 }
 
 /**
@@ -28,16 +34,6 @@ function isType(node: ASTNode | undefined, type: string): boolean {
  */
 function isIdentifier(node: ASTNode | undefined): boolean {
     return isType(node, 'Identifier');
-}
-
-/**
- * Check if a node is a MemberExpression.
- *
- * @param node The AST node to check
- * @returns True if the node is a MemberExpression
- */
-function isMember(node: ASTNode | undefined): boolean {
-    return isType(node, 'MemberExpression');
 }
 
 /**
@@ -57,8 +53,17 @@ function isCall(node: ASTNode | undefined): boolean {
  * @returns The rightmost method name
  */
 function getRightestMethodName(node: ASTNode): string {
-    const callee = (node as any).callee;
-    return isMember(callee) ? callee.property.name : callee.name;
+    const callExpr = asCallExpression(node);
+    if (!callExpr) {
+        return '';
+    }
+    const memberCallee = asMemberExpression(callExpr.callee);
+    if (memberCallee) {
+        const identProp = asIdentifier(memberCallee.property);
+        return identProp?.name ?? '';
+    }
+    const identCallee = asIdentifier(callExpr.callee);
+    return identCallee?.name ?? '';
 }
 
 /**
@@ -69,10 +74,17 @@ function getRightestMethodName(node: ASTNode): string {
  */
 function isWindow(node: ASTNode | undefined): boolean {
     // true if node is the global variable 'window'
-    return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
+    return !!(
+        isIdentifier(node) &&
+        node &&
+        typeof node === 'object' &&
+        node !== null &&
+        'name' in node &&
+        getLiteralOrIdentifierName(node) === 'window'
+    );
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -85,7 +97,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const FORBIDDEN_NAVIGATOR_WINDOW = ['javaEnabled'],
             FORBIDDEN_GLOB_EVENT = [
                 'onload',
@@ -131,7 +143,12 @@ const rule: Rule.RuleModule = {
             // true if node is the global variable 'window' or a reference to it
             return !!(
                 isWindow(node) ||
-                (isIdentifier(node) && node && 'name' in node && WINDOW_OBJECTS.includes(node.name))
+                (isIdentifier(node) &&
+                    node &&
+                    typeof node === 'object' &&
+                    node !== null &&
+                    'name' in node &&
+                    WINDOW_OBJECTS.includes(getLiteralOrIdentifierName(node)))
             );
         }
 
@@ -143,10 +160,14 @@ const rule: Rule.RuleModule = {
          */
         function isNavigator(node: ASTNode | undefined): boolean {
             // true if node id the global variable 'navigator', 'window.navigator' or '<windowReference>.navigator'
-            return (
-                (isIdentifier(node) && node && 'name' in node && node.name === 'navigator') ||
-                (isMember(node) && isWindowObject((node as any).object) && isNavigator((node as any).property))
-            );
+            if (isIdentifier(node) && node && typeof node === 'object' && node !== null && 'name' in node) {
+                return getLiteralOrIdentifierName(node) === 'navigator';
+            }
+            const memberNode = asMemberExpression(node);
+            if (memberNode) {
+                return isWindowObject(memberNode.object) && isNavigator(memberNode.property);
+            }
+            return false;
         }
 
         /**
@@ -159,7 +180,12 @@ const rule: Rule.RuleModule = {
             // true if node is the global variable 'navigator'/'window.navigator' or a reference to it
             return !!(
                 isNavigator(node) ||
-                (isIdentifier(node) && node && 'name' in node && NAVIGATOR_OBJECTS.includes(node.name))
+                (isIdentifier(node) &&
+                    node &&
+                    typeof node === 'object' &&
+                    node !== null &&
+                    'name' in node &&
+                    NAVIGATOR_OBJECTS.includes(getLiteralOrIdentifierName(node)))
             );
         }
 
@@ -171,9 +197,12 @@ const rule: Rule.RuleModule = {
          * @returns True if the assignment was remembered
          */
         function rememberWindow(left: ASTNode, right: ASTNode): boolean {
-            if (isWindowObject(right) && isIdentifier(left) && 'name' in left) {
-                WINDOW_OBJECTS.push(left.name);
-                return true;
+            if (isWindowObject(right) && isIdentifier(left) && typeof left === 'object' && left !== null) {
+                const identLeft = asIdentifier(left);
+                if (identLeft) {
+                    WINDOW_OBJECTS.push(identLeft.name);
+                    return true;
+                }
             }
             return false;
         }
@@ -186,9 +215,12 @@ const rule: Rule.RuleModule = {
          * @returns True if the assignment was remembered
          */
         function rememberNavigator(left: ASTNode, right: ASTNode): boolean {
-            if (isNavigatorObject(right) && isIdentifier(left) && 'name' in left) {
-                NAVIGATOR_OBJECTS.push(left.name);
-                return true;
+            if (isNavigatorObject(right) && isIdentifier(left) && typeof left === 'object' && left !== null) {
+                const identLeft = asIdentifier(left);
+                if (identLeft) {
+                    NAVIGATOR_OBJECTS.push(identLeft.name);
+                    return true;
+                }
             }
             return false;
         }
@@ -206,8 +238,9 @@ const rule: Rule.RuleModule = {
             },
             'MemberExpression': function (node: any): void {
                 if (isNavigatorObject(node.object)) {
-                    if (isCall(node.parent)) {
-                        const methodName = getRightestMethodName(node.parent);
+                    const parent = node.parent as ASTNode;
+                    if (isCall(parent)) {
+                        const methodName = getRightestMethodName(parent);
                         if (typeof methodName === 'string' && FORBIDDEN_METHODS.includes(methodName)) {
                             context.report({ node: node, messageId: 'navigator' });
                         }
