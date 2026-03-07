@@ -1,7 +1,6 @@
 const base = require('../../eslint.config.js');
 const { default: eslintPlugin } = require('eslint-plugin-eslint-plugin');
 
-const { tsParser } = require('typescript-eslint');
 
 module.exports = [
     {
@@ -11,7 +10,6 @@ module.exports = [
     {
         languageOptions: {
             parserOptions: {
-                parser: tsParser,
                 tsconfigRootDir: __dirname,
                 project: './tsconfig.eslint.json'
             }

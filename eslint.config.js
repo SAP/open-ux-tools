@@ -6,7 +6,6 @@ const tseslint = require('typescript-eslint');
 const importPlugin = require('eslint-plugin-import');
 const sonarjs = require('eslint-plugin-sonarjs');
 const isFixMode = process.argv.includes('--fix');
-const tsParser = tseslint.parser;
 
 const compat = new FlatCompat({
     baseDirectory: __dirname, // optional; default: process.cwd()
@@ -262,7 +261,6 @@ module.exports = [
     {
         name: 'typescript-eslint-1',
         languageOptions: {
-            parser: tsParser
         },
         files: ['**/*.ts', '**/*.tsx'],
         // 'extends': ['plugin:@typescript-eslint/recommended'],
@@ -327,7 +325,6 @@ module.exports = [
     {
         name: 'typescript-eslint-2',
         languageOptions: {
-            parser: tsParser
         },
         files: ['**/test/**/*.js', '**/test/**/*.ts', '**/test/**/*.tsx'],
         rules: {
