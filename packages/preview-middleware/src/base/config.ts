@@ -259,10 +259,6 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
             applyConnector: localConnectorPath,
             writeConnector: localConnectorPath,
             custom: true
-        },
-        {
-            connector: 'LocalStorageConnector',
-            layers: ['CUSTOMER', 'USER']
         }
     ];
 }
