@@ -330,6 +330,8 @@ resources:
     parameters:
       service-plan: application
       service: xsuaa
+      path: ./xs-security.json
+      service-name: standalonewithabapserviceprovider-xsuaa-service
       config:
         xsappname: 'standalonewithabapserviceprovider-\${space-guid}'
         tenant-mode: dedicated
@@ -480,6 +482,8 @@ resources:
     parameters:
       service-plan: application
       service: xsuaa
+      path: ./xs-security.json
+      service-name: standalone-with-connectivity-service-xsuaa-service
       config:
         xsappname: 'standalone-with-connectivity-service-\${space-guid}'
         tenant-mode: dedicated
