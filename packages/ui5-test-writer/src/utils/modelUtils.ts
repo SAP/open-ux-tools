@@ -127,10 +127,10 @@ export function getListReportFeatures(
     log?: Logger,
     metadata?: string
 ): ListReportFeatures {
-    const hasMetadata = metadata && listReportPage.entitySet;
-    const buttonVisibility = hasMetadata
-        ? safeCheckButtonVisibility(metadata, listReportPage.entitySet!, log)
-        : undefined;
+    const buttonVisibility =
+        metadata && listReportPage.entitySet
+            ? safeCheckButtonVisibility(metadata, listReportPage.entitySet, log)
+            : undefined;
     const toolbarActions = getToolBarActionNames(listReportPage.model, log);
 
     return {
@@ -139,9 +139,10 @@ export function getListReportFeatures(
         deleteButton: buildButtonState(buttonVisibility?.delete),
         filterBarItems: getFilterFieldNames(listReportPage.model, log),
         tableColumns: getTableColumnData(listReportPage.model, log),
-        toolBarActions: hasMetadata
-            ? safeCheckActionButtonStates(metadata, listReportPage.entitySet!, toolbarActions, log)
-            : []
+        toolBarActions:
+            metadata && listReportPage.entitySet
+                ? safeCheckActionButtonStates(metadata, listReportPage.entitySet, toolbarActions, log)
+                : []
     };
 }
 

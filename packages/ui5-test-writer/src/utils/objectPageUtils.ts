@@ -25,7 +25,6 @@ export async function getObjectPageFeatures(
     log?: Logger
 ): Promise<ObjectPageFeatures[]> {
     const objectPageFeatures: ObjectPageFeatures[] = [];
-    // const objectPages = getObjectPages(applicationModel);
     if (!objectPages || objectPages.length === 0) {
         log?.warn('Object Pages not found in application model. Dynamic tests will not be generated for Object Pages.');
         return objectPageFeatures;
@@ -42,7 +41,7 @@ export async function getObjectPageFeatures(
             listReportPageKey
         );
         // extract header sections (facets)
-        pageFeatureData.headerSections = extractObjectPageHeaderSectionsData(objectPage as PageWithModelV4);
+        pageFeatureData.headerSections = extractObjectPageHeaderSectionsData(objectPage);
         objectPageFeatures.push(pageFeatureData);
     }
 
@@ -85,7 +84,7 @@ function getObjectPageNavigationParents(
     };
 
     objectPages.forEach((objectPage) => {
-        const navigationRoutes = getNavigationRoutes(objectPage as PageWithModelV4);
+        const navigationRoutes = getNavigationRoutes(objectPage);
         const routeToTargetOP = navigationRoutes.find((nav) => nav.route === targetObjectPageKey);
         if (routeToTargetOP) {
             navigationParents.parentOPName = objectPage.name;
@@ -231,22 +230,6 @@ function isFormSection(section: SectionItem): boolean {
     return getAggregations(section)?.form !== undefined;
 }
 
-// /**
-//  * Retrieves the key of the List Report page from the given application model.
-//  *
-//  * @param applicationModel - The application model containing page definitions.
-//  * @returns The key of the List Report page, or null if not found.
-//  */
-// function getListReportPageKey(applicationModel: ApplicationModel): string | null {
-//     for (const pageKey in applicationModel.pages) {
-//         const page = applicationModel.pages[pageKey];
-//         if (page.pageType === PageTypeV4.ListReport) {
-//             return pageKey;
-//         }
-//     }
-//     return null;
-// }
-
 /**
  * Retrieves navigation targets from the given page model.
  *
@@ -259,7 +242,7 @@ function getNavigationRoutes(pageModel: PageWithModelV4): { identifier: string; 
         return navigationTargets;
     }
 
-    Object.keys(pageModel.navigation).map((navigationKey) => {
+    Object.keys(pageModel.navigation).forEach((navigationKey) => {
         if (pageModel.navigation) {
             const navigationEntry = pageModel.navigation[navigationKey];
             navigationTargets.push({

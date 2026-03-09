@@ -375,7 +375,7 @@ function analyzeOperationAvailability(operationAvailable: any): {
  * @returns The action method name
  */
 function extractActionMethodName(actionName: string): string {
-    const match = actionName.match(/\.([^.()]+)\(/);
+    const match = /\.([^.()]+)\(/.exec(actionName);
     if (match?.[1]) {
         return match[1];
     }
