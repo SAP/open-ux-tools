@@ -106,7 +106,7 @@
         "pleaseProvideAllRequiredData": "Please provide the required data and try again.",
         "cfNotInstalled": "Cloud Foundry is not installed in your space. Please install it to continue.",
         "cfNotLoggedIn": "You are not logged in to Cloud Foundry. Please login to continue.",
-        "cfOrgSpaceMissing": "You are logged in to the Cloud Foundry API endpoint but no Organization and Space are targeted. Please target an Organization and Space to continue.",
+        "cfOrgSpaceMissing": "You are logged in to the Cloud Foundry API endpoint but no organization and space are targeted. Target an organization and space to continue.",
         "baseAppHasToBeSelected": "Base application has to be selected. Please select a base application.",
         "businessServiceHasToBeSelected": "Business service has to be selected. Please select a business service.",
         "businessServiceDoesNotExist": "The service chosen does not exist in cockpit or the user is not member of the needed space.",
