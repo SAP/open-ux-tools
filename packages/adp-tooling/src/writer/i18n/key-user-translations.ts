@@ -4,15 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { getWebappPath } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import type { NewI18nEntry, SapTextType } from '@sap-ux/i18n';
-
-/**
- * Shape of a single text entry in the top-level `texts` object of the API response.
- */
-export interface TextTranslations {
-    type?: string;
-    values?: Record<string, string>;
-}
-
+import type { KeyUserTextTranslations } from '@sap-ux/axios-extension';
 /**
  * Old-to-new ISO 639 language code mappings used by UI5 locale resolution.
  * Source: sap/base/i18n/Localization.js M_ISO639_OLD_TO_NEW
@@ -114,7 +106,7 @@ export function replaceTextsWithI18nBindings(
 export async function writeKeyUserTranslations(
     projectPath: string,
     fileName: string,
-    topLevelTexts: Record<string, TextTranslations>,
+    topLevelTexts: KeyUserTextTranslations,
     fs: Editor
 ): Promise<void> {
     const webappPath = await getWebappPath(projectPath, fs);

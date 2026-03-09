@@ -4,12 +4,12 @@ import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
+import type { KeyUserTextTranslations } from '@sap-ux/axios-extension';
 
 import {
     normalizeLanguageForI18n,
     replaceTextsWithI18nBindings,
-    writeKeyUserTranslations,
-    type TextTranslations
+    writeKeyUserTranslations
 } from '../../../../src/writer/i18n/key-user-translations';
 
 jest.mock('@sap-ux/i18n', () => ({
@@ -159,7 +159,7 @@ describe('i18n-writer', () => {
         });
 
         it('should write translations to the correct i18n files', async () => {
-            const topLevelTexts: Record<string, TextTranslations> = {
+            const topLevelTexts: KeyUserTextTranslations = {
                 annotationText: {
                     type: 'XFLD',
                     values: {
@@ -204,7 +204,7 @@ describe('i18n-writer', () => {
         });
 
         it('should handle multiple text entries with multiple languages', async () => {
-            const topLevelTexts: Record<string, TextTranslations> = {
+            const topLevelTexts: KeyUserTextTranslations = {
                 title: {
                     type: 'XTIT',
                     values: {
@@ -250,7 +250,7 @@ describe('i18n-writer', () => {
         });
 
         it('should skip text entries without values', async () => {
-            const topLevelTexts: Record<string, TextTranslations> = {
+            const topLevelTexts: KeyUserTextTranslations = {
                 emptyText: {
                     type: 'XFLD'
                 },
@@ -274,7 +274,7 @@ describe('i18n-writer', () => {
         });
 
         it('should not include annotation when text type is not provided', async () => {
-            const topLevelTexts: Record<string, TextTranslations> = {
+            const topLevelTexts: KeyUserTextTranslations = {
                 text: {
                     values: {
                         '': 'No Type'
@@ -293,7 +293,7 @@ describe('i18n-writer', () => {
         });
 
         it('should apply language normalization for language keys', async () => {
-            const topLevelTexts: Record<string, TextTranslations> = {
+            const topLevelTexts: KeyUserTextTranslations = {
                 text: {
                     type: 'XFLD',
                     values: {
