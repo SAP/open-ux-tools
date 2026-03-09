@@ -17,7 +17,11 @@ import {
     type AdpWriterConfig
 } from '../types';
 import { renderFile } from 'ejs';
-import { replaceTextsWithI18nBindings, writeKeyUserTranslations, type TextTranslations } from '../writer/i18n/key-user-translations';
+import {
+    replaceTextsWithI18nBindings,
+    writeKeyUserTranslations,
+    type TextTranslations
+} from '../writer/i18n/key-user-translations';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
