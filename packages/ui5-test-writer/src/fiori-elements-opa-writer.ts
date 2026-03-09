@@ -272,6 +272,7 @@ export async function generateOPAFiles(
     fs?: Editor,
     log?: Logger
 ): Promise<Editor> {
+    // test
     const editor = fs ?? create(createStorage());
 
     const manifest = readManifest(editor, basePath);
