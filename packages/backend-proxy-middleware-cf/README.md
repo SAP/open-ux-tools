@@ -14,6 +14,7 @@ It can be used either with the `ui5 serve` or the `fiori run` commands.
 | ------------------- | ---------- | ---------------- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `url`               | `string`   | **required**     | `undefined`   | Destination URL to proxy requests to.                                                                           |
 | `paths`             | `string[]` | **required**     | `[]`          | Array of OData source paths to proxy to this destination. Each path represents an OData service that should be proxied. Requests matching these paths will have the path prefix removed before forwarding. |
+| `pathRewrite`       | `string`   | optional         | `undefined`   | Optional path rewriting. When specified, the matched path prefix will be replaced with this value before forwarding to the backend. If not specified, the matched path is simply removed. Example: path `/resources/lib/api` with pathRewrite `/api` transforms `/resources/lib/api/v1/Service` to `/api/v1/Service`. |
 | `credentials`       | object     | optional         | `undefined`    | Manual OAuth credentials. If not provided, middleware attempts to auto-detect from Cloud Foundry ADP project.   |
 | `credentials.clientId` | `string` | mandatory (if credentials provided) | `undefined` | OAuth2 client ID.                                                                                                |
 | `credentials.clientSecret` | `string` | mandatory (if credentials provided) | `undefined` | OAuth2 client secret.                                                                                            |
@@ -103,7 +104,36 @@ server:
               - /odata/v4/service2
               - /odata/v2/legacy
 ```
-### Miltiple Backend Services
+
+### Path Rewriting with pathRewrite
+
+When your application requests resources with a specific path prefix (e.g., from a UI5 library), but the backend API expects a different path structure, use `pathRewrite`:
+
+```yaml
+server:
+  customMiddleware:
+    - name: backend-proxy-middleware-cf
+      afterMiddleware: compression
+      configuration:
+        backends:
+          - url: https://my-backend.example.com
+            paths:
+              - /resources/my/app/ui/api/example
+            pathRewrite: /api/example
+```
+
+**How it works:**
+- **Request from app:** `/resources/my/app/ui/api/example/v1/ExampleService/$metadata`
+- **Matched path:** `/resources/my/app/ui/api/example`
+- **Path rewriting:** `/api/example`
+- **Forwarded to backend:** `/api/example/v1/ExampleService/$metadata`
+
+Without `pathRewrite`, the matched path prefix is simply removed:
+- **Request:** `/odata/v4/service/EntitySet`
+- **Matched path:** `/odata`
+- **Forwarded:** `/v4/service/EntitySet`
+
+### Multiple Backend Services
 
 You can proxy multiple backend services:
 

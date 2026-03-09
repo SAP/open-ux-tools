@@ -1,5 +1,5 @@
 import React from 'react';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import type {
     IContextualMenuProps,
     IContextualMenuItem,
@@ -134,7 +134,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
             originalItems: [],
             items: [],
             valueSeparator: this.props.valueSeparator ?? '.',
-            uiidInput: uuid.v4(),
+            uiidInput: uuidv4(),
             isDisabled: !this.props.items.length,
             isMenuOpen: false,
             valueChanged: false

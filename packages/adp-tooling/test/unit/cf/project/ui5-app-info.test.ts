@@ -49,12 +49,12 @@ describe('getReusableLibraryPaths', () => {
             {
                 path: '/resources/my/reusable/lib',
                 src: './.adp/reuse/myreusablelib',
-                fallthrough: false
+                fallthrough: true
             },
             {
                 path: '/resources/another/lib',
                 src: './.adp/reuse/anotherlib',
-                fallthrough: false
+                fallthrough: true
             }
         ]);
         expect(mockLogger.warn).not.toHaveBeenCalled();
@@ -123,7 +123,7 @@ describe('getReusableLibraryPaths', () => {
             {
                 path: '/resources/valid/lib',
                 src: './.adp/reuse/validlib',
-                fallthrough: false
+                fallthrough: true
             }
         ]);
     });

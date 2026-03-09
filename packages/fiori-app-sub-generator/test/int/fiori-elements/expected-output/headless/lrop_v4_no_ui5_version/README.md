@@ -1,10 +1,10 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Feb 04 2026 12:56:15 GMT+0000 (Greenwich Mean Time)|
+|**Generation Date and Time**<br>Mon Feb 23 2026 15:24:32 GMT+0000 (Coordinated Universal Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
-|**Generation Platform**<br>CLI|
+|**Generation Platform**<br>Visual Studio Code|
 |**Template Used**<br>List Report Page V4|
 |**Service Type**<br>OData URL|
 |**Service URL**<br>https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/|
@@ -12,7 +12,7 @@
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
 |**Namespace**<br>testnamepsace|
 |**UI5 Theme**<br>sap_horizon|
-|**UI5 Version**<br>1.144.0|
+|**UI5 Version**<br>1.145.0|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|
 |**Main Entity**<br>Travel|

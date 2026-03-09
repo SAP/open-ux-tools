@@ -29,7 +29,8 @@ export async function initI18nInquirerCommon(): Promise<void> {
                 }
                 return value;
             }
-        }
+        },
+        showSupportNotice: false
     });
     addi18nResourceBundle();
 }

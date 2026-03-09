@@ -38,7 +38,7 @@ export function getReusableLibraryPaths(
         return {
             path: resourcePath,
             src: `./.adp/reuse/${html5AppName}`,
-            fallthrough: false
+            fallthrough: true
         };
     });
 }
