@@ -17,6 +17,7 @@ import {
     type AdpWriterConfig
 } from '../types';
 import { renderFile } from 'ejs';
+import { replaceTextsWithI18nBindings, writeKeyUserTranslations, type TextTranslations } from '../writer/i18n/key-user-translations';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
@@ -99,6 +100,16 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         const change = { ...(entry.content as Record<string, unknown>) };
         if (!change['fileName']) {
             continue;
+        }
+
+        const fileName = change['fileName'] as string;
+        const contentTexts = change['texts'] as Record<string, Record<string, unknown>> | undefined;
+        const topLevelTexts = entry.texts as Record<string, TextTranslations> | undefined;
+
+        // Replace content.texts values with i18n bindings and write translations to .properties files
+        if (contentTexts && topLevelTexts && Object.keys(topLevelTexts).length > 0) {
+            change['texts'] = replaceTextsWithI18nBindings(contentTexts, fileName);
+            await writeKeyUserTranslations(projectPath, fileName, topLevelTexts, fs);
         }
 
         const transformedChange = transformKeyUserChangeForAdp(change, config.app.id, config.app.layer);
