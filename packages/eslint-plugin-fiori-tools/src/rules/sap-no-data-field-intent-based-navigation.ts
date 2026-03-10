@@ -57,18 +57,24 @@ function checkTablesInPage(
         const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.annotation.top.uri];
 
         const itentBasedNavigationDataFields = getIntentBasedNavDataFields(table, aliasInfo);
-        if (itentBasedNavigationDataFields.length) {
+        itentBasedNavigationDataFields.forEach((dataField) => {
+            if (!table.annotation) {
+                return;
+            }
             problems.push({
                 type: NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
                 pageName: page.targetName,
                 annotation: {
                     file: table.annotation.annotation.top.uri,
                     annotationPath: table.annotation.annotationPath,
-                    reference: table.annotation.annotation.top,
-                    reportedElements: itentBasedNavigationDataFields
+                    reference: {
+                        uri: table.annotation.annotation.top.uri,
+                        value: dataField
+                    },
+                    reportedTable: table.annotation.annotation.top.value
                 }
             });
-        }
+        });
     }
 }
 
@@ -106,15 +112,9 @@ const rule: FioriRuleDefinition = createFioriRule({
         if (validationResult.length === 0) {
             return {};
         }
-
-        let diagnosticElements = {};
-        const lookup = new Set<Element | { reportedElements: Element[] }>();
+        const lookup = new Set<Element>();
         for (const diagnostic of validationResult) {
-            lookup.add(diagnostic.annotation?.reference?.value);
-            diagnosticElements = {
-                ...diagnosticElements,
-                [diagnostic.annotation.file]: diagnostic.annotation.reportedElements
-            };
+            lookup.add(diagnostic.annotation?.reportedTable);
         }
         return {
             ['target>element[name="Annotation"]'](node: Element): void {
@@ -122,19 +122,14 @@ const rule: FioriRuleDefinition = createFioriRule({
                 if (!lookup.has(node)) {
                     return;
                 }
-                const issue = validationResult.find((result) => result.annotation.reference.value.range === node.range);
-                if (!issue) {
-                    return;
-                }
-                const nodesForFile = diagnosticElements[
-                    issue.annotation.file as keyof typeof diagnosticElements
-                ] as Element[];
-                nodesForFile.forEach((nodeForFile) =>
-                    context.report({
-                        node: nodeForFile,
-                        messageId: 'no-data-field-intent-based-navigation'
-                    })
-                );
+                validationResult.forEach((result) => {
+                    if (result.annotation.reportedTable === node) {
+                        context.report({
+                            node: result.annotation.reference.value, // report DataField node
+                            messageId: 'no-data-field-intent-based-navigation'
+                        });
+                    }
+                });
             }
         };
     }
