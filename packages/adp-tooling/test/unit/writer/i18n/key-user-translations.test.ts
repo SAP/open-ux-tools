@@ -41,23 +41,6 @@ describe('i18n-writer', () => {
             expect(normalizeLanguageForI18n('ji')).toBe('yi');
         });
 
-        it('should handle ABAP language codes via M_ABAP_LANGUAGE_TO_LOCALE', () => {
-            expect(normalizeLanguageForI18n('ZH')).toBe('zh_Hans');
-            expect(normalizeLanguageForI18n('ZF')).toBe('zh_Hant');
-            expect(normalizeLanguageForI18n('SH')).toBe('sr_Latn');
-            expect(normalizeLanguageForI18n('CT')).toBe('cnr');
-            expect(normalizeLanguageForI18n('6N')).toBe('en_GB');
-            expect(normalizeLanguageForI18n('1P')).toBe('pt_PT');
-            expect(normalizeLanguageForI18n('1X')).toBe('es_MX');
-            expect(normalizeLanguageForI18n('3F')).toBe('fr_CA');
-        });
-
-        it('should handle ABAP language codes case-insensitively', () => {
-            expect(normalizeLanguageForI18n('zh')).toBe('zh_Hans');
-            expect(normalizeLanguageForI18n('zf')).toBe('zh_Hant');
-            expect(normalizeLanguageForI18n('sh')).toBe('sr_Latn');
-        });
-
         it('should handle BCP47 tags with region subtags', () => {
             expect(normalizeLanguageForI18n('pt-BR')).toBe('pt_BR');
             expect(normalizeLanguageForI18n('en-GB')).toBe('en_GB');
@@ -74,14 +57,6 @@ describe('i18n-writer', () => {
         it('should handle BCP47 tags with underscore separators', () => {
             expect(normalizeLanguageForI18n('pt_BR')).toBe('pt_BR');
             expect(normalizeLanguageForI18n('zh_Hans')).toBe('zh_Hans');
-        });
-
-        it('should handle ABAP pseudo language codes by extracting language and region only', () => {
-            // Pseudo languages (1Q, 2Q, 3Q) map to en-US-x-saptrc etc.
-            // Private use sections are not relevant for i18n file naming
-            expect(normalizeLanguageForI18n('1Q')).toBe('en_US');
-            expect(normalizeLanguageForI18n('2Q')).toBe('en_US');
-            expect(normalizeLanguageForI18n('3Q')).toBe('en_US');
         });
     });
 

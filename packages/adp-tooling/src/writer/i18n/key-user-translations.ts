@@ -7,7 +7,7 @@ import type { NewI18nEntry, SapTextType } from '@sap-ux/i18n';
 import type { KeyUserTextTranslations } from '@sap-ux/axios-extension';
 
 /**
- * Old-to-new ISO 639 language code mappings used by UI5 locale resolution.
+ * Old-to-new ISO 639 language code mappings. Safety net for legacy systems that may still return deprecated codes.
  * Source: sap/base/i18n/Localization.js M_ISO639_OLD_TO_NEW
  */
 const M_ISO639_OLD_TO_NEW: Record<string, string> = {
@@ -16,47 +16,28 @@ const M_ISO639_OLD_TO_NEW: Record<string, string> = {
 };
 
 /**
- * ABAP language code to BCP47 locale mappings.
- * Source: sap/base/i18n/Localization.js M_ABAP_LANGUAGE_TO_LOCALE
- */
-const M_ABAP_LANGUAGE_TO_LOCALE: Record<string, string> = {
-    'ZH': 'zh-Hans',
-    'ZF': 'zh-Hant',
-    'SH': 'sr-Latn',
-    'CT': 'cnr',
-    '6N': 'en-GB',
-    '1P': 'pt-PT',
-    '1X': 'es-MX',
-    '3F': 'fr-CA',
-    '1Q': 'en-US-x-saptrc',
-    '2Q': 'en-US-x-sappsd',
-    '3Q': 'en-US-x-saprigi'
-};
-
-/**
  * Normalizes a backend language key to the locale suffix used in i18n .properties file names.
- * Applies the same language mapping rules used by UI5 when resolving locales.
  *
- * @param lang - Language key from the backend response (e.g., '', 'en', 'iw', 'ZH', 'pt-BR').
- * @returns The normalized locale suffix for .properties file naming (e.g., '', 'en', 'he', 'zh_Hans', 'pt_BR').
+ * The backend (LRep) already normalizes language keys to ISO 639 via T002/T002X lookup,
+ * so this function primarily converts BCP47 separators (`-`) to underscores (`_`) for
+ * .properties file naming and applies old-to-new ISO 639 mapping as a safety net.
+ *
+ * @param lang - Language key from the backend response (e.g., '', 'en', 'iw', 'pt-BR', 'zh-Hans').
+ * @returns The normalized locale suffix for .properties file naming (e.g., '', 'en', 'he', 'pt_BR', 'zh_Hans').
  */
 export function normalizeLanguageForI18n(lang: string): string {
     if (!lang) {
         return '';
     }
 
-    // Check ABAP language codes first (uppercase lookup)
-    const abapMapped = M_ABAP_LANGUAGE_TO_LOCALE[lang.toUpperCase()];
-    const tag = abapMapped ?? lang;
-
     // Parse BCP47 tag: language[-Script][-Region][-variant][-extension][-privateuse]
-    const parts = tag.split(/[-_]/);
+    const parts = lang.split(/[-_]/);
     let language = parts[0].toLowerCase();
 
-    // Apply old-to-new ISO 639 mapping
+    // Apply old-to-new ISO 639 mapping as safety net
     language = M_ISO639_OLD_TO_NEW[language] ?? language;
 
-    // Collect script and region subtags
+    // Collect script and region subtags, skip variants/extensions/private use
     const subtags: string[] = [];
     for (let i = 1; i < parts.length; i++) {
         const p = parts[i];
@@ -67,7 +48,6 @@ export function normalizeLanguageForI18n(lang: string): string {
             // Region subtag (e.g., GB, TW, BR)
             subtags.push(p.toUpperCase());
         }
-        // Skip variants, extensions, and private use subtags
     }
 
     return subtags.length ? `${language}_${subtags.join('_')}` : language;
