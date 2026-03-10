@@ -63,15 +63,15 @@ const buildOptions = {
 
 // Build
 esbuild.build(buildOptions).then(() => {
-    // Copy embeddings data from fiori-docs-embeddings package
-    const embeddingsDataSrc = resolve(__dirname, '../fiori-docs-embeddings/data');
-    const embeddingsDataDest = resolve(__dirname, 'dist/data');
+    // Copy only embeddings data from fiori-docs-embeddings package
+    const embeddingsSrc = resolve(__dirname, '../fiori-docs-embeddings/data/embeddings');
+    const embeddingsDest = resolve(__dirname, 'dist/data/embeddings');
 
-    if (existsSync(embeddingsDataSrc)) {
-        mkdirSync(embeddingsDataDest, { recursive: true });
-        cpSync(embeddingsDataSrc, embeddingsDataDest, { recursive: true });
-        console.log('✓ Copied embeddings data to dist/data');
+    if (existsSync(embeddingsSrc)) {
+        mkdirSync(embeddingsDest, { recursive: true });
+        cpSync(embeddingsSrc, embeddingsDest, { recursive: true });
+        console.log('✓ Copied embeddings data to dist/data/embeddings');
     } else {
-        console.warn('⚠️ Embeddings data not found at', embeddingsDataSrc);
+        console.warn('⚠️ Embeddings data not found at', embeddingsSrc);
     }
 }).catch(() => process.exit(1));
