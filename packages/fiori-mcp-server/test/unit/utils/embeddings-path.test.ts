@@ -16,7 +16,6 @@ jest.mock('@sap-ux/fiori-docs-embeddings', () => ({
     getEmbeddingsPath: jest.fn()
 }));
 
-// eslint-disable-next-line import/no-unresolved -- Mocked module
 import { getDataPath, getEmbeddingsPath } from '@sap-ux/fiori-docs-embeddings';
 
 const mockGetDataPath = getDataPath as jest.MockedFunction<typeof getDataPath>;

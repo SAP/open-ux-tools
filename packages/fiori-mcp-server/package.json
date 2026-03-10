@@ -20,8 +20,8 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build-esbuild-base": "esbuild --format=cjs --bundle --platform=node --target=node20 --outdir=dist --external:vscode  --external:@sap-ux/fiori-docs-embeddings --external:@sap-ux/semantic-search --main-fields=module,main src/index.ts",
-        "build-dev": "pnpm run build-esbuild-base --sourcemap=inline",
+        "build-esbuild-base": "node esbuild.config.mjs",
+        "build-dev": "pnpm run build-esbuild-base --dev",
         "build-compile": "tsc --noEmit",
         "build-bundle": "pnpm run build-esbuild-base --minify && pnpm run copy-icons",
         "copy-icons": "node -e \"const fs=require('node:fs');const path=require('node:path');['icon.png','icon.svg'].forEach(f=>fs.copyFileSync(path.join('assets',f),path.join('dist',f)))\"",
@@ -92,6 +92,7 @@
     "dependencies": {
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
         "@sap-ux/semantic-search": "workspace:*",
+        "onnxruntime-web": "^1.22.0",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0"
     },
