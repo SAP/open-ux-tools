@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import fetch from 'node-fetch';
+import axios from 'axios';
 import { marked } from 'marked';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
@@ -205,26 +205,31 @@ class HTTPAICoreClient implements LLMClient {
         }
 
         if (!this.token && this.credentials) {
-            const resp = await fetch(this.credentials.url + '/oauth/token?grant_type=client_credentials', {
-                method: 'POST',
-                headers: {
-                    Authorization: `Basic ${Buffer.from(
-                        this.credentials.clientid + ':' + this.credentials.clientsecret
-                    ).toString('base64')}`
+            const resp = await axios.post<TokenResponse>(
+                this.credentials.url + '/oauth/token?grant_type=client_credentials',
+                null,
+                {
+                    headers: {
+                        Authorization: `Basic ${Buffer.from(
+                            this.credentials.clientid + ':' + this.credentials.clientsecret
+                        ).toString('base64')}`
+                    }
                 }
-            });
-            const tokenData = (await resp.json()) as TokenResponse;
-            this.token = tokenData.access_token;
+            );
+            this.token = resp.data.access_token;
         }
 
         if (!this.deploymentUrl[payload.deployment_id] && this.credentials) {
-            const configurations = await fetch(this.credentials.serviceurls.AI_API_URL + '/v2/lm/configurations', {
-                headers: {
-                    Authorization: `Bearer ${this.token}`,
-                    'AI-Resource-Group': 'default'
+            const configurations = await axios.get<ConfigurationsResponse>(
+                this.credentials.serviceurls.AI_API_URL + '/v2/lm/configurations',
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.token}`,
+                        'AI-Resource-Group': 'default'
+                    }
                 }
-            });
-            const configurationsData = (await configurations.json()) as ConfigurationsResponse;
+            );
+            const configurationsData = configurations.data;
 
             const configName = 'embeddingsscript-' + payload.deployment_id;
             const config = configurationsData.resources.find((r) => r.name === configName);
@@ -233,44 +238,50 @@ class HTTPAICoreClient implements LLMClient {
             if (config) {
                 configurationId = config.id;
             } else {
-                const postConfig = await fetch(this.credentials.serviceurls.AI_API_URL + '/v2/lm/configurations', {
-                    method: 'POST',
-                    body: JSON.stringify({
+                const postConfig = await axios.post<Configuration>(
+                    this.credentials.serviceurls.AI_API_URL + '/v2/lm/configurations',
+                    {
                         name: configName,
                         executableId: 'azure-openai',
                         scenarioId: 'foundation-models',
                         parameterBindings: [{ key: 'modelName', value: payload.deployment_id }]
-                    }),
-                    headers: {
-                        Authorization: `Bearer ${this.token}`,
-                        'AI-Resource-Group': 'default',
-                        'content-type': 'application/json'
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.token}`,
+                            'AI-Resource-Group': 'default',
+                            'content-type': 'application/json'
+                        }
                     }
-                });
-                const postConfigData = (await postConfig.json()) as Configuration;
-                configurationId = postConfigData.id;
+                );
+                configurationId = postConfig.data.id;
             }
 
-            const deployments = await fetch(this.credentials.serviceurls.AI_API_URL + '/v2/lm/deployments', {
-                headers: {
-                    Authorization: `Bearer ${this.token}`,
-                    'AI-Resource-Group': 'default'
+            const deployments = await axios.get<DeploymentsResponse>(
+                this.credentials.serviceurls.AI_API_URL + '/v2/lm/deployments',
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.token}`,
+                        'AI-Resource-Group': 'default'
+                    }
                 }
-            });
-            const deploymentsData = (await deployments.json()) as DeploymentsResponse;
+            );
+            const deploymentsData = deployments.data;
 
             const deployment = deploymentsData.resources.find((r) => r.configurationId === configurationId);
 
             if (!deployment) {
-                await fetch(this.credentials.serviceurls.AI_API_URL + '/v2/lm/deployments', {
-                    method: 'POST',
-                    body: JSON.stringify({ configurationId }),
-                    headers: {
-                        Authorization: `Bearer ${this.token}`,
-                        'AI-Resource-Group': 'default',
-                        'content-type': 'application/json'
+                await axios.post(
+                    this.credentials.serviceurls.AI_API_URL + '/v2/lm/deployments',
+                    { configurationId },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.token}`,
+                            'AI-Resource-Group': 'default',
+                            'content-type': 'application/json'
+                        }
                     }
-                });
+                );
                 throw new Error(
                     'Deployment created, please run again in a few minutes.\nReason: The AI Core Service needs a deployment to query LLMs, the deployment was created but it takes a few minutes to complete.'
                 );
@@ -282,11 +293,10 @@ class HTTPAICoreClient implements LLMClient {
             this.deploymentUrl[payload.deployment_id] = deployment.deploymentUrl;
         }
 
-        const res = await fetch(
+        const res = await axios.post<LLMResponse>(
             this.deploymentUrl[payload.deployment_id] + '/chat/completions?api-version=2023-05-15',
+            { messages: payload.messages },
             {
-                method: 'POST',
-                body: JSON.stringify({ messages: payload.messages }),
                 headers: {
                     Authorization: `Bearer ${this.token}`,
                     'AI-Resource-Group': 'default',
@@ -294,7 +304,7 @@ class HTTPAICoreClient implements LLMClient {
                 }
             }
         );
-        return (await res.json()) as LLMResponse;
+        return res.data;
     }
 }
 
@@ -1247,15 +1257,10 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
         this.logger.info(`Fetching API documentation from: ${source.url}`);
 
         try {
-            const response = await fetch(source.url!);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            const apiData = (await response.json()) as ApiData | ApiSymbol[];
-            return this.convertApiToDocuments(apiData, source);
+            const response = await axios.get<ApiData | ApiSymbol[]>(source.url!);
+            return this.convertApiToDocuments(response.data, source);
         } catch (error) {
-            throw new Error(`Failed to fetch API documentation: ${error.message}`);
+            throw new Error(`Failed to fetch API documentation: ${(error as Error).message}`);
         }
     }
 

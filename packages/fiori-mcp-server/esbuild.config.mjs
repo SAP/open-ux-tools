@@ -3,12 +3,15 @@
  *
  * Key decisions:
  * - Bundle semantic-search: Yes, it's a pure JS/TS package
+ * - Bundle fiori-docs-embeddings: Code is bundled, data files are copied to dist/data
  * - Keep onnxruntime-web external: Has WASM binaries that must be loaded at runtime
- * - Keep fiori-docs-embeddings external: Uses import.meta.url for path resolution
- * - Code splitting for search functionality: Lazy load search to reduce startup time
  */
 import * as esbuild from 'esbuild';
-import { readFileSync } from 'node:fs';
+import { readFileSync, cpSync, existsSync, mkdirSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const isProduction = process.argv.includes('--minify');
 const isDev = process.argv.includes('--dev');
@@ -29,11 +32,9 @@ const buildOptions = {
     // Keep these external - they have special runtime requirements:
     // - vscode: VSCode extension API
     // - onnxruntime-web: Has WASM binaries loaded at runtime
-    // - fiori-docs-embeddings: Uses import.meta.url for path resolution to data files
     external: [
         'vscode',
-        'onnxruntime-web',
-        '@sap-ux/fiori-docs-embeddings'
+        'onnxruntime-web'
     ],
 
     // Code splitting for better startup performance
@@ -51,9 +52,9 @@ const buildOptions = {
         'process.env.PACKAGE_VERSION': JSON.stringify(pkg.version)
     },
 
-    // Banner for the output
+    // Banner for the output (shebang is already in src/index.ts)
     banner: {
-        js: '#!/usr/bin/env node\n// @sap-ux/fiori-mcp-server - SAP Fiori MCP Server'
+        js: '// @sap-ux/fiori-mcp-server - SAP Fiori MCP Server'
     },
 
     // Log level
@@ -61,4 +62,16 @@ const buildOptions = {
 };
 
 // Build
-esbuild.build(buildOptions).catch(() => process.exit(1));
+esbuild.build(buildOptions).then(() => {
+    // Copy embeddings data from fiori-docs-embeddings package
+    const embeddingsDataSrc = resolve(__dirname, '../fiori-docs-embeddings/data');
+    const embeddingsDataDest = resolve(__dirname, 'dist/data');
+
+    if (existsSync(embeddingsDataSrc)) {
+        mkdirSync(embeddingsDataDest, { recursive: true });
+        cpSync(embeddingsDataSrc, embeddingsDataDest, { recursive: true });
+        console.log('✓ Copied embeddings data to dist/data');
+    } else {
+        console.warn('⚠️ Embeddings data not found at', embeddingsDataSrc);
+    }
+}).catch(() => process.exit(1));

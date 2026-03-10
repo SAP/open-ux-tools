@@ -1,14 +1,15 @@
 /**
  * Utility module for resolving embeddings data paths
- * Handles fallback mechanisms when embeddings package is not available
+ * When bundled, data is copied to dist/data directory
  */
 
 import path from 'node:path';
+import { existsSync } from 'node:fs';
 import { logger } from './logger';
 
 /**
- * Attempts to resolve the path to embeddings data.
- * First tries to use embeddings package, then falls back to local data.
+ * Resolves the path to embeddings data.
+ * Looks for data in the bundled dist/data directory.
  *
  * @returns Object containing paths and availability status
  */
@@ -18,39 +19,51 @@ export async function resolveEmbeddingsPath(): Promise<{
     isExternalPackage: boolean;
     isAvailable: boolean;
 }> {
-    // Try to resolve embeddings package using dynamic import (ESM package)
+    // Data is bundled in dist/data (same directory as this bundle)
+    const bundledDataPath = path.join(__dirname, 'data');
+    const bundledEmbeddingsPath = path.join(bundledDataPath, 'embeddings');
+
+    if (existsSync(bundledEmbeddingsPath)) {
+        logger.log('✓ Using bundled embeddings data');
+        return {
+            dataPath: bundledDataPath,
+            embeddingsPath: bundledEmbeddingsPath,
+            isExternalPackage: false,
+            isAvailable: true
+        };
+    }
+
+    // Fallback: try to load from installed package (for development)
     try {
-        // eslint-disable-next-line import/no-unresolved -- Dynamic import of ESM package
-        const embeddingsModule = await import('@sap-ux/fiori-docs-embeddings');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports -- External package loaded at runtime
+        const embeddingsModule = require('@sap-ux/fiori-docs-embeddings');
         const getDataPath = embeddingsModule.getDataPath;
         const getEmbeddingsPath = embeddingsModule.getEmbeddingsPath;
 
-        if (typeof getDataPath !== 'function' || typeof getEmbeddingsPath !== 'function') {
-            throw new Error('Package not found or invalid');
+        if (typeof getDataPath === 'function' && typeof getEmbeddingsPath === 'function') {
+            const packageDataPath = getDataPath();
+            const packageEmbeddingsPath = getEmbeddingsPath();
+
+            if (existsSync(packageEmbeddingsPath)) {
+                logger.log('✓ Using embeddings package');
+                return {
+                    dataPath: packageDataPath ?? '',
+                    embeddingsPath: packageEmbeddingsPath ?? '',
+                    isExternalPackage: true,
+                    isAvailable: true
+                };
+            }
         }
-
-        const packageDataPath = getDataPath();
-        const packageEmbeddingsPath = getEmbeddingsPath();
-
-        logger.log('✓ Using embeddings package');
-
-        return {
-            dataPath: packageDataPath ?? '',
-            embeddingsPath: packageEmbeddingsPath ?? '',
-            isExternalPackage: true,
-            isAvailable: true
-        };
-    } catch (error) {
-        logger.warn(`Could not load embeddings package: ${error instanceof Error ? error.message : String(error)}`);
+    } catch {
+        // Package not available, continue to fallback
     }
 
-    // No data available - return non-existent paths but mark as unavailable
-    const fallbackPath = path.join(__dirname, '../../data');
+    // No data available
     logger.warn('⚠️ No embeddings data available - running in limited mode');
 
     return {
-        dataPath: fallbackPath,
-        embeddingsPath: path.join(fallbackPath, 'embeddings'),
+        dataPath: bundledDataPath,
+        embeddingsPath: bundledEmbeddingsPath,
         isExternalPackage: false,
         isAvailable: false
     };

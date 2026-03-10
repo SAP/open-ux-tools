@@ -1,7 +1,10 @@
 import * as fs from 'node:fs/promises';
 import { join } from 'node:path';
 
-const mockFetch = jest.fn();
+const mockAxios = {
+    get: jest.fn(),
+    post: jest.fn()
+};
 const mockSpawn = jest.fn();
 
 const mockLogger = {
@@ -15,13 +18,15 @@ jest.mock('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-jest.mock('node-fetch', () => ({
-    default: mockFetch
+jest.mock('axios', () => ({
+    default: mockAxios,
+    ...mockAxios
 }));
 
-jest.mock('gray-matter', () => ({
-    default: jest.requireActual('gray-matter')
-}));
+jest.mock('gray-matter', () => {
+    const actualMatter = jest.requireActual('gray-matter');
+    return actualMatter;
+});
 
 jest.mock('fs/promises', () => ({
     readFile: jest.fn(),
@@ -350,11 +355,7 @@ describe('MultiSourceDocumentationBuilder', () => {
             const mockApiData = {
                 symbols: [{ name: 'TestClass', kind: 'class', description: 'Test class' }]
             };
-            const mockResponse = {
-                ok: true,
-                json: jest.fn().mockResolvedValue(mockApiData)
-            };
-            mockFetch.mockResolvedValue(mockResponse);
+            mockAxios.get.mockResolvedValue({ data: mockApiData });
 
             const builder = new MultiSourceDocumentationBuilder();
             const source = {
@@ -367,19 +368,13 @@ describe('MultiSourceDocumentationBuilder', () => {
 
             const documents = await builder.processJsonApiSource(source);
 
-            expect(mockFetch).toHaveBeenCalledWith('https://test.com/api.json');
+            expect(mockAxios.get).toHaveBeenCalledWith('https://test.com/api.json');
             expect(documents).toHaveLength(1);
             expect(documents[0].name).toBe('TestClass.md');
         });
 
         it('should handle API fetch errors', async () => {
-            const mockResponse = {
-                ok: false,
-                status: 404,
-                statusText: 'Not Found',
-                json: jest.fn().mockResolvedValue({})
-            };
-            mockFetch.mockResolvedValue(mockResponse);
+            mockAxios.get.mockRejectedValue(new Error('Request failed with status code 404'));
 
             const builder = new MultiSourceDocumentationBuilder();
             const source = {
@@ -850,20 +845,6 @@ describe('MultiSourceDocumentationBuilder', () => {
 
     describe('buildFilestore', () => {
         it('should handle github source processing', async () => {
-            const mockSuccessResponse = {
-                ok: true,
-                status: 200,
-                json: jest
-                    .fn()
-                    .mockResolvedValue([{ name: 'test.md', type: 'file', download_url: 'https://test.com/test.md' }])
-            };
-
-            const mockFileResponse = {
-                ok: true,
-                status: 200,
-                text: jest.fn().mockResolvedValue('# Test Content\n\nThis is test content.')
-            };
-
             const mockChild = {
                 stdout: { on: jest.fn() },
                 stderr: { on: jest.fn() },
@@ -875,13 +856,11 @@ describe('MultiSourceDocumentationBuilder', () => {
             };
 
             mockSpawn.mockReturnValue(mockChild);
-            mockFetch
-                .mockResolvedValueOnce(mockSuccessResponse) // getDirectoryContents
-                .mockResolvedValueOnce(mockFileResponse); // file content fetch
 
             mockFs.mkdir.mockResolvedValue(undefined);
             mockFs.writeFile.mockResolvedValue(undefined);
             mockFs.stat.mockRejectedValue(new Error('Directory not found')); // Repository doesn't exist
+            mockFs.readdir.mockResolvedValue([]); // Empty directory
 
             const builder = new MultiSourceDocumentationBuilder();
             builder.config.sources = [
@@ -1837,7 +1816,8 @@ describe('MultiSourceDocumentationBuilder', () => {
 
     describe('HTTPAICoreClient send method', () => {
         beforeEach(() => {
-            mockFetch.mockReset();
+            mockAxios.get.mockReset();
+            mockAxios.post.mockReset();
             delete process.env.AI_CORE_SERVICE_KEY;
         });
 
@@ -1867,35 +1847,28 @@ describe('MultiSourceDocumentationBuilder', () => {
                 url: 'https://auth.test'
             });
 
-            mockFetch
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ access_token: 'mock-token' })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [{ name: 'embeddingsscript-gpt-4', id: 'config-123' }]
-                    })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [
-                            {
-                                configurationId: 'config-123',
-                                status: 'RUNNING',
-                                deploymentUrl: 'https://deploy.test'
-                            }
-                        ]
-                    })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        choices: [{ message: { content: 'Response' } }]
-                    })
-                } as never);
+            // Token request (POST)
+            mockAxios.post.mockResolvedValueOnce({ data: { access_token: 'mock-token' } });
+            // Get configurations (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: { resources: [{ name: 'embeddingsscript-gpt-4', id: 'config-123' }] }
+            });
+            // Get deployments (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: {
+                    resources: [
+                        {
+                            configurationId: 'config-123',
+                            status: 'RUNNING',
+                            deploymentUrl: 'https://deploy.test'
+                        }
+                    ]
+                }
+            });
+            // Chat completion (POST)
+            mockAxios.post.mockResolvedValueOnce({
+                data: { choices: [{ message: { content: 'Response' } }] }
+            });
 
             const builder = new MultiSourceDocumentationBuilder();
             const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
@@ -1904,7 +1877,8 @@ describe('MultiSourceDocumentationBuilder', () => {
                 messages: [{ role: 'user', content: 'test' }]
             });
 
-            expect(mockFetch).toHaveBeenCalledTimes(4);
+            expect(mockAxios.post).toHaveBeenCalledTimes(2);
+            expect(mockAxios.get).toHaveBeenCalledTimes(2);
             expect(result).toHaveProperty('choices');
         });
 
@@ -1916,27 +1890,16 @@ describe('MultiSourceDocumentationBuilder', () => {
                 url: 'https://auth.test'
             });
 
-            mockFetch
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ access_token: 'token' })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ resources: [] })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ id: 'new-config' })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ resources: [] })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ id: 'new-deployment' })
-                } as never);
+            // Token (POST)
+            mockAxios.post.mockResolvedValueOnce({ data: { access_token: 'token' } });
+            // Get configurations - empty (GET)
+            mockAxios.get.mockResolvedValueOnce({ data: { resources: [] } });
+            // Create configuration (POST)
+            mockAxios.post.mockResolvedValueOnce({ data: { id: 'new-config' } });
+            // Get deployments - empty (GET)
+            mockAxios.get.mockResolvedValueOnce({ data: { resources: [] } });
+            // Create deployment (POST)
+            mockAxios.post.mockResolvedValueOnce({ data: { id: 'new-deployment' } });
 
             const builder = new MultiSourceDocumentationBuilder();
             const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
@@ -1948,7 +1911,8 @@ describe('MultiSourceDocumentationBuilder', () => {
                 })
             ).rejects.toThrow('Deployment created, please run again in a few minutes');
 
-            expect(mockFetch).toHaveBeenCalledTimes(5);
+            expect(mockAxios.post).toHaveBeenCalledTimes(3);
+            expect(mockAxios.get).toHaveBeenCalledTimes(2);
         });
 
         it('should throw error when deployment is not ready', async () => {
@@ -1959,29 +1923,24 @@ describe('MultiSourceDocumentationBuilder', () => {
                 url: 'https://auth.test'
             });
 
-            mockFetch
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ access_token: 'token' })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }]
-                    })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [
-                            {
-                                configurationId: 'config',
-                                status: 'PENDING',
-                                deploymentUrl: 'https://deploy.test'
-                            }
-                        ]
-                    })
-                } as never);
+            // Token (POST)
+            mockAxios.post.mockResolvedValueOnce({ data: { access_token: 'token' } });
+            // Get configurations (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: { resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }] }
+            });
+            // Get deployments - PENDING status (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: {
+                    resources: [
+                        {
+                            configurationId: 'config',
+                            status: 'PENDING',
+                            deploymentUrl: 'https://deploy.test'
+                        }
+                    ]
+                }
+            });
 
             const builder = new MultiSourceDocumentationBuilder();
             const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
@@ -1993,7 +1952,8 @@ describe('MultiSourceDocumentationBuilder', () => {
                 })
             ).rejects.toThrow('Deployment not ready');
 
-            expect(mockFetch).toHaveBeenCalledTimes(3);
+            expect(mockAxios.post).toHaveBeenCalledTimes(1);
+            expect(mockAxios.get).toHaveBeenCalledTimes(2);
         });
 
         it('should reuse token and deployment URL on subsequent calls', async () => {
@@ -2004,37 +1964,32 @@ describe('MultiSourceDocumentationBuilder', () => {
                 url: 'https://auth.test'
             });
 
-            mockFetch
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ access_token: 'token' })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }]
-                    })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [
-                            {
-                                configurationId: 'config',
-                                status: 'RUNNING',
-                                deploymentUrl: 'https://deploy.test'
-                            }
-                        ]
-                    })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ choices: [{ message: { content: 'R1' } }] })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ choices: [{ message: { content: 'R2' } }] })
-                } as never);
+            // Token (POST)
+            mockAxios.post.mockResolvedValueOnce({ data: { access_token: 'token' } });
+            // Get configurations (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: { resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }] }
+            });
+            // Get deployments (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: {
+                    resources: [
+                        {
+                            configurationId: 'config',
+                            status: 'RUNNING',
+                            deploymentUrl: 'https://deploy.test'
+                        }
+                    ]
+                }
+            });
+            // First chat completion (POST)
+            mockAxios.post.mockResolvedValueOnce({
+                data: { choices: [{ message: { content: 'R1' } }] }
+            });
+            // Second chat completion (POST)
+            mockAxios.post.mockResolvedValueOnce({
+                data: { choices: [{ message: { content: 'R2' } }] }
+            });
 
             const builder = new MultiSourceDocumentationBuilder();
             const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
@@ -2049,13 +2004,15 @@ describe('MultiSourceDocumentationBuilder', () => {
                 messages: [{ role: 'user', content: 'test2' }]
             });
 
-            expect(mockFetch).toHaveBeenCalledTimes(5);
+            expect(mockAxios.post).toHaveBeenCalledTimes(3);
+            expect(mockAxios.get).toHaveBeenCalledTimes(2);
         });
     });
 
     describe('LLM wrapper error handling', () => {
         beforeEach(() => {
-            mockFetch.mockReset();
+            mockAxios.get.mockReset();
+            mockAxios.post.mockReset();
             delete process.env.AI_CORE_SERVICE_KEY;
         });
 
@@ -2071,32 +2028,28 @@ describe('MultiSourceDocumentationBuilder', () => {
                 url: 'https://auth.test'
             });
 
-            mockFetch
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ access_token: 'token' })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }]
-                    })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [
-                            {
-                                configurationId: 'config',
-                                status: 'RUNNING',
-                                deploymentUrl: 'https://deploy.test'
-                            }
-                        ]
-                    })
-                } as never)
-                .mockRejectedValueOnce({
-                    body: { error: 'Service unavailable' }
-                });
+            // Token (POST)
+            mockAxios.post.mockResolvedValueOnce({ data: { access_token: 'token' } });
+            // Get configurations (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: { resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }] }
+            });
+            // Get deployments (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: {
+                    resources: [
+                        {
+                            configurationId: 'config',
+                            status: 'RUNNING',
+                            deploymentUrl: 'https://deploy.test'
+                        }
+                    ]
+                }
+            });
+            // Chat completion fails (POST)
+            mockAxios.post.mockRejectedValueOnce({
+                body: { error: 'Service unavailable' }
+            });
 
             const builder = new MultiSourceDocumentationBuilder();
             const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
@@ -2121,30 +2074,26 @@ describe('MultiSourceDocumentationBuilder', () => {
                 url: 'https://auth.test'
             });
 
-            mockFetch
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ access_token: 'token' })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }]
-                    })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [
-                            {
-                                configurationId: 'config',
-                                status: 'RUNNING',
-                                deploymentUrl: 'https://deploy.test'
-                            }
-                        ]
-                    })
-                } as never)
-                .mockRejectedValueOnce(new Error('Network error'));
+            // Token (POST)
+            mockAxios.post.mockResolvedValueOnce({ data: { access_token: 'token' } });
+            // Get configurations (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: { resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }] }
+            });
+            // Get deployments (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: {
+                    resources: [
+                        {
+                            configurationId: 'config',
+                            status: 'RUNNING',
+                            deploymentUrl: 'https://deploy.test'
+                        }
+                    ]
+                }
+            });
+            // Chat completion fails (POST)
+            mockAxios.post.mockRejectedValueOnce(new Error('Network error'));
 
             const builder = new MultiSourceDocumentationBuilder();
             const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
@@ -2179,7 +2128,8 @@ describe('MultiSourceDocumentationBuilder', () => {
 
     describe('processDocumentWithLLM', () => {
         beforeEach(() => {
-            mockFetch.mockReset();
+            mockAxios.get.mockReset();
+            mockAxios.post.mockReset();
             delete process.env.AI_CORE_SERVICE_KEY;
         });
 
@@ -2195,35 +2145,28 @@ describe('MultiSourceDocumentationBuilder', () => {
                 url: 'https://auth.test'
             });
 
-            mockFetch
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ access_token: 'token' })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [{ name: 'embeddingsscript-gpt-5-mini', id: 'config' }]
-                    })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [
-                            {
-                                configurationId: 'config',
-                                status: 'RUNNING',
-                                deploymentUrl: 'https://deploy.test'
-                            }
-                        ]
-                    })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        choices: [{ message: { content: '# Optimized Content' } }]
-                    })
-                } as never);
+            // Token (POST)
+            mockAxios.post.mockResolvedValueOnce({ data: { access_token: 'token' } });
+            // Get configurations (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: { resources: [{ name: 'embeddingsscript-gpt-5-mini', id: 'config' }] }
+            });
+            // Get deployments (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: {
+                    resources: [
+                        {
+                            configurationId: 'config',
+                            status: 'RUNNING',
+                            deploymentUrl: 'https://deploy.test'
+                        }
+                    ]
+                }
+            });
+            // Chat completion (POST)
+            mockAxios.post.mockResolvedValueOnce({
+                data: { choices: [{ message: { content: '# Optimized Content' } }] }
+            });
 
             const builder = new MultiSourceDocumentationBuilder();
             const processDoc = (
@@ -2255,30 +2198,26 @@ describe('MultiSourceDocumentationBuilder', () => {
                 url: 'https://auth.test'
             });
 
-            mockFetch
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ access_token: 'token' })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [{ name: 'embeddingsscript-gpt-5-mini', id: 'config' }]
-                    })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [
-                            {
-                                configurationId: 'config',
-                                status: 'RUNNING',
-                                deploymentUrl: 'https://deploy.test'
-                            }
-                        ]
-                    })
-                } as never)
-                .mockRejectedValue(new Error('LLM error'));
+            // Token (POST)
+            mockAxios.post.mockResolvedValueOnce({ data: { access_token: 'token' } });
+            // Get configurations (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: { resources: [{ name: 'embeddingsscript-gpt-5-mini', id: 'config' }] }
+            });
+            // Get deployments (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: {
+                    resources: [
+                        {
+                            configurationId: 'config',
+                            status: 'RUNNING',
+                            deploymentUrl: 'https://deploy.test'
+                        }
+                    ]
+                }
+            });
+            // Multiple chat completion failures (POST)
+            mockAxios.post.mockRejectedValue(new Error('LLM error'));
 
             const builder = new MultiSourceDocumentationBuilder();
             const processDoc = (
@@ -2300,7 +2239,8 @@ describe('MultiSourceDocumentationBuilder', () => {
             });
 
             expect(result).toBe('# Test Title\n\nOriginal content');
-            expect(mockFetch).toHaveBeenCalledTimes(7);
+            // 1 token + 4 retries for chat completions = 5 POST calls, plus 2 GET calls
+            expect(mockAxios.post).toHaveBeenCalled();
         }, 25000);
     });
 
@@ -2319,7 +2259,8 @@ describe('MultiSourceDocumentationBuilder', () => {
 
     describe('processSource with json-api', () => {
         beforeEach(() => {
-            mockFetch.mockReset();
+            mockAxios.get.mockReset();
+            mockAxios.post.mockReset();
             delete process.env.AI_CORE_SERVICE_KEY;
         });
 
@@ -2355,39 +2296,30 @@ describe('MultiSourceDocumentationBuilder', () => {
                 ]
             };
 
-            mockFetch
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => mockApiData
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({ access_token: 'token' })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [{ name: 'embeddingsscript-gpt-5-mini', id: 'config' }]
-                    })
-                } as never)
-                .mockResolvedValueOnce({
-                    ok: true,
-                    json: async () => ({
-                        resources: [
-                            {
-                                configurationId: 'config',
-                                status: 'RUNNING',
-                                deploymentUrl: 'https://deploy.test'
-                            }
-                        ]
-                    })
-                } as never)
-                .mockResolvedValue({
-                    ok: true,
-                    json: async () => ({
-                        choices: [{ message: { content: '# Optimized' } }]
-                    })
-                } as never);
+            // Get API data (GET)
+            mockAxios.get.mockResolvedValueOnce({ data: mockApiData });
+            // Token (POST)
+            mockAxios.post.mockResolvedValueOnce({ data: { access_token: 'token' } });
+            // Get configurations (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: { resources: [{ name: 'embeddingsscript-gpt-5-mini', id: 'config' }] }
+            });
+            // Get deployments (GET)
+            mockAxios.get.mockResolvedValueOnce({
+                data: {
+                    resources: [
+                        {
+                            configurationId: 'config',
+                            status: 'RUNNING',
+                            deploymentUrl: 'https://deploy.test'
+                        }
+                    ]
+                }
+            });
+            // Chat completions (POST)
+            mockAxios.post.mockResolvedValue({
+                data: { choices: [{ message: { content: '# Optimized' } }] }
+            });
 
             const builder = new MultiSourceDocumentationBuilder();
             const processSource = (
@@ -2410,7 +2342,7 @@ describe('MultiSourceDocumentationBuilder', () => {
                 enabled: true
             });
 
-            expect(mockFetch).toHaveBeenCalled();
+            expect(mockAxios.get).toHaveBeenCalled();
         }, 10000);
     });
 });

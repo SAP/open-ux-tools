@@ -4,11 +4,9 @@
  */
 
 import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-// ES module - use import.meta.url to get the directory path
-const currentFilename = fileURLToPath(import.meta.url);
-const packageRootDirname = path.dirname(path.dirname(currentFilename));
+// CommonJS - use __dirname to get the directory path
+const packageRootDirname = path.dirname(__dirname);
 
 /**
  * Get the path to the data directory.

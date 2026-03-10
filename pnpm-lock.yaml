@@ -2242,6 +2242,9 @@ importers:
       '@types/node':
         specifier: 20.0.0
         version: 20.0.0
+      axios:
+        specifier: 1.8.4
+        version: 1.8.4
       fast-xml-parser:
         specifier: 5.4.1
         version: 5.4.1
@@ -2251,9 +2254,6 @@ importers:
       marked:
         specifier: ^12.0.0
         version: 12.0.2
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
       npm-run-all2:
         specifier: 8.0.4
         version: 8.0.4
@@ -10297,6 +10297,9 @@ packages:
 
   axios@1.13.5:
     resolution: {integrity: sha512-cz4ur7Vb0xS4/KUN0tPWe44eqxrIu31me+fbang3ijiNscE129POzipJJA6zniq2C/Z6sJCjMimjS8Lc/GAs8Q==}
+
+  axios@1.8.4:
+    resolution: {integrity: sha512-eBSYY4Y68NNlHbHBMdeDmKNtDgXWhQsJcGqzO3iLUM0GraQFSS9cVgPX5I9b3lbdFKyYoAEGAZF1DwhTaljNAw==}
 
   azure-devops-node-api@12.5.0:
     resolution: {integrity: sha512-R5eFskGvOm3U/GzeAuxRkUsAl0hrAwGgWn6zAd2KrZmrEhWZVqLew4OOupbQlXUuojUzpGtq62SmdhJ06N88og==}
@@ -25596,6 +25599,14 @@ snapshots:
       dateformat: 3.0.3
 
   axios@1.13.5(debug@4.4.3):
+    dependencies:
+      follow-redirects: 1.15.11(debug@4.4.3)
+      form-data: 4.0.5
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
+  axios@1.8.4:
     dependencies:
       follow-redirects: 1.15.11(debug@4.4.3)
       form-data: 4.0.5
