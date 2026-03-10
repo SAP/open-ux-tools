@@ -5,6 +5,7 @@ import { getWebappPath } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import type { NewI18nEntry, SapTextType } from '@sap-ux/i18n';
 import type { KeyUserTextTranslations } from '@sap-ux/axios-extension';
+
 /**
  * Old-to-new ISO 639 language code mappings used by UI5 locale resolution.
  * Source: sap/base/i18n/Localization.js M_ISO639_OLD_TO_NEW
@@ -91,6 +92,7 @@ export function replaceTextsWithI18nBindings(
         entry.value = `{i18n>${generatedKey}}`;
         result[textId] = entry;
     }
+
     return result;
 }
 
@@ -122,7 +124,6 @@ export async function writeKeyUserTranslations(
         }
 
         const generatedKey = `${fileName}_${textId}`;
-
         for (const lang of Object.keys(values)) {
             const normalizedLang = normalizeLanguageForI18n(lang);
             if (!entriesByLanguage[normalizedLang]) {
