@@ -8,19 +8,19 @@ export type DocSearchInput = {
 };
 
 export interface SearchResultItem {
-    title: string;
-    category: string;
-    path: string;
-    score: number;
-    matches: string[];
-    excerpt?: string;
+    // title: string;
+    // category: string;
+    // path: string;
+    similarity: number;
+    // matches: string[];
+    // excerpt?: string;
     content?: string;
-    uri: string;
+    // uri: string;
 }
 
 export interface SearchResponseData {
     query: string;
-    searchType: 'hybrid' | 'limited_fallback';
+    searchType: 'semantic' | 'limited_fallback';
     results: SearchResultItem[];
     total: number;
     error?: string;
@@ -62,15 +62,15 @@ export async function docSearch(
         await embeddingService.initialize();
 
         // Convert text query to embedding vector
-        const queryVector = await embeddingService.generateEmbedding(query);
+        // const queryVector = await embeddingService.generateEmbedding(query);
 
         // Perform semantic search with the query vector
-        const searchResults = await vectorService.semanticSearch(queryVector, maxResults ?? 10);
+        const searchResults = await vectorService.semanticSearch(query, maxResults ?? 10);
         if (resultAsString) {
             let resultString = '';
             for (const [index, result] of searchResults.entries()) {
                 resultString += `Result ${index + 1}:\n\n`;
-                resultString += `${result.document.content}\n`;
+                resultString += `${result.content}\n`;
                 resultString += '---\n\n';
             }
             return resultString;
@@ -78,16 +78,16 @@ export async function docSearch(
             // Convert vector search results to the expected format
             return {
                 query,
-                searchType: 'hybrid',
+                searchType: 'semantic',
                 results: searchResults.map((result) => ({
-                    title: result.document.title,
-                    category: result.document.category,
-                    path: result.document.path,
-                    score: result.score,
-                    matches: [], // Vector search doesn't provide specific text matches
-                    excerpt: result.document.metadata?.excerpt,
-                    content: result.document.content,
-                    uri: `sap-fiori://docs/${result.document.category}/${result.document.id}`
+                    // title: result.document.title,
+                    // category: result.document.category,
+                    // path: result.document.path,
+                    similarity: result.similarity,
+                    // matches: [], // Vector search doesn't provide specific text matches
+                    // excerpt: result.document.metadata?.excerpt,
+                    content: result.content
+                    // uri: `sap-fiori://docs/${result.document.category}/${result.document.id}`
                 })),
                 total: searchResults.length
             };

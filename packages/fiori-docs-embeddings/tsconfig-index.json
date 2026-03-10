@@ -1,12 +1,10 @@
 {
     "extends": "../../tsconfig-esm.json",
-    "include": ["src", "src/**/*.json"],
+    "include": ["src/index.ts"],
     "compilerOptions": {
         "rootDir": "src",
-        "outDir": "dist"
-        // "allowJs": true,
-        // "checkJs": true,
-        // "noImplicitAny": false
+        "outDir": "dist",
+        "composite": true
     },
     "references": [
         {

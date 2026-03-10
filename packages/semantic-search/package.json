@@ -1,0 +1,64 @@
+{
+    "name": "@sap-ux/semantic-search",
+    "version": "0.1.0",
+    "description": "Semantic search functionality with embeddings support",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/semantic-search"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Asemantic-search"
+    },
+    "license": "Apache-2.0",
+    "private": false,
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/cjs/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/cjs/index.d.ts",
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        }
+    },
+    "scripts": {
+        "build": "pnpm run clean && pnpm run build:cjs && pnpm run build:esm && pnpm run build:pkg-json",
+        "build:cjs": "tsc --project tsconfig.cjs.json",
+        "build:esm": "tsc --project tsconfig.esm.json",
+        "build:pkg-json": "node -e \"require('fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'}, null, 2))\" && node -e \"require('fs').writeFileSync('dist/esm/package.json', JSON.stringify({type:'module'}, null, 2))\"",
+        "watch": "tsc --project tsconfig.cjs.json --watch",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --silent",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "dependencies": {
+        "onnxruntime-web": "^1.22.0"
+    },
+    "devDependencies": {
+        "@types/node": "20.0.0"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "!dist/*.map",
+        "!dist/**/*.map",
+        "!dist/**/*.tsbuildinfo"
+    ],
+    "keywords": [
+        "semantic",
+        "search",
+        "embeddings",
+        "similarity",
+        "nlp",
+        "sap",
+        "fiori"
+    ],
+    "engines": {
+        "node": ">=20.x"
+    }
+}

@@ -15,11 +15,8 @@ jest.mock('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-jest.mock('@xenova/transformers', () => ({
-    pipeline: mockPipeline
-}));
-
-jest.mock('@lancedb/lancedb', () => ({
+jest.mock('@sap-ux/semantic-search', () => ({
+    createEmbeddingPipeline: mockPipeline,
     connect: mockConnect
 }));
 
@@ -88,7 +85,6 @@ describe('EmbeddingBuilder', () => {
             await builder.initialize();
 
             expect(mockPipeline).toHaveBeenCalledWith(
-                'feature-extraction',
                 'Xenova/all-MiniLM-L6-v2',
                 expect.objectContaining({
                     quantized: false,

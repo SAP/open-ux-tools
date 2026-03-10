@@ -1,6 +1,6 @@
-const config = require('../../jest.base.js');
+import config from '../../jest.base.js';
 
-module.exports = {
+export default {
     ...config,
     modulePathIgnorePatterns: [...config.modulePathIgnorePatterns, '<rootDir>/test/data/', '<rootDir>/data/']
 };

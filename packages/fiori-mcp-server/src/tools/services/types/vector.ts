@@ -15,10 +15,9 @@ export interface VectorDocument {
     };
 }
 
-export interface VectorSearchResult {
-    document: VectorDocument;
-    score: number; // Similarity score (0-1)
-    distance: number; // Vector distance
+export interface SearchResult {
+    content: string;
+    similarity: number; // Similarity score (0-1)
 }
 
 export interface EmbeddingProvider {

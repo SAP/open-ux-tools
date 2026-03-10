@@ -1,23 +1,19 @@
 #!/usr/bin/env node
 
-import { pipeline, type FeatureExtractionPipeline } from '@xenova/transformers';
-import { connect } from '@lancedb/lancedb';
+import { embeddings, store } from '@sap-ux/semantic-search';
+import type {} from '@sap-ux/semantic-search';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
-
-interface ProgressCallback {
-    status: string;
-    progress?: number;
-}
+import { getEmbeddingsPath } from '../index';
 
 interface EmbeddingConfig {
     embeddingsPath: string;
-    model: string;
-    chunkSize: number;
-    chunkOverlap: number;
+    // model: string;
+    // chunkSize: number;
+    // chunkOverlap: number;
     batchSize: number;
-    maxVectorsPerTable: number;
+    // maxVectorsPerTable: number;
 }
 
 interface Document {
@@ -41,6 +37,7 @@ interface Chunk {
     title: string;
     category: string;
     path: string;
+    pathId?: string; // Sanitized path safe for use as filename (added during chunkAllDocuments)
     metadata: {
         tags: string[];
         headers: string[];
@@ -52,54 +49,24 @@ interface Chunk {
     vector?: number[];
 }
 
-interface VectorData {
-    id: string;
-    vector: number[];
-    content: string;
-    title: string;
-    category: string;
-    path: string;
-    chunk_index: number;
-    document_id: string;
-    // Flattened metadata fields
-    tags_json: string;
-    headers_json: string;
-    lastModified: string;
-    wordCount: number;
-    excerpt: string;
-    totalChunks: number;
-    [key: string]: unknown;
-}
-
-interface EmbeddingMetadata {
-    version: string;
-    createdAt: string;
-    model: string;
-    dimensions: number;
-    totalVectors: number;
-    totalDocuments: number;
-    chunkSize: number;
-    chunkOverlap: number;
-}
-
 /**
  *
  */
 class EmbeddingBuilder {
     private readonly config: EmbeddingConfig;
-    private pipeline: FeatureExtractionPipeline;
+    // private pipeline: FeatureExtractionPipeline;
     private readonly documents: Document[];
     private readonly chunks: Chunk[];
     private readonly logger: Logger;
 
     constructor() {
         this.config = {
-            embeddingsPath: './data/embeddings',
-            model: 'Xenova/all-MiniLM-L6-v2',
-            chunkSize: 2000, // Much larger chunks to reduce count
-            chunkOverlap: 100, // Minimal overlap
-            batchSize: 20, // Increased batch size for faster processing
-            maxVectorsPerTable: 5000 // Limit vectors per table to control file size
+            embeddingsPath: getEmbeddingsPath(),
+            // model: 'Xenova/all-MiniLM-L6-v2',
+            // chunkSize: 2000, // Much larger chunks to reduce count
+            // chunkOverlap: 100, // Minimal overlap
+            batchSize: 20 // Increased batch size for faster processing
+            // maxVectorsPerTable: 5000 // Limit vectors per table to control file size
         };
         this.documents = [];
         this.chunks = [];
@@ -107,32 +74,30 @@ class EmbeddingBuilder {
     }
 
     async initialize(): Promise<void> {
-        this.logger.info('🤖 Loading embedding model...');
-        this.logger.info(`Model: ${this.config.model}`);
-
-        try {
-            this.pipeline = await pipeline('feature-extraction', this.config.model, {
-                quantized: false, // Try without quantization first
-                progress_callback: (progress: ProgressCallback) => {
-                    if (progress.status === 'downloading') {
-                        this.logger.info(`Downloading: ${Math.round(progress.progress || 0)}%`);
-                    }
-                }
-            });
-        } catch (error) {
-            this.logger.warn(`Failed to load preferred model (${error.message}), trying fallback...`);
-            // Fallback to a simpler model if the main one fails
-            this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-                quantized: false,
-                progress_callback: (progress: ProgressCallback) => {
-                    if (progress.status === 'downloading') {
-                        this.logger.info(`Fallback model downloading: ${Math.round(progress.progress || 0)}%`);
-                    }
-                }
-            });
-        }
-
-        this.logger.info('✓ Embedding model loaded');
+        // this.logger.info('🤖 Loading embedding model...');
+        // this.logger.info(`Model: ${this.config.model}`);
+        // try {
+        //     this.pipeline = await createEmbeddingPipeline(this.config.model, {
+        //         quantized: false, // Try without quantization first
+        //         progress_callback: (progress: ProgressCallback) => {
+        //             if (progress.status === 'downloading') {
+        //                 this.logger.info(`Downloading: ${Math.round(progress.progress || 0)}%`);
+        //             }
+        //         }
+        //     });
+        // } catch (error) {
+        //     this.logger.warn(`Failed to load preferred model (${error.message}), trying fallback...`);
+        //     // Fallback to a simpler model if the main one fails
+        //     this.pipeline = await createEmbeddingPipeline('Xenova/all-MiniLM-L6-v2', {
+        //         quantized: false,
+        //         progress_callback: (progress: ProgressCallback) => {
+        //             if (progress.status === 'downloading') {
+        //                 this.logger.info(`Fallback model downloading: ${Math.round(progress.progress || 0)}%`);
+        //             }
+        //         }
+        //     });
+        // }
+        // this.logger.info('✓ Embedding model loaded');
     }
 
     async loadDocuments(): Promise<void> {
@@ -302,7 +267,13 @@ class EmbeddingBuilder {
 
         for (const doc of this.documents) {
             const docChunks = this.chunkDocument(doc);
-            this.chunks.push(...docChunks);
+            // Add sanitized path ID to each chunk
+            const pathId = this.sanitizeForFilename(doc.path);
+            const chunksWithPathId = docChunks.map((chunk) => ({
+                ...chunk,
+                pathId
+            }));
+            this.chunks.push(...chunksWithPathId);
         }
 
         this.logger.info(`✓ Created ${this.chunks.length} chunks from ${this.documents.length} documents`);
@@ -325,197 +296,220 @@ class EmbeddingBuilder {
         this.logger.info(`   Multi-chunk docs: ${stats.multiChunkDocs}`);
     }
 
-    /**
-     * Generate embedding for text using the transformer pipeline.
-     *
-     * @param text - Text to generate embedding for
-     * @returns Promise resolving to embedding vector
-     */
-    async generateEmbedding(text: string): Promise<number[]> {
-        const cleanText = text.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 8192);
+    // /**
+    //  * Generate embedding for text using the transformer pipeline.
+    //  *
+    //  * @param text - Text to generate embedding for
+    //  * @returns Promise resolving to embedding vector
+    //  */
+    // async generateEmbedding(text: string): Promise<number[]> {
+    //     const cleanText = text.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 8192);
 
-        const result = await this.pipeline(cleanText, { pooling: 'mean', normalize: true });
-        return Array.from(result.data);
+    //     const result = await this.pipeline(cleanText, { pooling: 'mean', normalize: true });
+    //     return Array.from(result.data);
+    // }
+
+    /**
+     * Sanitize a path string to be safe for use as a filename across operating systems.
+     * Removes or replaces characters that are invalid in Windows, macOS, or Linux filenames.
+     *
+     * @param pathStr - Path string to sanitize
+     * @returns Sanitized string safe for use in filenames
+     */
+    private sanitizeForFilename(pathStr: string): string {
+        return pathStr
+            .replace(/[<>:"|?*]/g, '_') // Replace Windows-invalid chars
+            .replace(/\\/g, '_') // Replace backslashes
+            .replace(/\//g, '_') // Replace forward slashes
+            .replace(/\s+/g, '_') // Replace whitespace with underscores
+            .replace(/\.+/g, '_') // Replace dots with underscores
+            .replace(/_+/g, '_') // Collapse multiple underscores
+            .replace(/^_|_$/g, ''); // Remove leading/trailing underscores
     }
 
     async generateAllEmbeddings(): Promise<void> {
         this.logger.info('\n🧠 Generating embeddings...');
-        this.logger.info(`Processing ${this.chunks.length} chunks in batches of ${this.config.batchSize}`);
 
-        const batches: Chunk[][] = [];
-        for (let i = 0; i < this.chunks.length; i += this.config.batchSize) {
-            batches.push(this.chunks.slice(i, i + this.config.batchSize));
+        // Filter chunks with valid pathId and group by pathId
+        const chunksWithPathId = this.chunks.filter((chunk): chunk is Chunk & { pathId: string } => !!chunk.pathId);
+        const chunksByPathId = new Map<string, Array<Chunk & { pathId: string }>>();
+
+        for (const chunk of chunksWithPathId) {
+            if (!chunksByPathId.has(chunk.pathId)) {
+                chunksByPathId.set(chunk.pathId, []);
+            }
+            chunksByPathId.get(chunk.pathId)!.push(chunk);
         }
 
-        let processedCount = 0;
-        for (let i = 0; i < batches.length; i++) {
-            const batch = batches[i];
+        this.logger.info(`Found ${chunksByPathId.size} unique paths to process`);
 
-            // Only show batch progress every 50 batches or for the first few
-            if (i < 5 || i % 50 === 0 || i === batches.length - 1) {
-                this.logger.info(`Processing batch ${i + 1}/${batches.length} (${batch.length} chunks)`);
-            }
+        let totalEmbeddingsCount = 0;
 
-            for (const chunk of batch) {
-                try {
-                    chunk.vector = await this.generateEmbedding(chunk.content);
-                    processedCount++;
+        // Process each pathId
+        for (const [pathId, pathChunks] of chunksByPathId) {
+            this.logger.info(`\nProcessing pathId: ${pathId} (${pathChunks.length} chunks)`);
 
-                    if (processedCount % 200 === 0 || processedCount === this.chunks.length) {
-                        const percent = Math.round((processedCount / this.chunks.length) * 100);
-                        this.logger.info(`  ✓ Processed ${processedCount}/${this.chunks.length} chunks (${percent}%)`);
-                    }
-                } catch (error) {
-                    this.logger.warn(`Failed to generate embedding for ${chunk.id}: ${error.message}`);
-                }
-            }
+            // Collect all content for chunks with the same pathId
+            const allContent = pathChunks.map((chunk) => chunk.content);
+
+            // Generate embeddings for all chunks with the same pathId in a single call
+            this.logger.info(`  Generating embeddings for ${allContent.length} chunks...`);
+            const embeddingsResult = await embeddings(allContent, { id: pathId });
+
+            totalEmbeddingsCount += embeddingsResult.embeddings.length;
+            this.logger.info(`  ✓ Generated ${embeddingsResult.embeddings.length} embeddings for pathId: ${pathId}`);
+
+            // Store all embeddings for this pathId in a single call
+            this.logger.info(`  Storing ${embeddingsResult.embeddings.length} embeddings...`);
+            await store(this.config.embeddingsPath, embeddingsResult as any);
+            this.logger.info(`✓ Completed storing pathId: ${pathId}`);
         }
 
-        this.logger.info(`✓ Generated ${processedCount} embeddings`);
+        this.logger.info(`\n✓ Total embeddings generated and stored: ${totalEmbeddingsCount}`);
     }
 
-    /**
-     * Create vector database with embeddings.
-     *
-     * @returns Promise resolving to embedding metadata
-     */
-    async createVectorDatabase(): Promise<EmbeddingMetadata> {
-        this.logger.info('\n💾 Creating vector database...');
+    // /**
+    //  * Create vector database with embeddings.
+    //  *
+    //  * @returns Promise resolving to embedding metadata
+    //  */
+    // async createVectorDatabase(): Promise<EmbeddingMetadata> {
+    //     this.logger.info('\n💾 Creating vector database...');
 
-        // Ensure embeddings directory exists
-        await fs.mkdir(this.config.embeddingsPath, { recursive: true });
+    //     // Ensure embeddings directory exists
+    //     await fs.mkdir(this.config.embeddingsPath, { recursive: true });
 
-        // Connect to LanceDB
-        const dbPath = path.resolve(this.config.embeddingsPath);
-        const db = await connect(dbPath);
+    //     // Connect to LanceDB
+    //     const dbPath = path.resolve(this.config.embeddingsPath);
+    //     const db = await connect(dbPath);
 
-        // Prepare data for LanceDB with flattened structure
-        const vectorData: VectorData[] = this.chunks
-            .filter((chunk) => chunk.vector)
-            .map((chunk) => ({
-                id: chunk.id,
-                vector: chunk.vector!,
-                content: chunk.content,
-                title: chunk.title,
-                category: chunk.category,
-                path: chunk.path,
-                chunk_index: chunk.chunkIndex,
-                document_id: chunk.documentId,
-                // Flatten metadata to avoid schema inference issues
-                tags_json: JSON.stringify(chunk.metadata.tags || []),
-                headers_json: JSON.stringify(chunk.metadata.headers || []),
-                lastModified: chunk.metadata.lastModified || '',
-                wordCount: chunk.metadata.wordCount || 0,
-                excerpt: chunk.metadata.excerpt || '',
-                totalChunks: chunk.metadata.totalChunks || 1
-            }));
+    //     // Prepare data for LanceDB with flattened structure
+    //     const vectorData: VectorData[] = this.chunks
+    //         .filter((chunk) => chunk.vector)
+    //         .map((chunk) => ({
+    //             id: chunk.id,
+    //             vector: chunk.vector!,
+    //             content: chunk.content,
+    //             title: chunk.title,
+    //             category: chunk.category,
+    //             path: chunk.path,
+    //             chunk_index: chunk.chunkIndex,
+    //             document_id: chunk.documentId,
+    //             // Flatten metadata to avoid schema inference issues
+    //             tags_json: JSON.stringify(chunk.metadata.tags || []),
+    //             headers_json: JSON.stringify(chunk.metadata.headers || []),
+    //             lastModified: chunk.metadata.lastModified || '',
+    //             wordCount: chunk.metadata.wordCount || 0,
+    //             excerpt: chunk.metadata.excerpt || '',
+    //             totalChunks: chunk.metadata.totalChunks || 1
+    //         }));
 
-        this.logger.info(`Storing ${vectorData.length} vectors in LanceDB`);
+    //     this.logger.info(`Storing ${vectorData.length} vectors in LanceDB`);
 
-        // Split data into smaller chunks to avoid large files
-        const maxVectorsPerTable = this.config.maxVectorsPerTable;
-        const tableChunks: VectorData[][] = [];
+    //     // Split data into smaller chunks to avoid large files
+    //     const maxVectorsPerTable = this.config.maxVectorsPerTable;
+    //     const tableChunks: VectorData[][] = [];
 
-        for (let i = 0; i < vectorData.length; i += maxVectorsPerTable) {
-            tableChunks.push(vectorData.slice(i, i + maxVectorsPerTable));
-        }
+    //     for (let i = 0; i < vectorData.length; i += maxVectorsPerTable) {
+    //         tableChunks.push(vectorData.slice(i, i + maxVectorsPerTable));
+    //     }
 
-        this.logger.info(`Splitting into ${tableChunks.length} tables with max ${maxVectorsPerTable} vectors each`);
+    //     this.logger.info(`Splitting into ${tableChunks.length} tables with max ${maxVectorsPerTable} vectors each`);
 
-        // Drop existing tables
-        for (let i = 0; i < tableChunks.length; i++) {
-            const tableName = `documents_${i.toString().padStart(3, '0')}`;
-            try {
-                await db.dropTable(tableName);
-                this.logger.info(`🗑️  Dropped existing table: ${tableName}`);
-            } catch {
-                // Table doesn't exist, which is fine
-            }
-        }
+    //     // Drop existing tables
+    //     for (let i = 0; i < tableChunks.length; i++) {
+    //         const tableName = `documents_${i.toString().padStart(3, '0')}`;
+    //         try {
+    //             await db.dropTable(tableName);
+    //             this.logger.info(`🗑️  Dropped existing table: ${tableName}`);
+    //         } catch {
+    //             // Table doesn't exist, which is fine
+    //         }
+    //     }
 
-        // Create new tables with explicit schema
-        for (let i = 0; i < tableChunks.length; i++) {
-            const tableName = `documents_${i.toString().padStart(3, '0')}`;
-            const chunk = tableChunks[i];
+    //     // Create new tables with explicit schema
+    //     for (let i = 0; i < tableChunks.length; i++) {
+    //         const tableName = `documents_${i.toString().padStart(3, '0')}`;
+    //         const chunk = tableChunks[i];
 
-            // Flatten metadata to avoid schema inference issues with nested arrays
-            const normalizedChunk = chunk.map((item) => {
-                // Safely access metadata with proper typing
-                type ChunkMetadata = {
-                    tags: string[];
-                    headers: string[];
-                    lastModified: string;
-                    wordCount: number;
-                    excerpt: string;
-                    totalChunks: number;
-                };
-                const metadata: ChunkMetadata =
-                    (item.metadata as ChunkMetadata) ||
-                    ({
-                        tags: [],
-                        headers: [],
-                        lastModified: '',
-                        wordCount: 0,
-                        excerpt: '',
-                        totalChunks: 1
-                    } as ChunkMetadata);
+    //         // Flatten metadata to avoid schema inference issues with nested arrays
+    //         const normalizedChunk = chunk.map((item) => {
+    //             // Safely access metadata with proper typing
+    //             type ChunkMetadata = {
+    //                 tags: string[];
+    //                 headers: string[];
+    //                 lastModified: string;
+    //                 wordCount: number;
+    //                 excerpt: string;
+    //                 totalChunks: number;
+    //             };
+    //             const metadata: ChunkMetadata =
+    //                 (item.metadata as ChunkMetadata) ||
+    //                 ({
+    //                     tags: [],
+    //                     headers: [],
+    //                     lastModified: '',
+    //                     wordCount: 0,
+    //                     excerpt: '',
+    //                     totalChunks: 1
+    //                 } as ChunkMetadata);
 
-                return {
-                    id: item.id || '',
-                    vector: Array.isArray(item.vector) ? item.vector : [],
-                    content: item.content || '',
-                    title: item.title || '',
-                    category: item.category || '',
-                    path: item.path || '',
-                    chunk_index: typeof item.chunk_index === 'number' ? item.chunk_index : 0,
-                    document_id: item.document_id || '',
-                    // Flatten metadata fields to avoid nested array issues
-                    tags_json: JSON.stringify(Array.isArray(metadata.tags) ? metadata.tags : []),
-                    headers_json: JSON.stringify(Array.isArray(metadata.headers) ? metadata.headers : []),
-                    lastModified: typeof metadata.lastModified === 'string' ? metadata.lastModified : '',
-                    wordCount: typeof metadata.wordCount === 'number' ? metadata.wordCount : 0,
-                    excerpt: typeof metadata.excerpt === 'string' ? metadata.excerpt : '',
-                    totalChunks: typeof metadata.totalChunks === 'number' ? metadata.totalChunks : 1
-                };
-            });
+    //             return {
+    //                 id: item.id || '',
+    //                 vector: Array.isArray(item.vector) ? item.vector : [],
+    //                 content: item.content || '',
+    //                 title: item.title || '',
+    //                 category: item.category || '',
+    //                 path: item.path || '',
+    //                 chunk_index: typeof item.chunk_index === 'number' ? item.chunk_index : 0,
+    //                 document_id: item.document_id || '',
+    //                 // Flatten metadata fields to avoid nested array issues
+    //                 tags_json: JSON.stringify(Array.isArray(metadata.tags) ? metadata.tags : []),
+    //                 headers_json: JSON.stringify(Array.isArray(metadata.headers) ? metadata.headers : []),
+    //                 lastModified: typeof metadata.lastModified === 'string' ? metadata.lastModified : '',
+    //                 wordCount: typeof metadata.wordCount === 'number' ? metadata.wordCount : 0,
+    //                 excerpt: typeof metadata.excerpt === 'string' ? metadata.excerpt : '',
+    //                 totalChunks: typeof metadata.totalChunks === 'number' ? metadata.totalChunks : 1
+    //             };
+    //         });
 
-            this.logger.info(`📝 Creating table ${tableName} with ${normalizedChunk.length} vectors...`);
-            await db.createTable(tableName, normalizedChunk);
-            this.logger.info(`✓ Created table ${tableName}`);
-        }
+    //         this.logger.info(`📝 Creating table ${tableName} with ${normalizedChunk.length} vectors...`);
+    //         await db.createTable(tableName, normalizedChunk);
+    //         this.logger.info(`✓ Created table ${tableName}`);
+    //     }
 
-        // Create a table index file for easy querying
-        const tableIndex = {
-            tables: tableChunks.map((_, i) => `documents_${i.toString().padStart(3, '0')}`),
-            totalTables: tableChunks.length,
-            maxVectorsPerTable,
-            totalVectors: vectorData.length
-        };
+    //     // Create a table index file for easy querying
+    //     const tableIndex = {
+    //         tables: tableChunks.map((_, i) => `documents_${i.toString().padStart(3, '0')}`),
+    //         totalTables: tableChunks.length,
+    //         maxVectorsPerTable,
+    //         totalVectors: vectorData.length
+    //     };
 
-        const tableIndexPath = path.join(this.config.embeddingsPath, 'table_index.json');
-        await fs.writeFile(tableIndexPath, JSON.stringify(tableIndex, null, 2));
+    //     const tableIndexPath = path.join(this.config.embeddingsPath, 'table_index.json');
+    //     await fs.writeFile(tableIndexPath, JSON.stringify(tableIndex, null, 2));
 
-        this.logger.info('✓ Vector database created with multiple tables');
+    //     this.logger.info('✓ Vector database created with multiple tables');
 
-        // Create metadata file
-        const metadata: EmbeddingMetadata = {
-            version: '1.0.0',
-            createdAt: new Date().toISOString(),
-            model: this.config.model,
-            dimensions: vectorData.length > 0 ? vectorData[0].vector.length : 384,
-            totalVectors: vectorData.length,
-            totalDocuments: this.documents.length,
-            chunkSize: this.config.chunkSize,
-            chunkOverlap: this.config.chunkOverlap
-        };
+    //     // Create metadata file
+    //     const metadata: EmbeddingMetadata = {
+    //         version: '1.0.0',
+    //         createdAt: new Date().toISOString(),
+    //         model: this.config.model,
+    //         dimensions: vectorData.length > 0 ? vectorData[0].vector.length : 384,
+    //         totalVectors: vectorData.length,
+    //         totalDocuments: this.documents.length,
+    //         chunkSize: this.config.chunkSize,
+    //         chunkOverlap: this.config.chunkOverlap
+    //     };
 
-        const metadataPath = path.join(this.config.embeddingsPath, 'metadata.json');
-        await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
+    //     const metadataPath = path.join(this.config.embeddingsPath, 'metadata.json');
+    //     await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
 
-        this.logger.info(`✓ Created metadata file: ${metadataPath}`);
+    //     this.logger.info(`✓ Created metadata file: ${metadataPath}`);
 
-        return metadata;
-    }
+    //     return metadata;
+    // }
 
     async buildEmbeddings(): Promise<void> {
         this.logger.info('🚀 Starting embedding generation...');
@@ -525,14 +519,14 @@ class EmbeddingBuilder {
             await this.loadDocuments();
             await this.chunkAllDocuments();
             await this.generateAllEmbeddings();
-            const metadata = await this.createVectorDatabase();
+            // const metadata = await this.createVectorDatabase();
 
             this.logger.info('\n🎉 Embedding generation completed!');
             this.logger.info(`📊 Summary:`);
-            this.logger.info(`   Model: ${metadata.model}`);
-            this.logger.info(`   Dimensions: ${metadata.dimensions}`);
-            this.logger.info(`   Total vectors: ${metadata.totalVectors}`);
-            this.logger.info(`   Total documents: ${metadata.totalDocuments}`);
+            // this.logger.info(`   Model: ${metadata.model}`);
+            // this.logger.info(`   Dimensions: ${metadata.dimensions}`);
+            // this.logger.info(`   Total vectors: ${metadata.totalVectors}`);
+            // this.logger.info(`   Total documents: ${metadata.totalDocuments}`);
             this.logger.info(`   Database: ${this.config.embeddingsPath}`);
         } catch (error) {
             this.logger.error(`❌ Embedding generation failed: ${error.message}`);
@@ -548,7 +542,7 @@ class EmbeddingBuilder {
 export { EmbeddingBuilder };
 
 // Run the builder
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
     const logger = new ToolsLogger();
     const builder = new EmbeddingBuilder();
     builder.buildEmbeddings().catch((error) => {

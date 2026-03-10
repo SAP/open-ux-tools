@@ -1,81 +1,46 @@
 /**
  * Utility module for resolving embeddings data paths
- * Handles fallback mechanisms when @sap-ux/fiori-docs-embeddings package is not available
+ * Handles fallback mechanisms when embeddings package is not available
  */
 
-import fs from 'node:fs/promises';
 import path from 'node:path';
 import { logger } from './logger';
+import { getDataPath, getEmbeddingsPath } from '@sap-ux/fiori-docs-embeddings';
 
 /**
- * Attempts to resolve the path to embeddings data. First tries to use @sap-ux/fiori-docs-embeddings package, then falls back to local data.
+ * Attempts to resolve the path to embeddings data.
+ * First tries to use embeddings package, then falls back to local data.
  *
  * @returns Object containing paths and availability status
  */
 export async function resolveEmbeddingsPath(): Promise<{
     dataPath: string;
     embeddingsPath: string;
-    searchPath: string;
-    docsPath: string;
     isExternalPackage: boolean;
     isAvailable: boolean;
 }> {
-    // Try to resolve @sap-ux/fiori-docs-embeddings package
+    // Try to resolve embeddings package
     try {
-        // Try to require the embeddings package dynamically
-        let embeddingsPackage: any;
-        try {
-            // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-require-imports
-            embeddingsPackage = require('@sap-ux/fiori-docs-embeddings');
-        } catch {
-            // Try dynamic import as fallback with proper error handling
-            try {
-                const moduleName = '@sap-ux/fiori-docs-embeddings';
-                embeddingsPackage = await import(moduleName);
-            } catch {
-                embeddingsPackage = null;
-            }
-        }
-
-        if (!embeddingsPackage || typeof embeddingsPackage.getDataPath !== 'function') {
+        if (
+            typeof getDataPath !== 'function' ||
+            typeof getEmbeddingsPath !== 'function'
+        ) {
             throw new Error('Package not found or invalid');
         }
 
-        const packageDataPath = embeddingsPackage.getDataPath();
+        const packageDataPath = getDataPath();
+        const packageEmbeddingsPath = getEmbeddingsPath();
 
-        // Verify the data actually exists
-        await fs.access(packageDataPath);
-
-        logger.log('✓ Using @sap-ux/fiori-docs-embeddings package');
+        logger.log('✓ Using embeddings package');
 
         return {
-            dataPath: packageDataPath,
-            embeddingsPath: path.join(packageDataPath, 'embeddings'),
-            searchPath: path.join(packageDataPath, 'search'),
-            docsPath: path.join(packageDataPath, 'docs'),
+            dataPath: packageDataPath ?? '',
+            embeddingsPath: packageEmbeddingsPath ?? '',
             isExternalPackage: true,
             isAvailable: true
         };
-    } catch {
-        logger.warn('Could not load @sap-ux/fiori-docs-embeddings package, trying local data...');
-    }
-
-    // Fallback to local data directory (legacy path)
-    const localDataPath = path.join(__dirname, '../../data');
-    try {
-        await fs.access(localDataPath);
-        logger.log('✓ Using local data directory');
-
-        return {
-            dataPath: localDataPath,
-            embeddingsPath: path.join(localDataPath, 'embeddings'),
-            searchPath: path.join(localDataPath, 'search'),
-            docsPath: path.join(localDataPath, 'docs'),
-            isExternalPackage: false,
-            isAvailable: true
-        };
-    } catch {
-        logger.warn('Local data directory not available either');
+    } catch (error) {
+        logger.warn(`Could not load embeddings package: ${error instanceof Error ? error.message : String(error)}`);
     }
 
     // No data available - return non-existent paths but mark as unavailable
@@ -85,19 +50,7 @@ export async function resolveEmbeddingsPath(): Promise<{
     return {
         dataPath: fallbackPath,
         embeddingsPath: path.join(fallbackPath, 'embeddings'),
-        searchPath: path.join(fallbackPath, 'search'),
-        docsPath: path.join(fallbackPath, 'docs'),
         isExternalPackage: false,
         isAvailable: false
     };
-}
-
-/**
- * Check if embeddings data is available.
- *
- * @returns True if embeddings data is available
- */
-export async function hasEmbeddingsData(): Promise<boolean> {
-    const { isAvailable } = await resolveEmbeddingsPath();
-    return isAvailable;
 }

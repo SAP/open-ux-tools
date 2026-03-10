@@ -3,9 +3,9 @@ module.exports = {
     ...config,
     setupFilesAfterEnv: ['<rootDir>/test/jest.setup.ts'],
     modulePathIgnorePatterns: [...config.modulePathIgnorePatterns, '<rootDir>/test/data/'],
-    transformIgnorePatterns: ['<rootDir>/node_modules/(?!@xenova)'],
+    transformIgnorePatterns: ['<rootDir>/node_modules/(?!@sap-ux/semantic-search|@sap-ux/fiori-docs-embeddings|mem-fs|mem-fs-editor)'],
     moduleNameMapper: {
-        '^@lancedb/lancedb$': '<rootDir>/test/__mocks__/@lancedb/lancedb.js',
-        '^@xenova/transformers$': '<rootDir>/test/__mocks__/@xenova/transformers.js'
+        '^@sap-ux/semantic-search$': '<rootDir>/test/__mocks__/@sap-ux/semantic-search.js',
+        '^@sap-ux/fiori-docs-embeddings$': '<rootDir>/test/__mocks__/@sap-ux/fiori-docs-embeddings.js'
     }
 };
