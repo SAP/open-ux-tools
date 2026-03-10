@@ -1,4 +1,6 @@
 ---
+'@sap-ux/axios-extension': patch
+'@sap-ux/generator-adp': patch
 '@sap-ux/adp-tooling': patch
 ---
 
