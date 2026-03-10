@@ -15,7 +15,7 @@ import {
 import type { ButtonState } from '../../../src/types';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 
 describe('Test buildButtonState()', () => {
     test('should return visible false when buttonState is undefined', () => {
