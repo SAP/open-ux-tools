@@ -69,6 +69,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
+        "@sap-ux/semantic-search": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
         "@types/diff": "5.0.9",
@@ -80,6 +81,8 @@
         "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "i18next": "25.8.12",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0",
         "os-name": "4.0.1",
         "ts-node": "10.9.2",
         "zod": "4.1.13",
@@ -90,11 +93,7 @@
         "@langchain/core": "1.1.26"
     },
     "dependencies": {
-        "@sap-ux/fiori-docs-embeddings": "workspace:*",
-        "@sap-ux/semantic-search": "workspace:*",
-        "onnxruntime-web": "^1.22.0",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0"
+        "onnxruntime-web": "^1.22.0"
     },
     "engines": {
         "node": ">=20.x"
