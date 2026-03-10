@@ -5,7 +5,6 @@
 
 import path from 'node:path';
 import { logger } from './logger';
-import { getDataPath, getEmbeddingsPath } from '@sap-ux/fiori-docs-embeddings';
 
 /**
  * Attempts to resolve the path to embeddings data.
@@ -19,8 +18,13 @@ export async function resolveEmbeddingsPath(): Promise<{
     isExternalPackage: boolean;
     isAvailable: boolean;
 }> {
-    // Try to resolve embeddings package
+    // Try to resolve embeddings package using dynamic import (ESM package)
     try {
+        // eslint-disable-next-line import/no-unresolved -- Dynamic import of ESM package
+        const embeddingsModule = await import('@sap-ux/fiori-docs-embeddings');
+        const getDataPath = embeddingsModule.getDataPath;
+        const getEmbeddingsPath = embeddingsModule.getEmbeddingsPath;
+
         if (typeof getDataPath !== 'function' || typeof getEmbeddingsPath !== 'function') {
             throw new Error('Package not found or invalid');
         }

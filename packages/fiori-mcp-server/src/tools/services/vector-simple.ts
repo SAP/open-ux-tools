@@ -28,7 +28,7 @@ export class SimpleVectorService {
             // Resolve the embeddings path dynamically
             const pathInfo = await resolveEmbeddingsPath();
 
-            this.dataPath = pathInfo.embeddingsPath;
+            this.dataPath = pathInfo.embeddingsPath; // Update dataPath with resolved path
             logger.log(`Using embeddings path: ${this.dataPath} (external: ${pathInfo.isExternalPackage})`);
 
             this.embeddingsDocs = await load(this.dataPath);

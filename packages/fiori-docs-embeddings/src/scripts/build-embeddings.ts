@@ -541,12 +541,24 @@ class EmbeddingBuilder {
 // Export the class
 export { EmbeddingBuilder };
 
-// Run the builder when executed directly
-if (require.main === module) {
+/**
+ * Main entry point for CLI execution.
+ * Call this function to run the embedding builder.
+ */
+export async function main(): Promise<void> {
     const logger = new ToolsLogger();
     const builder = new EmbeddingBuilder();
-    builder.buildEmbeddings().catch((error) => {
+    try {
+        await builder.buildEmbeddings();
+    } catch (error) {
         logger.error(`Build failed: ${error.message}`);
         process.exit(1);
-    });
+    }
+}
+
+// Run when executed directly via tsx/node
+// The CLI check is done by checking if this file is the entry point
+const isDirectExecution = process.argv[1]?.includes('build-embeddings');
+if (isDirectExecution) {
+    main().catch(() => process.exit(1));
 }

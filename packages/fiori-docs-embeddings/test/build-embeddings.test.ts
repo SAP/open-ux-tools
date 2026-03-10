@@ -19,6 +19,13 @@ jest.mock('@sap-ux/semantic-search', () => ({
     store: mockStore
 }));
 
+// Mock the index module to avoid import.meta issues in Jest
+jest.mock('../src/index', () => ({
+    getDataPath: jest.fn().mockReturnValue('/mock/data'),
+    getEmbeddingsPath: jest.fn().mockReturnValue('/mock/data/embeddings'),
+    embeddingsIds: [{ id: 'fiori-embeddings', path: '/mock/data/embeddings', weighting: 1 }]
+}));
+
 jest.mock('fs/promises', () => ({
     readFile: jest.fn(),
     mkdir: jest.fn(),
