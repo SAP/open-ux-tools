@@ -99,6 +99,15 @@ export const CONFIG = {
 
             return { ids };
         }
+    },
+    ['building-block/custom-column/View.xml']: {
+        getData: (generateId: IdGeneratorFunction): { ids: Record<string, string> } => {
+            return {
+                ids: {
+                    column: generateId('TableColumn')
+                }
+            };
+        }
     }
 };
 
