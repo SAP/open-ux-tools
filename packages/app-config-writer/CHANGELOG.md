@@ -1,5 +1,96 @@
 # @sap-ux/app-config-writer
 
+## 0.6.120
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+
+## 0.6.119
+
+### Patch Changes
+
+- 8df3c88: fix: add prerequisite for add eslint config command
+
+## 0.6.118
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/ui5-application-writer@1.7.19
+
+## 0.6.117
+
+### Patch Changes
+
+- Updated dependencies [bd95e55]
+    - @sap-ux/ui5-application-writer@1.7.19
+
+## 0.6.116
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-application-writer@1.7.18
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.6.115
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux/ui5-application-writer@1.7.17
+
+## 0.6.114
+
+### Patch Changes
+
+- 77fe375: feat: add new command to convert eslint config of a project
+
+## 0.6.113
+
+### Patch Changes
+
+- Updated dependencies [ac58145]
+- Updated dependencies [45d4797]
+    - @sap-ux/ui5-application-writer@1.7.16
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/ui5-config@0.29.20
+
+## 0.6.112
+
+### Patch Changes
+
+- Updated dependencies [96e9b9e]
+    - @sap-ux/axios-extension@1.25.19
+    - @sap-ux/ui5-application-writer@1.7.15
+
+## 0.6.111
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/ui5-application-writer@1.7.15
+    - @sap-ux/axios-extension@1.25.18
+
+## 0.6.110
+
+### Patch Changes
+
+- Updated dependencies [4af92b5]
+    - @sap-ux/axios-extension@1.25.18
+
 ## 0.6.109
 
 ### Patch Changes

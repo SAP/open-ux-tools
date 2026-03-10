@@ -18,10 +18,10 @@ import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { coerce, gte, lt } from 'semver';
 import { addExtensionTypes, getManifestPath } from '../common/utils';
-import { copyTpl, extendJSON } from '../common/file';
+import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file';
 import { generateBuildingBlock } from '../building-block';
 import { BuildingBlockType } from '../building-block/types';
-import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/xml';
+import { augmentXpathWithLocalNames } from '../building-block/prompts/utils';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../i18n';
 
@@ -94,6 +94,7 @@ export function getTemplateRoot(ui5Version?: string): string {
  * @param data.minUI5Version
  * @param {string} viewPath - The path to the view XML file.
  * @param {Editor} fs - The memfs editor instance.
+ * @param {(baseId: string) => Promise<string>} generateId - Function to generate unique IDs for the building block elements.
  * @param {Logger} [log] - Logger instance.
  * @returns {Promise<void>} Resolves when the building block is handled or skipped due to version constraints.
  */
@@ -102,6 +103,7 @@ async function handlePageBuildingBlock(
     data: { pageBuildingBlockTitle: string; minUI5Version?: string },
     viewPath: string,
     fs: Editor,
+    generateId: IdGeneratorFunction,
     log?: Logger
 ): Promise<void> {
     const minVersion = coerce(data.minUI5Version);
@@ -111,6 +113,7 @@ async function handlePageBuildingBlock(
         return;
     }
 
+    const pageId = generateId('Page');
     await generateBuildingBlock(
         basePath,
         {
@@ -118,8 +121,9 @@ async function handlePageBuildingBlock(
             aggregationPath: augmentXpathWithLocalNames(`/mvc:View/Page`),
             replace: true,
             buildingBlockData: {
-                id: 'Page',
+                id: pageId,
                 buildingBlockType: BuildingBlockType.Page,
+                generateId,
                 title: data.pageBuildingBlockTitle
             }
         },
@@ -137,14 +141,13 @@ async function handlePageBuildingBlock(
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
 export async function generate(basePath: string, data: CustomPage, fs?: Editor, log?: Logger): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     validateVersion(data.minUI5Version);
     await validatePageConfig(basePath, data, fs, []);
 
     const manifestPath = await getManifestPath(basePath, fs);
 
+    const fnGenerateId = await createIdGenerator(basePath, fs);
     const config = enhanceData(data, manifestPath, fs);
 
     // merge content into existing files
@@ -161,7 +164,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
     // add extension content
     const viewPath = join(config.path, `${config.name}.view.xml`);
     if (!fs.exists(viewPath)) {
-        copyTpl(fs, join(root, 'ext/View.xml'), viewPath, config);
+        copyTpl(fs, join(root, 'ext/View.xml'), viewPath, config, fnGenerateId);
         // i18n.properties
         const manifest = fs.readJSON(manifestPath) as Manifest;
         const defaultI18nPath = 'i18n/i18n.properties';
@@ -181,6 +184,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
             { pageBuildingBlockTitle: data.pageBuildingBlockTitle, minUI5Version: data.minUI5Version },
             viewPath,
             fs,
+            fnGenerateId,
             log
         );
     }

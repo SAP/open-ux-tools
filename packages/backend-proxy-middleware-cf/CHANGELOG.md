@@ -1,5 +1,93 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.79
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.89
+
+## 0.0.78
+
+### Patch Changes
+
+- Updated dependencies [f14a3d1]
+    - @sap-ux/adp-tooling@0.18.88
+
+## 0.0.77
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.87
+
+## 0.0.76
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/adp-tooling@0.18.86
+
+## 0.0.75
+
+### Patch Changes
+
+- Updated dependencies [5d458c7]
+    - @sap-ux/adp-tooling@0.18.85
+
+## 0.0.74
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+- Updated dependencies [83ca0e9]
+- Updated dependencies [fdd57de]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/adp-tooling@0.18.84
+
+## 0.0.73
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.83
+
+## 0.0.72
+
+### Patch Changes
+
+- Updated dependencies [f5f9a78]
+- Updated dependencies [45d4797]
+    - @sap-ux/adp-tooling@0.18.82
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/project-access@1.35.11
+
+## 0.0.71
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.81
+
+## 0.0.70
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/adp-tooling@0.18.80
+    - @sap-ux/project-access@1.35.11
+
+## 0.0.69
+
+### Patch Changes
+
+- Updated dependencies [2d42592]
+    - @sap-ux/adp-tooling@0.18.79
+
+## 0.0.68
+
+### Patch Changes
+
+- Updated dependencies [4af92b5]
+    - @sap-ux/adp-tooling@0.18.78
+
 ## 0.0.67
 
 ### Patch Changes

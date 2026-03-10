@@ -1,5 +1,141 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.108
+
+### Patch Changes
+
+- Updated dependencies [32d028b]
+    - @sap-ux/odata-service-inquirer@2.19.11
+
+## 0.5.107
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.23
+- @sap-ux/odata-service-inquirer@2.19.10
+- @sap-ux/abap-deploy-config-sub-generator@0.2.26
+- @sap-ux/cf-deploy-config-sub-generator@0.2.150
+- @sap-ux/deploy-config-generator-shared@0.1.104
+
+## 0.5.106
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-sub-generator@0.2.25
+
+## 0.5.105
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-sub-generator@0.2.24
+- @sap-ux/deploy-config-generator-shared@0.1.104
+- @sap-ux/fiori-generator-shared@0.13.85
+- @sap-ux/odata-service-inquirer@2.19.9
+
+## 0.5.104
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/abap-deploy-config-sub-generator@0.2.23
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.149
+    - @sap-ux/fiori-generator-shared@0.13.85
+    - @sap-ux/inquirer-common@0.11.22
+    - @sap-ux/odata-service-inquirer@2.19.8
+    - @sap-ux/deploy-config-generator-shared@0.1.104
+
+## 0.5.103
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-sub-generator@0.2.22
+
+## 0.5.102
+
+### Patch Changes
+
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/inquirer-common@0.11.21
+    - @sap-ux/odata-service-inquirer@2.19.7
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/abap-deploy-config-sub-generator@0.2.21
+    - @sap-ux/fiori-generator-shared@0.13.84
+    - @sap-ux/ui5-config@0.29.21
+    - @sap-ux/deploy-config-generator-shared@0.1.103
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.148
+
+## 0.5.101
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+    - @sap-ux/abap-deploy-config-sub-generator@0.2.20
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.147
+    - @sap-ux/odata-service-inquirer@2.19.6
+    - @sap-ux/inquirer-common@0.11.20
+    - @sap-ux/deploy-config-generator-shared@0.1.102
+
+## 0.5.100
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+- Updated dependencies [f5f9a78]
+    - @sap-ux/abap-deploy-config-sub-generator@0.2.19
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.146
+    - @sap-ux/deploy-config-generator-shared@0.1.102
+    - @sap-ux/inquirer-common@0.11.19
+    - @sap-ux/odata-service-inquirer@2.19.5
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/ui5-config@0.29.20
+
+## 0.5.99
+
+### Patch Changes
+
+- Updated dependencies [2302698]
+    - @sap-ux/inquirer-common@0.11.18
+    - @sap-ux/odata-service-inquirer@2.19.4
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.145
+    - @sap-ux/deploy-config-generator-shared@0.1.101
+    - @sap-ux/abap-deploy-config-sub-generator@0.2.18
+    - @sap-ux/fiori-generator-shared@0.13.82
+
+## 0.5.98
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+    - @sap-ux/abap-deploy-config-sub-generator@0.2.17
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.144
+    - @sap-ux/odata-service-inquirer@2.19.3
+    - @sap-ux/inquirer-common@0.11.17
+    - @sap-ux/fiori-generator-shared@0.13.82
+    - @sap-ux/deploy-config-generator-shared@0.1.101
+
+## 0.5.97
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-sub-generator@0.2.16
+
+## 0.5.96
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-sub-generator@0.2.15
+- @sap-ux/deploy-config-generator-shared@0.1.100
+- @sap-ux/fiori-generator-shared@0.13.81
+- @sap-ux/odata-service-inquirer@2.19.2
+
 ## 0.5.95
 
 ### Patch Changes
