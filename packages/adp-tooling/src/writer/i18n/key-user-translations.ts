@@ -114,7 +114,7 @@ export async function writeKeyUserTranslations(
     const entriesByLanguage: Record<string, NewI18nEntry[]> = {};
     for (const textId of Object.keys(topLevelTexts)) {
         const textEntry = topLevelTexts[textId];
-        const textType = textEntry.type as SapTextType | undefined;
+        const textType = textEntry.type as SapTextType;
         const values = textEntry.values;
 
         if (!values) {
