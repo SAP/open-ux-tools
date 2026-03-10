@@ -39,14 +39,13 @@ export function normalizeLanguageForI18n(lang: string): string {
 
     // Collect script and region subtags, skip variants/extensions/private use
     const subtags: string[] = [];
-    for (let i = 1; i < parts.length; i++) {
-        const p = parts[i];
-        if (p.length === 4 && /^[A-Za-z]{4}$/.test(p)) {
+    for (const part of parts.slice(1)) {
+        if (/^[A-Za-z]{4}$/.test(part)) {
             // Script subtag (e.g., Hans, Hant, Latn)
-            subtags.push(p[0].toUpperCase() + p.slice(1).toLowerCase());
-        } else if (p.length === 2 && /^[A-Za-z]{2}$/.test(p)) {
+            subtags.push(part[0].toUpperCase() + part.slice(1).toLowerCase());
+        } else if (/^[A-Za-z]{2}$/.test(part)) {
             // Region subtag (e.g., GB, TW, BR)
-            subtags.push(p.toUpperCase());
+            subtags.push(part.toUpperCase());
         }
     }
 
