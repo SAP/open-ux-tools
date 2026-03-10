@@ -8,7 +8,7 @@ import { validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { getTemplatePath } from '../templates';
-import { copyTpl, getJsonSpace } from '../common/file';
+import { copyTpl, getJsonSpace, createIdGenerator } from '../common/file';
 import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
 import type { FilterField } from '../building-block/types';
 import type { ManifestNamespace } from '@sap-ux/project-access';
@@ -55,6 +55,7 @@ export async function generateCustomFilter(basePath: string, filterConfig: Custo
         fs = create(createStorage());
     }
     await validateBasePath(basePath, fs);
+    const fnGenerateId = await createIdGenerator(basePath, fs);
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
     const config = enhanceConfig(filterConfig, manifestPath, manifest);
@@ -82,7 +83,7 @@ export async function generateCustomFilter(basePath: string, filterConfig: Custo
     // create a fragment file
     const fragmentPath = join(config.path, `${config.fragmentFile}.fragment.xml`);
     if (!fs.exists(fragmentPath)) {
-        copyTpl(fs, getTemplatePath(`filter/fragment.xml`), fragmentPath, config);
+        copyTpl(fs, getTemplatePath(`filter/fragment.xml`), fragmentPath, config, fnGenerateId);
     }
 
     return fs;

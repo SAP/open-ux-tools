@@ -1109,6 +1109,7 @@ export interface CfAdpWriterConfig {
         name: string;
         path: string;
         folder: string;
+        xsSecurityAppName?: string;
     };
     customConfig?: CustomConfig;
     ui5: {

@@ -1,6 +1,7 @@
 import type { FioriRuleDefinition } from '../types';
 import type { FioriXMLRuleDefinition } from '../language/xml/types';
 import {
+    ANCHOR_BAR_VISIBLE,
     FLEX_ENABLED,
     WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     COPY_TO_CLIPBOARD,
@@ -62,6 +63,7 @@ import sapUi5LegacyJquerysapUsage from './sap-ui5-legacy-jquerysap-usage';
 import sapUi5NoPrivateProp from './sap-ui5-no-private-prop';
 import sapUsageBasemastercontroller from './sap-usage-basemastercontroller';
 
+import anchorBarVisibleRule from './sap-anchor-bar-visible';
 import flexEnabledRule from './sap-flex-enabled';
 import requireWidthIncludingColumnHeader from './sap-width-including-column-header';
 import creationModeForTable from './sap-creation-mode-for-table';
@@ -123,6 +125,7 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-ui5-legacy-jquerysap-usage': sapUi5LegacyJquerysapUsage,
     'sap-ui5-no-private-prop': sapUi5NoPrivateProp,
     'sap-usage-basemastercontroller': sapUsageBasemastercontroller,
+    [ANCHOR_BAR_VISIBLE]: anchorBarVisibleRule,
     [FLEX_ENABLED]: flexEnabledRule,
     [WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
     [COPY_TO_CLIPBOARD]: copyToClipboard,

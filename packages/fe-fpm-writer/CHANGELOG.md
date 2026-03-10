@@ -1,5 +1,81 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.5
+
+### Patch Changes
+
+- Updated dependencies [e1ef0ba]
+    - @sap-ux/fiori-annotation-api@0.9.30
+
+## 0.43.4
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/fiori-annotation-api@0.9.29
+
+## 0.43.3
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- Updated dependencies [7c06ef0]
+    - @sap-ux/fiori-annotation-api@0.9.28
+    - @sap-ux/project-access@1.35.12
+
+## 0.43.2
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/fiori-annotation-api@0.9.27
+    - @sap-ux/project-access@1.35.11
+
+## 0.43.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/fiori-annotation-api@0.9.26
+
+## 0.43.0
+
+### Minor Changes
+
+- b1c3f49: Support Custom Action Building Blocks
+
+### Patch Changes
+
+- 2b276ec: chore: address minor post-merge comments for generateControlIdsForGeneratedSnippets
+
+## 0.42.21
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.25
+
+## 0.42.20
+
+### Patch Changes
+
+- efc4ec1: Ensure generated fragments and views use stable control IDs in their initial snippets.
+
+## 0.42.19
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+
+## 0.42.18
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/fiori-annotation-api@0.9.24
+
 ## 0.42.17
 
 ### Patch Changes
