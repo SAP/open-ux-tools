@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.30.0
+
+### Minor Changes
+
+- 3edf6d7: Preserve preview path during service sync
+
 ## 0.29.34
 
 ### Patch Changes
