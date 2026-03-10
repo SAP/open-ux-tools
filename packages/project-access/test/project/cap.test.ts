@@ -26,7 +26,8 @@ import {
     readCapServiceMetadataEdmx,
     toReferenceUri,
     isCapProject,
-    deleteCapApp
+    deleteCapApp,
+    getGlobalCdsHomePath
 } from '../../src';
 import * as file from '../../src/file';
 import os from 'node:os';
@@ -850,6 +851,38 @@ describe('Test getCapEnvironment()', () => {
         expect(loadSpy).toHaveBeenNthCalledWith(1, 'PROJECT_ROOT', '@sap/cds');
         expect(loadSpy).toHaveBeenNthCalledWith(2, join('GLOBAL_ROOT', 'node_modules', '@sap', 'cds'), '@sap/cds');
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
+    });
+});
+
+describe('Test getGlobalCdsHomePath()', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+        // clearing cache after each test to make tests independent of each other
+        clearGlobalCdsModulePromiseCache();
+    });
+
+    test('Expected response from "cds env --json"', async () => {
+        // Mock setup
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(
+            getChildProcessMock('{"_home_cds-dk": "GLOBAL_ROOT"}')
+        );
+
+        // Test execution
+        const cdsHomePath = await getGlobalCdsHomePath();
+
+        // Result check
+        expect(cdsHomePath).toEqual('GLOBAL_ROOT');
+    });
+
+    test('Unexpected response from "cds env --json"', async () => {
+        // Mock setup
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('{}'));
+
+        // Test execution
+        const cdsHomePath = await getGlobalCdsHomePath();
+
+        // Result check
+        expect(cdsHomePath).toEqual(undefined);
     });
 });
 
