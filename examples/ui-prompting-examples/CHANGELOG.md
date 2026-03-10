@@ -1,5 +1,29 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.5.12
+
+### Patch Changes
+
+- Updated dependencies [5d458c7]
+    - @sap-ux/ui-components@2.0.2
+    - @sap-ux/ui-prompting@0.6.11
+
+## 0.5.11
+
+### Patch Changes
+
+- 14d8ab3: fix(deps): update dependency babel-loader to v10
+- Updated dependencies [14d8ab3]
+    - @sap-ux/ui-components@2.0.1
+    - @sap-ux/ui-prompting@0.6.10
+
+## 0.5.10
+
+### Patch Changes
+
+- 4b02611: fix(deps): update dependency ws to v8.19.0
+    - @sap-ux/ui-prompting@0.6.9
+
 ## 0.5.9
 
 ### Patch Changes
