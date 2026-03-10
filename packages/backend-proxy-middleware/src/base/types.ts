@@ -59,6 +59,10 @@ export interface LocalBackendConfig extends BaseBackendConfig {
      * Mandatory URL pointing to the backend system
      */
     url: string;
+    /**
+     * Backend system type. 'catalog' (default) indicates a catalog service. 'service' indicates a full service URL;
+     */
+    type?: 'catalog' | 'service';
 }
 
 export type BackendConfig = LocalBackendConfig | DestinationBackendConfig;

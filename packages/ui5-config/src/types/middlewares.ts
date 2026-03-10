@@ -1,4 +1,12 @@
 import type { AuthenticationType } from '@sap-ux/store';
+
+export const BackendType = {
+    catalog: 'catalog', // usually ommitted, as it's the default assumption for a backend system.
+    service: 'service'
+} as const;
+
+export type BackendType = (typeof BackendType)[keyof typeof BackendType];
+
 export interface UI5ProxyConfigTarget {
     path: string | string[];
     url: string;
@@ -26,6 +34,7 @@ export interface FioriToolsProxyConfigBackend {
     apiHub?: boolean;
     ws?: boolean;
     xfwd?: boolean;
+    type?: BackendType;
 }
 
 export interface FioriToolsProxyConfigUI5 {
