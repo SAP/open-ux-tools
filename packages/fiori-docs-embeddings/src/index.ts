@@ -4,22 +4,9 @@
  */
 
 import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-// Handle both CommonJS and ES module environments
-let currentFilename: string;
-let packageRootDirname: string;
-
-if (typeof import.meta !== 'undefined') {
-    // ES module environment
-    currentFilename = fileURLToPath(import.meta.url);
-    packageRootDirname = path.dirname(currentFilename);
-} else {
-    // CommonJS environment
-    currentFilename = __filename;
-    packageRootDirname = __dirname;
-}
-packageRootDirname = path.join(packageRootDirname, '..');
+// This package is built to CommonJS, so __dirname is always available
+const packageRootDirname = path.join(__dirname, '..');
 
 /**
  * Get the path to the data directory.

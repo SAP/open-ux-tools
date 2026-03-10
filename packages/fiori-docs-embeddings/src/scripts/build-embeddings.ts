@@ -541,8 +541,8 @@ class EmbeddingBuilder {
 // Export the class
 export { EmbeddingBuilder };
 
-// Run the builder
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run the builder when executed directly
+if (require.main === module) {
     const logger = new ToolsLogger();
     const builder = new EmbeddingBuilder();
     builder.buildEmbeddings().catch((error) => {

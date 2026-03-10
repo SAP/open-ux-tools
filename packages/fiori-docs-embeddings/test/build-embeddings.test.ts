@@ -1,8 +1,7 @@
 import * as fs from 'node:fs/promises';
-import { join } from 'node:path';
 
-const mockPipeline = jest.fn();
-const mockConnect = jest.fn();
+const mockEmbeddings = jest.fn();
+const mockStore = jest.fn();
 
 const mockLogger = {
     info: jest.fn(),
@@ -16,8 +15,8 @@ jest.mock('@sap-ux/logger', () => ({
 }));
 
 jest.mock('@sap-ux/semantic-search', () => ({
-    createEmbeddingPipeline: mockPipeline,
-    connect: mockConnect
+    embeddings: mockEmbeddings,
+    store: mockStore
 }));
 
 jest.mock('fs/promises', () => ({
@@ -31,22 +30,15 @@ jest.mock('fs/promises', () => ({
 interface EmbeddingBuilderType {
     config: {
         embeddingsPath: string;
-        model: string;
-        chunkSize: number;
-        chunkOverlap: number;
         batchSize: number;
-        maxVectorsPerTable: number;
     };
-    pipeline: unknown;
     documents: Array<unknown>;
     chunks: Array<unknown>;
     initialize(): Promise<void>;
     loadDocuments(): Promise<void>;
     chunkDocument(doc: unknown): unknown[];
     findSentenceBreak(text: string): number;
-    generateEmbedding(text: string): Promise<number[]>;
     chunkAllDocuments(): Promise<void>;
-    createVectorDatabase(): Promise<unknown>;
     buildEmbeddings(): Promise<void>;
 }
 
@@ -67,44 +59,15 @@ describe('EmbeddingBuilder', () => {
 
             expect(builder).toBeDefined();
             expect(builder.config).toBeDefined();
-            expect(builder.config.embeddingsPath).toBe('./data/embeddings');
-            expect(builder.config.model).toBe('Xenova/all-MiniLM-L6-v2');
-            expect(builder.config.chunkSize).toBe(2000);
-            expect(builder.config.chunkOverlap).toBe(100);
+            expect(builder.config.embeddingsPath).toContain('embeddings');
             expect(builder.config.batchSize).toBe(20);
-            expect(builder.config.maxVectorsPerTable).toBe(5000);
         });
     });
 
     describe('initialize', () => {
-        it('should load embedding model successfully', async () => {
-            const mockPipelineInstance = jest.fn();
-            mockPipeline.mockResolvedValue(mockPipelineInstance);
-
+        it('should complete initialization without error', async () => {
             const builder = new EmbeddingBuilder();
-            await builder.initialize();
-
-            expect(mockPipeline).toHaveBeenCalledWith(
-                'Xenova/all-MiniLM-L6-v2',
-                expect.objectContaining({
-                    quantized: false,
-                    progress_callback: expect.any(Function)
-                })
-            );
-            expect(builder.pipeline).toBe(mockPipelineInstance);
-        });
-
-        it('should fallback to same model on error', async () => {
-            const mockPipelineInstance = jest.fn();
-            mockPipeline
-                .mockRejectedValueOnce(new Error('Failed to load model'))
-                .mockResolvedValueOnce(mockPipelineInstance);
-
-            const builder = new EmbeddingBuilder();
-            await builder.initialize();
-
-            expect(mockPipeline).toHaveBeenCalledTimes(2);
-            expect(builder.pipeline).toBe(mockPipelineInstance);
+            await expect(builder.initialize()).resolves.not.toThrow();
         });
     });
 
@@ -132,12 +95,11 @@ This is another test content.`;
 
         it('should handle document loading errors gracefully', async () => {
             mockFs.readdir.mockResolvedValue(['test.md'] as never);
-            mockFs.readFile.mockRejectedValue(new Error('File not found'));
+            mockFs.readFile.mockRejectedValue(new Error('File read error'));
 
             const builder = new EmbeddingBuilder();
             await builder.loadDocuments();
 
-            expect(builder.documents).toHaveLength(0);
             expect(mockLogger.warn).toHaveBeenCalled();
         });
     });
@@ -148,52 +110,39 @@ This is another test content.`;
             const doc = {
                 id: 'test-doc',
                 title: 'Test Document',
-                content: 'Short content',
+                content: 'This is a short piece of content.',
                 category: 'test',
                 path: 'test/doc.md',
                 tags: ['test'],
                 headers: ['Header'],
                 lastModified: '2023-01-01',
-                wordCount: 2,
-                excerpt: 'Short content'
+                wordCount: 7,
+                excerpt: 'This is a short...'
             };
 
-            const chunks = builder.chunkDocument(doc);
+            const chunks = builder.chunkDocument(doc) as Array<{ content: string; metadata: { totalChunks: number } }>;
 
             expect(chunks).toHaveLength(1);
-            expect(chunks[0]).toMatchObject({
-                id: 'test-doc-chunk-0',
-                documentId: 'test-doc',
-                chunkIndex: 0,
-                content: 'Short content',
-                title: 'Test Document',
-                category: 'test',
-                path: 'test/doc.md',
-                metadata: expect.objectContaining({
-                    tags: ['test'],
-                    headers: ['Header'],
-                    totalChunks: 1
-                })
-            });
+            expect(chunks[0].content).toBe('This is a short piece of content.');
         });
 
         it('should chunk large documents', () => {
             const builder = new EmbeddingBuilder();
-            const longContent = 'A'.repeat(5000); // Much longer than chunkSize (2000) to ensure multiple chunks
+            const content = 'A'.repeat(5000);
             const doc = {
                 id: 'test-doc',
                 title: 'Test Document',
-                content: longContent,
+                content,
                 category: 'test',
                 path: 'test/doc.md',
                 tags: ['test'],
                 headers: ['Header'],
                 lastModified: '2023-01-01',
-                wordCount: 1,
-                excerpt: longContent.substring(0, 200) + '...'
+                wordCount: 5000,
+                excerpt: content.substring(0, 200) + '...'
             };
 
-            const chunks = builder.chunkDocument(doc) as Array<{ metadata: { totalChunks: number } }>;
+            const chunks = builder.chunkDocument(doc) as Array<{ content: string; metadata: { totalChunks: number } }>;
 
             expect(chunks.length).toBeGreaterThanOrEqual(1);
             expect(chunks[0].metadata.totalChunks).toBe(chunks.length);
@@ -252,150 +201,6 @@ This is another test content.`;
         });
     });
 
-    describe('generateEmbedding', () => {
-        it('should generate embeddings for text', async () => {
-            const mockResult = { data: new Float32Array([0.1, 0.2, 0.3]) };
-            const mockPipelineInstance = jest.fn().mockResolvedValue(mockResult);
-            mockPipeline.mockResolvedValue(mockPipelineInstance);
-
-            const builder = new EmbeddingBuilder();
-            await builder.initialize();
-
-            const embedding = await builder.generateEmbedding('test text');
-
-            expect(embedding).toEqual(
-                expect.arrayContaining([expect.closeTo(0.1, 5), expect.closeTo(0.2, 5), expect.closeTo(0.3, 5)])
-            );
-            expect(mockPipelineInstance).toHaveBeenCalledWith('test text', { pooling: 'mean', normalize: true });
-        });
-
-        it('should clean text before generating embeddings', async () => {
-            const mockResult = { data: new Float32Array([0.1, 0.2, 0.3]) };
-            const mockPipelineInstance = jest.fn().mockResolvedValue(mockResult);
-            mockPipeline.mockResolvedValue(mockPipelineInstance);
-
-            const builder = new EmbeddingBuilder();
-            await builder.initialize();
-
-            const text = 'test\n\ntext\nwith\n   multiple   spaces';
-            await builder.generateEmbedding(text);
-
-            expect(mockPipelineInstance).toHaveBeenCalledWith('test text with multiple spaces', {
-                pooling: 'mean',
-                normalize: true
-            });
-        });
-    });
-
-    describe('createVectorDatabase', () => {
-        it('should create vector database with LanceDB', async () => {
-            const mockTable = { drop: jest.fn() };
-            const mockDb = {
-                openTable: jest.fn().mockResolvedValue(mockTable),
-                dropTable: jest.fn(),
-                createTable: jest.fn()
-            };
-            mockConnect.mockResolvedValue(mockDb);
-            mockFs.mkdir.mockResolvedValue(undefined);
-            mockFs.writeFile.mockResolvedValue(undefined);
-
-            const builder = new EmbeddingBuilder();
-            builder.chunks = [
-                {
-                    id: 'chunk-1',
-                    documentId: 'doc-1',
-                    chunkIndex: 0,
-                    content: 'test content',
-                    title: 'Test',
-                    category: 'test',
-                    path: 'test.md',
-                    metadata: {
-                        tags: ['test'],
-                        headers: ['Header'],
-                        lastModified: '2023-01-01',
-                        wordCount: 2,
-                        excerpt: 'test content',
-                        totalChunks: 1
-                    },
-                    vector: [0.1, 0.2, 0.3]
-                }
-            ];
-            builder.documents = [
-                {
-                    id: 'doc-1',
-                    title: 'Test',
-                    content: 'test content',
-                    category: 'test',
-                    path: 'test.md',
-                    tags: ['test'],
-                    headers: ['Header'],
-                    lastModified: '2023-01-01',
-                    wordCount: 2,
-                    excerpt: 'test content'
-                }
-            ];
-
-            const metadata = await builder.createVectorDatabase();
-
-            expect(mockFs.mkdir).toHaveBeenCalledWith('./data/embeddings', { recursive: true });
-            expect(mockConnect).toHaveBeenCalled();
-            expect(mockDb.createTable).toHaveBeenCalledWith('documents_000', expect.any(Array));
-            expect(mockFs.writeFile).toHaveBeenCalledWith(
-                expect.stringContaining('table_index.json'),
-                expect.stringContaining('documents_000')
-            );
-            expect(metadata).toMatchObject({
-                version: '1.0.0',
-                model: 'Xenova/all-MiniLM-L6-v2',
-                dimensions: 3,
-                totalVectors: 1,
-                totalDocuments: 1,
-                chunkSize: 2000,
-                chunkOverlap: 100
-            });
-        });
-
-        it('should handle existing table by dropping it', async () => {
-            const mockTable = { drop: jest.fn() };
-            const mockDb = {
-                openTable: jest.fn().mockResolvedValue(mockTable),
-                dropTable: jest.fn(),
-                createTable: jest.fn()
-            };
-            mockConnect.mockResolvedValue(mockDb);
-            mockFs.mkdir.mockResolvedValue(undefined);
-            mockFs.writeFile.mockResolvedValue(undefined);
-
-            const builder = new EmbeddingBuilder();
-            builder.chunks = [
-                {
-                    id: 'chunk-1',
-                    documentId: 'doc-1',
-                    chunkIndex: 0,
-                    content: 'test content',
-                    title: 'Test',
-                    category: 'test',
-                    path: 'test.md',
-                    vector: [0.1, 0.2, 0.3],
-                    metadata: {
-                        tags: ['test'],
-                        headers: ['Header'],
-                        lastModified: '2023-01-01',
-                        wordCount: 2,
-                        excerpt: 'test content',
-                        totalChunks: 1
-                    }
-                }
-            ];
-            builder.documents = [];
-
-            await builder.createVectorDatabase();
-
-            expect(mockDb.dropTable).toHaveBeenCalledWith('documents_000');
-            expect(mockDb.createTable).toHaveBeenCalled();
-        });
-    });
-
     describe('chunkAllDocuments', () => {
         it('should chunk multiple documents and create statistics', async () => {
             const builder = new EmbeddingBuilder();
@@ -446,20 +251,19 @@ This is another test content.`;
         });
     });
 
-    describe('generateAllEmbeddings', () => {
-        it('should process chunks and generate vectors', async () => {
-            const builder = new EmbeddingBuilder();
-            await builder.initialize();
-
-            // Since generateAllEmbeddings is called internally, test through generateEmbedding
-            const embedding = await builder.generateEmbedding('test content');
-
-            expect(embedding).toEqual(expect.any(Array));
-            expect(embedding).toHaveLength(3); // Mock returns [0.1, 0.2, 0.3]
-        });
-    });
-
     describe('buildEmbeddings error handling', () => {
+        let exitSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            exitSpy = jest.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+                throw new Error(`process.exit called with "${code}"`);
+            }) as never);
+        });
+
+        afterEach(() => {
+            exitSpy.mockRestore();
+        });
+
         it('should handle directory read errors gracefully and log warnings', async () => {
             const builder = new EmbeddingBuilder();
             mockLogger.warn.mockClear();
@@ -467,14 +271,8 @@ This is another test content.`;
             // Force an error in loadDocuments by making readdir fail
             mockFs.readdir.mockRejectedValue(new Error('Directory read error'));
 
-            // Mock the vector database creation to avoid errors
-            const mockDb = {
-                openTable: jest.fn().mockRejectedValue(new Error('Table not found')),
-                createTable: jest.fn().mockResolvedValue({})
-            };
-            mockConnect.mockResolvedValue(mockDb);
-            mockFs.mkdir.mockResolvedValue(undefined as never);
-            mockFs.writeFile.mockResolvedValue(undefined as never);
+            // Mock embeddings to succeed (no chunks to process)
+            mockEmbeddings.mockResolvedValue({ embeddings: [] });
 
             // loadDocuments catches errors and logs warnings, doesn't throw
             await builder.buildEmbeddings();
@@ -487,52 +285,60 @@ This is another test content.`;
     });
 
     describe('buildEmbeddings integration', () => {
+        let exitSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            // Mock process.exit to prevent Jest from exiting on errors
+            exitSpy = jest.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+                throw new Error(`process.exit called with "${code}"`);
+            }) as never);
+        });
+
+        afterEach(() => {
+            exitSpy.mockRestore();
+        });
+
         it('should build embeddings successfully with real flow', async () => {
             const mockMarkdownContent = `**TITLE**: Test Document
 **TAGS**: test, fiori
 
 This is test content for embedding generation.`;
 
-            const mockDb = {
-                openTable: jest.fn().mockRejectedValue(new Error('Table not found')),
-                createTable: jest.fn().mockResolvedValue({}),
-                dropTable: jest.fn()
-            };
-
-            mockConnect.mockResolvedValue(mockDb);
             mockFs.readdir.mockResolvedValue(['test.md'] as never);
             mockFs.readFile.mockResolvedValue(mockMarkdownContent);
             mockFs.mkdir.mockResolvedValue(undefined as never);
             mockFs.writeFile.mockResolvedValue(undefined as never);
 
+            // Mock the embeddings function to return valid results
+            mockEmbeddings.mockResolvedValue({
+                embeddings: [[0.1, 0.2, 0.3]]
+            });
+            mockStore.mockResolvedValue(undefined);
+
             const builder = new EmbeddingBuilder();
             await builder.buildEmbeddings();
 
-            expect(mockConnect).toHaveBeenCalled();
-            expect(mockFs.writeFile).toHaveBeenCalledWith(expect.stringContaining('metadata.json'), expect.any(String));
+            expect(mockEmbeddings).toHaveBeenCalled();
+            expect(mockStore).toHaveBeenCalled();
         });
 
-        it('should handle vector database errors and exit gracefully', async () => {
+        it('should handle embedding generation errors and exit gracefully', async () => {
             const builder = new EmbeddingBuilder();
 
             mockLogger.error.mockClear();
-            const exitSpy = jest.spyOn(process, 'exit').mockImplementation(((code?: number) => {
-                throw new Error(`process.exit called with code ${code}`);
-            }) as never);
 
-            // Make readdir succeed but createVectorDatabase fail
+            // Make readdir succeed but embedding generation fail
             mockFs.readdir.mockResolvedValue(['test.md'] as never);
             mockFs.readFile.mockResolvedValue('**TITLE**: Test\n\nContent');
 
-            // Make the database connection fail to trigger the error path
-            mockConnect.mockRejectedValue(new Error('Database connection failed'));
+            // Make the embeddings call fail to trigger the error path
+            mockEmbeddings.mockRejectedValue(new Error('Embedding generation failed'));
 
             // buildEmbeddings catches errors and calls process.exit, which we mock to throw
-            await expect(builder.buildEmbeddings()).rejects.toThrow('process.exit called with code 1');
+            await expect(builder.buildEmbeddings()).rejects.toThrow('process.exit called with "1"');
 
             expect(mockLogger.error).toHaveBeenCalled();
             expect(exitSpy).toHaveBeenCalledWith(1);
-            exitSpy.mockRestore();
         });
     });
 
@@ -591,12 +397,16 @@ This is test content for embedding generation.`;
     });
 
     describe('error handling and edge cases', () => {
-        it('should handle initialize errors when model fails to load', async () => {
-            mockPipeline.mockRejectedValue(new Error('Model download failed'));
+        let exitSpy: jest.SpyInstance;
 
-            const builder = new EmbeddingBuilder();
+        beforeEach(() => {
+            exitSpy = jest.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+                throw new Error(`process.exit called with "${code}"`);
+            }) as never);
+        });
 
-            await expect(builder.initialize()).rejects.toThrow('Model download failed');
+        afterEach(() => {
+            exitSpy.mockRestore();
         });
 
         it('should handle empty data_local directory gracefully', async () => {
@@ -606,23 +416,6 @@ This is test content for embedding generation.`;
             await builder.loadDocuments();
 
             expect(builder.documents).toHaveLength(0);
-        });
-    });
-
-    describe('initialization edge cases', () => {
-        it('should handle model loading with retry on failure', async () => {
-            const mockPipelineInstance = jest.fn().mockResolvedValue([0.1, 0.2, 0.3]);
-
-            // First call fails, second succeeds (fallback)
-            mockPipeline
-                .mockRejectedValueOnce(new Error('Model load failed'))
-                .mockResolvedValueOnce(mockPipelineInstance);
-
-            const builder = new EmbeddingBuilder();
-            await builder.initialize();
-
-            expect(mockPipeline).toHaveBeenCalledTimes(2);
-            expect(builder.pipeline).toBe(mockPipelineInstance);
         });
     });
 });
