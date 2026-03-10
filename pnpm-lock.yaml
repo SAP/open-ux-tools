@@ -2473,18 +2473,6 @@ importers:
 
   packages/fiori-mcp-server:
     dependencies:
-      '@sap-ux/fiori-docs-embeddings':
-        specifier: workspace:*
-        version: link:../fiori-docs-embeddings
-      '@sap-ux/semantic-search':
-        specifier: workspace:*
-        version: link:../semantic-search
-      mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
-      mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
       onnxruntime-web:
         specifier: ^1.22.0
         version: 1.24.3
@@ -2522,6 +2510,9 @@ importers:
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
+      '@sap-ux/fiori-docs-embeddings':
+        specifier: workspace:*
+        version: link:../fiori-docs-embeddings
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n
@@ -2540,6 +2531,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/semantic-search':
+        specifier: workspace:*
+        version: link:../semantic-search
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
@@ -2573,6 +2567,12 @@ importers:
       i18next:
         specifier: 25.8.12
         version: 25.8.12(typescript@5.9.3)
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
       npm-run-all2:
         specifier: 8.0.4
         version: 8.0.4
