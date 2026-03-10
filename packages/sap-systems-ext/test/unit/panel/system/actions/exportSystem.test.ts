@@ -77,7 +77,7 @@ describe('Test the export system action', () => {
                 2
             )
         );
-        expect(showInformationMessageSpy).toHaveBeenCalledWith('System [Test System] exported.');
+        expect(showInformationMessageSpy).toHaveBeenCalledWith('Connection [Test System] exported.');
     });
 
     it('should show the error when exporting the system fails', async () => {
@@ -121,7 +121,7 @@ describe('Test the export system action', () => {
                 2
             )
         );
-        expect(showErrorMessageSpy).toHaveBeenCalledWith('Failed to export system information: Writing failure.');
+        expect(showErrorMessageSpy).toHaveBeenCalledWith('Failed to export connection information: Writing failure.');
     });
 
     it('should export system without client when not provided', async () => {
@@ -162,7 +162,7 @@ describe('Test the export system action', () => {
                 2
             )
         );
-        expect(showInformationMessageSpy).toHaveBeenCalledWith('System [OData Service System] exported.');
+        expect(showInformationMessageSpy).toHaveBeenCalledWith('Connection [OData Service System] exported.');
     });
 
     it('should not export if file path is not provided', async () => {

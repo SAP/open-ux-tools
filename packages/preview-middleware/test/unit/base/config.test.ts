@@ -89,10 +89,15 @@ describe('config', () => {
                         { path: '/local/developerEditor.html', developerMode: true }
                     ]
                 },
+                editors: {
+                    cardGenerator: {
+                        path: '/local/cardGenerator.html'
+                    }
+                },
                 test: [{ framework: 'OPA5' }]
             } as MiddlewareConfig;
             const previews = getPreviewPaths(config);
-            expect(previews).toHaveLength(4);
+            expect(previews).toHaveLength(5);
             expect(
                 previews.find(
                     ({ path }) =>
@@ -104,6 +109,7 @@ describe('config', () => {
             expect(consoleSpyError).toHaveBeenCalledWith(
                 'developerMode is ONLY supported for SAP UI5 adaptation projects.'
             );
+            expect(previews.find(({ path }) => path === config?.editors?.cardGenerator?.path)).toBeDefined();
             expect(consoleSpyWarning).toHaveBeenCalledWith('developerMode for /local/developerEditor.html disabled');
             expect(previews.find(({ path }) => path === '/test/opaTests.qunit.html')).toBeDefined();
             consoleSpyError.mockRestore();

@@ -13,7 +13,7 @@
         ':label(renovate)',
         ':rebaseStalePrs',
         ':semanticCommits',
-        ':semanticPrefixChore',
+        ':semanticPrefixFixDepsChoreOthers',
         ':timezone(America/Los_Angeles)',
         ':updateNotScheduled',
         'workarounds:typesNodeVersioning'
@@ -31,11 +31,13 @@
     dependencyDashboardTitle: 'Renovate Dependency Dashboard',
 
     assigneesFromCodeOwners: true,
-
     // Allow Renovate to continue updating PRs after GitHub Actions bot commits
     // This is needed for the update-ui5manifest-version workflow which adds
     // additional changes (test fixtures, changesets) to Renovate PRs
-    gitIgnoredAuthors: ['github-actions[bot]@users.noreply.github.com', kranthie-sap],
+    gitIgnoredAuthors: [
+        '84985584+kranthie-sap@users.noreply.github.com',
+        'github-actions[bot]@users.noreply.github.com'
+    ],
 
     ignorePaths: [
         '**/templates/**',
@@ -70,6 +72,11 @@
     ignoreDeps: ['@sap-ux-private/playwright'],
 
     packageRules: [
+        // Override: devDependencies should also use 'fix' (not just runtime deps)
+        {
+            matchDepTypes: ['devDependencies'],
+            semanticCommitType: 'fix'
+        },
         {
             matchPackageNames: ['@ui5/manifest'],
             groupName: 'dependencies [@ui5/manifest]',
@@ -139,6 +146,18 @@
         {
             matchPackageNames: ['@types/vscode{/,}**'],
             allowedVersions: '1.73.1'
+        },
+        {
+            // Packages from https://github.com/SAP/open-ux-odata
+            matchPackageNames: [
+                '@sap-ux/vocabularies-types',
+                '@sap-ux/edmx-parser',
+                '@sap-ux/annotation-converter',
+                '@sap-ux/fe-mockserver-core',
+                '@sap-ux/fe-mockserver-plugin-cds',
+                '@sap-ux/ui5-middleware-fe-mockserver'
+            ],
+            groupName: 'dependencies [open-ux-odata]'
         },
         {
             matchPackageNames: [

@@ -18,7 +18,7 @@ export const exportSystem = async (_context: PanelContext, action: ExportSystem)
     const backendSystem = await getBackendSystem({ url: system.url, client: system.client });
 
     if (!backendSystem) {
-        SystemsLogger.logger.error(t('error.systemNotFound', { systemName: system.name }));
+        SystemsLogger.logger.error(t('error.connectionNotFound', { systemName: system.name }));
         return;
     }
 
@@ -38,7 +38,7 @@ export const exportSystem = async (_context: PanelContext, action: ExportSystem)
             const data = JSON.stringify(systemDetails, null, 2);
             writeFileSync(filePath.fsPath, data);
 
-            window.showInformationMessage(t('info.systemExported', geti18nOpts(backendSystem.name)));
+            window.showInformationMessage(t('info.connectionExported', geti18nOpts(backendSystem.name)));
             logTelemetry(SystemActionStatus.EXPORT_SUCCESS);
         }
     } catch (e) {

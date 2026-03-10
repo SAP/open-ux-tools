@@ -2,7 +2,7 @@ import { join } from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
-import type { AbapServiceProvider, KeyUserChangeContent } from '@sap-ux/axios-extension';
+import { type AbapServiceProvider, AdaptationProjectType, type KeyUserChangeContent } from '@sap-ux/axios-extension';
 
 import type {
     AdpWriterConfig,
@@ -26,6 +26,7 @@ import {
 import { getProviderConfig } from '../abap';
 import { AppRouterType, FlexLayer } from '../types';
 import { t } from '../i18n';
+import { getSupportedProject } from '../source';
 
 export interface ConfigOptions {
     /**
@@ -56,10 +57,17 @@ export interface ConfigOptions {
      * System UI5 Version.
      */
     systemVersion: string | undefined;
+
     /**
      * The application manifest.
      */
     manifest: Manifest | undefined;
+
+    /**
+     * The Adaptation project type.
+     */
+    projectType?: AdaptationProjectType;
+
     /**
      * Logger instance for debugging and error reporting.
      */
@@ -98,6 +106,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         publicVersions,
         systemVersion,
         manifest,
+        projectType,
         toolsId,
         keyUserChanges
     } = options;
@@ -107,10 +116,10 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
 
     const target = await getProviderConfig(configAnswers.system, logger);
 
-    const isCloudProject = await provider.isAbapCloud();
+    const isCloudSystem = await provider.isAbapCloud();
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
-    const ui5Version = isCloudProject
+    const ui5Version = isCloudSystem
         ? getLatestVersion(publicVersions)
         : getVersionToBeUsed(attributeAnswers.ui5Version, isCustomerBase, publicVersions);
 
@@ -131,7 +140,8 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         fioriId
     };
 
-    if (isCloudProject) {
+    const supportedProject = await getSupportedProject(provider);
+    if (projectType === AdaptationProjectType.CLOUD_READY) {
         const lrep = provider.getLayeredRepository();
         const { activeLanguages: languages } = await lrep.getSystemInfo();
 
@@ -153,7 +163,9 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
                     id: packageJson.name ?? '',
                     version: packageJson.version ?? '',
                     toolsId
-                }
+                },
+                projectType,
+                supportedProject
             }
         },
         target,
