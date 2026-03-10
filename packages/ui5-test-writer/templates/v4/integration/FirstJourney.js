@@ -9,7 +9,7 @@ sap.ui.define([
 
         opaTest("Start application", function (Given, When, Then) {
             Given.iStartMyApp();
-            Then.onThe<%- startLR %>.iSeeThisPage();
+            <% if (startLR) { %>Then.onThe<%- startLR %>.iSeeThisPage();<%} %>
         });
 
 <% if (startLR) { %>

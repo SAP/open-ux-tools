@@ -15,6 +15,7 @@ import {
 import type { ButtonState } from '../../../src/types';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 
 describe('Test buildButtonState()', () => {
     test('should return visible false when buttonState is undefined', () => {
@@ -1195,49 +1196,50 @@ describe('Test getListReportFeatures()', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-        const mockPageModel: TreeModel = {
-            root: {
-                aggregations: {
-                    filterBar: {
-                        aggregations: {
-                            selectionFields: {
-                                aggregations: {
-                                    field1: { description: 'Filter 1' } as unknown as TreeAggregation
-                                }
-                            } as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation,
-                    table: {
-                        aggregations: {
-                            columns: {
-                                aggregations: {
-                                    col1: {
-                                        description: 'Column 1',
-                                        custom: false,
-                                        schema: {
-                                            keys: [{ name: 'Value', value: 'col1' }]
-                                        }
-                                    } as unknown as TreeAggregation
-                                }
-                            } as unknown as TreeAggregation,
-                            toolBar: {
-                                aggregations: {
-                                    actions: {
-                                        aggregations: {
-                                            action1: { description: 'Check' } as unknown as TreeAggregation
-                                        }
-                                    } as unknown as TreeAggregation
-                                }
-                            } as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation
-                }
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
+        const mockPageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {
+                        filterBar: {
+                            aggregations: {
+                                selectionFields: {
+                                    aggregations: {
+                                        field1: { description: 'Filter 1' } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation,
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        col1: {
+                                            description: 'Column 1',
+                                            custom: false,
+                                            schema: {
+                                                keys: [{ name: 'Value', value: 'col1' }]
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation,
+                                toolBar: {
+                                    aggregations: {
+                                        actions: {
+                                            aggregations: {
+                                                action1: { description: 'Check' } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation
+            } as unknown as TreeModel,
+            name: 'test'
+        };
 
-        const result = getListReportFeatures(mockPageModel, mockLogger, validMetadata, 'TestSet');
+        const result = getListReportFeatures(mockPageModel, mockLogger, validMetadata);
 
         expect(result).toBeDefined();
         expect(result.createButton).toBeDefined();
@@ -1248,39 +1250,40 @@ describe('Test getListReportFeatures()', () => {
     });
 
     test('should return features without metadata when metadata is not provided', () => {
-        const mockPageModel: TreeModel = {
-            root: {
-                aggregations: {
-                    filterBar: {
-                        aggregations: {
-                            selectionFields: {
-                                aggregations: {
-                                    field1: { description: 'Filter 1' } as unknown as TreeAggregation
-                                }
-                            } as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation,
-                    table: {
-                        aggregations: {
-                            columns: {
-                                aggregations: {
-                                    col1: { description: 'Column 1' } as unknown as TreeAggregation
-                                }
-                            } as unknown as TreeAggregation,
-                            toolBar: {
-                                aggregations: {
-                                    actions: {
-                                        aggregations: {}
-                                    } as unknown as TreeAggregation
-                                }
-                            } as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation
-                }
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
+        const mockPageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {
+                        filterBar: {
+                            aggregations: {
+                                selectionFields: {
+                                    aggregations: {
+                                        field1: { description: 'Filter 1' } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation,
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        col1: { description: 'Column 1' } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation,
+                                toolBar: {
+                                    aggregations: {
+                                        actions: {
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation
+            } as unknown as TreeModel,
+            name: 'test'
+        };
 
         const result = getListReportFeatures(mockPageModel, mockLogger);
 
@@ -1299,35 +1302,36 @@ describe('Test getListReportFeatures()', () => {
     });
 
     test('should return features without metadata when only metadata is provided but not entitySetName', () => {
-        const mockPageModel: TreeModel = {
-            root: {
-                aggregations: {
-                    filterBar: {
-                        aggregations: {
-                            selectionFields: {
-                                aggregations: {}
-                            } as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation,
-                    table: {
-                        aggregations: {
-                            columns: {
-                                aggregations: {}
-                            } as unknown as TreeAggregation,
-                            toolBar: {
-                                aggregations: {
-                                    actions: {
-                                        aggregations: {}
-                                    } as unknown as TreeAggregation
-                                }
-                            } as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation
-                }
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
+        const mockPageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {
+                        filterBar: {
+                            aggregations: {
+                                selectionFields: {
+                                    aggregations: {}
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation,
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {}
+                                } as unknown as TreeAggregation,
+                                toolBar: {
+                                    aggregations: {
+                                        actions: {
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation
+            } as unknown as TreeModel,
+            name: 'test'
+        };
 
         const validMetadata = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
@@ -1353,13 +1357,14 @@ describe('Test getListReportFeatures()', () => {
     });
 
     test('should handle empty page model gracefully', () => {
-        const emptyPageModel: TreeModel = {
-            root: {
-                aggregations: {}
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
+        const emptyPageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {}
+                } as unknown as TreeAggregation
+            } as unknown as TreeModel,
+            name: 'test'
+        };
 
         const result = getListReportFeatures(emptyPageModel, mockLogger);
 
@@ -1371,13 +1376,14 @@ describe('Test getListReportFeatures()', () => {
     });
 
     test('should handle missing logger gracefully', () => {
-        const mockPageModel: TreeModel = {
-            root: {
-                aggregations: {}
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
+        const mockPageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {}
+                } as unknown as TreeAggregation
+            } as unknown as TreeModel,
+            name: 'test'
+        };
 
         const result = getListReportFeatures(mockPageModel);
         expect(result).toBeDefined();
@@ -1410,57 +1416,58 @@ describe('Test getListReportFeatures()', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-        const completePageModel: TreeModel = {
-            root: {
-                aggregations: {
-                    filterBar: {
-                        aggregations: {
-                            selectionFields: {
-                                aggregations: {
-                                    field1: { description: 'Product' } as unknown as TreeAggregation,
-                                    field2: { description: 'Category' } as unknown as TreeAggregation
-                                }
-                            } as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation,
-                    table: {
-                        aggregations: {
-                            columns: {
-                                aggregations: {
-                                    col1: {
-                                        description: 'ID',
-                                        custom: false,
-                                        schema: {
-                                            keys: [{ name: 'Value', value: 'IDColumn' }]
-                                        }
-                                    } as unknown as TreeAggregation,
-                                    col2: {
-                                        description: 'Name',
-                                        custom: false,
-                                        schema: {
-                                            keys: [{ name: 'Value', value: 'NameColumn' }]
-                                        }
-                                    } as unknown as TreeAggregation
-                                }
-                            } as unknown as TreeAggregation,
-                            toolBar: {
-                                aggregations: {
-                                    actions: {
-                                        aggregations: {
-                                            action1: { description: 'Check' } as unknown as TreeAggregation
-                                        }
-                                    } as unknown as TreeAggregation
-                                }
-                            } as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation
-                }
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
+        const completePageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {
+                        filterBar: {
+                            aggregations: {
+                                selectionFields: {
+                                    aggregations: {
+                                        field1: { description: 'Product' } as unknown as TreeAggregation,
+                                        field2: { description: 'Category' } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation,
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        col1: {
+                                            description: 'ID',
+                                            custom: false,
+                                            schema: {
+                                                keys: [{ name: 'Value', value: 'IDColumn' }]
+                                            }
+                                        } as unknown as TreeAggregation,
+                                        col2: {
+                                            description: 'Name',
+                                            custom: false,
+                                            schema: {
+                                                keys: [{ name: 'Value', value: 'NameColumn' }]
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation,
+                                toolBar: {
+                                    aggregations: {
+                                        actions: {
+                                            aggregations: {
+                                                action1: { description: 'Check' } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation
+            } as unknown as TreeModel,
+            name: 'test'
+        };
 
-        const result = getListReportFeatures(completePageModel, mockLogger, validMetadata, 'TestSet');
+        const result = getListReportFeatures(completePageModel, mockLogger, validMetadata);
 
         // Verify all components are integrated
         expect(result.filterBarItems).toHaveLength(2);

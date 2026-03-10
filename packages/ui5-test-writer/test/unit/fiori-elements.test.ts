@@ -275,6 +275,7 @@ describe('ui5-test-writer', () => {
             const projectDir = prepareTestFiles('Worklistv4');
             fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
+            expect(fs.dump(projectDir)).toMatchSnapshot();
             const firstJourneyContent =
                 fs.dump()['test/test-output/Worklistv4/webapp/test/integration/FirstJourney.js'].contents;
             expect(firstJourneyContent).not.toContain('iCheckFilterField');
@@ -285,6 +286,7 @@ describe('ui5-test-writer', () => {
             const projectDir = prepareTestFiles('LROPv4');
             fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
+            expect(fs.dump(projectDir)).toMatchSnapshot();
             const firstJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckFilterField');

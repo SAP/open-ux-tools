@@ -17,6 +17,7 @@ import {
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 
 /**
  * Builds a button state object from button visibility result.
@@ -81,30 +82,34 @@ export function safeCheckActionButtonStates(
 }
 
 /**
- * Retrieves list report features from the given page model.
+ * Gets List Report features from the page model using ux-specification.
  *
- * @param pageModel - The tree model containing list report definitions.
- * @param log - Optional logger instance.
- * @param metadata - Optional OData metadata XML content.
- * @param entitySetName - Optional entity set name.
- * @returns ListReportFeatures object containing various features of the list report.
+ * @param listReportPage - the List Report page containing the tree model with feature definitions
+ * @param log - optional logger instance
+ * @param metadata - optional metadata for the OPA test generation
+ * @returns feature data extracted from the List Report page model
  */
 export function getListReportFeatures(
-    pageModel: TreeModel,
+    listReportPage: PageWithModelV4,
     log?: Logger,
-    metadata?: string,
-    entitySetName?: string
+    metadata?: string
 ): ListReportFeatures {
-    const hasMetadata = metadata && entitySetName;
-    const buttonVisibility = hasMetadata ? safeCheckButtonVisibility(metadata, entitySetName, log) : undefined;
-    const toolbarActions = getToolBarActionNames(pageModel, log);
+    const buttonVisibility =
+        metadata && listReportPage.entitySet
+            ? safeCheckButtonVisibility(metadata, listReportPage.entitySet, log)
+            : undefined;
+    const toolbarActions = getToolBarActionNames(listReportPage.model, log);
 
     return {
+        name: listReportPage.name,
         createButton: buildButtonState(buttonVisibility?.create),
         deleteButton: buildButtonState(buttonVisibility?.delete),
-        filterBarItems: getFilterFieldNames(pageModel, log),
-        tableColumns: getTableColumnData(pageModel, log),
-        toolBarActions: hasMetadata ? safeCheckActionButtonStates(metadata, entitySetName, toolbarActions, log) : []
+        filterBarItems: getFilterFieldNames(listReportPage.model, log),
+        tableColumns: getTableColumnData(listReportPage.model, log),
+        toolBarActions:
+            metadata && listReportPage.entitySet
+                ? safeCheckActionButtonStates(metadata, listReportPage.entitySet, toolbarActions, log)
+                : []
     };
 }
 

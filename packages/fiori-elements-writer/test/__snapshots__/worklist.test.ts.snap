@@ -14526,9 +14526,6 @@ sap.ui.require(
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
     \\"fewrk2/test/integration/FirstJourney\\",
-    \\"fewrk2/test/integration/TravelListJourney\\",
-    \\"fewrk2/test/integration/TravelObjectPageJourney\\",
-    \\"fewrk2/test/integration/BookingObjectPageJourney\\",
 ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();

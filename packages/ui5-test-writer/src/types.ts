@@ -103,18 +103,10 @@ export type ListReportFeatures = {
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
 };
+
 export interface ActionButtonState {
-    /**
-     * The label text of the action button.
-     */
     label: string;
-    /**
-     * The fully qualified action name.
-     */
     action: string;
-    /**
-     * Indicates whether the action button is visible.
-     */
     visible: boolean;
     /**
      * Indicates whether the action button is enabled.
@@ -135,6 +127,7 @@ export interface ActionButtonState {
 }
 
 export type FPMFeatures = {
+    name?: string;
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
 };
@@ -159,9 +152,6 @@ export type HeaderSectionFeatureData = {
     }[];
 };
 
-/**
- * Represents the button state information for create/delete actions.
- */
 export interface ButtonState {
     visible: boolean;
     /**
@@ -173,9 +163,6 @@ export interface ButtonState {
     dynamicPath?: string;
 }
 
-/**
- * Result interface for button visibility checks.
- */
 export interface ButtonVisibilityResult {
     /**
      * State of the Create button based on Capabilities.InsertRestrictions annotation.

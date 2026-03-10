@@ -10,15 +10,9 @@ import type {
     TreeModel,
     ApplicationModel
 } from '@sap/ux-specification/dist/types/src/parser';
-import type { AppFeatures, ListReportFeatures } from '../types';
+import type { AppFeatures, FPMFeatures } from '../types';
 import { getObjectPageFeatures, getObjectPages } from './objectPageUtils';
-import {
-    buildButtonState,
-    getFilterFieldNames,
-    getToolBarActionNames,
-    safeCheckActionButtonStates,
-    safeCheckButtonVisibility
-} from './listReportUtils';
+import { getFilterFieldNames, getListReportFeatures } from './listReportUtils';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
@@ -105,45 +99,13 @@ export async function getAppFeatures(
             log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }
         if (fpmPage) {
-            featureData.fpm = getFPMFeatures(fpmPage.model, log);
+            featureData.fpm = getFPMFeatures(fpmPage, log);
         }
     } catch (error) {
         // do noting here, as individual feature extraction methods already log warnings
     }
 
     return featureData;
-}
-
-/**
- * Gets List Report features from the page model using ux-specification.
- *
- * @param listReportPage - the List Report page containing the tree model with feature definitions
- * @param log - optional logger instance
- * @param metadata - optional metadata for the OPA test generation
- * @returns feature data extracted from the List Report page model
- */
-export function getListReportFeatures(
-    listReportPage: PageWithModelV4,
-    log?: Logger,
-    metadata?: string
-): ListReportFeatures {
-    const buttonVisibility =
-        metadata && listReportPage.entitySet
-            ? safeCheckButtonVisibility(metadata, listReportPage.entitySet, log)
-            : undefined;
-    const toolbarActions = getToolBarActionNames(listReportPage.model, log);
-
-    return {
-        name: listReportPage.name,
-        createButton: buildButtonState(buttonVisibility?.create),
-        deleteButton: buildButtonState(buttonVisibility?.delete),
-        filterBarItems: getFilterFieldNames(listReportPage.model, log),
-        tableColumns: getTableColumnData(listReportPage.model, log),
-        toolBarActions:
-            metadata && listReportPage.entitySet
-                ? safeCheckActionButtonStates(metadata, listReportPage.entitySet, toolbarActions, log)
-                : []
-    };
 }
 
 /**
@@ -281,14 +243,15 @@ export function getFPMPage(applicationModel: ApplicationModel, log?: Logger): Pa
 /**
  * Gets FPM features from the page model using ux-specification.
  *
- * @param pageModel - the tree model containing FPM Custom Page definitions
+ * @param page - the FPM Custom Page containing model definitions
  * @param log - optional logger instance
  * @returns feature data extracted from the FPM Custom Page model
  */
-export function getFPMFeatures(pageModel: TreeModel, log?: Logger): ListReportFeatures {
+export function getFPMFeatures(page: PageWithModelV4, log?: Logger): FPMFeatures {
     return {
-        filterBarItems: getFilterFieldNames(pageModel, log),
-        tableColumns: getTableColumnData(pageModel, log)
+        name: page.name,
+        filterBarItems: getFilterFieldNames(page.model, log),
+        tableColumns: getTableColumnData(page.model, log)
     };
 }
 

@@ -297,17 +297,6 @@ export async function generateOPAFiles(
         }
     );
 
-    // Integration (OPA) test files - version-specific
-    editor.copyTpl(
-        join(rootV4TemplateDirPath, 'integration', 'opaTests.*.*'),
-        join(testOutDirPath, 'integration'),
-        config,
-        undefined,
-        {
-            globOptions: { dot: true }
-        }
-    );
-
     // Pages files (one for each page in the app)
     config.pages.forEach((page) => {
         writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor);
@@ -326,6 +315,8 @@ export async function generateOPAFiles(
         navigatedOP: LROP.pageOP?.targetKey,
         hideFilterBar: config.hideFilterBar
     };
+
+    const generatedJourneyPages = [];
 
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),
@@ -350,6 +341,7 @@ export async function generateOPAFiles(
                 globOptions: { dot: true }
             }
         );
+        generatedJourneyPages.push(listReport.name);
     }
 
     if (objectPages && objectPages.length > 0) {
@@ -366,13 +358,14 @@ export async function generateOPAFiles(
                     globOptions: { dot: true }
                 }
             );
+            generatedJourneyPages.push(objectPage.name);
         });
     }
 
     if (fpm) {
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration/FPMJourney.js'),
-            join(testOutDirPath, 'integration/FPMJourney.js'),
+            join(testOutDirPath, `integration/${fpm.name}Journey.js`),
             {
                 ...journeyParams,
                 ...fpm
@@ -382,7 +375,19 @@ export async function generateOPAFiles(
                 globOptions: { dot: true }
             }
         );
+        generatedJourneyPages.push(fpm.name);
     }
+
+    // Integration (OPA) test files - version-specific
+    editor.copyTpl(
+        join(rootV4TemplateDirPath, 'integration', 'opaTests.*.*'),
+        join(testOutDirPath, 'integration'),
+        { ...config, generatedJourneyPages },
+        undefined,
+        {
+            globOptions: { dot: true }
+        }
+    );
 
     // Journey Runner
     editor.copyTpl(

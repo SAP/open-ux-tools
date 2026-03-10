@@ -19053,9 +19053,6 @@ sap.ui.require(
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
     \\"lrop_v4_add_test_virtual_endpoints/test/integration/FirstJourney\\",
-    \\"lrop_v4_add_test_virtual_endpoints/test/integration/TravelListJourney\\",
-    \\"lrop_v4_add_test_virtual_endpoints/test/integration/TravelObjectPageJourney\\",
-    \\"lrop_v4_add_test_virtual_endpoints/test/integration/BookingObjectPageJourney\\",
 ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
@@ -22966,9 +22963,6 @@ sap.ui.require(
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
     \\"lrop_v4_addtests/test/integration/FirstJourney\\",
-    \\"lrop_v4_addtests/test/integration/TravelListJourney\\",
-    \\"lrop_v4_addtests/test/integration/TravelObjectPageJourney\\",
-    \\"lrop_v4_addtests/test/integration/BookingObjectPageJourney\\",
 ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
@@ -23812,9 +23806,6 @@ sap.ui.require(
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
     \\"lrop_v4_addtests_cds/test/integration/FirstJourney\\",
-    \\"lrop_v4_addtests_cds/test/integration/TravelListJourney\\",
-    \\"lrop_v4_addtests_cds/test/integration/TravelObjectPageJourney\\",
-    \\"lrop_v4_addtests_cds/test/integration/BookingObjectPageJourney\\",
 ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
@@ -24725,9 +24716,6 @@ sap.ui.require(
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
     \\"lrop_v4_addtests_cds/test/integration/FirstJourney\\",
-    \\"lrop_v4_addtests_cds/test/integration/TravelListJourney\\",
-    \\"lrop_v4_addtests_cds/test/integration/TravelObjectPageJourney\\",
-    \\"lrop_v4_addtests_cds/test/integration/BookingObjectPageJourney\\",
 ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
@@ -26110,9 +26098,6 @@ sap.ui.require(
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
     \\"lrop_v4_annotation_reuse_lib/test/integration/FirstJourney\\",
-    \\"lrop_v4_annotation_reuse_lib/test/integration/TravelListJourney\\",
-    \\"lrop_v4_annotation_reuse_lib/test/integration/TravelObjectPageJourney\\",
-    \\"lrop_v4_annotation_reuse_lib/test/integration/BookingObjectPageJourney\\",
 ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();

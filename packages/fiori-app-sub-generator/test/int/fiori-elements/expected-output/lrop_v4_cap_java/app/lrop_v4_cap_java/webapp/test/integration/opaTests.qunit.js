@@ -23,7 +23,6 @@ sap.ui.require(
     "sap/ui/qunit/qunit-junit",
     "sap/ui/qunit/qunit-coverage",
     "testNameSpace/lropv4capjava/test/integration/FirstJourney",
-    "testNameSpace/lropv4capjava/test/integration/BooksObjectPageJourney",
 ], function (QUnit) {
     "use strict";
     QUnit.start();
