@@ -205,13 +205,17 @@ describe('createJsonFixer', () => {
 
         it('should update the value for a parent node - fixParent = true', () => {
             const sourceText = `{"parent": {"old": true}}`;
-            const { node, ast } = createNodeFromJson(sourceText, ['parent']);
+            const { node, ast } = createNodeFromJson(sourceText, ['parent', 'old']);
             const mockContextWithText = {
                 sourceCode: {
                     getParent: jest
                         .fn()
-                        .mockReturnValueOnce({ name: 'parent', type: 'Object', members: [{}] })
-                        .mockReturnValueOnce({ name: 'parent', type: 'Member', value: { range: [0, 1] } }),
+                        .mockReturnValueOnce({
+                            name: 'parent',
+                            type: 'Object',
+                            members: [{ name: 'old', type: 'Member', value: { range: [1, 2] } }]
+                        })
+                        .mockReturnValueOnce({ name: 'parent', type: 'Member', value: { range: [0, 3] } }),
                     text: sourceText,
                     ast: { body: ast.body }
                 },

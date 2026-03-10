@@ -321,7 +321,7 @@ Array [
   Object {
     "range": Array [
       0,
-      1,
+      3,
     ],
     "text": "false",
     "type": "replace",

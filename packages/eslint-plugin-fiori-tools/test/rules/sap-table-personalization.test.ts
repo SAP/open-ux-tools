@@ -472,7 +472,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
         ),
         createInvalidTest(
             {
-                name: 'V4 - object page table - personalization is {} - all properties disabled',
+                name: 'V4 - object page table - personalization is {} - all properties disabled, group not checked',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
@@ -488,12 +488,12 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                             'tableSettings',
                             'personalization'
                         ],
-                        value: false
+                        value: {}
                     }
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-table-personalization',
+                        messageId: 'sap-table-missing-personalization-properties',
                         line: 145,
                         column: 21
                     }
