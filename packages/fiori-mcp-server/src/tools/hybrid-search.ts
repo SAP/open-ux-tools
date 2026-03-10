@@ -8,14 +8,8 @@ export type DocSearchInput = {
 };
 
 export interface SearchResultItem {
-    // title: string;
-    // category: string;
-    // path: string;
     similarity: number;
-    // matches: string[];
-    // excerpt?: string;
     content?: string;
-    // uri: string;
 }
 
 export interface SearchResponseData {
@@ -61,10 +55,7 @@ export async function docSearch(
         await vectorService.initialize();
         await embeddingService.initialize();
 
-        // Convert text query to embedding vector
-        // const queryVector = await embeddingService.generateEmbedding(query);
-
-        // Perform semantic search with the query vector
+        // Perform semantic search with the query
         const searchResults = await vectorService.semanticSearch(query, maxResults ?? 10);
         if (resultAsString) {
             let resultString = '';
@@ -75,26 +66,18 @@ export async function docSearch(
             }
             return resultString;
         } else {
-            // Convert vector search results to the expected format
             return {
                 query,
                 searchType: 'semantic',
                 results: searchResults.map((result) => ({
-                    // title: result.document.title,
-                    // category: result.document.category,
-                    // path: result.document.path,
                     similarity: result.similarity,
-                    // matches: [], // Vector search doesn't provide specific text matches
-                    // excerpt: result.document.metadata?.excerpt,
                     content: result.content
-                    // uri: `sap-fiori://docs/${result.document.category}/${result.document.id}`
                 })),
                 total: searchResults.length
             };
         }
     } catch (error) {
         // Fallback when embeddings data is not available
-        // Log warning about embeddings not being available
         logger.warn(`Embeddings data not available, providing limited search capability: ${error}`);
         return {
             query,
