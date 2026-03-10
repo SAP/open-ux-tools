@@ -152,53 +152,54 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
     }
     if (personalization === false) {
         // Every table personalization setting is disabled
+        return [
+            {
+                type: TABLE_PERSONALIZATION,
+                pageName: page.targetName,
+                messageId: MessageIdByProperty[''],
+                manifest: {
+                    uri: parsedApp.manifest.manifestUri,
+                    object: parsedApp.manifestObject,
+                    propertyPath: table.configuration.personalization.configurationPath
+                }
+            }
+        ];
+    }
+    const undefinedProperties: PersonalizationProperty[] = [];
+    // Check personalization object properties
+    for (const key of PersonalizationProperties) {
+        const property = key as PersonalizationProperty;
+        const propertyValue = personalization[property];
+        if (shouldCheckProperty(table, parsedApp, property)) {
+            if (propertyValue === false) {
+                problems.push({
+                    type: TABLE_PERSONALIZATION,
+                    pageName: page.targetName,
+                    property,
+                    messageId: MessageIdByProperty[property],
+                    manifest: {
+                        uri: parsedApp.manifest.manifestUri,
+                        object: parsedApp.manifestObject,
+                        propertyPath: [...table.configuration.personalization.configurationPath, property]
+                    }
+                });
+            } else if (propertyValue === undefined) {
+                undefinedProperties.push(property);
+            }
+        }
+    }
+    if (undefinedProperties.length) {
         problems.push({
             type: TABLE_PERSONALIZATION,
             pageName: page.targetName,
-            messageId: MessageIdByProperty[''],
+            undefinedProperties,
+            messageId: MISSING_PERSONALIZATION_PROPERTIES,
             manifest: {
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
                 propertyPath: table.configuration.personalization.configurationPath
             }
         });
-    } else {
-        const undefinedProperties: PersonalizationProperty[] = [];
-        // Check personalization object properties
-        for (const key of PersonalizationProperties) {
-            const property = key as PersonalizationProperty;
-            const propertyValue = personalization[property];
-            if (shouldCheckProperty(table, parsedApp, property)) {
-                if (propertyValue === false) {
-                    problems.push({
-                        type: TABLE_PERSONALIZATION,
-                        pageName: page.targetName,
-                        property,
-                        messageId: MessageIdByProperty[property],
-                        manifest: {
-                            uri: parsedApp.manifest.manifestUri,
-                            object: parsedApp.manifestObject,
-                            propertyPath: [...table.configuration.personalization.configurationPath, property]
-                        }
-                    });
-                } else if (propertyValue === undefined) {
-                    undefinedProperties.push(property);
-                }
-            }
-        }
-        if (undefinedProperties.length) {
-            problems.push({
-                type: TABLE_PERSONALIZATION,
-                pageName: page.targetName,
-                undefinedProperties,
-                messageId: MISSING_PERSONALIZATION_PROPERTIES,
-                manifest: {
-                    uri: parsedApp.manifest.manifestUri,
-                    object: parsedApp.manifestObject,
-                    propertyPath: table.configuration.personalization.configurationPath
-                }
-            });
-        }
     }
     return problems;
 }
