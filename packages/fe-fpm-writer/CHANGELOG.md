@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.6
+
+### Patch Changes
+
+- 620ca53: fix: add control id for sap.fe.macros.table column
+
 ## 0.43.5
 
 ### Patch Changes
