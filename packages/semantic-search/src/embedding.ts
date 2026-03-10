@@ -1,6 +1,6 @@
-import fs from 'fs/promises';
-import { constants } from 'fs';
-import path from 'path';
+import fs from 'node:fs/promises';
+import { constants } from 'node:fs';
+import path from 'node:path';
 import * as ort from 'onnxruntime-web';
 import { getDataDir } from './utils';
 
@@ -96,7 +96,7 @@ async function initializeModelAndVocab(): Promise<void> {
     const loadModelAndVocab = async () => {
         // Load model as buffer for onnxruntime-web
         const modelBuffer = await fs.readFile(modelPath);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         session = await ort.InferenceSession.create(new Uint8Array(modelBuffer));
 
         // Try to parse tokenizer JSON
@@ -137,6 +137,8 @@ async function initializeModelAndVocab(): Promise<void> {
 
 /**
  * Basic text normalization similar to BERT
+ *
+ * @param text
  */
 function normalizeText(text: string): string {
     // Convert to NFD normalization (decomposed)
@@ -153,6 +155,8 @@ function normalizeText(text: string): string {
 
 /**
  * BERT-style punctuation detection
+ *
+ * @param char
  */
 function isPunctuation(char: string): boolean {
     const cp = char.codePointAt(0);
@@ -172,6 +176,8 @@ function isPunctuation(char: string): boolean {
 
 /**
  * Simple Unicode category detection (basic implementation)
+ *
+ * @param char
  */
 function getUnicodeCategory(char: string): string | null {
     // This is a simplified version - real BERT uses full Unicode database
@@ -199,6 +205,8 @@ function getUnicodeCategory(char: string): string | null {
 
 /**
  * BERT-style pre-tokenization: split on whitespace and punctuation
+ *
+ * @param text
  */
 function preTokenize(text: string): string[] {
     const tokens: string[] = [];
@@ -234,6 +242,11 @@ function preTokenize(text: string): string[] {
 
 /**
  * True WordPiece tokenization with greedy longest-match algorithm
+ *
+ * @param token
+ * @param vocab
+ * @param unkToken
+ * @param maxInputCharsPerWord
  */
 function wordPieceTokenize(
     token: string,
@@ -287,6 +300,10 @@ interface TokenizationResult {
 
 /**
  * Main tokenization function that combines all steps
+ *
+ * @param text
+ * @param vocab
+ * @param maxLength
  */
 function wordPieceTokenizer(text: string, vocab: Map<string, number>, maxLength = 512): TokenizationResult[] {
     const unkToken = '[UNK]';
@@ -360,6 +377,9 @@ function wordPieceTokenizer(text: string, vocab: Map<string, number>, maxLength 
 
 /**
  * Process embeddings for multiple chunks and combine them
+ *
+ * @param chunks
+ * @param session
  */
 async function processChunkedEmbeddings(
     chunks: TokenizationResult[],

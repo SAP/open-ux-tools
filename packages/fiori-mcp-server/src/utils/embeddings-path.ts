@@ -21,10 +21,7 @@ export async function resolveEmbeddingsPath(): Promise<{
 }> {
     // Try to resolve embeddings package
     try {
-        if (
-            typeof getDataPath !== 'function' ||
-            typeof getEmbeddingsPath !== 'function'
-        ) {
+        if (typeof getDataPath !== 'function' || typeof getEmbeddingsPath !== 'function') {
             throw new Error('Package not found or invalid');
         }
 

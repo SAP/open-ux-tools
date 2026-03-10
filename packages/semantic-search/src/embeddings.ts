@@ -1,6 +1,6 @@
-import fs from 'fs/promises';
-import path from 'path';
-import crypto from 'crypto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import crypto from 'node:crypto';
 import embedding from './embedding';
 import { getDataDir } from './utils';
 
@@ -224,7 +224,7 @@ export async function embeddings(
  */
 export async function store(dir: string, config: StoreConfig): Promise<void> {
     // Validate config format
-    if (!config || !config.id || !config.embeddings || !Array.isArray(config.embeddings)) {
+    if (!config?.id || !config.embeddings || !Array.isArray(config.embeddings)) {
         throw new Error('Invalid config format: must have id and embeddings array');
     }
 

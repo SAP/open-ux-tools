@@ -3,7 +3,7 @@ const { tsParser } = require('typescript-eslint');
 
 module.exports = [
     {
-        ignores: ['dist/**', 'data/**', 'coverage/**', 'index.js'],
+        ignores: ['dist/**', 'data/**', 'coverage/**', 'index.js', 'jest.config.mjs'],
     },
     ...base,
     {

@@ -1,5 +1,5 @@
-import fs from 'fs/promises';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import { embeddings, store, load, search, clearCache, register, registered, loadRegistered } from '../src/embeddings';
 
 const TEST_DIR = path.join(__dirname, 'temp-store-load-test');

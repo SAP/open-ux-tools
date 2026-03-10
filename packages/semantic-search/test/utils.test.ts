@@ -1,6 +1,6 @@
 import { getDataDir } from '../src/utils';
-import path from 'path';
-import os from 'os';
+import path from 'node:path';
+import os from 'node:os';
 
 describe('utils', () => {
     it('should return data directory path', () => {
