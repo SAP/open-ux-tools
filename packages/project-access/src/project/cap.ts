@@ -414,6 +414,16 @@ export async function readCapServiceMetadataEdmx(
 }
 
 /**
+ * Normalizes a service URL path by removing a leading and/or trailing slash.
+ *
+ * @param urlPath - The URL path to normalize.
+ * @returns The normalized path without leading or trailing slashes.
+ */
+function normalizeServiceUrlPath(urlPath: string): string {
+    return urlPath.replace(/(?:^\/)|(?:\/$)/g, '');
+}
+
+/**
  * Find a service in a list of services ignoring leading and trailing slashes.
  *
  * @param services - list of services from cds.compile.to['serviceinfo'](model)
@@ -424,8 +434,15 @@ function findServiceByUri(
     services: { name: string; urlPath: string }[],
     uri: string
 ): { name: string; urlPath: string } | undefined {
-    const searchUri = uniformUrl(uri).replace(/(?:^\/)|(?:\/$)/g, '');
-    return services.find((srv) => srv.urlPath.replace(/(?:^\/)|(?:\/$)/g, '') === searchUri);
+    const searchUri = normalizeServiceUrlPath(uniformUrl(uri));
+    let service = services.find((srv) => normalizeServiceUrlPath(srv.urlPath));
+    if (!service) {
+        service = services.find((srv) => {
+            const normalizedPath = normalizeServiceUrlPath(srv.urlPath);
+            return searchUri.endsWith(`/${normalizedPath}`);
+        });
+    }
+    return service;
 }
 
 /**
