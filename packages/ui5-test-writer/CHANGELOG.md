@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.86
+
+### Patch Changes
+
+- 295cacc: fix: remove sap-no-global-define eslint annotations from testsuite templates
+
 ## 0.7.85
 
 ### Patch Changes
