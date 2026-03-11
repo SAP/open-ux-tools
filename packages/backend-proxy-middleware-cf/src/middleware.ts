@@ -8,14 +8,15 @@ import type { MiddlewareParameters } from '@ui5/server';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 
 import { createProxy } from './proxy';
+import { nextFreePort } from './utils';
+import { startApprouter } from './approuter';
 import { loadExtensions } from './extensions';
 import { mergeEffectiveOptions } from './config';
+import { updateXsuaaService } from './xssecurity';
 import type { BackendProxyMiddlewareCfConfig } from './types';
-import { nextFreePort } from './utils';
-import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from './env';
-import { buildRouteEntries, loadAndPrepareXsappConfig } from './routes';
-import { startApprouter } from './approuter';
 import { fetchBasUrlTemplate, resolveBasExternalUrl } from './bas';
+import { buildRouteEntries, loadAndPrepareXsappConfig } from './routes';
+import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from './env';
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ async function backendProxyMiddlewareCf({
     }
 
     await loadAndApplyEnvOptions(rootPath, effectiveOptions, logger);
+    await updateXsuaaService(rootPath, logger);
 
     const sourcePath = project.getSourcePath();
     const xsappConfig = loadAndPrepareXsappConfig({

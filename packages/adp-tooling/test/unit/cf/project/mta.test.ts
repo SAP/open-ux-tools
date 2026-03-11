@@ -10,11 +10,12 @@ import {
     readMta,
     buildVcapServicesFromResources
 } from '../../../../src/cf/project/mta';
+import type { MtaYaml } from '../../../../src';
 import { initI18n, t } from '../../../../src/i18n';
 import { requestCfApi } from '../../../../src/cf/services/cli';
-import { getServiceKeyCredentialsWithTags } from '../../../../src/cf/services/api';
 import { getRouterType } from '../../../../src/cf/project/yaml';
 import { getYamlContent } from '../../../../src/cf/project/yaml-loader';
+import { getServiceKeyCredentialsWithTags } from '../../../../src/cf/services/api';
 
 jest.mock('../../../../src/cf/project/yaml', () => ({
     getRouterType: jest.fn()
