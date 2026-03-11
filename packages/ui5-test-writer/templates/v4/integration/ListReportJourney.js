@@ -9,7 +9,7 @@
  * ║   To add your own custom tests:                                       ║ *
  * ║      - Create a new Journey test file in this directory.              ║ *
  * ║      - Follow the same pattern as this file.                          ║ *
- * ║      - Add the new file to the opaTests.qunit.js config.              ║ *
+ * ║      - Add the new file to the opaTests.qunit.js config file.         ║ *
  * ║      - Custom Journey files are not overwritten.                      ║ *
  * ║                                                                       ║ *
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
