@@ -1,3 +1,7 @@
-.homeNewsContainer .sapCuxBaseWrapper > * {
+.homeLayout.sapCuxBaseLayout section {
+    display: block;
+}
+
+.homeLayout .homeNewsContainer .sapCuxBaseWrapper > * {
     width: 100%;
 }

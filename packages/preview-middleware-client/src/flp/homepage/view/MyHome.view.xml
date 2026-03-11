@@ -9,7 +9,7 @@
     <m:Page
         id="page"
         showHeader="false"
-        class="sapUiBaseLayout sapUiResponsiveContentPadding sapUiLayoutPadding sapCuxBaseLayout"
+        class="homeLayout sapUiResponsiveContentPadding sapUiLayoutPadding sapCuxBaseLayout"
     >
         <AppsContainer id="appsContainer">
             <FavAppPanel id="favoriteApps" />
