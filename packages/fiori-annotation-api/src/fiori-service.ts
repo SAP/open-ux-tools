@@ -264,12 +264,9 @@ export class FioriAnnotationService {
         for (const [, value] of this.adapter.getValueListReferences().entries()) {
             for (const entry of value) {
                 for (const uri of entry.uris) {
-                    // TODO: make this parallel
                     const resource = files.get(uri);
-                    if (resource?.data) {
-                        // TODO: check uri
-                        this.adapter.syncExternalService(uri, resource.data, resource.localFilePath);
-                    }
+
+                    this.adapter.syncExternalService(uri, resource?.data ?? '', resource?.localFilePath ?? '');
                 }
             }
         }

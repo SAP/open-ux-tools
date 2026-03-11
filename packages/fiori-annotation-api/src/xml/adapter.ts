@@ -181,7 +181,23 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
      * @param localFilePath - Local file path of the external service metadata file.
      */
     public syncExternalService(uri: string, data: string, localFilePath: string): void {
-        const { ast: metadataDocument, comments: metadataComments } = parseWithoutCache(data, true);
+        const { ast: metadataDocument, comments: metadataComments } = data
+            ? parseWithoutCache(data, true)
+            : {
+                  ast: {
+                      type: 'XMLDocument',
+                      rootElement: null,
+                      position: {
+                          startOffset: 0,
+                          endOffset: 0,
+                          startLine: 0,
+                          endLine: 0,
+                          startColumn: 0,
+                          endColumn: 0
+                      }
+                  } as XMLDocument,
+                  comments: []
+              };
         const metadataAnnotations = convertDocument(uri, metadataDocument);
         this.documents.set(uri, {
             uri,

@@ -6,7 +6,6 @@ import * as astDep from '@xml-tools/ast';
 import * as converterDep from '@sap-ux/xml-odata-annotation-converter';
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 import { pathToFileURL } from 'node:url';
-import { join } from 'node:path';
 
 jest.mock('@xml-tools/parser');
 jest.mock('@xml-tools/ast');
@@ -51,7 +50,7 @@ describe('XML Adapter', () => {
             });
         });
 
-        test('sync external services data', () => {
+        test.each([true, false])('sync external services data', (isFileExists) => {
             // Arrange
             const adapter = new XMLAnnotationServiceAdapter(
                 {
@@ -103,25 +102,42 @@ describe('XML Adapter', () => {
                 .mockImplementation(() => {});
 
             // Act
-            adapter.syncExternalService('dummyUri', 'dummyData', 'localFilePath');
+            adapter.syncExternalService('dummyUri', isFileExists ? 'dummyData' : '', 'localFilePath');
             const services = adapter.getExternalServices();
 
             // Assert
             try {
-                expect(parserMock).toHaveBeenCalledWith('dummyData');
-                expect(buildAstMock).toHaveBeenCalledWith(dummyCst, dummyTokenVector);
-                expect(convertDocumentMock).toHaveBeenCalledWith('dummyUri', dummyAst);
+                if (isFileExists) {
+                    expect(parserMock).toHaveBeenCalledWith('dummyData');
+                    expect(buildAstMock).toHaveBeenCalledWith(dummyCst, dummyTokenVector);
+                    expect(convertDocumentMock).toHaveBeenCalledWith('dummyUri', dummyAst);
 
-                expect(adapter['documents'].get('dummyUri')).toEqual({
-                    ast: {
-                        type: 'dummyAst'
-                    },
-                    comments: [],
-                    uri: 'dummyUri',
-                    usedNamespaces: new Set(),
-                    annotationFile: dummyAnnotationFile
-                });
-                expect(convertMetadataDocumentMock).toHaveBeenCalledWith('dummyUri', dummyAst);
+                    expect(adapter['documents'].get('dummyUri')).toEqual({
+                        ast: {
+                            type: 'dummyAst'
+                        },
+                        comments: [],
+                        uri: 'dummyUri',
+                        usedNamespaces: new Set(),
+                        annotationFile: dummyAnnotationFile
+                    });
+                    expect(convertMetadataDocumentMock).toHaveBeenCalledWith('dummyUri', dummyAst);
+                } else {
+                    expect(parserMock).not.toHaveBeenCalled();
+                    expect(buildAstMock).not.toHaveBeenCalled();
+                    expect(convertMetadataDocumentMock).toHaveBeenCalledWith('dummyUri', {
+                        'position': {
+                            'endColumn': 0,
+                            'endLine': 0,
+                            'endOffset': 0,
+                            'startColumn': 0,
+                            'startLine': 0,
+                            'startOffset': 0
+                        },
+                        'rootElement': null,
+                        'type': 'XMLDocument'
+                    });
+                }
                 expect(importMock).toHaveBeenCalledWith([{ name: 'dummyMetadata' }], 'dummyUri', 'dummyUri');
                 expect(services[0].compiledService).toEqual({
                     annotationFiles: [dummyAnnotationFile],
