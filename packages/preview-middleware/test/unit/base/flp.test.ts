@@ -664,6 +664,73 @@ describe('FlpSandbox', () => {
             expect(response.text.includes('livereloadPort: 35729')).toBe(true);
         });
 
+        test('resource roots are remapped to editor path depth (editor at root, flp one level deep)', async () => {
+            // FLP is at /test/flp.html (one level deep) → basePath ".."
+            // Editor is at /rta.html (root level)        → newBasePath should be "."
+            const flp = new FlpSandbox(
+                {
+                    ...mockConfig,
+                    rta: {
+                        layer: 'CUSTOMER_BASE',
+                        editors: [{ path: '/rta.html' }]
+                    }
+                } as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+            const localServer = supertest(app);
+
+            // The FLP at test/flp.html should still use "../" resource roots
+            const flpResponse = await localServer.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(flpResponse.text).toContain('"open.ux.preview.client":"../preview/client"');
+
+            // The editor at /rta.html should use "./" resource roots, not "../"
+            const editorResponse = await localServer
+                .get('/rta.html?fiori-tools-rta-mode=true')
+                .expect(200);
+            // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
+            expect(editorResponse.text).toContain('"open.ux.preview.client":"preview/client"');
+            expect(editorResponse.text).not.toContain('"open.ux.preview.client":"../preview/client"');
+            // App resource root must also be remapped to "."
+            expect(editorResponse.text).toContain('"test.fe.v2.app":"."');
+            expect(editorResponse.text).not.toContain('"test.fe.v2.app":".."');
+        });
+
+        test('resource roots are unchanged when editor is at same depth as FLP', async () => {
+            // FLP is at /test/flp.html (one level deep)    → basePath ".."
+            // Editor is at /test/rta.html (same depth)     → newBasePath should still be ".."
+            const flp = new FlpSandbox(
+                {
+                    ...mockConfig,
+                    rta: {
+                        layer: 'CUSTOMER_BASE',
+                        editors: [{ path: '/test/rta.html' }]
+                    }
+                } as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+            const localServer = supertest(app);
+
+            const editorResponse = await localServer
+                .get('/test/rta.html?fiori-tools-rta-mode=true')
+                .expect(200);
+            expect(editorResponse.text).toContain('"open.ux.preview.client":"../preview/client"');
+            expect(editorResponse.text).toContain('"test.fe.v2.app":".."');
+        });
+
         test('rta with developerMode=true and plugin', async () => {
             await server.get('/with/plugin.html').expect(200);
             const response = await server
