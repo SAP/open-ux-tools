@@ -239,7 +239,10 @@ export class ListReport {
             // Select the parent div of the label, then its sibling div, then the descendant with the required attribute
             const valueHelpSelector =
                 this.feVersion === 'fev4' || (this.feVersion === 'fev2' && lte(this.ui5Version, '1.130.0'))
-                    ? `div:has(> [id="${escapedId(labelId)}"]) ~ div [title="Open Picker"],
+                    ? `div:has(> [id="${escapedId(labelId)}"]) [title="Open Picker"],
+                    div:has(> [id="${escapedId(labelId)}"]) ~ div [title="Open Picker"],
+                    div:has(> [id="${escapedId(labelId)}"]) [aria-label="Show Value Help"],
+                    div:has(> [id="${escapedId(labelId)}"]) [aria-label="Open Picker"],
                     div:has(> [id="${escapedId(labelId)}"]) ~ div [aria-label="Show Value Help"],
                     div:has(> [id="${escapedId(labelId)}"]) ~ div [aria-label="Open Picker"],
                     div:has(> [id="${escapedId(
@@ -2217,6 +2220,11 @@ function convertToExpectMatchers(obj: any): unknown {
     // Base case: null or undefined
     if (obj === null || obj === undefined) {
         return obj;
+    }
+
+    // Handle RegExp objects
+    if (obj instanceof RegExp) {
+        return expect.stringMatching(obj);
     }
 
     // Handle arrays
