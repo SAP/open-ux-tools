@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.27
+
+### Patch Changes
+
+- 05f3f4c: fix: Various ADP Generator fixes for CF flow
+- Updated dependencies [05f3f4c]
+    - @sap-ux/adp-tooling@0.18.90
+
 ## 0.9.26
 
 ### Patch Changes

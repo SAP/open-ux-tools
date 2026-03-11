@@ -1,5 +1,18 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.6
+
+### Patch Changes
+
+- 620ca53: fix: add control id for sap.fe.macros.table column
+
+## 0.43.5
+
+### Patch Changes
+
+- Updated dependencies [e1ef0ba]
+    - @sap-ux/fiori-annotation-api@0.9.30
+
 ## 0.43.4
 
 ### Patch Changes
