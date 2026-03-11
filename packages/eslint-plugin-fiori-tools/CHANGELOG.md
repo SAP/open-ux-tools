@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.7.7
+
+### Patch Changes
+
+- a9322c9: fix(deps): update dependency globals to v17
+
 ## 9.7.6
 
 ### Patch Changes
