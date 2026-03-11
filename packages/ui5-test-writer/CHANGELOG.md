@@ -1,5 +1,234 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.86
+
+### Patch Changes
+
+- 295cacc: fix: remove sap-no-global-define eslint annotations from testsuite templates
+
+## 0.7.85
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/ui5-application-writer@1.7.19
+
+## 0.7.84
+
+### Patch Changes
+
+- Updated dependencies [bd95e55]
+    - @sap-ux/ui5-application-writer@1.7.19
+
+## 0.7.83
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-application-writer@1.7.18
+
+## 0.7.82
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+- Updated dependencies [5aff25c]
+    - @sap-ux/ui5-application-writer@1.7.17
+
+## 0.7.81
+
+### Patch Changes
+
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+- Updated dependencies [ac58145]
+- Updated dependencies [45d4797]
+    - @sap-ux/ui5-application-writer@1.7.16
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/project-access@1.35.11
+
+## 0.7.80
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/ui5-application-writer@1.7.15
+
+## 0.7.79
+
+### Patch Changes
+
+- 7d643c3: remove Filterbar OPA tests for Worklist app
+
+## 0.7.78
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/ui5-application-writer@1.7.14
+
+## 0.7.77
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/ui5-application-writer@1.7.14
+
+## 0.7.76
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/ui5-application-writer@1.7.13
+
+## 0.7.75
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/ui5-application-writer@1.7.13
+
+## 0.7.74
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/ui5-application-writer@1.7.12
+
+## 0.7.73
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+
+## 0.7.72
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/ui5-application-writer@1.7.11
+
+## 0.7.71
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-application-writer@1.7.10
+
+## 0.7.70
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/ui5-application-writer@1.7.9
+
+## 0.7.69
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/ui5-application-writer@1.7.9
+
+## 0.7.68
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/ui5-application-writer@1.7.8
+
+## 0.7.67
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/ui5-application-writer@1.7.8
+
+## 0.7.66
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.1
+- @sap-ux/ui5-application-writer@1.7.8
+
+## 0.7.65
+
+### Patch Changes
+
+- Updated dependencies [2bffca7]
+    - @sap-ux/ui5-application-writer@1.7.7
+
+## 0.7.64
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/ui5-application-writer@1.7.6
+
+## 0.7.63
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/ui5-application-writer@1.7.6
+
+## 0.7.62
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-application-writer@1.7.6
+
+## 0.7.61
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+
+## 0.7.60
+
+### Patch Changes
+
+- 185a8cf: Align @sap/ux-specification version
+
+## 0.7.59
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/ui5-application-writer@1.7.5
+
+## 0.7.58
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/ui5-application-writer@1.7.5
+    - @sap-ux/project-access@1.34.4
+
+## 0.7.57
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+- Updated dependencies [6d71400]
+    - @sap-ux/ui5-application-writer@1.7.4
+    - @sap-ux/project-access@1.34.3
+
 ## 0.7.56
 
 ### Patch Changes

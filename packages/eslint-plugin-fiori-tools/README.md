@@ -14,17 +14,17 @@ pnpm: `pnpm add @sap-ux/eslint-plugin-fiori-tools`
 
 ## Usage
 
-To consume this module, add `@sap-ux/eslint-plugin-fiori-tools` to your project's eslint config file, for example, `eslint.config.js`. You must specify one of the following configurations:
+To consume this module, add `@sap-ux/eslint-plugin-fiori-tools` to your project's eslint config file, for example, `eslint.config.mjs`. You must specify one of the following configurations:
 
 - recommended: Contains rules for JavaScript & TypeScript on both production and test code.
 
 - recommended-for-s4hana: contains rules for JavaScript & TypeScript on both production and test code. This configuration is recommended for SAP internal use.
 
-`eslint.config.js`
+`eslint.config.mjs`
 ```javascript
-const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ```
@@ -36,27 +36,27 @@ All rules from `eslint-plugin-fiori-custom` have been migrated to `@sap-ux/eslin
 
 Note: ESLint 9 requires you to use the new flat config.
  
-1. Create the `eslint.config.js` file.
+1. Create the `eslint.config.mjs` file.
 ```javascript
-const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ```
 
-2. Copy any values from the `.eslintignore` file (if it exists) into the `eslint.config.js` file by adding the `ignores` array.
+2. Copy any values from the `.eslintignore` file (if it exists) into the `eslint.config.mjs` file by adding the `ignores` array.
 
    For more information, see [https://eslint.org/docs/latest/use/configure/configuration-files#excluding-files-with-ignores](Excluding files with ignores).
 
    ```javascript
-   const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+   import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-   module.exports = [
-        {
-        ignores: ['dist']
-        },
-       ...fioriTools.configs.recommended,
+   export default [
+      {
+         ignores: ['dist']
+      },
+         ...fioriTools.configs.recommended
    ];
    ```
 
@@ -102,8 +102,11 @@ module.exports = [
 
 ## Rules
 
+<div style="overflow-x: auto;">
+
 | Rule | Description | Recommended | Recommended for S/4HANA |
 |------|-------------|:-----------:|:-----------------------:|
+| [sap-anchor-bar-visible](docs/rules/sap-anchor-bar-visible.md) | Anchor Bar Visible should not be set to false in manifest settings for object page headers (except form entry object pages). | | ✅ |
 | [sap-bookmark-performance](docs/rules/sap-bookmark-performance.md) | Ensure the correct usage of the auto-refresh interval options for `sap.ushell.ui.footerbar.AddBookmarkButton`. | ✅ | ✅ |
 | [sap-browser-api-error](docs/rules/sap-browser-api-error.md) | Detect forbidden usages of `(window.)document` APIs. | | |
 | [sap-browser-api-warning](docs/rules/sap-browser-api-warning.md) | Detect warnings for usages of `(window.)document` APIs. | ✅ | ✅ |
@@ -153,6 +156,11 @@ module.exports = [
 | [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect the usage of private properties and functions of UI5 elements. | | |
 | [sap-usage-basemastercontroller](docs/rules/sap-usage-basemastercontroller.md) | Detect the usage of the deprecated `BaseMasterController`. | ✅ | ✅ |
 | [sap-creation-mode-for-table](docs/rules/sap-creation-mode-for-table.md) | Validates that the table creation mode (`createMode` in OData V2 and `creationMode` in OData V4) is correctly configured to ensure an optimal user experience when creating new table entries. | | ✅ |
-| [sap-disable-copy-to-clipboard](docs/rules/sap-disable-copy-to-clipboard.md) | Ensures that the `disableCopyToClipboard` property in all tables is set to `false` or ommited from `tableSettings` in the `manifest.json` file for OData V4 applications. The default value is `false`. | | ✅ |
+| [sap-copy-to-clipboard](docs/rules/sap-copy-to-clipboard.md) | Ensures that the copy functionality in any table is enabled. "Copy" button is shown by default. | | ✅ |
+| [sap-enable-paste](docs/rules/sap-enable-paste.md) | Ensures that the paste functionality in any OData V4 applications tables is available | | ✅ |
+| [sap-enable-export](docs/rules/sap-enable-export.md) | Ensures that the export to Excel functionality in any OData V4 applications tables is available | | ✅ |
 | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the `manifest.json` file for applications using UI5 version 1.56 or higher. | | ✅ |
 | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than six columns) have the `widthIncludingColumnHeader` property set to `true` for better calculation of column width. | | ✅ |
+| [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Ensures Valid `statePreservationMode` Configuration in SAP Fiori Elements | | ✅ |
+| [sap-table-column-vertical-alignment](docs/rules/sap-table-column-vertical-alignment.md) | Ensures `tableColumnVerticalAlignment` Configuration for Responsive Type Tables in SAP Fiori Elements applications | | ✅ |
+</div>

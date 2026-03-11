@@ -11,7 +11,7 @@ type DataSource = ManifestNamespace.DataSource;
 /**
  * The OData version type.
  */
-type ODataVersion = 'v2' | 'v4' | '2.0' | '4.0';
+type ODataVersion = 'v2' | 'v4' | '2.0' | '4.0' | '4.01';
 
 /**
  * Describes an OData service instance.
@@ -104,6 +104,7 @@ export class ODataHealthChecker {
                 return this.getServiceV2Metadata(serviceUrl);
             case 'v4':
             case '4.0':
+            case '4.01':
                 return this.getServiceV4Metadata(serviceUrl);
         }
     }
@@ -140,10 +141,20 @@ export class ODataHealthChecker {
     }
 
     private getServices(): ODataServiceInfo[] {
-        const manifest: Manifest = this.rta.getRootControlInstance().getManifest() as unknown as Manifest;
+        const rootControl = this.rta.getRootControlInstance();
+        const manifest: Manifest = rootControl.getManifest() as unknown as Manifest;
         const dataSources = manifest?.['sap.app']?.dataSources;
-        return Object.values(dataSources ?? {})
-            .filter(this.isOdataService)
-            .map(this.toOdataServiceInfo);
+        const odataServices = Object.values(dataSources ?? {}).filter(this.isOdataService);
+
+        const isCloudFoundry = !!this.rta.getFlexSettings().isCloudFoundry;
+        if (isCloudFoundry) {
+            const manifestObject = rootControl.getManifestObject();
+            return odataServices.map((src) => ({
+                serviceUrl: manifestObject.resolveUri(src.uri),
+                oDataVersion: (src.settings?.odataVersion ?? ODataHealthChecker.DEFAULT_ODATA_VERSION)
+            }));
+        }
+
+        return odataServices.map(this.toOdataServiceInfo);
     }
 }

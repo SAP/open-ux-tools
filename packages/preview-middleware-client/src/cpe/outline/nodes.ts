@@ -55,9 +55,14 @@ function getAdditionalData(id: string): AdditionalData {
  * @returns An array of children nodes, or an empty array if none are found
  */
 function getChildren(current: OutlineViewNode): OutlineViewNode[] {
-    return (current.elements ?? []).flatMap((element: OutlineViewNode) =>
-        element.type === 'aggregation' ? (element.elements ?? []) : []
-    );
+    return (current.elements ?? []).flatMap((element: OutlineViewNode) => {
+        if (element.type === 'aggregation') {
+            return element.elements ?? [];
+        } else if (element.type === 'extensionPoint') {
+            return [element];
+        }
+        return [];
+    });
 }
 
 /**

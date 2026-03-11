@@ -1,5 +1,216 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.85
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/telemetry@0.6.86
+
+## 0.13.84
+
+### Patch Changes
+
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+- Updated dependencies [fdd57de]
+    - @sap-ux/telemetry@0.6.85
+    - @sap-ux/project-access@1.35.12
+
+## 0.13.83
+
+### Patch Changes
+
+- @sap-ux/btp-utils@1.1.9
+- @sap-ux/project-access@1.35.11
+- @sap-ux/telemetry@0.6.84
+
+## 0.13.82
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/telemetry@0.6.83
+
+## 0.13.81
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/telemetry@0.6.82
+
+## 0.13.80
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/telemetry@0.6.81
+
+## 0.13.79
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/telemetry@0.6.80
+
+## 0.13.78
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/telemetry@0.6.79
+
+## 0.13.77
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/telemetry@0.6.78
+
+## 0.13.76
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+    - @sap-ux/telemetry@0.6.77
+
+## 0.13.75
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/telemetry@0.6.76
+
+## 0.13.74
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/telemetry@0.6.75
+
+## 0.13.73
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/telemetry@0.6.74
+
+## 0.13.72
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/telemetry@0.6.73
+
+## 0.13.71
+
+### Patch Changes
+
+- @sap-ux/telemetry@0.6.72
+
+## 0.13.70
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/telemetry@0.6.71
+
+## 0.13.69
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/telemetry@0.6.70
+
+## 0.13.68
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/telemetry@0.6.69
+    - @sap-ux/project-access@1.35.1
+
+## 0.13.67
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/telemetry@0.6.68
+
+## 0.13.66
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/telemetry@0.6.67
+
+## 0.13.65
+
+### Patch Changes
+
+- @sap-ux/telemetry@0.6.66
+
+## 0.13.64
+
+### Patch Changes
+
+- @sap-ux/telemetry@0.6.65
+
+## 0.13.63
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/telemetry@0.6.64
+
+## 0.13.62
+
+### Patch Changes
+
+- Updated dependencies [9f11dd2]
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/telemetry@0.6.63
+
+## 0.13.61
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/telemetry@0.6.62
+
+## 0.13.60
+
+### Patch Changes
+
+- @sap-ux/btp-utils@1.1.6
+- @sap-ux/project-access@1.34.4
+- @sap-ux/telemetry@0.6.61
+
+## 0.13.59
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/telemetry@0.6.60
+
 ## 0.13.58
 
 ### Patch Changes

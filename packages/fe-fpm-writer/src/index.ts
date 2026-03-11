@@ -26,6 +26,7 @@ export { validateBasePath, validateVersion } from './common/validate';
 export {
     BuildingBlockType,
     FilterBar,
+    Form,
     Chart,
     Field,
     FieldFormatOptions,
@@ -35,12 +36,14 @@ export {
     CustomColumn,
     CustomFilterField,
     RichTextEditor,
-    ButtonGroupConfig
+    ButtonGroupConfig,
+    Action
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
+    FormPromptsAnswer,
     TablePromptsAnswer,
     PagePromptsAnswer,
     RichTextEditorPromptsAnswer,

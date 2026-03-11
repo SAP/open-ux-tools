@@ -17,7 +17,57 @@ import * as addXMLAdditionalInfo from '../../../../src/cpe/additional-change-inf
 import { CommunicationService } from '../../../../src/cpe/communication-service';
 import * as adpUtils from '../../../../src/adp/utils';
 import AddCustomFragment from 'open/ux/preview/client/adp/controllers/AddCustomFragment.controller';
+import Control from 'sap/ui/core/Control';
+import SimpleForm from 'sap/ui/layout/form';
 
+const mocks = {
+    setValueStateMock: jest.fn(),
+    setValueStateTextMock: jest.fn()
+};
+
+type StateType = ValueState | keyof typeof ValueState;
+const mockFormInput = (
+    isInput: boolean,
+    values: String | String[] = '',
+    states?: StateType | StateType[],
+    stateTexts?: string | string[],
+    controlStates: {
+        editable?: boolean;
+        visible?: boolean;
+    } = { editable: true, visible: true }
+): any => ({
+    isA: jest.fn().mockReturnValue(isInput),
+    getVisible: jest.fn().mockReturnValue(controlStates.visible),
+    getEditable: jest.fn().mockReturnValue(controlStates.editable),
+    getValue: nCallsMock(values),
+    getValueState: nCallsMock(states),
+    getValueStateText: nCallsMock(stateTexts),
+    setValueState: mocks.setValueStateMock
+});
+const mockInputEvent = (value: String | Object): Event =>
+    ({
+        getSource: jest.fn().mockReturnValue({
+            getValue: jest.fn().mockReturnValue(value),
+            setValueState: mocks.setValueStateMock
+        })
+    }) as unknown as Event;
+/**
+ * Simulates various values returns in sequential calls
+ * the last value stays persistent and is returned in further calls
+ * @param v - value or array of values
+ * @returns jest mock function returning provided values, the last value stays persistent and is returned in further calls
+ */
+const nCallsMock = <T>(v: T | T[]) => {
+    const values = Array.isArray(v) ? v : [v];
+    return values.reduce((acc, value, idx) => {
+        if (idx === values.length - 1) {
+            acc.mockReturnValue(value);
+        } else {
+            acc.mockReturnValueOnce(value);
+        }
+        return acc;
+    }, jest.fn());
+};
 describe('AddCustomFragment', () => {
     beforeAll(() => {
         fetchMock.mockResolvedValue({
@@ -82,7 +132,8 @@ describe('AddCustomFragment', () => {
                         appType: 'fe-v4',
                         pageId: 'somePageId'
                     },
-                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    type: 'section'
                 }
             );
 
@@ -123,7 +174,8 @@ describe('AddCustomFragment', () => {
                         appType: 'fe-v4',
                         pageId: 'somePageId'
                     },
-                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    type: 'section'
                 }
             );
 
@@ -168,7 +220,8 @@ describe('AddCustomFragment', () => {
                         appType: 'fe-v4',
                         pageId: 'somePageId'
                     },
-                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    type: 'section'
                 }
             );
 
@@ -203,7 +256,7 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
                 {
-                     propertyPath: 'content/body/sections/',
+                    propertyPath: 'content/body/sections/',
                     appDescriptor: {
                         anchor: 'someAnchor',
                         projectId: 'test',
@@ -211,7 +264,8 @@ describe('AddCustomFragment', () => {
                         appType: 'fe-v4',
                         pageId: 'somePageId'
                     },
-                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    type: 'section'
                 }
             );
 
@@ -254,7 +308,8 @@ describe('AddCustomFragment', () => {
                         appType: 'fe-v4',
                         pageId: 'somePageId'
                     },
-                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    type: 'section'
                 }
             );
 
@@ -297,7 +352,8 @@ describe('AddCustomFragment', () => {
                         appType: 'fe-v4',
                         pageId: 'somePageId'
                     },
-                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    type: 'section'
                 }
             );
 
@@ -340,7 +396,8 @@ describe('AddCustomFragment', () => {
                         pageId: 'somePageId',
                         projectId: 'test'
                     },
-                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    type: 'section'
                 }
             );
 
@@ -401,7 +458,8 @@ describe('AddCustomFragment', () => {
                         pageId: 'somePageId',
                         projectId: 'test'
                     },
-                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    type: 'section'
                 }
             );
 
@@ -464,7 +522,8 @@ describe('AddCustomFragment', () => {
                         pageId: 'somePageId',
                         projectId: 'test'
                     },
-                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    type: 'section'
                 }
             );
 
@@ -515,7 +574,8 @@ describe('AddCustomFragment', () => {
                         pageId: 'somePageId',
                         projectId: 'test'
                     },
-                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    type: 'section'
                 }
             );
 
@@ -538,6 +598,129 @@ describe('AddCustomFragment', () => {
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Success);
+        });
+    });
+
+    describe('onIdInputChange', () => {
+        const overlays = {
+            getId: jest.fn().mockReturnValue('some-id')
+        };
+        const testModel = {
+            setProperty: jest.fn(),
+            getProperty: jest.fn().mockReturnValue([{ fragmentName: 'CustomColumn.fragment.xml' }])
+        } as unknown as JSONModel;
+
+        let beginBtnSetEnabledMock: jest.Mock<any, any, any>;
+        const createDialog = (content: Control[], validateIdResult = true) => {
+            const addFragment = new AddCustomFragment(
+                'adp.extension.controllers.AddCustomFragment',
+                overlays as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring,
+                {
+                    propertyPath: 'controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/columns/test',
+                    validateId: () => validateIdResult,
+                    appDescriptor: {
+                        anchor: 'someAnchor',
+                        projectId: 'test',
+                        pageId: 'listPage',
+                        appComponent: {} as any,
+                        appType: 'fe-v4'
+                    },
+                    type: 'tableColumn',
+                    title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
+                }
+            );
+            beginBtnSetEnabledMock = jest.fn().mockReturnValue({ rerender: jest.fn() });
+            addFragment.dialog = {
+                getBeginButton: jest.fn().mockReturnValue({ setEnabled: beginBtnSetEnabledMock }),
+                getContent: jest.fn().mockReturnValue([
+                    {
+                        getContent: jest.fn().mockReturnValue(content)
+                    } as unknown as SimpleForm<Control[]>
+                ]),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                setEscapeHandler: jest.fn().mockResolvedValue('')
+            } as unknown as Dialog;
+
+            return addFragment;
+        };
+
+
+         beforeEach(() => {
+            mocks.setValueStateTextMock = jest.fn();
+            mocks.setValueStateMock = jest.fn().mockReturnValue({
+                setValueStateText: mocks.setValueStateTextMock
+            });
+        });
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        test('sets error when when id exists', async () => {
+            const event = mockInputEvent('test');
+            const addFragment = createDialog(
+                [
+                    mockFormInput(false),
+                    mockFormInput(true, '', ValueState.Success),
+                    mockFormInput(false),
+                    mockFormInput(true, '', ValueState.Success)
+                ],
+                false
+            );
+            await addFragment.setup(addFragment.dialog);
+
+            addFragment.model = testModel;
+            addFragment.onIdInputChange(event as unknown as Event);
+            expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
+            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
+                1,
+                "Column with ID ''test'' is already defined."
+            );
+        });
+
+        test('sets error when id required', async () => {
+            const event = mockInputEvent('');
+            const addFragment = createDialog(
+                [
+                    mockFormInput(false),
+                    mockFormInput(true, '', ValueState.Success),
+                    mockFormInput(false),
+                    mockFormInput(true, '', ValueState.Success)
+                ],
+                true
+            );
+            await addFragment.setup(addFragment.dialog);
+
+            addFragment.model = testModel;
+            addFragment.onIdInputChange(event as unknown as Event);
+            expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
+            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
+                1,
+                "Column ID is required."
+            );
+        });
+
+        test('sets error when id invalid format', async () => {
+            const event = mockInputEvent('1vvg');
+            const addFragment = createDialog(
+                [
+                    mockFormInput(false),
+                    mockFormInput(true, '', ValueState.Success),
+                    mockFormInput(false),
+                    mockFormInput(true, '', ValueState.Success)
+                ],
+                true
+            );
+            await addFragment.setup(addFragment.dialog);
+
+            addFragment.model = testModel;
+            addFragment.onIdInputChange(event as unknown as Event);
+            expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
+            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
+                1,
+                "Column ID must start with a letter or _ and may contain letters, digits, _, ., :, and -."
+            );
         });
     });
 
@@ -588,7 +771,8 @@ describe('AddCustomFragment', () => {
                         pageId: 'somePageId',
                         projectId: 'test'
                     },
-                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    type: 'section'
                 }
             );
 

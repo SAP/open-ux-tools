@@ -1,5 +1,184 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.41
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.40
+
+### Patch Changes
+
+- e773022: fix(deps): update dependency @sap-ai-sdk/foundation-models to v2.8.0
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+    - @sap-ux/store@1.5.9
+
+## 0.6.39
+
+### Patch Changes
+
+- afd2fa2: feat: add icon and title to mcp server
+
+## 0.6.38
+
+### Patch Changes
+
+- a8f4e03: fix(deps): update dependency @sap-ai-sdk/langchain to v2.8.0
+- 2302698: fix(deps): update dependency @sap-ux/edmx-parser to v0.10.0
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.37
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.36
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.35
+
+### Patch Changes
+
+- Updated dependencies [6c993f3]
+    - @sap-ux/store@1.5.8
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
+## 0.6.34
+
+### Patch Changes
+
+- 94d370f: fix(deps): update dependency @langchain/mcp-adapters to v1.1.3
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
+## 0.6.33
+
+### Patch Changes
+
+- ff634b0: fix(deps): update dependency @sap-ux/edmx-parser to v0.9.8
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
+## 0.6.32
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/store@1.5.7
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
+## 0.6.31
+
+### Patch Changes
+
+- 1371f6b: fix(deps): update dependency @langchain/core to v1.1.26
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
+## 0.6.30
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
+## 0.6.29
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/fiori-docs-embeddings@0.4.14
+
+## 0.6.28
+
+### Patch Changes
+
+- Updated dependencies [3795bb2]
+    - @sap-ux/fiori-docs-embeddings@0.4.14
+
+## 0.6.27
+
+### Patch Changes
+
+- Updated dependencies [38e215e]
+    - @sap-ux/store@1.5.5
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.26
+
+### Patch Changes
+
+- b8efec5: Update dependency "@modelcontextprotocol/sdk": "1.26.0"
+- Updated dependencies [83e3b70]
+    - @sap-ux/store@1.5.4
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.25
+
+### Patch Changes
+
+- 32a9147: chore(deps): update dependency @langchain/mcp-adapters to v1.1.2
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.24
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.23
+
+### Patch Changes
+
+- bd48387: Update readme for Self-Signed SSL Certificates
+
+## 0.6.22
+
+### Patch Changes
+
+- Updated dependencies [c3a1e07]
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.21
+
+### Patch Changes
+
+- 6b659e7: feat: add tool annotations for better AI guidance
+
+## 0.6.20
+
+### Patch Changes
+
+- @sap-ux/fiori-docs-embeddings@0.4.12
+- @sap-ux/store@1.5.3
+
+## 0.6.19
+
+### Patch Changes
+
+- Updated dependencies [4eac0a7]
+    - @sap-ux/fiori-docs-embeddings@0.4.12
+
+## 0.6.18
+
+### Patch Changes
+
+- 5d50232: feat: add telemetry tracking for MCP server sessions and handlers
+
+## 0.6.17
+
+### Patch Changes
+
+- 529408b: refactor: adjust telemetry functionalityId reporting
+
 ## 0.6.16
 
 ### Patch Changes

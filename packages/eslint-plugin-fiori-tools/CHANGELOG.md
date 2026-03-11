@@ -1,5 +1,302 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.7.8
+
+### Patch Changes
+
+- Updated dependencies [79e69b9]
+    - @sap-ux/odata-vocabularies@0.4.28
+    - @sap-ux/fiori-annotation-api@0.9.31
+
+## 9.7.7
+
+### Patch Changes
+
+- a9322c9: fix(deps): update dependency globals to v17
+
+## 9.7.6
+
+### Patch Changes
+
+- Updated dependencies [e1ef0ba]
+    - @sap-ux/fiori-annotation-api@0.9.30
+
+## 9.7.5
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/fiori-annotation-api@0.9.29
+
+## 9.7.4
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- fa74f92: fix(deps): update dependency c8 to v11
+- 83ca0e9: fix(deps): update dependency cross-env to v10
+- Updated dependencies [7c06ef0]
+    - @sap-ux/fiori-annotation-api@0.9.28
+    - @sap-ux/project-access@1.35.12
+
+## 9.7.3
+
+### Patch Changes
+
+- f90fcca: fix(deps): update dependency @eslint/json to v0.14.0
+    - @sap-ux/fiori-annotation-api@0.9.27
+    - @sap-ux/project-access@1.35.11
+
+## 9.7.2
+
+### Patch Changes
+
+- 4dcf980: fix(deps): update dependency @eslint/config-helpers to v0.5.2
+
+## 9.7.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/fiori-annotation-api@0.9.26
+
+## 9.7.0
+
+### Minor Changes
+
+- 51236d3: Add sap-anchor-bar-visible eslint rule.
+
+## 9.6.10
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.25
+- @sap-ux/odata-annotation-core@0.2.16
+- @sap-ux/odata-entity-model@0.3.6
+- @sap-ux/odata-vocabularies@0.4.27
+
+## 9.6.9
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/fiori-annotation-api@0.9.24
+
+## 9.6.8
+
+### Patch Changes
+
+- 562469f: Update the readme with .mjs example for configuration
+
+## 9.6.7
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.23
+
+## 9.6.6
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/fiori-annotation-api@0.9.22
+
+## 9.6.5
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/fiori-annotation-api@0.9.21
+    - @sap-ux/odata-annotation-core@0.2.15
+    - @sap-ux/odata-entity-model@0.3.6
+    - @sap-ux/odata-vocabularies@0.4.26
+
+## 9.6.4
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/fiori-annotation-api@0.9.20
+
+## 9.6.3
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.19
+
+## 9.6.2
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/fiori-annotation-api@0.9.18
+
+## 9.6.1
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/fiori-annotation-api@0.9.17
+
+## 9.6.0
+
+### Minor Changes
+
+- 552c106: Fix: check table paste functionality is enabled on object pages only.
+
+## 9.5.11
+
+### Patch Changes
+
+- Updated dependencies [1fa3bb7]
+    - @sap-ux/odata-vocabularies@0.4.25
+    - @sap-ux/fiori-annotation-api@0.9.16
+
+## 9.5.10
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/fiori-annotation-api@0.9.15
+
+## 9.5.9
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/fiori-annotation-api@0.9.14
+
+## 9.5.8
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/fiori-annotation-api@0.9.13
+
+## 9.5.7
+
+### Patch Changes
+
+- 47f2f3f: Add auto fix for `sap-width-including-column-header` rule
+
+## 9.5.6
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/odata-vocabularies@0.4.24
+    - @sap-ux/fiori-annotation-api@0.9.12
+    - @sap-ux/project-access@1.35.1
+
+## 9.5.5
+
+### Patch Changes
+
+- Updated dependencies [3795bb2]
+    - @sap-ux/odata-annotation-core@0.2.14
+    - @sap-ux/fiori-annotation-api@0.9.11
+    - @sap-ux/odata-entity-model@0.3.5
+    - @sap-ux/odata-vocabularies@0.4.23
+
+## 9.5.4
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/fiori-annotation-api@0.9.10
+
+## 9.5.3
+
+### Patch Changes
+
+- 0e1d0f3: Remove statePreservationMode with auto fix option
+
+## 9.5.2
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/fiori-annotation-api@0.9.9
+
+## 9.5.1
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/fiori-annotation-api@0.9.8
+
+## 9.5.0
+
+### Minor Changes
+
+- 5c8b645: Add tableColumnVerticalAlignment setting rule for Responsive tables in OData V2 applications.
+
+## 9.4.1
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-annotation-api@0.9.7
+
+## 9.4.0
+
+### Minor Changes
+
+- 6a5469b: Added eslint rules to enable paste and export in OData V4 application tables.
+
+## 9.3.3
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+    - @sap-ux/fiori-annotation-api@0.9.6
+    - @sap-ux/project-access@1.34.4
+
+## 9.3.2
+
+### Patch Changes
+
+- c77df15: Exclude page name when reporting issue on application level for table creation mode
+
+## 9.3.1
+
+### Patch Changes
+
+- ecc305d: Add statePreservationMode rule for OData V2 application.
+
+## 9.3.0
+
+### Minor Changes
+
+- 416428c: Add copy to clipboard property rule for OData V2 application tables.
+
+## 9.2.4
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/fiori-annotation-api@0.9.5
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/odata-annotation-core@0.2.13
+    - @sap-ux/odata-entity-model@0.3.4
+    - @sap-ux/odata-vocabularies@0.4.22
+
 ## 9.2.3
 
 ### Patch Changes

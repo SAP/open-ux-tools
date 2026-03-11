@@ -1,6 +1,6 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { ParsedService } from '../parser';
-import type { LinkerContext } from './types';
+import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
 import { collectTables, collectSections } from './annotations';
@@ -30,6 +30,10 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     entity: MetadataElement;
     sections: Section[];
     lookup: NodeLookup<Table | Section>;
+    header: {
+        anchorBarVisible: ConfigurationProperty<boolean>;
+        visible: ConfigurationProperty<boolean>;
+    };
 }
 
 export type FeV4PageType = FeV4ListReport | FeV4ObjectPage;
@@ -41,26 +45,6 @@ export interface AnnotationBasedNode<T extends AnnotationNode, Configuration ext
     children: Children[];
 }
 
-export interface ConfigurationBase<T extends string, Configuration extends object = {}> {
-    type: T;
-    annotation?: unknown;
-    configuration: {
-        [K in keyof Configuration]: {
-            /**
-             * All possible supported configuration values. Empty means dynamic value resolved by framework at runtime.
-             */
-            values: Configuration[K][];
-            /**
-             * Actual value as defined in the manifest file.
-             */
-            valueInFile?: Configuration[K];
-            /**
-             * Absolute path in manifest where this configuration is defined.
-             */
-            configurationPath: string[];
-        };
-    };
-}
 export type OrphanSection = ConfigurationBase<'orphan-section', {}>;
 export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
 export type Section = TableSection | OrphanSection;
@@ -69,6 +53,8 @@ export interface TableSettings {
     tableType: string;
     widthIncludingColumnHeader: boolean;
     disableCopyToClipboard: boolean;
+    enableExport: boolean;
+    enablePaste: boolean;
 }
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
@@ -131,6 +117,30 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
                 ],
                 values: [true, false]
             },
+            enableExport: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'enableExport'
+                ],
+                values: [true, false]
+            },
+            enablePaste: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'enablePaste'
+                ],
+                values: [true, false]
+            },
             creationMode: {
                 configurationPath: [
                     ...pathToPage,
@@ -184,7 +194,7 @@ export type NodeLookup<T extends Node> = {
  * @param context - The linker context containing app and service information
  */
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
-    const linkedApp = linkApplicationSettings(context.app.manifestObject['sap.fe'] ?? {});
+    const linkedApp = linkApplicationSettings(context);
     const manifest = context.app.manifestObject;
     const routingTargets = manifest['sap.ui5']?.routing?.targets;
     if (!routingTargets) {
@@ -221,9 +231,20 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                 entity: entity,
                 configuration: {},
                 sections: [],
-                lookup: {}
+                lookup: {},
+                header: {
+                    anchorBarVisible: {
+                        values: [true, false],
+                        configurationPath: []
+                    },
+                    visible: {
+                        values: [true, false],
+                        configurationPath: []
+                    }
+                }
             };
             linkObjectPageSections(page, path, name, sections, target);
+            linkObjectPageHeader(page, target);
             linkedApp.pages.push(page);
         }
     }
@@ -237,6 +258,12 @@ interface Target {
             contextPath?: string;
 
             controlConfiguration?: { [key: string]: TableConfiguration };
+            content?: {
+                header?: {
+                    anchorBarVisible?: boolean;
+                    visible?: boolean;
+                };
+            };
         };
     };
 }
@@ -246,6 +273,8 @@ interface TableConfiguration {
         type?: string;
         widthIncludingColumnHeader?: boolean;
         disableCopyToClipboard?: boolean;
+        enableExport?: boolean;
+        enablePaste?: boolean;
         creationMode?: {
             name?: string;
         };
@@ -329,8 +358,12 @@ function linkListReportTable(
                 tableControl.configuration.tableType.valueInFile = tableType;
                 const columnHeaderValue = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
                 tableControl.configuration.widthIncludingColumnHeader.valueInFile = columnHeaderValue;
-                const value = controlConfiguration.tableSettings?.disableCopyToClipboard;
-                tableControl.configuration.disableCopyToClipboard.valueInFile = value;
+                const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
+                tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
+                const enableExportValue = controlConfiguration.tableSettings?.enableExport;
+                tableControl.configuration.enableExport.valueInFile = enableExportValue;
+                const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
+                tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
                 const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
                 tableControl.configuration.creationMode.valueInFile = creationModeValue;
                 tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
@@ -420,6 +453,10 @@ function linkObjectPageSections(
             tableControl.configuration.widthIncludingColumnHeader.valueInFile = value;
             const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
             tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
+            const enableExportValue = controlConfiguration.tableSettings?.enableExport;
+            tableControl.configuration.enableExport.valueInFile = enableExportValue;
+            const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
+            tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
             const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
             tableControl.configuration.creationMode.valueInFile = creationModeValue;
             tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
@@ -439,6 +476,23 @@ function linkObjectPageSections(
         page.lookup[control.type] ??= [];
         (page.lookup[control.type]! as Extract<Section | Table, { type: typeof control.type }>[]).push(control);
     }
+}
+
+/**
+ * Links the object page header configuration for Fiori Elements V4.
+ *
+ * @param page - The object page being linked
+ * @param target - The routing target containing the header configuration
+ */
+function linkObjectPageHeader(page: FeV4ObjectPage, target: Target): void {
+    const header = target.options?.settings?.content?.header;
+    const basePath = ['sap.ui5', 'routing', 'targets', page.targetName, 'options', 'settings', 'content', 'header'];
+
+    page.header.anchorBarVisible.valueInFile = header?.anchorBarVisible;
+    page.header.anchorBarVisible.configurationPath = [...basePath, 'anchorBarVisible'];
+
+    page.header.visible.valueInFile = header?.visible;
+    page.header.visible.configurationPath = [...basePath, 'visible'];
 }
 
 interface PageSettings {
@@ -528,9 +582,11 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
 /**
  * Links application-level settings from manifest configuration for Fiori Elements V4.
  *
- * @param config - The manifest application settings
+ * @param context - Linker context containing parsed application data
+ * @returns A linked Fiori Elements V4 application object
  */
-function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV4App {
+function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
+    const config: ManifestApplicationSettings = context.app.manifestObject['sap.fe'] ?? {};
     const createMode = config.macros?.table?.defaultCreationMode;
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',

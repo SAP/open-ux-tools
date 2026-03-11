@@ -12,7 +12,8 @@ import {
     getErrorMessage,
     loadingTestConnectionInfo,
     validateSystemInfo,
-    getSystemInfo
+    getSystemInfo,
+    hasServiceMetadata
 } from '../utils';
 import { TelemetryHelper, compareSystems, getBackendSystemService, shouldStoreSystemInfo, t } from '../../../utils';
 import {
@@ -44,22 +45,10 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
         return;
     }
 
-    let serviceCount: CatalogServicesCounts = { v2Request: {}, v4Request: {} };
-    try {
-        serviceCount = await getCatalogServiceCount(system);
-
-        const { v2Request, v4Request } = serviceCount;
-
-        if ((v2Request.count ?? 0) > 0 || (v4Request.count ?? 0) > 0) {
-            postConnectionStatus(postMessage, true, serviceCount);
-            logServiceSummary(system.name, serviceCount);
-            logTestTelemetry(TestConnectionStatus.SUCCEED, system.systemType);
-        } else {
-            throw new Error(t('error.noServices'));
-        }
-    } catch (e) {
-        handleCatalogError(postMessage, serviceCount, isGuidedAnswersEnabled, e as Error);
-        logTestTelemetry(TestConnectionStatus.FAILED, system.systemType);
+    if (system.connectionType === 'abap_catalog') {
+        await testCatalog(system, isGuidedAnswersEnabled, postMessage);
+    } else if (system.connectionType === 'odata_service') {
+        await testODataService(system, postMessage);
     }
 
     try {
@@ -72,21 +61,81 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
 }
 
 /**
+ * Tests the connection to an ABAP system by retrieving the count of available OData services from the catalog.
+ *
+ * @param system - the backend system
+ * @param isGuidedAnswersEnabled - isGuidedAnswersEnabled
+ * @param postMessage - function to post message to the webview
+ */
+async function testCatalog(
+    system: BackendSystem,
+    isGuidedAnswersEnabled: boolean,
+    postMessage: (msg: unknown) => void
+): Promise<void> {
+    let serviceCount: CatalogServicesCounts = { v2Request: {}, v4Request: {} };
+    try {
+        serviceCount = await getCatalogServiceCount(system);
+
+        const { v2Request, v4Request } = serviceCount;
+
+        if ((v2Request.count ?? 0) > 0 || (v4Request.count ?? 0) > 0) {
+            postConnectionStatus({ connected: true, catalogResults: serviceCount, postMessage });
+            logServiceSummary(system.name, serviceCount);
+            logTestTelemetry(TestConnectionStatus.SUCCEED, system.systemType);
+        } else {
+            throw new Error(t('error.noServices'));
+        }
+    } catch (e) {
+        handleCatalogError(postMessage, serviceCount, isGuidedAnswersEnabled, e as Error);
+        logTestTelemetry(TestConnectionStatus.FAILED, system.systemType);
+    }
+}
+
+/**
+ * Tests the connection to a generic host system.
+ *
+ * @param system - the backend system
+ * @param postMessage - function to post message to the webview
+ */
+async function testODataService(system: BackendSystem, postMessage: (msg: unknown) => void): Promise<void> {
+    try {
+        await hasServiceMetadata(system);
+        postConnectionStatus({ connected: true, message: t('info.serviceMetadata'), postMessage });
+        logTestTelemetry(TestConnectionStatus.SUCCEED, system.systemType);
+    } catch (e) {
+        postConnectionStatus({
+            connected: false,
+            message: t('info.noServiceMetadata'),
+            postMessage
+        });
+        logServiceRequestError(e as AxiosError);
+        logTestTelemetry(TestConnectionStatus.FAILED, system.systemType);
+    }
+}
+
+/**
  * Posts the connection status message to the webview.
  *
- * @param postMessage - function to post message to the webview
- * @param connected - if the connection was successful
- * @param catalogResults - optional catalog results containing service counts
- * @param message - optional message to include
- * @param guidedAnswerLink - optional guided answer link details
+ * @param params - parameters for posting the connection status
+ * @param params.postMessage - function to post message to the webview
+ * @param params.connected - if the connection was successful
+ * @param params.catalogResults - optional catalog results containing service counts
+ * @param params.message - optional message to include
+ * @param params.guidedAnswerLink - optional guided answer link details
  */
-function postConnectionStatus(
-    postMessage: (msg: unknown) => void,
-    connected: boolean,
-    catalogResults?: CatalogServicesCounts,
-    message?: string,
-    guidedAnswerLink?: IActionCalloutDetail
-): void {
+function postConnectionStatus({
+    postMessage,
+    connected,
+    catalogResults,
+    message,
+    guidedAnswerLink
+}: {
+    postMessage: (msg: unknown) => void;
+    connected: boolean;
+    catalogResults?: CatalogServicesCounts;
+    message?: string;
+    guidedAnswerLink?: IActionCalloutDetail;
+}): void {
     postMessage(connectionStatusMsg({ connectionStatus: { connected, catalogResults, message }, guidedAnswerLink }));
 }
 
@@ -109,7 +158,7 @@ function handleCatalogError(
 
     const catalogResultError = catalog.v2Request.error ?? catalog.v4Request.error;
     if (!catalogResultError) {
-        return postConnectionStatus(postMessage, false, undefined, error?.message);
+        return postConnectionStatus({ connected: false, message: error?.message, postMessage });
     }
 
     const errorType = getErrorType(catalogResultError);
@@ -119,13 +168,22 @@ function handleCatalogError(
         logGATelemetry(GuidedAnswersLinkAction.LINK_CREATED, errorType, isGuidedAnswersEnabled);
     }
 
-    return postConnectionStatus(
-        postMessage,
-        false,
-        undefined,
-        getErrorMessage(errorType, catalogResultError),
-        guidedAnswerLink
-    );
+    return postConnectionStatus({
+        connected: false,
+        message: getErrorMessage(errorType, catalogResultError),
+        guidedAnswerLink,
+        postMessage
+    });
+}
+
+/**
+ * Logs the error that occurred during the service request.
+ *
+ * @param error - the axios error
+ */
+function logServiceRequestError(error: AxiosError): void {
+    SystemsLogger.logger.error(t('error.serviceRequest', { error: error.message }));
+    logAxiosError(error);
 }
 
 /**
@@ -135,27 +193,43 @@ function handleCatalogError(
  */
 function logCatalogErrors(catalogResult: CatalogServicesCounts): void {
     if (catalogResult.v2Request.error) {
-        logAxiosError(ODataVersion.v2, catalogResult.v2Request.error as AxiosError);
+        logCatalogError(ODataVersion.v2, catalogResult.v2Request.error as AxiosError);
     }
     if (catalogResult.v4Request.error) {
-        logAxiosError(ODataVersion.v4, catalogResult.v4Request.error as AxiosError);
+        logCatalogError(ODataVersion.v4, catalogResult.v4Request.error as AxiosError);
     }
+}
+
+/**
+ * Logs the catalog error details.
+ *
+ * @param version - OData version
+ * @param error - Axios error
+ */
+function logCatalogError(version: ODataVersion, error: AxiosError): void {
+    SystemsLogger.logger.error(t('error.catalogRequest', { version, error: error.message }));
+    logAxiosError(error);
 }
 
 /**
  * Logs the error details.
  *
- * @param version - OData version
  * @param error - Axios error
  */
-function logAxiosError(version: ODataVersion, error: AxiosError): void {
-    SystemsLogger.logger.error(t('error.catalogRequest', { version, error: error.message }));
+function logAxiosError(error: AxiosError): void {
+    const safeStringify = (obj: unknown): string => {
+        try {
+            return JSON.stringify(obj, null, 2);
+        } catch {
+            return String(obj);
+        }
+    };
 
     if (error.response?.data) {
-        SystemsLogger.logger.debug(JSON.stringify(error.response.data, null, 2));
+        SystemsLogger.logger.debug(safeStringify(error.response.data));
     }
     if (error.cause) {
-        SystemsLogger.logger.debug(JSON.stringify(error.cause, null, 2));
+        SystemsLogger.logger.debug(safeStringify(error.cause));
     }
 }
 

@@ -29,6 +29,7 @@ import {
     SET_CHART_QUESTIONS,
     SET_CHOICES,
     SET_FILTERBAR_QUESTIONS,
+    SET_FORM_QUESTIONS,
     SET_TABLE_QUESTIONS,
     SET_PAGE_QUESTIONS,
     SET_VALIDATION_RESULTS,
@@ -133,6 +134,7 @@ const QUESTIONS_TYPE_MAP = new Map([
     [PromptsType.Table, SET_TABLE_QUESTIONS],
     [PromptsType.Chart, SET_CHART_QUESTIONS],
     [PromptsType.FilterBar, SET_FILTERBAR_QUESTIONS],
+    [PromptsType.Form, SET_FORM_QUESTIONS],
     [PromptsType.Page, SET_PAGE_QUESTIONS],
     [PromptsType.RichTextEditor, SET_RICH_TEXT_EDITOR_QUESTIONS],
     [PromptsType.RichTextEditorButtonGroups, SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS]

@@ -194,12 +194,7 @@ describe('getAbapTargetPrompts', () => {
                     destination: 'mockDest1'
                 })
             ).toBe(false);
-            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith(
-                'mockDest1',
-                mockDestinations,
-                undefined,
-                undefined
-            );
+            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith('mockDest1', mockDestinations);
         } else {
             throw new Error('Destination setter prompt not found');
         }
@@ -211,7 +206,6 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: mockTargetSystems
         });
-        jest.spyOn(validators, 'validateTargetSystem').mockResolvedValueOnce(true);
 
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const targetSystemPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.targetSystem);
@@ -280,11 +274,11 @@ describe('getAbapTargetPrompts', () => {
         );
 
         if (targetSystemCliSetterPrompt) {
-            expect(
+            await expect(
                 (targetSystemCliSetterPrompt.when as Function)({
-                    targetSystem: 'target1'
+                    targetSystem: 'https://target.com'
                 })
-            ).toBe(false);
+            ).resolves.toBe(false);
             expect(validateTargetSystemUrlCliSpy).toHaveBeenCalledTimes(1);
         } else {
             throw new Error('Target system setter prompt not found');
@@ -297,7 +291,7 @@ describe('getAbapTargetPrompts', () => {
             backendSystems: undefined
         });
         PromptState.isYUI = true;
-        jest.spyOn(validators, 'validateTargetSystemUrlCli').mockReturnValueOnce();
+        jest.spyOn(validators, 'validateTargetSystemUrlCli').mockResolvedValueOnce();
         jest.spyOn(validators, 'validateUrl').mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const urlPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.url);

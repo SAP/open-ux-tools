@@ -130,6 +130,27 @@ export async function applyOptionalFeatures(
 }
 
 /**
+ * Adds eslint configuration to a project.
+ *
+ * @param basePath - base path to be used for adding the config
+ * @param fs - file system reference
+ */
+export async function addEslintFeature(basePath: string, fs: Editor): Promise<void> {
+    const input = {
+        tmplPath: join(__dirname, '../templates'),
+        basePath: basePath,
+        fs: fs,
+        ui5Configs: [] as UI5Config[], // the ui5Configs is not used for eslint configuration
+        ui5App: {
+            app: {
+                id: 'dummy' // the app config is not used for eslint configuration
+            }
+        }
+    } satisfies FeatureInput;
+    await copyTemplates('eslint', input);
+}
+
+/**
  * Generates the resource URL based on the project type and ui5 framework details.
  *
  * @param {boolean} isEdmxProjectType Indicates if the project type is Edmx or CAP.
