@@ -2,15 +2,16 @@
 
 ## Table of Contents
 
-- [1. Add Custom Table Column.](#1-add-custom-table-column)
+- [1. Add Custom Table Column(manifest change).](#1-add-custom-table-columnmanifest-change)
 - [2. Enable Variant Management in Tables.](#2-enable-variant-management-in-tables)
 - [3. Enable Empty row mode.](#3-enable-empty-row-mode)
 - [4. Change table actions](#4-change-table-actions)
 - [5. Add SubObject Page Quick Action](#5-add-subobject-page-quick-action)
 - [6. Add Custom Table Action to Object page](#6-add-custom-table-action-to-object-page)
+- [7: Add Custom Page Action to OP page](#7-add-custom-page-action-to-op-page)
 
-<a id="1-add-custom-table-column"></a>
-## 1. Add Custom Table Column.
+<a id="1-add-custom-table-columnmanifest-change"></a>
+## 1. Add Custom Table Column(manifest change).
 
 ### Steps
 
@@ -20,25 +21,19 @@
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Add Custom Table Column` button in the Quick Actions Panel
-7. Fill `Fragment Name` field with `table-column` in the dialog `Add Custom Table Column`
-8. Click `Save and Reload` button in the toolBar
-9. Verify changes:
+7. Fill `Column ID` field with `testColumnId` in the dialog `Add Custom Table Column`
+8. Fill `Fragment Name` field with `TestFragment` in the dialog `Add Custom Table Column`
+9. Click `Save and Reload` button in the toolBar
+10. Verify changes:
 
 **Fragment(s)**
 
-**table-column.fragment.xml**
+**TestFragment.fragment.xml**
 ```xml
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
-    <!-- viewName: sap.fe.templates.ObjectPage.ObjectPage -->
-    <!-- controlType: sap.ui.mdc.Table -->
-    <!-- targetAggregation: columns --> 
-    <table:Column
-        id="column-<UNIQUE_ID>"
-        width="10%"
-        header="New Column">
         <Text id="text-<UNIQUE_ID>" text="Sample data"/>
-    </table:Column>
 </core:FragmentDefinition>
+
 ```
 
 **Change(s)**
@@ -46,18 +41,28 @@
 ```json
 {
   "fileType": "change",
-  "changeType": "addXML",
+  "changeType": "appdescr_fe_changePageConfiguration",
   "content": {
-    "targetAggregation": "columns",
-    "index": 3,
-    "fragmentPath": "fragments/table-column.fragment.xml"
+    "page": "RootEntityObjectPage",
+    "entityPropertyChange": {
+      "operation": "UPSERT",
+      "propertyPath": "controlConfiguration/toFirstAssociatedEntity/@com.sap.vocabularies.UI.v1.LineItem#tableSection/columns/testColumnId",
+      "propertyValue": {
+        "header": "New Column",
+        "position": {
+          "anchor": "DataField::DateProperty",
+          "placement": "After"
+        },
+        "template": "adp.fiori.elements.v4.changes.fragments.TestFragment"
+      }
+    }
   }
 }
 ```
 
 
-10. Check Column Name is `New Column`
-11. Check Column Data is `Sample data`
+11. Check Column Name is `New Column`
+12. Check Column Data is `Sample data`
 
 ---
 
@@ -208,40 +213,83 @@
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Add Custom Table Action` button in the Quick Actions Panel
-7. Fill `Fragment Name` field with `op-table-action` in the dialog `Add Custom Table Action`
-8. Click `Save and Reload` button in the toolBar
-9. Verify changes:
-
-**Fragment(s)**
-
-**op-table-action.fragment.xml**
-```xml
-<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!-- viewName: sap.fe.templates.ObjectPage.ObjectPage -->
-    <!-- controlType: sap.ui.mdc.Table -->
-    <!-- targetAggregation: actions --> 
-    <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-<UNIQUE_ID>" >
-        <Button xmlns:m="sap.m" id="btn-<UNIQUE_ID>" visible="true" text="New Action" />
-    </actiontoolbar:ActionToolbarAction>
-</core:FragmentDefinition>
-```
+7. Fill `Action Id` field with `testTableActionId` in the dialog `Add Custom Table Action`
+8. Fill `Button Text` field with `Test Table Action` in the dialog `Add Custom Table Action`
+9. Click `Save and Reload` button in the toolBar
+10. Verify changes:
 
 **Change(s)**
 
 ```json
 {
   "fileType": "change",
-  "changeType": "addXML",
+  "changeType": "appdescr_fe_changePageConfiguration",
   "content": {
-    "targetAggregation": "actions",
-    "index": 0,
-    "fragmentPath": "fragments/op-table-action.fragment.xml"
+    "page": "RootEntityObjectPage",
+    "entityPropertyChange": {
+      "operation": "UPSERT",
+      "propertyPath": "controlConfiguration/toFirstAssociatedEntity/@com.sap.vocabularies.UI.v1.LineItem#tableSection/actions/testTableActionId",
+      "propertyValue": {
+        "enabled": true,
+        "position": {
+          "anchor": "DataFieldForAction::Service.approveRootEntity",
+          "placement": "Before"
+        },
+        "press": ".extension.<ApplicationId.FolderName.ScriptFilename.methodName>",
+        "text": "Test Table Action",
+        "visible": true,
+        "requiresSelection": false
+      }
+    }
   }
 }
 ```
 
 
-10. Check control with label `New Action` is visible in the `Running Application Preview`
+11. Check control with label `Test Table Action` is visible in the `Running Application Preview`
+
+---
+
+<a id="7-add-custom-page-action-to-op-page"></a>
+## 7: Add Custom Page Action to OP page
+
+### Steps
+
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
+3. Click `Go` button in the Running Application Preview
+4. Click on row `1` of `Root Entities` table 
+5. Click `UI Adaptation` button in the toolBar
+6. Click `Add Custom Page Action` button in the Quick Actions Panel
+7. Fill `Action Id` field with `testActionId` in the dialog `Add Custom Page Action`
+8. Fill `Button Text` field with `Test Page Action` in the dialog `Add Custom Page Action`
+9. Click `Save and Reload` button in the toolBar
+10. Verify changes:
+
+**Change(s)**
+
+```json
+{
+  "fileType": "change",
+  "changeType": "appdescr_fe_changePageConfiguration",
+  "content": {
+    "page": "RootEntityObjectPage",
+    "entityPropertyChange": {
+      "operation": "UPSERT",
+      "propertyPath": "content/header/actions/testActionId",
+      "propertyValue": {
+        "enabled": true,
+        "press": ".extension.<ApplicationId.FolderName.ScriptFilename.methodName>",
+        "text": "Test Page Action",
+        "visible": true
+      }
+    }
+  }
+}
+```
+
+
+11. Check control with label `Test Page Action` is visible in the `Running Application Preview`
 
 ---
 

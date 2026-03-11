@@ -3,6 +3,10 @@ import { bindingContextRelative, bindingContextAbsolute } from '../../types';
 import type { PromptContext } from '../../../prompts/types';
 import { getEntitySets } from './service';
 import { i18nNamespaces, translate } from '../../../i18n';
+import { join } from 'node:path';
+import { getExistingButtonGroups } from '../utils/xml';
+import type { Answers } from 'inquirer';
+import { BUTTON_GROUP_CONFIGS } from '../../processor';
 
 /**
  * Loads entity sets from cache or fetches them for the given context.
@@ -143,4 +147,41 @@ export function resolveBindingContextTypeChoices(context: PromptContext) {
         };
     }
     return getBindingContextTypeChoices();
+}
+
+/**
+ * Get button groups choices based on existing XML content.
+ * If no existing button groups, only defaults are checked.
+ *
+ * @param context - Prompt context
+ * @param answers - Current answers
+ * @returns Array of button group choices with checked state based on XML
+ */
+export async function getButtonGroupsChoices(context: PromptContext, answers: Answers) {
+    const { project, appPath, fs } = context;
+    if (!project) {
+        return [];
+    }
+
+    // Get existing button groups from XML if viewOrFragmentPath is available
+    let existingButtonGroups = new Set<string>();
+    if (answers.viewOrFragmentPath) {
+        const xmlFilePath = join(appPath, answers.viewOrFragmentPath);
+        existingButtonGroups = await getExistingButtonGroups(xmlFilePath, answers.aggregationPath, fs);
+    }
+
+    // If no existing button groups, use defaults
+    const isInitial = !existingButtonGroups || existingButtonGroups.size === 0;
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.richTextEditorButtonGroups.');
+
+    return BUTTON_GROUP_CONFIGS.map((config) => {
+        const name = t(`choices.${config.name}`) as string;
+        return {
+            name: name,
+            value: config.name,
+            hidden: !isInitial && existingButtonGroups.has(config.name),
+            checked: existingButtonGroups.has(config.name),
+            title: name
+        };
+    });
 }

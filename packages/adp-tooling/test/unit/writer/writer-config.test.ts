@@ -16,7 +16,7 @@ import type {
 import { t } from '../../../src/i18n';
 import { AppRouterType } from '../../../src/types';
 import { getCfConfig } from '../../../src/writer/writer-config';
-import { FlexLayer, getProviderConfig, getConfig } from '../../../src';
+import { FlexLayer, getProviderConfig, getConfig, getSupportedProject, SupportedProject } from '../../../src';
 import type { CfConfig, CfServicesAnswers, CreateCfConfigParams } from '../../../src/types';
 
 const basePath = join(__dirname, '../../fixtures/base-app/manifest.json');
@@ -24,6 +24,11 @@ const manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
 
 jest.mock('../../../src/abap/config.ts', () => ({
     getProviderConfig: jest.fn()
+}));
+
+jest.mock('../../../src/source/systems.ts', () => ({
+    ...jest.requireActual('../../../src/source/systems.ts'),
+    getSupportedProject: jest.fn()
 }));
 
 const systemDetails = {
@@ -44,7 +49,7 @@ const mockAbapProvider = {
         getSystemInfo: getSystemInfoMock
     })
 } as unknown as AbapServiceProvider;
-
+const getSupportedProjectMock = getSupportedProject as jest.MockedFunction<typeof getSupportedProject>;
 const getProviderConfigMock = getProviderConfig as jest.Mock;
 
 const configAnswers: ConfigAnswers = {
@@ -73,15 +78,18 @@ const baseConfig: ConfigOptions = {
     packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
     logger: {} as ToolsLogger,
     manifest,
-    toolsId: 'test-tools-id'
+    toolsId: 'test-tools-id',
+    keyUserChanges: [],
+    projectType: AdaptationProjectType.CLOUD_READY
 };
 
 describe('getConfig', () => {
     beforeEach(() => {
         getProviderConfigMock.mockResolvedValue(systemDetails);
+        getSupportedProjectMock.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
     });
 
-    it('returns the correct config with provided parameters when system is cloud ready', async () => {
+    it('returns the correct config with provided parameters when system and the project type are cloud ready', async () => {
         isAbapCloudMock.mockResolvedValue(true);
         const config = await getConfig(baseConfig);
 
@@ -102,7 +110,9 @@ describe('getConfig', () => {
                         id: '@sap-ux/generator-adp',
                         toolsId: 'test-tools-id',
                         version: '0.0.1'
-                    }
+                    },
+                    projectType: AdaptationProjectType.CLOUD_READY,
+                    supportedProject: SupportedProject.CLOUD_READY_AND_ON_PREM
                 }
             },
             target: {
@@ -115,12 +125,25 @@ describe('getConfig', () => {
                 shouldSetMinVersion: true,
                 version: '1.135.0'
             },
-            options: { fioriTools: true, enableTypeScript: false }
+            options: { fioriTools: true, enableTypeScript: false },
+            keyUserChanges: []
         });
     });
 });
 
 describe('getCfConfig', () => {
+    const mockServiceKeys = [
+        {
+            credentials: {
+                uaa: {} as any,
+                uri: 'test-uri',
+                endpoints: {},
+                'html5-apps-repo': {
+                    app_host_id: 'host-123'
+                }
+            }
+        }
+    ];
     const baseParams: CreateCfConfigParams = {
         projectPath: '/test/project',
         layer: FlexLayer.CUSTOMER_BASE,
@@ -157,7 +180,11 @@ describe('getCfConfig', () => {
         packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
         toolsId: 'test-tools-id',
         html5RepoRuntimeGuid: 'runtime-guid',
-        publicVersions: { latest: { version: '1.135.0' } as VersionDetail }
+        publicVersions: { latest: { version: '1.135.0' } as VersionDetail },
+        serviceInfo: {
+            serviceKeys: mockServiceKeys,
+            serviceInstance: { guid: 'service-guid', name: 'service-name' }
+        }
     };
 
     test('should create CF config with managed approuter', () => {

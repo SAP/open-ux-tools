@@ -171,4 +171,22 @@ export function isBackendSystemKeyExisting(
     return backendSystems.find((backendSystem) => BackendSystemKey.from(backendSystem).getId() === newBackendSystemId);
 }
 
+/**
+ * Compare 2 string arrays without considering ordering.
+ *
+ * @param array1
+ * @param array2
+ */
+export function areArraysEquivalent(array1: Array<string> | undefined, array2: Array<string> | undefined): boolean {
+    // Both undefined, same length or same object ref
+    if ((!array1 && !array2) || (array1?.length === 0 && array2?.length === 0) || array1 === array2) {
+        return true;
+    }
+    // If either undefined must be different due to earlier condition
+    if (!array1 || !array2) {
+        return false;
+    }
+    return [...array1].sort().toString() === [...array2].sort().toString();
+}
+
 export { PromptState };

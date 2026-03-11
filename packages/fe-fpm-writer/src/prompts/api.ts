@@ -32,7 +32,7 @@ export class PromptsAPI {
     private cache: { [N in SupportedPrompts as N['type']]?: Prompts<N['answers']> } = {};
 
     /**
-     * Contructore of prompt API.
+     * Constructor of prompt API.
      *
      * @param fs the file system object for reading files
      * @param project
@@ -64,11 +64,10 @@ export class PromptsAPI {
         fs?: Editor,
         options?: PromptContextOptions
     ): Promise<PromptsAPI> {
-        if (!fs) {
-            fs = create(createStorage());
-        }
+        fs = fs ?? create(createStorage());
         await initI18n();
         const project = projectPath ? await getProject(projectPath) : undefined;
+
         return new PromptsAPI(fs, project, appId, options);
     }
 
@@ -83,6 +82,7 @@ export class PromptsAPI {
     ): Promise<Prompts<NarrowPrompt<typeof type>['answers']>> {
         const method = type in PromptsQuestionsMap ? PromptsQuestionsMap[type] : unsupportedPrompts;
         const prompt = await (method(this.context) as Promise<Prompts<NarrowPrompt<typeof type>['answers']>>);
+
         // Update cache
         this.cache = {
             ...this.cache,
@@ -107,7 +107,7 @@ export class PromptsAPI {
         try {
             const prompt = this.cache[type] ?? (await this.getPrompts(type));
             const question = prompt.questions.find((question) => question.name === fieldName);
-            if (question?.type === 'list') {
+            if (question && (question.type === 'list' || question.type === 'checkbox')) {
                 const choices =
                     typeof question.choices === 'function' ? await question.choices(answers) : question.choices;
                 return choices ?? [];
@@ -184,7 +184,8 @@ export class PromptsAPI {
         const generator = PromptsGeneratorsMap.hasOwnProperty(config.type)
             ? PromptsGeneratorsMap[config.type]
             : undefined;
-        return generator?.(this.context.appPath, config.answers, this.context.fs) ?? this.context.fs;
+        config.answers.buildingBlockData = { ...config.answers.buildingBlockData };
+        return generator?.(this.context.appPath, { ...config.answers }, this.context.fs) ?? this.context.fs;
     }
 
     /**

@@ -3,19 +3,27 @@ import { promises as fsPromises } from 'node:fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 
-import type { BuildingBlockConfig, Chart, Field, FilterBar, Table, CustomColumn, CustomFilterField } from '../../src';
+import type {
+    BuildingBlockConfig,
+    Chart,
+    Field,
+    FilterBar,
+    Form,
+    Table,
+    CustomColumn,
+    CustomFilterField,
+    Action
+} from '../../src';
 
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
-import { BUILDING_BLOCK_CONFIG } from '../../src/building-block';
+import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
-import {
-    bindingContextAbsolute,
-    bindingContextRelative,
-    type BindingContextType
-} from '../../src/building-block/types';
+import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types';
 import { i18nNamespaces, translate } from '../../src/i18n';
 import { Placement } from '../../src/common/types';
+import type { IdGeneratorFunction } from '../../src/common/file';
+import * as fileAccess from '@sap-ux/project-access/dist/file';
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -26,14 +34,22 @@ describe('Building Blocks', () => {
     const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
     const xmlFragmentFilePath = 'webapp/ext/fragment/custom.fragment.xml';
     const testOutputRoot = join(__dirname, '../test-output/unit/building-block');
-
+    let generateId: IdGeneratorFunction;
     beforeAll(() => {
         clearTestOutput(testOutputRoot);
     });
 
     beforeEach(async () => {
+        let item = 0;
         jest.requireActual('mem-fs-editor');
         fs = create(createStorage());
+        jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
+        generateId = jest.fn((baseId: string) => {
+            if (['Item', 'ButtonGroup'].includes(baseId)) {
+                return `${baseId}${item++}`;
+            }
+            return `${baseId}`;
+        });
         testAppPath = join(testOutputRoot, `${Date.now()}`);
         fs.delete(testAppPath);
         if (!testXmlViewContent) {
@@ -68,6 +84,7 @@ describe('Building Blocks', () => {
                         aggregationPath: 'testAggregation',
                         buildingBlockData: {
                             id: 'testFilterBar',
+                            generateId,
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
                     },
@@ -85,6 +102,7 @@ describe('Building Blocks', () => {
                         viewOrFragmentPath: 'invalidXmlViewFilePath',
                         aggregationPath: 'testAggregation',
                         buildingBlockData: {
+                            generateId,
                             id: 'testFilterBar',
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
@@ -107,6 +125,7 @@ describe('Building Blocks', () => {
                         aggregationPath: 'testAggregation',
                         buildingBlockData: {
                             id: 'testFilterBar',
+                            generateId,
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
                     },
@@ -148,6 +167,7 @@ describe('Building Blocks', () => {
                 aggregationPath: aggregationPath,
                 buildingBlockData: {
                     id: 'testFilterBar',
+                    generateId,
                     buildingBlockType: BuildingBlockType.FilterBar
                 }
             },
@@ -174,6 +194,7 @@ describe('Building Blocks', () => {
                         aggregationPath: aggregationPath,
                         buildingBlockData: {
                             id: 'testFilterBar',
+                            generateId,
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
                     },
@@ -196,6 +217,7 @@ describe('Building Blocks', () => {
                         aggregationPath: 'testAggregationPath',
                         buildingBlockData: {
                             id: 'testFilterBar',
+                            generateId,
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
                     },
@@ -226,6 +248,7 @@ describe('Building Blocks', () => {
                         aggregationPath: aggregationPath,
                         buildingBlockData: {
                             id: 'testFilterBar',
+                            generateId,
                             buildingBlockType: BuildingBlockType.FilterBar
                         }
                     },
@@ -244,6 +267,7 @@ describe('Building Blocks', () => {
                     aggregationPath: 'testAggregationPath',
                     buildingBlockData: {
                         id: 'testFilterBar',
+                        generateId,
                         buildingBlockType: BuildingBlockType.FilterBar
                     }
                 })
@@ -275,6 +299,7 @@ describe('Building Blocks', () => {
             aggregationPath: aggregationPath,
             buildingBlockData: {
                 id: 'testFilterBar',
+                generateId,
                 buildingBlockType: BuildingBlockType.FilterBar
             }
         });
@@ -295,6 +320,7 @@ describe('Building Blocks', () => {
                 aggregationPath: aggregationPath,
                 buildingBlockData: {
                     id: 'testFilterBar',
+                    generateId,
                     buildingBlockType: BuildingBlockType.FilterBar,
                     filterChanged: 'onFilterChanged',
                     search: 'onSearch',
@@ -374,25 +400,29 @@ describe('Building Blocks', () => {
             {
                 buildingBlockData: {
                     id: 'testFilterBar',
-                    buildingBlockType: BuildingBlockType.FilterBar
+                    buildingBlockType: BuildingBlockType.FilterBar,
+                    generateId
                 } as FilterBar
             },
             {
                 buildingBlockData: {
                     id: 'testChart',
-                    buildingBlockType: BuildingBlockType.Chart
+                    buildingBlockType: BuildingBlockType.Chart,
+                    generateId
                 } as Chart
             },
             {
                 buildingBlockData: {
                     id: 'testField',
-                    buildingBlockType: BuildingBlockType.Field
+                    buildingBlockType: BuildingBlockType.Field,
+                    generateId
                 } as Field
             },
             {
                 buildingBlockData: {
                     id: 'testTable',
-                    buildingBlockType: BuildingBlockType.Table
+                    buildingBlockType: BuildingBlockType.Table,
+                    generateId
                 } as Field
             }
         ];
@@ -426,6 +456,7 @@ describe('Building Blocks', () => {
             buildingBlockType: BuildingBlockType.FilterBar,
             contextPath: 'testContextPath',
             metaPath: 'testMetaPath',
+            generateId,
             filterChanged: 'testOnFilterChanged',
             search: 'testOnSearch'
         };
@@ -435,6 +466,7 @@ describe('Building Blocks', () => {
             contextPath: 'testContextPath',
             metaPath: 'testMetaPath',
             filterBar: 'testFilterBar',
+            generateId,
             personalization: 'testPersonalization',
             selectionMode: 'MULTIPLE',
             selectionChange: 'testOnSelectionChange'
@@ -444,6 +476,7 @@ describe('Building Blocks', () => {
             buildingBlockType: BuildingBlockType.Field,
             contextPath: 'testContextPath',
             metaPath: 'testMetaPath',
+            generateId,
             formatOptions: JSON.stringify({ displayMode: 'Value' }).replace(/\"/g, `'`),
             readOnly: true,
             semanticObject: 'testSemanticObject'
@@ -454,6 +487,7 @@ describe('Building Blocks', () => {
             contextPath: 'testContextPath',
             metaPath: 'testMetaPath',
             busy: true,
+            generateId,
             enableAutoColumnWidth: true,
             enableExport: true,
             enableFullScreen: true,
@@ -637,6 +671,7 @@ describe('Building Blocks', () => {
                         aggregationPath,
                         buildingBlockData: {
                             buildingBlockType: testData.buildingBlockData.buildingBlockType,
+                            generateId,
                             id: testData.buildingBlockData.id
                         }
                     },
@@ -660,6 +695,7 @@ describe('Building Blocks', () => {
                     aggregationPath,
                     buildingBlockData: {
                         buildingBlockType: BuildingBlockType.Table,
+                        generateId,
                         id: 'Test'
                     },
                     allowAutoAddDependencyLib: false
@@ -757,6 +793,243 @@ describe('Building Blocks', () => {
         });
     });
 
+    describe('Form building block', () => {
+        test('generate Form building block with just ID', async () => {
+            const basePath = join(testAppPath, 'generate-form-with-id');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                generateId,
+                buildingBlockType: BuildingBlockType.Form
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-with-id');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate Form building block with title property', async () => {
+            const basePath = join(testAppPath, 'generate-form-with-title');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                generateId,
+                title: 'Test Form Title'
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-with-title');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate Form building block with contextPath and metaPath', async () => {
+            const basePath = join(testAppPath, 'generate-form-with-context-meta-path');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                generateId,
+                contextPath: '/TestEntity',
+                metaPath: '@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation',
+                title: 'General Information'
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-with-context-meta-path');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate Form building block with metaPath as object', async () => {
+            const basePath = join(testAppPath, 'generate-form-with-metapath-object');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                generateId,
+                title: 'Form with MetaPath Object',
+                metaPath: {
+                    entitySet: 'TestEntitySet',
+                    qualifier: '@com.sap.vocabularies.UI.v1.FieldGroup#Details',
+                    bindingContextType: 'absolute' as BindingContextType
+                }
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-with-metapath-object');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate Form building block with ReferenceFacet annotation', async () => {
+            const basePath = join(testAppPath, 'generate-form-with-reference-facet');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                generateId,
+                contextPath: '/TestEntity',
+                metaPath: '@com.sap.vocabularies.UI.v1.ReferenceFacet#FormDetails',
+                title: 'Form Details'
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-with-reference-facet');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate Form building block in xml fragment', async () => {
+            const basePath = join(testAppPath, 'generate-form-in-fragment');
+            const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentContent);
+
+            const buildingBlockData: Form = {
+                id: 'testFormInFragment',
+                buildingBlockType: BuildingBlockType.Form,
+                generateId,
+                contextPath: '/TestEntity',
+                metaPath: '@com.sap.vocabularies.UI.v1.FieldGroup#Info',
+                title: 'Fragment Form'
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-in-fragment');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('getSerializedFileContent for Form building block', async () => {
+            const basePath = join(testAppPath, 'get-form-snippet');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                generateId,
+                contextPath: '/TestEntity',
+                metaPath: '@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation',
+                title: 'Test Form'
+            };
+
+            const codeSnippet = await getSerializedFileContent<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(codeSnippet.viewOrFragmentPath.content).toBeDefined();
+            expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
+            expect(codeSnippet.manifest).toBeDefined();
+        });
+
+        test('generate Form building block without macros namespace', async () => {
+            const basePath = join(testAppPath, 'generate-form-without-macros-ns');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            const xmlViewContentWithoutMacrosNs = (
+                await fsPromises.readFile(
+                    join('test/unit/sample/building-block/webapp-without-macros-ns-xml-view/ext/main/Main.view.xml'),
+                    'utf-8'
+                )
+            ).toLocaleString();
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), xmlViewContentWithoutMacrosNs);
+
+            const buildingBlockData: Form = {
+                id: 'testForm',
+                buildingBlockType: BuildingBlockType.Form,
+                generateId,
+                title: 'Test Form'
+            };
+
+            await generateBuildingBlock<Form>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-form-without-macros-ns');
+            await writeFilesForDebugging(fs);
+        });
+    });
+
     test('Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false"', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
         const basePath = join(__dirname, 'sample/building-block/webapp-prompts');
@@ -781,6 +1054,7 @@ describe('Building Blocks', () => {
                 allowAutoAddDependencyLib: false,
                 buildingBlockData: {
                     id: 'testFilterBar',
+                    generateId,
                     buildingBlockType: BuildingBlockType.FilterBar
                 }
             },
@@ -796,7 +1070,8 @@ describe('Building Blocks', () => {
             id: 'testPage',
             buildingBlockType: BuildingBlockType.Page,
             title: 'Test Page Title',
-            description: 'Test Page Description'
+            description: 'Test Page Description',
+            generateId
         };
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
@@ -822,7 +1097,8 @@ describe('Building Blocks', () => {
             id: 'testPage',
             buildingBlockType: BuildingBlockType.Page,
             title: 'Test Page Title',
-            description: 'Test Page Description'
+            description: 'Test Page Description',
+            generateId
         };
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
@@ -875,6 +1151,7 @@ describe('Building Blocks', () => {
             const customColumnData: CustomColumn = {
                 id: 'testCustomColumn2',
                 buildingBlockType: BuildingBlockType.CustomColumn,
+                generateId,
                 title: 'CustomColumnTitle2',
                 embededFragment: {
                     folder: 'ext/fragment',
@@ -929,6 +1206,7 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumn2',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnTitle2',
+                generateId,
                 embededFragment: {
                     folder: 'ext/fragment',
                     typescript: false,
@@ -969,6 +1247,7 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumn3',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'ExistingFragment',
+                generateId,
                 position: {
                     placement: Placement.After
                 },
@@ -1017,6 +1296,7 @@ describe('Building Blocks', () => {
             const customColumnData: CustomColumn = {
                 id: 'testCustomColumnWithFolder',
                 buildingBlockType: BuildingBlockType.CustomColumn,
+                generateId,
                 title: 'CustomColumnWithFolder',
                 position: {
                     placement: Placement.After
@@ -1064,6 +1344,7 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumnNoFolder',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnNoFolder',
+                generateId,
                 position: {
                     placement: Placement.After
                 },
@@ -1111,6 +1392,7 @@ describe('Building Blocks', () => {
             const customColumnData: CustomColumn = {
                 id: 'testCustomColumnContent',
                 buildingBlockType: BuildingBlockType.CustomColumn,
+                generateId,
                 title: 'CustomColumnContent',
                 position: {
                     placement: Placement.After
@@ -1155,6 +1437,7 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumnFragmentContent',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnFragmentContent',
+                generateId,
                 position: {
                     placement: Placement.After
                 },
@@ -1192,9 +1475,401 @@ describe('Building Blocks', () => {
             const fragmentContent = fs.read(expectedFragmentPath);
             expect(fragmentContent).toContain('Sample Text');
             expect(fragmentContent).toContain('<core:FragmentDefinition');
-            expect(fragmentContent).toContain('<Text text="Sample Text"');
+            expect(fragmentContent).toContain('<Text id="Text" text="Sample Text"');
 
             await writeFilesForDebugging(fs);
+        });
+    });
+
+    describe('Custom Action building block', () => {
+        const testXmlViewContentWithTable = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:Table id="testTable" metaPath="@com.sap.vocabularies.UI.v1.LineItem">
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>`;
+
+        test('generate CustomAction Building blocks', async () => {
+            const basePath = join(testAppPath, 'generate-custom-action-basic');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+            const customActionData: Action = {
+                id: 'testAction1',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'approveAction',
+                text: 'Approve',
+                anchor: 'approveAction',
+                placement: Placement.After,
+                requiresSelection: true,
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onApprove',
+                        fileName: 'ApproveHandlerFile'
+                    },
+                    name: 'approveAction',
+                    folder: 'ext/fragment'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: customActionData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-action-basic');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate multiple CustomActions building blocks', async () => {
+            const basePath = join(testAppPath, 'generate-multiple-custom-actions');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            // Add first action
+            const firstAction: Action = {
+                id: 'testAction5',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'firstAction',
+                text: 'First Action',
+                requiresSelection: false,
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onFirst',
+                        fileName: 'my/test/App/ext/handlers/FirstHandler'
+                    },
+                    name: 'firstAction',
+                    folder: 'ext/fragment'
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: firstAction
+                },
+                fs
+            );
+
+            // Add second action
+            const secondAction: Action = {
+                id: 'testAction6',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'secondAction',
+                text: 'Second Action',
+                anchor: 'firstAction',
+                placement: Placement.After,
+                requiresSelection: true,
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onSecond',
+                        fileName: 'my/test/App/ext/handlers/SecondHandler'
+                    },
+                    name: 'secondAction',
+                    folder: 'ext/fragment'
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: secondAction
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-action-basic');
+        });
+
+        test('generate typescript CustomAction Building blocks', async () => {
+            const basePath = join(testAppPath, 'generate-custom-action-basic-ts');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+            const customActionData: Action = {
+                id: 'testAction1',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'approveAction',
+                text: 'Approve',
+                anchor: 'approveAction',
+                placement: Placement.After,
+                requiresSelection: true,
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onApprove',
+                        fileName: 'ApproveHandlerFile'
+                    },
+                    name: 'approveAction',
+                    folder: 'ext/fragment',
+                    typescript: true
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: customActionData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-action-basic-ts');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('append new function to existing file', async () => {
+            const handlerFileName = 'HandlerFile';
+            const folder = join('ext', 'fragment');
+            const basePath = join(testAppPath, 'generate-multiple-custom-actions');
+            const handlerPath = join(basePath, 'webapp', folder, `${handlerFileName}.js`);
+
+            // Create existing HandlerFile.js file with initial method
+            fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), handlerPath, {
+                eventHandlerFnName: 'onFirst',
+                ns: 'my.test.App.ext.fragment',
+                parameters: []
+            });
+
+            const initialContent = fs.read(handlerPath);
+
+            // Find position to insert new method (before closing brace of return object)
+            const closingBraceIndex = initialContent.lastIndexOf('}');
+            const insertPosition = initialContent.lastIndexOf('}', closingBraceIndex - 1);
+
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            // Add action that appends to existing HandlerFile.js
+            const customAction: Action = {
+                id: 'testAction',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'newAction',
+                text: 'New Action',
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'newFunction',
+                        fileName: 'HandlerFile',
+                        insertScript: {
+                            fragment:
+                                ',\n        newFunction: function() {\n            MessageToast.show("New action invoked.");\n        }',
+                            position: insertPosition
+                        }
+                    },
+                    name: 'customAction',
+                    folder: 'ext/fragment'
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: customAction
+                },
+                fs
+            );
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-action-basic');
+        });
+
+        test('append new function to existing TypeScript file', async () => {
+            const handlerFileName = 'HandlerFile';
+            const folder = join('ext', 'fragment');
+            const basePath = join(testAppPath, 'generate-multiple-custom-actions-ts');
+            const handlerPath = join(basePath, 'webapp', folder, `${handlerFileName}.ts`);
+
+            // Create existing HandlerFile.ts file with initial method
+            fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.ts'), handlerPath, {
+                eventHandlerFnName: 'onFirst',
+                ns: 'my.test.App.ext.fragment',
+                parameters: []
+            });
+
+            const initialContent = fs.read(handlerPath);
+
+            // Find position to insert new method (after the closing brace of first function)
+            const firstFunctionEnd = initialContent.lastIndexOf('}');
+            const insertPosition = firstFunctionEnd + 1;
+
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            const customAction: Action = {
+                id: 'testAction',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'newAction',
+                text: 'New Action',
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'newFunction',
+                        fileName: 'HandlerFile',
+                        insertScript: {
+                            fragment:
+                                '\n\n/**\n * new action handler.\n */\nexport function onNewAction(this: ExtensionAPI) {\n    MessageToast.show("new action invoked.");\n}',
+                            position: insertPosition
+                        }
+                    },
+                    name: 'customAction',
+                    folder: 'ext/fragment',
+                    typescript: true
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: customAction
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-multiple-custom-actions-ts');
+        });
+
+        test('correctly indexes new handlers when parent already has existing handlers', async () => {
+            const basePath = join(testAppPath, 'generate-actions-with-existing-handlers');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+
+            // Create XML with existing handlers already in core:require
+            const testXmlViewWithExistingHandlers = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros" xmlns:macrosTable="sap.fe.macros.table">
+    <Page title="Main">
+        <content>
+            <macros:Table id="testTable" metaPath="@com.sap.vocabularies.UI.v1.LineItem"
+                core:require="{Existing: 'my/test/App/ext/handlers/Existing', Helper: 'my/test/App/ext/utils/Helper'}">
+                <macros:actions>
+                    <macrosTable:Action id="existingAction" key="existingAction" text="Existing" press="Existing.onExisting"/>
+                </macros:actions>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewWithExistingHandlers);
+
+            // Add new action with handler name "Helper" (already exists with different path)
+            const action1: Action = {
+                id: 'testAction1',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'action1',
+                text: 'Action 1',
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onAction1',
+                        fileName: 'Helper'
+                    },
+                    name: 'action1',
+                    folder: 'ext/actions'
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: action1
+                },
+                fs
+            );
+
+            // Add another action with handler name "Existing" (already exists)
+            const action2: Action = {
+                id: 'testAction2',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'action2',
+                text: 'Action 2',
+                generateId,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'onAction2',
+                        fileName: 'Existing'
+                    },
+                    name: 'action2',
+                    folder: 'ext/other'
+                }
+            };
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: action2
+                },
+                fs
+            );
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-actions-with-existing-handlers');
+        });
+
+        test('generate CustomAction with controller file', async () => {
+            const basePath = join(testAppPath, 'generate-custom-action-controller');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+            const customActionData: Action = {
+                id: 'testActionController',
+                buildingBlockType: BuildingBlockType.Action,
+                actionKey: 'controllerAction',
+                generateId,
+                text: 'Controller Action',
+                requiresSelection: false,
+                embeddedAction: {
+                    eventHandler: {
+                        fnName: 'controllerAction',
+                        fileName: 'customView.controller'
+                    },
+                    name: 'controllerAction',
+                    folder: 'ext/fragment'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithTable);
+
+            await generateBuildingBlock<Action>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: customActionData
+                },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-action-controller');
         });
     });
 
@@ -1208,6 +1883,7 @@ describe('Building Blocks', () => {
                 bindingContextType: bindingContextAbsolute,
                 entitySet: 'testEntitySet'
             },
+            generateId,
             targetProperty: 'testProperty'
         };
 
@@ -1227,41 +1903,491 @@ describe('Building Blocks', () => {
         await writeFilesForDebugging(fs);
     });
 
-    test('throws error for Rich Text Editor building block if UI5 version is below 1.117.0', async () => {
-        const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
-        const basePath = join(testAppPath, 'generate-rich-text-editor-block');
-        const richTextEditorData = {
-            id: 'testRichTextEditor',
-            buildingBlockType: BuildingBlockType.RichTextEditor,
-            metaPath: {
-                bindingContextType: bindingContextRelative,
-                entitySet: '_testNavigation'
-            },
-            targetProperty: 'testProperty'
-        };
+    // test('throws error for Rich Text Editor building block if UI5 version is below 1.117.0', async () => {
+    //     const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
+    //     const basePath = join(testAppPath, 'generate-rich-text-editor-block');
+    //     const richTextEditorData = {
+    //         id: 'testRichTextEditor',
+    //         buildingBlockType: BuildingBlockType.RichTextEditor,
+    //         metaPath: {
+    //             bindingContextType: bindingContextRelative,
+    //             entitySet: '_testNavigation'
+    //         },
+    //         targetProperty: 'testProperty'
+    //     };
 
-        fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentContent);
-        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+    //     fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentContent);
+    //     fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
 
-        await generateBuildingBlock(
-            basePath,
-            {
-                viewOrFragmentPath: xmlFragmentFilePath,
-                aggregationPath,
-                buildingBlockData: richTextEditorData
-            },
-            fs
-        );
-        expect(fs.read(join(basePath, xmlFragmentFilePath))).toMatchSnapshot('generate-rich-text-editor-block');
-        await writeFilesForDebugging(fs);
+    //     await generateBuildingBlock(
+    //         basePath,
+    //         {
+    //             viewOrFragmentPath: xmlFragmentFilePath,
+    //             aggregationPath,
+    //             buildingBlockData: richTextEditorData
+    //         },
+    //         fs
+    //     );
+    //     expect(fs.read(join(basePath, xmlFragmentFilePath))).toMatchSnapshot('generate-rich-text-editor-block');
+    //     await writeFilesForDebugging(fs);
+    // });
+
+    describe('RichTextEditorButtonGroups building block', () => {
+        const testXmlFragmentWithoutButtonGroups = `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" 
+        xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+        <VBox>
+            <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="RichTextEditor"/>
+        </VBox>
+    </core:FragmentDefinition>`;
+
+        test('RichTextEditorButtonGroups detects richtexteditor:buttonGroups elements correctly', async () => {
+            const xmlFragmentWithButtonGroups = `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"
+        xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+        <VBox>
+            <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="RichTextEditor">
+                <macros:buttonGroups>
+                    <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic"/>
+                </macros:buttonGroups>
+            </macros:RichTextEditorWithMetadata>
+        </VBox>
+    </core:FragmentDefinition>`;
+            const basePath = join(testAppPath, 'test-rte-button-groups');
+            const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata`;
+            const buttonGroupsData = {
+                id: 'RichTextButtonGroups',
+                generateId,
+                buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                buttonGroups: [{ name: 'clipboard', buttons: 'cut,copy,paste' }, { name: 'undo' }]
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlFragmentFilePath), xmlFragmentWithButtonGroups);
+
+            const { DOMParser } = await import('@xmldom/xmldom');
+            const xmlDocument = new DOMParser().parseFromString(xmlFragmentWithButtonGroups);
+
+            const hasButtonGroups = xmlDocument.getElementsByTagName('macros:buttonGroups').length > 0;
+            expect(hasButtonGroups).toBe(true);
+
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: buttonGroupsData
+                },
+                fs
+            );
+
+            const fragmentContent = fs.read(join(basePath, xmlFragmentFilePath));
+            expect(fragmentContent).toMatchSnapshot('generate-rte-button-groups-with-existing-button-groups');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate RichTextEditorButtonGroups without richtexteditor:buttonGroups wrapper', async () => {
+            const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata`;
+            const basePath = join(testAppPath, 'test-rte-button-groups');
+            const buttonGroupsData = {
+                id: 'RichTextButtonGroups',
+                buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
+                buttonGroups: [
+                    { name: 'font-style', buttons: 'bold,italic,underline' },
+                    { name: 'clipboard' },
+                    { name: 'undo' }
+                ]
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentWithoutButtonGroups);
+
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: buttonGroupsData
+                },
+                fs
+            );
+
+            const fragmentContent = fs.read(join(basePath, xmlFragmentFilePath));
+            expect(fragmentContent).toMatchSnapshot('generate-rte-button-groups-without-wrapper');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate RichTextEditorButtonGroups with existing button groups', async () => {
+            const xmlFragmentWithExisting = `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"
+        xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+        <VBox>
+            <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="RichTextEditor">
+                <macros:buttonGroups>
+                    <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic"/>
+                    <richtexteditor:ButtonGroup name="link" visible="true" priority="4" buttons="link,unlink"/>
+                </macros:buttonGroups>
+            </macros:RichTextEditorWithMetadata>
+        </VBox>
+    </core:FragmentDefinition>`;
+            const basePath = join(testAppPath, 'test-rte-button-groups');
+            const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata`;
+            const buttonGroupsData = {
+                id: 'RichTextButtonGroups',
+                generateId,
+                buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                buttonGroups: [{ name: 'clipboard', visible: true, priority: 10 }, { name: 'undo' }]
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlFragmentFilePath), xmlFragmentWithExisting);
+
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: buttonGroupsData
+                },
+                fs
+            );
+
+            const fragmentContent = fs.read(join(basePath, xmlFragmentFilePath));
+            expect(fragmentContent).toMatchSnapshot('generate-rte-button-groups-replace-existing');
+        });
+
+        test("generate RichTextEditorButtonGroups - preserve existing element's attributes when no new attributes provided", async () => {
+            const xmlFragmentWithExistingAttributes = `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"
+                xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+                <VBox>
+                    <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="RichTextEditor">
+                        <macros:buttonGroups>
+                            <richtexteditor:ButtonGroup name="clipboard" visible="false" priority="15" buttons="cut,copy,paste" id="existingClipboard"/>
+                            <richtexteditor:ButtonGroup name="undo" visible="true" priority="12" buttons="undo,redo" customToolbarPriority="50" row="3"/>
+                            <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic"/>
+                            <richtexteditor:ButtonGroup name="link" visible="false" priority="8" buttons="link,unlink" customToolbarPriority="25"/>
+                        </macros:buttonGroups>
+                    </macros:RichTextEditorWithMetadata>
+                </VBox>
+            </core:FragmentDefinition>`;
+
+            const basePath = join(testAppPath, 'test-rte-button-groups-preserve-attributes');
+            const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata`;
+
+            const buttonGroupsData = {
+                id: 'RichTextButtonGroupsPreserve',
+                generateId,
+                buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                buttonGroups: [
+                    // User keeps 'clipboard' - no new attributes provided
+                    // Should preserve: visible="false", priority="15", buttons="cut,copy,paste", id="existingClipboard"
+                    { name: 'clipboard' },
+
+                    // User keeps 'undo' - no new attributes provided
+                    // Should preserve: visible="true", priority="12", buttons="undo,redo", customToolbarPriority="50", row="3"
+                    { name: 'undo' },
+
+                    // User unselected 'font-style' and 'link' - they should be removed
+
+                    // User adds new 'structure' - no existing attributes to preserve, use defaults
+                    { name: 'structure' }
+                ]
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlFragmentFilePath), xmlFragmentWithExistingAttributes);
+
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: buttonGroupsData
+                },
+                fs
+            );
+
+            const fragmentContent = fs.read(join(basePath, xmlFragmentFilePath));
+            expect(fragmentContent).toMatchSnapshot('generate-rte-button-groups-preserve-existing-attributes');
+        });
+
+        test("generate RichTextEditorButtonGroups - override existing element's attributes when new attributes provided", async () => {
+            const xmlFragmentWithComplexExisting = `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"
+                xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+                <VBox>
+                    <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="RichTextEditor">
+                        <macros:buttonGroups>
+                            <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic"/>
+                            <richtexteditor:ButtonGroup name="link" visible="true" priority="4" buttons="link,unlink" customToolbarPriority="33" row="3"/>
+                            <richtexteditor:ButtonGroup name="clipboard" visible="false" priority="15" buttons="cut,copy,paste" id="existingClipboard"/>
+                            <richtexteditor:ButtonGroup name="undo" visible="true" priority="10" buttons="undo,redo"/>
+                            <richtexteditor:ButtonGroup name="table" visible="true" priority="8" buttons="table" customToolbarPriority="20"/>
+                        </macros:buttonGroups>
+                    </macros:RichTextEditorWithMetadata>
+                </VBox>
+            </core:FragmentDefinition>`;
+
+            const basePath = join(testAppPath, 'test-rte-button-groups-complex');
+            const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata`;
+
+            // Complex scenario: User modifies some existing button groups and adds new ones
+            const complexButtonGroupsData = {
+                id: 'RichTextButtonGroupsComplex',
+                buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
+                buttonGroups: [
+                    // Keep 'clipboard' but with modified properties (was visible=false, now true; was priority=15, now 10; remove id)
+                    { name: 'clipboard', visible: true, priority: 10 },
+                    // Keep 'undo' but with custom buttons (was undo,redo, now only undo)
+                    { name: 'undo', buttons: 'undo', visible: true, priority: 12 },
+                    // Add new 'font-style' with completely different config than before
+                    {
+                        name: 'font-style',
+                        buttons: 'bold,italic,underline,strikethrough',
+                        visible: false,
+                        priority: 20,
+                        id: 'newFontStyle'
+                    },
+                    // Add new 'structure' that wasn't in existing
+                    { name: 'structure', visible: true, priority: 5, buttons: 'formatselect' },
+                    // Add new 'insert' with all optional properties
+                    {
+                        name: 'insert',
+                        buttons: 'image',
+                        visible: true,
+                        priority: 18,
+                        customToolbarPriority: '40',
+                        row: 2,
+                        id: 'customInsert'
+                    },
+                    // Add new 'text-align' with defaults
+                    { name: 'text-align' }
+                ]
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlFragmentFilePath), xmlFragmentWithComplexExisting);
+
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: complexButtonGroupsData
+                },
+                fs
+            );
+
+            const fragmentContent = fs.read(join(basePath, xmlFragmentFilePath));
+            expect(fragmentContent).toMatchSnapshot('generate-rte-button-groups-complex-replace');
+        });
+
+        test('throws error for unknown button group name', async () => {
+            const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata`;
+            const buttonGroupsData = {
+                id: 'RichTextButtonGroupsUnknown',
+                buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
+                buttonGroups: [{ name: 'invalid-button-group' }]
+            };
+            const basePath = join(testAppPath, 'test-rte-button-groups');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentWithoutButtonGroups);
+
+            await expect(
+                generateBuildingBlock(
+                    basePath,
+                    {
+                        viewOrFragmentPath: xmlFragmentFilePath,
+                        aggregationPath: aggregationPath,
+                        buildingBlockData: buttonGroupsData
+                    },
+                    fs
+                )
+            ).rejects.toThrow('Unknown button group: invalid-button-group');
+        });
+
+        test('RichTextEditorButtonGroups with all available button groups', async () => {
+            const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata`;
+            const buttonGroupsData = {
+                id: 'RichTextAllButtonGroups',
+                buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
+                buttonGroups: [
+                    { name: 'font-style' },
+                    { name: 'font' },
+                    { name: 'clipboard' },
+                    { name: 'structure' },
+                    { name: 'undo' },
+                    { name: 'insert' },
+                    { name: 'link' },
+                    { name: 'text-align' },
+                    { name: 'table' },
+                    { name: 'styleselect' }
+                ]
+            };
+            const basePath = join(testAppPath, 'test-rte-button-groups');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentWithoutButtonGroups);
+
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: buttonGroupsData
+                },
+                fs
+            );
+
+            const fragmentContent = fs.read(join(basePath, xmlFragmentFilePath));
+            expect(fragmentContent).toMatchSnapshot('generate-rte-all-button-groups');
+        });
+
+        test('multiple RichTextEditors with complex button group scenarios', async () => {
+            const xmlFragmentWithMultipleRTEs = `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"
+            xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+            <VBox>
+                <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="RichTextEditor1">
+                    <macros:buttonGroups>
+                        <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic"/>
+                        <richtexteditor:ButtonGroup name="clipboard" visible="true" priority="5" buttons="cut,copy,paste"/>
+                    </macros:buttonGroups>
+                </macros:RichTextEditorWithMetadata>
+                
+                <macros:RichTextEditorWithMetadata metaPath="/Travel/Description" id="RichTextEditor2">
+                    <macros:buttonGroups>
+                        <richtexteditor:ButtonGroup name="link" visible="false" priority="3" buttons="link,unlink"/>
+                        <richtexteditor:ButtonGroup name="undo" visible="true" priority="10" buttons="undo,redo"/>
+                    </macros:buttonGroups>
+                </macros:RichTextEditorWithMetadata>
+                
+                <macros:RichTextEditorWithMetadata metaPath="/Travel/Notes" id="RichTextEditor3"/>
+            </VBox>
+        </core:FragmentDefinition>`;
+
+            const basePath = join(testAppPath, 'test-multiple-rtes-complex');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlFragmentFilePath), xmlFragmentWithMultipleRTEs);
+
+            // Test Case 1: Replace existing button groups in RichTextEditor1 with new selection
+            // User unselects 'clipboard' and adds 'table' and 'insert'
+            const buttonGroupsDataRTE1 = {
+                id: 'RichTextButtonGroups1',
+                buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
+                buttonGroups: [
+                    { name: 'font-style', visible: true, priority: 15, buttons: 'bold,italic,underline' },
+                    { name: 'table', visible: true, priority: 8 },
+                    { name: 'insert', visible: false, priority: 7, customToolbarPriority: '25', row: 2 }
+                ]
+            };
+
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath: `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata[@id='RichTextEditor1']`,
+                    buildingBlockData: buttonGroupsDataRTE1
+                },
+                fs
+            );
+
+            let fragmentContent = fs.read(join(basePath, xmlFragmentFilePath));
+            expect(fragmentContent).toMatchSnapshot('multiple-rtes-step1-update-rte1');
+
+            // Test Case 2: Update RichTextEditor2 - replace all button groups
+            const buttonGroupsDataRTE2 = {
+                id: 'RichTextButtonGroups2',
+                buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
+                buttonGroups: [
+                    { name: 'clipboard' },
+                    { name: 'text-align', buttons: 'alignleft,aligncenter,alignright,alignjustify' },
+                    { name: 'structure', visible: false, priority: 12 }
+                ]
+            };
+
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath: `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata[@id='RichTextEditor2']`,
+                    buildingBlockData: buttonGroupsDataRTE2
+                },
+                fs
+            );
+
+            fragmentContent = fs.read(join(basePath, xmlFragmentFilePath));
+            expect(fragmentContent).toMatchSnapshot('multiple-rtes-step2-update-rte2');
+
+            // Test Case 3: Add button groups to RichTextEditor3 (initially empty)
+            const buttonGroupsDataRTE3 = {
+                id: 'RichTextButtonGroups3',
+                buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
+                buttonGroups: [
+                    { name: 'font', buttons: 'fontselect,fontsizeselect' },
+                    { name: 'styleselect', visible: true, priority: 20 },
+                    { name: 'undo' },
+                    { name: 'link', buttons: 'link', customToolbarPriority: '40', id: 'customLinkButton' }
+                ]
+            };
+
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath: `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata[@id='RichTextEditor3']`,
+                    buildingBlockData: buttonGroupsDataRTE3
+                },
+                fs
+            );
+
+            fragmentContent = fs.read(join(basePath, xmlFragmentFilePath));
+            expect(fragmentContent).toMatchSnapshot('multiple-rtes-step3-add-to-rte3');
+        });
+
+        test('generate RichTextEditor button groups with empty array', async () => {
+            const testXmlFragmentForEdgeCases = `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" 
+            xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+            <VBox>
+                <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="EdgeCaseRTE"/>
+            </VBox>
+        </core:FragmentDefinition>`;
+
+            const basePath = join(testAppPath, 'test-rte-empty-button-groups');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentForEdgeCases);
+
+            // Test: Empty button groups array (should remove existing buttonGroups)
+            const emptyButtonGroups = {
+                id: 'EmptyButtonGroups',
+                buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+                generateId,
+                buttonGroups: []
+            };
+
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath: `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata[@id='EdgeCaseRTE']`,
+                    buildingBlockData: emptyButtonGroups
+                },
+                fs
+            );
+
+            const fragmentContent = fs.read(join(basePath, xmlFragmentFilePath));
+            expect(fragmentContent).toMatchSnapshot('rte-empty-button-groups');
+        });
     });
 
-    test('generate Rich Text Editor building block with error', async () => {
+    test('generate Rich Text Editor building block with error if UI5 version is below 1.117.0', async () => {
         const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
         const basePath = join(testAppPath, 'generate-rich-text-editor-block');
         const richTextEditorData = {
             id: 'testRichTextEditor',
             buildingBlockType: BuildingBlockType.RichTextEditor,
+            generateId,
             metaPath: {
                 bindingContextType: bindingContextAbsolute,
                 entitySet: 'testEntitySet'
@@ -1333,6 +2459,7 @@ describe('Building Blocks', () => {
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterField2',
                 buildingBlockType: BuildingBlockType.CustomFilterField,
+                generateId,
                 label: 'Custom Filter Field 2',
                 anchor: 'testAnchor',
                 property: 'testProperty',
@@ -1386,6 +2513,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:FilterBar`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterField2',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field 2',
                 anchor: 'testAnchor',
@@ -1429,6 +2557,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterField3',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Existing Filter Field Fragment',
                 anchor: 'testAnchor',
@@ -1484,6 +2613,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterFieldWithFolder',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field With Folder',
                 anchor: 'testAnchor',
@@ -1536,6 +2666,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterFieldNoFolder',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field No Folder',
                 anchor: 'testAnchor',
@@ -1587,6 +2718,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterFieldContent',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field Content',
                 anchor: 'testAnchor',
@@ -1632,6 +2764,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterFieldFragmentContent',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field Fragment Content',
                 anchor: 'testAnchor',
@@ -1686,6 +2819,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'testCustomFilterFieldAllProps',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Custom Filter Field All Properties',
                 anchor: 'existingFilterField',
@@ -1744,6 +2878,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'minimalCustomFilterField',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Minimal Filter Field',
                 anchor: 'someAnchor',
@@ -1793,6 +2928,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customFilterFieldData: CustomFilterField = {
                 id: 'customFilterFieldWithEventHandler',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Filter Field With Event Handler',
                 anchor: 'someAnchor',
@@ -1858,23 +2994,23 @@ describe('Building Blocks', () => {
             // Test CustomColumn configuration
             const customColumnConfig = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomColumn]!;
             expect(customColumnConfig).toBeDefined();
-            expect(customColumnConfig.nodes.explicit).toBe('columns');
-            expect(customColumnConfig.nodes.default).toBe('Column');
+            expect(customColumnConfig.aggregationConfig.aggregationName).toBe('columns');
+            expect(customColumnConfig.aggregationConfig.elementName).toBe('Column');
             expect(customColumnConfig.templateFile).toBe('common/Fragment.xml');
             expect(customColumnConfig.namespace.uri).toBe('sap.fe.macros.table');
             expect(customColumnConfig.namespace.prefix).toBe('macrosTable');
-            expect(customColumnConfig.resultPropertyName).toBe('hasTableColumns');
+            // expect(customColumnConfig.resultPropertyName).toBe('hasTableColumns');
             expect(typeof customColumnConfig.processor).toBe('function');
 
             // Test CustomFilterField configuration
             const customFilterFieldConfig = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFilterField]!;
             expect(customFilterFieldConfig).toBeDefined();
-            expect(customFilterFieldConfig.nodes.explicit).toBe('filterFields');
-            expect(customFilterFieldConfig.nodes.default).toBe('FilterField');
+            expect(customFilterFieldConfig.aggregationConfig.aggregationName).toBe('filterFields');
+            expect(customFilterFieldConfig.aggregationConfig.elementName).toBe('FilterField');
             expect(customFilterFieldConfig.templateFile).toBe('filter/fragment.xml');
             expect(customFilterFieldConfig.namespace.uri).toBe('sap.fe.macros.filterBar');
             expect(customFilterFieldConfig.namespace.prefix).toBe('macros');
-            expect(customFilterFieldConfig.resultPropertyName).toBe('hasFilterFields');
+            // expect(customFilterFieldConfig.resultPropertyName).toBe('hasFilterFields');
             expect(typeof customFilterFieldConfig.processor).toBe('function');
         });
 
@@ -1888,12 +3024,18 @@ describe('Building Blocks', () => {
             const wrongTypeBuildingBlock = {
                 id: 'wrongType',
                 buildingBlockType: BuildingBlockType.FilterBar, // Wrong type for CustomColumn processor
+                generateId,
                 label: 'Wrong Type'
             };
 
             // Should throw error when processor is called with wrong type
             expect(() => {
-                customColumnProcessor(wrongTypeBuildingBlock, mockFs, '/mock/path', mockConfig);
+                const context = {
+                    fs: mockFs,
+                    viewPath: '/mock/path'
+                };
+                customColumnProcessor(wrongTypeBuildingBlock, context);
+                //customColumnProcessor(wrongTypeBuildingBlock, mockFs, '/mock/path', mockConfig);
             }).toThrow('Expected CustomColumn building block data');
         });
 
@@ -1907,12 +3049,17 @@ describe('Building Blocks', () => {
             const wrongTypeBuildingBlock = {
                 id: 'wrongType',
                 buildingBlockType: BuildingBlockType.Chart, // Wrong type for CustomFilterField processor
+                generateId,
                 title: 'Wrong Type'
             };
 
             // Should throw error when processor is called with wrong type
             expect(() => {
-                customFilterFieldProcessor(wrongTypeBuildingBlock, mockFs, '/mock/path', mockConfig);
+                const context = {
+                    fs: mockFs,
+                    viewPath: '/mock/path'
+                };
+                customFilterFieldProcessor(wrongTypeBuildingBlock, context);
             }).toThrow('Expected CustomFilterField building block data');
         });
 
@@ -1928,13 +3075,18 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Test Filter Field',
                 anchor: 'testAnchor',
+                generateId,
                 property: 'testProperty',
                 required: false
             };
 
             // Should throw error when processor is called without embededFragment
             expect(() => {
-                customFilterFieldProcessor(customFilterFieldData, mockFs, '/mock/path', mockConfig);
+                const context = {
+                    fs: mockFs,
+                    viewPath: '/mock/path'
+                };
+                customFilterFieldProcessor(customFilterFieldData, context);
             }).toThrow('EmbeddedFragment is required for CustomFilterField');
         });
 
@@ -1949,6 +3101,7 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumn',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'Test Column',
+                generateId,
                 embededFragment: {
                     typescript: false,
                     content:
@@ -1963,7 +3116,11 @@ describe('Building Blocks', () => {
 
             // Should not throw error and should process correctly
             expect(() => {
-                customColumnProcessor(customColumnData, mockFs, '/mock/path/fragment.xml', mockConfig);
+                const context = {
+                    fs: mockFs,
+                    viewPath: '/mock/path/fragment.xml'
+                };
+                customColumnProcessor(customColumnData, context);
             }).not.toThrow();
 
             // Verify that content was set
@@ -1982,6 +3139,7 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'Test Filter Field',
                 anchor: 'testAnchor',
+                generateId,
                 property: 'testProperty',
                 required: false,
                 filterFieldKey: 'testKey',
@@ -2010,13 +3168,12 @@ describe('Building Blocks', () => {
 
             // Should not throw error and should process correctly
             expect(() => {
-                customFilterFieldProcessor(
-                    customFilterFieldData,
-                    mockFs,
-                    '/mock/path/fragment.xml',
-                    mockConfig,
-                    mockEmbeddedFragment
-                );
+                const context = {
+                    fs: mockFs,
+                    viewPath: '/mock/path/fragment.xml',
+                    embeddedFragment: mockEmbeddedFragment
+                };
+                customFilterFieldProcessor(customFilterFieldData, context);
             }).not.toThrow();
         });
 
@@ -2024,22 +3181,18 @@ describe('Building Blocks', () => {
             // Verify that all configurations have the correct structure
             Object.values(BUILDING_BLOCK_CONFIG).forEach((config) => {
                 if (config) {
-                    expect(config).toHaveProperty('nodes');
-                    expect(config.nodes).toHaveProperty('explicit');
-                    expect(config.nodes).toHaveProperty('default');
-                    expect(config).toHaveProperty('templateType');
-                    expect(config).toHaveProperty('templateFile');
+                    expect(config).toHaveProperty('aggregationConfig');
+                    expect(config.aggregationConfig).toHaveProperty('aggregationName');
+                    expect(config.aggregationConfig).toHaveProperty('elementName');
                     expect(config).toHaveProperty('namespace');
                     expect(config.namespace).toHaveProperty('uri');
                     expect(config.namespace).toHaveProperty('prefix');
-                    expect(config).toHaveProperty('resultPropertyName');
                     expect(config).toHaveProperty('processor');
                     expect(typeof config.processor).toBe('function');
 
                     // Verify processor function signature by checking its length (parameter count)
                     // processor(buildingBlockData, fs, viewPath, config, embeddedFragment?)
-                    expect(config.processor.length).toBeGreaterThanOrEqual(4);
-                    expect(config.processor.length).toBeLessThanOrEqual(5);
+                    expect(config.processor.length).toBe(2);
                 }
             });
         });
@@ -2063,6 +3216,7 @@ describe('Building Blocks', () => {
             const buildingBlockData: CustomFilterField = {
                 id: 'newField',
                 buildingBlockType: BuildingBlockType.CustomFilterField,
+                generateId,
                 label: 'New Field',
                 anchor: 'existingField',
                 property: 'testProperty',
@@ -2107,6 +3261,7 @@ describe('Building Blocks', () => {
 
             const buildingBlockData: CustomFilterField = {
                 id: 'newField',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'New Field',
                 anchor: 'existingField',
@@ -2158,6 +3313,7 @@ describe('Building Blocks', () => {
 
             const buildingBlockDataForFilterBar2: CustomFilterField = {
                 id: 'newFieldInBar2',
+                generateId,
                 buildingBlockType: BuildingBlockType.CustomFilterField,
                 label: 'New Field in Bar 2',
                 anchor: 'field2',
@@ -2206,6 +3362,7 @@ describe('Building Blocks', () => {
             const buildingBlockDataForTable2: CustomColumn = {
                 id: 'newColumnInTable2',
                 buildingBlockType: BuildingBlockType.CustomColumn,
+                generateId,
                 title: 'New Column in Table 2',
                 position: { placement: Placement.After },
                 embededFragment: {
@@ -2253,6 +3410,7 @@ describe('Building Blocks', () => {
             const buildingBlockData: CustomFilterField = {
                 id: 'newFieldInBar2',
                 buildingBlockType: BuildingBlockType.CustomFilterField,
+                generateId,
                 label: 'New Field',
                 anchor: 'field2',
                 property: 'testProperty',

@@ -80,6 +80,7 @@ describe('getFunctionalityDetails', () => {
                     flexEnabled: {
                         description: 'Enables key user adaptation for an application.',
                         descriptionSrcURL: 'https://ui5.sap.com/sdk/#/topic/ccd45ba3f0b446a0901b2c9d42b8ad53',
+                        'manifestPath': '$["sap.ui5"].flexEnabled',
                         type: 'boolean'
                     }
                 }
@@ -140,11 +141,19 @@ describe('getFunctionalityDetails', () => {
                             }
                         ],
                         'properties': {
-                            'group': {
+                            'overflowGroup': {
                                 'artifactType': 'Manifest',
                                 'description':
                                     "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
                                 'descriptionSrcURL': 'https://ui5.sap.com/#/topic/cbf16c599f2d4b8796e3702f7d4aae6c',
+                                'type': 'number'
+                            },
+                            'priority': {
+                                'artifactType': 'Manifest',
+                                'description':
+                                    'Defines the priority of the action. This determines ordering and whether the action is moved into overflow.',
+                                'descriptionSrcURL': 'https://ui5.sap.com/#/topic/cbf16c599f2d4b8796e3702f7d4aae6c',
+                                'enum': ['AlwaysOverflow', 'High', 'Low', 'NeverOverflow'],
                                 'type': 'string'
                             }
                         },
@@ -176,6 +185,7 @@ describe('getFunctionalityDetails', () => {
                         description:
                             'The flexible column layout allows users to see more details on the page, and to expand and collapse the screen areas.',
                         descriptionSrcURL: 'https://ui5.sap.com/sdk/#/topic/e762257125b34513b0859faa1610b09e',
+                        'manifestPath': '$["sap.ui5"].routing.config.flexibleColumnLayout',
                         properties: {
                             defaultThreeColumnLayoutType: {
                                 enum: [

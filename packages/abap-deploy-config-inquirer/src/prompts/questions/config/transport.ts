@@ -5,7 +5,7 @@ import {
     defaultOrShowTransportListQuestion,
     showTransportInputChoice
 } from '../../conditions';
-import { getTransportChoices } from '../../helpers';
+import { getTransportChoices, shouldRunValidation } from '../../helpers';
 import { validateTransportChoiceInput, validateTransportQuestion } from '../../validators';
 import { PromptState } from '../../prompt-state';
 import { transportName } from '../../../service-provider-utils/transport-list';
@@ -34,6 +34,9 @@ export function getTransportRequestPrompts(
     isYUI = false
 ): Question<AbapDeployConfigAnswersInternal>[] {
     let transportInputChoice: TransportChoices;
+    let prevAnswers = {};
+    let validateTransportChoiceResult: string | boolean | IValidationLink = false;
+
     PromptState.isYUI = isYUI;
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
@@ -53,20 +56,23 @@ export function getTransportRequestPrompts(
                 ),
             validate: async (
                 input: TransportChoices,
-                previousAnswers: AbapDeployConfigAnswersInternal
+                answers: AbapDeployConfigAnswersInternal
             ): Promise<boolean | string | IValidationLink> => {
-                const result = await validateTransportChoiceInput({
-                    useStandalone,
-                    input,
-                    previousAnswers,
-                    validateInputChanged: true,
-                    prevTransportInputChoice: transportInputChoice,
-                    backendTarget: options.backendTarget,
-                    ui5AbapRepoName: options.ui5AbapRepo?.default,
-                    transportDescription: options.transportCreated?.description
-                });
+                if (shouldRunValidation(prevAnswers as AbapDeployConfigAnswersInternal, answers)) {
+                    validateTransportChoiceResult = await validateTransportChoiceInput({
+                        useStandalone,
+                        input,
+                        previousAnswers: answers,
+                        validateInputChanged: true,
+                        prevTransportInputChoice: transportInputChoice,
+                        backendTarget: options.backendTarget,
+                        ui5AbapRepoName: options.ui5AbapRepo?.default,
+                        transportDescription: options.transportCreated?.description
+                    });
+                }
                 transportInputChoice = input;
-                return result;
+                prevAnswers = answers;
+                return validateTransportChoiceResult;
             }
         } as ListQuestion<AbapDeployConfigAnswersInternal>,
         {

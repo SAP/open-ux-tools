@@ -100,6 +100,37 @@ describe('MultiSourceDocumentationBuilder', () => {
             expect(builder.config.sources).toBeDefined();
             expect(builder.config.sources.length).toBeGreaterThan(0);
         });
+
+        it('should include tools-suite source with useEnvAuth enabled', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            const toolsSuiteSource = builder.config.sources.find((s: any) => s.id === 'tools-suite');
+
+            expect(toolsSuiteSource).toBeDefined();
+            expect(toolsSuiteSource).toMatchObject({
+                id: 'tools-suite',
+                type: 'github',
+                owner: 'ux-engineering',
+                repo: 'tools-suite',
+                branch: 'master',
+                docsPath: 'docs/product/features-commands',
+                category: 'fiori-tools',
+                enabled: true,
+                useEnvAuth: true
+            });
+        });
+
+        it('should have multiple sources configured', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            const sourceIds = builder.config.sources.map((s: any) => s.id);
+
+            expect(sourceIds).toContain('btp-fiori-tools');
+            expect(sourceIds).toContain('sapui5');
+            expect(sourceIds).toContain('fiori-samples');
+            expect(sourceIds).toContain('fiori-showcase');
+            expect(sourceIds).toContain('tools-suite');
+        });
     });
 
     describe('parseDocument', () => {
@@ -425,6 +456,287 @@ describe('MultiSourceDocumentationBuilder', () => {
             const result = await builder.cloneOrUpdateRepository(source);
 
             expect(result).toContain('test-owner-test-repo');
+        });
+
+        it('should use environment authentication when useEnvAuth is true', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'tools-suite',
+                type: 'github' as const,
+                owner: 'ux-engineering',
+                repo: 'tools-suite',
+                branch: 'master',
+                category: 'fiori-tools',
+                enabled: true,
+                useEnvAuth: true
+            };
+
+            // Set environment variables
+            const originalGithubHost = process.env.GITHUB_HOST;
+            const originalGithubToken = process.env.GITHUB_TOKEN;
+            process.env.GITHUB_HOST = 'https://github.example.com';
+            process.env.GITHUB_TOKEN = 'test-token-12345';
+
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockRejectedValue(new Error('Directory not found'));
+
+            const result = await builder.cloneOrUpdateRepository(source);
+
+            expect(result).toContain('ux-engineering-tools-suite');
+            expect(mockSpawn).toHaveBeenCalledWith(
+                'git',
+                expect.arrayContaining([
+                    'clone',
+                    '--depth',
+                    '1',
+                    '--branch',
+                    'master',
+                    expect.stringContaining('test-token-12345@github.example.com/ux-engineering/tools-suite.git'),
+                    'ux-engineering-tools-suite'
+                ]),
+                expect.objectContaining({ cwd: expect.any(String) })
+            );
+            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Using environment authentication'));
+
+            // Restore environment variables
+            if (originalGithubHost !== undefined) {
+                process.env.GITHUB_HOST = originalGithubHost;
+            } else {
+                delete process.env.GITHUB_HOST;
+            }
+            if (originalGithubToken !== undefined) {
+                process.env.GITHUB_TOKEN = originalGithubToken;
+            } else {
+                delete process.env.GITHUB_TOKEN;
+            }
+        });
+
+        it('should handle useEnvAuth with GITHUB_HOST having trailing slash', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'test-repo',
+                type: 'github' as const,
+                owner: 'test-owner',
+                repo: 'test-repo',
+                branch: 'main',
+                category: 'test',
+                enabled: true,
+                useEnvAuth: true
+            };
+
+            const originalGithubHost = process.env.GITHUB_HOST;
+            const originalGithubToken = process.env.GITHUB_TOKEN;
+            process.env.GITHUB_HOST = 'https://github.example.com/';
+            process.env.GITHUB_TOKEN = 'test-token';
+
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockRejectedValue(new Error('Directory not found'));
+
+            await builder.cloneOrUpdateRepository(source);
+
+            expect(mockSpawn).toHaveBeenCalledWith(
+                'git',
+                expect.arrayContaining([
+                    expect.stringContaining('test-token@github.example.com/test-owner/test-repo.git')
+                ]),
+                expect.any(Object)
+            );
+
+            if (originalGithubHost !== undefined) {
+                process.env.GITHUB_HOST = originalGithubHost;
+            } else {
+                delete process.env.GITHUB_HOST;
+            }
+            if (originalGithubToken !== undefined) {
+                process.env.GITHUB_TOKEN = originalGithubToken;
+            } else {
+                delete process.env.GITHUB_TOKEN;
+            }
+        });
+
+        it('should handle useEnvAuth with GITHUB_HOST having protocol prefix', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'test-repo',
+                type: 'github' as const,
+                owner: 'test-owner',
+                repo: 'test-repo',
+                branch: 'main',
+                category: 'test',
+                enabled: true,
+                useEnvAuth: true
+            };
+
+            const originalGithubHost = process.env.GITHUB_HOST;
+            const originalGithubToken = process.env.GITHUB_TOKEN;
+            process.env.GITHUB_HOST = 'http://github.example.com';
+            process.env.GITHUB_TOKEN = 'test-token';
+
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockRejectedValue(new Error('Directory not found'));
+
+            await builder.cloneOrUpdateRepository(source);
+
+            expect(mockSpawn).toHaveBeenCalledWith(
+                'git',
+                expect.arrayContaining([
+                    expect.stringContaining('test-token@github.example.com/test-owner/test-repo.git')
+                ]),
+                expect.any(Object)
+            );
+
+            if (originalGithubHost !== undefined) {
+                process.env.GITHUB_HOST = originalGithubHost;
+            } else {
+                delete process.env.GITHUB_HOST;
+            }
+            if (originalGithubToken !== undefined) {
+                process.env.GITHUB_TOKEN = originalGithubToken;
+            } else {
+                delete process.env.GITHUB_TOKEN;
+            }
+        });
+
+        it('should fall back to public URL when useEnvAuth is true but environment variables are missing', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'test-repo',
+                type: 'github' as const,
+                owner: 'test-owner',
+                repo: 'test-repo',
+                branch: 'main',
+                category: 'test',
+                enabled: true,
+                useEnvAuth: true
+            };
+
+            const originalGithubHost = process.env.GITHUB_HOST;
+            const originalGithubToken = process.env.GITHUB_TOKEN;
+            delete process.env.GITHUB_HOST;
+            delete process.env.GITHUB_TOKEN;
+
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockRejectedValue(new Error('Directory not found'));
+
+            await builder.cloneOrUpdateRepository(source);
+
+            expect(mockSpawn).toHaveBeenCalledWith(
+                'git',
+                expect.arrayContaining([
+                    'clone',
+                    '--depth',
+                    '1',
+                    '--branch',
+                    'main',
+                    'https://github.com/test-owner/test-repo.git',
+                    'test-owner-test-repo'
+                ]),
+                expect.any(Object)
+            );
+
+            if (originalGithubHost !== undefined) {
+                process.env.GITHUB_HOST = originalGithubHost;
+            }
+            if (originalGithubToken !== undefined) {
+                process.env.GITHUB_TOKEN = originalGithubToken;
+            }
+        });
+
+        it('should update existing repository with environment authentication', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'tools-suite',
+                type: 'github' as const,
+                owner: 'ux-engineering',
+                repo: 'tools-suite',
+                branch: 'master',
+                category: 'fiori-tools',
+                enabled: true,
+                useEnvAuth: true
+            };
+
+            const originalGithubHost = process.env.GITHUB_HOST;
+            const originalGithubToken = process.env.GITHUB_TOKEN;
+            process.env.GITHUB_HOST = 'github.example.com';
+            process.env.GITHUB_TOKEN = 'update-token';
+
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockResolvedValue({ isDirectory: () => true } as any); // Repository exists
+
+            const result = await builder.cloneOrUpdateRepository(source);
+
+            expect(result).toContain('ux-engineering-tools-suite');
+            expect(mockSpawn).toHaveBeenCalledWith(
+                'git',
+                ['pull', 'origin', 'master'],
+                expect.objectContaining({ cwd: expect.stringContaining('ux-engineering-tools-suite') })
+            );
+
+            if (originalGithubHost !== undefined) {
+                process.env.GITHUB_HOST = originalGithubHost;
+            } else {
+                delete process.env.GITHUB_HOST;
+            }
+            if (originalGithubToken !== undefined) {
+                process.env.GITHUB_TOKEN = originalGithubToken;
+            } else {
+                delete process.env.GITHUB_TOKEN;
+            }
         });
     });
 

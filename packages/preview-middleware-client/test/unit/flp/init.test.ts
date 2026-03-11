@@ -3,11 +3,14 @@ import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { fetchMock, sapMock } from 'mock/window';
+import NewsContainer from 'sap/cux/home/NewsContainer';
+import NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import type Component from 'sap/ui/core/Component';
 import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
 import { Window } from 'types/global';
 import * as apiHandler from '../../../src/adp/api-handler';
+import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller';
 import {
     init,
     loadI18nResourceBundle,
@@ -438,6 +441,58 @@ describe('flp/init', () => {
 
             expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();
             expect(sapMock.ushell.Container.init).toHaveBeenCalledWith('cdm');
+        });
+
+        test('enhancedHomePage view - use new NewsContainer control when available', (done) => {
+            const mockPage = {
+                insertContent: jest.fn()
+            };
+
+            const controller = new MyHomeController('testController');
+            controller.getView = jest.fn().mockReturnValue({
+                getId: jest.fn().mockReturnValue('testView'),
+                byId: jest.fn().mockReturnValue(mockPage)
+            });
+
+            controller.onInit();
+            setTimeout(() => {
+                expect(mockPage.insertContent).toHaveBeenCalled();
+                const insertedContainer = mockPage.insertContent.mock.calls[0][0];
+
+                // Verify it's an instance of NewsContainer (when available)
+                expect(insertedContainer).toBeInstanceOf(NewsContainer);
+                expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
+                done();
+            });
+        });
+
+        test('enhancedHomePage view - fallback to NewsAndPagesContainer control when NewsContainer is not available', (done) => {
+            jest.doMock('sap/cux/home/NewsContainer', () => {
+                throw new Error('NewsContainer not found');
+            });
+
+            const mockPage = {
+                insertContent: jest.fn()
+            };
+
+            const controller = new MyHomeController('testController');
+            controller.getView = jest.fn().mockReturnValue({
+                getId: jest.fn().mockReturnValue('testView'),
+                byId: jest.fn().mockReturnValue(mockPage)
+            });
+
+            controller.onInit();
+            setTimeout(() => {
+                expect(mockPage.insertContent).toHaveBeenCalled();
+                const insertedContainer = mockPage.insertContent.mock.calls[0][0];
+
+                // Verify it's an instance of NewsAndPagesContainer (fallback when NewsContainer unavailable)
+                expect(insertedContainer).toBeInstanceOf(NewsAndPagesContainer);
+                expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
+
+                jest.dontMock('sap/cux/home/NewsContainer');
+                done();
+            });
         });
     });
 });

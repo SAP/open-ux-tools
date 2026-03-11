@@ -41,6 +41,55 @@ describe('flp/WorkspaceConnector', () => {
             expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledTimes(0);
         });
 
+        test('setItem (fileChange) with baseUrl (from ui5-patched-router)', async () => {
+            const mockBaseUrl = '/test.base.url';
+
+            // Mock BEFORE isolating modules
+            documentMock.getElementById.mockImplementation((id: string) => {
+                if (id === 'sap-ui-bootstrap') {
+                    return {
+                        dataset: {
+                            openUxPreviewBaseUrl: mockBaseUrl
+                        }
+                    };
+                }
+                return null;
+            });
+
+            await jest.isolateModulesAsync(async () => {
+                // Dynamically import to get fresh baseUrl
+                const { default: testConnector } = await import('../../../src/flp/WorkspaceConnector');
+
+                testConnector.storage.fileChangeRequestNotifier = jest.fn();
+                const change = { data: '~Data', fileName: 'dummyFile', changeType: 'property' };
+                await testConnector.storage.setItem('~notUsed', change);
+
+                expect(fetch).toHaveBeenCalledWith(
+                    expect.stringContaining(mockBaseUrl),
+                    expect.objectContaining({
+                        method: 'POST',
+                        body: JSON.stringify(
+                            {
+                                change: { ...change },
+                                additionalChangeInfo: undefined
+                            },
+                            null,
+                            2
+                        )
+                    })
+                );
+                expect(testConnector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith(
+                    'dummyFile',
+                    'create',
+                    change,
+                    undefined
+                );
+            });
+
+            // Clean up
+            documentMock.getElementById.mockReset();
+        });
+
         test('setItem (fileChange)', async () => {
             connector.storage.fileChangeRequestNotifier = jest.fn();
             const change = { data: '~Data', fileName: 'dummyFile', changeType: 'property' };

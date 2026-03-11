@@ -79,5 +79,24 @@ export function getEntityFileName(entityName: string): string {
     return toPersistenceName(entityName) + '.json';
 }
 
+/**
+ * Simple object matcher that supports nested objects
+ *
+ * @param obj - object to inspect
+ * @param filter - properties and values used for filtering the object.
+ * @returns - true if the `obj` has equivalent property values to `attrs`
+ */
+export function isMatch(obj: any, filter: any): boolean {
+    return Object.entries(filter).every(([key, val]) => {
+        if (Array.isArray(val)) {
+            return val.includes(obj[key]);
+        }
+        if (val && typeof val === 'object') {
+            return isMatch(obj[key], val);
+        }
+        return obj[key] === val;
+    });
+}
+
 export * from './app-studio';
 export * from './backend';

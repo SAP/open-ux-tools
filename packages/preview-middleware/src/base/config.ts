@@ -50,6 +50,7 @@ export type PreviewUrls = {
  */
 export interface TemplateConfig {
     basePath: string;
+    baseUrl: string;
     apps: Record<
         string,
         {
@@ -383,6 +384,7 @@ export function createFlpTemplateConfig(
     }
     return {
         basePath: basePath,
+        baseUrl: '',
         apps: {},
         init: initPath,
         ui5: {
@@ -434,10 +436,13 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
     const flpConfig = getFlpConfigWithDefaults(config.flp);
     urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
     // add editor urls
-    if (config.editors?.rta) {
-        config.editors.rta.endpoints.forEach((endpoint) => {
+    if (config.editors) {
+        config.editors.rta?.endpoints.forEach((endpoint) => {
             urls.push({ path: endpoint.path, type: 'editor' });
         });
+        if (config.editors.cardGenerator?.path) {
+            urls.push({ path: config.editors.cardGenerator.path, type: 'editor' });
+        }
     }
     // add test urls if configured
     if (config.test) {
@@ -507,9 +512,7 @@ export async function generatePreviewFiles(
     sanitizeConfig(config, logger);
 
     // create file system if not provided
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
 
     // generate FLP configuration
     const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.ejs'), 'utf-8');

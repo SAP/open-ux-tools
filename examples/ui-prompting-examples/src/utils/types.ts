@@ -1,10 +1,12 @@
 import {
     type FilterBarPromptsAnswer,
     type ChartPromptsAnswer,
+    type FormPromptsAnswer,
     type TablePromptsAnswer,
     type PagePromptsAnswer,
     type Prompts,
     type RichTextEditorPromptsAnswer,
+    type RichTextEditorButtonGroupsPromptsAnswer,
     type SupportedGeneratorAnswers,
     type Answers,
     type CodeSnippet
@@ -20,7 +22,9 @@ export type Actions =
     | SetPageQuestions
     | SetChartQuestions
     | SetFilterBarQuestions
+    | SetFormQuestions
     | SetRichTextEditorQuestions
+    | SetRichTextEditorButtonGroupsQuestions
     | GetChoices
     | SetChoices
     | ApplyAnswers
@@ -38,7 +42,9 @@ export const SET_TABLE_QUESTIONS = 'SET_TABLE_QUESTIONS';
 export const SET_PAGE_QUESTIONS = 'SET_PAGE_QUESTIONS';
 export const SET_CHART_QUESTIONS = 'SET_CHART_QUESTIONS';
 export const SET_RICH_TEXT_EDITOR_QUESTIONS = 'SET_RICH_TEXT_EDITOR_QUESTIONS';
+export const SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS = 'SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS';
 export const SET_FILTERBAR_QUESTIONS = 'SET_FILTERBAR_QUESTIONS';
+export const SET_FORM_QUESTIONS = 'SET_FORM_QUESTIONS';
 export const GET_CHOICES = 'GET_CHOICES';
 export const SET_CHOICES = 'SET_CHOICES';
 export const APPLY_ANSWERS = 'APPLY_ANSWERS';
@@ -93,8 +99,16 @@ export interface SetRichTextEditorQuestions extends Prompts<RichTextEditorPrompt
     type: typeof SET_RICH_TEXT_EDITOR_QUESTIONS;
 }
 
+export interface SetRichTextEditorButtonGroupsQuestions extends Prompts<RichTextEditorButtonGroupsPromptsAnswer> {
+    type: typeof SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS;
+}
+
 export interface SetFilterBarQuestions extends Prompts<FilterBarPromptsAnswer> {
     type: typeof SET_FILTERBAR_QUESTIONS;
+}
+
+export interface SetFormQuestions extends Prompts<FormPromptsAnswer> {
+    type: typeof SET_FORM_QUESTIONS;
 }
 
 export interface SetValidationResults {

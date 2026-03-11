@@ -16,7 +16,7 @@ exports[`Test system selection prompts should return system selection prompts an
         },
       },
     ],
-    "default": -1,
+    "default": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Select a system configuration.",
@@ -142,7 +142,7 @@ exports[`Test system selection prompts should return system selection prompts an
         },
       },
     ],
-    "default": -1,
+    "default": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Select a system configuration.",

@@ -5,11 +5,13 @@ import {
     getPromptsForChangeDataSource,
     getAdpConfig,
     ManifestService,
-    getVariant
+    getVariant,
+    isCFEnvironment,
+    type AdpPreviewConfigWithTarget
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
-import { validateAdpProject } from '../../validation';
+import { validateAdpAppType } from '../../validation';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { FileName } from '@sap-ux/project-access';
 
@@ -24,6 +26,7 @@ export function addChangeDataSourceCommand(cmd: Command): void {
     cmd.command('data-source [path]')
         .description(
             `Replace the OData Source of the base application in an adaptation project.\n
+            This command is not supported for Cloud Foundry projects.\n
 Example:
     \`npx --yes @sap-ux/create@latest change data-source\``
         )
@@ -47,9 +50,13 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         if (!basePath) {
             basePath = process.cwd();
         }
-        await validateAdpProject(basePath);
+        await validateAdpAppType(basePath);
+        if (await isCFEnvironment(basePath)) {
+            throw new Error('This command is not supported for Cloud Foundry projects.');
+        }
+
         const variant = await getVariant(basePath);
-        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
+        const { target, ignoreCertErrors = false } = await getAdpConfig<AdpPreviewConfigWithTarget>(basePath, yamlPath);
         const provider = await createAbapServiceProvider(
             target,
             {

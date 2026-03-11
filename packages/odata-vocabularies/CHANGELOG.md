@@ -1,5 +1,47 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.27
+
+### Patch Changes
+
+- Updated dependencies [a2cbf4e]
+    - @sap-ux/odata-annotation-core-types@0.5.6
+
+## 0.4.26
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [cc1c422]
+    - @sap-ux/odata-annotation-core-types@0.5.5
+
+## 0.4.25
+
+### Patch Changes
+
+- 1fa3bb7: update vocabularies
+
+## 0.4.24
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+
+## 0.4.23
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+- Updated dependencies [3795bb2]
+    - @sap-ux/odata-annotation-core-types@0.5.4
+
+## 0.4.22
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/odata-annotation-core-types@0.5.3
+
 ## 0.4.21
 
 ### Patch Changes

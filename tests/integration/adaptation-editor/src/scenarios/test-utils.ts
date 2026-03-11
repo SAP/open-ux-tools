@@ -376,8 +376,12 @@ export class ListReport {
         await test.step('Click on the table in the List Report', async () => {
             const controlId = 'fiori.elements.v4.0::RootEntityList--fe::table::RootEntity::LineItem';
             const escaped = escapedId(controlId);
-            const overlayLocator = this.frame.locator(`[data-sap-ui-dt-for="${escaped}"]`);
-            await overlayLocator.click();
+            const overlayLocator = this.frame.locator(`[data-sap-ui-dt-for="${escaped}"]`).first();
+            // Wait for overlay to be visible
+            await overlayLocator.waitFor({ state: 'visible', timeout: 15000 });
+
+            // Use JavaScript click to bypass the blocking child overlay
+            await overlayLocator.evaluate((element: HTMLElement) => element.click());
         });
     }
 
