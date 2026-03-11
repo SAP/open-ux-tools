@@ -14,7 +14,8 @@ import {
     getOrCreateServiceInstanceKeys,
     addServeStaticMiddleware,
     addBackendProxyMiddleware,
-    getCfUi5AppInfo
+    getCfUi5AppInfo,
+    getProjectNameForXsSecurity
 } from '../../../src/cf';
 import { getBaseAppId } from '../../../src/base/helper';
 import { runBuild } from '../../../src/base/project-builder';
@@ -36,6 +37,9 @@ const mockGetCfUi5AppInfo = getCfUi5AppInfo as jest.MockedFunction<typeof getCfU
 const mockGetBaseAppId = getBaseAppId as jest.MockedFunction<typeof getBaseAppId>;
 const mockRunBuild = runBuild as jest.MockedFunction<typeof runBuild>;
 const mockReadUi5Yaml = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
+const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
+    typeof getProjectNameForXsSecurity
+>;
 
 const mockServiceKeys = [
     {
@@ -153,6 +157,8 @@ describe('CF Writer', () => {
             mkdirSync(projectDir, { recursive: true });
             writeFileSync(join(projectDir, 'mta.yaml'), originalMtaYaml);
 
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
+
             await generateCf(projectDir, createConfigWithProjectPath(projectDir), mockLogger, fs);
 
             expect(fs.dump(projectDir)).toMatchSnapshot();
@@ -162,6 +168,8 @@ describe('CF Writer', () => {
             const projectDir = join(outputDir, 'managed-approuter');
             mkdirSync(projectDir, { recursive: true });
             writeFileSync(join(projectDir, 'mta.yaml'), originalMtaYaml);
+
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
 
             const customConfig = createConfigWithProjectPath(projectDir);
             customConfig.cf.approuter = AppRouterType.MANAGED;
@@ -175,6 +183,8 @@ describe('CF Writer', () => {
             const projectDir = join(outputDir, 'options');
             mkdirSync(projectDir, { recursive: true });
             writeFileSync(join(projectDir, 'mta.yaml'), originalMtaYaml);
+
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
 
             const customConfig = createConfigWithProjectPath(projectDir);
             customConfig.options = {

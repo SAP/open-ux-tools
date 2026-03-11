@@ -5,20 +5,23 @@ import { initI18n, t } from '../../../src/i18n';
 import { isAppSupported, loadApps } from '../../../src';
 
 describe('Target Applications', () => {
-    const APP_FIELDS =
-        'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName,sap.fiori/cloudDevAdaptationStatus';
     const APPS_WITH_DESCR_FILTER = {
-        fields: APP_FIELDS,
+        fields: 'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName',
         'sap.ui/technology': 'UI5',
         'sap.app/type': 'application',
         'fileType': 'appdescr'
     };
     const APPS_WITH_VARIANT_DESCR_FILTER = {
-        fields: APP_FIELDS,
+        fields: 'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName',
         'sap.ui/technology': 'UI5',
         'sap.app/type': 'application',
         'fileType': 'appdescr_variant',
         'originLayer': 'VENDOR'
+    };
+    const CLOUD_ONLY_APPS_FILTER = {
+        fields: 'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName,sap.fiori/cloudDevAdaptationStatus',
+        'sap.app/type': 'application',
+        'sap.fiori/cloudDevAdaptationStatus': 'released'
     };
     const searchMock = jest.fn();
 
@@ -45,6 +48,8 @@ describe('Target Applications', () => {
             expect(apps.length).toBe(2);
             expect(apps[0].title).toEqual('App One');
             expect(apps[0].cloudDevAdaptationStatus).toEqual('released');
+            expect(searchMock).toHaveBeenCalledTimes(1);
+            expect(searchMock).toHaveBeenCalledWith(CLOUD_ONLY_APPS_FILTER);
         });
 
         it('should load and merge applications correctly for on-premise project', async () => {

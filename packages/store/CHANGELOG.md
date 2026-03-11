@@ -1,5 +1,18 @@
 # @sap-ux/store
 
+## 1.5.9
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+
+## 1.5.8
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
 ## 1.5.7
 
 ### Patch Changes

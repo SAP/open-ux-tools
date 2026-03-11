@@ -409,6 +409,7 @@ export default class extends Generator {
             const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
             const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
             const manifest = this.jsonInput ? this.manifest : this.prompter.manifest;
+            const keyUserChanges = this.jsonInput ? this.jsonInput.keyUserChanges : this.keyUserPrompter?.changes;
             const projectType = this._getProjectType();
 
             const packageJson = getPackageInfo();
@@ -424,7 +425,7 @@ export default class extends Generator {
                 logger: this.toolsLogger,
                 projectType,
                 toolsId: this.toolsId,
-                keyUserChanges: this.keyUserPrompter?.changes
+                keyUserChanges
             });
 
             if (config.options) {

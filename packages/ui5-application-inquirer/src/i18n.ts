@@ -18,7 +18,8 @@ export async function initI18nUi5AppInquirer(): Promise<void> {
             defaultVariables: {
                 defaultProjectNumber
             }
-        }
+        },
+        showSupportNotice: false
     });
     i18n.addResourceBundle('en', ui5AppInquirerNamespace, translations);
     // Add bundles on which this module depends (this is a temp workaround as the init from the imported modules is not called)

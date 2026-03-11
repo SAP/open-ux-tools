@@ -1,5 +1,44 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.19
+
+### Patch Changes
+
+- bd95e55: feat: add function to add eslint config from template
+
+## 1.7.18
+
+### Patch Changes
+
+- @sap-ux/ui5-config@0.29.21
+
+## 1.7.17
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+
+## 1.7.16
+
+### Patch Changes
+
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+    - @sap-ux/ui5-config@0.29.20
+
+## 1.7.15
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+
+## 1.7.14
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/ui5-config@0.29.19
+
 ## 1.7.13
 
 ### Patch Changes

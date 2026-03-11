@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 2.0.2
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
+## 2.0.1
+
+### Patch Changes
+
+- 14d8ab3: fix(deps): update dependency babel-loader to v10
+
+## 2.0.0
+
+### Major Changes
+
+- c4839f5: update border radius for UI components to improve consistency
+
+## 1.27.10
+
+### Patch Changes
+
+- 88a1f57: fix(deps): update dependency storybook to v8.6.17 [security]
+
 ## 1.27.9
 
 ### Patch Changes
