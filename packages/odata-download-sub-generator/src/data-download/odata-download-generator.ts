@@ -22,6 +22,7 @@ import {
     generateMockserverConfig,
     type MockserverConfig as MockserverUpdateConfig
 } from '@sap-ux/mockserver-config-writer';
+import { TelemetryHelper } from '../telemetry';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
@@ -145,6 +146,10 @@ export class ODataDownloadGenerator extends Generator {
             this.options.logger,
             this.options.vscode
         ) as ILogWrapper & Logger;
+
+        await TelemetryHelper.initTelemetrySettings();
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_STARTED', { 'startTime': Date() });
     }
 
     async prompting(): Promise<void> {
@@ -221,8 +226,12 @@ export class ODataDownloadGenerator extends Generator {
                         // Writes relative to destination root path
                         this.writeDestinationJSON(join(this.state.mockDataRootPath!, `${entityName}.json`), entityData);
                     });
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WROTE_DATA_FILES', { 'writeTime': Date() });
                 } catch (error) {
                     ODataDownloadGenerator.logger.error(error);
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITING_DATA_ERROR', { 'writeTime': Date() });
                 }
             } else {
                 ODataDownloadGenerator.logger.info(t('info.noServiceEntityData'));
@@ -261,8 +270,14 @@ export class ODataDownloadGenerator extends Generator {
                         await generateMockserverConfig(this.state.appRootPath, config, this.fs);
                     }
                 }
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WROTE_VALUE_HELP_DATA', { 'writeTime': Date() });
             } else {
                 ODataDownloadGenerator.logger.info(t('info.noValueHelpData'));
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITING_VALUE_HELP_DATA_ERROR', {
+                    'writeTime': Date()
+                });
             }
             // Update the metadata
             if (this.state.updateMainServiceMetadata && this.state.mainServiceMetadata && this.state.mainServiceName) {

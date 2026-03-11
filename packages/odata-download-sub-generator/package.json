@@ -49,6 +49,7 @@
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap/ux-specification": "1.142.1",
         "@types/yeoman-generator": "5.2.14",
@@ -57,6 +58,7 @@
         "i18next": "25.8.12",
         "inquirer": "8.2.7",
         "odata-query": "8.0.5",
+        "os-name": "6.0.0",
         "prettify-xml": "1.2.0",
         "yeoman-generator": "5.10.0"
     },

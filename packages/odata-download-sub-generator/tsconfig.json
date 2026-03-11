@@ -41,6 +41,9 @@
       "path": "../store"
     },
     {
+      "path": "../telemetry"
+    },
+    {
       "path": "../ui5-config"
     }
   ]
