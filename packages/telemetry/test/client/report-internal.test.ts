@@ -51,7 +51,8 @@ describe('ClientFactory Send Report Internal Extension', () => {
                     'cmn.appstudio': false,
                     'cmn.internalFeatures': 'external',
                     'cmn.devspace': '',
-                    'cmn.nodeVersion': expect.any(String)
+                    'cmn.nodeVersion': expect.any(String),
+                    'cmn.ideType': expect.any(String)
                 }
             });
         } finally {

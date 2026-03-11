@@ -26,7 +26,7 @@ import {
 } from '@sap-ux/project-access';
 import type { CustomTask } from '@sap-ux/ui5-config';
 import { ToolingTelemetrySettings } from './config-state';
-import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } from './types';
+import type { CommonFioriProjectProperties, IdeType, InternalFeature, SourceTemplate } from './types';
 import { CommonProperties, DeployTarget, ODataSource, ToolsId } from './types';
 
 /**
@@ -63,6 +63,8 @@ export async function getCommonProperties(): Promise<CommonFioriProjectPropertie
         commonProperties[CommonProperties.InternlVsExternal];
 
     commonProperties[CommonProperties.NodeVersion] = await getOSNodeVersion();
+    commonProperties[CommonProperties.IdeType] = getIdeType();
+
     return commonProperties;
 }
 
@@ -337,4 +339,74 @@ async function getOSNodeVersion(): Promise<string> {
     } catch {
         return 'unknown';
     }
+}
+
+/**
+ * Detect the IDE/editor hosting the extension.
+ * Identifies VSCode, VSCode Insiders, Cursor, Windsurf, Antigravity, Trae, Kiro,
+ * VSCodium, code-server, SAP Business Application Studio, and standalone Node.js processes (CLI, MCP servers).
+ *
+ * @returns The detected IDE type
+ */
+export function getIdeType(): IdeType {
+    // Check for SAP Business Application Studio first
+    if (isAppStudio()) {
+        return 'appstudio';
+    }
+
+    const vscodeCwd = process.env.VSCODE_CWD?.toLowerCase() ?? '';
+    const vscodePid = process.env.VSCODE_PID;
+    const termProgram = process.env.TERM_PROGRAM ?? '';
+
+    // No VSCode environment detected - likely a standalone Node.js process (CLI, MCP, etc.)
+    if (!vscodePid && !vscodeCwd && termProgram !== 'vscode' && termProgram !== 'vscode-insiders') {
+        return 'unknown';
+    }
+
+    // Cursor detection - has its own environment variable or path indicator
+    if (process.env.CURSOR_TRACE_ID || vscodeCwd.includes('cursor')) {
+        return 'cursor';
+    }
+
+    // Windsurf detection (Codeium's IDE)
+    if (vscodeCwd.includes('windsurf') || vscodeCwd.includes('codeium')) {
+        return 'windsurf';
+    }
+
+    // Antigravity detection (Salesforce's IDE)
+    if (vscodeCwd.includes('antigravity')) {
+        return 'antigravity';
+    }
+
+    // Trae detection (ByteDance's IDE)
+    if (vscodeCwd.includes('trae')) {
+        return 'trae';
+    }
+
+    // Kiro detection (AWS's IDE)
+    if (vscodeCwd.includes('kiro')) {
+        return 'kiro';
+    }
+
+    // VSCodium detection (open-source VSCode without MS telemetry)
+    if (vscodeCwd.includes('vscodium') || vscodeCwd.includes('codium')) {
+        return 'vscodium';
+    }
+
+    // code-server detection (browser-based VSCode)
+    if (vscodeCwd.includes('code-server') || process.env.CODE_SERVER_SESSION) {
+        return 'code-server';
+    }
+
+    // VSCode Insiders detection
+    if (vscodeCwd.includes('insiders') || termProgram === 'vscode-insiders') {
+        return 'vscode-insiders';
+    }
+
+    // Standard VSCode detection
+    if (vscodePid || termProgram === 'vscode') {
+        return 'vscode';
+    }
+
+    return 'unknown';
 }
