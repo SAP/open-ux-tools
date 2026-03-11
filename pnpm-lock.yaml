@@ -3163,7 +3163,7 @@ importers:
         specifier: 8.0.4
         version: 8.0.4
 
-  packages/odata-download-sub-generator:
+  packages/odata-download-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.22.0
