@@ -691,9 +691,7 @@ describe('FlpSandbox', () => {
             expect(flpResponse.text).toContain('"open.ux.preview.client":"../preview/client"');
 
             // The editor at /rta.html should use "./" resource roots, not "../"
-            const editorResponse = await localServer
-                .get('/rta.html?fiori-tools-rta-mode=true')
-                .expect(200);
+            const editorResponse = await localServer.get('/rta.html?fiori-tools-rta-mode=true').expect(200);
             // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
             expect(editorResponse.text).toContain('"open.ux.preview.client":"preview/client"');
             expect(editorResponse.text).not.toContain('"open.ux.preview.client":"../preview/client"');
@@ -724,9 +722,7 @@ describe('FlpSandbox', () => {
             app.use(flp.router);
             const localServer = supertest(app);
 
-            const editorResponse = await localServer
-                .get('/test/rta.html?fiori-tools-rta-mode=true')
-                .expect(200);
+            const editorResponse = await localServer.get('/test/rta.html?fiori-tools-rta-mode=true').expect(200);
             expect(editorResponse.text).toContain('"open.ux.preview.client":"../preview/client"');
             expect(editorResponse.text).toContain('"test.fe.v2.app":".."');
         });
