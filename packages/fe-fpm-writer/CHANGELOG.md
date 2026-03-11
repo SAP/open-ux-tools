@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.7
+
+### Patch Changes
+
+- d45d105: Move `@sap-ux/i18n` from `devDependencies` to `dependencies`
+
 ## 0.43.6
 
 ### Patch Changes
