@@ -9,6 +9,7 @@ export const ENABLE_PASTE = 'sap-enable-paste';
 export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignment';
+export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -89,6 +90,11 @@ export interface TableColumnVerticalAlignment {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export interface StrictUomFiltering {
+    type: typeof STRICT_UOM_FILTERING;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
@@ -98,4 +104,5 @@ export type Diagnostic =
     | EnableExport
     | EnablePaste
     | StatePreservationMode
-    | TableColumnVerticalAlignment;
+    | TableColumnVerticalAlignment
+    | StrictUomFiltering;
