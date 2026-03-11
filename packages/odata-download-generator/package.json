@@ -1,5 +1,5 @@
 {
-    "name": "@sap-ux/generator-odata-downloader",
+    "name": "@sap-ux/generator-odata-download",
     "displayName": "Fiori Elements Data Downloader",
     "description": "Yeoman generator that supports download of app data, typically for mock data server use.",
     "version": "0.0.1",

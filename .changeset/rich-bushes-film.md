@@ -1,5 +1,5 @@
 ---
-'@sap-ux/odata-download-generator': patch
+'@sap-ux/generator-odata-download': patch
 ---
 
-New package @sap-ux/odata-downloader-sub-generator
+Adds new package @sap-ux/generator-odata-download
