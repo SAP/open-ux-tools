@@ -58,7 +58,7 @@
         "i18next": "25.8.12",
         "inquirer": "8.2.7",
         "odata-query": "8.0.5",
-        "os-name": "6.0.0",
+        "os-name": "4.0.1",
         "prettify-xml": "1.2.0",
         "yeoman-generator": "5.10.0"
     },

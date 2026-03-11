@@ -99,6 +99,13 @@ jest.mock('../src/utils/i18n', () => ({
     t: jest.fn((key: string) => key)
 }));
 
+jest.mock('../src/telemetry', () => ({
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn().mockResolvedValue(undefined),
+        sendTelemetry: jest.fn().mockResolvedValue(undefined)
+    }
+}));
+
 describe('ODataDownloadGenerator', () => {
     beforeEach(() => {
         jest.clearAllMocks();
