@@ -1,5 +1,19 @@
 # @sap-ux/adp-tooling
 
+## 0.18.90
+
+### Patch Changes
+
+- 05f3f4c: fix: Various ADP Generator fixes for CF flow
+
+## 0.18.89
+
+### Patch Changes
+
+- Updated dependencies [3edf6d7]
+    - @sap-ux/odata-service-writer@0.30.0
+    - @sap-ux/inquirer-common@0.11.23
+
 ## 0.18.88
 
 ### Patch Changes
