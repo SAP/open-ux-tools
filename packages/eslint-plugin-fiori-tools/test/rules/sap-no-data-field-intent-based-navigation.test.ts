@@ -1,9 +1,11 @@
 import { RuleTester } from 'eslint';
-import flexEnabledRule from '../../src/rules/sap-no-data-field-intent-based-navigation';
+import intentBasedNavRule from '../../src/rules/sap-no-data-field-intent-based-navigation';
 import { meta, languages } from '../../src/index';
 import {
     getAnnotationsAsXmlCode,
     setup,
+    V2_ANNOTATIONS,
+    V2_ANNOTATIONS_PATH,
     V4_ANNOTATIONS,
     V4_ANNOTATIONS_PATH,
     V4_FACETS_ANNOTATIONS
@@ -60,10 +62,67 @@ const V4_FACETS_ANNOTATIONS_DF = `
             </Annotations>
             `;
 
+const V2_TABLE_ANNOTATION_DF = `
+           <Annotations Target="TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType">
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="DeliveryCalendarYear" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>                        
+                        <Record Type="UI.DataFieldForIntentBasedNavigation">
+                            <PropertyValue Property="SemanticObject" String="qwerty"/>
+                        </Record>
+                        <Record Type="UI.DataFieldWithIntentBasedNavigation">
+                            <PropertyValue Property="Value" String="asdfg"/>
+                            <PropertyValue Property="SemanticObject" String=""/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+                `;
+
+export const V2_FACETS_ANNOTATIONS = `
+            <Annotations Target="TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType">
+                 <Annotation Term="UI.Facets" >
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="Products"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.LineItem"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            `;
+
+const V2_FACETS_ANNOTATIONS_DF = `
+            <Annotations Target="TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType">
+                 <Annotation Term="UI.Facets" >
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="Products"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.LineItem"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>                        
+                        <Record Type="UI.DataFieldForIntentBasedNavigation">
+                            <PropertyValue Property="SemanticObject" String="qwerty"/>
+                        </Record>
+                        <Record Type="UI.DataFieldWithIntentBasedNavigation">
+                            <PropertyValue Property="Value" String="asdfg"/>
+                            <PropertyValue Property="SemanticObject" String=""/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            `;
+
 const TEST_NAME = 'sap-no-data-field-intent-based-navigation';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-ruleTester.run(TEST_NAME, flexEnabledRule, {
+ruleTester.run(TEST_NAME, intentBasedNavRule, {
     valid: [
         createValidTest(
             // Non-XML files should be ignored
@@ -87,6 +146,22 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                 name: 'V4: OP table with no DF intent based navigation',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FACETS_ANNOTATIONS)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V2: LR table with no DF intent based navigation',
+                filename: V2_ANNOTATIONS_PATH,
+                code: V2_ANNOTATIONS
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V2: OP table with no DF intent based navigation',
+                filename: V2_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_FACETS_ANNOTATIONS)
             },
             []
         )
@@ -140,6 +215,58 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                         endColumn: 34,
                         endLine: 37,
                         line: 35
+                    }
+                ]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V2: LR table with DF intent based navigation',
+                filename: V2_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_TABLE_ANNOTATION_DF),
+                errors: [
+                    {
+                        message:
+                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                        column: 25,
+                        endColumn: 34,
+                        endLine: 243,
+                        line: 241
+                    },
+                    {
+                        message:
+                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                        column: 25,
+                        endColumn: 34,
+                        endLine: 247,
+                        line: 244
+                    }
+                ]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V2: OP table with DF intent based navigation',
+                filename: V2_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_FACETS_ANNOTATIONS_DF),
+                errors: [
+                    {
+                        message:
+                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                        column: 25,
+                        endColumn: 34,
+                        endLine: 247,
+                        line: 245
+                    },
+                    {
+                        message:
+                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                        column: 25,
+                        endColumn: 34,
+                        endLine: 251,
+                        line: 248
                     }
                 ]
             },
