@@ -365,7 +365,7 @@ describe('createJsonFixer', () => {
 
         it('should insert value on a parent node - fixParent = true', () => {
             const sourceText = `{"parent": {"old": true}}`;
-            const { node, ast } = createNodeFromJson(sourceText, ['parent']);
+            const { node, ast } = createNodeFromJson(sourceText, ['parent', 'old']);
             const mockContextWithText = {
                 sourceCode: {
                     getParent: jest
@@ -571,7 +571,7 @@ describe('createJsonFixer', () => {
 
         it('should delete parent object value if fixParent = true', () => {
             const sourceText = `{"parent": {"old": true}}`;
-            const { node, ast } = createNodeFromJson(sourceText, ['parent']);
+            const { node, ast } = createNodeFromJson(sourceText, ['parent', 'old']);
             const mockContextWithText = {
                 sourceCode: {
                     getParent: jest
