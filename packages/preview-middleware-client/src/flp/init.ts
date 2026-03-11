@@ -8,7 +8,6 @@ import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import type AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
-import initCdm from './initCdm';
 import initConnectors from './initConnectors';
 import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import type Component from 'sap/ui/core/Component';
@@ -302,12 +301,6 @@ export async function init({
     enhancedHomePage?: boolean | null;
     enableCardGenerator?: boolean;
 }): Promise<void> {
-    // Set CDM configuration before importing ushell container
-    // to ensure proper configuration pickup during bootstrap
-    if (enhancedHomePage) {
-        initCdm();
-    }
-
     const urlParams = new URLSearchParams(window.location.search);
     const container =
         sap?.ushell?.Container ??

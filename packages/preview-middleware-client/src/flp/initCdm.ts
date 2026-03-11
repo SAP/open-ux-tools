@@ -5,7 +5,7 @@ import type { Window } from 'types/global';
  *
  * @returns {void}
  */
-export default function initCdm(): void {
+((): void => {
     (window as unknown as Window)['sap-ushell-config'] = {
         defaultRenderer: 'fiori2',
         renderers: {
@@ -108,4 +108,4 @@ export default function initCdm(): void {
             }
         }
     };
-}
+})();
