@@ -113,6 +113,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             return {};
         }
         const lookup = new Set<Element>();
+        const dfLookup = new Set<Element>();
         for (const diagnostic of validationResult) {
             lookup.add(diagnostic.annotation?.reportedTable);
         }
@@ -123,12 +124,15 @@ const rule: FioriRuleDefinition = createFioriRule({
                     return;
                 }
                 validationResult.forEach((result) => {
-                    if (result.annotation.reportedTable === node) {
+                    const dfNode = result.annotation.reference.value;
+                    // check if df node was not already reported
+                    if (result.annotation.reportedTable === node && !dfLookup.has(dfNode)) {
                         context.report({
-                            node: result.annotation.reference.value, // report DataField node
+                            node: dfNode, // report DataField node
                             messageId: 'no-data-field-intent-based-navigation'
                         });
                     }
+                    dfLookup.add(result.annotation.reference.value);
                 });
             }
         };
