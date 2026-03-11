@@ -6,10 +6,10 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packagesodata-app-data-downloader"
+        "directory": "packages/odata-downloader-generator"
     },
     "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-app-data-downloader"
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-download"
     },
     "license": "Apache-2.0",
     "main": "generators/app/index.js",

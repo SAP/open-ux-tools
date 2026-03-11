@@ -16,7 +16,7 @@ import { ODataDownloadGenerator } from '../data-download';
 
 export const generatorName = '@sap-ux/odata-download-sub-generator';
 
-const resourceId = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
+const resourceId = 'c01f3247-ApplicationInsightsInstrumentationKeyPLACEH0LDER';
 
 export interface TelemetryData {
     [key: string]: string;
@@ -182,8 +182,7 @@ export abstract class TelemetryHelper {
         const telemetryEvent = this.prepareTelemetryEvent(telemetryEventName, telemetryDataWithContext);
         await ClientFactory.getTelemetryClient().reportEvent(
             telemetryEvent,
-            SampleRate.NoSampling,
-            appPath ? { appPath } : undefined
+            SampleRate.NoSampling
         );
     }
 
