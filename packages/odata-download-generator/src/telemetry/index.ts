@@ -169,21 +169,12 @@ export abstract class TelemetryHelper {
      *
      * @param telemetryEventName - the event name to be reported
      * @param telemetryData - the telemetry data
-     * @param appPath - the path of the application
      * @returns - a promise that resolves when the event is sent
      */
-    public static async sendTelemetry(
-        telemetryEventName: string,
-        telemetryData: TelemetryData,
-        appPath?: string
-    ): Promise<void> {
+    public static async sendTelemetry(telemetryEventName: string, telemetryData: TelemetryData): Promise<void> {
         const telemetryDataWithContext = this.createTelemetryData(telemetryData) ?? telemetryData;
-
         const telemetryEvent = this.prepareTelemetryEvent(telemetryEventName, telemetryDataWithContext);
-        await ClientFactory.getTelemetryClient().reportEvent(
-            telemetryEvent,
-            SampleRate.NoSampling
-        );
+        await ClientFactory.getTelemetryClient().reportEvent(telemetryEvent, SampleRate.NoSampling);
     }
 
     /**
