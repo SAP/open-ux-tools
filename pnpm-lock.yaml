@@ -93,8 +93,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0(eslint@9.39.1)
       globals:
-        specifier: 16.5.0
-        version: 16.5.0
+        specifier: 17.4.0
+        version: 17.4.0
       husky:
         specifier: 8.0.3
         version: 8.0.3
@@ -1897,8 +1897,8 @@ importers:
         specifier: 1.0.11
         version: 1.0.11
       globals:
-        specifier: 16.5.0
-        version: 16.5.0
+        specifier: 17.4.0
+        version: 17.4.0
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -12781,12 +12781,12 @@ packages:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
-  globals@16.5.0:
-    resolution: {integrity: sha512-c/c15i26VrJ4IRt5Z89DnIzCGDn9EcebibhAOjw5ibqEHsE1wLUgkPn9RDmNcUKyU87GeaL633nyJ+pplFR2ZQ==}
-    engines: {node: '>=18'}
-
   globals@17.3.0:
     resolution: {integrity: sha512-yMqGUQVVCkD4tqjOJf3TnrvaaHDMYp4VlUSObbkIiuCPe/ofdMBFIAcBbCSRFWOnos6qRiTVStDwqPLUclaxIw==}
+    engines: {node: '>=18'}
+
+  globals@17.4.0:
+    resolution: {integrity: sha512-hjrNztw/VajQwOLsMNT1cbJiH2muO3OROCHnbehc8eY5JyD2gqz4AcMHPqgaOR59DjgUjYAYLeH699g/eWi2jw==}
     engines: {node: '>=18'}
 
   globalthis@1.0.4:
@@ -28628,9 +28628,9 @@ snapshots:
 
   globals@14.0.0: {}
 
-  globals@16.5.0: {}
-
   globals@17.3.0: {}
+
+  globals@17.4.0: {}
 
   globalthis@1.0.4:
     dependencies:
