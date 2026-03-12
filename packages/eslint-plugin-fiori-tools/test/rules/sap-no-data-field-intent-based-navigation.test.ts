@@ -35,6 +35,63 @@ const V4_TABLE_ANNOTATION_DF = `
             </Annotations>
                 `;
 
+const V4_FIELD_GROUP_ANNOTATIONS = `<Annotations Target="IncidentService.Incidents">
+                <Annotation Term="UI.HeaderFacets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="formSection" />
+                            <PropertyValue Property="ID" String="formSection" />
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#formSection" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="formSection">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="identifier" />
+                                    <PropertyValue Property="Label" String="identifier" />
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="createdBy" />
+                                    <PropertyValue Property="Label" String="createdBy" />
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`;
+
+const V4_FIELD_GROUP_ANNOTATIONS_DF = `<Annotations Target="IncidentService.Incidents">
+                <Annotation Term="UI.HeaderFacets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="formSection" />
+                            <PropertyValue Property="ID" String="formSection" />
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#formSection" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="formSection">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataFieldForIntentBasedNavigation">
+                                    <PropertyValue Property="SemanticObject" String="qwertty" />
+                                    <PropertyValue Property="Action" String="toappnavsample" />
+                                </Record>
+                                <Record Type="UI.DataFieldWithIntentBasedNavigation">
+                                    <PropertyValue Property="Value" Int="1" />
+                                    <PropertyValue Property="SemanticObject" String="" />
+                                    <PropertyValue Property="Label" String="test00" />
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`;
+
 const V4_FACETS_ANNOTATIONS_DF = `
             <Annotations Target="IncidentService.Incidents">
                  <Annotation Term="UI.Facets" >
@@ -119,6 +176,45 @@ const V2_FACETS_ANNOTATIONS_DF = `
             </Annotations>
             `;
 
+const V2_FIELD_FROUP_ANNOTATIONS = ` <Annotations Target="TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType">
+                <Annotation Term="UI.FieldGroup" Qualifier="formSection">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="Currency" />
+                                    <PropertyValue Property="Label" String="Currency" />
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="GrossAmount" />
+                                    <PropertyValue Property="Label" String="GrossAmount" />
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`;
+
+const V2_FIELD_FROUP_ANNOTATIONS_DF = ` <Annotations Target="TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType">
+                <Annotation Term="UI.FieldGroup" Qualifier="formSection">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataFieldForIntentBasedNavigation">
+                                    <PropertyValue Property="SemanticObject" String="qwertty" />
+                                    <PropertyValue Property="Action" String="toappnavsample" />
+                                </Record>
+                                <Record Type="UI.DataFieldWithIntentBasedNavigation">
+                                    <PropertyValue Property="Value" Int="1" />
+                                    <PropertyValue Property="SemanticObject" String="" />
+                                    <PropertyValue Property="Label" String="test00" />
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`;
+
 const TEST_NAME = 'sap-no-data-field-intent-based-navigation';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
@@ -151,6 +247,14 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
         ),
         createValidTest(
             {
+                name: 'V4: FieldGroup annotation without DF intent based navigation',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FIELD_GROUP_ANNOTATIONS)
+            },
+            []
+        ),
+        createValidTest(
+            {
                 name: 'V2: LR table with no DF intent based navigation',
                 filename: V2_ANNOTATIONS_PATH,
                 code: V2_ANNOTATIONS
@@ -162,6 +266,14 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                 name: 'V2: OP table with no DF intent based navigation',
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_FACETS_ANNOTATIONS)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V2: FieldGroup annotation without DF intent based navigation',
+                filename: V2_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_FIELD_FROUP_ANNOTATIONS)
             },
             []
         )
@@ -222,6 +334,32 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
         ),
         createInvalidTest(
             {
+                name: 'V4: FieldGroup annotation with DF intent based navigation',
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FIELD_GROUP_ANNOTATIONS_DF),
+                filename: V4_ANNOTATIONS_PATH,
+                errors: [
+                    {
+                        message:
+                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                        column: 33,
+                        endColumn: 42,
+                        endLine: 33,
+                        line: 30
+                    },
+                    {
+                        message:
+                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                        column: 33,
+                        endColumn: 42,
+                        endLine: 38,
+                        line: 34
+                    }
+                ]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
                 name: 'V2: LR table with DF intent based navigation',
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_TABLE_ANNOTATION_DF),
@@ -267,6 +405,33 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                         endColumn: 34,
                         endLine: 251,
                         line: 248
+                    }
+                ]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V2: FieldGroup annotation with DF intent based navigation',
+                filename: V2_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_FIELD_FROUP_ANNOTATIONS_DF),
+                errors: [
+                    {
+                        message:
+                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                        column: 33,
+                        endColumn: 42,
+                        endLine: 241,
+                        line: 238
+                    },
+                    {
+                        message:
+                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+
+                        column: 33,
+                        endColumn: 42,
+                        endLine: 246,
+                        line: 242
                     }
                 ]
             },
