@@ -435,7 +435,7 @@ function findServiceByUri(
     uri: string
 ): { name: string; urlPath: string } | undefined {
     const searchUri = normalizeServiceUrlPath(uniformUrl(uri));
-    let service = services.find((srv) => normalizeServiceUrlPath(srv.urlPath));
+    let service = services.find((srv) => normalizeServiceUrlPath(srv.urlPath) === searchUri);
     if (!service) {
         service = services.find((srv) => {
             const normalizedPath = normalizeServiceUrlPath(srv.urlPath);
