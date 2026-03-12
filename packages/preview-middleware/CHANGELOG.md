@@ -1,5 +1,19 @@
 # @sap-ux/preview-middleware
 
+## 0.23.151
+
+### Patch Changes
+
+- 05f3f4c: fix: Various ADP Generator fixes for CF flow
+- Updated dependencies [05f3f4c]
+    - @sap-ux/adp-tooling@0.18.90
+
+## 0.23.150
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.89
+
 ## 0.23.149
 
 ### Patch Changes
