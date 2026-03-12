@@ -1260,6 +1260,14 @@ describe('getCapServiceName', () => {
             );
         }
     });
+
+    test('Ignore service prefixes - return valid service name', async () => {
+        const capServiceName = await getCapServiceName(
+            '/some/test/path',
+            '/external.uri/external-ui/dummy/v1/odata/v4/service/one/'
+        );
+        expect(capServiceName).toEqual('ServiceOne');
+    });
 });
 
 describe('deleteCapApp', () => {
