@@ -103,9 +103,11 @@ function resetAppConfig(appConfig: AppConfig): AppConfig {
 /**
  * Gets all prompts for the OData downloader flow.
  *
+ * @param options
+ * @param options.appPath
  * @returns Object containing questions and answer references
  */
-export async function getODataDownloaderPrompts(): Promise<{
+export async function getODataDownloaderPrompts(options?: { appPath?: string }): Promise<{
     questions: Question[];
     answers: {
         application: AppConfig;
@@ -128,7 +130,7 @@ export async function getODataDownloaderPrompts(): Promise<{
     };
     const servicePaths: string[] = [];
 
-    const appSelectionQuestion = getAppSelectionPrompt(appConfig, servicePaths);
+    const appSelectionQuestion = getAppSelectionPrompt(appConfig, servicePaths, options?.appPath);
 
     const systemSelectionQuestions = await getSystemSelectionQuestions(
         {
@@ -190,15 +192,16 @@ export async function getODataDownloaderPrompts(): Promise<{
  *
  * @param appConfig - The application configuration reference
  * @param servicePaths - Array to store service paths
+ * @param appPath
  * @returns The app selection input question
  */
-function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[]): InputQuestion {
+function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[], appPath?: string): InputQuestion {
     return {
         type: 'input',
         guiType: 'folder-browser',
         name: promptNames.appSelection,
         message: t('prompts.appSelection.message'),
-        default: (answers: Answers) => answers.appSelection ?? appConfig.appAccess?.app.appRoot,
+        default: (answers: Answers) => appPath ?? answers.appSelection ?? appConfig.appAccess?.app.appRoot,
         guiOptions: { mandatory: true, breadcrumb: t('prompts.appSelection.breadcrumb') },
         validate: async (appPath: string): Promise<string | boolean> => {
             if (!appPath) {

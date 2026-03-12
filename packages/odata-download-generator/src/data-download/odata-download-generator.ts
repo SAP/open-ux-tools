@@ -157,7 +157,7 @@ export class ODataDownloadGenerator extends Generator {
             const {
                 answers: { application, odataQueryResult, odataServiceAnswers },
                 questions
-            } = await getODataDownloaderPrompts();
+            } = await getODataDownloaderPrompts(this.options?.data);
             const promptAnswers = (await this.prompt(questions)) as Record<string, unknown>;
             this.state.entityOData = odataQueryResult.odata;
             this.state.entityPropertyToEntitySet = application.relatedEntityChoices.entitySetsFlat;

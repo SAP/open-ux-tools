@@ -160,6 +160,38 @@ describe('Test prompts', () => {
             expect(appSelectionPrompt.name).toBe(promptNames.appSelection);
         });
 
+        it('should use appPath option as default value when passed to getODataDownloaderPrompts', async () => {
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+                prompts: [],
+                answers: {}
+            });
+
+            const testAppPath = '/test/custom/app/path';
+            const result = await getODataDownloaderPrompts({ appPath: testAppPath });
+            const appPrompt = result.questions.find((q: any) => q.name === promptNames.appSelection) as InputQuestion;
+
+            // The default function should return the appPath when called
+            const defaultValue = (appPrompt.default as Function)({});
+            expect(defaultValue).toBe(testAppPath);
+        });
+
+        it('should fallback to answers.appSelection when appPath option is not provided', async () => {
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+                prompts: [],
+                answers: {}
+            });
+
+            const result = await getODataDownloaderPrompts();
+            const appPrompt = result.questions.find((q: any) => q.name === promptNames.appSelection) as InputQuestion;
+
+            // When appPath is not provided, should fallback to answers.appSelection
+            const existingSelection = '/existing/selection/path';
+            const defaultValue = (appPrompt.default as Function)({ appSelection: existingSelection });
+            expect(defaultValue).toBe(existingSelection);
+        });
+
         it('should validate app path successfully', async () => {
             const mockAppAccess = {
                 app: {
