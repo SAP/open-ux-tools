@@ -204,7 +204,7 @@ export async function createServiceInstance(
             `Creating service instance '${serviceInstanceName}' of service '${serviceName}' with '${plan}' plan`
         );
 
-        const commandParameters: string[] = ['create-service', serviceName, plan, serviceInstanceName];
+        const commandParameters: string[] = ['create-service', serviceName, plan, serviceInstanceName, '--wait'];
 
         if (xsSecurityProjectName) {
             let xsSecurity = null;

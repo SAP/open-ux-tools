@@ -405,7 +405,8 @@ describe('CF Services API', () => {
                 'create-service',
                 serviceName,
                 plan,
-                serviceInstanceName
+                serviceInstanceName,
+                '--wait'
             ]);
         });
 
@@ -428,6 +429,7 @@ describe('CF Services API', () => {
                 'xsuaa',
                 plan,
                 serviceInstanceName,
+                '--wait',
                 '-c',
                 JSON.stringify({ xsappname: 'test-project' })
             ]);
