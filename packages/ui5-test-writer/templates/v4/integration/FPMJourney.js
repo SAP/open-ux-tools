@@ -7,10 +7,10 @@
  * ║   overwritten when you run the OPA test generator again.              ║ *
  * ║                                                                       ║ *
  * ║   To add your own custom tests:                                       ║ *
- * ║      - Create a new journey test file in this directory.              ║ *
- * ║      - Follow the same pattern as this file.                          ║ *
- * ║      - Add the new file to the opaTests.qunit.js config file.         ║ *
- * ║      - Custom journey files are not overwritten.                      ║ *
+ * ║   - Create a new journey test file in this directory.                 ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the opaTests.qunit.js config file.            ║ *
+ * ║   - Custom journey files are not overwritten.                         ║ *
  * ║                                                                       ║ *
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
