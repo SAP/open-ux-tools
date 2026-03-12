@@ -3,6 +3,7 @@ import { STRICT_UOM_FILTERING, type StrictUomFiltering } from '../language/diagn
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer';
+import { isLowerThanMinimalUi5Version } from '../utils/version';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: STRICT_UOM_FILTERING,
@@ -28,8 +29,14 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (app.type !== 'fe-v4') {
                 continue;
             }
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+            if (
+                !parsedApp.manifest.minUI5Version ||
+                isLowerThanMinimalUi5Version(parsedApp.manifest.minUI5Version, { major: 1, minor: 143 })
+            ) {
+                continue;
+            }
             if (app.configuration.disableStrictUomFiltering.valueInFile === true) {
-                const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
                 problems.push({
                     type: STRICT_UOM_FILTERING,
                     manifest: {

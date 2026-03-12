@@ -1,10 +1,10 @@
 # Disallow Setting `disableStrictUomFiltering` to `true` in SAP FE App Configuration (`sap-strict-uom-filtering`)
 
-Ensures that the `disableStrictUomFiltering` property is not set to `true` in the `sap.fe.app` configuration in the `manifest.json` file.
+Ensures that the `disableStrictUomFiltering` property is not set to `true` in the `sap.fe.app` configuration in the `manifest.json` file. Applies to OData V4 applications only.
 
 ## Rule Details
 
-This rule checks if the `disableStrictUomFiltering` property is set to `true` in the `sap.fe.app` configuration within the `manifest.json` file. Setting this property to `true` disables strict unit-of-measure filtering, which can result in incorrect filter behavior when users filter by fields that use units of measure. This rule ensures the correct configuration for unit-of-measure filtering.
+This rule checks if the `disableStrictUomFiltering` property is set to `true` in the `sap.fe.app` configuration within the `manifest.json` file of OData V4 applications (UI5 version 1.143 or higher). Setting this property to `true` disables strict unit-of-measure filtering, which can result in incorrect filter behavior when users filter by fields that use units of measure. This rule ensures the correct configuration for unit-of-measure filtering.
 
 ### Why Was This Rule Introduced?
 

@@ -33,6 +33,19 @@ ruleTester.run(TEST_NAME, strictUomFilteringRule, {
                 ])
             },
             []
+        ),
+        createValidTest(
+            {
+                name: 'disableStrictUomFiltering is true but UI5 version is below 1.143 - should not report',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.fe', 'app', 'disableStrictUomFiltering'],
+                        value: true
+                    }
+                ])
+            },
+            []
         )
     ],
 
@@ -43,11 +56,19 @@ ruleTester.run(TEST_NAME, strictUomFilteringRule, {
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.143.0'
+                    },
+                    {
                         path: ['sap.fe', 'app', 'disableStrictUomFiltering'],
                         value: true
                     }
                 ]),
                 output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.143.0'
+                    },
                     {
                         path: ['sap.fe', 'app'],
                         value: {}
