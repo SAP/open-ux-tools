@@ -2,8 +2,9 @@ import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { ParsedService } from '../parser';
 import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
 import { getParsedServiceByName } from '../utils';
-import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
-import { collectTables, collectSections } from './annotations';
+import type { AnnotationNode, FieldGroupNode, TableNode, TableSectionNode } from './annotations';
+import { collectTables, collectSections, collectFieldGroups } from './annotations';
+import { linkListReportFieldGroup, linkObjectPageFieldGroups } from './utils';
 
 export interface ApplicationSetting {
     createMode: string;
@@ -20,7 +21,8 @@ export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
     contextPath: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
-    lookup: NodeLookup<Table | OrphanTable>;
+    fieldGroups: FieldGroup[];
+    lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
 }
 
 export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
@@ -29,7 +31,8 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     contextPath: string;
     entity: MetadataElement;
     sections: Section[];
-    lookup: NodeLookup<Table | Section>;
+    fieldGroups: FieldGroup[];
+    lookup: NodeLookup<Table | Section | FieldGroup>;
     header: {
         anchorBarVisible: ConfigurationProperty<boolean>;
         visible: ConfigurationProperty<boolean>;
@@ -59,6 +62,7 @@ export interface TableSettings {
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
+export type FieldGroup = AnnotationBasedNode<FieldGroupNode, {}>;
 
 interface ManifestApplicationSettings {
     macros?: {
@@ -183,7 +187,7 @@ function getCreationModeValues(tableType?: string): string[] {
     return ['InlineCreationRows', 'NewPage'];
 }
 
-export type Node = Section | Table | OrphanTable;
+export type Node = Section | Table | OrphanTable | FieldGroup;
 export type NodeLookup<T extends Node> = {
     [K in T['type']]?: Extract<T, { type: K }>[];
 };
@@ -222,6 +226,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
             linkListReport(context, linkedApp, path, name, contextPath, entity, target);
         } else if (target.name === 'sap.fe.templates.ObjectPage' && entity.structuredType) {
             const sections = collectSections('v4', entity.structuredType, mainService);
+            const fieldGroups = collectFieldGroups(entity.structuredType, mainService);
 
             const page: FeV4ObjectPage = {
                 type: 'object-page',
@@ -231,6 +236,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                 entity: entity,
                 configuration: {},
                 sections: [],
+                fieldGroups: [],
                 lookup: {},
                 header: {
                     anchorBarVisible: {
@@ -245,6 +251,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
             };
             linkObjectPageSections(page, path, name, sections, target);
             linkObjectPageHeader(page, target);
+            linkObjectPageFieldGroups(page, fieldGroups);
             linkedApp.pages.push(page);
         }
     }
@@ -312,6 +319,7 @@ function linkListReport(
         return;
     }
     const tables = collectTables('v4', entityType, mainService);
+    const fieldGroups = collectFieldGroups(entityType, mainService);
 
     const page: FeV4ListReport = {
         type: 'list-report-page',
@@ -321,9 +329,11 @@ function linkListReport(
         entity: entity,
         configuration: {},
         tables: [],
+        fieldGroups: [],
         lookup: {}
     };
     linkListReportTable(page, [...path, name], tables, target);
+    linkListReportFieldGroup(page, fieldGroups);
     linkedApp.pages.push(page);
 }
 

@@ -3,8 +3,9 @@ import type { LinkerContext, ConfigurationBase } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { ParsedService } from '../parser';
 
-import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
-import { collectSections, collectTables } from './annotations';
+import type { AnnotationNode, FieldGroupNode, TableNode, TableSectionNode } from './annotations';
+import { collectFieldGroups, collectSections, collectTables } from './annotations';
+import { linkListReportFieldGroup, linkObjectPageFieldGroups } from './utils';
 
 export interface FlexibleColumnLayoutSettings {
     defaultTwoColumnLayoutType: string;
@@ -25,7 +26,6 @@ export interface PageSetting {
 export type OrphanSection = ConfigurationBase<'orphan-section', TableSettings>;
 export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
 export type Section = TableSection | OrphanSection;
-
 export interface TableSettings {
     createMode: string;
     tableType: string;
@@ -34,8 +34,9 @@ export interface TableSettings {
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
+export type FieldGroup = AnnotationBasedNode<FieldGroupNode, {}>;
 
-export type Node = Section | Table | OrphanTable;
+export type Node = Section | Table | OrphanTable | FieldGroup;
 export type NodeLookup<T extends Node> = {
     [K in T['type']]?: Extract<T, { type: K }>[];
 };
@@ -50,7 +51,8 @@ export interface FeV2ListReport extends ConfigurationBase<'list-report-page', Pa
     entitySetName: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
-    lookup: NodeLookup<Table | OrphanTable>;
+    fieldGroups: FieldGroup[];
+    lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
 }
 
 export interface FeV2ObjectPage extends ConfigurationBase<'object-page', PageSetting> {
@@ -59,7 +61,8 @@ export interface FeV2ObjectPage extends ConfigurationBase<'object-page', PageSet
     entitySetName: string;
     entity: MetadataElement;
     sections: Section[];
-    lookup: NodeLookup<Table | Section>;
+    fieldGroups: FieldGroup[];
+    lookup: NodeLookup<Table | Section | FieldGroup>;
 }
 
 export type FeV2PageType = FeV2ListReport | FeV2ObjectPage;
@@ -357,6 +360,7 @@ function linkListReportPage(
     }
 
     const table = collectTables('v2', entityType, mainService);
+    const fieldGroups = collectFieldGroups(entityType, mainService);
     const createMode = target.component?.settings?.createMode;
     const page: FeV2ListReport = {
         type: 'list-report-page',
@@ -366,10 +370,12 @@ function linkListReportPage(
         entitySetName,
         entity,
         tables: [],
+        fieldGroups: [],
         lookup: {}
     };
 
     linkListReportTable(page, [...path, name], table, target);
+    linkListReportFieldGroup(page, fieldGroups);
     linkedApp.pages.push(page);
 }
 
@@ -407,6 +413,7 @@ function linkObjectPagePage(
     }
 
     const sections = collectSections('v2', entityType, mainService);
+    const fieldGroups = collectFieldGroups(entityType, mainService);
     const createMode = target.component?.settings?.createMode;
     const page: FeV2ObjectPage = {
         type: 'object-page',
@@ -416,10 +423,12 @@ function linkObjectPagePage(
         entitySetName,
         entity,
         sections: [],
+        fieldGroups: [],
         lookup: {}
     };
 
     linkObjectPageSections(page, [...path, name], entity, mainService, sections, target);
+    linkObjectPageFieldGroups(page, fieldGroups);
     linkedApp.pages.push(page);
 }
 

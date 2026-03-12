@@ -12,7 +12,7 @@ import {
 } from '@sap-ux/odata-annotation-core';
 import type { IndexedAnnotation, ParsedService } from '../parser';
 import { buildAnnotationIndexKey } from '../parser';
-import { UI_LINE_ITEM } from '../../constants';
+import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants';
 
 export interface AnnotationBasedNode<T extends string, Children = never> {
     type: T;
@@ -28,8 +28,9 @@ export type TableSectionNode = AnnotationBasedNode<'table-section', TableNode>;
 
 // NOSONAR - TableNode provides semantic meaning for code readability
 export type TableNode = AnnotationBasedNode<'table'>;
+export type FieldGroupNode = AnnotationBasedNode<'fieldGroup'>;
 
-export type AnnotationNode = TableSectionNode | TableNode;
+export type AnnotationNode = TableSectionNode | TableNode | FieldGroupNode;
 export type NodeLookup = {
     [K in AnnotationNode['type']]?: Extract<AnnotationNode, { type: K }>[];
 };
@@ -57,6 +58,31 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
     }
     return tables;
 }
+
+/**
+ * Collects fieldGroup annotations
+ *
+ * @param entityType - The entity type name
+ * @param service - The parsed OData service
+ * @returns array of field group annotations
+ */
+export function collectFieldGroups(entityType: string, service: ParsedService): FieldGroupNode[] {
+    const fieldGroups: FieldGroupNode[] = [];
+    const fgKey = buildAnnotationIndexKey(entityType, UI_FIELD_GROUP);
+    const fieldGroupsByKey = service.index.annotations[fgKey];
+
+    for (const key of Object.keys(fieldGroupsByKey ?? {})) {
+        const fieldGroup: FieldGroupNode = {
+            type: 'fieldGroup',
+            annotation: fieldGroupsByKey[key],
+            annotationPath: UI_FIELD_GROUP,
+            children: []
+        };
+        fieldGroups.push(fieldGroup);
+    }
+    return fieldGroups;
+}
+
 /**
  * Collects section nodes from UI.Facets annotations for an entity type.
  *
