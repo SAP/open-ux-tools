@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.152
+
+### Patch Changes
+
+- 0453fe5: fix: ensure leading slash for preview paths
+
 ## 0.23.151
 
 ### Patch Changes
