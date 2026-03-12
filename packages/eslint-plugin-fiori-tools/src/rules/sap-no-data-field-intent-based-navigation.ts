@@ -12,9 +12,9 @@ import { type ParsedService } from '../project-context/parser';
 /**
  * Collects DataFieldForIntentBasedNavigation and DataFieldWithIntentBasedNavigation used in a page
  *
- * @param tableOrFieldGroup - page table or FieldGroup annotation to check for DataFields
+ * @param tableOrFieldGroup - Page table or FieldGroup annotation to check for DataFields
  * @param aliasInfo - Alias information for resolving qualified names
- * @returns array of data fild with/for intent based navigation
+ * @returns Array of data fild with/for intent based navigation
  */
 function getIntentBasedNavDataFields(
     tableOrFieldGroup: FeV2Table | FeV4Table | FieldGroup,
@@ -52,10 +52,12 @@ function getIntentBasedNavDataFields(
 }
 
 /**
+ * Checks if DataFieldForIntentBasedNavigation or DataFieldWithIntentBasedNavigation are used in the table of FieldGroup annotation.
+ * Adds to problems for every DataField annotation used.
  *
- * @param page
- * @param parsedService
- * @param problems
+ * @param page - Application page V2 or V4
+ * @param parsedService - Parsed annotation service
+ * @param problems - Array of found rule violations
  */
 function checkTablesAndFieldGroupsInPage(
     page: FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage,
@@ -97,7 +99,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         docs: {
             recommended: true,
             description: '',
-            url: ''
+            url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-no-data-field-intent-based-navigation.md'
         },
         messages: {
             ['no-data-field-intent-based-navigation']:
@@ -139,7 +141,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                     .filter((result) => result.annotation.reportedParent === node)
                     .forEach((result) => {
                         const dfNode = result.annotation.reference.value;
-                        // check if df node was not already reported
+                        // check if DataField node was not already reported
                         if (result.annotation.reportedParent === node && !dfLookup.has(dfNode)) {
                             context.report({
                                 node: dfNode, // report DataField node
