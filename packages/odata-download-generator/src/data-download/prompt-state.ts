@@ -23,7 +23,7 @@ export class PromptState {
     }
 
     static resetRefFacetCache(): void {
-        this.entityTypeRefFacetCache = {};
+        PromptState.entityTypeRefFacetCache = {};
     }
 
     static resetServiceCaches(): void {

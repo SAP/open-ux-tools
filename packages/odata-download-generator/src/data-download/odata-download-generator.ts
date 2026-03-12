@@ -282,7 +282,7 @@ export class ODataDownloadGenerator extends Generator {
             // Update the metadata
             if (this.state.updateMainServiceMetadata && this.state.mainServiceMetadata && this.state.mainServiceName) {
                 const mainServiceMetadataPath = join(
-                    this.state.appRootPath!,
+                    this.state.appRootPath,
                     DirName.Webapp,
                     DirName.LocalService,
                     this.state.mainServiceName,
