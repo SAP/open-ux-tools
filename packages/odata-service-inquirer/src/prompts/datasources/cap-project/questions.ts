@@ -147,7 +147,8 @@ export function getLocalCapProjectPrompts(
             guiOptions: {
                 applyDefaultWhenDirty: true,
                 mandatory: true,
-                breadcrumb: true
+                breadcrumb: true,
+                showOutputTabLink: { command: { id: 'sap.ux.appWizard.showOutputChannel' } }
             },
             default: () => {
                 return capServiceChoices?.length > 1 ? defaultServiceIndex : 0;

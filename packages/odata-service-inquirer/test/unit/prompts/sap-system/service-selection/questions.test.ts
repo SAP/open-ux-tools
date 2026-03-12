@@ -123,6 +123,11 @@ describe('Test new system prompt', () => {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": "Service",
                   "mandatory": true,
+                  "showOutputTabLink": {
+                    "command": {
+                      "id": "sap.ux.appWizard.showOutputChannel",
+                    },
+                  },
                 },
                 "message": [Function],
                 "name": "someNamespace:serviceSelection",

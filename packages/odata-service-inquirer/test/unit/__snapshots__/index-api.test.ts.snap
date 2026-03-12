@@ -120,6 +120,11 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Service",
       "mandatory": true,
+      "showOutputTabLink": {
+        "command": {
+          "id": "sap.ux.appWizard.showOutputChannel",
+        },
+      },
     },
     "message": [Function],
     "name": "systemSelection:serviceSelection",
@@ -227,6 +232,11 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Service",
       "mandatory": true,
+      "showOutputTabLink": {
+        "command": {
+          "id": "sap.ux.appWizard.showOutputChannel",
+        },
+      },
     },
     "message": [Function],
     "name": "abapOnPrem:serviceSelection",
@@ -300,6 +310,11 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Service",
       "mandatory": true,
+      "showOutputTabLink": {
+        "command": {
+          "id": "sap.ux.appWizard.showOutputChannel",
+        },
+      },
     },
     "message": [Function],
     "name": "abapOnBtp:serviceSelection",
@@ -354,6 +369,11 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
       "applyDefaultWhenDirty": true,
       "breadcrumb": true,
       "mandatory": true,
+      "showOutputTabLink": {
+        "command": {
+          "id": "sap.ux.appWizard.showOutputChannel",
+        },
+      },
     },
     "message": "OData Service",
     "name": "capService",

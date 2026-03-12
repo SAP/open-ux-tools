@@ -82,7 +82,8 @@ export function getSystemServiceQuestion(
         guiOptions: {
             breadcrumb: t('prompts.systemService.breadcrumb'),
             mandatory: true,
-            applyDefaultWhenDirty: true
+            applyDefaultWhenDirty: true,
+            showOutputTabLink: { command: { id: 'sap.ux.appWizard.showOutputChannel' } }
         },
         source: (prevAnswers: unknown, input: string) => searchChoices(input, serviceChoices as ListChoiceOptions[]),
         // SystemSelectionAnswers should not be needed here in the interest of keeping these prompts decoupled but TelemetryHelper is used here and it requires the previously selected destination

@@ -36,6 +36,11 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
       "applyDefaultWhenDirty": true,
       "breadcrumb": true,
       "mandatory": true,
+      "showOutputTabLink": {
+        "command": {
+          "id": "sap.ux.appWizard.showOutputChannel",
+        },
+      },
     },
     "message": "OData Service",
     "name": "capService",
