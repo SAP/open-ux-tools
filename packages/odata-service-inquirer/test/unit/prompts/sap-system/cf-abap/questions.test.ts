@@ -98,6 +98,11 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": "Service",
                   "mandatory": true,
+                  "showOutputTabLink": {
+                    "command": {
+                      "id": "sap.ux.appWizard.showOutputChannel",
+                    },
+                  },
                 },
                 "message": [Function],
                 "name": "cfAbapBas:serviceSelection",

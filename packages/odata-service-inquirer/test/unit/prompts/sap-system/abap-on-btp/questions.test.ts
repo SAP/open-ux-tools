@@ -143,6 +143,11 @@ describe('questions', () => {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": "Service",
                   "mandatory": true,
+                  "showOutputTabLink": {
+                    "command": {
+                      "id": "sap.ux.appWizard.showOutputChannel",
+                    },
+                  },
                 },
                 "message": [Function],
                 "name": "abapOnBtp:serviceSelection",
