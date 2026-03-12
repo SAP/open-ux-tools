@@ -6,6 +6,13 @@
     controllerName="open.ux.preview.client.flp.homepage.controller.MyHome"
     class="sapUShellFullHeight"
 >
+    <m:MessageStrip
+        id="disclaimer"
+        type="Information"
+        showIcon="true"
+        text="Disclaimer: This is a preview version. Some features available on this homepage may not be present in the main MyHome page."
+    />
+
     <m:Page
         id="page"
         showHeader="false"
