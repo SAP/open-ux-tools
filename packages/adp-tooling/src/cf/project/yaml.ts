@@ -94,7 +94,7 @@ export function getAppParamsFromUI5Yaml(projectPath: string): AppParamsExtended 
     const appConfiguration = parsedYaml?.builder?.customTasks?.[0]?.configuration;
     const appParams: AppParamsExtended = {
         appHostId: appConfiguration?.appHostId || '',
-        appName: appConfiguration?.appVersion || '',
+        appName: appConfiguration?.appName || '',
         appVersion: appConfiguration?.appVersion || '',
         spaceGuid: appConfiguration?.space || ''
     };
