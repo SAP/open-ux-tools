@@ -5,7 +5,7 @@ import * as fileMock from '@sap-ux/project-access/dist/file';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { createEntityChoices, getData } from '../../src/data-download/prompts/prompt-helpers';
+import { createEntityChoices, getData, getServiceDetails, getSpecification } from '../../src/data-download/prompts/prompt-helpers';
 import { getEntityModel } from '../../src/data-download/utils';
 import * as odataQueryModule from '../../src/data-download/odata-query';
 import { initI18nODataDownloadGenerator } from '../../src/utils/i18n';
@@ -13,6 +13,8 @@ import type { AppConfig, Entity, ReferencedEntities } from '../../src/data-downl
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { EntityType } from '@sap-ux/vocabularies-types';
 import { PromptState } from '../../src/data-download/prompt-state';
+import type { ApplicationAccess, ServiceSpecification } from '@sap-ux/project-access';
+import * as utils from '../../src/data-download/utils';
 
 const readJSONOriginal = fileMock.readJSON;
 
@@ -544,5 +546,154 @@ describe('Test getData', () => {
             []
         );
         expect(result).toBe('Connection failed');
+    });
+});
+
+describe('Test getServiceDetails', () => {
+    // Use test-apps/travel which has a real ui5.yaml file
+    const testAppPath = join(__dirname, '../test-data/test-apps/travel');
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('should return service path and URI from service specification', async () => {
+        jest.spyOn(utils, 'getSystemNameFromStore').mockResolvedValue('MY_SYSTEM');
+
+        const service: ServiceSpecification = {
+            uri: '/sap/opu/odata4/sap/fe_draft_travel/srvd/sap/travel_processor/0001/',
+            local: '/localService/mainService/metadata.xml'
+        };
+
+        const result = await getServiceDetails(testAppPath, service);
+
+        expect(result.servicePath).toBe('/sap/opu/odata4/sap/fe_draft_travel/srvd/sap/travel_processor/0001/');
+        expect(result.systemName).toBeDefined();
+    });
+
+    test('should return undefined system name when getSystemNameFromStore returns undefined', async () => {
+        jest.spyOn(utils, 'getSystemNameFromStore').mockResolvedValue(undefined);
+
+        const service: ServiceSpecification = {
+            uri: '/sap/opu/odata4/sap/fe_draft_travel/srvd/sap/travel_processor/0001/',
+            local: '/localService/mainService/metadata.xml'
+        };
+
+        const result = await getServiceDetails(testAppPath, service);
+
+        expect(result.servicePath).toBe('/sap/opu/odata4/sap/fe_draft_travel/srvd/sap/travel_processor/0001/');
+    });
+});
+
+describe('Test getSpecification', () => {
+    beforeAll(async () => {
+        await initI18nODataDownloadGenerator();
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('should return specification when API version is 24 or higher', async () => {
+        const mockSpecification = {
+            getApiVersion: jest.fn().mockReturnValue({ version: '24' })
+        };
+
+        jest.spyOn(require('@sap-ux/project-access'), 'getSpecificationModuleFromCache').mockResolvedValue(
+            mockSpecification
+        );
+
+        const mockAppAccess = {
+            app: {
+                appRoot: '/test/app'
+            }
+        } as ApplicationAccess;
+
+        const result = await getSpecification(mockAppAccess);
+
+        expect(result).toBe(mockSpecification);
+    });
+
+    test('should return specification when API version is greater than 24', async () => {
+        const mockSpecification = {
+            getApiVersion: jest.fn().mockReturnValue({ version: '25' })
+        };
+
+        jest.spyOn(require('@sap-ux/project-access'), 'getSpecificationModuleFromCache').mockResolvedValue(
+            mockSpecification
+        );
+
+        const mockAppAccess = {
+            app: {
+                appRoot: '/test/app'
+            }
+        } as ApplicationAccess;
+
+        const result = await getSpecification(mockAppAccess);
+
+        expect(result).toBe(mockSpecification);
+    });
+
+    test('should return error message when API version is below 24', async () => {
+        const mockSpecification = {
+            getApiVersion: jest.fn().mockReturnValue({ version: '23' })
+        };
+
+        jest.spyOn(require('@sap-ux/project-access'), 'getSpecificationModuleFromCache').mockResolvedValue(
+            mockSpecification
+        );
+
+        const mockAppAccess = {
+            app: {
+                appRoot: '/test/app'
+            }
+        } as ApplicationAccess;
+
+        const result = await getSpecification(mockAppAccess);
+
+        expect(typeof result).toBe('string');
+        expect(result).toContain('23');
+    });
+
+    test('should handle non-string API version (returns 0)', async () => {
+        const mockSpecification = {
+            getApiVersion: jest.fn().mockReturnValue({ version: undefined })
+        };
+
+        jest.spyOn(require('@sap-ux/project-access'), 'getSpecificationModuleFromCache').mockResolvedValue(
+            mockSpecification
+        );
+
+        const mockAppAccess = {
+            app: {
+                appRoot: '/test/app'
+            }
+        } as ApplicationAccess;
+
+        const result = await getSpecification(mockAppAccess);
+
+        // Version 0 is less than 24, should return error message
+        expect(typeof result).toBe('string');
+        expect(result).toContain('0');
+    });
+
+    test('should handle numeric string version correctly', async () => {
+        const mockSpecification = {
+            getApiVersion: jest.fn().mockReturnValue({ version: '100' })
+        };
+
+        jest.spyOn(require('@sap-ux/project-access'), 'getSpecificationModuleFromCache').mockResolvedValue(
+            mockSpecification
+        );
+
+        const mockAppAccess = {
+            app: {
+                appRoot: '/test/app'
+            }
+        } as ApplicationAccess;
+
+        const result = await getSpecification(mockAppAccess);
+
+        expect(result).toBe(mockSpecification);
     });
 });
