@@ -98,7 +98,7 @@ export interface NoDataFieldIntentBasedNavigation {
         file: string;
         annotationPath: string;
         reference: AnnotationReference;
-        reportedTable: Element;
+        reportedParent: Element;
     };
 }
 

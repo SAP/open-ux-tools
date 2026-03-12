@@ -5,22 +5,34 @@ import type { FioriRuleDefinition } from '../types';
 import type { NoDataFieldIntentBasedNavigation } from '../language/diagnostics';
 import { NO_DATA_FIELD_INTENT_BASED_NAVIGATION } from '../language/diagnostics';
 import { getRecordType } from '../project-context/linker/annotations';
-import type { FeV4ObjectPage, FeV4ListReport, Table as FeV4Table } from '../project-context/linker/fe-v4';
+import type { FeV4ObjectPage, FeV4ListReport, Table as FeV4Table, FieldGroup } from '../project-context/linker/fe-v4';
 import type { FeV2ListReport, FeV2ObjectPage, Table as FeV2Table } from '../project-context/linker/fe-v2';
 import { type ParsedService } from '../project-context/parser';
 
 /**
+ * Collects DataFieldForIntentBasedNavigation and DataFieldWithIntentBasedNavigation used in a page
  *
- * @param table
- * @param aliasInfo
- * @returns
+ * @param tableOrFieldGroup - page table or FieldGroup annotation to check for DataFields
+ * @param aliasInfo - Alias information for resolving qualified names
+ * @returns array of data fild with/for intent based navigation
  */
-function getIntentBasedNavDataFields(table: FeV2Table | FeV4Table, aliasInfo: AliasInformation): Element[] {
-    if (!table.annotation) {
+function getIntentBasedNavDataFields(
+    tableOrFieldGroup: FeV2Table | FeV4Table | FieldGroup,
+    aliasInfo: AliasInformation
+): Element[] {
+    if (!tableOrFieldGroup.annotation) {
         return [];
     }
 
-    const [collection] = elementsWithName(Edm.Collection, table.annotation.annotation.top.value);
+    let collection: Element;
+    if (tableOrFieldGroup.type == 'table') {
+        [collection] = elementsWithName(Edm.Collection, tableOrFieldGroup.annotation.annotation.top.value);
+    } else {
+        const [record] = elementsWithName(Edm.Record, tableOrFieldGroup.annotation.annotation.top.value);
+        const [propertyValue] = elementsWithName(Edm.PropertyValue, record);
+        [collection] = elementsWithName(Edm.Collection, propertyValue);
+    }
+
     if (!collection) {
         return [];
     }
@@ -45,33 +57,33 @@ function getIntentBasedNavDataFields(table: FeV2Table | FeV4Table, aliasInfo: Al
  * @param parsedService
  * @param problems
  */
-function checkTablesInPage(
+function checkTablesAndFieldGroupsInPage(
     page: FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage,
     parsedService: ParsedService,
     problems: NoDataFieldIntentBasedNavigation[]
 ): void {
-    for (const table of page.lookup['table'] ?? []) {
-        if (!table.annotation) {
+    for (const tableOrFieldGroup of [...(page.lookup['table'] ?? []), ...(page.lookup['fieldGroup'] ?? [])]) {
+        if (!tableOrFieldGroup.annotation) {
             continue;
         }
-        const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.annotation.top.uri];
+        const aliasInfo = parsedService.artifacts.aliasInfo[tableOrFieldGroup.annotation.annotation.top.uri];
 
-        const itentBasedNavigationDataFields = getIntentBasedNavDataFields(table, aliasInfo);
+        const itentBasedNavigationDataFields = getIntentBasedNavDataFields(tableOrFieldGroup, aliasInfo);
         itentBasedNavigationDataFields.forEach((dataField) => {
-            if (!table.annotation) {
+            if (!tableOrFieldGroup.annotation) {
                 return;
             }
             problems.push({
                 type: NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
                 pageName: page.targetName,
                 annotation: {
-                    file: table.annotation.annotation.top.uri,
-                    annotationPath: table.annotation.annotationPath,
+                    file: tableOrFieldGroup.annotation.annotation.top.uri,
+                    annotationPath: tableOrFieldGroup.annotation.annotationPath,
                     reference: {
-                        uri: table.annotation.annotation.top.uri,
+                        uri: tableOrFieldGroup.annotation.annotation.top.uri,
                         value: dataField
                     },
-                    reportedTable: table.annotation.annotation.top.value
+                    reportedParent: tableOrFieldGroup.annotation.annotation.top.value
                 }
             });
         });
@@ -102,7 +114,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                 if (!parsedService) {
                     continue;
                 }
-                checkTablesInPage(page, parsedService, problems);
+                checkTablesAndFieldGroupsInPage(page, parsedService, problems);
             }
         }
 
@@ -115,25 +127,27 @@ const rule: FioriRuleDefinition = createFioriRule({
         const lookup = new Set<Element>();
         const dfLookup = new Set<Element>();
         for (const diagnostic of validationResult) {
-            lookup.add(diagnostic.annotation?.reportedTable);
+            lookup.add(diagnostic.annotation?.reportedParent);
         }
         return {
             ['target>element[name="Annotation"]'](node: Element): void {
-                // check table node
+                // check table/fieldGroup parent node
                 if (!lookup.has(node)) {
                     return;
                 }
-                validationResult.forEach((result) => {
-                    const dfNode = result.annotation.reference.value;
-                    // check if df node was not already reported
-                    if (result.annotation.reportedTable === node && !dfLookup.has(dfNode)) {
-                        context.report({
-                            node: dfNode, // report DataField node
-                            messageId: 'no-data-field-intent-based-navigation'
-                        });
-                    }
-                    dfLookup.add(result.annotation.reference.value);
-                });
+                validationResult
+                    .filter((result) => result.annotation.reportedParent === node)
+                    .forEach((result) => {
+                        const dfNode = result.annotation.reference.value;
+                        // check if df node was not already reported
+                        if (result.annotation.reportedParent === node && !dfLookup.has(dfNode)) {
+                            context.report({
+                                node: dfNode, // report DataField node
+                                messageId: 'no-data-field-intent-based-navigation'
+                            });
+                            dfLookup.add(result.annotation.reference.value);
+                        }
+                    });
             }
         };
     }
