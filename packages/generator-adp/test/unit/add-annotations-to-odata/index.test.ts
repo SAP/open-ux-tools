@@ -23,7 +23,9 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     generateChange: jest.fn(),
     getVariant: jest.fn(),
     getAdpConfig: jest.fn(),
-    getAdpProjectData: jest.fn()
+    getAdpProjectData: jest.fn(),
+    isCFEnvironment: jest.fn().mockResolvedValue(false),
+    ManifestServiceCF: { init: jest.fn() }
 }));
 
 jest.mock('../../../src/utils/templates', () => ({
