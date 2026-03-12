@@ -1,7 +1,7 @@
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { readFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { initI18n, t } from '../../../../src/i18n';
 import { getFDCApps } from '../../../../src/cf/services/api';

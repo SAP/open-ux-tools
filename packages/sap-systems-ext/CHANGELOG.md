@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 0.3.10
+
+### Patch Changes
+
+- 83ca0e9: fix(deps): update dependency cross-env to v10
+
+## 0.3.9
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+
 ## 0.3.8
 
 ### Patch Changes

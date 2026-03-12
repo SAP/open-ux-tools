@@ -173,12 +173,10 @@ describe('MTA Project Functions', () => {
     });
 
     describe('hasApprouter', () => {
-        const projectName = 'MyProject';
-
         test('should return true when approuter module exists', () => {
             const moduleNames = ['myproject-approuter', 'other-module'];
 
-            const result = hasApprouter(projectName, moduleNames);
+            const result = hasApprouter(moduleNames);
 
             expect(result).toBe(true);
         });
@@ -186,7 +184,15 @@ describe('MTA Project Functions', () => {
         test('should return true when destination-content module exists', () => {
             const moduleNames = ['myproject-destination-content', 'other-module'];
 
-            const result = hasApprouter(projectName, moduleNames);
+            const result = hasApprouter(moduleNames);
+
+            expect(result).toBe(true);
+        });
+
+        test('should return true when approuter from a different project exists', () => {
+            const moduleNames = ['other-project-approuter', 'some-module'];
+
+            const result = hasApprouter(moduleNames);
 
             expect(result).toBe(true);
         });
@@ -194,7 +200,7 @@ describe('MTA Project Functions', () => {
         test('should return false when no approuter modules exist', () => {
             const moduleNames = ['other-module', 'another-module'];
 
-            const result = hasApprouter(projectName, moduleNames);
+            const result = hasApprouter(moduleNames);
 
             expect(result).toBe(false);
         });
@@ -202,7 +208,7 @@ describe('MTA Project Functions', () => {
         test('should return false when module names array is empty', () => {
             const moduleNames: string[] = [];
 
-            const result = hasApprouter(projectName, moduleNames);
+            const result = hasApprouter(moduleNames);
 
             expect(result).toBe(false);
         });

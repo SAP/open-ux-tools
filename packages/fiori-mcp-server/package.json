@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "0.6.36",
+    "version": "0.6.41",
     "keywords": [
         "SAP Fiori tools",
         "SAP Fiori elements",
@@ -23,7 +23,8 @@
         "build-esbuild-base": "esbuild --bundle --platform=node --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings  --external:@sap-ux/store --main-fields=module,main src/index.ts",
         "build-dev": "pnpm run build-esbuild-base --sourcemap=inline",
         "build-compile": "tsc --noEmit",
-        "build-bundle": "pnpm run build-esbuild-base --minify",
+        "build-bundle": "pnpm run build-esbuild-base --minify && pnpm run copy-icons",
+        "copy-icons": "node -e \"const fs=require('node:fs');const path=require('node:path');['icon.png','icon.svg'].forEach(f=>fs.copyFileSync(path.join('assets',f),path.join('dist',f)))\"",
         "build": "npm-run-all build-compile build-bundle",
         "watch": "tsc --watch",
         "bundle": "npm-run-all build tgz:package tgz:rename",
@@ -45,7 +46,9 @@
     "files": [
         "LICENSE",
         "dist",
-        "!dist/**/*.map"
+        "!dist/**/*.map",
+        "assets/icon.svg",
+        "assets/icon.png"
     ],
     "bin": {
         "fiori-mcp": "./dist/index.js"
@@ -58,9 +61,9 @@
         "@sap/ux-specification": "1.142.0",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
-        "@sap-ux/annotation-converter": "0.10.19",
-        "@sap-ux/vocabularies-types": "0.14.5",
-        "@sap-ux/edmx-parser": "0.9.8",
+        "@sap-ux/annotation-converter": "0.10.21",
+        "@sap-ux/vocabularies-types": "0.15.0",
+        "@sap-ux/edmx-parser": "0.10.0",
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/logger": "workspace:*",
@@ -79,8 +82,8 @@
         "os-name": "4.0.1",
         "ts-node": "10.9.2",
         "zod": "4.1.13",
-        "@sap-ai-sdk/foundation-models": "2.3.0",
-        "@sap-ai-sdk/langchain": "2.3.0",
+        "@sap-ai-sdk/foundation-models": "2.8.0",
+        "@sap-ai-sdk/langchain": "2.8.0",
         "promptfoo": "0.120.25",
         "@langchain/mcp-adapters": "1.1.3",
         "@langchain/core": "1.1.26"
