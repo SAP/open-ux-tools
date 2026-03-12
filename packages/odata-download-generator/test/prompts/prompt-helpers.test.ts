@@ -1,11 +1,17 @@
 import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
+import * as projectAccess from '@sap-ux/project-access';
 import { createApplicationAccess, FileName, getSpecificationModuleFromCache } from '@sap-ux/project-access';
 import * as commandMock from '@sap-ux/project-access/dist/command';
 import * as fileMock from '@sap-ux/project-access/dist/file';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { createEntityChoices, getData, getServiceDetails, getSpecification } from '../../src/data-download/prompts/prompt-helpers';
+import {
+    createEntityChoices,
+    getData,
+    getServiceDetails,
+    getSpecification
+} from '../../src/data-download/prompts/prompt-helpers';
 import { getEntityModel } from '../../src/data-download/utils';
 import * as odataQueryModule from '../../src/data-download/odata-query';
 import { initI18nODataDownloadGenerator } from '../../src/utils/i18n';
@@ -599,8 +605,8 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '24' })
         };
 
-        jest.spyOn(require('@sap-ux/project-access'), 'getSpecificationModuleFromCache').mockResolvedValue(
-            mockSpecification
+        jest.spyOn(projectAccess, 'getSpecificationModuleFromCache').mockResolvedValue(
+            mockSpecification as unknown as Specification
         );
 
         const mockAppAccess = {
@@ -619,8 +625,8 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '25' })
         };
 
-        jest.spyOn(require('@sap-ux/project-access'), 'getSpecificationModuleFromCache').mockResolvedValue(
-            mockSpecification
+        jest.spyOn(projectAccess, 'getSpecificationModuleFromCache').mockResolvedValue(
+            mockSpecification as unknown as Specification
         );
 
         const mockAppAccess = {
@@ -639,8 +645,8 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '23' })
         };
 
-        jest.spyOn(require('@sap-ux/project-access'), 'getSpecificationModuleFromCache').mockResolvedValue(
-            mockSpecification
+        jest.spyOn(projectAccess, 'getSpecificationModuleFromCache').mockResolvedValue(
+            mockSpecification as unknown as Specification
         );
 
         const mockAppAccess = {
@@ -660,8 +666,8 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: undefined })
         };
 
-        jest.spyOn(require('@sap-ux/project-access'), 'getSpecificationModuleFromCache').mockResolvedValue(
-            mockSpecification
+        jest.spyOn(projectAccess, 'getSpecificationModuleFromCache').mockResolvedValue(
+            mockSpecification as unknown as Specification
         );
 
         const mockAppAccess = {
@@ -682,8 +688,8 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '100' })
         };
 
-        jest.spyOn(require('@sap-ux/project-access'), 'getSpecificationModuleFromCache').mockResolvedValue(
-            mockSpecification
+        jest.spyOn(projectAccess, 'getSpecificationModuleFromCache').mockResolvedValue(
+            mockSpecification as unknown as Specification
         );
 
         const mockAppAccess = {
