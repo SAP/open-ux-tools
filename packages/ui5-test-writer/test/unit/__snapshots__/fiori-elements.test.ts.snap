@@ -14673,8 +14673,6 @@ sap.ui.define([
             Then.onTheTravelList.iSeeThisPage();
         });
 
-        opaTest(\\"Check filter bar\\", function (Given, When, Then) {
-        });
 
         opaTest(\\"Check table columns and actions\\", function (Given, When, Then) {
 

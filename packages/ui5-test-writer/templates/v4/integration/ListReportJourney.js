@@ -31,13 +31,13 @@ sap.ui.define([
             <%_ }); -%>
         });
 
+        <%_ if (!hideFilterBar && filterBarItems && filterBarItems.length > 0) { -%>
         opaTest("Check filter bar", function (Given, When, Then) {
-            <%_ if (!hideFilterBar && filterBarItems && filterBarItems.length > 0) { -%>
-                <%_ filterBarItems.forEach(function(item) { _%>
+            <%_ filterBarItems.forEach(function(item) { _%>
             Then.onThe<%- startLR%>.onFilterBar().iCheckFilterField("<%- item %>");
-                <%_ }); -%>
-            <%_ } -%>
+            <%_ }); -%>
         });
+<%_ } -%>
 
         opaTest("Check table columns and actions", function (Given, When, Then) {
             <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
