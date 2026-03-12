@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.7.21
+
+### Patch Changes
+
+- 1d8ab37: fix(deps): update dependency body-parser to v2
+
 ## 0.7.20
 
 ### Patch Changes
