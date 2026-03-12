@@ -1405,9 +1405,6 @@ importers:
       '@ui5/fs':
         specifier: 4.0.5
         version: 4.0.5
-      body-parser:
-        specifier: 1.20.4
-        version: 1.20.4
       ejs:
         specifier: 3.1.10
         version: 3.1.10
