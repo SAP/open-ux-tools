@@ -110,6 +110,7 @@ export default [
 | [sap-bookmark-performance](docs/rules/sap-bookmark-performance.md) | Ensure the correct usage of the auto-refresh interval options for `sap.ushell.ui.footerbar.AddBookmarkButton`. | ✅ | ✅ |
 | [sap-browser-api-error](docs/rules/sap-browser-api-error.md) | Detect forbidden usages of `(window.)document` APIs. | | |
 | [sap-browser-api-warning](docs/rules/sap-browser-api-warning.md) | Detect warnings for usages of `(window.)document` APIs. | ✅ | ✅ |
+| [sap-condensed-table-layout](docs/rules/sap-condensed-table-layout.md) | Requires `condensedTableLayout` to be enabled when using Grid Table, Analytical Table, or Tree Table | | ✅ |
 | [sap-cross-application-navigation](docs/rules/sap-cross-application-navigation.md) | Do not use a static list of cross-application navigation targets. | ✅ | ✅ |
 | [sap-forbidden-window-property](docs/rules/sap-forbidden-window-property.md) | Detect the definition of global properties in the `window` object. | ✅ | ✅ |
 | [sap-message-toast](docs/rules/sap-message-toast.md) | Ensure the usage of the correct method options for `sap.m.MessageToast.show`. | ✅ | ✅ |

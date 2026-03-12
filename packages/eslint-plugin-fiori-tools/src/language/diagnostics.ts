@@ -9,6 +9,7 @@ export const ENABLE_PASTE = 'sap-enable-paste';
 export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignment';
+export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -89,6 +90,12 @@ export interface TableColumnVerticalAlignment {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export interface CondensedTableLayout {
+    type: typeof CONDENSED_TABLE_LAYOUT;
+    pageName: string;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
@@ -98,4 +105,5 @@ export type Diagnostic =
     | EnableExport
     | EnablePaste
     | StatePreservationMode
-    | TableColumnVerticalAlignment;
+    | TableColumnVerticalAlignment
+    | CondensedTableLayout;
