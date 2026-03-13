@@ -98,15 +98,15 @@ export default class OvpRoutesHandler {
                 return;
             }
 
-            const serviceUrl = `/sap/opu/odata/sap/${dataSource.Title}/`;
+            const serviceURI = `/sap/opu/odata/sap/${dataSource.Title}`;
             res.status(HttpStatusCodes.OK).json({
-                serviceUrl,
+                serviceUrl: `${serviceURI}/`,
                 annotations: annotations.map((a) => ({
                     TechnicalName: a.TechnicalName,
                     Uri: toRelativePath(a.Uri)
                 })),
                 modelInformation: {
-                    serviceURI: `/sap/opu/odata/sap/${dataSource.Title}`,
+                    serviceURI,
                     serviceAnnotation: annotations[0].TechnicalName,
                     serviceAnnotationURI: toRelativePath(annotations[0].Uri)
                 }
