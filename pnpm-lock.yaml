@@ -2832,6 +2832,94 @@ importers:
         specifier: 6.3.0
         version: 6.3.0(@types/node@18.19.130)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@18.19.130))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@18.19.130)))
 
+  packages/generator-odata-downloader:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.22.0
+        version: 1.22.0
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.21
+        version: 0.10.21
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/edmx-parser':
+        specifier: 0.10.0
+        version: 0.10.0
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/mockserver-config-writer':
+        specifier: workspace:*
+        version: link:../mockserver-config-writer
+      '@sap-ux/odata-service-inquirer':
+        specifier: workspace:*
+        version: link:../odata-service-inquirer
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      '@sap/ux-specification':
+        specifier: 1.142.1
+        version: 1.142.1(typescript@5.9.3)
+      '@vscode-logging/logger':
+        specifier: 2.0.8
+        version: 2.0.8
+      deepmerge:
+        specifier: 4.3.1
+        version: 4.3.1
+      i18next:
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
+      inquirer:
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@22.19.10)
+      odata-query:
+        specifier: 8.0.5
+        version: 8.0.5
+      os-name:
+        specifier: 4.0.1
+        version: 4.0.1
+      prettify-xml:
+        specifier: 1.2.0
+        version: 1.2.0
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
+    devDependencies:
+      '@sap-ux/vocabularies-types':
+        specifier: 0.15.0
+        version: 0.15.0
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/yeoman-generator':
+        specifier: 5.2.11
+        version: 5.2.11
+      rimraf:
+        specifier: 6.1.3
+        version: 6.1.3
+
   packages/guided-answers-helper: {}
 
   packages/i18n:
@@ -3158,94 +3246,6 @@ importers:
       npm-run-all2:
         specifier: 8.0.4
         version: 8.0.4
-
-  packages/odata-download-generator:
-    dependencies:
-      '@sap-devx/yeoman-ui-types':
-        specifier: 1.22.0
-        version: 1.22.0
-      '@sap-ux/annotation-converter':
-        specifier: 0.10.21
-        version: 0.10.21
-      '@sap-ux/axios-extension':
-        specifier: workspace:*
-        version: link:../axios-extension
-      '@sap-ux/btp-utils':
-        specifier: workspace:*
-        version: link:../btp-utils
-      '@sap-ux/edmx-parser':
-        specifier: 0.10.0
-        version: 0.10.0
-      '@sap-ux/fiori-generator-shared':
-        specifier: workspace:*
-        version: link:../fiori-generator-shared
-      '@sap-ux/inquirer-common':
-        specifier: workspace:*
-        version: link:../inquirer-common
-      '@sap-ux/logger':
-        specifier: workspace:*
-        version: link:../logger
-      '@sap-ux/mockserver-config-writer':
-        specifier: workspace:*
-        version: link:../mockserver-config-writer
-      '@sap-ux/odata-service-inquirer':
-        specifier: workspace:*
-        version: link:../odata-service-inquirer
-      '@sap-ux/odata-service-writer':
-        specifier: workspace:*
-        version: link:../odata-service-writer
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
-      '@sap-ux/telemetry':
-        specifier: workspace:*
-        version: link:../telemetry
-      '@sap-ux/ui5-config':
-        specifier: workspace:*
-        version: link:../ui5-config
-      '@sap/ux-specification':
-        specifier: 1.142.1
-        version: 1.142.1(typescript@5.9.3)
-      '@vscode-logging/logger':
-        specifier: 2.0.8
-        version: 2.0.8
-      deepmerge:
-        specifier: 4.3.1
-        version: 4.3.1
-      i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
-      inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.19.10)
-      odata-query:
-        specifier: 8.0.5
-        version: 8.0.5
-      os-name:
-        specifier: 4.0.1
-        version: 4.0.1
-      prettify-xml:
-        specifier: 1.2.0
-        version: 1.2.0
-      yeoman-generator:
-        specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
-    devDependencies:
-      '@sap-ux/vocabularies-types':
-        specifier: 0.15.0
-        version: 0.15.0
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
-      rimraf:
-        specifier: 6.1.3
-        version: 6.1.3
 
   packages/odata-entity-model:
     devDependencies:

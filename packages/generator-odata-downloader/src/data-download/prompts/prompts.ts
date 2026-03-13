@@ -15,7 +15,7 @@ import type { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
 import { t } from '../../utils/i18n';
 import { ODataDownloadGenerator } from '../odata-download-generator';
 import type { EntitySetsFlat } from '../odata-query';
-import type { AppConfig } from '../types';
+import type { AppConfig, ReferencedEntities } from '../types';
 import { getEntityModel } from '../utils';
 import { createEntityChoices, getData, getServiceDetails, getSpecification } from './prompt-helpers';
 import { PromptState } from '../prompt-state';
@@ -339,9 +339,9 @@ function getResetSelectionPrompt(
         entitySetsFlat: EntitySetsFlat;
     }
 ): Question {
-    let previousServicePath;
-    let previousSystemName;
-    let previousReset;
+    let previousServicePath: string | undefined;
+    let previousSystemName: string | undefined;
+    let previousReset: boolean | undefined;
     const toggleSelectionPrompt = {
         when: () => {
             // System was changed, rebuild choices even if service path is the same, otherwise if service is different
@@ -523,7 +523,7 @@ function getUpdateMainServiceMetadataPrompt(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
     appConfig: AppConfig
 ): ConfirmQuestion {
-    let entityModelResult;
+    let entityModelResult: ReferencedEntities | undefined;
     const question: ConfirmQuestion = {
         when: async () => {
             if (appConfig.appAccess && appConfig.specification && odataServiceAnswers?.metadata) {
