@@ -4,7 +4,7 @@
     "devDependencies": {
       "<%= tsTypes %>": "<%= tsTypesVersion %>",
       "eslint": "^9",
-      "@ui5/cli": "^4.0.33",
+      "@ui5/cli": "^4.0.43",
       "@ui5/ts-interface-generator": "^0.8.1",
       "karma": "^6.3.17",
       "karma-chrome-launcher": "^3.1.1",

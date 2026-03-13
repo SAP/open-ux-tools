@@ -89,7 +89,7 @@
             "mta-local": "1.0.8",
             "router>path-to-regexp": "0.1.12",
             "router@^2.0.0>path-to-regexp": "8.2.0",
-            "tar@<7.5.9": ">=7.5.9",
+            "tar@<7.5.11": ">=7.5.11",
             "get-uri>basic-ftp": "=5.2.0",
             "@puppeteer/browsers>proxy-agent": ">=6.5.0",
             "minimatch@<3.1.5": "^3.1.5",
@@ -104,7 +104,13 @@
             "glob@=11.1.0>minimatch@<10.2.4": "^10.2.4",
             "ignore-walk>minimatch@<10.2.4": "^10.2.4",
             "eslint-plugin-sonarjs>minimatch@<10.2.4": "^10.2.4",
-            "nx>minimatch@<10.2.4": "^10.2.4"
+            "nx>minimatch@<10.2.4": "^10.2.4",
+            "eslint>ajv@<8.18.0": "^8.18.0",
+            "@eslint/eslintrc>ajv@<8.18.0": "^8.18.0",
+            "@sap/ux-specification>@sap-ux/fe-fpm-writer": "workspace:*",
+            "@sap/ux-specification>@sap-ux/project-access": "workspace:*",
+            "schema-utils>ajv@<8.18.0": "^8.18.0",
+            "@typescript-eslint/rule-tester>ajv@<8.18.0": "^8.18.0"
         },
         "onlyBuiltDependencies": [
             "sharp",
