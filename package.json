@@ -102,7 +102,6 @@
             "@ui5/fs>minimatch@<9.0.7": "^9.0.9",
             "glob@=13.0.6>minimatch@<10.2.4": "^10.2.4",
             "glob@=11.1.0>minimatch@<10.2.4": "^10.2.4",
-            "promptfoo>minimatch@<10.2.4": "^10.2.4",
             "ignore-walk>minimatch@<10.2.4": "^10.2.4",
             "eslint-plugin-sonarjs>minimatch@<10.2.4": "^10.2.4",
             "nx>minimatch@<10.2.4": "^10.2.4"
