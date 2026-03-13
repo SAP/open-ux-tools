@@ -571,18 +571,18 @@ describe('proxy', () => {
             }
         });
 
-        test('options are updated for backend with type service', async () => {
+        test('options are updated for backend with a connectPath', async () => {
             mockIsAppStudio.mockReturnValue(false);
             const backend: LocalBackendConfig = {
                 url: 'http://backend.example',
                 path: '/my/path',
-                type: 'service'
+                connectPath: '/test/path'
             };
 
             const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options).toBeDefined();
             expect(mockBackendSystemRead).toHaveBeenCalledWith({
-                url: 'http://backend.example/my/path',
+                url: 'http://backend.example/test/path',
                 client: undefined
             });
         });

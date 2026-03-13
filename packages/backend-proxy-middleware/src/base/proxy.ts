@@ -413,8 +413,8 @@ async function updateProxyConfigFromStore(
     try {
         const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
         let backendUrl = localBackend.url;
-        if (localBackend.type === 'service') {
-            backendUrl = new URL(localBackend.path, localBackend.url).href;
+        if (localBackend.connectPath) {
+            backendUrl = new URL(localBackend.connectPath, localBackend.url).href;
         }
         const system =
             (await systemStore.read(new BackendSystemKey({ url: backendUrl, client: localBackend.client }))) ??

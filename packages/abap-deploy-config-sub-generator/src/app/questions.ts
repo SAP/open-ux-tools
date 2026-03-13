@@ -31,14 +31,16 @@ function getAbapTarget(
     existingAbapDeployTask?: AbapDeployConfig,
     backendConfig?: FioriToolsProxyConfigBackend
 ): AbapTarget {
-    let url, scp, client, destinationName, authenticationType;
+    let url, scp, client, destinationName, authenticationType, connectPath;
 
     if (isAppStudio() && destination) {
         // the destination used during app generation
         destinationName = destination.Name;
     } else if (backendSystem) {
+        const urlFromSystem = new URL(backendSystem.url);
         // the backend system used during app generation
-        url = backendSystem.url;
+        url = urlFromSystem.origin;
+        connectPath = urlFromSystem.pathname === '/' ? undefined : urlFromSystem.pathname;
         client = backendSystem.client;
         scp = !!backendSystem.serviceKeys;
         authenticationType = backendSystem.authenticationType;
@@ -52,6 +54,7 @@ function getAbapTarget(
     } else if (backendConfig) {
         // the existing base configuration (ui5.yaml)
         url = backendConfig.url;
+        connectPath = backendConfig.connectPath;
         scp = backendConfig.scp;
         client = backendConfig.client;
         authenticationType = backendConfig.authenticationType;
@@ -63,7 +66,8 @@ function getAbapTarget(
         scp,
         client: client || '', // Needs to default to empty string
         destination: destinationName,
-        authenticationType
+        authenticationType,
+        connectPath
     } as AbapTarget;
 }
 

@@ -160,7 +160,7 @@ describe('Test transform state', () => {
             }
         };
         const feApp = await transformState<FioriElementsApp<unknown>>(state);
-        expect(feApp.service.previewSettings).toMatchObject({ type: 'service', path: '/odata/service' });
+        expect(feApp.service.previewSettings).toMatchObject({ connectPath: '/odata/service' });
     });
 
     test('should correctly map entity related config and page building block title for FPM floorplan', async () => {

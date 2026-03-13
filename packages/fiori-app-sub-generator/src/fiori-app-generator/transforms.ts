@@ -214,8 +214,7 @@ function getPreviewSettings(service: Service): Partial<OdataService['previewSett
         const url = service.connectedSystem.backendSystem.url;
         previewSettings = {
             ...previewSettings,
-            type: 'service',
-            path: url ? new URL(url).pathname : undefined
+            connectPath: url ? new URL(url).pathname : undefined
         };
     }
 

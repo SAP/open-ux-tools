@@ -236,8 +236,7 @@ export function getSystemServiceQuestion(
                 (answers: { [serviceSelectionPromptName]?: ServiceAnswer }) =>
                     !!(connectValidator.serviceProvider instanceof AbapServiceProvider) &&
                     !!convertedMetadataRef.convertedMetadata &&
-                    answers?.[serviceSelectionPromptName]?.serviceODataVersion === ODataVersion.v4 &&
-                    connectValidator.connectType === 'abap_catalog'
+                    answers?.[serviceSelectionPromptName]?.serviceODataVersion === ODataVersion.v4
             )
         );
     }

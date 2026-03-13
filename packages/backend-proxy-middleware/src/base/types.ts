@@ -60,9 +60,10 @@ export interface LocalBackendConfig extends BaseBackendConfig {
      */
     url: string;
     /**
-     * Backend system type. 'catalog' (default) indicates a catalog service. 'service' indicates a full service URL;
+     * Path used to connect to a specific service in the backend system.
+     * This is required to fetch the correct credentials from the store when a full odata service url 'system' is used.
      */
-    type?: 'catalog' | 'service';
+    connectPath?: string;
 }
 
 export type BackendConfig = LocalBackendConfig | DestinationBackendConfig;
