@@ -5,7 +5,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
-import { getServiceNameByTags, getServiceInstanceKeys, createServiceInstance } from '../services/api';
+import { getServiceNameByTags, getOrCreateServiceInstanceKeys, createServiceInstance } from '../services/api';
 import type { HTML5Content, ServiceInfo, Uaa, CfAppParams } from '../../types';
 
 const HTML5_APPS_REPO_RUNTIME = 'html5-apps-repo-runtime';
@@ -66,7 +66,7 @@ export async function downloadZip(token: string, appHostId: string, uri: string)
  */
 export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLogger): Promise<ServiceInfo> {
     try {
-        let serviceInfo = await getServiceInstanceKeys(
+        let serviceInfo = await getOrCreateServiceInstanceKeys(
             {
                 spaceGuids: [spaceGuid],
                 planNames: ['app-runtime'],
@@ -79,7 +79,7 @@ export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLo
             await createServiceInstance('app-runtime', HTML5_APPS_REPO_RUNTIME, serviceName, {
                 logger
             });
-            serviceInfo = await getServiceInstanceKeys({ names: [HTML5_APPS_REPO_RUNTIME] }, logger);
+            serviceInfo = await getOrCreateServiceInstanceKeys({ names: [HTML5_APPS_REPO_RUNTIME] }, logger);
             if (!serviceInfo?.serviceKeys?.length) {
                 logger.debug(t('error.noUaaCredentialsFoundForHtml5Repo'));
                 throw new Error(t('error.cannotFindHtml5RepoRuntime'));
