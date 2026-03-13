@@ -1,6 +1,6 @@
 import type { BackendSystem } from '@sap-ux/store';
 import { ODataVersion, type ODataServiceInfo } from '@sap-ux/axios-extension';
-import { getCatalogServiceCount, getSystemInfo } from '../../../../../src/panel/system/utils';
+import { getCatalogServiceCount, getSystemInfo, hasServiceMetadata } from '../../../../../src/panel/system/utils';
 
 const listServicesMock = jest.fn();
 
@@ -10,14 +10,21 @@ const catalogServiceMock = jest.fn().mockImplementation(() => ({
 }));
 
 const getSystemInfoMock = jest.fn();
+const metadataMock = jest.fn();
+const serviceMock = jest.fn().mockImplementation(() => ({
+    metadata: metadataMock
+}));
+
 jest.mock('@sap-ux/axios-extension', () => ({
     ...jest.requireActual('@sap-ux/axios-extension'),
     createForAbap: jest.fn().mockImplementation(({ refreshTokenChangedCb }) => ({
         catalog: catalogServiceMock,
-        getSystemInfo: getSystemInfoMock
+        getSystemInfo: getSystemInfoMock,
+        service: serviceMock
     })),
     createForAbapOnCloud: jest.fn().mockImplementation(({ refreshTokenChangedCb }) => ({
-        catalog: catalogServiceMock
+        catalog: catalogServiceMock,
+        service: serviceMock
     }))
 }));
 
@@ -127,5 +134,113 @@ describe('getSystemInfo', () => {
 
         const result = await getSystemInfo(system);
         expect(result).toBeUndefined();
+    });
+});
+
+describe('hasServiceMetadata', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should return true when service metadata is available', async () => {
+        const mockMetadata = '<edmx:Edmx Version="1.0"></edmx:Edmx>';
+        metadataMock.mockResolvedValue(mockMetadata);
+
+        const system: BackendSystem = {
+            url: 'https://example.com/sap/opu/odata/sap/SERVICE',
+            name: 'Test System',
+            systemType: 'OnPrem',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'odata_service'
+        };
+
+        const result = await hasServiceMetadata(system);
+        expect(result).toBe(true);
+        expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/SERVICE/');
+        expect(metadataMock).toHaveBeenCalled();
+    });
+
+    it('should return false when service metadata is not available', async () => {
+        metadataMock.mockResolvedValue(undefined);
+
+        const system: BackendSystem = {
+            url: 'https://example.com/sap/opu/odata/sap/SERVICE',
+            name: 'Test System',
+            systemType: 'OnPrem',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'odata_service'
+        };
+
+        const result = await hasServiceMetadata(system);
+        expect(result).toBe(false);
+    });
+
+    it('should add trailing slash to path if not present', async () => {
+        const mockMetadata = '<edmx:Edmx Version="1.0"></edmx:Edmx>';
+        metadataMock.mockResolvedValue(mockMetadata);
+
+        const system: BackendSystem = {
+            url: 'https://example.com/sap/opu/odata/sap/SERVICE',
+            name: 'Test System',
+            systemType: 'OnPrem',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'odata_service'
+        };
+
+        await hasServiceMetadata(system);
+        expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/SERVICE/');
+    });
+
+    it('should not add additional trailing slash if already present', async () => {
+        const mockMetadata = '<edmx:Edmx Version="1.0"></edmx:Edmx>';
+        metadataMock.mockResolvedValue(mockMetadata);
+
+        const system: BackendSystem = {
+            url: 'https://example.com/sap/opu/odata/sap/SERVICE/',
+            name: 'Test System',
+            systemType: 'OnPrem',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'odata_service'
+        };
+
+        await hasServiceMetadata(system);
+        expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/SERVICE/');
+    });
+
+    it('should handle errors when retrieving metadata', async () => {
+        const mockError = new Error('Metadata retrieval failed');
+        metadataMock.mockRejectedValue(mockError);
+
+        const system: BackendSystem = {
+            url: 'https://example.com/sap/opu/odata/sap/SERVICE',
+            name: 'Test System',
+            systemType: 'OnPrem',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'odata_service'
+        };
+
+        await expect(hasServiceMetadata(system)).rejects.toThrow('Metadata retrieval failed');
+    });
+
+    it('should work with AbapCloud systems', async () => {
+        const mockMetadata = '<edmx:Edmx Version="1.0"></edmx:Edmx>';
+        metadataMock.mockResolvedValue(mockMetadata);
+
+        const system: BackendSystem = {
+            url: 'https://example.com/sap/opu/odata/sap/SERVICE',
+            name: 'Test Cloud System',
+            systemType: 'AbapCloud',
+            authenticationType: 'oauth2',
+            connectionType: 'odata_service'
+        };
+
+        const result = await hasServiceMetadata(system);
+        expect(result).toBe(true);
+        expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/SERVICE/');
     });
 });

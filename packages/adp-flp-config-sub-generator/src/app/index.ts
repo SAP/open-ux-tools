@@ -2,7 +2,12 @@ import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
 import { join, basename } from 'node:path';
-import { type AxiosError, type AbapServiceProvider, isAxiosError } from '@sap-ux/axios-extension';
+import {
+    type AxiosError,
+    type AbapServiceProvider,
+    isAxiosError,
+    AdaptationProjectType
+} from '@sap-ux/axios-extension';
 import {
     getVariant,
     getAdpConfig,
@@ -13,7 +18,8 @@ import {
     getBaseAppInbounds,
     type InternalInboundNavigation,
     type AdpPreviewConfigWithTarget,
-    type DescriptorVariant
+    type DescriptorVariant,
+    getExistingAdpProjectType
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
@@ -444,7 +450,7 @@ export default class AdpFlpConfigGenerator extends Generator {
      */
     private async _validateProjectType(): Promise<void> {
         const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
-        if (!isFioriAdaptation || isCFEnvironment(this.projectRootPath)) {
+        if (!isFioriAdaptation || (await isCFEnvironment(this.projectRootPath))) {
             this._abortExecution(t('error.projectNotSupported'));
         }
     }
@@ -455,8 +461,8 @@ export default class AdpFlpConfigGenerator extends Generator {
      * @throws {Error} If the project is not supported or not cloud ready.
      */
     private async _validateCloudProject(): Promise<void> {
-        const isCloud = await this.provider.isAbapCloud();
-        if (!isCloud) {
+        const projectType = await getExistingAdpProjectType(this.projectRootPath);
+        if (projectType !== AdaptationProjectType.CLOUD_READY) {
             this._abortExecution(t('error.projectNotCloudReady'));
         }
     }

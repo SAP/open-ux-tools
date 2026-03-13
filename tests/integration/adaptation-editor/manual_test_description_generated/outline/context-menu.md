@@ -2,21 +2,21 @@
 
 ## Table of Contents
 
-- [1: Trigger Add Fragment at OverflowToolbar node via context menu](#1-trigger-add-fragment-at-overflowtoolbar-node-via-context-menu)
+- [1: Trigger Add Fragment at Create node via context menu](#1-trigger-add-fragment-at-create-node-via-context-menu)
 - [2: Rename "Create" button via context menu](#2-rename-create-button-via-context-menu)
 - [3: Rename  Object Page Section via context menu](#3-rename-object-page-section-via-context-menu)
 - [4: Add Fragment at Section node via context menu](#4-add-fragment-at-section-node-via-context-menu)
 
-<a id="1-trigger-add-fragment-at-overflowtoolbar-node-via-context-menu"></a>
-## 1: Trigger Add Fragment at OverflowToolbar node via context menu
+<a id="1-trigger-add-fragment-at-create-node-via-context-menu"></a>
+## 1: Trigger Add Fragment at Create node via context menu
 
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. Find and right click on `OverflowToolbar` node in the Outline Panel
+2. Find and right click on `Create` node in the Outline Panel
 3. Click `Add: Fragment` item in the context menu of the Outline Panel
-4. Fill `Fragment Name` field with `toolbar-fragment` in the dialog `Add XML Fragment`
-5. Click `Save and Reload` button in the toolBar
+4. Fill `Fragment Name` field with `create-tooltip-fragment` in the dialog `Add XML Fragment`
+5. Click `Save` button in the toolBar
 6. Verify changes:
 
 **Change(s)**
@@ -26,9 +26,9 @@
   "fileType": "change",
   "changeType": "addXML",
   "content": {
-    "targetAggregation": "content",
-    "index": 10,
-    "fragmentPath": "fragments/toolbar-fragment.fragment.xml"
+    "targetAggregation": "tooltip",
+    "index": 0,
+    "fragmentPath": "fragments/create-tooltip-fragment.fragment.xml"
   }
 }
 ```

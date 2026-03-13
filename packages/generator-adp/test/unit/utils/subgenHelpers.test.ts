@@ -6,6 +6,7 @@ import { t } from '../../../src/utils/i18n';
 import { addFlpGen, addDeployGen, addExtProjectGen } from '../../../src/utils/subgenHelpers';
 import { getExtensionProjectData } from '../../../src/app/extension-project';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.mock('../../../src/app/extension-project', () => ({
     getExtensionProjectData: jest.fn()
@@ -103,7 +104,14 @@ describe('Sub-generator helpers', () => {
                     Name: 'SYS',
                     Client: '100',
                     Url: 'sys-url'
-                }
+                },
+                projectType: AdaptationProjectType.ON_PREMISE
+            };
+
+            const additionalValidation = {
+                shouldValidatePackageForStartingPrefix: true,
+                shouldValidatePackageType: true,
+                shouldValidateFormatAndSpecialCharacters: true
             };
 
             await addDeployGen(deployOptions, composeWith, logger, wizard);
@@ -118,7 +126,18 @@ describe('Sub-generator helpers', () => {
                     appGenDestination: 'SYS',
                     appGenServiceHost: 'sys-url',
                     telemetryData: { appType: 'Fiori Adaptation' },
-                    subGenPromptOptions: expect.any(Object)
+                    subGenPromptOptions: {
+                        ui5AbapRepo: { hideIfOnPremise: true },
+                        transportInputChoice: { hideIfOnPremise: true },
+                        overwriteAbapConfig: { hide: true },
+                        packageAutocomplete: {
+                            additionalValidation
+                        },
+                        packageManual: {
+                            additionalValidation
+                        },
+                        adpProjectType: AdaptationProjectType.ON_PREMISE
+                    }
                 })
             );
             expect(logger.info).toHaveBeenCalled();

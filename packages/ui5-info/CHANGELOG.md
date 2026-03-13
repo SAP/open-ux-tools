@@ -1,5 +1,24 @@
 # @sap-ux/ui5-info
 
+## 0.13.14
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+
+## 0.13.13
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+
+## 0.13.12
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+
 ## 0.13.11
 
 ### Patch Changes
