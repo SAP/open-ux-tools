@@ -9,8 +9,9 @@ import {
     ENABLE_EXPORT,
     ENABLE_PASTE,
     STATE_PRESERVATION_MODE,
-    TABLE_COLUMN_VERTICAL_ALIGNMENT,
-    CONDENSED_TABLE_LAYOUT
+    CONDENSED_TABLE_LAYOUT,
+    TABLE_PERSONALIZATION,
+    TABLE_COLUMN_VERTICAL_ALIGNMENT
 } from '../language/diagnostics';
 
 // Import all rules
@@ -71,6 +72,7 @@ import statePreservationMode from './sap-state-preservation-mode';
 import copyToClipboard from './sap-copy-to-clipboard';
 import enableExport from './sap-enable-export';
 import enablePaste from './sap-enable-paste';
+import tablePersonalization from './sap-table-personalization';
 import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment';
 import condensedTableLayout from './sap-condensed-table-layout';
 
@@ -133,6 +135,7 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [ENABLE_PASTE]: enablePaste,
     [CREATION_MODE_FOR_TABLE]: creationModeForTable,
     [STATE_PRESERVATION_MODE]: statePreservationMode,
-    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
-    [CONDENSED_TABLE_LAYOUT]: condensedTableLayout
+    [CONDENSED_TABLE_LAYOUT]: condensedTableLayout,
+    [TABLE_PERSONALIZATION]: tablePersonalization,
+    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment
 };

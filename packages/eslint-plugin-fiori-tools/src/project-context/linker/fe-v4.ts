@@ -56,6 +56,7 @@ export interface TableSettings {
     enableExport: boolean;
     enablePaste: boolean;
     condensedTableLayout: boolean;
+    personalization: boolean | { column?: boolean; filter?: boolean; sort?: boolean; group?: boolean };
 }
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
@@ -166,6 +167,18 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
                     'name'
                 ],
                 values: getCreationModeValues()
+            },
+            personalization: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'personalization'
+                ],
+                values: [true, false, {}]
             }
         }
     };
@@ -292,6 +305,14 @@ interface TableConfiguration {
         creationMode?: {
             name?: string;
         };
+        personalization?:
+            | boolean
+            | {
+                  column?: boolean;
+                  filter?: boolean;
+                  sort?: boolean;
+                  group?: boolean;
+              };
     };
 }
 
@@ -383,6 +404,8 @@ function linkListReportTable(
                 const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
                 tableControl.configuration.creationMode.valueInFile = creationModeValue;
                 tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
+                const personalization = controlConfiguration.tableSettings?.personalization;
+                tableControl.configuration.personalization.valueInFile = personalization;
             }
         } else {
             // no annotation definition found for this table, but configuration exists
@@ -478,6 +501,8 @@ function linkObjectPageSections(
             const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
             tableControl.configuration.creationMode.valueInFile = creationModeValue;
             tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
+            const personalization = controlConfiguration.tableSettings?.personalization;
+            tableControl.configuration.personalization.valueInFile = personalization;
         } else {
             // no annotation definition found for this section, but configuration exists
             const orphanedSection: OrphanSection = {
