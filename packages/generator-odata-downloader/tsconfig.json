@@ -6,8 +6,7 @@
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "generators",
-    "noImplicitAny": false
+    "outDir": "generators"
   },
   "references": [
     {
