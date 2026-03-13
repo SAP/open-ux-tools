@@ -1242,7 +1242,7 @@ describe('getCapServiceName', () => {
                         { name: 'ServiceOne', urlPath: 'service/one' },
                         { name: 'ServiceThree', urlPath: 'service/three' },
                         { name: 'ServiceFour', urlPath: 'service/four' },
-                        { name: 'ServiceFive', urlPath: 'dummy/service/one' }
+                        { name: 'ServiceFive', urlPath: 'dummy/service/three' }
                     ])
                 }
             },
@@ -1271,7 +1271,7 @@ describe('getCapServiceName', () => {
     });
 
     test('Find exact service match', async () => {
-        const capServiceName = await getCapServiceName('/some/test/path', 'dummy/service/one');
+        const capServiceName = await getCapServiceName('/some/test/path', 'dummy/service/three');
         expect(capServiceName).toEqual('ServiceFive');
     });
 });
