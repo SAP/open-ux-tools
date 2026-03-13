@@ -6,6 +6,7 @@ import { type SelectedEntityAnswer } from './prompts/prompts';
 import type { ReferencedEntities } from './types';
 
 export type EntitySetsFlat = { [entityPath: string]: string };
+type ExpandTree = { expand?: Record<string, ExpandTree> };
 
 /**
  * Builds the expands object used to create an odata query.
@@ -13,8 +14,6 @@ export type EntitySetsFlat = { [entityPath: string]: string };
  * @param entityPaths - Array of entity paths with their entity set names
  * @returns Object containing expands configuration and entity path parts
  */
-type ExpandTree = { expand?: Record<string, ExpandTree> };
-
 export function getExpands(entityPaths: { entityPath: string; entitySetName: string }[]): {
     expands: object;
     entityPathParts: string[];
