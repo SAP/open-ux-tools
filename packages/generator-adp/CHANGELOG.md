@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.28
+
+### Patch Changes
+
+- 53af342: feat: Create service keys
+- Updated dependencies [53af342]
+    - @sap-ux/adp-tooling@0.18.91
+
 ## 0.9.27
 
 ### Patch Changes

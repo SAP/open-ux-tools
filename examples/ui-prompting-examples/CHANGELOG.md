@@ -1,5 +1,13 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.5.13
+
+### Patch Changes
+
+- Updated dependencies [12b8b2e]
+    - @sap-ux/ui-components@2.0.3
+    - @sap-ux/ui-prompting@0.6.12
+
 ## 0.5.12
 
 ### Patch Changes
