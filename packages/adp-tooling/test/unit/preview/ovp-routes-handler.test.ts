@@ -122,9 +122,7 @@ describe('OvpRoutesHandler', () => {
         });
 
         test('returns 400 when dataSource has no Title', async () => {
-            const response = await server
-                .post('/adp/api/ovp/metamodel')
-                .send({ dataSource: { ID: 'SRV_001' } });
+            const response = await server.post('/adp/api/ovp/metamodel').send({ dataSource: { ID: 'SRV_001' } });
             expect(response.status).toBe(400);
         });
 

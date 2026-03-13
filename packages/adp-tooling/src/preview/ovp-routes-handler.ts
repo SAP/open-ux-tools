@@ -89,9 +89,7 @@ export default class OvpRoutesHandler {
             }
 
             const catalogService = this.provider.catalog(ODataVersion.v2);
-            const filterOptions = dataSource.ID
-                ? { id: dataSource.ID }
-                : { title: dataSource.Title };
+            const filterOptions = dataSource.ID ? { id: dataSource.ID } : { title: dataSource.Title };
             const annotations = await catalogService.getAnnotations(filterOptions);
 
             if (annotations.length === 0) {
@@ -113,7 +111,9 @@ export default class OvpRoutesHandler {
                     serviceAnnotationURI: toRelativePath(annotations[0].Uri)
                 }
             });
-            this.logger.debug(`OVP: Fetched service info for ${dataSource.Title} with ${annotations.length} annotations`);
+            this.logger.debug(
+                `OVP: Fetched service info for ${dataSource.Title} with ${annotations.length} annotations`
+            );
         } catch (e) {
             this.logger.error(`OVP: Failed to fetch metamodel: ${(e as Error).message}`);
             res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({
