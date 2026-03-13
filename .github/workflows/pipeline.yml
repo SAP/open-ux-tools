@@ -200,7 +200,7 @@ jobs:
             - name: Set instrumentation key in generator-odata-downloader
               uses: jacobtomlinson/gha-find-replace@v3
               with:
-                  include: packages/odata-generator-downloader/src/telemetry/index.ts
+                  include: packages/generator-odata-downloader/src/telemetry/index.ts
                   find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
                   replace: ${{ secrets.INSTRUMENTATION_KEY }}
                   regex: false
