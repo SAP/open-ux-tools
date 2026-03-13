@@ -9,8 +9,9 @@ import {
     ENABLE_EXPORT,
     ENABLE_PASTE,
     STATE_PRESERVATION_MODE,
-    TABLE_COLUMN_VERTICAL_ALIGNMENT,
-    STRICT_UOM_FILTERING
+    STRICT_UOM_FILTERING,
+    TABLE_PERSONALIZATION,
+    TABLE_COLUMN_VERTICAL_ALIGNMENT
 } from '../language/diagnostics';
 
 // Import all rules
@@ -72,6 +73,7 @@ import strictUomFilteringRule from './sap-strict-uom-filtering';
 import copyToClipboard from './sap-copy-to-clipboard';
 import enableExport from './sap-enable-export';
 import enablePaste from './sap-enable-paste';
+import tablePersonalization from './sap-table-personalization';
 import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment';
 
 import type { Rule } from 'eslint';
@@ -134,5 +136,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [CREATION_MODE_FOR_TABLE]: creationModeForTable,
     [STATE_PRESERVATION_MODE]: statePreservationMode,
     [STRICT_UOM_FILTERING]: strictUomFilteringRule,
+    [TABLE_PERSONALIZATION]: tablePersonalization,
     [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment
 };

@@ -274,6 +274,7 @@ export const configs: Record<string, Linter.Config[]> = {
                 '@sap-ux/fiori-tools/sap-creation-mode-for-table': 'warn',
                 '@sap-ux/fiori-tools/sap-state-preservation-mode': 'warn',
                 '@sap-ux/fiori-tools/sap-strict-uom-filtering': 'warn',
+                '@sap-ux/fiori-tools/sap-table-personalization': 'warn',
                 '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn'
             }
         }

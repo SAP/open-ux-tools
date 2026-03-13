@@ -1405,9 +1405,6 @@ importers:
       '@ui5/fs':
         specifier: 4.0.5
         version: 4.0.5
-      body-parser:
-        specifier: 1.20.4
-        version: 1.20.4
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -1942,6 +1939,9 @@ importers:
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -1976,9 +1976,6 @@ importers:
         specifier: 0.0.33
         version: 0.0.33
     devDependencies:
-      '@sap-ux/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@sap-ux/ui-prompting':
         specifier: workspace:*
         version: link:../ui-prompting
