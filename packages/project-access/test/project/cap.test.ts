@@ -1238,7 +1238,12 @@ describe('getCapServiceName', () => {
             load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
             compile: {
                 to: {
-                    serviceinfo: jest.fn().mockImplementation(() => [{ name: 'ServiceOne', urlPath: 'service/one' }])
+                    serviceinfo: jest.fn().mockImplementation(() => [
+                        { name: 'ServiceOne', urlPath: 'service/one' },
+                        { name: 'ServiceThree', urlPath: 'service/three' },
+                        { name: 'ServiceFour', urlPath: 'service/four' },
+                        { name: 'ServiceFive', urlPath: 'dummy/service/one' }
+                    ])
                 }
             },
             env: jestMockEnv
@@ -1252,13 +1257,9 @@ describe('getCapServiceName', () => {
     });
 
     test('Service not found error message', async () => {
-        try {
-            await getCapServiceName('/some/test/path', 'service/two');
-        } catch (error) {
-            expect(error.message).toBe(
-                'Service for uri: \'service/two\' not found. Available services: [{"name":"ServiceOne","urlPath":"service/one"}]'
-            );
-        }
+        await expect(getCapServiceName('/some/test/path', 'service/two')).rejects.toThrow(
+            /Service for uri: 'service\/two' not found\. Available services: \[\{"name":"ServiceOne","urlPath":"service\/one".*/
+        );
     });
 
     test('Ignore service prefixes - return valid service name', async () => {
@@ -1267,6 +1268,11 @@ describe('getCapServiceName', () => {
             '/external.uri/external-ui/dummy/v1/odata/v4/service/one/'
         );
         expect(capServiceName).toEqual('ServiceOne');
+    });
+
+    test('Find exact service match', async () => {
+        const capServiceName = await getCapServiceName('/some/test/path', 'dummy/service/one');
+        expect(capServiceName).toEqual('ServiceFive');
     });
 });
 
