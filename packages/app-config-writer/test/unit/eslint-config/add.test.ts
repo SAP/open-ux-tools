@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { generateEslintConfig } from '../../../src/eslint-config/index';
+import { generateEslintConfig } from '../../../src/';
 import type { Package } from '@sap-ux/project-access';
 
 describe('generateEslintConfig', () => {
@@ -47,6 +47,21 @@ describe('generateEslintConfig', () => {
             }
         });
 
+        test('should fail when eslint.config.mjs already exists', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/missing-config');
+            const eslintConfigPath = join(basePath, 'eslint.config.mjs');
+            fs.write(eslintConfigPath, '// existing eslint config');
+            try {
+                await generateEslintConfig(basePath, { logger: loggerMock, fs });
+                fail('Error should have been thrown');
+            } catch (error) {
+                expect(error.message).toContain('The prerequisites are not met');
+                expect(errorMock).toHaveBeenCalledWith(
+                    expect.stringContaining('An ESLint configuration file already exists at path')
+                );
+            }
+        });
+
         test('should succeed when prerequisites are met', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/missing-config');
             const result = await generateEslintConfig(basePath, { logger: loggerMock, fs });
@@ -64,7 +79,7 @@ describe('generateEslintConfig', () => {
             const packageJson = fs.readJSON(packageJsonPath) as Package;
 
             expect(packageJson.devDependencies).toBeDefined();
-            expect(packageJson.devDependencies?.eslint).toBe('^9.0.0');
+            expect(packageJson.devDependencies?.eslint).toBe('^9');
             expect(packageJson.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^9.0.0');
         });
 
@@ -76,7 +91,7 @@ describe('generateEslintConfig', () => {
             const packageJson = fs.readJSON(packageJsonPath) as Package;
 
             expect(packageJson.scripts).toBeDefined();
-            expect(packageJson.scripts?.lint).toBe('eslint .');
+            expect(packageJson.scripts?.lint).toBe('eslint ./');
         });
 
         test('should preserve existing devDependencies', async () => {

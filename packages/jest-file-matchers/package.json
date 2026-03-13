@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/jest-file-matchers",
-    "version": "0.2.10",
+    "version": "0.2.11",
     "description": "Jest matchers for files and folders",
     "repository": {
         "type": "git",
@@ -30,7 +30,7 @@
     "dependencies": {
         "chalk": "4.1.2",
         "dir-compare": "5.0.0",
-        "filenamify": "4.2.0",
+        "filenamify": "4.3.0",
         "jest-diff": "30.2.0",
         "minimatch": "3.1.5"
     },

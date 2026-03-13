@@ -2,21 +2,15 @@ import type { CopyOptions, Editor } from 'mem-fs-editor';
 import type { TabInfo } from '../common/types';
 import { sep, normalize } from 'node:path';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
-import { isElementIdAvailable } from '../building-block/prompts/utils';
+import { isElementIdAvailable } from './utils';
 
 const CHAR_SPACE = ' ';
 const CHAR_TAB = '\t';
 interface ButtonGroup {
-    name: string;
-    buttons: string[];
-    visible?: boolean;
-    priority?: number;
-    customToolbarPriority?: number;
-    row?: number;
     id?: string;
 }
 export type IdGeneratorFunction = (baseId: string, validatedIds?: string[]) => string;
-interface TemplateContext {
+export interface TemplateContext {
     buttonGroups?: ButtonGroup[];
     name?: string;
     data?: {
@@ -85,7 +79,10 @@ export const CONFIG = {
         }
     },
     ['building-block/rich-text-editor-button-groups/View.xml']: {
-        getData: (generateId: IdGeneratorFunction, context?: TemplateContext): { ids: Record<string, string> } => {
+        getData: (
+            generateId: IdGeneratorFunction,
+            context?: Partial<TemplateContext>
+        ): { ids: Record<string, string> } => {
             // Get buttonGroups from context
             const buttonGroups = context?.buttonGroups || context?.data?.buttonGroups || [];
 
@@ -93,7 +90,7 @@ export const CONFIG = {
             const ids: Record<string, string> = {};
             const validatedIds: string[] = [];
             buttonGroups.forEach((group, index) => {
-                const id = generateId(`${'ButtonGroup'}`, validatedIds);
+                const id = generateId('ButtonGroup', validatedIds);
                 ids[index] = group.id ?? id;
                 if (!group.id) {
                     validatedIds.push(id);
@@ -101,6 +98,15 @@ export const CONFIG = {
             });
 
             return { ids };
+        }
+    },
+    ['building-block/custom-column/View.xml']: {
+        getData: (generateId: IdGeneratorFunction): { ids: Record<string, string> } => {
+            return {
+                ids: {
+                    column: generateId('TableColumn')
+                }
+            };
         }
     }
 };

@@ -13,10 +13,11 @@ import type {
 } from '../../../prompts/types';
 import { bindingContextAbsolute, BuildingBlockType } from '../../types';
 import type { BindingContextType } from '../../types';
-import { getFilterBarIdsInFile, getXPathStringsForXmlFile, isElementIdAvailable } from './xml';
+import { getFilterBarIdsInFile, getXPathStringsForXmlFile } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 import { getEntitySetOptions, resolveEntitySetTargets, loadEntitySets } from './prompt-helpers';
 import { getFragmentAndViewFiles } from '../../../common/file';
+import { isElementIdAvailable } from '../../../common/utils';
 
 /* eslint-disable @typescript-eslint/no-floating-promises */
 initI18n();
