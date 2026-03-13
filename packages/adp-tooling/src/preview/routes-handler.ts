@@ -13,9 +13,8 @@ import type { NextFunction, Request, Response } from 'express';
 
 import { TemplateFileName, HttpStatusCodes } from '../types';
 import { DirName } from '@sap-ux/project-access';
-import { type CodeExtChange } from '../types';
+import type { DataSources, CodeExtChange } from '../types';
 import { ManifestService } from '../base/abap/manifest-service';
-import type { DataSources } from '../types';
 import { getVariant, isTypescriptSupported } from '../base/helper';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
