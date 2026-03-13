@@ -2,7 +2,13 @@ import { MessageType, Prompts, type AppWizard } from '@sap-devx/yeoman-ui-types'
 import type { ExternalService } from '@sap-ux/axios-extension';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
-import { DefaultLogger, getHostEnvironment, hostEnvironment, LogWrapper } from '@sap-ux/fiori-generator-shared';
+import {
+    DefaultLogger,
+    getHostEnvironment,
+    hostEnvironment,
+    LogWrapper,
+    setYeomanEnvConflicterForce
+} from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import { writeExternalServiceMetadata } from '@sap-ux/odata-service-writer';
 import { DirName, getMockServerConfig } from '@sap-ux/project-access';
@@ -102,11 +108,7 @@ export class ODataDownloadGenerator extends Generator {
         super(args, opts, {
             unique: 'namespace'
         });
-        // @ts-expect-error no types available
-        if (this.env.conflicter) {
-            // @ts-expect-error no types available
-            this.env.conflicter.force = true;
-        }
+        setYeomanEnvConflicterForce(this.env, true);
         this.options.force = true;
 
         // Generator steps
@@ -149,7 +151,7 @@ export class ODataDownloadGenerator extends Generator {
 
         await TelemetryHelper.initTelemetrySettings();
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_STARTED', { 'startTime': Date() });
+        TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_STARTED', { 'startUpTime': Date() });
     }
 
     async prompting(): Promise<void> {
@@ -210,6 +212,9 @@ export class ODataDownloadGenerator extends Generator {
         if (this.state.appRootPath) {
             if (this.state.entityOData && this.state.entityPropertyToEntitySet && this.state.appEntities) {
                 try {
+                    const writeStartTime = Date.now();
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITE_DATA_FILES_START', { 'time': Date() });
                     // Set target dir to mock data path
                     this.destinationRoot(join(this.state.appRootPath));
 
@@ -222,16 +227,23 @@ export class ODataDownloadGenerator extends Generator {
                         t('info.entityFilesToBeGenerated', { entities: Object.keys(entityFileData).join(', ') })
                     );
 
-                    Object.entries(entityFileData).forEach(([entityName, entityData]) => {
+                    const dataFiles = Object.entries(entityFileData);
+
+                    dataFiles.forEach(([entityName, entityData]) => {
                         // Writes relative to destination root path
                         this.writeDestinationJSON(join(this.state.mockDataRootPath!, `${entityName}.json`), entityData);
                     });
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WROTE_DATA_FILES', { 'writeTime': Date() });
+                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITE_DATA_FILES_END', {
+                        'writeFileDuration': `${Date.now() - writeStartTime} ms`,
+                        'numberOfFiles': `${dataFiles.length}`
+                    });
                 } catch (error) {
                     ODataDownloadGenerator.logger.error(error);
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITING_DATA_ERROR', { 'writeTime': Date() });
+                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITING_DATA_ERROR', {
+                        'writeFileErrorTime': Date()
+                    });
                 }
             } else {
                 ODataDownloadGenerator.logger.info(t('info.noServiceEntityData'));
@@ -239,45 +251,55 @@ export class ODataDownloadGenerator extends Generator {
 
             // Write value help data files
             if (this.state.valueHelpData?.length) {
-                // Service metadata writing will create the necessary data folders
-                // Passing the webapp folder might be invalid, but we cant pass the path from the mocker server here.
-                const webappPath = join(this.state.appRootPath, DirName.Webapp);
-                await writeExternalServiceMetadata(
-                    this.fs,
-                    webappPath,
-                    this.state.valueHelpData,
-                    this.state.mainServiceName,
-                    this.state.mainServicePath
-                );
-                // Update the mock server config if `resolveExternalServiceReferences` is not already present
-                if (this.state.mockServerConfig) {
-                    const config: MockserverUpdateConfig = {
-                        webappPath: webappPath,
-                        // Since ui5-mock.yaml already exists, set 'skip' to skip package.json file updates
-                        packageJsonConfig: {
-                            skip: true
-                        },
-                        // Set 'overwrite' to true to overwrite services data in YAML files
-                        ui5MockYamlConfig: {
-                            overwrite: true
-                        }
-                    };
-                    if (config.ui5MockYamlConfig && this.state.mainServiceName) {
-                        config.ui5MockYamlConfig.resolveExternalServiceReferences = {
-                            [this.state.mainServiceName]: true
+                try {
+                    const writeVHStartTime = Date.now();
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITE_VALUE_HELP_FILES_START', { 'time': Date() });
+                    // Service metadata writing will create the necessary data folders
+                    // Passing the webapp folder might be invalid, but we cant pass the path from the mocker server here.
+                    const webappPath = join(this.state.appRootPath, DirName.Webapp);
+                    await writeExternalServiceMetadata(
+                        this.fs,
+                        webappPath,
+                        this.state.valueHelpData,
+                        this.state.mainServiceName,
+                        this.state.mainServicePath
+                    );
+                    // Update the mock server config if `resolveExternalServiceReferences` is not already present
+                    if (this.state.mockServerConfig) {
+                        const config: MockserverUpdateConfig = {
+                            webappPath: webappPath,
+                            // Since ui5-mock.yaml already exists, set 'skip' to skip package.json file updates
+                            packageJsonConfig: {
+                                skip: true
+                            },
+                            // Set 'overwrite' to true to overwrite services data in YAML files
+                            ui5MockYamlConfig: {
+                                overwrite: true
+                            }
                         };
-                        // Regenerate mockserver middleware for ui5-mock.yaml by overwriting
-                        await generateMockserverConfig(this.state.appRootPath, config, this.fs);
+                        if (config.ui5MockYamlConfig && this.state.mainServiceName) {
+                            config.ui5MockYamlConfig.resolveExternalServiceReferences = {
+                                [this.state.mainServiceName]: true
+                            };
+                            // Regenerate mockserver middleware for ui5-mock.yaml by overwriting
+                            await generateMockserverConfig(this.state.appRootPath, config, this.fs);
+                        }
                     }
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITE_VALUE_HELP_DATA_FILES_END', {
+                        'writeFileDuration': `${Date.now() - writeVHStartTime} ms`,
+                        'numberOfExternalServices': `${this.state.valueHelpData.length}`
+                    });
+                } catch (error) {
+                    ODataDownloadGenerator.logger.error(error);
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITING_BALUE_HELP_DATA_ERROR', {
+                        'writeFileErrorTime': Date()
+                    });
                 }
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WROTE_VALUE_HELP_DATA', { 'writeTime': Date() });
             } else {
                 ODataDownloadGenerator.logger.info(t('info.noValueHelpData'));
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITING_VALUE_HELP_DATA_ERROR', {
-                    'writeTime': Date()
-                });
             }
             // Update the metadata
             if (this.state.updateMainServiceMetadata && this.state.mainServiceMetadata && this.state.mainServiceName) {

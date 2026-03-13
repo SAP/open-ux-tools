@@ -9,6 +9,7 @@ import { ODataDownloadGenerator } from '../src/data-download/odata-download-gene
 import { getODataDownloaderPrompts, promptNames } from '../src/data-download/prompts/prompts';
 import { getValueHelpSelectionPrompt } from '../src/data-download/prompts/value-help-prompts';
 import { createEntitySetData } from '../src/data-download/utils';
+import { wrap } from 'node:module';
 
 // Create a mock AbapServiceProvider class for instanceof checks
 // Defined inside the factory to avoid hoisting issues
@@ -23,6 +24,7 @@ jest.mock('@sap-ux/axios-extension', () => {
 });
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
     DefaultLogger: {
         info: jest.fn(),
         error: jest.fn(),

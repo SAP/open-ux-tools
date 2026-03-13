@@ -30,6 +30,13 @@ const UIAnnotationTypes = {
     CollectionFacet: 'com.sap.vocabularies.UI.v1.CollectionFacet'
 } as const;
 
+jest.mock('../../src/telemetry', () => ({
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn().mockResolvedValue(undefined),
+        sendTelemetry: jest.fn().mockResolvedValue(undefined)
+    }
+}));
+
 describe('Test createEntityChoices', () => {
     beforeEach(() => {
         // Test isolation, this is a static cache

@@ -18,6 +18,7 @@ import type { AppConfig, Entity } from '../types';
 import { getSystemNameFromStore } from '../utils';
 import { PromptState } from '../prompt-state';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
+import { TelemetryHelper } from '../../telemetry';
 
 /**
  * Fetches OData from the backend service.
@@ -40,6 +41,9 @@ export async function getData(
             );
 
             if (odataServiceProvider) {
+                const queryStartTime = Date.now();
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                TelemetryHelper.sendTelemetry('ODATA_DOWNLOAD_SEND_QUERY', { 'time': Date() });
                 const { odataResult } = await fetchData(
                     appConfig.referencedEntities.listEntity,
                     odataServiceProvider,
@@ -47,9 +51,18 @@ export async function getData(
                     1
                 );
                 if (odataResult.entityData) {
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOAD_RECEIVED_QUERY_RESULT', {
+                        'duration': `${Date.now() - queryStartTime} ms`,
+                        'resultSize': `${odataResult.entityData.length} rows`
+                    });
                     ODataDownloadGenerator.logger.debug(`Got result rows: ${odataResult.entityData.length}`);
                     return { odataQueryResult: odataResult.entityData };
                 } else if (odataResult.error) {
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    TelemetryHelper.sendTelemetry('ODATA_DOWNLOAD_QUERY_ERRORED', {
+                        'duration': `${Date.now() - queryStartTime} ms`
+                    });
                     return `${odataResult.error}`;
                 }
             }

@@ -14,7 +14,7 @@ import { ODataDownloadGenerator } from '../data-download';
 
 const generatorName = '@sap-ux/odata-download-sub-generator';
 
-const resourceId = 'c01f3247-ApplicationInsightsInstrumentationKeyPLACEH0LDER';
+const resourceId = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
 
 export interface TelemetryData {
     [key: string]: string;
