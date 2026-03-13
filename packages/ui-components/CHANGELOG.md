@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.0.3
+
+### Patch Changes
+
+- 12b8b2e: Change icon color to use default color variable
+
 ## 2.0.2
 
 ### Patch Changes
