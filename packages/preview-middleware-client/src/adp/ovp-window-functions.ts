@@ -1,0 +1,164 @@
+import log from 'sap/base/Log';
+import ODataModel from 'sap/ui/model/odata/v2/ODataModel';
+
+interface I18nProperty {
+    key: string;
+    value: string;
+    textType?: string;
+}
+
+interface DataSourceInfo {
+    ID: string;
+    Title: string;
+    Description?: string;
+    TechnicalServiceName?: string;
+    TechnicalServiceVersion?: number;
+    ServiceUrl?: string;
+    MetadataUrl?: string;
+}
+
+interface DataSourcesResponse {
+    results: DataSourceInfo[];
+}
+
+interface ServiceInfoResponse {
+    serviceUrl: string;
+    annotations: Array<{ TechnicalName: string; Uri: string }>;
+    modelInformation: OvpModelInformation;
+}
+
+interface OvpModelInformation {
+    serviceURI: string;
+    serviceAnnotation: string;
+    serviceAnnotationURI: string;
+}
+
+interface OvpMetaModelResult {
+    oEntityContainers: Record<string, unknown>;
+    oSchema: Record<string, unknown>[];
+    modelInformation: OvpModelInformation;
+}
+
+declare global {
+    interface Window {
+        writeToI18n: (sPath: string, aProperties: I18nProperty[]) => void;
+        getNewDataSources: (sPath: string) => Promise<DataSourcesResponse>;
+        getMetaModelForNewDataSource: (
+            oDataSourceSelected: DataSourceInfo[],
+            sPath: string
+        ) => Promise<OvpMetaModelResult | undefined>;
+    }
+}
+
+/**
+ * Returns the base URL for API requests.
+ *
+ * @returns Base URL string
+ */
+function getBaseUrl(): string {
+    return document.getElementById('root')?.dataset.openUxPreviewBaseUrl ?? '';
+}
+
+/**
+ * Creates a UI5 ODataModel with annotation URLs and returns its metamodel
+ * with entity containers, schema, and model information.
+ *
+ * @param serviceInfo Service URL and annotation details from the server
+ * @returns Promise resolving to a metamodel object with oEntityContainers, oSchema, and modelInformation
+ */
+async function buildMetaModel(serviceInfo: ServiceInfoResponse): Promise<OvpMetaModelResult> {
+    const annotationUris = serviceInfo.annotations.map((a) => a.Uri);
+
+    const oModel = new ODataModel(serviceInfo.serviceUrl, {
+        annotationURI: annotationUris,
+        loadAnnotationsJoined: true,
+        skipMetadataAnnotationParsing: false,
+        json: true
+    });
+
+    const oMetaModel = oModel.getMetaModel();
+    await oMetaModel.loaded();
+
+    return {
+        oEntityContainers: oMetaModel.getODataEntityContainer() as Record<string, unknown>,
+        oSchema: oMetaModel.getObject('/dataServices/schema') as Record<string, unknown>[],
+        modelInformation: serviceInfo.modelInformation
+    };
+}
+
+/**
+ * Initializes OVP bridge functions required by the sap.ovp library for the
+ * "Add New Card" flow in the adaptation editor.
+ *
+ * These bridge functions are registered as globals on the window object
+ * and connect the OVP runtime (in the preview iframe) to the server-side
+ * adaptation tooling middleware via fetch requests.
+ */
+export function initOvpWindowFunctions(): void {
+    const baseUrl = getBaseUrl();
+
+    /**
+     * Writes i18n entries to the adaptation project's i18n properties file.
+     *
+     * @param _sPath - i18n path (ignored; server resolves from project context)
+     * @param aProperties - Array of i18n key-value entries to write
+     */
+    window.writeToI18n = (_sPath: string, aProperties: I18nProperty[]): void => {
+        const entries = aProperties.map((p) => ({
+            key: p.key,
+            value: p.value,
+            annotation: p.textType
+        }));
+        fetch(`${baseUrl}/editor/i18n`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(entries)
+        }).catch((error) => {
+            log.error('OVP writeToI18n failed', error);
+        });
+    };
+
+    /**
+     * Fetches available OData V2 services from the ABAP system catalog.
+     *
+     * @param _sPath - Application path (ignored; server uses its own provider)
+     * @returns Promise resolving to an object with a results array of service metadata
+     */
+    window.getNewDataSources = async (_sPath: string): Promise<DataSourcesResponse> => {
+        const response = await fetch(`${baseUrl}/adp/api/ovp/datasources`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data sources: ${response.status}`);
+        }
+        return response.json();
+    };
+
+    /**
+     * Fetches the OData metadata model for a selected data source service.
+     * Creates a real UI5 ODataModel with annotations to build a full metamodel
+     * compatible with the OVP dialog.
+     *
+     * @param oDataSourceSelected - Array of selected data source objects
+     * @param _sPath - Application path (ignored; server uses its own provider)
+     * @returns Promise resolving to a metamodel object with oEntityContainers, oSchema, and modelInformation
+     */
+    window.getMetaModelForNewDataSource = async (
+        oDataSourceSelected: DataSourceInfo[],
+        _sPath: string
+    ): Promise<OvpMetaModelResult | undefined> => {
+        const response = await fetch(`${baseUrl}/adp/api/ovp/metamodel`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ dataSource: oDataSourceSelected[0] })
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch metamodel: ${response.status}`);
+        }
+        const serviceInfo = (await response.json()) as ServiceInfoResponse | null;
+        if (!serviceInfo) {
+            return undefined;
+        }
+        return buildMetaModel(serviceInfo);
+    };
+
+    log.info('OVP bridge functions initialized (writeToI18n, getNewDataSources, getMetaModelForNewDataSource)');
+}

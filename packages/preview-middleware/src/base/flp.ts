@@ -1189,6 +1189,8 @@ export class FlpSandbox {
         this.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         this.router.use(json());
         adp.addApis(this.router);
+        // Register i18n store route for ADP projects (used by OVP bridge functions)
+        this.addStoreI18nKeysRoute();
     }
 
     /**
