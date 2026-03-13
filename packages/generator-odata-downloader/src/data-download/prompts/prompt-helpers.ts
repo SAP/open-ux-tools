@@ -144,7 +144,7 @@ function getEntitySelectionChoices(
     poEntityPaths?: string[],
     listPageEntity?: Entity
 ): { entitySetsFlat: EntitySetsFlat; choices: CheckboxChoiceOptions<SelectedEntityAnswer>[] } {
-    const entitySetsFlat = {};
+    const entitySetsFlat: EntitySetsFlat = {};
     const navEntities = currentEntity.navPropEntities;
     if (navEntities && navEntities.length > 0) {
         // Check the entity types assigned annotations for cross refs to other entities that should be selected by default

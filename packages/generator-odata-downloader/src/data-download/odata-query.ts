@@ -13,12 +13,14 @@ export type EntitySetsFlat = { [entityPath: string]: string };
  * @param entityPaths - Array of entity paths with their entity set names
  * @returns Object containing expands configuration and entity path parts
  */
+type ExpandTree = { expand?: Record<string, ExpandTree> };
+
 export function getExpands(entityPaths: { entityPath: string; entitySetName: string }[]): {
     expands: object;
     entityPathParts: string[];
 } {
     const entityPathParts: string[] = [];
-    const expand = entityPaths.reduce(
+    const expand = entityPaths.reduce<ExpandTree>(
         (tree, { entityPath: path }) => {
             const parts = path.split('/');
             let current = tree;
