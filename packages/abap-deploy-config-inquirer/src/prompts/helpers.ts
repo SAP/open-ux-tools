@@ -79,7 +79,7 @@ async function getBackendTargetChoices(
         }
     ];
 
-    const target = backendTarget?.abapTarget as AbapTarget | undefined;
+    const target = backendTarget?.abapTarget;
     const targetUrl = target ? resolveTargetUrl(target) : undefined;
 
     const sorted = [...backendSystems].sort((a, b) =>
