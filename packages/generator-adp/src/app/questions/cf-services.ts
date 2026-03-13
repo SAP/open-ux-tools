@@ -1,5 +1,3 @@
-import path from 'node:path';
-
 import type {
     CfServicesAnswers,
     CFServicesQuestion,
@@ -216,8 +214,7 @@ export class CFServicesPrompter {
             choices: getAppRouterChoices(this.isInternalUsage),
             when: () => {
                 const modules = getModuleNames(mtaProjectPath);
-                const mtaProjectName = path.basename(mtaProjectPath);
-                const hasRouter = hasApprouter(mtaProjectName, modules);
+                const hasRouter = hasApprouter(modules);
                 if (hasRouter) {
                     this.approuter = getApprouterType(mtaProjectPath);
                 }
@@ -321,6 +318,10 @@ export class CFServicesPrompter {
 
                     this.apps = await getCfApps(this.businessServiceInfo.serviceKeys, cfConfig, this.logger);
                     this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
+
+                    if (this.apps.length === 0) {
+                        return t('error.noAppsFoundForBusinessService');
+                    }
                 } catch (e) {
                     this.apps = [];
                     this.logger?.error(`Failed to get available applications: ${e.message}`);

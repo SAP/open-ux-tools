@@ -1,5 +1,19 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.7.8
+
+### Patch Changes
+
+- Updated dependencies [79e69b9]
+    - @sap-ux/odata-vocabularies@0.4.28
+    - @sap-ux/fiori-annotation-api@0.9.31
+
+## 9.7.7
+
+### Patch Changes
+
+- a9322c9: fix(deps): update dependency globals to v17
+
 ## 9.7.6
 
 ### Patch Changes
