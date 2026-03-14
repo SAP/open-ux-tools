@@ -69,13 +69,13 @@ export enum UiIcons {
     FileWord = 'FileWord',
     Filter = 'Filter',
     FilterWithChevron = 'FilterWithChevron',
-    Form = 'Form',
-    FormField = 'FormField',
     Folder = 'Folder',
     FolderOpened = 'FolderOpened',
     Footer = 'Footer',
     ForeignKey = 'ForeignKey',
     ForeignKeySmall = 'ForeignKeySmall',
+    Form = 'Form',
+    FormField = 'FormField',
     FullscreenExpand = 'FullscreenExpand',
     FullscreenCollapse = 'FullscreenCollapse',
     GoLeft = 'GoLeft',
@@ -1120,6 +1120,20 @@ export function initIcons(): void {
                     />
                 </svg>
             ),
+            [UiIcons.FormField]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M13 7C13.5523 7 14 7.44772 14 8V9C14 9.51768 13.6067 9.94379 13.1025 9.99512L13 10H3L2.89746 9.99512C2.42703 9.94722 2.05278 9.57297 2.00488 9.10254L2 9V8C2 7.44772 2.44772 7 3 7H13ZM3 9H13V8H3V9Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M7.5 5C7.77614 5 8 5.22386 8 5.5C8 5.77614 7.77614 6 7.5 6H2.5C2.22386 6 2 5.77614 2 5.5C2 5.22386 2.22386 5 2.5 5H7.5Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
             [UiIcons.FullscreenExpand]: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -1132,20 +1146,6 @@ export function initIcons(): void {
                     />
                     <path
                         d="M5.29649 9.9991L6.00349 10.7061L1.71249 14.9971H6.00449V15.9971H0.500488C0.223488 15.9971 0.000488281 15.7731 0.000488281 15.4971V9.9981H1.00049V14.2951L5.29649 9.9991Z"
-                        fill={COLORS.default}
-                    />
-                </svg>
-            ),
-            [UiIcons.FormField]: (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M13 7C13.5523 7 14 7.44772 14 8V9C14 9.51768 13.6067 9.94379 13.1025 9.99512L13 10H3L2.89746 9.99512C2.42703 9.94722 2.05278 9.57297 2.00488 9.10254L2 9V8C2 7.44772 2.44772 7 3 7H13ZM3 9H13V8H3V9Z"
-                        fill={COLORS.default}
-                    />
-                    <path
-                        d="M7.5 5C7.77614 5 8 5.22386 8 5.5C8 5.77614 7.77614 6 7.5 6H2.5C2.22386 6 2 5.77614 2 5.5C2 5.22386 2.22386 5 2.5 5H7.5Z"
                         fill={COLORS.default}
                     />
                 </svg>
