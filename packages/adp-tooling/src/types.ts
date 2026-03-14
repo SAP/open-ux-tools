@@ -145,6 +145,7 @@ export interface ConfigAnswers {
     password: string;
     storeCredentials?: boolean;
     application: SourceApplication;
+    projectType?: AdaptationProjectType;
     fioriId?: string;
     ach?: string;
     shouldCreateExtProject?: boolean;
