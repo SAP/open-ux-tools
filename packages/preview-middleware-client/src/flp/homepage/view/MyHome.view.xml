@@ -1,23 +1,37 @@
 <mvc:View
     xmlns="sap.cux.home"
     xmlns:m="sap.m"
+    xmlns:dt="sap.ui.dt"
     xmlns:mvc="sap.ui.core.mvc"
     displayBlock="true"
     controllerName="open.ux.preview.client.flp.homepage.controller.MyHome"
     class="sapUShellFullHeight"
 >
-    <m:MessageStrip
-        id="disclaimer"
-        type="Information"
-        showIcon="true"
-        text="Disclaimer: This is a preview version. Some features available on this homepage may not be present in the main MyHome page."
-    />
-
     <m:Page
         id="page"
-        showHeader="false"
         class="homeLayout sapUiResponsiveContentPadding sapUiLayoutPadding sapCuxBaseLayout"
     >
+        <m:customHeader>
+            <m:OverflowToolbar id="salutationBar" class="salutationBar" height="5rem" dt:designtime="not-adaptable-tree">
+                <m:VBox id="headerLeftContainer" gap="0.125rem" renderType="Bare" class="hideOverflow">
+                    <m:Text id="headerDate"/>
+                    <m:Title
+                        id="greetingTitle"
+                        level="H2"
+                        titleStyle="{= ${view>/deviceType} === 'XLargeDesktop' ? 'H3' : 'H4'}"
+                    />
+                </m:VBox>
+                <m:ToolbarSpacer id="headerToolbarSpacer"/>
+                <m:GenericTag
+                    id="devPreviewTag"
+                    text="{i18n>devPreviewBadge}"
+                    status="Information"
+                    design="StatusIconHidden"
+                    tooltip="{i18n>devPreviewTooltip}"
+                />
+            </m:OverflowToolbar>
+        </m:customHeader>
+
         <AppsContainer id="appsContainer">
             <FavAppPanel id="favoriteApps" />
         </AppsContainer>

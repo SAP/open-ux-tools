@@ -1,7 +1,66 @@
-.homeLayout.sapCuxBaseLayout section {
-    display: block;
+:root {
+    --salutationBar-backgroundColor: var(--sapShell_Category_1_Background);
+    --salutationBar-textColor: var(--sapShell_Category_1_TextColor);
+    --salutationBar-borderColor: var(--sapShell_Category_1_BorderColor);
+    --salutationBar-margin-top: 1rem;
+    --salutationBar-margin-right: 2rem;
+    --salutationBar-margin-bottom: 0rem;
+    --salutationBar-margin-left: 2rem;
 }
 
-.homeLayout .homeNewsContainer .sapCuxBaseWrapper > * {
+.homeLayout.sapCuxBaseLayout {
+    flex-direction: column;
+}
+
+.homeLayout.sapCuxBaseLayout section {
+    display: block;
+    padding: var(--padding-top) var(--padding-right) var(--padding-bottom) var(--padding-left);
+}
+
+.homeLayout .homeNewsContainer .sapCuxBaseWrapper>* {
     width: 100%;
+}
+
+.salutationBar.sapMIBar.sapMHeader-CTX {
+    padding: 0.5rem 1rem;
+    margin: var(--salutationBar-margin-top) var(--salutationBar-margin-right) var(--salutationBar-margin-bottom) var(--salutationBar-margin-left);
+    border-radius: 0.625rem;
+    border: 1px solid var(--salutationBar-borderColor);
+}
+
+.sapCuxBaseLayout.sapMPage .sapMPageHeader:not(.sapMIBar-CTX)::after {
+    height: 0;
+}
+
+.salutationBar .sapMTitle,
+.salutationBar .sapMText,
+.salutationBar .sapUiIcon {
+    color: var(--salutationBar-textColor);
+}
+
+.salutationBar .sapMBtnInner.sapMBtnGhost,
+.salutationBar .sapMBtnInner {
+    background-color: var(--sapButton_Background);
+}
+
+.salutationBar .hideOverflow {
+    overflow: hidden;
+    flex-shrink: 1;
+}
+
+/* Mobile */
+@media (min-width: 320px) and (max-width: 599px) {
+    :root {
+        --salutationBar-margin-right: 0.5rem;
+        --salutationBar-margin-left: 0.5rem;
+        --salutationBar-margin-top: 0.5rem;
+    }
+}
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+    :root {
+        --salutationBar-margin-right: 3rem;
+        --salutationBar-margin-left: 3rem;
+    }
 }
