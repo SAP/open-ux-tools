@@ -1178,6 +1178,11 @@ export class FlpSandbox {
         await this.init(manifest, name, adp.resources, adp);
         this.router.use(adp.descriptor.url, adp.proxy.bind(adp));
         this.setupAdpCommonHandlers(adp);
+
+        if (manifest['sap.ovp']) {
+            await this.addStoreI18nKeysRoute();
+            this.logger.info('Registered /editor/i18n route for OVP adaptation project');
+        }
     }
 
     /**

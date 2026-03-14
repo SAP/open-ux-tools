@@ -392,6 +392,82 @@ export default class RoutesHandler {
     }
 
     /**
+     * Handler for retrieving available OData services from the ABAP V2 catalog.
+     * Used by the OVP "Add New Card" flow to populate the data source selection dropdown.
+     *
+     * @param _req Request
+     * @param res Response
+     * @param next Next Function
+     */
+    public handleGetOvpDataSources = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            if (this.isBuildPathMode) {
+                this.sendFilesResponse(res, { dataSources: [] });
+                return;
+            }
+
+            const catalogUrl = '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json';
+            const response = await this.provider.get(catalogUrl);
+            const parsed = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+            const results: Record<string, string>[] = parsed?.d?.results ?? [];
+
+            const dataSources = results.map((svc) => ({
+                ServiceUrl: svc.ServiceUrl,
+                Description: svc.Description || svc.TechnicalServiceName,
+                TechnicalServiceName: svc.TechnicalServiceName,
+                TechnicalServiceVersion: svc.TechnicalServiceVersion,
+                MetadataUrl: svc.MetadataUrl
+            }));
+
+            this.sendFilesResponse(res, { dataSources });
+        } catch (e) {
+            this.handleErrorMessage(res, next, e);
+        }
+    };
+
+    /**
+     * Handler for retrieving annotation URLs for a given OData service.
+     * Used by the OVP "Add New Card" flow to construct a metamodel with merged annotations.
+     *
+     * @param req Request (expects `serviceUrl` query parameter)
+     * @param res Response
+     * @param next Next Function
+     */
+    public handleGetOvpMetaModel = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            if (this.isBuildPathMode) {
+                res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Not available in build path mode' });
+                return;
+            }
+
+            const serviceUrl = req.query.serviceUrl as string;
+            if (!serviceUrl) {
+                res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'serviceUrl query parameter is required' });
+                return;
+            }
+
+            let annotationUrls: string[] = [];
+            try {
+                const encodedUrl = encodeURIComponent(serviceUrl);
+                const catalogAnnotUrl =
+                    `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('${encodedUrl}')/Annotations?$format=json`;
+                const annotResponse = await this.provider.get(catalogAnnotUrl);
+                const annotData =
+                    typeof annotResponse.data === 'string' ? JSON.parse(annotResponse.data) : annotResponse.data;
+                annotationUrls = (annotData?.d?.results ?? [])
+                    .map((ann: Record<string, string>) => ann.Url)
+                    .filter(Boolean);
+            } catch {
+                this.logger.warn(`Could not fetch catalog annotations for service: ${serviceUrl}`);
+            }
+
+            this.sendFilesResponse(res, { serviceUrl, annotationUrls });
+        } catch (e) {
+            this.handleErrorMessage(res, next, e);
+        }
+    };
+
+    /**
      * Returns manifest service.
      *
      * @returns Promise<ManifestService>

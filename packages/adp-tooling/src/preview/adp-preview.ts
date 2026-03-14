@@ -48,7 +48,9 @@ export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
     CODE_EXT = '/adp/api/code_ext',
-    ANNOTATION = '/adp/api/annotation'
+    ANNOTATION = '/adp/api/annotation',
+    OVP_DATASOURCES = '/adp/api/ovp/datasources',
+    OVP_METAMODEL = '/adp/api/ovp/metamodel'
 }
 
 /**
@@ -262,6 +264,9 @@ export class AdpPreview {
             ApiRoutes.ANNOTATION,
             this.routesHandler.handleGetAllAnnotationFilesMappedByDataSource as RequestHandler
         );
+
+        router.get(ApiRoutes.OVP_DATASOURCES, this.routesHandler.handleGetOvpDataSources as RequestHandler);
+        router.get(ApiRoutes.OVP_METAMODEL, this.routesHandler.handleGetOvpMetaModel as RequestHandler);
     }
 
     /**

@@ -7,7 +7,9 @@ export const enum ApiEndpoints {
     CONTROLLER = '/adp/api/controller',
     CODE_EXT = '/adp/api/code_ext',
     ANNOTATION_FILE = '/adp/api/annotation',
-    MANIFEST_APP_DESCRIPTOR = '/manifest.appdescr_variant'
+    MANIFEST_APP_DESCRIPTOR = '/manifest.appdescr_variant',
+    OVP_DATASOURCES = '/adp/api/ovp/datasources',
+    OVP_METAMODEL = '/adp/api/ovp/metamodel'
 }
 
 export const enum RequestMethod {
