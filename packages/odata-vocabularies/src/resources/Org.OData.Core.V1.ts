@@ -1,4 +1,4 @@
-// Last content update: Mon Feb 16 2026 12:18:31 GMT+0100 (Central European Standard Time)
+// Last content update: Fri Mar 06 2026 12:24:45 GMT+0100 (Central European Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -87,12 +87,12 @@ export default {
             '$Kind': 'Term',
             '$Collection': true,
             '$Type': 'Org.OData.Core.V1.Link',
-            '@Org.OData.Core.V1.Description': 'Link to related information'
+            '@Org.OData.Core.V1.Description': 'Links to related information'
         },
         'Link': {
             '$Kind': 'ComplexType',
             '@Org.OData.Core.V1.Description':
-                'The Link term is inspired by the `atom:link` element, see [RFC4287](https://tools.ietf.org/html/rfc4287#section-4.2.7), and the `Link` HTTP header, see [RFC5988](https://tools.ietf.org/html/rfc5988)',
+                'The Link type is inspired by the `atom:link` element, see [RFC4287](https://tools.ietf.org/html/rfc4287#section-4.2.7), and the `Link` HTTP header, see [RFC5988](https://tools.ietf.org/html/rfc5988)',
             'rel': {
                 '@Org.OData.Core.V1.Description':
                     'Link relation type, see [IANA Link Relations](http://www.iana.org/assignments/link-relations/link-relations.xhtml)'
