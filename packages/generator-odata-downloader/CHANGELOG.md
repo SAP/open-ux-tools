@@ -1,4 +1,4 @@
-# @sap-ux/generator-odata-download
+# @sap-ux/generator-odata-downloader
 
 ## 0.0.3
 
@@ -10,4 +10,4 @@
 
 ### Patch Changes
 
-- b7461bc: Adds new package @sap-ux/generator-odata-download
+- b7461bc: Adds new package @sap-ux/generator-odata-downloader

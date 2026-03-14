@@ -11,6 +11,6 @@ build({
   target: 'node18',
   platform: 'node',
   logLevel: 'info',
-  external: ['vscode', 'shelljs'],
+  external: ['vscode', 'yeoman-generator'],
   mainFields: ["module", "main"]
 }).catch(() => process.exit(1));
