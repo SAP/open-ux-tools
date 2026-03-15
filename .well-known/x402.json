@@ -1,0 +1,28 @@
+{
+  "name": "SAP/open-ux-tools",
+  "description": "SAP Fiori - Model Context Protocol (MCP) server",
+  "accepts": [
+    {
+      "network": "eip155:8453",
+      "asset": "USDC",
+      "address": "YOUR_WALLET_ADDRESS"
+    }
+  ],
+  "resources": [
+    {
+      "path": "/SAP Fiori tools",
+      "price": "0.01",
+      "description": "Pay-per-call access to SAP Fiori tools"
+    },
+    {
+      "path": "/SAP Fiori elements",
+      "price": "0.01",
+      "description": "Pay-per-call access to SAP Fiori elements"
+    },
+    {
+      "path": "/SAP Fiori freestyle",
+      "price": "0.01",
+      "description": "Pay-per-call access to SAP Fiori freestyle"
+    }
+  ]
+}
