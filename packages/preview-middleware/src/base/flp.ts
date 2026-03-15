@@ -63,6 +63,7 @@ import {
 import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
+import { NewsAdapter, type ODataNewsResponse, type NewsItem } from './utils/newsAdapter';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
@@ -127,6 +128,7 @@ export class FlpSandbox {
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
     private readonly cardGenerator?: CardGeneratorConfig;
+    private readonly newsAdapter: NewsAdapter;
     private projectType: ProjectType;
 
     /**
@@ -148,6 +150,7 @@ export class FlpSandbox {
         logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
         this.cardGenerator = config.editors?.cardGenerator;
+        this.newsAdapter = new NewsAdapter();
     }
 
     /**
@@ -221,6 +224,7 @@ export class FlpSandbox {
 
         if (this.flpConfig.enhancedHomePage) {
             this.addCDMRoute();
+            this.addNewsRoute();
         }
         await this.addRoutesForAdditionalApps();
 
@@ -722,6 +726,69 @@ export class FlpSandbox {
                 this.sendResponse(res, 'application/json', 200, JSON.stringify(json));
             }
         );
+    }
+
+    /**
+     * Add route for news API required by the enhanced FLP homepage.
+     */
+    private addNewsRoute(): void {
+        this.router.get(
+            '/homepage/news',
+            async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                const news = await this.fetchHomepageNews();
+                this.sendResponse(res, 'application/json', 200, JSON.stringify(news));
+            }
+        );
+    }
+
+    /**
+     * Fetch the news to be displayed on the enhanced FLP homepage.
+     *
+     * @returns a list of news items to be displayed on the enhanced FLP homepage
+     */
+    private async fetchRawNews(): Promise<NewsItem[]> {
+        // add dummy data for now
+        return Promise.resolve([
+            {
+                title: 'Welcome to the Local FLP',
+                subTitle: 'Your locally served Fiori launchpad',
+                description: 'This is a locally served Fiori launchpad for development and testing.',
+                footerText: 'Powered by @sap-ux/preview-middleware',
+                image: 'https://picsum.photos/900/600?blur'
+            },
+            {
+                title: 'Enhanced Home Page',
+                subTitle: 'Additional features for your local FLP',
+                description:
+                    'The enhanced home page is available for UI5 versions 1.123 and above. It provides additional features like news and a card catalog.',
+                footerText: 'Check out the documentation for more details.'
+            },
+            {
+                title: 'Card Catalog',
+                subTitle: 'Try out the Card Generator',
+                description:
+                    'The Card Generator allows you to easily create and test cards in your local FLP. It is available as a dev dependency for your project.',
+                footerText: 'Generate your first card and find it in the catalog!',
+                image: 'https://picsum.photos/900/600?grayscale'
+            }
+        ]);
+    }
+
+    /**
+     * Get the news to be displayed on the enhanced FLP homepage in the format required by the homepage.
+     *
+     * @returns the news response containing the news items to be displayed on the enhanced FLP homepage
+     */
+    private async fetchHomepageNews(): Promise<ODataNewsResponse> {
+        let rawNews: NewsItem[] = [];
+        try {
+            rawNews = await this.fetchRawNews();
+        } catch (error) {
+            this.logger.debug(`Error while fetching news for enhanced FLP homepage: ${error}`);
+        }
+
+        this.newsAdapter.setNewsItems(rawNews);
+        return await this.newsAdapter.getNewsResponse();
     }
 
     /**

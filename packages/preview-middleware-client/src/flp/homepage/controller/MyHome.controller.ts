@@ -129,13 +129,8 @@ export default class MyHomeController extends Controller {
 
         const view = this.getView();
         if (view) {
-            const newsContainer = new NewsContainerClass(`${view.getId()}-newsContainer`, {
-                content: [
-                    new NewsPanel(`${view.getId()}-news`, {
-                        // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-hardcoded-url
-                        url: 'https://sapui5untested.int.sap.eu2.hana.ondemand.com/databinding/proxy/https/news.sap.com/feed'
-                    })
-                ]
+            const newsContainer = new NewsContainerClass(`${view.createId('newsContainer')}-newsContainer`, {
+                content: [new NewsPanel(view.createId('news'), { url: '/homepage/news' })]
             }).addStyleClass('homeNewsContainer');
 
             const page = view.byId('page') as Page;

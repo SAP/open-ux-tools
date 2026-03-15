@@ -18,7 +18,23 @@
     },
     "groups": {},
     "visualizations": {},
-    "applications": {},
+    "applications": {
+        "manage.news": {
+            "sap.app": {
+                "id": "manage.news",
+                "title": "Manage News",
+                "crossNavigation": {
+                    "inbounds": {
+                        "NewsArticle-display": {
+                            "semanticObject": "NewsArticle",
+                            "action": "display",
+                            "title": "Manage News"
+                        }
+                    }
+                }
+            }
+        }
+    },
     "pages": {
         "SAP_BASIS_PG_UI_MYHOME": {
             "identification": {
