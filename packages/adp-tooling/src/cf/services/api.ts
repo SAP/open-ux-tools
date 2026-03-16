@@ -55,7 +55,7 @@ export async function getBusinessServiceInfo(
     config: CfConfig,
     logger: ToolsLogger
 ): Promise<ServiceInfo | null> {
-    const serviceKeys = await getServiceInstanceKeys(
+    const serviceKeys = await getOrCreateServiceInstanceKeys(
         {
             spaceGuids: [config.space.GUID],
             names: [businessService]
@@ -205,7 +205,7 @@ export async function createServiceInstance(
             `Creating service instance '${serviceInstanceName}' of service '${serviceName}' with '${plan}' plan`
         );
 
-        const commandParameters: string[] = ['create-service', serviceName, plan, serviceInstanceName];
+        const commandParameters: string[] = ['create-service', serviceName, plan, serviceInstanceName, '--wait'];
 
         if (xsSecurityProjectName) {
             let xsSecurity = null;
@@ -224,7 +224,11 @@ export async function createServiceInstance(
             commandParameters.push('-c', JSON.stringify(xsSecurity));
         }
 
-        await Cli.execute(commandParameters);
+        const result = await Cli.execute(commandParameters);
+        if (result && result.exitCode !== 0) {
+            logger?.error(`Service creation failed: ${result.stderr || 'Unknown error'}`);
+            throw new Error(`Service creation failed with code ${result.exitCode}: ${result.stderr || ''}`);
+        }
         logger?.log(`Service instance '${serviceInstanceName}' created successfully`);
     } catch (e) {
         logger?.error(e);
@@ -255,6 +259,7 @@ export async function getServiceNameByTags(spaceGuid: string, tags: string[]): P
  * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string[]} initialServices - The initial services.
  * @param {string} timestamp - The timestamp.
+ * @param {string} spaceGuid - The space GUID.
  * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>} The promise.
@@ -263,6 +268,7 @@ export async function createServices(
     yamlContent: MtaYaml,
     initialServices: string[],
     timestamp: string,
+    spaceGuid: string,
     templatePathOverwrite?: string,
     logger?: ToolsLogger
 ): Promise<void> {
@@ -292,6 +298,13 @@ export async function createServices(
                     }
                 );
             }
+            await getOrCreateServiceInstanceKeys(
+                {
+                    spaceGuids: [spaceGuid],
+                    names: [resource.parameters?.['service-name'] ?? '']
+                },
+                logger
+            );
         }
     }
 }
@@ -303,7 +316,7 @@ export async function createServices(
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<ServiceInfo | null>} The service instance keys.
  */
-export async function getServiceInstanceKeys(
+export async function getOrCreateServiceInstanceKeys(
     serviceInstanceQuery: GetServiceInstanceParams,
     logger?: ToolsLogger
 ): Promise<ServiceInfo | null> {

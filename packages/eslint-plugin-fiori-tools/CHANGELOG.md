@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.9.0
+
+### Minor Changes
+
+- 5055dde: Feat: add sap-strict-uom-filtering eslint rule
+
+## 9.8.0
+
+### Minor Changes
+
+- af65902: Add table personalization rule that checks that all table customization settings are available in OData V4 applications.
+
 ## 9.7.8
 
 ### Patch Changes

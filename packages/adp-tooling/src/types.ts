@@ -1120,6 +1120,10 @@ export interface CfAdpWriterConfig {
          * Business service instance keys.
          */
         serviceInfo?: ServiceInfo | null;
+        /**
+         * GUID of the BTP space.
+         */
+        spaceGuid: string;
     };
     project: {
         name: string;
@@ -1160,6 +1164,7 @@ export interface CreateCfConfigParams {
     packageJson: Package;
     toolsId: string;
     serviceInfo?: ServiceInfo | null;
+    spaceGuid: string;
 }
 
 export const AppRouterType = {
