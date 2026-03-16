@@ -1,12 +1,13 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { ParsedService } from '../parser';
-import type { LinkerContext, ConfigurationBase } from './types';
+import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
 import { collectTables, collectSections } from './annotations';
 
 export interface ApplicationSetting {
     createMode: string;
+    disableStrictUomFiltering: boolean;
 }
 
 export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSetting> {
@@ -30,6 +31,10 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     entity: MetadataElement;
     sections: Section[];
     lookup: NodeLookup<Table | Section>;
+    header: {
+        anchorBarVisible: ConfigurationProperty<boolean>;
+        visible: ConfigurationProperty<boolean>;
+    };
 }
 
 export type FeV4PageType = FeV4ListReport | FeV4ObjectPage;
@@ -51,6 +56,7 @@ export interface TableSettings {
     disableCopyToClipboard: boolean;
     enableExport: boolean;
     enablePaste: boolean;
+    personalization: boolean | { column?: boolean; filter?: boolean; sort?: boolean; group?: boolean };
 }
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
@@ -61,6 +67,9 @@ interface ManifestApplicationSettings {
         table?: {
             defaultCreationMode?: string;
         };
+    };
+    app?: {
+        disableStrictUomFiltering?: boolean;
     };
 }
 
@@ -149,6 +158,18 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
                     'name'
                 ],
                 values: getCreationModeValues()
+            },
+            personalization: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'personalization'
+                ],
+                values: [true, false, {}]
             }
         }
     };
@@ -227,9 +248,20 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                 entity: entity,
                 configuration: {},
                 sections: [],
-                lookup: {}
+                lookup: {},
+                header: {
+                    anchorBarVisible: {
+                        values: [true, false],
+                        configurationPath: []
+                    },
+                    visible: {
+                        values: [true, false],
+                        configurationPath: []
+                    }
+                }
             };
             linkObjectPageSections(page, path, name, sections, target);
+            linkObjectPageHeader(page, target);
             linkedApp.pages.push(page);
         }
     }
@@ -243,6 +275,12 @@ interface Target {
             contextPath?: string;
 
             controlConfiguration?: { [key: string]: TableConfiguration };
+            content?: {
+                header?: {
+                    anchorBarVisible?: boolean;
+                    visible?: boolean;
+                };
+            };
         };
     };
 }
@@ -257,6 +295,14 @@ interface TableConfiguration {
         creationMode?: {
             name?: string;
         };
+        personalization?:
+            | boolean
+            | {
+                  column?: boolean;
+                  filter?: boolean;
+                  sort?: boolean;
+                  group?: boolean;
+              };
     };
 }
 
@@ -346,6 +392,8 @@ function linkListReportTable(
                 const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
                 tableControl.configuration.creationMode.valueInFile = creationModeValue;
                 tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
+                const personalization = controlConfiguration.tableSettings?.personalization;
+                tableControl.configuration.personalization.valueInFile = personalization;
             }
         } else {
             // no annotation definition found for this table, but configuration exists
@@ -439,6 +487,8 @@ function linkObjectPageSections(
             const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
             tableControl.configuration.creationMode.valueInFile = creationModeValue;
             tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
+            const personalization = controlConfiguration.tableSettings?.personalization;
+            tableControl.configuration.personalization.valueInFile = personalization;
         } else {
             // no annotation definition found for this section, but configuration exists
             const orphanedSection: OrphanSection = {
@@ -455,6 +505,23 @@ function linkObjectPageSections(
         page.lookup[control.type] ??= [];
         (page.lookup[control.type]! as Extract<Section | Table, { type: typeof control.type }>[]).push(control);
     }
+}
+
+/**
+ * Links the object page header configuration for Fiori Elements V4.
+ *
+ * @param page - The object page being linked
+ * @param target - The routing target containing the header configuration
+ */
+function linkObjectPageHeader(page: FeV4ObjectPage, target: Target): void {
+    const header = target.options?.settings?.content?.header;
+    const basePath = ['sap.ui5', 'routing', 'targets', page.targetName, 'options', 'settings', 'content', 'header'];
+
+    page.header.anchorBarVisible.valueInFile = header?.anchorBarVisible;
+    page.header.anchorBarVisible.configurationPath = [...basePath, 'anchorBarVisible'];
+
+    page.header.visible.valueInFile = header?.visible;
+    page.header.visible.configurationPath = [...basePath, 'visible'];
 }
 
 interface PageSettings {
@@ -550,6 +617,7 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
 function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
     const config: ManifestApplicationSettings = context.app.manifestObject['sap.fe'] ?? {};
     const createMode = config.macros?.table?.defaultCreationMode;
+    const disableStrictUomFiltering = config.app?.disableStrictUomFiltering;
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',
         pages: [],
@@ -558,6 +626,11 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
                 values: ['InlineCreationRows', 'NewPage'],
                 configurationPath: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
                 valueInFile: createMode
+            },
+            disableStrictUomFiltering: {
+                values: [true, false],
+                configurationPath: ['sap.fe', 'app', 'disableStrictUomFiltering'],
+                valueInFile: disableStrictUomFiltering
             }
         }
     };

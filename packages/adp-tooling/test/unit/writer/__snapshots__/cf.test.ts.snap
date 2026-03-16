@@ -27,7 +27,7 @@ dist/
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
-		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"build-mta\\": \\"rimraf ../resources ../mta_archives && mbt build --mtar archive --source ../\\",
 		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
@@ -136,7 +136,7 @@ test.namespace_sap.app.title=Test CF App",
   },
   "../minimal-cf/xs-security.json": Object {
     "contents": "{
-	\\"xsappname\\": \\"test-cf-project\\",
+	\\"xsappname\\": \\"test_project_1234567890\\",
 	\\"tenant-mode\\": \\"dedicated\\",
 	\\"description\\": \\"Security profile of called application\\",
 	\\"scopes\\": [],
@@ -170,7 +170,7 @@ dist/
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
-		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"build-mta\\": \\"rimraf ../resources ../mta_archives && mbt build --mtar archive --source ../\\",
 		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
@@ -279,7 +279,7 @@ test.namespace_sap.app.title=Test CF App",
   },
   "xs-security.json": Object {
     "contents": "{
-	\\"xsappname\\": \\"test-cf-project\\",
+	\\"xsappname\\": \\"test_project_1234567890\\",
 	\\"tenant-mode\\": \\"dedicated\\",
 	\\"description\\": \\"Security profile of called application\\",
 	\\"scopes\\": [],
@@ -318,7 +318,7 @@ dist/
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
-		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"build-mta\\": \\"rimraf ../resources ../mta_archives && mbt build --mtar archive --source ../\\",
 		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
@@ -427,7 +427,7 @@ test.namespace_sap.app.title=Test CF App",
   },
   "../managed-approuter/xs-security.json": Object {
     "contents": "{
-	\\"xsappname\\": \\"test-cf-project\\",
+	\\"xsappname\\": \\"test_project_1234567890\\",
 	\\"tenant-mode\\": \\"dedicated\\",
 	\\"description\\": \\"Security profile of called application\\",
 	\\"scopes\\": [],
@@ -461,7 +461,7 @@ dist/
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
-		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"build-mta\\": \\"rimraf ../resources ../mta_archives && mbt build --mtar archive --source ../\\",
 		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
@@ -570,7 +570,7 @@ test.namespace_sap.app.title=Test CF App",
   },
   "../minimal-cf/xs-security.json": Object {
     "contents": "{
-	\\"xsappname\\": \\"test-cf-project\\",
+	\\"xsappname\\": \\"test_project_1234567890\\",
 	\\"tenant-mode\\": \\"dedicated\\",
 	\\"description\\": \\"Security profile of called application\\",
 	\\"scopes\\": [],
@@ -640,7 +640,7 @@ dist/
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
-		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"build-mta\\": \\"rimraf ../resources ../mta_archives && mbt build --mtar archive --source ../\\",
 		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
@@ -749,7 +749,7 @@ test.namespace_sap.app.title=Test CF App",
   },
   "xs-security.json": Object {
     "contents": "{
-	\\"xsappname\\": \\"test-cf-project\\",
+	\\"xsappname\\": \\"test_project_1234567890\\",
 	\\"tenant-mode\\": \\"dedicated\\",
 	\\"description\\": \\"Security profile of called application\\",
 	\\"scopes\\": [],
@@ -788,7 +788,7 @@ dist/
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
-		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"build-mta\\": \\"rimraf ../resources ../mta_archives && mbt build --mtar archive --source ../\\",
 		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
@@ -897,7 +897,7 @@ test.namespace_sap.app.title=Test CF App",
   },
   "xs-security.json": Object {
     "contents": "{
-	\\"xsappname\\": \\"test-cf-project\\",
+	\\"xsappname\\": \\"test_project_1234567890\\",
 	\\"tenant-mode\\": \\"dedicated\\",
 	\\"description\\": \\"Security profile of called application\\",
 	\\"scopes\\": [],

@@ -1,5 +1,72 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.87
+
+### Patch Changes
+
+- 1b7094e: fix(deps): update dependency @sap/ux-specification to v1.144.0
+
+## 0.7.86
+
+### Patch Changes
+
+- 295cacc: fix: remove sap-no-global-define eslint annotations from testsuite templates
+
+## 0.7.85
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/ui5-application-writer@1.7.19
+
+## 0.7.84
+
+### Patch Changes
+
+- Updated dependencies [bd95e55]
+    - @sap-ux/ui5-application-writer@1.7.19
+
+## 0.7.83
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-application-writer@1.7.18
+
+## 0.7.82
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+- Updated dependencies [5aff25c]
+    - @sap-ux/ui5-application-writer@1.7.17
+
+## 0.7.81
+
+### Patch Changes
+
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+- Updated dependencies [ac58145]
+- Updated dependencies [45d4797]
+    - @sap-ux/ui5-application-writer@1.7.16
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/project-access@1.35.11
+
+## 0.7.80
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/ui5-application-writer@1.7.15
+
+## 0.7.79
+
+### Patch Changes
+
+- 7d643c3: remove Filterbar OPA tests for Worklist app
+
 ## 0.7.78
 
 ### Patch Changes

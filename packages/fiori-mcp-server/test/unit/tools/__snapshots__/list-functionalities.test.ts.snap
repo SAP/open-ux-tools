@@ -84,6 +84,13 @@ Array [
     ],
   },
   Object {
+    "description": "Enables lazy loading for sections in object pages. If a specific object page defines its own \`enableLazyLoading\` property, that page-level setting overrides this application-level setting.",
+    "functionalityId": Array [
+      "settings",
+      "enableLazyLoading",
+    ],
+  },
+  Object {
     "description": "Defines the title for the application.",
     "functionalityId": Array [
       "settings",
@@ -219,6 +226,16 @@ To ensure a consistent experience, set this and 'Stay On Current Page After Save
     ],
   },
   Object {
+    "description": "Defines the personalization mode, currently only effective if variant management on page is either set to Page or Control.
+By default all table settings are enabled. You can change this for the different parts of the table by setting the properties \\"Column\\", \\"Sort\\" and \\"Filter\\" accordingly.
+Omitting a property is treated as false, this allows apps to avoid getting new features like grouping in upcoming releases.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "personalization",
+    ],
+  },
+  Object {
     "description": "Defines the layout options of the table popins. A popin layout defined at the table level takes precedence over a popin layout defined at the application level.",
     "functionalityId": Array [
       "TravelList",
@@ -311,9 +328,7 @@ To ensure a consistent experience, set this and 'Stay On Current Page After Save
     ],
   },
   Object {
-    "description": "Defines the personalization mode, currently only effective if variant management on page is either set to Page or Control.
-By default all table settings are enabled. You can change this for the different parts of the table by setting the properties \\"Column\\", \\"Sort\\" and \\"Filter\\" accordingly.
-Omitting a property is treated as false, this allows apps to avoid getting new features like grouping in upcoming releases.",
+    "description": "personalization",
     "functionalityId": Array [
       "TravelList",
       "table",
@@ -445,7 +460,7 @@ If this is not set with a value, the default value is 'NewPage'.",
     ],
   },
   Object {
-    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelList",
       "table",
@@ -456,7 +471,7 @@ If this is not set with a value, the default value is 'NewPage'.",
     ],
   },
   Object {
-    "description": "Defines the priority of the action. This determines ordering and whether the action is moved into overflow.",
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
     "functionalityId": Array [
       "TravelList",
       "table",
@@ -511,7 +526,7 @@ If this is not set with a value, the default value is 'NewPage'.",
     ],
   },
   Object {
-    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelList",
       "table",
@@ -522,7 +537,7 @@ If this is not set with a value, the default value is 'NewPage'.",
     ],
   },
   Object {
-    "description": "Defines the priority of the action. This determines ordering and whether the action is moved into overflow.",
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
     "functionalityId": Array [
       "TravelList",
       "table",
@@ -577,7 +592,7 @@ If this is not set with a value, the default value is 'NewPage'.",
     ],
   },
   Object {
-    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelList",
       "table",
@@ -588,7 +603,7 @@ If this is not set with a value, the default value is 'NewPage'.",
     ],
   },
   Object {
-    "description": "Defines the priority of the action. This determines ordering and whether the action is moved into overflow.",
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
     "functionalityId": Array [
       "TravelList",
       "table",
@@ -879,6 +894,13 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
+    "description": "Enable lazy loading for sections in an object page.",
+    "functionalityId": Array [
+      "TravelObjectPage",
+      "enableLazyLoading",
+    ],
+  },
+  Object {
     "description": "Set editableHeaderContent to true to make the header fields editable.",
     "functionalityId": Array [
       "TravelObjectPage",
@@ -903,7 +925,7 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
-    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelObjectPage",
       "header",
@@ -913,7 +935,7 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
-    "description": "Defines the priority of the action. This determines ordering and whether the action is moved into overflow.",
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
     "functionalityId": Array [
       "TravelObjectPage",
       "header",
@@ -923,7 +945,7 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
-    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelObjectPage",
       "header",
@@ -933,7 +955,7 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
-    "description": "Defines the priority of the action. This determines ordering and whether the action is moved into overflow.",
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
     "functionalityId": Array [
       "TravelObjectPage",
       "header",

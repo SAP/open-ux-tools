@@ -25,7 +25,7 @@ import {
     loadApps,
     loadCfConfig,
     storeCredentials,
-    getServiceInstanceKeys
+    getOrCreateServiceInstanceKeys
 } from '@sap-ux/adp-tooling';
 import {
     getDefaultTargetFolder,
@@ -409,6 +409,7 @@ export default class extends Generator {
             const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
             const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
             const manifest = this.jsonInput ? this.manifest : this.prompter.manifest;
+            const keyUserChanges = this.jsonInput ? this.jsonInput.keyUserChanges : this.keyUserPrompter?.changes;
             const projectType = this._getProjectType();
 
             const packageJson = getPackageInfo();
@@ -424,7 +425,7 @@ export default class extends Generator {
                 logger: this.toolsLogger,
                 projectType,
                 toolsId: this.toolsId,
-                keyUserChanges: this.keyUserPrompter?.changes
+                keyUserChanges
             });
 
             if (config.options) {
@@ -638,7 +639,7 @@ export default class extends Generator {
         const backendUrls = this.cfPrompter.backendUrls;
         const oauthPaths = this.cfPrompter.oauthPaths;
 
-        const serviceInfo = await getServiceInstanceKeys(
+        const serviceInfo = await getOrCreateServiceInstanceKeys(
             {
                 names: [this.cfServicesAnswers.businessService ?? '']
             },
@@ -659,7 +660,8 @@ export default class extends Generator {
             publicVersions,
             packageJson: getPackageInfo(),
             toolsId: this.toolsId,
-            serviceInfo
+            serviceInfo,
+            spaceGuid: this.cfConfig.space.GUID
         });
 
         if (config.options) {
