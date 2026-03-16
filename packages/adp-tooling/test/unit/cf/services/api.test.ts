@@ -860,7 +860,7 @@ describe('CF Services API', () => {
                 name: serviceInstanceName,
                 tags: mockTags,
                 plan,
-                credentials: { credentials: mockCredentials }
+                credentials: mockCredentials
             });
             expect(mockRequestCfApi).toHaveBeenCalledTimes(2);
             expect(mockGetServiceKeys).toHaveBeenCalledWith('instance-guid-123');

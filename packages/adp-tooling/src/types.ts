@@ -907,7 +907,7 @@ export interface ServiceKeyCredentialsWithTags {
     name: string;
     tags: string[];
     plan: string;
-    credentials: ServiceKeys | undefined;
+    credentials: ServiceKeys['credentials'] | undefined;
 }
 
 export interface AppRouterEnvOptions {

@@ -29,22 +29,30 @@ const UI5_SERVER_AUTH_ROUTE: XsappRoute = {
  * @returns The loaded and mutated XsappConfig.
  */
 export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): XsappConfig {
-    const { rootPath, xsappJsonPath, effectiveOptions, sourcePath } = options;
+    const { rootPath, xsappJsonPath, effectiveOptions, sourcePath, logger } = options;
     const xsappConfig = JSON.parse(fs.readFileSync(xsappJsonPath, 'utf8')) as XsappConfig;
+
+    const xsappRoutes = xsappConfig.routes ?? [];
+    xsappConfig.routes = xsappRoutes.filter((route) => {
+        if (route.service === 'html5-apps-repo-rt') {
+            logger.debug(`Filtering out xs-app.json route: service "html5-apps-repo-rt" (source: ${route.source})`);
+            return false;
+        }
+        const hasResources = route.source.includes('/resources') || route.source.includes('/test-resources');
+        if (!route.localDir && route.authenticationType === 'none' && hasResources) {
+            logger.debug(
+                `Filtering out xs-app.json route: unauthenticated resource route without localDir (source: ${route.source})`
+            );
+            return false;
+        }
+        return true;
+    });
 
     if (effectiveOptions.disableWelcomeFile) {
         delete xsappConfig.welcomeFile;
     }
 
     xsappConfig.authenticationMethod = effectiveOptions.authenticationMethod;
-
-    const xsappRoutes = xsappConfig.routes ?? [];
-    xsappConfig.routes = xsappRoutes.filter((route) => {
-        return (
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- boolean OR for route inclusion
-            (effectiveOptions.allowLocalDir || !route.localDir) && (effectiveOptions.allowServices || !route.service)
-        );
-    });
 
     if (
         effectiveOptions.appendAuthRoute &&

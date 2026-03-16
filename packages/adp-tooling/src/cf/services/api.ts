@@ -432,7 +432,7 @@ export async function getServiceKeyCredentialsWithTags(
             name: serviceInstanceName,
             tags,
             plan,
-            credentials: credentials?.[0]
+            credentials: credentials?.[0].credentials
         };
     } catch (e) {
         logger?.error(
