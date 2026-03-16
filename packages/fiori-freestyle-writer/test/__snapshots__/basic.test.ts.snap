@@ -2914,7 +2914,6 @@ export default class View1Page extends Opa5 {
   "webapp/test/testsuite.qunit.ts": Object {
     "contents": "/* global window, parent, location */
 
-// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-global-define,@typescript-eslint/ban-ts-comment
 // @ts-nocheck
 window.suite = function() {
 	// eslint-disable-next-line
@@ -3788,7 +3787,6 @@ export default class View1Page extends Opa5 {
   "webapp/test/testsuite.qunit.ts": Object {
     "contents": "/* global window, parent, location */
 
-// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-global-define,@typescript-eslint/ban-ts-comment
 // @ts-nocheck
 window.suite = function() {
 	// eslint-disable-next-line

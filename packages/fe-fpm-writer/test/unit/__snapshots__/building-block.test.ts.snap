@@ -535,7 +535,7 @@ exports[`Building Blocks CustomColumn building block CustomColumn detects macros
             <macros:Table>
                 <macros:columns>
                     <macros:Column/>
-                    <macrosTable:Column header=\\"CustomColumnTitle2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
+                    <macrosTable:Column id=\\"TableColumn\\" header=\\"CustomColumnTitle2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
                         <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomColumnTitle2\\" type=\\"XML\\"/>
                     </macrosTable:Column>
                 </macros:columns>
@@ -559,7 +559,7 @@ Object {
         <content>
             <macros:Table>
                 <macros:columns>
-                    <macrosTable:Column header=\\"CustomColumnTitle2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
+                    <macrosTable:Column id=\\"TableColumn\\" header=\\"CustomColumnTitle2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
                         <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomColumnTitle2\\" type=\\"XML\\"/>
                     </macrosTable:Column>
                 </macros:columns>
@@ -2486,7 +2486,7 @@ exports[`Building Blocks updateAggregationPath scopes aggregation search to targ
     </macros:Table>
     <macros:Table id=\\"Table2\\">
         <macros:Column id=\\"column2\\"/>
-        <macrosTable:Column header=\\"New Column in Table 2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
+        <macrosTable:Column id=\\"TableColumn\\" header=\\"New Column in Table 2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
             <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestColumnFragment\\" type=\\"XML\\"/>
         </macrosTable:Column>
     </macros:Table>

@@ -1,5 +1,37 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.19.11
+
+### Patch Changes
+
+- 32d028b: Fixes: create an abap service provider when a connect path is specified
+
+## 2.19.10
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.23
+
+## 2.19.9
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+    - @sap-ux/fiori-generator-shared@0.13.85
+
+## 2.19.8
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/fiori-generator-shared@0.13.85
+    - @sap-ux/inquirer-common@0.11.22
+    - @sap-ux/project-input-validator@0.6.67
+    - @sap-ux/telemetry@0.6.86
+
 ## 2.19.7
 
 ### Patch Changes

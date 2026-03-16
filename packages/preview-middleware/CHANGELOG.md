@@ -1,5 +1,62 @@
 # @sap-ux/preview-middleware
 
+## 0.23.153
+
+### Patch Changes
+
+- Updated dependencies [53af342]
+    - @sap-ux/adp-tooling@0.18.91
+
+## 0.23.152
+
+### Patch Changes
+
+- 0453fe5: fix: ensure leading slash for preview paths
+
+## 0.23.151
+
+### Patch Changes
+
+- 05f3f4c: fix: Various ADP Generator fixes for CF flow
+- Updated dependencies [05f3f4c]
+    - @sap-ux/adp-tooling@0.18.90
+
+## 0.23.150
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.89
+
+## 0.23.149
+
+### Patch Changes
+
+- Updated dependencies [f14a3d1]
+    - @sap-ux/adp-tooling@0.18.88
+
+## 0.23.148
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.87
+- @sap-ux/system-access@0.6.64
+
+## 0.23.147
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/adp-tooling@0.18.86
+    - @sap-ux/system-access@0.6.63
+
+## 0.23.146
+
+### Patch Changes
+
+- Updated dependencies [5d458c7]
+    - @sap-ux/adp-tooling@0.18.85
+
 ## 0.23.145
 
 ### Patch Changes

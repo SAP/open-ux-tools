@@ -1,5 +1,45 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.32
+
+### Patch Changes
+
+- dfa433e: feat: Enabled support of referenced external metadata
+- Updated dependencies [dfa433e]
+    - @sap-ux/odata-annotation-core-types@0.5.7
+    - @sap-ux/odata-entity-model@0.3.7
+    - @sap-ux/cds-odata-annotation-converter@0.7.13
+    - @sap-ux/odata-annotation-core@0.2.17
+    - @sap-ux/odata-vocabularies@0.4.29
+    - @sap-ux/xml-odata-annotation-converter@0.4.11
+    - @sap-ux/cds-annotation-parser@0.2.34
+
+## 0.9.31
+
+### Patch Changes
+
+- Updated dependencies [79e69b9]
+    - @sap-ux/odata-vocabularies@0.4.28
+    - @sap-ux/cds-annotation-parser@0.2.33
+    - @sap-ux/cds-odata-annotation-converter@0.7.12
+    - @sap-ux/xml-odata-annotation-converter@0.4.10
+
+## 0.9.30
+
+### Patch Changes
+
+- e1ef0ba: chore update `@sap/ux-cds-compiler-facade` dependency
+- Updated dependencies [e1ef0ba]
+    - @sap-ux/cds-odata-annotation-converter@0.7.11
+
+## 0.9.29
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/cds-odata-annotation-converter@0.7.10
+
 ## 0.9.28
 
 ### Patch Changes
