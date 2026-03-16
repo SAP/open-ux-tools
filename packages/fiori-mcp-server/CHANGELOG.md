@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.42
+
+### Patch Changes
+
+- 681f169: fix: MCP server title
+
 ## 0.6.41
 
 ### Patch Changes
