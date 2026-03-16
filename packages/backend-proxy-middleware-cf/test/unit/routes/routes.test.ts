@@ -8,6 +8,7 @@ import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../../src/route
 
 describe('routes', () => {
     const rootPath = '/project/root';
+    const mockLogger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() } as unknown as ToolsLogger;
 
     describe('loadAndPrepareXsappConfig', () => {
         beforeEach(() => {
@@ -32,7 +33,8 @@ describe('routes', () => {
                     allowServices: false,
                     disableUi5ServerRoutes: true // disable to test only existing routes
                 }),
-                sourcePath: path.join(rootPath, 'webapp')
+                sourcePath: path.join(rootPath, 'webapp'),
+                logger: mockLogger
             });
 
             expect(result.authenticationMethod).toBe('none');
@@ -54,7 +56,8 @@ describe('routes', () => {
                     allowLocalDir: false,
                     allowServices: false
                 }),
-                sourcePath: rootPath
+                sourcePath: rootPath,
+                logger: mockLogger
             });
 
             expect(result.welcomeFile).toBeUndefined();
@@ -76,7 +79,8 @@ describe('routes', () => {
                     allowServices: false,
                     disableUi5ServerRoutes: true // disable to test only auth route
                 }),
-                sourcePath
+                sourcePath,
+                logger: mockLogger
             });
 
             expect(result.routes).toHaveLength(1);
@@ -101,7 +105,8 @@ describe('routes', () => {
                     allowLocalDir: false,
                     allowServices: false
                 }),
-                sourcePath: rootPath
+                sourcePath: rootPath,
+                logger: mockLogger
             });
 
             // Should have only the HTML auth route (no /resources, /test-resources, or catch-all)
@@ -126,7 +131,8 @@ describe('routes', () => {
                     allowLocalDir: false,
                     allowServices: false
                 }),
-                sourcePath: rootPath
+                sourcePath: rootPath,
+                logger: mockLogger
             });
 
             expect(result.routes).toHaveLength(0);
@@ -147,7 +153,8 @@ describe('routes', () => {
                     allowLocalDir: false,
                     allowServices: false
                 }),
-                sourcePath: rootPath
+                sourcePath: rootPath,
+                logger: mockLogger
             });
 
             // Should have 1 existing route + 1 ui5-server auth route
@@ -159,8 +166,6 @@ describe('routes', () => {
     });
 
     describe('buildRouteEntries', () => {
-        const logger = { info: jest.fn(), debug: jest.fn() } as unknown as ToolsLogger;
-
         beforeEach(() => {
             jest.clearAllMocks();
         });
@@ -178,25 +183,25 @@ describe('routes', () => {
                     debug: true,
                     destinations: [{ name: 'api', url: '/api' }]
                 }),
-                logger
+                logger: mockLogger
             });
 
             expect(result).toHaveLength(1);
             expect(result[0].re).toBeInstanceOf(RegExp);
             expect(result[0].path).toBeDefined();
             expect(result[0].url).toBe('/api');
-            expect(logger.debug).toHaveBeenCalledWith('Adding destination "api" proxying to ^/api/(.*)$');
+            expect(mockLogger.debug).toHaveBeenCalledWith('Adding destination "api" proxying to ^/api/(.*)$');
         });
 
         test('returns empty array when xsappConfig has no routes', () => {
             const result = buildRouteEntries({
                 xsappConfig: { routes: [] },
                 effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }),
-                logger
+                logger: mockLogger
             });
 
             expect(result).toEqual([]);
-            expect(logger.debug).not.toHaveBeenCalled();
+            expect(mockLogger.debug).not.toHaveBeenCalled();
         });
     });
 });

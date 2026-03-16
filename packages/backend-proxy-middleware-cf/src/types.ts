@@ -119,6 +119,7 @@ export interface PrepareXsappConfigOptions {
     xsappJsonPath: string;
     effectiveOptions: EffectiveOptions;
     sourcePath: string;
+    logger: ToolsLogger;
 }
 
 /** Options for creating the proxy middleware. */

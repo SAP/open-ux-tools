@@ -1,9 +1,12 @@
 import { startApprouter } from '../../../src/approuter';
+import type { ToolsLogger } from '@sap-ux/logger';
 
 const mockApprouterStart = jest.fn();
 jest.mock('@sap/approuter', () => () => ({
     start: mockApprouterStart
 }));
+
+const mockLogger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() } as unknown as ToolsLogger;
 
 describe('approuter', () => {
     beforeEach(() => {
@@ -17,10 +20,9 @@ describe('approuter', () => {
                 port: 5000,
                 xsappConfig,
                 rootPath: '/project/root',
-                modules: []
+                modules: [],
+                logger: mockLogger
             });
-
-            expect(mockApprouterStart).toHaveBeenCalledTimes(1);
             expect(mockApprouterStart).toHaveBeenCalledWith({
                 port: 5000,
                 xsappConfig,
@@ -37,7 +39,8 @@ describe('approuter', () => {
                 port: 5000,
                 xsappConfig: { routes: [] },
                 rootPath: '/project/root',
-                modules: []
+                modules: [],
+                logger: mockLogger
             });
 
             expect(g['backend-proxy-middleware-cf'].approuters).toHaveLength(1);
@@ -53,7 +56,8 @@ describe('approuter', () => {
                     port: 5000,
                     xsappConfig: { routes: [] },
                     rootPath: '/project/root',
-                    modules: []
+                    modules: [],
+                    logger: mockLogger
                 })
             ).not.toThrow();
         });

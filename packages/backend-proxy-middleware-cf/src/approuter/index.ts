@@ -1,5 +1,7 @@
 import createApprouter from '@sap/approuter';
 
+import type { ToolsLogger } from '@sap-ux/logger';
+
 import type { XsappConfig } from '../types';
 
 /**
@@ -14,6 +16,8 @@ interface StartApprouterOptions {
     rootPath: string;
     /** Approuter extension modules. */
     modules: unknown[];
+    /** Logger instance. */
+    logger: ToolsLogger;
 }
 
 /**
@@ -23,15 +27,22 @@ interface StartApprouterOptions {
  * @returns The started approuter instance.
  */
 export function startApprouter(options: StartApprouterOptions): ReturnType<typeof createApprouter> {
-    const { port, xsappConfig, rootPath, modules } = options;
+    const { port, xsappConfig, rootPath, modules, logger } = options;
 
     const approuter = createApprouter();
-    approuter.start({
-        port,
-        xsappConfig,
-        workingDir: rootPath,
-        extensions: modules
-    });
+    try {
+        approuter.start({
+            port,
+            xsappConfig,
+            workingDir: rootPath,
+            extensions: modules
+        });
+    } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        throw new Error(`Failed to start approuter on port ${port}: ${message}`);
+    }
+
+    logger.debug(`Approuter started on port ${port}`);
 
     // Register approuter globally for cleanup
     const globalKey = 'backend-proxy-middleware-cf' as const;

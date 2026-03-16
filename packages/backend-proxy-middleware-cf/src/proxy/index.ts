@@ -122,7 +122,15 @@ export function createProxy(options: CreateProxyOptions, logger: ToolsLogger): R
                     return intercept(proxyRes, req, res);
                 }
                 return undefined;
-            }
+            },
+            error: (err, _req, res) => {
+                logger.error(`Approuter proxy error: ${err.message}`);
+                const response = res as ServerResponse;
+                if (!response.headersSent) {
+                    response.writeHead(502, { 'Content-Type': 'text/plain' });
+                    response.end(`Approuter is not reachable: ${err.message}`);
+                }
+            },
         }
     });
 

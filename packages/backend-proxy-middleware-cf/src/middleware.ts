@@ -64,7 +64,8 @@ async function backendProxyMiddlewareCf({
         rootPath,
         xsappJsonPath,
         effectiveOptions,
-        sourcePath
+        sourcePath,
+        logger
     });
 
     const { modules, routes: extensionsRoutes } = loadExtensions(rootPath, effectiveOptions.extensions, logger);
@@ -105,7 +106,7 @@ async function backendProxyMiddlewareCf({
             }
 
             const routes = buildRouteEntries({ xsappConfig, effectiveOptions, logger });
-            startApprouter({ port, xsappConfig, rootPath, modules });
+            startApprouter({ port, xsappConfig, rootPath, modules, logger });
 
             proxyMiddleware = createProxy({ customRoutes, routes, baseUri, effectiveOptions, basExternalUrl }, logger);
             initialized = true;
