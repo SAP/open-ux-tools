@@ -133,7 +133,7 @@ export function getSystemServiceQuestion(
                         );
                     }
                 } else {
-                    LoggerHelper.logger.error(t('error.noCatalogOrServiceAvailable'));
+                    LoggerHelper.logger.error(t('errors.noCatalogOrServiceAvailable'));
                 }
             }
             return serviceChoices;
@@ -233,7 +233,7 @@ export function getSystemServiceQuestion(
          */
         questions.push(
             ...withCondition(
-                [getValueHelpDownloadPrompt(connectValidator, promptNamespace, convertedMetadataRef)],
+                getValueHelpDownloadPrompt(connectValidator, promptNamespace, convertedMetadataRef),
                 (answers: { [serviceSelectionPromptName]?: ServiceAnswer }) =>
                     !!(connectValidator.serviceProvider instanceof AbapServiceProvider) &&
                     !!convertedMetadataRef.convertedMetadata &&

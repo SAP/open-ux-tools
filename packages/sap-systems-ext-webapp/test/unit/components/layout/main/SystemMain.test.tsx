@@ -56,7 +56,7 @@ describe('<SystemMain />', () => {
         addNewSapSystem: false,
         // Mock functions
         setName: jest.fn(),
-        setType: jest.fn(),
+        setSystemType: jest.fn(),
         setUrl: jest.fn(),
         setClient: jest.fn(),
         setUsername: jest.fn(),

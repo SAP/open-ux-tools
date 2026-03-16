@@ -1,5 +1,65 @@
 # @sap-ux/control-property-editor
 
+## 0.7.21
+
+### Patch Changes
+
+- 1d8ab37: fix(deps): update dependency body-parser to v2
+
+## 0.7.20
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
+## 0.7.19
+
+### Patch Changes
+
+- 0cf8a97: fix(deps): update dependency @ui5/fs to v4
+
+## 0.7.18
+
+### Patch Changes
+
+- 4f7b796: fix(deps): update dependency ts-jest to v29.4.6
+
+## 0.7.17
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
+## 0.7.16
+
+### Patch Changes
+
+- e19516b: fix(deps): update dependency ts-import-plugin to v3
+
+## 0.7.15
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+
+## 0.7.14
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
+## 0.7.13
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+
+## 0.7.12
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
 ## 0.7.11
 
 ### Patch Changes

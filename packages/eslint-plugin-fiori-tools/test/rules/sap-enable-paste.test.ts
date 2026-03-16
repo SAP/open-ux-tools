@@ -37,7 +37,7 @@ ruleTester.run(TEST_NAME, enablePasteRule, {
         ),
         createValidTest(
             {
-                name: 'V4 - object page table - enablePaste is true',
+                name: 'V4 - object page table - enablePaste is true on an Object Page',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
@@ -45,11 +45,11 @@ ruleTester.run(TEST_NAME, enablePasteRule, {
                             'sap.ui5',
                             'routing',
                             'targets',
-                            'IncidentsList',
+                            'IncidentsObjectPage',
                             'options',
                             'settings',
                             'controlConfiguration',
-                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'enablePaste'
                         ],
@@ -58,13 +58,11 @@ ruleTester.run(TEST_NAME, enablePasteRule, {
                 ])
             },
             [FACETSV4]
-        )
-    ],
+        ),
 
-    invalid: [
-        createInvalidTest(
+        createValidTest(
             {
-                name: 'V4 - enablePaste is false',
+                name: 'V4 - object page table - enablePaste is false on a List Report Page',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
@@ -82,11 +80,38 @@ ruleTester.run(TEST_NAME, enablePasteRule, {
                         ],
                         value: false
                     }
+                ])
+            },
+            [FACETSV4]
+        )
+    ],
+
+    invalid: [
+        createInvalidTest(
+            {
+                name: 'V4 - enablePaste is false on an Object Page',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'enablePaste'
+                        ],
+                        value: false
+                    }
                 ]),
                 errors: [
                     {
                         messageId: 'sap-enable-paste',
-                        line: 127,
+                        line: 145,
                         column: 21
                     }
                 ],
@@ -96,18 +121,14 @@ ruleTester.run(TEST_NAME, enablePasteRule, {
                             'sap.ui5',
                             'routing',
                             'targets',
-                            'IncidentsList',
+                            'IncidentsObjectPage',
                             'options',
                             'settings',
                             'controlConfiguration',
-                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings'
                         ],
-                        value: {
-                            type: 'ResponsiveTable',
-                            selectionMode: 'Auto'
-                            // enablePaste property removed
-                        }
+                        value: {}
                     }
                 ])
             },

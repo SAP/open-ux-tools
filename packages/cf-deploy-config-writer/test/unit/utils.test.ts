@@ -33,19 +33,19 @@ describe('CF utils', () => {
 
             // Test successful command execution
             mockRun.mockResolvedValueOnce('success');
-            await expect(runCommand('/test/path', 'npm', ['install'], 'Install failed:')).resolves.not.toThrow();
+            await expect(runCommand('/test/path', 'npm', ['install'], 'Install failed')).resolves.not.toThrow();
             expect(mockRun).toHaveBeenCalledWith('npm', ['install'], { cwd: '/test/path' });
 
             // Test failed command execution with error message
             const errorMessage = 'Command execution failed';
             mockRun.mockRejectedValueOnce(new Error(errorMessage));
-            await expect(runCommand('/test/path', 'npm', ['build'], 'Build failed:')).rejects.toThrow(
+            await expect(runCommand('/test/path', 'npm', ['build'], 'Build failed')).rejects.toThrow(
                 `Build failed: ${errorMessage}`
             );
 
             // Test failed command execution with non-Error object
             mockRun.mockRejectedValueOnce('Unknown error');
-            await expect(runCommand('/test/path', 'npm', ['test'], 'Test failed:')).rejects.toThrow(
+            await expect(runCommand('/test/path', 'npm', ['test'], 'Test failed')).rejects.toThrow(
                 'Test failed: Unknown error'
             );
 
