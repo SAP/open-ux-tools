@@ -97,7 +97,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
 
         if (this.isCFProject) {
             this.system = '';
-            this.logger.log('CF project detected, will use HTML5 repository for manifest');
+            this.logger.log('CF project detected, will use build output for manifest');
             this._registerPrompts(new Prompts(getSubGenAuthPages(this.generatorType, this.system)));
             this.prompts.splice(0, 1, []);
             return;
@@ -128,7 +128,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
 
     /**
      * Retrieves and parses the manifest (app descriptor) of the current project.
-     * For CF projects, downloads the manifest from the HTML5 Repository.
+     * For CF projects, builds the project and reads the manifest from the dist folder.
      * For ABAP projects, fetches the merged manifest via the ABAP service provider.
      *
      * @returns {Promise<Manifest>} The manifest.

@@ -1,15 +1,23 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import type { IManifestService, DataSources } from '../../types';
-import { getAppParamsFromUI5Yaml } from '../project/yaml';
-import { downloadAppContent } from '../app/html5-repo';
+import { runBuild } from '../../base/project-builder';
 import { t } from '../../i18n';
+
+/** Default build output folder used by CF ADP projects. */
+const CF_BUILD_PATH = 'dist';
 
 /**
  * Service class for handling operations related to the manifest of a CF-deployed UI5 application.
- * Mirrors the ABAP {@link ManifestService} API, but retrieves the manifest from the HTML5 Repository
- * instead of using an ABAP service provider.
+ * Extends the ABAP {@link ManifestService} API, but retrieves the manifest from the local
+ * build output (`dist/`)
+ *
+ * The build is triggered automatically during initialization so that the `dist/` folder
+ * contains the latest merged manifest before it is read.
  */
 export class ManifestServiceCF implements IManifestService {
     private manifest: Manifest;
@@ -22,8 +30,8 @@ export class ManifestServiceCF implements IManifestService {
     private constructor(private readonly logger: ToolsLogger) {}
 
     /**
-     * Creates an instance of the ManifestServiceCF by downloading the manifest
-     * from the CF HTML5 Repository.
+     * Creates an instance of the ManifestServiceCF by building the project and
+     * reading the manifest from the `dist/` folder.
      *
      * @param projectPath - The path to the adaptation project.
      * @param logger - The logger instance.
@@ -31,17 +39,21 @@ export class ManifestServiceCF implements IManifestService {
      */
     public static async init(projectPath: string, logger: ToolsLogger): Promise<ManifestServiceCF> {
         const service = new ManifestServiceCF(logger);
-        const appParams = getAppParamsFromUI5Yaml(projectPath);
-        logger.debug(`Downloading manifest from HTML5 Repository for app '${appParams.appName}'`);
-        const appContent = await downloadAppContent(appParams.spaceGuid, appParams, logger);
-        service.manifest = appContent.manifest;
-        logger.debug('Manifest successfully downloaded from HTML5 Repository');
+
+        logger.debug('Triggering project build to generate dist folder');
+        await runBuild(projectPath, { ADP_BUILDER_MODE: 'preview' });
+
+        const manifestPath = join(projectPath, CF_BUILD_PATH, 'manifest.json');
+        logger.debug(`Reading manifest from '${manifestPath}'`);
+        const manifestContent = readFileSync(manifestPath, 'utf-8');
+        service.manifest = JSON.parse(manifestContent) as Manifest;
+        logger.debug('Manifest successfully read from dist folder');
 
         return service;
     }
 
     /**
-     * Returns the manifest fetched from the HTML5 Repository during initialization.
+     * Returns the manifest read from the build output during initialization.
      *
      * @returns The current manifest.
      */
