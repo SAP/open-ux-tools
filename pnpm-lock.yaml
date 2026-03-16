@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@sap-ux/vocabularies-types': 0.15.0
   '@storybook/manager-api>store2': 2.14.4
   '@sap-ux/ui5-config>axios': ^1.13.5
   '@sap/service-provider-apis>axios': ^1.13.5
@@ -8435,14 +8436,6 @@ packages:
   '@sap-ux/ui5-middleware-fe-mockserver@2.3.38':
     resolution: {integrity: sha512-7HBYgqIfdlPA537JhbDtGyzDSUWB6FSeS4favvWlv64tfJeUTKXLfOOCAQo74jY5R58IvY+3pPWVSksxQINACQ==}
 
-  '@sap-ux/vocabularies-types@0.13.2':
-    resolution: {integrity: sha512-lPFiWVXyA4yUBeQBJePxnqXZ/bMKk6vR3GoLtW/5ayBcQAJxWTpeyK8QX91sR+AajDmzkCF/8ND2ewi8SewySg==}
-    engines: {node: '>=18.x'}
-
-  '@sap-ux/vocabularies-types@0.14.5':
-    resolution: {integrity: sha512-66Q7Q4zVVSirPopU7oRw0ZDtUiOhAF2DuKy70uJl2wRfQ2WXLbrezEkHRxVdiVpQYm5n5qTkr6sX/I+/WXQjXQ==}
-    engines: {node: '>=18.x'}
-
   '@sap-ux/vocabularies-types@0.15.0':
     resolution: {integrity: sha512-H/xKp65xSUMSOulqd+vNzxIOLwupnVDwHTJaQL9xf+/AVPY0bJzUgFy+OOUU7gtqm8NFPgv+06Hz6DyyMRCflA==}
     engines: {node: '>=18.x'}
@@ -8452,6 +8445,7 @@ packages:
 
   '@sap-ux/xml-odata-annotation-converter@0.4.6':
     resolution: {integrity: sha512-GD/BcylI6z2htLwil3gDP88j4gCClAMlfrhzJFSWXqrK0YdutHfE3NLUm1Cj232+2YDi6j5U7ZTa8MO1bzC2iQ==}
+    hasBin: true
 
   '@sap-ux/yaml@0.17.3':
     resolution: {integrity: sha512-TG/hUwNtipnXtffCvGKq8cG4WVkSSWxgloz/6fMbGupL67BnAD2SmAZWkfVtMVjrK13MOsqCC9S98fm8sHt24g==}
@@ -22840,7 +22834,7 @@ snapshots:
 
   '@sap-ux/annotation-converter@0.10.19':
     dependencies:
-      '@sap-ux/vocabularies-types': 0.14.5
+      '@sap-ux/vocabularies-types': 0.15.0
 
   '@sap-ux/annotation-converter@0.10.21':
     dependencies:
@@ -22848,7 +22842,7 @@ snapshots:
 
   '@sap-ux/annotation-converter@0.10.9':
     dependencies:
-      '@sap-ux/vocabularies-types': 0.13.2
+      '@sap-ux/vocabularies-types': 0.15.0
 
   '@sap-ux/cds-annotation-parser@0.2.24':
     dependencies:
@@ -22906,7 +22900,7 @@ snapshots:
       '@sap-ux/fiori-annotation-api': 0.9.3(typescript@5.9.3)
       '@sap-ux/logger': 0.8.0
       '@sap-ux/project-access': 1.34.2
-      '@sap-ux/vocabularies-types': 0.14.5
+      '@sap-ux/vocabularies-types': 0.15.0
       '@xmldom/xmldom': 0.8.10
       ejs: 3.1.10
       i18next: 25.3.0(typescript@5.9.3)
@@ -22925,7 +22919,7 @@ snapshots:
       '@sap-ux/fiori-annotation-api': 0.8.2(typescript@5.9.3)
       '@sap-ux/logger': 0.8.0
       '@sap-ux/project-access': 1.33.0
-      '@sap-ux/vocabularies-types': 0.13.2
+      '@sap-ux/vocabularies-types': 0.15.0
       '@xmldom/xmldom': 0.8.10
       ejs: 3.1.10
       i18next: 25.3.0(typescript@5.9.3)
@@ -22971,7 +22965,7 @@ snapshots:
       '@sap-ux/odata-entity-model': 0.3.3
       '@sap-ux/odata-vocabularies': 0.4.21
       '@sap-ux/project-access': 1.33.0
-      '@sap-ux/vocabularies-types': 0.13.2
+      '@sap-ux/vocabularies-types': 0.15.0
       '@sap-ux/xml-odata-annotation-converter': 0.4.4
       '@sap/ux-cds-compiler-facade': 1.19.0(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/odata-annotation-core@0.2.11)(@sap-ux/project-access@1.33.0)
       '@xml-tools/ast': 5.0.5
@@ -22994,7 +22988,7 @@ snapshots:
       '@sap-ux/odata-entity-model': 0.3.4
       '@sap-ux/odata-vocabularies': 0.4.21
       '@sap-ux/project-access': 1.34.2
-      '@sap-ux/vocabularies-types': 0.14.5
+      '@sap-ux/vocabularies-types': 0.15.0
       '@sap-ux/xml-odata-annotation-converter': 0.4.6
       '@sap/ux-cds-compiler-facade': 1.19.0(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/odata-annotation-core@0.2.12)(@sap-ux/project-access@1.34.2)
       '@xml-tools/ast': 5.0.5
@@ -23124,10 +23118,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sap-ux/vocabularies-types@0.13.2': {}
-
-  '@sap-ux/vocabularies-types@0.14.5': {}
-
   '@sap-ux/vocabularies-types@0.15.0': {}
 
   '@sap-ux/xml-odata-annotation-converter@0.4.4':
@@ -23229,7 +23219,7 @@ snapshots:
   '@sap/ux-specification@1.142.0(typescript@5.9.3)':
     dependencies:
       '@sap-ux/fe-fpm-writer': 0.40.2(typescript@5.9.3)
-      '@sap-ux/vocabularies-types': 0.13.2
+      '@sap-ux/vocabularies-types': 0.15.0
     transitivePeerDependencies:
       - debug
       - typescript
@@ -23237,7 +23227,7 @@ snapshots:
   '@sap/ux-specification@1.142.1(typescript@5.9.3)':
     dependencies:
       '@sap-ux/fe-fpm-writer': 0.40.11(typescript@5.9.3)
-      '@sap-ux/vocabularies-types': 0.14.5
+      '@sap-ux/vocabularies-types': 0.15.0
     transitivePeerDependencies:
       - debug
       - typescript
