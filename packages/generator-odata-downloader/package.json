@@ -54,7 +54,7 @@
         "@sap-ux/store": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@sap/ux-specification": "1.142.1",
+        "@sap/ux-specification": "1.144.0",
         "@vscode-logging/logger": "2.0.8",
         "deepmerge": "4.3.1",
         "i18next": "25.8.12",
