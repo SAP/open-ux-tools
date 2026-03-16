@@ -1,5 +1,12 @@
 # @sap-ux/generator-odata-download
 
+## 0.0.4
+
+### Patch Changes
+
+- 1b7094e: fix(deps): update dependency @sap/ux-specification to v1.144.0
+    - @sap-ux/odata-service-inquirer@2.19.11
+
 ## 0.0.3
 
 ### Patch Changes

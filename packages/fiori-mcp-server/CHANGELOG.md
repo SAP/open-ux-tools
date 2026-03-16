@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.43
+
+### Patch Changes
+
+- 1b7094e: fix(deps): update dependency @sap/ux-specification to v1.144.0
+
 ## 0.6.42
 
 ### Patch Changes

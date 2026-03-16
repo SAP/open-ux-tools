@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.87
+
+### Patch Changes
+
+- 1b7094e: fix(deps): update dependency @sap/ux-specification to v1.144.0
+
 ## 0.7.86
 
 ### Patch Changes
