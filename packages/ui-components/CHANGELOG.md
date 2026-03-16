@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.1
+
+### Patch Changes
+
+- 59c6ac3: `UITranslationInput` — new property `invertedCalloutTheme` to toggle between normal and inverted callout styles. Default is `false`. Previously `invertedCalloutTheme` was applied by default.
+
 ## 2.1.0
 
 ### Minor Changes
