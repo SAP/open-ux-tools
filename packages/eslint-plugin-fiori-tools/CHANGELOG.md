@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.9.0
+
+### Minor Changes
+
+- 5055dde: Feat: add sap-strict-uom-filtering eslint rule
+
 ## 9.8.0
 
 ### Minor Changes
