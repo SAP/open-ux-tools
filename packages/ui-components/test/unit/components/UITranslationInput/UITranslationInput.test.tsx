@@ -459,18 +459,19 @@ describe('<UITranslationInput />', () => {
     test.each(invertedCalloutThemeTestCases)(
         'Test "invertedCalloutTheme" property - value "$invertedCalloutTheme"',
         ({ invertedCalloutTheme, expectedInverted }) => {
-            const { container } = render(
+            render(
                 <UITranslationInput
                     id={id}
                     entries={entries}
+                    value="Test"
                     allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
                     defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                    namingConvention={TranslationKeyGenerator.PascalCase}
                     i18nPrefix={'i18n'}
-                    value={'test'}
-                    disabled={true}
                     invertedCalloutTheme={invertedCalloutTheme}
                 />
             );
+
             clickI18nButton();
             expect(document.querySelectorAll(selectors.invertedCalloutThemeInput).length).toEqual(
                 expectedInverted ? 1 : 0
