@@ -38,15 +38,13 @@ const getStringText = (property: keyof TranslationInputStrings, strings?: Transl
 };
 
 /**
- * Method returns class names string for callout component depending on props and component state.
+ * Returns the CSS class names for the translation callout component.
+ * Adds the base callout class and optionally an inverted theme modifier.
  *
- * @param props Component properties.
- * @returns Class names of translation input callout component.
+ * @param invertedCalloutTheme - If true, applies the inverted callout theme modifier.
+ * @returns A string containing the computed class names.
  */
-const getCalloutClassNames = <T extends TranslationEntry = TranslationEntry>(
-    props: UITranslationButtonProps<T>
-): string => {
-    const { invertedCalloutTheme } = props;
+const getCalloutClassNames = (invertedCalloutTheme?: boolean): string => {
     let classNames = ' ui-translatable__callout';
     if (invertedCalloutTheme) {
         classNames += ` ui-translatable__callout--inverted`;
@@ -61,7 +59,17 @@ const getCalloutClassNames = <T extends TranslationEntry = TranslationEntry>(
  * @returns Component to render translation button with callout.
  */
 export const UITranslationButton = <T extends TranslationEntry>(props: UITranslationButtonProps<T>): ReactElement => {
-    const { id, strings, value, onCreateNewEntry, onUpdateValue, onShowExistingEntry, busy, suggestion } = props;
+    const {
+        id,
+        strings,
+        value,
+        onCreateNewEntry,
+        onUpdateValue,
+        onShowExistingEntry,
+        busy,
+        suggestion,
+        invertedCalloutTheme
+    } = props;
     const [calloutVisible, setCalloutVisible] = useState(false);
     // Callbacks
     const onToggleCallout = useCallback((): void => {
@@ -110,7 +118,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                     beakWidth={8}
                     isBeakVisible={false}
                     setInitialFocus={true}
-                    className={getCalloutClassNames(props)}
+                    className={getCalloutClassNames(invertedCalloutTheme)}
                     onDismiss={() => onToggleCallout()}
                     contentPadding={UICalloutContentPadding.Standard}>
                     <div className="ui-translatable__message">

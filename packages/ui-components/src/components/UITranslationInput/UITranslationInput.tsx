@@ -139,10 +139,10 @@ const getTranslationSuggestion = <T extends TranslationEntry>(
 };
 
 /**
- * Method returns class names string depending on props and component state.
+ * Generates the CSS class names for the translation input component.
  *
- * @param props Component properties.
- * @returns Class names of root translation input element.
+ * @param props - Component props containing styling options.
+ * @returns A string containing the computed class names.
  */
 const getClassNames = <T extends TranslationEntry = TranslationEntry>(props: UITranslationInputProps<T>): string => {
     const { className, invertedCalloutTheme } = props;
