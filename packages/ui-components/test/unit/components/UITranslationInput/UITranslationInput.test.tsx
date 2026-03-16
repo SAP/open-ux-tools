@@ -19,7 +19,9 @@ describe('<UITranslationInput />', () => {
         button: '.ms-Button',
         callout: '.ms-Callout',
         loader: '.ms-Spinner',
-        inputField: '.ui-translatable__field'
+        inputField: '.ui-translatable__field',
+        invertedCalloutThemeInput: '.ui-translatable--inverted',
+        invertedCalloutThemeCallout: '.ui-translatable__callout--inverted'
     };
 
     const getButtonIdSelector = (id: string, goToCode = false): string => {
@@ -438,4 +440,44 @@ describe('<UITranslationInput />', () => {
             externalTitle
         );
     });
+
+    const invertedCalloutThemeTestCases = [
+        {
+            invertedCalloutTheme: undefined,
+            expectedInverted: false
+        },
+        {
+            invertedCalloutTheme: true,
+            expectedInverted: true
+        },
+        {
+            invertedCalloutTheme: false,
+            expectedInverted: false
+        }
+    ];
+
+    test.each(invertedCalloutThemeTestCases)(
+        'Test "invertedCalloutTheme" property - value "$invertedCalloutTheme"',
+        ({ invertedCalloutTheme, expectedInverted }) => {
+            const { container } = render(
+                <UITranslationInput
+                    id={id}
+                    entries={entries}
+                    allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
+                    defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                    i18nPrefix={'i18n'}
+                    value={'test'}
+                    disabled={true}
+                    invertedCalloutTheme={invertedCalloutTheme}
+                />
+            );
+            clickI18nButton();
+            expect(document.querySelectorAll(selectors.invertedCalloutThemeInput).length).toEqual(
+                expectedInverted ? 1 : 0
+            );
+            expect(document.querySelectorAll(selectors.invertedCalloutThemeCallout).length).toEqual(
+                expectedInverted ? 1 : 0
+            );
+        }
+    );
 });
