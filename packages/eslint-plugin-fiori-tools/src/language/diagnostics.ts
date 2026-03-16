@@ -12,6 +12,7 @@ export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 export const TABLE_PERSONALIZATION = 'sap-table-personalization';
 export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignment';
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
+export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -116,6 +117,10 @@ export interface CondensedTableLayout {
     pageName: string;
     manifest: ManifestPropertyDiagnosticData;
 }
+export interface StrictUomFiltering {
+    type: typeof STRICT_UOM_FILTERING;
+    manifest: ManifestPropertyDiagnosticData;
+}
 
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
@@ -127,5 +132,6 @@ export type Diagnostic =
     | EnablePaste
     | StatePreservationMode
     | CondensedTableLayout
+    | StrictUomFiltering
     | TablePersonalization
     | TableColumnVerticalAlignment;

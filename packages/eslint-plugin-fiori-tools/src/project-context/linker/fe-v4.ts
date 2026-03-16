@@ -7,6 +7,7 @@ import { collectTables, collectSections } from './annotations';
 
 export interface ApplicationSetting {
     createMode: string;
+    disableStrictUomFiltering: boolean;
 }
 
 export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSetting> {
@@ -67,6 +68,9 @@ interface ManifestApplicationSettings {
         table?: {
             defaultCreationMode?: string;
         };
+    };
+    app?: {
+        disableStrictUomFiltering?: boolean;
     };
 }
 
@@ -631,6 +635,7 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
 function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
     const config: ManifestApplicationSettings = context.app.manifestObject['sap.fe'] ?? {};
     const createMode = config.macros?.table?.defaultCreationMode;
+    const disableStrictUomFiltering = config.app?.disableStrictUomFiltering;
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',
         pages: [],
@@ -639,6 +644,11 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
                 values: ['InlineCreationRows', 'NewPage'],
                 configurationPath: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
                 valueInFile: createMode
+            },
+            disableStrictUomFiltering: {
+                values: [true, false],
+                configurationPath: ['sap.fe', 'app', 'disableStrictUomFiltering'],
+                valueInFile: disableStrictUomFiltering
             }
         }
     };
