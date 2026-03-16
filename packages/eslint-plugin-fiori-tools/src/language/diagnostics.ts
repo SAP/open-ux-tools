@@ -126,7 +126,6 @@ export type Diagnostic =
     | EnableExport
     | EnablePaste
     | StatePreservationMode
-    | TableColumnVerticalAlignment
     | CondensedTableLayout
     | TablePersonalization
     | TableColumnVerticalAlignment;
