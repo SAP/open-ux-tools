@@ -17,6 +17,12 @@ import './UITranslationInput.scss';
 export interface UITranslationButtonProps<T extends TranslationEntry> extends UITranslationProps<T> {
     onUpdateValue?: (value: string) => void;
     suggestion: TranslationSuggest<T>;
+    /**
+     * Inverted style theme
+     *
+     * @default false
+     */
+    invertedCalloutTheme?: boolean;
 }
 
 /**
@@ -29,6 +35,23 @@ export interface UITranslationButtonProps<T extends TranslationEntry> extends UI
  */
 const getStringText = (property: keyof TranslationInputStrings, strings?: TranslationInputStrings): string => {
     return strings?.[property] ?? '';
+};
+
+/**
+ * Method returns class names string for callout component depending on props and component state.
+ *
+ * @param props Component properties.
+ * @returns Class names of translation input callout component.
+ */
+const getCalloutClassNames = <T extends TranslationEntry = TranslationEntry>(
+    props: UITranslationButtonProps<T>
+): string => {
+    const { invertedCalloutTheme } = props;
+    let classNames = ' ui-translatable__callout';
+    if (invertedCalloutTheme) {
+        classNames += ` ui-translatable__callout--inverted`;
+    }
+    return classNames;
 };
 
 /**
@@ -87,7 +110,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                     beakWidth={8}
                     isBeakVisible={false}
                     setInitialFocus={true}
-                    className="ui-translatable__callout"
+                    className={getCalloutClassNames(props)}
                     onDismiss={() => onToggleCallout()}
                     contentPadding={UICalloutContentPadding.Standard}>
                     <div className="ui-translatable__message">
