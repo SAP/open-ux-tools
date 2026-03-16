@@ -1,5 +1,18 @@
 # @sap-ux/fe-fpm-cli
 
+## 0.1.122
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.43.8
+
+## 0.1.121
+
+### Patch Changes
+
+- Updated dependencies [d45d105]
+    - @sap-ux/fe-fpm-writer@0.43.7
+
 ## 0.1.120
 
 ### Patch Changes
