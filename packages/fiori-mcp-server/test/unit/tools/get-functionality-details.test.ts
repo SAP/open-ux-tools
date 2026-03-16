@@ -225,8 +225,7 @@ describe('getFunctionalityDetails', () => {
                             limitFCLToTwoColumns: {
                                 description:
                                     'Determines whether the Flexible Column Layout is limited to two columns. If set to true, the third level will be displayed in full screen mode rather than a third column.',
-                                'manifestPath':
-                                    '$["sap.ui5"].routing.config.flexibleColumnLayout.limitFCLToTwoColumns',
+                                'manifestPath': '$["sap.ui5"].routing.config.flexibleColumnLayout.limitFCLToTwoColumns',
                                 type: 'boolean'
                             }
                         },
