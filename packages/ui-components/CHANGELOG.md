@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.0
+
+### Minor Changes
+
+- 24bd091: feat(ui-component): add form, form field and mighty pen icons
+
 ## 2.0.3
 
 ### Patch Changes
