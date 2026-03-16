@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.2
+
+### Patch Changes
+
+- addfdee: Add `GoToData` icon to `UiIcons` enum and `initIcons()` function
+
 ## 2.1.1
 
 ### Patch Changes
