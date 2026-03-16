@@ -41,11 +41,11 @@ interface OvpMetaModelResult {
 
 declare global {
     interface Window {
-        writeToI18n: (sPath: string, aProperties: I18nProperty[]) => void;
-        getNewDataSources: (sPath: string) => Promise<DataSourcesResponse>;
+        writeToI18n: (path: string, properties: I18nProperty[]) => void;
+        getNewDataSources: (path: string) => Promise<DataSourcesResponse>;
         getMetaModelForNewDataSource: (
-            oDataSourceSelected: DataSourceInfo[],
-            sPath: string
+            selectedDataSources: DataSourceInfo[],
+            path: string
         ) => Promise<OvpMetaModelResult | undefined>;
     }
 }
@@ -69,19 +69,19 @@ function getBaseUrl(): string {
 async function buildMetaModel(serviceInfo: ServiceInfoResponse): Promise<OvpMetaModelResult> {
     const annotationUris = serviceInfo.annotations.map((a) => a.Uri);
 
-    const oModel = new ODataModel(serviceInfo.serviceUrl, {
+    const model = new ODataModel(serviceInfo.serviceUrl, {
         annotationURI: annotationUris,
         loadAnnotationsJoined: true,
         skipMetadataAnnotationParsing: false,
         json: true
     });
 
-    const oMetaModel = oModel.getMetaModel();
-    await oMetaModel.loaded();
+    const metaModel = model.getMetaModel();
+    await metaModel.loaded();
 
     return {
-        oEntityContainers: oMetaModel.getODataEntityContainer() as Record<string, unknown>,
-        oSchema: oMetaModel.getObject('/dataServices/schema') as Record<string, unknown>[],
+        oEntityContainers: metaModel.getODataEntityContainer() as Record<string, unknown>,
+        oSchema: metaModel.getObject('/dataServices/schema') as Record<string, unknown>[],
         modelInformation: serviceInfo.modelInformation
     };
 }
@@ -90,11 +90,11 @@ async function buildMetaModel(serviceInfo: ServiceInfoResponse): Promise<OvpMeta
  * Writes i18n entries to the adaptation project's i18n properties file.
  * Fire-and-forget: the OVP runtime does not await the result.
  *
- * @param _sPath - i18n path (ignored; server resolves from project context)
- * @param aProperties - Array of i18n key-value entries to write
+ * @param _path - i18n path (ignored; server resolves from project context)
+ * @param properties - Array of i18n key-value entries to write
  */
-function writeToI18n(_sPath: string, aProperties: I18nProperty[]): void {
-    const entries = aProperties.map((p) => ({
+function writeToI18n(_path: string, properties: I18nProperty[]): void {
+    const entries = properties.map((p) => ({
         key: p.key,
         value: p.value,
         annotation: p.textType
@@ -111,10 +111,10 @@ function writeToI18n(_sPath: string, aProperties: I18nProperty[]): void {
 /**
  * Fetches available OData V2 services from the ABAP system catalog.
  *
- * @param _sPath - Application path (ignored; server uses its own provider)
+ * @param _path - Application path (ignored; server uses its own provider)
  * @returns Promise resolving to an object with a results array of service metadata
  */
-async function getNewDataSources(_sPath: string): Promise<DataSourcesResponse> {
+async function getNewDataSources(_path: string): Promise<DataSourcesResponse> {
     const response = await fetch(`${getBaseUrl()}/adp/api/ovp/datasources`);
     if (!response.ok) {
         throw new Error(`Failed to fetch data sources: ${response.status}`);
@@ -127,18 +127,18 @@ async function getNewDataSources(_sPath: string): Promise<DataSourcesResponse> {
  * Creates a real UI5 ODataModel with annotations to build a full metamodel
  * compatible with the OVP dialog.
  *
- * @param oDataSourceSelected - Array of selected data source objects
- * @param _sPath - Application path (ignored; server uses its own provider)
+ * @param selectedDataSources - Array of selected data source objects
+ * @param _path - Application path (ignored; server uses its own provider)
  * @returns Promise resolving to a metamodel object
  */
 async function getMetaModelForNewDataSource(
-    oDataSourceSelected: DataSourceInfo[],
-    _sPath: string
+    selectedDataSources: DataSourceInfo[],
+    _path: string
 ): Promise<OvpMetaModelResult | undefined> {
     const response = await fetch(`${getBaseUrl()}/adp/api/ovp/metamodel`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ dataSource: oDataSourceSelected[0] })
+        body: JSON.stringify({ dataSource: selectedDataSources[0] })
     });
     if (!response.ok) {
         throw new Error(`Failed to fetch metamodel: ${response.status}`);
