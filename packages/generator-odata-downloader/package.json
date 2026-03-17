@@ -66,7 +66,7 @@
     },
     "devDependencies": {
         "@sap-ux/vocabularies-types": "0.15.0",
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "9.0.9",
         "@types/yeoman-generator": "5.2.11",
         "rimraf": "6.1.3"
     },
