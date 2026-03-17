@@ -1,5 +1,12 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.20
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+    - @sap-ux/ui5-config@0.29.21
+
 ## 1.7.19
 
 ### Patch Changes

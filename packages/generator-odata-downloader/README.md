@@ -1,4 +1,4 @@
-# @sap-ux/generator-odata-download
+# @sap-ux/generator-odata-downloader
 
 Yeoman generator that downloads OData V4 entity data from a backend service for use with the mock data server. This enables developers to work with realistic data during local development without needing a live backend connection.
 
@@ -23,7 +23,7 @@ Yeoman generator that downloads OData V4 entity data from a backend service for 
 ### With Yeoman
 
 ```bash
-yo @sap-ux/generator-odata-download
+yo @sap-ux/generator-odata-downloader
 ```
 
 ## Prompts
