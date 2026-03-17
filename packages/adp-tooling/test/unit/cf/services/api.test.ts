@@ -20,7 +20,6 @@ import { isLoggedInCf } from '../../../../src/cf/core/auth';
 import { getProjectNameForXsSecurity } from '../../../../src/cf/project';
 import type { CfConfig, ServiceInfo, MtaYaml } from '../../../../src/types';
 import { getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
-import { mock } from 'node:test';
 
 jest.mock('fs', () => ({
     readFileSync: jest.fn()
