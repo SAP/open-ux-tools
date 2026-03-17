@@ -67,7 +67,7 @@
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4",
-        "@types/supertest": "2.0.12",
+        "@types/supertest": "7.2.0",
         "connect": "^3.7.0",
         "copyfiles": "2.4.1",
         "dotenv": "17.3.1",
