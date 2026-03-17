@@ -34,6 +34,10 @@ describe('AbapServiceProvider', () => {
         nock.enableNetConnect();
     });
 
+    afterEach(() => {
+        nock.cleanAll();
+    });
+
     const server = 'https://server.example';
     const config = {
         baseURL: server,
@@ -130,7 +134,7 @@ describe('AbapServiceProvider', () => {
                 .get(AdtServices.DISCOVERY)
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .get(AdtServices.ATO_SETTINGS)
-                .replyWithError('Something went wrong');
+                .reply(500, 'Internal Server Error');
             expect(await createForAbap(config).isAbapCloud()).toBe(false);
         });
     });
