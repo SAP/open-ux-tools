@@ -2,10 +2,8 @@ import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { LinkerContext, ConfigurationBase } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { ParsedService } from '../parser';
-
-import type { AnnotationNode, FieldGroupNode, TableNode, TableSectionNode } from './annotations';
-import { collectFieldGroups, collectSections, collectTables } from './annotations';
-import { linkListReportFieldGroup, linkObjectPageFieldGroups } from './utils';
+import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
+import { collectSections, collectTables } from './annotations';
 
 export interface FlexibleColumnLayoutSettings {
     defaultTwoColumnLayoutType: string;
@@ -25,7 +23,9 @@ export interface PageSetting {
 
 export type OrphanSection = ConfigurationBase<'orphan-section', TableSettings>;
 export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
-export type Section = TableSection | OrphanSection;
+export type HeaderSection = AnnotationBasedNode<HeaderSectionNode, {}, FieldGroup>;
+export type Section = TableSection | OrphanSection | HeaderSection;
+
 export interface TableSettings {
     createMode: string;
     tableType: string;
@@ -360,7 +360,6 @@ function linkListReportPage(
     }
 
     const table = collectTables('v2', entityType, mainService);
-    const fieldGroups = collectFieldGroups(entityType, mainService);
     const createMode = target.component?.settings?.createMode;
     const page: FeV2ListReport = {
         type: 'list-report-page',
@@ -375,7 +374,6 @@ function linkListReportPage(
     };
 
     linkListReportTable(page, [...path, name], table, target);
-    linkListReportFieldGroup(page, fieldGroups);
     linkedApp.pages.push(page);
 }
 
@@ -413,7 +411,6 @@ function linkObjectPagePage(
     }
 
     const sections = collectSections('v2', entityType, mainService);
-    const fieldGroups = collectFieldGroups(entityType, mainService);
     const createMode = target.component?.settings?.createMode;
     const page: FeV2ObjectPage = {
         type: 'object-page',
@@ -427,8 +424,22 @@ function linkObjectPagePage(
         lookup: {}
     };
 
-    linkObjectPageSections(page, [...path, name], entity, mainService, sections, target);
-    linkObjectPageFieldGroups(page, fieldGroups);
+    linkObjectPageSections(
+        page,
+        [...path, name],
+        entity,
+        mainService,
+        sections.filter((section) => section.type === 'table-section'),
+        target
+    );
+    linkObjectPageHeaderSections(
+        page,
+        [...path, name],
+        entity,
+        mainService,
+        sections.filter((section) => section.type === 'header-section'),
+        target
+    );
     linkedApp.pages.push(page);
 }
 
@@ -586,6 +597,65 @@ function linkObjectPageSections(
 
     for (const control of Object.values(controls)) {
         if (control.type === 'table-section') {
+            page.sections.push(control);
+        }
+        page.lookup[control.type] ??= [] as any;
+        (page.lookup[control.type] as any[]).push(control);
+    }
+}
+
+/**
+ * Links object page header sections with their field group annotations for Fiori Elements V2.
+ *
+ * @param page - The object page being linked
+ * @param pathToPage - Configuration path segments to the page
+ * @param entity - The metadata element representing the entity
+ * @param service - The parsed OData service
+ * @param sections - Array of header section nodes to link
+ * @param _configuration - Manifest page settings
+ */
+function linkObjectPageHeaderSections(
+    page: FeV2ObjectPage,
+    pathToPage: string[],
+    entity: MetadataElement,
+    service: ParsedService,
+    sections: HeaderSectionNode[],
+    _configuration: ManifestPageSettings
+): void {
+    const controls: Record<string, Section | Table | FieldGroup> = {};
+
+    for (const section of sections) {
+        if (section.type !== 'header-section') {
+            continue;
+        }
+
+        const fieldGroup = section.children[0];
+        if (fieldGroup.type !== 'field-group') {
+            continue;
+        }
+
+        const configurationKey = getConfigurationKey(fieldGroup.annotationPath);
+        const linkedSection: HeaderSection = {
+            type: section.type,
+            annotation: section,
+            configuration: {},
+            children: []
+        };
+        controls[`${section.type}|${configurationKey}`] = linkedSection;
+
+        const linkedfieldGroup = {
+            type: fieldGroup.type,
+            annotation: fieldGroup,
+            configuration: {},
+            children: []
+        };
+
+        linkedSection.children.push(linkedfieldGroup);
+        controls[`${linkedfieldGroup.type}|${configurationKey}`] = linkedfieldGroup;
+    }
+
+    for (const control of Object.values(controls)) {
+        if (control.type === 'header-section') {
             page.sections.push(control);
         }
         page.lookup[control.type] ??= [] as any;
