@@ -1,5 +1,11 @@
 # @sap-ux/project-input-validator
 
+## 0.6.68
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
 ## 0.6.67
 
 ### Patch Changes
