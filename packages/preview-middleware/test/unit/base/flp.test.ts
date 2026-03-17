@@ -1027,15 +1027,16 @@ describe('FlpSandbox', () => {
             createPropertiesI18nEntriesMock.mockClear();
             const newI18nEntry = [{ key: 'CAP_KEY', value: 'CAP Value' }];
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            // bundleName should start with the app ID prefix for correct path resolution
             manifest['sap.app'].i18n = {
-                bundleName: 'sap.fe.cap.travel.i18n.i18n',
+                bundleName: 'test.fe.v2.app.i18n.i18n',
                 supportedLocales: ['en', 'de'],
                 fallbackLocale: 'en'
             };
             await flp.init(manifest);
 
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            // bundleName "sap.fe.cap.travel.i18n.i18n" should convert to "i18n/i18n.properties"
+            // bundleName "test.fe.v2.app.i18n.i18n" should convert to "i18n/i18n.properties" by removing the app ID prefix
             // getSourcePath() returns tmpdir() in the mock
             const expectedPath = join(tmpdir(), 'i18n', 'i18n_de.properties');
 

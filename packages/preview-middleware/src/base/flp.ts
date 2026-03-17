@@ -1094,26 +1094,28 @@ export class FlpSandbox {
             if (typeof i18nConfig === 'string') {
                 i18nPath = i18nConfig;
             } else if (typeof i18nConfig === 'object' && i18nConfig !== null) {
-                const config = i18nConfig as {
-                    bundleUrl?: string;
-                    bundleName?: string;
-                    supportedLocales?: string[];
-                    fallbackLocale?: string;
-                };
-                if (config.bundleName) {
+                if ('bundleName' in i18nConfig && i18nConfig.bundleName) {
                     // Convert bundleName (e.g., "sap.fe.cap.travel.i18n.i18n") to path
                     // Remove the app ID prefix and convert dots to slashes
-                    const bundleNameParts = config.bundleName.split('.');
-                    i18nPath = `${bundleNameParts.slice(-2).join('/')}.properties`;
-                } else if (config.bundleUrl) {
-                    i18nPath = config.bundleUrl;
+                    const appId = this.manifest['sap.app'].id;
+                    const bundlePath = i18nConfig.bundleName.startsWith(appId + '.')
+                        ? i18nConfig.bundleName.substring(appId.length + 1)
+                        : i18nConfig.bundleName;
+                    i18nPath = `${bundlePath.replace(/\./g, '/')}.properties`;
+                    if ('bundleUrl' in i18nConfig && i18nConfig.bundleUrl) {
+                        this.logger.info(
+                            `Both bundleName and bundleUrl are provided in i18n config. Using bundleName: ${i18nConfig.bundleName}`
+                        );
+                    }
+                } else if ('bundleUrl' in i18nConfig && i18nConfig.bundleUrl) {
+                    i18nPath = i18nConfig.bundleUrl;
                 }
 
-                supportedLocales = config.supportedLocales || [];
-                fallbackLocale = config.fallbackLocale;
+                supportedLocales = (i18nConfig.supportedLocales as string[]) ?? [];
+                fallbackLocale = i18nConfig.fallbackLocale;
             }
 
-            let requestedLocale = (req.query.locale as string) || fallbackLocale || '';
+            let requestedLocale = (req.query.locale as string) ?? fallbackLocale ?? '';
 
             if (!requestedLocale && supportedLocales.length > 0) {
                 requestedLocale = supportedLocales[0];
