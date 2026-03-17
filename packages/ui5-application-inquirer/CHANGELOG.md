@@ -1,5 +1,16 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.16.46
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/ui5-info@0.13.15
+    - @sap-ux/inquirer-common@0.11.24
+    - @sap-ux/project-input-validator@0.6.68
+
 ## 0.16.45
 
 ### Patch Changes

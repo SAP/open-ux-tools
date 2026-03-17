@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.3.11
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
 ## 0.3.10
 
 ### Patch Changes
