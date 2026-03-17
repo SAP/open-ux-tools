@@ -2,23 +2,21 @@ import { ClientFactory } from '../../src/base/client';
 import { TelemetrySettings } from '../../src/base/config-state';
 import { EventName } from '../../src/base/types/event-name';
 import { SampleRate } from '../../src/base/types/sample-rate';
-import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import type { EventTelemetry } from 'applicationinsights/out/src/declarations/contracts';
 
 const spyTrackEvent: jest.Mock = jest.fn();
 
 jest.mock('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
-        public channel: any;
         public addTelemetryProcessor: any;
         public trackEvent: any;
+        public setUseDiskRetryCaching: any;
         constructor() {
             this.config = {
                 samplingPercentage: 0
             };
-            this.channel = {
-                setUseDiskRetryCaching: jest.fn()
-            };
+            this.setUseDiskRetryCaching = jest.fn();
             this.addTelemetryProcessor = (fn: any) => {
                 fn({ tags: {} });
             };
