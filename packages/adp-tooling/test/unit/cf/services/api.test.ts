@@ -20,6 +20,7 @@ import { isLoggedInCf } from '../../../../src/cf/core/auth';
 import { getProjectNameForXsSecurity } from '../../../../src/cf/project';
 import type { CfConfig, ServiceInfo, MtaYaml } from '../../../../src/types';
 import { getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
+import { mock } from 'node:test';
 
 jest.mock('fs', () => ({
     readFileSync: jest.fn()
@@ -596,11 +597,10 @@ describe('CF Services API', () => {
             );
 
             expect(mockRequestCfApi).toHaveBeenCalledWith(expect.stringContaining('service_instances'));
-            expect(mockGetServiceKeys).toHaveBeenCalledWith('test-guid');
+            expect(mockGetServiceKeys).toHaveBeenCalledWith('test-guid', 'updated_at', mockLogger);
         });
 
         test('should create non-xsuaa service without security file path', async () => {
-            const projectPath = '/test/project';
             const yamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
                 ID: 'test-project',
@@ -639,7 +639,7 @@ describe('CF Services API', () => {
             // Verify that the call does NOT include the -c flag (no security file path)
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(expect.not.arrayContaining(['-c']));
             expect(mockRequestCfApi).toHaveBeenCalledWith(expect.stringContaining('service_instances'));
-            expect(mockGetServiceKeys).toHaveBeenCalledWith('test-guid');
+            expect(mockGetServiceKeys).toHaveBeenCalledWith('test-guid', 'updated_at', mockLogger);
         });
     });
 
