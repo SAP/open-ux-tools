@@ -64,7 +64,7 @@ function checkTablesAndFieldGroupsInPage(
     parsedService: ParsedService,
     problems: NoDataFieldIntentBasedNavigation[]
 ): void {
-    for (const tableOrFieldGroup of [...(page.lookup['table'] ?? []), ...(page.lookup['fieldGroup'] ?? [])]) {
+    for (const tableOrFieldGroup of [...(page.lookup['table'] ?? []), ...(page.lookup['field-group'] ?? [])]) {
         if (!tableOrFieldGroup.annotation) {
             continue;
         }
@@ -102,8 +102,10 @@ const rule: FioriRuleDefinition = createFioriRule({
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-no-data-field-intent-based-navigation.md'
         },
         messages: {
-            ['no-data-field-intent-based-navigation']:
-                'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.'
+            ['no-data-field-for-intent-based-navigation']:
+                'DataFieldForIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
+            ['no-data-field-with-intent-based-navigation']:
+                'DataFieldWithIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.'
         }
     },
     check(context) {
@@ -133,7 +135,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
         return {
             ['target>element[name="Annotation"]'](node: Element): void {
-                // check table/fieldGroup parent node
+                // check table or header section parent node
                 if (!lookup.has(node)) {
                     return;
                 }
@@ -141,11 +143,15 @@ const rule: FioriRuleDefinition = createFioriRule({
                     .filter((result) => result.annotation.reportedParent === node)
                     .forEach((result) => {
                         const dfNode = result.annotation.reference.value;
-                        // check if DataField node was not already reported
-                        if (result.annotation.reportedParent === node && !dfLookup.has(dfNode)) {
+                        // DataField can be reported multiple times (e.g. 2 pages referencing the same table)
+                        if (result.annotation.reportedParent === node) {
                             context.report({
-                                node: dfNode, // report DataField node
-                                messageId: 'no-data-field-intent-based-navigation'
+                                node: dfNode,
+                                messageId:
+                                    result.annotation.reference.value.attributes.Type.value ===
+                                    'UI.DataFieldForIntentBasedNavigation'
+                                        ? 'no-data-field-for-intent-based-navigation'
+                                        : 'no-data-field-with-intent-based-navigation'
                             });
                             dfLookup.add(result.annotation.reference.value);
                         }
