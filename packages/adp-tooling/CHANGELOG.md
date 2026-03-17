@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.94
+
+### Patch Changes
+
+- 3626b55: fix: Add New Card flow broken for OVP adaptation projects
+
 ## 0.18.93
 
 ### Patch Changes

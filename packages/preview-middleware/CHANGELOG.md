@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.23.156
+
+### Patch Changes
+
+- 3626b55: fix: Add New Card flow broken for OVP adaptation projects
+- Updated dependencies [3626b55]
+    - @sap-ux/adp-tooling@0.18.94
+
 ## 0.23.155
 
 ### Patch Changes
