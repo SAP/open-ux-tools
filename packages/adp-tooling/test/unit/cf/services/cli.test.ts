@@ -132,6 +132,12 @@ describe('CF Services CLI', () => {
         };
 
         test('should return credentials sorted by updated_at descending by default', async () => {
+            const mockLogger = {
+                info: jest.fn(),
+                debug: jest.fn(),
+                warn: jest.fn()
+            } as unknown as ToolsLogger;
+
             const mockResources = [
                 createMockResource({ guid: 'key-1', name: 'key-old', updated_at: '2026-01-01T00:00:00Z' }),
                 createMockResource({ guid: 'key-2', name: 'key-newest', updated_at: '2026-06-01T00:00:00Z' }),
@@ -145,10 +151,17 @@ describe('CF Services CLI', () => {
                 stderr: ''
             });
 
-            const result = await getServiceKeys(serviceInstanceGuid);
+            const result = await getServiceKeys(serviceInstanceGuid, 'updated_at', mockLogger);
 
             expect(result).toHaveLength(3);
             expect(mockCFLocal.cfGetServiceKeys).toHaveBeenCalledWith(expectedFilter);
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                `Found 3 service key(s) for instance '${serviceInstanceGuid}'`
+            );
+            expect(mockLogger.debug).toHaveBeenCalledWith(
+                "Service keys sorted by 'updated_at', using key 'key-newest' as primary"
+            );
+            expect(mockLogger.debug).toHaveBeenCalledWith('Retrieved credentials for 3 of 3 service key(s)');
             // Verify the order of curl calls matches sorted order (newest first)
             expect(mockCFToolsCliExecute).toHaveBeenNthCalledWith(
                 1,
@@ -168,6 +181,12 @@ describe('CF Services CLI', () => {
         });
 
         test('should sort by created_at when specified', async () => {
+            const mockLogger = {
+                info: jest.fn(),
+                debug: jest.fn(),
+                warn: jest.fn()
+            } as unknown as ToolsLogger;
+
             const mockResources = [
                 createMockResource({
                     guid: 'key-1',
@@ -190,9 +209,15 @@ describe('CF Services CLI', () => {
                 stderr: ''
             });
 
-            const result = await getServiceKeys(serviceInstanceGuid, 'created_at');
+            const result = await getServiceKeys(serviceInstanceGuid, 'created_at', mockLogger);
 
             expect(result).toHaveLength(2);
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                `Found 2 service key(s) for instance '${serviceInstanceGuid}'`
+            );
+            expect(mockLogger.debug).toHaveBeenCalledWith(
+                "Service keys sorted by 'created_at', using key 'key-a' as primary"
+            );
             // key-1 has newer created_at, so it should be first
             expect(mockCFToolsCliExecute).toHaveBeenNthCalledWith(
                 1,
@@ -232,6 +257,12 @@ describe('CF Services CLI', () => {
         });
 
         test('should filter out resources whose credential fetch fails', async () => {
+            const mockLogger = {
+                info: jest.fn(),
+                debug: jest.fn(),
+                warn: jest.fn()
+            } as unknown as ToolsLogger;
+
             const mockResources = [
                 createMockResource({ guid: 'key-1', name: 'key-good', updated_at: '2026-06-01T00:00:00Z' }),
                 createMockResource({ guid: 'key-2', name: 'key-bad', updated_at: '2026-01-01T00:00:00Z' })
@@ -250,10 +281,14 @@ describe('CF Services CLI', () => {
                     stderr: 'Not found'
                 });
 
-            const result = await getServiceKeys(serviceInstanceGuid);
+            const result = await getServiceKeys(serviceInstanceGuid, 'updated_at', mockLogger);
 
             expect(result).toHaveLength(1);
             expect(result[0]).toEqual(mockCredentials);
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                expect.stringContaining("Failed to fetch credentials for service key 'key-bad'")
+            );
+            expect(mockLogger.debug).toHaveBeenCalledWith('Retrieved credentials for 1 of 2 service key(s)');
         });
 
         test('should return single credential for single resource', async () => {

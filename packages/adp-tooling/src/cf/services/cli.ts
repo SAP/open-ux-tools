@@ -31,11 +31,13 @@ export async function isCfInstalled(logger: ToolsLogger): Promise<boolean> {
  *
  * @param serviceInstanceGuid - The service instance GUID.
  * @param sortBy - The metadata field to sort by, defaults to 'updated_at'.
+ * @param logger - Optional logger.
  * @returns The service instance credentials sorted by the specified field (newest first).
  */
 export async function getServiceKeys(
     serviceInstanceGuid: string,
-    sortBy: ServiceKeySortField = 'updated_at'
+    sortBy: ServiceKeySortField = 'updated_at',
+    logger?: ToolsLogger
 ): Promise<ServiceKeys[]> {
     try {
         const resources = await cfGetServiceKeys({
@@ -46,6 +48,8 @@ export async function getServiceKeys(
                 }
             ]
         });
+
+        logger?.info(`Found ${resources.length} service key(s) for instance '${serviceInstanceGuid}'`);
 
         const sorted = [...resources].sort((a, b) => {
             const dateA = a[sortBy as keyof CFResource];
@@ -62,17 +66,24 @@ export async function getServiceKeys(
             return new Date(dateB).getTime() - new Date(dateA).getTime();
         });
 
+        if (sorted.length > 0) {
+            logger?.debug(`Service keys sorted by '${sortBy}', using key '${sorted[0].name}' as primary`);
+        }
+
         const results = await Promise.all(
             sorted.map(async (resource) => {
                 try {
                     return await requestCfApi<ServiceKeys>(`/v3/service_credential_bindings/${resource.guid}/details`);
-                } catch {
+                } catch (e) {
+                    logger?.warn(`Failed to fetch credentials for service key '${resource.name}': ${e.message}`);
                     return undefined;
                 }
             })
         );
 
-        return results.filter((r): r is ServiceKeys => r !== undefined);
+        const filtered = results.filter((r): r is ServiceKeys => r !== undefined);
+        logger?.debug(`Retrieved credentials for ${filtered.length} of ${sorted.length} service key(s)`);
+        return filtered;
     } catch (e) {
         throw new Error(t('error.cfGetInstanceCredentialsFailed', { serviceInstanceGuid, error: e.message }));
     }
