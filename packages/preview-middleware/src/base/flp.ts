@@ -1083,47 +1083,13 @@ export class FlpSandbox {
      */
     private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
         try {
-            // getSourcePath() returns the webapp path directly for all project types
             const webappPath = this.utils.getProject().getSourcePath();
-
-            const i18nConfig = this.manifest['sap.app'].i18n;
-            let i18nPath = 'i18n/i18n.properties';
-            let fallbackLocale: string | undefined;
-            let supportedLocales: string[] = [];
-
-            if (typeof i18nConfig === 'string') {
-                i18nPath = i18nConfig;
-            } else if (typeof i18nConfig === 'object' && i18nConfig !== null) {
-                if ('bundleName' in i18nConfig && i18nConfig.bundleName) {
-                    // Convert bundleName (e.g., "sap.fe.cap.travel.i18n.i18n") to path
-                    // Remove the app ID prefix and convert dots to slashes
-                    const appId = this.manifest['sap.app'].id;
-                    const bundlePath = i18nConfig.bundleName.startsWith(appId + '.')
-                        ? i18nConfig.bundleName.substring(appId.length + 1)
-                        : i18nConfig.bundleName;
-                    i18nPath = `${bundlePath.replace(/\./g, '/')}.properties`;
-                    if ('bundleUrl' in i18nConfig && i18nConfig.bundleUrl) {
-                        this.logger.info(
-                            `Both bundleName and bundleUrl are provided in i18n config. Using bundleName: ${i18nConfig.bundleName}`
-                        );
-                    }
-                } else if ('bundleUrl' in i18nConfig && i18nConfig.bundleUrl) {
-                    i18nPath = i18nConfig.bundleUrl;
-                }
-
-                supportedLocales = (i18nConfig.supportedLocales as string[]) ?? [];
-                fallbackLocale = i18nConfig.fallbackLocale;
-            }
+            const { i18nPath, supportedLocales, fallbackLocale } = this.parseI18nConfig();
 
             let requestedLocale = (req.query.locale as string) ?? fallbackLocale ?? '';
-
             if (!requestedLocale && supportedLocales.length > 0) {
                 requestedLocale = supportedLocales[0];
             }
-            const baseFilePath = join(webappPath, i18nPath);
-            const filePath = requestedLocale
-                ? baseFilePath.replace('.properties', `_${requestedLocale}.properties`)
-                : baseFilePath;
 
             if (requestedLocale && supportedLocales.length > 0 && !supportedLocales.includes(requestedLocale)) {
                 this.sendResponse(
@@ -1135,6 +1101,11 @@ export class FlpSandbox {
                 return;
             }
 
+            const baseFilePath = join(webappPath, i18nPath);
+            const filePath = requestedLocale
+                ? baseFilePath.replace('.properties', `_${requestedLocale}.properties`)
+                : baseFilePath;
+
             const entries = ((req.body as Array<I18nEntry>) || []).map((entry) => ({
                 ...entry,
                 annotation: entry.comment ?? entry.annotation
@@ -1145,6 +1116,53 @@ export class FlpSandbox {
             this.logger.error(`File could not be updated. Error: ${error}`);
             this.sendResponse(res, 'text/plain', 500, 'File could not be updated.');
         }
+    }
+
+    /**
+     * Parses i18n configuration from manifest and returns path and locale settings.
+     *
+     * @returns i18n path, supported locales, and fallback locale
+     */
+    private parseI18nConfig(): { i18nPath: string; supportedLocales: string[]; fallbackLocale: string | undefined } {
+        const i18nConfig = this.manifest['sap.app'].i18n;
+        let i18nPath = 'i18n/i18n.properties';
+        let fallbackLocale: string | undefined;
+        let supportedLocales: string[] = [];
+
+        if (typeof i18nConfig === 'string') {
+            i18nPath = i18nConfig;
+        } else if (typeof i18nConfig === 'object' && i18nConfig !== null) {
+            i18nPath = this.getI18nPathFromConfig(i18nConfig);
+            supportedLocales = (i18nConfig.supportedLocales as string[]) ?? [];
+            fallbackLocale = i18nConfig.fallbackLocale;
+        }
+
+        return { i18nPath, supportedLocales, fallbackLocale };
+    }
+
+    /**
+     * Extracts i18n path from object configuration (bundleName or bundleUrl).
+     *
+     * @param i18nConfig - The i18n configuration object
+     * @returns The resolved i18n path
+     */
+    private getI18nPathFromConfig(i18nConfig: NonNullable<Exclude<Manifest['sap.app']['i18n'], string>>): string {
+        if ('bundleName' in i18nConfig && i18nConfig.bundleName) {
+            const appId = this.manifest['sap.app'].id;
+            const bundlePath = i18nConfig.bundleName.startsWith(appId + '.')
+                ? i18nConfig.bundleName.substring(appId.length + 1)
+                : i18nConfig.bundleName;
+            if ('bundleUrl' in i18nConfig && i18nConfig.bundleUrl) {
+                this.logger.info(
+                    `Both bundleName and bundleUrl are provided in i18n config. Using bundleName: ${i18nConfig.bundleName}`
+                );
+            }
+            return `${bundlePath.replaceAll('.', '/')}.properties`;
+        }
+        if ('bundleUrl' in i18nConfig && i18nConfig.bundleUrl) {
+            return i18nConfig.bundleUrl;
+        }
+        return 'i18n/i18n.properties';
     }
 
     /**
