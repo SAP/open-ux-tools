@@ -111,7 +111,7 @@
         "xsAppJsonNotFound": "The xs-app.json file was not found in any of the expected locations: {{paths}}",
         "noServiceInstanceNameFound": "No serviceInstanceName found in the app-variant-bundler-build configuration",
         "noServiceKeysFoundForInstance": "No service keys found for service instance: {{serviceInstanceName}}",
-        "couldNotFetchServiceKeys": "Could not fetch the service keys: {{error}}",
+        "couldNotFetchServiceKeys": "Cannot fetch the service keys. Error: {{error}}",
         "metadataFetchingNotSupportedForCF": "Metadata fetching is not supported for Cloud Foundry projects."
     },
     "choices": {
