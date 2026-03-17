@@ -9,10 +9,11 @@ import { readUi5Yaml } from '@sap-ux/project-access';
 import {
     adjustMtaYaml,
     getAppHostIds,
-    getServiceInstanceKeys,
+    getOrCreateServiceInstanceKeys,
     addServeStaticMiddleware,
     addBackendProxyMiddleware,
-    getCfUi5AppInfo
+    getCfUi5AppInfo,
+    getProjectNameForXsSecurity
 } from '../cf';
 import { getApplicationType } from '../source';
 import { fillDescriptorContent } from './manifest';
@@ -41,19 +42,23 @@ export async function generateCf(
         fs = create(createStorage());
     }
 
+    const timestamp = Date.now().toString();
+
     const fullConfig = setDefaults(config);
     const { app, cf, ui5, project } = fullConfig;
 
-    await adjustMtaYaml(
+    const yamlContent = await adjustMtaYaml(
         {
             projectPath: basePath,
             adpProjectName: project.name,
             appRouterType: cf.approuter,
             businessSolutionName: cf.businessSolutionName ?? '',
             businessService: cf.businessService,
-            serviceKeys: cf.serviceInfo?.serviceKeys
+            serviceKeys: cf.serviceInfo?.serviceKeys,
+            spaceGuid: cf.space.GUID
         },
         fs,
+        timestamp,
         config.options?.templatePathOverwrite,
         logger
     );
@@ -65,6 +70,7 @@ export async function generateCf(
     const variant = getCfVariant(fullConfig);
     fillDescriptorContent(variant.content as Content[], app.appType, ui5.version, app.i18nModels);
 
+    fullConfig.project.xsSecurityAppName = getProjectNameForXsSecurity(yamlContent, timestamp);
     await writeCfTemplates(basePath, variant, fullConfig, fs);
     await writeCfUI5Yaml(fullConfig.project.folder, fullConfig, fs);
 
@@ -135,15 +141,18 @@ export async function generateCfConfig(
 
     const ui5Config = await readUi5Yaml(basePath, yamlPath);
 
-    const bundlerTask = ui5Config.findCustomTask<{ serviceInstanceName?: string }>('app-variant-bundler-build');
+    const bundlerTask = ui5Config.findCustomTask<{ space?: string; serviceInstanceName?: string }>(
+        'app-variant-bundler-build'
+    );
     const serviceInstanceName = bundlerTask?.configuration?.serviceInstanceName;
     if (!serviceInstanceName) {
         throw new Error('No serviceInstanceName found in app-variant-bundler-build configuration');
     }
 
-    const serviceInfo = await getServiceInstanceKeys(
+    const serviceInfo = await getOrCreateServiceInstanceKeys(
         {
-            names: [serviceInstanceName]
+            names: [serviceInstanceName],
+            spaceGuids: [bundlerTask?.configuration?.space ?? '']
         },
         logger
     );

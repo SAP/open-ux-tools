@@ -347,7 +347,7 @@ describe('CF Services CLI', () => {
             await createServiceKey(serviceInstanceName, serviceKeyName);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
-                ['create-service-key', serviceInstanceName, serviceKeyName],
+                ['create-service-key', serviceInstanceName, serviceKeyName, '--wait'],
                 { env: { 'CF_COLOR': 'false' } }
             );
         });
@@ -367,7 +367,7 @@ describe('CF Services CLI', () => {
                 })
             );
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
-                ['create-service-key', serviceInstanceName, serviceKeyName],
+                ['create-service-key', serviceInstanceName, serviceKeyName, '--wait'],
                 { env: { 'CF_COLOR': 'false' } }
             );
         });
@@ -380,7 +380,7 @@ describe('CF Services CLI', () => {
                 t('error.createServiceKeyFailed', { serviceInstanceName, error: error.message })
             );
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
-                ['create-service-key', serviceInstanceName, serviceKeyName],
+                ['create-service-key', serviceInstanceName, serviceKeyName, '--wait'],
                 { env: { 'CF_COLOR': 'false' } }
             );
         });

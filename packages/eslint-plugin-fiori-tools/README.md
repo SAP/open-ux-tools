@@ -14,17 +14,17 @@ pnpm: `pnpm add @sap-ux/eslint-plugin-fiori-tools`
 
 ## Usage
 
-To consume this module, add `@sap-ux/eslint-plugin-fiori-tools` to your project's eslint config file, for example, `eslint.config.js`. You must specify one of the following configurations:
+To consume this module, add `@sap-ux/eslint-plugin-fiori-tools` to your project's eslint config file, for example, `eslint.config.mjs`. You must specify one of the following configurations:
 
 - recommended: Contains rules for JavaScript & TypeScript on both production and test code.
 
 - recommended-for-s4hana: contains rules for JavaScript & TypeScript on both production and test code. This configuration is recommended for SAP internal use.
 
-`eslint.config.js`
+`eslint.config.mjs`
 ```javascript
-const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ```
@@ -36,27 +36,27 @@ All rules from `eslint-plugin-fiori-custom` have been migrated to `@sap-ux/eslin
 
 Note: ESLint 9 requires you to use the new flat config.
  
-1. Create the `eslint.config.js` file.
+1. Create the `eslint.config.mjs` file.
 ```javascript
-const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ```
 
-2. Copy any values from the `.eslintignore` file (if it exists) into the `eslint.config.js` file by adding the `ignores` array.
+2. Copy any values from the `.eslintignore` file (if it exists) into the `eslint.config.mjs` file by adding the `ignores` array.
 
    For more information, see [https://eslint.org/docs/latest/use/configure/configuration-files#excluding-files-with-ignores](Excluding files with ignores).
 
    ```javascript
-   const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+   import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-   module.exports = [
-        {
-        ignores: ['dist']
-        },
-       ...fioriTools.configs.recommended,
+   export default [
+      {
+         ignores: ['dist']
+      },
+         ...fioriTools.configs.recommended
    ];
    ```
 
@@ -106,6 +106,7 @@ module.exports = [
 
 | Rule | Description | Recommended | Recommended for S/4HANA |
 |------|-------------|:-----------:|:-----------------------:|
+| [sap-anchor-bar-visible](docs/rules/sap-anchor-bar-visible.md) | Anchor Bar Visible should not be set to false in manifest settings for object page headers (except form entry object pages). | | ✅ |
 | [sap-bookmark-performance](docs/rules/sap-bookmark-performance.md) | Ensure the correct usage of the auto-refresh interval options for `sap.ushell.ui.footerbar.AddBookmarkButton`. | ✅ | ✅ |
 | [sap-browser-api-error](docs/rules/sap-browser-api-error.md) | Detect forbidden usages of `(window.)document` APIs. | | |
 | [sap-browser-api-warning](docs/rules/sap-browser-api-warning.md) | Detect warnings for usages of `(window.)document` APIs. | ✅ | ✅ |
@@ -161,5 +162,7 @@ module.exports = [
 | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the `manifest.json` file for applications using UI5 version 1.56 or higher. | | ✅ |
 | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than six columns) have the `widthIncludingColumnHeader` property set to `true` for better calculation of column width. | | ✅ |
 | [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Ensures Valid `statePreservationMode` Configuration in SAP Fiori Elements | | ✅ |
+| [sap-strict-uom-filtering](docs/rules/sap-strict-uom-filtering.md) | Ensures that `disableStrictUomFiltering` is not set to `true` in `sap.fe.app` manifest configuration | | ✅ |
 | [sap-table-column-vertical-alignment](docs/rules/sap-table-column-vertical-alignment.md) | Ensures `tableColumnVerticalAlignment` Configuration for Responsive Type Tables in SAP Fiori Elements applications | | ✅ |
+| [sap-table-personalization](docs/rules/sap-table-personalization.md) | Ensures that all table `personalization` options are enabled in the OData V4 applications. | | ✅ |
 </div>

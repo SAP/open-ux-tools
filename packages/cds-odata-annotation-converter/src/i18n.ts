@@ -16,6 +16,7 @@ export async function initI18n(): Promise<void> {
         },
         lng: 'en',
         fallbackLng: 'en',
-        joinArrays: '\n\n'
+        joinArrays: '\n\n',
+        showSupportNotice: false
     });
 }

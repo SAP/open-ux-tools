@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 1.1.10
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+
+## 1.1.9
+
+### Patch Changes
+
+- dd2131c: Axios upgrade from bas-sdk
+
 ## 1.1.8
 
 ### Patch Changes

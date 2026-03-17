@@ -97,7 +97,7 @@ export async function getServiceKeys(
  */
 export async function createServiceKey(serviceInstanceName: string, serviceKeyName: string): Promise<void> {
     try {
-        const cliResult = await Cli.execute(['create-service-key', serviceInstanceName, serviceKeyName], ENV);
+        const cliResult = await Cli.execute(['create-service-key', serviceInstanceName, serviceKeyName, '--wait'], ENV);
         if (cliResult.exitCode !== 0) {
             throw new Error(cliResult.stderr);
         }

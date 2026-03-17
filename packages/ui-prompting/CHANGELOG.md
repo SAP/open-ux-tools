@@ -1,5 +1,101 @@
 # @sap-ux/ui-prompting
 
+## 0.6.15
+
+### Patch Changes
+
+- Updated dependencies [addfdee]
+    - @sap-ux/ui-components@2.1.2
+
+## 0.6.14
+
+### Patch Changes
+
+- Updated dependencies [59c6ac3]
+    - @sap-ux/ui-components@2.1.1
+
+## 0.6.13
+
+### Patch Changes
+
+- Updated dependencies [24bd091]
+    - @sap-ux/ui-components@2.1.0
+
+## 0.6.12
+
+### Patch Changes
+
+- Updated dependencies [12b8b2e]
+    - @sap-ux/ui-components@2.0.3
+
+## 0.6.11
+
+### Patch Changes
+
+- Updated dependencies [5d458c7]
+    - @sap-ux/ui-components@2.0.2
+
+## 0.6.10
+
+### Patch Changes
+
+- 14d8ab3: fix(deps): update dependency babel-loader to v10
+- Updated dependencies [14d8ab3]
+    - @sap-ux/ui-components@2.0.1
+
+## 0.6.9
+
+### Patch Changes
+
+- Updated dependencies [c4839f5]
+    - @sap-ux/ui-components@2.0.0
+
+## 0.6.8
+
+### Patch Changes
+
+- 88a1f57: fix(deps): update dependency storybook to v8.6.17 [security]
+- Updated dependencies [88a1f57]
+    - @sap-ux/ui-components@1.27.10
+
+## 0.6.7
+
+### Patch Changes
+
+- Updated dependencies [4e6c4d5]
+    - @sap-ux/ui-components@1.27.9
+
+## 0.6.6
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+- Updated dependencies [4d381b7]
+    - @sap-ux/ui-components@1.27.8
+
+## 0.6.5
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [cc1c422]
+    - @sap-ux/ui-components@1.27.7
+
+## 0.6.4
+
+### Patch Changes
+
+- Updated dependencies [5deb976]
+- Updated dependencies [d8a39ce]
+    - @sap-ux/ui-components@1.27.6
+
+## 0.6.3
+
+### Patch Changes
+
+- Updated dependencies [a22d236]
+    - @sap-ux/ui-components@1.27.5
+
 ## 0.6.2
 
 ### Patch Changes

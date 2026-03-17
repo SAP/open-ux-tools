@@ -1,5 +1,39 @@
 # @sap-ux/reload-middleware
 
+## 0.3.18
+
+### Patch Changes
+
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+
+## 0.3.17
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/btp-utils@1.1.9
+
+## 0.3.16
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+
+## 0.3.15
+
+### Patch Changes
+
+- 97735d2: fix(deps): update dependency portfinder to v1.0.38
+
+## 0.3.14
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+
 ## 0.3.13
 
 ### Patch Changes

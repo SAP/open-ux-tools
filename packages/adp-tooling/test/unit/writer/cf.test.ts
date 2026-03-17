@@ -11,10 +11,11 @@ import { generateCf, writeUi5AppInfo, generateCfConfig } from '../../../src/writ
 import { AppRouterType, FlexLayer, type CfAdpWriterConfig, type CfUi5AppInfo, type CfConfig } from '../../../src/types';
 import {
     getAppHostIds,
-    getServiceInstanceKeys,
+    getOrCreateServiceInstanceKeys,
     addServeStaticMiddleware,
     addBackendProxyMiddleware,
-    getCfUi5AppInfo
+    getCfUi5AppInfo,
+    getProjectNameForXsSecurity
 } from '../../../src/cf';
 import { getBaseAppId } from '../../../src/base/helper';
 import { runBuild } from '../../../src/base/project-builder';
@@ -25,7 +26,9 @@ jest.mock('../../../src/base/project-builder');
 jest.mock('@sap-ux/project-access');
 
 const mockGetAppHostIds = getAppHostIds as jest.MockedFunction<typeof getAppHostIds>;
-const mockGetServiceInstanceKeys = getServiceInstanceKeys as jest.MockedFunction<typeof getServiceInstanceKeys>;
+const mockGetOrCreateServiceInstanceKeys = getOrCreateServiceInstanceKeys as jest.MockedFunction<
+    typeof getOrCreateServiceInstanceKeys
+>;
 const mockAddServeStaticMiddleware = addServeStaticMiddleware as jest.MockedFunction<typeof addServeStaticMiddleware>;
 const mockAddBackendProxyMiddleware = addBackendProxyMiddleware as jest.MockedFunction<
     typeof addBackendProxyMiddleware
@@ -34,6 +37,9 @@ const mockGetCfUi5AppInfo = getCfUi5AppInfo as jest.MockedFunction<typeof getCfU
 const mockGetBaseAppId = getBaseAppId as jest.MockedFunction<typeof getBaseAppId>;
 const mockRunBuild = runBuild as jest.MockedFunction<typeof runBuild>;
 const mockReadUi5Yaml = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
+const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
+    typeof getProjectNameForXsSecurity
+>;
 
 const mockServiceKeys = [
     {
@@ -83,7 +89,8 @@ const config: CfAdpWriterConfig = {
         serviceInfo: {
             serviceKeys: mockServiceKeys,
             serviceInstance: { guid: 'service-guid', name: 'service-name' }
-        }
+        },
+        spaceGuid: 'space-guid'
     },
     project: {
         name: 'test-cf-project',
@@ -150,6 +157,8 @@ describe('CF Writer', () => {
             mkdirSync(projectDir, { recursive: true });
             writeFileSync(join(projectDir, 'mta.yaml'), originalMtaYaml);
 
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
+
             await generateCf(projectDir, createConfigWithProjectPath(projectDir), mockLogger, fs);
 
             expect(fs.dump(projectDir)).toMatchSnapshot();
@@ -159,6 +168,8 @@ describe('CF Writer', () => {
             const projectDir = join(outputDir, 'managed-approuter');
             mkdirSync(projectDir, { recursive: true });
             writeFileSync(join(projectDir, 'mta.yaml'), originalMtaYaml);
+
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
 
             const customConfig = createConfigWithProjectPath(projectDir);
             customConfig.cf.approuter = AppRouterType.MANAGED;
@@ -172,6 +183,8 @@ describe('CF Writer', () => {
             const projectDir = join(outputDir, 'options');
             mkdirSync(projectDir, { recursive: true });
             writeFileSync(join(projectDir, 'mta.yaml'), originalMtaYaml);
+
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
 
             const customConfig = createConfigWithProjectPath(projectDir);
             customConfig.options = {
@@ -249,7 +262,7 @@ describe('CF Writer', () => {
 
         beforeEach(() => {
             mockReadUi5Yaml.mockResolvedValue(mockUi5Config as any);
-            mockGetServiceInstanceKeys.mockResolvedValue({
+            mockGetOrCreateServiceInstanceKeys.mockResolvedValue({
                 serviceKeys: mockServiceKeys,
                 serviceInstance: { guid: 'service-guid', name: 'service-name' }
             });
@@ -270,12 +283,15 @@ describe('CF Writer', () => {
             mkdirSync(projectDir, { recursive: true });
 
             mockUi5Config.findCustomTask.mockReturnValue({
-                configuration: { serviceInstanceName: 'test-service' }
+                configuration: { serviceInstanceName: 'test-service', space: 'space-guid' }
             });
 
             const fs = await generateCfConfig(projectDir, 'ui5.yaml', mockCfConfig, mockLogger);
 
-            expect(mockGetServiceInstanceKeys).toHaveBeenCalledWith({ names: ['test-service'] }, mockLogger);
+            expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
+                { names: ['test-service'], spaceGuids: ['space-guid'] },
+                mockLogger
+            );
             expect(mockGetAppHostIds).toHaveBeenCalledWith(mockServiceKeys);
             expect(mockGetBaseAppId).toHaveBeenCalledWith(projectDir);
             expect(mockGetCfUi5AppInfo).toHaveBeenCalledWith('test-app-id', ['host-123'], mockCfConfig, mockLogger);
@@ -306,10 +322,10 @@ describe('CF Writer', () => {
             mkdirSync(projectDir, { recursive: true });
 
             mockUi5Config.findCustomTask.mockReturnValue({
-                configuration: { serviceInstanceName: 'test-service' }
+                configuration: { serviceInstanceName: 'test-service', space: 'space-guid' }
             });
 
-            mockGetServiceInstanceKeys.mockResolvedValue(null);
+            mockGetOrCreateServiceInstanceKeys.mockResolvedValue(null);
 
             await expect(generateCfConfig(projectDir, 'ui5.yaml', mockCfConfig, mockLogger)).rejects.toThrow(
                 'No service keys found for service instance: test-service'

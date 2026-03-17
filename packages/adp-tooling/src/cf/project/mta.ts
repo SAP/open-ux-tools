@@ -58,16 +58,11 @@ export function getServicesForFile(mtaFilePath: string, logger: ToolsLogger): Bu
 /**
  * Check if the project has an approuter.
  *
- * @param {string} projectName - The project name.
  * @param {string[]} moduleNames - The module names.
  * @returns {boolean} Whether the project has an approuter.
  */
-export function hasApprouter(projectName: string, moduleNames: string[]): boolean {
-    return moduleNames.some(
-        (name) =>
-            name === `${projectName.toLowerCase()}-destination-content` ||
-            name === `${projectName.toLowerCase()}-approuter`
-    );
+export function hasApprouter(moduleNames: string[]): boolean {
+    return moduleNames.some((name) => name.includes('destination-content') || name.includes('approuter'));
 }
 
 /**

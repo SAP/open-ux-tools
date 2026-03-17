@@ -1,5 +1,91 @@
 # @sap-ux/project-input-validator
 
+## 0.6.68
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
+## 0.6.67
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+
+## 0.6.66
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+
+## 0.6.65
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+
+## 0.6.64
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+
+## 0.6.63
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
+## 0.6.62
+
+### Patch Changes
+
+- b96de78: fix(deps): update dependency validate-npm-package-name to v7
+    - @sap-ux/project-access@1.35.9
+
+## 0.6.61
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+
+## 0.6.60
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+
+## 0.6.59
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
+## 0.6.58
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+
+## 0.6.57
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+
+## 0.6.56
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+
 ## 0.6.55
 
 ### Patch Changes

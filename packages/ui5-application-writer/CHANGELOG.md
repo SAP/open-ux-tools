@@ -1,5 +1,86 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.20
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+    - @sap-ux/ui5-config@0.29.21
+
+## 1.7.19
+
+### Patch Changes
+
+- bd95e55: feat: add function to add eslint config from template
+
+## 1.7.18
+
+### Patch Changes
+
+- @sap-ux/ui5-config@0.29.21
+
+## 1.7.17
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+
+## 1.7.16
+
+### Patch Changes
+
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+    - @sap-ux/ui5-config@0.29.20
+
+## 1.7.15
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+
+## 1.7.14
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/ui5-config@0.29.19
+
+## 1.7.13
+
+### Patch Changes
+
+- 0ecc5f1: fix(deps): Update dependency @ui5/manifest to v1.83.0
+
+## 1.7.12
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+
+## 1.7.11
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+    - @sap-ux/ui5-config@0.29.18
+
+## 1.7.10
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+    - @sap-ux/ui5-config@0.29.18
+
+## 1.7.9
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+
 ## 1.7.8
 
 ### Patch Changes

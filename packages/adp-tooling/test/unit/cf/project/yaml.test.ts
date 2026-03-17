@@ -324,10 +324,12 @@ describe('YAML Project Functions', () => {
                     projectPath,
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.STANDALONE,
+                    spaceGuid,
                     businessSolutionName,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -357,9 +359,11 @@ describe('YAML Project Functions', () => {
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -394,9 +398,11 @@ describe('YAML Project Functions', () => {
                     adpProjectName: 'test-adp-project',
                     appRouterType: null as unknown as AppRouterType,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -429,9 +435,11 @@ describe('YAML Project Functions', () => {
                         adpProjectName: 'test-adp-project',
                         appRouterType: AppRouterType.STANDALONE,
                         businessSolutionName,
+                        spaceGuid,
                         businessService
                     },
                     mockMemFs,
+                    '1234567890',
                     undefined,
                     mockLogger
                 )
@@ -477,9 +485,11 @@ describe('YAML Project Functions', () => {
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -528,9 +538,11 @@ describe('YAML Project Functions', () => {
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService,
+                    spaceGuid,
                     serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -575,9 +587,11 @@ describe('YAML Project Functions', () => {
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService,
+                    spaceGuid,
                     serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -624,9 +638,11 @@ describe('YAML Project Functions', () => {
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService,
+                    spaceGuid,
                     serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -665,9 +681,11 @@ describe('YAML Project Functions', () => {
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService,
+                    spaceGuid,
                     serviceKeys: mockServiceKeys
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -723,9 +741,11 @@ describe('YAML Project Functions', () => {
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -782,9 +802,11 @@ describe('YAML Project Functions', () => {
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -841,9 +863,11 @@ describe('YAML Project Functions', () => {
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -920,11 +944,16 @@ describe('YAML Project Functions', () => {
                             {
                                 path: '/resources/my/reusable/lib',
                                 src: './.adp/reuse/myreusablelib',
-                                fallthrough: false
+                                fallthrough: true
                             },
                             {
                                 path: '/changes/test_variant_id',
                                 src: './webapp/changes',
+                                fallthrough: true
+                            },
+                            {
+                                path: '/test_variant_id/i18n',
+                                src: './webapp/i18n',
                                 fallthrough: true
                             }
                         ]
@@ -967,11 +996,16 @@ describe('YAML Project Functions', () => {
                             {
                                 path: '/resources/my/reusable/lib',
                                 src: './.adp/reuse/myreusablelib',
-                                fallthrough: false
+                                fallthrough: true
                             },
                             {
                                 path: '/changes/customer_app_variant',
                                 src: './webapp/changes',
+                                fallthrough: true
+                            },
+                            {
+                                path: '/customer_app_variant/i18n',
+                                src: './webapp/i18n',
                                 fallthrough: true
                             }
                         ]
@@ -1002,6 +1036,11 @@ describe('YAML Project Functions', () => {
                             {
                                 path: '/changes/customer_app_variant',
                                 src: './webapp/changes',
+                                fallthrough: true
+                            },
+                            {
+                                path: '/customer_app_variant/i18n',
+                                src: './webapp/i18n',
                                 fallthrough: true
                             }
                         ]
