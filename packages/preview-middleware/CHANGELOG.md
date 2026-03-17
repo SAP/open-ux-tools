@@ -1,5 +1,16 @@
 # @sap-ux/preview-middleware
 
+## 0.23.154
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/adp-tooling@0.18.92
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/system-access@0.6.65
+
 ## 0.23.153
 
 ### Patch Changes

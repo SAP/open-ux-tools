@@ -1,5 +1,19 @@
 # @sap-ux/app-config-writer
 
+## 0.6.121
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/store@1.5.10
+    - @sap-ux/ui5-application-writer@1.7.20
+    - @sap-ux/ui5-config@0.29.21
+
 ## 0.6.120
 
 ### Patch Changes
