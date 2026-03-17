@@ -861,6 +861,8 @@ export interface AppParamsExtended extends CfAppParams {
     spaceGuid: string;
 }
 
+export type ServiceKeySortField = 'updated_at' | 'created_at';
+
 export interface ServiceKeys {
     credentials: {
         [key: string]: any;
