@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.9.3
+
+### Patch Changes
+
+- 9afb66a: feat: add plugin version number to rule in readme
+
 ## 9.9.2
 
 ### Patch Changes
