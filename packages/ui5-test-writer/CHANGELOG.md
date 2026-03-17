@@ -1,5 +1,19 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.88
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [55417bb]
+    - @sap-ux/ui5-application-writer@1.7.20
+
+## 0.7.87
+
+### Patch Changes
+
+- 1b7094e: fix(deps): update dependency @sap/ux-specification to v1.144.0
+
 ## 0.7.86
 
 ### Patch Changes
