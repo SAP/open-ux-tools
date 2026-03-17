@@ -196,6 +196,15 @@ const V2_FIELD_FROUP_ANNOTATIONS = ` <Annotations Target="TECHED_ALP_SOA_SRV.Z_S
             </Annotations>`;
 
 const V2_FIELD_FROUP_ANNOTATIONS_DF = ` <Annotations Target="TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType">
+                <Annotation Term="UI.HeaderFacets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="formSection" />
+                            <PropertyValue Property="ID" String="formSection" />
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#formSection" />
+                        </Record>
+                    </Collection>
+                </Annotation>
                 <Annotation Term="UI.FieldGroup" Qualifier="formSection">
                     <Record Type="UI.FieldGroupType">
                         <PropertyValue Property="Data">
@@ -288,7 +297,7 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                 errors: [
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldWithIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
                         line: 20,
                         column: 25,
                         endLine: 23,
@@ -296,7 +305,7 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                     },
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldForIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
                         line: 27,
                         column: 25,
                         endLine: 29,
@@ -314,7 +323,7 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                 errors: [
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldWithIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
                         line: 31,
                         column: 24,
                         endLine: 34,
@@ -322,7 +331,7 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                     },
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldForIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
                         column: 25,
                         endColumn: 34,
                         endLine: 37,
@@ -340,7 +349,7 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                 errors: [
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldForIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
                         column: 33,
                         endColumn: 42,
                         endLine: 33,
@@ -348,7 +357,7 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                     },
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldWithIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
                         column: 33,
                         endColumn: 42,
                         endLine: 38,
@@ -366,7 +375,7 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                 errors: [
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldForIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
                         column: 25,
                         endColumn: 34,
                         endLine: 243,
@@ -374,7 +383,7 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                     },
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldWithIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
                         column: 25,
                         endColumn: 34,
                         endLine: 247,
@@ -392,19 +401,35 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                 errors: [
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldForIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
+                        line: 245,
                         column: 25,
-                        endColumn: 34,
                         endLine: 247,
-                        line: 245
+                        endColumn: 34
                     },
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldForIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
+                        line: 245,
                         column: 25,
-                        endColumn: 34,
+                        endLine: 247,
+                        endColumn: 34
+                    },
+                    {
+                        message:
+                            'DataFieldWithIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
+                        line: 248,
+                        column: 25,
                         endLine: 251,
-                        line: 248
+                        endColumn: 34
+                    },
+                    {
+                        message:
+                            'DataFieldWithIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
+                        line: 248,
+                        column: 25,
+                        endLine: 251,
+                        endColumn: 34
                     }
                 ]
             },
@@ -418,19 +443,19 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                 errors: [
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldForIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
                         column: 33,
                         endColumn: 42,
-                        endLine: 241,
-                        line: 238
+                        endLine: 250,
+                        line: 247
                     },
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.',
+                            'DataFieldWithIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
                         column: 33,
                         endColumn: 42,
-                        endLine: 246,
-                        line: 242
+                        endLine: 255,
+                        line: 251
                     }
                 ]
             },
