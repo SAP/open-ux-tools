@@ -13,6 +13,7 @@ import type Text from 'sap/m/Text';
 import type NewsContainer from 'sap/cux/home/NewsContainer';
 import type NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
 import { getSalutationBarBackground } from '../utils/salutationBarUtils';
+import Title from 'sap/m/Title';
 
 /**
  * @namespace open.ux.preview.client.flp.homepage.controller.MyHome
@@ -43,7 +44,8 @@ export default class MyHomeController extends Controller {
         const view = this.getView();
         if (view) {
             const oViewModel = new JSONModel({
-                deviceType: MyHomeController.calculateDeviceType(Device.resize.width)
+                deviceType: MyHomeController.calculateDeviceType(Device.resize.width),
+                cards: []
             });
             view.setModel(oViewModel, 'view');
 
@@ -56,6 +58,7 @@ export default class MyHomeController extends Controller {
 
         void this.initSalutationBar();
         void this.initializeNewsContainer();
+        void this.initializeInsightsContainer();
     }
 
     private getText(sKey: string, aArgs?: string[]): string {
@@ -129,12 +132,36 @@ export default class MyHomeController extends Controller {
 
         const view = this.getView();
         if (view) {
-            const newsContainer = new NewsContainerClass(`${view.createId('newsContainer')}-newsContainer`, {
+            const newsContainer = new NewsContainerClass(view.createId('newsContainer'), {
                 content: [new NewsPanel(view.createId('news'), { url: '/homepage/news' })]
             }).addStyleClass('homeNewsContainer');
 
             const page = view.byId('page') as Page;
             page?.insertContent(newsContainer, 0);
+        }
+    }
+
+    private async initializeInsightsContainer() {
+        try {
+            const response = await fetch('/cards/store');
+            if (!response.ok) {
+                Log.error('Failed to load insights data: ' + response.statusText);
+                return;
+            }
+
+            const cards = await response.json() as object[];
+            const view = this.getView();
+            if (!view) {
+                return;
+            }
+
+            const viewModel = view.getModel('view') as JSONModel;
+            viewModel?.setProperty('/cards', cards);
+            (view.byId('insightsTitle') as Title)?.setText(
+                this.getText('insightsTitleWithCount', [String(cards.length)])
+            );
+        } catch (error: unknown) {
+            Log.error('Failed to load insights data', error instanceof Error ? error : new Error(String(error)));
         }
     }
 }
