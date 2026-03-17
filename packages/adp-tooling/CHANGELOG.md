@@ -1,5 +1,15 @@
 # @sap-ux/adp-tooling
 
+## 0.18.93
+
+### Patch Changes
+
+- a854433: feat: Handle i18n translations from key user changes in ADP generator
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/system-access@0.6.66
+
 ## 0.18.92
 
 ### Patch Changes
