@@ -141,5 +141,4 @@ export type Diagnostic =
     | TableColumnVerticalAlignment
     | NoDataFieldIntentBasedNavigation
     | TablePersonalization
-    | StrictUomFiltering
-    | TableColumnVerticalAlignment;
+    | StrictUomFiltering;
