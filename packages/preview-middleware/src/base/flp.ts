@@ -61,7 +61,7 @@ import {
     remapResourcesForPath
 } from './config';
 import { generateCdm } from './cdm';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { NewsAdapter, type ODataNewsResponse, type NewsItem } from './utils/newsAdapter';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
@@ -1169,6 +1169,77 @@ export class FlpSandbox {
         this.router.post(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
             await this.storeCardManifestHandler(req, res);
         });
+
+        this.router.get(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
+            await this.fetchStoredCardManifestsHandler(req, res);
+        });
+    }
+
+    /**
+     * Collects card manifests for a single floorplan entry.
+     *
+     * @param webappPath the webapp directory path
+     * @param embedSettings the embeds settings for a floorplan
+     * @returns array of parsed card manifest objects
+     */
+    private collectCardManifestsForFloorplan(
+        webappPath: string,
+        embedSettings: ManifestNamespace.EmbedsSettings
+    ): object[] {
+        const results: object[] = [];
+        const entityManifests = embedSettings.manifests;
+        if (!entityManifests) {
+            return results;
+        }
+        for (const entitySet in entityManifests) {
+            for (const entry of entityManifests[entitySet]) {
+                if (!entry.localUri) {
+                    continue;
+                }
+                const filePath = join(webappPath, entry.localUri, FileName.Manifest);
+                if (!existsSync(filePath)) {
+                    this.logger.debug(`Card manifest not found at ${filePath}, skipping.`);
+                    continue;
+                }
+                try {
+                    const content = this.fs.read(filePath);
+                    results.push(JSON.parse(content));
+                } catch (error) {
+                    this.logger.debug(`Failed to read card manifest at ${filePath}: ${error}`);
+                }
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Retrieves all stored card manifests by reading the `sap.cards.ap.embeds` section
+     * from the application manifest and loading each referenced card manifest file.
+     *
+     * @param {Request} _req - The HTTP request object.
+     * @param {Response} res - The HTTP response object used to send the response back to the client.
+     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     */
+    private async fetchStoredCardManifestsHandler(_req: Request, res: Response): Promise<void> {
+        try {
+            const webappPath = this.utils.getProject().getSourcePath();
+            const embeds = this.manifest['sap.cards.ap']?.embeds;
+            const manifests: object[] = [];
+
+            if (embeds) {
+                for (const floorplan in embeds) {
+                    const floorplanEntry = embeds[floorplan] as ManifestNamespace.EmbedsSettings | undefined;
+                    if (floorplanEntry) {
+                        manifests.push(...this.collectCardManifestsForFloorplan(webappPath, floorplanEntry));
+                    }
+                }
+            }
+
+            this.sendResponse(res, 'application/json', 200, JSON.stringify(manifests));
+        } catch (error) {
+            this.logger.error(`Could not retrieve stored card manifests. Error: ${error}`);
+            this.sendResponse(res, 'text/plain', 500, 'Could not retrieve stored card manifests.');
+        }
     }
 
     /**

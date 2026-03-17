@@ -3,6 +3,8 @@
     xmlns:m="sap.m"
     xmlns:dt="sap.ui.dt"
     xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.f"
+    xmlns:w="sap.ui.integration.widgets"
     displayBlock="true"
     controllerName="open.ux.preview.client.flp.homepage.controller.MyHome"
     class="sapUShellFullHeight"
@@ -35,5 +37,15 @@
         <AppsContainer id="appsContainer">
             <FavAppPanel id="favoriteApps" />
         </AppsContainer>
+
+        <m:VBox id="insightsTilesContainer" visible="{= ${view>/cards/length} > 0}" renderType="Bare" class="sapCuxBaseContainer">
+            <m:Title id="insightsTitle" level="H4" titleStyle="H4"/>
+            <f:GridContainer id="insightsCardContainer" class="sapUiSmallMarginTop" items="{view>/cards}">
+                <w:Card id="card" manifest="{view>}"/>
+                <f:layout>
+                    <f:GridContainerSettings minColumnSize="19rem" maxColumnSize="30rem" gap="1rem"/>
+                </f:layout>
+            </f:GridContainer>
+        </m:VBox>
     </m:Page>
 </mvc:View>
