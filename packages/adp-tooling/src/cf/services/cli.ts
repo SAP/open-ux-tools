@@ -73,7 +73,7 @@ export async function createServiceKey(serviceInstanceName: string, serviceKeyNa
 export async function updateServiceInstance(serviceInstanceName: string, parameters: object): Promise<void> {
     try {
         const cliResult = await Cli.execute(
-            ['update-service', serviceInstanceName, '-c', JSON.stringify(parameters)],
+            ['update-service', serviceInstanceName, '-c', JSON.stringify(parameters), '--wait'],
             ENV
         );
         if (cliResult.exitCode !== 0) {

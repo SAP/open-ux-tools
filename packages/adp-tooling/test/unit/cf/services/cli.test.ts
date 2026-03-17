@@ -325,7 +325,7 @@ describe('CF Services CLI', () => {
             await updateServiceInstance(serviceInstanceName, parameters);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
-                ['update-service', serviceInstanceName, '-c', JSON.stringify(parameters)],
+                ['update-service', serviceInstanceName, '-c', JSON.stringify(parameters), '--wait'],
                 { env: { 'CF_COLOR': 'false' } }
             );
         });
