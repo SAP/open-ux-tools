@@ -1,5 +1,25 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.74
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [55417bb]
+    - @sap-ux/cap-config-writer@0.12.78
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/ui5-application-writer@1.7.20
+    - @sap-ux/ui5-test-writer@0.7.88
+    - @sap-ux/ui5-config@0.29.21
+
+## 2.5.73
+
+### Patch Changes
+
+- Updated dependencies [1b7094e]
+    - @sap-ux/ui5-test-writer@0.7.87
+
 ## 2.5.72
 
 ### Patch Changes

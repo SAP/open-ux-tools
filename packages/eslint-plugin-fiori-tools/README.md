@@ -106,6 +106,7 @@ export default [
 
 | Since | Rule | Description | Recommended | Recommended for S/4HANA |
 |:-----:|------|-------------|:-----------:|:-----------------------:|
+| 9.9.0 | [sap-strict-uom-filtering](docs/rules/sap-strict-uom-filtering.md) | Ensures that `disableStrictUomFiltering` is not set to `true` in `sap.fe.app` manifest configuration | | ✅ |
 | 9.8.0 | [sap-table-personalization](docs/rules/sap-table-personalization.md) | Ensures that all table `personalization` options are enabled in the OData V4 applications. | | ✅ |
 | 9.7.0 | [sap-anchor-bar-visible](docs/rules/sap-anchor-bar-visible.md) | Anchor Bar Visible should not be set to false in manifest settings for object page headers (except form entry object pages). | | ✅ |
 | 9.5.0 | [sap-table-column-vertical-alignment](docs/rules/sap-table-column-vertical-alignment.md) | Ensures `tableColumnVerticalAlignment` Configuration for Responsive Type Tables in SAP Fiori Elements applications | | ✅ |
