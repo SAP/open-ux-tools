@@ -8,7 +8,12 @@ import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../../src/route
 
 describe('routes', () => {
     const rootPath = '/project/root';
-    const mockLogger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() } as unknown as ToolsLogger;
+    const mockLogger = {
+        debug: jest.fn(),
+        info: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn()
+    } as unknown as ToolsLogger;
 
     describe('loadAndPrepareXsappConfig', () => {
         beforeEach(() => {

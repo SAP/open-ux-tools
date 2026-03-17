@@ -130,7 +130,7 @@ export function createProxy(options: CreateProxyOptions, logger: ToolsLogger): R
                     response.writeHead(502, { 'Content-Type': 'text/plain' });
                     response.end(`Approuter is not reachable: ${err.message}`);
                 }
-            },
+            }
         }
     });
 
