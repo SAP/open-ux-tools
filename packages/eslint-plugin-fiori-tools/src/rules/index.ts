@@ -11,7 +11,8 @@ import {
     STATE_PRESERVATION_MODE,
     TABLE_COLUMN_VERTICAL_ALIGNMENT,
     NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
-    TABLE_PERSONALIZATION
+    TABLE_PERSONALIZATION,
+    STRICT_UOM_FILTERING
 } from '../language/diagnostics';
 
 // Import all rules
@@ -69,6 +70,7 @@ import flexEnabledRule from './sap-flex-enabled';
 import requireWidthIncludingColumnHeader from './sap-width-including-column-header';
 import creationModeForTable from './sap-creation-mode-for-table';
 import statePreservationMode from './sap-state-preservation-mode';
+import strictUomFilteringRule from './sap-strict-uom-filtering';
 import copyToClipboard from './sap-copy-to-clipboard';
 import enableExport from './sap-enable-export';
 import enablePaste from './sap-enable-paste';
@@ -137,5 +139,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [STATE_PRESERVATION_MODE]: statePreservationMode,
     [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
     [NO_DATA_FIELD_INTENT_BASED_NAVIGATION]: noDataFieldIntentBasedNavigation,
-    [TABLE_PERSONALIZATION]: tablePersonalization
+    [TABLE_PERSONALIZATION]: tablePersonalization,
+    [STRICT_UOM_FILTERING]: strictUomFilteringRule
 };
