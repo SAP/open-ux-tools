@@ -96,8 +96,7 @@ export function collectSections(
     entityType: string,
     service: ParsedService
 ): (TableSectionNode | HeaderSectionNode)[] {
-    const sections: TableSectionNode[] = [];
-    const headerFacetNodes: HeaderSectionNode[] = [];
+    const sections: (TableSectionNode | HeaderSectionNode)[] = [];
     const facetsKey = buildAnnotationIndexKey(entityType, 'com.sap.vocabularies.UI.v1.Facets');
     const facets = service.index.annotations[facetsKey]?.['undefined'];
 
@@ -131,29 +130,29 @@ export function collectSections(
     if (!headerFacetCollection) {
         return sections;
     }
-    const hfRecords = elementsWithName(Edm.Record, headerFacetCollection);
-    const hfAliasInfo = service.artifacts.aliasInfo[headerFacets.top.uri];
-    let hfIndex = 0;
-    for (const record of hfRecords) {
-        const headerFacet = processReferenceHeaderFacetRecord(
+    const headerFacetRecords = elementsWithName(Edm.Record, headerFacetCollection);
+    const headerFacetAliasInfo = service.artifacts.aliasInfo[headerFacets.top.uri];
+    index = 0;
+    for (const record of headerFacetRecords) {
+        const headerFacet = processReferenceFacetRecord(
             record,
-            hfAliasInfo,
+            headerFacetAliasInfo,
             entityType,
             service,
-            facets,
-            hfIndex
+            headerFacets,
+            index
         );
         if (headerFacet) {
-            headerFacetNodes.push(headerFacet);
+            sections.push(headerFacet);
         }
-        hfIndex++;
+        index++;
     }
 
-    return [...sections, ...headerFacetNodes];
+    return sections;
 }
 
 /**
- * Process a single reference facet record and create a table section if applicable.
+ * Process a single reference facet record and create a table or header section if applicable.
  *
  * @param record
  * @param aliasInfo
@@ -169,7 +168,7 @@ function processReferenceFacetRecord(
     service: ParsedService,
     facets: IndexedAnnotation,
     index: number
-): TableSectionNode | undefined {
+): TableSectionNode | HeaderSectionNode | undefined {
     const type = getRecordType(aliasInfo, record);
     if (type !== 'com.sap.vocabularies.UI.v1.ReferenceFacet') {
         return undefined;
@@ -202,68 +201,15 @@ function processReferenceFacetRecord(
     const [, _annotationPath] = fullyQualifiedPath.split('@');
     const [term, qualifier] = _annotationPath.split('#');
 
-    if (term !== UI_LINE_ITEM) {
-        return undefined;
+    if (term === UI_LINE_ITEM) {
+        return createTableSection(facets, index, referencedEntityType, qualifier, annotationPath, aliasInfo, service);
     }
 
-    return createTableSection(facets, index, referencedEntityType, qualifier, annotationPath, aliasInfo, service);
-}
-
-/**
- *
- * @param record
- * @param aliasInfo
- * @param entityType
- * @param service
- * @param hfacets
- * @param index
- * @returns
- */
-function processReferenceHeaderFacetRecord(
-    record: Element,
-    aliasInfo: AliasInformation,
-    entityType: string,
-    service: ParsedService,
-    hfacets: IndexedAnnotation,
-    index: number
-): HeaderSectionNode | undefined {
-    const type = getRecordType(aliasInfo, record);
-    if (type !== 'com.sap.vocabularies.UI.v1.ReferenceFacet') {
-        return undefined;
+    if (term === UI_FIELD_GROUP) {
+        return addHeaderSection(facets, index, referencedEntityType, qualifier, annotationPath, aliasInfo, service);
     }
 
-    const properties = getRecordPropertyValue(record);
-    const id = properties['ID']?.value;
-    const target = properties['Target'];
-
-    if (!id || !target || target.kind !== Edm.AnnotationPath) {
-        return undefined;
-    }
-
-    const annotationPath = target.value;
-    if (annotationPath.startsWith('/')) {
-        // absolute path is not supported
-        return undefined;
-    }
-
-    const referencedEntityType = getReferencedEntityType(aliasInfo, entityType, annotationPath, service);
-    if (!referencedEntityType) {
-        return undefined;
-    }
-
-    const fullyQualifiedPath = toFullyQualifiedPath(
-        aliasInfo.aliasMap,
-        '',
-        parsePath(`/${entityType}/${annotationPath}`)
-    );
-    const [, _annotationPath] = fullyQualifiedPath.split('@');
-    const [term, qualifier] = _annotationPath.split('#');
-
-    if (term !== UI_FIELD_GROUP) {
-        return undefined;
-    }
-
-    return addHeaderSection(hfacets, index, referencedEntityType, qualifier, annotationPath, aliasInfo, service);
+    return undefined;
 }
 
 /**

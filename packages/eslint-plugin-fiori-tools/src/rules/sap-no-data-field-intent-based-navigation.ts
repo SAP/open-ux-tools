@@ -129,7 +129,6 @@ const rule: FioriRuleDefinition = createFioriRule({
             return {};
         }
         const lookup = new Set<Element>();
-        const dfLookup = new Set<Element>();
         for (const diagnostic of validationResult) {
             lookup.add(diagnostic.annotation?.reportedParent);
         }
@@ -153,7 +152,6 @@ const rule: FioriRuleDefinition = createFioriRule({
                                         ? 'no-data-field-for-intent-based-navigation'
                                         : 'no-data-field-with-intent-based-navigation'
                             });
-                            dfLookup.add(result.annotation.reference.value);
                         }
                     });
             }
