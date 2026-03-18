@@ -42,10 +42,14 @@ export async function getCredentialsFromStore(
     try {
         if (!isAppStudio()) {
             const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-            let system = await systemService.read(new BackendSystemKey({ url: target.url, client: target.client }));
+            let url = target.url;
+            if (target.connectPath) {
+                url = new URL(target.connectPath, target.url).href;
+            }
+            let system = await systemService.read(new BackendSystemKey({ url, client: target.client }));
             // check if there are credentials for the default client
             if (!system && target.client) {
-                system = await systemService.read(new BackendSystemKey({ url: target.url }));
+                system = await systemService.read(new BackendSystemKey({ url }));
             }
             return system;
         }
