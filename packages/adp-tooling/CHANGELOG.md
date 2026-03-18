@@ -1,5 +1,21 @@
 # @sap-ux/adp-tooling
 
+## 0.18.94
+
+### Patch Changes
+
+- 3626b55: fix: Add New Card flow broken for OVP adaptation projects
+
+## 0.18.93
+
+### Patch Changes
+
+- a854433: feat: Handle i18n translations from key user changes in ADP generator
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/system-access@0.6.66
+
 ## 0.18.92
 
 ### Patch Changes

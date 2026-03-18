@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.25.24
+
+### Patch Changes
+
+- a854433: feat: Handle i18n translations from key user changes in ADP generator
+
 ## 1.25.23
 
 ### Patch Changes
