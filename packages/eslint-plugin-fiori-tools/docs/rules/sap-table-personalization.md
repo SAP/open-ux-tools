@@ -4,7 +4,7 @@
 
 Ensures that all table `personalization` properties are enabled in the pages of OData V4 applications. Table personalization is provided by default for all tables.
 
-Restriction: Grouping is available for analytical tables in applications with a minimum SAPUI5 version of 1.108 or higher and responsive tables in applications with a minimum SAPUI5 version of 1.120 or higher.
+Restriction: Grouping is available for analytical tables in applications with SAPUI5 1.108 or higher and responsive tables in applications with SAPUI5 1.120 or higher.
 
 ### Why Was This Rule Introduced?
 
