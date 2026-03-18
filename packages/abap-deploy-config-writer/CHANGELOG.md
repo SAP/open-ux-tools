@@ -1,5 +1,124 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.93
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.66
+
+## 0.2.92
+
+### Patch Changes
+
+- Updated dependencies [5d452e5]
+    - @sap-ux/system-access@0.6.65
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.2.91
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.64
+
+## 0.2.90
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/system-access@0.6.63
+
+## 0.2.89
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+    - @sap-ux/system-access@0.6.63
+
+## 0.2.88
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+
+## 0.2.87
+
+### Patch Changes
+
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/system-access@0.6.62
+    - @sap-ux/ui5-config@0.29.20
+
+## 0.2.86
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.61
+
+## 0.2.85
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/system-access@0.6.60
+
+## 0.2.84
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.60
+
+## 0.2.83
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/system-access@0.6.59
+
+## 0.2.82
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.58
+- @sap-ux/ui5-config@0.29.19
+
+## 0.2.81
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/system-access@0.6.57
+
+## 0.2.80
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/system-access@0.6.56
+
+## 0.2.79
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+    - @sap-ux/project-access@1.35.7
+    - @sap-ux/system-access@0.6.56
+
+## 0.2.78
+
+### Patch Changes
+
+- Updated dependencies [d588c26]
+    - @sap-ux/system-access@0.6.56
+
 ## 0.2.77
 
 ### Patch Changes

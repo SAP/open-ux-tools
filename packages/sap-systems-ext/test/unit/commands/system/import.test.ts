@@ -1,7 +1,7 @@
 import type { SystemCommandContext } from '../../../../src/types/system';
 import { PanelManager, type SystemPanel } from '../../../../src/panel';
 import { importSystemCommandHandler } from '../../../../src/commands/system/import';
-import { join } from 'path';
+import { join } from 'node:path';
 import * as utils from '../../../../src/utils';
 import * as vscodeMod from 'vscode';
 import { SystemPanelViewType } from '../../../../src/utils/constants';
@@ -75,7 +75,7 @@ describe('Test the import system command handler', () => {
         const handler = importSystemCommandHandler(mockContext);
         await handler();
 
-        expect(showErrorMessageSpy).toHaveBeenCalledWith('Failed to import system configuration.');
+        expect(showErrorMessageSpy).toHaveBeenCalledWith('Failed to import the connection configuration.');
     });
 
     it('should show error message that config is incomplete and missing system url', async () => {
@@ -87,7 +87,7 @@ describe('Test the import system command handler', () => {
         const handler = importSystemCommandHandler(mockContext);
         await handler();
 
-        expect(showErrorMessageSpy).toHaveBeenCalledWith('System configuration is incomplete. A URL is required.');
+        expect(showErrorMessageSpy).toHaveBeenCalledWith('Connection configuration is incomplete. A URL is required.');
     });
 
     it('should show error message that config is does not contain any system configs', async () => {
@@ -101,7 +101,7 @@ describe('Test the import system command handler', () => {
 
         expect(showErrorMessageSpy).toHaveBeenCalledWith(
             expect.stringContaining(
-                `No systems defined in configuration file: ${join(
+                `No connections defined in the configuration file: ${join(
                     __dirname,
                     '../../../fixtures/import/invalid-test.json'
                 )}`

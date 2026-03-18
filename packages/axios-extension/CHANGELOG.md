@@ -1,5 +1,72 @@
 # @sap-ux/axios-extension
 
+## 1.25.24
+
+### Patch Changes
+
+- a854433: feat: Handle i18n translations from key user changes in ADP generator
+
+## 1.25.23
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+
+## 1.25.22
+
+### Patch Changes
+
+- 2d21925: fix(deps): Update dependency open to v8.4.2 (latest CommonJS version)
+
+## 1.25.21
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+
+## 1.25.20
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/btp-utils@1.1.9
+
+## 1.25.19
+
+### Patch Changes
+
+- 96e9b9e: fix(deps): update dependency open to v7.4.2
+
+## 1.25.18
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+
+## 1.25.17
+
+### Patch Changes
+
+- ca2566b: Update fast-xml-parser
+
+    Issue: #37278
+
+## 1.25.16
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+
+## 1.25.15
+
+### Patch Changes
+
+- Updated dependencies [d588c26]
+    - @sap-ux/feature-toggle@0.3.7
+
 ## 1.25.14
 
 ### Patch Changes

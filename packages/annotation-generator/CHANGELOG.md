@@ -1,5 +1,113 @@
 # @sap-ux/annotation-generator
 
+## 0.4.40
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.33
+
+## 0.4.39
+
+### Patch Changes
+
+- Updated dependencies [dfa433e]
+    - @sap-ux/odata-annotation-core-types@0.5.7
+    - @sap-ux/fiori-annotation-api@0.9.32
+    - @sap-ux/odata-entity-model@0.3.7
+
+## 0.4.38
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.31
+
+## 0.4.37
+
+### Patch Changes
+
+- Updated dependencies [e1ef0ba]
+    - @sap-ux/fiori-annotation-api@0.9.30
+
+## 0.4.36
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/fiori-annotation-api@0.9.29
+
+## 0.4.35
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- Updated dependencies [7c06ef0]
+    - @sap-ux/fiori-annotation-api@0.9.28
+    - @sap-ux/project-access@1.35.12
+
+## 0.4.34
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.27
+- @sap-ux/project-access@1.35.11
+
+## 0.4.33
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/fiori-annotation-api@0.9.26
+
+## 0.4.32
+
+### Patch Changes
+
+- Updated dependencies [a2cbf4e]
+    - @sap-ux/odata-annotation-core-types@0.5.6
+    - @sap-ux/fiori-annotation-api@0.9.25
+    - @sap-ux/odata-entity-model@0.3.6
+
+## 0.4.31
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/fiori-annotation-api@0.9.24
+
+## 0.4.30
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.23
+
+## 0.4.29
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/fiori-annotation-api@0.9.22
+
+## 0.4.28
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/fiori-annotation-api@0.9.21
+    - @sap-ux/odata-annotation-core-types@0.5.5
+    - @sap-ux/odata-entity-model@0.3.6
+
+## 0.4.27
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/fiori-annotation-api@0.9.20
+
 ## 0.4.26
 
 ### Patch Changes

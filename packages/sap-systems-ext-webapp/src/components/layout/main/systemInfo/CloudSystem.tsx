@@ -1,12 +1,12 @@
 import React from 'react';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ReactElement } from 'react';
-import { UITextInput } from '@sap-ux/ui-components';
+import { UITextInput, UITooltip, UITooltipUtils } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import '../../../../styles/SystemMain.scss';
 import { ServiceKey } from './ServiceKey';
-import { getUrlErrorMessage } from './utils';
+import { getUrlErrorMessage, useTextInputOverflow } from './utils';
 
 interface CloudSystemProps {
     systemInfo?: BackendSystem;
@@ -32,6 +32,9 @@ export function CloudSystem({
     setIsDetailsValid
 }: Readonly<CloudSystemProps>): ReactElement {
     const { t } = useTranslation();
+    const reentranceUrlId = 'reentranceUrl';
+    const { isEditing, isOverflowing, onEditStart, onEditEnd } = useTextInputOverflow(reentranceUrlId, systemInfo?.url);
+    const tooltipContent = <div className="url-tooltip">{systemInfo?.url}</div>;
 
     let cloudComponent = <div></div>;
 
@@ -42,19 +45,28 @@ export function CloudSystem({
                     <label className="store-detail-label">
                         {t('labels.url')} <span className="mandatory-asterisk">*</span>
                     </label>
-                    <UITextInput
-                        name="reentranceTicketUrl"
-                        id="reentranceUrl"
-                        key={`reentranceTicketUrl-${systemInfo?.connectionType}`}
-                        value={systemInfo?.url}
-                        onChange={(e) => {
-                            setUrl((e.target as HTMLInputElement).value);
-                            setIsDetailsUpdated(true);
-                        }}
-                        onGetErrorMessage={(value) =>
-                            getUrlErrorMessage(value, t, setIsDetailsValid, systemInfo?.connectionType)
-                        }
-                    />
+                    <UITooltip
+                        tooltipProps={UITooltipUtils.renderContent(tooltipContent)}
+                        delay={0}
+                        calloutProps={{ hidden: isEditing || !systemInfo?.url || !isOverflowing }}>
+                        <UITextInput
+                            name="reentranceTicketUrl"
+                            id={reentranceUrlId}
+                            key={`reentranceTicketUrl-${systemInfo?.connectionType}`}
+                            value={systemInfo?.url}
+                            onChange={(e) => {
+                                onEditStart();
+                                setUrl((e.target as HTMLInputElement).value);
+                                setIsDetailsUpdated(true);
+                            }}
+                            onBlur={() => onEditEnd()}
+                            onGetErrorMessage={(value) => {
+                                const errorMsg = getUrlErrorMessage(value, t, systemInfo?.connectionType);
+                                setIsDetailsValid(!errorMsg);
+                                return errorMsg;
+                            }}
+                        />
+                    </UITooltip>
                 </div>
             </div>
         );

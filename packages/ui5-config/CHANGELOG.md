@@ -1,5 +1,24 @@
 # @sap-ux/ui5-config
 
+## 0.29.21
+
+### Patch Changes
+
+- Updated dependencies [2917c4c]
+    - @sap-ux/yaml@0.17.5
+
+## 0.29.20
+
+### Patch Changes
+
+- c09b843: (ADP) Add small refactoring to deployment validatiors and remove the redundant ui5 config hasBuilderKey() method.
+
+## 0.29.19
+
+### Patch Changes
+
+- d92cd35: fix(deps): update dependency ajv to v8.18.0 [security]
+
 ## 0.29.18
 
 ### Patch Changes
