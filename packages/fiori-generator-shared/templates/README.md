@@ -15,7 +15,7 @@
 |**UI5 Theme**<br><%= locals.ui5Theme ? locals.ui5Theme : '' %>|
 |**UI5 Version**<br><%= locals.ui5Version ? locals.ui5Version : '' %>|
 |**Enable TypeScript**<br><% if(locals.enableTypeScript === true) { %><%= "True" %><% } else { %><%= "False" %><% }%>|
-|**Add Eslint configuration**<br><% if(locals.enableEslint === true) { %>True&lt;br/&gt;, see https://www.npmjs.com/package/@sap-ux/eslint-plugin-fiori-tools#rules for the eslint rules.<% } else { %><%= "False" %><% }%>|<% if(locals.valueHelpDownloaded === true) { %>
+|**Add Eslint configuration**<br><% if(locals.enableEslint === true) { %><%= "True, see https://www.npmjs.com/package/@sap-ux/eslint-plugin-fiori-tools#rules for the eslint rules." %><% } else { %><%= "False" %><% }%>|<% if(locals.valueHelpDownloaded === true) { %>
 |**Value Help Metadata**<br>Downloaded for external services|<% } %><% if (locals.entityRelatedConfig) locals.entityRelatedConfig.forEach(entry => { %>
 |**<%= entry.type %>**<br><%= entry.value %>|<%})%>
 
