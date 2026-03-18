@@ -108,7 +108,7 @@ export default [
 |:-----:|------|-------------|:-----------:|:-----------------------:|
 | 9.9.0 | [sap-strict-uom-filtering](docs/rules/sap-strict-uom-filtering.md) | Ensures that `disableStrictUomFiltering` is not set to `true` in the `sap.fe.app` manifest configuration. | | ✅ |
 | 9.8.0 | [sap-table-personalization](docs/rules/sap-table-personalization.md) | Ensures that all table `personalization` options are enabled in OData V4 applications. | | ✅ |
-| 9.7.0 | [sap-anchor-bar-visible](docs/rules/sap-anchor-bar-visible.md) | Anchor Bar Visible must not be set to f`false` in manifest settings for object page headers (except form entry object pages). | | ✅ |
+| 9.7.0 | [sap-anchor-bar-visible](docs/rules/sap-anchor-bar-visible.md) | Anchor Bar Visible must not be set to `false` in manifest settings for object page headers (except form entry object pages). | | ✅ |
 | 9.5.0 | [sap-table-column-vertical-alignment](docs/rules/sap-table-column-vertical-alignment.md) | Ensures `tableColumnVerticalAlignment` configuration for responsives tables in SAP Fiori elements applications. | | ✅ |
 | 9.4.0 | [sap-enable-export](docs/rules/sap-enable-export.md) | Ensures that the export to Excel functionality in tables in OData V4 applications is available. | | ✅ |
 | 9.4.0 | [sap-enable-paste](docs/rules/sap-enable-paste.md) | Ensures that the paste functionality in tables in OData V4 applications is available. | | ✅ |
