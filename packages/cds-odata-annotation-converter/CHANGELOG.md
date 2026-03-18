@@ -1,5 +1,33 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.14
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
+## 0.7.13
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core@0.2.17
+- @sap-ux/odata-vocabularies@0.4.29
+- @sap-ux/cds-annotation-parser@0.2.34
+
+## 0.7.12
+
+### Patch Changes
+
+- Updated dependencies [79e69b9]
+    - @sap-ux/odata-vocabularies@0.4.28
+    - @sap-ux/cds-annotation-parser@0.2.33
+
+## 0.7.11
+
+### Patch Changes
+
+- e1ef0ba: chore update `@sap/ux-cds-compiler-facade` dependency
+
 ## 0.7.10
 
 ### Patch Changes

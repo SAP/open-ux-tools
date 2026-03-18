@@ -1166,9 +1166,9 @@ export class FlpSandbox {
         // CF ADP build path mode: serve built resources directly from build output
         if ('cfBuildPath' in config) {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
-            configureRta(this.rta, layer, variant.id, false);
+            configureRta(this.rta, layer, variant.id, false, true);
             await this.init(manifest, variant.reference);
-            this.setupAdpCommonHandlers(adp);
+            await this.setupAdpCommonHandlers(adp);
             return;
         }
 
@@ -1177,7 +1177,7 @@ export class FlpSandbox {
         const { name, manifest } = descriptor;
         await this.init(manifest, name, adp.resources, adp);
         this.router.use(adp.descriptor.url, adp.proxy.bind(adp));
-        this.setupAdpCommonHandlers(adp);
+        await this.setupAdpCommonHandlers(adp);
     }
 
     /**
@@ -1185,10 +1185,12 @@ export class FlpSandbox {
      *
      * @param adp AdpPreview instance
      */
-    private setupAdpCommonHandlers(adp: AdpPreview): void {
+    private async setupAdpCommonHandlers(adp: AdpPreview): Promise<void> {
         this.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         this.router.use(json());
         adp.addApis(this.router);
+        // Register i18n store route for ADP projects (used by OVP bridge functions)
+        await this.addStoreI18nKeysRoute();
     }
 
     /**
@@ -1222,8 +1224,15 @@ function serializeUi5Configuration(config: Map<string, string>): string {
  * @param layer UI5 flex layer
  * @param variantId variant identifier
  * @param isCloud whether this is a cloud project
+ * @param isCloudFoundry whether this is a Cloud Foundry ADP scenario
  */
-function configureRta(rta: RtaConfig | undefined, layer: UI5FlexLayer, variantId: string, isCloud: boolean): void {
+function configureRta(
+    rta: RtaConfig | undefined,
+    layer: UI5FlexLayer,
+    variantId: string,
+    isCloud: boolean,
+    isCloudFoundry?: boolean
+): void {
     if (!rta) {
         return;
     }
@@ -1233,7 +1242,8 @@ function configureRta(rta: RtaConfig | undefined, layer: UI5FlexLayer, variantId
         ...rta.options,
         projectId: variantId,
         scenario: 'ADAPTATION_PROJECT',
-        isCloud
+        isCloud,
+        ...(isCloudFoundry !== undefined && { isCloudFoundry })
     };
 
     for (const editor of rta.endpoints) {
