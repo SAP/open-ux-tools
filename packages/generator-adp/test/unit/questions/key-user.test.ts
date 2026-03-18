@@ -540,7 +540,65 @@ describe('KeyUserImportPrompter', () => {
                 getFlexVersionsMock.mockResolvedValue({ versions: mockFlexVersions });
                 listAdaptationsMock.mockResolvedValue({ adaptations: [] });
 
-                await expect(prompter['loadDataAndValidateKeyUserChanges']()).rejects.toThrow();
+                await expect(prompter['loadDataAndValidateKeyUserChanges']()).rejects.toThrow(
+                    t('error.keyUserNoAdaptations')
+                );
+            });
+
+            it('should throw user-friendly error when loadFlexVersions gets 404', async () => {
+                const axiosError = {
+                    isAxiosError: true,
+                    message: 'Not Found',
+                    name: 'AxiosError',
+                    response: { status: 404, statusText: 'Not Found' }
+                } as AxiosError;
+                getFlexVersionsMock.mockRejectedValue(axiosError);
+                isAxiosErrorMock.mockReturnValue(true);
+
+                await expect(prompter['loadDataAndValidateKeyUserChanges']()).rejects.toThrow(
+                    t('error.keyUserFlexVersionsFailed')
+                );
+                expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Error loading flex versions'));
+                expect(logger.debug).toHaveBeenCalledWith(axiosError);
+            });
+
+            it('should re-throw non-axios error from loadFlexVersions', async () => {
+                const error = new Error('Network error');
+                getFlexVersionsMock.mockRejectedValue(error);
+                isAxiosErrorMock.mockReturnValue(false);
+
+                await expect(prompter['loadDataAndValidateKeyUserChanges']()).rejects.toThrow('Network error');
+                expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Error loading flex versions'));
+                expect(logger.debug).toHaveBeenCalledWith(error);
+            });
+
+            it('should throw user-friendly error when loadAdaptations gets 404', async () => {
+                getFlexVersionsMock.mockResolvedValue({ versions: mockFlexVersions });
+                const axiosError = {
+                    isAxiosError: true,
+                    message: 'Not Found',
+                    name: 'AxiosError',
+                    response: { status: 404, statusText: 'Not Found' }
+                } as AxiosError;
+                listAdaptationsMock.mockRejectedValue(axiosError);
+                isAxiosErrorMock.mockReturnValue(true);
+
+                await expect(prompter['loadDataAndValidateKeyUserChanges']()).rejects.toThrow(
+                    t('error.keyUserAdaptationsFailed')
+                );
+                expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Error loading adaptations'));
+                expect(logger.debug).toHaveBeenCalledWith(axiosError);
+            });
+
+            it('should re-throw non-axios error from loadAdaptations', async () => {
+                getFlexVersionsMock.mockResolvedValue({ versions: mockFlexVersions });
+                const error = new Error('Connection reset');
+                listAdaptationsMock.mockRejectedValue(error);
+                isAxiosErrorMock.mockReturnValue(false);
+
+                await expect(prompter['loadDataAndValidateKeyUserChanges']()).rejects.toThrow('Connection reset');
+                expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Error loading adaptations'));
+                expect(logger.debug).toHaveBeenCalledWith(error);
             });
         });
     });
