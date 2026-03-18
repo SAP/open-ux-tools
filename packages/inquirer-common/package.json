@@ -54,7 +54,7 @@
     "devDependencies": {
         "@sap-ux/vocabularies-types": "0.15.0",
         "@sap-devx/yeoman-ui-types": "1.22.0",
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "9.0.9",
         "@types/semver": "7.7.1",
         "@types/lodash": "4.14.202",
         "jest-extended": "6.0.0"
