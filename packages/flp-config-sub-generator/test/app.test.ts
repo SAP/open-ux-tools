@@ -18,6 +18,22 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
 import { join } from 'node:path';
 
+// Mock applicationinsights to prevent @azure/monitor-opentelemetry-exporter from failing on macOS
+// (it requires SYSTEMDRIVE env var which is Windows-only)
+jest.mock(
+    'applicationinsights',
+    () => ({
+        TelemetryClient: class {
+            public config = { samplingPercentage: 0 };
+            public setUseDiskRetryCaching = jest.fn();
+            public addTelemetryProcessor = jest.fn();
+            public trackEvent = jest.fn();
+            public flush = jest.fn().mockResolvedValue(undefined);
+        }
+    }),
+    { virtual: true }
+);
+
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
     // eslint-disable-next-line @typescript-eslint/no-require-imports
