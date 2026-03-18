@@ -7,7 +7,8 @@
     "namespace": "testnamepsace",
     "targetFolder": "./test-output",
     "name": "lrop_v4_no_ui5_version",
-    "sapux": true
+    "sapux": true,
+    "enableEslint": false
   },
   "service": {
     "servicePath": "/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/",
