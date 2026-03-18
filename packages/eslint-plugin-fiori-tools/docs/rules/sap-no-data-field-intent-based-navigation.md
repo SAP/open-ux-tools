@@ -4,7 +4,7 @@
 
 ### Why Was This Rule Introduced?
 
-TODO
+Two annotations: `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavigation` should not be used in tables and and form fields because they contain hard coded Fiori apps. A semantic object navigation shall be offered only via the Smart Link / Semantic Link control, so it should be used instead.
 
 ### Warning Message
 
@@ -45,11 +45,10 @@ TODO
 </Annotation>
 ```
 
-#### Correct: Semantic Link Navigation is Used
+#### Correct: Semantic Link (Smart Link) Navigation is Used
 
-```xml
-TODO
-```
+The `sap.ui.comp.navpopover.SmartLink` control provides a popover with navigation links to related applications, for example, more detailed information about customer data.
+For more information about this control, see the [API Reference](https://ui5.sap.com/#/api/sap.ui.comp.navpopover.SmartLink) and the [samples](https://ui5.sap.com/#/entity/sap.ui.comp.navpopover.SmartLink).
 
 ## Bug Report
 
@@ -57,4 +56,4 @@ If you encounter an issue with this rule, please open a [GitHub issue](https://g
 
 ## Further Reading
 
-- [UI5 UI Adaptation Documentation](TODO)
+- [UI5 UI Adaptation Documentation: Smart Link](https://ui5.sap.com/#/topic/f638884d0d624ad8a243f4005f8e9972)
