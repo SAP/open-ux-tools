@@ -1,12 +1,13 @@
 const { build } = require('esbuild');
+const production = process.argv.includes('--production');
 
 build({
   entryPoints: ['src/app/index.ts'],
   bundle: true,
   format: 'cjs',
   outfile: 'generators/app/index.js',
-  minify: false,
-  sourcemap: true,
+  minify: production,
+  sourcemap: !production,
   target: 'node18',
   platform: 'node',
   logLevel: 'info',
