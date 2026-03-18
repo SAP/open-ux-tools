@@ -19,7 +19,7 @@
     "scripts": {
         "build": "npm-run-all clean bundle:prod",
         "compile": "tsc --build",
-        "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
+        "clean": "rimraf --glob generators prebuilds test/test-output coverage *.tsbuildinfo",
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
@@ -36,10 +36,10 @@
         "generators",
         "!generators/*.map",
         "!generators/**/*.map",
+        "prebuilds",
         "yeoman.png"
     ],
     "dependencies": {
-        "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
         "@sap-devx/yeoman-ui-types": "1.22.0",
@@ -68,7 +68,8 @@
         "odata-query": "8.0.5",
         "os-name": "4.0.1",
         "prettify-xml": "1.2.0",
-        "rimraf": "6.1.3"
+        "rimraf": "6.1.3",
+        "yeoman-generator": "5.10.0"
     },
     "engines": {
         "node": ">=20.x"
