@@ -106,7 +106,7 @@ export class ODataDownloadGenerator extends Generator {
      * @param opts - Generator options passed to yeoman
      */
     constructor(args: string | string[], opts: GeneratorOptions) {
-        super(args, opts, {
+        super(args, { ...opts, skipInstall: true }, {
             unique: 'namespace'
         });
         setYeomanEnvConflicterForce(this.env, true);
