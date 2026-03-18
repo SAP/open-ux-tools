@@ -32,8 +32,41 @@ describe('external service loading', () => {
                                 name: Edm.Annotation
                             }),
                             uris: [
+                                "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer1.paymentcardtype'"
+                            ],
+                            namespace: 'test.namespace'
+                        }
+                    ]
+                ],
+                [
+                    'tns.TargetB(Collection(tns.param1),tns.param2,Edm.String,  test.namespace.param3, param4,Collection(param5),Collection(Edm.String),Collection( test.namespace.param6))',
+                    [
+                        {
+                            location: Location.create('file:///main.xml', Range.create(0, 0, 0, 0)),
+                            annotation: createElementNode({
+                                name: Edm.Annotation
+                            }),
+                            uris: [
                                 "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'"
-                            ]
+                            ],
+                            namespace: 'test.namespace',
+                            alias: 'tns'
+                        }
+                    ]
+                ],
+                [
+                    'tns.TargetC()',
+                    [
+                        {
+                            location: Location.create('file:///main.xml', Range.create(0, 0, 0, 0)),
+                            annotation: createElementNode({
+                                name: Edm.Annotation
+                            }),
+                            uris: [
+                                "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer3.paymentcardtype'"
+                            ],
+                            namespace: 'test.namespace',
+                            alias: 'tns'
                         }
                     ]
                 ]
@@ -46,13 +79,22 @@ describe('external service loading', () => {
         });
         expect(data).toMatchInlineSnapshot(`
             Map {
-              "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'" => Object {
+              "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer1.paymentcardtype'" => Object {
                 "data": "file",
                 "localFilePath": "localService/srvd_f4/sap/p_paymentcardtypevaluehelp/0001/TargetA/metadata.xml",
               },
+              "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'" => Object {
+                "data": "file",
+                "localFilePath": "localService/srvd_f4/sap/p_paymentcardtypevaluehelp/0001/TargetB(Collection(test.namespace.param1),test.namespace.param2,Edm.String,  test.namespace.param3,param4,Collection(param5),Collection(Edm.String),Collection( test.namespace.param6))/metadata.xml",
+              },
+              "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer3.paymentcardtype'" => Object {
+                "data": "file",
+                "localFilePath": "localService/srvd_f4/sap/p_paymentcardtypevaluehelp/0001/TargetC()/metadata.xml",
+              },
             }
         `);
-        expect(readFileSpy).toHaveBeenCalledWith(
+        expect(readFileSpy).toHaveBeenNthCalledWith(
+            1,
             join(
                 __dirname,
                 'localService',
@@ -61,6 +103,20 @@ describe('external service loading', () => {
                 'p_paymentcardtypevaluehelp',
                 '0001',
                 'TargetA',
+                'metadata.xml'
+            ),
+            'utf-8'
+        );
+        expect(readFileSpy).toHaveBeenNthCalledWith(
+            2,
+            join(
+                __dirname,
+                'localService',
+                'srvd_f4',
+                'sap',
+                'p_paymentcardtypevaluehelp',
+                '0001',
+                'TargetB(Collection(test.namespace.param1),test.namespace.param2,Edm.String,  test.namespace.param3,param4,Collection(param5),Collection(Edm.String),Collection( test.namespace.param6))',
                 'metadata.xml'
             ),
             'utf-8'
