@@ -556,7 +556,7 @@ describe('KeyUserImportPrompter', () => {
                 isAxiosErrorMock.mockReturnValue(true);
 
                 await expect(prompter['loadDataAndValidateKeyUserChanges']()).rejects.toThrow(
-                    t('error.keyUserFlexVersionsFailed')
+                    t('error.keyUserFlexVersionsNotSupported')
                 );
                 expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Error loading flex versions'));
                 expect(logger.debug).toHaveBeenCalledWith(axiosError);
@@ -584,7 +584,7 @@ describe('KeyUserImportPrompter', () => {
                 isAxiosErrorMock.mockReturnValue(true);
 
                 await expect(prompter['loadDataAndValidateKeyUserChanges']()).rejects.toThrow(
-                    t('error.keyUserAdaptationsFailed')
+                    t('error.keyUserAdaptationsNotSupported')
                 );
                 expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Error loading adaptations'));
                 expect(logger.debug).toHaveBeenCalledWith(axiosError);

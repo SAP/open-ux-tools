@@ -247,7 +247,7 @@ export class KeyUserImportPrompter {
         } catch (e) {
             this.logger.error(`Error loading adaptations for component ${this.componentId}: ${e.message}`);
             this.logger.debug(e);
-            throw new Error(getUnsupportedApiMessage(e, t('error.keyUserAdaptationsFailed')));
+            throw new Error(getUnsupportedApiMessage(e, t('error.keyUserAdaptationsNotSupported')));
         }
     }
 
@@ -263,7 +263,7 @@ export class KeyUserImportPrompter {
         } catch (e) {
             this.logger.error(`Error loading flex versions for component ${this.componentId}: ${e.message}`);
             this.logger.debug(e);
-            throw new Error(getUnsupportedApiMessage(e, t('error.keyUserFlexVersionsFailed')));
+            throw new Error(getUnsupportedApiMessage(e, t('error.keyUserFlexVersionsNotSupported')));
         }
     }
 
