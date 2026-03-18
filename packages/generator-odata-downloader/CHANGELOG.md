@@ -1,5 +1,15 @@
 # @sap-ux/generator-odata-download
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/odata-service-inquirer@2.19.13
+    - @sap-ux/odata-service-writer@0.30.1
+
 ## 0.0.5
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.287
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.103
+- @sap-ux/odata-service-inquirer@2.19.13
+
+## 0.3.286
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/odata-service-inquirer@2.19.13
+    - @sap-ux/system-access@0.6.66
+    - @sap-ux/abap-deploy-config-writer@0.2.93
+
 ## 0.3.285
 
 ### Patch Changes

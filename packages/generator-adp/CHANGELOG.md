@@ -1,5 +1,24 @@
 # @sap-ux/generator-adp
 
+## 0.9.31
+
+### Patch Changes
+
+- Updated dependencies [3626b55]
+    - @sap-ux/adp-tooling@0.18.94
+
+## 0.9.30
+
+### Patch Changes
+
+- a854433: feat: Handle i18n translations from key user changes in ADP generator
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/adp-tooling@0.18.93
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/system-access@0.6.66
+
 ## 0.9.29
 
 ### Patch Changes

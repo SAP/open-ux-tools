@@ -1,5 +1,29 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.12.0
+
+### Minor Changes
+
+- b5c7d47: Enable ESLint by default for new applications.
+
+### Patch Changes
+
+- Updated dependencies [b5c7d47]
+    - @sap-ux/ui5-application-inquirer@0.17.0
+    - @sap-ux/fiori-elements-writer@2.8.103
+    - @sap-ux/fiori-freestyle-writer@2.5.75
+    - @sap-ux/odata-service-inquirer@2.19.13
+
+## 0.11.107
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/odata-service-inquirer@2.19.13
+    - @sap-ux/odata-service-writer@0.30.1
+
 ## 0.11.106
 
 ### Patch Changes
