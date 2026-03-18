@@ -1,5 +1,28 @@
 # @sap-ux/odata-service-writer
 
+## 0.30.1
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [55417bb]
+    - @sap-ux/mockserver-config-writer@0.9.63
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.30.0
+
+### Minor Changes
+
+- 3edf6d7: Preserve preview path during service sync
+
+## 0.29.34
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/mockserver-config-writer@0.9.62
+
 ## 0.29.33
 
 ### Patch Changes

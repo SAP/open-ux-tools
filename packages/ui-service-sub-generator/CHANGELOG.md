@@ -1,5 +1,64 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.210
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/system-access@0.6.66
+    - @sap-ux/ui-service-inquirer@0.2.147
+
+## 0.1.209
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/system-access@0.6.65
+    - @sap-ux/ui-service-inquirer@0.2.146
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/inquirer-common@0.11.24
+    - @sap-ux/telemetry@0.6.87
+
+## 0.1.208
+
+### Patch Changes
+
+- @sap-ux/ui-service-inquirer@0.2.145
+
+## 0.1.207
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.23
+- @sap-ux/ui-service-inquirer@0.2.144
+
+## 0.1.206
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+    - @sap-ux/fiori-generator-shared@0.13.85
+    - @sap-ux/system-access@0.6.64
+    - @sap-ux/ui-service-inquirer@0.2.143
+
+## 0.1.205
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.21
+- @sap-ux/fiori-generator-shared@0.13.85
+- @sap-ux/inquirer-common@0.11.22
+- @sap-ux/system-access@0.6.63
+- @sap-ux/telemetry@0.6.86
+- @sap-ux/ui-service-inquirer@0.2.142
+
 ## 0.1.204
 
 ### Patch Changes

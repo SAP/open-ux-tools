@@ -1,5 +1,22 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.86
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/telemetry@0.6.87
+
+## 0.13.85
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/telemetry@0.6.86
+
 ## 0.13.84
 
 ### Patch Changes

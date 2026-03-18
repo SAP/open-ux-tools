@@ -1,5 +1,32 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.144
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/ui5-info@0.13.15
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/ui5-library-inquirer@0.6.83
+    - @sap-ux/ui5-library-writer@0.6.70
+    - @sap-ux/nodejs-utils@0.2.17
+
+## 0.1.143
+
+### Patch Changes
+
+- @sap-ux/ui5-library-inquirer@0.6.82
+
+## 0.1.142
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.85
+- @sap-ux/ui5-library-writer@0.6.69
+- @sap-ux/ui5-library-inquirer@0.6.81
+
 ## 0.1.141
 
 ### Patch Changes

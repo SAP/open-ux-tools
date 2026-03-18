@@ -1,5 +1,25 @@
 # @sap-ux/axios-extension
 
+## 1.25.24
+
+### Patch Changes
+
+- a854433: feat: Handle i18n translations from key user changes in ADP generator
+
+## 1.25.23
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+
+## 1.25.22
+
+### Patch Changes
+
+- 2d21925: fix(deps): Update dependency open to v8.4.2 (latest CommonJS version)
+
 ## 1.25.21
 
 ### Patch Changes
