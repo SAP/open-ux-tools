@@ -3,7 +3,7 @@
     "displayName": "Control Property Editor",
     "description": "Control Property Editor",
     "license": "Apache-2.0",
-    "version": "0.7.21",
+    "version": "0.7.22",
     "main": "dist/app.js",
     "repository": {
         "type": "git",
@@ -39,7 +39,7 @@
         "@types/react": "16.14.69",
         "eslint-plugin-react": "7.37.5",
         "http-proxy-middleware": "2.0.9",
-        "i18next": "25.8.12",
+        "i18next": "25.8.18",
         "jest-scss-transform": "1.0.4",
         "npm-run-all2": "8.0.4",
         "react": "16.14.0",

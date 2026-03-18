@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.19.0
+
+### Minor Changes
+
+- 428ee72: fix: Rename action missing for Object Page elements in Adaptation Editor. Annotation changes are now explicitly disabled as they are not supported in developer mode.
+
+## 0.18.27
+
+### Patch Changes
+
+- 3626b55: fix: Add New Card flow broken for OVP adaptation projects
+
 ## 0.18.26
 
 ### Patch Changes
