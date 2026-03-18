@@ -92,6 +92,8 @@ const connector = merge({}, ObjectStorageConnector, {
             features.isVariantAdaptationEnabled = true;
         }
 
+        features.isAnnotationChangeEnabled = false;
+
         return features;
     }
 }) as typeof ObjectStorageConnector;
