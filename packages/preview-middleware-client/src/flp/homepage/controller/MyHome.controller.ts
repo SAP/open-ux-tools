@@ -14,6 +14,60 @@ import type NewsContainer from 'sap/cux/home/NewsContainer';
 import type NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
 import { getSalutationBarBackground } from '../utils/salutationBarUtils';
 import Title from 'sap/m/Title';
+import GridContainer from 'sap/f/GridContainer';
+
+const CARDS_GAP = 16;
+const MIN_CARD_WIDTH = 304;
+const MIN_CARD_WIDTH_NARROW = 285;
+const MAX_CARD_WIDTH = 583;
+const NARROW_BREAKPOINT = 320;
+const MOBILE_CARD_WIDTH_REM = 19;
+
+interface CardConfig {
+    containerWidth: number;
+    totalCards: number;
+    minWidth: number;
+    maxWidth: number;
+    gap: number;
+}
+
+/**
+ * Calculate the card width for a card based on the container width.
+ *
+ * @param {CardConfig} config - Card configuration.
+ * @returns {number} The calculated width of a card.
+ */
+function calculateCardWidth(config: CardConfig): number {
+    const { containerWidth, totalCards, minWidth, maxWidth, gap } = config;
+
+    const maxColumns = Math.floor((containerWidth + gap) / (minWidth + gap));
+    const columns = Math.min(maxColumns, totalCards);
+
+    if (columns <= 0) {
+        return minWidth;
+    }
+
+    const totalGap = (columns - 1) * gap;
+    const cardWidth = (containerWidth - totalGap) / columns;
+
+    return Math.min(Math.max(cardWidth, minWidth), maxWidth);
+}
+
+/**
+ * Fetches the specified CSS properties of a DOM element.
+ *
+ * @param {Element} element - The DOM element to get properties from.
+ * @param {string[]} properties - An array of CSS property names to retrieve.
+ * @returns {Record<string, number>} An object mapping each CSS property name to its numeric value (in pixels).
+ */
+function fetchElementProperties(element: Element, properties: string[]): Record<string, number> {
+    const style = window.getComputedStyle(element);
+    const result: Record<string, number> = {};
+    properties.forEach((prop) => {
+        result[prop] = parseFloat(style.getPropertyValue(prop)) || 0;
+    });
+    return result;
+}
 
 /**
  * @namespace open.ux.preview.client.flp.homepage.controller.MyHome
@@ -40,17 +94,20 @@ export default class MyHomeController extends Controller {
             return 'XLargeDesktop';
         }
     }
+
     onInit() {
         const view = this.getView();
         if (view) {
             const oViewModel = new JSONModel({
                 deviceType: MyHomeController.calculateDeviceType(Device.resize.width),
+                insightsCardWidth: `${MIN_CARD_WIDTH / 16}rem`,
                 cards: []
             });
             view.setModel(oViewModel, 'view');
 
             Device.resize.attachHandler((oEvent: { width: number }) => {
                 oViewModel.setProperty('/deviceType', MyHomeController.calculateDeviceType(oEvent.width));
+                this._updateInsightsCardWidth();
                 const salutationBar = this.byId('salutationBar');
                 void this.applySalutationBarBackground(salutationBar?.getDomRef() as HTMLElement);
             });
@@ -141,7 +198,54 @@ export default class MyHomeController extends Controller {
         }
     }
 
+    /**
+     * Calculates and updates the insights card column width based on the current container dimensions.
+     */
+    private _updateInsightsCardWidth(): void {
+        const view = this.getView();
+        const viewModel = view?.getModel('view') as JSONModel;
+        const gridContainer = this.byId('insightsCardContainer') as GridContainer;
+        const layoutDomRef = gridContainer?.getDomRef();
+
+        if (!layoutDomRef) {
+            return;
+        }
+
+        const domProperties = fetchElementProperties(layoutDomRef, ['width', 'padding-left', 'padding-right']);
+        const availableWidth = domProperties.width - domProperties['padding-left'] - domProperties['padding-right'];
+
+        const isMobile = Device.system.phone;
+        let cardWidthRem: string;
+
+        if (isMobile) {
+            cardWidthRem = `${MOBILE_CARD_WIDTH_REM}rem`;
+        } else {
+            const cards = (viewModel.getProperty('/cards') as object[]) || [];
+            const cardLayoutConfig: CardConfig = {
+                containerWidth: availableWidth,
+                totalCards: cards.length || 1,
+                minWidth: availableWidth <= NARROW_BREAKPOINT ? MIN_CARD_WIDTH_NARROW : MIN_CARD_WIDTH,
+                maxWidth: MAX_CARD_WIDTH,
+                gap: CARDS_GAP
+            };
+            const cardWidth = calculateCardWidth(cardLayoutConfig);
+            cardWidthRem = `${cardWidth / 16}rem`;
+        }
+
+        viewModel.setProperty('/insightsCardWidth', cardWidthRem);
+    }
+
     private async initializeInsightsContainer() {
+        const gridContainer = this.byId('insightsCardContainer') as GridContainer;
+        gridContainer?.addEventDelegate(
+            {
+                onAfterRendering: () => {
+                    this._updateInsightsCardWidth();
+                }
+            },
+            this
+        );
+
         try {
             const response = await fetch('/cards/store');
             if (!response.ok) {
