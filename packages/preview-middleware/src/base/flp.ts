@@ -129,6 +129,7 @@ export class FlpSandbox {
     private readonly project: ReaderCollection;
     private readonly cardGenerator?: CardGeneratorConfig;
     private readonly newsAdapter: NewsAdapter;
+    private readonly objectCardCache = new Map<string, object>();
     private projectType: ProjectType;
 
     /**
@@ -1177,7 +1178,6 @@ export class FlpSandbox {
 
     /**
      * Recursively scans a directory for manifest.json files and returns their parsed contents.
-     * Filters out cards of type "Object".
      *
      * @param dir the directory to scan
      * @returns array of parsed card manifest objects
@@ -1196,8 +1196,7 @@ export class FlpSandbox {
                     const content = this.fs.read(fullPath);
                     const parsed = JSON.parse(content) as Record<string, unknown>;
                     const sapApp = parsed['sap.app'] as Record<string, unknown> | undefined;
-                    const sapCard = parsed['sap.card'] as Record<string, unknown> | undefined;
-                    if (sapApp?.type === 'card' && sapCard?.type !== 'Object') {
+                    if (sapApp?.type === 'card') {
                         results.push(parsed);
                     }
                 } catch (error) {
@@ -1209,20 +1208,148 @@ export class FlpSandbox {
     }
 
     /**
-     * Retrieves all stored card manifests by scanning the `cards/` directory
-     * for manifest files with `sap.app.type === 'card'`, excluding Object cards.
+     * Resolves the OData entity set fetch URL from an Object card manifest.
      *
-     * @param {Request} _req - The HTTP request object.
+     * @param sapCard the sap.card section of the manifest
+     * @returns the resolved entity set URL path, or undefined if it cannot be resolved
+     */
+    private resolveEntitySetUrl(sapCard: Record<string, unknown>): string | undefined {
+        const config = sapCard['configuration'] as Record<string, unknown> | undefined;
+        const params = config?.['parameters'] as Record<string, Record<string, unknown>> | undefined;
+        const entitySet = params?.['_entitySet']?.['value'] as string | undefined;
+        if (!entitySet) {
+            return undefined;
+        }
+
+        const batchUrl = (sapCard['data'] as Record<string, unknown>)?.['request'] as
+            | Record<string, unknown>
+            | undefined;
+        const urlTemplate = batchUrl?.['url'] as string | undefined;
+        if (!urlTemplate) {
+            return undefined;
+        }
+
+        const destinations = config?.['destinations'] as Record<string, Record<string, unknown>> | undefined;
+        let defaultUrl = (destinations?.['service']?.['defaultUrl'] as string) ?? '';
+        defaultUrl = defaultUrl.endsWith('/') ? defaultUrl.substring(0, defaultUrl.length - 1) : defaultUrl;
+
+        const serviceUrl = urlTemplate.replace('{{destinations.service}}', defaultUrl).replace(/\/\$batch$/, '');
+        return `${serviceUrl}/${entitySet}?$top=1&$format=json`;
+    }
+
+    /**
+     * Fetches the first record from the entity set and populates mandatory parameter
+     * values in the Object card manifest. Results are cached by `sap.app.id`.
+     * Non-Object cards are returned unchanged.
+     *
+     * @param manifest the parsed card manifest
+     * @param req the incoming HTTP request (used for protocol/host)
+     * @returns the manifest, enhanced with parameter values for Object cards
+     */
+    private async enhanceObjectCardManifest(manifest: object, req: Request): Promise<object> {
+        const parsed = manifest as Record<string, unknown>;
+        const sapCard = parsed['sap.card'] as Record<string, unknown> | undefined;
+        if (sapCard?.['type'] !== 'Object') {
+            return manifest;
+        }
+
+        const sapApp = parsed['sap.app'] as Record<string, unknown> | undefined;
+        const appId = sapApp?.['id'] as string | undefined;
+        if (appId && this.objectCardCache.has(appId)) {
+            return this.objectCardCache.get(appId)!;
+        }
+
+        const fetchUrl = this.resolveEntitySetUrl(sapCard);
+        if (!fetchUrl) {
+            this.logger.debug('Could not resolve entity set URL for Object card');
+            return manifest;
+        }
+
+        try {
+            const baseUrl = `${req.protocol}://${req.headers.host}`;
+            const response = await fetch(`${baseUrl}${fetchUrl}`);
+            if (!response.ok) {
+                this.logger.debug(`Entity set fetch failed with status ${response.status}`);
+                return manifest;
+            }
+
+            const json = (await response.json()) as Record<string, unknown>;
+            const record = this.extractFirstRecord(json);
+            if (!record) {
+                return manifest;
+            }
+
+            this.populateMandatoryParameters(sapCard, record);
+
+            if (appId) {
+                this.objectCardCache.set(appId, parsed);
+            }
+        } catch (error) {
+            this.logger.debug(`Failed to enhance Object card manifest: ${error}`);
+        }
+
+        return manifest;
+    }
+
+    /**
+     * Extracts the first record from an OData JSON response.
+     * Handles both V2 (`d.results[0]`) and V4 (`value[0]`) response formats.
+     *
+     * @param json the parsed JSON response
+     * @returns the first record, or undefined if none found
+     */
+    private extractFirstRecord(json: Record<string, unknown>): Record<string, unknown> | undefined {
+        const d = json['d'] as Record<string, unknown> | undefined;
+        if (d) {
+            const results = d['results'] as Record<string, unknown>[] | undefined;
+            return results?.[0] ?? d;
+        }
+        const value = json['value'] as Record<string, unknown>[] | undefined;
+        return value?.[0];
+    }
+
+    /**
+     * Populates mandatory OData parameter values in the card manifest
+     * from a fetched entity record.
+     *
+     * @param sapCard the sap.card section of the manifest
+     * @param record the fetched entity record
+     */
+    private populateMandatoryParameters(sapCard: Record<string, unknown>, record: Record<string, unknown>): void {
+        const config = sapCard['configuration'] as Record<string, unknown> | undefined;
+        const params = config?.['parameters'] as Record<string, Record<string, unknown>> | undefined;
+        const mandatoryParams = params?.['_mandatoryODataParameters']?.['value'] as string[] | undefined;
+        if (!params || !mandatoryParams) {
+            return;
+        }
+
+        for (const paramName of mandatoryParams) {
+            const paramEntry = params[paramName];
+            if (paramEntry && paramName in record) {
+                paramEntry['value'] = String(record[paramName]);
+            }
+        }
+    }
+
+    /**
+     * Retrieves all stored card manifests by scanning the `cards/` directory
+     * for manifest files with `sap.app.type === 'card'`.
+     *
+     * @param {Request} req - The HTTP request object.
      * @param {Response} res - The HTTP response object used to send the response back to the client.
      * @returns {Promise<void>} A promise that resolves when the operation is complete.
      */
-    private async fetchStoredCardManifestsHandler(_req: Request, res: Response): Promise<void> {
+    private async fetchStoredCardManifestsHandler(req: Request, res: Response): Promise<void> {
         try {
             const webappPath = this.utils.getProject().getSourcePath();
             const cardsDir = join(webappPath, 'cards');
             const manifests = this.collectCardManifestsFromDirectory(cardsDir);
 
-            this.sendResponse(res, 'application/json', 200, JSON.stringify(manifests));
+            const enhanced = await Promise.all(
+                manifests.map((manifest) => this.enhanceObjectCardManifest(manifest, req))
+            );
+
+            this.sendResponse(res, 'application/json', 200, JSON.stringify(enhanced));
         } catch (error) {
             this.logger.error(`Could not retrieve stored card manifests. Error: ${error}`);
             this.sendResponse(res, 'text/plain', 500, 'Could not retrieve stored card manifests.');
