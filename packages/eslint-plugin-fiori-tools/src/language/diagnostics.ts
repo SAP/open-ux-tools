@@ -1,5 +1,6 @@
 import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser';
+import type { SourceLocation } from '@eslint/core';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
 export const ANCHOR_BAR_VISIBLE = 'sap-anchor-bar-visible';
 export const FLEX_ENABLED = 'sap-flex-enabled';
@@ -8,7 +9,9 @@ export const ENABLE_EXPORT = 'sap-enable-export';
 export const ENABLE_PASTE = 'sap-enable-paste';
 export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
+export const TABLE_PERSONALIZATION = 'sap-table-personalization';
 export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignment';
+export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -29,6 +32,7 @@ export interface ManifestPropertyDiagnosticData {
     uri: string;
     object: Manifest;
     propertyPath: string[];
+    loc?: SourceLocation;
 }
 
 export interface FlexEnabled {
@@ -84,8 +88,31 @@ export interface StatePreservationMode {
     value?: string;
 }
 
+export type PersonalizationProperty = 'column' | 'filter' | 'sort' | 'group';
+export type PersonalizationMessageId =
+    | 'sap-table-personalization'
+    | 'sap-table-personalization-column'
+    | 'sap-table-personalization-filter'
+    | 'sap-table-personalization-sort'
+    | 'sap-table-personalization-group'
+    | 'sap-table-missing-personalization-properties';
+
+export interface TablePersonalization {
+    type: typeof TABLE_PERSONALIZATION;
+    messageId: PersonalizationMessageId;
+    property?: PersonalizationProperty;
+    undefinedProperties?: PersonalizationProperty[];
+    pageName: string;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
 export interface TableColumnVerticalAlignment {
     type: typeof TABLE_COLUMN_VERTICAL_ALIGNMENT;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
+export interface StrictUomFiltering {
+    type: typeof STRICT_UOM_FILTERING;
     manifest: ManifestPropertyDiagnosticData;
 }
 
@@ -98,4 +125,6 @@ export type Diagnostic =
     | EnableExport
     | EnablePaste
     | StatePreservationMode
+    | StrictUomFiltering
+    | TablePersonalization
     | TableColumnVerticalAlignment;

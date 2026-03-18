@@ -40,7 +40,7 @@ export function getTargetEnvPrompt(
             hint: t('prompts.targetEnvTooltip'),
             breadcrumb: t('prompts.targetEnvBreadcrumb')
         },
-        validate: (value: string) => validateEnvironment(value, isCFLoggedIn),
+        validate: (value: string) => validateEnvironment(value, isCFLoggedIn, cfConfig),
         additionalMessages: (value: string) => getTargetEnvAdditionalMessages(value, isCFLoggedIn, cfConfig)
     } as ListQuestion<TargetEnvAnswers>;
 }
