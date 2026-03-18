@@ -760,7 +760,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as false. Currently column, filter, group, sort are disabled.'
+                            'When using an object, omitting a setting is treated as false. Currently column, filter, group, sort are disabled.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -831,12 +831,12 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as false. Currently column, sort are disabled.'
+                            'When using an object, omitting a setting is treated as false. Currently column, sort are disabled.'
                     },
                     {
                         line: 129,
                         column: 23,
-                        message: 'Table data filtering should be enabled.'
+                        message: 'Table data filtering must be enabled.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -889,12 +889,12 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as false. Currently column is disabled.'
+                            'When using an object, omitting a setting is treated as false. Currently column is disabled.'
                     },
                     {
                         line: 129,
                         column: 23,
-                        message: 'Table data filtering should be enabled.'
+                        message: 'Table data filtering must be enabled.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -965,12 +965,12 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as false. Currently filter, sort are disabled.'
+                            'When using an object, omitting a setting is treated as false. Currently filter, sort are disabled.'
                     },
                     {
                         line: 129,
                         column: 23,
-                        message: 'Table data grouping should be enabled for analytical and responsive type tables.'
+                        message: 'Table data grouping must be enabled for analytical and responsive type tables.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
