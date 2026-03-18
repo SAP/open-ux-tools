@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.32
+
+### Patch Changes
+
+- 4f86250: feat: Adjust mini wizard behavior for CF scenario
+- Updated dependencies [4f86250]
+    - @sap-ux/adp-tooling@0.18.95
+
 ## 0.9.31
 
 ### Patch Changes
