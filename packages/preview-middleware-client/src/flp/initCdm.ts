@@ -17,11 +17,6 @@ import type { Window } from 'types/global';
             }
         }
     },
-    apps: {
-        insights: {
-            enabled: true
-        }
-    },
     ushell: {
         customPreload: {
             enabled: false
