@@ -15,6 +15,7 @@
     "launchFlpConfigAsSubGenerator": false,
     "sapux": false,
     "localUI5Version": "1.82.2",
-    "manifestVersion": "1.31.0"
+    "manifestVersion": "1.31.0",
+    "enableEslint": false
   }
 }

@@ -366,8 +366,11 @@ export class KeyUserImportPrompter {
             this.logger.error(`Error validating key-user changes for adaptation ${adaptationId}: ${e.message}`);
             this.logger.debug(e);
 
-            if (isAxiosError(e) && (e.response?.status === 405 || e.response?.status === 404)) {
-                return t('error.keyUserNotSupported');
+            if (isAxiosError(e)) {
+                const status = e.response?.status;
+                if (status === 400 || status === 404 || status === 405) {
+                    return t('error.keyUserNotSupported');
+                }
             }
 
             return e.message;
