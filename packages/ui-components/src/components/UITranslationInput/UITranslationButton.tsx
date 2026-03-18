@@ -17,6 +17,12 @@ import './UITranslationInput.scss';
 export interface UITranslationButtonProps<T extends TranslationEntry> extends UITranslationProps<T> {
     onUpdateValue?: (value: string) => void;
     suggestion: TranslationSuggest<T>;
+    /**
+     * Inverted style theme
+     *
+     * @default false
+     */
+    invertedCalloutTheme?: boolean;
 }
 
 /**
@@ -32,13 +38,38 @@ const getStringText = (property: keyof TranslationInputStrings, strings?: Transl
 };
 
 /**
+ * Returns the CSS class names for the translation callout component.
+ * Adds the base callout class and optionally an inverted theme modifier.
+ *
+ * @param invertedCalloutTheme - If true, applies the inverted callout theme modifier.
+ * @returns A string containing the computed class names.
+ */
+const getCalloutClassNames = (invertedCalloutTheme?: boolean): string => {
+    let classNames = ' ui-translatable__callout';
+    if (invertedCalloutTheme) {
+        classNames += ` ui-translatable__callout--inverted`;
+    }
+    return classNames;
+};
+
+/**
  * Component to render translation button to provide helper callout with i18n generation option.
  *
  * @param props Component properties.
  * @returns Component to render translation button with callout.
  */
 export const UITranslationButton = <T extends TranslationEntry>(props: UITranslationButtonProps<T>): ReactElement => {
-    const { id, strings, value, onCreateNewEntry, onUpdateValue, onShowExistingEntry, busy, suggestion } = props;
+    const {
+        id,
+        strings,
+        value,
+        onCreateNewEntry,
+        onUpdateValue,
+        onShowExistingEntry,
+        busy,
+        suggestion,
+        invertedCalloutTheme
+    } = props;
     const [calloutVisible, setCalloutVisible] = useState(false);
     // Callbacks
     const onToggleCallout = useCallback((): void => {
@@ -87,7 +118,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                     beakWidth={8}
                     isBeakVisible={false}
                     setInitialFocus={true}
-                    className="ui-translatable__callout"
+                    className={getCalloutClassNames(invertedCalloutTheme)}
                     onDismiss={() => onToggleCallout()}
                     contentPadding={UICalloutContentPadding.Standard}>
                     <div className="ui-translatable__message">

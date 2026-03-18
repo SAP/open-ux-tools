@@ -1,5 +1,33 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.29
+
+### Patch Changes
+
+- Updated dependencies [dfa433e]
+    - @sap-ux/odata-annotation-core-types@0.5.7
+
+## 0.4.28
+
+### Patch Changes
+
+- 79e69b9: fix: update vocabularies
+
+## 0.4.27
+
+### Patch Changes
+
+- Updated dependencies [a2cbf4e]
+    - @sap-ux/odata-annotation-core-types@0.5.6
+
+## 0.4.26
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [cc1c422]
+    - @sap-ux/odata-annotation-core-types@0.5.5
+
 ## 0.4.25
 
 ### Patch Changes

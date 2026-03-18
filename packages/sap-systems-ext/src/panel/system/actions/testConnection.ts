@@ -217,11 +217,19 @@ function logCatalogError(version: ODataVersion, error: AxiosError): void {
  * @param error - Axios error
  */
 function logAxiosError(error: AxiosError): void {
+    const safeStringify = (obj: unknown): string => {
+        try {
+            return JSON.stringify(obj, null, 2);
+        } catch {
+            return String(obj);
+        }
+    };
+
     if (error.response?.data) {
-        SystemsLogger.logger.debug(JSON.stringify(error.response.data, null, 2));
+        SystemsLogger.logger.debug(safeStringify(error.response.data));
     }
     if (error.cause) {
-        SystemsLogger.logger.debug(JSON.stringify(error.cause, null, 2));
+        SystemsLogger.logger.debug(safeStringify(error.cause));
     }
 }
 

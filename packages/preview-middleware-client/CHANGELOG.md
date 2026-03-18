@@ -1,5 +1,60 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.19.0
+
+### Minor Changes
+
+- 428ee72: fix: Rename action missing for Object Page elements in Adaptation Editor. Annotation changes are now explicitly disabled as they are not supported in developer mode.
+
+## 0.18.27
+
+### Patch Changes
+
+- 3626b55: fix: Add New Card flow broken for OVP adaptation projects
+
+## 0.18.26
+
+### Patch Changes
+
+- 05f3f4c: fix: Various ADP Generator fixes for CF flow
+
+## 0.18.25
+
+### Patch Changes
+
+- 8017bd3: updates for minimatch
+
+    #37169
+
+## 0.18.24
+
+### Patch Changes
+
+- Updated dependencies [4f7b796]
+    - @sap-ux-private/control-property-editor-common@0.7.7
+
+## 0.18.23
+
+### Patch Changes
+
+- ed1399d: Fix: Change custom column creation in v4 from addXML to appDescr change
+
+## 0.18.22
+
+### Patch Changes
+
+- 0ecc5f1: fix(deps): Update dependency @ui5/manifest to v1.83.0
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [cc1c422]
+    - @sap-ux-private/control-property-editor-common@0.7.6
+
+## 0.18.21
+
+### Patch Changes
+
+- Updated dependencies [d588c26]
+    - @sap-ux-private/control-property-editor-common@0.7.5
+
 ## 0.18.20
 
 ### Patch Changes

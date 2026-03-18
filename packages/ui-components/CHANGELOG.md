@@ -1,5 +1,71 @@
 # @sap-ux/ui-components
 
+## 2.1.2
+
+### Patch Changes
+
+- addfdee: Add `GoToData` icon to `UiIcons` enum and `initIcons()` function
+
+## 2.1.1
+
+### Patch Changes
+
+- 59c6ac3: `UITranslationInput` — new property `invertedCalloutTheme` to toggle between normal and inverted callout styles. Default is `false`. Previously `invertedCalloutTheme` was applied by default.
+
+## 2.1.0
+
+### Minor Changes
+
+- 24bd091: feat(ui-component): add form, form field and mighty pen icons
+
+## 2.0.3
+
+### Patch Changes
+
+- 12b8b2e: Change icon color to use default color variable
+
+## 2.0.2
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
+## 2.0.1
+
+### Patch Changes
+
+- 14d8ab3: fix(deps): update dependency babel-loader to v10
+
+## 2.0.0
+
+### Major Changes
+
+- c4839f5: update border radius for UI components to improve consistency
+
+## 1.27.10
+
+### Patch Changes
+
+- 88a1f57: fix(deps): update dependency storybook to v8.6.17 [security]
+
+## 1.27.9
+
+### Patch Changes
+
+- 4e6c4d5: Update of Icons - `SidePanelRight`, `Edit`, `Trash`, `Add`, `Filter`
+
+## 1.27.8
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+
+## 1.27.7
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
 ## 1.27.6
 
 ### Patch Changes

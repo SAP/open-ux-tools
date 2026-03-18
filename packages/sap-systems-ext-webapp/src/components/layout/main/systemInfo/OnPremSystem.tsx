@@ -1,17 +1,17 @@
 import React from 'react';
 import type { ReactElement } from 'react';
 import type { BackendSystem } from '@sap-ux/store';
-import { UITextInput } from '@sap-ux/ui-components';
+import { UITextInput, UITooltip, UITooltipUtils } from '@sap-ux/ui-components';
 import { BasicAuthCreds } from './BasicAuthCreds';
 import { useTranslation } from 'react-i18next';
 
 import '../../../../styles/SystemMain.scss';
-import { getUrlErrorMessage } from './utils';
+import { getUrlErrorMessage, useTextInputOverflow } from './utils';
 
 interface OnPremSystemProps {
     systemInfo?: BackendSystem;
     setUrl: (url: string | undefined) => void;
-    setClient?: (client: string | undefined) => void;
+    setClient: (client: string | undefined) => void;
     setUsername: (username: string) => void;
     setPassword: (password: string) => void;
     setIsDetailsUpdated: (isUpdated: boolean) => void;
@@ -41,6 +41,9 @@ export function OnPremSystem({
     setIsDetailsValid
 }: Readonly<OnPremSystemProps>): ReactElement {
     const { t } = useTranslation();
+    const sysUrlId = 'sysUrl';
+    const { isEditing, isOverflowing, onEditStart, onEditEnd } = useTextInputOverflow(sysUrlId, systemInfo?.url);
+    const tooltipContent = <div className="url-tooltip">{systemInfo?.url}</div>;
 
     return (
         <div>
@@ -48,19 +51,28 @@ export function OnPremSystem({
                 <label className="store-detail-label">
                     {t('labels.url')} <span className="mandatory-asterisk">*</span>
                 </label>
-                <UITextInput
-                    name="systemUrl"
-                    id="sysUrl"
-                    key={`systemUrl-${systemInfo?.connectionType}`} // force re-render so validation is ran if connection type changes
-                    value={systemInfo?.url}
-                    onChange={(e) => {
-                        setUrl((e.target as HTMLInputElement).value);
-                        setIsDetailsUpdated(true);
-                    }}
-                    onGetErrorMessage={(value) =>
-                        getUrlErrorMessage(value, t, setIsDetailsValid, systemInfo?.connectionType)
-                    }
-                />
+                <UITooltip
+                    tooltipProps={UITooltipUtils.renderContent(tooltipContent)}
+                    delay={0}
+                    calloutProps={{ hidden: isEditing || !systemInfo?.url || !isOverflowing }}>
+                    <UITextInput
+                        name="systemUrl"
+                        id={sysUrlId}
+                        key={`systemUrl-${systemInfo?.connectionType}`} // force re-render so validation is ran if connection type changes
+                        value={systemInfo?.url}
+                        onChange={(e) => {
+                            onEditStart();
+                            setUrl((e.target as HTMLInputElement).value);
+                            setIsDetailsUpdated(true);
+                        }}
+                        onBlur={() => onEditEnd()}
+                        onGetErrorMessage={(value) => {
+                            const urlMessage = getUrlErrorMessage(value, t, systemInfo?.connectionType);
+                            setIsDetailsValid(!urlMessage);
+                            return urlMessage;
+                        }}
+                    />
+                </UITooltip>
             </div>
             <div className="store-text-field">
                 <label className="store-detail-label">{t('labels.client')}</label>
@@ -69,9 +81,7 @@ export function OnPremSystem({
                     id="sysClient"
                     value={systemInfo?.client}
                     onChange={(e) => {
-                        if (setClient) {
-                            setClient((e.target as HTMLInputElement).value);
-                        }
+                        setClient((e.target as HTMLInputElement).value);
                         setIsDetailsUpdated(true);
                     }}
                 />

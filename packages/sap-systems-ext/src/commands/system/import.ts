@@ -141,7 +141,7 @@ function readConfig(filePath: string): SystemConfig | undefined {
     const [systemConfig] = (JSON.parse(raw) as SystemConfigFile).systems ?? [];
 
     if (!systemConfig) {
-        throw new Error(t('error.noSystemsDefined', { filePath }));
+        throw new Error(t('error.noConnectionsDefined', { filePath }));
     }
     return systemConfig;
 }

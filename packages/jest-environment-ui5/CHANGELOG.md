@@ -1,5 +1,19 @@
 # Change Log
 
+## 5.3.19
+
+### Patch Changes
+
+- 83ca0e9: fix(deps): update dependency cross-env to v10
+
+## 5.3.18
+
+### Patch Changes
+
+- 8017bd3: updates for minimatch
+
+    #37169
+
 ## 5.3.17
 
 ### Patch Changes

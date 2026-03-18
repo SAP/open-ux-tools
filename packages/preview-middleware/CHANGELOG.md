@@ -1,5 +1,241 @@
 # @sap-ux/preview-middleware
 
+## 0.24.0
+
+### Minor Changes
+
+- 428ee72: fix: Rename action missing for Object Page elements in Adaptation Editor. Annotation changes are now explicitly disabled as they are not supported in developer mode.
+
+## 0.23.156
+
+### Patch Changes
+
+- 3626b55: fix: Add New Card flow broken for OVP adaptation projects
+- Updated dependencies [3626b55]
+    - @sap-ux/adp-tooling@0.18.94
+
+## 0.23.155
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/adp-tooling@0.18.93
+    - @sap-ux/system-access@0.6.66
+
+## 0.23.154
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/adp-tooling@0.18.92
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/system-access@0.6.65
+
+## 0.23.153
+
+### Patch Changes
+
+- Updated dependencies [53af342]
+    - @sap-ux/adp-tooling@0.18.91
+
+## 0.23.152
+
+### Patch Changes
+
+- 0453fe5: fix: ensure leading slash for preview paths
+
+## 0.23.151
+
+### Patch Changes
+
+- 05f3f4c: fix: Various ADP Generator fixes for CF flow
+- Updated dependencies [05f3f4c]
+    - @sap-ux/adp-tooling@0.18.90
+
+## 0.23.150
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.89
+
+## 0.23.149
+
+### Patch Changes
+
+- Updated dependencies [f14a3d1]
+    - @sap-ux/adp-tooling@0.18.88
+
+## 0.23.148
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.87
+- @sap-ux/system-access@0.6.64
+
+## 0.23.147
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/adp-tooling@0.18.86
+    - @sap-ux/system-access@0.6.63
+
+## 0.23.146
+
+### Patch Changes
+
+- Updated dependencies [5d458c7]
+    - @sap-ux/adp-tooling@0.18.85
+
+## 0.23.145
+
+### Patch Changes
+
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+- Updated dependencies [83ca0e9]
+- Updated dependencies [fdd57de]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/adp-tooling@0.18.84
+    - @sap-ux/system-access@0.6.63
+
+## 0.23.144
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.83
+
+## 0.23.143
+
+### Patch Changes
+
+- Updated dependencies [f5f9a78]
+- Updated dependencies [45d4797]
+    - @sap-ux/adp-tooling@0.18.82
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/system-access@0.6.62
+
+## 0.23.142
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.81
+- @sap-ux/system-access@0.6.61
+
+## 0.23.141
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/adp-tooling@0.18.80
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/system-access@0.6.60
+
+## 0.23.140
+
+### Patch Changes
+
+- Updated dependencies [2d42592]
+    - @sap-ux/adp-tooling@0.18.79
+
+## 0.23.139
+
+### Patch Changes
+
+- Updated dependencies [4af92b5]
+    - @sap-ux/adp-tooling@0.18.78
+    - @sap-ux/system-access@0.6.60
+
+## 0.23.138
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/adp-tooling@0.18.77
+    - @sap-ux/system-access@0.6.59
+
+## 0.23.137
+
+### Patch Changes
+
+- b68b558: Fix card generator endpoints using wrong paths for CAP projects.
+
+## 0.23.136
+
+### Patch Changes
+
+- Updated dependencies [6c993f3]
+    - @sap-ux/adp-tooling@0.18.76
+    - @sap-ux/system-access@0.6.58
+
+## 0.23.135
+
+### Patch Changes
+
+- ed1399d: Fix: Change custom column creation in v4 from addXML to appDescr change
+- Updated dependencies [ed1399d]
+    - @sap-ux/adp-tooling@0.18.75
+
+## 0.23.134
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+- Updated dependencies [fd8de2b]
+- Updated dependencies [c043712]
+    - @sap-ux/i18n@0.3.9
+    - @sap-ux/adp-tooling@0.18.74
+    - @sap-ux/project-access@1.35.9
+    - @sap-ux/system-access@0.6.57
+
+## 0.23.133
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/i18n@0.3.8
+    - @sap-ux/adp-tooling@0.18.73
+    - @sap-ux/system-access@0.6.56
+
+## 0.23.132
+
+### Patch Changes
+
+- Updated dependencies [ce9f074]
+    - @sap-ux/adp-tooling@0.18.72
+
+## 0.23.131
+
+### Patch Changes
+
+- 34b8293: fix: add cards generator path to CAP index.html
+
+## 0.23.130
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.71
+- @sap-ux/project-access@1.35.7
+- @sap-ux/system-access@0.6.56
+
+## 0.23.129
+
+### Patch Changes
+
+- Updated dependencies [d588c26]
+    - @sap-ux/adp-tooling@0.18.70
+    - @sap-ux/feature-toggle@0.3.7
+    - @sap-ux/system-access@0.6.56
+
 ## 0.23.128
 
 ### Patch Changes
