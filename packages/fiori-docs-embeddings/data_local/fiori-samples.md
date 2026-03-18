@@ -1,254 +1,241 @@
 
 --------------------------------
 
-**TITLE**: SAP Fiori tools - Sample Projects: Setup, Run, and Access Mock OData
+**TITLE**: Samples for SAP Fiori tools
 
-**INTRODUCTION**: This document provides concise, actionable steps to clone the "Samples for SAP Fiori tools" repo, install dependencies, run a sample Fiori elements project locally, and access its mock OData service. Use these steps when automating setup in scripts or generating project-specific boilerplate.
+**INTRODUCTION**: This repository contains sample SAP Fiori elements projects built with SAP Fiori tools. Use these samples to learn, follow tutorials, or run local mock data and OData services. Steps below show how to download, install, run, and access the mock OData service for any sample app folder (e.g., V2/apps/myfioriapp).
 
-**TAGS**: fiori-samples, sap-fiori, sap-fiori-tools, samples, npm, mock-odata, tutorial
+**TAGS**: fiori-samples, sap-fiori, sap-fiori-tools, sapui5, odata, mock-server, tutorials, samples
 
-**STEP**: 1. Clone repository
+**STEP**: 1 — Retrieve repository
 
-**DESCRIPTION**: Clone the samples repository to your local filesystem. Replace <destination-folder> with your preferred path or omit it to clone into the current directory.
+**DESCRIPTION**: Clone the repository to your local file system or download it as a ZIP from GitHub. The canonical repo URL is provided below.
 
 **LANGUAGE**: Shell
 
 **CODE**:
 ```shell
-# Clone the repository (public GitHub)
-git clone https://github.com/SAP-samples/fiori-tools-samples.git <destination-folder>
-
-# Example: clone into current directory
+# Clone repository (preferred)
 git clone https://github.com/SAP-samples/fiori-tools-samples.git
+
+# OR download as ZIP via browser from:
+# https://github.com/SAP-samples/fiori-tools-samples
 ```
 
-**STEP**: 2. Inspect samples and choose a sample app
+**STEP**: 2 — Choose a sample app directory
 
-**DESCRIPTION**: The repository contains multiple sample projects grouped by scenario. Change into the chosen sample app folder before installing dependencies. Common path pattern: V2/apps/<sample-app-name>.
+**DESCRIPTION**: Change into the sample app you want to run. Tutorials and blog posts reference specific sample folders (e.g., V2/apps/myfioriapp). The folder containing runtime screenshots is V2/apps/images/products-review-run.png.
 
 **LANGUAGE**: Shell
 
 **CODE**:
 ```shell
-# List recommended sample folders
-ls -la fiori-tools-samples/V2/apps
-
-# Example: change to the "myfioriapp" sample app
+# Example: navigate to a specific sample app before installing dependencies
 cd fiori-tools-samples/V2/apps/myfioriapp
+
+# Screenshot path demonstrating "URL" and "Service Path"
+# V2/apps/images/products-review-run.png
 ```
 
-**STEP**: 3. Install npm dependencies
+**STEP**: 3 — Install dependencies
 
-**DESCRIPTION**: Install all project dependencies for the selected sample. Run from the sample app root (where package.json lives).
+**DESCRIPTION**: Install Node.js dependencies for the selected sample. Refer to the SAP Fiori tools documentation for Node.js and tool version requirements before running (link provided).
 
 **LANGUAGE**: Shell
 
 **CODE**:
 ```shell
-# From sample app folder (contains package.json)
+# Install dependencies in the sample app folder
 npm install
+
+# SAP Fiori tools documentation / requirements:
+# https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html
 ```
 
-**STEP**: 4. Start the sample app locally (dev server)
+**STEP**: 4 — Start the sample app locally
 
-**DESCRIPTION**: Start the local development server. The start script will host the Fiori elements app and expose a dev server URL and a Service Path for the mock OData service. Note terminal output for "URL" and "Service Path".
+**DESCRIPTION**: Start the local host for the sample app. The dev server prints a "URL" to open the UI and a "Service Path" to the mock OData service. Use the "URL" to view the app; to access the OData service combine the "URL" and the "Service Path". The run screenshot shows where these values appear.
 
-**LANGUAGE**: Shell
+**LANGUAGE**: Shell / Plain text
 
 **CODE**:
 ```shell
-# Start the local dev server (serves app + mock OData)
+# Start the app (runs the local dev server)
 npm start
 ```
 
-**STEP**: 5. Construct and open the mock OData endpoint
-
-**DESCRIPTION**: Combine the "URL" value (host + port) and the "Service Path" value (OData path) displayed by the dev server to form the full mock OData endpoint. Open the app URL in a browser to view the running app, or open the combined OData URL to inspect mock service metadata or OData responses.
-
-**LANGUAGE**: Plain text / URL
-
-**CODE**:
+Example terminal output (illustrative):
 ```text
-# Example values displayed by the dev server:
 URL: http://localhost:8083
 Service Path: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+```
 
-# Combined full mock OData endpoint:
+Combine the two values to call the mock OData service:
+```text
 http://localhost:8083/sap/opu/odata/sap/SEPMRA_PROD_MAN
-
-# Open the app in a browser (app URL is provided by the dev server)
-# Open the OData metadata in a browser:
-http://localhost:8083/sap/opu/odata/sap/SEPMRA_PROD_MAN/$metadata
 ```
 
-**STEP**: 6. View the example run screenshot (local file)
+**STEP**: 5 — View app with mock data
 
-**DESCRIPTION**: Example screenshot showing the running sample app and dev server values is stored in the repo. Open it for quick visual reference.
+**DESCRIPTION**: Use the printed URL in a browser to view the Fiori elements UI with mock data. To query the mock OData endpoints, use the combined URL (URL + Service Path) as shown above.
 
-**LANGUAGE**: Shell / File path
-
-**CODE**:
-```shell
-# Screenshot file path relative to repo root
-V2/apps/images/products-review-run.png
-
-# On macOS:
-open V2/apps/images/products-review-run.png
-
-# On Linux:
-xdg-open V2/apps/images/products-review-run.png
-
-# On Windows (PowerShell):
-ii .\V2\apps\images\products-review-run.png
-```
-
-**STEP**: 7. Requirements and troubleshooting references
-
-**DESCRIPTION**: For environment, prerequisites, and detailed getting-started instructions, consult the SAP Fiori tools documentation. Use the SAP Community for general questions and the specified GitHub issues link only for tutorial-related problems.
-
-**LANGUAGE**: Plain text / URL
+**LANGUAGE**: Plain text
 
 **CODE**:
 ```text
-# Official SAP Fiori tools documentation (prereqs & setup)
-https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html
+# Example:
+# Open in browser:
+http://localhost:8083
 
-# Support options:
-# 1) SAP Community (general support) - tag "SAP Fiori tools"
+# OData mock service endpoint:
+http://localhost:8083/sap/opu/odata/sap/SEPMRA_PROD_MAN
+```
+
+**STEP**: 6 — Known issues
+
+**DESCRIPTION**: There are no known issues with the sample resources in this repository. If you encounter problems, follow the support options below.
+
+**LANGUAGE**: Plain text
+
+**CODE**:
+```text
+# No known issues for repository samples.
+```
+
+**STEP**: 7 — How to obtain support
+
+**DESCRIPTION**: Two support channels:
+- Use SAP Community when asking general questions related to SAP Fiori tools (select tag "SAP Fiori tools").
+- If the sample fails specifically in SAP Developer tutorials, report via the Tutorials GitHub issues link.
+
+**LANGUAGE**: Plain text
+
+**CODE**:
+```text
+# Option 1: SAP Community (general questions about Fiori tools)
 https://answers.sap.com/questions/ask.html
+# Tag your question with: "SAP Fiori tools"
 
-# 2) Report issues related to SAP Developer tutorials only:
+# Option 2: Report tutorial/sample-specific issues (only for tutorial integration issues)
 https://github.com/SAPDocuments/Tutorials/issues/new
 ```
 
-**STEP**: 8. License
+**STEP**: 8 — License
 
-**DESCRIPTION**: Project is licensed under Apache License 2.0. Refer to the license file in the repo for full terms.
+**DESCRIPTION**: The project is licensed under Apache License 2.0. License file path is included in the repository.
 
-**LANGUAGE**: Plain text / File path
+**LANGUAGE**: Plain text
 
 **CODE**:
 ```text
-# License file path in repository
-LICENSES/Apache-2.0.txt
+# License:
 # Copyright (c) 2009-2020 SAP SE or an SAP affiliate company.
+# Licensed under the Apache Software License, version 2.0
+# See file: /LICENSES/Apache-2.0.txt
 ```
 --------------------------------
 
-**TITLE**: SAP Fiori elements application - Products Review (List Report Object Page, V2)
+**TITLE**: SAP Fiori elements application - Products Review (List Report / Object Page V2)
 
-**INTRODUCTION**: Step-by-step developer guide to clone, install, run the Products Review sample Fiori Elements application, start the local mock OData server, obtain the combined OData service URL, and open the application in a browser. Use the combined URL as the service endpoint when generating or testing other Fiori apps with SAP Fiori tools.
+**INTRODUCTION**: Quick, actionable guide to clone, install, run and view the "Products Review" SAP Fiori elements sample. Includes how to start the local mock OData server and how to derive the OData service URL from console output.
 
-**TAGS**: fiori-samples, sap-fiori, fiori-elements, lrop-v2, mock-server, odata
+**TAGS**: fiori-samples, fiori, sap-fiori, mock-server, odata, list-report, object-page, npm
 
-STEP: 1 — Create workspace folder and clone repository
-DESCRIPTION: Create a local folder, clone the repository (replace <GIT_REPO_URL> with the repository URL), then change into the project folder path fiori-tools-samples/V2/products-review.
-LANGUAGE: Bash
-CODE:
-```bash
-# create a workspace folder (optional)
+**STEP**: 1 — Create workspace and clone repository
+
+**DESCRIPTION**: Create a local folder for the sample and clone the repository. Replace <repository-url> with the actual GitHub repository URL you want to clone.
+
+**LANGUAGE**: Shell
+
+**CODE**:
+```shell
+# create a folder (optional)
 mkdir ~/projects
 cd ~/projects
 
-# clone the repository (replace with actual GitHub URL)
-git clone <GIT_REPO_URL>
+# clone the repository (replace with actual repo URL)
+git clone <repository-url>
 
-# navigate to the sample app subfolder
+# navigate into the sample path used by this documentation
 cd fiori-tools-samples/V2/products-review
 ```
 
-STEP: 2 — Install npm dependencies
-DESCRIPTION: Install all dependencies declared in package.json inside fiori-tools-samples/V2/products-review.
-LANGUAGE: Bash
-CODE:
-```bash
-# from project root
+**STEP**: 2 — Install dependencies
+
+**DESCRIPTION**: Install Node.js dependencies defined in package.json. Run this inside fiori-tools-samples/V2/products-review.
+
+**LANGUAGE**: Shell
+
+**CODE**:
+```shell
+# from fiori-tools-samples/V2/products-review
 npm install
 ```
 
-STEP: 3 — Start the application and local mock server
-DESCRIPTION: Start the application. The project starts a local mock OData server and a small web server. Watch the console for two values: "URL" (base address) and "Service Path" (OData service path). Example log lines will show how to build the full OData service URL.
-LANGUAGE: Bash
-CODE:
-```bash
-# start the local server(s)
+**STEP**: 3 — Start the application and/or mock server
+
+**DESCRIPTION**: Start the project. This will run the local mock server that exposes the OData service and launches the app (or provide a local index.html). Watch the terminal console for "Service Path" and "URL" values.
+
+**LANGUAGE**: Shell
+
+**CODE**:
+```shell
 npm start
-
-# Example console output (format)
-# URL: http://localhost:8080
-# Service Path: /mockserver/ProductsReviewService/
-# Combine to form OData service endpoint: http://localhost:8080/mockserver/ProductsReviewService/
 ```
 
-STEP: 4 — Form the full OData service URL to use with SAP Fiori tools
-DESCRIPTION: Combine the "URL" and "Service Path" values exactly as printed to form the OData endpoint. Use this combined URL when generating new apps with SAP Fiori tools or when configuring an external client.
-LANGUAGE: Plain text
-CODE:
+**STEP**: 4 — Construct the OData service URL (when using mock server)
+
+**DESCRIPTION**: In the terminal output you will see two pieces of information: URL and Service Path. Combine them to form the OData service URL used by SAP Fiori tools or the application: ODataServiceURL = URL + ServicePath. Example format: http://localhost:XXXX + /mockservice/path
+
+**LANGUAGE**: None
+
+**CODE**:
 ```text
-# Example combination
-# URL                = http://localhost:8080
-# Service Path       = /mockserver/ProductsReviewService/
-# Combined OData URL = http://localhost:8080/mockserver/ProductsReviewService/
+# Example terminal output (illustrative)
+# URL: http://localhost:3000
+# Service Path: /sap/opu/odata/sap/Z_PRODUCTS_SRV
+# Combined OData service URL:
+# http://localhost:3000/sap/opu/odata/sap/Z_PRODUCTS_SRV
 ```
 
-STEP: 5 — Open the running application in a browser
-DESCRIPTION: Open the printed "URL" in a browser, click index.html in the server file listing (or directly open the app path), then click "Manage Products" to view the List Report / Object Page application.
-LANGUAGE: Plain text
-CODE:
+**STEP**: 5 — View the application in a browser
+
+**DESCRIPTION**: Open the application using the URL shown in the console. Navigate to the project's index.html and then open the sample screen "Manage Products" to see the List Report / Object Page.
+
+**LANGUAGE**: None
+
+**CODE**:
 ```text
-# 1. Open the base URL printed by npm start (e.g., http://localhost:8080)
-# 2. Click index.html in the directory listing (or browse to the app path shown in console)
-# 3. In the app, click "Manage Products" to load the List Report -> Object Page UI
+# Steps:
+# 1. Copy the 'URL' value from the terminal (e.g., http://localhost:3000)
+# 2. Paste it into your browser address bar and press Enter
+# 3. Click on index.html (served by the dev server)
+# 4. Click on "Manage Products" in the app to open the Fiori sample
 ```
 
-STEP: 6 — Use the mock OData endpoint with SAP Fiori tools Application Generator
-DESCRIPTION: In SAP Fiori tools (Application Generator), when prompted for an OData service, paste the Combined OData URL (from STEP 4). Proceed through generator inputs to create or test an LROP V2 application against the local mock data.
-LANGUAGE: Plain text
-CODE:
-```text
-# In the SAP Fiori tools Application Generator:
-# - Service URL: <Combined OData URL from STEP 4>
-# - Follow generator prompts to scaffold an LROP V2 application
-```
+**STEP**: 6 — Notes for using this project with SAP Fiori tools Application Generator
 
-STEP: 7 — Project file paths and quick references
-DESCRIPTION: Important repository path and files for quick inspection and modification.
-LANGUAGE: Plain text
-CODE:
-```text
-# Key project folder (relative to repository root)
-fiori-tools-samples/V2/products-review
+**DESCRIPTION**: Use the OData service URL (constructed in STEP 4) as the data source when creating an LROP V2 application with the SAP Fiori tools Application Generator. The mock server provides a local OData endpoint compatible with the generator.
 
-# Files to inspect or customize
-- package.json              # npm scripts and dependencies
-- src/                      # application source (UI5/Fiori elements artifacts)
-- mockserver/               # mock data and server configuration (if present)
-- index.html                # entry page shown when accessing the base URL
-```
+**LANGUAGE**: None
 
-STEP: 8 — Notes and troubleshooting
-DESCRIPTION: Basic troubleshooting tips: ensure you ran npm install, confirm npm start logs URL & Service Path, and use the exact concatenation of those values as the OData endpoint.
-LANGUAGE: Plain text
-CODE:
+**CODE**:
 ```text
-# Troubleshooting checklist:
-# - Confirm you are in fiori-tools-samples/V2/products-review when running npm install/npm start
-# - If no URL/Service Path appears, look for server or mockserver logs in the console
-# - Use the exact printed URL + Service Path (watch for trailing slashes)
-# - If ports conflict, stop other local servers or change the port via environment/config if supported
+# Use this OData service URL in Fiori tools Application Generator:
+# http://localhost:3000/sap/opu/odata/sap/Z_PRODUCTS_SRV  (example)
 ```
 --------------------------------
 
-**TITLE**: Sales Order (Generated SAP Fiori Elements App) — Start & Metadata
+**TITLE**: Application Details — Sales Order (salesorder)
 
-**INTRODUCTION**: Quick reference for starting the generated SAP Fiori Elements app and for programmatic access to the generation metadata. Use these steps to run the app locally (regular or mock), verify prerequisites, and install the ESLint plugin used by the project.
+**INTRODUCTION**: Metadata and run instructions for the generated SAP Fiori Elements application "Sales Order" (module: salesorder). Use this for automated code generation, CI scripts, or local development tasks such as starting the app or running it with mock data.
 
-**TAGS**: fiori-samples, sap-fiori-elements, UI5, OData, npm, eslint, mock-data
+**TAGS**: fiori, sap, ui5, odata, fiori-elements, list-report, object-page, nodejs, eslint, mock-data, sap_fiori_3
 
-**STEP**: 1 — Generated application metadata (machine-readable)
-**DESCRIPTION**: Copy this JSON object into your automation, test harness, or generator-lookup table to preserve all generation metadata (generator, platform, floorplan, service URL, UI5 details, and more).
-**LANGUAGE**: JSON
-**CODE**:
+STEP: 1 — Generated application metadata (machine-friendly)
+DESCRIPTION: Core metadata collected at generation time. Keep this JSON snippet for tooling, validation, or automated scaffolding.
+LANGUAGE: JSON
+CODE:
 ```json
 {
   "generationDateTime": "Wed Aug 10 2022 13:46:39 GMT+0200 (Central European Summer Time)",
@@ -264,906 +251,740 @@ CODE:
   "ui5Theme": "sap_fiori_3",
   "ui5Version": "1.84.14",
   "enableCodeAssistLibraries": true,
-  "eslintConfigurationAdded": true,
-  "eslintPlugin": "https://www.npmjs.com/package/eslint-plugin-fiori-custom",
+  "eslintConfig": "https://www.npmjs.com/package/eslint-plugin-fiori-custom",
   "mainEntity": "SalesOrder"
 }
 ```
 
-**STEP**: 2 — Start the generated app (development)
-**DESCRIPTION**: From the project's root folder run the start script that the generator created. This launches the app in development mode using the configured backend/service URL.
-**LANGUAGE**: Bash
-**CODE**:
+STEP: 2 — Start the generated app (development)
+DESCRIPTION: Run the app from the generated app root folder. This launches the UI5 development server and serves the Fiori Elements app.
+LANGUAGE: bash
+CODE:
 ```bash
-# Change to the generated app root folder (if not already there)
-cd /path/to/your/generated/salesorder
-
-# Start the app (development)
 npm start
 ```
 
-**STEP**: 3 — Start the generated app using mock data
-**DESCRIPTION**: Run the project's mock server script to run the app against generated mock data that reflects the OData Service URL used during generation. Useful for offline development and UI testing.
-**LANGUAGE**: Bash
-**CODE**:
+STEP: 3 — Start the generated app with mock data
+DESCRIPTION: Run the app using mock data that mirrors the OData service supplied at generation time. Use this for offline development and UI testing without a live backend.
+LANGUAGE: bash
+CODE:
 ```bash
-# From the project root
 npm run start-mock
-
-# The mock server uses the OData metadata and annotations generated during scaffolding.
-# Mock data is meant to mirror:
-# https://sapes5.sapdevcenter.com/sap/opu/odata4/sap/ze2e001/default/sap/ze2e001_salesorder/0001/
 ```
 
-**STEP**: 4 — Verify Node / NPM prerequisites
-**DESCRIPTION**: Ensure an active Node.js LTS version and its supported npm are installed. Use these commands to check installed versions. If needed, install/switch Node versions (nvm example shown).
-**LANGUAGE**: Bash
-**CODE**:
+STEP: 4 — Pre-requisites (verify environment)
+DESCRIPTION: Ensure a supported Node.js LTS and matching npm are installed. Use the commands below to verify installed versions before running the app.
+LANGUAGE: bash
+CODE:
 ```bash
-# Check Node and npm versions
+# Verify Node.js and npm versions (Node.js LTS recommended)
 node -v
 npm -v
-
-# Optional: use nvm to switch to Node LTS
-# nvm install --lts
-# nvm use --lts
 ```
 
-**STEP**: 5 — ESLint configuration (install plugin used by the project)
-**DESCRIPTION**: The project includes ESLint configuration using the eslint-plugin-fiori-custom ruleset. Install the plugin as a dev dependency if you need to reproduce the linting environment or CI checks.
-**LANGUAGE**: Bash
-**CODE**:
-```bash
-# Install the ESLint plugin referenced by the generated project
-npm install --save-dev eslint-plugin-fiori-custom
+STEP: 5 — ESLint configuration reference
+DESCRIPTION: The project includes ESLint configuration. Use the referenced plugin for Fiori-specific linting rules. Include or reference this package when setting up CI or local dev linting.
+LANGUAGE: text
+CODE:
+```
+ESLint plugin for Fiori custom rules:
+https://www.npmjs.com/package/eslint-plugin-fiori-custom
+```
 
-# Reference / documentation:
-# https://www.npmjs.com/package/eslint-plugin-fiori-custom
+STEP: 6 — Notes for automation/CI
+DESCRIPTION: Use the metadata JSON (STEP 1) in automation scripts to:
+- Validate serviceUrl values before running integration tests.
+- Confirm UI5 version (1.84.14) and theme (sap_fiori_3) for compatibility checks.
+- Use mainEntity ("SalesOrder") and floorplan ("List Report Object Page V4") to generate test scenarios or mock payloads. 
+LANGUAGE: JSON
+CODE:
+```json
+{
+  "ciHints": {
+    "validateServiceUrl": true,
+    "ui5Version": "1.84.14",
+    "theme": "sap_fiori_3",
+    "mainEntity": "SalesOrder",
+    "floorplan": "List Report Object Page V4"
+  }
+}
 ```
 --------------------------------
 
-**TITLE**: SAP Fiori Elements Incidents Management — Preview & Setup
+**TITLE**: Fiori Elements Incidents Management — Sample App (OData V4 List Report)
 
-**INTRODUCTION**: Sample SAP Fiori Elements (OData V4) app for managing incidents. This guide provides concise, action-oriented steps to prepare the workspace, install dependencies, and preview the application using SAP Fiori tools in SAP Business Application Studio or Visual Studio Code.
+**INTRODUCTION**: This repository contains a SAP Fiori sample app to manage incidents. The app is implemented as a Fiori elements List Report using OData V4. Use this guide to clone, install, and preview the app locally in SAP Business Application Studio or Visual Studio Code with the SAP Fiori tools extension.
 
-**TAGS**: fiori-samples, sap-fiori, odata-v4, list-report, incidents, fiori-tools, vscode, business-application-studio
+**TAGS**: fiori, sap, odata-v4, sap-fiori-tools, samples, list-report, incidents-management, business-application-studio, vscode, npm
 
-**STEP**: 1 — Prerequisites
+STEP: Overview and learning resources
 
-**DESCRIPTION**: Ensure your environment has the required tools and extensions installed before opening the project:
-- Node.js and npm installed.
-- Visual Studio Code or SAP Business Application Studio.
-- SAP Fiori tools extension (for VS Code: "SAP Fiori tools" / "Fiori tools - Application Preview").
-- Familiarize with the tutorial and tool documentation linked below.
+DESCRIPTION: The app demonstrates a Fiori elements List Report pattern for OData V4. Reference tutorial and setup docs to learn how it was built and how to run it.
 
-Documentation links:
 - Tutorial: https://developers.sap.com/group.fiori-tools-odata-v4-incident.html
-- SAP Fiori tools docs: https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html
+- SAP Fiori tools documentation: https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html
 
-**LANGUAGE**: Plain text
+LANGUAGE: Markdown
 
-**CODE**:
-```text
-Prerequisites:
-- Node.js (https://nodejs.org/)
-- Visual Studio Code or SAP Business Application Studio
-- Install "SAP Fiori tools" extension in VS Code (for local preview)
+CODE:
+```markdown
+Tutorial: https://developers.sap.com/group.fiori-tools-odata-v4-incident.html
+SAP Fiori tools docs: https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html
 ```
 
-**STEP**: 2 — Clone repository (if not already cloned)
+STEP: Requirements
 
-**DESCRIPTION**: Clone the project repository and change into the project folder. Replace <REPO_URL> with the repository URL.
+DESCRIPTION: Preview and run this sample using either:
+- SAP Business Application Studio (BAS)
+- Visual Studio Code with the SAP Fiori tools extension
 
-**LANGUAGE**: Shell
+Ensure Node.js and npm are installed. Use the SAP Fiori tools extension in VS Code or the SAP Fiori perspective in BAS to preview the application.
 
-**CODE**:
+LANGUAGE: Plain Text
+
+CODE:
+```text
+Supported environments:
+- SAP Business Application Studio
+- Visual Studio Code + SAP Fiori tools extension
+Prerequisites:
+- Node.js (LTS recommended)
+- npm
+```
+
+STEP: Clone repository and open workspace
+
+DESCRIPTION: Clone the repository to your local machine (or create the project workspace in BAS). Open the project root folder named fiori-elements-incidents-management as the workspace root before installing dependencies.
+
+LANGUAGE: Shell
+
+CODE:
 ```bash
-# clone repository (replace with actual repo URL)
-git clone <REPO_URL>
+# Example: clone the repository (replace <repository-url> with the actual URL)
+git clone <repository-url>
 
-# change into the project workspace root
+# Open the project folder as the workspace root:
 cd fiori-elements-incidents-management
 ```
 
-**STEP**: 3 — Open workspace in your IDE
+STEP: Install dependencies
 
-**DESCRIPTION**: Open the fiori-elements-incidents-management folder as the workspace root in your IDE.
+DESCRIPTION: Install npm dependencies from the project root. Run this in a terminal opened at the workspace root folder fiori-elements-incidents-management.
 
-**LANGUAGE**: Shell / UI
+LANGUAGE: Shell
+
+CODE:
+```bash
+npm install
+```
+
+STEP: Preview the application using SAP Fiori tools
+
+DESCRIPTION: Use the SAP Fiori Tools preview feature to run the app locally.
+
+- In Visual Studio Code: Open the SAP Fiori extension view (left activity bar), locate the project, right-click the project entry and select "Preview Application".
+- In SAP Business Application Studio: Use the SAP Fiori tools or the preview/run options provided by BAS to start the app preview.
+
+LANGUAGE: Plain Text
+
+CODE:
+```text
+In VS Code:
+1. Click on "SAP Fiori" in the left activity bar.
+2. Right-click the project 'fiori-elements-incidents-management' and select "Preview Application".
+
+In BAS:
+Use the SAP Fiori tools preview/run action for the opened project workspace.
+```
+
+STEP: Notes and troubleshooting
+
+DESCRIPTION: If preview fails, verify:
+- You opened the folder fiori-elements-incidents-management as the workspace root
+- npm install completed without errors
+- SAP Fiori tools extension is installed and enabled
+- Node.js version is compatible (use LTS)
+
+LANGUAGE: Plain Text
+
+CODE:
+```text
+Troubleshooting checklist:
+- Confirm workspace root: fiori-elements-incidents-management
+- Re-run: npm install
+- Ensure SAP Fiori Tools extension is installed (VS Code) or SAP Fiori perspective is used (BAS)
+- Check Node.js and npm versions
+```
+--------------------------------
+
+**TITLE**: Incidents Management — Generated Fiori Elements App Details
+
+**INTRODUCTION**: Metadata and run instructions for the generated SAP Fiori Elements List Report (V4) application "Incidents Management". Use this to inspect generation settings, start the app locally, or run it with mock data.
+
+**TAGS**: fiori-samples, sap, fiori-elements, cap, ui5, list-report, mock, generator-fiori-elements
+
+STEP: 1 — App generation metadata
+
+DESCRIPTION: Full generation metadata extracted from the application report. Use these values when configuring local runtime, service connections, or regenerating the app.
+
+LANGUAGE: JSON
+
+CODE:
+```json
+{
+  "Generation Date and Time": "Fri Dec 09 2024 13:43:41 GMT+0000 (Coordinated Universal Time)",
+  "App Generator": "@sap/generator-fiori-elements",
+  "App Generator Version": "1.8.3",
+  "Generation Platform": "SAP Business Application Studio",
+  "Template Used": "List Report Page V4",
+  "Service Type": "Local Cap",
+  "Service URL": "http://localhost:4004/incident/",
+  "Module Name": "incidents",
+  "Application Title": "Incidents Management",
+  "Namespace": "sap.fe.demo",
+  "UI5 Theme": "sap_horizon",
+  "UI5 Version": "1.108.0",
+  "Enable Code Assist Libraries": false,
+  "Enable TypeScript": false,
+  "Add Eslint configuration": false,
+  "Main Entity": "Incidents",
+  "Navigation Entity": "None",
+  "App Start URL": "http://localhost:4004/incidents/webapp/index.html"
+}
+```
+
+STEP: 2 — Start the generated app locally
+
+DESCRIPTION: Start your CAP project (backend OData service) and open the generated Fiori Elements UI in your browser at the app start URL below. Ensure the CAP service is running on the same host/port as the Service URL.
+
+LANGUAGE: text
+
+CODE:
+```
+http://localhost:4004/incidents/webapp/index.html
+```
+
+STEP: 3 — Run the app with mock data
+
+DESCRIPTION: To run the application using mock data (reflecting the OData Service URL provided during generation), execute this command from the generated app root folder.
+
+LANGUAGE: Shell
+
+CODE:
+```bash
+npm run start-mock
+```
+
+STEP: 4 — Pre-requisites / verify environment
+
+DESCRIPTION: The app requires an active Node.js LTS runtime and a supported npm version. Verify Node.js and npm are installed and accessible before starting the CAP project or running the mock server.
+
+LANGUAGE: Shell
+
+CODE:
+```bash
+node -v
+npm -v
+```
+--------------------------------
+
+**TITLE**: SAP Fiori Elements List Report Sample — Product Manager (OData V2)
+
+**INTRODUCTION**: Sample SAP Fiori elements app (list report) to manage products using OData V2. Use this repository to preview and develop the app with SAP Fiori tools in SAP Business Application Studio or Visual Studio Code. Requires an SAP Gateway Demo system (ES5) for live data.
+
+**TAGS**: fiori-samples, sap-fiori, odata-v2, sap-fiori-tools, sap-business-application-studio, visual-studio-code, sample-app
+
+**STEP**: Prerequisites and resources
+
+**DESCRIPTION**: Confirm required tools and backend access before starting. Required: SAP Fiori tools in BAS or VS Code, and access to SAP Gateway Demo system (ES5). Reference tutorials and documentation for setup.
+
+**LANGUAGE**: text
+
+**CODE**:
+```text
+Tutorial to build app (overview): 
+https://help.sap.com/docs/link-disclaimer?site=https%3A%2F%2Fdevelopers.sap.com%2Fgroup.fiori-tools-lrop.html
+
+Fiori tools getting started:
+https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html
+
+Signup for ES5 (SAP Gateway Demo system) if needed:
+https://developers.sap.com/tutorials/gateway-demo-signup.html
+```
+
+**STEP**: Open project and install dependencies
+
+**DESCRIPTION**: Open a terminal in the application folder (example folder name is myfioriapp). Install Node dependencies required by the project.
+
+**LANGUAGE**: Bash
 
 **CODE**:
 ```bash
-# open the current folder in VS Code (if using VS Code)
-code .
+# Open a terminal in the project/app folder (e.g., right-click the app folder and open terminal)
+cd myfioriapp
+
+# Install dependencies
+npm install
 ```
-UI action (SAP Business Application Studio or VS Code):
-- Open the IDE → File → Open Folder → select the fiori-elements-incidents-management folder.
 
-**STEP**: 4 — Install dependencies
+**STEP**: Prepare SAP Fiori tools environment
 
-**DESCRIPTION**: Install npm dependencies at the project root. Run this once after cloning or when dependencies change.
+**DESCRIPTION**: In Visual Studio Code or SAP Business Application Studio, switch to the SAP Fiori activity, open Application Modeler, and view Application Info and Application Status. Use these UI screens to validate manifest, data source, and app settings required for preview.
+
+**LANGUAGE**: text
+
+**CODE**:
+```text
+1. In the left activity bar, switch to "SAP Fiori".
+2. In Application Modeler view, right-click the app name to open "Application Info".
+3. On the "Application Info" page, inspect and perform actions under "Application Status".
+```
+
+**STEP**: Preview the application (live backend or mock data)
+
+**DESCRIPTION**: Use the Application Modeler UI to preview the app. Choose "start" to preview with live data from the backend (requires ES5 access), or choose "start-mock" to preview using mock data provided in the project.
+
+**LANGUAGE**: text
+
+**CODE**:
+```text
+1. In Application Modeler view, right-click the app name.
+2. Select "Preview Application".
+3. Choose one of the options:
+   - start       -> preview with live backend data (requires ES5)
+   - start-mock  -> preview with mock data
+```
+--------------------------------
+
+**TITLE**: SAPUI5 Sample App — Product Management (Freestyle)
+
+**INTRODUCTION**: Quick reference for setting up, installing dependencies, and previewing the SAPUI5 Product Management sample app (freestyle). Use this when generating automation or CLI scripts to prepare the app for local preview using SAP Fiori tools in SAP Business Application or VS Code.
+
+**TAGS**: fiori-samples, sapui5, ui5, sap-fiori, sample-app, preview, installation
+
+**STEP**: 1 — Prepare project folder and install dependencies
+
+**DESCRIPTION**: From the cloned repository, open a terminal in the application folder (example folder name: myfioriapp). Install Node dependencies with npm. This prepares the project for preview and local tooling.
 
 **LANGUAGE**: Shell
 
 **CODE**:
 ```bash
-# install project dependencies
+# open terminal in the app folder (example folder name: myfioriapp)
+cd myfioriapp
+
+# install dependencies
 npm install
 ```
 
-**STEP**: 5 — Preview the application using SAP Fiori tools
+**STEP**: 2 — Verify environment and prerequisites
 
-**DESCRIPTION**: Use the SAP Fiori tools extension to run the application preview. In VS Code use the Fiori tools view; in Business Application Studio use the SAP Fiori launchpad preview.
+**DESCRIPTION**: Ensure SAP Fiori tools are available in your environment (SAP Business Application or Visual Studio Code). Follow the SAP Fiori tools setup documentation if tools are not installed. This step is required before using the Application Modeler and preview features.
 
-Actions:
-- In VS Code: click the "SAP Fiori" icon on the left activity bar → right-click the project → select "Preview Application".
-- In Business Application Studio: use the "Preview Application" command from the SAP Fiori tools panel.
-
-**LANGUAGE**: Plain text
+**LANGUAGE**: Markdown
 
 **CODE**:
-```text
-VS Code UI steps:
-1. Click "SAP Fiori" in the left activity bar.
-2. Right-click the "fiori-elements-incidents-management" project.
-3. Select "Preview Application".
-
-Business Application Studio:
-- Use the SAP Fiori tools panel and select "Preview Application" for the project.
+```markdown
+Prerequisite documentation:
+- SAP Fiori tools setup: https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html
+Tutorial to learn app development: https://developers.sap.com/group.cp-frontend-ui5-1.html
 ```
 
-**STEP**: 6 — Troubleshooting & further learning
+**STEP**: 3 — Use SAP Fiori tools: open Application Modeler and check Application Info
 
-**DESCRIPTION**: If preview fails, verify node/npm versions, ensure SAP Fiori tools extension is installed and active, and confirm the current folder is the project root. For a step-by-step build guide and learning material, follow the tutorial link.
+**DESCRIPTION**: In SAP Business Application or VS Code with SAP Fiori tools, open the "SAP Fiori" view, then use Application Modeler to inspect the app. Right-click the app name to open Application Info and review Application Status. Perform any required actions (e.g., bind services, configure destinations) shown in Application Status before preview.
 
-**LANGUAGE**: Plain text
+**LANGUAGE**: Shell
 
 **CODE**:
-```text
-If preview fails:
-- Confirm Node.js and npm are installed and on PATH.
-- Run `npm install` again to ensure dependencies are present.
-- Ensure the opened folder is: fiori-elements-incidents-management
-- Confirm SAP Fiori tools extension is installed and enabled.
-
-Learn more:
-- Tutorial: https://developers.sap.com/group.fiori-tools-odata-v4-incident.html
-- Fiori tools docs: https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html
-```
---------------------------------
-
-**TITLE**: Incidents Management — Run & Metadata (SAP Fiori Elements / CAP)
-
-**INTRODUCTION**: Quick-reference for launching the generated "Incidents Management" Fiori Elements app (List Report Page V4) backed by a local CAP service. Contains project metadata, service endpoints, example commands to start the CAP backend or run the app with mock data, and quick prerequisite checks.
-
-**TAGS**: fiori-samples, sap-fiori, fiori-elements, cap, ui5, odata, incidents, sap-fe
-
-STEP: 1 — Project Metadata (machine-friendly)
-DESCRIPTION: Project and generation metadata extracted from the generated application. Use this JSON object in automation scripts or to populate environment/config files.
-LANGUAGE: JSON
-CODE:
-```json
-{
-  "generationDate": "Fri Dec 09 2024 13:43:41 GMT+0000 (Coordinated Universal Time)",
-  "appGenerator": "@sap/generator-fiori-elements",
-  "appGeneratorVersion": "1.8.3",
-  "generationPlatform": "SAP Business Application Studio",
-  "templateUsed": "List Report Page V4",
-  "serviceType": "Local Cap",
-  "serviceURL": "http://localhost:4004/incident/",
-  "moduleName": "incidents",
-  "applicationTitle": "Incidents Management",
-  "namespace": "sap.fe.demo",
-  "ui5Theme": "sap_horizon",
-  "ui5Version": "1.108.0",
-  "enableCodeAssistLibraries": false,
-  "enableTypeScript": false,
-  "addEslintConfiguration": false,
-  "mainEntity": "Incidents",
-  "navigationEntity": "None",
-  "appStartUrl": "http://localhost:4004/incidents/webapp/index.html"
-}
-```
-
-STEP: 2 — Start CAP backend (examples)
-DESCRIPTION: Start the local CAP service that serves the OData endpoint. Use the command that matches your project setup. Run from the project root (where package.json and srv/ exist).
-LANGUAGE: Shell
-CODE:
 ```bash
-# Option A: If project uses SAP Cloud Application Programming model CLI
-# (recommended when @sap/cds is available)
-cd /path/to/project/root
-# start/logging with live-reload
-cds watch
-
-# Option B: If npm start script is available (common for generated projects)
-npm start
-
-# After backend is running, open the application in your browser:
-# (Application index generated by the template)
-http://localhost:4004/incidents/webapp/index.html
+# GUI actions (execute in SAP Business Application or VS Code with SAP Fiori tools):
+# 1. Open the "SAP Fiori" view (left activity bar).
+# 2. In "Application Modeler" view, right-click the app name -> Application Info.
+# 3. Review and perform actions under "Application Status".
+# (No CLI commands for these GUI steps.)
 ```
 
-STEP: 3 — Run the application with mock data
-DESCRIPTION: Launch the app in mock mode using the shipped script. This simulates the OData service used during generation.
-LANGUAGE: Shell
-CODE:
-```bash
-# Run from the generated app root folder
-npm run start-mock
-```
+**STEP**: 4 — Preview the application
 
-STEP: 4 — Service endpoint and app paths
-DESCRIPTION: Key endpoints and file paths for integration and automation.
-LANGUAGE: JSON
-CODE:
-```json
-{
-  "odataServiceUrl": "http://localhost:4004/incident/",
-  "appIndexHtml": "/incidents/webapp/index.html",
-  "fullAppUrl": "http://localhost:4004/incidents/webapp/index.html",
-  "moduleFolder": "incidents"
-}
-```
+**DESCRIPTION**: Start a local preview of the application from the Application Modeler. Right-click the app name in Application Modeler, choose "Preview Application", and select the "start" option. Use the preview to validate UI and OData/service connectivity.
 
-STEP: 5 — Prerequisites and quick checks
-DESCRIPTION: Verify Node and npm prerequisites before starting the app.
-LANGUAGE: Shell
-CODE:
-```bash
-# Verify Node (LTS) and npm versions
-node --version
-npm --version
+**LANGUAGE**: Shell
 
-# If using @sap/cds commands (optional)
-# Install/verify cds globally or as dev dependency
-npm install --save-dev @sap/cds
-# then use
-npx cds --version
-```
-
-STEP: 6 — Quick troubleshooting notes
-DESCRIPTION: Common issues and quick remediation steps when the app or service fails to start.
-LANGUAGE: Shell
-CODE:
-```bash
-# If port 4004 is in use, find and stop the process (example for Linux/macOS)
-lsof -i :4004
-kill <pid>
-
-# If OData endpoint returns 404:
-curl -i http://localhost:4004/incident/
-
-# If mock script fails, inspect package.json for 'start-mock' script
-cat package.json | jq '.scripts["start-mock"]'
-```
---------------------------------
-
-**TITLE**: SAP Fiori Elements List Report (Products) — Sample App Setup and Preview
-
-**INTRODUCTION**: Quick, action-oriented guide to prepare, install dependencies, and preview the SAP Fiori Elements list report sample app (Products) that uses OData V2. Use this to get the sample running in SAP Business Application Studio (BAS) or Visual Studio Code with SAP Fiori tools and to preview live data from the SAP Gateway Demo ES5 system or using mock data.
-
-**TAGS**: fiori-samples, sap-fiori, fiori-elements, odata-v2, sap-business-application-studio, visual-studio-code, application-modeler
-
-**STEP**: 1 — Prerequisites: SAP Gateway Demo (ES5) access and Fiori tools
-**DESCRIPTION**: Ensure you have access to the SAP Gateway Demo system (ES5) to preview live backend data. Also confirm you have SAP Fiori tools installed in your IDE (BAS or VS Code). If you need ES5 access, follow the signup tutorial.
-**LANGUAGE**: text
 **CODE**:
-```text
-SAP Gateway Demo (ES5) signup tutorial:
-https://developers.sap.com/tutorials/gateway-demo-signup.html
+```bash
+# GUI actions to preview:
+# 1. In "Application Modeler", right-click the app name -> "Preview Application".
+# 2. Choose the "start" option to launch the preview.
+# 3. Inspect the running app in the preview browser window that opens.
+```
 
-SAP Fiori tools documentation:
+**STEP**: 5 — Reference learning resources
+
+**DESCRIPTION**: Use the official tutorial and documentation to understand the app structure and build process. These links are the canonical resources for implementing or extending the sample.
+
+**LANGUAGE**: Markdown
+
+**CODE**:
+```markdown
+Tutorial (how to build this app):
+https://developers.sap.com/group.cp-frontend-ui5-1.html
+
+SAP Fiori tools documentation (setup & usage):
 https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html
-
-Developer tutorial for building this app:
-https://help.sap.com/docs/link-disclaimer?site=https%3A%2F%2Fdevelopers.sap.com%2Fgroup.fiori-tools-lrop.html
-```
-
-**STEP**: 2 — Clone repository and open the app folder
-**DESCRIPTION**: Clone the repository (replace <repo-url>) and open the sample app folder (example folder name: myfioriapp). Use BAS or VS Code. In VS Code, use `code .` to open the folder in the current window.
-**LANGUAGE**: shell
-**CODE**:
-```bash
-# clone repo (replace <repo-url> with actual repository URL)
-git clone <repo-url>
-
-# change into the sample app folder (example folder name: myfioriapp)
-cd myfioriapp
-
-# (optional) open the folder in VS Code
-code .
-```
-
-**STEP**: 3 — Install npm dependencies
-**DESCRIPTION**: From the app folder (myfioriapp) open a terminal and run npm install to install project dependencies required by the Fiori app.
-**LANGUAGE**: shell
-**CODE**:
-```bash
-# from within the app folder (myfioriapp)
-npm install
-```
-
-**STEP**: 4 — Open SAP Fiori tools Application Modeler
-**DESCRIPTION**: In BAS or VS Code, switch to the SAP Fiori view. Open the Application Modeler (left activity bar: "SAP Fiori"). Right-click the app name in the Application Modeler view to open the Application Info page and review Application Status actions (e.g., check connection, required roles, routing).
-**LANGUAGE**: text
-**CODE**:
-```text
-1. In the left Activity Bar, click "SAP Fiori"
-2. In "Application Modeler" view, locate your app (myfioriapp)
-3. Right-click app name -> "Application Info"
-4. Under "Application Status", review and perform any suggested actions
-```
-
-**STEP**: 5 — Preview the application (live backend or mock data)
-**DESCRIPTION**: Use the Application Modeler to preview the app. Right-click the app name and select "Preview Application". Choose "start" to preview using live data from the backend (requires ES5 credentials), or choose "start-mock" to preview with mock data.
-**LANGUAGE**: text
-**CODE**:
-```text
-1. In "Application Modeler", right-click your app -> "Preview Application"
-2. Choose:
-   - "start"       -> Launch preview with live OData V2 backend (ES5). Ensure backend destination/credentials are configured.
-   - "start-mock"  -> Launch preview using generated mock data (no backend required)
-3. Follow prompts to open the preview in a new browser tab or in the IDE preview window
-```
-
-**STEP**: 6 — Troubleshooting and next steps
-**DESCRIPTION**: If preview fails, verify:
-- ES5 account credentials and destination configuration (if using live data)
-- Network/proxy settings in the IDE
-- Required SAP Fiori tools extensions are installed
-Refer to the SAP Fiori tools docs and the tutorial linked above for build and debug steps.
-**LANGUAGE**: text
-**CODE**:
-```text
-Common checks:
-- Confirm ES5 demo user and password
-- Confirm destination configuration points to ES5
-- Re-run `npm install` if dependencies are missing
-- Check browser console and terminal logs for errors
-```
---------------------------------
-
-**TITLE**: SAPUI5 Freestyle Product Manager — Setup and Preview with SAP Fiori Tools
-
-**INTRODUCTION**: Quick, code-focused instructions to clone, install, and preview the SAPUI5 freestyle sample "Product Manager" app using SAP Fiori tools (VS Code or SAP Business Application). Includes required prerequisites, file paths, and terminal commands.
-
-**TAGS**: fiori-samples, sapui5, sap-fiori-tools, vscode, sample-app, product-management, freestyle
-
-**STEP**: 1 — Prerequisites
-
-**DESCRIPTION**: Ensure your environment has the required software and extensions before opening the app in SAP Fiori tools.
-
-**LANGUAGE**: Text
-
-**CODE**:
-```text
-Required:
-- Node.js (LTS recommended)
-- npm (comes with Node.js)
-- Visual Studio Code OR SAP Business Application Studio
-- SAP Fiori tools extension(s) installed in VS Code (Application Modeler / Fiori tools)
-- Network access to the cloned repository or SAP system (if applicable)
-
-Documentation links:
-- App tutorial: https://developers.sap.com/group.cp-frontend-ui5-1.html
-- SAP Fiori tools getting started: https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html
-```
-
-**STEP**: 2 — Clone repository (adjust URL)
-
-**DESCRIPTION**: Clone the repository containing the sample app. Replace <repo-url> with the actual repository URL. This creates a local folder (example folder name: myfioriapp).
-
-**LANGUAGE**: Bash
-
-**CODE**:
-```bash
-# clone the repository (replace <repo-url> with actual URL)
-git clone <repo-url>
-
-# change into the application folder (example folder name)
-cd myfioriapp
-```
-
-**STEP**: 3 — Install npm dependencies
-
-**DESCRIPTION**: From the application's root folder (e.g., myfioriapp) open a terminal and run npm install to install dependencies required by the SAPUI5 app.
-
-**LANGUAGE**: Bash
-
-**CODE**:
-```bash
-# from the app root (myfioriapp)
-npm install
-```
-
-**STEP**: 4 — Verify package.json (optional)
-
-**DESCRIPTION**: Inspect package.json to see available npm scripts. The Application Modeler preview uses a "start" option; if a "start" script exists you can run it directly as an alternative to using the UI preview.
-
-**LANGUAGE**: Bash/JSON
-
-**CODE**:
-```bash
-# print scripts section of package.json
-cat package.json | sed -n '1,120p'  # or open package.json in editor
-
-# Example: run start script if present
-npm run start
-```
-
-**STEP**: 5 — Open app in VS Code / SAP Business Application Studio
-
-**DESCRIPTION**: Open the cloned folder in VS Code or SAP Business Application Studio. Use the SAP Fiori tools activity view to access Application Modeler.
-
-**LANGUAGE**: Text
-
-**CODE**:
-```text
-# In VS Code:
-1. File -> Open Folder -> select <path>/myfioriapp
-2. Open the SAP Fiori tools activity view (left activity bar -> "SAP Fiori")
-3. In Application Modeler, locate the app name entry for this project
-```
-
-**STEP**: 6 — Check Application Info and Application Status
-
-**DESCRIPTION**: Right-click the app entry in Application Modeler -> "Application Info" to open the Application Info page. Review and perform actions under "Application Status" if required (e.g., resolve missing configuration or service connections).
-
-**LANGUAGE**: Text
-
-**CODE**:
-```text
-# UI steps:
-- Right click on the app name in Application Modeler
-- Select "Application Info"
-- Inspect fields in "Application Status" and perform suggested actions (if any)
-```
-
-**STEP**: 7 — Preview the application (SAP Fiori tools)
-
-**DESCRIPTION**: Use Application Modeler to preview the app. Right-click app name -> "Preview Application" -> choose "start" to launch the preview. This uses the Fiori tools local preview server to serve the UI5 application.
-
-**LANGUAGE**: Text
-
-**CODE**:
-```text
-# UI steps to preview:
-- In Application Modeler, right click on the app name
-- Select "Preview Application"
-- Choose the "start" preview option
-# Optional alternative (if package.json has "start"):
-npm run start
-# Then open the provided URL (usually http://localhost:8080 or as shown in terminal)
-```
-
-**STEP**: 8 — Troubleshooting tips
-
-**DESCRIPTION**: Common checks if preview fails: ensure Node/npm versions, verify dependency install, check Application Status in Application Modeler, and confirm no port conflicts. Consult Fiori tools documentation linked above.
-
-**LANGUAGE**: Text
-
-**CODE**:
-```text
-Troubleshooting checklist:
-- Node and npm installed and in PATH
-- npm install completed without errors
-- No port conflicts (if preview server fails to start)
-- Application Status shows no missing configs or broken targets
-- Check developer console and terminal logs for detailed error messages
 ```
 --------------------------------
 
 **TITLE**: Get Started with SAP Cloud Application Programming Model (CAP) using Fiori tools
 
-**INTRODUCTION**: Practical, code-focused steps to run, build and deploy the CAP sample projects (with different approuter configurations) included in this repository. Includes local development, MTA build & Cloud Foundry deployment, running standalone approuter, hybrid CDS profile handling, and creating a SAP BTP Destination to expose CAP services. Use these commands and file paths to reproduce or adapt the samples.
+**INTRODUCTION**: This repository contains sample CAP projects demonstrating different approuter configurations and deployment steps for Cloud Foundry. Use these samples to generate CAP services and Fiori frontends, test router configurations (managed/standalone/hybrid), create BTP destinations, and deploy to SAP BTP / Cloud Foundry. Follow the included sample README files and the referenced blog post for step-by-step generation and deployment guidance.
 
-**TAGS**: sap, cap, fiori, cloud-foundry, hana, xsuaa, approuter, mta, destination, sap-btp, cds, nodejs
+**TAGS**: cap, sap, fiori, cloud-foundry, approuter, hana, xsuaa, destination, cds, mta, ci-cd
 
-**STEP**: 1 — Clone repository and locate CAP sample projects
-
-**DESCRIPTION**: Clone the repository containing the CAP + Fiori sample projects and list the sample directories referenced in this documentation.
-
-**LANGUAGE**: Bash
-
-**CODE**:
-```bash
-# Clone the repository that contains these samples (replace <REPO_URL> with the repo URL)
-git clone <REPO_URL> cap-fiori-samples
-cd cap-fiori-samples
-
-# Confirm the CAP sample folders referenced below exist
-ls -d cap/cap-fiori-mta cap/cap-fiori-mta-standalone cap/cap-fiori-hybrid cap/destination
-```
-
-**STEP**: 2 — Run a CAP project locally (generic instructions)
-
-**DESCRIPTION**: Install npm dependencies and run a CAP service locally using the CDS CLI. This uses the default SQLite persistence for local testing. Use cds watch to auto-reload while developing.
-
-**LANGUAGE**: Bash
-
-**CODE**:
-```bash
-# Change into a sample CAP project (example: managed approuter sample)
-cd cap/cap-fiori-mta
-
-# Install dependencies
-npm install
-
-# Run locally with live-reload and default SQLite DB
-npx cds watch
-
-# Alternative: build and run the Node.js service directly (without watch)
-npx cds build
-node srv/server.js   # if package.json provides this entry
-```
-
-**STEP**: 3 — Build MTA archive for Cloud Foundry (Managed Approuter)
-
-**DESCRIPTION**: For projects that use a managed approuter and are packaged as an MTA, use the mbt tool to build an .mtar and then deploy to Cloud Foundry. Ensure your mta.yaml contains required modules and resource/service definitions (HANA, XSUAA, HTML5 runtime).
-
-**LANGUAGE**: Bash
-
-**CODE**:
-```bash
-# Install MBT (Multi-Target Application Build Tool)
-npm install -g @sap/mbt
-
-# From the root of the managed-approuter project
-cd cap/cap-fiori-mta
-
-# Build MTA archive (creates mta_archives/<app>.mtar)
-mbt build
-
-# Login to Cloud Foundry and target org/space
-cf login -a https://api.<CF_API_ENDPOINT> -u <USER> -p <PASSWORD> -o <ORG> -s <SPACE>
-
-# Deploy the generated .mtar (force overwrite with -f if needed)
-cf deploy mta_archives/<your-app-name>.mtar -f
-```
-
-**STEP**: 4 — Deploy a standalone approuter project (in-memory/database-less or SQLite)
-
-**DESCRIPTION**: The standalone approuter sample runs without the MTA packaging; it can be pushed directly to Cloud Foundry (cf push) or run locally. Use an in-memory/SQLite DB for simple testing; update package.json or manifest.yml as needed for CF deployment.
-
-**LANGUAGE**: Bash
-
-**CODE**:
-```bash
-# Change to standalone project
-cd cap/cap-fiori-mta-standalone
-
-# Install dependencies
-npm install
-
-# Run locally
-npx cds watch
-
-# To deploy to Cloud Foundry without MTA packaging:
-# Ensure a manifest.yml exists in the project root (app name, memory, buildpack, env)
-cf push
-
-# Example minimal manifest.yml fragment inside this project (create if absent):
-# ---
-# applications:
-# - name: cap-fiori-standalone
-#   memory: 512M
-#   buildpacks:
-#     - nodejs_buildpack
-#   command: npm start
-```
-
-**STEP**: 5 — Managed Approuter with CDS Hybrid Profile (HANA + XSUAA on SAP BTP)
-
-**DESCRIPTION**: Use the hybrid profile to support both local development and cloud-bound HANA + XSUAA services. The project typically contains a cds configuration (package.json/cds-config.json or @sap/cds settings) and an mta.yaml that binds to HANA and XSUAA. Build and deploy via mbt as in Step 3. Locally, override service bindings by using environment variables or default-env.json.
-
-**LANGUAGE**: Bash / JSON
-
-**CODE**:
-```bash
-# Example: run hybrid profile locally using environment defaults (project: cap/cap-fiori-hybrid)
-cd cap/cap-fiori-hybrid
-npm install
-
-# Use local SQLite for testing, or set environment variables to connect to a remote HANA
-# Example: set CDS to use hana when running in cloud, else sqlite for local runs
-export CDS_ENV_PATH=default-env.json   # if your project uses this pattern
-
-# Start locally
-npx cds watch
-
-# Build and deploy to BTP Cloud Foundry (same mbt and cf flow)
-mbt build
-cf deploy mta_archives/<your-hybrid-app>.mtar -f
-```
-
-**STEP**: 6 — Create a SAP BTP Destination to expose CAP services
-
-**DESCRIPTION**: Configure a Destination in SAP BTP that points to a deployed CAP app route so other BTP apps or subaccounts can consume the CAP OData endpoints. You can create destinations in the BTP Cockpit or via the BTP CLI. This example shows a destination JSON and a CLI-style creation (conceptual). Check ../cap/destination/README.md for cross-subaccount/region details.
-
-**LANGUAGE**: JSON / Bash
-
-**CODE**:
-```json
-// Example destination JSON (use BTP Cockpit or API to create)
-{
-  "Name": "my-cap-service-destination",
-  "Type": "HTTP",
-  "URL": "https://<your-cap-app-route>",
-  "ProxyType": "Internet",
-  "Description": "Destination exposing CAP OData services",
-  "Authentication": "NoAuthentication"     // or OAuth2SAMLBearerAssertion / OAuth2UserTokenExchange depending on your security
-}
-```
-
-```bash
-# Conceptual CLI flow using BTP/CF tooling (replace placeholders accordingly)
-
-# 1) Create a destination service instance in the subaccount (Cloud Foundry destination service plan)
-cf create-service destination lite destination-instance
-
-# 2) Bind the destination service to a Cloud Foundry space or app (if required)
-cf bind-service <app-name> destination-instance
-
-# 3) Alternatively, create destination in the BTP Cockpit:
-#    - Navigate to Subaccount -> Connectivity -> Destinations -> New Destination
-#    - Paste the JSON fields (Name, URL, Authentication, etc.)
-```
-
-**STEP**: 7 — References, diagnostics and continuous delivery notes
-
-**DESCRIPTION**: Preserve links to documentation, blog post and CI/CD resources for deeper guidance and deployment automation.
-
-**LANGUAGE**: Plain text / URLs
-
-**CODE**:
-```text
-# Official CAP docs and examples
-https://cap.cloud.sap/docs/
-
-# Blog post used to generate these projects (select approuter/HTML5 runtime)
-https://blogs.sap.com/2022/02/10/build-and-deploy-a-cap-project-node.js-api-with-a-sap-fiori-elements-ui-and-a-managed-approuter-configuration/
-
-# Continuous Integration / Delivery tutorial (video)
-https://www.youtube.com/watch?v=gvWSHSZFPok
-
-# Sample project folders referenced in this repo:
-cap/cap-fiori-mta/           # Managed Approuter + HANA Cloud service
-cap/cap-fiori-mta-standalone/ # Standalone Approuter + in-memory/SQLite DB
-cap/cap-fiori-hybrid/       # Managed Approuter with CDS hybrid profile (HANA + XSUAA)
-cap/destination/            # Create SAP BTP Destination exposing CAP services
-
-# License
-/LICENSES/Apache-2.0.txt  # Apache Software License, version 2.0
-```
-
---------------------------------
-
-**TITLE**: Get Started with SAP CAP + Fiori Elements using Managed Approuter and Hybrid Profile (Cloud Foundry)
-
-**INTRODUCTION**: Quick, action-oriented guide to develop, test, and run a SAP Cloud Application Programming Model (CAP) project with a Fiori Elements UI on Cloud Foundry using a managed approuter and CAP hybrid profile. Enables “production-near” testing: use real HANA HDI and XSUAA services locally via bindings and a local approuter that fetches valid tokens.
-
-**TAGS**: fiori, cap, hybrid, cloud-foundry, approuter, hana, xsuaa, sap-btp, fiori-elements
-
-**STEP**: Prerequisites
-**DESCRIPTION**: Ensure cloud services, trial account and dev workspace exist before proceeding.
+**STEP**: Repository sample overview
+**DESCRIPTION**: The repository provides four CAP sample projects. Use the README files in each folder for project-specific instructions, configuration, and deployment details.
 **LANGUAGE**: text
 **CODE**:
-```
-Required:
-- SAP Cloud Platform trial account: https://account.hana.ondemand.com/
-- Subscribe to Launchpad Service: https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html
-- Create SAP HANA Cloud Service instance and ensure it is running:
-  https://developers.sap.com/tutorials/btp-app-hana-cloud-setup.html
-- Create a dev workspace using "Full Stack Cloud Application" (SAP Business Application Studio or VS Code dev space)
+```text
+Sample projects (relative paths in this repository):
+
+1. Managed Approuter with SAP HANA Cloud service
+   Path: cap/cap-fiori-mta/README.md
+
+2. Standalone Approuter with an in-memory database
+   Path: cap/cap-fiori-mta-standalone/README.md
+
+3. Managed Approuter with CDS Hybrid Profile (HANA + XSUAA on SAP BTP)
+   Path: cap/cap-fiori-hybrid/README.md
+
+4. Create a SAP BTP Destination exposing CAP services (supports cross subaccount & regions)
+   Path: cap/destination/README.md
 ```
 
-**STEP**: Clone repository and open project
-**DESCRIPTION**: Clone the sample repo and change into the CAP hybrid project folder.
+**STEP**: Open a sample README and inspect project files
+**DESCRIPTION**: Navigate to a sample folder and open its README for step-by-step instructions, configuration snippets, and deployment commands specific to that sample. Use local file inspection or display the file contents in your environment to extract actionable steps for automation.
 **LANGUAGE**: bash
+**CODE**:
+```bash
+# Example commands (run from repository root)
+ls -la cap/cap-fiori-mta
+cat cap/cap-fiori-mta/README.md
+
+ls -la cap/cap-fiori-mta-standalone
+cat cap/cap-fiori-mta-standalone/README.md
+
+ls -la cap/cap-fiori-hybrid
+cat cap/cap-fiori-hybrid/README.md
+
+ls -la cap/destination
+cat cap/destination/README.md
+```
+
+**STEP**: Follow the official CAP generation guide (blog post)
+**DESCRIPTION**: The sample projects were generated following the blog post linked below. Use it to reproduce CAP project scaffolding and to select the HTML5 application runtime approuter configuration when generating the Fiori frontend.
+**LANGUAGE**: text
+**CODE**:
+```text
+Blog post used to generate samples:
+https://blogs.sap.com/2022/02/10/build-and-deploy-a-cap-project-node.js-api-with-a-sap-fiori-elements-ui-and-a-managed-approuter-configuration/
+
+Action:
+- Follow the blog steps to scaffold the CAP service and Fiori UI.
+- When prompted, select the appropriate router configuration (Managed Approuter, Standalone Approuter, or Hybrid).
+```
+
+**STEP**: Common CAP CLI and local dev commands (examples)
+**DESCRIPTION**: Use the CAP CLI for local development, service generation, and testing. These are common commands used in CAP development — adapt per sample README and project structure.
+**LANGUAGE**: bash
+**CODE**:
+```bash
+# Initialize a CAP project (example)
+cds init <project-name>
+
+# Add a service and model files
+cds add srv
+
+# Install dependencies and run the service locally
+npm install
+npm start        # or cds watch
+
+# Build and run Fiori frontend locally (if present)
+cds build --production
+# then serve static files with a webserver or use the approuter locally
+```
+
+**STEP**: Deploy samples to Cloud Foundry (high-level sequence)
+**DESCRIPTION**: Each sample README contains exact Cloud Foundry deployment instructions. Typical sequence: authenticate to CF, target org/space, create required BTP services (HANA, XSUAA, destination), bind services, and push app(s). Use the sample manifest(s) in each project or MTA for multi-module deployments.
+**LANGUAGE**: bash
+**CODE**:
+```bash
+# Example deployment workflow (adapt using README/manifest files in each sample)
+cf login --sso                        # or cf login -a <api> -u <user>
+cf target -o <ORG> -s <SPACE>
+# Create or ensure BTP services (HANA, XSUAA, destination) exist per sample README
+# Deploy using manifest or MTA
+cf push                               # for single apps
+# Or for MTA builds:
+mbt build -p=cf
+cf deploy <generated-mtar-file>
+```
+
+**STEP**: Destination sample (cross subaccount & regions)
+**DESCRIPTION**: The destination sample shows how to expose CAP services through a SAP BTP Destination and includes cross-subaccount/region support. Inspect the destination README for configuration artifacts and example JSON/manifest snippets.
+**LANGUAGE**: text
+**CODE**:
+```text
+Destination sample:
+Path: cap/destination/README.md
+Check this file for:
+- Destination service instance creation
+- Destination configuration JSON examples
+- Cross-subaccount and region configuration notes
+```
+
+**STEP**: CI/CD integration resource
+**DESCRIPTION**: For guidance on integrating CI/CD into CAP deployment, review the referenced YouTube tutorial. Use it to create pipelines that build, test, and deploy your CAP projects.
+**LANGUAGE**: text
+**CODE**:
+```text
+Continuous Integration and Delivery tutorial:
+https://www.youtube.com/watch?v=gvWSHSZFPok
+```
+
+**STEP**: Support and official CAP docs
+**DESCRIPTION**: Use the official CAP documentation site for APIs, library references, and deeper framework guidance.
+**LANGUAGE**: text
+**CODE**:
+```text
+CAP documentation and community:
+https://cap.cloud.sap/docs/
+```
+
+**STEP**: License
+**DESCRIPTION**: License for this repository and link to license file.
+**LANGUAGE**: text
+**CODE**:
+```text
+License: Apache Software License, version 2.0 (except as noted)
+License file: /LICENSES/Apache-2.0.txt
+Copyright (c) 2009-2026 SAP SE or an SAP affiliate company.
+```
+--------------------------------
+
+**TITLE**: Get Started with SAP Cloud Application Programming Model (CAP) using Fiori tools and Managed Approuter with Hybrid Profile
+
+**INTRODUCTION**: Build, run, and test a CAP project with a Fiori Elements UI on Cloud Foundry (CF) using a managed approuter and the SAP CAP hybrid profile. This guide shows the commands and steps to: clone the sample, deploy services (HANA HDI and XSUAA), bind services for hybrid testing, run the app locally while routing requests to deployed BTP services (production-near), and use the local approuter to obtain XSUAA tokens for authenticated requests.
+
+**TAGS**: sap-cap, fiori, cloud-foundry, btp, hybrid-profile, hana, xsuaa, localrouter, approuter, fiori-elements
+
+**STEP**: 1 — Prerequisites
+
+**DESCRIPTION**: Verify required accounts, services, and tooling before starting. Ensure you have access to SAP BTP trial, Launchpad Service subscription, a running SAP HANA Cloud instance, and a development workspace configured for Full Stack Cloud Application.
+
+**LANGUAGE**: Plaintext
+
+**CODE**:
+```
+Prerequisites:
+- SAP Cloud Platform trial account
+- Launchpad Service subscription
+- SAP HANA Cloud Service instance (running)
+- Dev workspace: Full Stack Cloud Application
+- Optional: VS Code with SAP Fiori tools & Cloud Foundry (CF) extensions
+References:
+- CAP hybrid profile docs: https://cap.cloud.sap/docs/advanced/hybrid-testing
+- Blog used to generate project: https://blogs.sap.com/2022/02/10/build-and-deploy-a-cap-project-node.js-api-with-a-sap-fiori-elements-ui-and-a-managed-approuter-configuration/
+```
+
+**STEP**: 2 — Clone repository and open project
+
+**DESCRIPTION**: Clone the sample repository and change into the CAP hybrid project directory. Run commands from the project root where package scripts are defined.
+
+**LANGUAGE**: Shell
+
 **CODE**:
 ```bash
 git clone https://github.com/SAP-samples/fiori-tools-samples.git
 cd fiori-tools-samples/cap/cap-fiori-hybrid
 ```
 
-**STEP**: Login to Cloud Foundry (CF)
-**DESCRIPTION**: Authenticate to Cloud Foundry; you can use the IDE Command Palette (CF: Login to Cloud Foundry) or CLI.
-**LANGUAGE**: bash
+**STEP**: 3 — Login to Cloud Foundry
+
+**DESCRIPTION**: Authenticate with your Cloud Foundry org/space. Use the VS Code Command Palette for integrated login or the CF CLI if preferred.
+
+**LANGUAGE**: Shell
+
 **CODE**:
 ```bash
-# CLI example
-cf login -a https://api.<region>.cf.cloud.sap -u <EMAIL> -o <ORG> -s <SPACE>
+# From VS Code:
+# View -> Command Palette -> "CF: Login to Cloud Foundry"
+
+# Or use the CF CLI:
+cf login
 ```
 
-**STEP**: Install dependencies
-**DESCRIPTION**: Install app dependencies used by npm scripts in the project.
-**LANGUAGE**: bash
+**STEP**: 4 — Install dependencies, build and deploy apps
+
+**DESCRIPTION**: Install required npm dependencies for the CAP and Fiori UI apps, build both apps, then deploy them to Cloud Foundry. Run these commands from the project root.
+
+**LANGUAGE**: Shell
+
 **CODE**:
 ```bash
-# From project root
+# install application dependencies
 npm run install:app
-```
 
-**STEP**: Build and deploy CAP and Fiori UI
-**DESCRIPTION**: Build local artifacts and push to Cloud Foundry. This creates HANA/XS UAA bindings used later by hybrid mode.
-**LANGUAGE**: bash
-**CODE**:
-```bash
-# Build apps
+# build CAP and Fiori UI applications
 npm run build
 
-# Deploy CAP and Fiori apps to Cloud Foundry
+# deploy CAP and Fiori UI to Cloud Foundry
 npm run deploy
 ```
 
-**STEP**: Update XSUAA (xs-security) service on CF
-**DESCRIPTION**: Deploy or update the XSUAA service instance configuration defined in xs-security.json. Ensure the roles in xs-security.json are assigned to your BTP user.
-**LANGUAGE**: bash
+**STEP**: 5 — Update XSUAA (xs-security) and assign roles
+
+**DESCRIPTION**: Update the deployed XSUAA security service so roles defined in xs-security.json are created/updated on BTP. Ensure your user has the required role (e.g., capuser) assigned in the BTP cockpit under Security -> Role Collections or via the IAM UI.
+
+**LANGUAGE**: Shell
+
 **CODE**:
 ```bash
-# Update UAA configuration
+# update the XSUAA security service on CF
 npm run cf:uaa:update
 
-# Manual step: assign roles to your user in SAP BTP Cockpit under Security -> Role Collections
-# Follow: https://cap.cloud.sap/docs/node.js/authentication#auth-in-cockpit
+# File to check and edit (project root)
+# xs-security.json
 ```
 
-**STEP**: Push initial data to HANA
-**DESCRIPTION**: Edit sample CSV file(s) in the data/ folder if needed, then deploy data to the HANA HDI container created during deploy.
-**LANGUAGE**: bash
+**STEP**: 6 — Populate HANA with sample data
+
+**DESCRIPTION**: Edit CSV files in the data folder if needed, then push sample data to the deployed HANA HDI instance.
+
+**LANGUAGE**: Shell
+
 **CODE**:
 ```bash
-# Edit CSV files in ./data/ before running
-# Push data to HANA HDI
+# edit CSV files in the data folder as needed, then deploy data to HANA
 npm run deploy:hana
 ```
 
-**STEP**: Create local service bindings for hybrid mode
-**DESCRIPTION**: Generate local binding file (~/.cds-services.json) that references the deployed managed services (XSUAA and HDI). The cds bind commands create local bindings pointing to the CF service instances.
-**LANGUAGE**: bash
+**STEP**: 7 — Bind deployed services to local CDS runtime for hybrid mode
+
+**DESCRIPTION**: Create local CDS bindings so your local CAP runtime uses the deployed XSUAA and HANA services. These commands write binding entries to your local CDS registry (~/.cds-services.json) and prepare the runtime to route requests to the deployed services.
+
+**LANGUAGE**: Shell
+
 **CODE**:
 ```bash
-# Bind to XSUAA service instance (name used in deploy)
+# bind to the XSUAA service (name from deployment: managedAppCAPProject-xsuaa-service)
 cds bind -2 managedAppCAPProject-xsuaa-service --kind xsuaa
 
-# Bind to HANA HDI service instance
+# bind to the HANA HDI service (name from deployment: managedAppCAPProject-db)
 cds bind -2 managedAppCAPProject-db
 ```
 
-**STEP**: Run CAP in hybrid mode (connects to deployed HANA and XSUAA)
-**DESCRIPTION**: Start the CAP app in hybrid mode. At this stage it will use the created ~/.cds-services.json bindings to connect to cloud services.
-Do NOT accept any non-authenticating "Open in a New Tab" prompt from the IDE browser preview.
-**LANGUAGE**: bash
+**STEP**: 8 — Run CAP in hybrid watch mode (do not open UI tab yet)
+
+**DESCRIPTION**: Start the CAP application locally in hybrid mode. The local runtime will use the bindings created above to connect to the deployed HANA/UAA. Do NOT click any automatic "Open in a New Tab" prompts because that may skip authentication through XSUAA.
+
+**LANGUAGE**: Shell
+
 **CODE**:
 ```bash
-# Start CAP in hybrid watch mode
+# start local CAP runtime in hybrid mode (uses service bindings)
 npm run watch:hybrid
 ```
+
+**STEP**: 9 — Verify hybrid startup console output
+
+**DESCRIPTION**: Confirm the CAP runtime connects to the HANA service by checking the console output. Expect to see the bindings registry and a HANA connect log.
+
+**LANGUAGE**: Plaintext
+
 **CODE**:
-```text
-# Expected console output indicating HANA connectivity
+```
 [cds] - connect using bindings from: { registry: '~/.cds-services.json' }
 [cds] - connect to db > hana {
-  ... (connection details)
-}
 ```
 
-**STEP**: Install and start local approuter (localrouter)
-**DESCRIPTION**: The local approuter (localrouter) fetches valid tokens from the deployed XSUAA and attaches them to outgoing requests, routing HTTP traffic to deployed HANA/XSUAA—this simulates production behavior locally.
-**LANGUAGE**: bash
+**STEP**: 10 — Install and run the local approuter (localrouter)
+
+**DESCRIPTION**: The localrouter fetches a valid token from the deployed XSUAA instance and attaches it to subsequent requests, simulating a production-near environment. Install the local approuter and start it via CDS so the router uses the existing bindings.
+
+**LANGUAGE**: Shell
+
 **CODE**:
 ```bash
-# Install local approuter dependencies
+# install the local approuter package
 npm run install:localrouter
 
-# Start the local approuter using cds bind exec (ensures bindings are available)
+# start the local approuter using cds bind execution so it inherits service bindings
 cds bind --exec -- npm start --prefix localrouter
-# The local approuter will start on port 5001 by default
 ```
 
-**STEP**: Open the application through the localrouter
-**DESCRIPTION**: Use your IDE port preview or a browser to open the localrouter endpoint and navigate to the Fiori UI app path. Use port 5001.
-**LANGUAGE**: text
+**STEP**: 11 — Open app via localrouter (port 5001)
+
+**DESCRIPTION**: Open the localrouter endpoint to access the Fiori UI routed through the local approuter. Use VS Code Ports preview or a browser pointed to the localrouter port. Then select your Fiori UI application from the router landing page.
+
+**LANGUAGE**: Plaintext
+
 **CODE**:
 ```
-# In VS Code: View -> Ports: Preview -> select port 5001
-# Or open in browser: http://localhost:5001/<fiori-app-path>
-# Then select the Fiori UI application from the approuter landing page
+# In VS Code:
+# View -> Ports: Preview -> select port 5001
+# Then open the new browser tab and select the Fiori UI application served at:
+http://localhost:5001/
 ```
 
-**STEP**: Edit sample data (optional)
-**DESCRIPTION**: Modify CSV sample data files stored in the data folder and redeploy to HANA when needed.
-**LANGUAGE**: text
-**CODE**:
-```
-Path: ./data/*.csv
-# After editing:
-npm run deploy:hana
-```
+**STEP**: 12 — Gotchas: "Forbidden" error when loading UI
 
-**STEP**: Troubleshooting — Forbidden error on Fiori UI
-**DESCRIPTION**: If the Fiori UI shows "Application could not be started due to technical issues. Forbidden", ensure your BTP user is assigned to the role used by the app (e.g., capuser) in the XSUAA role collection.
-**LANGUAGE**: text
+**DESCRIPTION**: If the UI shows a Forbidden error, your BTP user likely lacks the assigned role. Assign your email/user to the role defined in xs-security.json (e.g., capuser) in the BTP cockpit. See CAP docs for "Auth in cockpit" guidance.
+
+**LANGUAGE**: Plaintext
+
 **CODE**:
 ```
-Symptom:
+Error example shown in browser:
 Application could not be started due to technical issues.
 Forbidden
 
-Fix:
-1. In SAP BTP Cockpit -> Subaccount -> Security -> Role Collections (or Application Security)
-2. Assign your email/user to the role defined in xs-security.json (e.g., capuser)
-3. Re-login to obtain a fresh token (restart local approuter or browser session)
-See: https://cap.cloud.sap/docs/node.js/authentication#auth-in-cockpit
+Resolution:
+- Ensure your user is assigned to the role (e.g., "capuser") defined in xs-security.json.
+- Steps: BTP Cockpit -> Security -> Role Collections / Users -> assign role to your user.
+- CAP docs: https://cap.cloud.sap/docs/node.js/authentication#auth-in-cockpit
 ```
 
-**STEP**: Useful file paths and scripts
-**DESCRIPTION**: Reference the important project paths and npm scripts used throughout the workflow.
-**LANGUAGE**: text
+**STEP**: 13 — Useful references, support, and license
+
+**DESCRIPTION**: Links for further reading, reviewing local repository changes for hybrid testing, and how to get help. License location in the repository.
+
+**LANGUAGE**: Plaintext
+
 **CODE**:
 ```
-Project root: fiori-tools-samples/cap/cap-fiori-hybrid
+Review local changes supporting CDS hybrid testing: changes.md
 
-Key files:
-- xs-security.json                     # XSUAA role definitions
-- package.json                         # npm scripts: install:app, build, deploy, deploy:hana, cf:uaa:update, watch:hybrid, install:localrouter
-- data/                                # CSV sample data files to push to HANA
-- localrouter/                          # local approuter project folder
-
-Important commands (summary):
-npm run install:app
-npm run build
-npm run deploy
-npm run cf:uaa:update
-npm run deploy:hana
-cds bind -2 <xsuaa-service-name> --kind xsuaa
-cds bind -2 <hdi-service-name>
-npm run watch:hybrid
-npm run install:localrouter
-cds bind --exec -- npm start --prefix localrouter
-```
-
-**STEP**: Support and License
-**DESCRIPTION**: Where to get help and license information.
-**LANGUAGE**: text
-**CODE**:
-```
-Support: Use the SAP Community for questions and bug reports:
-https://answers.sap.com/tags/9f13aee1-834c-4105-8e43-ee442775e5ce
+Get support:
+- SAP Community: https://answers.sap.com/tags/9f13aee1-834c-4105-8e43-ee442775e5ce
 
 License:
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-Apache Software License, version 2.0
-See: ../../LICENSES/Apache-2.0.txt
+- This project is licensed under Apache-2.0 (see file):
+  ../../LICENSES/Apache-2.0.txt
 ```
 --------------------------------
 
-**TITLE**: Enable CDS Hybrid Mode in a CAP Project with a Fiori UI Frontend (Managed Approuter)
+**TITLE**: Enabling CDS Hybrid Mode in a CAP project with a Fiori UI frontend
 
-**INTRODUCTION**: This guide shows the exact code and file edits to enable CDS hybrid mode for a CAP project with a SAP Fiori frontend using the Managed Approuter runtime. It adds a local approuter for XSUAA during local development, aligns HDI and XSUAA service keys in mta.yaml, updates xs-security.json for local/cloud OAuth endpoints and scopes, and secures a Catalog service in srv/cat-service.cds.
+**INTRODUCTION**: Apply configuration changes to a SAP CAP + Fiori project (Managed Approuter) so the local development environment and Cloud Foundry deployment share the same HDI container, run a local approuter for XSUAA-based auth, update xs-security for multi-environment OAuth, and restrict the Catalog service to a custom role. Use this to enable CDS hybrid mode for local dev and CF runtime parity.
 
-**TAGS**: fiori, CAP, CDS, hybrid, approuter, xsuaa, hdi, mta, cloud-foundry, hana
+**TAGS**: fiori-samples, CAP, CDS, hybrid-mode, approuter, xsuaa, hdi, mta, cloud-foundry
 
-**STEP**: 0 — Prerequisites
-**DESCRIPTION**: Ensure HANA Cloud DB is provisioned and the CAP + Fiori UI apps are deployed to Cloud Foundry. References: HANA Cloud DB tutorial and blog post used to generate the projects.
-**LANGUAGE**: text
-**CODE**:
-```text
-Prerequisites:
-- HANA Cloud database is setup and running in your cloud space.
-  (See: https://developers.sap.com/tutorials/hana-cloud-create-db-project.html)
-- CAP project and SAP Fiori UI application have been generated and deployed to Cloud Foundry
-  (Source generation approach reference: blog post used to build these steps).
-```
-
-**STEP**: 1 — Edit mta.yaml to align HDI and XSUAA service keys
-**DESCRIPTION**: Modify mta.yaml so local and deployed CAP projects share the same HDI instance and so service-keys names align for destination and XSUAA bindings. Apply the three edits below in the appropriate module/resource definitions in your mta.yaml (replace placeholders like managedAppCAPProject and ${service-name} with your project-specific names if necessary).
+**STEP**: Step 1 — Update mta.yaml: share HDI and align service-keys
+**DESCRIPTION**: Edit the project root mta.yaml to (A) append the properties node to the DB deployer so local and deployed CAP projects share the same HDI instance, (B) update the UAA binding to use a consistent service-key name, and (C) add service-key mapping and hdi-service-name property to the HDI container entry. Apply each snippet into the respective section of mta.yaml (preserve indentation).
 **LANGUAGE**: YAML
-**CODE**:
+**CODE**
 ```yaml
-# 1) Append properties -> TARGET_CONTAINER under the db-deployer module
-# File: mta.yaml (module: managedAppCAPProject-db-deployer)
+# A: Append the properties node to managedAppCAPProject-db-deployer
 - name: managedAppCAPProject-db-deployer
   type: hdb
   path: db
@@ -1171,9 +992,10 @@ Prerequisites:
     - name: managedAppCAPProject-db
       properties:
         TARGET_CONTAINER: ~{hdi-service-name}
+```
 
-# 2) Update the destination-content module to reference the aligned xsuaa service-key
-# File: mta.yaml (module: managedAppCAPProject-destination-content)
+```yaml
+# B: Update uaa_managedAppCAPProject service-key parameter alignment
 - name: managedAppCAPProject-destination-content
   type: com.sap.application.content
   requires:
@@ -1188,9 +1010,10 @@ Prerequisites:
       parameters:
         service-key:
           name: managedAppCAPProject-xsuaa-service-key
+```
 
-# 3) Update the db resource to include service-keys and expose hdi-service-name property
-# File: mta.yaml (resource: managedAppCAPProject-db)
+```yaml
+# C: Update managedAppCAPProject-db to add service-keys and hdi-service-name property
 - name: managedAppCAPProject-db
   type: com.sap.xs.hdi-container
   parameters:
@@ -1202,21 +1025,26 @@ Prerequisites:
     hdi-service-name: ${service-name}
 ```
 
-**STEP**: 2 — Add and isolate a local approuter for XSUAA during local development
-**DESCRIPTION**: Use the CDS helper to add an approuter, then move the generated router files to a dedicated local router folder. Set the approuter default-env.json to forward requests to your local CAP service (default port 4004) and to run on port 5001.
-**LANGUAGE**: Bash / JSON
-**CODE**:
+**STEP**: Step 2 — Add and localize Approuter for local XSUAA handling
+**DESCRIPTION**: Add a local approuter, move generated files into a controlled local router folder, and configure the approuter environment to forward auth tokens to the local srv API on port 4004 while the approuter listens on port 5001.
+- Run the cds command to add an approuter.
+- Move the generated files into localrouter to manually control the router configuration.
+- Edit the default-env.json to set PORT 5001 and a destination for the local srv-api at http://localhost:4004.
+**LANGUAGE**: Bash
+**CODE**
 ```bash
-# From your CAP project root:
+# Add approuter to the project
 cds add approuter
 
-# Move generated files into a controlled folder
+# Move generated approuter files into a controlled folder
 mkdir -p localrouter
 mv app/default-env.json app/package.json app/xs-app.json localrouter/
 ```
 
+**LANGUAGE**: JSON
+**CODE**
 ```json
-// File: localrouter/default-env.json
+// localrouter/default-env.json
 {
   "destinations": [
     {
@@ -1229,286 +1057,266 @@ mv app/default-env.json app/package.json app/xs-app.json localrouter/
 }
 ```
 
-**STEP**: 3 — Update xs-security.json for local and cloud OAuth endpoints and define scopes/role-templates
-**DESCRIPTION**: Add OAuth redirect URIs that support Cloud Foundry, Business Application Studio, and localhost. Add a CAP-specific scope and role-template (capuser) and reference the scope in the role-template. Place these blocks in your xs-security.json (project root or app/srv location as used in your CAP project).
+**STEP**: Step 3 — Update xs-security.json for multi-environment OAuth and add scopes/role-templates
+**DESCRIPTION**: Edit xs-security.json (project root) to:
+- Allow OAuth redirect URIs for Cloud Foundry, Business Application Studio, and localhost.
+- Add a custom scope $XSAPPNAME.capuser and role-template capuser that references the scope.
+Insert the provided oauth2-configuration, scopes, and role-templates sections into xs-security.json (merge with existing JSON structure).
 **LANGUAGE**: JSON
-**CODE**:
+**CODE**
 ```json
-// File: xs-security.json (insert or merge into existing JSON)
-{
-  "oauth2-configuration": {
-    "redirect-uris": [
+// Add or update oauth2-configuration in xs-security.json
+"oauth2-configuration": {
+  "redirect-uris": [
       "https://**.hana.ondemand.com/**",
       "https://**.applicationstudio.cloud.sap/**",
       "http://localhost:*/**"
-    ]
-  },
-  "scopes": [
-    {
-      "name": "$XSAPPNAME.capuser",
-      "description": "CAP Project Generated role scope"
-    }
-  ],
-  "role-templates": [
-    {
-      "name": "capuser",
-      "description": "CAP Project Generated role template",
-      "scope-references": ["$XSAPPNAME.capuser"],
-      "attribute-references": []
-    }
   ]
-}
+},
 ```
 
-**STEP**: 4 — Secure the Catalog service with the new capuser role
-**DESCRIPTION**: Update your service CDS annotations to require the capuser role instead of the generic authenticated-user. Edit srv/cat-service.cds and replace any @requires: 'authenticated-user' with @(requires: 'capuser').
-**LANGUAGE**: CDS
-**CODE**:
-```cds
-// File: srv/cat-service.cds
-// Before:
-@requires: 'authenticated-user'
-service CatalogService {
-  // ... entities and actions
-}
+```json
+// Add scopes and role-templates to xs-security.json
+"scopes": [
+  {
+    "name": "$XSAPPNAME.capuser",
+    "description": "CAP Project Generated role scope"
+  }
+],
+"role-templates": [
+  {
+    "name": "capuser",
+    "description": "CAP Project Generated role template",
+    "scope-references": ["$XSAPPNAME.capuser"],
+    "attribute-references": []
+  }
+],
+```
 
-// After:
+**STEP**: Step 4 — Apply security annotation to Catalog service (srv/cat-service.cds)
+**DESCRIPTION**: Restrict the Catalog service to the new custom role. Open srv/cat-service.cds and replace the existing annotation @requires: 'authenticated-user' with the role reference annotation @(requires: 'capuser'). Save and redeploy the service.
+**LANGUAGE**: CDS
+**CODE**
+```cds
+// In srv/cat-service.cds - replace this:
+@requires: 'authenticated-user'
+
+// With this:
 @(requires: 'capuser')
-service CatalogService {
-  // ... entities and actions
-}
 ```
 --------------------------------
 
-**TITLE**: Get Started with SAP Cloud Application Programming Model (CAP) using Fiori tools and Managed Approuter
+**TITLE**: Build and Deploy a CAP Project with Fiori Elements UI and Managed Approuter on SAP BTP
 
-**INTRODUCTION**: Build, run, and deploy a CAP (Cloud Application Programming Model) Node.js API with a Fiori Elements UI and a Managed Approuter configuration hosted on SAP Business Technology Platform (BTP). This project was generated following the blog post: https://blogs.sap.com/2022/02/10/build-and-deploy-a-cap-project-node.js-api-with-a-sap-fiori-elements-ui-and-a-managed-approuter-configuration/ using the "Managed Approuter" HTML5 application runtime.
+**INTRODUCTION**: Step-by-step actions to build, run locally, and deploy a SAP Cloud Application Programming Model (CAP) project with a Fiori Elements UI and a Managed Approuter runtime on SAP Business Technology Platform (BTP). Includes Cloud Foundry (CF) deployment options, verification, and undeploy commands. The project follows the Managed Approuter configuration from the referenced blog post.
 
-**TAGS**: CAP, Fiori, Fiori Elements, approuter, managed-approuter, SAP BTP, Cloud Foundry, Cloud MTA, HANA Cloud, cds, npm
+**TAGS**: sap, cap, fiori, btp, cloud-foundry, managed-approuter, hana-cloud, nodejs, mta
 
-**STEP**: 1 - Prerequisites
+**STEP**: 1 — Prerequisites (for Cloud Foundry deployment)
 
-**DESCRIPTION**: Prepare accounts, services, and development environment required for deploying to Cloud Foundry (CF) and for running locally or in SAP Business Application Studio (SBAS).
+**DESCRIPTION**: Ensure your SAP BTP/Cloud Foundry environment and services are available before deploying. Required only if deploying to CF.
 
-**LANGUAGE**: Text
+- Create or use an SAP Cloud Platform trial account: https://account.hana.ondemand.com/
+- Subscribe to the Launchpad Service: https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html
+- Create an SAP HANA Cloud Service instance or use an existing one: https://developers.sap.com/tutorials/btp-app-hana-cloud-setup.html#08480ec0-ac70-4d47-a759-dc5cb0eb1d58
+- (Optional) If using SAP Business Application Studio (SBAS), create a dev workspace using a "Full Stack Cloud Application": https://help.sap.com/viewer/c2b99f19e9264c4d9ae9221b22f6f589/2021_3_QRC/en-US/f728966223894cc28be3ca2ee60ee784.html
+
+**LANGUAGE**: N/A
 
 **CODE**:
 ```text
-Required if deploying to Cloud Foundry (CF):
-- SAP Cloud Platform trial account: https://account.hana.ondemand.com/
-- Subscribe to Launchpad Service: https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html
-- SAP HANA Cloud Service instance (create or reuse): https://developers.sap.com/tutorials/btp-app-hana-cloud-setup.html#08480ec0-ac70-4d47-a759-dc5cb0eb1d58
-
-SAP Business Application Studio (SBAS) dev workspace:
-- Create a "Full Stack Cloud Application" dev workspace:
-  https://help.sap.com/viewer/c2b99f19e9264c4d9ae9221b22f6f589/2021_3_QRC/en-US/f728966223894cc28be3ca2ee60ee784.html
+No code required for prerequisites (service and account setup).
 ```
 
-**STEP**: 2 - Install dependencies and run locally
+**STEP**: 2 — Install dependencies and bind database
 
-**DESCRIPTION**: Install npm dependencies, bind/publish your HANA Cloud service (if used), and run the CAP app locally with live-reload. When cds watch starts, open the served Fiori app or the Books service endpoint in the browser.
+**DESCRIPTION**: Install Node dependencies and bind the project to your SAP HANA Cloud instance before running locally.
+
+- From your project root, install exact dependencies using npm ci.
+- Bind and publish your database artifacts to your HANA Cloud Service instance as applicable for your CAP project (follow your DB project instructions).
 
 **LANGUAGE**: Shell
 
 **CODE**:
 ```shell
-# From the project root:
 npm ci
-
-# Bind and publish your HANA Cloud Service instance as required (follow HANA Cloud DB tutorials/steps)
-# Example references:
-# https://developers.sap.com/tutorials/hana-cloud-create-db-project.html
-
-# Start the CAP app in watch mode (builds and serves backend and app)
-cds watch
-
-# When prompted by cds watch, choose "Open in New Tab" and select:
-# - the Fiori web application, or
-# - the "Books" service endpoint
+# Bind/publish to HANA Cloud Service instance (follow your DB project steps)
 ```
 
-**STEP**: 3 - Build and deploy to Cloud Foundry (Option 1: Cloud MTA Build Tool - UI)
+**STEP**: 3 — Run the CAP application locally
 
-**DESCRIPTION**: Build an MTA archive and deploy via the Cloud MTA Build Tool (IDE integration). This is the GUI approach from SAP Business Application Studio or supported IDEs.
+**DESCRIPTION**: Build, watch, and run CAP locally. Use cds watch to run the local server and auto-reload on changes. Open the Fiori web app or the Books service endpoint from the generated URL.
 
-**LANGUAGE**: Text
+**LANGUAGE**: Shell
+
+**CODE**:
+```shell
+cds watch
+# When prompted, select "Open in New Tab" then choose your Fiori web application or the "Books" service endpoint.
+```
+
+**STEP**: 4 — Build and deploy to Cloud Foundry — Option 1: Cloud MTA Build Tool (GUI in IDE)
+
+**DESCRIPTION**: If you use the Cloud MTA Build Tool integration in your IDE (e.g., Business Application Studio), build and deploy the MTA archive via the context menu. Use this flow after making changes.
+
+- Right-click mta.yaml -> Build MTA Project
+- Right-click mta_archives -> managedAppCAPProject_1.0.0.mtar -> Deploy MTA Archive
+- The deploy action will prompt for CF credentials if not logged in.
+
+**LANGUAGE**: N/A
 
 **CODE**:
 ```text
-- If you have changed project files:
-  1. Right-click mta.yaml -> "Build MTA Project"
-  2. After build completes, locate the archive in:
-     mta_archives/managedAppCAPProject_1.0.0.mtar
-  3. Right-click that .mtar -> "Deploy MTA Archive"
-  4. You will be prompted for Cloud Foundry login details if not already authenticated.
+mta.yaml
+mta_archives -> managedAppCAPProject_1.0.0.mtar
+# Use IDE context menu: Build MTA Project -> Deploy MTA Archive
 ```
 
-**STEP**: 4 - Build and deploy to Cloud Foundry (Option 2: CLI)
+**STEP**: 5 — Build and deploy to Cloud Foundry — Option 2: CLI (npm scripts)
 
-**DESCRIPTION**: Use the provided npm scripts to build and deploy the project from the command line. This prompts for CF credentials if not logged in.
+**DESCRIPTION**: Build and deploy using the provided npm scripts. This will build the project and deploy to Cloud Foundry, prompting for credentials if needed.
 
 **LANGUAGE**: Shell
 
 **CODE**:
 ```shell
-# From the project root:
 npm run build && npm run deploy
-
-# This sequence will:
-# - build the project artifacts
-# - deploy to Cloud Foundry (prompts for CF login if needed)
 ```
 
-**STEP**: 5 - Verify deployment
+**STEP**: 6 — Verify deployment — Option 1: CLI (html5-list)
 
-**DESCRIPTION**: Confirm the HTML5/Fiori application is deployed either via the CF CLI helper command or via the SAP BTP Cockpit UI.
+**DESCRIPTION**: List HTML5 applications and retrieve the generated URL for the deployed Fiori application using the cf html5-list command. Select the URL to open your application.
 
 **LANGUAGE**: Shell
 
 **CODE**:
 ```shell
-# Option 1: Use cf html5-list to get the generated URL
 cf html5-list -u -di managedAppCAPProject-destination-service -u --runtime launchpad
-
-# Option 2: In SAP BTP Cockpit:
-# - Login to your BTP subaccount
-# - Navigate to "HTML5 Applications"
-# - Select your deployed Fiori application and open the URL
 ```
 
-**STEP**: 6 - Undeploy
+**STEP**: 7 — Verify deployment — Option 2: SAP BTP Cockpit
 
-**DESCRIPTION**: Remove the deployed CAP project from SAP BTP using the provided npm script.
+**DESCRIPTION**: Confirm the deployed Fiori application via the SAP BTP Cockpit UI.
+
+- Login to your SAP BTP subaccount.
+- Navigate to HTML5 Applications (left navigation).
+- Select your deployed Fiori application and open it.
+
+**LANGUAGE**: N/A
+
+**CODE**:
+```text
+Use SAP BTP Cockpit -> HTML5 Applications -> select your Fiori application
+```
+
+**STEP**: 8 — Undeploy the CAP project
+
+**DESCRIPTION**: Remove the deployed application from SAP BTP using the provided npm script.
 
 **LANGUAGE**: Shell
 
 **CODE**:
 ```shell
-# From the project root:
 npm run undeploy
 ```
 
-**STEP**: 7 - Support and licensing
+**STEP**: 9 — References, support, and license
 
-**DESCRIPTION**: Where to get help and license details.
+**DESCRIPTION**: Useful links for how the project was generated, support channels, and license information.
 
-**LANGUAGE**: Text
+- Blog source for project generation (Managed Approuter): https://blogs.sap.com/2022/02/10/build-and-deploy-a-cap-project-node.js-api-with-a-sap-fiori-elements-ui-and-a-managed-approuter-configuration/
+- Get community support: https://answers.sap.com/tags/9f13aee1-834c-4105-8e43-ee442775e5ce
+- License: Apache Software License, version 2.0 — see file ../../LICENSES/Apache-2.0.txt
+
+**LANGUAGE**: N/A
 
 **CODE**:
 ```text
-Get support:
-- Ask questions or report issues on the SAP Community: https://answers.sap.com/tags/9f13aee1-834c-4105-8e43-ee442775e5ce
-
-License:
-- Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-- Licensed under the Apache Software License, version 2.0 except as noted otherwise in the LICENSE file:
-  ../../LICENSES/Apache-2.0.txt
+Blog: https://blogs.sap.com/2022/02/10/build-and-deploy-a-cap-project-node.js-api-with-a-sap-fiori-elements-ui-and-a-managed-approuter-configuration/
+Support: https://answers.sap.com/tags/9f13aee1-834c-4105-8e43-ee442775e5ce
+License file: ../../LICENSES/Apache-2.0.txt
 ```
 --------------------------------
 
-**TITLE**: Switch CAP Project from SQLite to SAP HANA (HANA Cloud)
+**TITLE**: Switch CAP project database from SQLite to SAP HANA (HANA Cloud)
 
-**INTRODUCTION**: Step-by-step changes to switch a CAP-based Fiori sample project from the default SQLite datasource to SAP HANA (HANA Cloud). Includes package.json edits, mta.yaml path update, binding the HDI-shared instance, running local CDS with HANA, deployment notes, and a troubleshooting tip.
+**INTRODUCTION**: Step-by-step actions to convert a CAP sample project from the default SQLite to SAP HANA (HANA Cloud). Includes package.json changes, mta.yaml module path update, HDI binding/publishing, running cds watch to verify the HANA datasource, and a troubleshooting copy of the generated .env.
 
-**TAGS**: fiori-samples, CAP, cds, HANA, HANA-Cloud, HDI, sqlite, package.json, mta.yaml, deployment
+**TAGS**: fiori-samples, CAP, cds, sap-hana, hana-cloud, hdishared, mta, cloud-foundry, sqlite
 
-**STEP**: 1 — Prerequisites
-
-**DESCRIPTION**: Ensure you have a running SAP HANA Cloud instance in your cloud space and an HDI-shared instance available. Use the HANA Cloud tutorial to create the DB project and service instance if needed.
-
-**LANGUAGE**: text
-
+**STEP**: 1 — Prepare HANA Cloud
+**DESCRIPTION**: Ensure a HANA Cloud database is created and running in your cloud space before switching the project datasource. Follow the SAP tutorial to create a HANA Cloud DB project.
+**LANGUAGE**: Text
 **CODE**:
 ```text
-Tutorial: https://developers.sap.com/tutorials/hana-cloud-create-db-project.html
-(Ensure HDI-shared instance is provisioned and accessible from your cloud space)
+https://developers.sap.com/tutorials/hana-cloud-create-db-project.html
 ```
 
-**STEP**: 2 — Update package.json "cds" configuration to use HANA
-
-**DESCRIPTION**: Replace or update the "cds" node in your project's package.json to set build tasks for hana, configure hana deploy format, and set required services (db -> hana, uaa -> xsuaa). Save package.json at the project root.
-
+**STEP**: 2 — Update cds configuration in package.json
+**DESCRIPTION**: Replace or update the "cds" node in your project's package.json so CAP builds for hana and uses hana as the required db kind and xsuaa for uaa. This config directs cds build output for hana to ../db and sets deploy-format and requires entries for hana and uaa.
 **LANGUAGE**: JSON
-
 **CODE**:
 ```json
-{
-  "cds": {
-    "build": {
-      "tasks": [
-        {
-          "for": "hana",
-          "dest": "../db"
-        },
-        {
-          "for": "node-cf"
+    "cds": {
+        "build": {
+            "tasks": [
+                {
+                    "for": "hana",
+                    "dest": "../db"
+                },
+                {
+                  "for": "node-cf"
+                }
+              ]
+            },
+        "hana": {
+            "deploy-format": "hdbtable"
+            },
+        "requires": {
+            "db": {
+              "kind": "hana"
+            },
+            "uaa": {
+              "kind": "xsuaa"
+            }
         }
-      ]
-    },
-    "hana": {
-      "deploy-format": "hdbtable"
-    },
-    "requires": {
-      "db": {
-        "kind": "hana"
-      },
-      "uaa": {
-        "kind": "xsuaa"
-      }
-    }
   }
-}
 ```
 
 **STEP**: 3 — Update mta.yaml module path for DB deployer
-
-**DESCRIPTION**: In mta.yaml locate the module named managedAppCAPProject-db-deployer and update its path from gen/db to db so the HANA build output is used. Save mta.yaml at project root.
-
+**DESCRIPTION**: In mta.yaml locate the managedAppCAPProject-db-deployer module and change its path from gen/db to db so the deployer uses the new db output location produced by cds build/watch.
 **LANGUAGE**: YAML
-
 **CODE**:
 ```yaml
-# Example snippet in mta.yaml: ensure path points to 'db'
-modules:
-  - name: managedAppCAPProject-db-deployer
-    type: hdb
-    path: db          # <-- changed from gen/db to db
-    requires:
-      - name: managedAppCAPProject-db
+# locate and update the module entry in mta.yaml
+- name: managedAppCAPProject-db-deployer
+  path: db
+  # (other module properties remain unchanged)
 ```
 
-**STEP**: 4 — Bind managedAppCAPProject-db to HDI-shared and publish sample data
-
-**DESCRIPTION**: Using the SAP HANA PROJECTS view (SAP Web IDE / HANA tooling), bind the generated module managedAppCAPProject-db to your deployed HDI-shared instance. Then publish sample data that the CAP build generated. For manual/local CAP binding & publish guidance, refer to the blog post.
-
-**LANGUAGE**: text
-
+**STEP**: 4 — Bind HDI-shared instance and publish sample data
+**DESCRIPTION**: In SAP HANA Projects (or using your preferred tooling) bind the generated managedAppCAPProject-db to your existing deployed HDI-shared instance, then publish the sample data that was generated for the project. For detailed steps on binding and publishing from a local CAP project, refer to the blog post below.
+**LANGUAGE**: Text
 **CODE**:
 ```text
-Blog reference: https://blogs.sap.com/2021/01/21/building-hana-opensap-cloud-2020-part-2-project-setup-and-first-db-build/
-
-Steps (summary):
-- Open HANA PROJECTS view
-- Select your CAP project's DB module (managedAppCAPProject-db)
-- Bind it to your existing HDI-shared instance (SharedDevKey or similar)
-- Publish (deploy) the content to the HDI container to create tables and sample data
+https://blogs.sap.com/2021/01/21/building-hana-opensap-cloud-2020-part-2-project-setup-and-first-db-build/
 ```
 
-**STEP**: 5 — Run local CDS with HANA as datasource
-
-**DESCRIPTION**: Stop any running cds instances and run cds watch from project root. Confirm the console shows connection details for HANA. Open the app in a browser tab (Open in New Tab) and validate services (e.g., CatalogService).
-
-**LANGUAGE**: Bash
-
+**STEP**: 5 — Stop existing cds instances and run cds watch to verify HANA datasource
+**DESCRIPTION**: Stop any currently running cds instances for the project, then start cds watch. Confirm the log shows a connection to hana with the expected connection properties and that the CatalogService is served.
+**LANGUAGE**: bash
 **CODE**:
 ```bash
-# Stop existing cds instances (if any)
-# Then start watch
+# stop existing cds instances (example)
+# pkill -f "cds"  # OR stop via terminal/process manager you used
+
+# start watch
 cds watch
 ```
 
-**LANGUAGE**: Bash (console output)
-
+**STEP**: 6 — Expected cds watch output (verify)
+**DESCRIPTION**: Example output you should see showing cds connected to HANA using bindings and serving the CatalogService at /catalog. Confirm certificate, driver, HDI user, host, port, schema, service_key_name, url, and user are present.
+**LANGUAGE**: bash
 **CODE**:
 ```bash
 [cds] - connect using bindings from: { registry: '~/.cds-services.json' }
@@ -1528,114 +1336,74 @@ cds watch
 [cds] - serving CatalogService { at: '/catalog' }
 ```
 
-**STEP**: 6 — Build and deploy to Cloud Foundry
+**STEP**: 7 — Open app and validate, then rebuild & deploy to CF
+**DESCRIPTION**: Select "Open in New Tab" to open your application and validate functionality against HANA. Once validated, re-run your build and deploy steps (e.g., cds build, cf deploy commands or your existing CI/CD) to push changes to Cloud Foundry.
 
-**DESCRIPTION**: After local validation, re-run your build and deploy steps to push changes to Cloud Foundry. Typical steps include cds build (to regenerate db artifacts) and cf deploy/push as per your CI/CD or mta deploy process.
-
-**LANGUAGE**: Bash
-
-**CODE**:
-```bash
-# Example local build & mta deploy (adapt to your project scripts)
-cds build
-# then follow your mta/cf deployment sequence, e.g.:
-cf deploy mta_archives/your-mta-file.mtar
-# or use your project's deployment scripts
-```
-
-**STEP**: 7 — Troubleshooting: .env binding fix
-
-**DESCRIPTION**: If the app fails to connect to HANA (missing bindings locally), copy the generated .env from the db folder to your project root so cds can pick up local environment bindings.
-
-**LANGUAGE**: Bash
-
+**STEP**: 8 — Troubleshooting: copy generated .env if DB connection fails
+**DESCRIPTION**: If the local project cannot connect to HANA, copy the generated .env file from the db folder to the project root so cds and other tools find the service bindings.
+**LANGUAGE**: bash
 **CODE**:
 ```bash
 cp db/.env .
 ```
 --------------------------------
 
-**TITLE**: Add XSUAA Authentication to Catalog API (CAP + Fiori)
+**TITLE**: Add XSUAA Authentication to Catalog API (Fiori Samples)
 
-**INTRODUCTION**: Step-by-step code-focused changes to secure the Catalog API with XSUAA. Applies to a CAP backend deployed via MTA with a Fiori frontend. Modify routes, package dependencies, CDS service authorization, and mta.yaml module/resource settings to use a static host and bind XSUAA.
+**INTRODUCTION**: Step-by-step code changes to secure the Catalog API with XSUAA. Includes edits to xs-app.json, root package.json, service CDS, and mta.yaml. Apply these changes, then rebuild and deploy to Cloud Foundry.
 
-**TAGS**: sap, xsuaa, cap, fiori, mta, cds, xs-app.json, destination, authentication, nodejs, cf
+**TAGS**: xsuaa, authentication, mta.yaml, xs-app.json, cds, package.json, destination, CloudFoundry, CAP
 
-**STEP**: Update route to require XSUAA in frontend xs-app.json
-
-**DESCRIPTION**: In the Fiori app router route definition (app/feproject-ui/xs-app.json) change authenticationType from "none" to "xsuaa" for the catalog route so the app router forwards tokens and enforces authentication.
-
+**STEP**: 1 — Update frontend route to use XSUAA
+**DESCRIPTION**: In the frontend project manifest (app->feproject-ui->xs-app.json), change authenticationType from "none" to "xsuaa" and keep the existing routing properties. This ensures requests to /catalog/ are routed with XSUAA authentication and CSRF protection is explicitly set.
 **LANGUAGE**: JSON
-
 **CODE**:
 ```json
-// File: app/feproject-ui/xs-app.json
-{
-  "authenticationType": "xsuaa",
-  "csrfProtection": false,
-  "source": "^/catalog/",
-  "destination": "cap-catalog-api"
-}
+    {
+      "authenticationType": "xsuaa",
+      "csrfProtection": false,
+      "source": "^/catalog/",
+      "destination": "cap-catalog-api"
+    },
 ```
 
-**STEP**: Add XSUAA and Passport dependencies to root package.json
-
-**DESCRIPTION**: In the project root package.json, add the required libraries so the CAP service can use xsuaa/xssec and passport for authentication.
-
+**STEP**: 2 — Add XSUAA-related dependencies to root package.json
+**DESCRIPTION**: In the project root package.json, add the required dependencies for XSUAA integration and passport. Add these under the "dependencies" section.
 **LANGUAGE**: JSON
-
 **CODE**:
 ```json
-// File: package.json (root)
-{
-  "dependencies": {
-    "@sap/xsenv": "^4.2.0",
-    "@sap/xssec": "^3.6.0",
-    "passport": "^0.6.0"
-    // ...other existing dependencies
-  }
-}
+        "@sap/xsenv": "^4.2.0",
+        "@sap/xssec": "^3.6.0",
+        "passport": "^0.6.0"
 ```
 
-**STEP**: Require authenticated user in CDS service
-
-**DESCRIPTION**: Protect the Catalog service on the CAP side by requiring an authenticated user. Edit srv/cat-service.cds and add the @requires annotation on the service definition.
-
+**STEP**: 3 — Require authenticated user on the Catalog service
+**DESCRIPTION**: Enable authentication on the Catalog service by adding the @requires annotation in srv->cat-service.cds. This enforces that only authenticated users can access the CatalogService entity projections.
 **LANGUAGE**: CDS
-
 **CODE**:
 ```cds
-// File: srv/cat-service.cds
 @requires: 'authenticated-user'
 service CatalogService {
     @readonly entity Books as projection on my.Books;
 }
 ```
 
-**STEP**: Add appname parameter to mta.yaml (Change 1)
-
-**DESCRIPTION**: Add a unique appname in the top-level parameters node to generate a stable static hostname for the service. Pick a unique value per subaccount.
-
+**STEP**: 4 — Modify mta.yaml: set appname parameter
+**DESCRIPTION**: In mta.yaml, add an appname parameter (unique per subaccount). This appname is used to construct a static hostname for the deployed service and referenced in other resources below.
 **LANGUAGE**: YAML
-
 **CODE**:
 ```yaml
-# File: mta.yaml
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
   appname: mycapproject-unique
 ```
 
-**STEP**: Update managedAppCAPProject-srv module for UAA binding and static host (Change 2)
-
-**DESCRIPTION**: Modify the server module (gen/srv) to require the UAA resource and remove usage of srv-api; set host to ${appname} so the app gets the static hostname.
-
+**STEP**: 5 — Modify mta.yaml: update service module to use UAA and static host
+**DESCRIPTION**: Update the managedAppCAPProject-srv module to require the UAA instance and remove srv-api reference. Set host to use the ${appname} parameter so the service is exposed at a static hostname.
 **LANGUAGE**: YAML
-
 **CODE**:
 ```yaml
-# File: mta.yaml (module section)
 - name: managedAppCAPProject-srv
   type: nodejs
   path: gen/srv
@@ -1650,343 +1418,291 @@ parameters:
     ignore: [".env", "node_modules/"]
 ```
 
-**STEP**: Update destination resource to use static hostname (Change 3)
-
-**DESCRIPTION**: Change the Catalog API destination URL to point to the static host generated by appname and default-domain. Ensure HTML5.DynamicDestination and HTML5.ForwardAuthToken are enabled so the frontend forwards auth tokens.
-
+**STEP**: 6 — Modify mta.yaml: update destination resource to point to static host
+**DESCRIPTION**: In the managedAppCAPProject-destination-service resource, change the destination URL to the static hostname generated from ${appname} and ${default-domain}. Enable HTML5.DynamicDestination and ForwardAuthToken so the frontend forwards the token.
 **LANGUAGE**: YAML
-
 **CODE**:
 ```yaml
-# File: mta.yaml (resource: managedAppCAPProject-destination-service)
   - Authentication: NoAuthentication
     Name: cap-catalog-api
     ProxyType: Internet
     Type: HTTP
     URL: https://${appname}.${default-domain}
     HTML5.DynamicDestination: true
-    HTML5.ForwardAuthToken: true
+    HTML5.ForwardAuthToken: true    
 ```
 
-**STEP**: Remove srv-api reference from destination resource (Change 4)
-
-**DESCRIPTION**: The destination resource should no longer reference the previous srv-api; remove that reference so the destination uses the static host URL. (Make sure any references to srv-api under this resource are deleted.)
-
+**STEP**: 7 — Modify mta.yaml: remove srv-api reference from destination-service
+**DESCRIPTION**: Remove any remaining reference to the srv-api service in managedAppCAPProject-destination-service. The destination should reference the static host URL instead of a service API.
 **LANGUAGE**: YAML
-
 **CODE**:
 ```yaml
-# File: mta.yaml (ensure no 'srv-api' reference remains in this resource)
-# Example: remove any entries like:
-# - name: srv-api
-# that were previously listed under this resource
+# Remove the srv-api entry from the managedAppCAPProject-destination-service resources.
+# (No code snippet provided; perform removal of srv-api references so the destination uses the static URL above.)
 ```
 
-**STEP**: Rebuild and redeploy
-
-**DESCRIPTION**: Validate changes locally if possible, then re-run your build and deploy steps (MBT / cf push / CI pipeline you normally use) to push updates to Cloud Foundry so the Catalog API is secured with XSUAA.
-
-**LANGUAGE**: text
-
+**STEP**: 8 — Rebuild and deploy
+**DESCRIPTION**: Validate changes locally if possible, then re-run your build and deploy steps to push changes to Cloud Foundry. After deployment, the Catalog API will be secured with XSUAA authentication.
+**LANGUAGE**: CLI
 **CODE**:
-```text
-# Actions to run (example, depending on your project):
-# 1. Rebuild MTA and archives: mbt build
-# 2. Deploy the MTA to CF / your CI/CD pipeline
-# 3. Verify that the Catalog API endpoint is reachable at:
-#    https://{appname}.{default-domain}/catalog/
-# 4. Confirm authentication is enforced and tokens are forwarded
+```bash
+# Example commands (adjust per project tooling)
+npm run build
+mbt build
+cf deploy mta_archives/<your-mta>.mtar
 ```
 --------------------------------
 
-**TITLE**: Configure a Fiori Elements App to Support SAP Launchpad Service (FLP)
+**TITLE**: Configure Fiori Elements App for SAP Launchpad (FLP) in a CAP Project
 
-**INTRODUCTION**: Step-by-step actions to add FLP configuration to a Fiori Elements application inside a CAP project, update manifest and i18n, and redeploy to Cloud Foundry so the app can be consumed from an SAP Launchpad Site.
+**INTRODUCTION**: Step-by-step instructions to add SAP Launchpad (FLP) configuration to a Fiori Elements application inside a CAP project, including commands to run, expected prompt answers, JSON changes to manifest.json, and i18n additions. Use this to prepare the app for publication on SAP BTP Launchpad Service.
 
-**TAGS**: sap, fiori, launchpad, flp, cap, fiori-elements, manifest, i18n, cloud-foundry
+**TAGS**: sap, fiori, cap, launchpad, flp, cloud-foundry, ui5, fiori-elements, manifest, i18n
 
 **STEP**: 1 — Change into the Fiori Elements application directory
 
-**DESCRIPTION**: Move into the Fiori Elements app folder inside your CAP project to run the FLP configuration tool.
+**DESCRIPTION**: From the root of your CAP project, change into the Fiori Elements app folder to run tooling commands there.
 
-**LANGUAGE**: bash
+**LANGUAGE**: Bash
 
 **CODE**:
 ```bash
-# From the CAP project root:
 cd managedAppCAPProject/app/feproject-ui
 ```
 
-**STEP**: 2 — Run the FLP configuration generator
+**STEP**: 2 — Run the UI5 tooling command to add FLP config
 
-**DESCRIPTION**: Execute the @sap/ux-ui5-tooling fiori add flp-config generator via npx. Answer the interactive prompts with values that represent your application. Use the semantic object to represent a business entity (e.g., customer, sales order, product).
+**DESCRIPTION**: Use npx to invoke the @sap/ux-ui5-tooling generator that adds the FLP crossNavigation config to your manifest.json and app i18n. Run this from the Fiori app directory (step 1).
 
-**LANGUAGE**: bash
+**LANGUAGE**: Bash
 
 **CODE**:
 ```bash
-# Run the generator from the Fiori app folder:
 npx -p @sap/ux-ui5-tooling fiori add flp-config
 ```
 
-Sample prompt answers to enter when asked (use values for your app):
-```text
+**STEP**: 3 — Provide answers to generator prompts
+
+**DESCRIPTION**: When prompted by the generator, provide values that describe your application. The semantic object represents a business entity (e.g., customer, sales order, product).
+
+**LANGUAGE**: Bash
+
+**CODE**:
+```bash
 Semantic Object -> MyFEApplication
-Action           -> display
-Title            -> List Report Object Page
-Subtitle         -> Fiori Application
+Action -> display
+Title -> List Report Object Page
+Subtitle - Fiori Application
 ```
 
-**STEP**: 3 — Verify/merge crossNavigation into manifest.json
+**STEP**: 4 — Confirm manifest.json changes (crossNavigation node)
 
-**DESCRIPTION**: The generator adds a crossNavigation -> inbounds node to your app manifest so the Launchpad can identify and navigate to the app. Confirm the following JSON snippet is present in your manifest (typically located in managedAppCAPProject/app/feproject-ui/webapp/manifest.json). Merge into your manifest if needed.
+**DESCRIPTION**: The generator will add a crossNavigation -> inbounds entry in your manifest.json. Verify that the entry matches your semantic object, action and uses the i18n keys for title/subTitle.
 
 **LANGUAGE**: JSON
 
 **CODE**:
 ```json
 "crossNavigation": {
-    "inbounds": {
-        "cap-tutorial-feprojectui-inbound": {
-            "signature": {
-                "parameters": {},
-                "additionalParameters": "allowed"
-            },
-            "semanticObject": "MyFEApplication",
-            "action": "display",
-            "title": "{{flpTitle}}",
-            "subTitle": "{{flpSubtitle}}",
-            "icon": ""
+            "inbounds": {
+                "cap-tutorial-feprojectui-inbound": {
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    },
+                    "semanticObject": "MyFEApplication",
+                    "action": "display",
+                    "title": "{{flpTitle}}",
+                    "subTitle": "{{flpSubtitle}}",
+                    "icon": ""
+                }
+            }
         }
-    }
-}
 ```
 
-**STEP**: 4 — Add FLP titles to i18n.properties
+**STEP**: 5 — Confirm i18n.properties entries added
 
-**DESCRIPTION**: The generator appends keys to your i18n resource bundle. Confirm these keys (or add them) in your app i18n file, typically at managedAppCAPProject/app/feproject-ui/webapp/i18n/i18n.properties.
-
-**LANGUAGE**: properties
-
-**CODE**:
-```properties
-flpTitle=List Report Object Page
-
-flpSubtitle=
-```
-
-**STEP**: 5 — Rebuild and redeploy to Cloud Foundry
-
-**DESCRIPTION**: Rebuild your CAP project and redeploy the updated Fiori app to Cloud Foundry so the FLP configuration is available in the deployed app. Replace the example commands below with your project’s build/deploy commands if different.
-
-**LANGUAGE**: bash
-
-**CODE**:
-```bash
-# From CAP project root (example using mbt + cf)
-cd managedAppCAPProject
-
-# Build multi-target archive (example)
-mbt build
-
-# Deploy the resulting MTAR to Cloud Foundry (example)
-cf deploy mta_archives/*.mtar
-```
-
-**STEP**: 6 — Subscribe and configure Launchpad Service on SAP BTP
-
-**DESCRIPTION**: Ensure the Launchpad Service is available and configured on your SAP BTP subaccount. Then create a Launchpad Site and add your app tile/target pointing to the semantic object/action you configured.
-
-**LANGUAGE**: text
-
-**CODE**:
-```text
-- Ensure Launchpad Service is subscribed and configured on your SAP BTP subaccount:
-  https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html
-
-- Create a Launchpad Site to consume your Fiori Elements app:
-  https://developers.sap.com/tutorials/cp-portal-cloud-foundry-create-sitelaunchpad.html
-
-- In the Launchpad Site, add a target mapping or tile that points to:
-  Semantic Object = MyFEApplication
-  Action          = display
-```
---------------------------------
-
-**TITLE**: Get Started with SAP Cloud Application Programming Model (CAP) using Fiori tools and Standalone Approuter
-
-**INTRODUCTION**: Step-by-step, code-focused guide to run, build, deploy, verify, and undeploy a CAP Node.js project with a SAP Fiori Elements UI and a standalone approuter on SAP BTP (Cloud Foundry). Includes local development commands, Cloud Foundry deployment options, xs-security.json notes, and connectivity-service toggle in mta.yaml.
-
-**TAGS**: fiori, CAP, CAPM, BTP, Cloud Foundry, approuter, "Fiori tools", Node.js, cds, deploy, SBAS
-
-**STEP**: 1 - Prerequisites (Cloud Foundry only)
-
-**DESCRIPTION**: Confirm Cloud Foundry prerequisites before deploying: SAP account, Launchpad Service subscription, and the API endpoint for your CF region. You must insert your CF API endpoint into xs-security.json under oauth2-configuration.
+**DESCRIPTION**: The generator appends i18n entries used by the FLP tile/target configuration. Verify or edit values in your app's i18n.properties file.
 
 **LANGUAGE**: JSON
 
 **CODE**:
 ```json
-{
-  "xsappname": "standaloneCAPProject",
-  "tenant-mode": "shared",
-  "oauth2-configuration": {
-    "url": "<CF_API_ENDPOINT>"
-  },
-  "scopes": [],
-  "authorization": {}
-}
+flpTitle=List Report Object Page
+
+flpSubtitle=
 ```
-Replace <CF_API_ENDPOINT> with your API endpoint found in the BTP Subaccount overview, e.g.:
-https://api.cf.us10-001.hana.ondemand.com
 
-Files referenced:
-- xs-security.json (project root)
+**STEP**: 6 — Rebuild and redeploy the application to Cloud Foundry
 
----
+**DESCRIPTION**: After the FLP configuration changes, rebuild and push your app to Cloud Foundry so the updated manifest and i18n are deployed. Replace build steps with your project's actual build commands if needed.
 
-**STEP**: 2 - Create Dev Workspace in SAP Business Application Studio (optional)
+**LANGUAGE**: Bash
 
-**DESCRIPTION**: If using SAP Business Application Studio (SBAS), create a dev workspace using either the "SAP Fiori" or "Full Stack Cloud Application" dev space before opening the project.
+**CODE**:
+```bash
+# Example generic steps (adjust to your project)
+# Build (Java/Maven or Node-based CAP)
+# mvn clean package
+# or
+# npm install && npm run build
 
-**LANGUAGE**: text
+# Deploy to Cloud Foundry
+cf push
+```
+
+**STEP**: 7 — Ensure Launchpad Service is subscribed and configured
+
+**DESCRIPTION**: Confirm the SAP Launchpad Service is available and configured on your SAP BTP subaccount. Follow the official onboarding guide if not already done.
+
+**LANGUAGE**: PlainText
 
 **CODE**:
 ```text
-Follow SBAS docs to create a dev workspace:
-https://help.sap.com/viewer/c2b99f19e9264c4d9ae9221b22f6f589/2021_3_QRC/en-US/f728966223894cc28be3ca2ee60ee784.html
+https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html
 ```
 
----
+**STEP**: 8 — Create a Launchpad Site to consume the Fiori Elements app
 
-**STEP**: 3 - Setup and Run Locally
+**DESCRIPTION**: Create a Launchpad Site in your BTP subaccount and add a tile/target mapping that references the semantic object/action you configured (MyFEApplication / display). Follow the official site creation tutorial.
 
-**DESCRIPTION**: Install dependencies and run the CAP app locally. Use cds watch for live reload and open the Fiori UI or the Books service endpoint.
-
-**LANGUAGE**: Shell
+**LANGUAGE**: PlainText
 
 **CODE**:
-```shell
-# Install dependencies
-npm install
+```text
+https://developers.sap.com/tutorials/cp-portal-cloud-foundry-create-sitelaunchpad.html
+```
+--------------------------------
 
-# Start CAP in watch mode (build + launch)
+**TITLE**: Get Started with SAP Cloud Application Programming Model (CAP) using Fiori tools and Standalone Approuter
+
+**INTRODUCTION**: Build and deploy a CAP-based Node.js API with a Fiori Elements UI and a standalone approuter on SAP Business Technology Platform (BTP). This guide covers running locally with an in-memory database, building and deploying to Cloud Foundry (CF) using either the Cloud MTA Build Tool or CLI, verifying deployment, and undeploying. The project was generated following the blog post: https://blogs.sap.com/2022/02/10/build-and-deploy-a-cap-project-node.js-api-with-a-sap-fiori-elements-ui-and-a-managed-approuter-configuration/ (using the Standalone Approuter configuration).
+
+**TAGS**: fiori, sap-cap, cloud-foundry, approuter, btp, fiori-tools, cds, nodejs
+
+**STEP**: 1 — Prerequisites (for Cloud Foundry deployment)
+**DESCRIPTION**: Ensure you have the required SAP BTP/CF resources and configuration before deploying. Update xs-security.json with the correct oauth2-configuration API region (the API Endpoint can be found on your subaccount overview and must be appended to oauth2-configuration). Subscribe to the Launchpad Service if you plan to use the SAP Launchpad. These prerequisites are required only if deploying to Cloud Foundry.
+**LANGUAGE**: text
+**CODE**:
+```text
+- SAP Cloud Platform account: https://account.hana.ondemand.com/
+- Launchpad Service subscription: https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html
+- Locate your API Endpoint (example): https://api.cf.<region>.hana.ondemand.com
+- Update xs-security.json -> oauth2-configuration with the API endpoint for your CF region
+```
+
+**STEP**: 2 — Create a Development Workspace (SAP Business Application Studio)
+**DESCRIPTION**: If using SAP Business Application Studio (SBAS), create a dev workspace using either the "SAP Fiori" or "Full Stack Cloud Application" dev space templates to get required tooling and environment.
+**LANGUAGE**: text
+**CODE**:
+```text
+Create dev workspace in SBAS using:
+- Dev Space: "SAP Fiori" or "Full Stack Cloud Application"
+See: https://help.sap.com/viewer/... (SBAS dev workspace docs)
+```
+
+**STEP**: 3 — Setup and Run Locally
+**DESCRIPTION**: Install dependencies, start the CAP application with live-reload, open the provided browser UI, and navigate to the Books service or the Fiori web application.
+**LANGUAGE**: shell
+**CODE**:
+```shell
+npm i
 cds watch
 ```
-When prompted by the terminal/browser, select "Open in New Tab" then choose the Fiori web application (UI) or the Books service endpoint.
+Description: After running `cds watch`, select "Open in New Tab" when prompted. In the opened browser tab, select the Fiori web application or the "Books" service endpoint.
 
----
-
-**STEP**: 4 - Build & Deploy to Cloud Foundry — Option 1 (Cloud MTA Build Tool - GUI)
-
-**DESCRIPTION**: Use the Cloud MTA Build Tool integrated UI (Business Application Studio or VS Code extension) to build and deploy the MTA. Ensure xs-security.json oauth2-configuration contains the correct CF API endpoint before building.
-
+**STEP**: 4 — Build and Deploy to Cloud Foundry (Option 1: Cloud MTA Build Tool)
+**DESCRIPTION**: Use the Cloud MTA Build Tool (GUI in BAS or similar IDE) to build and deploy the MTA archive. Ensure xs-security.json contains the correct oauth2-configuration settings before building.
+- Update xs-security.json oauth2-configuration for your CF API region.
+- Build the MTA project.
+- Deploy the generated MTAR to Cloud Foundry.
 **LANGUAGE**: text
-
 **CODE**:
 ```text
-1. Ensure xs-security.json.oauth2-configuration.url is set to your CF API endpoint.
-2. In the IDE: Right-click mta.yaml -> Build MTA Project.
-3. In the IDE: Right-click mta_archives/standaloneCAPProject_1.0.0.mtar -> Deploy MTA Archive.
-4. Follow prompts to log in to Cloud Foundry (if required).
+1. Ensure xs-security.json is updated with correct oauth2-configuration for your API region.
+2. Right-click mta.yaml -> "Build MTA Project"
+3. Right-click mta_archives/standaloneCAPProject_1.0.0.mtar -> "Deploy MTA Archive"
+This will prompt for CF credentials if not logged in.
 ```
-Files referenced:
-- mta.yaml
-- mta_archives/standaloneCAPProject_1.0.0.mtar
 
----
-
-**STEP**: 5 - Build & Deploy to Cloud Foundry — Option 2 (CLI)
-
-**DESCRIPTION**: Use provided npm scripts to build and deploy via CLI. Ensure xs-security.json oauth2-configuration has the CF API endpoint.
-
-**LANGUAGE**: Shell
-
+**STEP**: 5 — Build and Deploy to Cloud Foundry (Option 2: CLI)
+**DESCRIPTION**: Build and deploy using local npm scripts. Ensure xs-security.json is updated with oauth2-configuration for your CF API region. Run the build + deploy script which will prompt for CF credentials if required. After deployment, use the second generated application URL (approuter) to access the Fiori UI.
+**LANGUAGE**: shell
 **CODE**:
 ```shell
-# Build and deploy using project npm scripts
 npm run build && npm run deploy
 ```
-After successful deploy, open the second generated application URL, e.g.:
+Example approuter URL pattern (select the second generated URL after deployment):
+```text
 <subdomain>-<space>-standalonecapproject-approuter.cfapps.<api-region>.hana.ondemand.com
+```
 
----
-
-**STEP**: 6 - Verify Deployment
-
-**DESCRIPTION**: Verify CF deployment either via CLI or BTP Cockpit. Use the CLI command shown to list MTA deployed apps (select the second URL in the output), or inspect the approuter routes in BTP Cockpit.
-
-**LANGUAGE**: Shell
-
+**STEP**: 6 — Verify Deployment (Option 1: CF CLI)
+**DESCRIPTION**: Use the Cloud Foundry CLI to show MTA deployment details and copy the approuter URL (the second URL under the `urls` column). Replace command argument with your MTA name if different.
+**LANGUAGE**: shell
 **CODE**:
 ```shell
-# Use CF CLI command provided by the sample to inspect the MTA and URLs
 cf mta standaloneCAPProject
 ```
-Alternative: In BTP Cockpit go to Subaccount -> Spaces -> select space -> open deployed approuter app (e.g., standalonecapproject-approuter) and inspect application routes.
+Action: From the output, select the second URL listed under the `urls` column to open the deployed approuter and Fiori UI.
 
----
+**STEP**: 7 — Verify Deployment (Option 2: SAP BTP Cockpit)
+**DESCRIPTION**: Verify routes and application instances via the SAP BTP Cockpit.
+**LANGUAGE**: text
+**CODE**:
+```text
+1. Login to SAP BTP Cockpit -> Subaccount -> Overview -> Spaces
+2. Select the space where you deployed the app
+3. Select the approuter app (example name: standalonecapproject-approuter)
+4. View application routes to access the Fiori UI
+```
 
-**STEP**: 7 - Undeploy
-
-**DESCRIPTION**: Remove the deployed CAP project from Cloud Foundry using the project npm script.
-
-**LANGUAGE**: Shell
-
+**STEP**: 8 — Undeploy
+**DESCRIPTION**: Remove the deployed CAP project from Cloud Foundry using the provided npm script.
+**LANGUAGE**: shell
 **CODE**:
 ```shell
 npm run undeploy
 ```
 
----
-
-**STEP**: 8 - Known Issues / Enable Connectivity Service
-
-**DESCRIPTION**: To support on-premise connectivity, enable the connectivity resource in mta.yaml by uncommenting the connectivity service configuration named standaloneCAPProject-connectivity. This enables the SAP Connectivity service to connect cloud apps to on-premise systems.
-
-**LANGUAGE**: YAML
-
-**CODE**:
-```yaml
-# Example mta.yaml resource - uncomment if you require on-prem connectivity
-resources:
-  - name: standaloneCAPProject-connectivity
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: connectivity
-      service-plan: lite
-```
-File referenced:
-- mta.yaml
-
----
-
-**STEP**: 9 - Get Support & License
-
-**DESCRIPTION**: Where to get help and project license details.
-
+**STEP**: 9 — Known Issues / Connectivity to On-Premise Systems
+**DESCRIPTION**: To enable on-premise connectivity, uncomment and enable the connectivity service in mta.yaml (service name: standaloneCAPProject-connectivity). The SAP Connectivity service lets cloud applications connect to on-premise systems. Ensure mta.yaml changes are saved before building/deploying.
 **LANGUAGE**: text
-
 **CODE**:
 ```text
-Support:
-- SAP Community: https://answers.sap.com/tags/9f13aee1-834c-4105-8e43-ee442775e5ce
+- Open mta.yaml
+- Uncomment the connectivity resource and corresponding module/service bindings
+- Enable standaloneCAPProject-connectivity service
+- Rebuild and redeploy the MTA
+```
 
-License:
-- Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-- Licensed under Apache Software License, version 2.0
-- See LICENSE file: ../../LICENSES/Apache-2.0.txt
+**STEP**: 10 — Get Support
+**DESCRIPTION**: For questions or issues, post to the SAP Community tag for visibility and support.
+**LANGUAGE**: text
+**CODE**:
+```text
+SAP Community: https://answers.sap.com/tags/9f13aee1-834c-4105-8e43-ee442775e5ce
+```
+
+**STEP**: 11 — License
+**DESCRIPTION**: Project license details and copyright.
+**LANGUAGE**: text
+**CODE**:
+```text
+Copyright (c) 2009-2026 SAP SE or an SAP affiliate company.
+Licensed under the Apache Software License, version 2.0.
+See LICENSE: ../../LICENSES/Apache-2.0.txt
 ```
 --------------------------------
 
-**TITLE**: Application Details — mystandalonecapproject (Fiori Elements List Report Object Page V4)
+**TITLE**: Application Details for mystandalonecapproject (Fiori Elements - List Report Object Page V4)
 
-**INTRODUCTION**: Quick reference and actionable steps to start and run the generated SAP Fiori Elements application "mystandalonecapproject". Includes project metadata, start commands (CAP backend and mock), index.html path, and prerequisites for local development.
+**INTRODUCTION**: This document provides actionable metadata and launch instructions for the generated Fiori Elements application "mystandalonecapproject". Use the metadata for automation (scaffolding, CI, or code generation) and follow the steps to run the app against a local CAP service or with mock data.
 
-**TAGS**: fiori, sap-fiori-elements, cap, ui5, start, mock, npm, cds
+**TAGS**: fiori, ui5, cap, sap, fiori-elements, list-report, object-page, mock, launch
 
-**STEP**: 1 — Project metadata (machine-readable)
-**DESCRIPTION**: All generation and app configuration details exported as JSON for use in automation or generator tooling.
+**STEP**: 1 — Application metadata (machine-readable)
+**DESCRIPTION**: Exact generation and app configuration metadata. Use this JSON for automation, validation, or injecting into scripts.
 **LANGUAGE**: JSON
 **CODE**:
 ```json
@@ -2006,156 +1722,133 @@ License:
   "enableCodeAssistLibraries": false,
   "enableTypeScript": false,
   "addEslintConfiguration": false,
-  "mainEntity": "Books"
+  "mainEntity": "Books",
+  "appEntry": "/mystandalonecapproject/webapp/index.html"
 }
 ```
 
-**STEP**: 2 — Start CAP backend (open the Fiori app)
-**DESCRIPTION**: Start your local CAP backend so the OData service is available at the configured Service URL, then open the Fiori application's index.html. Use the CAP start command appropriate for your project; examples below show common commands.
-**LANGUAGE**: Shell
+**STEP**: 2 — Prerequisites
+**DESCRIPTION**: Ensure runtime prerequisites are installed before running the app. Confirm Node.js LTS and a supported npm version are installed.
+**LANGUAGE**: PlainText
+**CODE**:
+```
+Pre-requisite:
+1. Active NodeJS LTS (Long Term Support) version and associated supported NPM version. See https://nodejs.org
+```
+
+**STEP**: 3 — Start the CAP backend (local service)
+**DESCRIPTION**: Start your CAP project so the local OData service is available at the service URL defined in metadata (http://localhost:4004/catalog/). The generator expects the Fiori app to be served with the CAP backend running on port 4004. If your project uses typical CAP scripts, use one of these example commands from the CAP project root to start the service. If your project uses different start scripts, run the equivalent command defined in your repository.
+**LANGUAGE**: Bash
 **CODE**:
 ```bash
-# from the CAP project root (example)
-# Option A: using npx to run @sap/cds (recommended if @sap/cds is installed locally)
-npx cds watch
+# Example CAP start commands (choose appropriate for your project)
+# Option A: cds watch (typical CAP development)
+cds watch
 
-# Option B: using npm script if your project defines one (check package.json)
+# Option B: npm start (if defined in package.json to start CAP)
 npm start
-
-# After backend is running, open the app in your browser:
-# App URL:
-# http://localhost:4004/mystandalonecapproject/webapp/index.html
 ```
 
-**STEP**: 3 — Run the generated app with mock data
-**DESCRIPTION**: Launch the frontend using the supplied mock data that mirrors the OData service used during generation. Run this command from the generated app folder (mystandalonecapproject) root.
-**LANGUAGE**: Shell
-**CODE**:
-```bash
-# change into the generated app folder (if not already there)
-cd mystandalonecapproject
-
-# Start the app using mock data (as generated)
-npm run start-mock
-
-# Then open:
-# http://localhost:4004/mystandalonecapproject/webapp/index.html
-```
-
-**STEP**: 4 — Direct file entry (open static index)
-**DESCRIPTION**: Location of the built index.html used by the Fiori app; useful for debugging or serving static files.
-**LANGUAGE**: Plaintext
+**STEP**: 4 — Launch the generated Fiori app in a browser (real backend)
+**DESCRIPTION**: Once the CAP backend is running and serving the OData catalog, open the Fiori app index in a browser. The app entry path is relative to the project root.
+**LANGUAGE**: PlainText
 **CODE**:
 ```
-Path: mystandalonecapproject/webapp/index.html
-Open in browser (when backend or static server running):
+Open in browser:
 http://localhost:4004/mystandalonecapproject/webapp/index.html
 ```
 
-**STEP**: 5 — Service endpoint used by the app
-**DESCRIPTION**: OData service endpoint the app expects when connected to a local CAP backend.
-**LANGUAGE**: URL
+**STEP**: 5 — Run the application with Mock Data
+**DESCRIPTION**: If you want to run the Fiori app without a running CAP backend, start the provided mock server using the npm script generated with the app. This will run the UI and mock OData responses that reflect the service URL supplied during generation.
+**LANGUAGE**: Bash
 **CODE**:
-```
-Service URL: http://localhost:4004/catalog/
-Main Entity: Books
+```bash
+# From the generated app root folder:
+npm run start-mock
 ```
 
-**STEP**: 6 — Development prerequisites
-**DESCRIPTION**: Minimal environment requirements to run and develop the generated application locally.
-**LANGUAGE**: Plaintext
+**STEP**: 6 — Service endpoint reference
+**DESCRIPTION**: Reference for the service endpoint that the app expects when running against the local CAP service.
+**LANGUAGE**: PlainText
 **CODE**:
 ```
-1. Active Node.js LTS (Long Term Support) and corresponding supported npm version.
-   See: https://nodejs.org
-
-2. For CAP backend: @sap/cds available (global or project-local). Starting examples use `npx cds watch` or project npm scripts.
-```
-
-**STEP**: 7 — App generation and development flags (quick reference)
-**DESCRIPTION**: Summary of the generation options and flags that affect code and tooling in the generated project.
-**LANGUAGE**: JSON
-**CODE**:
-```json
-{
-  "ui5Theme": "sap_horizon",
-  "ui5Version": "1.102.1",
-  "enableCodeAssistLibraries": false,
-  "enableTypeScript": false,
-  "addEslintConfiguration": false,
-  "floorplan": "List Report Object Page V4"
-}
+Service URL (OData catalog):
+http://localhost:4004/catalog/
 ```
 --------------------------------
 
-**TITLE**: Deploy CAP Project with Fiori UI, In-Memory SQLite, and FLP (Cloud Foundry / Local)
+**TITLE**: Deploy CAP Project with Fiori UI, In-Memory SQLite and FLP Support (Standalone MTA)
 
-**INTRODUCTION**: Step-by-step, code-focused guide to create a standalone CAP project with an in-memory SQLite DB, add a Fiori UI shell (FLP) and approuter, prepare mta.yaml for deployment, and run locally or deploy to Cloud Foundry. Suitable for SAP Business Application Studio or VSCode.
+**INTRODUCTION**: Step-by-step, action-oriented instructions to initialize a standalone CAP project, connect it to an in-memory SQLite database, add an approuter and a Fiori UI using MTA templates, configure FLP/destination integration, and prepare for local development or Cloud Foundry deployment.
 
-**TAGS**: CAP, SAP, Fiori, FLP, CloudFoundry, approuter, mta, SQLite, in-memory, cds, UI5
+**TAGS**: fiori, CAP, Cloud Foundry, mta, approuter, FLP, SQLite, in-memory, cds, sap
 
-**STEP**: 1 — Prerequisites and environment
-**DESCRIPTION**: Ensure you have a Fiori or Full-Stack dev space and install the CDS tools. Decide an MTA id (example: standaloneCAPProject).
+**STEP**: Prerequisites & project initialization
+
+**DESCRIPTION**: Ensure development environment and CDS tooling are available. Choose a unique MTA id (example: standaloneCAPProject). Initialize a CAP project and add sample content and MTA support.
+
 **LANGUAGE**: Bash
+
 **CODE**:
 ```bash
-# Ensure CDS Toolkit is installed globally
+# Ensure CDS CLI is installed globally
 npm i -g @sap/cds-dk
 
-# Choose an MTA id for the project:
-# Example:
-MTA_ID=standaloneCAPProject
-```
+# Example MTA id
+# use: standaloneCAPProject
 
-**STEP**: 2 — Initialize CAP project and add samples + MTA
-**DESCRIPTION**: Create a new CAP project, change into its folder, add sample data and an MTA descriptor.
-**LANGUAGE**: Bash
-**CODE**:
-```bash
+# Initialize CAP project and add samples + mta
 cds init standaloneCAPProject
-cd standaloneCAPProject/
+cd  standaloneCAPProject/
 cds add samples
 cds add mta
 ```
 
-**STEP**: 3 — Edit package.json: move sqlite3, add libs, and configure in-memory DB
-**DESCRIPTION**: Move sqlite3 from devDependencies → dependencies, add @sap/xsenv, @sap/xssec, passport, and add a cds node that configures an in-memory SQLite database and enables the in_memory_db feature.
-**LANGUAGE**: JSON
-**CODE**:
-```json
-// package.json -> dependencies (example fragment)
-{
-  "dependencies": {
-    "sqlite3": "^5.0.4",
-    "@sap/xsenv": "^4.2.0",
-    "@sap/xssec": "^3.6.0",
-    "passport": "^0.6.0"
-    // ... other dependencies
-  },
+**STEP**: package.json — dependencies and CDS in-memory DB configuration
 
-  // add this "cds" node to package.json root
-  "cds": {
+**DESCRIPTION**: Edit package.json in the project root to:
+- Move "sqlite3" from devDependencies to dependencies.
+- Add xsenv/xssec and passport dependencies.
+- Configure CDS to use an in-memory SQLite DB and enable the in_memory_db feature.
+
+Apply the three changes below to package.json.
+
+**LANGUAGE**: JSON
+
+**CODE**:
+```JSON
+# a) Move sqlite3 to dependencies (ensure this appears under "dependencies")
+"sqlite3": "^5.0.4"
+
+# b) Add these dependencies under "dependencies"
+"@sap/xsenv": "^4.2.0",
+"@sap/xssec": "^3.6.0", 
+"passport": "^0.6.0"
+
+# c) Add the cds node to package.json to connect CDS to in-memory sqlite
+"cds": {
     "requires": {
-      "db": {
+        "db": {
         "kind": "sqlite",
         "credentials": {
           "database": ":memory:"
         }
-      }
+     }
     },
     "features": {
       "in_memory_db": true
     }
-  }
-}
+}    
 ```
 
-**STEP**: 4 — Adjust mta.yaml build-parameters for production build (copy init data)
-**DESCRIPTION**: In the generated mta.yaml, update or add build-parameters to run npm install --production, build CDS for production, and copy db sample data into generated srv folder.
+**STEP**: mta.yaml — build-parameters pre-build commands
+
+**DESCRIPTION**: Update mta.yaml to run production npm install, build cds and copy db data into the generated srv folder as part of build-parameters before-all.
+
 **LANGUAGE**: YAML
+
 **CODE**:
-```yaml
-# mta.yaml (fragment under the root or module build-parameters scope)
+```YAML
 build-parameters:
   before-all:
    - builder: custom
@@ -2165,95 +1858,126 @@ build-parameters:
       - cp -r db/data gen/srv/srv/data
 ```
 
-**STEP**: 5 — Add UI annotations to srv/cat-service.cds
-**DESCRIPTION**: Append UI annotations to the CatalogService Books entity to expose SelectionFields and LineItem metadata for Fiori elements.
-**LANGUAGE**: CDS
+**STEP**: srv/cat-service.cds — add UI annotations for CatalogService.Books
+
+**DESCRIPTION**: Append UI annotations to srv/cat-service.cds to expose SelectionFields and LineItem annotations for Books entity and to label fields.
+
+**LANGUAGE**: JSON
+
 **CODE**:
-```cds
-// srv/cat-service.cds - append this annotation block
-annotate CatalogService.Books with @(
-  UI : {
-    SelectionFields: [ title ],
-    LineItem: [
-      { Value: ID },
-      { Value: title },
-      { Value: stock }
-    ]
-  }
-){
-  ID    @( title: 'ID' );
-  title @( title: 'Title' );
-  stock @( title: 'Stock' );
-};
+```JSON
+	annotate CatalogService.Books with @(
+    UI : { 
+        SelectionFields  : [
+            title
+        ],
+        LineItem  : [
+            { Value : ID },
+            { Value : title }, 
+            { Value : stock }                                   
+        ],
+     }
+  ){
+      ID @( title: 'ID' );    
+      title @( title: 'Title' );
+      stock @( title: 'Stock' );
+  };
 ```
 
-**STEP**: 6 — Install dependencies and validate locally
-**DESCRIPTION**: Install node modules and run cds watch to validate the service and UI metadata.
+**STEP**: Install packages and validate locally
+
+**DESCRIPTION**: Install npm packages and run the CAP service locally to validate the catalog service.
+
 **LANGUAGE**: Bash
+
 **CODE**:
 ```bash
-# from project root
 npm install
-
-# run local dev server and watch for changes
 cds watch
-# Open the service URL printed by cds watch in a browser to validate CatalogService
+# Follow the opened tab in the browser to validate CatalogService is running
 ```
 
-**STEP**: 7 — Create Approuter module (MTA template)
-**DESCRIPTION**: In your IDE (Business Application Studio or similar) create an Approuter module from the MTA template. Use Standalone Approuter, enable authentication, and indicate you will add a UI.
-**LANGUAGE**: Bash (instructions as commands/comments)
+**STEP**: Add Approuter module via MTA template (UI & auth choices)
+
+**DESCRIPTION**: From your MTA project (right-click mta.yaml -> Create MTA Module from Template). Choose Approuter Configuration. Use Standalone Approuter runtime. Answer prompts:
+- Add authentication? — Yes
+- Add a UI? — Yes
+
+(Use the wizard options; no additional code required here.)
+
+**LANGUAGE**: JSON
+
 **CODE**:
-```bash
-# Right-click mta.yaml -> Create MTA Module from Template
-# Template choices:
-# - Select: Approuter Configuration
-# - HTML5 application runtime: Standalone Approuter
-# - Add authentication? Yes
-# - Do you plan to add a UI? Yes
+```JSON
+# Use MTA "Create MTA Module from Template" wizard:
+# - Template: Approuter Configuration
+# - HTML5 runtime: Standalone Approuter
+# - Add authentication: Yes
+# - Add UI: Yes
 ```
 
-**STEP**: 8 — Create SAP Fiori Application module (MTA template) linked to local CAP
-**DESCRIPTION**: Use the MTA template to add a Fiori application module, choose OData service, point to your local CAP project, enable MTA deployment config and FLP config, and configure semantic object/action/title.
-**LANGUAGE**: Bash (instructions as commands/comments)
+**STEP**: Add SAP Fiori Application module via MTA template (connect to CAP OData)
+
+**DESCRIPTION**: Create an SAP Fiori Application module:
+- Template: SAP Fiori Application
+- Choose application type and floorplan
+- Use a Local CAP Project (point to project)
+- Select OData service and main entity
+- Provide unique project name (e.g. mystandalonecapproject)
+- Add deployment configuration to MTA project: Yes
+- Add FLP configuration: Yes
+- Target: Cloud Foundry
+- Destination: None
+- Semantic Object: MyStandaloneCapProject
+- Action: display
+- Title: The Title of my Standalone App
+- Finish the wizard
+
+**LANGUAGE**: JSON
+
 **CODE**:
-```bash
-# Right-click mta.yaml -> Create MTA Module from Template
-# Template choices:
-# - Select: SAP Fiori Application
-# - Application type & floorplan: (choose Fiori elements List Report/Object Page or your preferred)
-# - Use a Local CAP Project: Yes -> point to this CAP project
-# - Select: OData Service -> choose Main entity
-# - Project name example: mystandalonecapproject
-# - Add deployment config to MTA? Yes
-# - Add FLP configuration? Yes
-# - Choose target: Cloud Foundry
+```JSON
+# Use MTA "Create MTA Module from Template" wizard for:
+# - Template: SAP Fiori Application
+# - Use a Local CAP Project -> point to your CAP project
+# - Select OData Service, Main entity
+# - Project name: mystandalonecapproject
+# - Add deployment configuration to MTA: Yes
+# - Add FLP configuration: Yes
+# - Target: Cloud Foundry
 # - Destination: None
 # - Semantic Object: MyStandaloneCapProject
 # - Action: display
 # - Title: The Title of my Standalone App
 ```
 
-**STEP**: 9 — Add xs-app.json route for the catalog UI
-**DESCRIPTION**: In the generated Fiori app approuter folder, add a route at the top of the routes list to forward /catalog/ to the CAP destination (cap-launchpad) without authentication.
+**STEP**: app/mystandalonecapproject/xs-app.json — add route for catalog to destination
+
+**DESCRIPTION**: Add a route to forward requests with path prefix /catalog/ to the destination named cap-launchpad. Insert this object as the first route in xs-app.json's routes array.
+
 **LANGUAGE**: JSON
+
 **CODE**:
-```json
-// app/mystandalonecapproject/xs-app.json - add as the first route
-{
-  "authenticationType": "none",
-  "csrfProtection": false,
-  "source": "^/catalog/",
-  "destination": "cap-launchpad"
-}
+```JSON
+    {
+      "authenticationType": "none",
+      "csrfProtection": false,
+      "source": "^/catalog/",
+      "destination": "cap-launchpad"
+    },	
 ```
 
-**STEP**: 10 — Update mta.yaml: adjust srv module, add destination resource and requires
-**DESCRIPTION**: Update the generated srv module attributes (name, type, path, provides, parameters, build-parameters). Add a destination service resource (cap-launchpad) and a service instance resource that configures HTML5Runtime destinations including cap-launchpad. Ensure srv module provides srv-api and other modules require it.
+**STEP**: mta.yaml — update service module attributes and add destination resource
+
+**DESCRIPTION**: Update the generated service module standaloneCAPProject-srv to use the generated gen/srv path, provide srv-api, and use npm-ci builder. Add a destination service resource (standaloneCAPProject-destination-service) that references srv-api and configures HTML5 runtime destinations including cap-launchpad. Also ensure modules requiring srv-api include a requires node.
+
+Apply the snippets below.
+
 **LANGUAGE**: YAML
+
 **CODE**:
-```yaml
-# mta.yaml - update existing srv module (replace existing standaloneCAPProject-srv)
+```YAML
+# Update existing module standaloneCAPProject-srv
 - name: standaloneCAPProject-srv
   type: nodejs
   path: gen/srv
@@ -2269,8 +1993,25 @@ cds watch
     builder: npm-ci
 ```
 
-```yaml
-# mta.yaml - destination resource (service instance) example
+**LANGUAGE**: YAML
+
+**CODE**:
+```YAML
+# Add destination resource (summary fragment)
+- Authentication: NoAuthentication
+  Name: cap-launchpad
+  ProxyType: Internet
+  Type: HTTP
+  URL: ~{srv-api/srv-url}
+  HTML5.DynamicDestination: true
+  HTML5.ForwardAuthToken: true
+```
+
+**LANGUAGE**: YAML
+
+**CODE**:
+```YAML
+# Example full destination service resource and requires linkage
 - name: standaloneCAPProject-destination-service
   type: org.cloudfoundry.managed-service
   requires:
@@ -2292,7 +2033,7 @@ cds watch
             Type: HTTP
             URL: ~{srv-api/srv-url}
             HTML5.DynamicDestination: true
-            HTML5.ForwardAuthToken: true
+            HTML5.ForwardAuthToken: true  
           existing_destinations_policy: update
       version: 1.0.0
     service: destination
@@ -2300,420 +2041,302 @@ cds watch
     service-plan: lite
 ```
 
-```yaml
-# mta.yaml - where a module requires srv-api
-requires:
-  - name: srv-api
-```
+**STEP**: Local validation complete / Ready for deployment
 
-**STEP**: 11 — Local development / final checks
-**DESCRIPTION**: After edits, re-run npm install if you modified package.json, verify with cds watch, and open the application endpoints in the browser.
-**LANGUAGE**: Bash
+**DESCRIPTION**: At this point your MTA project includes a CAP backend module (gen/srv), destination configuration for FLP, and a Fiori UI with approuter route. The project is ready for local development or Cloud Foundry deployment. Proceed to adjust approuter package.json for CF and build/deploy steps below.
+
+**LANGUAGE**: text
+
 **CODE**:
-```bash
-npm install
-cds watch
-# Verify CatalogService and UI routes are accessible
+```text
+# Project is ready for local development or Cloud Foundry deployment.
 ```
 
-**STEP**: 12 — Prepare approuter for Cloud Foundry: update package.json
-**DESCRIPTION**: For Cloud Foundry Node.js runtime compatibility (Node >=14 / approuter v11), update the approuter package.json in the <mta-id>-approuter folder.
+**STEP**: approuter package.json — Cloud Foundry compatibility adjustments
+
+**DESCRIPTION**: In the <mta-id>-approuter folder package.json, bump @sap/approuter to 11.5.0 and require node >=14.0.0 to support Node.js 16 on Cloud Foundry. Update these fields in the approuter package.json.
+
 **LANGUAGE**: JSON
+
 **CODE**:
-```json
-// <mta-id>-approuter/package.json (patch example)
-{
-  "dependencies": {
-    "@sap/approuter": "11.5.0"
-  },
-  "engines": {
-    "node": ">= 14.0.0"
-  }
+```JSON
+# Example changes in <mta-id>-approuter/package.json
+"@sap/approuter": "11.5.0",
+"engines": {
+  "node": ">= 14.0.0"
 }
 ```
 
-**STEP**: 13 — Build and deploy MTA (Business Application Studio)
-**DESCRIPTION**: Build the MTA to produce an .mtar archive, then deploy it to Cloud Foundry (must be logged in).
+**STEP**: Build & deploy (Business Application Studio)
+
+**DESCRIPTION**: Use the IDE MTA tooling to build and deploy the MTA archive. Right-click the mta.yaml to Build MTA Project (generates .mtar), then right-click the mtar in mta_archives and Deploy MTA Archive (ensure Cloud Foundry login before deploying).
+
 **LANGUAGE**: Bash
+
 **CODE**:
 ```bash
 # In Business Application Studio:
-# - Right-click mta.yaml -> Build MTA Project (creates mtar in mta_archives/)
-# - Right-click the .mtar -> Deploy MTA Archive (requires CF login)
+# 1) Right-click mta.yaml -> Build MTA Project (generates mtar)
+# 2) Right-click the mtar in mta_archives -> Deploy MTA Archive
+#    (ensure you're logged into Cloud Foundry)
 ```
 
-**STEP**: 14 — Build and deploy (VSCode / CLI)
-**DESCRIPTION**: Alternative CLI commands to build and deploy (depends on scripts in your project package.json).
+**STEP**: Build & deploy (VSCode / CLI script)
+
+**DESCRIPTION**: Use the repository-provided npm script to build and deploy (if configured). Run the combined script that builds and deploys the MTA.
+
 **LANGUAGE**: Bash
+
 **CODE**:
+```BASH
 npm run build && npm run deploy
+```
 --------------------------------
 
 **TITLE**: Get Started with SAP Cloud Application Programming Model (CAP) using Fiori tools and Application Frontend Service
 
-**INTRODUCTION**: Quick, code-focused starter that shows how to scaffold a CAP service, add a simple CDS model and OData service, create a UI5 frontend (Fiori tools compatible), run locally with cds watch and prepare artifacts to deploy to SAP BTP (Application Frontend Service). Includes concrete files and commands for automation and code-generation workflows.
+**INTRODUCTION**: Quick reference for code-generation agents and developers to locate authoritative resources and initial actions when building CAP-based UIs with Fiori tools and the Application Frontend Service. Use the links and commands below to fetch documentation, blog guidance, and license details. This page collects the essential starting points so an automation or developer can programmatically retrieve guidance and incorporate it into a generation workflow.
 
-**TAGS**: CAP, Cloud Application Programming Model, Fiori, UI5, Application Frontend Service, AFS, OData, CDS, Node.js, BTP, Fiori-tools
+**TAGS**: fiori-samples, CAP, Application Frontend Service, fiori-tools, SAP, documentation, getting-started
 
-STEP: 1 — Initialize CAP project
-DESCRIPTION: Create a new CAP project with Node.js runtime and default folder layout. This initializes package.json and basic structure.
-LANGUAGE: bash
-CODE:
-```bash
-# create project folder and initialize CAP
-mkdir cap-afs-sample
-cd cap-afs-sample
+**STEP**: 1 — Read the official service overview
 
-# initialize npm + CAP
-npm init -y
-npm install --save @sap/cds
-npx cds init
+**DESCRIPTION**: Open the SAP Help Portal page that explains the Application Frontend Service. Use this page to understand service capabilities, supported patterns, and provisioning details that inform scaffolding and deployment choices.
 
-# optionally install sqlite for local persistence
-npm install --save sqlite3
-```
+**LANGUAGE**: text
 
-STEP: 2 — Add CDS data model (db/schema.cds)
-DESCRIPTION: Define a simple domain model and persistence entity. Save as db/schema.cds.
-LANGUAGE: CDS
-CODE:
-```cds
-namespace my.bookshop;
-
-using { cuid } from '@sap/cds/common';
-
-entity Books : cuid {
-  title    : String(111);
-  author   : String(111);
-  stock    : Integer;
-  price    : Decimal(9,2);
-  createdAt: Timestamp;
-}
-```
-
-STEP: 3 — Define an OData service (srv/cat-service.cds)
-DESCRIPTION: Expose the entity through a service for OData consumption by UI5.
-LANGUAGE: CDS
-CODE:
-```cds
-using my.bookshop as db from '../db/schema';
-
-service CatalogService @(requires: 'authenticated-user') {
-  entity Books as projection on db.Books;
-}
-```
-
-STEP: 4 — Add optional service implementation hooks (srv/server.js)
-DESCRIPTION: Add Node.js service bootstrap for custom logic and to enable local testing. Use this file for handlers, custom endpoints, or middleware.
-LANGUAGE: JavaScript
-CODE:
-```javascript
-// srv/server.js
-const cds = require('@sap/cds');
-
-module.exports = cds.service.impl(async function() {
-  const { Books } = this.entities;
-
-  // Example: set createdAt on CREATE
-  this.before('CREATE', 'Books', (req) => {
-    req.data.createdAt = new Date().toISOString();
-  });
-
-  // Example: simple custom action (uncomment and extend as needed)
-  // this.on('markOutOfStock', async (req) => { ... });
-});
-```
-
-STEP: 5 — package.json scripts for local development
-DESCRIPTION: Minimal package.json snippets to run CAP locally and serve UI modules via cds watch.
-LANGUAGE: JSON
-CODE:
-```json
-{
-  "name": "cap-afs-sample",
-  "version": "1.0.0",
-  "scripts": {
-    "start": "cds run",
-    "watch": "cds watch"
-  },
-  "dependencies": {
-    "@sap/cds": "^7",
-    "sqlite3": "^5"
-  }
-}
-```
-
-STEP: 6 — Place UI5 app under app/webapp to be served by CAP
-DESCRIPTION: CAP can serve a UI module placed under app/ by default. Create a minimal UI5 app manifest and index that consumes the CatalogService OData endpoint.
-LANGUAGE: JSON
-CODE:
-```json
-// app/webapp/manifest.json
-{
-  "sap.app": {
-    "id": "my.bookshop.ui",
-    "type": "application",
-    "applicationVersion": { "version": "1.0.0" },
-    "title": "Bookshop UI"
-  },
-  "sap.ui5": {
-    "rootView": "my.bookshop.ui.view.App",
-    "dependencies": {
-      "minUI5Version": "1.84.0",
-      "libs": { "sap.m": {}, "sap.ui.core": {} }
-    },
-    "models": {
-      "": {
-        "dataSource": "CatalogService",
-        "settings": { "odataVersion": "2.0" }
-      }
-    }
-  },
-  "sap.app.technology": "UI5",
-  "sap.ui": {
-    "technology": "UI5"
-  },
-  "sap.platform.hcp": {
-    "uri": "/"
-  },
-  "dataSources": {
-    "CatalogService": {
-      "uri": "/catalog/",
-      "type": "OData",
-      "settings": { "odataVersion": "2.0" }
-    }
-  }
-}
-```
-
-LANGUAGE: XML
-CODE:
-```xml
-<!-- app/webapp/view/App.view.xml -->
-<mvc:View controllerName="my.bookshop.ui.controller.App"
-    xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-  <App>
-    <pages>
-      <Page title="Bookshop">
-        <List id="bookList" items="{/Books}">
-          <items>
-            <StandardListItem title="{title}" description="{author}" info="{price}"/>
-          </items>
-        </List>
-      </Page>
-    </pages>
-  </App>
-</mvc:View>
-```
-
-LANGUAGE: JavaScript
-CODE:
-```javascript
-// app/webapp/controller/App.controller.js
-sap.ui.define(["sap/ui/core/mvc/Controller"], function(Controller) {
-  return Controller.extend("my.bookshop.ui.controller.App", {
-    onInit: function() {
-      // default OData model is configured via manifest.json
-    }
-  });
-});
-```
-
-LANGUAGE: HTML
-CODE:
-```html
-<!-- app/webapp/index.html -->
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Bookshop</title>
-    <script id="sap-ui-bootstrap"
-            src="https://ui5.sap.com/resources/sap-ui-core.js"
-            data-sap-ui-theme="sap_fiori_3"
-            data-sap-ui-libs="sap.m"
-            data-sap-ui-resourceroots='{"my.bookshop.ui": "./"}'>
-    </script>
-    <script>
-      sap.ui.getCore().attachInit(function () {
-        sap.ui.require(["sap/ui/core/ComponentContainer"], function (ComponentContainer) {
-          new ComponentContainer({ name: "my.bookshop.ui", settings: { id: "bookshop" } }).placeAt("content");
-        });
-      });
-    </script>
-  </head>
-  <body class="sapUiBody" id="content"></body>
-</html>
-```
-
-STEP: 7 — Run locally (cds watch serves backend + UI)
-DESCRIPTION: Use cds watch to run the OData service and serve the UI module concurrently. Test the UI against the local backend.
-LANGUAGE: bash
-CODE:
-```bash
-# Start CAP service and UI (watch mode auto-updates)
-npm run watch
-
-# Open web UI at:
-# http://localhost:4004/index.html  (or the root path served by CDS)
-# OData service available at:
-# http://localhost:4004/catalog/Books
-```
-
-STEP: 8 — Prepare for deployment to SAP BTP / Application Frontend Service (high-level)
-DESCRIPTION: For deployment to Application Frontend Service on SAP BTP (CF), package the UI and backend per your org's pipeline. Common approaches:
-- Deploy backend CAP app to Cloud Foundry (cf push or MTA)
-- Deploy static UI assets to Application Frontend Service (AFS) or use the Application Router that integrates with AFS
-- Bind required services (xsuaa, destination, app-frontend-service) in your manifest or MTA
-Refer to official docs (links below) for AFS-specific manifest and service binding patterns.
-LANGUAGE: bash
-CODE:
-```bash
-# Example high-level steps (adjust to your org and toolchain):
-# 1. Build UI
-cd app/webapp
-# if using ui5 build tooling
-npx @ui5/cli build --all
-
-# 2. Package artifacts into an MTA or CF app and push
-# Example: push CAP backend
-cf push cap-backend -f manifest-backend.yml
-
-# 3. Deploy UI to Application Frontend Service (AFS) following SAP Help Portal guidance
-# See official docs linked below for exact manifest/service configuration and bindings.
-```
-
-STEP: 9 — Useful links and resources
-DESCRIPTION: Preserve official docs and blog posts for Application Frontend Service (AFS) and deeper examples.
-LANGUAGE: text
-CODE:
+**CODE**:
 ```text
-SAP Help Portal - What Is Application Frontend Service:
+URL:
 https://help.sap.com/docs/application-frontend-service/application-frontend-service/what-is-application-frontend-service?version=Cloud
 
-Blog - Introducing Application Frontend Service:
+Suggested quick fetch (curl):
+curl -L "https://help.sap.com/docs/application-frontend-service/application-frontend-service/what-is-application-frontend-service?version=Cloud"
+```
+
+**STEP**: 2 — Read the product introduction blog
+
+**DESCRIPTION**: Read the official announcement and high-level guidance from the SAP Community blog to capture use cases, recommended approaches, and examples that influence template selection and UI patterns.
+
+**LANGUAGE**: text
+
+**CODE**:
+```text
+URL:
 https://community.sap.com/t5/technology-blog-posts-by-sap/introducing-application-frontend-service/ba-p/14091408
 
-Blog - Simple UI Applications with Application Frontend Service:
-https://community.sap.com/t5/technology-blog-posts-by-sap/simple-ui-applications-with-application-frontend-service/ba-p/14096009
+Suggested quick fetch (curl):
+curl -L "https://community.sap.com/t5/technology-blog-posts-by-sap/introducing-application-frontend-service/ba-p/14091408"
 ```
 
-STEP: 10 — Licensing and repository paths
-DESCRIPTION: Preserve license reference and repository path for legal and repo structure.
-LANGUAGE: text
-CODE:
+**STEP**: 3 — Read the step-by-step blog about simple UI applications
+
+**DESCRIPTION**: Review the "Simple UI Applications with Application Frontend Service" blog post for concrete examples and step sequences that are useful to reproduce in automation or scaffolding scripts (how-to guidance, constraints, and sample flows).
+
+**LANGUAGE**: text
+
+**CODE**:
 ```text
-License: Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the LICENSE file:
+URL:
+https://community.sap.com/t5/technology-blog-posts-by-sap/simple-ui-applications-with-application-frontend-service/ba-p/14096009
 
-../../LICENSES/Apache-2.0.txt
+Suggested quick fetch (curl):
+curl -L "https://community.sap.com/t5/technology-blog-posts-by-sap/simple-ui-applications-with-application-frontend-service/ba-p/14096009"
 ```
 
+**STEP**: 4 — Sample applications status and next actions
 
+**DESCRIPTION**: Sample application implementations are listed as "Coming soon..." in this repository. For now, programmatically poll the repository or CI location where sample apps will be added and prepare scaffolding tasks to populate once samples appear.
+
+**LANGUAGE**: bash
+
+**CODE**:
+```bash
+# Example: poll the repository README or samples folder for changes (adjust repo URL)
+REPO_RAW_URL="https://raw.githubusercontent.com/<org>/<repo>/main/path/to/samples/README.md"
+while true; do
+  curl -s -o /tmp/samples-readme.md "$REPO_RAW_URL"
+  if grep -q -i "coming soon" /tmp/samples-readme.md; then
+    echo "Samples not yet available. Sleeping and retrying..."
+    sleep 3600
+  else
+    echo "Samples available. Downloading..."
+    curl -L -O "https://github.com/<org>/<repo>/archive/refs/heads/main.zip"
+    break
+  fi
+done
+```
+
+**STEP**: 5 — Review license and copyright details
+
+**DESCRIPTION**: The project is licensed under the Apache Software License 2.0. Use the provided repository path to retrieve the license file and include it with generated code or compliance checks.
+
+**LANGUAGE**: bash
+
+**CODE**:
+```bash
+# View the license file located in the repository
+LICENSE_PATH="../../LICENSES/Apache-2.0.txt"
+
+# If running in the repository root or appropriate context:
+if [ -f "$LICENSE_PATH" ]; then
+  cat "$LICENSE_PATH"
+else
+  echo "License file not found at $LICENSE_PATH. Adjust path to repository layout."
+fi
+```
+
+**STEP**: 6 — Actionable next steps for code generation agents
+
+**DESCRIPTION**: Use the collected resources to:
+- Determine required service APIs and provisioning actions from the Help Portal.
+- Extract example steps from the blog posts to form scripted walkthroughs for Fiori tools (scaffolding, building, deployment).
+- Watch the samples folder and integrate sample app templates into the code generator when available.
+- Ensure Apache-2.0 licensing is included in generated artifacts (use LICENSE_PATH above).
+
+**LANGUAGE**: text
+
+**CODE**:
+```text
+Next actions checklist:
+- Fetch and parse the Help Portal page to extract service capabilities and API endpoints.
+- Parse blog posts for step-by-step commands and convert them into automation tasks.
+- Monitor repository for sample applications and import templates when published.
+- Include ../../LICENSES/Apache-2.0.txt contents with generated projects for compliance.
+```
 --------------------------------
 
 **TITLE**: Expose a deployed CAP project as an SAP BTP destination
 
-**INTRODUCTION**: Step-by-step actions to expose a deployed SAP Cloud Application Programming (CAP) Node.js service as an SAP BTP Destination using XSUAA credentials and OAuth2ClientCredentials. Includes how to retrieve the service URL, obtain XSUAA service key values, create the destination (with required fields), and verify via Business Application Studio and curl.
+**INTRODUCTION**: Step-by-step instructions to expose a deployed CAP (Cloud Application Programming) Node.js service with a SAPUI5 Fiori UI as an SAP BTP destination. This enables secure consumption of OData endpoints from other BTP services and tools (e.g., SAP Fiori tools, Business Application Studio). Includes retrieving XSUAA credentials, creating an OAuth2 Client Credentials destination, and testing via Business Application Studio Service Centre and curl.
 
-**TAGS**: fiori-samples, CAP, SAP BTP, destination, XSUAA, OAuth2ClientCredentials, OAuth2UserTokenExchange, Business Application Studio, OData, SAPUI5
+**TAGS**: fiori-samples, CAP, SAP BTP, destination, OAuth2ClientCredentials, XSUAA, SAPUI5, Business Application Studio, Cloud Foundry
 
 STEP: Prerequisites
-DESCRIPTION: Confirm required accounts, subscriptions, and that the CAP project has been deployed to the same subaccount where you will create the destination.
+
+DESCRIPTION: Verify required accounts, subscriptions, and that your CAP project with SAPUI5 Fiori UI is deployed in the same subaccount where you'll create the destination.
+
 LANGUAGE: text
+
 CODE:
 ```text
-- SAP BTP account (e.g., trial): https://account.hana.ondemand.com/
-- Subscribed to SAP Build Work Zone (follow tutorial): https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html
-- CAP project with SAPUI5 Fiori UI deployed (example blog): https://community.sap.com/t5/technology-blogs-by-sap/build-and-deploy-a-cap-project-node-js-api-with-a-sap-fiori-elements-ui-and/ba-p/13537906
-- Destination must be created in the same subaccount where the CAP app is deployed.
+- You have an SAP BTP account, e.g. a trial account: https://account.hana.ondemand.com/
+- You are subscribed to SAP Build Work Zone (see tutorial: https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html)
+- You have deployed a CAP project with a SAPUI5 Fiori UI (example deployment flow: https://community.sap.com/t5/technology-blogs-by-sap/build-and-deploy-a-cap-project-node-js-api-with-a-sap-fiori-elements-ui-and/ba-p/13537906)
+- You will create the destination in the same subaccount where the CAP project is deployed
 ```
 
-STEP: Get the CAP service endpoint (Dev Space / Service Center)
-DESCRIPTION: Open your BTP subaccount dev space or Service Center and locate the running Node.js/CAP service. Copy the app root URL (base URL).
+STEP: 1 — Locate the running CAP Node.js service
+
+DESCRIPTION: In your SAP BTP dev space (e.g., Business Application Studio), open the nodejs service list to find the running CAP service. Note the base URL of the service. Example shown in screenshots: Step1.png and Step2.png.
+
 LANGUAGE: text
+
 CODE:
 ```text
-Example endpoint (replace with your instance):
+Example CAP service URL (base endpoint):
 https://28bdb0fbtrial-dev-managedappcapproject-srv.cfapps.us10-001.hana.ondemand.com
-
-Image references (optional): Step1.png, Step2.png, Step2b.png
-```
-
-STEP: Verify endpoint requires authentication (expected 401 without headers)
-DESCRIPTION: Test an OData route to confirm it returns HTTP 401 when unauthenticated (indicates XSUAA protection is active).
-LANGUAGE: text
-CODE:
-```text
-Example service route:
+Example exposed OData service path:
 https://28bdb0fbtrial-dev-managedappcapproject-srv.cfapps.us10-001.hana.ondemand.com/odata/v4/catalog
-
-Expected response (unauthenticated):
-HTTP 401 Unauthorized
-
-Image reference: Step2c.png
 ```
 
-STEP: Retrieve XSUAA service keys (clientid, clientsecret, url)
-DESCRIPTION: From your subaccount root, choose Instances and Subscriptions → select the XSUAA service instance deployed with your CAP app → Service Keys tab. Create a new service key if none exist. Extract clientid, clientsecret, and url.
-LANGUAGE: JSON
-CODE:
-```json
-{
-  "clientid": "sb-managedappcapproject!t299668",
-  "clientsecret": "xGRgYPoAXbMv2gqRIDontThinkSooZ7uY=",
-  "url": "https://28bdb0fbtrial.authentication.us10.hana.ondemand.com"
-}
-```
-DESCRIPTION: Save these values; you'll use them to configure the destination. Image references: Step3.png, Step4.png, Step5.png
+STEP: 2 — Confirm endpoint returns 401 without auth
 
-STEP: Create the destination in SAP BTP Cockpit (Connectivity → Destinations)
-DESCRIPTION: In your subaccount cockpit, open Connectivity → Destinations → Create Destination. Set Authentication = OAuth2ClientCredentials and fill the properties below. IMPORTANT: append "/oauth/token" to the Token Service URL.
-LANGUAGE: JSON
-CODE:
-```json
-{
-  "Name": "capdestination",
-  "Description": "CAP Project Destination",
-  "URL": "https://28bdb0fbtrial-dev-managedappcapproject-srv.cfapps.us10-001.hana.ondemand.com",
-  "Authentication": "OAuth2ClientCredentials",
-  "Client ID": "sb-managedappcapproject!t299668",
-  "Client Secret": "xGRgYPoAXbMv2gqRIDontThinkSooZ7uY=",
-  "Token Service URL": "https://28bdb0fbtrial.authentication.us10.hana.ondemand.com/oauth/token",
-  "Token Service user": "sb-managedappcapproject!t299668",
-  "Token Service password": "xGRgYPoAXbMv2gqRIDontThinkSooZ7uY=",
-  "HTML5.Timeout": "60000",
-  "WebIDEEnabled": "true",
-  "WebIDEUsage": "odata_gen",
-  "HTML5.DynamicDestination": "true"
-}
-```
-DESCRIPTION: Save the destination. Image reference: Step6.png
-NOTE: To use Token Exchange (authenticate a user across systems) instead, set Authentication = OAuth2UserTokenExchange. This removes the requirement for Token Service user and password in the destination config.
+DESCRIPTION: When requesting the endpoint without appropriate authorization headers, you should receive HTTP 401 — this indicates the service is protected by XSUAA and must be accessed via a configured destination with OAuth credentials. Screenshot reference: Step2c.png.
 
-STEP: Test the destination via Business Application Studio Service Centre
-DESCRIPTION: In Business Application Studio open Service Centre (left nav), select the destination (capdestination). Add the service path (e.g., /odata/v4/catalog) in the path field and click Connect. The status will show availability and return OData if successful.
 LANGUAGE: text
+
 CODE:
 ```text
-Service path to append: /odata/v4/catalog
-Example final URL used by Service Centre: https://capdestination.dest/odata/v4/catalog
-Image references: Step7.png, Step7b.png
+Expected unauthenticated response: HTTP 401 Unauthorized
 ```
 
-STEP: Test the destination via curl (terminal)
-DESCRIPTION: Use curl to confirm the destination returns the OData payload. The destination host alias (capdestination.dest) is resolved by BTP tools/service centre or proxy — use the destination alias provided by your environment.
-LANGUAGE: bash
+STEP: 3 — Retrieve XSUAA service key (clientid, clientsecret, url)
+
+DESCRIPTION: From the subaccount root, open "Instances and Subscriptions", locate the Authorization and Trust Management (XSUAA) service instance created for your CAP app (e.g., managedAppCAPProject-xsuaa-service). Open the "Service Keys" tab and create a service key if none exist. Extract the following properties from the service key JSON:
+
+LANGUAGE: text
+
+CODE:
+```text
+Required properties from the XSUAA service key:
+- clientid
+- clientsecret
+- url
+
+Example values (from service key JSON):
+sb-managedappcapproject!t299668
+xGRgYPoAXbMv2gqRIDontThinkSooZ7uY=
+https://28bdb0fbtrial.authentication.us10.hana.ondemand.com
+```
+
+STEP: 4 — Create a new SAP BTP destination (OAuth2ClientCredentials)
+
+DESCRIPTION: In the subaccount, open Connectivity → Destinations → Create Destination. Configure the destination to use OAuth2ClientCredentials using the XSUAA service key values. Important: append /oauth/token to the Token Service URL property. Include additional HTML5 properties required for Fiori tools.
+
+LANGUAGE: JSON
+
+CODE:
+```json
+Name: capdestination
+Description: CAP Project Destination
+URL: from step 2 i.e. https://28bdb0fbtrial-dev-managedappcapproject-srv.cfapps.us10-001.hana.ondemand.com
+Client ID: from step 5 i.e. sb-managedappcapproject!t299668
+Client Secret: from step 5 i.e. xGRgYPoAXbMv2gqRIDontThinkSooZ7uY=
+Token Service URL: from step 5 i.e. https://28bdb0fbtrial.authentication.us10.hana.ondemand.com appended with /oauth/token
+Token Service user: same as client ID
+Token Service password: same as client secret
+HTML5.Timeout: 60000
+WebIDEEnabled: true
+WebIDEUsage: odata_gen
+HTML5.DynamicDestination: true
+HTML5.Timeout: 60000
+Authentication: OAuth2ClientCredentials
+```
+
+STEP: 5 — Note about Token Exchange vs Client Credentials
+
+DESCRIPTION: Use OAuth2ClientCredentials to authenticate services (machine-to-machine). To use Token Exchange (authenticate a user across systems) set Authentication to OAuth2UserTokenExchange — this removes the need for Token Service user/password in the destination and is used for user token propagation scenarios.
+
+LANGUAGE: text
+
+CODE:
+```text
+- OAuth2ClientCredentials: Client Credentials Grant (service/application authentication)
+- OAuth2UserTokenExchange: Token Exchange Grant (user authentication propagation)
+```
+
+STEP: 6 — Test the destination in Business Application Studio Service Centre
+
+DESCRIPTION: In Business Application Studio, open Service Centre (left navigation). Select the destination (capdestination). If status shows "Not Available", append the service path (e.g., /odata/v4/catalog) and click Connect to verify the service is reachable through the destination. Screenshot references: Step7.png, Step7b.png.
+
+LANGUAGE: text
+
+CODE:
+```text
+Service path to enter: /odata/v4/catalog
+Complete URL resolved by Service Centre: https://capdestination.dest/odata/v4/catalog
+```
+
+STEP: 7 — Test the destination via curl
+
+DESCRIPTION: Use curl to test the destination from a terminal. The following command performs the request and saves verbose output to a file. Replace the URL with the destination hostname returned by your BTP cockpit if needed.
+
+LANGUAGE: Bash
+
 CODE:
 ```bash
 curl -L "https://capdestination.dest/odata/v4/catalog" -vs > curl-cap-output.txt 2>&1
-# Inspect output:
-cat curl-cap-output.txt
 ```
+
+STEP: 8 — Example successful OData response
+
+DESCRIPTION: After a successful call through the destination, you should receive OData JSON. Example response for /odata/v4/catalog:
+
 LANGUAGE: JSON
+
 CODE:
-```json
+```JSON
 {
   "@odata.context": "$metadata",
   "@odata.metadataEtag": "W/\"kpKGEWiUkdl2tvln8+lIbb+WgNsbQRujr+H11i5pAUg=\"",
@@ -2726,304 +2349,153 @@ CODE:
 }
 ```
 
-STEP: Next steps / usage
-DESCRIPTION: Use the SAP Fiori tools generator or Web IDE to generate HTML5 applications that consume the OData services via this destination. For cross-subaccount/region scenarios see the linked guidance.
-LANGUAGE: text
-CODE:
-```text
-Reference: SAP BTP: How to call protected app across regions with SAML and OAuth
-https://community.sap.com/t5/technology-blogs-by-sap/sap-btp-how-to-call-protected-app-across-regions-with-saml-and-oauth-2/ba-p/13546145
-```
+STEP: 9 — Next steps
 
-STEP: License
-DESCRIPTION: Licensing information for this documentation repository.
+DESCRIPTION: With the destination configured and tested, you can generate HTML5/Fiori applications that consume the CAP OData services using SAP Fiori tools and the HTML5 generator. For cross-subaccount or cross-region secure calls, see guidance on SAML and OAuth token exchange.
+
 LANGUAGE: text
+
 CODE:
 ```text
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-Licensed under the Apache Software License, version 2.0.
-See LICENSE file: ../../LICENSES/Apache-2.0.txt
+Further reading:
+- Destinations & OAuth: https://community.sap.com/t5/technology-blogs-by-members/sap-btp-destinations-in-a-nutshell-part-3-oauth-2-0-client-credentials/ba-p/13577101
+- Cross-subaccount / regions: https://community.sap.com/t5/technology-blogs-by-sap/sap-btp-how-to-call-protected-app-across-regions-with-saml-and-oauth-2/ba-p/13546145
+
+License:
+Copyright (c) 2009-2026 SAP SE or an SAP affiliate company.
+This project is licensed under the Apache Software License, version 2.0 except as noted in the LICENSE file:
+../../LICENSES/Apache-2.0.txt
 ```
 --------------------------------
 
-**TITLE**: Referenced Guides Index for fiori-samples (paths and quick code hooks)
+**TITLE**: Referenced Guides for fiori-samples
 
-**INTRODUCTION**: This document indexes the referenced guides in the fiori-samples repository, giving direct file paths and concise, actionable code snippets for programmatic access, quick inspection, and common runtime configuration patterns (proxy, SSL, CI/CD, environment credentials). Use these steps to locate and integrate each guide into automation, tests, or developer scripts.
+**INTRODUCTION**: This index links focused technical guides used by fiori-samples. Each entry states the purpose, typical use-case, and the README file path to open for implementation details. Use these when generating code or automation to integrate SAP BTP destinations, Cloud Connector, S/4HANA, headless generation, proxy/SSL setup, CI/CD with environment credentials, and ABAP cloud cross-account scenarios.
 
-**TAGS**: fiori-samples, SAP, BTP, OData, Cloud-Connector, S4HANA, proxy, ssl, cicd, abap, headless, generator
+**TAGS**: fiori-samples, sap-btp, destinations, odata, s4hana, cloud-connector, headless-generator, proxy, ssl, cicd, abap, abapcloud
 
-**STEP**: 1 — Consuming and validating SAP BTP destinations to support OData XML Service
+**STEP**: 1
 
-**DESCRIPTION**: Open and consume the guide at destinations/README.md. Use programmatic reading to extract usage and sample configuration fragments for automation or documentation generation.
+**DESCRIPTION**: Consuming and validating SAP BTP destinations to support OData XML Service. Use this guide when configuring BTP destinations for OData/XML services, validating connectivity, and testing metadata and service endpoints.
 
-**LANGUAGE**: Shell
+**LANGUAGE**: text
 
 **CODE**:
-```bash
-# Print the file to console
-cat destinations/README.md
+```text
+destinations/README.md
+[Consuming and validating SAP BTP destinations to support OData XML Service](destinations/README.md)
 ```
 
-**LANGUAGE**: JavaScript
+**STEP**: 2
+
+**DESCRIPTION**: Running SAP Fiori Generator headless. Use this guide to automate Fiori project generation without interactive prompts (CI/CD or scripted setups), and incorporate generator options to produce reusable artifacts.
+
+**LANGUAGE**: text
 
 **CODE**:
-```javascript
-// Read the README file programmatically (Node.js)
-const fs = require('fs');
-const path = require('path');
-const file = path.join(__dirname, 'destinations', 'README.md');
-const content = fs.readFileSync(file, 'utf8');
-console.log(content);
+```text
+headless/README.md
+[Running SAP Fiori Generator headless](headless/README.md)
 ```
 
-**STEP**: 2 — Running SAP Fiori Generator headless
+**STEP**: 3
 
-**DESCRIPTION**: Inspect headless/README.md for instructions to run the SAP Fiori Generator in headless (non-interactive) mode. Use the file to derive CLI invocation patterns for automation.
+**DESCRIPTION**: Consuming SAP Cloud Connector via SAP BTP destination. Follow this to configure on-premise connectivity through Cloud Connector and set up corresponding BTP destinations (Cloud Connector -> On-Premise systems).
 
-**LANGUAGE**: Shell
+**LANGUAGE**: text
 
 **CODE**:
-```bash
-# Open guide for headless generator
-less headless/README.md
+```text
+onpremise/README.md
+[Consuming SAP Cloud Connector via SAP BTP destination](onpremise/README.md)
 ```
 
-**LANGUAGE**: JavaScript
+**STEP**: 4
+
+**DESCRIPTION**: Consuming SAP S/4Hana public cloud via SAP BTP destination. Use this guide for setting up secure connections from BTP to SAP S/4HANA Cloud systems and handling required destination settings for OData/REST integration.
+
+**LANGUAGE**: text
 
 **CODE**:
-```javascript
-// Example: programmatically parse headless README to extract CLI examples
-const fs = require('fs');
-const file = 'headless/README.md';
-const readme = fs.readFileSync(file, 'utf8');
-// Implement parser to extract fenced code blocks or CLI examples
-console.log(readme.slice(0, 200));
+```text
+s4hana/README.md
+[Consuming SAP S/4Hana public cloud via SAP BTP destination](s4hana/README.md)
 ```
 
-**STEP**: 3 — Consuming SAP Cloud Connector via SAP BTP destination (on-premise)
+**STEP**: 5
 
-**DESCRIPTION**: Refer to onpremise/README.md for steps to configure and consume on-premise services via SAP Cloud Connector and BTP destinations. Use the README to pull required destination JSON or env var names into deployment scripts.
+**DESCRIPTION**: Proxy Configuration. Reference this when code or infrastructure must route traffic through HTTP/HTTPS proxies, configure environment variables, or adapt client libraries to corporate proxy settings.
 
-**LANGUAGE**: Shell
+**LANGUAGE**: text
 
 **CODE**:
-```bash
-# View onpremise guide
-cat onpremise/README.md
+```text
+proxy/README.md
+[Proxy Configuration](proxy/README.md)
 ```
 
-**LANGUAGE**: JSON
+**STEP**: 6
+
+**DESCRIPTION**: Self-Signed SSL Certificate. Use this guide to create, install, and trust self-signed certificates for development and testing, and to configure local runtimes or BTP trust stores accordingly.
+
+**LANGUAGE**: text
 
 **CODE**:
-```json
-// Example destination JSON snippet you might extract or create from the README
-{
-  "Name": "OnPremServiceDest",
-  "Type": "HTTP",
-  "URL": "https://my-onprem-host.example.com",
-  "ProxyType": "OnPremise",
-  "Authentication": "NoAuthentication"
-}
+```text
+sslcerts/README.md
+[Self-Signed SSL Certificate](sslcerts/README.md)
 ```
 
-**STEP**: 4 — Consuming SAP S/4HANA public cloud via SAP BTP destination
+**STEP**: 7
 
-**DESCRIPTION**: Use s4hana/README.md to configure consumption of S/4HANA public cloud services via BTP destinations. Automate destination creation or validation using the provided path.
+**DESCRIPTION**: ABAP CI/CD Pipeline Support with Environment Credentials. Follow these instructions to integrate ABAP CI/CD pipelines using environment-provided credentials for non-interactive, secure deployments and automated testing.
 
-**LANGUAGE**: Shell
+**LANGUAGE**: text
 
 **CODE**:
-```bash
-# Open S/4HANA consumption guide
-sed -n '1,200p' s4hana/README.md
+```text
+cicd/README.md
+[ABAP CI/CD Pipeline Support with Environment Credentials](cicd/README.md)
 ```
 
-**LANGUAGE**: JSON
+**STEP**: 8
+
+**DESCRIPTION**: SAP BTP ABAP Environment (Steampunk) - Cross Subaccount and Regions. Use this guide when deploying or integrating ABAP Steampunk projects across multiple subaccounts or geographic regions; covers cross-account credentials and connectivity considerations.
+
+**LANGUAGE**: text
 
 **CODE**:
-```json
-// Example: Minimal destination template for S/4HANA public cloud
-{
-  "Name": "S4HanaPublicCloud",
-  "Type": "HTTP",
-  "URL": "https://api.s4hana.example.com",
-  "Authentication": "OAuth2SAMLBearerAssertion"
-}
+```text
+abapcloud/README.md
+[SAP BTP ABAP Environment (Steampunk) - Cross Subaccount and Regions](abapcloud/README.md)
 ```
 
-**STEP**: 5 — Proxy Configuration
+**STEP**: 9
 
-**DESCRIPTION**: Use proxy/README.md for instructions on configuring system and application-level proxies. Examples here show how to set environment variables and use them from Node.js or shell scripts.
+**DESCRIPTION**: License and copyright details. The project uses Apache-2.0 licensing—refer to the license file for redistribution and contribution rules.
 
-**LANGUAGE**: Shell
-
-**CODE**:
-```bash
-# Set proxy environment variables for CLI and build tools
-export HTTP_PROXY="http://proxy.example.com:8080"
-export HTTPS_PROXY="http://proxy.example.com:8080"
-# Verify
-env | grep -i proxy
-```
-
-**LANGUAGE**: JavaScript
+**LANGUAGE**: text
 
 **CODE**:
-```javascript
-// Example: configure axios to use environment proxy variables
-const axios = require('axios');
-const HttpsProxyAgent = require('https-proxy-agent');
-
-const proxy = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
-const agent = proxy ? new HttpsProxyAgent(proxy) : undefined;
-
-axios.get('https://example.api', { httpsAgent: agent })
-  .then(res => console.log(res.status))
-  .catch(err => console.error(err));
-```
-
-**STEP**: 6 — Self-Signed SSL Certificate
-
-**DESCRIPTION**: Refer to sslcerts/README.md for guidance on trusting self-signed certificates. The examples include adding certificates to runtime trust stores and setting NODE_EXTRA_CA_CERTS for Node.js processes.
-
-**LANGUAGE**: Shell
-
-**CODE**:
-```bash
-# Example: set Node.js to trust extra CA cert (assumes cert.pem exists)
-export NODE_EXTRA_CA_CERTS="$(pwd)/sslcerts/cert.pem"
-node your-app.js
-```
-
-**LANGUAGE**: Shell
-
-**CODE**:
-```bash
-# View the self-signed cert README
-cat sslcerts/README.md
-```
-
-**STEP**: 7 — ABAP CI/CD Pipeline Support with Environment Credentials
-
-**DESCRIPTION**: Open cicd/README.md for instructions to integrate ABAP CI/CD using environment-stored credentials. Use this to add secrets to CI platforms and to reference them in pipeline YAML.
-
-**LANGUAGE**: YAML
-
-**CODE**:
-```yaml
-# Example GitHub Actions snippet: reference secrets for ABAP pipeline
-name: ABAP CI/CD
-on: [push]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    env:
-      ABAP_USER: ${{ secrets.ABAP_USER }}
-      ABAP_PASSWORD: ${{ secrets.ABAP_PASSWORD }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run ABAP CI job
-        run: ./ci-scripts/run-abap-ci.sh
-```
-
-**LANGUAGE**: Shell
-
-**CODE**:
-```bash
-# Inspect the cicd guide
-less cicd/README.md
-```
-
-**STEP**: 8 — SAP BTP ABAP Environment (Steampunk) - Cross Subaccount and Regions
-
-**DESCRIPTION**: See abapcloud/README.md for cross-subaccount and multi-region patterns. Use the README to source configuration keys (subaccount, region, destination names) for automation.
-
-**LANGUAGE**: JSON
-
-**CODE**:
-```json
-// Example configuration fragment for multi-region ABAP deployments
-{
-  "subaccount": "0000000-abc-123",
-  "region": "eu10",
-  "destination": "ABAPBackend"
-}
-```
-
-**LANGUAGE**: Shell
-
-**CODE**:
-```bash
-# View the ABAP cloud guide
-cat abapcloud/README.md
-```
-
-**STEP**: 9 — License
-
-**DESCRIPTION**: The project is licensed under the Apache Software License, version 2.0. See LICENSES/Apache-2.0.txt for the full license text. Ensure any generated code or redistributed content includes this license where required.
-
-**LANGUAGE**: Shell
-
-**CODE**:
-```bash
-# Print license file
-cat LICENSES/Apache-2.0.txt
-```
-
-**LANGUAGE**: Markdown
-
-**CODE**:
-```markdown
-# License note (reference)
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-This project is licensed under the Apache Software License, version 2.0.
-Refer to /LICENSES/Apache-2.0.txt for full details.
+```text
+LICENSES/Apache-2.0.txt
+Copyright (c) 2009-2026 SAP SE or an SAP affiliate company.
+This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the LICENSE file.
 ```
 --------------------------------
 
-**TITLE**: Configure SAP BTP Destination for ABAP Cloud (Steampunk) and Troubleshooting
+**TITLE**: Configure SAP BTP ABAP Environment (Steampunk) for External Fiori App Access and Cross-Account Destinations
 
-**INTRODUCTION**: Action-oriented reference for configuring SAP BTP destinations to connect to SAP BTP ABAP Environment (Steampunk). Includes ready-to-use destination JSON examples for SAMLAssertion and OAuth2UserTokenExchange authentication, required WebIDEUsage values, guidance for cross-account/cross-region use via SAMLAssertion, and concise troubleshooting pointers (communication system and connectivity trace).
+**INTRODUCTION**: Action-oriented reference for configuring SAP BTP ABAP Environment (Steampunk) connections used by Fiori apps and UI tooling. Includes prerequisites, required destination settings, deployment reference, cross-account/cross-region destination configuration using SAMLAssertion, and troubleshooting steps to resolve common connectivity issues.
 
-**TAGS**: SAP BTP, ABAP, Steampunk, destination, WebIDEUsage, SAMLAssertion, OAuth2UserTokenExchange, troubleshooting, connectivity-trace
+**TAGS**: sap, abap, steampunk, btp, fiori, destination, saml, oauth2, oauth2usertokenexchange, communication-system, troubleshooting
 
-**STEP**: 1 — Destination JSON examples for ABAP Cloud (Steampunk)
+**STEP**: Prerequisites — Authentication and destination usage flags
 
-**DESCRIPTION**: Create a destination in the BTP cockpit or via an API that points to your ABAP Cloud system. Ensure you include the required WebIDEUsage value string: "odata_abap,dev_abap,abap_cloud". Below are two concrete examples you can paste into the BTP Destination creation UI (or use as payload when creating destinations via API).
-
-**LANGUAGE**: JSON
-
-**CODE**:
-```json
-{
-  "Name": "MySteampunk_ABAP_SAML",
-  "Type": "HTTP",
-  "Description": "Destination to SAP BTP ABAP Environment (Steampunk) using SAMLAssertion for cross-account/region usage",
-  "URL": "https://<your-abap-cloud-host>.hana.ondemand.com",
-  "ProxyType": "Internet",
-  "Authentication": "SAMLAssertion",
-  "WebIDEUsage": "odata_abap,dev_abap,abap_cloud",
-  "TrustAll": "false"
-}
-```
-
-```json
-{
-  "Name": "MySteampunk_ABAP_OAuth2",
-  "Type": "HTTP",
-  "Description": "Destination to SAP BTP ABAP Environment (Steampunk) using OAuth2UserTokenExchange",
-  "URL": "https://<your-abap-cloud-host>.hana.ondemand.com",
-  "ProxyType": "Internet",
-  "Authentication": "OAuth2UserTokenExchange",
-  "TokenServiceURL": "https://<xsuaa-domain>/oauth/token",
-  "WebIDEUsage": "odata_abap,dev_abap,abap_cloud",
-  "TrustAll": "false"
-}
-```
-
-**STEP**: 2 — Required WebIDEUsage value
-
-**DESCRIPTION**: Always set the WebIDEUsage field on ABAP Cloud destinations to indicate the destination type to tooling (UI tooling, Business Application Studio, etc.). Use the exact comma-separated string below.
+**DESCRIPTION**: 
+- Choose an Authentication type for the destination: supported options include OAuth2UserTokenExchange and SAMLAssertion. Decide which suits your scenario (OAuth2UserTokenExchange for token exchange flows; SAMLAssertion for cross-account/region trust scenarios).
+- When exposing a Steampunk system to the internet via an SAP BTP destination, ensure the destination property WebIDEUsage contains the required values so SAP tooling recognizes the destination as an ABAP Cloud system.
+- The presence of the value abap_cloud in WebIDEUsage is used to determine that the target system is an ABAP Cloud (Steampunk) system.
 
 **LANGUAGE**: text
 
@@ -3032,281 +2504,307 @@ Refer to /LICENSES/Apache-2.0.txt for full details.
 WebIDEUsage: odata_abap,dev_abap,abap_cloud
 ```
 
-**STEP**: 3 — Cross-account / cross-region destinations (use SAMLAssertion)
+**STEP**: Understanding ABAP Cloud Environment (Steampunk)
 
-**DESCRIPTION**: For sharing destinations across global accounts, regions, or subaccounts, prefer Authentication = SAMLAssertion. Follow the official cross-subaccount documentation and the referenced tutorial/video for setup of trust and destination propagation. Note: some older instructional content references legacy flows (certificate locations, legacy cockpit steps); use the current help pages for the exact UI locations.
+**DESCRIPTION**: Read this technical blog to understand terminology and deployment models (Steampunk vs embedded vs ABAP on Cloud). Use it to confirm your system architecture and requirements before configuring destinations or deploying Fiori apps.
 
-**LANGUAGE**: text
+**LANGUAGE**: url
 
 **CODE**:
 ```text
-Recommended:
-- Authentication: SAMLAssertion
-- Ensure WebIDEUsage includes "abap_cloud"
-- Follow official guides:
-  - Video (may contain legacy UI references): https://www.youtube.com/watch?v=8ePyQJsmWYA
-  - Help topic: https://help.sap.com/docs/btp/sap-business-technology-platform/creating-destination-for-cross-subaccount-communication
+https://community.sap.com/t5/technology-blog-posts-by-members/demystifying-sap-btp-abap-environment-steampunk-abap-on-cloud-embedded/ba-p/13567772
 ```
 
-**STEP**: 4 — Troubleshooting: Communication System & Connectivity Trace
+**STEP**: Create and deploy an SAP Fiori App to ABAP Cloud (Steampunk)
 
-**DESCRIPTION**: If external tooling (Business Application Studio, Fiori tooling) cannot access your ABAP Cloud instance, check that the communication system is configured correctly in your ABAP Cloud tenant. If still blocked, enable and collect a connectivity trace in the ABAP Cloud system and analyze it per the SAP help documentation. Use the links below for step-by-step instructions.
+**DESCRIPTION**: Follow the step-by-step SAP tutorial to generate a Fiori Elements app and deploy it into your ABAP Cloud environment. Use the tutorial to prepare the app, configure the destination, and push code to the ABAP cloud repository.
+
+**LANGUAGE**: url
+
+**CODE**:
+```text
+https://developers.sap.com/tutorials/abap-environment-deploy-fiori-elements-ui.html
+```
+
+**STEP**: Enable a BTP Destination for Cross-Account or Cross-Region Use (SAMLAssertion)
+
+**DESCRIPTION**: 
+- For cross-account or cross-region destination usage by UI tooling, use SAMLAssertion-based trust between subaccounts/regions.
+- Two recommended approaches:
+  1. Watch the walkthrough video for cross-account/cross-region destination configuration to understand the end-to-end steps. Note: some UI details in the video may be outdated (legacy flows, certificate locations), but the cross-account concepts are valid.
+  2. Follow the official SAP help article for creating a destination for cross-subaccount communication which contains current instructions and required trust configuration.
+- Ensure the destination's WebIDEUsage includes abap_cloud (see prerequisites). Confirm SAML trust is established and that certificates/metadata are correctly exchanged between accounts or regions.
+
+**LANGUAGE**: url
+
+**CODE**:
+```text
+# Option 1 (video)
+https://www.youtube.com/watch?v=8ePyQJsmWYA
+
+# Option 2 (official docs)
+https://help.sap.com/docs/btp/sap-business-technology-platform/creating-destination-for-cross-subaccount-communication
+```
+
+**STEP**: Troubleshooting connectivity and communication system setup
+
+**DESCRIPTION**: 
+- The most common failure when external tools (e.g., Business Application Studio) try to access ABAP Cloud is a misconfigured Communication System or missing trust/credentials in the destination.
+- Verify the Communication System is created and configured for SAP Business Application Studio access. Ensure the communication user, OAuth/SAML settings, and URLs are correct.
+- If access is still blocked, enable a connectivity trace in the ABAP Cloud system and analyze the trace to identify certificate, authentication, or routing errors. Follow the help topics linked below for step-by-step instructions.
+
+**LANGUAGE**: url
+
+**CODE**:
+```text
+# Create a Communication System for BAS
+https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/creating-communication-system-for-sap-business-application-studio
+
+# Enable and inspect Connectivity Trace
+https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/display-connectivity-trace
+```
+
+**STEP**: License and project attribution
+
+**DESCRIPTION**: Project licensing information and path to the Apache-2.0 license file in the repository.
 
 **LANGUAGE**: text
 
 **CODE**:
 ```text
-Troubleshooting checklist:
-1) Verify Destination configuration in BTP cockpit:
-   - URL is reachable from the Internet (if using ProxyType: Internet)
-   - Authentication is set correctly (SAMLAssertion or OAuth2UserTokenExchange)
-   - WebIDEUsage contains: odata_abap,dev_abap,abap_cloud
-
-2) Verify Communication System configuration in ABAP Cloud:
-   - Follow: https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/creating-communication-system-for-sap-business-application-studio
-
-3) Enable and collect connectivity trace in ABAP Cloud and analyze:
-   - Follow: https://help.sap.com/docs/sap-btp-abap-environment/abap-environment/display-connectivity-trace
-
-4) If cross-account/region: verify trust configuration and SAML settings per:
-   - https://help.sap.com/docs/btp/sap-business-technology-platform/creating-destination-for-cross-subaccount-communication
-
-License:
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company. See LICENSE file at: ../../LICENSES/Apache-2.0.txt
+Copyright (c) 2009-2026 SAP SE or an SAP affiliate company.
+This project is licensed under the Apache Software License, version 2.0
+See: ../../LICENSES/Apache-2.0.txt
 ```
 --------------------------------
 
-**TITLE**: SAPUI5 / ABAP Deployment: Sample Configurations and CI/CD Best Practices
+**TITLE**: Sample Configurations to Improve ABAP Deployment Task (SAPUI5 / ui5-tooling)
 
-**INTRODUCTION**: Practical, code-focused guidance for configuring ABAP deployment of SAPUI5 apps using ui5-tooling and the fiori CLI. Covers environment variable handling (.env), dynamic transport request creation, CI/CD CLI commands, building archives (ui5-task-zipper), and recommended CLI flags (yes, failFast, debug). Recommended integration point: SAP Cloud Transport Management Service (CTMS).
+**INTRODUCTION**: Practical, code-focused recipes to configure SAPUI5 deployment to ABAP systems. Includes environment-variable credential handling, dynamic transport-request creation, CI/CD CLI commands, and options to generate a deployable archive.zip. Use these steps to integrate deployments into CI/CD pipelines (Azure DevOps, CircleCI, GitHub Actions) and to run deployments via SAP Cloud Transport Management (CTMS).
 
-**TAGS**: ABAP, SAPUI5, ui5-tooling, fiori-cli, deployment, CI/CD, CTMS, dotenv, ui5-deploy, ui5-task-zipper
+**TAGS**: ABAP, SAPUI5, ui5-tooling, deployment, CTMS, CI/CD, environment-variables, ui5-deploy.yaml, archive, zip
 
-**STEP**: 1 - Recommendation: Use CTMS for ABAP deployments
-
-**DESCRIPTION**: Use SAP Cloud Transport Management Service (CTMS) as the recommended end-to-end deployment target for ABAP. Integrate external CI/CD systems (Azure DevOps, CircleCI, GitHub Actions) to CTMS via APIs or marketplace Actions so deployments into SAP BTP/ABAP landscapes follow transport governance and auditing.
-
+**STEP**: 1 — Recommended Deployment Flow (CTMS)
+**DESCRIPTION**: Prefer SAP Cloud Transport Management (CTMS) to perform deployments into SAP landscapes. CTMS provides change control, audit logs, and is the recommended path for SAP BTP/ABAP deployments. You can integrate external CI/CD platforms via CTMS APIs or use GitHub Actions (marketplace action available).
 **LANGUAGE**: text
-
 **CODE**:
 ```text
-Recommended resources:
-- @sap/ux-ui5-tooling: https://www.npmjs.com/package/@sap/ux-ui5-tooling
-- CTMS / background reading: https://community.sap.com/t5/technology-blog-posts-by-sap/sap-btp-runtimes-my-personal-considerations-and-preferences-on-cloud/ba-p/14129510
-- Deploy to SAP BTP with CTMS (GitHub Action): https://github.com/marketplace/actions/deploy-to-sap-btp-with-ctms
+References:
+- ui5-tooling package: https://www.npmjs.com/package/@sap/ux-ui5-tooling
+- CTMS GitHub Action: https://github.com/marketplace/actions/deploy-to-sap-btp-with-ctms
+- CTMS blog/resource example: https://community.sap.com/t5/technology-blog-posts-by-sap/sap-btp-runtimes-my-personal-considerations-and-preferences-on-cloud/ba-p/14129510
 ```
 
-**STEP**: 2 - Use environment variables via .env for credentials
-
-**DESCRIPTION**: Create a .env at project root for local development and CI secrets. Configure ui5-deploy.yaml to reference environment variables when using .env or to use exported environment variables. Use flags yes and failFast to automate non-interactive CI flows.
-
-**LANGUAGE**: text
-
+**STEP**: 2 — Use .env for credentials and update ui5-deploy.yaml
+**DESCRIPTION**: Create a .env file (root of SAPUI5 project) and reference env vars in ui5-deploy.yaml using the env: prefix. Add configuration flags to bypass prompts and fail fast in CI.
+**LANGUAGE**: bash
 **CODE**:
-```text
-File: .env (root of SAPUI5 project)
+```bash
+# .env (root of project)
 XYZ_USER=myusername
 XYZ_PASSWORD=mypassword
 ```
-
 **LANGUAGE**: YAML
-
 **CODE**:
-```yaml
-# ui5-deploy.yaml (credential example when referencing env vars)
+```YAML
+# ui5-deploy.yaml (snippet aligned with existing root nodes such as target)
 configuration:
-  yes: true        # bypass Yes confirmation prompt (CI)
-  failFast: true   # exit immediately on errors (recommended for CI)
+  yes: true
+  failFast: true
   target:
     url: https://XYZ.sap-system.corp:44311
-    client: 200
+    client: 200        
   credentials:
     username: env:XYZ_USER
     password: env:XYZ_PASSWORD
 ```
+**DESCRIPTION**: Flags:
+- yes: true — bypass "Yes" confirmation prompts during deploy/undeploy.
+- failFast: true — exit immediately on exceptions (useful to stop CI on auth failures).
 
-**LANGUAGE**: Bash
-
+**STEP**: 3 — Export environment variables instead of .env (alternative)
+**DESCRIPTION**: If not using a .env file, export credentials in your CI agent or shell and reference them in ui5-deploy.yaml without the env: prefix (or pass via CLI).
+**LANGUAGE**: bash
 **CODE**:
 ```bash
-# Option A: Export environment variables (CI or shell)
+# Export in shell / CI agent environment
 export XYZ_USER='~username'
 export XYZ_PASSWORD='~password'
-
-# If you exported env vars, ui5-deploy.yaml can reference plain names:
-# credentials:
-#   username: XYZ_USER
-#   password: XYZ_PASSWORD
-
-# Option B: pass credentials via CLI (explicit environment reference)
-npx fiori deploy --username 'env:XYZ_USER' --password 'env:XYZ_PASSWORD' ...
+```
+**LANGUAGE**: YAML
+**CODE**:
+```YAML
+# ui5-deploy.yaml when credentials come from environment variables (names referenced directly)
+credentials:
+  username: XYZ_USER
+  password: XYZ_PASSWORD
+```
+**LANGUAGE**: bash
+**CODE**:
+```bash
+# Or pass credentials via CLI params (example)
+--username XYZ_USER --pasword XYZ_PASSWORD
 ```
 
-**STEP**: 3 - Enable non-interactive CI behavior (yes, failFast)
-
-**DESCRIPTION**: Add yes: true and failFast: true in ui5-deploy.yaml or pass flags in CLI (--yes --failFast) to avoid prompts and fail early on errors (useful for authentication failures in CI).
-
+**STEP**: 4 — Create Transport Request (TR) dynamically on deploy/undeploy
+**DESCRIPTION**: Use the REPLACE_WITH_TRANSPORT placeholder in ui5-deploy.yaml to create a transport request dynamically each run. This works for both deploy and undeploy operations.
 **LANGUAGE**: YAML
-
 **CODE**:
-```yaml
+```YAML
 # ui5-deploy.yaml snippet
-configuration:
-  yes: true
-  failFast: true
-```
-
-**STEP**: 4 - Create Transport Request (TR) dynamically during deploy/undeploy
-
-**DESCRIPTION**: Use the transport bookmark REPLACE_WITH_TRANSPORT in ui5-deploy.yaml or CLI to instruct the tooling to create a transport automatically per run (applies to deploy and undeploy).
-
-**LANGUAGE**: YAML
-
-**CODE**:
-```yaml
-# ui5-deploy.yaml (app config)
 app:
   name: /TEST/SAMPLE_APP
   package: /TEST/UPLOAD
   transport: REPLACE_WITH_TRANSPORT
 ```
 
-**STEP**: 5 - CI/CD: full deploy CLI example
-
-**DESCRIPTION**: Generate a single CLI command for CI/CD pipelines. Use --noConfig to skip loading project config and pass required flags and env references. Replace placeholders as needed.
-
-**LANGUAGE**: Bash
-
+**STEP**: 5 — CI/CD: Example deploy CLI command for pipelines
+**DESCRIPTION**: Single-line command you can use in CI/CD to deploy with environment-based credentials, create a dynamic TR, archive content, and apply fail-fast/yes flags.
+**LANGUAGE**: bash
 **CODE**:
 ```bash
-npx fiori deploy \
-  --url https://your-env.hana.ondemand.com \
-  --name 'SAMPLE_APP' \
-  --package 'MY_PACKAGE' \
-  --transport 'REPLACE_WITH_TRANSPORT' \
-  --archive-path 'archive.zip' \
-  --username 'env:XYZ_USER' \
-  --password 'env:XYZ_PASSWORD' \
-  --noConfig \
-  --failFast \
-  --yes
+npx fiori deploy --url https://your-env.hana.ondemand.com --name 'SAMPLE_APP' --package 'MY_PACKAGE' --transport 'REPLACE_WITH_TRANSPORT' --archive-path 'archive.zip' --username 'env:XYZ_USER' --password 'env:XYZ_PASSWORD' --noConfig --failFast --yes
 ```
 
-**STEP**: 6 - Generate a ZIP archive: Option 1 (auto) and Option 2 (ui5-task-zipper)
+**STEP**: 6 — Generate ZIP archive (Option 1: auto-archive dist)
+**DESCRIPTION**: Omit --archive-path from CLI to let the deploy process archive the ./dist folder on-the-fly. No additional project updates required.
+**LANGUAGE**: text
+**CODE**:
+```text
+Option 1: Remove --archive-path 'archive.zip' from CLI params and allow the dist folder to be archived during deployment.
+```
 
-**DESCRIPTION**: Option 1: omit --archive-path to let the CLI archive ./dist on the fly. Option 2: create archive.zip during build with ui5-task-zipper and reference it via --archive-path in CI.
-
-Option 2 requires adding ui5-task-zipper to package.json, registering the custom task in ui5.yaml or a dedicated build.yaml, then running npx ui5 build --config build.yaml to produce ./dist/archive.zip.
-
-Keep package.json scripts updated to use the archive target.
-
+**STEP**: 7 — Generate ZIP archive (Option 2: build archive via ui5-task-zipper)
+**DESCRIPTION**: Add ui5-task-zipper to produce ./dist/archive.zip during npm run build. Update package.json devDependencies, add builder custom task in ui5.yaml or use a dedicated build.yaml, then run the ui5 build command or npm script.
 **LANGUAGE**: JSON
-
 **CODE**:
 ```json
-// package.json (devDependency)
-"devDependencies": {
-  "ui5-task-zipper": "latest"
-}
+// package.json (add to devDependencies)
+"ui5-task-zipper": "latest"
 ```
-
 **LANGUAGE**: YAML
-
 **CODE**:
-```yaml
-# ui5.yaml (builder custom task registration)
+```YAML
+# ui5.yaml (builder section example)
 builder:
   customTasks:
     - name: ui5-task-zipper
       afterTask: generateVersionInfo
       configuration:
-        archiveName: "archive"
+        archiveName: "archive"          
         keepResources: true
 ```
-
 **LANGUAGE**: YAML
-
 **CODE**:
 ```yaml
-# Optional: build.yaml to handle build-only/archive creation
+# build.yaml (alternative dedicated build configuration)
 # yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
 specVersion: "3.1"
 metadata:
   name: <your-project-name>
-type: application
+type: application  
 builder:
   customTasks:
     - name: ui5-task-zipper
       afterTask: generateVersionInfo
       configuration:
-        archiveName: "archive"
+        archiveName: "archive"          
         keepResources: true
 ```
-
-**LANGUAGE**: Bash
-
+**LANGUAGE**: bash
 **CODE**:
 ```bash
-# Build with custom build.yaml to produce ./dist/archive.zip
+# Build with the dedicated configuration to produce ./dist/archive.zip
 npx ui5 build --config build.yaml
 
-# Optional package.json script
-# "scripts": { "archive": "ui5 build --config build.yaml" }
+# Optional: add script to package.json
+"archive": "ui5 build --config build.yaml"
 ```
-
 **LANGUAGE**: text
-
 **CODE**:
 ```text
-Expected builder output shows the ui5-task-zipper task execution:
+When npm run build or npx ui5 build is executed, ui5-task-zipper will generate ./dist/archive.zip.
+Update your deployment scripts to point to ./dist/archive.zip as the archive-path.
+```
+**LANGUAGE**: text
+**CODE**:
+```text
+Example build log lines showing the custom task execution:
 info project1 › Running task ui5-task-zipper...
-info ProjectBuilder Build succeeded
-Resulting file: ./dist/archive.zip
+info ProjectBuilder Build succeeded in 199 ms
 ```
 
-**STEP**: 7 - Debugging and logging
-
-**DESCRIPTION**: Enable verbose debug logging for npm scripts or direct npx commands by setting DEBUG=*. Use this to troubleshoot authentication or deployment errors in CI/local runs.
-
-**LANGUAGE**: Bash
-
-**CODE**:
-```bash
-# Using npm script:
-DEBUG=* npm run deploy
-
-# Direct CLI:
-DEBUG=* npx fiori deploy --url ... --username 'env:XYZ_USER' ...
-```
-
-**STEP**: 8 - Additional important notes & CLI parameter reference
-
-**DESCRIPTION**: Quick facts to use while scripting pipelines and configuring ui5-deploy.yaml.
-
+**STEP**: 8 — Additional operational notes
+**DESCRIPTION**: Extra actionable notes for CI and debugging.
 **LANGUAGE**: text
-
 **CODE**:
 ```text
-- Header customization for deployment is NOT supported via CLI or ui5-deploy.yaml.
-- To reference environment variables from a .env loader, use 'env:VAR_NAME' form in ui5-deploy.yaml and CLI (e.g., --username 'env:XYZ_USER').
-- If you export environment variables in the shell/CI runner, you can also reference them directly in runtime or set ui5-deploy.yaml values to the environment variable names.
-- Use REPLACE_WITH_TRANSPORT to dynamically create a Transport Request (TR) on deploy and undeploy.
-- Use --noConfig when you want a pure CLI-only invocation without reading project ui5.yaml defaults.
+1. Appending additional HTTP headers for deployment is not supported via the CLI or ui5-deploy.yaml.
+2. Enable debug logging when running deploy tasks:
+   # Using npm scripts
+   DEBUG=* npm run deploy
+   # Or when using the CLI directly
+   DEBUG=* npx fiori deploy ...
 ```
 --------------------------------
 
-**TITLE**: Consume and validate SAP BTP destinations for OData XML services (Northwind example)
+**TITLE**: Consuming and Validating SAP BTP Destinations for OData XML Services (Northwind example)
 
-**INTRODUCTION**: Step-by-step, code-focused guide to create/import an SAP BTP destination for an OData XML service, verify connectivity from Business Application Studio (BAS) and externally, validate OData metadata and catalogs, and troubleshoot common misconfigurations. Uses the public Northwind OData service (services.odata.org) as an example.
+**INTRODUCTION**: This document shows step-by-step, actionable configuration and validation examples to consume OData XML services using SAP BTP destinations. It includes destination property examples, verification commands (curl), environment checks, and common misconfiguration fixes. Use these snippets directly when creating or validating destinations in SAP BTP, SAP Business Application Studio, Service Centre, or when testing via terminal/browser.
 
-**TAGS**: sap btp, destination, odata, odata-xml, fiori-tools, business-application-studio, curl, northwind, environment-check
+**TAGS**: SAP BTP, destination, OData, OData V2, OData V4, Fiori tools, northwind, curl, dynamic_dest
 
-**STEP**: 1 — Sample destination properties (base configuration / import)
-**DESCRIPTION**: Create or import a destination named "northwind" that points to the OData service base URL. Use this as the baseline destination (NoAuthentication, Internet proxy). Copy/paste the INI-style destination file into the SAP BTP Destinations import or create it manually in the Cockpit -> Connectivity -> Destinations.
-**LANGUAGE**: ini
-**CODE**:
-```ini
-# northwind destination (base)
+STEP: 1 — Prerequisites
+DESCRIPTION: Ensure the environment and permissions are ready before creating or testing destinations.
+LANGUAGE: text
+CODE:
+```text
+- SAP Cloud Foundry Runtime configured in your SAP BTP subaccount.
+- Admin rights to SAP BTP cockpit to modify destinations.
+- Knowledge of SAP BTP destinations and SAP Business Application Studio.
+- Use case restricted to OData XML services for SAP Fiori tools generator.
+```
+
+STEP: 2 — Flow Diagram (request flow using a destination with basic auth)
+DESCRIPTION: Sequence diagram describing how a browser -> BTP app -> Destination -> External API flow works (basic auth example).
+LANGUAGE: mermaid
+CODE:
+```mermaid
+sequenceDiagram
+    participant User
+    participant Browser as Web Browser
+    participant BTPApp as SAP BTP Application
+    participant DestinationService as SAP BTP Destination Service
+    participant ExternalAPI as External Basic Auth API Endpoint
+
+    User->>Browser: 1. Accesses a BTP app URL such as an SAP Fiori launchpad tile.
+    Browser->>BTPApp: 2. Requests data or an action requiring an external API call.
+    BTPApp->>DestinationService: 3. Looks up the destination "MyBasicAuthEndpoint".
+    DestinationService->>BTPApp: 4. Provides the destination configuration which includes the URL and basic auth username and password.
+    BTPApp->>ExternalAPI: 5. Makes an API call: a HTTP request with the "Authorization: Basic ..." header.
+    ExternalAPI->>BTPApp: 6. Validates credentials and responds with data.
+    BTPApp->>Browser: 7. Sends the processed data and the response.
+    Browser->>User: 8. Displays the data and confirms the action.
+```
+
+STEP: 3 — Sample Microsoft OData XML Service Endpoints
+DESCRIPTION: Public service examples used for testing (Northwind).
+LANGUAGE: text
+CODE:
+```text
+#1
+https://services.odata.org/v2/northwind/northwind.svc/
+#2
+https://services.odata.org/V3/Northwind/Northwind.svc/
+```
+
+STEP: 4 — Sample SAP BTP Destination (northwind, NoAuthentication, Internet proxy)
+DESCRIPTION: Importable destination snippet. Use in SAP BTP Cockpit -> Destinations -> Import. Preserve property names exactly.
+LANGUAGE: properties
+CODE:
+```
+#
 Type=HTTP
 HTML5.DynamicDestination=true
 Authentication=NoAuthentication
@@ -3317,13 +2815,56 @@ URL=https\://services.odata.org
 Name=northwind
 WebIDEUsage=odata_gen
 ```
+DESCRIPTION (additional): Screenshot file referenced: northwind_destination.png?raw=true. Import file reference: [northwind?raw=true].
 
-**STEP**: 2 — Alternative destination when base URL contains hardcoded service path (full_url)
-**DESCRIPTION**: If the destination's URL already includes a full service path (hardcoded), add WebIDEAdditionalData=full_url so appended paths are not concatenated incorrectly. Import or create the destination with the properties below.
-**LANGUAGE**: ini
-**CODE**:
-```ini
-# northwind_fullurl destination (URL points directly at a service/resource)
+STEP: 5 — Properties Summary (action-oriented)
+DESCRIPTION: Key properties to set and their actionable meaning. Apply when creating or troubleshooting destinations.
+LANGUAGE: text
+CODE:
+```text
+- WebIDEUsage:
+  - Use 'odata_gen' to target a specific OData service endpoint.
+  - Use 'odata_abap' to allow tooling to query ABAP OData catalogs (V2/V4). Do NOT set both.
+
+- WebIDEEnabled=true: Allows use with SAP Business Application Studio.
+
+- HTML5.Timeout=60000: Timeout in ms for destination responses.
+
+- HTML5.DynamicDestination=true: Enables runtime dynamic destinations for HTML5/Fiori apps.
+
+- Authentication:
+  - Set to NoAuthentication, BasicAuthentication, or OAuth2ClientCredentials depending on the endpoint.
+```
+
+STEP: 6 — Understanding WebIDEUsage (values and when to use)
+DESCRIPTION: Use these values depending on generator/tooling needs. Keep only the one that applies.
+LANGUAGE: text
+CODE:
+```text
+Common values:
+- odata_gen  => Use when you know the exact service endpoint to call (individual service).
+- odata_abap => Use to consume OData V2/V4 ABAP catalogs (searchable list of services).
+Note: odata_gen and odata_abap are mutually exclusive for a given destination.
+```
+
+STEP: 7 — WebIDEAdditionalData behavior and examples
+DESCRIPTION: Use WebIDEAdditionalData=full_url when the destination URL is already the complete final service URL (prevents tooling from appending service paths).
+LANGUAGE: text
+CODE:
+```text
+- Without WebIDEAdditionalData:
+  - Destination is treated as a base host; tooling appends service paths (e.g., /sap/opu/odata/...).
+
+- With WebIDEAdditionalData=full_url:
+  - Destination is treated as a full URL; tooling does NOT append extra paths.
+```
+
+STEP: 8 — Example where destination must be full URL (use WebIDEAdditionalData=full_url)
+DESCRIPTION: Destination configured with a hardcoded full service URL. Import this when the URL already includes the service root/path.
+LANGUAGE: properties
+CODE:
+```
+#
 Type=HTTP
 HTML5.DynamicDestination=true
 Authentication=NoAuthentication
@@ -3336,318 +2877,216 @@ Name=northwind_fullurl
 WebIDEUsage=odata_gen
 ```
 
-**STEP**: 3 — WebIDEUsage guidance (choose one)
-**DESCRIPTION**: Set WebIDEUsage according to the consumption scenario:
-- Use odata_gen when you know the specific service endpoint (single service).
-- Use odata_abap when you want to browse ABAP OData catalogs (V2 or V4).
-Do not set both values simultaneously on the same destination.
-
-**LANGUAGE**: text
-**CODE**:
-```text
-WebIDEUsage options:
-- odata_gen  -> specific OData XML service (use when you know the service path)
-- odata_abap -> ABAP OData catalogs (V2/V4) to discover services
-```
-
-**STEP**: 4 — Test destination from BAS using proxy-style placeholder (odata_gen examples)
-**DESCRIPTION**: Use curl against the BAS destination proxy placeholder: https://dest.<destination-name>/ appended with service path. Escape $ in shell for $metadata. These commands run from a BAS terminal or any environment that resolves the dest.<name> proxy.
-**LANGUAGE**: bash
-**CODE**:
+STEP: 9 — Test individual OData service via curl (odata_gen)
+DESCRIPTION: Use these curl commands to validate that the destination plus service path resolves correctly via SAP Business Application Studio proxy. Escape $ with backslash in shell.
+LANGUAGE: bash
+CODE:
 ```bash
-# call base service (example for /v2/northwind/northwind.svc/)
-curl "https://dest.northwind/v2/northwind/northwind.svc/" -vs > curl-datasrv-output.txt 2>&1
+curl -L "https://northwind.dest/v2/northwind/northwind.svc/" -vs > curl-datasrv-output.txt 2>&1
 
-# retrieve $metadata (note escaping of $)
-curl "https://dest.northwind/v2/northwind/northwind.svc/\$metadata" -vs > curl-datasrv-meta-output.txt 2>&1
+curl -L "https://northwind.dest/v2/northwind/northwind.svc/\$metadata" -vs > curl-datasrv-meta-output.txt 2>&1
 ```
+DESCRIPTION (action): Replace northwind.dest with <destination-name>.dest. These commands save verbose output (headers + body) to files for debugging.
 
-**STEP**: 5 — Test ABAP catalogs (odata_abap) — catalog endpoints and explanation
-**DESCRIPTION**: If WebIDEUsage=odata_abap, call the ABAP catalog endpoints to list services. These endpoints are only available when target system is an ABAP system. For a non-ABAP destination like the public Northwind service, these calls return 404.
-**LANGUAGE**: bash
-**CODE**:
+STEP: 10 — Test OData catalogs via curl (odata_abap)
+DESCRIPTION: Use these curl commands when your destination uses WebIDEUsage=odata_abap (ABAP catalogs). Escape $ with backslash in shell.
+LANGUAGE: bash
+CODE:
 ```bash
 # OData V2 Catalog
-curl "https://dest.<destination-name>/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection" -vs > curl-v2catalog-output.txt 2>&1
+curl -L "https://<destination-name>.dest/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection" -vs > curl-v2catalog-output.txt 2>&1
 
-# OData V4 Catalog (expand Services)
-curl "https://dest.<destination-name>/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?\$expand=DefaultSystem(\$expand=Services)" -vs > curl-v4catalog-output.txt 2>&1
+# OData V4 Catalog
+curl -L "https://<destination_name>.dest/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?\$expand=DefaultSystem(\$expand=Services)" -vs > curl-v4catalog-output.txt 2>&1
 ```
-Note: The northwind destination is not an ABAP system → these catalog endpoints will 404.
+DESCRIPTION (note): These catalog endpoints only exist on ABAP systems; non-ABAP destinations (e.g., northwind) return 404.
 
-**STEP**: 6 — Run Environment Check in SAP Business Application Studio (Service Centre / Fiori tools)
-**DESCRIPTION**: Use the Fiori Environment Check to validate the destination configuration and gather debug trace logs and a ZIP report for support.
-Steps:
-1. Open BAS.
-2. Open Command Palette -> "Fiori: Open Environment Check".
-3. Select "Check Destination", choose your destination.
-4. Enter credentials if prompted.
-5. Select "Save and view results".
-6. A "Preview results.md" opens — review Destination Details for missing parameters.
-Attach the generated ZIP to support tickets; it contains debug traces and service lists.
-
-**LANGUAGE**: text
-**CODE**:
+STEP: 11 — Environment Check using SAP Business Application Studio
+DESCRIPTION: Run the Environment Check to validate destination configuration and connectivity, and generate a diagnostics zip for support.
+LANGUAGE: text
+CODE:
 ```text
-Environment Check output includes:
-- Destination Details (properties & values)
-- Connectivity test results (reachable/unreachable)
-- Catalog checks (V2/V4) when applicable
-- Debug trace logs (zip for support)
+1. Open SAP Business Application Studio.
+2. Open Command Palette (View -> Find Command).
+3. Run: Fiori: Open Environment Check
+4. Click 'Check Destination', choose your destination.
+5. Enter credentials if prompted.
+6. Click 'Save and view results'.
+7. Review 'Preview results.md' -> 'Destination Details' for missing params.
+8. Attach generated zip to support tickets (includes trace logs and service list).
 ```
 
-**STEP**: 7 — Access destination from outside BAS (dynamic_dest path) — construct URL
-**DESCRIPTION**: If your subaccount exposes SAP Build Work Zone (or BAS dynamic_dest) you can call destinations from outside BAS. Replace placeholders with your values: <subdomain>, <region>, <your-destination-name>, <service-path>.
-**LANGUAGE**: text
-**CODE**:
-```text
-# URL pattern (replace tokens)
-https://<subdomain>.launchpad.cfapps.<region>.hana.ondemand.com/dynamic_dest/<your-destination-name>/<service-path>/<service-name>
-
-# Example: metadata of an OData service
-https://my-subdomain.launchpad.cfapps.eu10.hana.ondemand.com/dynamic_dest/MyDestination/sap/opu/odata/sap/MyBusinessService/$metadata
-
-# Example: V2 Catalog via dynamic_dest
-https://my-subdomain.launchpad.cfapps.eu10.hana.ondemand.com/dynamic_dest/MyDestination/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection
+STEP: 12 — Common Error: Incorrect destination URL that includes query/path fragments
+DESCRIPTION: If the destination URL contains extra paths or query params, tooling appends service paths producing invalid final URLs (404 or 401/403). Example of incorrect URL and the invalid final URL produced.
+LANGUAGE: text
+CODE:
 ```
-
-**STEP**: 8 — Common error: destination URL contains hardcoded path (404 or 401/403)
-**DESCRIPTION**: If the destination URL contains additional path segments or query params (e.g., URL=https://services.odata.org/odata/$format=JSON), appended service paths will produce invalid URLs and HTTP errors. Solution: set destination URL to the base URL only; if you must use a hardcoded full URL, use WebIDEAdditionalData=full_url (see Step 2).
-**LANGUAGE**: text
-**CODE**:
-```text
-Bad destination URL:
-URL=https\://services.odata.org/odata/$format=JSON
-# When appended, results in:
+# Incorrect destination URL configured:
+https://services.odata.org/odata/$format=JSON
+```
+LANGUAGE: text
+CODE:
+```
+# Resulting constructed (invalid) URL:
 https://services.odata.org/odata/$format=JSON/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection
-
-Fix options:
-- Remove hardcoded path/query from URL and use WebIDEUsage + appended service path
-OR
-- Use WebIDEAdditionalData=full_url so appended paths are not concatenated (see northwind_fullurl example)
 ```
+DESCRIPTION (action): Fix by setting URL to base host: https://services.odata.org and optionally use WebIDEAdditionalData=full_url when targeting a specific pre-built service URL.
 
-**STEP**: 9 — Troubleshooting verification commands (curl) for full_url destination
-**DESCRIPTION**: Validate a destination configured with WebIDEAdditionalData=full_url using dest.<name> proxy endpoints.
-**LANGUAGE**: bash
-**CODE**:
+STEP: 13 — Fix: Destination configured as full URL with WebIDEAdditionalData=full_url and testing via curl
+DESCRIPTION: When the destination is a full/pre-built service URL, use WebIDEAdditionalData=full_url and test via the .dest proxy.
+LANGUAGE: properties
+CODE:
+```
+#
+Type=HTTP
+HTML5.DynamicDestination=true
+Authentication=NoAuthentication
+HTML5.Timeout=60000
+WebIDEEnabled=true
+ProxyType=Internet
+WebIDEAdditionalData=full_url
+URL=https\://services.odata.org/v2/northwind/northwind.svc/
+Name=northwind_fullurl
+WebIDEUsage=odata_gen
+```
+LANGUAGE: bash
+CODE:
 ```bash
-# call the full_url destination base
-curl "https://dest.northwind_fullurl/" -vs > curl-fullurl-output.txt 2>&1
+curl -L "https://northwind_fullurl.dest/" -vs > curl-fullurl-output.txt 2>&1
 
-# call the full_url destination $metadata
-curl "https://dest.northwind_fullurl/\$metadata" -vs > curl-fullurl-meta-output.txt 2>&1
+curl -L "https://northwind_fullurl.dest/\$metadata" -vs > curl-fullurl-meta-output.txt 2>&1
 ```
 
-**STEP**: 10 — Reference assets and notes
-**DESCRIPTION**: Useful links, image and additional resources to consult while implementing and debugging.
+STEP: 14 — Dynamic Destinations: validate outside Business Application Studio via launchpad endpoint
+DESCRIPTION: Use the dynamic_dest path on your SAP BTP launchpad to validate a destination directly from SAP Fiori launchpad. Ensure your subaccount is configured to expose dynamic_dest (e.g., via SAP Build Work Zone).
+LANGUAGE: text
+CODE:
+```text
+Prerequisites:
+- Destination uses HTML5.DynamicDestination=true and WebIDEEnabled=true.
+- You know your subaccount Subdomain and API endpoint (e.g., mytrial-account, https://api.cf.eu10.hana.ondemand.com).
+
+Template:
+https://<your-subaccount-subdomain>.launchpad.cfapps.<your-region-api-endpoint>.hana.ondemand.com/dynamic_dest/<your-destination-name>/<path-to-your-OData-metadata-or-service-path>
+
+Example base:
+https://mytrial-account.launchpad.cfapps.us10.hana.ondemand.com/dynamic_dest/mys4hc-destination/
+
+Examples:
+- OData V2 catalog:
+  https://mytrial-account.launchpad.cfapps.us10.hana.ondemand.com/dynamic_dest/mys4hc-destination/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection
+
+- OData V4 catalog:
+  https://mytrial-account.launchpad.cfapps.us10.hana.ondemand.com/dynamic_dest/mys4hc-destination/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)
+```
+
+STEP: 15 — License
+DESCRIPTION: Project license reference.
+LANGUAGE: text
+CODE:
+```text
+Copyright (c) 2009-2026 SAP SE or an SAP affiliate company.
+This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the LICENSE file: ../../LICENSES/Apache-2.0.txt
+```
+--------------------------------
+
+**TITLE**: Running SAP Fiori Tools Headless Generator
+
+**INTRODUCTION**: Use a JSON configuration containing all required properties to run the SAP Fiori Tools generators in headless mode. This enables automated, repeatable creation or augmentation of applications (either appending a UI to a CAP project or generating a standalone SAP Fiori UI app) with a managed approuter configuration.
+
+**TAGS**: fiori-samples, headless, fiori-tools, CAP, fiori-ui, approuter, json, automation
+
+**STEP**: 1 — CAP headless generator
+
+**DESCRIPTION**: Append a SAP Fiori UI application with a managed approuter configuration to an existing CAP project by providing a complete JSON payload to the CAP headless generator. The payload must include every mandatory property defined by the generator. Consult the CAP headless README for the configuration schema, example payloads, and exact invocation instructions. Typical workflow:
+- Create a JSON configuration file (e.g., headless-config.json) in the project root.
+- Ensure all mandatory properties are present in the JSON payload.
+- Execute the headless generator as described in cap/README.md (follow the exact CLI/command documented there).
+
+Preserved reference files:
+- cap/README.md — contains schema, examples, and invocation instructions.
+
 **LANGUAGE**: text
+
 **CODE**:
 ```text
-Image: northwind_destination.png?raw=true
-Importable destination: northwind?raw=true
+File reference: cap/README.md
+Location: cap/README.md
+```
 
-References:
-- SAP Fiori tools generator: https://help.sap.com/docs/SAP_FIORI_tools
-- Service Centre (BAS): https://help.sap.com/docs/bas/sap-business-application-studio/explore-services-using-service-center
-- Destination authentication types: https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/http-destinations
-- Create destinations tutorial: https://developers.sap.com/tutorials/cp-cf-create-destination..html
+**STEP**: 2 — Fiori UI headless generator
 
-License:
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-Licensed under Apache-2.0 (see LICENSE file)
+**DESCRIPTION**: Generate a standalone SAP Fiori UI application with a managed approuter configuration using the headless UI generator. Provide a JSON payload that contains all required fields. Consult the Fiori UI headless README for the exact configuration schema, mandatory properties, sample payloads, options, and the precise command to run the generator. Typical workflow:
+- Create a JSON configuration file (e.g., headless-ui-config.json).
+- Populate all mandatory values as specified by the fioriui/README.md schema.
+- Run the headless generator following the instructions in fioriui/README.md.
+
+Preserved reference files:
+- fioriui/README.md — contains schema, examples, and invocation instructions.
+
+**LANGUAGE**: text
+
+**CODE**:
+```text
+File reference: fioriui/README.md
+Location: fioriui/README.md
+```
+
+**STEP**: 3 — License
+
+**DESCRIPTION**: Project licensing information and exceptions are provided. Preserve or reference this when redistributing or modifying generated code.
+
+**LANGUAGE**: text
+
+**CODE**:
+```text
+License: Apache Software License, version 2.0 (with exceptions noted)
+File reference: ../../LICENSES/Apache-2.0.txt
 ```
 --------------------------------
 
-**TITLE**: Running SAP Fiori Tools Headless Generator (CAP & Fiori UI)
+**TITLE**: Running CAP Headless (append SAP Fiori UI + managed approuter to CAP)
 
-**INTRODUCTION**: Instructions and ready-to-use examples to run the SAP Fiori Tools generators in headless mode using a JSON configuration. Includes sample payloads for appending a Fiori UI to an existing CAP project (CAP headless) and for generating a standalone Fiori UI app (Fiori UI headless). Use these payloads and commands as templates for automation (CI/CD) or scripting.
+**INTRODUCTION**: Use the SAP Fiori headless generator to append a UI application and managed approuter configuration to an existing CAP project. This doc shows prerequisites, an optional CAP project creation command, the required cap_app_config.json example, and exact generator commands with options.
 
-**TAGS**: fiori, headless, generator, CAP, SAPUI5, approuter, automation, CI
-
-STEP: 1 — Prepare a headless JSON payload (CAP headless)
-DESCRIPTION: Create a JSON file containing all mandatory properties for appending a SAP Fiori UI application to an existing CAP project (managed approuter enabled). Save file at cap/headless-config.json (path is an example; adjust to your repo layout).
-LANGUAGE: JSON
-CODE:
-```json
-{
-  "generator": "cap",
-  "metadata": {
-    "name": "my-fiori-cap-app",
-    "id": "com.example.myfioriapp",
-    "title": "My Fiori CAP App",
-    "description": "Fiori UI appended to existing CAP project"
-  },
-  "ui": {
-    "framework": "SAPUI5",
-    "template": "ListReportObjectPage",
-    "ui5Version": "1.102.0",
-    "managedApprouter": true
-  },
-  "cap": {
-    "existingProject": true,
-    "projectPath": "../",        /* Root path of the CAP project */
-    "srvModule": "srv",
-    "appModule": "app"
-  },
-  "approuter": {
-    "applicationRoute": "/myfiori",
-    "port": 8080,
-    "routeDestination": "html5-apps-repo"
-  }
-}
-```
-
-STEP: 2 — Prepare a headless JSON payload (Fiori UI headless)
-DESCRIPTION: Create a JSON file for generating a standalone SAP Fiori UI application (managed approuter enabled). Save file at fioriui/headless-config.json. Use this payload when you want a new UI project rather than attaching to an existing CAP project.
-LANGUAGE: JSON
-CODE:
-```json
-{
-  "generator": "fiori-ui",
-  "metadata": {
-    "name": "my-fiori-ui-app",
-    "id": "com.example.myfioriui",
-    "title": "My Fiori UI App",
-    "description": "Standalone Fiori UI application generated headlessly"
-  },
-  "ui": {
-    "framework": "SAPUI5",
-    "template": "ListReportObjectPage",
-    "ui5Version": "1.102.0",
-    "managedApprouter": true
-  },
-  "approuter": {
-    "applicationRoute": "/myfioriui",
-    "port": 8081,
-    "routeDestination": "html5-apps-repo"
-  },
-  "output": {
-    "projectPath": "./my-fiori-ui-app"
-  }
-}
-```
-
-STEP: 3 — Run the headless generator (examples)
-DESCRIPTION: Execute the generator with the prepared JSON payload. Replace the CLI invocation with the actual generator package or local binary used in your environment. Examples below show common patterns: using npx, the local node_modules binary, or a Yeoman invocation. Provide the path to the config file created in Steps 1–2.
-LANGUAGE: Bash
-CODE:
-```bash
-# Example A: using npx (replace with actual generator package name used in your repo)
-npx @sap/generator-fiori -- --headless --config ./cap/headless-config.json
-
-# Example B: using local node_modules binary
-./node_modules/.bin/@sap/generator-fiori --headless --config ./fioriui/headless-config.json
-
-# Example C: if generator is a Yeoman generator (replace 'generator-fiori' with actual name)
-yo generator-fiori --headless --config ./cap/headless-config.json
-```
-
-STEP: 4 — Verify generated output and files
-DESCRIPTION: After running the generator, inspect the generated/updated project folder(s) and verify managed approuter configuration and UI artifacts (webapp, manifest.json, xs-app.json or approuter files). Example commands to list and inspect files.
-LANGUAGE: Bash
-CODE:
-```bash
-# List generated project files for a standalone UI app
-ls -la ./my-fiori-ui-app
-ls -la ./my-fiori-ui-app/webapp
-cat ./my-fiori-ui-app/webapp/manifest.json
-
-# For CAP-applied app, check the app module and approuter entry
-ls -la ../app
-cat ../app/xs-app.json || cat ../app/approuter/.xs-app.json
-```
-
-STEP: 5 — Use and adapt payload keys
-DESCRIPTION: Typical keys you will want to include and adapt in your payloads:
-- metadata: name, id, title, description
-- ui: framework (SAPUI5), template, ui5Version, managedApprouter (boolean)
-- cap: existingProject (boolean), projectPath, srvModule, appModule (for CAP headless)
-- approuter: applicationRoute, port, routeDestination
-- output/projectPath: where to generate files (for standalone UI)
-LANGUAGE: JSON
-CODE:
-```json
-{
-  "metadata": { "name": "...", "id": "...", "title": "..." },
-  "ui": { "framework": "SAPUI5", "template": "...", "managedApprouter": true },
-  "cap": { "existingProject": true, "projectPath": "../", "srvModule": "srv", "appModule": "app" },
-  "approuter": { "applicationRoute": "/app", "port": 8080, "routeDestination": "html5-apps-repo" },
-  "output": { "projectPath": "./generated-app" }
-}
-```
-
-STEP: 6 — References & README locations
-DESCRIPTION: See the generator-specific README files in this repository for detailed, generator-specific configuration keys and additional options.
-LANGUAGE: Plain
-CODE:
-```
-Files:
-- cap/README.md     # CAP headless generator details and specific keys
-- fioriui/README.md # Fiori UI headless generator details and specific keys
-```
-
-STEP: 7 — License
-DESCRIPTION: Project license reference.
-LANGUAGE: Plain
-CODE:
-```
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-This project is licensed under the Apache Software License, version 2.0.
-License file: ../../LICENSES/Apache-2.0.txt
-```
---------------------------------
-
-**TITLE**: Running CAP Headless — Generate and append an SAP Fiori UI app (managed approuter) to a CAP project
-
-**INTRODUCTION**: Step-by-step, code-focused instructions to append a SAP Fiori UI application with managed approuter configuration to an existing CAP project using the @sap/fiori headless Yeoman generator. Includes prerequisites, optional CAP project creation, config file structure, generator invocation examples, and gotchas.
-
-**TAGS**: fiori, CAP, headless, yo, generator, approuter, sap-fiori, CloudFoundry, BAS, VSCode, hana
+**TAGS**: fiori, CAP, headless, SAP, UI5, approuter, Cloud Foundry, yo, generator, CDS
 
 **STEP**: 1 — Prerequisites
 
-**DESCRIPTION**: Ensure the CAP development toolkit is available globally. If not installed, install @sap/cds-dk globally.
+**DESCRIPTION**: Ensure the CAP development kit is installed globally. Run this from a new terminal window if needed.
 
-**LANGUAGE**: bash
+**LANGUAGE**: Bash
 
 **CODE**:
 ```bash
-# Install CAP development kit globally (run from a new terminal)
 npm i -g @sap/cds-dk
 ```
 
-**STEP**: 2 — (Optional) Create a CAP project with sample data and HANA configuration
+**STEP**: 2 — (Optional) Create a CAP project with sample data and HANA
 
-**DESCRIPTION**: Quick single-line command that initializes a CAP project named managedAppCAPProject, adds tiny-sample, HANA and MTA support, installs dependencies, builds for HANA, and prepares gen/db for npm install.
+**DESCRIPTION**: One-line command to scaffold a CAP project named managedAppCAPProject, add a tiny sample, HANA and MTA support, install dependencies, build for HANA, and prepare generated db package.json for local install.
 
-- This step is optional if you already have a CAP project.
-- Run from the folder where you want the project to be created.
-
-**LANGUAGE**: bash
+**LANGUAGE**: Bash
 
 **CODE**:
 ```bash
-cds init managedAppCAPProject && cd managedAppCAPProject \
-  && cds add tiny-sample && cds add hana && cds add mta \
-  && npm install && cds build --for hana \
-  && cp gen/db/package.json db && npm i
+cds init managedAppCAPProject && cd managedAppCAPProject && cds add tiny-sample && cds add hana && cds add mta && npm install && cds build --for hana && cp gen/db/package.json db && npm i
 ```
 
-**STEP**: 3 — Create the headless configuration file (cap_app_config.json)
+**STEP**: 3 — Create cap_app_config.json and edit project/service/deploy properties
 
-**DESCRIPTION**: Create a JSON configuration file used by the headless generator. Update properties to match your CAP project root, CAP service details, and Fiori UI attributes. The targetFolder should point to the parent folder where the generated UI project (name property) will be created. For Business Application Studio (BAS) or VS Code, update targetFolder accordingly.
+**DESCRIPTION**: Create the headless input file then update the properties to reflect your CAP project root, CAP service details, UI project name, target folder, and deploy settings. The sample contains fields you must review and update (project.targetFolder, service.capService.serviceName/serviceCdsPath, entityConfig, and deployConfig).
 
-**LANGUAGE**: bash
+**LANGUAGE**: Bash
 
 **CODE**:
 ```bash
-# Create an empty config file in the CAP project root
 touch cap_app_config.json
 ```
 
-**STEP**: 4 — Example cap_app_config.json (update values to match your project)
+**STEP**: 4 — cap_app_config.json example (update fields to match your project)
 
-**DESCRIPTION**: Example configuration file. Update title, description, namespace, ui5Version, localUI5Version, name, targetFolder, servicePath, capService.projectPath, capService.serviceName, serviceCdsPath, appPath, entityConfig.mainEntity.entityName, and deployConfig as required. Note: this JSON contains inline comments for documentation — remove comments or convert to valid JSON for strict parsers.
+**DESCRIPTION**: Copy this JSON into cap_app_config.json and edit values (paths, names, and booleans) as required. Note: comments (// ...) are explanatory — retain or remove when saving in strict JSON parsers.
 
 **LANGUAGE**: JSON
 
@@ -3695,127 +3134,131 @@ touch cap_app_config.json
 }
 ```
 
-**STEP**: 5 — Run the headless generator (basic)
+**STEP**: 5 — Run the headless generator (command template)
 
-**DESCRIPTION**: From the CAP project root, run the Yeoman headless generator with the path to the config file. The second argument can be an optional path-to-output-or-cwd. Use --force to overwrite, --skipInstall to skip dependency installs, --deleteFile to remove the input config after generation, and --logLevel to control logging.
+**DESCRIPTION**: From the root of the CAP project, run the yeoman headless generator pointing to your cap_app_config.json. Optionally specify an output path / working directory. Use --force to overwrite, --skipInstall to skip install phase, --deleteFile to remove input config, and --logLevel to control logging.
 
-**LANGUAGE**: bash
+- Command template:
+  yo @sap/fiori-elements:headless <path-to-config-file> <optional-path-to-output-or-cwd> <options>
+
+**LANGUAGE**: Bash
 
 **CODE**:
 ```bash
-# Basic usage: current directory as output
-yo @sap/fiori-elements:headless ./cap_app_config.json ./
-
-# Example with logLevel and skipInstall
-yo @sap/fiori:headless ./cap_app_config.json --logLevel debug --skipInstall
-
-# Force overwrite existing files
-yo @sap/fiori:headless ./cap_app_config.json --force
-
-# Delete input config file after generation
-yo @sap/fiori:headless ./cap_app_config.json --deleteFile
-
-# Full pattern
 yo @sap/fiori-elements:headless <path-to-config-file> <optional-path-to-output-or-cwd> <options>
 ```
 
-**STEP**: 6 — Generator options reference
+**STEP**: 6 — Examples: run generator with common flags
 
-**DESCRIPTION**: Short, actionable list of supported CLI options you will likely use during automated generation or CI.
+**DESCRIPTION**: Example invocations — run from CAP project root. First example uses current directory as output, second enables debug logging and skipInstall.
 
-**LANGUAGE**: text
+**LANGUAGE**: Bash
 
 **CODE**:
-```text
---force          Overwrite existing output files
---skipInstall    Skip install phase (no npm/yarn install)
---deleteFile     Delete the input app configuration file after generation
---logLevel       Set logging level: debug | info
+```bash
+yo @sap/fiori:headless ./cap_app_config.json ./
 ```
 
-**STEP**: 7 — Gotchas and recommended edits
-
-**DESCRIPTION**: Common pitfalls and required edits depending on target deployment or existing approuter configuration.
-
-**LANGUAGE**: text
-
-**CODE**:
-```text
-1) If you want to generate a SAP Fiori UI application WITHOUT Cloud Foundry deployment configuration, remove the "deployConfig" section from cap_app_config.json.
-
-2) If the CAP project already contains a managed or standalone approuter, set "deployConfig.addToManagedAppRouter" to false or remove it to avoid app router conflicts.
-
-3) The example JSON contains // comments for readability. Remove comments if your tooling requires strict JSON (no comments).
-
-4) Ensure "targetFolder" points to the folder that will contain the generated UI subfolder named by "project.name". Example:
-   targetFolder: "/Users/MyUser/Documents/managedAppCAPProject/app/"
-   Resulting UI app path: "/Users/MyUser/Documents/managedAppCAPProject/app/mylropproject"
-
-5) Keep "deployConfig.destinationName" as "fiori-default-srv-api" unless you have a specific destination you want to reference in mta.yaml.
+```bash
+yo @sap/fiori:headless ./cap_app_config.json --logLevel debug --skipInstall
 ```
 
-**STEP**: 8 — License
+**STEP**: 7 — Generator options reference
 
-**DESCRIPTION**: Project license reference.
+**DESCRIPTION**: Quick reference for available command-line options.
 
-**LANGUAGE**: text
+**LANGUAGE**: PlainText
 
 **CODE**:
-```text
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the LICENSE file at /LICENSES/Apache-2.0.txt.
+```
+--force        : Overwrite existing output files
+--skipInstall  : Skip the install phase after generation
+--deleteFile   : Delete the input app configuration file after generation
+--logLevel     : debug | info
+```
+
+**STEP**: 8 — Gotchas / Notes
+
+**DESCRIPTION**: Important configuration gotchas to avoid common errors. Update your config accordingly.
+
+**LANGUAGE**: PlainText
+
+**CODE**:
+```
+1. To generate a SAP Fiori UI without Cloud Foundry deploy config, remove "deployConfig" from cap_app_config.json.
+2. If your CAP project already uses an existing "managed" or "standalone" approuter configuration, set "addToManagedAppRouter" to false or remove it.
+3. Ensure paths in cap_app_config.json (project.targetFolder, service.capService.serviceCdsPath, service.capService.projectPath) point to actual locations in your repository.
+4. JSON comments (// ...) are explanatory; remove them if your tooling requires strict JSON.
+```
+
+**STEP**: 9 — License
+
+**DESCRIPTION**: Project license information.
+
+**LANGUAGE**: PlainText
+
+**CODE**:
+```
+Copyright (c) 2009-2026 SAP SE or an SAP affiliate company.
+This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the LICENSE file at /LICENSES/Apache-2.0.txt
 ```
 --------------------------------
 
-**TITLE**: Generate SAP Fiori UI Headless with Managed Approuter (CAP + OData)
+**TITLE**: Running SAP UI Headless — Generate SAP Fiori UI with managed approuter configuration
 
-**INTRODUCTION**: Use the SAP Fiori headless Yeoman generator to create a SAP Fiori UI application from OData metadata and a JSON configuration. This document shows how to prepare the OData metadata, create the headless configuration file (app_config.json), run the generator, and enable Cloud Foundry + managed approuter deployment configuration.
+**INTRODUCTION**: Step-by-step instructions to generate a SAP Fiori UI application using the SAP Yeoman headless generator. Use a JSON configuration file that contains OData EDMX metadata (as raw XML string) and deployment options to produce a UI5 project and optional Cloud Foundry / managed approuter artifacts.
 
-**TAGS**: sap, fiori, headless, generator, yo, ui5, cap, odata, cloud-foundry, approuter, northwind
+**TAGS**: fiori-samples, sap, ui5, cap, headless, generator, odata, sap-fiori, cf
 
-**STEP**: 1 — Prerequisites: fetch OData metadata & escape quotes
-**DESCRIPTION**: Fetch the OData XML metadata (required input) and escape all double quotes so it can be embedded as a JSON string value in app_config.json.
-- Example public metadata URL: https://services.odata.org/V2/Northwind/Northwind.svc/$metadata
-- Escape double quotes in the XML before embedding into JSON: replace " with \"
-**LANGUAGE**: Bash
+**STEP**: 1 — Prerequisites
+
+**DESCRIPTION**: Ensure you have the OData service metadata and prepare the XML for embedding into the JSON config. When embedding raw XML into JSON, escape each double quote with a backslash (\").
+
+**LANGUAGE**: Markdown
+
 **CODE**:
-```bash
-# Download metadata (example)
-curl -sS "https://services.odata.org/V2/Northwind/Northwind.svc/$metadata" -o metadata.xml
+```text
+Prerequisites:
+- OData XML metadata is required. Example metadata URL:
+  https://services.odata.org/V2/Northwind/Northwind.svc/$metadata
 
-# Escape double quotes so metadata can be inserted as a single-line JSON string
-# Produces metadata-escaped.txt that you can paste into the "edmx" property of the config
-sed 's/"/\\"/g' metadata.xml > metadata-escaped.txt
+- When appending raw XML into the JSON configuration, replace each " with \"
+  so the XML is valid as a JSON string.
 ```
 
-**STEP**: 2 — Create headless configuration file
-**DESCRIPTION**: Create the JSON configuration file (app_config.json). Update properties to reflect your CAP project, UI project attributes, service endpoint, and the escaped OData XML (edmx). Replace values below as needed: project.title, project.description, project.namespace, project.ui5Version, project.localUI5Version, project.name, project.targetFolder, service.servicePath, service.host, and deployConfig.destinationName.
-- Filename used by generator examples: ./app_config.json
+**STEP**: 2 — Create the SAP Fiori app configuration file
+
+**DESCRIPTION**: Create a new configuration file (example name: app_config.json). Edit this file to reflect your CAP project values, CAP Service properties (servicePath, host, edmx), UI settings, entity selection, FLP configuration and deployment choices. Update project.targetFolder to the target location where the new project directory (project.name) will be created.
+
 **LANGUAGE**: Bash
+
 **CODE**:
 ```bash
-# Create the config file in your current directory (or use your preferred filename)
+# Create an app configuration file in the current directory
 touch app_config.json
 ```
 
-**STEP**: 3 — app_config.json (full JSON configuration template)
-**DESCRIPTION**: Paste or save the following JSON into app_config.json. Replace the edmx value with the escaped metadata from metadata-escaped.txt (single-line string with quotes escaped). This JSON is valid and ready for the headless generator.
+**STEP**: 3 — Example app_config.json — full configuration (edit to your project)
+
+**DESCRIPTION**: Use the JSON below as a template. Update values for project.title, project.namespace, project.ui5Version, project.localUI5Version, project.name, project.targetFolder, service.servicePath, service.host, and deployConfig.destinationName. The edmx value contains the raw OData XML metadata as a string — ensure quotes are escaped. Remove flpConfig to skip FLP/Build Work Zone configuration. Remove deployConfig to skip Cloud Foundry deployment and managed approuter generation.
+
 **LANGUAGE**: JSON
+
 **CODE**:
-```json
+```JSON
 {
   "version": "0.2",
   "floorplan": "FE_LROP",
   "project": {
     "title": "Project's \"Title\"",
     "description": "Test 'Project' \"Description\"",
-    "namespace": "ns.test",
+    "namespace": "ns.test", // Update or remove if not required
     "ui5Version": "1.84.0",
     "localUI5Version": "1.82.2",
     "enableTelemetry": true,
-    "name": "northwind",
+    "name": "northwind", // SAP Fiori UI project name
     "sapux": true,
-    "targetFolder": "/Users/MyUser/Documents/"
+    "targetFolder": "/Users/MyUser/Documents/" // Target location of new project appended with project name i.e. /Users/MyUser/Documents/northwind
   },
   "service": {
     "servicePath": "/V2/Northwind/Northwind.svc/",
@@ -3833,143 +3276,100 @@ touch app_config.json
   },
   "deployConfig": {
     "deployTarget": "CF",
-    "destinationName": "MySubAccountDestination",
-    "addToManagedAppRouter": true
+    "destinationName": "MySubAccountDestination", // Refer to your SAP BTP subaccount destinations, update xs-app.json if not already generated
+    "addToManagedAppRouter": true // Generate an mta.yaml with a managed approuter configuration
   }
 }
 ```
 
 **STEP**: 4 — Run the headless generator
-**DESCRIPTION**: Run the Yeoman SAP Fiori headless generator from the directory where you want to create the UI project (the generator will create the project under project.targetFolder + project.name if targetFolder is absolute). Command syntax:
-yo @sap/fiori:headless <path-to-config-file> <optional-output-path-or-cwd> <options>
+
+**DESCRIPTION**: Change into the directory where you want the project created (the generator will create a directory named project.name under project.targetFolder if configured). Run the Yeoman SAP Fiori headless generator with your configuration file. Pass optional flags to control overwrite, install phase, deletion of the config file, and logging.
+
+Syntax:
+yo @sap/fiori:headless <path-to-config-file> <optional-path-to-output-or-cwd> <options>
+
 Available options:
-- --force : overwrite existing output files
-- --skipInstall : skip install phase (npm / yarn)
-- --deleteFile : delete the input app configuration file after generation
-- --logLevel debug|info
+- --force : Overwrite existing output files
+- --skipInstall : Skip the install phase to avoid running npm/yarn install
+- --deleteFile : Delete the input app configuration file after generation
+- --logLevel debug | info : Set logging verbosity
+
 **LANGUAGE**: Bash
+
 **CODE**:
 ```bash
-# Basic run (assumes app_config.json in current directory)
+# Example: basic run using config in current directory
 yo @sap/fiori:headless ./app_config.json
 
-# With debug logging and skip install
+# Example: run with debug logging and skip install
 yo @sap/fiori:headless ./app_config.json --logLevel debug --skipInstall
-
-# Force overwrite existing files
-yo @sap/fiori:headless ./app_config.json --force
-
-# Provide an explicit output directory (optional 2nd arg)
-yo @sap/fiori:headless ./app_config.json ./output-directory --skipInstall
 ```
 
-**STEP**: 5 — Deployment & managed approuter notes
-**DESCRIPTION**: The deployConfig node controls Cloud Foundry deployment and managed approuter generation:
-- To generate an mta.yaml and managed approuter, set deployConfig.addToManagedAppRouter = true and deployConfig.deployTarget = "CF".
-- deployConfig.destinationName must match an existing destination in your SAP BTP subaccount; update xs-app.json if required.
+**STEP**: 5 — Post-generation notes and gotchas
 
-If you do not want FLP (Build Workzone) configuration or Cloud Foundry deployment:
-- Remove the flpConfig node to skip FLP generation.
-- Remove the deployConfig node to skip CF deployment and approuter generation.
+**DESCRIPTION**: Short actionable items to avoid common mistakes and to control optional outputs.
 
-Example: remove flpConfig and deployConfig by producing a stripped configuration (only minimal nodes required):
-**LANGUAGE**: JSON
+- To generate the SAP Fiori UI without Build Work Zone (FLP) remove the flpConfig node from app_config.json.
+- To skip Cloud Foundry deployment and managed approuter artifacts remove the deployConfig node.
+- If deployConfig.addToManagedAppRouter is true, generator will create mta.yaml and managed approuter setup; ensure deployConfig.destinationName matches a CF destination in your SAP BTP subaccount and update xs-app.json if needed.
+- Ensure project.targetFolder exists and you have write permissions; the generator appends project.name to targetFolder to create the final path.
+
+**LANGUAGE**: Markdown
+
 **CODE**:
-```json
-{
-  "version": "0.2",
-  "floorplan": "FE_LROP",
-  "project": {
-    "title": "Project's \"Title\"",
-    "name": "northwind",
-    "targetFolder": "/Users/MyUser/Documents/"
-  },
-  "service": {
-    "servicePath": "/V2/Northwind/Northwind.svc/",
-    "host": "https://services.odata.org",
-    "edmx": "<escaped-xml-string-here>"
-  },
-  "entityConfig": {
-    "mainEntity": { "entityName": "Categories" },
-    "navigationEntity": { "EntitySet": "Products" }
-  }
-}
+```text
+Gotchas:
+1. Remove flpConfig to skip FLP/Build Workzone configuration.
+2. Remove deployConfig to skip Cloud Foundry / managed approuter configuration.
+3. Verify destinationName in deployConfig matches your SAP BTP subaccount destinations.
+4. Ensure quotes in edmx are escaped (replace " with \") before embedding XML as a JSON string.
 ```
 
-**STEP**: 6 — Post-generation checklist
-**DESCRIPTION**: After generation:
-- Inspect generated files: UI5 project under targetFolder + project.name.
-- If deployConfig.addToManagedAppRouter = true, inspect generated mta.yaml and xs-app.json for correct destinationName.
-- Run local build and tests per generated README (generator generates additional instructions inside the project).
+**STEP**: 6 — License
 
-**LICENSE**: Copyright (c) 2009-2025 SAP SE or an SAP affiliate company. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the LICENSE file.
+**DESCRIPTION**: Project license reference.
+
+**LANGUAGE**: Markdown
+
+**CODE**:
+```text
+License:
+Copyright (c) 2009-2026 SAP SE or an SAP affiliate company.
+This project is licensed under the Apache Software License, version 2.0, except as noted otherwise in the LICENSE file:
+/LICENSES/Apache-2.0.txt
+```
 --------------------------------
 
-**TITLE**: SAP Cloud Connector (On-Premise) Destination
+**TITLE**: Configure SAP BTP Destination with ProxyType=OnPremise (Cloud Connector)
 
-**INTRODUCTION**: Quick actionable reference to define, import, validate, debug, and collect logs for an SAP BTP destination that uses ProxyType=OnPremise (Cloud Connector). Use this when connecting SAP BTP applications (including Fiori apps) to on-premise systems (S/4HANA, ABAP, internal APIs). Includes destination file example, validation curl, debug/deploy tracing, and required log file names for support.
+**INTRODUCTION**: Configure an SAP BTP destination that uses ProxyType=OnPremise so cloud apps can securely reach on‑premise systems via the Cloud Connector. This guide provides actionable steps, configuration snippets, validation commands, trace logging steps, troubleshooting checks, and the support-ticket artifact checklist.
 
-**TAGS**: fiori-samples, sap-btp, cloud-connector, destination, onpremise, principal-propagation, connectivity, odata, bas
+**TAGS**: SAP BTP, Cloud Connector, OnPremise, Destination, PrincipalPropagation, OData, Connectivity, troubleshooting
 
-STEP: 1 — Prerequisites
-DESCRIPTION: Verify platform and permission requirements before creating or importing an OnPremise destination. Note Fiori Elements generator supports only OData XML services.
-LANGUAGE: text
-CODE:
-```text
-Prerequisites checklist:
-- SAP BTP subaccount with Cloud Foundry runtime configured.
-- Admin rights in SAP BTP cockpit (to create/modify Destinations).
-- Admin rights to SAP Cloud Connector (SCC) UI.
-- For SAP Fiori Elements: only OData XML services supported.
-- Familiarity: SAP BTP destinations and creating destinations in the BTP cockpit:
-  - https://learning.sap.com/learning-journeys/administrating-sap-business-technology-platform/using-destinations
-  - https://developers.sap.com/tutorials/cp-cf-create-destination..html
-```
+STEP: Flow Diagram
 
-STEP: 2 — Destination file example (importable)
-DESCRIPTION: Copy/paste this destination file content and import into SAP BTP Destinations. Adjust URL, CloudConnectorLocationId, Name, and Authentication to your landscape. This example uses PrincipalPropagation and enables WebIDE/OData catalog exposure.
-LANGUAGE: properties
-CODE:
-```properties
-# File: cloudconnector.destination (import in SAP BTP cockpit)
-Type=HTTP
-HTML5.DynamicDestination=true
-HTML5.Timeout=60000
-Description=SAP Cloud Connector
-Authentication=PrincipalPropagation
-CloudConnectorLocationId=scloud
-WebIDEEnabled=true
-ProxyType=OnPremise
-URL=http://my-internal-host:44330/
-Name=cloudconnector
-WebIDEUsage=odata_abap
-```
-Notes:
-- WebIDEUsage=odata_abap => exposes OData service catalogs to BAS/Web IDE.
-- HTML5.DynamicDestination=true => destination created dynamically at runtime.
-- Authentication options: Basic, OAuth2 Client Credentials, OAuth2 User Credentials, PrincipalPropagation.
-- CloudConnectorLocationId must match the SCC Location ID configured in the subaccount.
+DESCRIPTION: Sequence diagram illustrating the runtime flow from developer/app to back end via Destination and Cloud Connector. Use a Mermaid-capable renderer to visualize.
 
-STEP: 3 — System flow (visual)
-DESCRIPTION: Use this sequence to understand runtime lookup and request flow (BTP app -> Destination Service -> Connectivity Service/Cloud Connector -> On-Premise system).
 LANGUAGE: mermaid
+
 CODE:
 ```mermaid
 sequenceDiagram
-   participant Developer as Developer (BAS)
+   participant Developer as Developer (SAP Business Application Studio)
    participant BTPApp as SAP BTP Application (Runtime)
    participant DestinationService as SAP BTP Destination Service
    participant ConnectivityService as SAP BTP Connectivity Service (Cloud Connector)
-   participant BackendSystem as Backend System (e.g., S/4HANA, External API)
+   participant BackendSystem as Back-End System such as SAP S/4HANA or External API
 
-   Developer->>BTPApp: 1. Develops & Deploys App in BAS
+   Developer->>BTPApp: 1. Develops & Deploys App in SAP Business Application Studio
    BTPApp->>DestinationService: 2. App requests Destination 'MyBackend'
-   DestinationService->>BTPApp: 3. Provides Destination Configuration (URL, Auth, Proxy)
+   DestinationService->>BTPApp: 3. Provides Destination Configuration (URL, Auth, and Proxy)
 
-   alt On-Premise Backend (via Cloud Connector)
-      BTPApp->>ConnectivityService: 4a. Connects via Secure Tunnel
+   alt On-Premise Backend (using Cloud Connector)
+      BTPApp->>ConnectivityService: 4a. Connects using Secure Tunnel
       ConnectivityService-->>BackendSystem: 5a. Routes request to On-Premise System
-   else Cloud/External Backend
+   else Cloud/External Back End
       BTPApp->>BackendSystem: 4b. Direct HTTP/API Call
    end
 
@@ -3977,168 +3377,302 @@ sequenceDiagram
    BTPApp-->>Developer: 7. Application processes and displays data
 ```
 
-STEP: 4 — Validate connectivity (Environment Check + quick test)
-DESCRIPTION: Run the Environment Check (see ../destinations/README.md#environment-check) and perform a direct connection test with curl from BAS or any environment that can reach the destination endpoint.
-LANGUAGE: bash
-CODE:
-```bash
-# Example: BAS terminal connection test (replace placeholders)
-# Replace <destination-name> and <bsp-name>
-curl -vs -i -H "X-CSRF-Token: Fetch" \
- "https://dest.<destination-name>/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV/Repositories(%27<bsp-name>%27)?saml2=disabled" \
-  > curl-abap-srv-output.txt 2>&1
-# Inspect curl-abap-srv-output.txt for response headers and body to determine connectivity vs deployment issues.
-# Note: HTTP 404 can indicate BSP not deployed (connectivity may still be OK).
-```
+STEP: Cloud Connector Configuration
 
-STEP: 5 — Enable and collect SAP Cloud Connector trace logs
-DESCRIPTION: Enable detailed SCC logging only for troubleshooting. Collect these trace files and timestamps when reproducing the issue.
+DESCRIPTION: Install and configure Cloud Connector and establish a subaccount mapping. Ensure Cloud Connector is running, connected to the target SAP BTP subaccount, and virtual host/port -> backend host/port mappings are created and active. Use the Cloud Connector UI to create mappings and access control entries (Access Policy: Path, URL Path may be "/").
+
 LANGUAGE: text
+
 CODE:
 ```text
-SCC trace settings (UI actions):
-1. Confirm SCC version.
-2. Set Cloud Connector Loggers = ALL.
-3. Set Other Loggers = Information.
-4. Enable Payload Trace (select correct subaccount).
-5. Reproduce the failing scenario.
-6. Download these logs:
-   - ljs_trace.log          (Cloud Connector)
-   - scc_core.log           (if applicable / newer versions)
-   - traffic_trace_<subaccount>_on_<region>.trc
-   - tunnel_traffic_trace_<subaccount>_on_<region>.trc (if generated)
-7. After capture, disable trace logging.
-Important: Do not enable in production unless troubleshooting a specific issue.
+Action checklist (Cloud Connector UI):
+1. Login -> Subaccount Overview -> Verify subaccount connection.
+2. Cloud to On-Premise -> Add Virtual Host Mapping:
+   - Virtual Host: <virtual-host>
+   - Virtual Port: <virtual-port>
+   - Backend Host: <backend-host>
+   - Backend Port: <backend-port>
+3. Cloud to On-Premise -> Access Control -> Add mapping:
+   - Access Policy: Path
+   - URL Path: "/" (or as required)
+   - Check Availability -> Verify mapping is reachable
+4. For trace troubleshooting: Log and Trace Files -> Edit (see trace logging step)
 ```
 
-STEP: 6 — What to check when connectivity fails
-DESCRIPTION: Common troubleshooting checklist to isolate SCC, network, SSL, destination configuration, or ABAP-level issues.
+STEP: SAP BTP Destination Properties (Example)
+
+DESCRIPTION: Use these destination properties to create/update an OnPremise destination in the SAP BTP cockpit. Update CloudConnectorLocationId and URL to match your Cloud Connector virtual host mapping. PrincipalPropagation is recommended for end-user identity forwarding.
+
+LANGUAGE: ini
+
+CODE:
+```ini
+# SAP BTP Cloud Connector Destination Example
+Type=HTTP
+HTML5.DynamicDestination=true
+Description=SAP Cloud Connector
+Authentication=PrincipalPropagation
+CloudConnectorLocationId=scloud
+WebIDEEnabled=true
+ProxyType=OnPremise
+URL=http://my-internal-host:44330/
+Name=MyOnPremiseDestination
+WebIDEUsage=odata_abap
+HTML5.Timeout=60000
+```
+
+STEP: Destination Properties — Notes
+
+DESCRIPTION: Action-oriented property meanings to copy into cockpit when creating the destination.
+
 LANGUAGE: text
+
 CODE:
 ```text
-Common checks:
-- Is SCC running and connected to the BTP subaccount? (SCC -> Subaccount Overview)
-- Verify Virtual Host Mapping in SCC matches Destination host/path.
-- Access Control mapping path: ensure Access Policy = Path and URL Path = / (or specific path as required).
-- Firewalls / IP whitelisting: ensure BTP data center IPs allowed if needed.
-- SSL certs: check SCC core or ljs logs for certificate errors.
-- If no traffic recorded in traffic_trace_ logs, SCC cannot reach target ABAP system.
-ABAP checks (if ABAP backend):
-- /IWFND/ERROR_LOG  -> view OData errors.
-- /IWFND/GW_CLIENT  -> test service calls directly in ABAP.
+- WebIDEUsage=odata_abap: Expose OData catalogs to SAP Business Application Studio.
+- WebIDEEnabled=true: Allow use in Business Application Studio.
+- HTML5.Timeout=60000: Timeout in milliseconds.
+- HTML5.DynamicDestination=true: Allow dynamic runtime creation.
+- Authentication=PrincipalPropagation: Forward end-user identity to back end (recommended).
+- CloudConnectorLocationId: Must match Cloud Connector entry in subaccount.
+- URL: Use virtual host:port mapped in Cloud Connector (internal address).
 ```
 
-STEP: 7 — Deployment debug logging (frontend / HTML5 apps)
-DESCRIPTION: Run deployments with DEBUG/verbose logging to surface HTTP request/response issues during fiori deploy or npm script deployments.
+STEP: Validate Connectivity (Environment Check)
+
+DESCRIPTION: Run the Environment Check in SAP Business Application Studio to validate OData V2/V4 catalog endpoints. Fix issues reported in envcheck-results.md before proceeding.
+
+LANGUAGE: text
+
+CODE:
+```text
+1. Run Environment Check (SAP Business Application Studio):
+   - See ../destinations/README.md#environment-check
+2. Review generated file: envcheck-results.md
+3. Resolve any failures reported (authentication, unreachable URL, metadata issues).
+```
+
+STEP: Quick Connectivity Checks
+
+DESCRIPTION: Run these checks to quickly identify common failures before collecting logs.
+
+LANGUAGE: text
+
+CODE:
+```text
+Quick checks:
+- Is Cloud Connector running and connected to SAP BTP subaccount?
+- Is virtual host/port mapping active and correct?
+- Does destination.CloudConnectorLocationId match the Cloud Connector?
+- Are destination and back-end authentication methods aligned (PrincipalPropagation/SSL/certs)?
+- Are firewalls/proxies blocking traffic between Cloud Connector and back end?
+- Can you curl the back end from the Cloud Connector host locally?
+```
+
+STEP: Enable Cloud Connector Trace Logging (Capture Logs)
+
+DESCRIPTION: Enable trace logging temporarily to capture the specified log files for troubleshooting. Revert logging to normal levels after capture.
+
+LANGUAGE: text
+
+CODE:
+```text
+1. Cloud Connector UI -> Log and Trace Files -> Edit
+2. Set:
+   - Cloud Connector Loggers = ALL
+   - Other Loggers = Information
+3. Enable Payload Trace and select correct subaccount.
+4. Reproduce the failing scenario.
+5. Collect logs:
+   - ljs_trace.log
+   - scc_core.log (if present)
+   - traffic_trace_<subaccount>_on_<region>.trc (required)
+   - tunnel_traffic_trace_<subaccount>_on_<region>.trc (if applicable)
+6. Revert log levels to avoid excessive logging.
+Notes:
+- If no network traffic appears in traffic_trace_ logs, likely Cloud Connector cannot establish tunnel (firewall/proxy).
+- See: Monitoring, Logging, and Troubleshooting docs.
+```
+
+STEP: Checklist for Support Tickets (Artifacts to Attach)
+
+DESCRIPTION: Compile a zip with the required artifacts before opening a ticket for BC-MID-SCC or CA-UX-IDE. Include optional debugging outputs too.
+
+LANGUAGE: text
+
+CODE:
+```text
+Required artifacts (zip into a single file):
+- Screenshot of destination in SAP BTP cockpit (all properties).
+- Environment Check report (envcheck-results.md).
+- From Cloud Connector:
+  - Subaccount Overview (Cloud Connector -> Subaccount Overview -> Click Subaccount).
+  - Virtual Host Mapping screenshot (Cloud to On-Premise -> Virtual Host Mapping).
+  - Access Control mapping and Edit view (Cloud to On-Premise -> Access Control -> Mapping -> Edit).
+  - Confirm Access Policy and URL Path (Path, "/") and Check Availability output.
+  - Collected trace logs (see trace logging step).
+- ABAP logs (if backend is ABAP):
+  - /IWFND/ERROR_LOG
+  - /IWFND/GW_CLIENT
+Optional:
+- curl output from Business Application Studio terminal.
+- Clear reproduction steps and expected vs actual behavior.
+```
+
+STEP: Example Connection Test (curl)
+
+DESCRIPTION: Run curl from SAP Business Application Studio (or any terminal) to test catalog connectivity. Replace <destination-name> and <bsp-name> as required. Save output to a file and attach to support ticket if needed.
+
 LANGUAGE: bash
+
 CODE:
 ```bash
+# Replace <destination-name> before executing
+curl -L -vs -i -H "X-CSRF-Token: Fetch" "https://<destination-name>.dest/sap/opu/odata/IWFND/CATALOGSERVICE;v=2?saml2=disabled" > curl-catalog-output.txt 2>&1
+```
+
+STEP: Deployment Prerequisites (ABAP Repo) & Debugging
+
+DESCRIPTION: Ensure repository service activation and required authorizations. Capture deployment debug logs and run curl against ABAP repository service to validate deployment connectivity.
+
+LANGUAGE: text
+
+CODE:
+```text
+Prerequisites:
+- Activate /UI5/ABAP_REPOSITORY_SRV in the backend.
+- Ensure S_DEVELOP authorizations are present.
+
+Capture debug output when deploying:
 # Mac / Linux
 DEBUG=* npm run deploy
-
-# Windows (cmd)
+# Windows (powershell)
 set DEBUG=* && npm run deploy
 ```
-LANGUAGE: json
+
+LANGUAGE: bash
+
 CODE:
-```json
-// package.json snippet: add --verbose to fiori deploy
-{
-  "scripts": {
-    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml --verbose && rimraf archive.zip"
-  }
-}
+```bash
+# Replace <destination-name> and <bsp-name> before executing
+curl -L -vs -i -H "X-CSRF-Token: Fetch" "https://<destination-name>.dest/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV/Repositories(%27<bsp-name>%27)?saml2=disabled" > curl-abap-srv-output.txt 2>&1
 ```
 
-STEP: 8 — Support ticket package: what to collect and submit
-DESCRIPTION: When opening a BC-MID-SCC support ticket, collect screenshots, SCC logs, environment check zip, and timestamped traces. Compress into a single zip file.
+STEP: Known Issues (Common Causes & References)
+
+DESCRIPTION: Common issues and SAP notes/KB links to consult when facing 401/403/404 or service catalog problems.
+
 LANGUAGE: text
+
 CODE:
 ```text
-Support package checklist:
-1) Screenshots from SAP BTP -> Subaccount -> Connectivity -> Destinations (show all properties).
-2) SCC screenshots:
-   - SCC -> Subaccount Overview -> select Subaccount
-   - SCC -> Cloud to On-Premise -> Virtual Host Mapping (match destination host/port)
-   - SCC -> Cloud to On-Premise -> Access Control -> select Mapping -> Edit (verify path)
-   - SCC -> Cloud to On-Premise -> Access Control -> Check Availability
-3) Trace logs (from Step 5).
-4) Environment Check report (zip) from ../destinations/README.md#environment-check
-5) Date/time of failing requests (to locate traces).
-6) Compress all files into a single zip and attach to support ticket (component: BC-MID-SCC).
+Known issues:
+- OData V4 catalog service not available -> HTTP 401/403/404; may indicate /IWFND/CONFIG not published.
+  - See OData V4 Service Catalog tutorial and docs.
+- SAP Notes:
+  - 2954378 - Gateway Error Log: No authorization to access service group '/IWNGW/NOTIFICATION'
+  - 2928752 - How to activate ICF nodes in SAP Gateway?
+  - 2489898 - HTTP 404 Not Found for /IWFND/CATALOGSERVICE
+  - 3378435 - Response headers too big in /UI5/UI5_REPOSITORY_LOAD
+Action:
+- Check /IWFND/ERROR_LOG and /IWFND/GW_CLIENT.
+- Ensure necessary ICF nodes are activated and published.
 ```
 
-STEP: 9 — Useful links & references
-DESCRIPTION: Quick links for Cloud Connector setup, principal propagation, troubleshooting and consuming UI5 from on-premise.
+STEP: Principal Propagation (Recommended)
+
+DESCRIPTION: Use Principal Propagation to forward end-user identity end-to-end. Follow setup and configuration guides; use it for productive landscapes to maintain per-user access control in on-premise back ends.
+
 LANGUAGE: text
+
 CODE:
 ```text
-Reference links:
-- Cloud Connector explained: https://community.sap.com/t5/technology-blog-posts-by-sap/cloud-connector-explained-in-simple-terms/ba-p/13547036
-- Install & configure SCC: https://blogs.sap.com/2021/09/05/installation-and-configuration-of-sap-cloud-connector
-- Principal Propagation:
-  - Blog: https://blogs.sap.com/2021/09/06/setting-up-principal-propagation
-  - SAP Help: https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/configuring-principal-propagation
-  - Troubleshoot: https://help.sap.com/docs/SUPPORT_CONTENT/appservices/3361376259.html
-- SCC troubleshooting guide: https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/cloud-connector-troubleshooting
-- Consuming & validating BTP destinations (Environment Check): ../destinations/README.md
-- Consuming SAPUI5 Libraries from On-Premise: ./ui5-onpremise.md
+- Principal Propagation forwards user identity from SAP BTP to on-premise backend.
+- Recommended for production to avoid using a generic technical user.
+- Setup references:
+  - Setting up Principal Propagation (community guide)
+  - Configuring Principal Propagation (official help)
+- Troubleshooting:
+  - How to Troubleshoot Cloud Connector Principal Propagation over HTTPS (trace client certificate).
+```
+
+STEP: Additional Resources & Support Links
+
+DESCRIPTION: Quick links and resources to follow for installation, destination creation, and Cloud Connector concepts.
+
+LANGUAGE: text
+
+CODE:
+```text
+Useful links:
+- Installation and Configuration of SAP Cloud Connector (blog)
+- Whitelisting SAP BTP IP ranges (SAP docs)
+- Understanding SAP BTP Destinations (learning)
+- Create SAP BTP Destinations (tutorial)
+- Cloud Connector Explained (community blog)
+- Consuming SAPUI5 libraries from On‑Premise (./ui5-onpremise.md)
+- Monitoring, Logging, and Troubleshooting (Cloud Connector docs)
+```
+
+STEP: License
+
+DESCRIPTION: Project license reference.
+
+LANGUAGE: text
+
+CODE:
+```text
+Copyright (c) 2009-2026 SAP SE or an SAP affiliate company.
+This project is licensed under the Apache License 2.0. See LICENSE at ../../LICENSES/Apache-2.0.txt
 ```
 --------------------------------
 
-**TITLE**: Expose an SAPUI5 Library from an On-Premise System via ui5.yaml and SAP BTP Destination
+**TITLE**: Expose SAPUI5 Library from an On-Premise System via ui5.yaml and SAP BTP Destination
 
-**INTRODUCTION**: Configure your project ui5.yaml and SAP BTP destinations so the UI5 runtime (resources) is served from an On‑Premise system through the Cloud Connector. Use this when a needed SAPUI5 version is not available on the public CDN. The steps show how to duplicate and adjust a destination, validate access, and update ui5.yaml to route /resources to the On‑Premise UI5 library while keeping /test-resources on the CDN.
+**INTRODUCTION**: Steps to configure ui5-tooling (ui5.yaml) and SAP BTP destinations so an SAPUI5 application can consume a SAPUI5 library served from an On-Premise system through the Cloud Connector. Use this when the specific SAPUI5 version is not available on the SAPUI5 CDN.
 
-**TAGS**: SAPUI5, ui5.yaml, SAP BTP, Cloud Connector, OnPremise, destination, fiori-tools-proxy
+**TAGS**: fiori, sapui5, ui5-tooling, ui5.yaml, sap-btp, cloud-connector, on-premise
 
-**STEP**: Prerequisites
-
-**DESCRIPTION**: Ensure basic prerequisites are met before changing destinations and ui5.yaml.
-
-**LANGUAGE**: Text
-
-**CODE**:
+STEP: Prerequisites
+DESCRIPTION: Ensure your environment meets these requirements before proceeding.
+- The SAPUI5 library is accessible from the On-Premise system.
+- The On-Premise system is reachable from your development environment (e.g., SAP Business Application Studio) via Cloud Connector.
+- The SAPUI5 version you require is unavailable on the SAPUI5 CDN (e.g., https://ui5.sap.com/1.71.53 returns HTTP 404). Check available versions at https://ui5.sap.com/versionoverview.html.
+LANGUAGE: Text
+CODE:
+```Text
+Prerequisites:
+- SAPUI5 library accessible on On-Premise system.
+- On-Premise reachable via Cloud Connector from the development environment.
+- Desired SAPUI5 version not available on SAPUI5 CDN.
 ```
-- SAPUI5 library is exposed and accessible from the On‑Premise system.
-- The On‑Premise system is reachable from your development environment via Cloud Connector (e.g., Business Application Studio).
-- The required SAPUI5 version is unavailable on https://ui5.sap.com (CDN). Check available versions: https://ui5.sap.com/versionoverview.html.
-- You have an existing SAP BTP destination (e.g., MyDestination) that connects to the On‑Premise system.
-- Your project contains a ui5.yaml used by fiori-tools-proxy middleware.
-```
 
-**STEP**: Existing Setup — current SAP BTP destination (On‑Premise)
-
-**DESCRIPTION**: Example of an existing SAP BTP destination that routes requests to your On‑Premise system via Cloud Connector. Note Name: MyDestination and ProxyType: OnPremise.
-
-**LANGUAGE**: JSON
-
-**CODE**:
-```json
+STEP: Existing SAP BTP destination (example)
+DESCRIPTION: The project already references an SAP BTP destination (MyDestination) configured for OnPremise access via Cloud Connector. Preserve this destination for backend OData/HTTP access.
+LANGUAGE: JSON
+CODE:
+```JSON
 {
-  "destination": {
-    "Authentication": "NoAuthentication",
-    "CloudConnectorLocationId": "MyCloudConnectorLocationId",
-    "HTML5.DynamicDestination": "true",
-    "HTML5.Timeout": "60000",
-    "Name": "MyDestination",
-    "ProxyType": "OnPremise",
-    "Type": "HTTP",
-    "URL": "http://my-internal-system.abc.internal:443",
-    "WebIDEEnabled": "true",
-    "WebIDEUsage": "odata_abap",
-    "sap-client": "100"
-  }
+    "destination": {
+        "Authentication": "NoAuthentication",
+        "CloudConnectorLocationId": "MyCloudConnectorLocationId",
+        "HTML5.DynamicDestination": "true",
+        "HTML5.Timeout": "60000",
+        "Name": "MyDestination",
+        "ProxyType": "OnPremise",
+        "Type": "HTTP",
+        "URL": "http://my-internal-system.abc.internal:443",
+        "WebIDEEnabled": "true",
+        "WebIDEUsage": "odata_abap",
+        "sap-client": "100"
+    }
 }
 ```
 
-**STEP**: Existing Setup — example ui5.yaml using UI5 CDN and destination
-
-**DESCRIPTION**: Example project ui5.yaml that currently points UI5 runtime to the CDN and uses fiori-tools-proxy with a backend destination. We'll update this to source /resources from the On‑Premise UI5 endpoint.
-
-**LANGUAGE**: YAML
-
-**CODE**:
+STEP: Existing ui5.yaml that points to CDN and destination
+DESCRIPTION: Example ui5.yaml before exposing SAPUI5 library from On-Premise. This file configures fiori-tools-proxy with ui5.url pointing to the CDN and backend destination MyDestination.
+LANGUAGE: YAML
+CODE:
 ```yaml
 # yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
@@ -4151,12 +3685,12 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false
+        ignoreCertError: false # If set to true, certificate errors will be ignored and self-signed certificates will be accepted.
         ui5:
           path:
             - /resources
             - /test-resources
-          url: https://ui5.sap.com
+          url: https://ui5.sap.com           
         backend:
           - path: /sap
             url: http://my-internal-system.abc.internal:443
@@ -4174,98 +3708,80 @@ server:
           theme: sap_fiori_3
 ```
 
-**STEP**: Duplicate SAP BTP Destination for UI5 resources
-
-**DESCRIPTION**: Create a second destination in the SAP BTP subaccount that points specifically to the UI5 resources path on the On‑Premise system. Change the destination Name (e.g., append _ui5) and set URL to include the UI5 expose path: /sap/public/bc/ui5_ui5/1/. WebIDEUsage is not required for this destination because it only serves static UI5 files.
-
-**LANGUAGE**: JSON
-
-**CODE**:
-```json
+STEP: Duplicate the SAP BTP destination for UI5 library exposure
+DESCRIPTION: Duplicate your existing BTP destination and modify the URL to point to the SAPUI5 library path on the On-Premise system. Use a new destination name (example: MyDestination_ui5). This destination only needs to serve static UI5 assets; WebIDEUsage is not required.
+LANGUAGE: JSON
+CODE:
+```JSON
 {
-  "destination": {
-    "Authentication": "NoAuthentication",
-    "CloudConnectorLocationId": "MyCloudConnectorLocationId",
-    "HTML5.DynamicDestination": "true",
-    "HTML5.Timeout": "60000",
-    "Name": "MyDestination_ui5",
-    "ProxyType": "OnPremise",
-    "Type": "HTTP",
-    "URL": "http://my-internal-system.abc.internal:443/sap/public/bc/ui5_ui5/1/",
-    "sap-client": "100"
-  }
+    "destination": {
+        "Authentication": "NoAuthentication",
+        "CloudConnectorLocationId": "MyCloudConnectorLocationId",
+        "HTML5.DynamicDestination": "true",
+        "HTML5.Timeout": "60000",
+        "Name": "MyDestination_ui5",
+        "ProxyType": "OnPremise",
+        "Type": "HTTP",
+        "URL": "http://my-internal-system.abc.internal:443/sap/public/bc/ui5_ui5/1/",       
+        "sap-client": "100"
+    }
 }
 ```
+DESCRIPTION (continued): Note the path /sap/public/bc/ui5_ui5/1/ — this is where SAPUI5 libraries are commonly exposed. Confirm the correct path with your system administrator if different.
 
-**STEP**: Validate the duplicated destination from your dev environment
-
-**DESCRIPTION**: Use curl (or equivalent HTTP client) to confirm the duplicated destination resolves through the BTP destination service and Cloud Connector, and returns UI5 resource content (e.g., sap-ui-core.js).
-
-**LANGUAGE**: Bash
-
-**CODE**:
+STEP: Validate the duplicated destination from SAP Business Application Studio
+DESCRIPTION: Use curl (or similar HTTP tool) to fetch a UI5 file via the new destination to confirm accessibility. Execute this command in BAS or your dev environment. Inspect the generated file for SAPUI5 content.
+LANGUAGE: Bash
+CODE:
 ```bash
-# Replace mydestination_ui5.dest with the actual BTP destination host your environment exposes
-curl 'https://mydestination_ui5.dest/resources/sap-ui-core.js' -X GET -i -H 'X-Csrf-Token: fetch' > output-ui5.txt
-
-# Inspect output-ui5.txt to verify it contains the sap-ui-core.js content (HTTP 200)
-less output-ui5.txt
+ curl -L 'https://mydestination_ui5.dest/resources/sap-ui-core.js' -X GET -i -H 'X-Csrf-Token: fetch' > output-tsk1.txt
 ```
 
-**STEP**: Update ui5.yaml to consume UI5 resources from On‑Premise destination and keep test resources on CDN
-
-**DESCRIPTION**: Modify the fiori-tools-proxy ui5 configuration inside ui5.yaml:
-- Set ui5.version to '' (empty) to avoid rewriting UI5 paths with a version.
-- Route /resources to the new destination host (e.g., https://mydestination_ui5.dest).
-- Route /test-resources to the CDN version closest to your runtime (choose a valid UI5 version, e.g., 1.71.76).
-
-This configuration uses the On‑Premise UI5 runtime for application resources but retains test resources from the public CDN.
-
-**LANGUAGE**: YAML
-
-**CODE**:
+STEP: Modify ui5.yaml to consume UI5 library from On-Premise destination
+DESCRIPTION: Update fiori-tools-proxy.ui5 configuration so:
+- /resources points to the new On-Premise UI5 destination (https://mydestination_ui5.dest).
+- /test-resources remains pointed to the SAPUI5 CDN version closest to your project (https://ui5.sap.com/<valid-UI5-version>).
+- Set ui5.version to an empty string to prevent rewriting UI5 paths with a version number.
+LANGUAGE: YAML
+CODE:
 ```yaml
-# ui5 section inside server.customMiddleware.fiori-tools-proxy.configuration
-ui5:
-  version: ''            # keep empty to avoid automatic version rewriting
-  paths:
-    - path: /resources
-      url: https://mydestination_ui5.dest
-    - path: /test-resources
-      url: https://ui5.sap.com/1.71.76
-```
-
-**STEP**: Example full ui5.yaml with the UI5 destination mapping
-
-**DESCRIPTION**: Complete example ui5.yaml integrating the duplicated UI5 destination mapping and existing backend destination. Update backend.destination to your original destination name if needed.
-
-**LANGUAGE**: YAML
-
-**CODE**:
-```yaml
-# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
-specVersion: "3.1"
-metadata:
-  name: testproject
-type: application
-server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false
         ui5:
           version: ''
           paths:
             - path: /resources
               url: https://mydestination_ui5.dest
             - path: /test-resources
-              url: https://ui5.sap.com/1.71.76
+              url: https://ui5.sap.com/<valid-UI5-version>
+```
+
+STEP: Full example ui5.yaml after changes
+DESCRIPTION: Example of the complete ui5.yaml that exposes /resources from the On-Premise UI5 destination while keeping /test-resources on the CDN. Note: in this sample the backend destination reference name is shown as mydestination (preserve your actual destination name).
+LANGUAGE: YAML
+CODE:
+```yaml
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: testproject
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored and self-signed certificates will be accepted.
+        ui5:
+          version: ''
+          paths:
+            - path: /resources          
+              url: https://mydestination_ui5.dest                    
+            - path: /test-resources
+              url: https://ui5.sap.com/1.71.76                
         backend:
           - path: /sap
             url: http://my-internal-system.abc.internal:443
-            destination: MyDestination
+            destination: mydestination
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -4278,604 +3794,514 @@ server:
         flp:
           theme: sap_fiori_3
 ```
+DESCRIPTION (continued): Key points:
+- ui5.version: '' prevents UI5 path rewriting.
+- /resources -> https://mydestination_ui5.dest (On-Premise UI5 library).
+- /test-resources -> https://ui5.sap.com/<valid-UI5-version> (CDN test resources).
 
-**STEP**: Notes and troubleshooting
+STEP: Notes and rationale
+DESCRIPTION: Duplicate the SAP BTP destination so you can control the public path used to expose UI5 library assets. The duplicate destination should point specifically to the UI5 assets path (e.g., /sap/public/bc/ui5_ui5/1/). The duplicated destination is only needed to serve UI5 static files; it does not need WebIDEUsage or OData settings.
 
-**DESCRIPTION**: Key tips and common checks when exposing UI5 from On‑Premise.
-
-**LANGUAGE**: Text
-
-**CODE**:
-```
-- Ensure Cloud Connector mapping includes the destination host and path (/sap/public/bc/ui5_ui5/1/).
-- If curl returns 404, verify the URL path on the On‑Premise system (the UI5 expose path can differ by system).
-- If SSL certificate issues occur during validation, you may set ignoreCertError: true in fiori-tools-proxy (development only).
-- Use the SAPUI5 version overview to pick a valid /test-resources URL: https://ui5.sap.com/versionoverview.html
-- The duplicated destination name (MyDestination_ui5) is arbitrary but must match the host your dev environment exposes (e.g., mydestination_ui5.dest).
-```
-
-**STEP**: License
-
-**DESCRIPTION**: Project license details.
-
-**LANGUAGE**: Text
-
-**CODE**:
-```
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-Licensed under the Apache Software License, version 2.0. See LICENSE file: ../../LICENSES/Apache-2.0.txt
+STEP: License
+DESCRIPTION: Project license information.
+LANGUAGE: Text
+CODE:
+```Text
+Copyright (c) 2009-2026 SAP SE or an SAP affiliate company. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the LICENSE file at ../../LICENSES/Apache-2.0.txt.
 ```
 --------------------------------
 
-**TITLE**: Defining Proxy Settings for SAP Fiori Tools (ui5 + Environment Variables)
+**TITLE**: Defining Proxy Settings for SAP Fiori Tools
 
-**INTRODUCTION**: Quick, actionable guide to configure proxy settings for SAP Fiori tools: configure per-project proxy via ui5.yaml, set runtime environment variables on macOS/Linux and Windows (PowerShell and GUI), handle credentials and special characters, and enable legacy patch proxy support for older @sap/ux-ui5-tooling releases.
+**INTRODUCTION**: Practical, code-focused reference for configuring proxy settings for SAP Fiori Tools. Includes ui5.yaml proxy configuration, environment variable examples for Linux/macOS and Windows PowerShell, deployment-specific TLS/credential handling, URL-encoding guidance, and compatibility flags for older @sap/ux-ui5-tooling versions.
 
-**TAGS**: sap, fiori, ui5, proxy, environment-variables, powershell, bash, axios, deployment
+**TAGS**: sap, fiori, proxy, ui5, environment-variables, windows, powershell, macos, linux, axios, deployment
 
-**STEP**: 1 — Prerequisites and rules
+**STEP**: 1 — Prerequisites and Best Practices
 
-**DESCRIPTION**: Verify permissions and IT policy. Default proxy URL should use http:// unless your IT Admin requires https://. When adding credentials embed them as user:password in the URL and URL-encode special characters in passwords.
+**DESCRIPTION**: Confirm permissions and network requirements before setting proxy configuration. Default proxy URL should use http:// unless IT explicitly requires https://. When adding credentials to URLs, URL-encode special characters (e.g., @ -> %40). Preserve file path references and license info for compliance.
 
-**LANGUAGE**: bash
+- Ensure you can modify environment variables on your system.
+- Ask IT if proxy settings are required.
+- Default proxy URL format: http://proxyserver:port (use https:// only if instructed).
+- If adding credentials, URL-encode special characters (see STEP 4).
+- License file: ../../LICENSES/Apache-2.0.txt
+
+**LANGUAGE**: Text
 
 **CODE**:
-```bash
-# Example proxy URL formats (use http:// by default unless IT requires https://)
-# No credentials:
-PROXY_URL="http://myproxy.com:8443"
-
-# With credentials:
-PROXY_URL="http://user:password@proxyserver:3128"
-# If password contains special characters, URL-encode them (example: p@s#w0rd -> p%40s%23w0rd):
-PROXY_URL="http://myusername:p%40s%23w0rd@proxy.domain.com:3128"
+```text
+Prerequisites:
+- Ensure you have the necessary permissions to modify environment variables.
+- Confirm with your IT Admin if proxy settings are required.
+- Default proxy URL should be http://proxyserver:port unless IT specifies https://.
+- If the proxy requires credentials, include them in the URL (user:password) and URL-encode special characters.
+License path: ../../LICENSES/Apache-2.0.txt
 ```
 
-**STEP**: 2 — Configure project-level proxy in ui5.yaml (SAP Fiori Tools)
+**STEP**: 2 — Configure proxy in ui5.yaml (ui5 tooling)
 
-**DESCRIPTION**: Add a fiori-tools proxy middleware section to ui5.yaml to route /sap (or other backend paths) through a proxy. Use the proxy key to specify the proxy URL. If backend requires TLS, use backend.url with https://.
+**DESCRIPTION**: Add a proxy middleware configuration to ui5.yaml to route /sap (or other backend paths) through the proxy. Place this block in your project ui5.yaml file (project root).
+
+- File: ui5.yaml
 
 **LANGUAGE**: YAML
 
 **CODE**:
 ```yaml
-# ui5.yaml (project root)
-specVersion: "2.2"
-metadata:
-  name: my-fiori-app
-server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        # Proxy server used by the middleware (use http:// by default)
-        proxy: http://myproxy.com:8443
-        # Backend mapping: local path '/sap' -> remote backend URL
-        backend:
-          - path: /sap
-            url: https://my.backend.com:1234
-# If credentials are required, use: proxy: http://user:password@proxyserver:port
+- name: fiori-tools-proxy
+  afterMiddleware: compression
+  configuration:
+    proxy: http://myproxy.com:8443
+    backend:
+    - path: /sap
+      url: https://my.backend.com:1234
 ```
 
-**STEP**: 3 — Set environment variables for macOS / Linux (temporary session)
+**STEP**: 3 — Set proxy environment variables (Linux/macOS / general examples)
 
-**DESCRIPTION**: Export proxy vars for the current shell session. Most tools respect HTTP_PROXY/HTTPS_PROXY/NO_PROXY (case-insensitive). Use HTTPS_PROXY for TLS connections and to include credentials.
+**DESCRIPTION**: Export standard proxy environment variables recognized by most CLI tools and libraries. Use lowercase variants (http_proxy, https_proxy, no_proxy) where required by specific tools. NO_PROXY is a comma-separated list of hosts that should bypass the proxy.
 
-**LANGUAGE**: bash
+**LANGUAGE**: Bash
+
+**CODE**:
+```bash
+export HTTP_PROXY=http://user:password@proxyserver:port
+export HTTPS_PROXY=http://user:password@proxyserver:port
+export NO_PROXY=localhost,127.0.0.1,internal.domain,.local
+```
+
+**STEP**: 4 — Deployment / TLS / Credentials / URL-encoding / ux-ui5-tooling compatibility
+
+**DESCRIPTION**: For TLS-enabled connections, set HTTPS_PROXY. Include credentials in the URL if required. If credentials contain special characters, URL-encode them (e.g., p@s#w0rd -> p%40s%23w0rd). For older @sap/ux-ui5-tooling versions (e.g., v1.17.6) enable the patch proxy feature via TOOLSUITE_FEATURES. See Axios extension for deployment proxy support.
+
+References:
+- @sap/ux-ui5-tooling proxy docs: https://www.npmjs.com/package/@sap/ux-ui5-tooling#providing-proxy-configuration
+- Axios extension proxy support: https://github.com/SAP/open-ux-tools/tree/main/packages/axios-extension#proxy-support
+- URL encode/decode: https://www.url-encode-decode.com/
+
+**LANGUAGE**: Bash
+
+**CODE**:
+```bash
+# Enable TLS proxy
+export HTTPS_PROXY=<YOUR-PROXY:PORT>
+
+# Example with credentials
+export HTTPS_PROXY=http://user:password@proxy.domain.com:3128
+
+# Example with URL-encoded special characters (p@s#w0rd -> p%40s%23w0rd)
+export HTTPS_PROXY=http://myusername:p%40s%23w0rd@proxy.domain.com:3128
+
+# For older @sap/ux-ui5-tooling versions (e.g., v1.17.6) enable patch proxy:
+export TOOLSUITE_FEATURES=sap.ux.enablePatchProxy
+```
+
+**STEP**: 5 — Windows PowerShell: set proxy env vars (session, user, machine) and GUI instructions
+
+**DESCRIPTION**: Use PowerShell to set proxy environment variables for the current session or persist them for the user or machine. For persistent machine-level variables you need Administrator privileges. Alternative: set variables through Windows GUI via System Properties → Environment Variables.
+
+GUI steps (summary):
+1. Right-click "This PC" or "Computer" → Properties → Advanced system settings.
+2. Click "Environment Variables".
+3. Add/Edit HTTP_PROXY, HTTPS_PROXY, NO_PROXY under User or System variables.
+4. Click OK and restart affected apps/sessions.
+
+**LANGUAGE**: PowerShell
+
+**CODE**:
+```powershell
+# Set for current PowerShell session
+$env:HTTP_PROXY = "http://user:password@proxyserver:port"
+$env:HTTPS_PROXY = "http://user:password@proxyserver:port"
+$env:NO_PROXY = "localhost,127.0.0.1,internal.domain,.local"
+
+# Set permanently for current user
+[Environment]::SetEnvironmentVariable("HTTP_PROXY", "http://user:password@proxyserver:port", "User")
+[Environment]::SetEnvironmentVariable("HTTPS_PROXY", "http://user:password@proxyserver:port", "User")
+[Environment]::SetEnvironmentVariable("NO_PROXY", "localhost,127.0.0.1,internal.domain,.local", "User")
+
+# Set system-wide (Machine) - requires Administrator
+[Environment]::SetEnvironmentVariable("HTTP_PROXY", "http://user:password@proxyserver:port", "Machine")
+[Environment]::SetEnvironmentVariable("HTTPS_PROXY", "http://user:password@proxyserver:port", "Machine")
+[Environment]::SetEnvironmentVariable("NO_PROXY", "localhost,127.0.0.1,internal.domain,.local", "Machine")
+```
+
+**STEP**: 6 — macOS / Linux: persistent shell profile setup
+
+**DESCRIPTION**: Export variables for the current session and append exports to your shell profile (~/.bashrc shown) for persistence. Replace ~/.bashrc with ~/.zshrc or other profile file if using a different shell. Reload the profile with source.
+
+**LANGUAGE**: Bash
 
 **CODE**:
 ```bash
 # Set for current session only
-export HTTP_PROXY="http://user:password@proxyserver:port"
-export HTTPS_PROXY="http://user:password@proxyserver:port"
-export NO_PROXY="localhost,127.0.0.1,internal.domain,.local"
+export HTTP_PROXY=http://user:password@proxyserver:port
+export HTTPS_PROXY=http://user:password@proxyserver:port
+export NO_PROXY=localhost,127.0.0.1,internal.domain,.local
 
-# Tools generally accept lowercase variants too:
-# export http_proxy="..." https_proxy="..." no_proxy="..."
-```
-
-**STEP**: 4 — Set environment variables for macOS / Linux (persist across sessions)
-
-**DESCRIPTION**: Append exports to your shell profile (example uses ~/.bashrc). Reload the profile after editing.
-
-**LANGUAGE**: bash
-
-**CODE**:
-```bash
-# Append to ~/.bashrc (or ~/.zshrc, ~/.profile depending on shell)
-echo 'export HTTP_PROXY="http://user:password@proxyserver:port"' >> ~/.bashrc
-echo 'export HTTPS_PROXY="http://user:password@proxyserver:port"' >> ~/.bashrc
-echo 'export NO_PROXY="localhost,127.0.0.1,internal.domain,.local"' >> ~/.bashrc
+# Persist across sessions (append to ~/.bashrc)
+echo 'export HTTP_PROXY=http://user:password@proxyserver:port' >> ~/.bashrc
+echo 'export HTTPS_PROXY=http://user:password@proxyserver:port' >> ~/.bashrc
+echo 'export NO_PROXY=localhost,127.0.0.1,internal.domain,.local' >> ~/.bashrc
 
 # Reload profile
 source ~/.bashrc
 ```
 
-**STEP**: 5 — Set HTTPS_PROXY for deployment and Axios-based tools (TLS + credentials)
+**STEP**: 7 — Variations and compatibility notes
 
-**DESCRIPTION**: For deployment tools (including SAP Axios Extension), set HTTPS_PROXY to enable TLS proxying. Include credentials in the URL if required. URL-encode special characters in username/password.
+**DESCRIPTION**: Most tools recognize both uppercase and lowercase environment variable names (HTTP_PROXY/http_proxy). Some tools expect protocol-specific formats for secure proxies (https://...). Confirm with the consuming tool or IT Admin. Keep these variations in mind during scripting and CI/CD pipelines.
 
-**LANGUAGE**: bash
-
-**CODE**:
-```bash
-# Example enabling HTTPS proxy for deployment tools
-export HTTPS_PROXY="http://user:password@proxy.domain.com:3128"
-
-# Example encoding a password with special characters (p@s#w0rd -> p%40s%23w0rd)
-export HTTPS_PROXY="http://myusername:p%40s%23w0rd@proxy.domain.com:3128"
-
-# Reference: SAP Axios Extension proxy support
-# https://github.com/SAP/open-ux-tools/tree/main/packages/axios-extension#proxy-support
-```
-
-**STEP**: 6 — Enable legacy patch proxy support for older @sap/ux-ui5-tooling
-
-**DESCRIPTION**: If using an older @sap/ux-ui5-tooling release (e.g., v1.17.6), enable the patch proxy feature by setting TOOLSUITE_FEATURES to sap.ux.enablePatchProxy. Newer SAP Fiori Tools enable this by default.
-
-**LANGUAGE**: bash
-
-**CODE**:
-```bash
-# Enable legacy patch proxy behavior (only needed for older tool versions)
-export TOOLSUITE_FEATURES="sap.ux.enablePatchProxy"
-```
-
-**STEP**: 7 — Windows PowerShell: set variables for current session
-
-**DESCRIPTION**: Set HTTP_PROXY, HTTPS_PROXY, NO_PROXY in the active PowerShell session. Use quoted strings and include credentials if required.
-
-**LANGUAGE**: PowerShell
-
-**CODE**:
-```powershell
-# Set for current PowerShell session only
-$env:HTTP_PROXY  = "http://user:password@proxyserver:port"
-$env:HTTPS_PROXY = "http://user:password@proxyserver:port"
-$env:NO_PROXY    = "localhost,127.0.0.1,internal.domain,.local"
-```
-
-**STEP**: 8 — Windows PowerShell: persist variables for user or machine
-
-**DESCRIPTION**: Persist environment variables across sessions using [Environment]::SetEnvironmentVariable. Use "User" for current user or "Machine" to set system-wide (requires admin).
-
-**LANGUAGE**: PowerShell
-
-**CODE**:
-```powershell
-# Persist for current user
-[Environment]::SetEnvironmentVariable("HTTP_PROXY",  "http://user:password@proxyserver:port", "User")
-[Environment]::SetEnvironmentVariable("HTTPS_PROXY", "http://user:password@proxyserver:port", "User")
-[Environment]::SetEnvironmentVariable("NO_PROXY",    "localhost,127.0.0.1,internal.domain,.local", "User")
-
-# Persist system-wide (requires Administrator)
-[Environment]::SetEnvironmentVariable("HTTP_PROXY",  "http://user:password@proxyserver:port", "Machine")
-[Environment]::SetEnvironmentVariable("HTTPS_PROXY", "http://user:password@proxyserver:port", "Machine")
-[Environment]::SetEnvironmentVariable("NO_PROXY",    "localhost,127.0.0.1,internal.domain,.local", "Machine")
-```
-
-**STEP**: 9 — Windows GUI: set environment variables via System Properties
-
-**DESCRIPTION**: If you prefer the Windows GUI, edit environment variables from System Properties → Environment Variables. Changes require restarting shells/applications to take effect.
-
-**LANGUAGE**: PowerShell
-
-**CODE**:
-```powershell
-# GUI steps (no code): 
-# 1. Right-click "This PC" or "Computer" -> Properties
-# 2. Click "Advanced system settings"
-# 3. Click "Environment Variables..."
-# 4. Add/Edit HTTP_PROXY, HTTPS_PROXY, NO_PROXY under User or System variables
-# 5. Click OK and restart shells/apps
-```
-
-**STEP**: 10 — NO_PROXY and variations (compatibility notes)
-
-**DESCRIPTION**: NO_PROXY should be a comma-separated list of hosts/domains to bypass the proxy. Most tools accept uppercase or lowercase variable names. Confirm tool-specific behavior in documentation.
-
-**LANGUAGE**: bash
-
-**CODE**:
-```bash
-# Typical NO_PROXY entries
-NO_PROXY="localhost,127.0.0.1,internal.domain,.local"
-
-# Tools may accept lowercase variants:
-# http_proxy, https_proxy, no_proxy
-```
-
-**STEP**: 11 — References and license
-
-**DESCRIPTION**: Useful links and license reference included for further reading.
-
-**LANGUAGE**: text
+**LANGUAGE**: Text
 
 **CODE**:
 ```text
-References:
-- @sap/ux-ui5-tooling proxy config: https://www.npmjs.com/package/@sap/ux-ui5-tooling#providing-proxy-configuration
-- SAP Axios Extension (proxy support): https://github.com/SAP/open-ux-tools/tree/main/packages/axios-extension#proxy-support
-- URL Encode/Decode: https://www.url-encode-decode.com/
-
-License:
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-Licensed under the Apache Software License, version 2.0
-See LICENSE: ../../LICENSES/Apache-2.0.txt
+Variations to consider:
+- Lowercase environment variables: http_proxy, https_proxy, no_proxy
+- Protocol-specific HTTPS proxy URL: https://proxyserver:port (use only if required)
+- Confirm tool-specific expectations (some tools prefer lowercase)
+- When scripting, export both uppercase and lowercase variants to maximize compatibility.
 ```
 --------------------------------
 
-**TITLE**: Configure SAP BTP SAMLAssertion Destination for SAP S/4HANA Cloud (Public) and Debug Connectivity
+**TITLE**: SAMLAssertion Destination for SAP S/4HANA Cloud Public Tenant (V2/V4 OData)
 
-**INTRODUCTION**: This guide shows how to create a SAMLAssertion destination in SAP BTP that points to an SAP S/4HANA Cloud Public tenant, validate OData V2/V4 catalog access from SAP Business Application Studio (BAS), configure nameIdFormat, assign required roles, and troubleshoot common connectivity and deployment errors.
+**INTRODUCTION**: Configure a SAP BTP SAMLAssertion destination that points to an SAP S/4HANA Cloud (Public) tenant to consume V2 and V4 OData catalogs from SAP Business Application Studio (BAS). Includes required preparatory steps, destination JSON template, validation commands, nameIdFormat recommendations, authorization requirements, tenant-type notes, and connectivity/debugging commands and error samples.
 
-**TAGS**: sap, s4hana-cloud, saml, destination, sap-btp, business-application-studio, odata, ui5, debugging
+**TAGS**: fiori-samples, sap-btp, s4hc, saml, destination, odata, sap-business-application-studio, debug
 
-**STEP**: Prerequisites
-**DESCRIPTION**: Verify required preconditions before creating and importing the destination.
-**LANGUAGE**: Text
-**CODE**:
-```text
+STEP: 1 — Prerequisites
+DESCRIPTION: Verify required setup before creating the SAMLAssertion destination and consuming OData catalogs.
+LANGUAGE: TEXT
+CODE:
+```
 Prerequisites:
-1. Complete Steps 1-3 from:
+1. Complete Steps 1, 2, and 3 from:
    https://developers.sap.com/tutorials/abap-custom-ui-bas-connect-s4hc.html
-2. Administrative access to your SAP S/4HANA Cloud system.
-3. Subscribed to SAP Business Application Studio:
-   https://help.sap.com/docs/SAP%20Business%20Application%20Studio/9d1db9835307451daa8c930fbd9ab264/6331319fd9ea4f0ea5331e21df329539.html
-4. Review SAP S/4HANA Cloud, Public Edition FAQ:
-   https://me.sap.com/notes/3445942
-5. Review SAP Business Application Studio integration notes:
-   https://me.sap.com/notes/3297481
+2. Have administrative access to your SAP S/4HANA Cloud system.
+3. Be subscribed to SAP Business Application Studio (BAS).
+   https://help.sap.com/docs/SAP%20Business%20Application%20Studio/6331319fd9ea4f0ea5331e21df329539.html
+4. Review:
+   - SAP S/4HANA Cloud, Public Edition FAQ: https://me.sap.com/notes/3445942
+   - BAS Integration with S/4HANA Cloud: https://me.sap.com/notes/3297481
 ```
 
-**STEP**: Create SAP BTP SAMLAssertion Destination (file template)
-**DESCRIPTION**: Create or open the s4hana-cloud_saml destination file and replace hostname placeholders (my1111111) with your tenant-specific hostname. Import this destination in SAP BTP subaccount -> Destinations -> Import Destination.
-**LANGUAGE**: JSON
-**CODE**:
+STEP: 2 — Edit s4hana-cloud_saml and replace placeholder host
+DESCRIPTION: Replace all instances of the placeholder hostname `my1111111` in the s4hana-cloud_saml file with your S/4HANA Cloud tenant hostname. Use a command-line replace for automation or edit in a text editor.
+LANGUAGE: Bash
+CODE:
+```bash
+# Replace placeholder hostname in the s4hana-cloud_saml file (Linux / macOS)
+sed -i 's/my1111111/your-s4hc-hostname/g' s4hana-cloud_saml
+
+# macOS (BSD sed) alternative:
+sed -i '' 's/my1111111/your-s4hc-hostname/g' s4hana-cloud_saml
+```
+
+STEP: 3 — Destination JSON template (SAMLAssertion)
+DESCRIPTION: Use the JSON template to import a destination into your SAP BTP subaccount. Replace placeholders: <DEST_NAME>, <BASE_URL>, <TENANT_HOST>, and set nameIdFormat appropriately. Authentication must be SAMLAssertion for deployment/consumption from BAS.
+LANGUAGE: JSON
+CODE:
 ```json
 {
-  "Name": "s4hc-saml-destination",
+  "Name": "<DEST_NAME>",
   "Type": "HTTP",
-  "URL": "https://my1111111.s4hana.ondemand.com",
+  "URL": "https://<TENANT_HOST>",
   "ProxyType": "Internet",
   "Authentication": "SAMLAssertion",
-  "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
-  "AdditionalProperties": {
-    "HTML5.DynamicDestination": "true",
-    "WebIDEEnabled": "true"
-  }
+  "TrustAll": "true",
+  "NameIdFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+  "Description": "SAMLAssertion destination to SAP S/4HANA Cloud Public tenant"
 }
 ```
-Note: Replace "my1111111.s4hana.ondemand.com" with your specific hostname. Import via SAP BTP cockpit -> Destinations -> Import Destination.
 
-**STEP**: nameIdFormat mapping (configure in destination)
-**DESCRIPTION**: Set nameIdFormat to control how user identity is mapped in S4HC. Default recommended: emailAddress.
-**LANGUAGE**: JSON
-**CODE**:
-```json
-{
-  "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-}
+STEP: 4 — Import destination into SAP BTP
+DESCRIPTION: Import the prepared destination JSON into your SAP BTP subaccount using the Destinations UI or REST API. Validate in BAS.
+LANGUAGE: TEXT
+CODE:
 ```
-Behavior:
-- urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress -> Maps SAML subject to email address in S4HC.
-- urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified -> Maps SAML subject to username.
-Ensure the IdP-provided email/username matches the user record and roles in S4HC.
-
-**STEP**: Import destination and validate from BAS
-**DESCRIPTION**: Import destination into SAP BTP subaccount and validate connectivity from SAP Business Application Studio.
-**LANGUAGE**: Text
-**CODE**:
-```text
-1. SAP BTP cockpit -> Subaccount -> Connectivity -> Destinations -> Import Destination (choose s4hana-cloud_saml JSON)
-2. In SAP Business Application Studio: open Dev Space, open destinations service and confirm the imported destination is listed.
-3. Test connectivity by calling OData catalogs (examples below) using dynamic_dest or direct call from BAS.
+1. Log in to SAP BTP subaccount -> Connectivity -> Destinations -> Import Destination.
+2. Upload the JSON file (use the template in STEP 3).
+3. In BAS: open the Destination list and confirm the destination is visible.
+4. Use the new destination in your BAS project to validate connectivity.
 ```
 
-**STEP**: Dynamic destination URL template (bypass BAS when needed)
-**DESCRIPTION**: Use dynamic_dest endpoints to call OData services via Launchpad (requires HTML5.DynamicDestination = true and WebIDEEnabled = true in destination Additional Properties).
-**LANGUAGE**: Text
-**CODE**:
-```text
-Template:
-https://<your-subaccount-subdomain>.launchpad.cfapps.<your-region-api-endpoint>.hana.ondemand.com/dynamic_dest/<your-destination-name>/<path-to-your-OData-service>
-
-Example base:
-https://mytrial-account.launchpad.cfapps.us10.hana.ondemand.com/dynamic_dest/mys4hc-destination/
-
-V2 Catalog example:
-https://mytrial-account.launchpad.cfapps.us10.hana.ondemand.com/dynamic_dest/mys4hc-destination/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection
-
-V4 Catalog example:
-https://mytrial-account.launchpad.cfapps.us10.hana.ondemand.com/dynamic_dest/mys4hc-destination/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)
-```
-To get your subdomain and API endpoint: SAP BTP subaccount -> Overview.
-
-**STEP**: Test OData Catalogs (curl examples)
-**DESCRIPTION**: Verify V2/V4 catalogs using curl (replace host and destination as appropriate).
-**LANGUAGE**: Bash
-**CODE**:
+STEP: 5 — Validate OData Catalogs (V2 and V4)
+DESCRIPTION: Use curl or a browser to validate that V2 and V4 OData catalogs are reachable through the destination. Replace <BASE_URL> or use your destination URL.
+LANGUAGE: Bash
+CODE:
 ```bash
-# V2 Catalog (replace HOST/DYNAMIC URL as needed)
-curl -i "https://mytrial-account.launchpad.cfapps.us10.hana.ondemand.com/dynamic_dest/mys4hc-destination/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection"
+# V2 Catalog (returns service collection)
+curl -I "https://<TENANT_HOST>/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection"
 
-# V4 Catalog
-curl -i "https://mytrial-account.launchpad.cfapps.us10.hana.ondemand.com/dynamic_dest/mys4hc-destination/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)"
+# V4 Catalog (returns service groups with expanded services)
+curl -I "https://<TENANT_HOST>/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?\$expand=DefaultSystem(\$expand=Services)"
 ```
 
-**STEP**: Authorization requirements and required catalogs/roles
-**DESCRIPTION**: Ensure the user has correct Business Roles and Business Catalogs to access and deploy OData/UI5 apps.
-**LANGUAGE**: Text
-**CODE**:
-```text
-Minimum relevant business catalogs/roles:
-- Access OData Services:
-  - Business Catalog: SAP_CORE_BC_EXT_TST
-  - Business Role template: SAP_BR_EXTENSIBILITY_SPEC (for Key User)
-  - Business Role template: SAP_BR_DEVELOPER (for Developer)
+STEP: 6 — nameIdFormat values and recommendations
+DESCRIPTION: Configure nameIdFormat in the destination to map IdP NameID to S/4HANA Cloud user identifier. Default recommended setting is the email address format. Keep version 1.1 unless a service provider requires otherwise.
+LANGUAGE: TEXT
+CODE:
+```
+Valid nameIdFormat values:
+- urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+  -> Maps NameID to email address (recommended by default).
+- urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+  -> Maps NameID to username.
 
-- Deploy application:
-  - Business Catalog: SAP_CORE_BC_EXT_UI
-  - Developer catalog: SAP_A4C_BC_DEV_UID_PC
-  - Business Role templates: SAP_BR_DEVELOPER, SAP_BR_EXTENSIBILITY_SPEC
-
-Note: Business roles can be named differently in instances (e.g., BR_DEVELOPER or Z_BR_DEVELOPER). Assign roles via S/4HANA Fiori app 'Maintain Business Users'.
+Notes:
+1. Use version 1.1 (do not change to 2.0 unless required by the SP).
+2. Ensure IdP email case and value exactly match the S4HC configured email (case-sensitive best practice).
+3. If using IAS or OIDC as IdP, ensure the IdP assertion/email matches the S4HC user email configured with roles.
 ```
 
-**STEP**: Assign SAP_BR_DEVELOPER to a user (S/4HANA)
-**DESCRIPTION**: Steps to add SAP_BR_DEVELOPER (or SAP_BR_EXTENSIBILITY_SPEC) to a user and validate catalogs.
-**LANGUAGE**: Text
-**CODE**:
-```text
-1. Launch Fiori app: Maintain Business Users
-2. Search and select the user
-3. Select 'Assigned Business Roles' -> Add -> search 'SAP_BR_DEVELOPER' (or required role)
-4. Select the assigned role -> 'Business Catalogs' -> ensure SAP_CORE_BC_EXT_TST and SAP_A4C_BC_DEV_UID_PC are present
+STEP: 7 — Authorization requirements (roles and catalogs)
+DESCRIPTION: Required business roles and business catalogs to browse OData services and deploy SAPUI5 apps. Assign these business roles to the user in S/4HANA Cloud (Maintain Business Users app).
+LANGUAGE: TEXT
+CODE:
+```
+Business catalogs and roles mapping:
+
+- To access OData Services:
+  Business Catalog: SAP_CORE_BC_EXT_TST
+  Business Role Template: SAP_BR_EXTENSIBILITY_SPEC
+
+- To deploy applications:
+  Business Catalogs: SAP_CORE_BC_EXT_UI
+  Developer Extensibility Catalog: SAP_A4C_BC_DEV_UID_PC
+  Business Role Template: SAP_BR_DEVELOPER
+
+Notes:
+- Recommended templates: SAP_BR_DEVELOPER, SAP_BR_EXTENSIBILITY_SPEC
+- Examples of alternative custom role names: BR_DEVELOPER, Z_BR_DEVELOPER
+- Ensure required business catalogs are added to the business role assigned to the user.
 ```
 
-**STEP**: Debugging — Authorization Failures (Display Authorization Trace)
-**DESCRIPTION**: Use S/4HANA Display Authorization Trace to find authorization failures for a user.
-**LANGUAGE**: Text
-**CODE**:
-```text
-1. In S/4HANA Cloud as Admin: Search for 'Display Authorization Trace'
-2. Filter:
-   - Status: Failed
-   - Users: {username}
-3. Inspect trace entries for missing authorization objects/roles.
-Reference: https://help.sap.com/docs/SAP_S4HANA_CLOUD/55a7cb346519450cb9e6d21c1ecd6ec1/ebb91d3758c441b18bf9ebd0798d424e.html
+STEP: 8 — Tenant types summary (Developer / Key User)
+DESCRIPTION: Behavior and endpoint differences per tenant type. Use the correct destination host for each tenant type and generate the destination via SAP help links.
+LANGUAGE: TEXT
+CODE:
+```
+Tenant types:
+
+1) Developer Extensibility (SAP Client 080)
+   - Purpose: ABAP developer extensibility, full ABAP development tool access.
+   - Note: Requires destination for Developer Extensibility host.
+   - Steps: https://help.sap.com/.../0af2819bbe064a3da455753c8518dd81.html?version=2502.500
+
+2) Key User Extensibility / Customizing (SAP Client 100)
+   - Purpose: Configuration, low-code, customizing tenant.
+   - Note: Requires a different host endpoint and destination.
+   - Steps: https://help.sap.com/.../31876c06f99645f289d802f9c95fb62b.html?version=2502.500
+
+Developer Note: Each tenant type exposes a separate communication system and SSL certificate per host.
 ```
 
-**STEP**: Debugging — Connectivity Failures (Display Connectivity Trace)
-**DESCRIPTION**: Use S/4HANA Display Connectivity Trace to find failed HTTP calls from BAS/destination. Filter by catalog request paths.
-**LANGUAGE**: Text
-**CODE**:
-```text
-1. In S/4HANA Cloud as Admin: Search for 'Display Connectivity Trace'
-2. Create new Trace with:
-   - Request Method: GET
-   - Path Prefix: /sap/opu/odata/IWFND/CATALOGSERVICE
-   OR
-   - Path Prefix: /sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/
-3. Save and reproduce the request from BAS, then inspect trace rows.
-Reference: https://help.sap.com/docs/SAP_S4HANA_CLOUD/0f69f8fb28ac4bf48d2b57b9637e81fa/a4f6ccd072f147f299b1d856062c8dc8.html
+STEP: 9 — Debugging connectivity: traces and filters
+DESCRIPTION: Use S/4HANA Cloud admin apps "Display Authorization Trace" and "Display Connectivity Trace" to inspect failed requests. Create traces with specific request methods and path prefixes to capture catalog calls.
+LANGUAGE: TEXT
+CODE:
+```
+Authorization Trace:
+- App: Display Authorization Trace
+- Typical filters: Status = Failed; filter Users by required user.
+
+Connectivity Trace:
+- App: Display Connectivity Trace
+- To capture V2 catalog calls:
+  Request Method: GET
+  Path Prefix: /sap/opu/odata/IWFND/CATALOGSERVICE
+- To capture V4 catalog calls:
+  Request Method: GET
+  Path Prefix: /sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/
 ```
 
-**STEP**: Troubleshooting — Common Deployment Errors and fixes
-**DESCRIPTION**: Error patterns, sample logs and remediation steps.
-**LANGUAGE**: Bash / Text
-**CODE**:
+STEP: 10 — Common deployment/connectivity error examples (preserve logs)
+DESCRIPTION: Preserve and use the exact error outputs when troubleshooting. These examples map to recommended fixes in the descriptions above.
+LANGUAGE: Bash
+CODE:
 ```bash
-# Issue: "The use of Gateway OData V2 Service ... is not permitted."
+# Issue 1: Use of Gateway OData V2 Service not permitted
 error abap-deploy-task YY1_Some_Service The use of Gateway OData V2 Service Z_MY_SERVICE 0001 is not permitted.
-# Cause: ABAP Language Version mismatch (ABAP for Cloud Development ≠ ABAP for Key Users)
-# Fix: Ensure the app is built for the target tenant type as per Tenant Types documentation.
 
-# Issue: HTTP 403 during deploy
+# Issue 2: Deployment fails with HTTP 403
+info abap-deploy-task YY1_Some_App Creating archive with UI5 build result.
+info abap-deploy-task YY1_Some_App Archive created.
 info abap-deploy-task YY1_Some_App Starting to deploy.
+info abap-deploy-task YY1_Some_App YY1_Some_Service found on target system: false
 error abap-deploy-task YY1_Some_App Request failed with status code 403
-# Common causes:
-# 1) Destination in BTP subaccount not configured with Authentication=SAMLAssertion.
-# 2) BAS user missing deploy role (SAP_CORE_BC_EXT_UI or SAP_A4C_BC_DEV_UID_PC).
-# Fix: Update destination Authentication to SAMLAssertion; assign required business roles.
 
-# Issue: HTTP 400 — not permitted services
+# Issue 3: Deployment fails with HTTP 400
 error The app uses not permitted services for ABAP for Cloud Development
 error abap-deploy-task ZF_TEST_API Request failed with status code 400
-# Cause: Service not allowed for this tenant type. Check Tenant Types and allowed services.
+error abap-deploy-task ZF_TEST_API The use of Gateway OData V2 Service API_PROC_ORDER_CONFIRMATION_2_SRV 0001 is not permitted
+
+# Issue 4: Examples of calling OData catalogs
+#V2 Catalog
+/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection
+#V4 Catalog
+/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)
 ```
 
-**STEP**: Troubleshooting — Missing services in catalogs
-**DESCRIPTION**: If OData services are not returned in catalogs, verify user authorizations and that the service is exposed in the system.
-**LANGUAGE**: Text
-**CODE**:
-```text
-1. Call V2/V4 catalog endpoints (see test examples).
-2. If a service is missing:
-   - Confirm user has required roles (SAP_BR_DEVELOPER / SAP_CORE_BC_EXT_TST).
-   - Confirm the OData service is activated and exposed via Communication Arrangement in S4HC.
-3. See: ./README.md#authorization-requirements and community blog:
-   https://community.sap.com/t5/technology-blog-posts-by-sap/exposing-an-odata-service-from-sap-s-4hana-cloud-public-edition-to-the-sap/ba-p/13628248
+STEP: 11 — Support communication users and partial-URL destination recommendation
+DESCRIPTION: When granting SAP Support access for troubleshooting or exposing specific OData endpoints, clone an existing destination and convert to a Partial URL destination; set Service URL to the OData base path to permit targeted requests.
+LANGUAGE: TEXT
+CODE:
+```
+Recommendation:
+1. Clone existing SAMLAssertion destination in SAP BTP.
+2. Change Type to Partial URL destination.
+3. Set Service URL to the OData base path you want to expose (e.g., https://<TENANT_HOST>/sap/opu/odata/IWFND/CATALOGSERVICE).
+4. Assign appropriate authorizations to the support communication user if they need access to OData catalogs.
 ```
 
-**STEP**: Support Communication User — partial URL destination method
-**DESCRIPTION**: Allow SAP Support to access catalogs via a cloned partial URL destination with limited base URL.
-**LANGUAGE**: Text
-**CODE**:
-```text
-1. Clone your existing SAMLAssertion destination in SAP BTP.
-2. Change Type to 'Partial URL' (only expose base Service URL).
-3. Set Service URL to the OData catalog base (e.g., https://<s4hc-host>/sap/opu/odata/IWFND/CATALOGSERVICE).
-4. Provide this cloned destination name to support so they can append service paths without exposing other endpoints.
-Reference: https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/45995:48363:53594:52803
+STEP: 12 — Full connectivity failure checks
+DESCRIPTION: If BAS requests are not reaching S/4HANA Cloud, validate traces and verify SAMLAssertion settings and destination integrity.
+LANGUAGE: TEXT
+CODE:
+```
+Checks when no requests reach S4HC:
+1. Confirm authorization or connectivity trace logging on S4HC shows no incoming requests.
+2. If nameIdFormat = urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress:
+   - Ensure the IdP email matches the S4HC user email exactly.
+3. If curl/Environment Check requests fail with HTTP 500 and do not reach S4HC:
+   - Clone the existing destination in BTP and use the new destination in BAS (possible destination corruption).
+4. Ensure the communication system for BAS is active:
+   https://help.sap.com/docs/SAP_S4HANA_CLOUD/.../79ed4173a0e44a5085c2d236d14b5ab8.html
 ```
 
-**STEP**: Tenant Types — choose correct destination and allowed services
-**DESCRIPTION**: Understand tenant-specific host endpoints and allowed services; follow tenant-specific destination generation links.
-**LANGUAGE**: Text
-**CODE**:
-```text
-Developer Extensibility (client 080):
-- Purpose: full ABAP dev access to released cloud objects.
-- Destination creation guide:
-  https://help.sap.com/docs/SAP_S4HANA_CLOUD/0f69f8fb28ac4bf48d2b57b9637e81fa/0af2819bbe064a3da455753c8518dd81.html?version=2502.500
+STEP: 13 — Related links and further reading
+DESCRIPTION: Useful references to follow for creation, trust setup, and developing custom UIs.
+LANGUAGE: TEXT
+CODE:
+```
+- Create a Destination to Connect to SAP Business Application Studio:
+  https://help.sap.com/docs/SAP_S4HANA_CLOUD/.../31876c06f99645f289d802f9c95fb62b.html
 
-Key User Extensibility/Customizing (client 100):
-- Purpose: configuration/customizing; low-code key user apps.
-- Destination creation guide:
-  https://help.sap.com/docs/SAP_S4HANA_CLOUD/0f69f8fb28ac4bf48d2b57b9637e81fa/31876c06f99645f289d802f9c95fb62b.html?version=2502.500
+- Integrating SAP Business Application Studio:
+  https://help.sap.com/docs/SAP_S4HANA_CLOUD/.../22bc724fd51a4aa4a4d1c5854db7e026.html
+
+- Develop a Custom UI for an SAP S/4HANA Cloud System:
+  https://developers.sap.com/tutorials/abap-custom-ui-bas-develop-s4hc.html
+
+- Set Up Trust Between SAP Cloud Identity Services and SAP BTP (Cloud Foundry):
+  https://developers.sap.com/tutorials/abap-custom-ui-trust-cf.html
+
+- Exposing an OData Service from SAP S/4HANA Cloud Public Edition to SAP BTP:
+  https://community.sap.com/t5/technology-blog-posts-by-sap/exposing-an-odata-service-from-sap-s-4hana-cloud-public-edition-to-the-sap/ba-p/13628248
+
+- Support and Q&A references:
+  https://userapps.support.sap.com/sap/support/knowledge/en/3373955
+  https://userapps.support.sap.com/sap/support/knowledge/en/3445942
 ```
 
-**STEP**: Full troubleshooting scenario — All HTTP requests from BAS fail
-**DESCRIPTION**: Diagnostic checklist when BAS requests consistently fail.
-**LANGUAGE**: Text
-**CODE**:
-```text
-Case A — Connectivity established but calls failing:
-1. Confirm traces in S4HC show incoming requests.
-2. Ensure the Communication System for BAS is active:
-   https://help.sap.com/docs/SAP_S4HANA_CLOUD/0f69f8fb28ac4bf48d2b57b9637e81fa/79ed4173a0e44a5085c2d236d14b5ab8.html
-3. Confirm BAS user has SAP_BR_DEVELOPER (consume OData) or deploy roles.
-
-Case B — No connectivity (no requests in S4HC traces):
-1. Confirm Environment Check or curl indicates HTTP 500 and no hits on S4HC.
-2. Clone the destination in BTP and reconfigure; use the new destination in BAS (the existing destination may be corrupted).
-```
-
-**STEP**: Related links & resources
-**DESCRIPTION**: Quick access to related SAP documentation and tutorials (preserved links).
-**LANGUAGE**: Text
-**CODE**:
-```text
-Integrating SAP Business Application Studio:
-https://help.sap.com/docs/SAP_S4HANA_CLOUD/0f69f8fb28ac4bf48d2b57b9637e81fa/22bc724fd51a4aa4a4d1c5854db7e026.html
-
-Develop a Custom UI for S/4HANA Cloud:
-https://developers.sap.com/tutorials/abap-custom-ui-bas-develop-s4hc.html
-
-Create a SAP Fiori App and Deploy it to SAP S/4HANA Cloud:
-https://developers.sap.com/tutorials/abap-s4hanacloud-procurement-purchasereq-shop-ui.html
-
-Set Up Trust Between SAP Cloud Identity Services and SAP BTP (CF):
-https://developers.sap.com/tutorials/abap-custom-ui-trust-cf.html
-
-User Management (IAS or IDP) overview:
-https://community.sap.com/t5/enterprise-resource-planning-blogs-by-sap/user-management-in-a-nutshell-for-the-sap-s-4hana-cloud-public-edition/ba-p/13556782
-```
-
-**STEP**: License
-**DESCRIPTION**: Licensing statement for the documentation.
-**LANGUAGE**: Text
-**CODE**:
-```text
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-Licensed under the Apache Software License, version 2.0 (see ../../LICENSES/Apache-2.0.txt).
-```
+License: Copyright (c) 2009-2026 SAP SE or an SAP affiliate company. Project licensed under Apache-2.0; see file path ../../LICENSES/Apache-2.0.txt.
 --------------------------------
 
-**TITLE**: Handling Self-Signed SSL Certificates in SAP Fiori Tools (Actionable Guide)
+**TITLE**: Handling Self-Signed SSL Certificates in SAP Fiori Tools
 
-**INTRODUCTION**: Practical, developer-focused steps to export, install, and configure trust for self-signed or private CA SSL certificates so SAP Fiori Tools, VS Code, Node.js, local UI5 preview and ABAP deployment can connect over HTTPS. Includes safe alternatives (NODE_EXTRA_CA_CERTS) and temporary bypass options (NODE_TLS_REJECT_UNAUTHORIZED) with security warnings.
+**INTRODUCTION**: Guidance and actionable steps to handle self-signed or private-CA SSL certificates when developing and deploying SAP Fiori apps with SAP Fiori Tools. Covers exporting certificates from browsers, installing them into OS trust stores, configuring Node.js to trust additional CAs, temporary bypass options (not recommended), and sample ui5.yaml / ui5-deploy.yaml configurations.
 
-**TAGS**: fiori-samples, ssl, certificates, nodejs, vscode, ui5, ui5-tooling, abap, macos, windows, linux
+**TAGS**: fiori, sap, ssl, certificates, self-signed, Node.js, NODE_EXTRA_CA_CERTS, NODE_TLS_REJECT_UNAUTHORIZED, ui5, ui5-tooling, vscode, ABAP, environment-variables, security
 
-**STEP**: 1 — When to apply / prerequisites
-**DESCRIPTION**: Apply these steps when the backend uses HTTPS with a certificate issued by a private or local CA that is not trusted by your OS or Node.js. If the backend is accessed via IP, ensure the certificate includes that IP in the SAN (Subject Alternative Name). If the certificate is invalid (expired, wrong host, broken chain) contact your administrator — these steps do not fix invalid certificates.
-**LANGUAGE**: Text
-**CODE**:
-```text
-Prerequisites:
-- Certificate issued by a private or local CA (self-signed or enterprise CA).
-- If connecting via IP, certificate must include IP in Subject Alternative Name (SAN).
-- These steps assume the cert is otherwise valid (not expired, correct host name).
-References:
-- SAP Help: https://help.sap.com/docs/SAP_FIORI_tools/...
-- Node.js extra CA docs: https://nodejs.org/api/cli.html#node_extra_ca_certsfile
+STEP: 1 — Prerequisites and SAN requirement
+DESCRIPTION: Ensure the certificate includes the DNS hostname or IP in the Subject Alternative Name (SAN) field. Connections by IP require the IP to be present in the SAN. Public CAs normally do not issue certs for IPs; self-signed or private CA is typically required for IP-based access.
+LANGUAGE: Text
+CODE:
+```
+Prerequisite:
+- Certificates are normally validated against a DNS hostname.
+- If connecting via an IP address, the certificate must explicitly list that IP in the Subject Alternative Name (SAN) field.
+- If SAN does not include the IP, clients (browsers, Node.js, Java, etc.) will reject connections with a hostname mismatch error.
 ```
 
-**STEP**: 2 — Export the server/CA certificate from browser
-**DESCRIPTION**: Use Edge/Chrome/Firefox to export the site certificate (CA or server cert depending on your CA structure). Save as .pem, .crt, .cer or .cert. Prefer exporting the CA certificate (the issuer) if available so multiple server certs are trusted.
-**LANGUAGE**: Text
-**CODE**:
-```text
-Chrome / Edge:
-- Click padlock → "Connection is Not Secure" / "Certificate (Invalid)" → Details → Copy to File → follow wizard → save as .pem or .crt
-
-Firefox:
-- Padlock → "Connection Not Secure" → More Information → View Certificate → Details → Export → save as .crt or .cer
-
-Output file examples:
-- C:\path\to\your\certificate.crt
-- /home/user/certs/my-ca.crt
+STEP: 2 — Security Risk: do not ignore certificate validation (action-oriented)
+DESCRIPTION: Do not use ignoreCertError: true or NODE_TLS_REJECT_UNAUTHORIZED=0 in production. These bypass TLS/SSL validation and introduce Man-in-the-Middle, broken chain-of-trust, malicious site access, and policy violation risks. Use only as temporary development workaround.
+LANGUAGE: Text
+CODE:
+```
+Security risk summary:
+- ignoreCertError: true and NODE_TLS_REJECT_UNAUTHORIZED=0 disable certificate validation.
+- Risks: MITM vulnerability, malicious site access, broken chain of trust, security policy violations.
+- Recommendation: Install the CA certificate in the OS/trust store or set NODE_EXTRA_CA_CERTS for Node.js instead of bypassing validation.
 ```
 
-**STEP**: 3 — Install certificate into OS trust store (so VS Code and browsers trust it)
-**DESCRIPTION**: Install the exported CA certificate into the OS trust store. Prefer CLI commands for reproducibility: Windows (certutil) or macOS (security). GUI instructions are also available but are not scriptable.
-**LANGUAGE**: PowerShell / Bash / Text
-**CODE**:
+STEP: 3 — Export the CA certificate from browser
+DESCRIPTION: Export the server/CA certificate from Edge, Chrome, or Firefox in PEM/CRT/ CER format ready for installation or to be used with NODE_EXTRA_CA_CERTS. See Node.js docs for NODE_EXTRA_CA_CERTS: https://nodejs.org/api/cli.html#node_extra_ca_certsfile
+LANGUAGE: Text
+CODE:
+```
+Steps to export certificate:
+1. Navigate to the website using Edge, Chrome, or Firefox.
+2. Click the padlock icon in the address bar.
+3. View certificate details:
+   - Chrome: Click "Connection is Not Secure" → "Certificate (Invalid)"
+   - Edge: Click "Certificate (Invalid)"
+   - Firefox: Click "Connection Not Secure" → "More Information" → "View Certificate"
+4. Export/Save the certificate:
+   - Chrome/Edge: Details tab → "Copy to File" → follow Certificate Export Wizard → save as .pem
+   - Firefox: Details → "Export" → save as .crt or .cer
+```
+
+STEP: 4 — Install CA certificate to support VSCode (Windows)
+DESCRIPTION: Install the CA certificate into Windows trust store to allow VSCode and system tools to trust certificates signed by your private CA.
+LANGUAGE: Text
+CODE:
+```
+Microsoft Windows:
+1. Right-click the CA certificate file and select "Install Certificate".
+2. Follow prompts to add the certificate to the trust store for current user or for all users.
+```
+
+STEP: 5 — Install CA certificate to support VSCode (macOS)
+DESCRIPTION: Import the CA certificate into macOS Keychain (System keychain) so VSCode and system tools trust the certificate.
+LANGUAGE: Text
+CODE:
+```
+MacOS:
+1. Right-click the CA certificate file.
+2. Select "Open With" → Keychain Access.
+3. Select "System" as the keychain to import into.
+```
+
+STEP: 6 — Configure Node.js to trust additional CA: NODE_EXTRA_CA_CERTS (Windows PowerShell)
+DESCRIPTION: Set NODE_EXTRA_CA_CERTS environment variable for the current session to point Node.js to the exported CA certificate file. File extensions allowed: .pem, .crt, .cer, .cert.
+LANGUAGE: PowerShell
+CODE:
 ```powershell
-# Windows (CLI): Add certificate to Trusted Root Certification Authorities (requires admin)
-certutil -addstore -f "Root" "C:\path\to\your\certificate.crt"
-
-# Alternatively (GUI): Right-click .crt -> Install Certificate -> Local Machine or Current User -> Trusted Root Certification Authorities
-```
-
-```bash
-# macOS (CLI): Add to System keychain and mark trusted (requires sudo)
-sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain /path/to/your/certificate.crt
-
-# Alternatively (GUI): Right-click certificate -> Open With -> Keychain Access -> select System keychain -> import
-```
-
-**STEP**: 4 — Configure Node.js to trust the custom CA (NODE_EXTRA_CA_CERTS)
-**DESCRIPTION**: Use NODE_EXTRA_CA_CERTS to add the CA to Node.js trust store without disabling validation. Works for Node-based tools (SAP Fiori generator, ui5 tooling, npm, yarn). File path can be .pem/.crt/.cer/.cert.
-**LANGUAGE**: PowerShell / Bash
-**CODE**:
-```powershell
-# Windows PowerShell (current session only)
+# Set for current session only
 $env:NODE_EXTRA_CA_CERTS = "C:\path\to\your\certificate.crt"
-# Verify
+
+# Verify it's set correctly
 $env:NODE_EXTRA_CA_CERTS
-
-# Run Node with the variable for one command
-$env:NODE_EXTRA_CA_CERTS = "C:\path\to\your\certificate.crt"; node your-script.js
 ```
 
+STEP: 7 — Configure Node.js to trust additional CA: NODE_EXTRA_CA_CERTS (macOS/Linux)
+DESCRIPTION: Use export to set NODE_EXTRA_CA_CERTS for the current shell session. Persist by adding to shell profile if needed.
+LANGUAGE: Bash
+CODE:
 ```bash
-# macOS / Linux (current session only)
-export NODE_EXTRA_CA_CERTS=/path/to/your/certificate.crt
-# Verify
-echo $NODE_EXTRA_CA_CERTS
-
-# Run Node with the variable for one command
-NODE_EXTRA_CA_CERTS=/path/to/your/certificate.crt node your-script.js
+# Set for current session only
+export NODE_EXTRA_CA_CERTS=path/to/your/certificate.crt
 ```
 
-**STEP**: 5 — Temporary global bypass (NOT RECOMMENDED for production)
-**DESCRIPTION**: For short-term development troubleshooting only: disable certificate verification globally in Node.js using NODE_TLS_REJECT_UNAUTHORIZED=0. This is insecure (MITM risk). Prefer NODE_EXTRA_CA_CERTS instead.
-**LANGUAGE**: Bash / PowerShell
-**CODE**:
+STEP: 8 — Globally bypass SSL validation (NOT RECOMMENDED) — Node.js
+DESCRIPTION: Temporary development-only method: disable Node.js certificate validation using NODE_TLS_REJECT_UNAUTHORIZED=0. This is equivalent to ignoreCertError: true and should only be used with full awareness of security risk.
+LANGUAGE: Bash
+CODE:
 ```bash
-# macOS / Linux (temporary, current session)
+# WARNING: Only for development environments
 export NODE_TLS_REJECT_UNAUTHORIZED=0
-# Run a command with bypass just for that execution
-NODE_TLS_REJECT_UNAUTHORIZED=0 node your-script.js
 ```
 
-```powershell
-# Windows PowerShell (current session)
-$env:NODE_TLS_REJECT_UNAUTHORIZED = '0'
-# Run a Node.js script with this setting
-$env:NODE_TLS_REJECT_UNAUTHORIZED = '0'; node your-script.js
-```
-
-**STEP**: 6 — Disable SSL validation for local UI5 preview (ui5.yaml)
-**DESCRIPTION**: To accept self-signed certs in the local UI5 preview middleware, set ignoreCertError in ui5.yaml -> server -> customMiddleware -> fiori-tools-proxy configuration. Place this file at your project root (ui5.yaml).
-**LANGUAGE**: YAML
-**CODE**:
+STEP: 9 — Disable SSL validation in local preview (ui5.yaml) — sample configuration
+DESCRIPTION: Example ui5.yaml snippet showing fiori-tools-proxy ignoreCertError option. Default is typically false. Set to true only if you must bypass cert validation for local preview (development only).
+LANGUAGE: YAML
+CODE:
 ```yaml
-# ui5.yaml (project root) - local preview proxy config
 # yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
 specVersion: "3.1"
 metadata:
   name: myproject
@@ -4885,7 +4311,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # set true to ignore cert errors (self-signed). Default = false
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -4893,16 +4319,16 @@ server:
           url: https://ui5.sap.com
         backend:
           - path: /here
-            url: https://my-backend-host:44300
+            url: http://localhost
 ```
 
-**STEP**: 7 — Disable SSL validation for ABAP deployment (ui5-deploy.yaml)
-**DESCRIPTION**: For deploy-to-abap tasks you can set ignoreCertError in ui5-deploy.yaml under the deploy task configuration. Use only if you understand the security risks.
-**LANGUAGE**: YAML
-**CODE**:
+STEP: 10 — Disable SSL validation when deploying to ABAP (ui5-deploy.yaml) — sample configuration
+DESCRIPTION: Example ui5-deploy.yaml snippet showing deploy-to-abap custom task configuration with ignoreCertError. Use only for development scenarios; prefer installing CA certificate or configuring NODE_EXTRA_CA_CERTS for production pipelines.
+LANGUAGE: YAML
+CODE:
 ```yaml
-# ui5-deploy.yaml (project root) - deploy-to-abap task
 # yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
 specVersion: "3.1"
 metadata:
   name: myproject
@@ -4912,7 +4338,7 @@ builder:
     - name: deploy-to-abap
       afterTask: generateCachebusterInfo
       configuration:
-        ignoreCertError: true # set true to accept self-signed certs (insecure)
+        ignoreCertError: true # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         target:
           url: https://myhost:44380
           client: '110'
@@ -4929,510 +4355,496 @@ builder:
       - /localService/**
 ```
 
-**STEP**: 8 — Persist environment variables (Windows and macOS/Linux)
-**DESCRIPTION**: Examples to persist NODE_EXTRA_CA_CERTS or NODE_TLS_REJECT_UNAUTHORIZED. Prefer setting NODE_EXTRA_CA_CERTS persistently over disabling TLS checks.
-**LANGUAGE**: PowerShell / Bash
-**CODE**:
+STEP: 11 — Configure NODE_TLS_REJECT_UNAUTHORIZED: Windows (manual UI)
+DESCRIPTION: Manually create/set NODE_TLS_REJECT_UNAUTHORIZED environment variable in Windows Environment Variables UI. Only use for development; understand risks.
+LANGUAGE: Text
+CODE:
+```
+Windows (Manual):
+1. Right-click Start or This PC → Select Properties.
+2. Click "Advanced system settings".
+3. Click "Environment Variables".
+4. Under "User variables for [username]", click New.
+5. Variable name: NODE_TLS_REJECT_UNAUTHORIZED
+6. Variable value: 0
+7. Click OK.
+```
+
+STEP: 12 — Configure NODE_TLS_REJECT_UNAUTHORIZED: Windows PowerShell (system or user persistence)
+DESCRIPTION: PowerShell commands to persist NODE_TLS_REJECT_UNAUTHORIZED for Machine or User scope, or set for current session only.
+LANGUAGE: PowerShell
+CODE:
 ```powershell
-# Windows - set permanently for all users (Machine) - requires admin
-[Environment]::SetEnvironmentVariable("NODE_EXTRA_CA_CERTS", "C:\path\to\your\certificate.crt", "Machine")
-# or set NODE_TLS_REJECT_UNAUTHORIZED (NOT RECOMMENDED)
+# Set permanently system-wide, set for all users (requires admin privileges)
 [Environment]::SetEnvironmentVariable("NODE_TLS_REJECT_UNAUTHORIZED", "0", "Machine")
+
+# Set permanently for current user
+[Environment]::SetEnvironmentVariable("NODE_TLS_REJECT_UNAUTHORIZED", "0", "User")
+
+# Set for current session only
+$env:NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
+# Verify it's set correctly
+$env:NODE_TLS_REJECT_UNAUTHORIZED
+
+# Run a Node.js script with the variable set just for this execution
+$env:NODE_TLS_REJECT_UNAUTHORIZED = '0'; node your-script.js
 ```
 
-```powershell
-# Windows - set permanently for current user
-[Environment]::SetEnvironmentVariable("NODE_EXTRA_CA_CERTS", "C:\path\to\your\certificate.crt", "User")
-```
-
+STEP: 13 — Configure NODE_TLS_REJECT_UNAUTHORIZED: macOS/Linux (persistence and session)
+DESCRIPTION: Commands to persist NODE_TLS_REJECT_UNAUTHORIZED system-wide or per-user, and to set for current session only. Use only for development.
+LANGUAGE: Bash
+CODE:
 ```bash
-# Linux / macOS - for all users (requires sudo)
-sudo sh -c 'echo "NODE_EXTRA_CA_CERTS=/path/to/your/certificate.crt" >> /etc/environment'
+# For all users (requires sudo/root)
+sudo sh -c 'echo "NODE_TLS_REJECT_UNAUTHORIZED=0" >> /etc/environment'
 
-# Linux / macOS - for current user (Bash)
-echo 'export NODE_EXTRA_CA_CERTS=/path/to/your/certificate.crt' >> ~/.bashrc
-source ~/.bashrc
+# For Bash (add to ~/.bashrc or ~/.bash_profile)
+echo 'export NODE_TLS_REJECT_UNAUTHORIZED=0' >> ~/.bashrc
 
-# Zsh
-echo 'export NODE_EXTRA_CA_CERTS=/path/to/your/certificate.crt' >> ~/.zshrc
-source ~/.zshrc
+# For Zsh (add to ~/.zshrc)
+echo 'export NODE_TLS_REJECT_UNAUTHORIZED=0' >> ~/.zshrc
+
+# Apply changes immediately
+source ~/.bashrc  # or source ~/.zshrc for Zsh
+
+# Set for current session only
+export NODE_TLS_REJECT_UNAUTHORIZED=0
+
+# Verify it's set correctly
+echo $NODE_TLS_REJECT_UNAUTHORIZED
+
+# Run a Node.js script with the variable set just for this execution
+NODE_TLS_REJECT_UNAUTHORIZED=0 node your-script.js
+
+# Or for any other command that uses Node.js
+NODE_TLS_REJECT_UNAUTHORIZED=0 npm start
 ```
 
-**STEP**: 9 — Security risks and recommended practices
-**DESCRIPTION**: Summary of risks and best practices to keep environments secure.
-**LANGUAGE**: Text
-**CODE**:
-```text
-Security summary:
-- Do NOT use NODE_TLS_REJECT_UNAUTHORIZED=0 or ignoreCertError:true in production.
-- Risks: Man-in-the-Middle (MITM), broken chain of trust, malicious site access, policy violations.
-Best practices:
-1. Install the CA certificate into the OS trust store (Step 3) and/or use NODE_EXTRA_CA_CERTS (Step 4).
-2. Use ui5.yaml / ui5-deploy.yaml ignoreCertError only for short-term dev scenarios and document why.
-3. If certificate is invalid (expired, wrong host, broken chain) contact the certificate administrator — do not bypass validation.
+STEP: 14 — References and license
+DESCRIPTION: Useful references and licensing information.
+LANGUAGE: Text
+CODE:
 ```
-
-**STEP**: 10 — Quick references
-**DESCRIPTION**: Useful links and license reference for the original SAP Fiori Tools guidance.
-**LANGUAGE**: Text
-**CODE**:
-```text
 References:
-- SAP Fiori Tools SSL docs: https://help.sap.com/docs/SAP_FIORI_tools/...
+- SAP Help: https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/4b318bede7eb4021a8be385c46c74045.html
 - SAP Community: https://community.sap.com/topics/fiori-tools
-- Node.js: NODE_EXTRA_CA_CERTS docs: https://nodejs.org/api/cli.html#node_extra_ca_certsfile
+- Node.js NODE_EXTRA_CA_CERTS: https://nodejs.org/api/cli.html#node_extra_ca_certsfile
 
 License:
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company. Apache-2.0 (see project LICENSE file)
+Copyright (c) 2009-2026 SAP SE or an SAP affiliate company.
+This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the LICENSE file: ../../LICENSES/Apache-2.0.txt
 ```
 --------------------------------
 
-**TITLE**: Migrate Neo Fiori UI Application to Cloud Foundry using Managed Approuter (Option 1)
+**TITLE**: Migrate Neo UI Application to Cloud Foundry with a Managed Approuter
 
-**INTRODUCTION**: Step-by-step migration of an exported Neo mtar/zip Fiori UI application into a new Fiori UI project prepared for Cloud Foundry deployment using a managed approuter. Includes unpacking, VS Code Fiori tooling migration, generation of xs-app.json, local testing, MTA build/deploy, and required security scope additions.
+**INTRODUCTION**: Step-by-step actions to extract a Neo mtar/zip, prepare a Fiori UI project, run Fiori Tools migration and descriptor transformation, configure managed approuter deployment, add security scopes/roles, build an MTA archive, deploy to Cloud Foundry, and retrieve the deployed URL. Use these commands in BAS/VS Code terminals and follow the UI prompts where indicated.
 
-**TAGS**: fiori, sapui5, cloud-foundry, neo, approuter, migration, xs-app.json, xs-security.json, mta, BAS
+**TAGS**: Neo, Cloud Foundry, Fiori, migration, managed-approuter, xs-app.json, xs-security.json, MTA, BAS, ui5
 
-**STEP**: 1 — Unpack exported Neo mtar/zip
-**DESCRIPTION**: Unzip the exported mtar or zip file into a working folder. If the mtar contains nested zips, unzip them as required.
-**LANGUAGE**: Bash
+**STEP**: 1. Unzip exported Neo mtar or zip
+**DESCRIPTION**: Extract the contents of your exported Neo mtar/zip into a workspace folder. Some nested archives may need additional extraction.
+**LANGUAGE**: BASH
 **CODE**:
-```bash
+```BASH
 unzip /home/user/projects/neo/solution.mtar -d /home/user/projects/neo/
-# If the content includes nested archives, unzip them similarly
 ```
 
-**STEP**: 2 — Create a new Fiori UI project folder
-**DESCRIPTION**: Prepare a destination folder that will contain the migrated UI app files.
-**LANGUAGE**: Bash
+**STEP**: 2. Create new Fiori UI project folder
+**DESCRIPTION**: Create the target folder that will contain your migrated UI application.
+**LANGUAGE**: BASH
 **CODE**:
-```bash
+```BASH
 mkdir -p /home/user/projects/fioriapp
 ```
 
-**STEP**: 3 — Extract the Neo UI application into the new folder
-**DESCRIPTION**: Unzip the Neo UI application package (example name: manageproductsneo.zip) into the Fiori UI folder created above.
-**LANGUAGE**: Bash
+**STEP**: 3. Unzip the Neo UI application into the Fiori folder
+**DESCRIPTION**: Extract the exported Neo UI application contents (zip) into the new Fiori project folder.
+**LANGUAGE**: BASH
 **CODE**:
-```bash
+```BASH
 unzip /home/user/projects/neo/manageproductsneo.zip -d /home/user/projects/fioriapp/
 ```
 
-**STEP**: 4 — Start Fiori tools migration (VS Code Command Palette)
-**DESCRIPTION**: Run the automated migration to convert project structure and metadata for use with Fiori tools and BAS. Follow the interactive prompts.
-**LANGUAGE**: Text
+**STEP**: 4. Run Fiori Tools migration (VS Code / BAS)
+**DESCRIPTION**: In VS Code or BAS use Command Palette -> "Fiori: Migrate Project for use in Fiori tools". Select the project. Choose an appropriate SAPUI5 preview version (latest or matching your app). Start migration and review the migration results and application information pages for issues and runnable commands.
+**LANGUAGE**: — 
 **CODE**:
-```
-Run in VS Code: "Fiori: Migrate Project for use in Fiori tools"
-- Select the project folder (/home/user/projects/fioriapp)
-- Ensure SAPUI5 preview version is latest or matches your project
+```text
+Command Palette -> Fiori: Migrate Project for use in Fiori tools
+- select project and SAPUI5 preview version
 - Start migration
-Outcome: a migration results page will open with issues to address and an application information page with runnable commands.
+- Review Migration Results and Application Information pages
 ```
 
-**STEP**: 5 — Generate xs-app.json from neo-app.json
-**DESCRIPTION**: Transform the Neo html5 descriptor (neo-app.json) into xs-app.json for Cloud Foundry routing. Re-run if xs-app.json is overwritten/deleted.
-**LANGUAGE**: Text
+**STEP**: 5. Transform neo-app.json to xs-app.json
+**DESCRIPTION**: Use the Neo Migration helper to generate xs-app.json routes from neo-app.json. If xs-app.json is overwritten or deleted, re-run this step using neo-app.json as the source.
+**LANGUAGE**: — 
 **CODE**:
-```
-Run in VS Code: "Neo Migration: HTML 5 Application descriptor transformation"
-- Select the file: neo-app.json
-Outcome: xs-app.json is created with routes populated from neo-app.json (used for CF deployment)
+```text
+Command Palette -> Neo Migration: HTML 5 Application descriptor transformation
+- Select neo-app.json
+- A new xs-app.json is created with routes populated from neo-app.json
 ```
 
-**STEP**: 6 — Change to the UI application root
-**DESCRIPTION**: Move into the project root to run deployment and build scripts.
-**LANGUAGE**: Bash
+**STEP**: 6. Change to the new UI application folder
+**DESCRIPTION**: Move into your Fiori application root before running deployment/config commands.
+**LANGUAGE**: BASH
 **CODE**:
-```bash
+```BASH
 cd /home/user/projects/fioriapp
 ```
 
-**STEP**: 7 — Configure deployment for Cloud Foundry (managed approuter)
-**DESCRIPTION**: Run the deploy-config script to add the application to a managed approuter. Use the interactive selections shown.
-**LANGUAGE**: Bash
+**STEP**: 7. Run deploy-config for Cloud Foundry and configure managed approuter
+**DESCRIPTION**: Execute the configured npm script to prepare deployment configuration for CF. When prompted:
+- Select destination: "none" (xs-app.json already exists)
+- Add application to managed application router: Yes
+- Overwrite xs-app.json: No (unless you plan to re-run descriptor transformation)
+- Review generated ui5.yaml and ui5-deploy.yaml for correct parameters
+**LANGUAGE**: — 
 **CODE**:
-```bash
-npm run deploy-config cf
-
-# During prompts:
-# - Destination: select "none" (xs-app.json already created)
-# - Add application to managed application router: Yes
-# - Overwrite xs-app.json: No (keep generated xs-app.json)
-# After completion: review ui5.yaml and ui5-deploy.yaml to ensure parameters are correct
+```text
+Command Palette -> npm run deploy-config cf
+- destination: none
+- Add application to managed application router: Yes
+- Overwrite xs-app.json: No
+- Review ui5.yaml and ui5-deploy.yaml
 ```
 
-**STEP**: 8 — Start the UI locally (BAS preview)
-**DESCRIPTION**: Preview the migrated UI locally to verify functionality before building.
-**LANGUAGE**: Bash
+**STEP**: 8. Start the Fiori UI locally (preview)
+**DESCRIPTION**: Start local preview in BAS to validate UI before building/deploying.
+**LANGUAGE**: BASH
 **CODE**:
-```bash
+```BASH
 npm run start
-# Preview UI in BAS / Fiori preview
 ```
 
-**STEP**: 9 — Build MTA archive for Cloud Foundry
-**DESCRIPTION**: Create the deployable multi-target application (MTA) archive.
-**LANGUAGE**: Bash
+**STEP**: 9. Build the application MTA archive for Cloud Foundry
+**DESCRIPTION**: Build the MTA (multi-target archive) containing the UI module and managed approuter for CF deployment.
+**LANGUAGE**: BASH
 **CODE**:
-```bash
+```BASH
 npm run build:mta
-# Produces the MTA archive to be deployed to Cloud Foundry
 ```
 
-**STEP**: 10 — Add security scopes and role templates to xs-security.json (SECURITY ALERT)
-**DESCRIPTION**: The generated xs-security.json may be empty. Append required scopes, role-templates, and role-collections so role collections can be managed at the subaccount level and applied to routes.
+**STEP**: 10. SECURITY ALERT — Add scopes and roles to xs-security.json
+**DESCRIPTION**: The generated xs-security.json usually lacks scopes/roles. Append the following security objects to xs-security.json to create manageable scopes, role-templates, and role-collections at subaccount level. Replace $XSAPPNAME with your application name as required.
 **LANGUAGE**: JSON
 **CODE**:
-```json
-{
-  "scopes": [
-    {
-      "name": "$XSAPPNAME.migratedroleapp",
-      "description": "Migrated scope from managed app"
-    }
-  ],
-  "role-templates": [
-    {
-      "name": "migratedroleapp",
-      "description": "Migrated Role Template from managed app",
-      "scope-references": [
-        "$XSAPPNAME.migratedroleapp"
-      ]
-    }
-  ],
-  "role-collections": [
-    {
-      "name": "ViewerPUBLIC",
-      "description": "Viewer (public) from migrated app",
-      "role-template-references": [
-        "$XSAPPNAME.migratedroleapp"
-      ]
-    }
-  ]
-}
+```JSON
+  "scopes":[
+    {
+      "name": "$XSAPPNAME.migratedroleapp",
+      "description": "Migrated scope from managed app"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "migratedroleapp",
+      "description": "Migrated Role Template from managed app",
+      "scope-references": [
+      "$XSAPPNAME.migratedroleapp"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "ViewerPUBLIC",
+      "description": "Viewer (public) from migrated app",
+      "role-template-references": [
+        "$XSAPPNAME.migratedroleapp"
+      ]
+    }
+  ]
 ```
 
-**STEP**: 11 — Apply scopes to xs-app.json routes
-**DESCRIPTION**: For any routes that require authorization, add the "scope" property referencing the scope in xs-security.json.
+**STEP**: 11. Apply scope to xs-app.json routes
+**DESCRIPTION**: Update routes in xs-app.json for endpoints that require authentication/authorization by adding the scope property to the route entry. Example:
 **LANGUAGE**: JSON
 **CODE**:
-```json
-{
-  "source": "^/northwind/(.*)$",
-  "target": "$1",
-  "destination": "northwind",
-  "csrfProtection": false,
-  "scope": "$XSAPPNAME.migratedroleapp"
-}
+```JSON
+    {
+      "source": "^/northwind/(.*)$",
+      "target": "$1",
+      "destination": "northwind",
+      "csrfProtection": false,
+      "scope": "$XSAPPNAME.migratedroleapp"
+    },
 ```
 
-**STEP**: 12 — Deploy the generated MTA archive to Cloud Foundry
-**DESCRIPTION**: Run the npm deploy script to push the MTA to CF via the configured toolchain.
-**LANGUAGE**: Bash
+**STEP**: 12. Deploy the generated MTA archive to Cloud Foundry
+**DESCRIPTION**: Use the npm script to deploy the previously built MTA archive to your Cloud Foundry environment.
+**LANGUAGE**: BASH
 **CODE**:
-```bash
+```BASH
 npm run deploy
 ```
 
-**STEP**: 13 — Retrieve the deployed HTML5 app URL / verify deployment
-**DESCRIPTION**: List HTML5 apps to retrieve the deployed application URL. Alternatively, use the BTP Cockpit (Subaccount > HTML5 Applications).
-**LANGUAGE**: Bash
+**STEP**: 13. Retrieve deployed app URL (HTML5 module)
+**DESCRIPTION**: From the project root, run cf html5-list to get the deployed app URL. You can alternatively look up the app URL in SAP BTP cockpit under Subaccount -> HTML5 Applications.
+**LANGUAGE**: BASH
 **CODE**:
-```bash
-# Example: list HTML5 apps and show the deployed app details (replace destination id as needed)
-cf html5-list -di ns-manageproductsneo-destination-service --runtime launchpad
-
-# Or: login to SAP BTP cockpit -> Subaccount -> HTML5 Applications -> find application URL
+```BASH
+cf html5-list -u -di ns-manageproductsneo-destination-service -u --runtime launchpad
 ```
 
-**STEP**: 14 — Map user to role collections and test access
-**DESCRIPTION**: Ensure your user is assigned to the correct role-collection(s) in the SAP BTP subaccount so scoped routes do not return HTTP 403.
-**LANGUAGE**: Text
-**CODE**:
-```
-- In SAP BTP Cockpit: Subaccount -> Security -> Role Collections
-- Assign your user to the "ViewerPUBLIC" (or other) role-collection created from xs-security.json
-- Test the app URL; scoped routes require the appropriate role assignment
-```
+**STEP**: 14. Ensure role collection mapping for users
+**DESCRIPTION**: Map your user profile to the correct role collections in the subaccount (e.g., ViewerPUBLIC) to avoid HTTP 403 when accessing scoped routes. Verify role assignments in SAP BTP cockpit.
 
-**STEP**: 15 — Undeploy (optional)
-**DESCRIPTION**: Remove the deployed MTA/app from Cloud Foundry if required.
-**LANGUAGE**: Bash
+**STEP**: 15. Undeploy (if required)
+**DESCRIPTION**: Use the provided npm script to undeploy the application from Cloud Foundry.
+**LANGUAGE**: BASH
 **CODE**:
-```bash
+```BASH
 npm run undeploy
 ```
 
-**STEP**: 16 — Reference: additional scripts and configuration
-**DESCRIPTION**: For extra commands and parameters, open package.json and review ui5.yaml and ui5-deploy.yaml for deployment options and customizations.
-**LANGUAGE**: Text
+**STEP**: 16. Additional references
+**DESCRIPTION**: Check package.json in your project root for available scripts and additional commands to manage build, deploy, and local preview. If xs-app.json is accidentally deleted/overwritten, rerun the Neo Migration descriptor transformation step using neo-app.json as the source. The migration results page will summarize issues to address post-migration.
+**LANGUAGE**: — 
 **CODE**:
-```
-- Inspect package.json for available npm scripts (deploy, undeploy, build:mta, start, deploy-config)
-- Check ui5.yaml and ui5-deploy.yaml to verify build and deploy parameters
+```text
+- Inspect package.json for script commands
+- Re-run "Neo Migration: HTML 5 Application descriptor transformation" if xs-app.json is lost
 ```
 --------------------------------
 
-**TITLE**: Configure MTA for multiple migrated Neo UI applications (Managed Approuter)
+**TITLE**: Configure MTA for Multiple Migrated Neo UI Applications (Managed Approuter)
 
-**INTRODUCTION**: Step-by-step developer-focused guide to create a managed application router (approuter) project, migrate Neo UI apps into it, generate required descriptors, add security scopes, build and deploy an MTA archive to Cloud Foundry (BTP). Use in Business Application Studio (BAS) or VS Code with Fiori tools.
+**INTRODUCTION**: Step-by-step, code-focused instructions to create a managed approuter project, migrate one or more Neo HTML5/SAPUI5 applications into it, generate required descriptor transformations, add security scopes, and build/deploy the multi-app MTA to Cloud Foundry (SAP BTP). Use these steps in Business Application Studio (BAS) or local development when migrating Neo UI apps to Cloud Foundry with an approuter.
 
-**TAGS**: mta, approuter, fiori, migration, neo, xs-app.json, xs-security.json, cf, html5
+**TAGS**: fiori, mta, migration, neo, approuter, xs-app.json, xs-security.json, cloud-foundry, html5, sap-btp, bas, ui5
 
-STEP: 1 — Generate Managed Approuter (BAS / VS Code)
-DESCRIPTION: Create a managed approuter project using the CF Application Router Generator. Provide a unique MTA ID (example: managedapp) and set the project root folder (example: /home/user/projects/managedapp).
-LANGUAGE: Shell / VSCode
+STEP: 1 — Generate Managed Approuter
+DESCRIPTION: Open the CF Application Router Generator in BAS and create a managed approuter project. Set a unique MTA ID and the `router path` to your workspace root. This creates the root project folder (example: managedapp).
+LANGUAGE: text
 CODE:
-```bash
-# In BAS or VS Code:
-# From View -> Command Palette, run "Open CF Application Router Generator"
-# Enter router path (example): /home/user/projects
-# Select: Managed Approuter
-# Enter unique MTA ID (example): managedapp
+```text
+From View -> Command Palette: Open CF Application Router Generator
+- Change "router path" to your workspace root (e.g. /home/user/projects)
+- Select "Managed Approuter"
+- Enter a unique MTA ID (e.g. managedapp)
 ```
 
-STEP: 2 — Change into managedapp root
-DESCRIPTION: Move into the new managedapprouter project root created by the generator.
-LANGUAGE: Bash
+STEP: 2 — Change into new managedapp folder
+DESCRIPTION: Move into the created managedapp folder. This will be the root of your MTA project where you will add migrated UI subfolders.
+LANGUAGE: bash
 CODE:
 ```bash
 cd /home/user/projects/managedapp/
 ```
 
-STEP: 3 — Unzip exported Neo MTAR/ZIP
-DESCRIPTION: Unpack your exported Neo mtar (or zip) into a working directory. Some mtar files contain nested zips that must be extracted separately.
-LANGUAGE: Bash
+STEP: 3 — Unzip exported Neo mtar (if applicable)
+DESCRIPTION: If you exported a Neo mtar/zip, unzip it to inspect the contents. Some mtar files contain nested archives that must be extracted separately.
+LANGUAGE: bash
 CODE:
 ```bash
 unzip /home/user/projects/neo/solution.mtar -d /home/user/projects/neo/
 ```
 
-STEP: 4 — Unzip the Neo UI application to a subfolder in managedapp
-DESCRIPTION: Extract the Neo application archive into the managedapp/fioriapp subfolder (create the subfolder if needed). This will be the UI app you migrate.
-LANGUAGE: Bash
+STEP: 4 — Unzip individual Neo application into managedapp subfolder
+DESCRIPTION: Unzip your Neo application archive into a dedicated subfolder under the managedapp root (example: fioriapp). Repeat this step for each Neo UI application you want to append to the MTA.
+LANGUAGE: bash
 CODE:
 ```bash
 unzip /home/user/projects/neo/manageproductsneo.zip -d /home/user/projects/managedapp/fioriapp
 ```
 
-STEP: 5 — Migrate UI project for Fiori tools
-DESCRIPTION: Run the Fiori tools migration to convert the UI app for local preview and tooling. Select the migrated project and appropriate SAPUI5 preview version, then start migration. Review migration results and the application information page.
-LANGUAGE: Shell / VSCode
+STEP: 5 — Run "Fiori: Migrate Project for use in Fiori tools"
+DESCRIPTION: Use the Fiori migration command to convert the app for use with Fiori tools and generate supporting artifacts. Select the UI project, confirm the SAPUI5 preview version, and start the migration. Review the migration results and the generated application information page.
+LANGUAGE: text
 CODE:
-```bash
-# In BAS or VS Code:
-# Run command: "Fiori: Migrate Project for use in Fiori tools"
-# - Select your project (managedapp/fioriapp)
-# - Choose SAPUI5 preview version (latest or project-appropriate)
-# - Select "Start migration"
-# - Review migration results and application information page
+```text
+Run: Fiori: Migrate Project for use in Fiori tools
+- Select your project
+- Ensure SAPUI5 preview version is correct
+- Select "Start migration"
+- Review the migration results and application information page
 ```
 
-STEP: 6 — Transform neo-app.json to xs-app.json
-DESCRIPTION: Convert the Neo router descriptor to the xs-app.json format used by Cloud Foundry. Use the Neo Migration tool to generate xs-app.json from neo-app.json. If xs-app.json is overwritten or deleted, re-run this migration step.
-LANGUAGE: Shell / VSCode
+STEP: 6 — Run "Neo Migration: HTML5 Application descriptor transformation"
+DESCRIPTION: Transform neo-app.json to xs-app.json for Cloud Foundry routing. Always select the original neo-app.json so the new xs-app.json routes are populated automatically. If xs-app.json is overwritten or deleted, re-run this step.
+LANGUAGE: text
 CODE:
-```bash
-# In BAS or VS Code:
-# Run command: "Neo Migration: HTML 5 Application descriptor transformation"
-# - Select the project's neo-app.json
-# - Tool generates xs-app.json in the UI project with routes populated from neo-app.json
+```text
+Run: Neo Migration: HTML5 Application descriptor transformation
+- Select neo-app.json in your UI project
+- Confirm new xs-app.json is created with routes populated from neo-app.json
 ```
 
-STEP: 7 — Change into the Fiori UI application folder
-DESCRIPTION: Adopt the UI project folder as the active working directory for subsequent npm commands and builds.
-LANGUAGE: Bash
+STEP: 7 — Change into the migrated Fiori UI application folder
+DESCRIPTION: Work inside the UI subfolder to finalize configuration and run deployment/build commands.
+LANGUAGE: bash
 CODE:
 ```bash
 cd /home/user/projects/managedapp/fioriapp
 ```
 
 STEP: 8 — Create deploy config for Cloud Foundry
-DESCRIPTION: Run the provided npm script to create deployment configuration for CF. When prompted:
-- Destination: select "none" if xs-app.json already exists.
-- Overwrite xs-app.json: answer "No" (if xs-app.json was generated in prior step).
-- After execution, inspect ui5.yaml and ui5-deploy.yaml for correct parameters.
-LANGUAGE: Bash
+DESCRIPTION: Run the deploy-config task to create or validate deploy config files. When prompted:
+- Select destination "none" (not required because xs-app.json was created).
+- Choose "No" if asked to overwrite xs-app.json (if overwritten, re-run the HTML5 descriptor transformation).
+- Inspect and adjust ui5.yaml and ui5-deploy.yaml to match your project parameters.
+LANGUAGE: bash
 CODE:
 ```bash
 npm run deploy-config cf
 # Follow prompts:
-# - Select destination: none (if xs-app.json already exists)
-# - Overwrite xs-app.json: No (unless re-generating)
-# Then manually review:
-# /home/user/projects/managedapp/fioriapp/ui5.yaml
-# /home/user/projects/managedapp/fioriapp/ui5-deploy.yaml
+# - destination: none
+# - Overwrite xs-app.json: No (unless you want to regenerate)
+# Review ui5.yaml and ui5-deploy.yaml
 ```
 
 STEP: 9 — Preview the UI locally
-DESCRIPTION: Start a local preview server to verify the migrated UI app runs locally in BAS/VS Code.
-LANGUAGE: Bash
+DESCRIPTION: Start a local preview to ensure the migrated UI runs correctly in BAS.
+LANGUAGE: bash
 CODE:
 ```bash
 npm run start
-# Verify UI loads in SAPUI5 preview
 ```
 
-STEP: 10 — Build MTA archive including all Fiori UI applications
-DESCRIPTION: Build the MTA archive that bundles the approuter and appended Fiori UI apps.
-LANGUAGE: Bash
+STEP: 10 — Build the MTA archive (includes all Fiori UI apps)
+DESCRIPTION: Build the MTA archive which packages the managed approuter plus all appended Fiori UI sub-apps.
+LANGUAGE: bash
 CODE:
 ```bash
 npm run build
-# This builds the MTA archive (mta_archives/*.mtar) containing the managedapprouter and UI modules
 ```
 
-STEP: 11 — SECURITY ALERT — Add scopes and role collections to xs-security.json
-DESCRIPTION: The generated xs-security.json often contains no scopes/roles. Append the following scopes, role-templates, and role-collections to xs-security.json to enable role-based route protection. Replace $XSAPPNAME with your xs application name variable if required by your build.
-LANGUAGE: JSON
+STEP: 11 — Add security scopes and role templates to xs-security.json
+DESCRIPTION: The generated xs-security.json may be empty. Append scopes, role-templates, and role-collections to enable role collection management at subaccount level. Use $XSAPPNAME where applicable. Add the following block into your xs-security.json (preserve JSON structure when inserting into existing file).
+LANGUAGE: json
 CODE:
 ```json
-"scopes": [
-  {
-    "name": "$XSAPPNAME.migratedroleapp",
-    "description": "Migrated scope from managed app"
-  }
-],
-"role-templates": [
-  {
-    "name": "migratedroleapp",
-    "description": "Migrated Role Template from managed app",
-    "scope-references": [
-      "$XSAPPNAME.migratedroleapp"
-    ]
-  }
-],
-"role-collections": [
-  {
-    "name": "ViewerPUBLIC",
-    "description": "Viewer (public) from migrated app",
-    "role-template-references": [
-      "$XSAPPNAME.migratedroleapp"
-    ]
-  }
-]
+  "scopes":[
+    {
+      "name": "$XSAPPNAME.migratedroleapp",
+      "description": "Migrated scope from managed app"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "migratedroleapp",
+      "description": "Migrated Role Template from managed app",
+      "scope-references": [
+      "$XSAPPNAME.migratedroleapp"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "ViewerPUBLIC",
+      "description": "Viewer (public) from migrated app",
+      "role-template-references": [
+        "$XSAPPNAME.migratedroleapp"
+      ]
+    }
+  ]
 ```
 
-STEP: 12 — Apply scopes to xs-app.json route(s)
-DESCRIPTION: Protect one or more routes in xs-app.json by attaching the scope name you added to xs-security.json. Add the "scope" property to each route that requires role-based access.
-LANGUAGE: JSON
+STEP: 12 — Apply scopes to specific xs-app.json routes
+DESCRIPTION: For routes that should be protected, update the corresponding xs-app.json route entries with the "scope" property referencing the scope you added to xs-security.json.
+LANGUAGE: json
 CODE:
 ```json
 {
-  "source": "^/northwind/(.*)$",
-  "target": "$1",
-  "destination": "northwind",
-  "csrfProtection": false,
-  "scope": "$XSAPPNAME.migratedroleapp"
-}
+  "source": "^/northwind/(.*)$",
+  "target": "$1",
+  "destination": "northwind",
+  "csrfProtection": false,
+  "scope": "$XSAPPNAME.migratedroleapp"
+},
 ```
 
-STEP: 13 — Deploy MTA archive to Cloud Foundry
-DESCRIPTION: Deploy the built MTA to your CF space using the provided npm script. After deployment, retrieve the HTML5 app runtime URL via cf CLI or BTP cockpit.
-LANGUAGE: Bash
+STEP: 13 — Deploy the MTA archive to Cloud Foundry
+DESCRIPTION: Deploy the built MTA to your Cloud Foundry environment using the provided npm script.
+LANGUAGE: bash
 CODE:
 ```bash
 npm run deploy
-
-# To get the HTML5 app URL (example using managedapp-destination-service):
-cf html5-list -u -di managedapp-destination-service -u --runtime launchpad
-
-# Or: Login to SAP BTP cockpit -> Subaccount -> HTML5 Applications -> find deployed app URL
 ```
 
-STEP: 14 — Verify role mapping to access scoped routes
-DESCRIPTION: Ensure your BTP user is assigned to the correct role collections (e.g., ViewerPUBLIC) at the subaccount/org level; otherwise accessing scoped routes returns HTTP 403.
-LANGUAGE: Shell / Console
+STEP: 14 — Retrieve the deployed HTML5 application URL
+DESCRIPTION: Use the cf CLI to list HTML5 apps and get the runtime/launchpad URL, or check SAP BTP cockpit > subaccount > HTML5 Applications.
+LANGUAGE: bash
 CODE:
 ```bash
-# No specific command; verify in SAP BTP cockpit:
-# Subaccount -> Security -> Role Collections -> assign users to the "ViewerPUBLIC" role collection (or other role-collection names added)
+cf html5-list -u -di managedapp-destination-service -u --runtime launchpad
+# Or: Login to SAP BTP cockpit > Subaccount > HTML5 Applications and view the application URL
 ```
 
-STEP: 15 — Undeploy MTA archive (optional)
-DESCRIPTION: Undeploy the application if you need to remove it from CF.
-LANGUAGE: Bash
+STEP: 15 — Verify access and role mapping
+DESCRIPTION: Ensure your user is assigned the appropriate role collection (e.g., ViewerPUBLIC) at the subaccount to avoid HTTP 403 on scoped routes. Map user profiles to role collections in the BTP cockpit or via the SAP Identity Provider.
+
+STEP: 16 — Undeploy (if required)
+DESCRIPTION: Remove the deployed MTA from Cloud Foundry.
+LANGUAGE: bash
 CODE:
 ```bash
 npm run undeploy
 ```
 
-STEP: 16 — Append additional migrated UI apps into the root mta.yaml
-DESCRIPTION: To add more migrated UI apps to the same managedapp MTA, repeat steps 3–12 for each Neo UI app and add each migrated app as a subfolder under /home/user/projects/managedapp/. Ensure each new module is added to mta.yaml and built as part of the MTA archive.
-LANGUAGE: Bash / YAML
+STEP: 17 — Append additional migrated UIs to the root mta.yaml
+DESCRIPTION: To add more migrated UI applications to the same managedapp MTA, repeat Steps 3–12 for each app. Add each migrated app as a subfolder under the managedapp folder and update root mta.yaml to include the new UI module entries and routes. Ensure unique module names and correct destination references for each added UI.
+LANGUAGE: text
 CODE:
-```bash
-# Example folder structure:
-# /home/user/projects/managedapp/
-# ├─ mta.yaml
-# ├─ approuter/...
-# ├─ fioriapp/        <-- migrated UI app 1
-# ├─ fioriapp2/       <-- migrated UI app 2 (repeat migration steps)
-# ...
-# After adding a new UI subfolder, update mta.yaml to include the new module and:
-npm run build
-npm run deploy
+```text
+- For each additional Neo app:
+  1. Unzip app into /home/user/projects/managedapp/<new-subfolder>
+  2. Run Fiori migration and HTML5 descriptor transformation for that subfolder
+  3. Ensure xs-app.json routes, xs-security.json scopes, and mta.yaml module entries are added/updated
+  4. Rebuild (npm run build) and redeploy (npm run deploy)
 ```
 --------------------------------
 
-**TITLE**: Migrate HTML5 Applications from SAP BTP Neo to Cloud Foundry (step-by-step code-ready guide)
+**TITLE**: Migrate HTML5 Applications from SAP BTP Neo to Cloud Foundry
 
-**INTRODUCTION**: Practical, code-focused steps and complete configuration examples to migrate custom HTML5/Fiori applications from SAP BTP Neo to Cloud Foundry. Includes folder setup, service migration (destinations/connectivity), security config, Cloud Foundry commands, UI5 fixes, and common troubleshooting actions with exact file snippets to use or adapt.
+**INTRODUCTION**: Step-by-step technical reference to migrate custom HTML5 (SAPUI5/Fiori) applications from SAP BTP Neo to Cloud Foundry. Includes prerequisites, Dev Space setup, creating migration artifacts (destinations/security), deploy commands, migration options, and actionable troubleshooting (gotchas) with exact file snippets and fixes.
 
-**TAGS**: sap-btp, cloud-foundry, neo-to-cf, html5, fiori, ui5, migration, destinations, xs-security, mtad, mtar, config, approuter
+**TAGS**: fiori-samples, sap-btp, cloud-foundry, migration, html5, ui5, destinations, xsuaa, xs-app.json, ui5-tooling
 
-STEP: 1 — Prerequisites and preparation
-DESCRIPTION: Verify required subscriptions and access before migrating. Ensure SAP BTP account, SAP Business Application Studio (BAS) subscription, and SAP Launchpad Service are available. If services not visible, add entitlements in the subaccount Entitlements -> Configure Entitlements, then add via Service Marketplace.
-LANGUAGE: Text
-CODE:
-```text
-Required:
+**STEP**: 1 — Prerequisites
+**DESCRIPTION**: Ensure required accounts, subscriptions and access are in place before migration.
+**LANGUAGE**: Text
+**CODE**:
+```Text
 - SAP BTP account
-- SAP Business Application Studio subscription (see BAS tutorial)
-- SAP Launchpad Service subscription
-- Access to your Neo project artifacts: *.mtar | *.zip | mta.yaml and UI project folders
+- Subscribed to SAP Business Application Studio (BAS)
+  Tutorial: https://help.sap.com/products/SAP%20Business%20Application%20Studio/9d1db9835307451daa8c930fbd9ab264/6331319fd9ea4f0ea5331e21df329539.html
+- Subscribed to SAP Launchpad Service
+  Tutorial: https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html
+- If services missing in Service Marketplace:
+  Subaccount -> Entitlements -> Configure Entitlements -> locate and add required service -> Save -> Return to Service Marketplace to add the service
 ```
 
-STEP: 2 — Create SAP Fiori Dev Space (BAS)
-DESCRIPTION: In the BTP cockpit open Instances and Subscriptions -> SAP Business Application Studio -> Dev Space Manager. Create a "Full Stack Cloud Application" dev space and enable SAP HANA Tools. This step prepares the environment for migration tasks and local testing.
-LANGUAGE: Text
-CODE:
-```text
-BTP cockpit -> Instances and Subscriptions -> SAP Business Application Studio -> Open Dev Space Manager
-Create dev space:
-- Type: Full Stack Cloud Application
-- Enable: SAP HANA Tools
+**STEP**: 2 — Create SAP Fiori Dev Space
+**DESCRIPTION**: Create a Full Stack Cloud Application dev space in BAS with SAP HANA Tools enabled.
+**LANGUAGE**: Text
+**CODE**:
+```Text
+SAP BTP cockpit -> Instances and Subscriptions -> SAP Business Application Studio -> open Dev Space Manager
+Create: Full Stack Cloud Application dev space (enable SAP HANA Tools)
 ```
 
-STEP: 3 — Generate migration folder and upload Neo artifacts
-DESCRIPTION: Create a migration working folder in your BAS workspace, then upload Neo artifacts (mtar/zip, mta.yaml, project folders) into it.
-LANGUAGE: Bash
-CODE:
-```bash
-# create migration folder in BAS or local workspace
+**STEP**: 3 — Prepare Migration Folder and Upload Artifacts
+**DESCRIPTION**: Create migration folder, upload exported Neo artifacts (*.mtar, *.zip, mta.yaml) and create base config files used to migrate destinations/security.
+**LANGUAGE**: BASH
+**CODE**:
+```BASH
 mkdir -p /home/user/projects/neo/
 
-# Upload (drag-and-drop) the following into /home/user/projects/neo/:
-# - *.mtar or *.zip exported from Neo
-# - mta.yaml (if available)
-# - webapp and project root files to inspect
-```
+# Upload your exported artifacts (*.mtar, *.zip, mta.yaml) to /home/user/projects/neo/
 
-STEP: 4 — Create base migration config files (xs-security.json, mtad.yaml, config.json)
-DESCRIPTION: Create required files to provision Cloud Foundry managed services (destination, connectivity) and capture security role configuration. Use the templates below; place them in the migration folder.
-LANGUAGE: Bash
-CODE:
-```bash
-cd /home/user/projects/neo/
+# Create baseline config files required for destination/security migration
 touch xs-security.json mtad.yaml config.json
 ```
 
-STEP: 5 — mtad.yaml (provision subaccount-level destination & connectivity)
-DESCRIPTION: Use this mtad schema to create managed-service resources for destination and connectivity. This example uses the "lite" service-plan and points destination initialization to config.json.
-LANGUAGE: YAML
-CODE:
-```yaml
+**STEP**: 4 — mtad.yaml (Cloud Foundry managed services)
+**DESCRIPTION**: Define managed service resources for destination and connectivity in mtad.yaml. This deploys services at subaccount level using config.json for initial data.
+**LANGUAGE**: YAML
+**CODE**:
+```YAML
 _schema-version: "3.1"
 ID: migrationcf
 description: Migrate services
@@ -5451,16 +4863,16 @@ resources:
     service: connectivity
 ```
 
-STEP: 6 — config.json (subaccount destination init data)
-DESCRIPTION: This sample creates a subaccount-level destination named "northwind". Adjust fields (Name, URL, Authentication, etc.) for each destination you migrate. Note: subaccount-level destinations are accessible to all apps in the subaccount.
-LANGUAGE: JSON
-CODE:
-```json
+**STEP**: 5 — config.json (subaccount destination initialization)
+**DESCRIPTION**: Example init_data for creating subaccount-level destinations. Note: subaccount-level destinations are available to all apps in the subaccount. For instance-level destinations (encapsulated with an app instance), use alternative configuration (see referenced sample link).
+**LANGUAGE**: JSON
+**CODE**:
+```JSON
 {
-  "init_data": {
-    "subaccount": {
-      "existing_destinations_policy": "update",
-      "destinations": [
+    "init_data": {
+      "subaccount": {
+        "existing_destinations_policy": "update",
+        "destinations": [
         {
           "Name": "northwind",
           "WebIDEEnabled": "true",
@@ -5478,931 +4890,989 @@ CODE:
 }
 ```
 
-STEP: 7 — xs-security.json (global role collection and templates)
-DESCRIPTION: Example xs-security.json defines an xsappname, tenant-mode, a scope, role-template and a role-collection so migrated apps can reference migrationcf.globalrole. Update names and roles per your security model.
-LANGUAGE: JSON
-CODE:
-```json
+**STEP**: 6 — xs-security.json (XSUAA security profile)
+**DESCRIPTION**: Example xs-security.json with xsappname, tenant-mode and role-templates/collections. Applications can consume the global role collection using the MTA ID and scoped name (e.g., migrationcf.globalrole).
+**LANGUAGE**: JSON
+**CODE**:
+```JSON
 {
-  "xsappname": "migrationcf",
-  "tenant-mode": "dedicated",
-  "description": "Security profile of called application",
-  "scopes":[
-    {
-      "name": "$XSAPPNAME.globalrole",
-      "description": "Migrated role"
-    }
-  ],
-  "role-templates": [
-    {
-      "name": "globalrole",
-      "description": "Migrated Role Template",
-      "scope-references": [
+    "xsappname": "migrationcf",
+    "tenant-mode": "dedicated",
+    "description": "Security profile of called application",
+    "scopes":[
+      {
+        "name": "$XSAPPNAME.globalrole",
+        "description": "Migrated role"
+      }
+    ],
+    "role-templates": [
+      {
+        "name": "globalrole",
+        "description": "Migrated Role Template",
+        "scope-references": [
         "$XSAPPNAME.globalrole"
-      ]
-    }
-  ],
-  "role-collections": [
-    {
-      "name": "GobalRole",
-      "description": "Global from migrated neo",
-      "role-template-references": [
-        "$XSAPPNAME.globalrole"
-      ]
-    }
-  ]
+        ]
+      }
+    ],
+    "role-collections": [
+      {
+        "name": "GobalRole",
+        "description": "Global from migrated neo",
+        "role-template-references": [
+          "$XSAPPNAME.globalrole"
+        ]
+      }
+    ]
 }
 ```
 
-STEP: 8 — Notes: subaccount vs instance-based destinations
-DESCRIPTION: This configuration creates subaccount-level destinations (shared by all apps). If you want destinations scoped to an application instance (private to the app), migrate using instance-based destination configuration — see linked sample for managed approuter + instance-level destination pattern.
-LANGUAGE: Text
-CODE:
-```text
-Reference: Instance-based destination example:
-https://blogs.sap.com/2022/02/10/build-and-deploy-a-cap-project-node.js-api-with-a-sap-fiori-elements-ui-and-a-managed-approuter-configuration/
-```
-
-STEP: 9 — Login to Cloud Foundry target and deploy services
-DESCRIPTION: Authenticate to the Cloud Foundry endpoint for the target subaccount/space and deploy the resources defined in mtad.yaml/mtar. Run CF login and then CF deploy from the migration folder.
-LANGUAGE: Bash
-CODE:
-```bash
-# Login to CF (replace placeholders)
+**STEP**: 7 — Login to Cloud Foundry target and deploy services
+**DESCRIPTION**: Login to the CF API endpoint targeting the organization and space where migration resources must be created. Then deploy the MTA to provision the managed services described in mtad.yaml.
+**LANGUAGE**: BASH
+**CODE**:
+```BASH
 cf login -a <api-endpoint> -o <organisation> -s <space>
 
-# Deploy the MTA/mtad configuration to provision services (run from migration folder)
+# From BAS you can also use: View -> Command Palette -> Login to Cloud Foundry
+
 cf deploy
 ```
 
-STEP: 10 — Decide migration option for your UI application
-DESCRIPTION: You have two folder-structure options for migrating Neo UI apps:
-- Option1: migrate a single Fiori UI application (updated for @ui5/cli v3) — see Option1.md
-- Option2: migrate multiple Fiori UI applications in a single project (references @ui5/cli v2) — see Option2.md
-Both use managed approuter configuration for deployment.
-LANGUAGE: Text
-CODE:
-```text
-- Option1.md  -> Single UI app migration (use @ui5/cli v3)
-- Option2.md  -> Multiple UI apps migration (uses @ui5/cli v2)
+**STEP**: 8 — Migration options for UI apps
+**DESCRIPTION**: Two migration patterns produce different folder structures. Choose based on single vs multiple Fiori UI apps in the Neo project.
+**LANGUAGE**: Text
+**CODE**:
+```Text
+Options:
+- Option 1: Migrate Neo application for a single Fiori UI application (updated for @ui5/cli v3)
+  Link: Option1.md
+- Option 2: Migrate Neo application supporting multiple Fiori UI applications (references @ui5/cli v2)
+  Link: Option2.md
+
+Both options deploy to Cloud Foundry using a managed approuter configuration.
 ```
 
-STEP: 11 — Sync Component IDs: Component.js, manifest.json, and test/flpSandbox.html
-DESCRIPTION: If UI5 component fails to load locally (Component preload errors or getResourceBundle undefined), ensure Component.js metadata ID, manifest.json sap.app.id, and test/flpSandbox.html resource roots and additionalInformation values match. Update these three points to the same namespace.
-LANGUAGE: JavaScript
-CODE:
-```javascript
-// Component.js (example)
-// Ensure the namespace here is the same used in manifest.json and test/flpSandbox.html
-t.extend("ns.manageproductsneo.Component", { metadata: { manifest: "json" } });
+**STEP**: 9 — Gotcha: Missing webapp folder or manifest.json
+**DESCRIPTION**: SAP Fiori Migration tool requires a webapp folder. If missing, create it, move UI resources (exclude Neo-specific files like neo-app.json, pom.xml, .che). If manifest.json is missing, follow UI5 guide to generate one.
+**LANGUAGE**: Text
+**CODE**:
+```Text
+- Ensure project root contains a 'webapp' folder with UI code.
+- Exclude Neo-specific files: neo-app.json, pom.xml, .che
+- UI5 manifest guide: https://sapui5.hana.ondemand.com/sdk/#/topic/3a9babace121497abea8f0ea66e156d9.html
 ```
 
-LANGUAGE: JSON
-CODE:
-```json
-// manifest.json (sap.app.id must match the Component namespace minus the .Component)
-{
-  "_version": "1.12.0",
-  "sap.app": {
-    "id": "manageproductsneo",
-    ...
-  }
-}
+**STEP**: 10 — Gotcha: Component ID mismatch (start/local preview error)
+**DESCRIPTION**: Sync Component.js extend ID and manifest.json sap.app.id. Update test/flpSandbox.html to use the Component.js ID for additionalInformation and data-sap-ui-resourceroots.
+**LANGUAGE**: JavaScript
+**CODE**:
+```JavaScript
+// Component.js snippet (example)
+t.extend("ns.manageproductsneo.Component",{metadata:{manifest:"json"}
 ```
 
-LANGUAGE: Text
-CODE:
-```text
-# test/flpSandbox.html updates (ensure both entries use the full Component namespace)
+**STEP**: 11 — Gotcha: manifest.json app id (related snippets)
+**DESCRIPTION**: Example manifest.sap.app.id causing mismatch. Update manifest or Component.js so IDs match, and update test/flpSandbox.html lines shown below.
+**LANGUAGE**: JSON
+**CODE**:
+```JSON
+    "_version": "1.12.0",
+    "sap.app": {
+        "id": "manageproductsneo",
+```
+
+**STEP**: 12 — Gotcha: Update test/flpSandbox.html entries
+**DESCRIPTION**: When running start, update lines in test/flpSandbox.html to reflect the Component.js ID.
+**LANGUAGE**: Text
+**CODE**:
+```Text
 Line 49: additionalInformation: "SAPUI5.Component=ns.manageproductsneo",
 Line 69: data-sap-ui-resourceroots='{"ns.manageproductsneo": "../"}'
 ```
 
-STEP: 12 — Fix manifest.json i18n configuration (invalid input / _loadI18n errors)
-DESCRIPTION: If UI5 fails with "invalid input" when loading i18n, simplify the i18n entry in manifest.json to a string path. If still failing, bump minUI5Version or pin local ui5 version in ui5.yaml for local validation.
-LANGUAGE: JSON
-CODE:
-```json
-// Bad (causes invalid input)
+**STEP**: 13 — Gotcha: manifest i18n invalid input error
+**DESCRIPTION**: Replace complex i18n object in manifest.json with a string path. If errors persist, bump minUI5Version or set UI5 version in ui5.yaml for local validation.
+**LANGUAGE**: JSON
+**CODE**:
+```JSON
+// Incorrect i18n block
 "i18n": {
-  "bundleUrl": "i18n/i18n.properties",
-  "supportedLocales": [ "" ],
-  "fallbackLocale": ""
-},
-
-// Good (use this)
-"i18n": "i18n/i18n.properties"
+            "bundleUrl": "i18n/i18n.properties",
+            "supportedLocales": [
+                ""
+            ],
+            "fallbackLocale": ""
+        },
 ```
 
-LANGUAGE: YAML
-CODE:
-```yaml
-# ui5.yaml: pin version for local ui5 tooling (example sets 1.109.0)
-ui5:
-  path:
-    - /resources
-    - /test-resources
-  url: https://ui5.sap.com
-  version: 1.109.0
+**STEP**: 14 — Gotcha: Correct i18n entry
+**DESCRIPTION**: Use simple string path for i18n in manifest.json.
+**LANGUAGE**: JSON
+**CODE**:
+```JSON
+"i18n": "i18n/i18n.properties",
 ```
 
-STEP: 13 — Bump UI5 min version in manifest (optional)
-DESCRIPTION: If i18n or other runtime features require newer UI5, update "minUI5Version" in manifest.json to a supported newer version. Consult UI5 version overview for supported versions.
-LANGUAGE: JSON
-CODE:
-```json
-// manifest.json
-"sap.ui5": {
-  "dependencies": {
-    "minUI5Version": "1.109.0"
-  }
-}
+**STEP**: 15 — Gotcha: Specify UI5 version in ui5.yaml (optional local validation)
+**DESCRIPTION**: Example ui5.yaml snippet to set UI5 runtime version for local preview and tooling.
+**LANGUAGE**: YAML
+**CODE**:
+```YAML
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: 1.109.0
 ```
 
-STEP: 14 — Fix CI static analysis (locate-reuse-libs.js parsing error)
-DESCRIPTION: If static code analysis fails with JS_PARSING_ERROR on locate-reuse-libs.js, update the analysis-plugin version in pom.xml to a newer 2.x release to avoid parsing errors.
-LANGUAGE: XML
-CODE:
-```xml
-<!-- Existing plugin snippet in pom.xml -->
-<plugin>
-  <groupId>com.sap.ca</groupId>
-  <artifactId>analysis-plugin</artifactId>
-  <version>${sap.analysis.version}</version>
-</plugin>
+**STEP**: 16 — Gotcha: HTTP 403 after deploy — xs-app.json scope issues
+**DESCRIPTION**: If deployed app returns HTTP 403, inspect logs in SAP BTP cockpit (HTML5 Applications -> logs). Root cause is typically insufficient roles/scopes in xs-app.json or role collection mapping. Add the user to the role collection or update xs-app.json role mappings. Clear cookies or use incognito to validate changes.
+**LANGUAGE**: Text
+**CODE**:
+```Text
+- Check logs: SAP BTP cockpit -> HTML5 Applications -> select app -> Logs
+- Validate xs-app.json scope and role collection mappings
+- Add user's ID to the role collection if missing
+- Clear session cookies or use incognito to force re-authentication
+```
 
-<!-- Set property -->
+**STEP**: 17 — Gotcha: CI/CD linting JS_PARSING_ERROR on locate-reuse-libs.js
+**DESCRIPTION**: Update static analysis plugin version in pom.xml to resolve parsing errors from legacy analysis plugin.
+**LANGUAGE**: XML
+**CODE**:
+```XML
+<!-- Current configuration -->
+<sap.analysis.version>1.54.8</sap.analysis.version>
+
+<!-- Proposed configuration -->
 <sap.analysis.version>2.0.4</sap.analysis.version>
 ```
 
-STEP: 15 — Troubleshoot HTTP 403 errors after deployment (scope/role issues)
-DESCRIPTION: If deployed app returns HTTP 403, check logs in BTP cockpit -> HTML5 Applications -> logs. Root cause is often missing scope/role mapping in xs-app.json or the role collection does not include the logged-in user. Add user to role collection, clear cookies or use incognito to revalidate session and roles.
-LANGUAGE: Text
-CODE:
-```text
-Troubleshooting actions:
-- Review BTP cockpit -> HTML5 Applications -> select app -> Logs
-- Verify xs-app.json route/app security scopes match xs-security.json role/collections
-- Add user IDs to role-collection defined in xs-security.json if required
-- Delete session cookies or use an incognito window to force re-login
+**STEP**: 18 — Gotcha: HTTP 404 due to absolute AJAX paths
+**DESCRIPTION**: Avoid absolute API paths in client-side code. Use relative paths so platform-assigned GUIDs are preserved in the runtime URL. Absolute paths bypass the GUID and cause 404s in Cloud Foundry.
+**LANGUAGE**: Text
+**CODE**:
+```Text
+- Replace absolute API calls with relative paths.
+- Example: use "/api/myService" instead of "https://<app-guid>.<subdomain>/api/myService"
 ```
 
-STEP: 16 — Troubleshoot HTTP 404 errors for deployed app (absolute AJAX paths)
-DESCRIPTION: If application returns 404 for static or API calls after deployment, inspect browser network requests. Absolute paths in AJAX calls will not resolve the unique GUID assigned to each app in Cloud Foundry. Convert absolute paths to relative paths or use destination service for back-end calls.
-LANGUAGE: Text
-CODE:
-```text
-Example fix:
-- Change AJAX call from absolute path:
-  GET https://my-subaccount-apps/some/api
-- To relative path within app:
-  GET /some/api
-Or route API calls through a destination bound to the app.
+**STEP**: 19 — Gotcha: Local preview proxy mapping mismatch (fiori-tools-proxy)
+**DESCRIPTION**: When using fiori-tools-proxy with npm run start, align xs-app.json routes and ui5.yaml backend definitions. Use pathReplace in ui5.yaml to strip prefixes that xs-app.json removes on Cloud Foundry.
+**LANGUAGE**: JSON
+**CODE**:
+```JSON
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/scim/(.*)$",
+      "target": "$1",
+      "destination": "API_ENDPOINT",
+      "authenticationType": "none",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/sap/(.*)$",
+      "target": "/sap/$1",
+      "destination": "s4hc_onpremise",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    }
+    ...
+  ]
+}
 ```
 
-STEP: 17 — Run local preview and common start command
-DESCRIPTION: Use npm start or ui5 tooling to run local preview. If component or manifest mismatches exist they will surface here — use the previous steps to sync IDs and i18n.
-LANGUAGE: Bash
-CODE:
-```bash
-# from app root
-npm install
-npm run start
-# or use @ui5/cli serve if configured
-ui5 serve --config=ui5.yaml
+**STEP**: 20 — Gotcha: ui5.yaml proxy configuration (example)
+**DESCRIPTION**: ui5.yaml sample showing fiori-tools-proxy backend entries. Add pathReplace for endpoints that need prefixes removed in proxied requests.
+**LANGUAGE**: YAML
+**CODE**:
+```yaml
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: my.fiori.app
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /scim
+            pathReplace: /
+            url: https://some.external.resource/scim/v2
+            destination: API_ENDPOINT
+          - path: /sap
+            url: http://s4hconpremise:44320
+            destination: s4hc_onpremise
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
 ```
 
-STEP: 18 — Deploy the migrated UI to Cloud Foundry (managed approuter)
-DESCRIPTION: After migration and testing, package and deploy the app (managed approuter configuration). Follow your chosen Option1/Option2 project layout and CI/CD pipeline to build mtar and push to CF. Example high-level commands depend on your pipeline; ensure mta archive contains correct mtad/mtar and xs-security.json.
-LANGUAGE: Bash
-CODE:
-```bash
-# Build MTA archive (example)
-mbt build
-
-# Deploy MTA archive to Cloud Foundry
-cf deploy mta_archives/<your_project>.mtar
+**STEP**: 21 — Reporting issues and traces
+**DESCRIPTION**: If unresolved, open an SAP support incident and attach a full network trace (.har) captured after reproducing the issue.
+**LANGUAGE**: Text
+**CODE**:
+```Text
+- Capture full network trace (.har) including all requests.
+- Guidance: How to capture an HTTP trace using Chrome or Edge:
+  https://launchpad.support.sap.com/#/notes/1990706
+- Attach the .har and reproduction steps to the SAP support incident.
 ```
 
-STEP: 19 — Reference links and further security administration
-DESCRIPTION: Useful references for deeper migration, security administration and UI5 version details.
-LANGUAGE: Text
-CODE:
-```text
-References:
-- Migration guide: https://help.sap.com/docs/HTML5_APPLICATIONS/b98f42a4d2cd40a9a3095e9f0492b465/b1763fd06421457b9970a3555020e750.html
-- Security Admin: https://help.sap.com/docs/BTP/65de2977205c403bbc107264b8eccf4b/1ff47b2d980e43a6b2ce294352333708.html
-- UI5 manifest help: https://sapui5.hana.ondemand.com/sdk/#/topic/3a9babace121497abea8f0ea66e156d9.html
-- UI5 version overview: https://sapui5.hana.ondemand.com/versionoverview.html
-```
+**STEP**: 22 — References and License
+**DESCRIPTION**: Keep referenced migration guide and licensing information.
+**LANGUAGE**: Text
+**CODE**:
+```Text
+- Referenced migration guide:
+  https://help.sap.com/docs/HTML5_APPLICATIONS/b98f42a4d2cd40a9a3095e9f0492b465/b1763fd06421457b9970a3555020e750.html
 
-STEP: 20 — License
-DESCRIPTION: License note for repo and content usage.
-LANGUAGE: Text
-CODE:
-```text
-Copyright (c) 2009-2025 SAP SE or an SAP affiliate company.
-Licensed under the Apache Software License, version 2.0 (see ../LICENSES/Apache-2.0.txt).
+- License:
+  Copyright (c) 2009-2026 SAP SE or an SAP affiliate company.
+  Licensed under Apache Software License, version 2.0
+  See: ../LICENSES/Apache-2.0.txt
 ```
 --------------------------------
 
 **TITLE**: Deploy Fiori generator extensions to Business Application Studio (BAS) using WEX
 
-**INTRODUCTION**: Step-by-step, code-focused instructions to prepare, publish and register a Fiori generator extension so it is automatically installable in SAP Business Application Studio dev spaces via the WEX (Business Application Studio Extension Management) tool. Includes local build/test, GitHub release packaging with PAT, example WEX config JSON, deployment command and verification steps.
+**INTRODUCTION**: Step-by-step, action-oriented instructions to make a Fiori generator extension available in BAS by (1) testing locally, (2) publishing a release artifact on GitHub (private repo with PAT), (3) preparing a WEX simple-extension configuration, and (4) deploying the configuration with the SAP Business Application Studio Extension Management (WEX) tool so the extension is auto-installed in new dev spaces.
 
-**TAGS**: BAS, Business Application Studio, Fiori, generator-extension, wex, npm, GitHub, PAT, release, yeoman
+**TAGS**: fiori, business-application-studio, bas, wex, fiori-generator, generator-extension, npm, github, PAT
 
-**STEP**: 1 — Build and test extension locally
+**STEP**: Preconditions — WEX tool and repo requirements
 
-**DESCRIPTION**: Build your extension (ensure compiled JS is included if using TypeScript), create a tarball with npm pack, and install locally to verify it works globally in your environment.
+**DESCRIPTION**: Ensure WEX preconditions are met and that the extension artifact will be publicly accessible to BAS (or accessible via a GitHub URL including a PAT). If the extension is TypeScript, include the compiled output in the repo (dist or compiled files). Relevant docs:
+- WEX package: https://www.npmjs.com/package/@sapse/business-application-studio-extension-management
+- BAS extension preconditions: https://help.sap.com/docs/bas/sap-business-application-studio/create-and-deploy-sap-business-application-studio-extension
+
+**LANGUAGE**: Text
+
+**CODE**:
+```text
+- Ensure the compiled output (for TypeScript extensions) is included in the repository (e.g., "dist/" or compiled files).
+- Create a GitHub repo (can be private) to host the release artefact.
+- Use a GitHub Personal Access Token (PAT) with minimum scopes: read:packages and repo.
+- Preferred: create a versioned release artifact via "Draft a new release" on GitHub.
+```
+
+**STEP**: Local packaging and testing
+
+**DESCRIPTION**: Generate a tarball of the extension package and install it globally to test locally in BAS-like environments. Run npm pack in the package root to create the tarball, then install globally with npm install -g <tarfile>. Verify the extension behavior locally.
 
 **LANGUAGE**: Shell
 
 **CODE**:
 ```shell
-# From the extension package root:
-# 1. Ensure TypeScript is compiled and the compiled output is included in the package (e.g. dist/).
-# 2. Create a tarball of the package:
+# In the extension package root:
 npm pack
 
-# This produces a file like: my-ext-1.0.0.tgz
-# 3. Install the tarball globally to test:
-npm install -g ./my-ext-1.0.0.tgz
-
-# 4. Run any local generator/test commands to verify behavior
-# (example — run your Yeoman generator):
-yo @sample/fiori-gen-ext
+# Install the generated tarball globally for local testing:
+npm install -g <extension_tarfile>
 ```
 
-**STEP**: 2 — Publish package to GitHub Releases and create a PAT
+**STEP**: Publish release on GitHub and generate PAT
 
-**DESCRIPTION**: Push your package repo to GitHub (private or restricted access). Create a GitHub Release and generate a GitHub Personal Access Token (PAT) with minimum scopes read:packages and repo. Use the release tarball URL (with embedded PAT for BAS access) as the yeomanPackages version URL in the WEX config.
+**DESCRIPTION**: Push package source and compiled output to the repo. On GitHub, create a release (Draft a new release) and use the release tarball URL as the yeomanPackages versionRange in the WEX config. Generate a GitHub PAT (Profile -> Settings -> Developer Settings -> Tokens (classic)) with scopes: read:packages and repo. Use the PAT in the release artifact URL to allow BAS to download the tarball.
 
-**LANGUAGE**: Shell / Notes
+**LANGUAGE**: Text
 
 **CODE**:
 ```text
-# Recommended:
-# - Push compiled package (including compiled JS/dist) to GitHub repo
-# - Create a Release (e.g. v0.0.1) via GitHub UI or API so a tarball URL is available:
-#   e.g. https://github.com/<UserName>/sample-fiori-gen-ext/archive/refs/tags/v0.0.1.tar.gz
-
-# Create a GitHub PAT (classic) with scopes:
-# - read:packages
-# - repo
-
-# Construct the authenticated tarball URL (example pattern used by BAS WEX):
-https://<UserName>:<GithubPAT>@github.com/<UserName>/sample-fiori-gen-ext/archive/refs/tags/v0.0.1.tar.gz
+- Push package and compiled output to your GitHub repository.
+- Create a release using "Draft a new release" (https://github.com/<User Name>/<Repository Name>/releases/new).
+- Create a GitHub PAT (classic) with scopes: read:packages and repo.
+- Use the release archive URL format:
+  https://<User Name>:<Github PAT>@github.com/<User Name>/<Repository Name>/archive/refs/tags/<tag>.tar.gz
 ```
 
-**STEP**: 3 — Prepare WEX simple-extension config JSON
+**STEP**: Prepare WEX simple-extension config file
 
-**DESCRIPTION**: Create a Simple Extension config file (example filename sample-extension.json). Fill yeomanPackages with an entry for your generator package using the authenticated tarball URL. Optionally set autoSelectExtensions to auto-install into new dev spaces.
+**DESCRIPTION**: Create the simple-extension JSON config file to tell BAS which yeoman package (extension) to fetch and install. Replace placeholders (<User Name>, <Github PAT>, <sub-account_name>, base64 image, versions, tag) with real values. To auto-select the extension for all new dev spaces, set autoSelectExtensions to ["ext-sap-ux-stage/testing-sample-gen-ext"] (or appropriate namespace/name).
+
+File: sample-extension.json
 
 **LANGUAGE**: JSON
 
 **CODE**:
 ```json
 {
-  "apiVersion": "1",
-  "name": "testing-sample-gen-ext",
-  "namespace": "ext-<sub-account_name>",
-  "autoSelectExtensions": [],
-  "about": {
-    "tagline": "Sample Gen Ext - SAP Fiori Tools",
-    "description": "Test extensions config - Sample Gen Ext",
-    "thumbnail": "<base64-encoded-image>"
-  },
-  "hidden": false,
-  "version": "0.0.2",
-  "vscodeExtensions": [],
-  "yeomanPackages": [
-    {
-      "name": "@sample/fiori-gen-ext",
-      "versionRange": "https://<UserName>:<GithubPAT>@github.com/<UserName>/sample-fiori-gen-ext/archive/refs/tags/v0.0.1.tar.gz"
-    }
-  ]
+    "apiVersion": "1",
+    "name": "testing-sample-gen-ext",
+    "namespace": "ext-<sub-account_name>",
+    "autoSelectExtensions": [
+    ],
+    "about": {
+        "tagline": "Sample Gen Ext - SAP Fiori Tools",
+        "description": "Test extensions config - Sample Gen Ext",
+        "thumbnail": "<base 64 encoded image>"
+    },
+    "hidden": false,
+    "version": "0.0.2",
+    "vscodeExtensions": [],
+        "yeomanPackages": [
+            {
+                "name": "@sample/fiori-gen-ext",
+                "versionRange": "https://<User Name>:<Github PAT>@github.com/<User Name>/sample-fiori-gen-ext/archive/refs/tags/v0.0.1.tar.gz"
+            }
+        ]
 }
 ```
 
-Note: To auto-select the extension for all new dev spaces add the fully-qualified id to autoSelectExtensions, e.g.
-```json
-"autoSelectExtensions": ["ext-sap-ux-stage/testing-sample-gen-ext"]
-```
+**STEP**: Deploy WEX configuration
 
-**STEP**: 4 — Install WEX tool (if needed) and deploy the config
-
-**DESCRIPTION**: Install the BAS Extension Management CLI and deploy your config file to register the extension option on the BAS Create Dev Spaces page.
+**DESCRIPTION**: Use the WEX CLI to deploy the simple-extension config to BAS so the Create Dev Space page shows the new extension option. Run wex deploy with the config file. See the WEX npm page for full CLI docs.
 
 **LANGUAGE**: Shell
 
 **CODE**:
 ```shell
-# Install WEX CLI globally (if not already installed)
+# Install WEX CLI (if not installed):
 npm install -g @sapse/business-application-studio-extension-management
 
-# Deploy the config file (example file: sample-extension.json)
+# Deploy your config:
 wex deploy --verbose -f sample-extension.json
 ```
 
-**STEP**: 5 — Verify installation in a created dev space
+**STEP**: Verify installation and logs in BAS
 
-**DESCRIPTION**: After successful deployment the extension option appears on the BAS Create Dev Spaces page. When selected (or auto-selected) and a dev space is created, the extension should be installed. Check the install log inside the dev space for errors or confirmation.
+**DESCRIPTION**: After successful deployment, the new extension option appears on the BAS Create Dev Spaces page. If you configured autoSelectExtensions, it will be selected by default. Create a dev space (or select the extension) and verify the extension installation. Check the install log inside the opened dev space for errors or success messages at the specified path.
 
-**LANGUAGE**: Shell / Paths
+**LANGUAGE**: Text
 
 **CODE**:
-```shell
-# Create a dev space in BAS from the Create Dev Space page and select the new extension option.
-
-# In the opened dev space, check the WEX install log:
-# Log file path inside the dev space:
-cat /extbin/generators/simple-extension-yo-install-output.txt
-
-# Verify that the generator is installed and available:
-# - Check global npm list for the package
-npm ls -g --depth=0 | grep "@sample/fiori-gen-ext"
-
-# - Or run the generator in the dev space to validate:
-yo @sample/fiori-gen-ext
+```text
+- Create a dev space in BAS using the configured extension option.
+- Verify logs inside the dev space at:
+/extbin/generators/simple-extension-yo-install-output.txt
 ```
 --------------------------------
 
-**TITLE**: Sample Fiori generator extension sub-generator (implementation & deployment guide)
+**TITLE**: Sample Fiori generator extension sub-generator (sample-fiori-gen-ext)
 
-**INTRODUCTION**: This document explains how to build, install, test and implement a Fiori generator extension for @sap/generator-fiori. It provides actionable code-focused examples for implementing FioriGeneratorExtensionAPI, customizing existing prompts, adding UI navigation steps, and writing to the in-memory file system during the Yeoman lifecycle. Use these examples to create an extension package (module name must include "fiori-gen-ext") that can be installed globally or bundled for Business Application Studio (BAS).
+**INTRODUCTION**: This document describes how to build, install, test, and develop a Fiori generator extension that integrates with @sap/generator-fiori. It includes installation steps, package.json requirements, API surface to implement (FioriGeneratorExtensionAPI), examples to customize existing prompts, add new navigation steps and prompts, and update/write generated files using Yeoman's in-memory file system.
 
-**TAGS**: fiori, sap, generator, extension, yeoman, vscode, bas, fiori-tools, typescript
+**TAGS**: fiori, generator, extension, yeoman, sap, vscode, business-application-studio, sample, @sap/generator-fiori
 
-**STEP**: 1 — Build & install (local testing)
-
-**DESCRIPTION**: Commands to build the sample extension, produce an installable tarball, and install globally for local testing.
-
-**LANGUAGE**: bash
-
-**CODE**:
-```bash
-# Clone repo and install dependencies
-git clone https://github.com/SAP-samples/fiori-tools-samples.git
-cd fiori-tools-samples/sample-fiori-gen-ext
-yarn install
-
-# Build a production bundle (uses esbuild in sample)
-yarn bundle
-
-# Create an installable artifact
-npm pack
-
-# Install the generated .tgz globally for local testing
-# Replace path-to-generated-tgz with the generated file, e.g. sample-fiori-gen-ext-1.0.0.tgz
-npm i -g <path-to-generated-tgz>
-```
-
-**STEP**: 2 — Bundle for Business Application Studio (BAS) deployment
-
-**DESCRIPTION**: Recommended bundling workflow to avoid installs at devspace startup. Notes about esbuild and bundling requirements; alternative: publish GitHub release and let WEX deploy.
-
-**LANGUAGE**: bash
-
-**CODE**:
-```bash
-# Create a bundle suitable for BAS (esbuild + shelljs are used in sample)
-yarn bundle
-
-# Check the generated bundle into your repo (recommended for BAS/WEX deployment)
-# Optionally: create installable artifact and install locally for testing
-npm pack
-npm i -g <path-to-generated-tgz>
-
-# Alternative: Create a GitHub release (Draft a new release) and let WEX deploy the release
-# See: sample repo deploy_extension.md for BAS-specific instructions
-```
-
-**STEP**: 3 — Valid install locations & package requirements
-
-**DESCRIPTION**: Where to install extension modules so the Fiori generator picks them up, and required package.json fields.
-
-**LANGUAGE**: text
-
-**CODE**:
-```
-Install locations (one of):
-1. Global npm module location (npm -g root) -> npm install -g <extension-module-tgz>
-2. Any standard BAS pre-install locations (configure via BAS dev space)
-3. Custom VSCode setting: "Application Wizard: Installation Location"
-
-Required package.json settings:
-- Module folder name or package name must include: "fiori-gen-ext"
-- package.json must include the keyword: "fiori-generator-extension"
-- Also include "yeoman-generator" keyword to indicate a Yeoman generator
-
-Example package.json snippet:
-{
-  "name": "@acme/acme-fiori-gen-ext",
-  "keywords": [
-    "fiori-generator-extension",
-    "yeoman-generator"
-  ]
-}
-```
-
-**STEP**: 4 — FioriGeneratorExtensionAPI interface (types & import)
-
-**DESCRIPTION**: Interface your generator must implement. Import types from @sap/generator-fiori. Use these hooks to provide settings, prompt extensions, and UI steps.
-
-**LANGUAGE**: typescript
-
-**CODE**:
-```typescript
-// imports (add others as needed)
-import Generator from "yeoman-generator";
-import {
-  FioriGeneratorExtensionAPI,
-  FioriGeneratorSettings,
-  FioriGeneratorPromptExtension,
-  Step
-} from "@sap/generator-fiori";
-
-// Interface (for reference, implemented by your generator)
-export interface FioriGeneratorExtensionAPI {
-  _getSettings?: () => FioriGeneratorSettings;
-  _getExtensions?: () => FioriGeneratorPromptExtension;
-  _getSteps?: () => Step[];
-}
-```
-
-**STEP**: 5 — Minimal extension generator skeleton (TypeScript)
-
-**DESCRIPTION**: Class skeleton showing how to implement the extension API and hold local state. Use this as the base for _getExtensions, _getSteps, prompting and writing phases.
-
-**LANGUAGE**: typescript
-
-**CODE**:
-```typescript
-import Generator from "yeoman-generator";
-import {
-  FioriGeneratorExtensionAPI,
-  FioriGeneratorPromptExtension
-} from "@sap/generator-fiori";
-
-export default class SampleFioriGenExt extends Generator implements FioriGeneratorExtensionAPI {
-  // Optional: hold answers across phases
-  private localAnswers: Record<string, any> = {};
-
-  // Optional access to Fiori generator state (injected by composeWith)
-  // public fioriGeneratorState: any;
-
-  // Provide prompt extensions, steps, settings below...
-}
-```
-
-**STEP**: 6 — Customize existing Fiori generator prompts (_getExtensions)
-
-**DESCRIPTION**: Extend validators and defaults for built-in Project Attributes prompts. Use names from FioriGeneratorPromptNames to target specific questions (module name, title, namespace, description, targetFolder, ui5Version). Custom validations run in addition to internal validations — return true or an error message.
-
-**LANGUAGE**: typescript
-
-**CODE**:
-```typescript
-import { FioriGeneratorExtensionAPI, FioriGeneratorPromptExtension, FioriGeneratorPromptNames } from "@sap/generator-fiori";
-
-class SampleFioriGenExt extends Generator implements FioriGeneratorExtensionAPI {
-  _getExtensions(): FioriGeneratorPromptExtension {
-    const { projectAttributes: { mainQuestions: questionNames } } = FioriGeneratorPromptNames;
-
-    const extensions: FioriGeneratorPromptExtension = {
-      "@sap/generator-fiori": {
-        [questionNames.name]: {
-          validate: (input: string): boolean | string => {
-            if (!input || input.length < 3) {
-              return "Name length must be >= 3 characters";
-            }
-            return true;
-          },
-          default: "superapp1"
-        },
-        [questionNames.title]: {
-          default: "Super App"
-        }
-      }
-    };
-    return extensions;
-  }
-}
-```
-
-**STEP**: 7 — Add new left-hand navigation steps and prompts
-
-**DESCRIPTION**: Provide _getSteps() to add navigation items (one step maps to one prompt() call). Implement prompting() to display questions for each step, store answers in localAnswers for later phases. Use guiOptions.breadcrumb as needed for Yeoman UI.
-
-**LANGUAGE**: typescript
-
-**CODE**:
-```typescript
-import Generator from "yeoman-generator";
-import { FioriGeneratorExtensionAPI } from "@sap/generator-fiori";
-import { IPrompt as YUIStep } from "@sap-devx/yeoman-ui-types";
-
-export default class SampleFioriGenExt extends Generator implements FioriGeneratorExtensionAPI {
-  private localAnswers: Record<string, any> = {};
-
-  _getSteps(): YUIStep[] {
-    return [
-      { name: "Extension step 1", description: "Extension step 1 description" },
-      { name: "Extension step 2", description: "Extension step 2 description" }
-    ];
-  }
-
-  async prompting(): Promise<void> {
-    // Prompts for "Extension step 1"
-    const answersPrompt1 = await this.prompt([
-      {
-        type: "input",
-        guiOptions: { breadcrumb: true },
-        name: "prompt1",
-        message: "Sample prompt1",
-        default: "Default value prompt1",
-        validate: (val: string) => val ? true : "Enter a value for prompt1"
-      },
-      {
-        type: "input",
-        guiOptions: { breadcrumb: true },
-        name: "prompt2",
-        message: "Sample prompt2",
-        validate: (val: string) => val ? true : "Enter a value for prompt2"
-      }
-    ]);
-
-    // Prompts for "Extension step 2"
-    const answersPrompt2 = await this.prompt([
-      {
-        type: "input",
-        guiOptions: { breadcrumb: true },
-        name: "prompt3",
-        message: "Sample prompt3",
-        default: () => (this.fioriGeneratorState?.project?.namespace || "")
-      },
-      {
-        type: "input",
-        guiOptions: { breadcrumb: true },
-        name: "prompt4",
-        message: "Sample prompt4"
-      }
-    ]);
-
-    // Combine answers for access in later phases
-    this.localAnswers = { ...answersPrompt1, ...answersPrompt2 };
-    this.log(`Extension answers: ${JSON.stringify(this.localAnswers)}`);
-  }
-}
-```
-
-**STEP**: 8 — Write/update files during the writing phase (in-memory FS)
-
-**DESCRIPTION**: Use this.fs (Yeoman mem-fs) to write new files and extend existing JSON files (manifest.json, package.json). The Fiori generator composes your extension after prompting and ensures generated project files exist in mem-fs before your writing() runs.
-
-**LANGUAGE**: typescript
-
-**CODE**:
-```typescript
-import Generator from "yeoman-generator";
-
-export default class SampleFioriGenExt extends Generator {
-  private localAnswers: Record<string, any> = {};
-
-  async writing(): Promise<void> {
-    const manifestPath = this.destinationPath("webapp", "manifest.json");
-
-    // Write a custom JSON file with answers
-    this.fs.writeJSON(this.destinationPath("sample.json"), {
-      moduleName: this.fioriGeneratorState?.project?.name,
-      moduleNamespace: this.fioriGeneratorState?.project?.namespace,
-      ...this.localAnswers
-    });
-
-    // Extend manifest.json with tags
-    this.fs.extendJSON(manifestPath, {
-      "sap.app": {
-        tags: { keywords: ["fiori", "custom extension", "acme"] }
-      }
-    });
-
-    // Add/extend package.json (e.g. devDependency)
-    const packageJsonPath = this.destinationPath("package.json");
-    if (this.fs.exists(packageJsonPath)) {
-      this.fs.extendJSON(packageJsonPath, {
-        devDependencies: { "fast-glob": "3.2.12" }
-      });
-    }
-  }
-}
-```
-
-**STEP**: 9 — Run & test the extension in VS Code / BAS / CLI
-
-**DESCRIPTION**: After global install or bundling, open BAS or VS Code Application Wizard. Use "SAP Fiori application" generator (package @sap/generator-fiori v1.9.7+) — your extension steps should appear in the left-hand navigation. CLI usage is supported when installed globally.
-
-**LANGUAGE**: text
-
-**CODE**:
-```
-# If installed globally:
-# - In Business Application Studio / VS Code: open Application Wizard, choose "SAP Fiori application"
-# - In CLI: run the Fiori generator as you normally would (generator will compose installed extensions)
-
-# Confirm UI shows "Extension step 1" and "Extension step 2" and the prompt defaults/validators are applied.
-```
-
-**STEP**: 10 — Deployment resources & additional help
-
-**DESCRIPTION**: Links to sample repo and BAS deployment notes. Community support contacts.
-
-**LANGUAGE**: text
-
-**CODE**:
-```
-Sample extension repository:
-https://github.com/SAP-samples/fiori-tools-samples/sample-fiori-gen-ext
-
-BAS deployment notes:
-sample-fiori-gen-ext/deploy_extension.md within the sample repository
-
-Community & support:
-- SAP Community Forum: https://answers.sap.com/tags/73555000100800002345
-- Email: SAPFioriElements@sap.com
-```
---------------------------------
-
-**TITLE**: Add the xml-js External Library to an SAP Fiori (SAPUI5) Freestyle App
-
-**INTRODUCTION**: This guide shows a reproducible, code-first method to add the xml-js third-party library to a SAPUI5 freestyle (Fiori) application. It includes npm installation, copying a browser-ready build into webapp resources, creating a small UI5 wrapper module, referencing the script in index.html, and example usage from a controller. Use this to parse/convert XML in the browser inside your SAP Fiori UI app.
-
-**TAGS**: SAPUI5, Fiori, xml-js, third-party, npm, webapp, resources, controller, index.html
-
-STEP: 1 — Install xml-js with npm
-DESCRIPTION: Add the xml-js package to your project dependencies so you can access the package files (browser build) in node_modules.
+STEP: Build and install the sample extension (local development)
+DESCRIPTION: Clone the sample repo, install node dependencies, build the extension bundle, create an installable tgz, and install it globally for local testing.
 LANGUAGE: Shell
 CODE:
 ```bash
-# from the root of your project (where package.json lives)
+# Clone repo (example)
+git clone https://github.com/SAP-samples/fiori-tools-samples.git
+cd sample-fiori-gen-ext
+
+# Install dependencies (requires yarn)
+yarn install
+
+# Bundle the extension
+yarn bundle
+
+# Create installable artefact
+npm pack
+
+# Install the generated tgz globally for testing (replace with actual path)
+npm i -g <path-to-generated-tgz>
+```
+
+STEP: Bundling for deployment to Business Application Studio (BAS)
+DESCRIPTION: Recommended workflow to prepare a deployable bundle that avoids runtime installs in BAS dev spaces. Use esbuild-based bundling provided in the sample. Check the bundle into the repo for WEX deployments.
+LANGUAGE: Shell
+CODE:
+```bash
+# Bundle the extension (esbuild script usage)
+yarn bundle
+
+# Create the tgz for local testing
+npm pack
+
+# Install locally to test
+npm i -g <path-to-generated-tgz>
+```
+
+STEP: Extension installation locations and package.json requirements
+DESCRIPTION: Where to install extension modules so the Fiori generator discovers them, and the required package.json keywords and naming conventions.
+LANGUAGE: JSON
+CODE:
+```json
+{
+    "notes": [
+        "Install locations that will be scanned for extension generators:",
+        "1. Global npm module location (Run `npm -g root` to view path). Install using `npm install -g <extension-module-tgz>`",
+        "2. Any standard install locations in a BAS dev space (pre-install configuration for dev spaces)",
+        "3. Custom location defined by the VSCode setting: `Application Wizard: Installation Location`"
+    ],
+    "requirements": [
+        "Module folder name must include the string `fiori-gen-ext` (package name typically includes this).",
+        "package.json must include the keyword: `\"fiori-generator-extension\"`.",
+        "Include the `yeoman-generator` keyword to indicate this is a Yeoman generator."
+    ],
+    "example": {
+        "name": "@acme/acme-fiori-gen-ext",
+        "keywords": [
+            "fiori-generator-extension"
+        ]
+    }
+}
+```
+
+STEP: Implement the FioriGeneratorExtensionAPI interface
+DESCRIPTION: Implement this interface in your generator to provide settings, prompt extensions, and navigation steps to the host @sap/generator-fiori. Import types from @sap/generator-fiori.
+LANGUAGE: TypeScript
+CODE:
+```typescript
+export interface FioriGeneratorExtensionAPI {
+    /**
+     * Returns the settings to control some prompt and generation options
+     */
+    _getSettings?: () => FioriGeneratorSettings;
+    /**
+     * Returns the extensions which extend existing Fiori generator prompts
+     */
+    _getExtensions?: () => FioriGeneratorPromptExtension;
+    /**
+     * Returns the navigation steps which group new prompts provided by the `prompting` phase
+     */
+    _getSteps?: () => Step[];
+}
+```
+
+STEP: Customize existing Fiori generator prompts (extend validators/defaults)
+DESCRIPTION: Provide _getExtensions implementation to extend/promote modifications for existing Project Attributes prompts (name, title, namespace, description, targetFolder, ui5Version). Extensions can override default and validate fields. Example below shows customizing the module name prompt to require length > 3 and set a default.
+LANGUAGE: TypeScript
+CODE:
+```typescript
+...
+import { FioriGeneratorExtensionAPI, FioriGeneratorPromptNames } from "@sap/generator-fiori";
+
+...
+class extends Generator implements FioriGeneratorExtensionAPI
+...
+// Get the Fiori generator "Project Attributes" step main question names
+const { projectAttributes: { mainQuestions: questionNames } } = FioriGeneratorPromptNames;
+...
+...
+    // Provide the extension prompts
+    _getExtensions(): FioriGeneratorPromptExtension {
+        this.log(`Getting extension defintions`);
+        const extensions = {
+            "@sap/generator-fiori": {
+                [questionNames.name]: {
+                    validate: (input: string): boolean | string => {
+                        if (input.length < 3) {
+                           return "Name length > 3";
+                        }
+                        return true;
+                    },
+                    default: "superapp1",
+                }
+            }
+        }
+        return extensions;
+    }
+...
+```
+
+STEP: Add new navigation steps and prompts to the Application Wizard UI
+DESCRIPTION: Provide _getSteps to expose navigation entries on the left-hand side. For each step you must call prompt() once in the generator's prompting lifecycle. The example below adds two steps and runs corresponding prompt groups. Store combined answers to a local object for use in later phases.
+LANGUAGE: TypeScript
+CODE:
+```typescript
+...
+import { FioriGeneratorExtensionAPI } from "@sap/generator-fiori";
+import { IPrompt as YUIStep } from "@sap-devx/yeoman-ui-types";
+...
+class extends Generator implements FioriGeneratorExtensionAPI {
+...
+    async prompting(): Promise<void> {
+        this.log('Sample Fiori generator extension: prompting()');
+        // These are the prompts for the first step
+        const answersPrompt1 = await this.prompt([
+            {
+                type: "input",
+                guiOptions: {
+                breadcrumb: true,
+                },
+                name: "prompt1",
+                message: "Sample prompt1",
+                default: 'Default value prompt1',
+                validate: (val, answers): boolean | string =>
+                    val ? true : "Validation message from prompt1, enter a value"
+            },
+            {
+                type: "input",
+                guiOptions: {
+                breadcrumb: true,
+                },
+                name: "prompt2",
+                message: "Sample prompt2",
+                validate: (val, answers): boolean | string =>
+                val ? true : "Validation message from prompt2, enter a value"
+            }
+        ]);
+        this.log(`Answers from sample sub-generator "Extension step 1" prompts:  ${JSON.stringify(answersPrompt1)}`);
+        // These are the prompts for the second step
+        const answersPrompt2 = await this.prompt([
+            {
+                type: "input",
+                guiOptions: {
+                breadcrumb: true,
+                },
+                name: "prompt3",
+                message: "Sample prompt3",
+                default: () => this.fioriGeneratorState.project.namespace || ""
+            },
+            {
+                type: "input",
+                guiOptions: {
+                breadcrumb: true,
+                },
+                name: "prompt4",
+                message: "Sample prompt4"
+            }
+        ]);
+        this.log(`Answers from sample sub-generator "Extension step 2" prompts:  ${JSON.stringify(answersPrompt2)}`);
+        // Assign local answers for access in following phases
+        this.localAnswers = Object.assign({}, answersPrompt1, answersPrompt2);
+    }
+    // Return the nav steps that will be added to the LHS navigation panel
+    // Note: for each step there must be one call to prompt()
+    _getSteps(): YUIStep[] {
+        return [
+            {
+                name: "Extension step 1",
+                description: "Extension step 1 description",
+            },
+            {
+                name: "Extension step 2",
+                description: "Extension step 2 description",
+            }
+        ];
+    }
+...
+}
+```
+
+STEP: Conditionally add steps (reference)
+DESCRIPTION: To show/hide steps conditionally (e.g., based on previous answers), follow patterns similar to the generator-foodq example in yeoman-ui. Use conditional logic in _getSteps or prompt flows as needed.
+LANGUAGE: Shell
+CODE:
+```bash
+# Reference example repository for conditional steps:
+# https://github.com/SAP/yeoman-ui/tree/master/packages/generator-foodq
+```
+
+STEP: Update or write files during the writing phase (use Yeoman in-memory fs)
+DESCRIPTION: The Fiori generator composes extensions after prompting and places them at the end of the run loop so your extension's writing() can extend generated files already present in memory. Use this.fs to writeJSON, extendJSON, check existence, and update package.json or manifest.json.
+LANGUAGE: TypeScript
+CODE:
+```typescript
+...
+    async writing(): Promise<void> {
+        const manifestPath = this.destinationPath('webapp', 'manifest.json');
+        // Write a new file with some prompt answers
+        this.fs.writeJSON(this.destinationPath('sample.json'), {
+        moduleName: this.fioriGeneratorState.project.name,
+        moduleNamespace: this.fioriGeneratorState.project.namespace,
+        ...this.localAnswers
+        });
+
+        // Extend the application manifest.json
+        this.fs.extendJSON(manifestPath, {
+        'sap.app': {
+            tags: {
+                keywords: ["fiori", "custom extension", "acme"]
+            }
+        }});
+
+        // Update the package.json, for example, by adding a dependency
+        const packageJsonPath = this.destinationPath('package.json');
+        if (this.fs.exists(packageJsonPath)) {
+        this.fs.extendJSON(packageJsonPath, { devDependencies: { 'fast-glob': '3.2.12' }})
+        };
+    }
+...
+```
+
+STEP: Deployment to Business Application Studio (BAS)
+DESCRIPTION: For instructions to deploy the extension bundle to BAS using WEX, see the sample repo deploy instructions. Check the bundle into your repo for WEX tool deployment and replace local npm pack/install steps with your CI release workflow if desired.
+LANGUAGE: Plaintext
+CODE:
+```text
+Deployment reference:
+https://github.com/SAP-samples/fiori-tools-samples/sample-fiori-gen-ext/deploy_extension.md
+
+Notes:
+- For repo-based releases you can create a GitHub release (Draft a new release) and let WEX deploy the bundle to BAS dev spaces.
+- When using WEX, step of installing tgz locally is replaced by WEX tool configuration for BAS dev spaces.
+```
+
+STEP: References and support
+DESCRIPTION: Links for the sample repository, inquirer prompt spec reference, Yeoman compose/run-loop, and community support channels.
+LANGUAGE: Plaintext
+CODE:
+```text
+Sample extension repo:
+https://github.com/SAP-samples/fiori-tools-samples/sample-fiori-gen-ext
+
+Inquirer question format:
+https://github.com/SBoudrias/Inquirer.js/tree/master/packages/inquirer#questions
+
+Yeoman composeWith / run loop:
+https://yeoman.io/authoring/composability.html
+https://yeoman.io/authoring/running-context.html
+
+Conditional steps example:
+https://github.com/SAP/yeoman-ui/tree/master/packages/generator-foodq
+
+Community & support:
+https://answers.sap.com/tags/73555000100800002345
+Email: SAPFioriElements@sap.com
+```
+--------------------------------
+
+**TITLE**: Add the xml-js External Library to a SAP Fiori (SAPUI5) Freestyle Application
+
+**INTRODUCTION**: This guide shows two safe, code-focused ways to add the third‑party xml-js library to a SAPUI5 freestyle application (sample project: ./ztravelapp). Use Case: parse/convert XML ↔ JSON in client-side controllers. Choose the approach that matches your project toolchain (npm + bundler or static browser script).
+
+**TAGS**: sapui5, sap-fiori, sap-btp, xml-js, third-party-library, freestyle, BAS, northwind
+
+**STEP**: Prerequisites
+**DESCRIPTION**: Ensure you have the following before adding the library.
+- SAP BTP account
+- SAP Business Application Studio subscription (follow the tutorial linked in your environment)
+- Sub-account destination named `northwind` is available (a `northind` configuration is attached)
+- Sample project path: ./ztravelapp/README.md
+**LANGUAGE**: text
+**CODE**:
+```text
+Prerequisites summary:
+- SAP BTP account
+- SAP Business Application Studio subscription
+- Destination: northwind (see attached 'northind' configuration)
+- Sample project: ./ztravelapp/README.md
+Library to add: xml-js (npm package)
+```
+
+**STEP**: Option A — Add xml-js via npm (recommended if you use UI5 Tooling / bundler)
+**DESCRIPTION**: Install xml-js into your project, let your bundler or UI5 Tooling resolve it, then import/require it in controllers. This integrates cleanly with modern build flows.
+**LANGUAGE**: Shell
+**CODE**:
+```bash
+# From your project root
 npm install xml-js --save
 ```
 
-STEP: 2 — Copy browser UMD/minified build into webapp resources
-DESCRIPTION: Copy the browser-ready bundle (UMD/minified) from node_modules into your application webapp/resources folder. Adjust paths if the package distribution differs (check node_modules/xml-js/dist or node_modules/xml-js for a browser build). Example uses the common dist/xml-js.min.js path and target folder webapp/resources/lib/xml-js/.
-LANGUAGE: Shell
-CODE:
-```bash
-# create target folder and copy the minified browser build
-mkdir -p webapp/resources/lib/xml-js
-cp node_modules/xml-js/dist/xml-js.min.js webapp/resources/lib/xml-js/xml-js.min.js
-# If the package has a different path, inspect node_modules/xml-js/ to find the browser UMD file.
-```
-
-STEP: 3 — Create a small UI5 wrapper module for consistent sap.ui.define usage
-DESCRIPTION: Create webapp/thirdparty/xml-js.js as a thin wrapper that returns the global object produced by the included browser bundle. This lets you require the library with sap.ui.define(['thirdparty/xml-js'], ...) in controllers and other UI5 modules.
-LANGUAGE: JavaScript
-CODE:
+**STEP**: Option A — Controller usage with CommonJS require (UI5 with bundler/require support)
+**DESCRIPTION**: Use require() to load xml-js in controllers when bundling or running with a CommonJS-compatible loader.
+**LANGUAGE**: JavaScript
+**CODE**:
 ```javascript
-// File: webapp/thirdparty/xml-js.js
-// Thin wrapper: return the global produced by the included xml-js browser bundle
-(function () {
-  // xml-js exposes an object in the browser UMD build. Try common global names.
-  var xmljs = window['xml-js'] || window.xmljs || window.convert || window.XMLJS || window.xml2js;
-  if (!xmljs) {
-    throw new Error("xml-js library not found. Ensure resources/lib/xml-js/xml-js.min.js is included in index.html");
-  }
-
-  // If UI5 is present, define as a UI5 module
-  if (typeof sap !== "undefined" && sap.ui && sap.ui.define) {
-    sap.ui.define([], function () { return xmljs; });
-  } else if (typeof define === "function" && define.amd) {
-    // AMD environment
-    define(function () { return xmljs; });
-  } else {
-    // fall back to global
-    window['thirdparty-xml-js'] = xmljs;
-  }
-}());
-```
-
-STEP: 4 — Include the xml-js browser script in index.html
-DESCRIPTION: Add a script tag to load the browser bundle before your app bootstraps or before Component.js runs. This guarantees the global object exists before the wrapper/your modules are evaluated.
-LANGUAGE: HTML
-CODE:
-```html
-<!-- File: webapp/index.html -->
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Your App</title>
-    <!-- Include xml-js browser build -->
-    <script src="resources/lib/xml-js/xml-js.min.js"></script>
-
-    <!-- UI5 bootstrap and other includes -->
-    <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
-            data-sap-ui-theme="sap_belize"
-            data-sap-ui-libs="sap.m"
-            data-sap-ui-compatversion="edge"
-            data-sap-ui-oninit="module:sap/ui/core/ComponentSupport">
-    </script>
-  </head>
-  <body class="sapUiBody" id="content">
-    <!-- root control will be placed here by Component support -->
-  </body>
-</html>
-```
-
-STEP: 5 — Use xml-js from a UI5 controller
-DESCRIPTION: Require the wrapper module as a UI5 dependency, then call xml-js functions (xml2js, js2xml). Example shows xml2js usage to convert an XML string to a JS object.
-LANGUAGE: JavaScript
-CODE:
-```javascript
-// File: webapp/controller/Main.controller.js
+// webapp/controller/Main.controller.js
 sap.ui.define([
-  "sap/ui/core/mvc/Controller",
-  "thirdparty/xml-js" // path maps to webapp/thirdparty/xml-js.js created above
-], function (Controller, xmljs) {
+  "sap/ui/core/mvc/Controller"
+], function (Controller) {
   "use strict";
 
-  return Controller.extend("my.namespace.controller.Main", {
+  // If your build resolves npm modules via require()
+  var convert = (typeof require !== "undefined") ? require("xml-js") : null;
+
+  return Controller.extend("your.namespace.controller.Main", {
     onInit: function () {
-      var xml = '<note><to>User</to><from>AI</from><body>Hello</body></note>';
-
-      // xmljs exposes xml2js and js2xml functions
-      var result = xmljs.xml2js(xml, { compact: true, spaces: 4 });
-      console.log("Converted XML to JS object:", result);
-
-      // convert back to XML example
-      var xmlOut = xmljs.js2xml(result, { compact: true, spaces: 4 });
-      console.log("Converted JS back to XML:", xmlOut);
+      var xml = "<root><item>value</item></root>";
+      if (convert) {
+        // xml2json is provided by xml-js
+        var jsonString = convert.xml2json(xml, { compact: true, spaces: 2 });
+        console.log("xml-js output (string):", jsonString);
+        // If you prefer a JS object:
+        var jsonObj = JSON.parse(jsonString);
+        console.log("xml-js output (object):", jsonObj);
+      } else {
+        console.warn("xml-js not available via require()");
+      }
     }
   });
 });
 ```
 
-STEP: 6 — Automate copy as an npm script (optional)
-DESCRIPTION: Add an npm script to automate copying the browser build into your webapp resources after npm install.
-LANGUAGE: JSON
-CODE:
+**STEP**: Option A — Controller usage with ES module import (if your toolchain supports ES imports)
+**DESCRIPTION**: Import xml-js as an ES module when your bundler supports it. Use the exported functions directly.
+**LANGUAGE**: JavaScript
+**CODE**:
+```javascript
+// webapp/controller/Main.controller.js (with ES module support)
+import Controller from "sap/ui/core/mvc/Controller";
+import * as convert from "xml-js"; // bundler resolves this import
+
+export default Controller.extend("your.namespace.controller.Main", {
+  onInit() {
+    const xml = "<root><item>value</item></root>";
+    const jsonString = convert.xml2json(xml, { compact: true, spaces: 2 });
+    const jsonObj = JSON.parse(jsonString);
+    console.log(jsonObj);
+  }
+});
+```
+
+**STEP**: Option B — Add xml-js as a static browser script (no bundler)
+**DESCRIPTION**: Use the xml-js browser/UMD distribution: copy the distribution file into your app (webapp/resources/lib/) and register it so UI5 loads it. Then access the exposed global object in controllers. Confirm the global name exposed by the specific UMD file you copied (common names: window.convert, window.xmljs, or check the file header).
+**LANGUAGE**: File operations / JSON
+**CODE**:
+```text
+# Place the browser distribution file in:
+webapp/resources/lib/xml-js.min.js
+```
+
+**STEP**: Option B — Reference the static script in index.html (after UI5 bootstrap)
+**DESCRIPTION**: Include the library script after the UI5 bootstrap script tag so the global is available to controllers.
+**LANGUAGE**: HTML
+**CODE**:
+```html
+<!-- webapp/index.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Your App</title>
+    <script id="sap-ui-bootstrap"
+      src="resources/sap-ui-core.js"
+      data-sap-ui-libs="sap.m"
+      data-sap-ui-theme="sap_belize">
+    </script>
+
+    <!-- Add the xml-js browser distribution file -->
+    <script src="resources/lib/xml-js.min.js"></script>
+  </head>
+  <body class="sapUiBody" id="content">
+    <!-- App content -->
+  </body>
+</html>
+```
+
+**STEP**: Option B — Register the static script in manifest.json (alternative to index.html)
+**DESCRIPTION**: Use manifest.json to register the JS resource so UI5 loads it with the app.
+**LANGUAGE**: JSON
+**CODE**:
 ```json
-// snippet for package.json
+// webapp/manifest.json (snippet)
 {
-  "scripts": {
-    "postinstall": "mkdir -p webapp/resources/lib/xml-js && cp node_modules/xml-js/dist/xml-js.min.js webapp/resources/lib/xml-js/xml-js.min.js"
-  },
-  "dependencies": {
-    "xml-js": "^1.6.11"
+  "sap.ui5": {
+    "resources": {
+      "js": [
+        {
+          "uri": "resources/lib/xml-js.min.js"
+        }
+      ]
+    }
   }
 }
 ```
 
-STEP: 7 — Notes and project references
-DESCRIPTION: Additional context and references for this sample project.
-LANGUAGE: Text
-CODE:
-- Example sample project: ./ztravelapp/README.md demonstrates adding xml-js to a freestyle SAPUI5 application.
-- Prerequisites: an SAP BTP account and subscription to SAP Business Application Studio. See SAP BAS docs for environment setup.
-- If deploying to BTP/Cloud Foundry or ABAP, verify copy strategy (web resources must be included in deployment artifact).
-- Sub-account destination used in samples: northwind. See the attached northind configuration for destination details.
---------------------------------
+**STEP**: Option B — Controller usage when loaded as a global
+**DESCRIPTION**: Access the global object exposed by the UMD build. Check the library file to determine the exact global variable name; the example below tries common fallbacks.
+**LANGUAGE**: JavaScript
+**CODE**:
+```javascript
+// webapp/controller/Main.controller.js
+sap.ui.define([
+  "sap/ui/core/mvc/Controller"
+], function (Controller) {
+  "use strict";
 
-**TITLE**: Add xml-js External Library to a Freestyle SAP Fiori (SAPUI5) Application
+  return Controller.extend("your.namespace.controller.Main", {
+    onInit: function () {
+      var xml = "<root><item>value</item></root>";
 
-**INTRODUCTION**: Step-by-step instructions and ready-to-use code snippets to add the xml-js NPM package to a freestyle SAPUI5 application running in SAP Business Application Studio. Includes npm installs, ui5.yaml middleware configuration, and sample controller code that imports and uses xml-js via sap.ui.define.
+      // Try common global names (confirm with the UMD file you added)
+      var convert = window.convert || window.xmljs || window["xml-js"] || null;
 
-**TAGS**: sapui5, fiori, ui5-tooling, npm, xml-js, middleware, ui5-tooling-modules, sap-btp, business-application-studio
+      if (convert && typeof convert.xml2json === "function") {
+        var jsonString = convert.xml2json(xml, { compact: true, spaces: 2 });
+        var jsonObj = JSON.parse(jsonString);
+        console.log(jsonObj);
+      } else {
+        console.warn("xml-js global not found. Confirm the UMD file exposes a global and its name.");
+      }
+    }
+  });
+});
+```
 
-**STEP**: Prerequisites
-**DESCRIPTION**: Ensure you have the required accounts and subscriptions before beginning.
+**STEP**: Verify and test
+**DESCRIPTION**: Run the app in SAP Business Application Studio or on your deployed environment. Open browser console and ensure xml-js functions are callable and output matches expectations. For the sample project, check ./ztravelapp/README.md for project-specific instructions and adapt the file paths accordingly.
 **LANGUAGE**: text
 **CODE**:
 ```text
-- SAP BTP account with a subscribed SAP Business Application Studio instance
-- Dev Space: Create a "SAP Fiori" dev space in Business Application Studio
-- Sub-account destination named: northwind
-- Familiarity with freestyle SAPUI5 app generation (see SAP Fiori Tools docs)
+Verification checklist:
+- If using npm/bundler: confirm xml-js is in package.json and the bundler has included it.
+- If using static script: confirm webapp/resources/lib/xml-js.min.js exists and loads (check Network tab).
+- In browser console, invoke a conversion to confirm output:
+  - convert.xml2json('<root><a>1</a></root>', {compact: true, spaces: 2})
+```
+--------------------------------
+
+**TITLE**: Add xml-js External Library to SAP Fiori UI5 Application
+
+**INTRODUCTION**: Step-by-step instructions to add the third-party library xml-js to a freestyle SAPUI5 application, enable ui5-tooling middleware to support NPM package imports, and consume xml-js inside a controller.
+
+**TAGS**: fiori, sapui5, ui5, xml-js, npm, ui5-tooling, middleware
+
+**STEP**: Prerequisites
+
+**DESCRIPTION**: Ensure you have the required environment and subscriptions before starting.
+
+**LANGUAGE**: text
+
+**CODE**:
+```text
+- SAP Business Technology Platform (SAP BTP) account
+- Subscribed to SAP Business Application Studio (follow: https://help.sap.com/products/SAP%20Business%20Application%20Studio/9d1db9835307451daa8c930fbd9ab264/6331319fd9ea4f0ea5331e21df329539.html)
+- Sub-account destination named `northwind` available
 ```
 
 **STEP**: Create SAP Fiori Dev Space
-**DESCRIPTION**: From SAP BTP cockpit -> Instances and Subscriptions -> Open SAP Business Application Studio -> Create a new "SAP Fiori" dev space.
+
+**DESCRIPTION**: From SAP BTP cockpit open Instances and Subscriptions → SAP Business Application Studio → launch dev space manager and create a SAP Fiori dev space.
+
 **LANGUAGE**: text
+
 **CODE**:
 ```text
-Open SAP BTP cockpit -> Instances and Subscriptions -> Select SAP Business Application Studio -> Open Dev Space Manager -> Create "SAP Fiori" dev space
+Open SAP BTP cockpit → Instances and Subscriptions → Select SAP Business Application Studio → open dev space manager → Create "SAP Fiori" dev space
 ```
 
-**STEP**: Generate a freestyle SAPUI5 application
-**DESCRIPTION**: Use SAP Fiori Tools in Business Application Studio to create a new freestyle UI5 application. See documentation link for guided steps and templates.
+**STEP**: Generate Freestyle SAPUI5 Application
+
+**DESCRIPTION**: Scaffold a freestyle SAPUI5 app using SAP Fiori Tools. Refer to the official guide for details and options.
+
 **LANGUAGE**: text
+
 **CODE**:
 ```text
-Documentation: https://sapui5.hana.ondemand.com/sdk/#/topic/a460a7348a6c431a8bd967ab9fb8d918
-Follow the "Freestyle" app generator in SAP Business Application Studio (Wizard from Fiori project templates)
+Reference: Developing Apps with SAP Fiori Tools
+https://sapui5.hana.ondemand.com/sdk/#/topic/a460a7348a6c431a8bd967ab9fb8d918
 ```
 
-**STEP**: Install xml-js (third‑party library)
-**DESCRIPTION**: Add xml-js to your project's package.json and install it into node_modules.
-**LANGUAGE**: bash
+**STEP**: Install Third-Party Library (xml-js)
+
+**DESCRIPTION**: Add xml-js as a runtime dependency in your project package.json.
+
+**LANGUAGE**: Bash
+
 **CODE**:
 ```bash
-# From your project root
 npm install xml-js --save-prod
 ```
 
-**STEP**: Install UI5 tooling extension that enables use of NPM package names
-**DESCRIPTION**: Install the ui5-tooling-modules package which provides the middleware/task to let UI5 tooling resolve NPM package names (third-party modules).
-**LANGUAGE**: bash
+**STEP**: Install UI5 Tooling Extension (ui5-tooling-modules)
+
+**DESCRIPTION**: Add the ui5-tooling extension that provides a custom middleware/task enabling NPM package names to be used inside UI5 modules.
+
+**LANGUAGE**: Bash
+
 **CODE**:
 ```bash
-# From your project root
 npm install ui5-tooling-modules --save-prod
 ```
 
-**STEP**: Configure ui5.yaml to enable the middleware
-**DESCRIPTION**: Edit ui5.yaml in your project root and add the ui5-tooling-modules middleware entry under server.customMiddleware. Preserve YAML alignment/indentation. This middleware exposes NPM modules under sap.ui.define.
-**LANGUAGE**: yaml
+**STEP**: Enable ui5-tooling-middleware in ui5.yaml
+
+**DESCRIPTION**: Open ui5.yaml and append the provided task configuration. Maintain YAML alignment/indentation according to your existing file structure (this snippet is the block to insert under tasks).
+
+**LANGUAGE**: YAML
+
 **CODE**:
-```yaml
-# ui5.yaml (snippet showing where to append the middleware)
-specVersion: '2.1'
-metadata:
-  name: your.app.namespace
-server:
-  customMiddleware:
+```YAML
     - name: ui5-tooling-modules-middleware
       afterMiddleware: compression
       configuration:
         addToNamespace: true
-# (Other ui5.yaml sections such as "resources" and "builders" remain unchanged)
 ```
 
-**STEP**: Import xml-js in your controller via sap.ui.define
-**DESCRIPTION**: Update your controller (e.g., webapp/controller/View1.controller.js) to include "xml-js" in the dependency array and add the corresponding parameter name in the factory function. Use the imported module (named here as xmljs) to convert XML to JSON.
-**LANGUAGE**: javascript
+**STEP**: Import xml-js into View1.controller.js (sap.ui.define)
+
+**DESCRIPTION**: Open webapp/controller/View1.controller.js and add xml-js as a dependency in sap.ui.define. Update the controller function signature to accept the library reference. Use the exact module name "xml-js" and a matching parameter name (e.g., xmljs).
+
+**LANGUAGE**: JavaScript
+
 **CODE**:
-```javascript
-// File: webapp/controller/View1.controller.js
+```JS
 sap.ui.define(
-  [
-    "sap/ui/core/mvc/Controller",
-    "xml-js" // third-party NPM module
-  ],
-  function (Controller, xmljs) {
-    "use strict";
-
-    return Controller.extend("your.app.namespace.controller.View1", {
-      onInit: function () {
-        // Example: convert an XML string to JSON using xml-js
-        var xml = '<root><item id="1">Value</item></root>';
-
-        var xmlToJson = JSON.parse(
-          xmljs.xml2json(xml, {
-            compact: true,
-            spaces: 4
-          })
-        );
-
-        console.log(">>>> xmlToJson", JSON.stringify(xmlToJson));
-        // Use xmlToJson in your controller logic...
-      }
-
-      // other controller methods...
-    });
-  }
-);
+  ["sap/ui/core/mvc/Controller", "xml-js"],
 ```
 
-**STEP**: Reference: Third-Party Modules with sap.ui.define
-**DESCRIPTION**: Review UI5 documentation about including third-party modules via sap.ui.define (Third Party Modules section).
+**STEP**: Update controller function parameters to include xml-js
+
+**DESCRIPTION**: Change the function parameter list to receive the imported xml-js module (parameter name here is xmljs). This must align positionally with the sap.ui.define dependency array.
+
+**LANGUAGE**: JavaScript
+
+**CODE**:
+```JS
+function (Controller, xmljs) {
+```
+
+**STEP**: Consume xml-js inside your controller
+
+**DESCRIPTION**: Use xml-js API to convert XML to JSON. Example uses xmljs.xml2json then parses the returned JSON string to a JavaScript object. Place this code where you handle the XML input (e.g., in an event handler or onInit).
+
+**LANGUAGE**: JavaScript
+
+**CODE**:
+```JS
+ var xmlToJson = JSON.parse(
+      xmljs.xml2json(xml, {
+        compact: true,
+        spaces: 4,
+      })
+    );
+    console.log(`>>>> xmlToJson ${JSON.stringify(xmlToJson)}`);
+```
+
+**STEP**: Reference for sap.ui.define Third-Party Modules
+
+**DESCRIPTION**: Review the official SAPUI5 documentation for details on importing third-party modules using sap.ui.define (Third Party Modules section).
+
 **LANGUAGE**: text
+
 **CODE**:
 ```text
-Documentation: https://sapui5.hana.ondemand.com/sdk/#/api/sap.ui%23methods/sap.ui.define
-See "Third Party Modules" section for guidance on how they are imported and referenced via ui5-tooling middleware.
-```
-
-**STEP**: Verify and run your app
-**DESCRIPTION**: Start the UI5 server (e.g., using "ui5 serve" or your project's start script) and test the controller to verify xml-js is available and functional.
-**LANGUAGE**: bash
-**CODE**:
-```bash
-# Example (use your project's configured start script if different)
-npx ui5 serve --open index.html
-# Or
-npm start
+https://sapui5.hana.ondemand.com/sdk/#/api/sap.ui%23methods/sap.ui.define
 ```
 
 **STEP**: Additional resources
-**DESCRIPTION**: Helpful blog posts and resources on external libraries in UI5 and related tips.
+
+**DESCRIPTION**: Further reading and examples for using external libraries in UI5/CAP and Smart Templates tips.
+
 **LANGUAGE**: text
+
 **CODE**:
 ```text
-- External libraries in UI5 + CAP + SAP Build Work Zone, Standard Edition:
+- External libraries in UI5 + CAP + SAP Build Work Zone, Standard Edition
   https://blogs.sap.com/2023/11/08/external-libraries-in-ui5-cap-sap-build-work-zone-standard-edition/
-
-- Smart templates and SAP Fiori Apps – 57 Tips and Tricks:
+- Smart templates and SAP Fiori Apps – 57 Tips and Tricks
   https://blogs.sap.com/2019/09/20/smart-templates-tips-and-tricks/
 ```
 --------------------------------

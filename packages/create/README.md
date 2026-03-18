@@ -68,7 +68,7 @@ Command group for adding features to existing SAP Fiori applications. A subcomma
 
 Usage: `npx --yes @sap-ux/create@latest add [subcommand] [options]`
 
-The available subcommands are: `mockserver-config`, `smartlinks-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config` and `variants-config`
+The available subcommands are: `mockserver-config`, `smartlinks-config`, `eslint-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config`, `variants-config` and `adp-cf-config`
 
 
 --------------------------------
@@ -103,6 +103,22 @@ Options:
 
 --------------------------------
 
+## [`add eslint-config`](#add-eslint-config)
+
+Add an ESLint configuration to a project including the SAP Fiori tools lint plugin (`@sap-ux/eslint-plugin-fiori-tools`).
+
+Example:
+
+`npx --yes @sap-ux/create@latest add eslint-config`
+
+Options:
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+- `-c, --config <string>` - The name of the SAP Fiori tools eslint plugin configuration to be used. _(default: `recommended`)_
+- `-n, --skip-install` - Skip the `npm install` step.
+
+--------------------------------
+
 ## [`add cds-plugin-ui5`](#add-cds-plugin-ui5)
 
 Add the `cds-plugin-ui5` module and all prerequisites to a CAP project for UI5 server integration.
@@ -129,7 +145,7 @@ Example:
 Options:
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 
@@ -142,7 +158,7 @@ Example:
 `npx --yes @sap-ux/create@latest add cards-editor`
 
 Options:
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -151,6 +167,9 @@ Options:
 ## [`add model`](#add-model)
 
 Add a new OData service and SAPUI5 model to an existing adaptation project.
+
+
+This command is not supported for Cloud Foundry projects.
 
 Example:
 
@@ -165,13 +184,16 @@ Options:
 
 Adds an annotation to the OData Source of the base application in an adaptation project.
 
+
+This command is not supported for Cloud Foundry projects.
+
 Example:
 
 `npx --yes @sap-ux/create@latest add annotations`
 
 Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 
@@ -184,7 +206,7 @@ Example:
 `npx --yes @sap-ux/create@latest add html`
 
 Options:
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -212,11 +234,11 @@ Example:
 `npx --yes @sap-ux/create@latest add deploy-config`
 
 Options:
-- `-t, --target <string>` _(required)_ - Target for deployment: ABAP or Cloud Foundry (not yet implemented)
+- `-t, --target <string>` - Target for deployment: ABAP or Cloud Foundry (not yet implemented)
 - `-s, --simulate` - Simulate only. Do not write. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
-- `-b, --base-file <string>` _(required)_ - The base config file of the project. _(default: "ui5.yaml")_
-- `-d, --deploy-file <string>` _(required)_ - The name of the deploy config file to be written. _(default: "ui5-deploy.yaml")_
+- `-b, --base-file <string>` - The base config file of the project. _(default: "ui5.yaml")_
+- `-d, --deploy-file <string>` - The name of the deploy config file to be written. _(default: "ui5-deploy.yaml")_
 
 --------------------------------
 
@@ -229,9 +251,26 @@ Example:
 `npx --yes @sap-ux/create@latest add variants-config`
 
 Options:
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
+
+--------------------------------
+
+## [`add adp-cf-config`](#add-adp-cf-config)
+
+Configure an existing Cloud Foundry adaptation project for local preview by fetching reusable libraries, building the project, and configuring ui5.yaml file middlewares.
+
+
+**⚠️ Experimental**: This command is experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions, if needed.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add adp-cf-config`
+
+Options:
+- `-v, --verbose` - Show verbose information.
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 
@@ -241,7 +280,7 @@ Command group for converting existing SAP Fiori applications. A subcommand is re
 
 Usage: `npx --yes @sap-ux/create@latest convert [subcommand] [options]`
 
-The available subcommands are: `preview-config`
+The available subcommands are: `preview-config` and `eslint-config`
 
 
 --------------------------------
@@ -257,9 +296,25 @@ Examples:
 `npx --yes @sap-ux/create@latest convert preview-config`
 
 Options:
-- `-s, --simulate <boolean>` _(required)_ - Simulate only. Do not write.
+- `-s, --simulate <boolean>` - Simulate only. Do not write.
 - `-v, --verbose` - Show verbose information.
-- `-t, --tests <boolean>` _(required)_ - Also, convert test suite and test runners.
+- `-t, --tests <boolean>` - Also, convert test suite and test runners.
+
+--------------------------------
+
+## [`convert eslint-config`](#convert-eslint-config)
+
+Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (ESLint version 9).
+
+Examples:
+
+`npx --yes @sap-ux/create@latest convert eslint-config`
+
+Options:
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+- `-c, --config <string>` - The name of the SAP Fiori tools ESLint plugin configuration to be used. _(default: `recommended`)_
+- `-n, --skip-install` - Skip the `npm install` step.
 
 --------------------------------
 
@@ -302,19 +357,25 @@ The available subcommands are: `data-source` and `inbound`
 
 Replace the OData Source of the base application in an adaptation project.
 
+
+This command is not supported for Cloud Foundry projects.
+
 Example:
 
 `npx --yes @sap-ux/create@latest change data-source`
 
 Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 
 ## [`change inbound`](#change-inbound)
 
 Replace the inbound FLP configurations of the base application in an adaptation project.
+
+
+This command is not supported for Cloud Foundry projects.
 
 Example:
 

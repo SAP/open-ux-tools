@@ -7,7 +7,7 @@ import {
     request,
     writeFragment
 } from '../../../src/adp/api-handler';
-import { fetchMock } from 'mock/window';
+import { documentMock, fetchMock } from 'mock/window';
 
 describe('API Handler', () => {
     describe('request', () => {
@@ -25,6 +25,30 @@ describe('API Handler', () => {
 
             await request(ApiEndpoints.FRAGMENT, RequestMethod.GET);
             expect(jsonSpy.mock.calls.length).toBe(1);
+        });
+
+        test('GET - parses the response (with baseUrl from ui5-patched-router)', async () => {
+            const mockBaseUrl = '/test.base.url';
+            documentMock.getElementById.mockImplementation((id: string) => {
+                if (id === 'root') {
+                    return {
+                        dataset: {
+                            openUxPreviewBaseUrl: mockBaseUrl
+                        }
+                    };
+                }
+                return null;
+            });
+            const jsonSpy = jest.fn();
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+
+            await request(ApiEndpoints.FRAGMENT, RequestMethod.GET);
+            expect(jsonSpy.mock.calls.length).toBe(1);
+            expect(fetchMock).toHaveBeenCalledWith(`${mockBaseUrl}${ApiEndpoints.FRAGMENT}`, expect.any(Object));
         });
 
         test('GET - throws error when is not ok', async () => {

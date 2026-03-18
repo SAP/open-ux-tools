@@ -1,5 +1,5 @@
 const base = require('../../eslint.config.js');
-const tsParser = require('@typescript-eslint/parser');
+const { tsParser } = require('typescript-eslint');
 
 module.exports = [
     ...base,
@@ -8,19 +8,19 @@ module.exports = [
             parserOptions: {
                 parser: tsParser,
                 tsconfigRootDir: __dirname,
-                project: './tsconfig.eslint.json',
-            },
+                project: './tsconfig.eslint.json'
+            }
         },
         rules: {
-        'jsdoc/require-returns': 'off',
-        'jsdoc/require-param': 'off',
-        'jsdoc/require-jsdoc': 'off',
-        'jsdoc/match-description': 'off',
-        'jsdoc/multiline-blocks': 'off',
-        'jsdoc/tag-lines': 'off',
-        'jsdoc/require-param-description': 'off',
-        'jsdoc/no-multi-asterisks': 'off',
-        'jsdoc/check-tag-names': 'off'
+            'jsdoc/require-returns': 'off',
+            'jsdoc/require-param': 'off',
+            'jsdoc/require-jsdoc': 'off',
+            'jsdoc/match-description': 'off',
+            'jsdoc/multiline-blocks': 'off',
+            'jsdoc/tag-lines': 'off',
+            'jsdoc/require-param-description': 'off',
+            'jsdoc/no-multi-asterisks': 'off',
+            'jsdoc/check-tag-names': 'off'
+        }
     }
-    },
 ];

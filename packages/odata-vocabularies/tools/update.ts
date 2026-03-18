@@ -20,6 +20,9 @@ export const SUPPORTED_VOCABULARIES: SupportedVocabularies = {
     'com.sap.vocabularies.Analytics.v1': {
         uri: 'https://sap.github.io/odata-vocabularies/vocabularies/Analytics.json'
     },
+    'com.sap.vocabularies.Auditing.v1': {
+        uri: 'https://sap.github.io/odata-vocabularies/vocabularies/Auditing.json'
+    },
     'Org.OData.Authorization.V1': {
         uri: 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Authorization.V1.json'
     },

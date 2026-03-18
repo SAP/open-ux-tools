@@ -1,5 +1,228 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.105
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/nodejs-utils@0.2.17
+
+## 0.1.104
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.85
+
+## 0.1.103
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.84
+
+## 0.1.102
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/nodejs-utils@0.2.16
+
+## 0.1.101
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.82
+
+## 0.1.100
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.81
+
+## 0.1.99
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/fiori-generator-shared@0.13.80
+
+## 0.1.98
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.79
+
+## 0.1.97
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.78
+
+## 0.1.96
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.77
+
+## 0.1.95
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/fiori-generator-shared@0.13.76
+
+## 0.1.94
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/nodejs-utils@0.2.16
+
+## 0.1.93
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.74
+
+## 0.1.92
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/nodejs-utils@0.2.15
+
+## 0.1.91
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.72
+
+## 0.1.90
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.71
+
+## 0.1.89
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.70
+
+## 0.1.88
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.69
+
+## 0.1.87
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/nodejs-utils@0.2.14
+
+## 0.1.86
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.67
+
+## 0.1.85
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.66
+
+## 0.1.84
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.65
+
+## 0.1.83
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.64
+
+## 0.1.82
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/nodejs-utils@0.2.13
+
+## 0.1.81
+
+### Patch Changes
+
+- Updated dependencies [9f11dd2]
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/fiori-generator-shared@0.13.62
+    - @sap-ux/nodejs-utils@0.2.12
+
+## 0.1.80
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.61
+
+## 0.1.79
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.60
+- @sap-ux/btp-utils@1.1.6
+- @sap-ux/nodejs-utils@0.2.11
+
+## 0.1.78
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.59
+
+## 0.1.77
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.58
+
+## 0.1.76
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.57
+
+## 0.1.75
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/fiori-generator-shared@0.13.56
+
+## 0.1.74
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.55
+
 ## 0.1.73
 
 ### Patch Changes

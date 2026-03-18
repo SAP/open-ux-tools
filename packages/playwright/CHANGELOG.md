@@ -1,5 +1,51 @@
 # @sap-ux-private/playwright
 
+## 0.2.12
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+
+## 0.2.11
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+
+## 0.2.10
+
+### Patch Changes
+
+- 451b2f0: fix(deps): update dependency @playwright/test to v1.58.2
+
+## 0.2.9
+
+### Patch Changes
+
+- 8017bd3: updates for minimatch
+
+    #37169
+
+## 0.2.8
+
+### Patch Changes
+
+- 9072d52: fix(deps): update dependency promisify-child-process to v5
+
+## 0.2.7
+
+### Patch Changes
+
+- 97735d2: fix(deps): update dependency portfinder to v1.0.38
+
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+
 ## 0.2.5
 
 ### Patch Changes

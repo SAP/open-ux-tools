@@ -8,7 +8,7 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { CustomElement, Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContentData } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, extendJSON } from '../common/file';
+import { copyTpl, extendJSON, type IdGeneratorFunction, createIdGenerator } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 import { getManifest } from '../common/utils';
@@ -49,13 +49,15 @@ function getAdditionalDependencies(ui5Version?: string): string | undefined {
  * @param {CustomSection} data - a custom section configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
+ * @param {(baseId: string) => string} generateId - Function to generate unique IDs for the building block elements.
  * @returns enhanced configuration
  */
 function enhanceConfig(
     fs: Editor,
     data: CustomSectionUnion,
     manifestPath: string,
-    manifest: Manifest
+    manifest: Manifest,
+    generateId: IdGeneratorFunction
 ): InternalCustomSection {
     const config: CustomSectionUnion & Partial<InternalCustomSection> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
@@ -74,7 +76,7 @@ function enhanceConfig(
     } else {
         Object.assign(
             config,
-            getDefaultFragmentContentData(config.name, config.eventHandler, undefined, undefined, false)
+            getDefaultFragmentContentData(config.name, generateId, config.eventHandler, undefined, undefined, false)
         );
     }
     // Additional dependencies to include into 'Fragment.xml'
@@ -99,15 +101,14 @@ async function generate(
     fs?: Editor
 ): Promise<{ editor: Editor; section: InternalCustomSection }> {
     validateVersion(customSection.minUI5Version);
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     await validateBasePath(basePath, fs);
+    const fnGenerateId = await createIdGenerator(basePath, fs);
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     // merge with defaults
-    const completeSection = enhanceConfig(fs, customSection, manifestPath, manifest);
+    const completeSection = enhanceConfig(fs, customSection, manifestPath, manifest, fnGenerateId);
 
     // enhance manifest with section definition
     const filledTemplate = render(fs.read(join(manifestTemplateRoot, `manifest.json`)), completeSection, {});
@@ -120,7 +121,7 @@ async function generate(
     // add fragment
     const viewPath = join(completeSection.path, `${completeSection.fragmentFile ?? completeSection.name}.fragment.xml`);
     if (!fs.exists(viewPath)) {
-        copyTpl(fs, getTemplatePath('common/FragmentWithVBox.xml'), viewPath, completeSection);
+        copyTpl(fs, getTemplatePath('common/FragmentWithVBox.xml'), viewPath, completeSection, fnGenerateId);
     }
 
     return { editor: fs, section: completeSection };
@@ -139,21 +140,20 @@ export async function generateCustomHeaderSection(
     customHeaderSection: CustomHeaderSection,
     fs?: Editor
 ): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    const fsEditor = fs ?? create(createStorage());
+    const fnGenerateId = await createIdGenerator(basePath, fsEditor); // initialize ID generator to ensure unique IDs across both section and edit fragment
     const manifestRoot = getManifestRoot('header-section', customHeaderSection.minUI5Version);
     const minVersion = coerce(customHeaderSection.minUI5Version);
     let editSection: (CustomElement & Partial<InternalCustomSection>) | undefined;
     // Prepare 'templateEdit' - apply namespace and folder path resolution
     if (customHeaderSection.edit && (!minVersion || gte(minVersion, '1.86.0'))) {
         editSection = customHeaderSection.edit;
-        const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
+        const { path: manifestPath, content: manifest } = await getManifest(basePath, fsEditor);
         // Set folder, ns and path for edit fragment
         setCommonDefaults(editSection, manifestPath, manifest);
     }
     // Call standard custom section generation
-    const { editor, section } = await generate(basePath, customHeaderSection, manifestRoot, fs);
+    const { editor, section } = await generate(basePath, customHeaderSection, manifestRoot, fsEditor);
     // Handle 'templateEdit' - edit fragment details
     if (editSection) {
         // Apply event handler for edit fragment
@@ -170,13 +170,20 @@ export async function generateCustomHeaderSection(
         } else {
             Object.assign(
                 editSection,
-                getDefaultFragmentContentData(editSection.name, editSection.eventHandler, false, true, false)
+                getDefaultFragmentContentData(
+                    editSection.name,
+                    fnGenerateId,
+                    editSection.eventHandler,
+                    false,
+                    true,
+                    false
+                )
             );
         }
         if (editSection.path) {
             const viewPath = join(editSection.path, `${editSection.name}.fragment.xml`);
             if (!editor.exists(viewPath)) {
-                copyTpl(editor, getTemplatePath('common/FragmentWithForm.xml'), viewPath, editSection);
+                copyTpl(editor, getTemplatePath('common/FragmentWithForm.xml'), viewPath, editSection, fnGenerateId);
             }
         }
     }

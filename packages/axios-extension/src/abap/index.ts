@@ -12,7 +12,13 @@ export {
     SystemInfo,
     AdaptationProjectType,
     Inbound,
-    InboundContent
+    InboundContent,
+    AdaptationsResponse,
+    AdaptationDescriptor,
+    KeyUserDataResponse,
+    KeyUserChangeContent,
+    KeyUserTextTranslations,
+    FlexVersion
 } from './lrep-service';
 export { AbapServiceProvider } from './abap-service-provider';
 export { AppIndex, AppIndexService, Ui5AppInfo, Ui5AppInfoContent, App } from './app-index-service';

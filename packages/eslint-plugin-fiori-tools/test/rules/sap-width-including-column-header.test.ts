@@ -10,6 +10,7 @@ import {
     setup,
     V4_ANNOTATIONS,
     V4_ANNOTATIONS_PATH,
+    V4_FACETS_ANNOTATIONS,
     V4_MANIFEST,
     V4_MANIFEST_PATH
 } from '../test-helper';
@@ -54,36 +55,7 @@ const _6_COLUMNS_ANNOTATIONS = {
 
 const FACETS = {
     filename: V4_ANNOTATIONS_PATH,
-    code: getAnnotationsAsXmlCode(
-        V4_ANNOTATIONS,
-        `
-            <Annotations Target="IncidentService.Incidents">
-                 <Annotation Term="UI.Facets" >
-                    <Collection>
-                        <Record Type="UI.ReferenceFacet">
-                            <PropertyValue Property="ID" String="Products"/>
-                            <PropertyValue Property="Label" String="Prducts"/>
-                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
-                        </Record>
-                    </Collection>
-                </Annotation>
-            </Annotations>
-             <Annotations Target="IncidentService.IncidentFlow">
-                 <Annotation Term="UI.LineItem">
-                    <Collection>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="processStep" />
-                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="stepStatus" />
-                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
-                        </Record>
-                    </Collection>
-                </Annotation>
-            </Annotations>
-                `
-    )
+    code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FACETS_ANNOTATIONS)
 };
 
 const ORIGINAL_ANNOTATIONS = {
@@ -109,14 +81,6 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
             {
                 name: 'non manifest file - xml',
                 filename: 'some-other-file.xml',
-                code: ''
-            },
-            []
-        ),
-        createValidTest(
-            {
-                name: 'non manifest file - cds',
-                filename: 'some-other-file.cds',
                 code: ''
             },
             []
@@ -160,14 +124,34 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
             {
                 name: 'widthIncludingColumnHeader missing for small table',
                 filename: V4_MANIFEST_PATH,
-                code: JSON.stringify(V4_MANIFEST, undefined, 2),
+                code: getManifestAsCode(V4_MANIFEST, []),
                 errors: [
                     {
                         messageId: 'width-including-column-header-manifest',
-                        line: 119,
+                        line: 124,
                         column: 19
                     }
-                ]
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings'
+                        ],
+                        value: {
+                            'widthIncludingColumnHeader': true,
+                            'type': 'ResponsiveTable',
+                            'selectionMode': 'Auto'
+                        }
+                    }
+                ])
             },
             [ORIGINAL_ANNOTATIONS]
         ),
@@ -214,10 +198,42 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                 errors: [
                     {
                         messageId: 'width-including-column-header-manifest',
-                        line: 134,
+                        line: 139,
                         column: 13
                     }
-                ]
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'widthIncludingColumnHeader'
+                        ],
+                        value: true
+                    },
+                    {
+                        path: ['sap.ui5', 'routing', 'targets', 'IncidentsObjectPage', 'options', 'settings'],
+                        value: {
+                            controlConfiguration: {
+                                'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem': {
+                                    tableSettings: {
+                                        widthIncludingColumnHeader: true
+                                    }
+                                }
+                            },
+                            editableHeaderContent: false,
+                            entitySet: 'Incidents',
+                            showDraftToggle: true
+                        }
+                    }
+                ])
             },
             [FACETS]
         )

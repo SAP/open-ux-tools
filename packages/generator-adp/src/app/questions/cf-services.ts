@@ -1,5 +1,3 @@
-import path from 'node:path';
-
 import type {
     CfServicesAnswers,
     CFServicesQuestion,
@@ -23,7 +21,7 @@ import {
     validateODataEndpoints,
     getBusinessServiceInfo,
     getOAuthPathsFromXsApp,
-    getBackendUrlFromServiceKeys
+    getBackendUrlsFromServiceKeys
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
@@ -104,13 +102,13 @@ export class CFServicesPrompter {
     }
 
     /**
-     * Returns the backend URL from service keys endpoints.
+     * Returns all backend URLs from service keys endpoints.
      *
-     * @returns {string | undefined} Backend URL from the first endpoint that has a url property, or undefined.
+     * @returns {string[]} Array of backend URLs from all endpoints.
      */
-    public get backendUrl(): string | undefined {
+    public get backendUrls(): string[] {
         const serviceKeys = this.businessServiceInfo?.serviceKeys ?? [];
-        return getBackendUrlFromServiceKeys(serviceKeys);
+        return getBackendUrlsFromServiceKeys(serviceKeys);
     }
 
     /**
@@ -216,8 +214,7 @@ export class CFServicesPrompter {
             choices: getAppRouterChoices(this.isInternalUsage),
             when: () => {
                 const modules = getModuleNames(mtaProjectPath);
-                const mtaProjectName = path.basename(mtaProjectPath);
-                const hasRouter = hasApprouter(mtaProjectName, modules);
+                const hasRouter = hasApprouter(modules);
                 if (hasRouter) {
                     this.approuter = getApprouterType(mtaProjectPath);
                 }
@@ -321,6 +318,10 @@ export class CFServicesPrompter {
 
                     this.apps = await getCfApps(this.businessServiceInfo.serviceKeys, cfConfig, this.logger);
                     this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
+
+                    if (this.apps.length === 0) {
+                        return t('error.noAppsFoundForBusinessService');
+                    }
                 } catch (e) {
                     this.apps = [];
                     this.logger?.error(`Failed to get available applications: ${e.message}`);

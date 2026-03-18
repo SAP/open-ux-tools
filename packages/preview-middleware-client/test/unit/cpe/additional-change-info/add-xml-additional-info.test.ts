@@ -58,15 +58,21 @@ describe('add-xml-additional-info.ts', () => {
         changeType: 'testType',
         layer: 'CUSTOMER_BASE'
     });
-    jest.spyOn(utilsCore, 'getControlById');
+    let getControlBySelectorSpy: jest.SpyInstance;
+
     beforeEach(() => {
         jest.clearAllMocks();
+        getControlBySelectorSpy = jest.spyOn(utilsCore, 'getControlBySelector');
+    });
+
+    afterEach(() => {
+        getControlBySelectorSpy.mockRestore();
     });
 
     describe('getAddXMLAdditionalInfo', () => {
         it('should return templateName for OBJECT_PAGE_CUSTOM_SECTION', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'sections' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
+            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -75,7 +81,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for CUSTOM_ACTION', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'actions' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(createMockElement('sap.f.DynamicPageTitle'));
+            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.f.DynamicPageTitle'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -84,7 +90,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for CUSTOM_ACTION - sap.m.OverflowToolbar', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'content' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(createMockElement('sap.m.OverflowToolbar'));
+            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.m.OverflowToolbar'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -93,7 +99,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for OBJECT_PAGE_HEADER_FIELD - sap.m.FlexBox, sap.uxap.ObjectPageDynamicHeaderContent', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'items' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(
+            getControlBySelectorSpy.mockReturnValue(
                 createMockElementWithParent('sap.m.FlexBox', 'sap.uxap.ObjectPageDynamicHeaderContent')
             );
 
@@ -104,7 +110,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for OBJECT_PAGE_HEADER_FIELD - sap.m.FlexBox, sap.uxap.ObjectPageLayout', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'items' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(
+            getControlBySelectorSpy.mockReturnValue(
                 createMockElementWithParent('sap.m.FlexBox', 'sap.uxap.ObjectPageLayout')
             );
 
@@ -115,7 +121,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for OBJECT_PAGE_HEADER_FIELD', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'headerContent' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
+            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -124,7 +130,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for V4_MDC_TABLE_COLUMN', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(createMockElement('sap.ui.mdc.Table'));
+            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.mdc.Table'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -133,7 +139,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for GRID_TREE_TABLE_COLUMN - sap.ui.table.Table', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(createMockElement('sap.ui.table.Table'));
+            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.table.Table'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -142,7 +148,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for GRID_TREE_TABLE_COLUMN - sap.ui.table.TreeTable', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(createMockElement('sap.ui.table.TreeTable'));
+            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.table.TreeTable'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -151,7 +157,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for ANALYTICAL_TABLE_COLUMN', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(createMockElement('sap.ui.table.AnalyticalTable'));
+            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.table.AnalyticalTable'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -160,7 +166,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for TABLE_ACTION', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'actions' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(createMockElement('sap.ui.mdc.Table'));
+            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.mdc.Table'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -169,7 +175,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return undefined for templateName', () => {
             mockChange.getContent.mockReturnValue({});
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(createMockElement('sap.ui.test.TestControl'));
+            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.test.TestControl'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -177,7 +183,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return undefined if no matching templateName is found', () => {
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
+            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -186,7 +192,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return targetAggregation, viewName and controlType if no matching templateName is found', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'content' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(
+            getControlBySelectorSpy.mockReturnValue(
                 createMockElementWithView('sap.uxap.ObjectPageLayout')
             );
 
@@ -201,7 +207,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return undefined if control is not found', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'sections' });
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(undefined);
+            getControlBySelectorSpy.mockReturnValue(undefined);
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -211,7 +217,7 @@ describe('add-xml-additional-info.ts', () => {
         it('should return undefined if missing selectorId and targetAggregation', () => {
             mockChange.getSelector.mockReturnValue(undefined);
             mockChange.getContent.mockReturnValue(undefined);
-            jest.spyOn(utilsCore, 'getControlById').mockReturnValue(undefined);
+            getControlBySelectorSpy.mockReturnValue(undefined);
 
             const result = getAddXMLAdditionalInfo(mockChange);
 

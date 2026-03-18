@@ -1,10 +1,17 @@
 import type { FioriRuleDefinition } from '../types';
 import type { FioriXMLRuleDefinition } from '../language/xml/types';
 import {
+    ANCHOR_BAR_VISIBLE,
     FLEX_ENABLED,
     WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
-    DISABLE_COPY_TO_CLIPBOARD,
-    CREATION_MODE_FOR_TABLE
+    COPY_TO_CLIPBOARD,
+    CREATION_MODE_FOR_TABLE,
+    ENABLE_EXPORT,
+    ENABLE_PASTE,
+    STATE_PRESERVATION_MODE,
+    STRICT_UOM_FILTERING,
+    TABLE_PERSONALIZATION,
+    TABLE_COLUMN_VERTICAL_ALIGNMENT
 } from '../language/diagnostics';
 
 // Import all rules
@@ -57,10 +64,17 @@ import sapUi5LegacyJquerysapUsage from './sap-ui5-legacy-jquerysap-usage';
 import sapUi5NoPrivateProp from './sap-ui5-no-private-prop';
 import sapUsageBasemastercontroller from './sap-usage-basemastercontroller';
 
+import anchorBarVisibleRule from './sap-anchor-bar-visible';
 import flexEnabledRule from './sap-flex-enabled';
 import requireWidthIncludingColumnHeader from './sap-width-including-column-header';
 import creationModeForTable from './sap-creation-mode-for-table';
-import disableCopyToClipboard from './sap-disable-copy-to-clipboard';
+import statePreservationMode from './sap-state-preservation-mode';
+import strictUomFilteringRule from './sap-strict-uom-filtering';
+import copyToClipboard from './sap-copy-to-clipboard';
+import enableExport from './sap-enable-export';
+import enablePaste from './sap-enable-paste';
+import tablePersonalization from './sap-table-personalization';
+import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment';
 
 import type { Rule } from 'eslint';
 
@@ -113,8 +127,15 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-ui5-legacy-jquerysap-usage': sapUi5LegacyJquerysapUsage,
     'sap-ui5-no-private-prop': sapUi5NoPrivateProp,
     'sap-usage-basemastercontroller': sapUsageBasemastercontroller,
+    [ANCHOR_BAR_VISIBLE]: anchorBarVisibleRule,
     [FLEX_ENABLED]: flexEnabledRule,
     [WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
-    [DISABLE_COPY_TO_CLIPBOARD]: disableCopyToClipboard,
-    [CREATION_MODE_FOR_TABLE]: creationModeForTable
+    [COPY_TO_CLIPBOARD]: copyToClipboard,
+    [ENABLE_EXPORT]: enableExport,
+    [ENABLE_PASTE]: enablePaste,
+    [CREATION_MODE_FOR_TABLE]: creationModeForTable,
+    [STATE_PRESERVATION_MODE]: statePreservationMode,
+    [STRICT_UOM_FILTERING]: strictUomFilteringRule,
+    [TABLE_PERSONALIZATION]: tablePersonalization,
+    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment
 };

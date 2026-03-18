@@ -1,5 +1,279 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.33
+
+### Patch Changes
+
+- Updated dependencies [55417bb]
+    - @sap-ux/cds-odata-annotation-converter@0.7.14
+
+## 0.9.32
+
+### Patch Changes
+
+- dfa433e: feat: Enabled support of referenced external metadata
+- Updated dependencies [dfa433e]
+    - @sap-ux/odata-annotation-core-types@0.5.7
+    - @sap-ux/odata-entity-model@0.3.7
+    - @sap-ux/cds-odata-annotation-converter@0.7.13
+    - @sap-ux/odata-annotation-core@0.2.17
+    - @sap-ux/odata-vocabularies@0.4.29
+    - @sap-ux/xml-odata-annotation-converter@0.4.11
+    - @sap-ux/cds-annotation-parser@0.2.34
+
+## 0.9.31
+
+### Patch Changes
+
+- Updated dependencies [79e69b9]
+    - @sap-ux/odata-vocabularies@0.4.28
+    - @sap-ux/cds-annotation-parser@0.2.33
+    - @sap-ux/cds-odata-annotation-converter@0.7.12
+    - @sap-ux/xml-odata-annotation-converter@0.4.10
+
+## 0.9.30
+
+### Patch Changes
+
+- e1ef0ba: chore update `@sap/ux-cds-compiler-facade` dependency
+- Updated dependencies [e1ef0ba]
+    - @sap-ux/cds-odata-annotation-converter@0.7.11
+
+## 0.9.29
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/cds-odata-annotation-converter@0.7.10
+
+## 0.9.28
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/cds-odata-annotation-converter@0.7.10
+
+## 0.9.27
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/project-access@1.35.11
+
+## 0.9.26
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/cds-odata-annotation-converter@0.7.10
+
+## 0.9.25
+
+### Patch Changes
+
+- Updated dependencies [a2cbf4e]
+    - @sap-ux/xml-odata-annotation-converter@0.4.10
+    - @sap-ux/odata-annotation-core-types@0.5.6
+    - @sap-ux/cds-odata-annotation-converter@0.7.10
+    - @sap-ux/odata-annotation-core@0.2.16
+    - @sap-ux/odata-entity-model@0.3.6
+    - @sap-ux/odata-vocabularies@0.4.27
+    - @sap-ux/cds-annotation-parser@0.2.32
+
+## 0.9.24
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/cds-odata-annotation-converter@0.7.9
+
+## 0.9.23
+
+### Patch Changes
+
+- Updated dependencies [6c993f3]
+    - @sap-ux/cds-odata-annotation-converter@0.7.9
+
+## 0.9.22
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/cds-odata-annotation-converter@0.7.8
+
+## 0.9.21
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/cds-annotation-parser@0.2.31
+    - @sap-ux/cds-odata-annotation-converter@0.7.8
+    - @sap-ux/odata-annotation-core-types@0.5.5
+    - @sap-ux/odata-annotation-core@0.2.15
+    - @sap-ux/odata-entity-model@0.3.6
+    - @sap-ux/odata-vocabularies@0.4.26
+    - @sap-ux/xml-odata-annotation-converter@0.4.9
+
+## 0.9.20
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/cds-odata-annotation-converter@0.7.7
+
+## 0.9.19
+
+### Patch Changes
+
+- Updated dependencies [cbd340a]
+    - @sap-ux/cds-odata-annotation-converter@0.7.7
+
+## 0.9.18
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/cds-odata-annotation-converter@0.7.6
+
+## 0.9.17
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/cds-odata-annotation-converter@0.7.6
+
+## 0.9.16
+
+### Patch Changes
+
+- Updated dependencies [1fa3bb7]
+    - @sap-ux/odata-vocabularies@0.4.25
+    - @sap-ux/cds-annotation-parser@0.2.30
+    - @sap-ux/cds-odata-annotation-converter@0.7.6
+    - @sap-ux/xml-odata-annotation-converter@0.4.8
+
+## 0.9.15
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/cds-odata-annotation-converter@0.7.5
+
+## 0.9.14
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/cds-odata-annotation-converter@0.7.5
+
+## 0.9.13
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/cds-odata-annotation-converter@0.7.5
+
+## 0.9.12
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/odata-vocabularies@0.4.24
+    - @sap-ux/cds-annotation-parser@0.2.29
+    - @sap-ux/cds-odata-annotation-converter@0.7.5
+    - @sap-ux/xml-odata-annotation-converter@0.4.8
+    - @sap-ux/project-access@1.35.1
+
+## 0.9.11
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+- Updated dependencies [3795bb2]
+    - @sap-ux/cds-odata-annotation-converter@0.7.4
+    - @sap-ux/xml-odata-annotation-converter@0.4.8
+    - @sap-ux/odata-annotation-core-types@0.5.4
+    - @sap-ux/cds-annotation-parser@0.2.28
+    - @sap-ux/odata-annotation-core@0.2.14
+    - @sap-ux/odata-entity-model@0.3.5
+    - @sap-ux/odata-vocabularies@0.4.23
+
+## 0.9.10
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/cds-odata-annotation-converter@0.7.3
+
+## 0.9.9
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/cds-odata-annotation-converter@0.7.3
+
+## 0.9.8
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/cds-odata-annotation-converter@0.7.3
+
+## 0.9.7
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/cds-odata-annotation-converter@0.7.3
+
+## 0.9.6
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/cds-odata-annotation-converter@0.7.3
+
+## 0.9.5
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+- Updated dependencies [6d71400]
+    - @sap-ux/odata-annotation-core-types@0.5.3
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/cds-odata-annotation-converter@0.7.3
+    - @sap-ux/odata-annotation-core@0.2.13
+    - @sap-ux/odata-entity-model@0.3.4
+    - @sap-ux/odata-vocabularies@0.4.22
+    - @sap-ux/xml-odata-annotation-converter@0.4.7
+    - @sap-ux/cds-annotation-parser@0.2.27
+
+## 0.9.4
+
+### Patch Changes
+
+- Updated dependencies [d11943d]
+    - @sap-ux/cds-odata-annotation-converter@0.7.2
+
 ## 0.9.3
 
 ### Patch Changes

@@ -1,5 +1,150 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.5.16
+
+### Patch Changes
+
+- Updated dependencies [addfdee]
+    - @sap-ux/ui-components@2.1.2
+    - @sap-ux/ui-prompting@0.6.15
+
+## 0.5.15
+
+### Patch Changes
+
+- Updated dependencies [59c6ac3]
+    - @sap-ux/ui-components@2.1.1
+    - @sap-ux/ui-prompting@0.6.14
+
+## 0.5.14
+
+### Patch Changes
+
+- Updated dependencies [24bd091]
+    - @sap-ux/ui-components@2.1.0
+    - @sap-ux/ui-prompting@0.6.13
+
+## 0.5.13
+
+### Patch Changes
+
+- Updated dependencies [12b8b2e]
+    - @sap-ux/ui-components@2.0.3
+    - @sap-ux/ui-prompting@0.6.12
+
+## 0.5.12
+
+### Patch Changes
+
+- Updated dependencies [5d458c7]
+    - @sap-ux/ui-components@2.0.2
+    - @sap-ux/ui-prompting@0.6.11
+
+## 0.5.11
+
+### Patch Changes
+
+- 14d8ab3: fix(deps): update dependency babel-loader to v10
+- Updated dependencies [14d8ab3]
+    - @sap-ux/ui-components@2.0.1
+    - @sap-ux/ui-prompting@0.6.10
+
+## 0.5.10
+
+### Patch Changes
+
+- 4b02611: fix(deps): update dependency ws to v8.19.0
+    - @sap-ux/ui-prompting@0.6.9
+
+## 0.5.9
+
+### Patch Changes
+
+- Updated dependencies [c4839f5]
+    - @sap-ux/ui-components@2.0.0
+    - @sap-ux/ui-prompting@0.6.9
+
+## 0.5.8
+
+### Patch Changes
+
+- 88a1f57: fix(deps): update dependency storybook to v8.6.17 [security]
+- Updated dependencies [88a1f57]
+    - @sap-ux/ui-components@1.27.10
+    - @sap-ux/ui-prompting@0.6.8
+
+## 0.5.7
+
+### Patch Changes
+
+- Updated dependencies [4e6c4d5]
+    - @sap-ux/ui-components@1.27.9
+    - @sap-ux/ui-prompting@0.6.7
+
+## 0.5.6
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+- Updated dependencies [4d381b7]
+    - @sap-ux/ui-components@1.27.8
+    - @sap-ux/ui-prompting@0.6.6
+
+## 0.5.5
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [cc1c422]
+    - @sap-ux/ui-components@1.27.7
+    - @sap-ux/ui-prompting@0.6.5
+
+## 0.5.4
+
+### Patch Changes
+
+- d8a39ce: fix(deps): update dependency sanitize-html to v2.17.1
+- Updated dependencies [5deb976]
+- Updated dependencies [d8a39ce]
+    - @sap-ux/ui-components@1.27.6
+    - @sap-ux/ui-prompting@0.6.4
+
+## 0.5.3
+
+### Patch Changes
+
+- a22d236: fix(deps): update dependency sanitize-html to v2.17.0
+- Updated dependencies [a22d236]
+    - @sap-ux/ui-components@1.27.5
+    - @sap-ux/ui-prompting@0.6.3
+
+## 0.5.2
+
+### Patch Changes
+
+- Updated dependencies [3795bb2]
+    - @sap-ux/ui-components@1.27.4
+    - @sap-ux/ui-prompting@0.6.2
+
+## 0.5.1
+
+### Patch Changes
+
+- Updated dependencies [b990534]
+    - @sap-ux/ui-components@1.27.3
+    - @sap-ux/ui-prompting@0.6.1
+
+## 0.5.0
+
+### Minor Changes
+
+- 68b0e54: Add Rich Text Editor Button Groups support
+
+### Patch Changes
+
+- Updated dependencies [68b0e54]
+    - @sap-ux/ui-prompting@0.6.0
+
 ## 0.4.14
 
 ### Patch Changes

@@ -1,4 +1,4 @@
-// Last content update: Wed Dec 03 2025 11:11:43 GMT+0100 (Central European Standard Time)
+// Last content update: Fri Mar 06 2026 12:24:45 GMT+0100 (Central European Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -96,8 +96,14 @@ export default {
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
             '$AppliesTo': ['EntityContainer'],
-            '@Org.OData.Core.V1.Description':
-                'Service supports the continue on error preference. Supports $batch requests. Services that apply the BatchContinueOnErrorSupported term should also specify the ContinueOnErrorSupported property from the BatchSupport term.'
+            '@Org.OData.Core.V1.Description': 'Service supports $batch requests and the `continue-on-error` preference',
+            '@Org.OData.Core.V1.Revisions': [
+                {
+                    'Kind': 'Deprecated',
+                    'Description':
+                        'Deprecated in favor of the [`ContinueOnErrorSupported`](#BatchSupportType) property from the [`BatchSupport`](#BatchSupport) term'
+                }
+            ]
         },
         'IsolationSupported': {
             '$Kind': 'Term',
@@ -462,7 +468,9 @@ export default {
             'ContinueOnErrorSupported': {
                 '$Type': 'Edm.Boolean',
                 '$DefaultValue': false,
-                '@Org.OData.Core.V1.Description': 'Service supports the continue on error preference'
+                '@Org.OData.Core.V1.Description': 'Service supports the `continue-on-error` preference',
+                '@Org.OData.Core.V1.LongDescription':
+                    'When the client specifies the `continue-on-error` preference, the service applies it\n            by processing all requests according to their dependencies, regardless of the format for the $batch request.'
             },
             'ReferencesInRequestBodiesSupported': {
                 '$Type': 'Edm.Boolean',
@@ -675,9 +683,20 @@ export default {
                     'The maximum number of levels that can be expanded in a expand expression. A value of -1 indicates there is no restriction.'
             }
         },
-        'ExpandRestrictionsType': {
+        'ExpandCollectionRestrictionsType': {
             '$Kind': 'ComplexType',
             '$BaseType': 'Org.OData.Capabilities.V1.ExpandRestrictionsBase',
+            'ExpandByKeyRestrictions': {
+                '$Type': 'Org.OData.Capabilities.V1.ExpandByKeyRestrictionsBase',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Restrictions on expand expressions when accessed by key',
+                '@Org.OData.Core.V1.LongDescription':
+                    'Restrictions on expand expressions when accessing a member of the collection by key. \n          SHOULD be Null (or unspecified) for single-valued targets. If Null for collection-valued targets, then the same expand capabilities \n          when accessing the collection apply when accessing an instance within the collection by key. Different non-expandable navigation or\n          stream properties from the target collection can be specified by providing an instance of the derived `ExpandByKeyRestrictionsType`. \n          Otherwise, the same set of non-expandable navigation and stream properties \n          specified for the collection apply when accessing an instance within the collection by key.'
+            }
+        },
+        'ExpandRestrictionsType': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'Org.OData.Capabilities.V1.ExpandCollectionRestrictionsType',
             'NonExpandableProperties': {
                 '$Collection': true,
                 '$Type': 'Edm.NavigationPropertyPath',
@@ -687,6 +706,26 @@ export default {
                 '$Collection': true,
                 '$Type': 'Edm.PropertyPath',
                 '@Org.OData.Core.V1.Description': 'These stream properties cannot be used in expand expressions'
+            }
+        },
+        'ExpandByKeyRestrictionsBase': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'Org.OData.Capabilities.V1.ExpandRestrictionsBase'
+        },
+        'ExpandByKeyRestrictionsType': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'Org.OData.Capabilities.V1.ExpandByKeyRestrictionsBase',
+            'NonExpandableProperties': {
+                '$Collection': true,
+                '$Type': 'Edm.NavigationPropertyPath',
+                '@Org.OData.Core.V1.Description':
+                    'These properties cannot be used in expand expressions when accessing by key'
+            },
+            'NonExpandableStreamProperties': {
+                '$Collection': true,
+                '$Type': 'Edm.PropertyPath',
+                '@Org.OData.Core.V1.Description':
+                    'These stream properties cannot be used in expand expressions when accessing by key'
             }
         },
         'SearchRestrictions': {

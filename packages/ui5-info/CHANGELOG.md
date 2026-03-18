@@ -1,5 +1,55 @@
 # @sap-ux/ui5-info
 
+## 0.13.15
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+
+## 0.13.14
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+
+## 0.13.13
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+
+## 0.13.12
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+
+## 0.13.11
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+
+## 0.13.10
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+
+## 0.13.9
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
+## 0.13.8
+
+### Patch Changes
+
+- 9aad34c: Adds min supported spec version constant
+
 ## 0.13.7
 
 ### Patch Changes

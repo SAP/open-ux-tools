@@ -77,6 +77,20 @@ Array [
     ],
   },
   Object {
+    "description": "Defines the default layout options of the table popins. A separate layout options of the table popins can be set for each responsive table in the application.",
+    "functionalityId": Array [
+      "settings",
+      "defaultPopinLayout",
+    ],
+  },
+  Object {
+    "description": "Enables lazy loading for sections in object pages. If a specific object page defines its own \`enableLazyLoading\` property, that page-level setting overrides this application-level setting.",
+    "functionalityId": Array [
+      "settings",
+      "enableLazyLoading",
+    ],
+  },
+  Object {
     "description": "Defines the title for the application.",
     "functionalityId": Array [
       "settings",
@@ -212,6 +226,24 @@ To ensure a consistent experience, set this and 'Stay On Current Page After Save
     ],
   },
   Object {
+    "description": "Defines the personalization mode, currently only effective if variant management on page is either set to Page or Control.
+By default all table settings are enabled. You can change this for the different parts of the table by setting the properties \\"Column\\", \\"Sort\\" and \\"Filter\\" accordingly.
+Omitting a property is treated as false, this allows apps to avoid getting new features like grouping in upcoming releases.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "personalization",
+    ],
+  },
+  Object {
+    "description": "Defines the layout options of the table popins. A popin layout defined at the table level takes precedence over a popin layout defined at the application level.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "popinLayout",
+    ],
+  },
+  Object {
     "description": "Defines the table type. Note: Grid tables, analytical tables, and tree tables aren't rendered on small-screen devices. Responsive tables are shown instead.",
     "functionalityId": Array [
       "TravelList",
@@ -296,9 +328,7 @@ To ensure a consistent experience, set this and 'Stay On Current Page After Save
     ],
   },
   Object {
-    "description": "Defines the personalization mode, currently only effective if variant management on page is either set to Page or Control.
-By default all table settings are enabled. You can change this for the different parts of the table by setting the properties \\"Column\\", \\"Sort\\" and \\"Filter\\" accordingly.
-Omitting a property is treated as false, this allows apps to avoid getting new features like grouping in upcoming releases.",
+    "description": "personalization",
     "functionalityId": Array [
       "TravelList",
       "table",
@@ -430,14 +460,25 @@ If this is not set with a value, the default value is 'NewPage'.",
     ],
   },
   Object {
-    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelList",
       "table",
       "toolBar",
       "actions",
       "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
-      "group",
+      "overflowGroup",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+      "priority",
     ],
   },
   Object {
@@ -485,14 +526,25 @@ If this is not set with a value, the default value is 'NewPage'.",
     ],
   },
   Object {
-    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelList",
       "table",
       "toolBar",
       "actions",
       "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
-      "group",
+      "overflowGroup",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+      "priority",
     ],
   },
   Object {
@@ -540,14 +592,25 @@ If this is not set with a value, the default value is 'NewPage'.",
     ],
   },
   Object {
-    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelList",
       "table",
       "toolBar",
       "actions",
       "DataFieldForAction::",
-      "group",
+      "overflowGroup",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction::",
+      "priority",
     ],
   },
   Object {
@@ -831,6 +894,13 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
+    "description": "Enable lazy loading for sections in an object page.",
+    "functionalityId": Array [
+      "TravelObjectPage",
+      "enableLazyLoading",
+    ],
+  },
+  Object {
     "description": "Set editableHeaderContent to true to make the header fields editable.",
     "functionalityId": Array [
       "TravelObjectPage",
@@ -855,23 +925,43 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
-    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelObjectPage",
       "header",
       "actions",
       "EditAction",
-      "group",
+      "overflowGroup",
     ],
   },
   Object {
-    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+    "functionalityId": Array [
+      "TravelObjectPage",
+      "header",
+      "actions",
+      "EditAction",
+      "priority",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelObjectPage",
       "header",
       "actions",
       "DeleteAction",
-      "group",
+      "overflowGroup",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+    "functionalityId": Array [
+      "TravelObjectPage",
+      "header",
+      "actions",
+      "DeleteAction",
+      "priority",
     ],
   },
   Object {

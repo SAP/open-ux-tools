@@ -36,4 +36,5 @@ export type BackendSerializableKeys =
     | 'client'
     | 'systemType'
     | 'authenticationType'
-    | 'connectionType';
+    | 'connectionType'
+    | 'systemInfo';

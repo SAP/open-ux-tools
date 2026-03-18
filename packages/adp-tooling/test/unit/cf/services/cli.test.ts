@@ -162,7 +162,7 @@ describe('CF Services CLI', () => {
             await createServiceKey(serviceInstanceName, serviceKeyName);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
-                ['create-service-key', serviceInstanceName, serviceKeyName],
+                ['create-service-key', serviceInstanceName, serviceKeyName, '--wait'],
                 { env: { 'CF_COLOR': 'false' } }
             );
         });
@@ -182,7 +182,7 @@ describe('CF Services CLI', () => {
                 })
             );
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
-                ['create-service-key', serviceInstanceName, serviceKeyName],
+                ['create-service-key', serviceInstanceName, serviceKeyName, '--wait'],
                 { env: { 'CF_COLOR': 'false' } }
             );
         });
@@ -195,7 +195,7 @@ describe('CF Services CLI', () => {
                 t('error.createServiceKeyFailed', { serviceInstanceName, error: error.message })
             );
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
-                ['create-service-key', serviceInstanceName, serviceKeyName],
+                ['create-service-key', serviceInstanceName, serviceKeyName, '--wait'],
                 { env: { 'CF_COLOR': 'false' } }
             );
         });
@@ -221,6 +221,20 @@ describe('CF Services CLI', () => {
             const result = await requestCfApi(url);
 
             expect(result).toEqual(mockJsonResponse);
+            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
+        });
+
+        test('should throw error when response is empty', async () => {
+            const mockResponse = {
+                exitCode: 0,
+                stdout: '',
+                stderr: ''
+            };
+            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+
+            await expect(requestCfApi(url)).rejects.toThrow(
+                t('error.failedToRequestCFAPI', { error: t('error.emptyCFAPIResponse') })
+            );
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
         });
 

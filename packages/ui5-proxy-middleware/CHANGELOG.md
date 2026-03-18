@@ -1,5 +1,111 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.27
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+    - @sap-ux/ui5-config@0.29.21
+
+## 1.6.26
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+- fdd57de: fix(deps): update dependency dotenv to v17
+    - @sap-ux/ui5-config@0.29.21
+
+## 1.6.25
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/ui5-config@0.29.20
+
+## 1.6.24
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+
+## 1.6.23
+
+### Patch Changes
+
+- d475c7f: feat: export TypeScript types for external consumption
+
+## 1.6.22
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/ui5-config@0.29.19
+
+## 1.6.21
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+
+## 1.6.20
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+
+## 1.6.19
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+    - @sap-ux/ui5-config@0.29.18
+
+## 1.6.18
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+    - @sap-ux/ui5-config@0.29.18
+
+## 1.6.17
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+
+## 1.6.16
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+
+## 1.6.15
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/ui5-config@0.29.15
+
+## 1.6.14
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/ui5-config@0.29.14
+
+## 1.6.13
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+
 ## 1.6.12
 
 ### Patch Changes

@@ -5,6 +5,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 import { DirName, getWebappPath } from '@sap-ux/project-access';
 import {
+    FlexLayer,
     TemplateFileName,
     type AnnotationsData,
     type ChangeType,
@@ -12,9 +13,11 @@ import {
     type InboundContent,
     type ManifestChangeProperties,
     type PropertyValueType,
-    ChangeTypeMap
+    ChangeTypeMap,
+    type AdpWriterConfig
 } from '../types';
 import { renderFile } from 'ejs';
+import { replaceTextsWithI18nBindings, writeKeyUserTranslations } from '../writer/i18n/key-user-translations';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
@@ -74,6 +77,78 @@ export async function writeAnnotationChange(
     } catch (e) {
         throw new Error(`Could not write annotation changes. Reason: ${e.message}`);
     }
+}
+
+/**
+ * Writes key-user change payloads to the generated adaptation project. Transforms key-user changes to a developer adaptation format.
+ *
+ * @param projectPath - Project root path.
+ * @param config - The writer configuration.
+ * @param fs - Yeoman mem-fs editor.
+ */
+export async function writeKeyUserChanges(projectPath: string, config: AdpWriterConfig, fs: Editor): Promise<void> {
+    const changes = config.keyUserChanges;
+    if (!changes?.length) {
+        return;
+    }
+
+    for (const entry of changes) {
+        if (!entry?.content) {
+            continue;
+        }
+
+        const change = { ...entry.content };
+        if (!change['fileName']) {
+            continue;
+        }
+
+        const fileName = change['fileName'] as string;
+        const contentTexts = change['texts'] as Record<string, Record<string, unknown>> | undefined;
+        const topLevelTexts = entry.texts;
+
+        // Replace content.texts values with i18n bindings and write translations to .properties files
+        if (contentTexts && topLevelTexts && Object.keys(topLevelTexts).length > 0) {
+            change['texts'] = replaceTextsWithI18nBindings(contentTexts, fileName);
+            await writeKeyUserTranslations(projectPath, fileName, topLevelTexts, fs);
+        }
+
+        const transformedChange = transformKeyUserChangeForAdp(change, config.app.id, config.app.layer);
+
+        await writeChangeToFolder(projectPath, transformedChange as unknown as ManifestChangeProperties, fs);
+    }
+}
+
+/**
+ * Transforms a key-user change to a developer adaptation format.
+ *
+ * @param change - The key-user change from the backend.
+ * @param appId - The ID of the newly created Adaptation Project.
+ * @param layer - The layer of the change.
+ * @returns {Record<string, unknown>} The transformed change object.
+ */
+export function transformKeyUserChangeForAdp(
+    change: Record<string, unknown>,
+    appId: string,
+    layer: FlexLayer | undefined
+): Record<string, unknown> {
+    const transformed = { ...change };
+
+    transformed.layer = layer ?? FlexLayer.CUSTOMER_BASE;
+    transformed.reference = appId;
+    transformed.namespace = path.posix.join('apps', appId, DirName.Changes, '/');
+    if (transformed.projectId) {
+        transformed.projectId = appId;
+    }
+    transformed.support ??= {};
+    const supportObject = transformed.support as Record<string, unknown>;
+    supportObject.generator = 'adp-key-user-converter';
+
+    delete transformed.adaptationId;
+    delete transformed.version;
+    delete transformed.context;
+    delete transformed.versionId;
+
+    return transformed;
 }
 
 /**

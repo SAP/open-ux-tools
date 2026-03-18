@@ -86,6 +86,13 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         return this.dataProvider.delete(entity);
     }
 
+    /**
+     * Retrieves all backend systems from the store. Can be filtered by providing retrieval options.
+     * N.B. if no `connectionType` is provided in the options, only systems with `abap_catalog` connection type will be returned.
+     *
+     * @param options - backend service retrieval options
+     * @returns - list of backend systems
+     */
     public async getAll(options?: BackendServiceRetrievalOptions): Promise<BackendSystem[] | []> {
         return this.dataProvider.getAll(options);
     }
@@ -113,6 +120,12 @@ function ensureSystemsJsonMigrated(): void {
     const legacySystemsPath = join(getFioriToolsDirectory(), systemFileName);
     const newSystemsPath = join(getSapToolsDirectory(), systemFileName);
     const migrationFlag = join(getSapToolsDirectory(), '.systemsMigrated');
+
+    if (!existsSync(legacySystemsPath)) {
+        // No legacy file exists, nothing to migrate
+        return;
+    }
+
     const legacyData = JSON.parse(readFileSync(legacySystemsPath, 'utf-8')).systems as Record<string, BackendSystem>;
 
     if (existsSync(migrationFlag)) {

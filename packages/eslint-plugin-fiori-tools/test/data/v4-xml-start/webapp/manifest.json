@@ -96,6 +96,11 @@
           "pattern": "Incidents({key}):?query:",
           "name": "IncidentsObjectPage",
           "target": "IncidentsObjectPage"
+        },
+        {
+          "pattern": "Categories({key}):?query:",
+          "name": "CategoriesObjectPage",
+          "target": "CategoriesObjectPage"
         }
       ],
       "targets": {
@@ -134,6 +139,26 @@
               "editableHeaderContent": false,
               "entitySet": "Incidents",
               "showDraftToggle": true
+            }
+          }
+        },
+        "CategoriesObjectPage": {
+          "type": "Component",
+          "id": "CategoriesObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "entitySet": "Category",
+              "editableHeaderContent": false,
+              "showDraftToggle": true,
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "TreeTable",
+                    "selectionMode": "Multi"
+                  }
+                }
+              }
             }
           }
         }

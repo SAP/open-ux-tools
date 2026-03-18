@@ -629,6 +629,70 @@ describe('parse', () => {
                     "uri": "file://annotations.xml",
                   },
                   "name": "_Travels",
+                  "partner": "_Bookings",
+                  "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.BookingsType/_Travels",
+                  "referentialConstraints": Array [
+                    Object {
+                      "sourceProperty": "ParentUUID",
+                      "sourceTypeName": "Z2SEPMRA_C_PD_PRODUCT_CDS.BookingsType",
+                      "targetProperty": "UUID",
+                      "targetTypeName": "Z2SEPMRA_C_PD_PRODUCT_CDS.TravelsType",
+                    },
+                  ],
+                  "structuredType": "Z2SEPMRA_C_PD_PRODUCT_CDS.TravelsType",
+                  "targetKinds": Array [
+                    "NavigationProperty",
+                  ],
+                }
+            `);
+        });
+
+        test('navigation property with Partner and ContainsTarget', () => {
+            const result = parseWithMarkup(
+                `<EntityType Name="BookingsType">
+                <Key>
+                    <PropertyRef Name="UUID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="UUID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="ParentUUID" Type="Edm.Guid" Nullable="false"/>
+                <NavigationProperty Name="_Travels" Type="Z2SEPMRA_C_PD_PRODUCT_CDS.TravelsType" Nullable="false" Partner="_Bookings" ContainsTarget="true">
+                    <ReferentialConstraint Property="ParentUUID" ReferencedProperty="UUID"/>
+                </NavigationProperty>
+            </EntityType>`
+            );
+            expect(
+                result
+                    .find((element) => element.name === 'Z2SEPMRA_C_PD_PRODUCT_CDS.BookingsType')
+                    ?.content.find((element) => element.name === '_Travels')
+            ).toMatchInlineSnapshot(`
+                Object {
+                  "containsTarget": true,
+                  "content": Array [],
+                  "edmPrimitiveType": "Z2SEPMRA_C_PD_PRODUCT_CDS.TravelsType",
+                  "facets": Object {
+                    "isNullable": false,
+                  },
+                  "isAnnotatable": true,
+                  "isCollectionValued": false,
+                  "isComplexType": false,
+                  "isEntityType": true,
+                  "kind": "NavigationProperty",
+                  "location": Object {
+                    "range": Object {
+                      "end": Object {
+                        "character": 37,
+                        "line": 13,
+                      },
+                      "start": Object {
+                        "character": 16,
+                        "line": 11,
+                      },
+                    },
+                    "uri": "file://annotations.xml",
+                  },
+                  "name": "_Travels",
+                  "partner": "_Bookings",
                   "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.BookingsType/_Travels",
                   "referentialConstraints": Array [
                     Object {

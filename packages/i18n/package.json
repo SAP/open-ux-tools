@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/i18n",
-    "version": "0.3.7",
+    "version": "0.3.9",
     "description": "Library for i18n",
     "repository": {
         "type": "git",
@@ -35,12 +35,12 @@
         "test:update-csv": "ts-node --project tsconfig.eslint.json --cwdMode test/unit/scripts/update-csv.ts"
     },
     "dependencies": {
-        "jsonc-parser": "3.2.0",
+        "jsonc-parser": "3.3.1",
         "vscode-languageserver-textdocument": "1.0.11",
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
-        "npm-run-all2": "6.2.0",
+        "npm-run-all2": "8.0.4",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
         "ts-node": "10.9.2",
