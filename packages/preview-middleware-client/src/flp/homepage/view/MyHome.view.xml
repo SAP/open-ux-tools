@@ -43,7 +43,7 @@
             <f:GridContainer id="insightsCardContainer" class="sapUiSmallMarginTop" items="{view>/cards}">
                 <w:Card id="card" manifest="{view>}" height="33rem"/>
                 <f:layout>
-                    <f:GridContainerSettings minColumnSize="24rem" maxColumnSize="30rem" gap="1rem"/>
+                    <f:GridContainerSettings columnSize="{view>/insightsCardWidth}" gap="1rem"/>
                 </f:layout>
             </f:GridContainer>
         </m:VBox>
