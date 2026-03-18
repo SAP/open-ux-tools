@@ -125,8 +125,8 @@
         "keyUserNoChangesAdaptation": "No key-user changes have been found for the '{{adaptationId}}' adaptation. Please select a different adaptation.",
         "keyUserNoAdaptations": "No context-based adaptations have been found for the selected application. Please refer to the documentation.",
         "keyUserNotSupported": "The selected system does not allow or support the import of key-user changes. Please refer to the documentation.",
-        "keyUserFlexVersionsFailed": "Failed to load flex versions for the selected application. Please refer to the documentation.",
-        "keyUserAdaptationsFailed": "Failed to load adaptations for the selected application. Please refer to the documentation."
+        "keyUserFlexVersionsFailed": "The selected system does not support retrieving flex versions. Please refer to the documentation.",
+        "keyUserAdaptationsFailed": "The selected system does not support retrieving adaptations. Please refer to the documentation."
     },
     "validators": {
         "ui5VersionNotDetectedError": "The SAPUI5 version of the selected system cannot be determined. You are able to create and edit adaptation projects that use the latest SAPUI5 version, but they are not usable on this system until the system's SAPUI5 version is upgraded to version 1.71 or higher."
