@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@sap-ux/vocabularies-types': 0.15.0
   '@storybook/manager-api>store2': 2.14.4
   '@sap-ux/ui5-config>axios': ^1.13.5
   '@sap/service-provider-apis>axios': ^1.13.5
@@ -410,8 +411,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7(@types/node@22.19.10))
@@ -465,8 +466,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
     devDependencies:
       '@sap-ux/store':
         specifier: workspace:*
@@ -584,8 +585,8 @@ importers:
         specifier: workspace:*
         version: link:../system-access
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@18.19.130))
@@ -681,8 +682,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.19.10)
@@ -745,8 +746,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1
       nock:
-        specifier: 13.4.0
-        version: 13.4.0
+        specifier: 14.0.11
+        version: 14.0.11
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -824,8 +825,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -864,8 +865,8 @@ importers:
         specifier: 1.13.5
         version: 1.13.5(debug@4.4.3)
       nock:
-        specifier: 13.4.0
-        version: 13.4.0
+        specifier: 14.0.11
+        version: 14.0.11
 
   packages/axios-extension:
     dependencies:
@@ -925,8 +926,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       nock:
-        specifier: 13.4.0
-        version: 13.4.0
+        specifier: 14.0.11
+        version: 14.0.11
       supertest:
         specifier: 7.2.2
         version: 7.2.2
@@ -958,8 +959,8 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -992,8 +993,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1
       nock:
-        specifier: 13.4.0
-        version: 13.4.0
+        specifier: 14.0.11
+        version: 14.0.11
       supertest:
         specifier: 7.2.2
         version: 7.2.2
@@ -1038,8 +1039,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1
       nock:
-        specifier: 13.4.0
-        version: 13.4.0
+        specifier: 14.0.11
+        version: 14.0.11
       supertest:
         specifier: 7.2.2
         version: 7.2.2
@@ -1060,8 +1061,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       nock:
-        specifier: 13.4.0
-        version: 13.4.0
+        specifier: 14.0.11
+        version: 14.0.11
 
   packages/cap-config-writer:
     dependencies:
@@ -1078,8 +1079,8 @@ importers:
         specifier: workspace:*
         version: link:../yaml
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1143,8 +1144,8 @@ importers:
         specifier: 1.21.0
         version: 1.21.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
     devDependencies:
       '@sap-ux/odata-annotation-core-types':
         specifier: workspace:*
@@ -1168,8 +1169,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7(@types/node@22.19.10))
@@ -1226,8 +1227,8 @@ importers:
         specifier: 1.2.3
         version: 1.2.3
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@18.19.130))
@@ -1305,8 +1306,8 @@ importers:
         specifier: 1.2.3
         version: 1.2.3
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1420,8 +1421,8 @@ importers:
         specifier: 2.0.9
         version: 2.0.9(@types/express@4.17.21)
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       jest-scss-transform:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.2.0(@babel/core@7.29.0))
@@ -1439,7 +1440,7 @@ importers:
         version: 16.14.0(react@16.14.0)
       react-i18next:
         specifier: 15.7.4
-        version: 15.7.4(i18next@25.8.12(typescript@5.9.3))(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(typescript@5.9.3)
+        version: 15.7.4(i18next@25.8.18(typescript@5.9.3))(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(typescript@5.9.3)
       react-redux:
         specifier: 7.2.9
         version: 7.2.9(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
@@ -1592,8 +1593,8 @@ importers:
         specifier: 2.0.8
         version: 2.0.8
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@18.19.130))
@@ -1656,8 +1657,8 @@ importers:
         specifier: 1.2.3
         version: 1.2.3
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@18.19.130))
@@ -1805,8 +1806,8 @@ importers:
         specifier: 1.0.14
         version: 1.0.14
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       ignore:
         specifier: 5.2.4
         version: 5.2.4
@@ -1957,8 +1958,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -2142,8 +2143,8 @@ importers:
         specifier: 2.5.1
         version: 2.5.1
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.19.10)
@@ -2293,8 +2294,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -2366,8 +2367,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -2424,8 +2425,8 @@ importers:
         specifier: 2.0.8
         version: 2.0.8
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       logform:
         specifier: 2.4.0
         version: 2.4.0
@@ -2552,8 +2553,8 @@ importers:
         specifier: 0.15.0
         version: 0.15.0
       '@sap/ux-specification':
-        specifier: 1.142.0
-        version: 1.142.0(typescript@5.9.3)
+        specifier: 1.144.0
+        version: 1.144.0(typescript@5.9.3)
       '@types/diff':
         specifier: 5.0.9
         version: 5.0.9
@@ -2570,8 +2571,8 @@ importers:
         specifier: 0.27.2
         version: 0.27.2
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       npm-run-all2:
         specifier: 8.0.4
         version: 8.0.4
@@ -2628,8 +2629,8 @@ importers:
         specifier: workspace:*
         version: link:../project-input-validator
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -2677,8 +2678,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.19.10)
@@ -2783,8 +2784,8 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       uuid:
         specifier: 11.1.0
         version: 11.1.0
@@ -2834,10 +2835,6 @@ importers:
 
   packages/generator-odata-downloader:
     dependencies:
-      yeoman-generator:
-        specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
-    devDependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.22.0
         version: 1.22.0
@@ -2887,8 +2884,8 @@ importers:
         specifier: 0.15.0
         version: 0.15.0
       '@sap/ux-specification':
-        specifier: 1.142.1
-        version: 1.142.1(typescript@5.9.3)
+        specifier: 1.144.0
+        version: 1.144.0(typescript@5.9.3)
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -2902,8 +2899,8 @@ importers:
         specifier: 4.3.1
         version: 4.3.1
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.19.10)
@@ -3004,8 +3001,8 @@ importers:
         specifier: 0.1.3
         version: 0.1.3
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -3103,8 +3100,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       jsonc-parser:
         specifier: 3.3.1
         version: 3.3.1
@@ -3171,8 +3168,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -3316,8 +3313,8 @@ importers:
         specifier: 5.4.1
         version: 5.4.1
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7(@types/node@22.19.10))
@@ -3377,8 +3374,8 @@ importers:
         specifier: 5.4.1
         version: 5.4.1
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -3566,8 +3563,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1
       nock:
-        specifier: 13.4.0
-        version: 13.4.0
+        specifier: 14.0.11
+        version: 14.0.11
       npm-run-all2:
         specifier: 8.0.4
         version: 8.0.4
@@ -3667,8 +3664,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       validate-npm-package-name:
         specifier: 7.0.2
         version: 7.0.2
@@ -3789,8 +3786,8 @@ importers:
         specifier: 0.5.10
         version: 0.5.10
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.19.10)
@@ -3916,8 +3913,8 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       jsonc-parser:
         specifier: 3.3.1
         version: 3.3.1
@@ -3985,8 +3982,8 @@ importers:
         specifier: 0.2.1
         version: 0.2.1
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       jest-scss-transform:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.2.0(@babel/core@7.29.0))
@@ -3998,7 +3995,7 @@ importers:
         version: 16.14.0(react@16.14.0)
       react-i18next:
         specifier: 15.7.4
-        version: 15.7.4(i18next@25.8.12(typescript@5.9.3))(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(typescript@5.9.3)
+        version: 15.7.4(i18next@25.8.18(typescript@5.9.3))(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(typescript@5.9.3)
       react-redux:
         specifier: 7.2.9
         version: 7.2.9(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
@@ -4037,8 +4034,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       pluralize:
         specifier: 8.0.0
         version: 8.0.0
@@ -4094,8 +4091,8 @@ importers:
         specifier: 2.4.4
         version: 2.4.4
       nock:
-        specifier: 13.4.0
-        version: 13.4.0
+        specifier: 14.0.11
+        version: 14.0.11
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -4430,8 +4427,8 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
@@ -4467,8 +4464,8 @@ importers:
         specifier: 6.0.0
         version: 6.0.0(jest@30.2.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       nock:
-        specifier: 13.5.6
-        version: 13.5.6
+        specifier: 14.0.11
+        version: 14.0.11
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -4509,8 +4506,8 @@ importers:
         specifier: workspace:*
         version: link:../ui-service-inquirer
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
@@ -4579,8 +4576,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7(@types/node@22.19.10))
@@ -4625,8 +4622,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -4721,8 +4718,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       nock:
-        specifier: 13.4.0
-        version: 13.4.0
+        specifier: 14.0.11
+        version: 14.0.11
 
   packages/ui5-library-inquirer:
     dependencies:
@@ -4739,8 +4736,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7(@types/node@22.19.10))
@@ -4764,8 +4761,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
     devDependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.22.0
@@ -4801,8 +4798,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-library-reference-writer
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@18.19.130))
@@ -4893,8 +4890,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-library-writer
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
@@ -4945,8 +4942,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -5003,8 +5000,8 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       proxy-from-env:
         specifier: 1.1.0
         version: 1.1.0
@@ -5025,8 +5022,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1
       nock:
-        specifier: 13.4.0
-        version: 13.4.0
+        specifier: 14.0.11
+        version: 14.0.11
       supertest:
         specifier: 7.2.2
         version: 7.2.2
@@ -5046,14 +5043,14 @@ importers:
         specifier: workspace:*
         version: link:../ui5-application-writer
       '@sap/ux-specification':
-        specifier: 1.142.1
-        version: 1.142.1(typescript@5.9.3)
+        specifier: 1.144.0
+        version: 1.144.0(typescript@5.9.3)
       ejs:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
-        version: 25.8.12(typescript@5.9.3)
+        specifier: 25.8.18
+        version: 25.8.18(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -7357,6 +7354,10 @@ packages:
     resolution: {integrity: sha512-47XIizs9XZXvuJgoaJUIE2lFoID8ugvc0jzSHP+Ptfk8nTbnR8g788wv48N03Kx0UkAv559HWRQ3yzOgzlRNUA==}
     engines: {node: '>= 18'}
 
+  '@mswjs/interceptors@0.41.3':
+    resolution: {integrity: sha512-cXu86tF4VQVfwz8W1SPbhoRyHJkti6mjH/XJIxp40jhO4j2k1m4KYrEykxqWPkFF3vrK4rgQppBh//AwyGSXPA==}
+    engines: {node: '>=18'}
+
   '@napi-rs/canvas-android-arm64@0.1.80':
     resolution: {integrity: sha512-sk7xhN/MoXeuExlggf91pNziBxLPVUqF2CAVnB57KLG/pz7+U5TKG8eXdc3pm0d7Od0WreB6ZKLj37sX9muGOQ==}
     engines: {node: '>= 10'}
@@ -7677,6 +7678,15 @@ packages:
 
   '@octokit/types@6.41.0':
     resolution: {integrity: sha512-eJ2jbzjdijiL3B4PrSQaSjuF2sPEQPVCPzBvTHJD9Nz+9dw2SGH4K4xeQJ77YfTq5bRQ+bD8wT11JbeDPmxmGg==}
+
+  '@open-draft/deferred-promise@2.2.0':
+    resolution: {integrity: sha512-CecwLWx3rhxVQF6V4bAgPS5t+So2sTbPgAzafKkVizyi7tlwpcFpdFqq+wqF2OwNBmqFuu6tOyouTuxgpMfzmA==}
+
+  '@open-draft/logger@0.3.0':
+    resolution: {integrity: sha512-X2g45fzhxH238HKO4xbSr7+wBS8Fvw6ixhTDuvLd5mqh6bJJCFAPwU9mPDxbcrRtfxv4u5IHCEH77BmxvXmmxQ==}
+
+  '@open-draft/until@2.1.0':
+    resolution: {integrity: sha512-U69T3ItWHvLwGg5eJ0n3I62nWuE6ilHlmz7zM0npLBRvPRd7e6NYmg54vvRtP5mZG7kZqZCFVdsTWo7BPtBujg==}
 
   '@openai/agents-core@0.5.4':
     resolution: {integrity: sha512-qAT9zGIIM7GT5/WGkLpp8Fuar7NL5qu30b5+o2jP3mE6aMfx9OZjdj0za/iYLeV5kzQ5pOcbvRXenfzHrhvd/A==}
@@ -8331,20 +8341,13 @@ packages:
   '@sap-ux/annotation-converter@0.10.21':
     resolution: {integrity: sha512-k6C8DNlDTqYb0OrKUwurDPV2G3KLGOhfMEtXl8WJOgd3mdf+qpA4vCRfmEtXlGB357X6bsMfxZw5CQHUt2WauQ==}
 
-  '@sap-ux/annotation-converter@0.10.9':
-    resolution: {integrity: sha512-3FZsUB9G/PhxyMuYs6tIcXEvStQl5NXHwLLyy94UGNAwYCYxwrST7UgiirlVCY9Krb03wb8RdPCldTEyyO5iEg==}
+  '@sap-ux/cds-annotation-parser@0.2.32':
+    resolution: {integrity: sha512-UH3Jk639mpWmLAD+3GT9apjFrI1+1xONcIYqUWVdtG76/0H7OnOXZ5vOL+3pyW18BsnzhOCZm8grhfS7dK0T5w==}
+    engines: {node: '>=20.x'}
 
-  '@sap-ux/cds-annotation-parser@0.2.24':
-    resolution: {integrity: sha512-CZxp6342j04cwzQT25Q0hyet9eCKnj716Xti7tJDt2biJzkBkUG8e+zXfWbhR9Aajx9uz4JnSPrEXzSEjEy+SQ==}
-
-  '@sap-ux/cds-annotation-parser@0.2.26':
-    resolution: {integrity: sha512-VFF2QTnKsvrKXW5vq2z1bmdZu9aYx/2AYA85N0arvenrGf4G8tlR9H+MbB5xE8PbWvg/s3owkUtvwjDRQPGjiQ==}
-
-  '@sap-ux/cds-odata-annotation-converter@0.6.17':
-    resolution: {integrity: sha512-3VymtIiQjGz95OwYqkcA7dzXkae4osyMqDlEJKfqnOVhwqNPFTLQyzwQUoz+vmk9v11v5J4ToyNBVJdoDDLb/Q==}
-
-  '@sap-ux/cds-odata-annotation-converter@0.7.1':
-    resolution: {integrity: sha512-M3TXSCl9u55WYF0I6d1w+kP9vgFEmIOpADOGlymb96RfWzYRI6+rvUYUsaZ1bJpBGiDrq7oF7Nec+7bSD90m9w==}
+  '@sap-ux/cds-odata-annotation-converter@0.7.11':
+    resolution: {integrity: sha512-csSSmxryrRaXf0Co/dFZIcaVs1MRUQ0+X7vn7GIqA+YcXqIFVs5q5WqFGOiCK04+wuVZgFOeTkqc2uRd5x69Og==}
+    engines: {node: '>=20.x'}
 
   '@sap-ux/edmx-parser@0.10.0':
     resolution: {integrity: sha512-kjOHHpI6ymxb3BLLUKMLpYwhTFC5d0KEGw+xzxNmI7YPnSmY5Qbb5b1Io/LV35jFgyUeRZYNPsxg1PVtYnTdhw==}
@@ -8352,12 +8355,8 @@ packages:
   '@sap-ux/edmx-parser@0.9.8':
     resolution: {integrity: sha512-GFyrixCHRvPVN07RjJYMQJE9xY2J3EpLuOsOXyAhuAoePqBjbAFuE+lJyyJMmJK3oltDBVDB+dqyA0eMSeCD/A==}
 
-  '@sap-ux/fe-fpm-writer@0.40.11':
-    resolution: {integrity: sha512-847DjXC6C1ko3spU49hbmlDEXIezt4OuQuzd+5jkPeBq/LFNi1XwVdf1ilR2mcTSqvGi6Vaq5Lgi3rTJsH5PLw==}
-    engines: {node: '>=20.x'}
-
-  '@sap-ux/fe-fpm-writer@0.40.2':
-    resolution: {integrity: sha512-CITbU3oj2xuCLAPItczgP5NXjbkkUVQFSlXGzXv1464qhmrWQSMUjWj14oBIAoXDbZSBj3i2YMhZMXe/VCtTyQ==}
+  '@sap-ux/fe-fpm-writer@0.43.7':
+    resolution: {integrity: sha512-+YM0pj3cM4p/mNwLqhsvnheKzILtGVHJ1ANhkSE5fCkTqUkeVLy2TC/Z9Zvn4keWy9rsjl5/apGZ0saEF9j6oQ==}
     engines: {node: '>=20.x'}
 
   '@sap-ux/fe-mockserver-core@1.6.38':
@@ -8368,14 +8367,12 @@ packages:
     peerDependencies:
       '@sap/cds-compiler': ^4.8 || ^5.4
 
-  '@sap-ux/fiori-annotation-api@0.8.2':
-    resolution: {integrity: sha512-r/SvuuSVJpmW/64PLLDzzdV8eM1+FTDLc1PRsqU7LaNS1uYoN+fnRn8HYmttNsfVHq6VDDxH/X0WPyLDTyDj9g==}
+  '@sap-ux/fiori-annotation-api@0.9.30':
+    resolution: {integrity: sha512-hSh7zgRa7V7zZ8IkGKywjsw9Qxj1cQqZNBu0zjDyfcK/PY7Rifzr/+2Pgzr//KMXmMAj6Mn4or/w1Pm2+vbtOw==}
+    engines: {node: '>=20.x'}
 
-  '@sap-ux/fiori-annotation-api@0.9.3':
-    resolution: {integrity: sha512-CqPnsWa65hHRLmcr/Vv7+IaBElLejyrsq0D92+95fgN2Az5l0v5PrdHmYBdmSufO0yAq8lH2Roz15PHeBSNqDw==}
-
-  '@sap-ux/i18n@0.3.7':
-    resolution: {integrity: sha512-vDEAaukwDG9O+nJHElKtYaLtMS63RLE+KFQMi4mn1/HDiIXb8dUwmj3F4/jceUhrOM11pjIhh6/q73AVcX+yzg==}
+  '@sap-ux/i18n@0.3.9':
+    resolution: {integrity: sha512-PPSsqt8QBZIMipp5mUuYl159eoXIbPfRAhz4zaPbN+oaEeS/DH/DkkPqzJW2sj3MPy1025zztEuU3Ebt8zLkpw==}
     engines: {node: '>=20.x'}
 
   '@sap-ux/logger@0.7.0':
@@ -8386,34 +8383,28 @@ packages:
     resolution: {integrity: sha512-1VrGrFykTa/HMxCFOI674zU+EZQD4EUgDjw21/ua7gTb0PO9tM/NFhuFUsnoXCDQ/3Gg1SMfW/VA1hZ7LjpqGw==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/logger@0.8.0':
-    resolution: {integrity: sha512-GFkFfg8s0y4qRU0nUiQuoCwZCITs+f2t+9HQrNscdSSxKfesPx4aTTVjVjxBbXOKVGwRqind65JULSPrYZy83Q==}
+  '@sap-ux/logger@0.8.2':
+    resolution: {integrity: sha512-ucT/sbk8zDOK4b0cPTzttSZQZRPpHlHwU/q0OpFjbGycpxryezOJGQhthsaHDOrv5RWTA+3LD4/LjfxZT0M2ew==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/odata-annotation-core-types@0.5.2':
-    resolution: {integrity: sha512-64M02aoHWR+0TooVxMywkkMLWAE+T0+1xKON+CKEfDAZAO5yN/+wZGFD9Gg44KdbsnLp9rwDYvDqrvJWKNWzNQ==}
-
-  '@sap-ux/odata-annotation-core@0.2.11':
-    resolution: {integrity: sha512-jVOC2CxsvfvKbE847eTeI1e9APXvhYvxIB0bthepe1682wxPMbXhllA6DINbEw6qy45+Bzj3lS6XQdHAwqr43A==}
-
-  '@sap-ux/odata-annotation-core@0.2.12':
-    resolution: {integrity: sha512-YbduGxIpHPFMYd384MKhi/qYON+0h7zLErv04iiAbQ3e5D3hbdPMQnZpGDbmXU1Lek5CuQ9bGHX86kNDcZtNMw==}
-
-  '@sap-ux/odata-entity-model@0.3.3':
-    resolution: {integrity: sha512-bwo13NyLOuif/R+shv0IXNgOBWLelA22KMsyUW7S0e3qxew/Tx1iHFmTjfbvgyMyC2cd7tGs4O1F+LMxveWT5Q==}
-
-  '@sap-ux/odata-entity-model@0.3.4':
-    resolution: {integrity: sha512-W6UoCcLZ1JOjZr1Ql61HZ9Y6DQJOqAjg4MXdArtTqDotZ422t8QNWtbDiQmTksFYCzrL+5EmLCgQG9RfPG6JqQ==}
-
-  '@sap-ux/odata-vocabularies@0.4.21':
-    resolution: {integrity: sha512-jFh/5W17VbGEPiKZncK0n4cA3TxLBnH4zoUzVFfhJFz3aey/gPny/7aLtnfBCXP/H890JaIjbvFfITZIV/EFBA==}
-
-  '@sap-ux/project-access@1.33.0':
-    resolution: {integrity: sha512-+KFm5AYfVPLdNBbpOJYR759sNb8xvU591NSnWAHB/poLeWtDJA31tfpIMhpeQ3vHV0YcASiG491vIrHEJI7Zgw==}
+  '@sap-ux/odata-annotation-core-types@0.5.6':
+    resolution: {integrity: sha512-mlUOWNJgnYvTTmJskFnzw4AEy0TL1xqDUJFqz5bLSukEgglhQTijbHeG1wzaSjANidfrOUgcg/7NZOMsrg/doA==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/project-access@1.34.2':
-    resolution: {integrity: sha512-3up+4uvYZJJeJRtMENbuGyrxD0ePfGPr45rfabLrCIJYAgGFaHeWcrgq3dlRjO9w0WdhaBZjy9dYTojx6azVkA==}
+  '@sap-ux/odata-annotation-core@0.2.16':
+    resolution: {integrity: sha512-bsn4pqxJMds5u3J2UTDGAAVAQ3/34cOdEpTsVhhQCs/IODXxx+nYPzrhstJNVDeCFBqlb0pOoJ8jqNYxTFOk3A==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/odata-entity-model@0.3.6':
+    resolution: {integrity: sha512-OC3ruYVHLTinDlo3hGGHT9qop2QjX2+Jwl1UOA3y0PV9bh1g3UiP6f91anQwsXlJKFLm1kGPUMA6cxkfNIGGHQ==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/odata-vocabularies@0.4.27':
+    resolution: {integrity: sha512-BbnCaDQP+JbKAcRpC2RN4plz3kY/Rl1darrJ9doLqp6icnFk/UT6rXb6FTEHVNOl94dlgzustqojSG26uO/2jw==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/project-access@1.35.13':
+    resolution: {integrity: sha512-hGeBdU+SHqkY/s+OYb08C0PiwBVk6uvrxu0hIgMMP40Czv//sfhRmSEnWwIOJF58O8HYzAJF0mhFxjotUmbqdg==}
     engines: {node: '>=20.x'}
 
   '@sap-ux/store@1.4.0':
@@ -8424,37 +8415,23 @@ packages:
     resolution: {integrity: sha512-/jO9Br7uJZP/GsvMPCgY2Sgn/qMs/JrSRLWxq8HdW633Qa0ngqliZSqdJxoHbAmpmzCjIAFq6dS3O2+a33ropA==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/ui5-config@0.29.12':
-    resolution: {integrity: sha512-nuhf8Ua6WNX1hm8bEHFKhZQ3nDt3/s8P9Vo+o8Yr6acRGqRN/Uk5MjObUtGsnC0rUBrD57fMFSWiI81UHBkkyA==}
-    engines: {node: '>=20.x'}
-
-  '@sap-ux/ui5-config@0.29.13':
-    resolution: {integrity: sha512-W8giviFXP0KVgdcCQlrInXEVGCtCKyCLKP62rVVP9v5+EXN4Zgq5QWAUF0O9ys1U8B/ZQy0NLUga0PMSUo9b+g==}
+  '@sap-ux/ui5-config@0.29.21':
+    resolution: {integrity: sha512-rOL9R3D4eC6/bC18pRj+LR/WA61TcKOmg3qCsZK+bV5/66BNCfO9ehA8cy9s3RM8acRaWcG76Qz1Z2WIHeA+2w==}
     engines: {node: '>=20.x'}
 
   '@sap-ux/ui5-middleware-fe-mockserver@2.3.38':
     resolution: {integrity: sha512-7HBYgqIfdlPA537JhbDtGyzDSUWB6FSeS4favvWlv64tfJeUTKXLfOOCAQo74jY5R58IvY+3pPWVSksxQINACQ==}
 
-  '@sap-ux/vocabularies-types@0.13.2':
-    resolution: {integrity: sha512-lPFiWVXyA4yUBeQBJePxnqXZ/bMKk6vR3GoLtW/5ayBcQAJxWTpeyK8QX91sR+AajDmzkCF/8ND2ewi8SewySg==}
-    engines: {node: '>=18.x'}
-
-  '@sap-ux/vocabularies-types@0.14.5':
-    resolution: {integrity: sha512-66Q7Q4zVVSirPopU7oRw0ZDtUiOhAF2DuKy70uJl2wRfQ2WXLbrezEkHRxVdiVpQYm5n5qTkr6sX/I+/WXQjXQ==}
-    engines: {node: '>=18.x'}
-
   '@sap-ux/vocabularies-types@0.15.0':
     resolution: {integrity: sha512-H/xKp65xSUMSOulqd+vNzxIOLwupnVDwHTJaQL9xf+/AVPY0bJzUgFy+OOUU7gtqm8NFPgv+06Hz6DyyMRCflA==}
     engines: {node: '>=18.x'}
 
-  '@sap-ux/xml-odata-annotation-converter@0.4.4':
-    resolution: {integrity: sha512-XTwLtCPVxCU+ML5nYvL/1CIqCnG6OXXLFBvI5dWsY6YwS4QcJLzM4qBzfyLRc6MeWly2oOEscJyVUZ+zFIRqZw==}
+  '@sap-ux/xml-odata-annotation-converter@0.4.10':
+    resolution: {integrity: sha512-DU7LJFR4dz50IdUUek/Z2ZL00W/dvAFB7MZu5UuamJL3dpdBUX4i6fXvMai0KdPIZ5e00BcDA+gMeoQMJvVS7A==}
+    engines: {node: '>=20.x'}
 
-  '@sap-ux/xml-odata-annotation-converter@0.4.6':
-    resolution: {integrity: sha512-GD/BcylI6z2htLwil3gDP88j4gCClAMlfrhzJFSWXqrK0YdutHfE3NLUm1Cj232+2YDi6j5U7ZTa8MO1bzC2iQ==}
-
-  '@sap-ux/yaml@0.17.3':
-    resolution: {integrity: sha512-TG/hUwNtipnXtffCvGKq8cG4WVkSSWxgloz/6fMbGupL67BnAD2SmAZWkfVtMVjrK13MOsqCC9S98fm8sHt24g==}
+  '@sap-ux/yaml@0.17.5':
+    resolution: {integrity: sha512-RSQ8bC0kFplhAqWQoQKp8VL+R89xxl+rxT5OH+5AIob1m0xGfaMWkB4SYIujIlWbZOBlSaGJwy99NOH+HvFyYA==}
     engines: {node: '>=20.x'}
 
   '@sap/bas-sdk@3.13.3':
@@ -8482,14 +8459,6 @@ packages:
   '@sap/subaccount-destination-service-provider@2.14.1':
     resolution: {integrity: sha512-P23fwTlPcaG3Y8s4ykMM+b6KrC59/fldxAFAYub9gge+5BBVp5O+JSogswcBuwXPw6KhuXbvWrKIBR4oc32AIg==}
 
-  '@sap/ux-cds-compiler-facade@1.19.0':
-    resolution: {integrity: sha512-lPjt+K7Xyxwr0hm3lUW7Lzt3MYMVvbkzhpzDbNpG0guBp4l+8FgXl1/2ZrHoQ8ZjHv6e3YUTWm9ICZkb+7s8Qg==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      '@sap-ux/odata-annotation-core': '>=0.2.8'
-      '@sap-ux/odata-annotation-core-types': '>=0.5.0'
-      '@sap-ux/project-access': '>=1.32.1'
-
   '@sap/ux-cds-compiler-facade@1.21.0':
     resolution: {integrity: sha512-oo2QlVPV4ZAcWjqflLsqzp8fBL2Fy0TW9Hco1Gjr8yj2AlW+/x2/Qd2QDMw5CRSNFawVsB+GAaCqknqhPk8EXA==}
     engines: {node: '>=20.0.0'}
@@ -8498,12 +8467,8 @@ packages:
       '@sap-ux/odata-annotation-core-types': '>=0.5.6'
       '@sap-ux/project-access': '>=1.35.13'
 
-  '@sap/ux-specification@1.142.0':
-    resolution: {integrity: sha512-GHT/R8PkahIjAH6QfM6FfuX6CfE5S6gsEGEvMq1N6nsHt7adehpWENMNf5pNakkciKTqU7z5a9MQ/aKOLdfizQ==}
-    engines: {node: '>=20.0.0 <21.0.0 || >=22.0.0 <23.0.0 || >=24.0.0 <25.0.0 || >=26.0.0', yarn: '>=1.22.19 < 2'}
-
-  '@sap/ux-specification@1.142.1':
-    resolution: {integrity: sha512-k0LeUTud+sQIN1M8tIAWanBOdGNbyGk3mZLz+krj75lYvutON6wEroHOniXMvkXz8UEt9+SJjS4kzmZw88h+BA==}
+  '@sap/ux-specification@1.144.0':
+    resolution: {integrity: sha512-NixT1rrKKfNaGfLH8GzkWmPai+UJU3f/DePIMl0r5QxVrD6uBwZXULFReSEZLsGbv/xoVfQuZzZHWhl5+BVwhA==}
     engines: {node: '>=20.0.0 <21.0.0 || >=22.0.0 <23.0.0 || >=24.0.0 <25.0.0 || >=26.0.0', yarn: '>=1.22.19 < 2'}
 
   '@sap/xsenv@6.1.0':
@@ -13205,6 +13170,14 @@ packages:
       typescript:
         optional: true
 
+  i18next@25.8.18:
+    resolution: {integrity: sha512-lzY5X83BiL5AP77+9DydbrqkQHFN9hUzWGjqjLpPcp5ZOzuu1aSoKaU3xbBLSjWx9dAzW431y+d+aogxOZaKRA==}
+    peerDependencies:
+      typescript: ^5
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   ibm-cloud-sdk-core@5.4.8:
     resolution: {integrity: sha512-tLMlZv13cV6S1UPj/bhv8XfV9Z1BDDs/4DxHKWnCw7QlJMzmGdHLPX386x9nrFMQMPZ48eAH+Thsa06tzUZkaA==}
     engines: {node: '>=20'}
@@ -13520,6 +13493,9 @@ packages:
   is-network-error@1.3.1:
     resolution: {integrity: sha512-6QCxa49rQbmUWLfk0nuGqzql9U8uaV2H6279bRErPBHe/109hCzsLUBUHfbEtvLIHBd6hyXbgedBSHevm43Edw==}
     engines: {node: '>=16'}
+
+  is-node-process@1.2.0:
+    resolution: {integrity: sha512-Vg4o6/fqPxIjtxgUH5QLJhwZ7gW5diGCVlXpuUfELC62CuxM1iHcRe51f2W1FDy04Ai4KJkagKjx3XaqyfRKXw==}
 
   is-npm@6.1.0:
     resolution: {integrity: sha512-O2z4/kNgyjhQwVR1Wpkbfc19JIhggF97NZNCpWTnjH7kVcZMUrnut9XSN7txI7VdyIYk5ZatOq3zvSuWpU8hoA==}
@@ -14833,13 +14809,9 @@ packages:
   no-case@3.0.4:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
 
-  nock@13.4.0:
-    resolution: {integrity: sha512-W8NVHjO/LCTNA64yxAPHV/K47LpGYcVzgKd3Q0n6owhwvD0Dgoterc25R4rnZbckJEb6Loxz1f5QMuJpJnbSyQ==}
-    engines: {node: '>= 10.13'}
-
-  nock@13.5.6:
-    resolution: {integrity: sha512-o2zOYiCpzRqSzPj0Zt/dQ/DqZeYoaQ7TUonc/xUPjCGl9WeHpNbxgVvOquXYAaJzI0M9BXV3HTzG0p8IUAbBTQ==}
-    engines: {node: '>= 10.13'}
+  nock@14.0.11:
+    resolution: {integrity: sha512-u5xUnYE+UOOBA6SpELJheMCtj2Laqx15Vl70QxKo43Wz/6nMHXS7PrEioXLjXAwhmawdEMNImwKCcPhBJWbKVw==}
+    engines: {node: '>=18.20.0 <20 || >=20.12.1'}
 
   node-abi@3.87.0:
     resolution: {integrity: sha512-+CGM1L1CgmtheLcBuleyYOn7NWPVu0s0EJH2C4puxgEZb9h8QpR9G2dBfZJOAUhi7VQxuBPMd0hiISWcTyiYyQ==}
@@ -15274,6 +15246,9 @@ packages:
 
   outdent@0.5.0:
     resolution: {integrity: sha512-/jHxFIzoMXdqPzTaCpFzAAWhpkSjZPF4Vsn6jAfNpmbH/ymsmd7Qc6VE9BGn0L6YMj6uwpQLxCECpus4ukKS9Q==}
+
+  outvariant@1.4.3:
+    resolution: {integrity: sha512-+Sl2UErvtsoajRDKCE5/dBz4DIvHXQQnAxtQTF04OJxY0+DyZXSo5P5Bb7XYWOh81syohlYL24hbDwxedPUJCA==}
 
   own-keys@1.0.1:
     resolution: {integrity: sha512-qFOyK5PjiWZd+QQIh+1jhdb9LpxTF0qs7Pm8o5QHYZ0M3vKqSqzsZaEB6oWlxZ+q2sJBMI/Ktgd2N5ZwQoRHfg==}
@@ -16745,11 +16720,6 @@ packages:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
 
-  semver@7.5.4:
-    resolution: {integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==}
-    engines: {node: '>=10'}
-    hasBin: true
-
   semver@7.7.3:
     resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
     engines: {node: '>=10'}
@@ -17134,6 +17104,9 @@ packages:
 
   streamx@2.23.0:
     resolution: {integrity: sha512-kn+e44esVfn2Fa/O0CPFcex27fjIL6MkVae0Mm6q+E6f0hWv578YCERbv+4m02cjxvDsPKLnmxral/rR6lBMAg==}
+
+  strict-event-emitter@0.5.1:
+    resolution: {integrity: sha512-vMgjE/GGEPEFnhFub6pa4FmJBRBVOLpIII2hvCZ8Kzb7K0hlHo7mQv6xYrBvCL2LtAIBwFUK8wvuJgTVSQ5MFQ==}
 
   strict-uri-encode@2.0.0:
     resolution: {integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==}
@@ -18389,10 +18362,6 @@ packages:
   yaml@1.10.2:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
-
-  yaml@2.2.2:
-    resolution: {integrity: sha512-CBKFWExMn46Foo4cldiChEzn7S7SRV+wqiluAb6xmueD/fGyRHIhX8m14vVGgeFWjN540nKCNVj6P21eQjgTuA==}
-    engines: {node: '>= 14'}
 
   yaml@2.8.2:
     resolution: {integrity: sha512-mplynKqc1C2hTVYxd0PU2xQAc22TI1vShAYGksCCfxbn/dFwnHTNi1bvYsBTkhdUNtGIf5xNOg938rrSSYvS9A==}
@@ -21774,6 +21743,15 @@ snapshots:
   '@msgpack/msgpack@3.1.3':
     optional: true
 
+  '@mswjs/interceptors@0.41.3':
+    dependencies:
+      '@open-draft/deferred-promise': 2.2.0
+      '@open-draft/logger': 0.3.0
+      '@open-draft/until': 2.1.0
+      is-node-process: 1.2.0
+      outvariant: 1.4.3
+      strict-event-emitter: 0.5.1
+
   '@napi-rs/canvas-android-arm64@0.1.80':
     optional: true
 
@@ -22190,6 +22168,15 @@ snapshots:
   '@octokit/types@6.41.0':
     dependencies:
       '@octokit/openapi-types': 12.11.0
+
+  '@open-draft/deferred-promise@2.2.0': {}
+
+  '@open-draft/logger@0.3.0':
+    dependencies:
+      is-node-process: 1.2.0
+      outvariant: 1.4.3
+
+  '@open-draft/until@2.1.0': {}
 
   '@openai/agents-core@0.5.4(@cfworker/json-schema@4.1.1)(ws@8.19.0)(zod@4.3.6)':
     dependencies:
@@ -22840,53 +22827,28 @@ snapshots:
 
   '@sap-ux/annotation-converter@0.10.19':
     dependencies:
-      '@sap-ux/vocabularies-types': 0.14.5
+      '@sap-ux/vocabularies-types': 0.15.0
 
   '@sap-ux/annotation-converter@0.10.21':
     dependencies:
       '@sap-ux/vocabularies-types': 0.15.0
 
-  '@sap-ux/annotation-converter@0.10.9':
+  '@sap-ux/cds-annotation-parser@0.2.32':
     dependencies:
-      '@sap-ux/vocabularies-types': 0.13.2
-
-  '@sap-ux/cds-annotation-parser@0.2.24':
-    dependencies:
-      '@sap-ux/odata-annotation-core': 0.2.11
-      '@sap-ux/odata-entity-model': 0.3.3
-      '@sap-ux/odata-vocabularies': 0.4.21
+      '@sap-ux/odata-annotation-core': 0.2.16
+      '@sap-ux/odata-entity-model': 0.3.6
+      '@sap-ux/odata-vocabularies': 0.4.27
       '@sap-ux/text-document-utils': 0.3.3
       chevrotain: 7.1.1
 
-  '@sap-ux/cds-annotation-parser@0.2.26':
+  '@sap-ux/cds-odata-annotation-converter@0.7.11(@sap-ux/odata-annotation-core-types@0.5.6)(@sap-ux/project-access@1.35.13)(typescript@5.9.3)':
     dependencies:
-      '@sap-ux/odata-annotation-core': 0.2.12
-      '@sap-ux/odata-entity-model': 0.3.4
-      '@sap-ux/odata-vocabularies': 0.4.21
+      '@sap-ux/cds-annotation-parser': 0.2.32
+      '@sap-ux/odata-annotation-core': 0.2.16
+      '@sap-ux/odata-vocabularies': 0.4.27
       '@sap-ux/text-document-utils': 0.3.3
-      chevrotain: 7.1.1
-
-  '@sap-ux/cds-odata-annotation-converter@0.6.17(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/project-access@1.33.0)(typescript@5.9.3)':
-    dependencies:
-      '@sap-ux/cds-annotation-parser': 0.2.24
-      '@sap-ux/odata-annotation-core': 0.2.11
-      '@sap-ux/odata-vocabularies': 0.4.21
-      '@sap-ux/text-document-utils': 0.3.3
-      '@sap/ux-cds-compiler-facade': 1.19.0(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/odata-annotation-core@0.2.11)(@sap-ux/project-access@1.33.0)
-      i18next: 25.3.0(typescript@5.9.3)
-    transitivePeerDependencies:
-      - '@sap-ux/odata-annotation-core-types'
-      - '@sap-ux/project-access'
-      - typescript
-
-  '@sap-ux/cds-odata-annotation-converter@0.7.1(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/project-access@1.34.2)(typescript@5.9.3)':
-    dependencies:
-      '@sap-ux/cds-annotation-parser': 0.2.26
-      '@sap-ux/odata-annotation-core': 0.2.12
-      '@sap-ux/odata-vocabularies': 0.4.21
-      '@sap-ux/text-document-utils': 0.3.3
-      '@sap/ux-cds-compiler-facade': 1.19.0(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/odata-annotation-core@0.2.12)(@sap-ux/project-access@1.34.2)
-      i18next: 25.3.0(typescript@5.9.3)
+      '@sap/ux-cds-compiler-facade': 1.21.0(@sap-ux/odata-annotation-core-types@0.5.6)(@sap-ux/odata-annotation-core@0.2.16)(@sap-ux/project-access@1.35.13)
+      i18next: 25.8.12(typescript@5.9.3)
     transitivePeerDependencies:
       - '@sap-ux/odata-annotation-core-types'
       - '@sap-ux/project-access'
@@ -22900,38 +22862,20 @@ snapshots:
     dependencies:
       xml-js: 1.6.11
 
-  '@sap-ux/fe-fpm-writer@0.40.11(typescript@5.9.3)':
+  '@sap-ux/fe-fpm-writer@0.43.7(typescript@5.9.3)':
     dependencies:
-      '@sap-ux/annotation-converter': 0.10.19
-      '@sap-ux/fiori-annotation-api': 0.9.3(typescript@5.9.3)
-      '@sap-ux/logger': 0.8.0
-      '@sap-ux/project-access': 1.34.2
-      '@sap-ux/vocabularies-types': 0.14.5
+      '@sap-ux/annotation-converter': 0.10.21
+      '@sap-ux/fiori-annotation-api': 0.9.30(typescript@5.9.3)
+      '@sap-ux/i18n': 0.3.9
+      '@sap-ux/logger': 0.8.2
+      '@sap-ux/project-access': 1.35.13
+      '@sap-ux/vocabularies-types': 0.15.0
       '@xmldom/xmldom': 0.8.10
       ejs: 3.1.10
-      i18next: 25.3.0(typescript@5.9.3)
+      i18next: 25.8.12(typescript@5.9.3)
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      semver: 7.5.4
-      xml-formatter: 2.6.1
-      xpath: 0.0.33
-    transitivePeerDependencies:
-      - debug
-      - typescript
-
-  '@sap-ux/fe-fpm-writer@0.40.2(typescript@5.9.3)':
-    dependencies:
-      '@sap-ux/annotation-converter': 0.10.9
-      '@sap-ux/fiori-annotation-api': 0.8.2(typescript@5.9.3)
-      '@sap-ux/logger': 0.8.0
-      '@sap-ux/project-access': 1.33.0
-      '@sap-ux/vocabularies-types': 0.13.2
-      '@xmldom/xmldom': 0.8.10
-      ejs: 3.1.10
-      i18next: 25.3.0(typescript@5.9.3)
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      semver: 7.5.4
+      semver: 7.7.4
       xml-formatter: 2.6.1
       xpath: 0.0.33
     transitivePeerDependencies:
@@ -22960,20 +22904,20 @@ snapshots:
     dependencies:
       '@sap/cds-compiler': 4.8.0
 
-  '@sap-ux/fiori-annotation-api@0.8.2(typescript@5.9.3)':
+  '@sap-ux/fiori-annotation-api@0.9.30(typescript@5.9.3)':
     dependencies:
-      '@sap-ux/annotation-converter': 0.10.9
-      '@sap-ux/cds-annotation-parser': 0.2.24
-      '@sap-ux/cds-odata-annotation-converter': 0.6.17(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/project-access@1.33.0)(typescript@5.9.3)
-      '@sap-ux/logger': 0.8.0
-      '@sap-ux/odata-annotation-core': 0.2.11
-      '@sap-ux/odata-annotation-core-types': 0.5.2
-      '@sap-ux/odata-entity-model': 0.3.3
-      '@sap-ux/odata-vocabularies': 0.4.21
-      '@sap-ux/project-access': 1.33.0
-      '@sap-ux/vocabularies-types': 0.13.2
-      '@sap-ux/xml-odata-annotation-converter': 0.4.4
-      '@sap/ux-cds-compiler-facade': 1.19.0(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/odata-annotation-core@0.2.11)(@sap-ux/project-access@1.33.0)
+      '@sap-ux/annotation-converter': 0.10.21
+      '@sap-ux/cds-annotation-parser': 0.2.32
+      '@sap-ux/cds-odata-annotation-converter': 0.7.11(@sap-ux/odata-annotation-core-types@0.5.6)(@sap-ux/project-access@1.35.13)(typescript@5.9.3)
+      '@sap-ux/logger': 0.8.2
+      '@sap-ux/odata-annotation-core': 0.2.16
+      '@sap-ux/odata-annotation-core-types': 0.5.6
+      '@sap-ux/odata-entity-model': 0.3.6
+      '@sap-ux/odata-vocabularies': 0.4.27
+      '@sap-ux/project-access': 1.35.13
+      '@sap-ux/vocabularies-types': 0.15.0
+      '@sap-ux/xml-odata-annotation-converter': 0.4.10
+      '@sap/ux-cds-compiler-facade': 1.21.0(@sap-ux/odata-annotation-core-types@0.5.6)(@sap-ux/odata-annotation-core@0.2.16)(@sap-ux/project-access@1.35.13)
       '@xml-tools/ast': 5.0.5
       '@xml-tools/parser': 1.0.11
       mem-fs: 2.1.0
@@ -22983,33 +22927,10 @@ snapshots:
       - debug
       - typescript
 
-  '@sap-ux/fiori-annotation-api@0.9.3(typescript@5.9.3)':
-    dependencies:
-      '@sap-ux/annotation-converter': 0.10.19
-      '@sap-ux/cds-annotation-parser': 0.2.26
-      '@sap-ux/cds-odata-annotation-converter': 0.7.1(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/project-access@1.34.2)(typescript@5.9.3)
-      '@sap-ux/logger': 0.8.0
-      '@sap-ux/odata-annotation-core': 0.2.12
-      '@sap-ux/odata-annotation-core-types': 0.5.2
-      '@sap-ux/odata-entity-model': 0.3.4
-      '@sap-ux/odata-vocabularies': 0.4.21
-      '@sap-ux/project-access': 1.34.2
-      '@sap-ux/vocabularies-types': 0.14.5
-      '@sap-ux/xml-odata-annotation-converter': 0.4.6
-      '@sap/ux-cds-compiler-facade': 1.19.0(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/odata-annotation-core@0.2.12)(@sap-ux/project-access@1.34.2)
-      '@xml-tools/ast': 5.0.5
-      '@xml-tools/parser': 1.0.11
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      vscode-languageserver-textdocument: 1.0.11
-    transitivePeerDependencies:
-      - debug
-      - typescript
-
-  '@sap-ux/i18n@0.3.7':
+  '@sap-ux/i18n@0.3.9':
     dependencies:
       '@sap-ux/text-document-utils': 0.3.3
-      jsonc-parser: 3.2.0
+      jsonc-parser: 3.3.1
       vscode-languageserver-textdocument: 1.0.11
 
   '@sap-ux/logger@0.7.0':
@@ -23026,58 +22947,38 @@ snapshots:
       winston: 3.11.0
       winston-transport: 4.7.0
 
-  '@sap-ux/logger@0.8.0':
+  '@sap-ux/logger@0.8.2':
     dependencies:
       chalk: 4.1.2
       lodash: 4.17.23
       winston: 3.11.0
-      winston-transport: 4.7.0
+      winston-transport: 4.9.0
 
-  '@sap-ux/odata-annotation-core-types@0.5.2':
+  '@sap-ux/odata-annotation-core-types@0.5.6':
     dependencies:
       '@sap-ux/text-document-utils': 0.3.3
 
-  '@sap-ux/odata-annotation-core@0.2.11':
+  '@sap-ux/odata-annotation-core@0.2.16':
     dependencies:
-      '@sap-ux/odata-annotation-core-types': 0.5.2
+      '@sap-ux/odata-annotation-core-types': 0.5.6
       '@sap-ux/text-document-utils': 0.3.3
 
-  '@sap-ux/odata-annotation-core@0.2.12':
+  '@sap-ux/odata-entity-model@0.3.6': {}
+
+  '@sap-ux/odata-vocabularies@0.4.27':
     dependencies:
-      '@sap-ux/odata-annotation-core-types': 0.5.2
-      '@sap-ux/text-document-utils': 0.3.3
+      '@sap-ux/odata-annotation-core-types': 0.5.6
 
-  '@sap-ux/odata-entity-model@0.3.3': {}
-
-  '@sap-ux/odata-entity-model@0.3.4': {}
-
-  '@sap-ux/odata-vocabularies@0.4.21':
+  '@sap-ux/project-access@1.35.13':
     dependencies:
-      '@sap-ux/odata-annotation-core-types': 0.5.2
-
-  '@sap-ux/project-access@1.33.0':
-    dependencies:
-      '@sap-ux/i18n': 0.3.7
-      '@sap-ux/ui5-config': 0.29.12
+      '@sap-ux/i18n': 0.3.9
+      '@sap-ux/ui5-config': 0.29.21
       fast-xml-parser: 5.4.1
       findit2: 2.2.3
       json-parse-even-better-errors: 4.0.0
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      semver: 7.5.4
-    transitivePeerDependencies:
-      - debug
-
-  '@sap-ux/project-access@1.34.2':
-    dependencies:
-      '@sap-ux/i18n': 0.3.7
-      '@sap-ux/ui5-config': 0.29.13
-      fast-xml-parser: 5.4.1
-      findit2: 2.2.3
-      json-parse-even-better-errors: 4.0.0
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      semver: 7.5.4
+      semver: 7.7.4
     transitivePeerDependencies:
       - debug
 
@@ -23096,25 +22997,14 @@ snapshots:
     dependencies:
       vscode-languageserver-types: 3.17.2
 
-  '@sap-ux/ui5-config@0.29.12':
+  '@sap-ux/ui5-config@0.29.21':
     dependencies:
-      '@sap-ux/yaml': 0.17.3
-      ajv: 8.17.1
+      '@sap-ux/yaml': 0.17.5
+      ajv: 8.18.0
       axios: 1.13.5(debug@4.4.3)
       js-yaml: 4.1.1
       lodash: 4.17.23
-      semver: 7.5.4
-    transitivePeerDependencies:
-      - debug
-
-  '@sap-ux/ui5-config@0.29.13':
-    dependencies:
-      '@sap-ux/yaml': 0.17.3
-      ajv: 8.17.1
-      axios: 1.13.5(debug@4.4.3)
-      js-yaml: 4.1.1
-      lodash: 4.17.23
-      semver: 7.5.4
+      semver: 7.7.4
     transitivePeerDependencies:
       - debug
 
@@ -23124,24 +23014,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sap-ux/vocabularies-types@0.13.2': {}
-
-  '@sap-ux/vocabularies-types@0.14.5': {}
-
   '@sap-ux/vocabularies-types@0.15.0': {}
 
-  '@sap-ux/xml-odata-annotation-converter@0.4.4':
+  '@sap-ux/xml-odata-annotation-converter@0.4.10':
     dependencies:
-      '@sap-ux/odata-annotation-core': 0.2.11
+      '@sap-ux/odata-annotation-core': 0.2.16
 
-  '@sap-ux/xml-odata-annotation-converter@0.4.6':
-    dependencies:
-      '@sap-ux/odata-annotation-core': 0.2.12
-
-  '@sap-ux/yaml@0.17.3':
+  '@sap-ux/yaml@0.17.5':
     dependencies:
       lodash: 4.17.23
-      yaml: 2.2.2
+      yaml: 2.8.2
 
   '@sap/bas-sdk@3.13.3':
     dependencies:
@@ -23208,17 +23090,11 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@sap/ux-cds-compiler-facade@1.19.0(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/odata-annotation-core@0.2.11)(@sap-ux/project-access@1.33.0)':
+  '@sap/ux-cds-compiler-facade@1.21.0(@sap-ux/odata-annotation-core-types@0.5.6)(@sap-ux/odata-annotation-core@0.2.16)(@sap-ux/project-access@1.35.13)':
     dependencies:
-      '@sap-ux/odata-annotation-core': 0.2.11
-      '@sap-ux/odata-annotation-core-types': 0.5.2
-      '@sap-ux/project-access': 1.33.0
-
-  '@sap/ux-cds-compiler-facade@1.19.0(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/odata-annotation-core@0.2.12)(@sap-ux/project-access@1.34.2)':
-    dependencies:
-      '@sap-ux/odata-annotation-core': 0.2.12
-      '@sap-ux/odata-annotation-core-types': 0.5.2
-      '@sap-ux/project-access': 1.34.2
+      '@sap-ux/odata-annotation-core': 0.2.16
+      '@sap-ux/odata-annotation-core-types': 0.5.6
+      '@sap-ux/project-access': 1.35.13
 
   '@sap/ux-cds-compiler-facade@1.21.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)':
     dependencies:
@@ -23226,18 +23102,10 @@ snapshots:
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
       '@sap-ux/project-access': link:packages/project-access
 
-  '@sap/ux-specification@1.142.0(typescript@5.9.3)':
+  '@sap/ux-specification@1.144.0(typescript@5.9.3)':
     dependencies:
-      '@sap-ux/fe-fpm-writer': 0.40.2(typescript@5.9.3)
-      '@sap-ux/vocabularies-types': 0.13.2
-    transitivePeerDependencies:
-      - debug
-      - typescript
-
-  '@sap/ux-specification@1.142.1(typescript@5.9.3)':
-    dependencies:
-      '@sap-ux/fe-fpm-writer': 0.40.11(typescript@5.9.3)
-      '@sap-ux/vocabularies-types': 0.14.5
+      '@sap-ux/fe-fpm-writer': 0.43.7(typescript@5.9.3)
+      '@sap-ux/vocabularies-types': 0.15.0
     transitivePeerDependencies:
       - debug
       - typescript
@@ -29141,6 +29009,12 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
+  i18next@25.8.18(typescript@5.9.3):
+    dependencies:
+      '@babel/runtime': 7.28.6
+    optionalDependencies:
+      typescript: 5.9.3
+
   ibm-cloud-sdk-core@5.4.8:
     dependencies:
       '@types/debug': 4.1.12
@@ -29480,6 +29354,8 @@ snapshots:
   is-negative-zero@2.0.3: {}
 
   is-network-error@1.3.1: {}
+
+  is-node-process@1.2.0: {}
 
   is-npm@6.1.0: {}
 
@@ -31237,21 +31113,11 @@ snapshots:
       lower-case: 2.0.2
       tslib: 2.8.1
 
-  nock@13.4.0:
+  nock@14.0.11:
     dependencies:
-      debug: 4.4.3
+      '@mswjs/interceptors': 0.41.3
       json-stringify-safe: 5.0.1
       propagate: 2.0.1
-    transitivePeerDependencies:
-      - supports-color
-
-  nock@13.5.6:
-    dependencies:
-      debug: 4.4.3
-      json-stringify-safe: 5.0.1
-      propagate: 2.0.1
-    transitivePeerDependencies:
-      - supports-color
 
   node-abi@3.87.0:
     dependencies:
@@ -31862,6 +31728,8 @@ snapshots:
   os-tmpdir@1.0.2: {}
 
   outdent@0.5.0: {}
+
+  outvariant@1.4.3: {}
 
   own-keys@1.0.1:
     dependencies:
@@ -32945,11 +32813,11 @@ snapshots:
       react: 19.2.4
       scheduler: 0.19.1
 
-  react-i18next@15.7.4(i18next@25.8.12(typescript@5.9.3))(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(typescript@5.9.3):
+  react-i18next@15.7.4(i18next@25.8.18(typescript@5.9.3))(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.28.6
       html-parse-stringify: 3.0.1
-      i18next: 25.8.12(typescript@5.9.3)
+      i18next: 25.8.18(typescript@5.9.3)
       react: 16.14.0
     optionalDependencies:
       react-dom: 16.14.0(react@16.14.0)
@@ -33773,10 +33641,6 @@ snapshots:
 
   semver@6.3.1: {}
 
-  semver@7.5.4:
-    dependencies:
-      lru-cache: 6.0.0
-
   semver@7.7.3: {}
 
   semver@7.7.4: {}
@@ -34345,6 +34209,8 @@ snapshots:
     transitivePeerDependencies:
       - bare-abort-controller
       - react-native-b4a
+
+  strict-event-emitter@0.5.1: {}
 
   strict-uri-encode@2.0.0: {}
 
@@ -35773,8 +35639,6 @@ snapshots:
   yaml-ast-parser@0.0.43: {}
 
   yaml@1.10.2: {}
-
-  yaml@2.2.2: {}
 
   yaml@2.8.2: {}
 
