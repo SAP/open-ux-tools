@@ -1,14 +1,14 @@
-# Require `personalization` Property in OData V4 Tables is Enabled in the `manifest.json` File (`sap-table-personalization`)
+# Require the `personalization` Property in OData V4 Tables to Be Enabled in the `manifest.json` File (`sap-table-personalization`)
 
 ## Rule Details
 
-Ensures that all table `personalization` options are enabled on the OData V4 application pages. Table personalization is provided by default for all tables.
+Ensures that all table `personalization` properties are enabled in the pages of OData V4 applications. Table personalization is provided by default for all tables.
 
-Restriction: grouping is available for Analytical tables in applications with minUI5 version starting from 1.108 and Responsive tables in applications with minUI5 version starting from 1.120.
+Restriction: Grouping is available for analytical tables in applications with a minimum SAPUI5 version of 1.108 or higher and responsive tables in applications with a minimum SAPUI5 version of 1.120 or higher.
 
 ### Why Was This Rule Introduced?
 
-Users should see all table personalization options that are available: adding or removing columns, filtering, sorting, and grouping.
+Users must see all the table personalization options that are available, such as adding or removing columns, filtering, sorting, and grouping.
 
 ### Warning Message
 
@@ -24,7 +24,7 @@ The following patterns are considered warnings:
 }
 ```
 
-Setting `personalization` property to false disables every table personalization setting, so it is the same as defining all  `personalization` properties to `false`:
+Setting the `personalization` property to `false` disables all table personalization settings, so it is the same as setting every `personalization` subproperty to `false`:
 
 ```json
 {
@@ -49,7 +49,7 @@ If the value "object" is used, omitting a setting is treated as `false`.
 }
 ```
 
-If you don't define all properties as `true`, all properties omitted will be switched off, like `filter` and `group` are also `false` in this example:
+If you don't define all properties as `true`, all omitted properties are disabled, for example, `filter` and `group` are also `false`:
 
 ```json
 {
@@ -76,7 +76,7 @@ The following patterns are considered correct:
 }
 ```
 
-The `personalization` property is correctly set to `true`, every table setting is enabled.
+The `personalization` property is set to `true` so every table setting is enabled.
 
 ```json
 {
@@ -91,13 +91,13 @@ The `personalization` property is correctly set to `true`, every table setting i
 }
 ```
 
-Every table `personalization` property is correctly set to `true`.
-Omitting table personalization from the `manifest.json` table settings is also correct, because all personalization settings are provided by default for all tables.
+Every table `personalization` property is set to `true`. Omitting table personalization from the `manifest.json` table settings is also correct, because all personalization settings are provided by default for all tables.
 
 ## How to Fix
 
 To fix the warning, ensure that either the `personalization` property is set to `true` or not defined in the table settings.
-You can use the quick fix provided by the plugin, it sets `personalization` property to `true`.
+
+You can use the quick fix provided by the plugin to set the `personalization` property to `true`.
 
 ## Bug Report
 

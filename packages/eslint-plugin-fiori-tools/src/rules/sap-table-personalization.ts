@@ -42,14 +42,14 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [TABLE_PERSONALIZATION]:
-                'Table personalization should be enabled. Currently every table personalization setting is disabled.',
-            [TABLE_PERSONALIZATION_COLUMN]: 'Adding or removing table columns should be enabled.',
-            [TABLE_PERSONALIZATION_FILTER]: 'Table data filtering should be enabled.',
-            [TABLE_PERSONALIZATION_SORT]: 'Table data sorting should be enabled.',
+                'All table personalization settings are disabled. Table personalization must be enabled.',
+            [TABLE_PERSONALIZATION_COLUMN]: 'Adding or removing table columns must be enabled.',
+            [TABLE_PERSONALIZATION_FILTER]: 'Table data filtering must be enabled.',
+            [TABLE_PERSONALIZATION_SORT]: 'Table data sorting must be enabled.',
             [TABLE_PERSONALIZATION_GROUP]:
-                'Table data grouping should be enabled for analytical and responsive type tables.',
+                'Table data grouping must be enabled for analytical and responsive type tables.',
             [MISSING_PERSONALIZATION_PROPERTIES]:
-                'In case of using an object, omitting a setting is treated as false. {{undefinedPropertiesString}}.'
+                'When using an object, omitting a setting is treated as false. {{undefinedPropertiesString}}.'
         },
         fixable: 'code'
     },
