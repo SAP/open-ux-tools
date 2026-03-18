@@ -284,10 +284,9 @@ export default class extends Generator {
             await this._promptForCfEnvironment();
         } else {
             const isExtensibilityExtInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
-            const isInternalUsage = isInternalFeaturesSettingEnabled();
             const configQuestions = this.prompter.getPrompts({
                 projectType: {
-                    default: isInternalUsage ? AdaptationProjectType.ON_PREMISE : AdaptationProjectType.CLOUD_READY
+                    default: AdaptationProjectType.CLOUD_READY
                 },
                 projectTypeCli: { hide: !this.isCli },
                 projectTypeClassicLabel: { hide: this.isCli },

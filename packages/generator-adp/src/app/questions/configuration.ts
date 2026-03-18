@@ -450,7 +450,7 @@ export class ConfigPrompter {
             },
             choices: getProjectTypeChoices,
             default: options?.default,
-            when: ({ application }: ConfigAnswers) => this.isReleasedAppOnMixedSystem(application),
+            when: ({ application }: ConfigAnswers) => this.shouldDisplayProjectTypePrompt(application),
             validate: async (projectType: AdaptationProjectType, { application }: ConfigAnswers) =>
                 this.validateProjectTypePrompt(projectType, application),
             additionalMessages: (_, answers: Answers | undefined) =>
@@ -509,7 +509,8 @@ export class ConfigPrompter {
                 type: 'label',
                 mandatory: false
             },
-            when: ({ application }: ConfigAnswers) => !options?.hide && this.isClassicAppOnMixedSystem(application),
+            when: ({ application }: ConfigAnswers) =>
+                !options?.hide && this.shouldDisplayProjectTypeClassicLabel(application),
             additionalMessages: () => ({
                 message: t('prompts.projectTypeClassicLabel'),
                 severity: Severity.information
@@ -537,7 +538,7 @@ export class ConfigPrompter {
             choices: () => getApplicationChoices(this.targetApps),
             default: options?.default,
             validate: (application: SourceApplication) => {
-                if (this.isReleasedAppOnMixedSystem(application)) {
+                if (this.shouldDisplayProjectTypePrompt(application)) {
                     // Move the app validation into the projectType prompt.
                     return true;
                 }
@@ -557,7 +558,7 @@ export class ConfigPrompter {
                 ),
             additionalMessages: (input) => {
                 const application = input as SourceApplication;
-                if (this.isReleasedAppOnMixedSystem(application)) {
+                if (this.shouldDisplayProjectTypePrompt(application)) {
                     return undefined;
                 }
                 return getAppAdditionalMessages(
@@ -583,9 +584,7 @@ export class ConfigPrompter {
         return {
             name: configPromptNames.appValidationCli,
             when: async ({ application }: ConfigAnswers): Promise<boolean> => {
-                if (!application || this.isReleasedAppOnMixedSystem(application)) {
-                    // Move the app validation into the projectType prompt in case the application
-                    // is released
+                if (!application || this.shouldDisplayProjectTypePrompt(application)) {
                     return false;
                 }
 
@@ -894,6 +893,11 @@ export class ConfigPrompter {
                 this.selectedProjectType = AdaptationProjectType.CLOUD_READY;
             } else if (this.supportedProject === SupportedProject.ON_PREM) {
                 this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
+            } else if (
+                this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM &&
+                isInternalFeaturesSettingEnabled()
+            ) {
+                this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
             }
         } catch (error) {
             this.handleSystemError(error);
@@ -996,11 +1000,6 @@ export class ConfigPrompter {
             return appValidationResult;
         }
 
-        const isInternalUsage = isInternalFeaturesSettingEnabled();
-        if (this.selectedProjectType === AdaptationProjectType.CLOUD_READY && isInternalUsage) {
-            return t('error.cloudSystemsForInternalUsers');
-        }
-
         return true;
     }
 
@@ -1045,5 +1044,27 @@ export class ConfigPrompter {
             this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM &&
             application?.cloudDevAdaptationStatus === ''
         );
+    }
+
+    /**
+     * Determines the project type prompt visibility. In case the user is external,
+     * the selected application is released and the system is mixed the prompt need to be visible.
+     *
+     * @param {SourceApplication} application - The selected application.
+     * @returns {boolean} True if the project type must be displayed.
+     */
+    private shouldDisplayProjectTypePrompt(application: SourceApplication | undefined): boolean {
+        return !isInternalFeaturesSettingEnabled() && this.isReleasedAppOnMixedSystem(application);
+    }
+
+    /**
+     * Determines the project type classic label visibility. In case the user is external,
+     * the selected application is NOT released and the system is mixed the label need to be visible.
+     *
+     * @param {SourceApplication} application - The selected application.
+     * @returns {boolean} True if the project type classic label must be displayed.
+     */
+    private shouldDisplayProjectTypeClassicLabel(application: SourceApplication | undefined): boolean {
+        return !isInternalFeaturesSettingEnabled() && this.isClassicAppOnMixedSystem(application);
     }
 }
