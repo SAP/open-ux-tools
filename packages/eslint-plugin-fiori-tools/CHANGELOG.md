@@ -1,5 +1,27 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.9.3
+
+### Patch Changes
+
+- 9afb66a: feat: add plugin version number to rule in readme
+
+## 9.9.2
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.33
+
+## 9.9.1
+
+### Patch Changes
+
+- Updated dependencies [dfa433e]
+    - @sap-ux/fiori-annotation-api@0.9.32
+    - @sap-ux/odata-entity-model@0.3.7
+    - @sap-ux/odata-annotation-core@0.2.17
+    - @sap-ux/odata-vocabularies@0.4.29
+
 ## 9.9.0
 
 ### Minor Changes

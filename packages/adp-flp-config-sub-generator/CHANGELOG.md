@@ -1,5 +1,40 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.206
+
+### Patch Changes
+
+- Updated dependencies [3626b55]
+    - @sap-ux/adp-tooling@0.18.94
+    - @sap-ux/flp-config-inquirer@0.4.153
+
+## 0.1.205
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/adp-tooling@0.18.93
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/flp-config-inquirer@0.4.152
+    - @sap-ux/system-access@0.6.66
+
+## 0.1.204
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/adp-tooling@0.18.92
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/system-access@0.6.65
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/flp-config-inquirer@0.4.151
+    - @sap-ux/inquirer-common@0.11.24
+    - @sap-ux/store@1.5.10
+
 ## 0.1.203
 
 ### Patch Changes
