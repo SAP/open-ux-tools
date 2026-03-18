@@ -53,7 +53,7 @@ exports[`Readme file generation tests should generate README.md with enableEslin
 |**UI5 Theme**<br>|
 |**UI5 Version**<br>|
 |**Enable TypeScript**<br>False|
-|**Add Eslint configuration**<br>True&lt;br/&gt;, see https://www.npmjs.com/package/@sap-ux/eslint-plugin-fiori-tools#rules for the eslint rules.|
+|**Add Eslint configuration**<br>True<br/>, see https://www.npmjs.com/package/@sap-ux/eslint-plugin-fiori-tools#rules for the eslint rules.|
 
 ## appName
 
