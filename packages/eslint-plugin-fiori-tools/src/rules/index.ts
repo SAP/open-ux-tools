@@ -12,7 +12,8 @@ import {
     CONDENSED_TABLE_LAYOUT,
     STRICT_UOM_FILTERING,
     TABLE_PERSONALIZATION,
-    TABLE_COLUMN_VERTICAL_ALIGNMENT
+    TABLE_COLUMN_VERTICAL_ALIGNMENT,
+    TEXT_ARRANGEMENT_HIDDEN
 } from '../language/diagnostics';
 
 // Import all rules
@@ -77,6 +78,7 @@ import enablePaste from './sap-enable-paste';
 import tablePersonalization from './sap-table-personalization';
 import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment';
 import condensedTableLayout from './sap-condensed-table-layout';
+import textArrangementHidden from './sap-text-arrangement-hidden';
 
 import type { Rule } from 'eslint';
 
@@ -140,5 +142,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [CONDENSED_TABLE_LAYOUT]: condensedTableLayout,
     [STRICT_UOM_FILTERING]: strictUomFilteringRule,
     [TABLE_PERSONALIZATION]: tablePersonalization,
-    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment
+    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
+    [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden
 };
