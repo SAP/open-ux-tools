@@ -13,6 +13,7 @@ export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 export const TABLE_PERSONALIZATION = 'sap-table-personalization';
 export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignment';
 export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-based-navigation';
+export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
@@ -124,6 +125,12 @@ export interface NoDataFieldIntentBasedNavigation {
     };
 }
 
+export interface CondensedTableLayout {
+    type: typeof CONDENSED_TABLE_LAYOUT;
+    pageName: string;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
 export interface StrictUomFiltering {
     type: typeof STRICT_UOM_FILTERING;
     manifest: ManifestPropertyDiagnosticData;
@@ -140,5 +147,6 @@ export type Diagnostic =
     | StatePreservationMode
     | TableColumnVerticalAlignment
     | NoDataFieldIntentBasedNavigation
+    | CondensedTableLayout
     | TablePersonalization
     | StrictUomFiltering;
