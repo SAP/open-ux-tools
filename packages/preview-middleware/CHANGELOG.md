@@ -1,5 +1,24 @@
 # @sap-ux/preview-middleware
 
+## 0.24.2
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.96
+
+## 0.24.1
+
+### Patch Changes
+
+- Updated dependencies [4f86250]
+    - @sap-ux/adp-tooling@0.18.95
+
+## 0.24.0
+
+### Minor Changes
+
+- 428ee72: fix: Rename action missing for Object Page elements in Adaptation Editor. Annotation changes are now explicitly disabled as they are not supported in developer mode.
+
 ## 0.23.156
 
 ### Patch Changes
