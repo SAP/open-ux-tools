@@ -20,6 +20,7 @@ export interface ApplicationSetting {
 }
 export interface PageSetting {
     createMode: string;
+    condensedTableLayout: boolean;
 }
 
 export type OrphanSection = ConfigurationBase<'orphan-section', TableSettings>;
@@ -253,13 +254,24 @@ function getEntityData(service: ParsedService, entitySetName: string) {
  * @param path
  * @param name
  * @param createMode
+ * @param condensedTableLayout
  */
-function createPageConfiguration(path: string[], name: string, createMode: string | undefined) {
+function createPageConfiguration(
+    path: string[],
+    name: string,
+    createMode: string | undefined,
+    condensedTableLayout: boolean | undefined
+) {
     return {
         createMode: {
             values: createModeValues,
             configurationPath: [...path, name, 'component', 'settings', 'createMode'],
             valueInFile: createMode
+        },
+        condensedTableLayout: {
+            values: [true, false],
+            configurationPath: [...path, name, 'component', 'settings', 'condensedTableLayout'],
+            valueInFile: condensedTableLayout
         }
     };
 }
@@ -294,6 +306,7 @@ interface ManifestPageSettings {
         name?: string;
         settings?: {
             createMode?: string;
+            condensedTableLayout?: boolean;
             tableSettings?: {
                 createMode?: string;
                 type?: string;
@@ -358,11 +371,12 @@ function linkListReportPage(
 
     const table = collectTables('v2', entityType, mainService);
     const createMode = target.component?.settings?.createMode;
+    const condensedTableLayout = target.component?.settings?.condensedTableLayout;
     const page: FeV2ListReport = {
         type: 'list-report-page',
         targetName: name,
         componentName,
-        configuration: createPageConfiguration(path, name, createMode),
+        configuration: createPageConfiguration(path, name, createMode, condensedTableLayout),
         entitySetName,
         entity,
         tables: [],
@@ -412,7 +426,7 @@ function linkObjectPagePage(
         type: 'object-page',
         targetName: name,
         componentName: 'sap.suite.ui.generic.template.ObjectPage',
-        configuration: createPageConfiguration(path, name, createMode),
+        configuration: createPageConfiguration(path, name, createMode, undefined),
         entitySetName,
         entity,
         sections: [],
