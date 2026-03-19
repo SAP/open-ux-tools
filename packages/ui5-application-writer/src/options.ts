@@ -46,12 +46,14 @@ async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: F
                 globOptions: { dot: true },
                 processDestinationPath: processDestinationPath
             });
-        } else {
+        } else if (outPath.endsWith('.json')) {
+            // Only merge JSON files (e.g., package.json)
             const add = JSON.parse(render(fs.read(optTmplFilePath), ui5App, {}));
             const existingFile = JSON.parse(fs.read(outPath));
             const merged = mergeObjects(existingFile, add);
             fs.writeJSON(outPath, merged);
         }
+        // For non-JSON files (like .mjs), skip if file already exists
     });
 }
 

@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.34
+
+### Patch Changes
+
+- 436cad8: fix: Fixed an issue where path to external metadata is incorrectly resolved for actions or functions with ValueListReferences annotations applied.
+
 ## 0.9.33
 
 ### Patch Changes
