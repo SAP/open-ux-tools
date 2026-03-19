@@ -24,7 +24,7 @@ Using `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavi
 </Annotation>
 ```
 
-#### Incorrect UI.FieldGroup Annotation using UI.DataFieldForIntentBasedNavigation and UI.DataFieldWithIntentBasedNavigation
+#### Incorrect `UI.FieldGroup` Annotation Using `UI.DataFieldForIntentBasedNavigation` and `UI.DataFieldWithIntentBasedNavigation`
 
 ```xml
 <Annotation Term="UI.FieldGroup" Qualifier="test">
