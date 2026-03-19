@@ -29,10 +29,15 @@ export interface SectionItem extends AggregationItem {
     title?: string;
     custom?: boolean;
     name?: string;
+    order?: number;
     schema: {
         keys: { name: string; value: string }[];
         dataType?: string;
     };
+}
+
+export interface BodySectionItem extends SectionItem {
+    isTable?: boolean;
 }
 
 export interface HeaderSectionItem extends SectionItem {
