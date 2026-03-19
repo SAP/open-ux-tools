@@ -15,6 +15,8 @@
 .homeLayout.sapCuxBaseLayout section {
     display: block;
     padding: var(--padding-top) var(--padding-right) var(--padding-bottom) var(--padding-left);
+    overflow: visible;
+    flex: 0 0 auto;
 }
 
 .homeLayout .homeNewsContainer .sapCuxBaseWrapper>* {

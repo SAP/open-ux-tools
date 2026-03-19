@@ -11,6 +11,7 @@
 >
     <m:Page
         id="page"
+        showHeader="true"
         class="homeLayout sapUiResponsiveContentPadding sapUiLayoutPadding sapCuxBaseLayout"
     >
         <m:customHeader>
