@@ -22,7 +22,7 @@ describe('add/adp-cf-config', () => {
     let traceChangesSpy: jest.SpyInstance;
     let loadCfConfigMock: jest.SpyInstance;
     let isLoggedInCfMock: jest.SpyInstance;
-    let generateCfConfigMock: jest.SpyInstance;
+    let setupCfPreviewMock: jest.SpyInstance;
 
     const mockCfConfig = {
         org: { Name: 'test-org', GUID: 'org-guid' },
@@ -55,7 +55,7 @@ describe('add/adp-cf-config', () => {
 
         loadCfConfigMock = jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValue(mockCfConfig);
         isLoggedInCfMock = jest.spyOn(adpTooling, 'isLoggedInCf').mockResolvedValue(true);
-        generateCfConfigMock = jest.spyOn(adpTooling, 'generateCfConfig').mockResolvedValue(mockFs);
+        setupCfPreviewMock = jest.spyOn(adpTooling, 'setupCfPreview').mockResolvedValue(mockFs);
     });
 
     test('should add command with correct options', () => {
@@ -85,7 +85,7 @@ describe('add/adp-cf-config', () => {
         expect(validateAdpAppTypeSpy).toHaveBeenCalledWith(appRoot);
         expect(loadCfConfigMock).toHaveBeenCalledWith(loggerMock);
         expect(isLoggedInCfMock).toHaveBeenCalledWith(mockCfConfig, loggerMock);
-        expect(generateCfConfigMock).toHaveBeenCalledWith(appRoot, 'ui5.yaml', mockCfConfig, loggerMock);
+        expect(setupCfPreviewMock).toHaveBeenCalledWith(appRoot, 'ui5.yaml', mockCfConfig, loggerMock);
         expect(traceChangesSpy).toHaveBeenCalledWith(mockFs);
         expect(mockFs.commit).toHaveBeenCalled();
     });
@@ -100,7 +100,7 @@ describe('add/adp-cf-config', () => {
         await command.parseAsync(getArgv());
 
         expect(validateBasePathSpy).toHaveBeenCalledWith(appRoot);
-        expect(generateCfConfigMock).toHaveBeenCalledWith(appRoot, 'ui5.yaml', mockCfConfig, loggerMock);
+        expect(setupCfPreviewMock).toHaveBeenCalledWith(appRoot, 'ui5.yaml', mockCfConfig, loggerMock);
 
         jest.spyOn(process, 'cwd').mockReturnValue(originalCwd);
     });
@@ -112,7 +112,7 @@ describe('add/adp-cf-config', () => {
 
         await command.parseAsync(getArgv(appRoot, '--config', customConfig));
 
-        expect(generateCfConfigMock).toHaveBeenCalledWith(appRoot, customConfig, mockCfConfig, loggerMock);
+        expect(setupCfPreviewMock).toHaveBeenCalledWith(appRoot, customConfig, mockCfConfig, loggerMock);
     });
 
     test('should throw error when not logged in to CF', async () => {
@@ -155,8 +155,8 @@ describe('add/adp-cf-config', () => {
         );
     });
 
-    test('should throw error when generateCfConfig fails', async () => {
-        generateCfConfigMock.mockRejectedValue(new Error('Generation failed'));
+    test('should throw error when setupCfPreview fails', async () => {
+        setupCfPreviewMock.mockRejectedValue(new Error('Generation failed'));
 
         const command = new Command('add');
         addAdaptationProjectCFConfigCommand(command);

@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath, validateAdpAppType } from '../../validation';
-import { isLoggedInCf, loadCfConfig, generateCfConfig, isCFEnvironment } from '@sap-ux/adp-tooling';
+import { isLoggedInCf, loadCfConfig, setupCfPreview, isCFEnvironment } from '@sap-ux/adp-tooling';
 import { FileName } from '@sap-ux/project-access';
 
 /**
@@ -51,7 +51,7 @@ async function setupAdaptationProjectCF(basePath: string, yamlPath: string): Pro
     }
 
     try {
-        const fs = await generateCfConfig(basePath, yamlPath, cfConfig, logger);
+        const fs = await setupCfPreview(basePath, yamlPath, cfConfig, logger);
 
         await traceChanges(fs);
         await new Promise<void>((resolve, reject) => {
