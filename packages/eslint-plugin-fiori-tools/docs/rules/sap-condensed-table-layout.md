@@ -42,7 +42,7 @@ A grid table, analytical table, or tree table is used without `condensedTableLay
 }
 ```
 
-A Grid Table (or Analytical Table or Tree Table) is used without `condensedTableLayout` enabled at the page level.
+A grid table, analytical table, or tree table is used without `condensedTableLayout` enabled at the page level.
 
 #### Correct `manifest.json` File in OData V4
 
