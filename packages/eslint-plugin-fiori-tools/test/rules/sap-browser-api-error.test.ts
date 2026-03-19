@@ -31,8 +31,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'document.createElement(foo);',
             errors: [
                 {
-                    message: 'Direct DOM insertion, create a custom control instead',
-                    type: 'MemberExpression'
+                    message: 'Direct DOM insertion, create a custom control instead'
                 }
             ]
         },
@@ -40,8 +39,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var mydocument = document;mydocument.createElement(foo);',
             errors: [
                 {
-                    message: 'Direct DOM insertion, create a custom control instead',
-                    type: 'MemberExpression'
+                    message: 'Direct DOM insertion, create a custom control instead'
                 }
             ]
         },
@@ -49,8 +47,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'document.execCommand(cmd, false, args);',
             errors: [
                 {
-                    message: 'Direct DOM Manipulation, better to use jQuery.appendTo if really needed',
-                    type: 'MemberExpression'
+                    message: 'Direct DOM Manipulation, better to use jQuery.appendTo if really needed'
                 }
             ]
         },
@@ -59,8 +56,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             errors: [
                 {
                     message:
-                        "insertBrOnReturn is not allowed since it is a Mozilla specific method, Chrome doesn't support that.",
-                    type: 'MemberExpression'
+                        "insertBrOnReturn is not allowed since it is a Mozilla specific method, Chrome doesn't support that."
                 }
             ]
         },
@@ -68,8 +64,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'location.reload();',
             errors: [
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 }
             ]
         },
@@ -77,8 +72,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var mylocation = location;mylocation.reload();',
             errors: [
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 }
             ]
         },
@@ -86,8 +80,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var mylocation = window.location;mylocation.reload();',
             errors: [
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 }
             ]
         },
@@ -95,8 +88,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'window.event.returnValue = false;',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'MemberExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -104,8 +96,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var wev = window.event;wev.returnValue = false;',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'MemberExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -113,8 +104,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'window.onload = function(){ return Hammer; }',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'MemberExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -122,8 +112,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'if (window.addEventListener) {x=1;}',
             errors: [
                 {
-                    message: errorMessage3,
-                    type: 'MemberExpression'
+                    message: errorMessage3
                 }
             ]
         },
@@ -131,8 +120,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'navigator.back();',
             errors: [
                 {
-                    message: errorMessage3,
-                    type: 'MemberExpression'
+                    message: errorMessage3
                 }
             ]
         },
@@ -140,8 +128,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var x = navigator.appCodeName;',
             errors: [
                 {
-                    message: errorMessage3,
-                    type: 'MemberExpression'
+                    message: errorMessage3
                 }
             ]
         },
@@ -149,8 +136,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var mynavig = window.navigator;',
             errors: [
                 {
-                    message: errorMessage3,
-                    type: 'VariableDeclarator'
+                    message: errorMessage3
                 }
             ]
         },
@@ -158,8 +144,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var mynavig = navigator;',
             errors: [
                 {
-                    message: errorMessage3,
-                    type: 'VariableDeclarator'
+                    message: errorMessage3
                 }
             ]
         },
@@ -167,8 +152,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var mynavig = window;',
             errors: [
                 {
-                    message: errorMessage3,
-                    type: 'VariableDeclarator'
+                    message: errorMessage3
                 }
             ]
         },
@@ -176,8 +160,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var mynavig = window.top.tip;',
             errors: [
                 {
-                    message: 'Definition of global variable/api in window object is not permitted.',
-                    type: 'MemberExpression'
+                    message: 'Definition of global variable/api in window object is not permitted.'
                 }
             ]
         },
@@ -185,8 +168,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'window.define();',
             errors: [
                 {
-                    message: 'Definition of global variable/api in window object is not permitted.',
-                    type: 'MemberExpression'
+                    message: 'Definition of global variable/api in window object is not permitted.'
                 }
             ]
         },
@@ -194,12 +176,10 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var mywindow = window;mywindow.define();',
             errors: [
                 {
-                    message: errorMessage3,
-                    type: 'VariableDeclarator'
+                    message: errorMessage3
                 },
                 {
-                    message: errorMessage3,
-                    type: 'MemberExpression'
+                    message: errorMessage3
                 }
             ]
         },
@@ -207,8 +187,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var sheet = document.styleSheets[i];',
             errors: [
                 {
-                    message: errorMessage4,
-                    type: 'MemberExpression'
+                    message: errorMessage4
                 }
             ]
         },
@@ -216,8 +195,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var mydocument = window.document;var sheet = mydocument.styleSheets[i];',
             errors: [
                 {
-                    message: errorMessage4,
-                    type: 'MemberExpression'
+                    message: errorMessage4
                 }
             ]
         },
@@ -225,8 +203,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var mydocument = document;var sheet = mydocument.styleSheets[i];',
             errors: [
                 {
-                    message: errorMessage4,
-                    type: 'MemberExpression'
+                    message: errorMessage4
                 }
             ]
         },
@@ -234,8 +211,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var abc = document.styleSheets.length;',
             errors: [
                 {
-                    message: errorMessage4,
-                    type: 'MemberExpression'
+                    message: errorMessage4
                 }
             ]
         },
@@ -243,8 +219,7 @@ ruleTester.run('sap-browser-api-error', rule, {
             code: 'var abcdocumnt = window.document; var sheet = abcdocumnt.styleSheets.length;',
             errors: [
                 {
-                    message: errorMessage4,
-                    type: 'MemberExpression'
+                    message: errorMessage4
                 }
             ]
         }

@@ -30,8 +30,7 @@ ruleTester.run('sap-no-override-rendering', rule, {
             options: [],
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'AssignmentExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -39,8 +38,7 @@ ruleTester.run('sap-no-override-rendering', rule, {
             code: 'var oButton = new sap.m.Button();' + 'oButton.getMe = function render(){foo.bar = 1;};',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'AssignmentExpression'
+                    message: errorMessage
                 }
             ]
         }

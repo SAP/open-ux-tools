@@ -26,8 +26,7 @@ ruleTester.run('sap-no-exec-command', rule, {
             code: 'document.execCommand(cmd, false, args);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -35,8 +34,7 @@ ruleTester.run('sap-no-exec-command', rule, {
             code: 'var w = window; var d = window.document; d.execCommand(cmd, false, args);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -44,8 +42,7 @@ ruleTester.run('sap-no-exec-command', rule, {
             code: 'window.document.execCommand(cmd, false, args);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -53,8 +50,7 @@ ruleTester.run('sap-no-exec-command', rule, {
             code: "window.document['execCommand'](cmd, false, args);",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         }

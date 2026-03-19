@@ -23,8 +23,7 @@ ruleTester.run('sap-no-global-selection', rule, {
             code: 'window.getSelection().rangeCount = 9;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -32,8 +31,7 @@ ruleTester.run('sap-no-global-selection', rule, {
             code: 'var w = window; w.getSelection().rangeCount = 9;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -41,8 +39,7 @@ ruleTester.run('sap-no-global-selection', rule, {
             code: 'var w; w = window; w.getSelection().rangeCount = 9;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         }

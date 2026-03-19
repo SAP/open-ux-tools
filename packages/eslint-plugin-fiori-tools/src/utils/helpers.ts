@@ -19,12 +19,10 @@ interface BaseNode {
 }
 
 export type IdentifierNode = BaseNode & {
-    type: 'Identifier';
     name: string;
 };
 
 export type MemberExpressionNode = BaseNode & {
-    type: 'MemberExpression';
     object: unknown;
     property: unknown;
     computed: boolean;
@@ -32,7 +30,6 @@ export type MemberExpressionNode = BaseNode & {
 };
 
 export type LiteralNode = BaseNode & {
-    type: 'Literal';
     value: string | number | boolean | null | RegExp;
     raw: string;
 };

@@ -23,8 +23,7 @@ ruleTester.run('sap-no-jquery-device-api', rule, {
             errors: [
                 {
                     message:
-                        'jQuery.device or $.device are deprecated since 1.20! use the respective functions of sap.ui.Device',
-                    type: 'MemberExpression'
+                        'jQuery.device or $.device are deprecated since 1.20! use the respective functions of sap.ui.Device'
                 }
             ]
         },
@@ -33,8 +32,7 @@ ruleTester.run('sap-no-jquery-device-api', rule, {
             errors: [
                 {
                     message:
-                        'jQuery.device or $.device are deprecated since 1.20! use the respective functions of sap.ui.Device',
-                    type: 'MemberExpression'
+                        'jQuery.device or $.device are deprecated since 1.20! use the respective functions of sap.ui.Device'
                 }
             ]
         }

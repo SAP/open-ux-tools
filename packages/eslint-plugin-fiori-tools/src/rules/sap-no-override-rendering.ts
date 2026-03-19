@@ -72,7 +72,6 @@ const rule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'fiori tools (fiori custom) ESLint rule',
-            category: 'Best Practices',
             recommended: false
         },
         messages: {
@@ -96,7 +95,7 @@ const rule: Rule.RuleModule = {
         defaultOptions: [{}]
     },
     create(context: Rule.RuleContext) {
-        const sourceCode = context.sourceCode ?? context.getSourceCode();
+        const sourceCode = context.sourceCode;
         const customNS = context.options[0]?.ns ? context.options[0].ns : [];
         const configuration = {
             'ns': uniquifyArray(

@@ -30,8 +30,7 @@ ruleTester.run('sap-no-ui5base-prop', rule, {
             code: 'oObject.oBindingContexts = 986;',
             errors: [
                 {
-                    message: 'Property oBindingContexts is a private member of sap.ui.base.ManagedObject!',
-                    type: 'MemberExpression'
+                    message: 'Property oBindingContexts is a private member of sap.ui.base.ManagedObject!'
                 }
             ]
         },
@@ -39,8 +38,7 @@ ruleTester.run('sap-no-ui5base-prop', rule, {
             code: 'oObject.mEventRegistry = 987;',
             errors: [
                 {
-                    message: 'Property mEventRegistry is a private member of sap.ui.base.EventProvider!',
-                    type: 'MemberExpression'
+                    message: 'Property mEventRegistry is a private member of sap.ui.base.EventProvider!'
                 }
             ]
         },
@@ -48,8 +46,7 @@ ruleTester.run('sap-no-ui5base-prop', rule, {
             code: 'oObject.mParameters = 6598;',
             errors: [
                 {
-                    message: 'Property mParameters is a private member of sap.ui.base.Event!',
-                    type: 'MemberExpression'
+                    message: 'Property mParameters is a private member of sap.ui.base.Event!'
                 }
             ]
         },
@@ -58,8 +55,7 @@ ruleTester.run('sap-no-ui5base-prop', rule, {
             errors: [
                 {
                     message:
-                        'Property aBatchOperations is a private member of sap.ui.model.odata.ODataModel or sap.ui.model.odata.v2.ODataModel!',
-                    type: 'MemberExpression'
+                        'Property aBatchOperations is a private member of sap.ui.model.odata.ODataModel or sap.ui.model.odata.v2.ODataModel!'
                 }
             ]
         }

@@ -25,8 +25,7 @@ ruleTester.run('sap-ui5-legacy-jquerysap-usage', rule, {
             code: ` jQuery.sap.require( 'sap.m.Button' );`,
             errors: [
                 {
-                    message: 'Legacy jQuery.sap usage is not allowed due to strict Content Security Policy.',
-                    type: 'CallExpression'
+                    message: 'Legacy jQuery.sap usage is not allowed due to strict Content Security Policy.'
                 }
             ]
         },
@@ -34,8 +33,7 @@ ruleTester.run('sap-ui5-legacy-jquerysap-usage', rule, {
             code: ` $.sap.require( 'sap.m.Button' );`,
             errors: [
                 {
-                    message: 'Legacy jQuery.sap usage is not allowed due to strict Content Security Policy.',
-                    type: 'CallExpression'
+                    message: 'Legacy jQuery.sap usage is not allowed due to strict Content Security Policy.'
                 }
             ]
         },
@@ -43,8 +41,7 @@ ruleTester.run('sap-ui5-legacy-jquerysap-usage', rule, {
             code: `jQuery.sap.declare( "myModule" , true);`,
             errors: [
                 {
-                    message: 'Legacy jQuery.sap usage is not allowed due to strict Content Security Policy.',
-                    type: 'CallExpression'
+                    message: 'Legacy jQuery.sap usage is not allowed due to strict Content Security Policy.'
                 }
             ]
         },
@@ -52,8 +49,7 @@ ruleTester.run('sap-ui5-legacy-jquerysap-usage', rule, {
             code: `$.sap.declare( "myModule" , true);`,
             errors: [
                 {
-                    message: 'Legacy jQuery.sap usage is not allowed due to strict Content Security Policy.',
-                    type: 'CallExpression'
+                    message: 'Legacy jQuery.sap usage is not allowed due to strict Content Security Policy.'
                 }
             ]
         }

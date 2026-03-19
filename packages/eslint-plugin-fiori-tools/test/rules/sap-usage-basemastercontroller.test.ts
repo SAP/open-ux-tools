@@ -22,8 +22,7 @@ ruleTester.run('sap-usage-basemastercontroller', rule, {
             code: "sap.ca.scfld.md.controller.BaseMasterController.extend('myBaseCOntroller', {config: 'myconfig'});",
             errors: [
                 {
-                    message: ERROR_MSG,
-                    type: 'MemberExpression'
+                    message: ERROR_MSG
                 }
             ]
         },
@@ -31,8 +30,7 @@ ruleTester.run('sap-usage-basemastercontroller', rule, {
             code: "define(['sap/ca/scfld/md/controller/BaseMasterController'], function(Controller){ Controller.extend('myBaseCOntroller', {config: 'myconfig'});})",
             errors: [
                 {
-                    message: ERROR_MSG,
-                    type: 'Literal'
+                    message: ERROR_MSG
                 }
             ]
         }

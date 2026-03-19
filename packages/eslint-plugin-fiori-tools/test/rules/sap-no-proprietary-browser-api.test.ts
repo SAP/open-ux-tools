@@ -47,12 +47,10 @@ ruleTester.run('sap-no-proprietary-browser-api', rule, {
             code: "document.body.appendChild(x);document.body.style.backgroundColor = 'yellow';",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 },
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -60,12 +58,10 @@ ruleTester.run('sap-no-proprietary-browser-api', rule, {
             code: "var w = window; var mydocument = w.document;mydocument.body.appendChild(x);mydocument.body.style.backgroundColor = 'yellow';",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 },
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -73,12 +69,10 @@ ruleTester.run('sap-no-proprietary-browser-api', rule, {
             code: "var mydocument = document;mydocument.body.appendChild(x);mydocument.body.style.backgroundColor = 'yellow';",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 },
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -86,16 +80,14 @@ ruleTester.run('sap-no-proprietary-browser-api', rule, {
             code: "var abcss = window.document.body;abcss.appendChild(x);abcss.style.backgroundColor = 'yellow';",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'VariableDeclarator'
+                    message: errorMessage
+
                 },
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 },
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -104,8 +96,7 @@ ruleTester.run('sap-no-proprietary-browser-api', rule, {
             code: 'var variab1 = window.innerWidth;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -114,8 +105,7 @@ ruleTester.run('sap-no-proprietary-browser-api', rule, {
             code: 'var myscreen = screen;var variab5 = myscreen.something;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -123,8 +113,7 @@ ruleTester.run('sap-no-proprietary-browser-api', rule, {
             code: 'var myscreen = window.screen;var variab5 = myscreen.something;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         }

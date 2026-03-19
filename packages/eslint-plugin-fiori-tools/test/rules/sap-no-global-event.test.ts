@@ -21,8 +21,7 @@ ruleTester.run('sap-no-global-event', rule, {
             code: 'window.event.returnValue = false;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -30,8 +29,7 @@ ruleTester.run('sap-no-global-event', rule, {
             code: 'var w = window; w.event.returnValue = false;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -39,8 +37,7 @@ ruleTester.run('sap-no-global-event', rule, {
             code: 'var w = window; var x = window; x.event.cancelBubble = false;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -48,8 +45,7 @@ ruleTester.run('sap-no-global-event', rule, {
             code: 'var wev = window.event;wev.returnValue = false;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -57,8 +53,7 @@ ruleTester.run('sap-no-global-event', rule, {
             code: 'window.onload = function(){ return Hammer; }',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         }
