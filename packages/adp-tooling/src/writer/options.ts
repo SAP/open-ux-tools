@@ -382,7 +382,6 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
 
 /**
  * Generate custom middleware configuration for CF adaptation projects.
- * Adds backend-proxy-middleware-cf, fiori-tools-appreload, fiori-tools-preview, and fiori-tools-proxy.
  *
  * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
  */
