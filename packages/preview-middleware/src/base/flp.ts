@@ -52,6 +52,7 @@ import {
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
+    type CdmPreviewUrl,
     isFlexConnector,
     createTestTemplateConfig,
     addApp,
@@ -716,6 +717,43 @@ export class FlpSandbox {
     }
 
     /**
+     * Collects all configured application paths from the middleware configuration.
+     * These represent all the URL endpoints where the application can be accessed
+     * (FLP preview, RTA editors, test runners, card generator).
+     *
+     * @returns an array of objects describing each configured path and its type
+     */
+    private collectAllConfiguredPaths(): CdmPreviewUrl[] {
+        const paths: CdmPreviewUrl[] = [];
+
+        // RTA editor endpoints (if configured)
+        if (this.rta?.endpoints) {
+            for (const editor of this.rta.endpoints) {
+                const editorPath = editor.path.startsWith('/') ? editor.path : `/${editor.path}`;
+                paths.push({ path: editorPath, type: 'editor', name: 'Runtime Adaptation' });
+            }
+        }
+
+        // Test paths (if configured — merge with defaults, use framework as type)
+        if (this.test) {
+            for (const testConfig of this.test) {
+                const merged = mergeTestConfigDefaults(testConfig);
+                paths.push({ path: merged.path, type: 'test', name: merged.framework });
+            }
+        }
+
+        // Card generator path (if configured)
+        if (this.cardGenerator?.path) {
+            const cgPath = this.cardGenerator.path.startsWith('/')
+                ? this.cardGenerator.path
+                : `/${this.cardGenerator.path}`;
+            paths.push({ path: cgPath, type: 'editor', name: 'Card Generator' });
+        }
+
+        return paths;
+    }
+
+    /**
      * Add routes for cdm.json required by FLP during bootstrapping via cdm.
      *
      */
@@ -723,7 +761,11 @@ export class FlpSandbox {
         this.router.get(
             '/cdm.json',
             async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
-                const json = generateCdm(this.templateConfig.apps);
+                const configurationPaths = this.collectAllConfiguredPaths();
+                const json = generateCdm(this.templateConfig.apps, {
+                    intent: this.flpConfig.intent,
+                    configurationPaths
+                });
                 this.sendResponse(res, 'application/json', 200, JSON.stringify(json));
             }
         );

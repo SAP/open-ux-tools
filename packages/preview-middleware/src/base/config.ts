@@ -45,6 +45,15 @@ export type PreviewUrls = {
     type: 'preview' | 'editor' | 'test';
 };
 
+export type CdmPreviewUrl = PreviewUrls & {
+    name: string;
+};
+
+export type CdmAdditionalConfig = {
+    intent: Intent;
+    configurationPaths: CdmPreviewUrl[];
+};
+
 /**
  * Internal structure used to fill the sandbox.html template
  */

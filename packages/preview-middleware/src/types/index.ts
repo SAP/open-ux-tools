@@ -167,9 +167,11 @@ type FLPAppVisualization = {
         };
         'sap.flp': {
             target: {
-                appId: string;
-                inboundId: string;
-                parameters: {
+                type?: string;
+                url?: string;
+                appId?: string;
+                inboundId?: string;
+                parameters?: {
                     name: string;
                     value: string;
                 }[];
