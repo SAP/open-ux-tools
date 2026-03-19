@@ -37,11 +37,11 @@ dist/
 	\\"devDependencies\\": {
 		\\"@sap-ux/create\\": \\"^0.15.9\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.86\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
@@ -190,11 +190,11 @@ dist/
 	\\"devDependencies\\": {
 		\\"@sap-ux/create\\": \\"^0.15.9\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.86\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
@@ -348,11 +348,11 @@ dist/
 	\\"devDependencies\\": {
 		\\"@sap-ux/create\\": \\"^0.15.9\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.86\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
@@ -501,11 +501,11 @@ dist/
 	\\"devDependencies\\": {
 		\\"@sap-ux/create\\": \\"^0.15.9\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.86\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
@@ -690,11 +690,11 @@ dist/
 	\\"devDependencies\\": {
 		\\"@sap-ux/create\\": \\"^0.15.9\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.86\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
@@ -848,11 +848,11 @@ dist/
 	\\"devDependencies\\": {
 		\\"@sap-ux/create\\": \\"^0.15.9\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.86\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
