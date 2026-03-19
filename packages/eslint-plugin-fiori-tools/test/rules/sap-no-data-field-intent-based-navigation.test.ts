@@ -409,22 +409,6 @@ ruleTester.run(TEST_NAME, intentBasedNavRule, {
                     },
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
-                        line: 245,
-                        column: 25,
-                        endLine: 247,
-                        endColumn: 34
-                    },
-                    {
-                        message:
-                            'DataFieldWithIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
-                        line: 248,
-                        column: 25,
-                        endLine: 251,
-                        endColumn: 34
-                    },
-                    {
-                        message:
                             'DataFieldWithIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
                         line: 248,
                         column: 25,
