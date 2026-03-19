@@ -56,7 +56,7 @@ export function getEnableEsLintPrompt(): UI5ApplicationQuestion {
         type: 'confirm',
         name: promptNames.enableEslint,
         message: t('prompts.enableEslint.message'),
-        default: false,
+        default: true,
         guiOptions: {
             breadcrumb: t('prompts.enableEslint.breadcrumb')
         }
