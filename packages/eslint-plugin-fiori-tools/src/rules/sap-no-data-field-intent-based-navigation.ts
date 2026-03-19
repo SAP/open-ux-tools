@@ -116,7 +116,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             ['no-data-field-for-intent-based-navigation']:
-                'DataFieldForIntentBasedNavigation annotation should not be used. Please use a semantic link navigation instead.',
+                'DataFieldForIntentBasedNavigation annotation must not be used. Please use a semantic link navigation instead.',
             ['no-data-field-with-intent-based-navigation']:
                 'DataFieldWithIntentBasedNavigation annotation must not be used. Please use a semantic link navigation instead.'
         }
