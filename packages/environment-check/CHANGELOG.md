@@ -1,5 +1,24 @@
 # @sap-ux/environment-check
 
+## 0.18.108
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+
+## 0.18.107
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/store@1.5.10
+    - @sap-ux/ui5-config@0.29.21
+
 ## 0.18.106
 
 ### Patch Changes

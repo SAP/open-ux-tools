@@ -1,5 +1,89 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.12.2
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+    - @sap-ux/cap-config-writer@0.12.79
+    - @sap-ux/fiori-elements-writer@2.8.105
+    - @sap-ux/fiori-freestyle-writer@2.5.76
+    - @sap-ux/odata-service-inquirer@2.19.14
+    - @sap-ux/ui5-application-inquirer@0.17.1
+
+## 0.12.1
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.41
+- @sap-ux/fiori-elements-writer@2.8.104
+- @sap-ux/fiori-freestyle-writer@2.5.75
+- @sap-ux/odata-service-inquirer@2.19.13
+
+## 0.12.0
+
+### Minor Changes
+
+- b5c7d47: Enable ESLint by default for new applications.
+
+### Patch Changes
+
+- Updated dependencies [b5c7d47]
+    - @sap-ux/ui5-application-inquirer@0.17.0
+    - @sap-ux/fiori-elements-writer@2.8.103
+    - @sap-ux/fiori-freestyle-writer@2.5.75
+    - @sap-ux/odata-service-inquirer@2.19.13
+
+## 0.11.107
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/odata-service-inquirer@2.19.13
+    - @sap-ux/odata-service-writer@0.30.1
+
+## 0.11.106
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/ui5-info@0.13.15
+    - @sap-ux/cap-config-writer@0.12.78
+    - @sap-ux/fiori-elements-writer@2.8.102
+    - @sap-ux/fiori-freestyle-writer@2.5.74
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/launch-config@0.10.76
+    - @sap-ux/odata-service-inquirer@2.19.12
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/store@1.5.10
+    - @sap-ux/ui5-application-inquirer@0.16.46
+    - @sap-ux/telemetry@0.6.87
+    - @sap-ux/annotation-generator@0.4.40
+
+## 0.11.105
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.101
+- @sap-ux/fiori-freestyle-writer@2.5.73
+- @sap-ux/odata-service-inquirer@2.19.11
+
+## 0.11.104
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.39
+- @sap-ux/fiori-elements-writer@2.8.100
+- @sap-ux/fiori-freestyle-writer@2.5.72
+- @sap-ux/odata-service-inquirer@2.19.11
+
 ## 0.11.103
 
 ### Patch Changes

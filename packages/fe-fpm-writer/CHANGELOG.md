@@ -1,5 +1,26 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.11
+
+### Patch Changes
+
+- Updated dependencies [436cad8]
+    - @sap-ux/fiori-annotation-api@0.9.34
+
+## 0.43.10
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+    - @sap-ux/fiori-annotation-api@0.9.33
+
+## 0.43.9
+
+### Patch Changes
+
+- Updated dependencies [dfa433e]
+    - @sap-ux/fiori-annotation-api@0.9.32
+
 ## 0.43.8
 
 ### Patch Changes
