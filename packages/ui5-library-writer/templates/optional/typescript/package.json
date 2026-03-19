@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "devDependencies": {
       "<%= tsTypes %>": "<%= tsTypesVersion %>",
-      "eslint": "^9",
+      "eslint": "^10",
       "@ui5/cli": "^4.0.33",
       "@ui5/ts-interface-generator": "^0.8.1",
       "karma": "^6.3.17",

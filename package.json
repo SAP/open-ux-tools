@@ -15,7 +15,7 @@
         "check-dependency-version-consistency": "5.0.1",
         "esbuild": "0.27.2",
         "esbuild-sass-plugin": "3.6.0",
-        "eslint": "9.39.1",
+        "eslint": "10.0.3",
         "eslint-config-prettier": "10.1.1",
         "eslint-import-resolver-typescript": "4.4.4",
         "eslint-plugin-import": "2.32.0",
@@ -38,7 +38,7 @@
         "rimraf": "6.1.3",
         "ts-jest": "29.4.6",
         "typescript": "5.9.3",
-        "typescript-eslint": "8.49.0",
+        "typescript-eslint": "8.57.1",
         "update-ts-references": "4.0.0",
         "yaml": "2.8.2",
         "yargs-parser": "21.1.1"

@@ -37,8 +37,8 @@
         "@eslint/json": "0.14.0",
         "@eslint/core": "1.1.1",
         "@eslint/config-helpers": "0.5.3",
-        "@typescript-eslint/eslint-plugin": ">=8.49.0",
-        "@typescript-eslint/parser": ">=8.49.0",
+        "@typescript-eslint/eslint-plugin": "8.57.1",
+        "@typescript-eslint/parser": "8.57.1",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
@@ -58,7 +58,7 @@
     },
     "peerDependencies": {
         "eslint": "^10",
-        "typescript-eslint": "^8.46.2"
+        "typescript-eslint": "8.57.1"
     },
     "engines": {
         "node": ">=20.x"
