@@ -81,7 +81,6 @@ ruleTester.run('sap-no-proprietary-browser-api', rule, {
             errors: [
                 {
                     message: errorMessage
-
                 },
                 {
                     message: errorMessage
