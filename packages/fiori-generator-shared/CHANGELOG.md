@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.87
+
+### Patch Changes
+
+- ae6758f: fix: update ESLint plugin URL in README template to @sap-ux/eslint-plugin-fiori-tools
+
 ## 0.13.86
 
 ### Patch Changes
