@@ -252,7 +252,7 @@ describe('YAML Project Functions', () => {
             expect(mockGetYamlContent).toHaveBeenCalledWith(ui5YamlPath);
             expect(result).toEqual({
                 appHostId: 'test-app-host-id',
-                appName: '1.0.0',
+                appName: 'test-app',
                 appVersion: '1.0.0',
                 spaceGuid: 'test-space-guid'
             });
