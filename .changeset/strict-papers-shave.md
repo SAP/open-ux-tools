@@ -1,5 +1,4 @@
 ---
-'@sap-ux/backend-proxy-middleware-cf': minor
 '@sap-ux/generator-adp': patch
 '@sap-ux/adp-tooling': patch
 '@sap-ux/create': patch
