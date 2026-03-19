@@ -4,19 +4,19 @@
 
 ### For OData V4 Applications
 
-This rule checks that `condensedTableLayout` is set to `true` in `tableSettings` within `controlConfiguration` in the `manifest.json` file for List Report pages whenever a Grid Table, Analytical Table, or Tree Table is configured.
+This rule checks that `condensedTableLayout` is set to `true` in `tableSettings` within `controlConfiguration` in the `manifest.json` file for list report pages whenever a grid table, analytical table, or tree table is configured.
 
 ### For OData V2 Applications
 
-This rule checks that `condensedTableLayout` is set to `true` in the page `settings` in the `manifest.json` file for List Report pages whenever a Grid Table, Analytical Table, or Tree Table is configured.
+This rule checks that `condensedTableLayout` is set to `true` in the page `settings` in the `manifest.json` file for list report pages whenever a grid table, analytical table, or tree table is configured.
 
 ### Why Was This Rule Introduced?
 
-Grid Table, Analytical Table, and Tree Table are optimised for displaying large amounts of data in a compact format. The `condensedTableLayout` property enables a denser row height that is better suited for these table types. Omitting or disabling it leads to unnecessarily large rows and a suboptimal user experience.
+Grid tables, analytical tables, and tree tables are optimized for displaying large amounts of data in a compact format. The `condensedTableLayout` property enables a denser row height that is better suited for these table types. Omitting or disabling it leads to unnecessarily large rows and a suboptimal user experience.
 
 ### Warning Message
 
-#### Incorrect Manifest File in OData V4
+#### Incorrect `manifest.json` File in OData V4
 
 ```json
 {
@@ -26,9 +26,9 @@ Grid Table, Analytical Table, and Tree Table are optimised for displaying large 
 }
 ```
 
-A Grid Table (or Analytical Table or Tree Table) is used without `condensedTableLayout` enabled.
+A grid table, analytical table, or tree table is used without `condensedTableLayout` enabled.
 
-#### Incorrect Manifest File in OData V2
+#### Incorrect `manifest.json` File in OData V2
 
 ```json
 {
@@ -44,7 +44,7 @@ A Grid Table (or Analytical Table or Tree Table) is used without `condensedTable
 
 A Grid Table (or Analytical Table or Tree Table) is used without `condensedTableLayout` enabled at the page level.
 
-#### Correct Manifest File in OData V4
+#### Correct `manifest.json` File in OData V4
 
 ```json
 {
@@ -57,7 +57,7 @@ A Grid Table (or Analytical Table or Tree Table) is used without `condensedTable
 
 The `condensedTableLayout` property is set to `true` alongside the compact table type.
 
-#### Correct Manifest File in OData V2
+#### Correct `manifest.json` File in OData V2
 
 ```json
 {
@@ -78,11 +78,11 @@ The `condensedTableLayout` property is set to `true` at the page `settings` leve
 
 ### OData V4
 
-Set `condensedTableLayout` to `true` in the `tableSettings` of the affected table control configuration in `manifest.json`.
+Set `condensedTableLayout` to `true` in the `tableSettings` of the affected table control configuration in in the `manifest.json` file.
 
 ### OData V2
 
-Set `condensedTableLayout` to `true` in the `settings` of the affected List Report page in `manifest.json`.
+Set `condensedTableLayout` to `true` in the `settings` of the affected List Report page in the `manifest.json` file.
 
 ## Bug Report
 

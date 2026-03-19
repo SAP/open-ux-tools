@@ -16,12 +16,12 @@ const rule: FioriRuleDefinition = createFioriRule({
         docs: {
             recommended: true,
             description:
-                'Requires condensedTableLayout to be enabled when using Grid Table, Analytical Table, or Tree Table',
+                'Requires condensedTableLayout to be enabled when using a grid table, analytical table, or tree table.',
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-condensed-table-layout.md'
         },
         messages: {
             [CONDENSED_TABLE_LAYOUT]:
-                '"condensedTableLayout" must be set to true when using GridTable, AnalyticalTable, or TreeTable'
+                '"condensedTableLayout" must be set to true when using a grid table, analytical table, or tree table.'
         },
         fixable: 'code'
     },
