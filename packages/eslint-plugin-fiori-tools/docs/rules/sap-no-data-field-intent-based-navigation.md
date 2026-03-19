@@ -4,7 +4,7 @@
 
 ### Why Was This Rule Introduced?
 
-Two annotations: `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavigation` should not be used in tables and and form fields because they contain hard coded Fiori apps. A semantic object navigation shall be offered only via the Smart Link / Semantic Link control, so it should be used instead.
+Using `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavigation` inside tables or form fields hard‑codes a specific semantic object and action pair and bypasses SAP Fiori launchpad intent resolution. This blocks role‑aware, multi‑target navigation, and the Smart Link popover experience. Instead, annotate the field with `Common.SemanticObject` so SAP Fiori elements renders a smart link that SAP Fiori launchpad resolves at runtime.
 
 ### Warning Message
 
