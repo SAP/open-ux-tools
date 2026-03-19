@@ -115,12 +115,13 @@ describe('prompt-helpers', () => {
                 name: promptNames.showAdvanced
             }
         };
-        // All prompts returned
         expect(hidePrompts(prompts).length).toEqual(14);
+        expect(hidePrompts(prompts)).toContainEqual({ name: promptNames.enableEslint });
         // Hide prompts that are not applicable for CAP projects
         let filteredPrompts = hidePrompts(prompts, {}, mockCdsInfo);
         expect(filteredPrompts.length).toEqual(12);
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.targetFolder });
+        // enableEslint is always hidden as it's enabled by default in writer
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.enableEslint });
 
         // Hide prompts based on prompt options
