@@ -13,6 +13,36 @@ import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
 import type { SupportedProject } from './source';
 
+export type DataSources = Record<string, ManifestNamespace.DataSource>;
+
+/**
+ * Common interface for manifest services (ABAP and CF).
+ * Consumers should program against this interface to support both environments.
+ */
+export interface IManifestService {
+    /**
+     * Returns the manifest.
+     *
+     * @returns The manifest.
+     */
+    getManifest(): Manifest;
+
+    /**
+     * Returns the data sources from the manifest.
+     *
+     * @returns The data sources from the manifest.
+     */
+    getManifestDataSources(): DataSources;
+
+    /**
+     * Returns the metadata of a data source.
+     *
+     * @param dataSourceId - The ID of the data source.
+     * @returns A promise that resolves to the metadata of the data source.
+     */
+    getDataSourceMetadata(dataSourceId: string): Promise<string>;
+}
+
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
     reference: string;
