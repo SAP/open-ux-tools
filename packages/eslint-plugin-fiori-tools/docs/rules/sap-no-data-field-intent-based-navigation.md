@@ -45,7 +45,7 @@ Using `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavi
 </Annotation>
 ```
 
-#### Correct: Semantic Link (Smart Link) Navigation is Used
+#### Correct: Semantic Link or Smart Link Navigation Is Used
 
 The `sap.ui.comp.navpopover.SmartLink` control provides a popover with navigation links to related applications, for example, more detailed information about customer data.
 For more information about this control, see the [API Reference](https://ui5.sap.com/#/api/sap.ui.comp.navpopover.SmartLink) and the [samples](https://ui5.sap.com/#/entity/sap.ui.comp.navpopover.SmartLink).
