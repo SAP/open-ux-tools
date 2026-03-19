@@ -1,5 +1,13 @@
 # @sap-ux/generator-simple-fe
 
+## 1.1.222
+
+### Patch Changes
+
+- Updated dependencies [b516f01]
+    - @sap-ux/fiori-elements-writer@2.8.106
+    - @sap-ux/fiori-freestyle-writer@2.5.77
+
 ## 1.1.221
 
 ### Patch Changes
