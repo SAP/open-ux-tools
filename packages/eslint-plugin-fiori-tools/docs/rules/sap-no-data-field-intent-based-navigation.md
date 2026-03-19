@@ -1,4 +1,4 @@
-# Ensure Neither DataFieldForIntentBasedNavigation nor DataFieldWithIntentBasedNavigation are Used in Tables or Form Fields in SAP Fiori Elements for OData V2 and V4 non-CAP Applications (`sap-no-data-field-intent-based-navigation`)
+# Ensure neither `DataFieldForIntentBasedNavigation` nor `DataFieldWithIntentBasedNavigation` are Used in Tables or Form Fields in SAP Fiori Elements for OData V2 and V4 Non-CAP Applications (`sap-no-data-field-intent-based-navigation`)
 
 ## Rule Details
 
