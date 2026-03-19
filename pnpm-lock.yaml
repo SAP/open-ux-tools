@@ -5036,6 +5036,12 @@ importers:
 
   packages/ui5-test-writer:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.21
+        version: 0.10.21
+      '@sap-ux/edmx-parser':
+        specifier: 0.10.0
+        version: 0.10.0
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -5064,6 +5070,9 @@ importers:
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
         version: link:../jest-file-matchers
+      '@sap-ux/vocabularies-types':
+        specifier: 0.15.0
+        version: 0.15.0
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
