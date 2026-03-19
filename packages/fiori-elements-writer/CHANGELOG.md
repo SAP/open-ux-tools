@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.106
+
+### Patch Changes
+
+- b516f01: add new opa tests for LR and OP, refactor file writing
+- Updated dependencies [b516f01]
+    - @sap-ux/ui5-test-writer@0.7.90
+
 ## 2.8.105
 
 ### Patch Changes
