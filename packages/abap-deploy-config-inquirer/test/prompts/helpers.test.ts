@@ -2,7 +2,7 @@ import { initI18n, t } from '../../src/i18n';
 import {
     getAbapSystemChoices,
     getPackageChoices,
-    shouldValidatePackage,
+    shouldRunValidation,
     updatePromptStateUrl
 } from '../../src/prompts/helpers';
 import { PromptState } from '../../src/prompts/prompt-state';
@@ -244,14 +244,14 @@ describe('helpers', () => {
         });
     });
 
-    describe('shouldValidatePackage', () => {
+    describe('shouldRunValidation', () => {
         it('should return true if prev answers object is empty', () => {
             const newAnswers = {
                 url: 'https://mock.url.com',
                 package: 'package1',
                 description: 'desc1'
             };
-            const result = shouldValidatePackage({} as AbapDeployConfigAnswersInternal, newAnswers);
+            const result = shouldRunValidation({} as AbapDeployConfigAnswersInternal, newAnswers);
             expect(result).toBe(true);
         });
 
@@ -266,7 +266,7 @@ describe('helpers', () => {
                 package: 'package1',
                 description: 'desc1'
             };
-            const result = shouldValidatePackage(prevAnswers, newAnswers);
+            const result = shouldRunValidation(prevAnswers, newAnswers);
             expect(result).toBe(false);
         });
 
@@ -281,7 +281,7 @@ describe('helpers', () => {
                 package: 'package1',
                 description: 'desc2'
             };
-            const result = shouldValidatePackage(prevAnswers, newAnswers);
+            const result = shouldRunValidation(prevAnswers, newAnswers);
             expect(result).toBe(false);
         });
 
@@ -296,7 +296,7 @@ describe('helpers', () => {
                 package: 'package1',
                 description: 'desc1'
             };
-            const result = shouldValidatePackage(prevAnswers, newAnswers);
+            const result = shouldRunValidation(prevAnswers, newAnswers);
             expect(result).toBe(true);
         });
     });

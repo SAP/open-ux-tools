@@ -1,5 +1,193 @@
 # @sap-ux/telemetry
 
+## 0.6.87
+
+### Patch Changes
+
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/store@1.5.10
+    - @sap-ux/nodejs-utils@0.2.17
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.6.86
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+
+## 0.6.85
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.6.84
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/nodejs-utils@0.2.16
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/ui5-config@0.29.20
+
+## 0.6.83
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+    - @sap-ux/project-access@1.35.11
+
+## 0.6.82
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+
+## 0.6.81
+
+### Patch Changes
+
+- Updated dependencies [6c993f3]
+    - @sap-ux/store@1.5.8
+    - @sap-ux/ui5-config@0.29.19
+
+## 0.6.80
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+
+## 0.6.79
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+
+## 0.6.78
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+    - @sap-ux/project-access@1.35.7
+
+## 0.6.77
+
+### Patch Changes
+
+- Updated dependencies [cbd340a]
+    - @sap-ux/store@1.5.7
+    - @sap-ux/ui5-config@0.29.18
+
+## 0.6.76
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/nodejs-utils@0.2.16
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-config@0.29.18
+
+## 0.6.75
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+
+## 0.6.74
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/nodejs-utils@0.2.15
+
+## 0.6.73
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/project-access@1.35.4
+
+## 0.6.72
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/ui5-config@0.29.16
+
+## 0.6.71
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+
+## 0.6.70
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+
+## 0.6.69
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/project-access@1.35.1
+    - @sap-ux/nodejs-utils@0.2.14
+
+## 0.6.68
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+
+## 0.6.67
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+
+## 0.6.66
+
+### Patch Changes
+
+- Updated dependencies [38e215e]
+    - @sap-ux/store@1.5.5
+    - @sap-ux/ui5-config@0.29.15
+
+## 0.6.65
+
+### Patch Changes
+
+- Updated dependencies [83e3b70]
+    - @sap-ux/store@1.5.4
+    - @sap-ux/ui5-config@0.29.15
+
 ## 0.6.64
 
 ### Patch Changes

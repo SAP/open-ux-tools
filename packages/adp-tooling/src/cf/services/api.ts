@@ -18,7 +18,8 @@ import type {
     ServiceInstance,
     CfServiceInstance,
     MtaYaml,
-    ServiceInfo
+    ServiceInfo,
+    CfUi5AppInfo
 } from '../../types';
 import { t } from '../../i18n';
 import { getProjectNameForXsSecurity } from '../project';
@@ -53,7 +54,7 @@ export async function getBusinessServiceInfo(
     config: CfConfig,
     logger: ToolsLogger
 ): Promise<ServiceInfo | null> {
-    const serviceKeys = await getServiceInstanceKeys(
+    const serviceKeys = await getOrCreateServiceInstanceKeys(
         {
             spaceGuids: [config.space.GUID],
             names: [businessService]
@@ -82,11 +83,17 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
     };
 
     let url: string;
+    const isBAS = isAppStudio();
 
     if (endpointParts?.[3]) {
-        // Public cloud - use mTLS enabled domain with "cert" prefix
+        // Public cloud
         const region = endpointParts[1];
-        url = `${fdcUrl}cert.cfapps.${region}.hana.ondemand.com`;
+        // Use mTLS enabled domain with "cert" prefix only in BAS, otherwise use regular domain
+        if (isBAS) {
+            url = `${fdcUrl}cert.cfapps.${region}.hana.ondemand.com`;
+        } else {
+            url = `${fdcUrl}cfapps.${region}.hana.ondemand.com`;
+        }
     } else if (endpointParts?.[4]?.endsWith('.cn')) {
         // China has a special URL pattern
         const parts = endpointParts[4].split('.');
@@ -96,9 +103,7 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
         url = `${fdcUrl}sapui5flex.cfapps${endpointParts?.[4]}`;
     }
 
-    // Add authorization token for non-BAS environments or private cloud
-    // For BAS environments with mTLS, the certificate authentication is handled automatically
-    if (!isAppStudio() || !endpointParts?.[3]) {
+    if (!isBAS || !endpointParts?.[3]) {
         options.headers!['Authorization'] = `Bearer ${cfConfig.token}`;
     }
 
@@ -139,6 +144,45 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
 }
 
 /**
+ * Get ui5AppInfo.json from FDC service.
+ *
+ * @param {string} appId - The application ID.
+ * @param {string[]} appHostIds - The app host IDs.
+ * @param {CfConfig} cfConfig - The CF config.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<CfUi5AppInfo>} The ui5AppInfo.json content.
+ */
+export async function getCfUi5AppInfo(
+    appId: string,
+    appHostIds: string[],
+    cfConfig: CfConfig,
+    logger?: ToolsLogger
+): Promise<CfUi5AppInfo> {
+    const requestArguments = getFDCRequestArguments(cfConfig);
+
+    const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
+    const url = `${requestArguments.url}/api/business-service/ui5appinfo?appId=${encodeURIComponent(
+        appId
+    )}&${appHostIdParams}`;
+
+    logger?.log(`Fetching ui5AppInfo.json from FDC: ${url}`);
+
+    try {
+        const response = await axios.get(url, requestArguments.options);
+
+        if (response.status === 200) {
+            logger?.log('Successfully retrieved ui5AppInfo.json from FDC');
+            return response.data as CfUi5AppInfo;
+        } else {
+            throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
+        }
+    } catch (error) {
+        logger?.error(`Getting ui5AppInfo.json failed. Request url: ${url}. ${error}`);
+        throw new Error(`Failed to get ui5AppInfo.json from FDC: ${error.message}`);
+    }
+}
+
+/**
  * Creates a service instance.
  *
  * @param {string} plan - The service plan.
@@ -160,7 +204,7 @@ export async function createServiceInstance(
             `Creating service instance '${serviceInstanceName}' of service '${serviceName}' with '${plan}' plan`
         );
 
-        const commandParameters: string[] = ['create-service', serviceName, plan, serviceInstanceName];
+        const commandParameters: string[] = ['create-service', serviceName, plan, serviceInstanceName, '--wait'];
 
         if (xsSecurityProjectName) {
             let xsSecurity = null;
@@ -179,7 +223,11 @@ export async function createServiceInstance(
             commandParameters.push('-c', JSON.stringify(xsSecurity));
         }
 
-        await Cli.execute(commandParameters);
+        const result = await Cli.execute(commandParameters);
+        if (result && result.exitCode !== 0) {
+            logger?.error(`Service creation failed: ${result.stderr || 'Unknown error'}`);
+            throw new Error(`Service creation failed with code ${result.exitCode}: ${result.stderr || ''}`);
+        }
         logger?.log(`Service instance '${serviceInstanceName}' created successfully`);
     } catch (e) {
         logger?.error(e);
@@ -210,6 +258,7 @@ export async function getServiceNameByTags(spaceGuid: string, tags: string[]): P
  * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string[]} initialServices - The initial services.
  * @param {string} timestamp - The timestamp.
+ * @param {string} spaceGuid - The space GUID.
  * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>} The promise.
@@ -218,6 +267,7 @@ export async function createServices(
     yamlContent: MtaYaml,
     initialServices: string[],
     timestamp: string,
+    spaceGuid: string,
     templatePathOverwrite?: string,
     logger?: ToolsLogger
 ): Promise<void> {
@@ -247,6 +297,13 @@ export async function createServices(
                     }
                 );
             }
+            await getOrCreateServiceInstanceKeys(
+                {
+                    spaceGuids: [spaceGuid],
+                    names: [resource.parameters?.['service-name'] ?? '']
+                },
+                logger
+            );
         }
     }
 }
@@ -258,9 +315,9 @@ export async function createServices(
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<ServiceInfo | null>} The service instance keys.
  */
-export async function getServiceInstanceKeys(
+export async function getOrCreateServiceInstanceKeys(
     serviceInstanceQuery: GetServiceInstanceParams,
-    logger: ToolsLogger
+    logger?: ToolsLogger
 ): Promise<ServiceInfo | null> {
     try {
         const serviceInstances = await getServiceInstance(serviceInstanceQuery);
@@ -317,7 +374,7 @@ async function getServiceInstance(params: GetServiceInstanceParams): Promise<Ser
  */
 export async function getOrCreateServiceKeys(
     serviceInstance: ServiceInstance,
-    logger: ToolsLogger
+    logger?: ToolsLogger
 ): Promise<ServiceKeys[]> {
     const serviceInstanceName = serviceInstance.name;
     try {

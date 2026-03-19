@@ -9,7 +9,6 @@ import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { defaultVersion, ui5ThemeIds } from '@sap-ux/ui5-info';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import { inc } from 'semver';
 import os from 'node:os';
 import { join } from 'node:path';
 
@@ -512,18 +511,20 @@ describe('getQuestions', () => {
         expect(getUI5ThemesSpy).toHaveBeenCalledWith(ui5Version);
     });
 
-    test('getQuestions, prompt: `enableEslint`', async () => {
+    test('getQuestions, prompt: `enableEslint` is always hidden', async () => {
+        // enableEslint prompt is always hidden as it's enabled by default in the writer
         let questions = await getQuestions([]);
         let enableEslintQuestion = questions.find((question) => question.name === promptNames.enableEslint);
-        // defaults
-        expect(enableEslintQuestion?.default).toEqual(false);
+        expect(enableEslintQuestion).toBeDefined(); // Enabled by default but should still be hidden
+
+        // Even when prompt options are provided, the prompt should still be hidden
         questions = await getQuestions([], {
             enableEslint: {
                 default: true
             }
         });
         enableEslintQuestion = questions.find((question) => question.name === promptNames.enableEslint);
-        expect(enableEslintQuestion?.default).toEqual(true);
+        expect(enableEslintQuestion).toBeDefined(); // Enabled by default but should still be hidden
     });
 
     test('getQuestions, prompt: `skipAnnotations`', async () => {

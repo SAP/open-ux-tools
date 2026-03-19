@@ -1,5 +1,89 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.14
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
+## 0.7.13
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core@0.2.17
+- @sap-ux/odata-vocabularies@0.4.29
+- @sap-ux/cds-annotation-parser@0.2.34
+
+## 0.7.12
+
+### Patch Changes
+
+- Updated dependencies [79e69b9]
+    - @sap-ux/odata-vocabularies@0.4.28
+    - @sap-ux/cds-annotation-parser@0.2.33
+
+## 0.7.11
+
+### Patch Changes
+
+- e1ef0ba: chore update `@sap/ux-cds-compiler-facade` dependency
+
+## 0.7.10
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core@0.2.16
+- @sap-ux/odata-vocabularies@0.4.27
+- @sap-ux/cds-annotation-parser@0.2.32
+
+## 0.7.9
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
+## 0.7.8
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [cc1c422]
+    - @sap-ux/cds-annotation-parser@0.2.31
+    - @sap-ux/odata-annotation-core@0.2.15
+    - @sap-ux/odata-vocabularies@0.4.26
+
+## 0.7.7
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
+## 0.7.6
+
+### Patch Changes
+
+- Updated dependencies [1fa3bb7]
+    - @sap-ux/odata-vocabularies@0.4.25
+    - @sap-ux/cds-annotation-parser@0.2.30
+
+## 0.7.5
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/odata-vocabularies@0.4.24
+    - @sap-ux/cds-annotation-parser@0.2.29
+
+## 0.7.4
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+- Updated dependencies [3795bb2]
+    - @sap-ux/cds-annotation-parser@0.2.28
+    - @sap-ux/odata-annotation-core@0.2.14
+    - @sap-ux/odata-vocabularies@0.4.23
+
 ## 0.7.3
 
 ### Patch Changes

@@ -59,7 +59,7 @@ export function getAbapOnPremQuestions(
             connectValidator,
             abapOnPremPromptNamespace,
             promptOptions?.serviceSelection,
-            false // Hide value help download prompt
+            promptOptions?.valueHelpDownload?.hide
         )
     );
 

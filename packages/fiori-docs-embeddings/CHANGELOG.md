@@ -1,5 +1,25 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.16
+
+### Patch Changes
+
+- ca2566b: Update fast-xml-parser
+
+    Issue: #37278
+
+## 0.4.15
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+
+## 0.4.14
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
 ## 0.4.13
 
 ### Patch Changes

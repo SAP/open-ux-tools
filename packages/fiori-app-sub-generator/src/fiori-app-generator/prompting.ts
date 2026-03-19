@@ -306,6 +306,10 @@ export async function createUI5ApplicationPromptOptions(
         },
         [ui5AppInquirerPromptNames.enableVirtualEndpoints]: {
             hide: service.capService?.capType === 'Java'
+        },
+        [ui5AppInquirerPromptNames.enableEslint]: {
+            hide: true,
+            default: true
         }
     };
     const promptOptions = merge(preMergedPromptOpts, promptSettings);
@@ -437,7 +441,7 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
             ...options.promptOptions?.systemSelection
         },
         [odataServiceInquirerPromptNames.valueHelpDownload]: {
-            hide: true,
+            hide: false,
             ...options.promptOptions?.valueHelpDownload
         }
     };

@@ -1607,12 +1607,13 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "com.sap.myui5tslib113/eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "com.sap.myui5tslib113/eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended,
-];",
+];
+",
     "state": "modified",
   },
   "com.sap.myui5tslib113/karma.conf.js": Object {
@@ -2228,12 +2229,13 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "com.sap.myui5tslib/eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "com.sap.myui5tslib/eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended,
-];",
+];
+",
     "state": "modified",
   },
   "com.sap.myui5tslib/karma.conf.js": Object {
@@ -2849,12 +2851,13 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "com.sap.myui5tslib121/eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "com.sap.myui5tslib121/eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended,
-];",
+];
+",
     "state": "modified",
   },
   "com.sap.myui5tslib121/karma.conf.js": Object {

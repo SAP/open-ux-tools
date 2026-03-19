@@ -22,7 +22,14 @@ import type { Manifest } from '../common/types';
 import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
-import { detectTabSpacing, extendJSON } from '../common/file';
+import {
+    CONFIG,
+    createIdGenerator,
+    detectTabSpacing,
+    extendJSON,
+    getRelativeTemplateComponentPath,
+    type TemplateContext
+} from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getOrAddNamespace } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
@@ -54,10 +61,9 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 ): Promise<Editor> {
     const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     await validateBasePath(basePath, fs, []);
+    const fnGenerateId = config.buildingBlockData.generateId ?? (await createIdGenerator(basePath, fs));
 
     if (!fs.exists(join(basePath, viewOrFragmentPath))) {
         throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
@@ -68,13 +74,26 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
     const { updatedAggregationPath, processedBuildingBlockData, hasAggregation, aggregationNamespace } =
-        processBuildingBlock(buildingBlockData, xmlDocument, manifestPath, manifest, aggregationPath, fs);
+        processBuildingBlock(
+            { ...buildingBlockData, generateId: fnGenerateId },
+            xmlDocument,
+            manifestPath,
+            manifest,
+            aggregationPath,
+            fs
+        );
 
     const templateConfig: TemplateConfig = {
         hasAggregation,
         aggregationNamespace
     };
-    const templateDocument = getTemplateDocument(processedBuildingBlockData, xmlDocument, fs, manifest, templateConfig);
+    const templateDocument = getTemplateDocument(
+        { ...processedBuildingBlockData, generateId: fnGenerateId },
+        xmlDocument,
+        fs,
+        manifest,
+        templateConfig
+    );
 
     if (
         buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor ||
@@ -257,15 +276,21 @@ function getTemplateContent<T extends BuildingBlock>(
     if (!buildingBlockData.id) {
         buildingBlockData.id = PLACEHOLDERS.id;
     }
-    return render(
-        fs.read(templateFilePath),
-        {
-            macrosNamespace: viewDocument ? getOrAddNamespace(viewDocument, 'sap.fe.macros', 'macros') : 'macros',
-            data: buildingBlockData,
-            config: templateConfig
-        },
-        {}
-    );
+    const configKey = getRelativeTemplateComponentPath(templateFilePath);
+    const config = CONFIG[configKey as keyof typeof CONFIG];
+    let context = {
+        macrosNamespace: viewDocument ? getOrAddNamespace(viewDocument, 'sap.fe.macros', 'macros') : 'macros',
+        data: buildingBlockData,
+        config: templateConfig
+    };
+    if (config?.getData) {
+        const additionalContext = config.getData(
+            buildingBlockData.generateId,
+            buildingBlockData as Partial<TemplateContext>
+        );
+        context = { ...context, ...additionalContext };
+    }
+    return render(fs.read(templateFilePath), context, {});
 }
 
 /**
@@ -401,9 +426,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
         return {};
     }
     // Validate the base and view paths
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs = fs ?? create(createStorage());
     // Read the view xml and template files and get content of the view xml file
     const xmlDocument = viewOrFragmentPath ? getUI5XmlDocument(basePath, viewOrFragmentPath, fs) : undefined;
     const { content: manifest, path: manifestPath } = await getManifest(basePath, fs, false);
