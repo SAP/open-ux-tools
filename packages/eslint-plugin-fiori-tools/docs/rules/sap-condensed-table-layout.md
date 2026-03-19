@@ -55,7 +55,7 @@ A grid table, analytical table, or tree table is used without `condensedTableLay
 }
 ```
 
-The `condensedTableLayout` property is set to `true` alongside the compact table type.
+The `condensedTableLayout` property is set to `true` alongside the grid table.
 
 #### Correct `manifest.json` File in OData V2
 
@@ -78,11 +78,11 @@ The `condensedTableLayout` property is set to `true` at the page `settings` leve
 
 ### OData V4
 
-Set `condensedTableLayout` to `true` in the `tableSettings` of the affected table control configuration in in the `manifest.json` file.
+Set `condensedTableLayout` to `true` in the `tableSettings` of the affected table control configuration in the `manifest.json` file.
 
 ### OData V2
 
-Set `condensedTableLayout` to `true` in the `settings` of the affected List Report page in the `manifest.json` file.
+Set `condensedTableLayout` to `true` in the `settings` of the affected list report page in the `manifest.json` file.
 
 ## Bug Report
 
