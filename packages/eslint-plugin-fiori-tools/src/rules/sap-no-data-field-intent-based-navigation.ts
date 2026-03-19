@@ -111,7 +111,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         docs: {
             recommended: true,
             description:
-                'UI.DataFieldForIntentBasedNavigation and UI.DataFieldWithIntentBasedNavigation should not be used.',
+                'UI.DataFieldForIntentBasedNavigation and UI.DataFieldWithIntentBasedNavigation must not be used.',
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-no-data-field-intent-based-navigation.md'
         },
         messages: {
