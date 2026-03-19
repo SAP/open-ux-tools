@@ -8,7 +8,7 @@ Two annotations: `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithInte
 
 ### Warning Message
 
-#### Incorrect UI.LineItem Annotation using UI.DataFieldForIntentBasedNavigation and UI.DataFieldWithIntentBasedNavigation
+#### Incorrect `UI.LineItem` Annotation Using `UI.DataFieldForIntentBasedNavigation` and `UI.DataFieldWithIntentBasedNavigation`
 
 ```xml
 <Annotation Term="UI.LineItem">
