@@ -75,19 +75,31 @@ function checkTablesAndFieldGroupsInPage(
             if (!tableOrFieldGroup.annotation) {
                 return;
             }
-            problems.push({
-                type: NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
-                pageName: page.targetName,
-                annotation: {
-                    file: tableOrFieldGroup.annotation.annotation.top.uri,
-                    annotationPath: tableOrFieldGroup.annotation.annotationPath,
-                    reference: {
-                        uri: tableOrFieldGroup.annotation.annotation.top.uri,
-                        value: dataField
-                    },
-                    reportedParent: tableOrFieldGroup.annotation.annotation.top.value
-                }
-            });
+            const alreadyReportedDFIndex = problems.findIndex(
+                (problem) => problem.annotation.reference.value === dataField
+            );
+            if (alreadyReportedDFIndex > -1) {
+                // If DataField was already reported, add the page to page name array for the existing issue.
+                // This way the issue is reported once, but the reference for all pages using the same table or field group is saved.
+                problems[alreadyReportedDFIndex] = {
+                    ...problems[alreadyReportedDFIndex],
+                    pageName: [...problems[alreadyReportedDFIndex].pageName, page.targetName]
+                };
+            } else {
+                problems.push({
+                    type: NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
+                    pageName: [page.targetName],
+                    annotation: {
+                        file: tableOrFieldGroup.annotation.annotation.top.uri,
+                        annotationPath: tableOrFieldGroup.annotation.annotationPath,
+                        reference: {
+                            uri: tableOrFieldGroup.annotation.annotation.top.uri,
+                            value: dataField
+                        },
+                        reportedParent: tableOrFieldGroup.annotation.annotation.top.value
+                    }
+                });
+            }
         });
     }
 }
@@ -98,7 +110,8 @@ const rule: FioriRuleDefinition = createFioriRule({
         type: 'suggestion',
         docs: {
             recommended: true,
-            description: '',
+            description:
+                'UI.DataFieldForIntentBasedNavigation and UI.DataFieldWithIntentBasedNavigation should not be used.',
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-no-data-field-intent-based-navigation.md'
         },
         messages: {
@@ -142,7 +155,6 @@ const rule: FioriRuleDefinition = createFioriRule({
                     .filter((result) => result.annotation.reportedParent === node)
                     .forEach((result) => {
                         const dfNode = result.annotation.reference.value;
-                        // DataField can be reported multiple times (e.g. 2 pages referencing the same table)
                         if (result.annotation.reportedParent === node) {
                             context.report({
                                 node: dfNode,
