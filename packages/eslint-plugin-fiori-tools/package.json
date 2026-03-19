@@ -25,17 +25,18 @@
     "devDependencies": {
         "c8": "^11.0.0",
         "cross-env": "10.1.0",
-        "eslint": "^9",
-        "@typescript-eslint/rule-tester": "8.46.2",
-        "eslint-plugin-eslint-plugin": "7.2.0"
+        "eslint": "^10",
+        "@typescript-eslint/rule-tester": "8.57.1",
+        "eslint-plugin-eslint-plugin": "7.3.2",
+        "@types/semver": "7.7.1"
     },
     "dependencies": {
         "@babel/core": "^7.28.5",
         "@babel/eslint-parser": "^7.28.5",
-        "@eslint/js": "^9",
+        "@eslint/js": "^10",
         "@eslint/json": "0.14.0",
-        "@eslint/core": "0.17.0",
-        "@eslint/config-helpers": "0.5.2",
+        "@eslint/core": "1.1.1",
+        "@eslint/config-helpers": "0.5.3",
         "@typescript-eslint/eslint-plugin": ">=8.49.0",
         "@typescript-eslint/parser": ">=8.49.0",
         "@sap-ux/fiori-annotation-api": "workspace:*",
@@ -47,7 +48,7 @@
         "@xml-tools/ast": "5.0.5",
         "@xml-tools/parser": "1.0.11",
         "@humanwhocodes/momoa": "^3.3.9",
-        "@eslint/plugin-kit": "0.5.0",
+        "@eslint/plugin-kit": "0.6.1",
         "globals": "17.4.0",
         "lodash": "4.17.23",
         "requireindex": "^1.2.0",
@@ -56,9 +57,8 @@
         "semver": "7.7.4"
     },
     "peerDependencies": {
-        "eslint": "^9",
-        "typescript-eslint": "^8.46.2",
-        "@types/semver": "7.7.1"
+        "eslint": "^10",
+        "typescript-eslint": "^8.46.2"
     },
     "engines": {
         "node": ">=20.x"
