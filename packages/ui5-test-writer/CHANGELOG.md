@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.90
+
+### Patch Changes
+
+- b516f01: add new opa tests for LR and OP, refactor file writing
+
 ## 0.7.89
 
 ### Patch Changes
