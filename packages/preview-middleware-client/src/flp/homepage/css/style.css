@@ -19,8 +19,8 @@
     flex: 0 0 auto;
 }
 
-.homeLayout .homeNewsContainer .sapCuxBaseWrapper>* {
-    width: 100%;
+.homeLayout .sapCuxNewsAndPagesContainer {
+    grid-column: span 12;
 }
 
 .salutationBar.sapMIBar.sapMHeader-CTX {
