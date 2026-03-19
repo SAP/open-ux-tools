@@ -83,12 +83,12 @@ function checkTablesAndFieldGroupsInPage(
                 // This way the issue is reported once, but the reference for all pages using the same table or field group is saved.
                 problems[alreadyReportedDFIndex] = {
                     ...problems[alreadyReportedDFIndex],
-                    pageName: [...problems[alreadyReportedDFIndex].pageName, page.targetName]
+                    pageNames: [...problems[alreadyReportedDFIndex].pageNames, page.targetName]
                 };
             } else {
                 problems.push({
                     type: NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
-                    pageName: [page.targetName],
+                    pageNames: [page.targetName],
                     annotation: {
                         file: tableOrFieldGroup.annotation.annotation.top.uri,
                         annotationPath: tableOrFieldGroup.annotation.annotationPath,
