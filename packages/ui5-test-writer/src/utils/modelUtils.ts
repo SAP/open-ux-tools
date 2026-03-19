@@ -67,10 +67,21 @@ export async function getAppFeatures(
     let listReportPage: PageWithModelV4 | null = null;
     let objectPages: PageWithModelV4[] | null = null;
     let fpmPage: PageWithModelV4 | null = null;
+    let projectMetadata = metadata;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
-        const appModel = await getModelFromSpecification(basePath, fs, log);
+        // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
+        const appAccess = await createApplicationAccess(basePath, { fs: fs });
+        const specification = await appAccess.getSpecification<Specification>();
+        const appModel: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
+
+        if (!projectMetadata) {
+            const metadataPath = appAccess.project?.apps['']?.services?.mainService?.local;
+            if (metadataPath) {
+                projectMetadata = fs?.read(metadataPath);
+            }
+        }
 
         listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
         objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
@@ -91,7 +102,7 @@ export async function getAppFeatures(
     // attempt to get individual feature data
     try {
         if (listReportPage) {
-            featureData.listReport = getListReportFeatures(listReportPage, log, metadata);
+            featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata);
         }
         if (objectPages) {
             log?.warn('Extracting Object Page features from application model');
@@ -106,34 +117,6 @@ export async function getAppFeatures(
     }
 
     return featureData;
-}
-
-/**
- * Gets the application model using ux-specification.
- *
- * @param basePath - the absolute target path where the application will be generated
- * @param fs - optional mem-fs editor instance
- * @param log - optional logger instance
- * @returns application model extracted from the specification
- */
-export async function getModelFromSpecification(
-    basePath: string,
-    fs?: Editor,
-    log?: Logger
-): Promise<ReadAppResult | undefined> {
-    let appResult: ReadAppResult | undefined;
-    try {
-        // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
-        const appAccess = await createApplicationAccess(basePath, { fs: fs });
-        const specification = await appAccess.getSpecification<Specification>();
-        appResult = await specification.readApp({ app: appAccess, fs: fs });
-    } catch (error) {
-        log?.warn(
-            'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
-                (error as Error).message
-        );
-    }
-    return appResult;
 }
 
 /**
