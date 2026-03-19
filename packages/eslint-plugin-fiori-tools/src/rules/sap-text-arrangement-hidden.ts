@@ -115,9 +115,7 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         for (const parsedApp of Object.values(context.sourceCode.projectContext.index.apps)) {
             for (const parsedService of Object.values(parsedApp.services)) {
-                for (const [annotationKey, qualifiedAnnotations] of Object.entries(
-                    parsedService.index.annotations
-                )) {
+                for (const [annotationKey, qualifiedAnnotations] of Object.entries(parsedService.index.annotations)) {
                     const atIdx = annotationKey.indexOf('/@');
                     if (atIdx === -1) {
                         continue;
@@ -232,4 +230,3 @@ const rule: FioriRuleDefinition = createFioriRule({
 });
 
 export default rule;
-
