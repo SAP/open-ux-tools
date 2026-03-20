@@ -17,6 +17,7 @@ import Title from 'sap/m/Title';
 import GridContainer from 'sap/f/GridContainer';
 import UI5Element from 'sap/ui/core/Element';
 import SysInfoBar from 'sap/ushell/ui/shell/SysInfoBar';
+import { URLHelper } from 'sap/m/library';
 
 const CARDS_GAP = 16;
 const MIN_CARD_WIDTH = 304;
@@ -103,6 +104,8 @@ export default class MyHomeController extends Controller {
             const oViewModel = new JSONModel({
                 deviceType: MyHomeController.calculateDeviceType(Device.resize.width),
                 insightsCardWidth: `${MIN_CARD_WIDTH / 16}rem`,
+                isCardGeneratedEnabled: false,
+                cardGeneratorPath: '',
                 cards: []
             });
             view.setModel(oViewModel, 'view');
@@ -119,12 +122,33 @@ export default class MyHomeController extends Controller {
         void this.initSalutationBar();
         void this.initializeNewsContainer();
         void this.initializeInsightsContainer();
+        void this.checkCardGeneratorAvailability();
     }
 
     onBeforeRendering(): void {
         const appsContainer = this.byId('favoriteApps') as UI5Element;
         appsContainer.removeAllAggregation('menuItems');
         appsContainer.removeAllAggregation('actionButtons');
+    }
+
+    async checkCardGeneratorAvailability(): Promise<void> {
+        try {
+            const response = await fetch('/cards/generator/availability');
+            if (!response.ok) {
+                Log.error('Failed to check card generator availability: ' + response.statusText);
+                return;
+            }
+
+            const { isAvailable, generatorPath } = await response.json() as { isAvailable: boolean; generatorPath: string };
+            const view = this.getView();
+            if (view) {
+                const oViewModel = view.getModel('view') as JSONModel;
+                oViewModel.setProperty('/isCardGeneratedEnabled', isAvailable);
+                oViewModel.setProperty('/cardGeneratorPath', generatorPath);
+            }
+        } catch (error) {
+            Log.error('Error checking card generator availability: ' + error);
+        }
     }
 
     private setupSystemInfoBar(): void {
@@ -281,13 +305,26 @@ export default class MyHomeController extends Controller {
                 return;
             }
 
+            const cardCount = cards.length;
             const viewModel = view.getModel('view') as JSONModel;
             viewModel?.setProperty('/cards', cards);
             (view.byId('insightsTitle') as Title)?.setText(
-                this.getText('insightsTitleWithCount', [String(cards.length)])
+                `${this.getText('insightsTitle')}${cardCount > 0 ? ` (${cardCount})` : ''}`
             );
         } catch (error: unknown) {
             Log.error('Failed to load insights data', error instanceof Error ? error : new Error(String(error)));
+        }
+    }
+
+    onCardGeneratorButtonPress(): void {
+        const view = this.getView();
+        const viewModel = view?.getModel('view') as JSONModel;
+        const generatorPath = viewModel?.getProperty('/cardGeneratorPath') as string;
+
+        if (generatorPath) {
+            URLHelper.redirect(generatorPath, true);
+        } else {
+            Log.error('Card generator path is not available.');
         }
     }
 
