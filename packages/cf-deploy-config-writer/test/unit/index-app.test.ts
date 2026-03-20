@@ -157,7 +157,7 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, `../sample/standalone`), appPath);
         await expect(generateAppConfig({ appPath, addManagedAppRouter: false })).rejects.toThrow(
-            /No SAP Fiori UI5 application found./
+            /No SAPUI5 application found. Please ensure the manifest.json file contains a valid 'sap.app.id'./
         );
     });
 
