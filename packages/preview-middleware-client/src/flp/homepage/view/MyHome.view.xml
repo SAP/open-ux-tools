@@ -5,6 +5,7 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:f="sap.f"
     xmlns:w="sap.ui.integration.widgets"
+    xmlns:shell="sap.ushell.ui.shell"
     displayBlock="true"
     controllerName="open.ux.preview.client.flp.homepage.controller.MyHome"
     class="sapUShellFullHeight"
@@ -20,18 +21,25 @@
                     <m:Text id="headerDate"/>
                     <m:Title
                         id="greetingTitle"
-                        level="H2"
                         titleStyle="{= ${view>/deviceType} === 'XLargeDesktop' ? 'H3' : 'H4'}"
                     />
                 </m:VBox>
                 <m:ToolbarSpacer id="headerToolbarSpacer"/>
-                <m:GenericTag
-                    id="devPreviewTag"
-                    class="devPreviewTag"
-                    text="{i18n>devPreviewBadge}"
-                    status="Information"
-                    design="StatusIconHidden"
-                />
+                <m:VBox
+                    id="headerRightContainer"
+                    gap="0.125rem"
+                    alignItems="End"
+                    renderType="Bare"
+                    class="hideOverflow"
+                >
+                    <m:Button
+                        id="terminalWarningsBtn"
+                        type="Ghost"
+                        text="{i18n>terminalWarnings}"
+                        tooltip="{i18n>terminalWarnings}"
+                        press=".onTerminalWarningsButtonPress"
+                    />
+                </m:VBox>
             </m:OverflowToolbar>
         </m:customHeader>
 
