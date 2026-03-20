@@ -18970,9 +18970,7 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelList.iSeeThisPage();
-
         });
 
 
@@ -19054,8 +19052,8 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'lrop_v4_add_test_virtual_endpoints/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"lrop_v4_add_test_virtual_endpoints/test/integration/FirstJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -22882,9 +22880,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelList.iSeeThisPage();
-
         });
 
 
@@ -22966,8 +22962,8 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'lrop_v4_addtests/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"lrop_v4_addtests/test/integration/FirstJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -23727,9 +23723,7 @@ appDescription=A Fiori application.",
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelList.iSeeThisPage();
-
         });
 
 
@@ -23811,8 +23805,8 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'lrop_v4_addtests_cds/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"lrop_v4_addtests_cds/test/integration/FirstJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -24639,9 +24633,7 @@ appDescription=A Fiori application.",
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelList.iSeeThisPage();
-
         });
 
 
@@ -24723,8 +24715,8 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'lrop_v4_addtests_cds/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"lrop_v4_addtests_cds/test/integration/FirstJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
@@ -26023,9 +26015,7 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelList.iSeeThisPage();
-
         });
 
 
@@ -26107,8 +26097,8 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    'lrop_v4_annotation_reuse_lib/test/integration/FirstJourney'
-  ], function (QUnit) {
+    \\"lrop_v4_annotation_reuse_lib/test/integration/FirstJourney\\",
+], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
 });
