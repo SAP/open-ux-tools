@@ -279,5 +279,7 @@ async function updatePackageJson(basePath: string, fs: Editor): Promise<void> {
     packageJson.devDependencies[packageName.ESLINT] = '^9.0.0';
     packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_TOOLS] = '^9.0.0';
     delete packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_CUSTOM];
+    packageJson.scripts ??= {};
+    packageJson.scripts['lnit'] = 'eslint ./';
     fs.writeJSON(packageJsonPath, packageJson);
 }

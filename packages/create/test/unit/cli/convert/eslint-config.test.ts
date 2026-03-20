@@ -5,6 +5,7 @@ import * as appConfigWriter from '@sap-ux/app-config-writer';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as logger from '../../../../src/tracing/logger';
 import * as common from '../../../../src/common';
+import * as projectAccess from '@sap-ux/project-access';
 import { addConvertEslintCommand } from '../../../../src/cli/convert/eslint-config';
 
 jest.mock('prompts');
@@ -15,6 +16,7 @@ describe('Test command convert eslint-config', () => {
     let fsMock: Editor;
     let logLevelSpy: jest.SpyInstance;
     let runNpmInstallSpy: jest.SpyInstance;
+    let execNpmCommandSpy: jest.SpyInstance;
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -33,10 +35,12 @@ describe('Test command convert eslint-config', () => {
         fsMock = {
             dump: jest.fn(),
             exists: jest.fn(),
+            delete: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
         jest.spyOn(appConfigWriter, 'convertEslintConfig').mockResolvedValue(fsMock);
         runNpmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => undefined);
+        execNpmCommandSpy = jest.spyOn(projectAccess, 'execNpmCommand').mockResolvedValue('');
     });
 
     test('Test create-fiori convert eslint-config <appRoot>', async () => {
@@ -56,6 +60,14 @@ describe('Test command convert eslint-config', () => {
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
+        // package-lock.json is staged for deletion before fs.commit, so it is flushed in the same commit
+        expect(fsMock.delete).toHaveBeenCalledWith(join(appRoot, 'package-lock.json'));
+        // Uninstall should be called with --no-save (does not modify package.json)
+        expect(execNpmCommandSpy).toHaveBeenCalledWith(
+            ['uninstall', '--no-save'],
+            expect.objectContaining({ cwd: appRoot, logger: loggerMock })
+        );
+        // npm install should be called only after uninstall resolves
         expect(runNpmInstallSpy).toHaveBeenCalledWith(
             appRoot,
             undefined,
@@ -73,6 +85,7 @@ describe('Test command convert eslint-config', () => {
         expect(logLevelSpy).toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalled();
+        expect(fsMock.delete).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
         expect(runNpmInstallSpy).not.toHaveBeenCalled();
     });
@@ -95,6 +108,8 @@ describe('Test command convert eslint-config', () => {
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
+        expect(fsMock.delete).not.toHaveBeenCalled();
+        expect(execNpmCommandSpy).not.toHaveBeenCalled();
         expect(runNpmInstallSpy).not.toHaveBeenCalled();
     });
 
@@ -113,6 +128,11 @@ describe('Test command convert eslint-config', () => {
         );
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
+        expect(fsMock.delete).toHaveBeenCalledWith(join(appRoot, 'package-lock.json'));
+        expect(execNpmCommandSpy).toHaveBeenCalledWith(
+            ['uninstall', '--no-save'],
+            expect.objectContaining({ cwd: appRoot, logger: loggerMock })
+        );
         expect(runNpmInstallSpy).toHaveBeenCalledWith(
             appRoot,
             undefined,
@@ -143,6 +163,7 @@ describe('Test command convert eslint-config', () => {
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('`npm install` was skipped'));
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
+        expect(fsMock.delete).not.toHaveBeenCalled();
         expect(runNpmInstallSpy).not.toHaveBeenCalled();
         expect(appConfigWriter.convertEslintConfig).toHaveBeenCalledWith(
             appRoot,
@@ -167,6 +188,7 @@ describe('Test command convert eslint-config', () => {
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
         expect(loggerMock.debug).toHaveBeenCalledWith(expect.any(Error));
         expect(fsMock.commit).not.toHaveBeenCalled();
+        expect(fsMock.delete).not.toHaveBeenCalled();
         expect(runNpmInstallSpy).not.toHaveBeenCalled();
     });
 
@@ -182,6 +204,11 @@ describe('Test command convert eslint-config', () => {
         expect(cwdSpy).toHaveBeenCalled();
         expect(appConfigWriter.convertEslintConfig).toHaveBeenCalledWith(appRoot, expect.any(Object));
         expect(fsMock.commit).toHaveBeenCalled();
+        expect(fsMock.delete).toHaveBeenCalledWith(join(appRoot, 'package-lock.json'));
+        expect(execNpmCommandSpy).toHaveBeenCalledWith(
+            ['uninstall', '--no-save'],
+            expect.objectContaining({ cwd: appRoot, logger: loggerMock })
+        );
         expect(runNpmInstallSpy).toHaveBeenCalledWith(
             appRoot,
             undefined,
@@ -201,6 +228,7 @@ describe('Test command convert eslint-config', () => {
         expect(logLevelSpy).toHaveBeenCalled(); // simulate should set verbose
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.delete).not.toHaveBeenCalled(); // simulate should not stage any deletions
         expect(fsMock.commit).not.toHaveBeenCalled(); // simulate should not commit
         expect(runNpmInstallSpy).not.toHaveBeenCalled(); // simulate should not run npm install
     });
@@ -215,6 +243,7 @@ describe('Test command convert eslint-config', () => {
         expect(logLevelSpy).toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.delete).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
         expect(runNpmInstallSpy).not.toHaveBeenCalled();
         expect(appConfigWriter.convertEslintConfig).toHaveBeenCalledWith(
@@ -240,7 +269,32 @@ describe('Test command convert eslint-config', () => {
         );
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
         expect(loggerMock.debug).toHaveBeenCalledWith(expect.any(Error));
+        expect(fsMock.delete).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
+        expect(runNpmInstallSpy).not.toHaveBeenCalled();
+    });
+
+    test('Test create-fiori convert eslint-config <appRoot> - npm install not called when uninstall fails', async () => {
+        // Given: uninstall rejects
+        const uninstallError = new Error('uninstall failed');
+        execNpmCommandSpy.mockRejectedValue(uninstallError);
+
+        // When
+        const command = new Command('convert');
+        addConvertEslintCommand(command);
+        await command.parseAsync(getArgv(['eslint-config', appRoot]));
+
+        // Then: error is logged and npm install is NOT triggered
+        expect(fsMock.commit).toHaveBeenCalled();
+        // package-lock.json is staged and committed before the async uninstall runs
+        expect(fsMock.delete).toHaveBeenCalledWith(join(appRoot, 'package-lock.json'));
+        expect(execNpmCommandSpy).toHaveBeenCalledWith(
+            ['uninstall', '--no-save'],
+            expect.objectContaining({ cwd: appRoot, logger: loggerMock })
+        );
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            expect.stringContaining(`npm (un)install failed. '${uninstallError.message}'`)
+        );
         expect(runNpmInstallSpy).not.toHaveBeenCalled();
     });
 });

@@ -3,6 +3,9 @@ import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import { convertEslintConfig as migrateEslintConfig } from '@sap-ux/app-config-writer';
 import { runNpmInstallCommand } from '../../common';
+import { execNpmCommand } from '@sap-ux/project-access';
+import { join } from 'node:path';
+
 /**
  * Add a new sub-command to convert the eslint configuration of a project to flat config format (eslint version 9).
  *
@@ -53,6 +56,10 @@ async function convertEslintConfig(
         const fs = await migrateEslintConfig(basePath, { logger, config });
         await traceChanges(fs);
         if (!simulate) {
+            if (!skipInstall) {
+                logger.info(`Deleting \`package-lock.json\` to avoid conflicts.`); // moved out
+                fs.delete(join(basePath, 'package-lock.json')); // staged before commit
+            }
             fs.commit(() => {
                 logger.info(
                     `ESlint configuration converted. Ensure the new configuration is working correctly before deleting old configuration files like '.eslintrc.json' or '.eslintignore'.`
@@ -62,8 +69,19 @@ async function convertEslintConfig(
                         `\`npm install\` was skipped. Ensure you install the dependencies before executing any linting commands.`
                     );
                 } else {
-                    logger.info(`Executing \`npm install\`.`);
-                    runNpmInstallCommand(basePath, undefined, { logger });
+                    logger.info(`Deleting \`node_modules\` to avoid dependency resolution conflicts.`);
+                    execNpmCommand(['uninstall', '--no-save'], {
+                        cwd: basePath,
+                        logger: logger
+                    })
+                        .then(() => {
+                            logger?.info('npm uninstall completed successfully.');
+                            logger.info(`Executing \`npm install\`.`);
+                            runNpmInstallCommand(basePath, undefined, { logger });
+                        })
+                        .catch((error) => {
+                            logger?.error(`npm (un)install failed. '${(error as Error).message}'`);
+                        });
                 }
             });
         }
