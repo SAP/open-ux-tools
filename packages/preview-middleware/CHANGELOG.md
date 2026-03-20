@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.24.4
+
+### Patch Changes
+
+- 55eb5dc: fix: disable condensing in workspace connector for older SAPUI5 versions
+
 ## 0.24.3
 
 ### Patch Changes
