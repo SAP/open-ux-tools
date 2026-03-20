@@ -50,6 +50,10 @@
     flex-shrink: 1;
 }
 
+.salutationBar .devPreviewTag {
+    pointer-events: none;
+}
+
 /* Mobile */
 @media (min-width: 320px) and (max-width: 599px) {
     :root {
