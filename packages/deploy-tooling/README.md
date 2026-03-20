@@ -70,7 +70,33 @@ This is the minimal custom task configuration for deployment using package `$TMP
       - /test/
 ```
 
-#### Configuration with logging enabled
+#### Additional Configuration Options
+
+##### Credentials
+You can provide credentials for the ABAP system using environment variables. The credentials are required for authentication against the ABAP system. Plain text credentials are not supported, use environment variables instead.
+
+```yaml
+- name: abap-deploy-task
+  configuration:
+    credentials:
+      username: env:XYZ_USER
+      password: env:XYZ_PASSWORD
+    app:
+      name: Z_TEST
+      package: $TMP
+    target:
+      url: https://target.example
+    exclude:
+      - /test/
+```
+Create an `.env` file in the root of your project with the following content:
+
+```
+XYZ_USER=your-username
+XYZ_PASSWORD=your-password
+```
+
+##### Logging
 Set the level of detail for log messages, default is `Info`;
 ```json
 Error = 0,
@@ -126,8 +152,8 @@ Options:
   --cloud                              target is an ABAP Cloud system
   --cloud-service-key <file-location>  JSON file location with the ABAP cloud service key.
   --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables. Secrets in your .env should not be committed to source control.
-  --username                           ABAP Service username
-  --password                           ABAP Service password
+  --username                           ABAP Service username, plain text credentials are not supported, use environment variables
+  --password                           ABAP Service password, plain text credentials are not supported, use environment variables
   --authentication-type                Authentication type for the app (e.g. 'basic', 'reentranceTicket'). Required for 'reentranceTicket'.
   --create-transport                   Create a transport request during deployment/undeployment
   --transport <transport-request>      Transport number to record the change in the ABAP system
