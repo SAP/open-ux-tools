@@ -276,8 +276,8 @@ async function updatePackageJson(basePath: string, fs: Editor): Promise<void> {
     const packageJsonPath = join(basePath, FileName.Package);
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     packageJson.devDependencies ??= {};
-    packageJson.devDependencies[packageName.ESLINT] = '^9.0.0';
-    packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_TOOLS] = '^9.0.0';
+    packageJson.devDependencies[packageName.ESLINT] = '^10.0.0';
+    packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_TOOLS] = '^10.0.0';
     delete packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_CUSTOM];
     fs.writeJSON(packageJsonPath, packageJson);
 }

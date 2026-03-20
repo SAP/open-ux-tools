@@ -510,7 +510,7 @@ describe('convertEslintConfig', () => {
             const packageJsonPath = join(basePath, 'package.json');
             const packageJson = fs.readJSON(packageJsonPath) as Package;
 
-            expect(packageJson.devDependencies?.eslint).toBe('^9.0.0');
+            expect(packageJson.devDependencies?.eslint).toBe('^10.0.0');
         });
 
         test('should update @sap-ux/eslint-plugin-fiori-tools version to ^9.0.0', async () => {
@@ -520,7 +520,7 @@ describe('convertEslintConfig', () => {
             const packageJsonPath = join(basePath, 'package.json');
             const packageJson = fs.readJSON(packageJsonPath) as Package;
 
-            expect(packageJson.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^9.0.0');
+            expect(packageJson.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^10.0.0');
         });
 
         test('should preserve existing devDependencies', async () => {
@@ -560,7 +560,7 @@ describe('convertEslintConfig', () => {
 
             const updatedPackageJson = fs.readJSON(packageJsonPath) as Package;
             expect(updatedPackageJson.devDependencies).toBeDefined();
-            expect(updatedPackageJson.devDependencies?.eslint).toBe('^9.0.0');
+            expect(updatedPackageJson.devDependencies?.eslint).toBe('^10.0.0');
         });
     });
 
@@ -649,8 +649,8 @@ describe('convertEslintConfig', () => {
             // Verify package.json was updated
             const packageJsonPath = join(basePath, 'package.json');
             const packageJson = fs.readJSON(packageJsonPath) as Package;
-            expect(packageJson.devDependencies?.eslint).toBe('^9.0.0');
-            expect(packageJson.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^9.0.0');
+            expect(packageJson.devDependencies?.eslint).toBe('^10.0.0');
+            expect(packageJson.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^10.0.0');
 
             // Verify result is the fs instance
             expect(result).toBe(fs);

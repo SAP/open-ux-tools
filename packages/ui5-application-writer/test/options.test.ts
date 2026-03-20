@@ -250,8 +250,8 @@ describe('UI5 templates', () => {
         // Verify that package.json was updated with eslint dependencies and script
         const updatedPackageJson = fs.readJSON(packageJsonPath) as Package;
         expect(updatedPackageJson?.scripts?.lint).toBe('eslint ./');
-        expect(updatedPackageJson?.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^9.0.0');
-        expect(updatedPackageJson?.devDependencies?.['eslint']).toBe('^9');
+        expect(updatedPackageJson?.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^10.0.0');
+        expect(updatedPackageJson?.devDependencies?.['eslint']).toBe('^10');
         // Verify existing dependencies are preserved
         expect(updatedPackageJson?.devDependencies?.['@ui5/cli']).toBe('^3.0.0');
         expect(updatedPackageJson?.scripts?.start).toBe('fiori run');
