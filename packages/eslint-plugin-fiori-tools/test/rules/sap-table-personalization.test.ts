@@ -760,7 +760,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'When using an object, omitting a setting is treated as false. The column, filter, group and sort properties are disabled.'
+                            'When using an object, omitting a setting is treated as false. The column, filter, group, and sort properties are disabled.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -831,7 +831,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'When using an object, omitting a setting is treated as false. The column and sort properties are disabled.'
+                            'When using an object, omitting a setting is treated as false. The column, and sort properties are disabled.'
                     },
                     {
                         line: 129,
@@ -965,7 +965,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'When using an object, omitting a setting is treated as false. The filter and sort properties are disabled.'
+                            'When using an object, omitting a setting is treated as false. The filter, and sort properties are disabled.'
                     },
                     {
                         line: 129,

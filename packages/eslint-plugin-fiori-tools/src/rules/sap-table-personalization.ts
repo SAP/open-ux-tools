@@ -87,7 +87,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                 diagnostic.undefinedProperties?.forEach((property, index) => {
                     switch (index) {
                         case undefinedPropertiesLength - 2: // second to last property
-                            undefinedPropertiesString += property + ' and ';
+                            undefinedPropertiesString += property + ', and ';
                             break;
                         case undefinedPropertiesLength - 1: // last property
                             undefinedPropertiesString += property + ' ';
