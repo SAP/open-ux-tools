@@ -1,5 +1,27 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.13.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/odata-service-inquirer@2.20.0
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/fiori-elements-writer@2.8.107
+    - @sap-ux/fiori-freestyle-writer@2.5.78
+    - @sap-ux/launch-config@0.10.77
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/telemetry@0.6.88
+    - @sap-ux/ui5-application-inquirer@0.17.2
+    - @sap-ux/annotation-generator@0.4.42
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/cap-config-writer@0.12.80
+    - @sap-ux/fiori-generator-shared@0.13.88
+
 ## 0.12.3
 
 ### Patch Changes
