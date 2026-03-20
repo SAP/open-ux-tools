@@ -31,7 +31,6 @@
                     text="{i18n>devPreviewBadge}"
                     status="Information"
                     design="StatusIconHidden"
-                    tooltip="{i18n>devPreviewTooltip}"
                 />
             </m:OverflowToolbar>
         </m:customHeader>
