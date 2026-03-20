@@ -116,6 +116,18 @@ export default class MyHomeController extends Controller {
         void this.initSalutationBar();
         void this.initializeNewsContainer();
         void this.initializeInsightsContainer();
+
+        // make dev preview tag non-interactive
+        const devPreviewTag = this.byId('devPreviewTag');
+        devPreviewTag?.addEventDelegate({
+            onAfterRendering: () => {
+                const domRef = devPreviewTag.getDomRef() as HTMLElement;
+                if (domRef) {
+                    domRef.setAttribute('tabindex', '-1');
+                    domRef.setAttribute('role', 'note');
+                }
+            }
+        });
     }
 
     private getText(sKey: string, aArgs?: string[]): string {

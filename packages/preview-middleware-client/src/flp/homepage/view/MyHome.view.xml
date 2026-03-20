@@ -27,6 +27,7 @@
                 <m:ToolbarSpacer id="headerToolbarSpacer"/>
                 <m:GenericTag
                     id="devPreviewTag"
+                    class="devPreviewTag"
                     text="{i18n>devPreviewBadge}"
                     status="Information"
                     design="StatusIconHidden"
