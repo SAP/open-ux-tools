@@ -18,6 +18,8 @@ export interface ValueListReference {
     location: Location;
     annotation: Element;
     uris: string[];
+    namespace: string;
+    alias?: string;
 }
 
 /**
