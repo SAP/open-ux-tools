@@ -167,6 +167,7 @@ generators
 
 # Output of 'npm pack'
 *.tgz
+**/prebuilds/**
 
 # tsc delta build
 *.tsbuildinfo

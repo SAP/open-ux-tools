@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 0.18.96
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.25
+
+## 0.18.95
+
+### Patch Changes
+
+- 4f86250: feat: Adjust mini wizard behavior for CF scenario
+
 ## 0.18.94
 
 ### Patch Changes
