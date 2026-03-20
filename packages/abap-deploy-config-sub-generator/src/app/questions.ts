@@ -37,10 +37,15 @@ function getAbapTarget(
         // the destination used during app generation
         destinationName = destination.Name;
     } else if (backendSystem) {
-        const urlFromSystem = new URL(backendSystem.url);
-        // the backend system used during app generation
-        url = urlFromSystem.origin;
-        connectPath = urlFromSystem.pathname === '/' ? undefined : urlFromSystem.pathname;
+        try {
+            const urlFromSystem = new URL(backendSystem.url);
+            // the backend system used during app generation
+            url = urlFromSystem.origin;
+            connectPath = urlFromSystem.pathname === '/' ? undefined : urlFromSystem.pathname;
+        } catch {
+            // If URL parsing fails, use the URL as-is
+            url = backendSystem.url;
+        }
         client = backendSystem.client;
         scp = !!backendSystem.serviceKeys;
         authenticationType = backendSystem.authenticationType;

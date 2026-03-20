@@ -44,7 +44,10 @@ export async function getCredentialsFromStore(
             const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
             let url = target.url;
             if (target.connectPath) {
-                url = new URL(target.connectPath, target.url).href;
+                const normalizedPath = target.connectPath.startsWith('/')
+                    ? target.connectPath
+                    : `/${target.connectPath}`;
+                url = new URL(normalizedPath, target.url).href;
             }
             let system = await systemService.read(new BackendSystemKey({ url, client: target.client }));
             // check if there are credentials for the default client

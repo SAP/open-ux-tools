@@ -38,7 +38,11 @@ function normalizeUrl(url: string): string {
  * @returns the resolved URL to be used for system matching, or undefined if no base URL is provided
  */
 function resolveTargetUrl(target: AbapTarget): string | undefined {
-    return target.connectPath ? new URL(target.connectPath, target.url).href : target.url;
+    try {
+        return target.connectPath ? new URL(target.connectPath, target.url).href : target.url;
+    } catch {
+        return target.url;
+    }
 }
 
 /**
@@ -239,10 +243,14 @@ export function updatePromptStateUrl(
         destinationUrl = destinations[previousAnswers.destination]?.Host;
     }
 
-    const targetSystemChoice =
-        previousAnswers?.targetSystem && previousAnswers.targetSystem !== TargetSystemType.Url
-            ? new URL(previousAnswers.targetSystem).origin
-            : undefined;
+    let targetSystemChoice: string | undefined;
+    if (previousAnswers?.targetSystem && previousAnswers.targetSystem !== TargetSystemType.Url) {
+        try {
+            targetSystemChoice = new URL(previousAnswers.targetSystem).origin;
+        } catch {
+            targetSystemChoice = previousAnswers.targetSystem; // if it's not a valid URL, use the raw value
+        }
+    }
 
     PromptState.abapDeployConfig.url = destinationUrl ?? targetSystemChoice ?? backendTarget?.abapTarget.url ?? '';
 }
