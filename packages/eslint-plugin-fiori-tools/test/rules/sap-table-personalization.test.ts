@@ -760,7 +760,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'When using an object, omitting a setting is treated as false. Currently column, filter, group, sort are disabled.'
+                            'When using an object, omitting a setting is treated as false. The column, filter, group and sort properties are disabled.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -831,7 +831,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'When using an object, omitting a setting is treated as false. Currently column, sort are disabled.'
+                            'When using an object, omitting a setting is treated as false. The column and sort properties are disabled.'
                     },
                     {
                         line: 129,
@@ -889,7 +889,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'When using an object, omitting a setting is treated as false. Currently column is disabled.'
+                            'When using an object, omitting a setting is treated as false. The column property is disabled.'
                     },
                     {
                         line: 129,
@@ -965,7 +965,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'When using an object, omitting a setting is treated as false. Currently filter, sort are disabled.'
+                            'When using an object, omitting a setting is treated as false. The filter and sort properties are disabled.'
                     },
                     {
                         line: 129,

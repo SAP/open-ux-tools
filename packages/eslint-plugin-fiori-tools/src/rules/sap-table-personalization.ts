@@ -79,11 +79,26 @@ const rule: FioriRuleDefinition = createFioriRule({
     createJsonVisitorHandler: (context, diagnostic, deepestPathResult) => {
         return function report(node: MemberNode): void {
             diagnostic.manifest.loc = node.loc;
-            let undefinedPropertiesString = '';
+            let undefinedPropertiesString = 'The ';
             let messageId = MessageIdByProperty[diagnostic.property ?? ''];
-            if (diagnostic.undefinedProperties?.length) {
-                undefinedPropertiesString = `Currently ${diagnostic.undefinedProperties.join(', ')} ${diagnostic.undefinedProperties.length === 1 ? 'is disabled' : 'are disabled'}`;
+            const undefinedPropertiesLength = diagnostic.undefinedProperties?.length;
+            if (undefinedPropertiesLength) {
                 messageId = MISSING_PERSONALIZATION_PROPERTIES;
+                diagnostic.undefinedProperties?.forEach((property, index) => {
+                    switch (index) {
+                        case undefinedPropertiesLength - 2: // second to last property
+                            undefinedPropertiesString += property + ' and ';
+                            break;
+                        case undefinedPropertiesLength - 1: // last property
+                            undefinedPropertiesString += property + ' ';
+                            break;
+                        default:
+                            undefinedPropertiesString += property + ', ';
+                            break;
+                    }
+                });
+                undefinedPropertiesString +=
+                    undefinedPropertiesLength === 1 ? 'property is disabled' : 'properties are disabled';
             }
             return context.report({
                 node,
