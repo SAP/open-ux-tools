@@ -47,9 +47,38 @@
             <FavAppPanel id="favoriteApps" />
         </AppsContainer>
 
-        <m:VBox id="insightsTilesContainer" visible="{= ${view>/cards/length} > 0}" renderType="Bare" class="sapCuxBaseContainer">
+        <m:VBox id="insightsTilesContainer" renderType="Bare" class="sapCuxBaseContainer">
             <m:Title id="insightsTitle" level="H4" titleStyle="H4"/>
-            <f:GridContainer id="insightsCardContainer" class="sapUiSmallMarginTop" items="{view>/cards}">
+            <m:VBox
+                id="noDataContainer"
+                backgroundDesign="Solid"
+                visible="{= ${view>/cards/length} === 0 }"
+                class="sapCuxAppsPanel sapUiSmallMarginTop"
+            >
+                <m:IllustratedMessage
+                    id="noDataIllustratedMessage"
+                    illustrationSize="Dot"
+                    illustrationType="sapIllus-NoData"
+                    class="sapUiSmallMargin"
+                >
+                    <m:additionalContent>
+                        <m:Button
+                            id="cardGeneratorButton"
+                            type="Emphasized"
+                            text="{i18n>cardGenerator}"
+                            visible="{view>/isCardGeneratedEnabled}"
+                            press=".onCardGeneratorButtonPress"
+                        />
+                    </m:additionalContent>
+                </m:IllustratedMessage>
+            </m:VBox>
+
+            <f:GridContainer
+                id="insightsCardContainer"
+                visible="{= ${view>/cards/length} &gt; 0}"
+                class="sapUiSmallMarginTop"
+                items="{view>/cards}"
+            >
                 <w:Card id="card" manifest="{view>}" height="33rem"/>
                 <f:layout>
                     <f:GridContainerSettings columnSize="{view>/insightsCardWidth}" gap="1rem"/>
