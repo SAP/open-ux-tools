@@ -36,3 +36,18 @@ declare module 'sap/cux/home/NewsAndPagesContainer' {
         constructor(settings?: NewsAndPagesContainerSettings);
     }
 }
+
+declare module 'sap/ushell/ui/shell/SysInfoBar' {
+    import Control from 'sap/ui/core/Control';
+
+    interface SysInfoBarSettings {
+        color?: string;
+        icon?: string;
+        text?: string;
+        subText?: string;
+    }
+
+    export default class SysInfoBar extends Control {
+        constructor(id?: string, settings?: SysInfoBarSettings);
+    }
+}

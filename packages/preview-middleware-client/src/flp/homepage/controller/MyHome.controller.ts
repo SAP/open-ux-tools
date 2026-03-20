@@ -15,6 +15,8 @@ import type NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
 import { getSalutationBarBackground } from '../utils/salutationBarUtils';
 import Title from 'sap/m/Title';
 import GridContainer from 'sap/f/GridContainer';
+import UI5Element from 'sap/ui/core/Element';
+import SysInfoBar from 'sap/ushell/ui/shell/SysInfoBar';
 
 const CARDS_GAP = 16;
 const MIN_CARD_WIDTH = 304;
@@ -113,21 +115,29 @@ export default class MyHomeController extends Controller {
             });
         }
 
+        this.setupSystemInfoBar();
         void this.initSalutationBar();
         void this.initializeNewsContainer();
         void this.initializeInsightsContainer();
+    }
 
-        // make dev preview tag non-interactive
-        const devPreviewTag = this.byId('devPreviewTag');
-        devPreviewTag?.addEventDelegate({
-            onAfterRendering: () => {
-                const domRef = devPreviewTag.getDomRef() as HTMLElement;
-                if (domRef) {
-                    domRef.setAttribute('tabindex', '-1');
-                    domRef.setAttribute('role', 'note');
-                }
-            }
-        });
+    onBeforeRendering(): void {
+        const appsContainer = this.byId('favoriteApps') as UI5Element;
+        appsContainer.removeAllAggregation('menuItems');
+        appsContainer.removeAllAggregation('actionButtons');
+    }
+
+    private setupSystemInfoBar(): void {
+        const systemInfoHtml = '<div id="systemInfo-shellArea"></div>';
+        const shellHeaderShellArea = document.getElementById('shell-header');
+        shellHeaderShellArea?.insertAdjacentHTML('beforebegin', systemInfoHtml);
+
+        new SysInfoBar('sysInfoBar', {
+            icon: 'sap-icon://source-code',
+            text: this.getText('infoBarText'),
+            subText: this.getText('infoBarSubText', [sap.ui.version]),
+            color: 'blue'
+        }).placeAt('systemInfo-shellArea');
     }
 
     private getText(sKey: string, aArgs?: string[]): string {
@@ -280,4 +290,6 @@ export default class MyHomeController extends Controller {
             Log.error('Failed to load insights data', error instanceof Error ? error : new Error(String(error)));
         }
     }
+
+    onTerminalWarningsButtonPress(): void {}
 }
