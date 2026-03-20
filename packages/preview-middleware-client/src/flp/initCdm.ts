@@ -11,6 +11,7 @@ import type { Window } from 'types/global';
             componentData: {
                 config: {
                     enableSearch: false,
+                    enableSetLanguage: true,
                     enableRecentActivity: true,
                     rootIntent: 'Shell-home'
                 }
