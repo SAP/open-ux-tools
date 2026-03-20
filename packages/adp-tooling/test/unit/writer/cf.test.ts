@@ -278,7 +278,7 @@ describe('CF Writer', () => {
                 configuration: { serviceInstanceName: 'test-service', space: 'space-guid' }
             });
 
-            const fs = await setupCfPreview(projectDir, 'ui5.yaml', mockCfConfig, mockLogger);
+            await setupCfPreview(projectDir, 'ui5.yaml', mockCfConfig, mockLogger);
 
             expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
                 { names: ['test-service'], spaceGuids: ['space-guid'] },
@@ -288,7 +288,6 @@ describe('CF Writer', () => {
             expect(mockGetBaseAppId).toHaveBeenCalledWith(projectDir);
             expect(mockGetCfUi5AppInfo).toHaveBeenCalledWith('test-app-id', ['host-123'], mockCfConfig, mockLogger);
             expect(mockRunBuild).toHaveBeenCalledWith(projectDir, { ADP_BUILDER_MODE: 'preview' });
-            expect(fs).toBeDefined();
         });
 
         test('should throw error when serviceInstanceName not found', async () => {

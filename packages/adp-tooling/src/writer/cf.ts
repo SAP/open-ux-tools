@@ -126,18 +126,13 @@ export async function writeUi5AppInfo(basePath: string, ui5AppInfo: CfUi5AppInfo
  * @param yamlPath - path to the project configuration file in YAML format
  * @param cfConfig - CF configuration
  * @param logger - logger instance
- * @param fs - mem-fs editor instance
- * @returns updated mem-fs editor instance
  */
 export async function setupCfPreview(
     basePath: string,
     yamlPath: string,
     cfConfig: CfConfig,
-    logger?: ToolsLogger,
-    fs?: Editor
-): Promise<Editor> {
-    fs ??= create(createStorage());
-
+    logger?: ToolsLogger
+): Promise<void> {
     const ui5Config = await readUi5Yaml(basePath, yamlPath);
 
     const bundlerTask = ui5Config.findCustomTask<{ space?: string; serviceInstanceName?: string }>(
@@ -170,6 +165,4 @@ export async function setupCfPreview(
 
     await writeUi5AppInfo(basePath, ui5AppInfo, logger);
     await runBuild(basePath, { ADP_BUILDER_MODE: 'preview' });
-
-    return fs;
 }
