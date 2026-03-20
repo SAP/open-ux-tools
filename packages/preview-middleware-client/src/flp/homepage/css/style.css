@@ -35,15 +35,10 @@
 }
 
 .salutationBar .sapMTitle,
-.salutationBar .sapMText,
-.salutationBar .sapUiIcon {
+.salutationBar .sapMText {
     color: var(--salutationBar-textColor);
 }
 
-.salutationBar .sapMBtnInner.sapMBtnGhost,
-.salutationBar .sapMBtnInner {
-    background-color: var(--sapButton_Background);
-}
 
 .salutationBar .hideOverflow {
     overflow: hidden;
