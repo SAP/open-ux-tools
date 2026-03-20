@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.9.34
+
+### Patch Changes
+
+- 5307571: fix: Add logging and user friendly error messages for key user API calls in the generator
+
 ## 0.9.33
 
 ### Patch Changes
