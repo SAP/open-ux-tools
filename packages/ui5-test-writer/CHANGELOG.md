@@ -2,6 +2,8 @@
 
 ## 0.7.91
 
+*Released: 2026-03-20T16:07:49Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.14
@@ -9,11 +11,15 @@
 
 ## 0.7.90
 
+*Released: 2026-03-19T16:10:59Z*
+
 ### Patch Changes
 
 - b516f01: add new opa tests for LR and OP, refactor file writing
 
 ## 0.7.89
+
+*Released: 2026-03-18T12:34:00Z*
 
 ### Patch Changes
 
@@ -21,6 +27,8 @@
     - @sap-ux/ui5-application-writer@1.8.0
 
 ## 0.7.88
+
+*Released: 2026-03-17T01:04:22Z*
 
 ### Patch Changes
 
@@ -30,17 +38,23 @@
 
 ## 0.7.87
 
+*Released: 2026-03-16T23:16:05Z*
+
 ### Patch Changes
 
 - 1b7094e: fix(deps): update dependency @sap/ux-specification to v1.144.0
 
 ## 0.7.86
 
+*Released: 2026-03-06T12:16:42Z*
+
 ### Patch Changes
 
 - 295cacc: fix: remove sap-no-global-define eslint annotations from testsuite templates
 
 ## 0.7.85
+
+*Released: 2026-03-05T16:08:22Z*
 
 ### Patch Changes
 
@@ -50,12 +64,16 @@
 
 ## 0.7.84
 
+*Released: 2026-03-05T13:30:55Z*
+
 ### Patch Changes
 
 - Updated dependencies [bd95e55]
     - @sap-ux/ui5-application-writer@1.7.19
 
 ## 0.7.83
+
+*Released: 2026-03-05T12:30:25Z*
 
 ### Patch Changes
 
@@ -65,6 +83,8 @@
 
 ## 0.7.82
 
+*Released: 2026-03-05T10:41:09Z*
+
 ### Patch Changes
 
 - 5aff25c: fix(deps): update dependency fs-extra to v11
@@ -72,6 +92,8 @@
     - @sap-ux/ui5-application-writer@1.7.17
 
 ## 0.7.81
+
+*Released: 2026-03-04T22:42:20Z*
 
 ### Patch Changes
 
@@ -84,6 +106,8 @@
 
 ## 0.7.80
 
+*Released: 2026-03-04T14:39:10Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.11
@@ -91,11 +115,15 @@
 
 ## 0.7.79
 
+*Released: 2026-03-04T11:44:41Z*
+
 ### Patch Changes
 
 - 7d643c3: remove Filterbar OPA tests for Worklist app
 
 ## 0.7.78
+
+*Released: 2026-02-27T15:42:39Z*
 
 ### Patch Changes
 
@@ -105,6 +133,8 @@
 
 ## 0.7.77
 
+*Released: 2026-02-26T10:46:59Z*
+
 ### Patch Changes
 
 - 6c993f3: fix: turn off i18next support notice
@@ -113,12 +143,16 @@
 
 ## 0.7.76
 
+*Released: 2026-02-23T22:35:31Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.9
 - @sap-ux/ui5-application-writer@1.7.13
 
 ## 0.7.75
+
+*Released: 2026-02-23T19:07:48Z*
 
 ### Patch Changes
 
@@ -128,6 +162,8 @@
 
 ## 0.7.74
 
+*Released: 2026-02-20T21:31:31Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.7
@@ -135,11 +171,15 @@
 
 ## 0.7.73
 
+*Released: 2026-02-20T20:20:17Z*
+
 ### Patch Changes
 
 - d588c26: fix(deps): update dependency rimraf to v6.1.3
 
 ## 0.7.72
+
+*Released: 2026-02-20T16:17:11Z*
 
 ### Patch Changes
 
@@ -148,6 +188,8 @@
     - @sap-ux/ui5-application-writer@1.7.11
 
 ## 0.7.71
+
+*Released: 2026-02-20T13:46:55Z*
 
 ### Patch Changes
 
@@ -158,6 +200,8 @@
 
 ## 0.7.70
 
+*Released: 2026-02-18T21:45:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [d57cc47]
@@ -166,12 +210,16 @@
 
 ## 0.7.69
 
+*Released: 2026-02-16T16:08:11Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.4
 - @sap-ux/ui5-application-writer@1.7.9
 
 ## 0.7.68
+
+*Released: 2026-02-13T09:54:38Z*
 
 ### Patch Changes
 
@@ -181,6 +229,8 @@
 
 ## 0.7.67
 
+*Released: 2026-02-12T10:29:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [d2b772d]
@@ -189,6 +239,8 @@
 
 ## 0.7.66
 
+*Released: 2026-02-10T23:50:15Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.1
@@ -196,12 +248,16 @@
 
 ## 0.7.65
 
+*Released: 2026-02-10T17:22:04Z*
+
 ### Patch Changes
 
 - Updated dependencies [2bffca7]
     - @sap-ux/ui5-application-writer@1.7.7
 
 ## 0.7.64
+
+*Released: 2026-02-09T11:21:43Z*
 
 ### Patch Changes
 
@@ -211,6 +267,8 @@
 
 ## 0.7.63
 
+*Released: 2026-02-05T20:09:45Z*
+
 ### Patch Changes
 
 - Updated dependencies [467e6aa]
@@ -218,6 +276,8 @@
     - @sap-ux/ui5-application-writer@1.7.6
 
 ## 0.7.62
+
+*Released: 2026-02-05T08:38:39Z*
 
 ### Patch Changes
 
@@ -227,17 +287,23 @@
 
 ## 0.7.61
 
+*Released: 2026-02-04T22:31:27Z*
+
 ### Patch Changes
 
 - 9f11dd2: chore - address audit issues
 
 ## 0.7.60
 
+*Released: 2026-02-04T14:42:07Z*
+
 ### Patch Changes
 
 - 185a8cf: Align @sap/ux-specification version
 
 ## 0.7.59
+
+*Released: 2026-02-03T15:42:23Z*
 
 ### Patch Changes
 
@@ -246,6 +312,8 @@
     - @sap-ux/ui5-application-writer@1.7.5
 
 ## 0.7.58
+
+*Released: 2026-01-30T16:59:27Z*
 
 ### Patch Changes
 
@@ -256,6 +324,8 @@
 
 ## 0.7.57
 
+*Released: 2026-01-29T14:02:02Z*
+
 ### Patch Changes
 
 - 6d71400: Changes to support v4.01 odata services
@@ -265,6 +335,8 @@
 
 ## 0.7.56
 
+*Released: 2026-01-28T00:19:05Z*
+
 ### Patch Changes
 
 - be6ea11: fix(deps): update dependency i18next to v25.8.0
@@ -273,11 +345,15 @@
 
 ## 0.7.55
 
+*Released: 2026-01-23T14:04:48Z*
+
 ### Patch Changes
 
 - 924e26f: fix(deps): update dependency @sap/ux-specification to v1.142.0
 
 ## 0.7.54
+
+*Released: 2026-01-16T13:57:39Z*
 
 ### Patch Changes
 
@@ -286,6 +362,8 @@
     - @sap-ux/ui5-application-writer@1.7.2
 
 ## 0.7.53
+
+*Released: 2026-01-15T14:14:39Z*
 
 ### Patch Changes
 
@@ -296,6 +374,8 @@
 
 ## 0.7.52
 
+*Released: 2026-01-14T17:56:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [b132944]
@@ -303,6 +383,8 @@
     - @sap-ux/ui5-application-writer@1.7.1
 
 ## 0.7.51
+
+*Released: 2026-01-12T12:01:34Z*
 
 ### Patch Changes
 
@@ -312,6 +394,8 @@
 
 ## 0.7.50
 
+*Released: 2026-01-09T11:35:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [e111d0d]
@@ -320,12 +404,16 @@
 
 ## 0.7.49
 
+*Released: 2026-01-06T14:37:31Z*
+
 ### Patch Changes
 
 - Updated dependencies [03598eb]
     - @sap-ux/ui5-application-writer@1.7.0
 
 ## 0.7.48
+
+*Released: 2025-12-23T18:45:16Z*
 
 ### Patch Changes
 
@@ -334,6 +422,8 @@
 
 ## 0.7.47
 
+*Released: 2025-12-19T15:33:24Z*
+
 ### Patch Changes
 
 - dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
@@ -341,6 +431,8 @@
     - @sap-ux/ui5-application-writer@1.6.7
 
 ## 0.7.46
+
+*Released: 2025-12-19T11:36:13Z*
 
 ### Patch Changes
 
@@ -352,6 +444,8 @@
 
 ## 0.7.45
 
+*Released: 2025-12-18T21:05:02Z*
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
@@ -362,12 +456,16 @@
 
 ## 0.7.44
 
+*Released: 2025-12-17T11:17:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [63c0f52]
     - @sap-ux/ui5-application-writer@1.6.5
 
 ## 0.7.43
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -379,6 +477,8 @@
 
 ## 0.7.42
 
+*Released: 2025-12-12T12:38:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [7217d7d]
@@ -386,6 +486,8 @@
     - @sap-ux/ui5-application-writer@1.6.3
 
 ## 0.7.41
+
+*Released: 2025-12-10T20:04:51Z*
 
 ### Patch Changes
 
@@ -395,6 +497,8 @@
 
 ## 0.7.40
 
+*Released: 2025-12-10T09:08:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [985223a]
@@ -402,6 +506,8 @@
     - @sap-ux/ui5-application-writer@1.6.3
 
 ## 0.7.39
+
+*Released: 2025-12-04T10:42:12Z*
 
 ### Patch Changes
 
@@ -411,6 +517,8 @@
 
 ## 0.7.38
 
+*Released: 2025-11-27T14:58:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [07725fe]
@@ -419,12 +527,16 @@
 
 ## 0.7.37
 
+*Released: 2025-11-26T14:39:37Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.32.10
 - @sap-ux/ui5-application-writer@1.6.2
 
 ## 0.7.36
+
+*Released: 2025-11-24T12:45:14Z*
 
 ### Patch Changes
 
@@ -435,6 +547,8 @@
 
 ## 0.7.35
 
+*Released: 2025-11-12T16:47:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [744fa93]
@@ -442,12 +556,16 @@
 
 ## 0.7.34
 
+*Released: 2025-11-10T14:56:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [aa2c7df]
     - @sap-ux/ui5-application-writer@1.6.0
 
 ## 0.7.33
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -459,6 +577,8 @@
 
 ## 0.7.32
 
+*Released: 2025-10-27T13:41:31Z*
+
 ### Patch Changes
 
 - Updated dependencies [d895232]
@@ -466,6 +586,8 @@
     - @sap-ux/ui5-application-writer@1.5.19
 
 ## 0.7.31
+
+*Released: 2025-10-22T09:32:12Z*
 
 ### Patch Changes
 
@@ -475,6 +597,8 @@
 
 ## 0.7.30
 
+*Released: 2025-10-21T07:47:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [c5d7915]
@@ -483,6 +607,8 @@
 
 ## 0.7.29
 
+*Released: 2025-10-10T12:22:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [9e94382]
@@ -490,6 +616,8 @@
     - @sap-ux/project-access@1.32.4
 
 ## 0.7.28
+
+*Released: 2025-10-06T17:09:01Z*
 
 ### Patch Changes
 
@@ -500,6 +628,8 @@
 
 ## 0.7.27
 
+*Released: 2025-10-06T10:53:53Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.32.2
@@ -507,12 +637,16 @@
 
 ## 0.7.26
 
+*Released: 2025-09-19T16:36:41Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.32.1
 - @sap-ux/ui5-application-writer@1.5.16
 
 ## 0.7.25
+
+*Released: 2025-09-19T00:44:48Z*
 
 ### Patch Changes
 
@@ -522,6 +656,8 @@
 
 ## 0.7.24
 
+*Released: 2025-09-18T07:30:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [c385a76]
@@ -530,12 +666,16 @@
 
 ## 0.7.23
 
+*Released: 2025-09-16T06:28:11Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.14
 - @sap-ux/ui5-application-writer@1.5.15
 
 ## 0.7.22
+
+*Released: 2025-08-28T13:37:07Z*
 
 ### Patch Changes
 
@@ -544,11 +684,15 @@
 
 ## 0.7.21
 
+*Released: 2025-08-20T14:17:32Z*
+
 ### Patch Changes
 
 - 1fff3c0: use self contained journeys for OPA tests
 
 ## 0.7.20
+
+*Released: 2025-08-14T15:20:59Z*
 
 ### Patch Changes
 
@@ -556,6 +700,8 @@
     - @sap-ux/ui5-application-writer@1.5.13
 
 ## 0.7.19
+
+*Released: 2025-08-14T14:36:13Z*
 
 ### Patch Changes
 
@@ -565,6 +711,8 @@
 
 ## 0.7.18
 
+*Released: 2025-08-13T10:00:10Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.11
@@ -572,11 +720,15 @@
 
 ## 0.7.17
 
+*Released: 2025-08-11T13:59:55Z*
+
 ### Patch Changes
 
 - 944af3e: Update all UI5 OPA test runner HTML files to use relative resource paths instead of absolute paths
 
 ## 0.7.16
+
+*Released: 2025-08-01T09:39:39Z*
 
 ### Patch Changes
 
@@ -585,12 +737,16 @@
 
 ## 0.7.15
 
+*Released: 2025-07-30T19:33:46Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.9
 - @sap-ux/ui5-application-writer@1.5.10
 
 ## 0.7.14
+
+*Released: 2025-07-28T22:57:52Z*
 
 ### Patch Changes
 
@@ -600,6 +756,8 @@
 
 ## 0.7.13
 
+*Released: 2025-07-25T11:40:41Z*
+
 ### Patch Changes
 
 - 2809593: update test snapshots to reflect latest template and linting changes
@@ -607,6 +765,8 @@
     - @sap-ux/ui5-application-writer@1.5.9
 
 ## 0.7.12
+
+*Released: 2025-07-08T12:06:04Z*
 
 ### Patch Changes
 
@@ -616,6 +776,8 @@
 
 ## 0.7.11
 
+*Released: 2025-07-04T15:18:17Z*
+
 ### Patch Changes
 
 - 69f62ec: i18next upgrade to 25.3.0
@@ -623,6 +785,8 @@
     - @sap-ux/ui5-application-writer@1.5.8
 
 ## 0.7.10
+
+*Released: 2025-07-04T09:34:59Z*
 
 ### Patch Changes
 
@@ -632,6 +796,8 @@
 
 ## 0.7.9
 
+*Released: 2025-07-03T12:14:55Z*
+
 ### Patch Changes
 
 - Updated dependencies [7a4543e]
@@ -639,6 +805,8 @@
     - @sap-ux/ui5-application-writer@1.5.6
 
 ## 0.7.8
+
+*Released: 2025-06-30T08:46:50Z*
 
 ### Patch Changes
 
@@ -648,6 +816,8 @@
 
 ## 0.7.7
 
+*Released: 2025-06-27T16:39:38Z*
+
 ### Patch Changes
 
 - Updated dependencies [f75b89d]
@@ -656,6 +826,8 @@
 
 ## 0.7.6
 
+*Released: 2025-06-24T07:18:46Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.3
@@ -663,11 +835,15 @@
 
 ## 0.7.5
 
+*Released: 2025-06-18T16:15:15Z*
+
 ### Patch Changes
 
 - 7fd2583: Fix wrong dependency type
 
 ## 0.7.4
+
+*Released: 2025-06-18T14:50:19Z*
 
 ### Patch Changes
 
@@ -676,6 +852,8 @@
 
 ## 0.7.3
 
+*Released: 2025-06-17T07:58:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [163522f]
@@ -683,17 +861,23 @@
 
 ## 0.7.2
 
+*Released: 2025-05-30T07:18:36Z*
+
 ### Patch Changes
 
 - @sap-ux/ui5-application-writer@1.5.2
 
 ## 0.7.1
 
+*Released: 2025-05-15T13:36:04Z*
+
 ### Patch Changes
 
 - @sap-ux/ui5-application-writer@1.5.1
 
 ## 0.7.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -707,6 +891,8 @@
 
 ## 0.6.7
 
+*Released: 2025-04-30T17:25:02Z*
+
 ### Patch Changes
 
 - Updated dependencies [0d8918a]
@@ -714,17 +900,23 @@
 
 ## 0.6.6
 
+*Released: 2025-04-24T15:01:01Z*
+
 ### Patch Changes
 
 - @sap-ux/ui5-application-writer@1.4.2
 
 ## 0.6.5
 
+*Released: 2025-04-23T15:22:38Z*
+
 ### Patch Changes
 
 - @sap-ux/ui5-application-writer@1.4.1
 
 ## 0.6.4
+
+*Released: 2025-04-23T13:59:14Z*
 
 ### Patch Changes
 
@@ -733,11 +925,15 @@
 
 ## 0.6.3
 
+*Released: 2025-03-18T09:41:03Z*
+
 ### Patch Changes
 
 - @sap-ux/ui5-application-writer@1.3.3
 
 ## 0.6.2
+
+*Released: 2025-03-10T20:40:35Z*
 
 ### Patch Changes
 
@@ -745,17 +941,23 @@
 
 ## 0.6.1
 
+*Released: 2025-03-05T09:14:02Z*
+
 ### Patch Changes
 
 - @sap-ux/ui5-application-writer@1.3.1
 
 ## 0.6.0
 
+*Released: 2025-03-04T15:37:10Z*
+
 ### Minor Changes
 
 - db575f3: Update unit test template for Freestyle version 1.120.0
 
 ## 0.5.2
+
+*Released: 2025-02-27T19:24:50Z*
 
 ### Patch Changes
 
@@ -764,11 +966,15 @@
 
 ## 0.5.1
 
+*Released: 2025-02-26T11:18:15Z*
+
 ### Patch Changes
 
 - f4867e5: Fix: Path Compatibility for Windows in FF Test Template Generation
 
 ## 0.5.0
+
+*Released: 2025-02-24T09:17:17Z*
 
 ### Minor Changes
 
@@ -776,11 +982,15 @@
 
 ## 0.4.1
 
+*Released: 2024-08-01T17:28:17Z*
+
 ### Patch Changes
 
 - e69db46: Upgrade fast-xml-parser
 
 ## 0.4.0
+
+*Released: 2024-07-05T15:03:05Z*
 
 ### Minor Changes
 
@@ -788,11 +998,15 @@
 
 ## 0.3.3
 
+*Released: 2024-05-07T14:01:29Z*
+
 ### Patch Changes
 
 - 4e267684: chore - ejs upgrade
 
 ## 0.3.2
+
+*Released: 2024-02-27T22:07:50Z*
 
 ### Patch Changes
 
@@ -800,11 +1014,15 @@
 
 ## 0.3.1
 
+*Released: 2023-11-10T10:22:27Z*
+
 ### Patch Changes
 
 - deabc5bd: fix template issues for worklist OPA test
 
 ## 0.3.0
+
+*Released: 2023-10-19T12:06:19Z*
 
 ### Minor Changes
 
@@ -812,11 +1030,15 @@
 
 ## 0.2.1
 
+*Released: 2023-10-18T13:59:49Z*
+
 ### Patch Changes
 
 - cbcad88d: fix(deps): update dependencies [i18next]
 
 ## 0.2.0
+
+*Released: 2023-09-29T18:36:57Z*
 
 ### Minor Changes
 
@@ -824,11 +1046,15 @@
 
 ## 0.1.11
 
+*Released: 2023-09-20T13:13:51Z*
+
 ### Patch Changes
 
 - 63c698a8: chore - fix publishing of modules missed in failed release build
 
 ## 0.1.10
+
+*Released: 2023-06-27T14:58:54Z*
 
 ### Patch Changes
 
@@ -836,11 +1062,15 @@
 
 ## 0.1.9
 
+*Released: 2023-06-14T13:41:00Z*
+
 ### Patch Changes
 
 - 080f89ac: Opa tests to use flpSandbox.html when index.html is not generated
 
 ## 0.1.8
+
+*Released: 2023-06-12T06:59:29Z*
 
 ### Patch Changes
 
@@ -848,11 +1078,15 @@
 
 ## 0.1.7
 
+*Released: 2023-02-23T13:56:23Z*
+
 ### Patch Changes
 
 - d350038: chore - TypeScript 4.9.4 upgrade
 
 ## 0.1.6
+
+*Released: 2023-02-10T14:09:06Z*
 
 ### Patch Changes
 
@@ -860,17 +1094,23 @@
 
 ## 0.1.5
 
+*Released: 2022-12-05T07:50:58Z*
+
 ### Patch Changes
 
 - 070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
 
 ## 0.1.4
 
+*Released: 2022-10-14T14:52:33Z*
+
 ### Patch Changes
 
 - 11c8f5d: Use manifest types from @sap-ux/project-access
 
 ## 0.1.3
+
+*Released: 2022-10-11T14:06:32Z*
 
 ### Patch Changes
 
@@ -880,11 +1120,15 @@
 
 ## 0.1.2
 
+*Released: 2022-10-04T15:02:00Z*
+
 ### Patch Changes
 
 - @sap-ux/ui5-config@0.15.1
 
 ## 0.1.1
+
+*Released: 2022-09-14T16:06:49Z*
 
 ### Patch Changes
 
@@ -892,6 +1136,8 @@
     - @sap-ux/ui5-config@0.15.0
 
 ## 0.1.0
+
+*Released: 2022-09-05T07:44:52Z*
 
 ### Minor Changes
 

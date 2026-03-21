@@ -2,11 +2,15 @@
 
 ## 0.30.0
 
+*Released: 2026-03-20T16:07:49Z*
+
 ### Minor Changes
 
 - 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
 
 ## 0.29.21
+
+*Released: 2026-03-05T12:30:25Z*
 
 ### Patch Changes
 
@@ -15,11 +19,15 @@
 
 ## 0.29.20
 
+*Released: 2026-03-04T14:39:10Z*
+
 ### Patch Changes
 
 - c09b843: (ADP) Add small refactoring to deployment validatiors and remove the redundant ui5 config hasBuilderKey() method.
 
 ## 0.29.19
+
+*Released: 2026-02-20T21:31:31Z*
 
 ### Patch Changes
 
@@ -27,11 +35,15 @@
 
 ## 0.29.18
 
+*Released: 2026-02-20T13:46:55Z*
+
 ### Patch Changes
 
 - bb310dc: fix(deps): update dependency semver to v7.7.4
 
 ## 0.29.17
+
+*Released: 2026-02-16T16:08:11Z*
 
 ### Patch Changes
 
@@ -39,17 +51,23 @@
 
 ## 0.29.16
 
+*Released: 2026-02-10T23:50:15Z*
+
 ### Patch Changes
 
 - 2fc459c: Upgrade axios
 
 ## 0.29.15
 
+*Released: 2026-02-05T08:38:39Z*
+
 ### Patch Changes
 
 - ad321ab: fix(deps): update dependency semver to v7.7.3
 
 ## 0.29.14
+
+*Released: 2026-01-30T16:59:27Z*
 
 ### Patch Changes
 
@@ -59,17 +77,23 @@
 
 ## 0.29.13
 
+*Released: 2026-01-16T13:57:39Z*
+
 ### Patch Changes
 
 - be67fc4: feat: adjust type definitions
 
 ## 0.29.12
 
+*Released: 2025-12-18T21:05:02Z*
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
 
 ## 0.29.11
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -79,11 +103,15 @@
 
 ## 0.29.10
 
+*Released: 2025-11-26T14:39:37Z*
+
 ### Patch Changes
 
 - 5d0598d: feat: save service metadata referenced in ValueListReferences and CodeList annotations.
 
 ## 0.29.9
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -93,11 +121,15 @@
 
 ## 0.29.8
 
+*Released: 2025-10-10T12:22:06Z*
+
 ### Patch Changes
 
 - 9e94382: Disable flex changes for preview with virtual endpoints using UI5 sources from npmjs
 
 ## 0.29.7
+
+*Released: 2025-10-06T17:09:01Z*
 
 ### Patch Changes
 
@@ -107,11 +139,15 @@
 
 ## 0.29.6
 
+*Released: 2025-10-06T10:53:53Z*
+
 ### Patch Changes
 
 - d866995: fix: pathReplace not taken into account or truncated in case of nested router instances
 
 ## 0.29.5
+
+*Released: 2025-09-19T16:36:41Z*
 
 ### Patch Changes
 
@@ -119,11 +155,15 @@
 
 ## 0.29.4
 
+*Released: 2025-09-16T06:28:11Z*
+
 ### Patch Changes
 
 - 8ccc4da: fix: "Undeploy" does not work with the new ui5-deploy.yaml file for ADP
 
 ## 0.29.3
+
+*Released: 2025-08-28T13:37:07Z*
 
 ### Patch Changes
 
@@ -131,11 +171,15 @@
 
 ## 0.29.2
 
+*Released: 2025-08-14T14:36:13Z*
+
 ### Patch Changes
 
 - 178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
 
 ## 0.29.1
+
+*Released: 2025-08-01T09:39:39Z*
 
 ### Patch Changes
 
@@ -143,11 +187,15 @@
 
 ## 0.29.0
 
+*Released: 2025-07-04T09:34:59Z*
+
 ### Minor Changes
 
 - c0fa1d1: enhance support for adding and updating preview configuration
 
 ## 0.28.3
+
+*Released: 2025-06-27T16:39:38Z*
 
 ### Patch Changes
 
@@ -155,17 +203,23 @@
 
 ## 0.28.2
 
+*Released: 2025-05-30T07:18:36Z*
+
 ### Patch Changes
 
 - 61ea5c0: fix: Incorrect types package put during adaptation project generation
 
 ## 0.28.1
 
+*Released: 2025-05-15T13:36:04Z*
+
 ### Patch Changes
 
 - 5e0020b: Support backend changes.
 
 ## 0.28.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -178,11 +232,15 @@
 
 ## 0.27.2
 
+*Released: 2025-04-24T15:01:01Z*
+
 ### Patch Changes
 
 - 7590bc3: Remove legacy CF deploy task
 
 ## 0.27.1
+
+*Released: 2025-04-23T15:22:38Z*
 
 ### Patch Changes
 
@@ -190,11 +248,15 @@
 
 ## 0.27.0
 
+*Released: 2025-04-23T13:59:14Z*
+
 ### Minor Changes
 
 - 1ca4004: updates for use for fiori tools preview middleware and use of virtual endpoints
 
 ## 0.26.5
+
+*Released: 2025-03-18T09:41:03Z*
 
 ### Patch Changes
 
@@ -202,11 +264,15 @@
 
 ## 0.26.4
 
+*Released: 2025-03-10T20:40:35Z*
+
 ### Patch Changes
 
 - 011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
 
 ## 0.26.3
+
+*Released: 2025-03-05T09:14:02Z*
 
 ### Patch Changes
 
@@ -214,11 +280,15 @@
 
 ## 0.26.2
 
+*Released: 2025-02-07T19:58:32Z*
+
 ### Patch Changes
 
 - ed8a9b9: Handling of `ignoreCertError` property from service in proxy middleware.
 
 ## 0.26.1
+
+*Released: 2025-01-27T18:57:16Z*
 
 ### Patch Changes
 
@@ -226,11 +296,15 @@
 
 ## 0.26.0
 
+*Released: 2024-12-02T16:28:38Z*
+
 ### Minor Changes
 
 - 73475e5: Support for multiple services and multiple annotations per service.
 
 ## 0.25.2
+
+*Released: 2024-11-18T20:38:37Z*
 
 ### Patch Changes
 
@@ -238,11 +312,15 @@
 
 ## 0.25.1
 
+*Released: 2024-11-05T21:46:19Z*
+
 ### Patch Changes
 
 - 6275288: add new cf deploy writer and dependencies that it requires
 
 ## 0.25.0
+
+*Released: 2024-09-23T10:02:33Z*
 
 ### Minor Changes
 
@@ -250,11 +328,15 @@
 
 ## 0.24.1
 
+*Released: 2024-08-28T11:16:50Z*
+
 ### Patch Changes
 
 - 1a99abc: separation between ui5libs and manifestlibs, to allow for different ui5 libraries set in manifest and other files
 
 ## 0.24.0
+
+*Released: 2024-08-19T11:34:45Z*
 
 ### Minor Changes
 
@@ -263,11 +345,15 @@
 
 ## 0.23.1
 
+*Released: 2024-07-12T08:50:08Z*
+
 ### Patch Changes
 
 - 22e4ad8: Generate correct ui5.yaml
 
 ## 0.23.0
+
+*Released: 2024-07-05T15:03:05Z*
 
 ### Minor Changes
 
@@ -280,11 +366,15 @@
 
 ## 0.22.10
 
+*Released: 2024-06-26T13:30:18Z*
+
 ### Patch Changes
 
 - 1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
 
 ## 0.22.9
+
+*Released: 2024-06-25T14:41:22Z*
 
 ### Patch Changes
 
@@ -294,11 +384,15 @@
 
 ## 0.22.8
 
+*Released: 2024-06-18T15:06:09Z*
+
 ### Patch Changes
 
 - a140cf8b: fix: incorrect fiori-tools-proxy config generated for adp
 
 ## 0.22.7
+
+*Released: 2024-06-12T15:20:44Z*
 
 ### Patch Changes
 
@@ -307,12 +401,16 @@
 
 ## 0.22.6
 
+*Released: 2024-06-07T14:16:07Z*
+
 ### Patch Changes
 
 - Updated dependencies [64a95bd1]
     - @sap-ux/yaml@0.15.0
 
 ## 0.22.5
+
+*Released: 2024-05-27T13:04:53Z*
 
 ### Patch Changes
 
@@ -322,11 +420,15 @@
 
 ## 0.22.4
 
+*Released: 2024-05-14T08:36:35Z*
+
 ### Patch Changes
 
 - e3d2324c: Improvements for consumption
 
 ## 0.22.3
+
+*Released: 2024-05-02T14:43:18Z*
 
 ### Patch Changes
 
@@ -334,11 +436,15 @@
 
 ## 0.22.2
 
+*Released: 2024-04-23T22:35:35Z*
+
 ### Patch Changes
 
 - b7d95fb3: fix paths and config writers
 
 ## 0.22.1
+
+*Released: 2024-04-04T13:19:16Z*
 
 ### Patch Changes
 
@@ -346,11 +452,15 @@
 
 ## 0.22.0
 
+*Released: 2024-03-21T16:21:01Z*
+
 ### Minor Changes
 
 - ec509c40: dynamically appends annotations from manifest.json for mockserver middleware config
 
 ## 0.21.1
+
+*Released: 2024-02-27T22:07:50Z*
 
 ### Patch Changes
 
@@ -360,11 +470,15 @@
 
 ## 0.21.0
 
+*Released: 2023-11-22T08:53:28Z*
+
 ### Minor Changes
 
 - 3f977f21: Enhanced functionality to support adding customer properties
 
 ## 0.20.0
+
+*Released: 2023-10-19T12:06:19Z*
 
 ### Minor Changes
 
@@ -377,6 +491,8 @@
 
 ## 0.19.5
 
+*Released: 2023-10-17T08:28:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [4052822f]
@@ -384,11 +500,15 @@
 
 ## 0.19.4
 
+*Released: 2023-10-09T17:37:13Z*
+
 ### Patch Changes
 
 - 65010b09: fix - use patch version 0 for ui5 types semver for more reliable installs
 
 ## 0.19.3
+
+*Released: 2023-09-20T13:13:51Z*
 
 ### Patch Changes
 
@@ -398,11 +518,15 @@
 
 ## 0.19.2
 
+*Released: 2023-09-19T15:51:30Z*
+
 ### Patch Changes
 
 - 3137514f: use platform independent UI5 CDN URLs
 
 ## 0.19.1
+
+*Released: 2023-09-19T14:02:55Z*
 
 ### Patch Changes
 
@@ -410,11 +534,15 @@
 
 ## 0.19.0
 
+*Released: 2023-08-11T09:14:46Z*
+
 ### Minor Changes
 
 - 375ca861: publish npm module after failure on PR #1110
 
 ## 0.18.2
+
+*Released: 2023-06-27T14:58:54Z*
 
 ### Patch Changes
 
@@ -424,17 +552,23 @@
 
 ## 0.18.1
 
+*Released: 2023-06-26T15:34:40Z*
+
 ### Patch Changes
 
 - d9355692: Upgrade vulnerable modules semver and fast-xml-parser
 
 ## 0.18.0
 
+*Released: 2023-06-21T06:38:48Z*
+
 ### Minor Changes
 
 - 59863d93: Removed types determination workaround.
 
 ## 0.17.1
+
+*Released: 2023-06-12T06:59:29Z*
 
 ### Patch Changes
 
@@ -444,11 +578,15 @@
 
 ## 0.17.0
 
+*Released: 2023-06-01T08:16:47Z*
+
 ### Minor Changes
 
 - 31207b95: abstract ui5-app-writer functions into appropriate modules
 
 ## 0.16.6
+
+*Released: 2023-04-26T14:34:08Z*
 
 ### Patch Changes
 
@@ -458,11 +596,15 @@
 
 ## 0.16.5
 
+*Released: 2023-03-24T14:54:37Z*
+
 ### Patch Changes
 
 - e7614e5: Add minor types for smartlinks configuration
 
 ## 0.16.4
+
+*Released: 2023-02-23T13:56:23Z*
 
 ### Patch Changes
 
@@ -472,12 +614,16 @@
 
 ## 0.16.3
 
+*Released: 2023-02-17T07:56:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [3327a3f]
     - @sap-ux/yaml@0.13.3
 
 ## 0.16.2
+
+*Released: 2023-02-10T14:09:06Z*
 
 ### Patch Changes
 
@@ -487,6 +633,8 @@
 
 ## 0.16.1
 
+*Released: 2022-12-05T07:50:58Z*
+
 ### Patch Changes
 
 - 070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
@@ -494,6 +642,8 @@
     - @sap-ux/yaml@0.13.1
 
 ## 0.16.0
+
+*Released: 2022-11-04T17:06:16Z*
 
 ### Minor Changes
 
@@ -506,6 +656,8 @@
 
 ## 0.15.4
 
+*Released: 2022-10-21T07:04:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [f3cbe4d]
@@ -513,17 +665,23 @@
 
 ## 0.15.3
 
+*Released: 2022-10-14T14:52:33Z*
+
 ### Patch Changes
 
 - 11c8f5d: Use manifest types from @sap-ux/project-access
 
 ## 0.15.2
 
+*Released: 2022-10-11T14:06:32Z*
+
 ### Patch Changes
 
 - 5b487ef: chore - Apply linting to test folders and linting fixes
 
 ## 0.15.1
+
+*Released: 2022-10-04T15:02:00Z*
 
 ### Patch Changes
 
@@ -532,11 +690,15 @@
 
 ## 0.15.0
 
+*Released: 2022-09-14T16:06:49Z*
+
 ### Minor Changes
 
 - 83a7a1a: Enhancements to detect if a project is supporting typescript or not
 
 ## 0.14.5
+
+*Released: 2022-08-25T13:08:21Z*
 
 ### Patch Changes
 
@@ -544,11 +706,15 @@
 
 ## 0.14.4
 
+*Released: 2022-07-27T08:51:11Z*
+
 ### Patch Changes
 
 - 30afc5f: Override glob-parent due to ReDos vulnerability
 
 ## 0.14.3
+
+*Released: 2022-07-21T14:10:31Z*
 
 ### Patch Changes
 
@@ -558,11 +724,15 @@
 
 ## 0.14.2
 
+*Released: 2022-07-20T14:42:08Z*
+
 ### Patch Changes
 
 - 7c4a4df: trim themelib theme names
 
 ## 0.14.1
+
+*Released: 2022-07-04T13:03:56Z*
 
 ### Patch Changes
 
@@ -571,6 +741,8 @@
     - @sap-ux/yaml@0.12.1
 
 ## 0.14.0
+
+*Released: 2022-06-13T09:53:27Z*
 
 ### Minor Changes
 
@@ -583,6 +755,8 @@
 
 ## 0.13.3
 
+*Released: 2022-05-19T14:38:34Z*
+
 ### Patch Changes
 
 - c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
@@ -591,11 +765,15 @@
 
 ## 0.13.2
 
+*Released: 2022-04-27T16:48:18Z*
+
 ### Patch Changes
 
 - b5ab868: Changing versions of dependent modules to fix vulnerabilities
 
 ## 0.13.1
+
+*Released: 2022-04-01T07:00:29Z*
 
 ### Patch Changes
 
@@ -603,11 +781,15 @@
 
 ## 0.13.0
 
+*Released: 2022-03-31T13:41:16Z*
+
 ### Minor Changes
 
 - 56409d0: Consolidated ui5 configuration types and enhanced API
 
 ## 0.12.3
+
+*Released: 2022-03-29T13:57:37Z*
 
 ### Patch Changes
 
@@ -617,6 +799,8 @@
 
 ## 0.12.2
 
+*Released: 2022-03-24T07:10:57Z*
+
 ### Patch Changes
 
 - 0837ac1: Add missing information to package.json and enforced use of higher version of minimist
@@ -624,6 +808,8 @@
     - @sap-ux/yaml@0.11.3
 
 ## 0.12.1
+
+*Released: 2022-03-22T19:34:16Z*
 
 ### Patch Changes
 
@@ -633,11 +819,15 @@
 
 ## 0.12.0
 
+*Released: 2022-02-18T09:46:40Z*
+
 ### Minor Changes
 
 - 2b12f4f: UI5 version removal from ui5.yaml and ui5-mock.yaml
 
 ## 0.11.1
+
+*Released: 2022-01-17T14:31:10Z*
 
 ### Patch Changes
 
@@ -646,6 +836,8 @@
     - @sap-ux/yaml@0.11.1
 
 ## 0.11.0
+
+*Released: 2021-12-14T12:31:46Z*
 
 ### Minor Changes
 
@@ -658,6 +850,8 @@
 
 ## 0.10.3
 
+*Released: 2021-11-03T14:20:52Z*
+
 ### Patch Changes
 
 - b7ee596: port tool-suite change - add delay to appreload middleware
@@ -665,6 +859,8 @@
     - @sap-ux/yaml@0.10.3
 
 ## 0.10.2
+
+*Released: 2021-11-01T18:18:45Z*
 
 ### Patch Changes
 
@@ -674,6 +870,8 @@
 
 ## 0.10.1
 
+*Released: 2021-10-28T12:12:48Z*
+
 ### Patch Changes
 
 - a7670a0: Update ui5 verison handling for ui5.yaml. Allow setting view name in basic template, enhancements to yaml lib.
@@ -681,6 +879,8 @@
     - @sap-ux/yaml@0.10.1
 
 ## 0.10.0
+
+*Released: 2021-10-22T12:53:00Z*
 
 ### Minor Changes
 
@@ -693,6 +893,8 @@
 
 ## 0.9.3
 
+*Released: 2021-10-22T16:07:57Z*
+
 ### Patch Changes
 
 - 6888c5b: Add Readme for modules, add deploy script FF template, engines.node update to lts and small clean-up
@@ -701,11 +903,15 @@
 
 ## 0.9.2
 
+*Released: 2021-10-22T14:11:14Z*
+
 ### Patch Changes
 
 - a16d4e7: fix versions in modules for patch instead of minor
 
 ## 0.10.0
+
+*Released: 2021-10-22T12:53:00Z*
 
 ### Minor Changes
 
