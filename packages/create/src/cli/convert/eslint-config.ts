@@ -14,7 +14,7 @@ import { join } from 'node:path';
 export function addConvertEslintCommand(cmd: Command): void {
     cmd.command('eslint-config [path]')
         .description(
-            `Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (ESLint version 9).\n
+            `Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (used since ESLint version 9), introduces specific ESLint checks for SAP Fiori applications (using plugin \`@sap-ux/eslint-plugin-fiori-tools\`), and deletes the deprecated plugin \`eslint-plugin-fiori-custom\`. To avoid dependency resolution conflicts, it deletes the \`node_modules\` folder as well as \`package-lock.json\` before running \`npm install\`.\n
 Examples:
     \`npx --yes @sap-ux/create@latest convert eslint-config\``
         )
@@ -25,7 +25,10 @@ Examples:
             'The name of the SAP Fiori tools ESLint plugin configuration to be used.',
             'recommended'
         )
-        .option('-n, --skip-install', 'Skip the `npm install` step.')
+        .option(
+            '-n, --skip-install',
+            'Skip the `npm install` step (also skips deleting the \`node_modules\` folder and \`package-lock.json\`).'
+        )
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
@@ -57,8 +60,8 @@ async function convertEslintConfig(
         await traceChanges(fs);
         if (!simulate) {
             if (!skipInstall) {
-                logger.info(`Deleting \`package-lock.json\` to avoid conflicts.`); // moved out
-                fs.delete(join(basePath, 'package-lock.json')); // staged before commit
+                logger.info(`Deleting \`package-lock.json\` to avoid conflicts.`);
+                fs.delete(join(basePath, 'package-lock.json'));
             }
             fs.commit(() => {
                 logger.info(
