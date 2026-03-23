@@ -132,7 +132,11 @@ const getTranslationSuggestion = <T extends TranslationEntry>(
     };
     tooltip = formatText(tooltip, messageValues);
     return {
-        message: <UIFormattedText values={messageValues} className='ui-translatable__message__text'>{message}</UIFormattedText>,
+        message: (
+            <UIFormattedText values={messageValues} className="ui-translatable__message__text">
+                {message}
+            </UIFormattedText>
+        ),
         tooltip,
         suggest
     };
