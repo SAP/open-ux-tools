@@ -69,7 +69,7 @@
         "@types/lodash": "4.17.24",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/vscode": "1.102.0",
+        "@types/vscode": "1.110.0",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.14",
         "@types/yeoman-test": "4.0.6",

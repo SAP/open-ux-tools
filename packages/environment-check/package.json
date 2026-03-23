@@ -35,7 +35,7 @@
         "@sap/bas-sdk": "3.13.3",
         "archiver": "7.0.1",
         "axios": "1.13.6",
-        "glob-gitignore": "1.0.14",
+        "glob-gitignore": "1.0.15",
         "i18next": "25.8.18",
         "ignore": "5.2.4",
         "minimist": "1.2.8",
@@ -45,8 +45,8 @@
     "devDependencies": {
         "@types/archiver": "7.0.0",
         "@types/minimist": "1.2.5",
-        "@types/prompts": "2.4.4",
-        "@types/vscode": "1.102.0"
+        "@types/prompts": "2.4.9",
+        "@types/vscode": "1.110.0"
     },
     "files": [
         "dist",
