@@ -27,7 +27,7 @@ Examples:
         )
         .option(
             '-n, --skip-install',
-            'Skip the `npm install` step (also skips deleting the \`node_modules\` folder and \`package-lock.json\`).'
+            'Skip the `npm install` step (also skips deleting the `node_modules` folder and `package-lock.json`).'
         )
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
