@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.30.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
 ## 0.29.21
 
 ### Patch Changes

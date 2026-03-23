@@ -121,6 +121,7 @@ Options:
   --verbose                            verbose log output (default: false)
   --destination  <destination>         Destination in SAP BTP pointing to an ABAP system
   --url <target-url>                   URL of target ABAP system
+  --connect-path <path>                (Optional) Service URL path used to retrieve credentials from secure storage
   --service                            (Optional) Alias for the target SAPUI5 Respository OData Service
   --client <sap-client>                Client number of target ABAP system
   --cloud                              target is an ABAP Cloud system

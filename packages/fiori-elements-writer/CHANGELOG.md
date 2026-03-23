@@ -1,5 +1,27 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.107
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/ui5-application-writer@1.8.1
+    - @sap-ux/annotation-generator@0.4.42
+    - @sap-ux/cap-config-writer@0.12.80
+    - @sap-ux/fe-fpm-writer@0.43.12
+    - @sap-ux/fiori-generator-shared@0.13.88
+    - @sap-ux/ui5-test-writer@0.7.91
+
+## 2.8.106
+
+### Patch Changes
+
+- b516f01: add new opa tests for LR and OP, refactor file writing
+- Updated dependencies [b516f01]
+    - @sap-ux/ui5-test-writer@0.7.90
+
 ## 2.8.105
 
 ### Patch Changes

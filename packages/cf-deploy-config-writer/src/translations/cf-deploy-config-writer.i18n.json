@@ -37,7 +37,8 @@
         "targetFolderDoesNotExist": "The target folder does not exist: {{targetFolder}}. Check the folder has the correct permissions.",
         "doesNotContainACapApp": "The target folder does not contain a Node.js CAP project. Please ensure the folder contains a Node.js CAP project.",
         "errorInstallingNodeModules": "An error occurred when installing node modules. Please check the logs.",
-        "errorGeneratingMtaYaml": "An error occurred when creating the mta.yaml file. Please check the logs."
+        "errorGeneratingMtaYaml": "An error occurred when creating the mta.yaml file. For more information, check the logs.",
+        "noUI5AppFound": "No SAPUI5 application found. Please ensure the manifest.json file contains a valid 'sap.app.id'."
     },
     "info":{
         "existingMTAExtensionNotFound": "Cannot find a valid existing MTA extension file. A new one will be created. Error: {{- error}}.",
