@@ -9,3 +9,5 @@ exports[`<UIMessageText /> UIMessageText component No key and matches 1`] = `"du
 exports[`<UIMessageText /> UIMessageText component No matches 1`] = `"dummy {{{unknown}}} test"`;
 
 exports[`<UIMessageText /> UIMessageText component Single match 1`] = `"dummy <b>testValue</b> test"`;
+
+exports[`<UIMessageText /> UIMessageText component Without values 1`] = `"dummy {{{unknown}}} test"`;
