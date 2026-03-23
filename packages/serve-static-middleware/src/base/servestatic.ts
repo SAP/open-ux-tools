@@ -34,9 +34,9 @@ export const serveStaticMiddleware = (
             compatibilityPaths.push(compatibilityPath);
         }
     }
-    paths.push(...compatibilityPaths);
+    const allPaths = [...paths, ...compatibilityPaths];
 
-    for (const pathConfig of paths) {
+    for (const pathConfig of allPaths) {
         const localOptions = resolveServeStaticOptions(pathConfig);
         const serveStaticOptions = { ...globalOptions, ...localOptions };
         const srcPath = resolveSrcPath(root, pathConfig.src);
