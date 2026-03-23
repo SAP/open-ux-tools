@@ -36,7 +36,7 @@
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@ui5/cli": "4.0.49",
-        "eslint-plugin-jsdoc": "50.8.0",
+        "eslint-plugin-jsdoc": "62.8.0",
         "npm-run-all2": "8.0.4",
         "ui5-tooling-transpile": "3.11.0",
         "vscode-languageserver-textdocument": "1.0.12",

@@ -16,16 +16,16 @@
     },
     "dependencies": {
         "@sap-ux/fe-fpm-writer": "workspace:*",
-        "inquirer": "^8.0.0",
+        "inquirer": "8.2.7",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0"
     },
     "devDependencies": {
-        "@types/inquirer": "^8.0.0",
+        "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/vinyl": "2.0.12",
-        "typescript-eslint": "^8.46.2"
+        "typescript-eslint": "8.57.2"
     },
     "files": [
         "dist",
