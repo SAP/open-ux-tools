@@ -8,6 +8,7 @@ interface MessageTextValues {
 export interface UIFormattedTextProps {
     children: string;
     values?: MessageTextValues;
+    className?: string;
 }
 
 interface ParseResult {
@@ -125,7 +126,7 @@ export function formatText(text: string, values: MessageTextValues): string {
  * @returns Component to render formatted text.
  */
 export function UIFormattedText(props: Readonly<UIFormattedTextProps>): ReactElement {
-    const { children, values = {} } = props;
+    const { children, values = {}, className } = props;
     const result = formatTextGeneric<JSX.Element>(
         children,
         values,
@@ -139,5 +140,5 @@ export function UIFormattedText(props: Readonly<UIFormattedTextProps>): ReactEle
         }
     );
 
-    return <div>{result}</div>;
+    return <div className={className}>{result}</div>;
 }
