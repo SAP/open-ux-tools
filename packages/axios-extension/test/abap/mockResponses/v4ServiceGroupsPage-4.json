@@ -28,6 +28,24 @@
                     }
                 ]
             }
+        },
+        {
+            "GroupId": "/IWNGW/NOTIFICATION2",
+            "Description": "R3TR G4BA /IWNGW/NOTIFICATION2",
+            "DefaultSystem": {
+                "SystemAlias": "LOCAL",
+                "Description": "Local System Alias",
+                "Services": [
+                    {
+                        "RepositoryId": "DEFAULT",
+                        "ServiceId": "/IWNGW/NOTIFICATION_SRV4",
+                        "ServiceVersion": "0001",
+                        "ServiceAlias": "",
+                        "Description": "Duplicate of Notification Gateway OData V4 Service1 with different URL",
+                        "ServiceUrl": "/sap/opu/odata4/iwngw/notification/default/iwngw/notification_srv2/0001/?sap-client=100"
+                    }
+                ]
+            }
         }
     ]
 }
