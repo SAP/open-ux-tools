@@ -1855,8 +1855,8 @@ importers:
         specifier: 0.14.0
         version: 0.14.0
       '@eslint/plugin-kit':
-        specifier: 0.5.0
-        version: 0.5.0
+        specifier: 0.6.1
+        version: 0.6.1
       '@humanwhocodes/momoa':
         specifier: ^3.3.9
         version: 3.3.10
@@ -5151,8 +5151,8 @@ importers:
         specifier: workspace:*
         version: link:../../../../packages/reload-middleware
       '@sap-ux/ui5-middleware-fe-mockserver':
-        specifier: 2.3.38
-        version: 2.3.38
+        specifier: 2.4.10
+        version: 2.4.10
       '@sap-ux/ui5-proxy-middleware':
         specifier: workspace:*
         version: link:../../../../packages/ui5-proxy-middleware
@@ -6805,10 +6805,6 @@ packages:
     resolution: {integrity: sha512-yL/sLrpmtDaFEiUj1osRP4TI2MDz1AddJL+jZ7KSqvBuliN4xqYY54IfdN8qD8Toa6g1iloph1fxQNkjOxrrpQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/core@1.1.0':
-    resolution: {integrity: sha512-/nr9K9wkr3P1EzFTdFdMoLuo1PmIxjmwvPozwoSodjNBdefGujXQUF93u1DDZpEaTuDvMsIQddsd35BwtrW9Xw==}
-    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
-
   '@eslint/core@1.1.1':
     resolution: {integrity: sha512-QUPblTtE51/7/Zhfv8BDwO0qkkzQL7P/aWWbqcf4xWLEYn1oKjdO0gglQBB4GAsu7u6wjijbCmzsUTy6mnk6oQ==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
@@ -6837,8 +6833,8 @@ packages:
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/plugin-kit@0.5.0':
-    resolution: {integrity: sha512-rSXBsAcmx80jI9OUevyNBU0f5pZRQJkNmk4bLX6hCbm1qKe5Z/TcU7vwXc2nR8814mhRlgbZIHL1+HSiYS0VkQ==}
+  '@eslint/plugin-kit@0.6.1':
+    resolution: {integrity: sha512-iH1B076HoAshH1mLpHMgwdGeTs0CYwL0SPMkGuSebZrwBp16v415e9NZXg2jtrqPVQjf6IANe2Vtlr5KswtcZQ==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   '@exodus/bytes@1.14.1':
@@ -8547,9 +8543,6 @@ packages:
   '@sap-devx/yeoman-ui-types@1.22.0':
     resolution: {integrity: sha512-t2BgSyRL700OSVlVW/6OC3pAED9V7nlp8PcZOijwAVn7sAPM0oNTKrDhz0yg+F79/AhmhzUkuIBiWHN6/An6cQ==}
 
-  '@sap-ux/annotation-converter@0.10.19':
-    resolution: {integrity: sha512-KuIuaD3nhV2pO09CX5xMtLQYFAFFVNbDcfyuidjG3PECm3kbxTaC5Ldh1QHzO0eLNpnb2jE6hjFs4Kr/csdPCQ==}
-
   '@sap-ux/annotation-converter@0.10.21':
     resolution: {integrity: sha512-k6C8DNlDTqYb0OrKUwurDPV2G3KLGOhfMEtXl8WJOgd3mdf+qpA4vCRfmEtXlGB357X6bsMfxZw5CQHUt2WauQ==}
 
@@ -8564,15 +8557,12 @@ packages:
   '@sap-ux/edmx-parser@0.10.0':
     resolution: {integrity: sha512-kjOHHpI6ymxb3BLLUKMLpYwhTFC5d0KEGw+xzxNmI7YPnSmY5Qbb5b1Io/LV35jFgyUeRZYNPsxg1PVtYnTdhw==}
 
-  '@sap-ux/edmx-parser@0.9.8':
-    resolution: {integrity: sha512-GFyrixCHRvPVN07RjJYMQJE9xY2J3EpLuOsOXyAhuAoePqBjbAFuE+lJyyJMmJK3oltDBVDB+dqyA0eMSeCD/A==}
-
   '@sap-ux/fe-fpm-writer@0.43.7':
     resolution: {integrity: sha512-+YM0pj3cM4p/mNwLqhsvnheKzILtGVHJ1ANhkSE5fCkTqUkeVLy2TC/Z9Zvn4keWy9rsjl5/apGZ0saEF9j6oQ==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/fe-mockserver-core@1.6.38':
-    resolution: {integrity: sha512-05bX1pmCwotRMVSx6WmqJZKgCOAF9Ql02CPbfWNfs0cIkEIUieoJKuPgUhrm18dh0RMSZt+gicUaJIpqe+znjw==}
+  '@sap-ux/fe-mockserver-core@1.7.10':
+    resolution: {integrity: sha512-DafpJ/Kbo+PcZVnbF19HxBbdM+CcxbnxzznhqCqVeNKGQIg//KqYEiFHJMeuOOK93+xDwCBHiuHZyalllgd2RQ==}
 
   '@sap-ux/fe-mockserver-plugin-cds@1.2.6':
     resolution: {integrity: sha512-CXyNgZ8Nuee638Afe74Y7afPhnk/bWAYDzmw/esh+5cdTLvSQfWGqwp5e/Qd72dA7mgiTZq4BV/SE0Rvp3G5AQ==}
@@ -8627,8 +8617,8 @@ packages:
     resolution: {integrity: sha512-rOL9R3D4eC6/bC18pRj+LR/WA61TcKOmg3qCsZK+bV5/66BNCfO9ehA8cy9s3RM8acRaWcG76Qz1Z2WIHeA+2w==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/ui5-middleware-fe-mockserver@2.3.38':
-    resolution: {integrity: sha512-7HBYgqIfdlPA537JhbDtGyzDSUWB6FSeS4favvWlv64tfJeUTKXLfOOCAQo74jY5R58IvY+3pPWVSksxQINACQ==}
+  '@sap-ux/ui5-middleware-fe-mockserver@2.4.10':
+    resolution: {integrity: sha512-CCVhJmoBwltC/2a18N39G1qcPCk8L+DbIfHXDzhidpqBuLfv9amsdubLj6Psic8JTycotK4zBg2a0tz8myEwAQ==}
 
   '@sap-ux/vocabularies-types@0.15.0':
     resolution: {integrity: sha512-H/xKp65xSUMSOulqd+vNzxIOLwupnVDwHTJaQL9xf+/AVPY0bJzUgFy+OOUU7gtqm8NFPgv+06Hz6DyyMRCflA==}
@@ -21152,10 +21142,6 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
 
-  '@eslint/core@1.1.0':
-    dependencies:
-      '@types/json-schema': 7.0.15
-
   '@eslint/core@1.1.1':
     dependencies:
       '@types/json-schema': 7.0.15
@@ -21192,9 +21178,9 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@eslint/plugin-kit@0.5.0':
+  '@eslint/plugin-kit@0.6.1':
     dependencies:
-      '@eslint/core': 1.1.0
+      '@eslint/core': 1.1.1
       levn: 0.4.1
 
   '@exodus/bytes@1.14.1(@noble/hashes@1.8.0)':
@@ -23172,10 +23158,6 @@ snapshots:
 
   '@sap-devx/yeoman-ui-types@1.22.0': {}
 
-  '@sap-ux/annotation-converter@0.10.19':
-    dependencies:
-      '@sap-ux/vocabularies-types': 0.15.0
-
   '@sap-ux/annotation-converter@0.10.21':
     dependencies:
       '@sap-ux/vocabularies-types': 0.15.0
@@ -23205,10 +23187,6 @@ snapshots:
     dependencies:
       xml-js: 1.6.11
 
-  '@sap-ux/edmx-parser@0.9.8':
-    dependencies:
-      xml-js: 1.6.11
-
   '@sap-ux/fe-fpm-writer@0.43.7(typescript@5.9.3)':
     dependencies:
       '@sap-ux/annotation-converter': 0.10.21
@@ -23229,10 +23207,10 @@ snapshots:
       - debug
       - typescript
 
-  '@sap-ux/fe-mockserver-core@1.6.38':
+  '@sap-ux/fe-mockserver-core@1.7.10':
     dependencies:
-      '@sap-ux/annotation-converter': 0.10.19
-      '@sap-ux/edmx-parser': 0.9.8
+      '@sap-ux/annotation-converter': 0.10.21
+      '@sap-ux/edmx-parser': 0.10.0
       balanced-match: 1.0.2
       body-parser: 1.20.4
       braces: 3.0.3
@@ -23348,9 +23326,9 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@sap-ux/ui5-middleware-fe-mockserver@2.3.38':
+  '@sap-ux/ui5-middleware-fe-mockserver@2.4.10':
     dependencies:
-      '@sap-ux/fe-mockserver-core': 1.6.38
+      '@sap-ux/fe-mockserver-core': 1.7.10
     transitivePeerDependencies:
       - supports-color
 
