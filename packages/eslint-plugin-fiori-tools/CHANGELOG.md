@@ -1,5 +1,25 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.10.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/fiori-annotation-api@0.9.35
+
+## 9.10.0
+
+### Minor Changes
+
+- 8ec22c9: [rule] add sap-condensed-table-layout eslint rule
+
+## 9.9.4
+
+### Patch Changes
+
+- Updated dependencies [436cad8]
+    - @sap-ux/fiori-annotation-api@0.9.34
+
 ## 9.9.3
 
 ### Patch Changes

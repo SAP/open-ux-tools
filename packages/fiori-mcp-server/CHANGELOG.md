@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.45
+
+### Patch Changes
+
+- 55d833f: fix i18next init showSupportNotice: false.
+
 ## 0.6.44
 
 ### Patch Changes

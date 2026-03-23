@@ -795,7 +795,9 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                     valueListReferences.push({
                         annotation,
                         uris: references,
-                        location: Location.create(annotationFile.uri, annotation.range)
+                        location: Location.create(annotationFile.uri, annotation.range),
+                        namespace: annotationFile.namespace?.name ?? '',
+                        alias: annotationFile.namespace?.alias
                     });
                 }
             }

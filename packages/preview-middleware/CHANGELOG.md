@@ -1,5 +1,47 @@
 # @sap-ux/preview-middleware
 
+## 0.24.6
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.99
+- @sap-ux/system-access@0.7.1
+
+## 0.24.5
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+
+## 0.24.4
+
+### Patch Changes
+
+- 55eb5dc: fix: disable condensing in workspace connector for older SAPUI5 versions
+
+## 0.24.3
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/adp-tooling@0.18.97
+    - @sap-ux/project-access@1.35.14
+
+## 0.24.2
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.96
+
+## 0.24.1
+
+### Patch Changes
+
+- Updated dependencies [4f86250]
+    - @sap-ux/adp-tooling@0.18.95
+
 ## 0.24.0
 
 ### Minor Changes
