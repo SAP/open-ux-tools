@@ -26,7 +26,13 @@ import {
     ManagedAppFront,
     CAPAppfrontDestination,
     deployMode,
-    enableParallelDeployments
+    enableParallelDeployments,
+    MAX_MTA_PREFIX_LENGTH,
+    MAX_MTA_PREFIX_SHORT_LENGTH,
+    MAX_MTA_PREFIX_SHORTER_LENGTH,
+    MAX_ABAP_SERVICE_PREFIX_LENGTH,
+    MAX_ABAP_SERVICE_NAME_LENGTH,
+    MAX_MTA_ID_LENGTH
 } from '../constants';
 import { t } from '../i18n';
 import type { Logger } from '@sap-ux/logger';
@@ -98,9 +104,9 @@ export class MtaConfig {
     /**
      * Determines if the MTA configuration contains a known resource or module.
      *
-     * @param requires resource to validate
-     * @param resourceType managed or existing service
-     * @returns true if the resource exists, false otherwise
+     * @param requires Resource requirements array to validate
+     * @param resourceType Managed or existing service type identifier
+     * @returns True if the resource exists, false otherwise
      * @private
      */
     private targetExists(requires: mta.Requires[], resourceType: string): boolean {
@@ -169,7 +175,7 @@ export class MtaConfig {
         const appHostName = this.resources.get(HTML5RepoHost)?.name;
         if (appHostName) {
             const appContentModule: mta.Module = {
-                name: `${this.prefix?.slice(0, 100)}-app-content`,
+                name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-app-content`,
                 type: 'com.sap.application.content',
                 path: '.',
                 requires: [
@@ -193,12 +199,15 @@ export class MtaConfig {
 
     private async addUaa(): Promise<void> {
         const resource: mta.Resource = {
-            name: `${this.prefix?.slice(0, 100)}-uaa`,
+            name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 'service-plan': 'application',
                 service: 'xsuaa',
-                config: { xsappname: `${this.prefix?.slice(0, 100)}` + '-${space-guid}', 'tenant-mode': 'dedicated' }
+                config: {
+                    xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}` + '-${space-guid}',
+                    'tenant-mode': 'dedicated'
+                }
             }
         };
         await this.mta?.addResource(resource);
@@ -208,7 +217,7 @@ export class MtaConfig {
 
     private async addHtml5Runtime(): Promise<void> {
         const resource: mta.Resource = {
-            name: `${this.prefix?.slice(0, 100)}-html5-repo-runtime`,
+            name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-html5-repo-runtime`,
             type: 'org.cloudfoundry.managed-service',
             parameters: { 'service-plan': 'app-runtime', service: 'html5-apps-repo' }
         };
@@ -228,7 +237,7 @@ export class MtaConfig {
         if (resource && !resource.parameters?.['service-name']) {
             resource.parameters = {
                 ...(resource.parameters ?? {}),
-                'service-name': `${this.prefix?.slice(0, 100)}-${serviceName}-service`
+                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-${serviceName}-service`
             };
             await this.mta?.updateResource(resource);
             this.resources.set(resourceName, resource);
@@ -236,13 +245,33 @@ export class MtaConfig {
         }
     }
 
+    /**
+     * Gets the effective service instance name for a resource.
+     * If service-name exists, returns it. Otherwise, returns the resource name.
+     *
+     * @param {string} resourceName - The resource identifier (e.g., HTML5RepoHost, ManagedXSUAA)
+     * @returns {string | undefined} The service instance name to use in destinations
+     */
+    private getServiceInstanceName(resourceName: string): string | undefined {
+        const resource = this.resources.get(resourceName);
+        // Prefer explicit service-name if it exists
+        const explicitServiceName = resource?.parameters?.['service-name'];
+        if (explicitServiceName) {
+            return explicitServiceName;
+        }
+
+        // Fallback: Use the resource name (CF will auto-generate using MTA ID + resource name)
+        // This matches what Cloud Foundry actually creates when service-name is missing
+        return resource?.name;
+    }
+
     private async addAppFrontResource(): Promise<void> {
         const resource: mta.Resource = {
-            name: `${this.prefix?.slice(0, 94)}-app-front`,
+            name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_SHORT_LENGTH)}-app-front`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 service: 'app-front',
-                'service-name': `${this.prefix?.slice(0, 96)}-app-front-service`,
+                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_SHORTER_LENGTH)}-app-front-service`,
                 'service-plan': 'developer'
             }
         };
@@ -252,12 +281,12 @@ export class MtaConfig {
     }
 
     private async addHtml5Host(): Promise<void> {
-        const html5host = `${this.prefix?.slice(0, 100)}-repo-host`; // Need to cater for -key being added too!
+        const html5host = `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-repo-host`; // Need to cater for -key being added too!
         const resource: mta.Resource = {
             name: html5host,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
-                'service-name': `${this.prefix?.slice(0, 100)}-html5-service`,
+                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-html5-service`,
                 'service-plan': 'app-host',
                 service: 'html5-apps-repo'
             }
@@ -270,10 +299,10 @@ export class MtaConfig {
     /**
      * Add a destination service to the MTA.
      *
-     * @param isManagedApp - If the destination service is for a managed app
+     * @param isManagedApp If the destination service is for a managed app (default: false)
      */
     private async addDestinationResource(isManagedApp = false): Promise<void> {
-        const destinationName = `${this.prefix?.slice(0, 100)}-destination-service`;
+        const destinationName = `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-destination-service`;
         const resource: mta.Resource = {
             name: destinationName,
             type: 'org.cloudfoundry.managed-service',
@@ -295,7 +324,7 @@ export class MtaConfig {
     /**
      * Update the destination service in the MTA if not already present.
      *
-     * @param isManagedApp - If the destination service is for a managed app, false by default
+     * @param isManagedApp If the destination service is for a managed app (default: false)
      */
     private async updateDestinationResource(isManagedApp = false): Promise<void> {
         const resource = this.resources.get('destination');
@@ -332,9 +361,9 @@ export class MtaConfig {
     /**
      * Update the server module to include the required dependencies to ensure endpoints are secured.
      *
-     * @param moduleType known module type
-     * @param supportedResource selected resource to be added
-     * @param appendSrvApi if `srv-api` should be appended, typically used for CAP flows
+     * @param moduleType Known module type (e.g., 'nodejs', 'java')
+     * @param supportedResource Selected resource to be added (default: ManagedXSUAA)
+     * @param appendSrvApi If `srv-api` should be appended, typically used for CAP flows (default: true)
      */
     private async updateServerModule(
         moduleType: ModuleType,
@@ -364,17 +393,17 @@ export class MtaConfig {
     private async addManagedUAAWithSecurity(): Promise<void> {
         this.log?.debug(t('debug.addXsuaaService'));
         const resource: mta.Resource = {
-            name: `${this.prefix?.slice(0, 100)}-uaa`,
+            name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 path: './xs-security.json',
                 service: 'xsuaa',
-                'service-name': `${this.prefix?.slice(0, 100)}-xsuaa-service`,
+                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-xsuaa-service`,
                 'service-plan': 'application',
                 ...(this.modules.has('nodejs') && this.modules.has('com.sap.application.content:appfront')
                     ? {
                           config: {
-                              xsappname: `${this.prefix?.slice(0, 100)}-\${org}-\${space}`,
+                              xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
                               'tenant-mode': 'dedicated'
                           }
                       }
@@ -389,8 +418,8 @@ export class MtaConfig {
     /**
      * Verify if the destination is valid and if WebIDEUsage is set to ODATA_GENERIC or ODATA_ABAP.
      *
-     * @param {MTADestinationType} destination - destination object
-     * @returns {boolean} - true if the destination is valid, false otherwise
+     * @param destination Destination object to validate
+     * @returns True if the destination is an OData destination (ODATA_GENERIC or ODATA_ABAP), false otherwise
      */
     private isODataDestination(destination: Destination): boolean {
         return isGenericODataDestination(destination) || isAbapEnvironmentOnBtp(destination);
@@ -400,7 +429,6 @@ export class MtaConfig {
      * Cleanup missing content for Managed | Standalone router types.
      *
      * @private
-     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     private async cleanupMissingResources(): Promise<void> {
         this.log?.debug(t('debug.addMissingModules'));
@@ -428,7 +456,8 @@ export class MtaConfig {
             this.modules.get('approuter.nodejs')
         ].filter((elem) => elem !== undefined)) {
             const destinationName =
-                this.resources.get('destination')?.name ?? `${this.prefix?.slice(0, 100)}-destination-service`;
+                this.resources.get('destination')?.name ??
+                `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-destination-service`;
             if (module?.requires?.findIndex((app) => app.name === destinationName) === -1) {
                 if (module.type === 'approuter.nodejs') {
                     module.requires.push({
@@ -453,7 +482,7 @@ export class MtaConfig {
     /**
      * Returns the MTA prefix, read from the MTA ID.
      *
-     * @returns {string} the MTA ID
+     * @returns The MTA ID prefix
      */
     public get prefix(): string {
         return this.mtaId;
@@ -462,7 +491,7 @@ export class MtaConfig {
     /**
      * Returns the path to the standalone approuter module.
      *
-     * @returns {string | undefined} the MTA ID
+     * @returns The path to the standalone approuter module, or undefined if not found
      */
     public get standaloneRouterPath(): string | undefined {
         return this.modules.get('approuter.nodejs')?.path;
@@ -471,17 +500,17 @@ export class MtaConfig {
     /**
      * Returns the cloud service name, read from the content module which contains destinations.
      *
-     * @returns {string | undefined} the cloud service name
+     * @returns The cloud service name, or undefined if not found
      */
     public get cloudServiceName(): string | undefined {
         let cloudServiceName;
         this.modules.forEach((contentModule) => {
             const moduleDestinations: MTADestinationType[] =
-                contentModule.parameters?.content?.instance?.destinations || [];
+                contentModule.parameters?.content?.instance?.destinations ?? [];
             if (contentModule.type === 'com.sap.application.content' && moduleDestinations.length) {
                 // In theory, if there is more than one, it should be same!
                 moduleDestinations.some((destination: MTADestinationType) => {
-                    cloudServiceName = destination['sap.cloud.service'] || undefined;
+                    cloudServiceName = destination['sap.cloud.service'];
                     return !!cloudServiceName;
                 });
             }
@@ -492,25 +521,25 @@ export class MtaConfig {
     /**
      * Returns true if the MTA contains an approuter module of type App Frontend Service.
      *
-     * @returns {boolean} true if the mta contains an App Frontend Service
+     * @returns True if the MTA contains an App Frontend Service
      */
     public hasAppFrontendRouter(): boolean {
         return this.modules.has('com.sap.application.content:appfront');
     }
 
     /**
-     * Returns the mta parameters.
+     * Returns the MTA parameters.
      *
-     * @returns {Promise<mta.Parameters>} the MTA parameters
+     * @returns The MTA parameters
      */
     public async getParameters(): Promise<mta.Parameters> {
         return this.mta.getParameters();
     }
 
     /**
-     * Returns the mta build parameters.
+     * Returns the MTA build parameters.
      *
-     * @returns {Promise<mta.Parameters>} the MTA build parameters
+     * @returns The MTA build parameters
      */
     public async getBuildParameters(): Promise<mta.ProjectBuildParameters> {
         return this.mta.getBuildParameters();
@@ -519,8 +548,7 @@ export class MtaConfig {
     /**
      * Update the MTA parameters.
      *
-     * @param parameters the MTA parameters being applied
-     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
+     * @param parameters The MTA parameters being applied
      */
     public async updateParameters(parameters: mta.Parameters): Promise<void> {
         await this.mta?.updateParameters(parameters);
@@ -530,8 +558,7 @@ export class MtaConfig {
     /**
      * Update the MTA build parameters i.e. build-parameters -> before-all.
      *
-     * @param parameters the MTA build parameters being applied
-     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
+     * @param parameters The MTA build parameters being applied
      */
     public async updateBuildParams(parameters: mta.ProjectBuildParameters): Promise<void> {
         await this.mta?.updateBuildParameters(parameters);
@@ -565,7 +592,7 @@ export class MtaConfig {
                 isHTML5AlreadyExisting = true;
             } else {
                 contentModule[MTABuildParams].requires.push({
-                    name: appName.slice(0, 128),
+                    name: appName.slice(0, MAX_MTA_ID_LENGTH),
                     artifacts: [artifactName],
                     'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`.replace(/\/{2,}/g, '/') // Matches two or more consecutive slashes where at least 2 repetitions of /
                 });
@@ -577,7 +604,7 @@ export class MtaConfig {
         // Add application module, if not found already
         if (!isHTML5AlreadyExisting && !this.apps.get(appName)) {
             const app: HTML5App = {
-                name: appName.slice(0, 128),
+                name: appName.slice(0, MAX_MTA_ID_LENGTH),
                 type: 'html5',
                 path: appPath,
                 'build-parameters': HTMLAppBuildParams as HTML5App['build-parameters']
@@ -621,7 +648,7 @@ export class MtaConfig {
     public async addConnectivityResource(): Promise<void> {
         const serviceType: ResourceType = 'connectivity';
         const resourceType = CloudFoundryServiceType.Managed;
-        const resourceName = `${this.prefix?.slice(0, 100)}-connectivity`;
+        const resourceName = `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-connectivity`;
 
         const router = this.modules.get('approuter.nodejs');
         if (router) {
@@ -723,7 +750,7 @@ export class MtaConfig {
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     public async addAbapService(serviceName: string, btpService: string): Promise<void> {
-        const newResourceName = `${this.prefix?.slice(0, 24)}-abap-${serviceName.slice(0, 20)}`;
+        const newResourceName = `${this.prefix?.slice(0, MAX_ABAP_SERVICE_PREFIX_LENGTH)}-abap-${serviceName.slice(0, MAX_ABAP_SERVICE_NAME_LENGTH)}`;
         const router = this.modules.get('approuter.nodejs');
         if (router) {
             if (router.requires?.findIndex((resource) => resource.name === newResourceName) === -1) {
@@ -789,7 +816,7 @@ export class MtaConfig {
         const destinationName = this.resources.get('destination')?.name;
         if (destinationName && xsuaaName && appRuntimeName) {
             const router: mta.Module = {
-                name: `${this.prefix?.slice(0, 100)}-router`,
+                name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-router`,
                 type: 'approuter.nodejs',
                 path: fromServerGenerator ? `${RouterModule}` : `${CloudFoundry}/${RouterModule}`,
                 parameters: {
@@ -850,7 +877,7 @@ export class MtaConfig {
         let destinationServiceName = this.resources.get('destination')?.name;
         if (!destinationServiceName) {
             this.log?.info(t('info.existingDestinationNotFound'));
-            destinationServiceName = `${this.prefix?.slice(0, 100)}-destination-service`;
+            destinationServiceName = `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-destination-service`;
         }
 
         const appMtaId = this.mtaId;
@@ -1029,7 +1056,7 @@ export class MtaConfig {
             const appHostName = this.resources.get(ManagedAppFront)?.name;
             if (appHostName) {
                 const appContentModule: mta.Module = {
-                    name: `${this.prefix?.slice(0, 100)}-app-content`,
+                    name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-app-content`,
                     type: 'com.sap.application.content',
                     path: '.',
                     requires: [
@@ -1076,21 +1103,21 @@ export class MtaConfig {
             await this.addHtml5Host();
         }
 
-        // Assume these need to be updated for safety!
-        await this.updateServiceName('html5', HTML5RepoHost);
-        await this.updateServiceName('xsuaa', ManagedXSUAA);
-
         // We only want to append a new one, if missing from the existing mta config
         if (!this.modules.has('com.sap.application.content:destination')) {
             this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.Managed }));
             const destinationName = this.resources.get('destination')?.name;
             const appHostName = this.resources.get(HTML5RepoHost)?.name;
-            const appHostServiceName = this.resources.get(HTML5RepoHost)?.parameters?.['service-name'];
             const managedXSUAAName = this.resources.get(ManagedXSUAA)?.name;
-            const managedXSUAAServiceName = this.resources.get(ManagedXSUAA)?.parameters?.['service-name'];
-            if (destinationName && appHostName && managedXSUAAName && managedXSUAAServiceName) {
+            if (destinationName && appHostName && managedXSUAAName) {
+                // Align the service-name, not always present
+                await this.updateServiceName('html5', HTML5RepoHost);
+                await this.updateServiceName('xsuaa', ManagedXSUAA);
+                // Retrieve the service-name
+                const appHostServiceName = this.getServiceInstanceName(HTML5RepoHost);
+                const managedXSUAAServiceName = this.getServiceInstanceName(ManagedXSUAA);
                 const router: mta.Module = {
-                    name: `${this.prefix?.slice(0, 100)}-destination-content`,
+                    name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-destination-content`,
                     type: 'com.sap.application.content',
                     requires: [
                         {
@@ -1121,17 +1148,17 @@ export class MtaConfig {
                             instance: {
                                 destinations: [
                                     {
-                                        Name: `${this.prefix?.slice(0, 100)}_html_repo_host`,
+                                        Name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}_html_repo_host`,
                                         ServiceInstanceName: appHostServiceName,
                                         ServiceKeyName: `${appHostName}-key`,
-                                        'sap.cloud.service': `${this.prefix?.slice(0, 100)}`
+                                        'sap.cloud.service': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}`
                                     },
                                     {
                                         Authentication: 'OAuth2UserTokenExchange',
-                                        Name: `${this.prefix?.slice(0, 100)}_uaa`,
+                                        Name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}_uaa`,
                                         ServiceInstanceName: managedXSUAAServiceName,
                                         ServiceKeyName: `${managedXSUAAName}-key`,
-                                        'sap.cloud.service': `${this.prefix?.slice(0, 100)}`
+                                        'sap.cloud.service': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}`
                                     }
                                 ],
                                 'existing_destinations_policy': 'update'

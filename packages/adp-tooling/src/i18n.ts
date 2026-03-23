@@ -20,7 +20,8 @@ export async function initI18n(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         defaultNS: adpI18nNamespace,
-        ns: [adpI18nNamespace]
+        ns: [adpI18nNamespace],
+        showSupportNotice: false
     });
 }
 

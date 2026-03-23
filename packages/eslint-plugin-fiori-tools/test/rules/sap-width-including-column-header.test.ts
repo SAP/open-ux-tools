@@ -124,14 +124,34 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
             {
                 name: 'widthIncludingColumnHeader missing for small table',
                 filename: V4_MANIFEST_PATH,
-                code: JSON.stringify(V4_MANIFEST, undefined, 2),
+                code: getManifestAsCode(V4_MANIFEST, []),
                 errors: [
                     {
                         messageId: 'width-including-column-header-manifest',
                         line: 124,
                         column: 19
                     }
-                ]
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings'
+                        ],
+                        value: {
+                            'widthIncludingColumnHeader': true,
+                            'type': 'ResponsiveTable',
+                            'selectionMode': 'Auto'
+                        }
+                    }
+                ])
             },
             [ORIGINAL_ANNOTATIONS]
         ),
@@ -181,7 +201,39 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                         line: 139,
                         column: 13
                     }
-                ]
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'widthIncludingColumnHeader'
+                        ],
+                        value: true
+                    },
+                    {
+                        path: ['sap.ui5', 'routing', 'targets', 'IncidentsObjectPage', 'options', 'settings'],
+                        value: {
+                            controlConfiguration: {
+                                'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem': {
+                                    tableSettings: {
+                                        widthIncludingColumnHeader: true
+                                    }
+                                }
+                            },
+                            editableHeaderContent: false,
+                            entitySet: 'Incidents',
+                            showDraftToggle: true
+                        }
+                    }
+                ])
             },
             [FACETS]
         )

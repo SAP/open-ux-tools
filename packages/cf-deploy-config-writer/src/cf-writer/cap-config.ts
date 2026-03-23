@@ -7,27 +7,28 @@ import type { Logger } from '@sap-ux/logger';
 import { type CAPConfig, type CFBaseConfig } from '../types';
 import { t } from '../i18n';
 import { getCapProjectType } from '@sap-ux/project-access';
+import { MTA_FILE_OPERATION_DELAY_MS } from '../constants';
 
 /**
  * Add a standalone | managed approuter to a CAP project.
  *
- * @param config writer configuration
- * @param fs an optional reference to a mem-fs editor
- * @param logger optional logger instance
- * @returns file system reference
+ * @param config Writer configuration
+ * @param fs An optional reference to a mem-fs editor
+ * @param logger Optional logger instance
+ * @returns File system reference
+ * @throws {Error} If target folder does not contain a Node.js CAP project
+ * @throws {Error} If mta.yaml already exists in the target directory
  */
 export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     if (logger) {
         LoggerHelper.logger = logger;
     }
     logger?.debug(`Generate CAP configuration using: \n ${JSON.stringify(config)}`);
     await validateConfig(config);
     await generateCAPMTA(config, fs);
-    // Delay, known issues with loading mta yaml after generation!
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Delay to ensure MTA file write completes before subsequent read operations
+    await new Promise((resolve) => setTimeout(resolve, MTA_FILE_OPERATION_DELAY_MS));
     await addRoutingConfig(config, fs);
     await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
     LoggerHelper.logger?.debug(t('debug.capGenerationCompleted'));
@@ -37,7 +38,9 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
 /**
  * Ensure the configuration is valid, target folder exists and is a CAP Node.js app and mta.yaml does not already exist.
  *
- * @param config writer configuration
+ * @param config Writer configuration
+ * @throws {Error} If target folder does not contain a CAP Node.js project
+ * @throws {Error} If mta.yaml already exists in the target directory
  */
 async function validateConfig(config: CAPConfig): Promise<void> {
     validateMtaConfig(config as CFBaseConfig);

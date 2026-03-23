@@ -2,7 +2,14 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
-import { addXSSecurityConfig, getTemplatePath, setMtaDefaults, validateVersion, runCommand } from '../utils';
+import {
+    addXSSecurityConfig,
+    getTemplatePath,
+    setMtaDefaults,
+    validateVersion,
+    runCommand,
+    toMtaModuleName as toMtaModuleNameUtil
+} from '../utils';
 import {
     MTAVersion,
     MTADescription,
@@ -14,7 +21,9 @@ import {
     CDSXSUAAService,
     CDSDestinationService,
     CDSHTML5RepoService,
-    RouterModule
+    RouterModule,
+    MAX_MTA_ID_LENGTH,
+    MTA_FILE_OPERATION_DELAY_MS
 } from '../constants';
 import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, type CAPConfig, RouterModuleType } from '../types';
 import LoggerHelper from '../logger-helper';
@@ -35,14 +44,16 @@ export async function getMtaId(rootPath: string): Promise<string | undefined> {
 }
 
 /**
- *  Get the MTA configuration from the target folder.
+ * Get the MTA configuration from the target folder.
+ * Retries up to 5 times with delays to handle file system timing issues.
  *
  * @param rootPath Path to the root folder
  * @returns MtaConfig instance if found
  */
 export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefined> {
     let mtaConfig;
-    for (let retries = 5; retries >= 0; retries--) {
+    const MAX_RETRIES = 5;
+    for (let retries = MAX_RETRIES; retries >= 0; retries--) {
         try {
             mtaConfig = await MtaConfig.newInstance(rootPath, LoggerHelper.logger);
             if (mtaConfig?.prefix) {
@@ -50,7 +61,8 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
             }
         } catch (error) {
             LoggerHelper.logger?.debug(t('debug.errorReadingMta', { error: error.message }));
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            // Delay before retry to allow file system operations to complete
+            await new Promise((resolve) => setTimeout(resolve, MTA_FILE_OPERATION_DELAY_MS));
         }
     }
     LoggerHelper.logger?.debug(t('debug.mtaReadWithPrefix', { prefix: mtaConfig?.prefix }));
@@ -58,13 +70,16 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
 }
 
 /**
- *  Generate an MTA ID that is suitable for CF deployment.
+ * Generate an MTA ID that is suitable for CF deployment.
+ * Removes special characters and restricts length to maximum allowed.
+ * Note: This delegates to the utility function and adds length restriction.
  *
- * @param appId Name of the app, like `sap.ux.app` and restrict to 128 characters
- * @returns Name that's acceptable for mta.yaml
+ * @param appId Name of the app, like `sap.ux.app`
+ * @returns Name that's acceptable for mta.yaml (sanitized and length-restricted)
  */
 export function toMtaModuleName(appId: string): string {
-    return appId.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>]/gi, '').slice(0, 128);
+    // Use the canonical implementation from utils and apply length restriction
+    return toMtaModuleNameUtil(appId).slice(0, MAX_MTA_ID_LENGTH);
 }
 
 /**
@@ -73,7 +88,7 @@ export function toMtaModuleName(appId: string): string {
  * @param config writer configuration
  */
 export function createMTA(config: MTABaseConfig): void {
-    const mtaId = `${config.mtaId.slice(0, 128)}`;
+    const mtaId = `${config.mtaId.slice(0, MAX_MTA_ID_LENGTH)}`;
     const mtaTemplate = readFileSync(getTemplatePath(`app/${FileName.MtaYaml}`), 'utf-8');
     const mtaContents = render(mtaTemplate, {
         id: mtaId,
@@ -111,7 +126,12 @@ export function doesCDSBinaryExist(): void {
 /**
  * Validate the writer configuration to ensure all required parameters are present.
  *
- * @param config writer configuration
+ * @param config Writer configuration
+ * @throws {Error} If MTA binary is not found in system path
+ * @throws {Error} If required MTA parameters (routerType, mtaId, mtaPath) are missing
+ * @throws {Error} If MTA ID is invalid (too long, invalid characters, or doesn't start with letter/underscore)
+ * @throws {Error} If MTA version is invalid
+ * @throws {Error} If ABAP service binding details are incomplete
  */
 export function validateMtaConfig(config: CFBaseConfig): void {
     // We use mta-lib, which in turn relies on the mta executable being installed and available in the path
@@ -120,7 +140,7 @@ export function validateMtaConfig(config: CFBaseConfig): void {
     if (!config.routerType || !config.mtaId || !config.mtaPath) {
         throw new Error(t('error.missingMtaParameters'));
     }
-    if (config.mtaId.length > 128 || !/^[a-zA-Z_]/.test(config.mtaId)) {
+    if (config.mtaId.length > MAX_MTA_ID_LENGTH || !/^[a-zA-Z_]/.test(config.mtaId)) {
         throw new Error(t('error.invalidMtaId'));
     }
     if (!/^[\w\-.]*$/.test(config.mtaId)) {
@@ -140,17 +160,16 @@ export function validateMtaConfig(config: CFBaseConfig): void {
 
 /**
  * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system i.e mta-lib.
- *
  * Note: this function is deprecated and will be removed in future releases since the cds binary currently does not support app frontend services.
  *
- * @param config writer configuration
- * @param fs reference to a mem-fs editor
- * @deprecated this function is deprecated and will be removed in future releases
+ * @param config Writer configuration
+ * @param fs Reference to a mem-fs editor
+ * @deprecated This function is deprecated and will be removed in future releases
  */
 async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<void> {
     const mtaTemplate = readFileSync(getTemplatePath(`frontend/${FileName.MtaYaml}`), 'utf-8');
     const mtaContents = render(mtaTemplate, {
-        id: `${config.mtaId.slice(0, 128)}`,
+        id: `${config.mtaId.slice(0, MAX_MTA_ID_LENGTH)}`,
         mtaDescription: config.mtaDescription ?? MTADescription,
         mtaVersion: config.mtaVersion ?? MTAVersion
     });
@@ -162,11 +181,12 @@ async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<v
 }
 
 /**
- *  Add standalone app router to the target folder.
+ * Add standalone app router to the target folder.
  *
- * @param cfConfig writer configuration
+ * @param cfConfig Writer configuration
  * @param mtaInstance MTA configuration instance
- * @param fs reference to a mem-fs editor
+ * @param fs Reference to a mem-fs editor
+ * @throws {Error} If service key retrieval fails for ABAP service binding
  */
 async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfig, fs: Editor): Promise<void> {
     await mtaInstance.addStandaloneRouter(true);
@@ -206,8 +226,8 @@ async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfi
 /**
  * Add standalone | managed | frontend app router to the target folder.
  *
- * @param config writer configuration
- * @param fs reference to a mem-fs editor
+ * @param config Writer configuration
+ * @param fs Reference to a mem-fs editor
  */
 export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void> {
     const mtaConfigInstance = await getMtaConfig(config.mtaPath);
@@ -225,8 +245,9 @@ export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promis
 /**
  * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system i.e mta-lib.
  *
- * @param config writer configuration
- * @param fs reference to a mem-fs editor
+ * @param config Writer configuration
+ * @param fs Reference to a mem-fs editor
+ * @throws {Error} If CDS command execution fails when generating mta.yaml
  */
 export async function generateCAPMTA(config: CAPConfig, fs: Editor): Promise<void> {
     if (config.routerType === RouterModuleType.AppFront) {

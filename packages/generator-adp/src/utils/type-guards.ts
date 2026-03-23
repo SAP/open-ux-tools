@@ -30,7 +30,8 @@ export function isJsonInput(value: unknown): value is JsonInput {
         isOptionalString(value.password) &&
         isOptionalString(value.targetFolder) &&
         isOptionalString(value.projectName) &&
-        isOptionalString(value.namespace)
+        isOptionalString(value.namespace) &&
+        isOptionalKeyUserChanges(value.keyUserChanges)
     );
 }
 
@@ -52,4 +53,25 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
  */
 function isOptionalString(value: unknown): value is string | undefined {
     return typeof value === 'undefined' || isString(value);
+}
+
+/**
+ * Type guard for an optional array of key user change content objects.
+ *
+ * @param {unknown} value - The value being checked.
+ * @returns {boolean} True if the value is undefined or a valid array of key user changes.
+ */
+function isOptionalKeyUserChanges(value: unknown): boolean {
+    if (value === undefined) {
+        return true;
+    }
+    if (!Array.isArray(value)) {
+        return false;
+    }
+    return value.every(
+        (item) =>
+            isPlainObject(item) &&
+            isPlainObject(item.content) &&
+            (item.texts === undefined || isPlainObject(item.texts))
+    );
 }

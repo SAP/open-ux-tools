@@ -1,5 +1,36 @@
 # @sap-ux/store
 
+## 1.5.10
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
+## 1.5.9
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+
+## 1.5.8
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
+## 1.5.7
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
+## 1.5.6
+
+### Patch Changes
+
+- 9f94937: support adding full service urls as a new connection type
+
 ## 1.5.5
 
 ### Patch Changes

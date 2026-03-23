@@ -62,15 +62,15 @@ import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type M
 /**
  * Add a managed approuter configuration to an existing HTML5 application, any exceptions thrown will be handled by the calling client.
  *
- * @param cfAppConfig writer configuration
- * @param fs an optional reference to a mem-fs editor
- * @param logger optional logger instance
- * @returns file system reference
+ * @param cfAppConfig Writer configuration
+ * @param fs An optional reference to a mem-fs editor
+ * @param logger Optional logger instance
+ * @returns File system reference
+ * @throws {Error} If MTA binary is not found in the system path
+ * @throws {Error} If required files (manifest.json, ui5.yaml) are missing or invalid
  */
 export async function generateAppConfig(cfAppConfig: CFAppConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     if (logger) {
         LoggerHelper.logger = logger;
     }
@@ -82,9 +82,10 @@ export async function generateAppConfig(cfAppConfig: CFAppConfig, fs?: Editor, l
 /**
  * Returns the updated configuration for the given HTML5 app, after reading all the required files.
  *
- * @param cfAppConfig writer configuration
- * @param fs reference to a mem-fs editor
- * @returns updated writer configuration
+ * @param cfAppConfig Writer configuration
+ * @param fs Reference to a mem-fs editor
+ * @returns Updated writer configuration
+ * @throws {Error} If no SAP Fiori UI5 application is found (missing app ID)
  */
 async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<CFConfig> {
     const isLCAP = cfAppConfig.lcapMode ?? false;
@@ -96,7 +97,7 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<C
     const { servicePath, firstServicePathSegment, appId } = await processManifest(cfAppConfig.appPath, fs);
 
     if (!appId) {
-        throw new Error('No SAP Fiori UI5 application found.');
+        throw new Error(t('error.noUI5AppFound'));
     }
 
     const { destinationIsFullUrl, destinationAuthentication } = await getDestinationProperties(
@@ -107,16 +108,16 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<C
 
     const config = {
         appPath: cfAppConfig.appPath.replace(/\/$/, ''),
-        destinationName: cfAppConfig.destinationName || destination,
+        destinationName: cfAppConfig.destinationName ?? destination,
         addManagedAppRouter: cfAppConfig.addManagedAppRouter,
         addAppFrontendRouter: cfAppConfig.addAppFrontendRouter,
         addMtaDestination: cfAppConfig.addMtaDestination ?? false,
         cloudServiceName: cfAppConfig.cloudServiceName,
         lcapMode: !isCap ? false : isLCAP, // Restricting local changes is only applicable for CAP flows
         isMtaRoot: hasRoot ?? false,
-        serviceHost: cfAppConfig.serviceHost || serviceHost,
+        serviceHost: cfAppConfig.serviceHost ?? serviceHost,
         rootPath: rootPath.replace(/\/$/, ''),
-        destinationAuthentication: cfAppConfig.destinationAuthentication || destinationAuthentication,
+        destinationAuthentication: cfAppConfig.destinationAuthentication ?? destinationAuthentication,
         isDestinationFullUrl: cfAppConfig.isDestinationFullUrl ?? destinationIsFullUrl,
         apiHubConfig: cfAppConfig.apiHubConfig,
         firstServicePathSegment:
@@ -213,18 +214,20 @@ async function processManifest(
     firstServicePathSegment: string | undefined;
     appId: string | undefined;
 }> {
-    const manifest = await readManifest(join(await getWebappPath(appPath), FileName.Manifest), fs);
-    const appId = manifest?.['sap.app']?.id ? toMtaModuleName(manifest?.['sap.app']?.id) : undefined;
+    const webappPath = await getWebappPath(appPath);
+    const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
+    const appId = manifest?.['sap.app']?.id ? toMtaModuleName(manifest['sap.app'].id) : undefined;
     const servicePath = manifest?.['sap.app']?.dataSources?.mainService?.uri;
-    const firstServicePathSegment = servicePath?.substring(0, servicePath?.indexOf('/', 1));
+    const firstServicePathSegment = servicePath?.substring(0, servicePath.indexOf('/', 1));
     return { servicePath, firstServicePathSegment, appId };
 }
 
 /**
  * Generates the deployment configuration for the HTML5 application.
  *
- * @param cfAppConfig writer configuration
- * @param fs reference to a mem-fs editor
+ * @param cfAppConfig Writer configuration
+ * @param fs Reference to a mem-fs editor
+ * @throws {Error} If MTA generation or configuration update fails
  */
 async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<void> {
     LoggerHelper?.logger?.debug(`Generate HTML5 app deployment configuration with: \n ${JSON.stringify(cfAppConfig)}`);
@@ -248,8 +251,9 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
 /**
  * Creates the MTA configuration file.
  *
- * @param cfConfig writer configuration
- * @param fs reference to a mem-fs editor
+ * @param cfConfig Writer configuration containing MTA details
+ * @param fs Reference to a mem-fs editor
+ * @throws {Error} If MTA file creation or CAP MTA generation fails
  */
 export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<void> {
     // Step1. Create mta.yaml
@@ -271,8 +275,9 @@ export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<v
 /**
  * Updates the MTA configuration file with the app router and destination.
  *
- * @param cfConfig writer configuration
- * @param fs reference to a mem-fs editor
+ * @param cfConfig Writer configuration
+ * @param fs Reference to a mem-fs editor
+ * @throws {Error} If MTA configuration update or save fails
  */
 async function appendAppRouter(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
@@ -306,12 +311,12 @@ async function appendAppRouter(cfConfig: CFConfig, fs: Editor): Promise<void> {
 /**
  * Cleans up standalone routes in a Cloud Foundry application configuration.
  *
- * @param {object} cfConfig - The Cloud Foundry configuration object
- * @param {string} cfConfig.rootPath - The root path of the application
- * @param {string} cfConfig.appId - The application identifier
- * @param {MtaConfig} mtaInstance - The MTA configuration instance
- * @param {Editor} fs - The file system editor for performing cleanup operations
- * @returns {void} - This function does not return a value
+ * @param cfConfig The Cloud Foundry configuration object
+ * @param cfConfig.rootPath The root path of the application
+ * @param cfConfig.appId The application identifier
+ * @param mtaInstance The MTA configuration instance
+ * @param fs The file system editor for performing cleanup operations
+ * @throws {Error} If xs-app.json cannot be read or updated
  */
 function cleanupStandaloneRoutes({ rootPath, appId }: CFConfig, mtaInstance: MtaConfig, fs: Editor): void {
     // Cleanup standalone xs-app.json to reflect new application
@@ -333,8 +338,9 @@ function cleanupStandaloneRoutes({ rootPath, appId }: CFConfig, mtaInstance: Mta
 /**
  * Apply changes to mta.yaml, will retry if an exception is thrown.
  *
- * @param cfConfig writer configuration
+ * @param cfConfig Writer configuration
  * @param mtaInstance MTA configuration instance
+ * @throws {Error} If MTA extension configuration cannot be added for API Hub Enterprise
  */
 async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig): Promise<void> {
     try {
@@ -361,8 +367,8 @@ async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig): Promise<void
 /**
  * Appends the Cloud Foundry specific configurations to the project.
  *
- * @param cfConfig writer configuration
- * @param fs reference to a mem-fs editor
+ * @param cfConfig Writer configuration
+ * @param fs Reference to a mem-fs editor
  */
 async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor): Promise<void> {
     // When data source is none in app generator, it is not required to provide destination
@@ -395,16 +401,18 @@ async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor):
 
 /**
  * Updates the manifest.json file with the cloud service name.
+ * Preserves existing sap.cloud properties while updating public and service values.
  *
- * @param cfConfig writer configuration
- * @param fs reference to a mem-fs editor
+ * @param cfConfig Writer configuration
+ * @param fs Reference to a mem-fs editor
  */
 async function updateManifest(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const webappPath = await getWebappPath(cfConfig.appPath, fs);
-    const manifest = await readManifest(join(webappPath, FileName.Manifest), fs);
+    const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
     if (manifest && cfConfig.cloudServiceName) {
+        // Preserve existing sap.cloud properties while updating required values (Sonar S7744 fix)
         const sapCloud = {
-            ...(manifest['sap.cloud'] || {}),
+            ...manifest['sap.cloud'],
             public: true,
             service: cfConfig.cloudServiceName
         } as Manifest['sap.cloud'];
@@ -417,8 +425,8 @@ async function updateManifest(cfConfig: CFConfig, fs: Editor): Promise<void> {
 /**
  * Updates the package.json file with the necessary scripts and dependencies.
  *
- * @param cfConfig writer configuration
- * @param fs reference to a mem-fs editor
+ * @param cfConfig Writer configuration
+ * @param fs Reference to a mem-fs editor
  */
 async function updateHTML5AppPackage(cfConfig: CFConfig, fs: Editor): Promise<void> {
     let deployArgs: string[] = [];
@@ -452,9 +460,8 @@ async function updateHTML5AppPackage(cfConfig: CFConfig, fs: Editor): Promise<vo
 /**
  * Generate UI5 deploy config.
  *
- * @param cfConfig - the deployment config
- * @param fs reference to a mem-fs editor
- * @returns the deploy config
+ * @param cfConfig The deployment configuration
+ * @param fs Reference to a mem-fs editor
  */
 export async function generateUI5DeployConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const ui5BaseConfig = await readUi5Yaml(cfConfig.appPath, FileName.Ui5Yaml, fs);

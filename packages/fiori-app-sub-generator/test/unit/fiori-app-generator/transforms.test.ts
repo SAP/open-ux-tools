@@ -11,6 +11,7 @@ import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types
 import type { Destination } from '@sap-ux/btp-utils';
 import { Authentication as DestinationAuthType } from '@sap-ux/btp-utils';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import * as featureToggle from '@sap-ux/feature-toggle';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     return {
@@ -20,6 +21,13 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
             name: 'CLI',
             technical: 'CLI'
         })
+    };
+});
+
+jest.mock('@sap-ux/feature-toggle', () => {
+    return {
+        ...jest.requireActual('@sap-ux/feature-toggle'),
+        isFeatureEnabled: jest.fn()
     };
 });
 
@@ -134,6 +142,25 @@ describe('Test transform state', () => {
         };
         const feApp = await transformState<FioriElementsApp<unknown>>(state);
         expect(feApp.service.previewSettings).toMatchObject({ apiHub: true });
+    });
+
+    test('should return preview settings for connection type of odata_service', async () => {
+        const state: State = {
+            ...baseState,
+            service: {
+                source: DatasourceType.sapSystem,
+                connectedSystem: {
+                    backendSystem: {
+                        name: 'some-backend-system',
+                        url: 'https://example.com/odata/service',
+                        connectionType: 'odata_service',
+                        systemType: 'OnPrem'
+                    }
+                } as Service['connectedSystem']
+            }
+        };
+        const feApp = await transformState<FioriElementsApp<unknown>>(state);
+        expect(feApp.service.previewSettings).toMatchObject({ connectPath: '/odata/service' });
     });
 
     test('should correctly map entity related config and page building block title for FPM floorplan', async () => {
@@ -308,8 +335,10 @@ describe('Test transform state', () => {
                 }
             }
         };
+        jest.spyOn(featureToggle, 'isFeatureEnabled').mockReturnValueOnce(true); // mock feature flag to disable root package json updates
         const feApp = await transformState<FioriElementsApp<unknown>>(state, true);
         expect(feApp.app.projectType).toStrictEqual('CAPNodejs');
+        expect(feApp.appOptions.disableCapRootPkgJsonUpdates).toBe(true);
     });
 
     test('Should transform state to Fiori Freestyle `simple` template settings', async () => {
