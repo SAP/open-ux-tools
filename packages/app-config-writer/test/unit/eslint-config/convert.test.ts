@@ -533,7 +533,7 @@ describe('convertEslintConfig', () => {
             expect(packageJson.devDependencies?.['@sap/ux-ui5-tooling']).toBe('1.15.1');
         });
 
-        test('should preserve existing scripts', async () => {
+        test('should override existing scripts', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
@@ -541,7 +541,7 @@ describe('convertEslintConfig', () => {
             const packageJson = fs.readJSON(packageJsonPath) as Package;
 
             expect(packageJson.scripts?.['start-variants-management']).toBeDefined();
-            expect(packageJson.scripts?.lint).toBe('eslint . --ext .js,.ts');
+            expect(packageJson.scripts?.lint).toBe('eslint ./');
         });
 
         test('should create devDependencies if it does not exist', async () => {

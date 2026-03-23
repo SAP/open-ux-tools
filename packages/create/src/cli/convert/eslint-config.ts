@@ -80,12 +80,12 @@ async function convertEslintConfig(
                         logger: logger
                     })
                         .then(() => {
-                            logger?.info('npm uninstall completed successfully.');
+                            logger.info('npm uninstall completed successfully.');
                             logger.info(`Executing \`npm install\`.`);
                             runNpmInstallCommand(basePath, undefined, { logger });
                         })
                         .catch((error) => {
-                            logger?.error(`npm (un)install failed. '${(error as Error).message}'`);
+                            logger.error(`npm (un)install failed. '${(error as Error).message}'`);
                         });
                 }
             });
