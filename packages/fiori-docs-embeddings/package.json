@@ -30,7 +30,7 @@
     "dependencies": {},
     "devDependencies": {
         "@npm/types": "2.1.0",
-        "@types/node": "20.0.0",
+        "@types/node": "20.19.37",
         "@lancedb/lancedb": "0.22.0",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/create": "workspace:*",
