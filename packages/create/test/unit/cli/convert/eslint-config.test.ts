@@ -64,7 +64,7 @@ describe('Test command convert eslint-config', () => {
         expect(fsMock.delete).toHaveBeenCalledWith(join(appRoot, 'package-lock.json'));
         // Uninstall should be called with --no-save (does not modify package.json)
         expect(execNpmCommandSpy).toHaveBeenCalledWith(
-            ['uninstall', '--no-save'],
+            ['uninstall', '@sap-ux/eslint-plugin-fiori-tools', '--no-save'],
             expect.objectContaining({ cwd: appRoot, logger: loggerMock })
         );
         // npm install should be called only after uninstall resolves
@@ -130,7 +130,7 @@ describe('Test command convert eslint-config', () => {
         expect(fsMock.commit).toHaveBeenCalled();
         expect(fsMock.delete).toHaveBeenCalledWith(join(appRoot, 'package-lock.json'));
         expect(execNpmCommandSpy).toHaveBeenCalledWith(
-            ['uninstall', '--no-save'],
+            ['uninstall', '@sap-ux/eslint-plugin-fiori-tools', '--no-save'],
             expect.objectContaining({ cwd: appRoot, logger: loggerMock })
         );
         expect(runNpmInstallSpy).toHaveBeenCalledWith(
@@ -206,7 +206,7 @@ describe('Test command convert eslint-config', () => {
         expect(fsMock.commit).toHaveBeenCalled();
         expect(fsMock.delete).toHaveBeenCalledWith(join(appRoot, 'package-lock.json'));
         expect(execNpmCommandSpy).toHaveBeenCalledWith(
-            ['uninstall', '--no-save'],
+            ['uninstall', '@sap-ux/eslint-plugin-fiori-tools', '--no-save'],
             expect.objectContaining({ cwd: appRoot, logger: loggerMock })
         );
         expect(runNpmInstallSpy).toHaveBeenCalledWith(
@@ -289,7 +289,7 @@ describe('Test command convert eslint-config', () => {
         // package-lock.json is staged and committed before the async uninstall runs
         expect(fsMock.delete).toHaveBeenCalledWith(join(appRoot, 'package-lock.json'));
         expect(execNpmCommandSpy).toHaveBeenCalledWith(
-            ['uninstall', '--no-save'],
+            ['uninstall', '@sap-ux/eslint-plugin-fiori-tools', '--no-save'],
             expect.objectContaining({ cwd: appRoot, logger: loggerMock })
         );
         expect(loggerMock.error).toHaveBeenCalledWith(
