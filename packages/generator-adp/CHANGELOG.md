@@ -1,5 +1,26 @@
 # @sap-ux/generator-adp
 
+## 0.9.35
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/adp-tooling@0.18.97
+    - @sap-ux/inquirer-common@0.11.26
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/telemetry@0.6.88
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.88
+    - @sap-ux/project-input-validator@0.6.69
+
+## 0.9.34
+
+### Patch Changes
+
+- 5307571: fix: Add logging and user friendly error messages for key user API calls in the generator
+
 ## 0.9.33
 
 ### Patch Changes
