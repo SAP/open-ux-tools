@@ -14,7 +14,7 @@ import { join } from 'node:path';
 export function addConvertEslintCommand(cmd: Command): void {
     cmd.command('eslint-config [path]')
         .description(
-            `Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (used since ESLint version 9), introduces specific ESLint checks for SAP Fiori applications (using plugin \`@sap-ux/eslint-plugin-fiori-tools\`), and deletes the deprecated plugin \`eslint-plugin-fiori-custom\`. To avoid dependency resolution conflicts, it deletes \`package-lock.json\` as well as \`@sap-ux/eslint-plugin-fiori-tools\` from the \`node_modules\` folder before running \`npm install\`.\n
+            `Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (used since ESLint version 9). It also introduces specific ESLint checks for SAP Fiori applications (using the \`@sap-ux/eslint-plugin-fiori-tools\` plugin), and deletes the deprecated \`eslint-plugin-fiori-custom\` plugin. To avoid dependency resolution conflicts, it deletes the \`package-lock.json\` file as well as the \`@sap-ux/eslint-plugin-fiori-tools\` module from the \`node_modules\` folder before running \`npm install\`.\n
 Examples:
     \`npx --yes @sap-ux/create@latest convert eslint-config\``
         )
@@ -27,7 +27,7 @@ Examples:
         )
         .option(
             '-n, --skip-install',
-            'Skip the `npm install` step (also skips deleting `package-lock.json` and `@sap-ux/eslint-plugin-fiori-tools` from the `node_modules` folder).'
+            'Skip the `npm install` step. Also skips deleting the `package-lock.json` file and the `@sap-ux/eslint-plugin-fiori-tools` module from the `node_modules` folder.'
         )
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
