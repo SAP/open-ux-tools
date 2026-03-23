@@ -27,15 +27,15 @@
     "dependencies": {
         "chalk": "4.1.2",
         "lodash": "4.17.23",
-        "winston": "3.11.0",
+        "winston": "3.19.0",
         "winston-transport": "4.9.0"
     },
     "devDependencies": {
-        "@types/debug": "4.1.12",
-        "@types/lodash": "4.14.202",
-        "@types/vscode": "1.73.1",
+        "@types/debug": "4.1.13",
+        "@types/lodash": "4.17.24",
+        "@types/vscode": "1.102.0",
         "jest-extended": "6.0.0",
-        "logform": "2.6.0"
+        "logform": "2.7.0"
     },
     "files": [
         "dist",

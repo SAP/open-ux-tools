@@ -35,7 +35,7 @@
         "@zowe/secrets-for-zowe-sdk": "8.29.4"
     },
     "devDependencies": {
-        "@types/pluralize": "0.0.30",
+        "@types/pluralize": "0.0.33",
         "@types/qs": "6.9.1",
         "fast-check": "2.25.0",
         "jest-extended": "6.0.0",

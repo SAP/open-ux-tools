@@ -46,7 +46,7 @@
     "hasbin": "1.2.3"
   },
   "devDependencies": {
-    "@types/ejs": "3.1.2",
+    "@types/ejs": "3.1.5",
     "@types/mem-fs": "1.1.2",
     "@types/mem-fs-editor": "7.0.1",
     "@types/hasbin": "1.2.2",

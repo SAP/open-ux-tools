@@ -31,7 +31,7 @@
         "@sap-ux/project-access": "workspace:*"
     },
     "devDependencies": {
-        "@types/validate-npm-package-name": "4.0.1",
+        "@types/validate-npm-package-name": "4.0.2",
         "jest-extended": "6.0.0"
     },
     "files": [

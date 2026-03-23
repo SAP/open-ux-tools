@@ -44,7 +44,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
-        "@jest/types": "30.2.0",
+        "@jest/types": "30.3.0",
         "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
@@ -56,7 +56,7 @@
         "memfs": "3.4.13",
         "mem-fs-editor": "9.4.0",
         "lodash": "4.17.23",
-        "@types/lodash": "4.14.202",
+        "@types/lodash": "4.17.24",
         "rimraf": "6.1.3",
         "unionfs": "4.4.0",
         "yeoman-test": "6.3.0"
