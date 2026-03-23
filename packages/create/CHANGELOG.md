@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.15.48
+
+### Patch Changes
+
+- cfb79f9: fix: npm install issues using convert eslint-config command
+- Updated dependencies [cfb79f9]
+    - @sap-ux/app-config-writer@0.6.125
+
 ## 0.15.47
 
 ### Patch Changes
