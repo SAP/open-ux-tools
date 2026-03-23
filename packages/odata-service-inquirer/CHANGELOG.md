@@ -1,5 +1,20 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.20.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.26
+- @sap-ux/project-access@1.35.14
+- @sap-ux/telemetry@0.6.88
+- @sap-ux/axios-extension@1.25.24
+- @sap-ux/fiori-generator-shared@0.13.88
+- @sap-ux/project-input-validator@0.6.69
+
 ## 2.19.14
 
 ### Patch Changes
