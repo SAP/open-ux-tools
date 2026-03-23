@@ -93,7 +93,7 @@
         "writingPhase": "An error occurred in the writing phase of the adaptation project generation. To see the error, view the logs.",
         "telemetry": "An error occurred when sending telemetry data: {{- error}}. To see the error, view the logs.",
         "updatingApp": "An error occurred when creating a new adaptation project. To see the error, view the logs.",
-        "cloudSystemsForInternalUsers": "You have selected a system that does not support On-Premise adaptation projects. Please select a supported system.",
+        "cloudSystemsForInternalUsers": "You have selected a system that does not support Classic adaptation projects. Please select a supported system.",
         "notDeployableNotFlexEnabledSystemError": "The system that you have selected is not an ABAP On-Premise system. Adaptation projects are only supported on those systems. Please choose an ABAP On-Premise system which supports flexibility and DTA_FOLDER deployment.",
         "notDeployableSystemError": "The system that you have selected is not an ABAP On-Premise system which supports `DTA_FOLDER` deployment. Adaptation projects are only supported on those systems. Please choose an ABAP On-Premise system which supports `DTA_FOLDER` deployment.",
         "notFlexEnabledError": "The system that you have selected is not an ABAP On-Premise system which supports flexibility. Adaptation projects are only supported on those systems. Please choose an ABAP On-Premise system which supports flexibility. If you continue, you will only be able to create an extension project.",
