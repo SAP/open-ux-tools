@@ -304,7 +304,7 @@ Options:
 
 ## [`convert eslint-config`](#convert-eslint-config)
 
-Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (used since ESLint version 9), introduces specific ESLint checks for SAP Fiori applications (using plugin `@sap-ux/eslint-plugin-fiori-tools`), and deletes the deprecated plugin `eslint-plugin-fiori-custom`. To avoid dependency resolution conflicts, it deletes the `node_modules` folder as well as `package-lock.json` before running `npm install`.
+Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (used since ESLint version 9), introduces specific ESLint checks for SAP Fiori applications (using plugin `@sap-ux/eslint-plugin-fiori-tools`), and deletes the deprecated plugin `eslint-plugin-fiori-custom`. To avoid dependency resolution conflicts, it deletes `package-lock.json` as well as `@sap-ux/eslint-plugin-fiori-tools` from the `node_modules` folder before running `npm install`.
 
 Examples:
 
@@ -314,7 +314,7 @@ Options:
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 - `-c, --config <string>` - The name of the SAP Fiori tools ESLint plugin configuration to be used. _(default: `recommended`)_
-- `-n, --skip-install` - Skip the `npm install` step (also skips deleting the `node_modules` folder and `package-lock.json`).
+- `-n, --skip-install` - Skip the `npm install` step (also skips deleting `package-lock.json` and `@sap-ux/eslint-plugin-fiori-tools` from the `node_modules` folder).
 
 --------------------------------
 

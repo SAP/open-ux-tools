@@ -14,7 +14,7 @@ import { join } from 'node:path';
 export function addConvertEslintCommand(cmd: Command): void {
     cmd.command('eslint-config [path]')
         .description(
-            `Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (used since ESLint version 9), introduces specific ESLint checks for SAP Fiori applications (using plugin \`@sap-ux/eslint-plugin-fiori-tools\`), and deletes the deprecated plugin \`eslint-plugin-fiori-custom\`. To avoid dependency resolution conflicts, it deletes the \`node_modules\` folder as well as \`package-lock.json\` before running \`npm install\`.\n
+            `Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (used since ESLint version 9), introduces specific ESLint checks for SAP Fiori applications (using plugin \`@sap-ux/eslint-plugin-fiori-tools\`), and deletes the deprecated plugin \`eslint-plugin-fiori-custom\`. To avoid dependency resolution conflicts, it deletes \`package-lock.json\` as well as \`@sap-ux/eslint-plugin-fiori-tools\` from the \`node_modules\` folder before running \`npm install\`.\n
 Examples:
     \`npx --yes @sap-ux/create@latest convert eslint-config\``
         )
@@ -27,7 +27,7 @@ Examples:
         )
         .option(
             '-n, --skip-install',
-            'Skip the `npm install` step (also skips deleting the `node_modules` folder and `package-lock.json`).'
+            'Skip the `npm install` step (also skips deleting `package-lock.json` and `@sap-ux/eslint-plugin-fiori-tools` from the `node_modules` folder).'
         )
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
@@ -72,8 +72,10 @@ async function convertEslintConfig(
                         `\`npm install\` was skipped. Ensure you install the dependencies before executing any linting commands.`
                     );
                 } else {
-                    logger.info(`Deleting \`node_modules\` to avoid dependency resolution conflicts.`);
-                    execNpmCommand(['uninstall', '--no-save'], {
+                    logger.info(
+                        `Deleting \`@sap-ux/eslint-plugin-fiori-tools\` from \`node_modules\` to avoid dependency resolution conflicts.`
+                    );
+                    execNpmCommand(['uninstall', '@sap-ux/eslint-plugin-fiori-tools', '--no-save'], {
                         cwd: basePath,
                         logger: logger
                     })
