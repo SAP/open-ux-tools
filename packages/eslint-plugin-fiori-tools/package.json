@@ -27,7 +27,7 @@
         "cross-env": "10.1.0",
         "eslint": "^9",
         "@typescript-eslint/rule-tester": "8.57.2",
-        "eslint-plugin-eslint-plugin": "7.2.0"
+        "eslint-plugin-eslint-plugin": "7.3.2"
     },
     "dependencies": {
         "@babel/core": "^7.28.5",
