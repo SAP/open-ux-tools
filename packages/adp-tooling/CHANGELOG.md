@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.98
+
+### Patch Changes
+
+- 2cd2544: feat: Change the way business service credentials are retrieved in the ADP generator
+
 ## 0.18.97
 
 ### Patch Changes
