@@ -238,6 +238,15 @@ export class ConnectionValidator {
     }
 
     /**
+     * Get the connection type.
+     *
+     * @returns the connection type, either 'abap_catalog' or 'odata_path'
+     */
+    public get connectType(): ConnectionType {
+        return this._connectType;
+    }
+
+    /**
      * Get the connected system name. If previously set this will be used, otherwise the name is determined
      * by the system auth type, or the validated url.
      *

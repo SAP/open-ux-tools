@@ -59,6 +59,11 @@ export interface LocalBackendConfig extends BaseBackendConfig {
      * Mandatory URL pointing to the backend system
      */
     url: string;
+    /**
+     * Path used to connect to a specific service in the backend system.
+     * This is required to fetch the correct credentials from the store when a full odata service url 'system' is used.
+     */
+    connectPath?: string;
 }
 
 export type BackendConfig = LocalBackendConfig | DestinationBackendConfig;

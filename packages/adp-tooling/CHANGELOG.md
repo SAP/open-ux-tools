@@ -1,5 +1,24 @@
 # @sap-ux/adp-tooling
 
+## 0.18.98
+
+### Patch Changes
+
+- 2cd2544: feat: Change the way business service credentials are retrieved in the ADP generator
+
+## 0.18.97
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/inquirer-common@0.11.26
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/project-input-validator@0.6.69
+
 ## 0.18.96
 
 ### Patch Changes

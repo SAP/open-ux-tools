@@ -1,5 +1,42 @@
 # @sap-ux/create
 
+## 0.15.47
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+    - @sap-ux/flp-config-inquirer@0.4.157
+    - @sap-ux/preview-middleware@0.24.5
+    - @sap-ux/app-config-writer@0.6.124
+
+## 0.15.46
+
+### Patch Changes
+
+- Updated dependencies [55eb5dc]
+    - @sap-ux/preview-middleware@0.24.4
+    - @sap-ux/app-config-writer@0.6.124
+
+## 0.15.45
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/abap-deploy-config-inquirer@1.8.0
+    - @sap-ux/abap-deploy-config-writer@0.3.0
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/adp-tooling@0.18.97
+    - @sap-ux/preview-middleware@0.24.3
+    - @sap-ux/app-config-writer@0.6.124
+    - @sap-ux/mockserver-config-writer@0.9.64
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/flp-config-inquirer@0.4.156
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/cap-config-writer@0.12.80
+
 ## 0.15.44
 
 ### Patch Changes

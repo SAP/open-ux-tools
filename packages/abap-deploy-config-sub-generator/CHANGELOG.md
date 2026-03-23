@@ -1,5 +1,30 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+
+## 0.3.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/abap-deploy-config-inquirer@1.8.0
+    - @sap-ux/abap-deploy-config-writer@0.3.0
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/adp-tooling@0.18.97
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/deploy-config-generator-shared@0.1.107
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.88
+
 ## 0.2.33
 
 ### Patch Changes
