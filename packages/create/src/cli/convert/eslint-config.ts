@@ -63,32 +63,30 @@ async function convertEslintConfig(
                 logger.info(`Deleting \`package-lock.json\` to avoid conflicts.`);
                 fs.delete(join(basePath, 'package-lock.json'));
             }
-            fs.commit(() => {
+            await new Promise<void>((resolve) => fs.commit(resolve));
+            logger.info(
+                `ESlint configuration converted. Ensure the new configuration is working correctly before deleting old configuration files like '.eslintrc.json' or '.eslintignore'.`
+            );
+            if (skipInstall) {
                 logger.info(
-                    `ESlint configuration converted. Ensure the new configuration is working correctly before deleting old configuration files like '.eslintrc.json' or '.eslintignore'.`
+                    `\`npm install\` was skipped. Ensure you install the dependencies before executing any linting commands.`
                 );
-                if (skipInstall) {
-                    logger.info(
-                        `\`npm install\` was skipped. Ensure you install the dependencies before executing any linting commands.`
-                    );
-                } else {
+            } else {
+                try {
                     logger.info(
                         `Deleting \`@sap-ux/eslint-plugin-fiori-tools\` from \`node_modules\` to avoid dependency resolution conflicts.`
                     );
-                    execNpmCommand(['uninstall', '@sap-ux/eslint-plugin-fiori-tools', '--no-save'], {
+                    await execNpmCommand(['uninstall', '@sap-ux/eslint-plugin-fiori-tools', '--no-save'], {
                         cwd: basePath,
                         logger: logger
-                    })
-                        .then(() => {
-                            logger.info('npm uninstall completed successfully.');
-                            logger.info(`Executing \`npm install\`.`);
-                            runNpmInstallCommand(basePath, undefined, { logger });
-                        })
-                        .catch((error) => {
-                            logger.error(`npm (un)install failed. '${(error as Error).message}'`);
-                        });
+                    });
+                    logger.info('npm uninstall completed successfully.');
+                    logger.info(`Executing \`npm install\`.`);
+                    runNpmInstallCommand(basePath, undefined, { logger });
+                } catch (error) {
+                    logger.error(`npm command failed. '${(error as Error).message}'`);
                 }
-            });
+            }
         }
     } catch (error) {
         logger.error(`Error while executing convert eslint-config. '${(error as Error).message}'`);

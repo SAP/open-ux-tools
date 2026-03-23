@@ -61,7 +61,7 @@ export async function convertEslintConfig(
     await removeFioriToolsFromExistingConfig(basePath, fs, logger);
     await runMigrationCommand(basePath, fs);
     await injectFioriToolsIntoMigratedConfig(basePath, fs, options.config, logger);
-    await updatePackageJson(basePath, fs);
+    await updatePackageJson(basePath, fs, logger);
 
     return fs;
 }
@@ -271,8 +271,9 @@ async function spawnMigrationCommand(basePath: string, configFileName: string): 
  *
  * @param basePath - base path to be used for the conversion
  * @param fs - file system reference
+ * @param logger - logger to report info to the user
  */
-async function updatePackageJson(basePath: string, fs: Editor): Promise<void> {
+async function updatePackageJson(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<void> {
     const packageJsonPath = join(basePath, FileName.Package);
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     packageJson.devDependencies ??= {};
@@ -280,6 +281,9 @@ async function updatePackageJson(basePath: string, fs: Editor): Promise<void> {
     packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_TOOLS] = '^9.0.0';
     delete packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_CUSTOM];
     packageJson.scripts ??= {};
+    if (packageJson.scripts['lint']) {
+        logger?.info('The `lint` script in the `package.json` file will be overwritten.');
+    }
     packageJson.scripts['lint'] = 'eslint ./';
     fs.writeJSON(packageJsonPath, packageJson);
 }

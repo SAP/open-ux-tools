@@ -39,7 +39,7 @@ describe('Test command convert eslint-config', () => {
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
         jest.spyOn(appConfigWriter, 'convertEslintConfig').mockResolvedValue(fsMock);
-        runNpmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => undefined);
+        runNpmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => Promise.resolve());
         execNpmCommandSpy = jest.spyOn(projectAccess, 'execNpmCommand').mockResolvedValue('');
     });
 
@@ -293,7 +293,7 @@ describe('Test command convert eslint-config', () => {
             expect.objectContaining({ cwd: appRoot, logger: loggerMock })
         );
         expect(loggerMock.error).toHaveBeenCalledWith(
-            expect.stringContaining(`npm (un)install failed. '${uninstallError.message}'`)
+            expect.stringContaining(`npm command failed. '${uninstallError.message}'`)
         );
         expect(runNpmInstallSpy).not.toHaveBeenCalled();
     });
