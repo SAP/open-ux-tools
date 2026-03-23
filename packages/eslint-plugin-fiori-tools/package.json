@@ -30,7 +30,7 @@
         "eslint-plugin-eslint-plugin": "7.3.2"
     },
     "dependencies": {
-        "@babel/core": "^7.28.5",
+        "@babel/core": "7.29.0",
         "@babel/eslint-parser": "^7.28.5",
         "@eslint/js": "^9",
         "@eslint/json": "0.14.0",
