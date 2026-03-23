@@ -131,10 +131,10 @@ export function UIFormattedText(props: Readonly<UIFormattedTextProps>): ReactEle
         values,
         (index: number, textPart: string, match?: string) => {
             return (
-                <span key={`anchor-${index}`}>
+                <React.Fragment key={`anchor-${index}`}>
                     {textPart}
                     {match && <b>{match}</b>}
-                </span>
+                </React.Fragment>
             );
         }
     );
