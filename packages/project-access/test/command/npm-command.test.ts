@@ -25,7 +25,7 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
         // Mock setup
         const processMock = getProcessMock((event, cb) => {
             if (event === 'exit') {
-                cb();
+                cb(0);
             }
         });
         const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
@@ -42,7 +42,7 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
         // Mock setup
         const processMock = getProcessMock((event, cb) => {
             if (event === 'exit') {
-                cb();
+                cb(0);
             }
         });
         const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
@@ -56,9 +56,8 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
 
         // Result check
         expect(spawnMock).toHaveBeenCalledWith('npm', ['install', 'mock-module'], { cwd: 'some/path' });
-        expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('data-STDERR_MOCK_DATA'));
-        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('data-STDOUT_MOCK_DATA'));
-    });
+        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('data-STDERR_MOCK_DATA'));
+        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('data-STDOUT_MOCK_DATA'));    });
 
     test('Error handling with logger', async () => {
         // Mock setup
@@ -104,7 +103,7 @@ describe('Test execNpmCommand(), simulate windows', () => {
         // Mock setup
         const processMock = getProcessMock((event, cb) => {
             if (event === 'exit') {
-                cb();
+                cb(0);
             }
         });
         const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
@@ -124,7 +123,7 @@ describe('Test execNpmCommand(), simulate windows', () => {
         // Mock setup
         const processMock = getProcessMock((event, cb) => {
             if (event === 'exit') {
-                cb();
+                cb(0);
             }
         });
         const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);

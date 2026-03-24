@@ -37,17 +37,20 @@ export async function execNpmCommand(
         spawnProcess.stderr.on('data', (data) => {
             stdErr += data.toString();
         });
-        spawnProcess.on('exit', () => {
-            if (logger) {
-                const commandString = `${npmCommand} ${commandArguments.join(' ')}`;
-                if (stdErr) {
-                    logger.error(`Command '${commandString}' not successful, stderr: ${stdErr}`);
+        spawnProcess.on('exit', (code) => {
+            const commandString = `${npmCommand} ${commandArguments.join(' ')}`;
+            if (code !== 0) {
+                logger?.error(`Command '${commandString}' not successful, stderr: ${stdErr}`);
+                reject(new Error(stdErr || `Command '${commandString}' exited with code ${code}`));
+            } else {
+                if (logger) {
+                    const output = [stdOut, stdErr].filter(Boolean).join('\n');
+                    if (output) {
+                        logger.info(`Command '${commandString}' successful:\n${output}`);
+                    }
                 }
-                if (stdOut) {
-                    logger.info(`Command '${commandString}' successful, stdout: ${stdOut}`);
-                }
+                resolve(stdOut);
             }
-            resolve(stdOut);
         });
         spawnProcess.on('error', (error) => {
             logger?.error(`Error executing npm command '${npmCommand} ${commandArguments.join(' ')}': ${error}`);
