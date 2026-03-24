@@ -57,7 +57,8 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
         // Result check
         expect(spawnMock).toHaveBeenCalledWith('npm', ['install', 'mock-module'], { cwd: 'some/path' });
         expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('data-STDERR_MOCK_DATA'));
-        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('data-STDOUT_MOCK_DATA'));    });
+        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('data-STDOUT_MOCK_DATA'));
+    });
 
     test('Error handling with logger', async () => {
         // Mock setup
