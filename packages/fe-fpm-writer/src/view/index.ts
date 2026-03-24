@@ -98,7 +98,7 @@ export async function generateCustomView(basePath: string, customView: CustomVie
     fs ??= create(createStorage());
     await validateBasePath(basePath, fs);
 
-    const fnGenerateId = await createIdGenerator(basePath, fs);
+    const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     // merge with defaults
