@@ -132,7 +132,9 @@ class EmbeddingBuilder {
                     }
                 });
             } catch (fallbackError) {
-                this.logger.warn(`Failed to load fallback model (${fallbackError.message}), skipping embedding generation.`);
+                this.logger.warn(
+                    `Failed to load fallback model (${fallbackError.message}), skipping embedding generation.`
+                );
                 return;
             }
         }
