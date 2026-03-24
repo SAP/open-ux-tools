@@ -2,6 +2,7 @@ import type { AbapDeployConfig, CliOptions } from '../../../src/types';
 import { getDeploymentConfig, mergeConfig } from '../../../src/cli/config';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import ProcessEnv = NodeJS.ProcessEnv;
 
 describe('cli/config', () => {
@@ -131,6 +132,60 @@ describe('cli/config', () => {
                 username: 'env:DotEnvMyUsername',
                 password: 'env:DotEnvMyPassword'
             });
+        });
+    });
+
+    describe('mergeConfig $TMP normalization', () => {
+        const baseConfig: AbapDeployConfig = {
+            app: { name: 'ZAPP', description: '', package: '', transport: '' },
+            target: { url: 'http://target.example' }
+        };
+
+        test('normalizes $tmp to $TMP and warns', async () => {
+            const logger = new ToolsLogger({ transports: [new NullTransport()] });
+            const warnSpy = jest.spyOn(logger, 'warn');
+            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: '$tmp' } }, {}, logger);
+            expect(merged.app.package).toBe('$TMP');
+            expect(warnSpy).toHaveBeenCalledWith(
+                'Package name was normalized to $TMP. Lowercase $tmp may cause deployment failures.'
+            );
+        });
+
+        test('normalizes mixed-case $Tmp to $TMP and warns', async () => {
+            const logger = new ToolsLogger({ transports: [new NullTransport()] });
+            const warnSpy = jest.spyOn(logger, 'warn');
+            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: '$Tmp' } }, {}, logger);
+            expect(merged.app.package).toBe('$TMP');
+            expect(warnSpy).toHaveBeenCalledTimes(1);
+        });
+
+        test('does not warn when package is already $TMP', async () => {
+            const logger = new ToolsLogger({ transports: [new NullTransport()] });
+            const warnSpy = jest.spyOn(logger, 'warn');
+            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: '$TMP' } }, {}, logger);
+            expect(merged.app.package).toBe('$TMP');
+            expect(warnSpy).not.toHaveBeenCalled();
+        });
+
+        test('does not normalize non-$TMP packages', async () => {
+            const logger = new ToolsLogger({ transports: [new NullTransport()] });
+            const warnSpy = jest.spyOn(logger, 'warn');
+            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: 'mypackage' } }, {}, logger);
+            expect(merged.app.package).toBe('mypackage');
+            expect(warnSpy).not.toHaveBeenCalled();
+        });
+
+        test('normalizes $tmp from CLI option', async () => {
+            const logger = new ToolsLogger({ transports: [new NullTransport()] });
+            const warnSpy = jest.spyOn(logger, 'warn');
+            const merged = await mergeConfig(baseConfig, { package: '$tmp' } as CliOptions, logger);
+            expect(merged.app.package).toBe('$TMP');
+            expect(warnSpy).toHaveBeenCalledTimes(1);
+        });
+
+        test('works without a logger (no crash)', async () => {
+            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: '$tmp' } }, {});
+            expect(merged.app.package).toBe('$TMP');
         });
     });
 });
