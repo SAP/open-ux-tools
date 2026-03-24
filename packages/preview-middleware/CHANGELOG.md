@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.25.0
+
+### Minor Changes
+
+- 997f605: fix: adjust resource-roots for rta editor endpoints
+
 ## 0.24.6
 
 ### Patch Changes
