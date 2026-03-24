@@ -29,7 +29,7 @@
         "@sap-ux/logger": "workspace:*",
         "i18next": "25.8.18",
         "pluralize": "8.0.0",
-        "reflect-metadata": "0.1.13"
+        "reflect-metadata": "0.2.2"
     },
     "optionalDependencies": {
         "@zowe/secrets-for-zowe-sdk": "8.29.4"

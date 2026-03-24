@@ -33,7 +33,7 @@
         "test-u": "jest --ci --forceExit --colors  --silent -u"
     },
     "dependencies": {
-        "@fluentui/react": "8.120.5",
+        "@fluentui/react": "8.125.5",
         "react-movable": "2.5.4",
         "react-select": "5.10.2",
         "react-virtualized": "9.22.6",
