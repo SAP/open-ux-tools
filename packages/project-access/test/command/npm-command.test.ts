@@ -226,7 +226,9 @@ describe('Test execNpmCommand(), simulate windows', () => {
  * @param onHandler - handler for process.on
  * @returns - mock implementation of child_process.ChildProcess
  */
-function getProcessMock(onHandler: (event: string, cb: (data?: any, data2?: any) => void) => void): childProcessMock.ChildProcess {
+function getProcessMock(
+    onHandler: (event: string, cb: (data?: any, data2?: any) => void) => void
+): childProcessMock.ChildProcess {
     return {
         stdout: {
             on: jest.fn().mockImplementationOnce((event, cb) => cb(`${event}-STDOUT_MOCK_DATA`))
