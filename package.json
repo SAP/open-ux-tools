@@ -90,7 +90,7 @@
             "mta-local": "1.0.8",
             "router>path-to-regexp": "0.1.12",
             "router@^2.0.0>path-to-regexp": "8.2.0",
-            "tar@<7.5.9": ">=7.5.9",
+            "tar@<7.5.7": ">=7.5.7",
             "get-uri>basic-ftp": "=5.2.0",
             "@puppeteer/browsers>proxy-agent": ">=6.5.0",
             "minimatch@<3.1.5": "^3.1.5",
