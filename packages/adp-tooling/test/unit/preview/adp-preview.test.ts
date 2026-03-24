@@ -7,7 +7,7 @@ import supertest from 'supertest';
 import type { Editor } from 'mem-fs-editor';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
-import type { SuperTest, Test } from 'supertest';
+
 
 import { type Logger, ToolsLogger } from '@sap-ux/logger';
 import * as systemAccess from '@sap-ux/system-access/dist/base/connect';
@@ -426,7 +426,7 @@ describe('AdaptationProject', () => {
         });
     });
     describe('proxy', () => {
-        let server: SuperTest<Test>;
+        let server: supertest.Agent;
         const next = jest.fn().mockImplementation((_req, res) => res.status(200).send());
         beforeAll(async () => {
             nock(backend)
@@ -618,7 +618,7 @@ describe('AdaptationProject', () => {
     });
 
     describe('addApis', () => {
-        let server: SuperTest<Test>;
+        let server: supertest.Agent;
         beforeAll(async () => {
             nock(backend)
                 .get((path) => path.startsWith('/sap/bc/lrep/actions/getcsrftoken/'))
@@ -981,7 +981,7 @@ describe('AdaptationProject', () => {
     });
 
     describe('addApis - cfBuildPath mode', () => {
-        let cfBuildPathServer: SuperTest<Test>;
+        let cfBuildPathServer: supertest.Agent;
         beforeAll(async () => {
             const adp = new AdpPreview(
                 {
