@@ -4050,8 +4050,8 @@ importers:
         specifier: 0.0.33
         version: 0.0.33
       '@types/qs':
-        specifier: 6.9.1
-        version: 6.9.1
+        specifier: 6.15.0
+        version: 6.15.0
       fast-check:
         specifier: 2.25.0
         version: 2.25.0
@@ -24429,7 +24429,7 @@ snapshots:
   '@types/express-serve-static-core@4.19.8':
     dependencies:
       '@types/node': 20.19.37
-      '@types/qs': 6.9.1
+      '@types/qs': 6.15.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
 
