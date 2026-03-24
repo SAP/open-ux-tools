@@ -1,5 +1,55 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.211
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/adp-tooling@0.18.99
+    - @sap-ux/fiori-generator-shared@0.13.88
+    - @sap-ux/flp-config-inquirer@0.4.158
+    - @sap-ux/system-access@0.7.1
+
+## 0.1.210
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+    - @sap-ux/flp-config-inquirer@0.4.157
+
+## 0.1.209
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/adp-tooling@0.18.97
+    - @sap-ux/inquirer-common@0.11.26
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/flp-config-inquirer@0.4.156
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.88
+
+## 0.1.208
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+    - @sap-ux/flp-config-inquirer@0.4.155
+    - @sap-ux/inquirer-common@0.11.25
+    - @sap-ux/adp-tooling@0.18.96
+
+## 0.1.207
+
+### Patch Changes
+
+- Updated dependencies [4f86250]
+    - @sap-ux/adp-tooling@0.18.95
+    - @sap-ux/flp-config-inquirer@0.4.154
+
 ## 0.1.206
 
 ### Patch Changes

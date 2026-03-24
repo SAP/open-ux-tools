@@ -1,5 +1,89 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.13.2
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.108
+- @sap-ux/odata-service-inquirer@2.20.1
+
+## 0.13.1
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/fiori-generator-shared@0.13.88
+    - @sap-ux/odata-service-inquirer@2.20.1
+    - @sap-ux/odata-service-writer@0.31.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/odata-service-inquirer@2.20.0
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/fiori-elements-writer@2.8.107
+    - @sap-ux/fiori-freestyle-writer@2.5.78
+    - @sap-ux/launch-config@0.10.77
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/telemetry@0.6.88
+    - @sap-ux/ui5-application-inquirer@0.17.2
+    - @sap-ux/annotation-generator@0.4.42
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/cap-config-writer@0.12.80
+    - @sap-ux/fiori-generator-shared@0.13.88
+
+## 0.12.3
+
+### Patch Changes
+
+- b516f01: add new opa tests for LR and OP, refactor file writing
+- Updated dependencies [b516f01]
+    - @sap-ux/fiori-elements-writer@2.8.106
+    - @sap-ux/odata-service-inquirer@2.19.14
+    - @sap-ux/fiori-freestyle-writer@2.5.77
+
+## 0.12.2
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+    - @sap-ux/cap-config-writer@0.12.79
+    - @sap-ux/fiori-elements-writer@2.8.105
+    - @sap-ux/fiori-freestyle-writer@2.5.76
+    - @sap-ux/odata-service-inquirer@2.19.14
+    - @sap-ux/ui5-application-inquirer@0.17.1
+
+## 0.12.1
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.41
+- @sap-ux/fiori-elements-writer@2.8.104
+- @sap-ux/fiori-freestyle-writer@2.5.75
+- @sap-ux/odata-service-inquirer@2.19.13
+
+## 0.12.0
+
+### Minor Changes
+
+- b5c7d47: Enable ESLint by default for new applications.
+
+### Patch Changes
+
+- Updated dependencies [b5c7d47]
+    - @sap-ux/ui5-application-inquirer@0.17.0
+    - @sap-ux/fiori-elements-writer@2.8.103
+    - @sap-ux/fiori-freestyle-writer@2.5.75
+    - @sap-ux/odata-service-inquirer@2.19.13
+
 ## 0.11.107
 
 ### Patch Changes

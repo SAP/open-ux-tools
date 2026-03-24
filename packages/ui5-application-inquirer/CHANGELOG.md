@@ -1,5 +1,25 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.17.2
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.26
+- @sap-ux/project-access@1.35.14
+- @sap-ux/project-input-validator@0.6.69
+
+## 0.17.1
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.25
+
+## 0.17.0
+
+### Minor Changes
+
+- b5c7d47: Hide ESLint prompt from users as ESLint is now enabled by default in the writer. The enableEslint prompt is no longer shown during application generation.
+
 ## 0.16.46
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.25.25
+
+### Patch Changes
+
+- c0e05ab: Updates catalog services dedup logic to include url
+
 ## 1.25.24
 
 ### Patch Changes

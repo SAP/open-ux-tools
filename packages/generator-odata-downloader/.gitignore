@@ -1,3 +1,0 @@
-# Allow output of 'pnpm pack'
-
-!*.tgz

@@ -1,5 +1,22 @@
 # @sap-ux/system-access
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+
+## 0.7.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.24
+
 ## 0.6.66
 
 ### Patch Changes

@@ -104,9 +104,9 @@ export class MtaConfig {
     /**
      * Determines if the MTA configuration contains a known resource or module.
      *
-     * @param requires resource to validate
-     * @param resourceType managed or existing service
-     * @returns true if the resource exists, false otherwise
+     * @param requires Resource requirements array to validate
+     * @param resourceType Managed or existing service type identifier
+     * @returns True if the resource exists, false otherwise
      * @private
      */
     private targetExists(requires: mta.Requires[], resourceType: string): boolean {
@@ -299,7 +299,7 @@ export class MtaConfig {
     /**
      * Add a destination service to the MTA.
      *
-     * @param isManagedApp - If the destination service is for a managed app
+     * @param isManagedApp If the destination service is for a managed app (default: false)
      */
     private async addDestinationResource(isManagedApp = false): Promise<void> {
         const destinationName = `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-destination-service`;
@@ -324,7 +324,7 @@ export class MtaConfig {
     /**
      * Update the destination service in the MTA if not already present.
      *
-     * @param isManagedApp - If the destination service is for a managed app, false by default
+     * @param isManagedApp If the destination service is for a managed app (default: false)
      */
     private async updateDestinationResource(isManagedApp = false): Promise<void> {
         const resource = this.resources.get('destination');
@@ -361,9 +361,9 @@ export class MtaConfig {
     /**
      * Update the server module to include the required dependencies to ensure endpoints are secured.
      *
-     * @param moduleType known module type
-     * @param supportedResource selected resource to be added
-     * @param appendSrvApi if `srv-api` should be appended, typically used for CAP flows
+     * @param moduleType Known module type (e.g., 'nodejs', 'java')
+     * @param supportedResource Selected resource to be added (default: ManagedXSUAA)
+     * @param appendSrvApi If `srv-api` should be appended, typically used for CAP flows (default: true)
      */
     private async updateServerModule(
         moduleType: ModuleType,
@@ -418,8 +418,8 @@ export class MtaConfig {
     /**
      * Verify if the destination is valid and if WebIDEUsage is set to ODATA_GENERIC or ODATA_ABAP.
      *
-     * @param {MTADestinationType} destination - destination object
-     * @returns {boolean} - true if the destination is valid, false otherwise
+     * @param destination Destination object to validate
+     * @returns True if the destination is an OData destination (ODATA_GENERIC or ODATA_ABAP), false otherwise
      */
     private isODataDestination(destination: Destination): boolean {
         return isGenericODataDestination(destination) || isAbapEnvironmentOnBtp(destination);
@@ -429,7 +429,6 @@ export class MtaConfig {
      * Cleanup missing content for Managed | Standalone router types.
      *
      * @private
-     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     private async cleanupMissingResources(): Promise<void> {
         this.log?.debug(t('debug.addMissingModules'));
@@ -483,7 +482,7 @@ export class MtaConfig {
     /**
      * Returns the MTA prefix, read from the MTA ID.
      *
-     * @returns {string} the MTA ID
+     * @returns The MTA ID prefix
      */
     public get prefix(): string {
         return this.mtaId;
@@ -492,7 +491,7 @@ export class MtaConfig {
     /**
      * Returns the path to the standalone approuter module.
      *
-     * @returns {string | undefined} the MTA ID
+     * @returns The path to the standalone approuter module, or undefined if not found
      */
     public get standaloneRouterPath(): string | undefined {
         return this.modules.get('approuter.nodejs')?.path;
@@ -501,7 +500,7 @@ export class MtaConfig {
     /**
      * Returns the cloud service name, read from the content module which contains destinations.
      *
-     * @returns {string | undefined} the cloud service name
+     * @returns The cloud service name, or undefined if not found
      */
     public get cloudServiceName(): string | undefined {
         let cloudServiceName;
@@ -522,25 +521,25 @@ export class MtaConfig {
     /**
      * Returns true if the MTA contains an approuter module of type App Frontend Service.
      *
-     * @returns {boolean} true if the mta contains an App Frontend Service
+     * @returns True if the MTA contains an App Frontend Service
      */
     public hasAppFrontendRouter(): boolean {
         return this.modules.has('com.sap.application.content:appfront');
     }
 
     /**
-     * Returns the mta parameters.
+     * Returns the MTA parameters.
      *
-     * @returns {Promise<mta.Parameters>} the MTA parameters
+     * @returns The MTA parameters
      */
     public async getParameters(): Promise<mta.Parameters> {
         return this.mta.getParameters();
     }
 
     /**
-     * Returns the mta build parameters.
+     * Returns the MTA build parameters.
      *
-     * @returns {Promise<mta.Parameters>} the MTA build parameters
+     * @returns The MTA build parameters
      */
     public async getBuildParameters(): Promise<mta.ProjectBuildParameters> {
         return this.mta.getBuildParameters();
@@ -549,8 +548,7 @@ export class MtaConfig {
     /**
      * Update the MTA parameters.
      *
-     * @param parameters the MTA parameters being applied
-     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
+     * @param parameters The MTA parameters being applied
      */
     public async updateParameters(parameters: mta.Parameters): Promise<void> {
         await this.mta?.updateParameters(parameters);
@@ -560,8 +558,7 @@ export class MtaConfig {
     /**
      * Update the MTA build parameters i.e. build-parameters -> before-all.
      *
-     * @param parameters the MTA build parameters being applied
-     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
+     * @param parameters The MTA build parameters being applied
      */
     public async updateBuildParams(parameters: mta.ProjectBuildParameters): Promise<void> {
         await this.mta?.updateBuildParameters(parameters);

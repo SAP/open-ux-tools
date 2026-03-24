@@ -1,5 +1,25 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.85
+
+### Patch Changes
+
+- 55d833f: fix i18next init showSupportNotice: false.
+
+## 0.3.84
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/project-access@1.35.14
+
+## 0.3.83
+
+### Patch Changes
+
+- 0e856a7: Ensure mta service-name is handled
+
 ## 0.3.82
 
 ### Patch Changes
