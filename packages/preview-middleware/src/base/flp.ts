@@ -423,7 +423,10 @@ export class FlpSandbox {
             params['fiori-tools-rta-mode'] = 'true';
             params['sap-ui-rta-skip-flex-validation'] = 'true';
             params['sap-ui-xx-condense-changes'] = 'true';
-            const redirectUrl = new URL(`${url}?${new URLSearchParams(params as Record<string, string>)}`, 'http://localhost');
+            const redirectUrl = new URL(
+                `${url}?${new URLSearchParams(params as Record<string, string>)}`,
+                'http://localhost'
+            );
             res.redirect(302, `${redirectUrl.pathname}${redirectUrl.search}`);
             return;
         }
@@ -482,7 +485,10 @@ export class FlpSandbox {
                 'ui5-patched-router' in req ? posix.join(req['ui5-patched-router']?.baseUrl ?? '', req.path) : req.path;
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
-            const redirectUrl = new URL(`${url}?${new URLSearchParams(params as Record<string, string>)}`, 'http://localhost');
+            const redirectUrl = new URL(
+                `${url}?${new URLSearchParams(params as Record<string, string>)}`,
+                'http://localhost'
+            );
             res.redirect(302, `${redirectUrl.pathname}${redirectUrl.search}`);
             return;
         }
