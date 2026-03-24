@@ -2,6 +2,8 @@
 "@sap-ux/project-integrity": patch
 "@sap-ux-private/playwright": patch
 "@sap-ux/logger": patch
+"@sap-ux/preview-middleware": patch
+"@sap-ux/eslint-plugin-fiori-tools": patch
 ---
 
 fix: update devDependencies and fix @types/node 20.x compatibility
@@ -10,3 +12,5 @@ fix: update devDependencies and fix @types/node 20.x compatibility
 - Fix ReadStream data event handler in project-integrity for @types/node 20.x (chunk type widened to `string | Buffer`)
 - Fix invalid @param JSDoc tags in playwright types
 - Fix logform TransformableInfo field types in logger for stricter TypeScript environments
+- Fix ParsedQs cast to Record<string,string> for URLSearchParams in preview-middleware (stricter @types/qs 6.15)
+- Fix rules cast to Plugin['rules'] in eslint-plugin-fiori-tools configs (stricter @eslint/core 1.x)
