@@ -144,7 +144,11 @@ describe('cli/config', () => {
         test('normalizes $tmp to $TMP and warns', async () => {
             const logger = new ToolsLogger({ transports: [new NullTransport()] });
             const warnSpy = jest.spyOn(logger, 'warn');
-            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: '$tmp' } }, {}, logger);
+            const merged = await mergeConfig(
+                { ...baseConfig, app: { ...baseConfig.app, package: '$tmp' } },
+                {},
+                logger
+            );
             expect(merged.app.package).toBe('$TMP');
             expect(warnSpy).toHaveBeenCalledWith(
                 'Package name was normalized to $TMP. Lowercase $tmp may cause deployment failures.'
@@ -154,7 +158,11 @@ describe('cli/config', () => {
         test('normalizes mixed-case $Tmp to $TMP and warns', async () => {
             const logger = new ToolsLogger({ transports: [new NullTransport()] });
             const warnSpy = jest.spyOn(logger, 'warn');
-            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: '$Tmp' } }, {}, logger);
+            const merged = await mergeConfig(
+                { ...baseConfig, app: { ...baseConfig.app, package: '$Tmp' } },
+                {},
+                logger
+            );
             expect(merged.app.package).toBe('$TMP');
             expect(warnSpy).toHaveBeenCalledTimes(1);
         });
@@ -162,7 +170,11 @@ describe('cli/config', () => {
         test('does not warn when package is already $TMP', async () => {
             const logger = new ToolsLogger({ transports: [new NullTransport()] });
             const warnSpy = jest.spyOn(logger, 'warn');
-            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: '$TMP' } }, {}, logger);
+            const merged = await mergeConfig(
+                { ...baseConfig, app: { ...baseConfig.app, package: '$TMP' } },
+                {},
+                logger
+            );
             expect(merged.app.package).toBe('$TMP');
             expect(warnSpy).not.toHaveBeenCalled();
         });
@@ -170,7 +182,11 @@ describe('cli/config', () => {
         test('does not normalize non-$TMP packages', async () => {
             const logger = new ToolsLogger({ transports: [new NullTransport()] });
             const warnSpy = jest.spyOn(logger, 'warn');
-            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: 'mypackage' } }, {}, logger);
+            const merged = await mergeConfig(
+                { ...baseConfig, app: { ...baseConfig.app, package: 'mypackage' } },
+                {},
+                logger
+            );
             expect(merged.app.package).toBe('mypackage');
             expect(warnSpy).not.toHaveBeenCalled();
         });
