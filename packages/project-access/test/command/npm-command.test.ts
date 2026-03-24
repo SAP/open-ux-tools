@@ -111,13 +111,10 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
             }
         });
         jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
-        const logger = {
-            error: jest.fn()
-        } as unknown as Logger;
 
         // Test execution
         try {
-            await execNpmCommand(['install', 'bad-module'], { logger, throwOnError: true });
+            await execNpmCommand(['install', 'bad-module'], { throwOnError: true });
             expect('Function execNpmCommand should have thrown exception but did not').toBe('Error');
         } catch (error) {
             expect(error.message).toContain('failed with exit code 1');
