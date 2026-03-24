@@ -87,7 +87,7 @@ interface EmbeddingMetadata {
  */
 class EmbeddingBuilder {
     private readonly config: EmbeddingConfig;
-    private pipeline: FeatureExtractionPipeline;
+    private pipeline: FeatureExtractionPipeline | undefined;
     private readonly documents: Document[];
     private readonly chunks: Chunk[];
     private readonly logger: Logger;
@@ -122,14 +122,19 @@ class EmbeddingBuilder {
         } catch (error) {
             this.logger.warn(`Failed to load preferred model (${error.message}), trying fallback...`);
             // Fallback to a simpler model if the main one fails
-            this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-                quantized: false,
-                progress_callback: (progress: ProgressCallback) => {
-                    if (progress.status === 'downloading') {
-                        this.logger.info(`Fallback model downloading: ${Math.round(progress.progress || 0)}%`);
+            try {
+                this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
+                    quantized: false,
+                    progress_callback: (progress: ProgressCallback) => {
+                        if (progress.status === 'downloading') {
+                            this.logger.info(`Fallback model downloading: ${Math.round(progress.progress || 0)}%`);
+                        }
                     }
-                }
-            });
+                });
+            } catch (fallbackError) {
+                this.logger.warn(`Failed to load fallback model (${fallbackError.message}), skipping embedding generation.`);
+                return;
+            }
         }
 
         this.logger.info('✓ Embedding model loaded');
@@ -334,7 +339,7 @@ class EmbeddingBuilder {
     async generateEmbedding(text: string): Promise<number[]> {
         const cleanText = text.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 8192);
 
-        const result = await this.pipeline(cleanText, { pooling: 'mean', normalize: true });
+        const result = await this.pipeline!(cleanText, { pooling: 'mean', normalize: true });
         return Array.from(result.data);
     }
 
@@ -522,6 +527,10 @@ class EmbeddingBuilder {
 
         try {
             await this.initialize();
+            if (!this.pipeline) {
+                this.logger.info('⚠️  No embedding model available, skipping embedding generation.');
+                return;
+            }
             await this.loadDocuments();
             await this.chunkAllDocuments();
             await this.generateAllEmbeddings();
