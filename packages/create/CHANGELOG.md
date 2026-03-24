@@ -1,5 +1,28 @@
 # @sap-ux/create
 
+## 0.15.49
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/abap-deploy-config-inquirer@1.8.1
+    - @sap-ux/adp-tooling@0.18.99
+    - @sap-ux/app-config-writer@0.6.126
+    - @sap-ux/flp-config-inquirer@0.4.158
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/preview-middleware@0.24.6
+    - @sap-ux/system-access@0.7.1
+    - @sap-ux/abap-deploy-config-writer@0.3.1
+
+## 0.15.48
+
+### Patch Changes
+
+- cfb79f9: fix: npm install issues using convert eslint-config command
+- Updated dependencies [cfb79f9]
+    - @sap-ux/app-config-writer@0.6.125
+
 ## 0.15.47
 
 ### Patch Changes
