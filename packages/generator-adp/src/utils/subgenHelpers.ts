@@ -3,13 +3,7 @@ import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type {
-    ConfigAnswers,
-    AttributesAnswers,
-    SystemLookup,
-    FlexLayer,
-    Endpoint
-} from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer, Endpoint } from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
 import { getExtensionProjectData } from '../app/extension-project';

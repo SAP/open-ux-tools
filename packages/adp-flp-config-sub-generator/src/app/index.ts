@@ -538,8 +538,7 @@ export default class AdpFlpConfigGenerator extends Generator {
 
         try {
             this.inbounds =
-                this.inbounds ??
-                (await getCfBaseAppInbounds(this.appId, appHostId, cfConfig, this.toolsLogger));
+                this.inbounds ?? (await getCfBaseAppInbounds(this.appId, appHostId, cfConfig, this.toolsLogger));
         } catch (e) {
             this.toolsLogger.error(`CF inbounds fetching failed: ${e}`);
             this._abortExecution(t('error.cfInboundsFetchFailed', { error: (e as Error).message }));
