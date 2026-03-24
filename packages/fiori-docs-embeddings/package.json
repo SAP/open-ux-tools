@@ -17,7 +17,7 @@
         "update-local-docs": "tsx src/scripts/build-local-docs.ts",
         "update-docs": "npm-run-all -l -s clean-data update-docs-script",
         "prepublishOnly": "npm run build",
-        "update-embeddings-script": "tsx src/scripts/build-embeddings.ts",
+        "update-embeddings-script": "node -e \"process.env.CI||require('child_process').execSync('tsx src/scripts/build-embeddings.ts',{stdio:'inherit'})\"",
         "update-embeddings": "npm-run-all -l -s clean-embeddings update-embeddings-script",
         "update-all": "npm-run-all -l -s update-docs update-embeddings",
         "clean-embeddings": "rm -rf dist data/embeddings",
