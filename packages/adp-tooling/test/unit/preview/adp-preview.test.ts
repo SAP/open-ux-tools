@@ -8,7 +8,6 @@ import type { Editor } from 'mem-fs-editor';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 
-
 import { type Logger, ToolsLogger } from '@sap-ux/logger';
 import * as systemAccess from '@sap-ux/system-access/dist/base/connect';
 import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotations';
