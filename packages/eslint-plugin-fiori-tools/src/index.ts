@@ -237,7 +237,7 @@ export const configs: Record<string, Linter.Config[]> = {
             plugins: {
                 '@sap-ux/fiori-tools': {
                     meta,
-                    rules: rules as Plugin["rules"]
+                    rules: rules as Plugin['rules']
                 }
             }
         },
@@ -253,7 +253,7 @@ export const configs: Record<string, Linter.Config[]> = {
                 '@sap-ux/fiori-tools': {
                     meta,
                     languages,
-                    rules: rules as Plugin["rules"]
+                    rules: rules as Plugin['rules']
                 }
             }
         },
