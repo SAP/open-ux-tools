@@ -1,5 +1,26 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.135
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.26
+- @sap-ux/project-access@1.35.14
+
+## 0.4.134
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.25
+
+## 0.4.133
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [55417bb]
+    - @sap-ux/inquirer-common@0.11.24
+
 ## 0.4.132
 
 ### Patch Changes

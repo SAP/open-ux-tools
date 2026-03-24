@@ -116,6 +116,42 @@ describe('config', () => {
             consoleSpyError.mockRestore();
             consoleSpyWarning.mockRestore();
         });
+
+        test('paths missing a leading slash are sanitized with a leading slash', async () => {
+            const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
+            const consoleSpyWarning = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
+            const config = {
+                flp: {
+                    path: 'test/flpSandbox.html',
+                    intent: { object: 'myapp', action: 'myaction' }
+                },
+                rta: {
+                    layer: 'CUSTOMER_BASE',
+                    editors: [{ path: 'local/editor.html', developerMode: false }]
+                },
+                editors: {
+                    cardGenerator: {
+                        path: 'local/cardGenerator.html'
+                    }
+                },
+                test: [{ framework: 'OPA5', path: 'test/opaTests.qunit.html' }]
+            } as MiddlewareConfig;
+            const previews = getPreviewPaths(config);
+            // FLP path is normalized by getFlpConfigWithDefaults
+            expect(previews.find(({ path }) => path === '/test/flpSandbox.html#myapp-myaction')).toBeDefined();
+            // editor endpoint path gets a leading slash added
+            expect(previews.find(({ path }) => path === '/local/editor.html')).toBeDefined();
+            // card generator path gets a leading slash added
+            expect(previews.find(({ path }) => path === '/local/cardGenerator.html')).toBeDefined();
+            // test path gets a leading slash added
+            expect(previews.find(({ path }) => path === '/test/opaTests.qunit.html')).toBeDefined();
+            // all returned paths start with /
+            previews.forEach(({ path }) => {
+                expect(path.startsWith('/')).toBe(true);
+            });
+            consoleSpyError.mockRestore();
+            consoleSpyWarning.mockRestore();
+        });
     });
 
     describe('generatePreviewFiles', () => {

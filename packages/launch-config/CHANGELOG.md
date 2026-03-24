@@ -1,5 +1,22 @@
 # @sap-ux/launch-config
 
+## 0.10.77
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/project-access@1.35.14
+
+## 0.10.76
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+    - @sap-ux/ui5-info@0.13.15
+    - @sap-ux/ui5-config@0.29.21
+
 ## 0.10.75
 
 ### Patch Changes

@@ -259,10 +259,6 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
             applyConnector: localConnectorPath,
             writeConnector: localConnectorPath,
             custom: true
-        },
-        {
-            connector: 'LocalStorageConnector',
-            layers: ['CUSTOMER', 'USER']
         }
     ];
 }
@@ -468,10 +464,14 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
     // add editor urls
     if (config.editors) {
         config.editors.rta?.endpoints.forEach((endpoint) => {
-            urls.push({ path: endpoint.path, type: 'editor' });
+            urls.push({ path: endpoint.path.startsWith('/') ? endpoint.path : `/${endpoint.path}`, type: 'editor' });
         });
         if (config.editors.cardGenerator?.path) {
-            urls.push({ path: config.editors.cardGenerator.path, type: 'editor' });
+            const cardGeneratorPath = config.editors.cardGenerator.path;
+            urls.push({
+                path: cardGeneratorPath.startsWith('/') ? cardGeneratorPath : `/${cardGeneratorPath}`,
+                type: 'editor'
+            });
         }
     }
     // add test urls if configured

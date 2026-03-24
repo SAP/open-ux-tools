@@ -1171,7 +1171,7 @@ export class FlpSandbox {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
             configureRta(this.rta, layer, variant.id, false, true);
             await this.init(manifest, variant.reference);
-            this.setupAdpCommonHandlers(adp);
+            await this.setupAdpCommonHandlers(adp);
             return;
         }
 
@@ -1180,7 +1180,7 @@ export class FlpSandbox {
         const { name, manifest } = descriptor;
         await this.init(manifest, name, adp.resources, adp);
         this.router.use(adp.descriptor.url, adp.proxy.bind(adp));
-        this.setupAdpCommonHandlers(adp);
+        await this.setupAdpCommonHandlers(adp);
     }
 
     /**
@@ -1188,10 +1188,12 @@ export class FlpSandbox {
      *
      * @param adp AdpPreview instance
      */
-    private setupAdpCommonHandlers(adp: AdpPreview): void {
+    private async setupAdpCommonHandlers(adp: AdpPreview): Promise<void> {
         this.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         this.router.use(json());
         adp.addApis(this.router);
+        // Register i18n store route for ADP projects (used by OVP bridge functions)
+        await this.addStoreI18nKeysRoute();
     }
 
     /**

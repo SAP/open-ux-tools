@@ -78,6 +78,7 @@
     "packageManager": "pnpm@10.30.3",
     "pnpm": {
         "overrides": {
+            "@sap-ux/vocabularies-types": "0.15.0",
             "@storybook/manager-api>store2": "2.14.4",
             "@sap-ux/ui5-config>axios": "^1.13.5",
             "@sap/service-provider-apis>axios": "^1.13.5",
@@ -102,7 +103,6 @@
             "@ui5/fs>minimatch@<9.0.7": "^9.0.9",
             "glob@=13.0.6>minimatch@<10.2.4": "^10.2.4",
             "glob@=11.1.0>minimatch@<10.2.4": "^10.2.4",
-            "promptfoo>minimatch@<10.2.4": "^10.2.4",
             "ignore-walk>minimatch@<10.2.4": "^10.2.4",
             "eslint-plugin-sonarjs>minimatch@<10.2.4": "^10.2.4",
             "nx>minimatch@<10.2.4": "^10.2.4"

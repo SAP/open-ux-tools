@@ -1,5 +1,33 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.135
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/telemetry@0.6.88
+- @sap-ux/ui5-library-reference-writer@0.2.61
+- @sap-ux/ui5-library-reference-inquirer@0.4.135
+- @sap-ux/fiori-generator-shared@0.13.88
+
+## 0.1.134
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+    - @sap-ux/ui5-library-reference-inquirer@0.4.134
+
+## 0.1.133
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [55417bb]
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/ui5-library-reference-inquirer@0.4.133
+    - @sap-ux/telemetry@0.6.87
+
 ## 0.1.132
 
 ### Patch Changes
