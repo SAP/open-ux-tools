@@ -1846,14 +1846,14 @@ importers:
         specifier: 0.5.3
         version: 0.5.3
       '@eslint/core':
-        specifier: 0.17.0
-        version: 0.17.0
+        specifier: 1.1.1
+        version: 1.1.1
       '@eslint/js':
         specifier: 9.22.0
         version: 9.22.0
       '@eslint/json':
-        specifier: 0.14.0
-        version: 0.14.0
+        specifier: 1.2.0
+        version: 1.2.0
       '@eslint/plugin-kit':
         specifier: 0.6.1
         version: 0.6.1
@@ -6811,9 +6811,9 @@ packages:
     resolution: {integrity: sha512-S26Stp4zCy88tH94QbBv3XCuzRQiZ9yXofEILmglYTh/Ug/a9/umqvgFtYBAo3Lp0nsI/5/qH1CCrbdK3AP1Tw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/json@0.14.0':
-    resolution: {integrity: sha512-rvR/EZtvUG3p9uqrSmcDJPYSH7atmWr0RnFWN6m917MAPx82+zQgPUmDu0whPFG6XTyM0vB/hR6c1Q63OaYtCQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+  '@eslint/json@1.2.0':
+    resolution: {integrity: sha512-CEFEyNgvzu8zn5QwVYDg3FaG+ZKUeUsNYitFpMYJAqoAlnw68EQgNbUfheSmexZr4n0wZPrAkPLuvsLaXO6wRw==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   '@eslint/object-schema@2.1.7':
     resolution: {integrity: sha512-VtAOaymWVfZcmZbp6E2mympDIHvyjXs/12LqWYjVw6qjrfF+VK+fyG33kChz3nnK+SU5/NeHOqrTEHS8sXO3OA==}
@@ -21006,10 +21006,10 @@ snapshots:
 
   '@eslint/js@9.39.1': {}
 
-  '@eslint/json@0.14.0':
+  '@eslint/json@1.2.0':
     dependencies:
-      '@eslint/core': 0.17.0
-      '@eslint/plugin-kit': 0.4.1
+      '@eslint/core': 1.1.1
+      '@eslint/plugin-kit': 0.6.1
       '@humanwhocodes/momoa': 3.3.10
       natural-compare: 1.4.0
 
