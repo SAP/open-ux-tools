@@ -25,6 +25,8 @@
         "authenticationFailed": "Authentication failed.",
         "projectNotCloudReady": "FLP Configuration is supported for Cloud Ready adaptation projects only",
         "baseAppInboundsFetching": "Error while fetching base application inbounds",
+        "cfConfigRequired": "CF configuration is required for Cloud Foundry adaptation projects.",
+        "cfInboundsFetchFailed": "Failed to fetch inbounds for the CF application: {{error}}",
         "warningCachingNotSupported": "Warning: caching is not supported"
     }
 }

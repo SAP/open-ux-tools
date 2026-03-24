@@ -3,7 +3,13 @@ import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer, Endpoint } from '@sap-ux/adp-tooling';
+import type {
+    ConfigAnswers,
+    AttributesAnswers,
+    SystemLookup,
+    FlexLayer,
+    Endpoint
+} from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
 import { getExtensionProjectData } from '../app/extension-project';
@@ -26,6 +32,7 @@ interface FlpGenProps {
     inbounds?: ManifestNamespace.Inbound;
     layer: FlexLayer;
     prompts: Prompts;
+    isCfProject?: boolean;
 }
 
 /**
@@ -60,7 +67,7 @@ const PACKAGE_ADDITIONAL_VALIDATION = {
  * @param {AppWizard} appWizard - AppWizard instance for interacting with the UI (optional).
  */
 export async function addFlpGen(
-    { projectRootPath, vscode, inbounds, layer, prompts }: FlpGenProps,
+    { projectRootPath, vscode, inbounds, layer, prompts, isCfProject }: FlpGenProps,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
@@ -76,7 +83,8 @@ export async function addFlpGen(
             layer,
             prompts,
             data: { projectRootPath },
-            appWizard
+            appWizard,
+            isCfProject
         });
         logger.info(`'@sap/fiori:adp-flp-config' was called.`);
     } catch (e) {
