@@ -58,7 +58,7 @@ undeploy --config myproject/my-undeploy-config.yaml
 
 This is the minimal custom task configuration for deployment using package `$TMP`, without the change being recorded in a transport request.
 
-> **Note:** The package name `$TMP` must be uppercase. If a lowercase variant (e.g. `$tmp`) is detected in the configuration, it will be automatically normalized to `$TMP` and a warning will be logged, as lowercase values may cause deployment failures.
+> **Note:** The package name `$TMP` must be uppercase. If a lowercase variant, for example, `$tmp`) is detected in the configuration, it is automatically normalized to `$TMP` and a warning is logged because lowercase values can cause deployment failures.
 
 ```yaml
 - name: abap-deploy-task
