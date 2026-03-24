@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.85
+
+### Patch Changes
+
+- 55d833f: fix i18next init showSupportNotice: false.
+
 ## 0.3.84
 
 ### Patch Changes
