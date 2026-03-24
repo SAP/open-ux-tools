@@ -70,7 +70,8 @@ export function getCredentialsPrompts<T extends Answers>(
             type: 'password',
             guiOptions: {
                 mandatory: true,
-                applyDefaultWhenDirty: true // Reset when the system changes, this avoids automatic reauth with the existing creds if the user changes the system selection
+                applyDefaultWhenDirty: true, // Reset when the system changes, this avoids automatic reauth with the existing creds if the user changes the system selection
+                showOutputTabLink: true
             },
             guiType: 'login',
             name: passwordPromptName,

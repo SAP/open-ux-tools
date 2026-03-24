@@ -73,18 +73,11 @@ export interface GuiOptions {
         url?: string;
     };
     /**
-     * When set, a "View Details in the Output Tab" link is shown below the validation error message,
-     * but only when the error text is long enough to be clamped (more than 2 lines).
-     * The link disappears when the panel is resized wide enough for the text to fit in 2 or fewer lines.
-     * The `command` specifies the VS Code command to invoke when the link is clicked (e.g. the output
-     * channel toggle command, which varies by generator context).
+     * When set to `true`, a "View Details in the Output Tab" link is shown below a clamped validation
+     * error message (one that overflows 2 lines). The consumer application (e.g. App Wizard) is
+     * responsible for wiring the link click to the appropriate output-channel command.
      */
-    showOutputTabLink?: {
-        command: {
-            id: string;
-            params?: object | string;
-        };
-    };
+    showOutputTabLink?: boolean;
 }
 
 export type PromptSeverityMessage = (

@@ -578,20 +578,6 @@ export class ConnectionValidator {
             try {
                 if (this._catalogV2) {
                     await this._catalogV2?.listServices();
-                    // Eagerly pre-fetch the v4 catalog in the background so that the service-selection
-                    // dropdown does not stall when choices() is called later.  Older ABAP on-prem systems
-                    // never respond to v4 catalog requests; without this pre-fetch the UI would freeze for
-                    // the full per-catalog timeout (5 s) at the choices() stage.  Errors/timeouts are
-                    // swallowed here – getServiceChoices() has its own per-catalog timeout as a safety net.
-                    if (this._catalogV4) {
-                        const catalogV4Ref = this._catalogV4;
-                        void this._catalogV4.listServices().catch((err) => {
-                            LoggerHelper.logger.debug(`V4 catalog pre-fetch failed: ${err.message ?? err}`);
-                            // Mark the catalog as returning no services so that choices() does not make
-                            // another network round-trip for this session.
-                            catalogV4Ref.services = [];
-                        });
-                    }
                 } else if (this._catalogV4) {
                     v4Requested = true;
                     await this._catalogV4?.listServices();
