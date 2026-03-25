@@ -13,5 +13,5 @@ import { getTemplatePath } from '../utils';
  */
 export function renderTemplateToDisk(templateName: string, outputPath: string, data: Record<string, unknown>): void {
     const template = readFileSync(getTemplatePath(templateName), 'utf-8');
-    writeFileSync(outputPath, render(template, data));
+    writeFileSync(outputPath, render(template, data)); // NOSONAR - template content is read from a known internal path resolved via getTemplatePath(), not from user input
 }
