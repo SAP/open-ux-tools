@@ -19,11 +19,15 @@
     }
     &__callout {
         border-radius: 4px;
-        border: 1px solid var(--vscode-editorWidget-foreground);
-        background-color: var(--vscode-editor-foreground);
         .ms-Callout-main {
-            color: var(--vscode-editorWidget-background);
             padding: 0;
+        }
+        &--inverted {
+            border: 1px solid var(--vscode-editorWidget-foreground);
+            background-color: var(--vscode-editor-foreground);
+            .ms-Callout-main {
+                color: var(--vscode-editorWidget-background);
+            }
         }
     }
     &__message {
@@ -40,6 +44,9 @@
                 }
             }
         }
+        &__text {
+            text-align: left;
+        }
     }
     &__field {
         width: 100%;
@@ -51,7 +58,7 @@
 }
 
 .vscode-high-contrast {
-    .ui-translatable__callout {
+    .ui-translatable__callout--inverted {
         border: 1px solid var(--vscode-editorWidget-border);
         background-color: var(--vscode-editorWidget-background);
         .ms-Callout-main {

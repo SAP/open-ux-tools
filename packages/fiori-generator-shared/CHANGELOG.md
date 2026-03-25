@@ -1,5 +1,35 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.89
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/telemetry@0.6.89
+
+## 0.13.88
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/telemetry@0.6.88
+
+## 0.13.87
+
+### Patch Changes
+
+- ae6758f: fix: update ESLint plugin URL in README template to @sap-ux/eslint-plugin-fiori-tools
+
+## 0.13.86
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/telemetry@0.6.87
+
 ## 0.13.85
 
 ### Patch Changes

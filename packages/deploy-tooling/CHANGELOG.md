@@ -1,5 +1,64 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.2
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.25
+- @sap-ux/inquirer-common@0.11.27
+- @sap-ux/project-input-validator@0.6.70
+- @sap-ux/system-access@0.7.1
+
+## 0.18.1
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/system-access@0.7.1
+
+## 0.18.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/inquirer-common@0.11.26
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/project-input-validator@0.6.69
+
+## 0.17.74
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.25
+
+## 0.17.73
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/system-access@0.6.66
+
+## 0.17.72
+
+### Patch Changes
+
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/system-access@0.6.65
+    - @sap-ux/inquirer-common@0.11.24
+    - @sap-ux/project-input-validator@0.6.68
+    - @sap-ux/ui5-config@0.29.21
+
 ## 0.17.71
 
 ### Patch Changes

@@ -5,9 +5,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { isAxiosError, type AbapServiceProvider, type Ui5AppInfoContent } from '@sap-ux/axios-extension';
 
 import { getWebappFiles } from '../helper';
-import type { DescriptorVariant } from '../../types';
-
-export type DataSources = Record<string, ManifestNamespace.DataSource>;
+import type { DescriptorVariant, IManifestService, DataSources } from '../../types';
 
 /**
  * Retrieves the inbound navigation configurations from the project's manifest.
@@ -35,7 +33,7 @@ export function getRegistrationIdFromManifest(manifest: Manifest): string | unde
  * It provides methods to fetch the manifest, data sources and metadata of a data source.
  *
  */
-export class ManifestService {
+export class ManifestService implements IManifestService {
     private manifest: Manifest;
     private appInfo: Ui5AppInfoContent;
 
