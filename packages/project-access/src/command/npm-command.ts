@@ -48,6 +48,9 @@ export async function execNpmCommand(
                 const output = stdMessages ? `:\n${stdMessages}` : '';
                 logger?.info(`Command '${commandString}' successful${output}`);
             } else if (options?.throwOnError) {
+                if (stdOut) {
+                    logger?.info(stdOut);
+                }
                 reject(new Error(`Command '${commandString}' failed with exit code ${code}. Stderr: ${stdErr}`));
                 return;
             } else {
