@@ -11,11 +11,7 @@ import { getTemplatePath } from '../utils';
  * @param outputPath Absolute path where the rendered file will be written
  * @param data Template data object passed to EJS
  */
-export function renderTemplateToDisk(
-    templateName: string,
-    outputPath: string,
-    data: Record<string, unknown>
-): void {
+export function renderTemplateToDisk(templateName: string, outputPath: string, data: Record<string, unknown>): void {
     const template = readFileSync(getTemplatePath(templateName), 'utf-8');
     writeFileSync(outputPath, render(template, data));
 }
