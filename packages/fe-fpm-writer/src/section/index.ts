@@ -103,7 +103,7 @@ async function generate(
     validateVersion(customSection.minUI5Version);
     fs ??= create(createStorage());
     await validateBasePath(basePath, fs);
-    const fnGenerateId = await createIdGenerator(basePath, fs);
+    const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
@@ -141,7 +141,7 @@ export async function generateCustomHeaderSection(
     fs?: Editor
 ): Promise<Editor> {
     const fsEditor = fs ?? create(createStorage());
-    const fnGenerateId = await createIdGenerator(basePath, fsEditor); // initialize ID generator to ensure unique IDs across both section and edit fragment
+    const fnGenerateId = await createIdGenerator({ basePath, fsEditor }); // initialize ID generator to ensure unique IDs across both section and edit fragment
     const manifestRoot = getManifestRoot('header-section', customHeaderSection.minUI5Version);
     const minVersion = coerce(customHeaderSection.minUI5Version);
     let editSection: (CustomElement & Partial<InternalCustomSection>) | undefined;

@@ -1,5 +1,27 @@
 # @sap-ux/odata-service-writer
 
+## 0.31.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/mockserver-config-writer@0.9.64
+    - @sap-ux/project-access@1.35.14
+
+## 0.30.1
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [55417bb]
+    - @sap-ux/mockserver-config-writer@0.9.63
+    - @sap-ux/ui5-config@0.29.21
+
 ## 0.30.0
 
 ### Minor Changes

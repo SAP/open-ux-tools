@@ -34,6 +34,7 @@ interface AdjustMtaYamlParams {
     businessSolutionName: string;
     businessService: string;
     serviceKeys?: ServiceKeys[];
+    spaceGuid: string;
 }
 
 /**
@@ -94,7 +95,7 @@ export function getAppParamsFromUI5Yaml(projectPath: string): AppParamsExtended 
     const appConfiguration = parsedYaml?.builder?.customTasks?.[0]?.configuration;
     const appParams: AppParamsExtended = {
         appHostId: appConfiguration?.appHostId || '',
-        appName: appConfiguration?.appVersion || '',
+        appName: appConfiguration?.appName || '',
         appVersion: appConfiguration?.appVersion || '',
         spaceGuid: appConfiguration?.space || ''
     };
@@ -445,7 +446,8 @@ export async function adjustMtaYaml(
         appRouterType,
         businessSolutionName,
         businessService,
-        serviceKeys
+        serviceKeys,
+        spaceGuid
     }: AdjustMtaYamlParams,
     memFs: Editor,
     timestamp: string,
@@ -489,7 +491,7 @@ export async function adjustMtaYaml(
     adjustMtaYamlOwnModule(yamlContent, adpProjectName);
     // should go last since it sorts the modules (workaround, should be removed after fixed in deployment module)
     adjustMtaYamlFlpModule(yamlContent, mtaProjectName, businessService);
-    await createServices(yamlContent, initialServices, timestamp, templatePathOverwrite, logger);
+    await createServices(yamlContent, initialServices, timestamp, spaceGuid, templatePathOverwrite, logger);
 
     const updatedYamlContent = yaml.dump(yamlContent, {
         lineWidth: -1 // Disable line wrapping to keep URLs on single lines

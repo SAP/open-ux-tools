@@ -1,5 +1,12 @@
 # @sap-ux/project-access
 
+## 1.35.14
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+
 ## 1.35.13
 
 ### Patch Changes

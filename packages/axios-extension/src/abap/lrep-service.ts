@@ -126,9 +126,22 @@ export interface AdaptationsResponse {
     adaptations: AdaptationDescriptor[];
 }
 
+/**
+ * Shape of a single text entry in the top-level `texts` object of a key-user change response.
+ */
+export interface TextTranslation {
+    type?: string;
+    values?: Record<string, string>;
+}
+
+/**
+ * Shape of the `texts` object in the key-user change response, which is a record of text IDs to their translations.
+ */
+export type KeyUserTextTranslations = Record<string, TextTranslation>;
+
 export interface KeyUserChangeContent {
     content: Record<string, unknown>;
-    texts?: Record<string, unknown>;
+    texts?: KeyUserTextTranslations;
 }
 
 export interface KeyUserDataResponse {

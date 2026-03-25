@@ -1,5 +1,114 @@
 # @sap-ux/generator-adp
 
+## 0.9.37
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/adp-tooling@0.18.99
+    - @sap-ux/fiori-generator-shared@0.13.88
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/system-access@0.7.1
+
+## 0.9.36
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+
+## 0.9.35
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/adp-tooling@0.18.97
+    - @sap-ux/inquirer-common@0.11.26
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/telemetry@0.6.88
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.88
+    - @sap-ux/project-input-validator@0.6.69
+
+## 0.9.34
+
+### Patch Changes
+
+- 5307571: fix: Add logging and user friendly error messages for key user API calls in the generator
+
+## 0.9.33
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+    - @sap-ux/inquirer-common@0.11.25
+    - @sap-ux/adp-tooling@0.18.96
+
+## 0.9.32
+
+### Patch Changes
+
+- 4f86250: feat: Adjust mini wizard behavior for CF scenario
+- Updated dependencies [4f86250]
+    - @sap-ux/adp-tooling@0.18.95
+
+## 0.9.31
+
+### Patch Changes
+
+- Updated dependencies [3626b55]
+    - @sap-ux/adp-tooling@0.18.94
+
+## 0.9.30
+
+### Patch Changes
+
+- a854433: feat: Handle i18n translations from key user changes in ADP generator
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/adp-tooling@0.18.93
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/system-access@0.6.66
+
+## 0.9.29
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/adp-tooling@0.18.92
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/system-access@0.6.65
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/inquirer-common@0.11.24
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/project-input-validator@0.6.68
+    - @sap-ux/store@1.5.10
+    - @sap-ux/telemetry@0.6.87
+
+## 0.9.28
+
+### Patch Changes
+
+- 53af342: feat: Create service keys
+- Updated dependencies [53af342]
+    - @sap-ux/adp-tooling@0.18.91
+
+## 0.9.27
+
+### Patch Changes
+
+- 05f3f4c: fix: Various ADP Generator fixes for CF flow
+- Updated dependencies [05f3f4c]
+    - @sap-ux/adp-tooling@0.18.90
+
 ## 0.9.26
 
 ### Patch Changes
