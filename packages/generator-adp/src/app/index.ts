@@ -607,9 +607,6 @@ export default class extends Generator {
         this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(cfServicesQuestions);
         this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
 
-        // Steps need to be updated here to be available after back navigation in Yeoman UI.
-        this._updateWizardStepsAfterNavigation();
-
         const selectedApp = this.cfServicesAnswers.baseApp;
         if (selectedApp && this.attributeAnswers?.addFlpConfig) {
             try {
@@ -618,6 +615,13 @@ export default class extends Generator {
                     selectedApp.appHostId,
                     this.cfConfig,
                     this.logger
+                );
+                // Register FLP wizard pages now that we know if inbounds are available
+                updateFlpWizardSteps(
+                    !!cfInbounds,
+                    this.prompts,
+                    this.attributeAnswers.projectName,
+                    true
                 );
                 if (cfInbounds) {
                     await addFlpGen(
