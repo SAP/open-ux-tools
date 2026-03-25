@@ -177,9 +177,12 @@ export async function mergeConfig(
         transport: options.transport ?? taskConfig.app?.transport
     };
 
-    if (app.package?.toLowerCase() === '$tmp' && app.package !== '$TMP') {
-        logger?.warn('Package name was normalized to $TMP. Lowercase $tmp may cause deployment failures.');
-        app.package = '$TMP';
+    if (app.package && app.package !== app.package.toUpperCase()) {
+        const normalized = app.package.toUpperCase();
+        logger?.warn(
+            `Package name '${app.package}' was normalized to '${normalized}'. Lowercase package names may cause deployment failures.`
+        );
+        app.package = normalized;
     }
     const target = mergeTarget(taskConfig.target, options);
     const config: AbapDeployConfig = { app, target, credentials: mergeCredentials(taskConfig, options) };
