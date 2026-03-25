@@ -59,8 +59,7 @@ ruleTester.run('sap-message-toast', rule, {
             code: "sap.m.MessageToast.show('Toast is ready!', {duration: 1000});",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -69,8 +68,7 @@ ruleTester.run('sap-message-toast', rule, {
             code: "sap.m.MessageToast.show('Toast is ready!', {test: 1, duration: -1});",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -79,8 +77,7 @@ ruleTester.run('sap-message-toast', rule, {
             code: "sap.m.MessageToast.show('Toast is ready!', {my: 'left top'});",
             errors: [
                 {
-                    message: 'Value for my of sap.m.MessageToast.show should be center bottom!',
-                    type: 'CallExpression'
+                    message: 'Value for my of sap.m.MessageToast.show should be center bottom!'
                 }
             ]
         },
@@ -89,8 +86,7 @@ ruleTester.run('sap-message-toast', rule, {
             code: "sap.m.MessageToast.show('Toast is ready!', {at: 'right bottom'});",
             errors: [
                 {
-                    message: 'Value for at of sap.m.MessageToast.show should be center bottom!',
-                    type: 'CallExpression'
+                    message: 'Value for at of sap.m.MessageToast.show should be center bottom!'
                 }
             ]
         },
@@ -99,8 +95,7 @@ ruleTester.run('sap-message-toast', rule, {
             code: "sap.m.MessageToast.show('Toast is ready!', {width: '40em'});",
             errors: [
                 {
-                    message: 'Value for width of sap.m.MessageToast.show should be less or equal to 35em!',
-                    type: 'CallExpression'
+                    message: 'Value for width of sap.m.MessageToast.show should be less or equal to 35em!'
                 }
             ]
         },
@@ -109,8 +104,7 @@ ruleTester.run('sap-message-toast', rule, {
             code: "var myToast = sap.m.MessageToast; myToast.show('Toast is ready!', {duration: 1000});",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -119,8 +113,7 @@ ruleTester.run('sap-message-toast', rule, {
             code: "var mySap = sap; var myMobile = mySap.m; myMobile.MessageToast.show('Toast is ready!', {duration: 1000});",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -129,8 +122,7 @@ ruleTester.run('sap-message-toast', rule, {
             code: "var toastIt = sap.m.MessageToast.show; toastIt('Toast is ready!', {duration: 1000});",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         }

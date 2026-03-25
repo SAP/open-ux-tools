@@ -1,4 +1,5 @@
-import type { CustomRuleDefinitionType, CustomRuleTypeDefinitions, RuleVisitor } from '@eslint/core';
+import type { RuleVisitor } from '@eslint/core';
+import type { CustomRuleDefinitionType, CustomRuleTypeDefinitions } from '@eslint/plugin-kit';
 
 import type { FioriAnnotationSourceCode } from './source-code';
 import type { AnyNode } from '@sap-ux/odata-annotation-core';

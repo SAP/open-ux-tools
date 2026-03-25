@@ -35,8 +35,7 @@ ruleTester.run('sap-cross-application-navigation', rule, {
             code: 'sap.ushell.Container.getService(\'CrossApplicationNavigation\').toExternal({target:{action: "#home"}});',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -44,8 +43,7 @@ ruleTester.run('sap-cross-application-navigation', rule, {
             code: 'sap.ushell.Container.getService(\'CrossApplicationNavigation\').toExternal({target:{semanticObject: "#Shell"}});',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -53,8 +51,7 @@ ruleTester.run('sap-cross-application-navigation', rule, {
             code: 'sap.ushell.Container.getService(\'CrossApplicationNavigation\').toExternal({target:{action: "home"}});',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -62,8 +59,7 @@ ruleTester.run('sap-cross-application-navigation', rule, {
             code: 'sap.ushell.Container.getService(\'CrossApplicationNavigation\').toExternal({target:{semanticObject: "Shell"}});',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -71,8 +67,7 @@ ruleTester.run('sap-cross-application-navigation', rule, {
             code: "sap.ushell.Container.getService('CrossApplicationNavigation').toExternal({});",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -80,8 +75,7 @@ ruleTester.run('sap-cross-application-navigation', rule, {
             code: "sap.ushell.Container.getService('CrossApplicationNavigation').toExternal({target:{foo:'bar',shellHash:'shellFisch'}});",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -91,8 +85,7 @@ ruleTester.run('sap-cross-application-navigation', rule, {
                 "oCrossAppNavigator['toExternal']({});",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -102,8 +95,7 @@ ruleTester.run('sap-cross-application-navigation', rule, {
                 'oCrossAppNavigator.toExternal({});',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -114,8 +106,7 @@ ruleTester.run('sap-cross-application-navigation', rule, {
                 'oCrossAppNavigator.toExternal({});',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -126,8 +117,7 @@ ruleTester.run('sap-cross-application-navigation', rule, {
                 'oCrossAppNavigator.toExternal();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         }

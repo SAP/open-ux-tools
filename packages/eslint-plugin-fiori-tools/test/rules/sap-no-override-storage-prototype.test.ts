@@ -25,8 +25,7 @@ ruleTester.run('sap-no-override-storage-prototype', rule, {
             code: 'Storage.prototype.setObj = function(key, obj) {};',
             errors: [
                 {
-                    message: 'Storage prototype should not be overridden as this can lead to unpredictable errors',
-                    type: 'AssignmentExpression'
+                    message: 'Storage prototype should not be overridden as this can lead to unpredictable errors'
                 }
             ]
         },
@@ -34,8 +33,7 @@ ruleTester.run('sap-no-override-storage-prototype', rule, {
             code: 'var str1 = Storage.prototype, str2 = Storage.prototype; str2.setObj = function(key, obj) {};',
             errors: [
                 {
-                    message: 'Storage prototype should not be overridden as this can lead to unpredictable errors',
-                    type: 'AssignmentExpression'
+                    message: 'Storage prototype should not be overridden as this can lead to unpredictable errors'
                 }
             ]
         }

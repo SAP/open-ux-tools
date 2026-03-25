@@ -117,8 +117,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -137,8 +136,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -157,8 +155,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -172,8 +169,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -201,8 +197,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -220,8 +215,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                     })`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -249,8 +243,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -278,8 +271,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -302,8 +294,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -331,8 +322,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -360,8 +350,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -389,8 +378,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -407,8 +395,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                     })`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         },
@@ -431,8 +418,7 @@ ruleTester.run('sap-ui5-forms', rule, {
                                 }).placeAt('content');`,
             errors: [
                 {
-                    message: 'Invalid content for SimpleForm / Form / SmartForm.',
-                    type: 'NewExpression'
+                    message: 'Invalid content for SimpleForm / Form / SmartForm.'
                 }
             ]
         }

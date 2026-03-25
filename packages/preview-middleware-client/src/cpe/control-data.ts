@@ -234,7 +234,7 @@ export function buildControlData(
     for (const propertyName of propertyNames) {
         const property = allProperties[propertyName];
         let analyzedType;
-        let isEnabled = false;
+        let isEnabled: boolean;
         let value: unknown;
         if (property && 'configuration' in property) {
             propertyType = PropertyType.Configuration;

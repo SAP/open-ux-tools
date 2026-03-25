@@ -53,6 +53,7 @@
         "babel-loader": "10.0.0",
         "copyfiles": "2.4.1",
         "css-loader": "6.8.1",
+        "eslint": "9.39.1",
         "eslint-plugin-react": "7.37.5",
         "eslint-plugin-storybook": "0.6.15",
         "mem-fs": "2.1.0",

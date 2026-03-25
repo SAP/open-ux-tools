@@ -23,8 +23,7 @@ ruleTester.run('sap-no-localstorage', rule, {
             code: 'localStorage.setObj(this.SETTINGS_NAME, this.objSettings);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -32,8 +31,7 @@ ruleTester.run('sap-no-localstorage', rule, {
             code: 'var abc = localStorage;abc.setObj(this.SETTINGS_NAME, this.objSettings);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -41,8 +39,7 @@ ruleTester.run('sap-no-localstorage', rule, {
             code: 'var abc = window.localStorage;abc.setObj(this.SETTINGS_NAME, this.objSettings);',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         }
