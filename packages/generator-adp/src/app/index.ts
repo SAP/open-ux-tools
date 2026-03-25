@@ -623,7 +623,7 @@ export default class extends Generator {
                     await addFlpGen(
                         {
                             vscode: this.vscode,
-                            projectRootPath: this.destinationPath(),
+                            projectRootPath: this._getProjectPath(),
                             inbounds: cfInbounds,
                             layer: this.layer,
                             prompts: this.prompts,
