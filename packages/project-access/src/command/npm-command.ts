@@ -44,8 +44,9 @@ export async function execNpmCommand(
             if (code === null) {
                 logger?.warn(`Command '${commandString}' was killed by signal: ${signal}`);
             } else if (code === 0) {
-                const output = [stdOut, stdErr].filter(Boolean).join('\n');
-                logger?.info(`Command '${commandString}' successful${output ? `:\n${output}` : ''}`);
+                const stdMessages = [stdOut, stdErr].filter(Boolean).join('\n');
+                const output = stdMessages ? `:\n${stdMessages}` : '';
+                logger?.info(`Command '${commandString}' successful${output}`);
             } else if (options?.throwOnError) {
                 reject(new Error(`Command '${commandString}' failed with exit code ${code}. Stderr: ${stdErr}`));
                 return;
