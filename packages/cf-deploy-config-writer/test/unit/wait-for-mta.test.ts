@@ -48,7 +48,9 @@ describe('waitForMtaFile', () => {
         // Given: file is absent for the first two polls, then present
         let callCount = 0;
         mockExistsSync.mockImplementation((p: string) => {
-            if (p !== mtaFilePath) return false;
+            if (p !== mtaFilePath) {
+                return false;
+            }
             callCount++;
             return callCount >= 3;
         });
