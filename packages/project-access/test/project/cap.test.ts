@@ -1240,9 +1240,11 @@ describe('getCapServiceName', () => {
                 to: {
                     serviceinfo: jest.fn().mockImplementation(() => [
                         { name: 'ServiceOne', urlPath: 'service/one' },
-                        { name: 'ServiceThree', urlPath: 'service/three' },
-                        { name: 'ServiceFour', urlPath: 'service/four' },
-                        { name: 'ServiceFive', urlPath: 'dummy/service/three' }
+                        { name: 'ServiceThree', urlPath: 'odata/v4/three/' },
+                        { name: 'ServiceFour', urlPath: 'odata/v4/four' },
+                        { name: 'ServiceFive', urlPath: 'dummy/odata/v4/three/' },
+                        { name: 'ServiceSix', urlPath: 'odata/v4/dummy/deep/service' },
+                        { name: 'ServiceSeven', urlPath: 'odata/v4/dummy/my.*' }
                     ])
                 }
             },
@@ -1262,16 +1264,108 @@ describe('getCapServiceName', () => {
         );
     });
 
-    test('Ignore service prefixes - return valid service name', async () => {
-        const capServiceName = await getCapServiceName(
-            '/some/test/path',
-            '/external.uri/external-ui/dummy/v1/odata/v4/service/one/'
-        );
-        expect(capServiceName).toEqual('ServiceOne');
+    const servicePrefixValidationTests = [
+        // /<string>.<string>/external-ui/<inbound-service-name>/v<version>/...
+        {
+            name: 'valid service uri 1',
+            datasourceUri: '/external.uri/external-ui/dummy/v1/odata/v4/three/',
+            valid: 'ServiceThree'
+        },
+        {
+            name: 'valid service uri 2',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/three/',
+            valid: 'ServiceThree'
+        },
+        {
+            name: 'invalid service pattern 1',
+            datasourceUri: '/external/external-ui/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 2',
+            datasourceUri: '/external.uri/external/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 3',
+            datasourceUri: '/external-ui/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 4',
+            datasourceUri: '/external.uri/external-ui/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 5',
+            datasourceUri: '/external.uri/external-ui/dummy/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 6',
+            datasourceUri: '/external.uri/external-ui/dummy/1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'valid service pattern, but service is not listed',
+            datasourceUri: '/external.uri/external-ui/dummy/v1/odata/v4/two/',
+            valid: undefined
+        },
+        {
+            name: 'valid service uri - deep uri',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/dummy/deep/service/',
+            valid: 'ServiceSix'
+        },
+        {
+            name: 'escape service path - matching path',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/dummy/my.*/',
+            valid: 'ServiceSeven'
+        },
+        {
+            name: 'escape service path - unmatching path',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/dummy/my.test/',
+            valid: undefined
+        },
+        // /ui/<inbound-service-name>/v<version>/...
+        {
+            name: 'valid service uri 3',
+            datasourceUri: '/ui/dummy/v1/odata/v4/three/',
+            valid: 'ServiceThree'
+        },
+        {
+            name: 'valid service pattern, but service is not listed 2',
+            datasourceUri: '/ui/dummy/v1/odata/v4/two/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 7',
+            datasourceUri: '/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 8',
+            datasourceUri: '/ui/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 9',
+            datasourceUri: '/ui/dummy/1/odata/v4/three/',
+            valid: undefined
+        }
+    ];
+    test.each(servicePrefixValidationTests)('Ignore service prefixes - $name', async ({ datasourceUri, valid }) => {
+        if (valid) {
+            const capServiceName = await getCapServiceName('/some/test/path', datasourceUri);
+            expect(capServiceName).toEqual(valid);
+        } else {
+            await expect(getCapServiceName('/some/test/path', datasourceUri)).rejects.toThrow(
+                /Service for uri: .* not found\. Available services:.*/
+            );
+        }
     });
 
     test('Find exact service match', async () => {
-        const capServiceName = await getCapServiceName('/some/test/path', 'dummy/service/three');
+        const capServiceName = await getCapServiceName('/some/test/path', 'dummy/odata/v4/three/');
         expect(capServiceName).toEqual('ServiceFive');
     });
 });

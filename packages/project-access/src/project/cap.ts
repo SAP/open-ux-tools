@@ -424,6 +424,34 @@ function normalizeServiceUrlPath(urlPath: string): string {
 }
 
 /**
+ * Checks whether a given URL path matches one of the supported service prefix patterns
+ * and ends with the expected service suffix path.
+ *
+ * Currently method validates against DwC service patterns, supported patterns:
+ * - `/ui/<inbound-service-name>/v<version>/<suffix>`
+ * - `/<string>.<string>/external-ui/<inbound-service-name>/v<version>/<suffix>`
+ *
+ * The `<suffix>` (e.g. `odata/v4/myService`) must match exactly.
+ *
+ * @param path - The full request path to validate.
+ * @param expectedSufixPath - The expected service path (e.g. `odata/v4/myService`).
+ * @returns `true` if the path matches one of the supported patterns and ends with the expected suffix.
+ */
+export function isMatchingServiceUri(path: string, expectedSufixPath: string): boolean {
+    // Escapes special regex characters in a string so it can be embedded into regular expression
+    expectedSufixPath = expectedSufixPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    const patterns = [
+        // regex for pattern -> /ui/<inbound-service-name>/v<version>/...
+        `^\\/ui\\/[^/]+\\/v\\d+\\/${expectedSufixPath}$`,
+        // regex for pattern -> /<string>.<string>/external-ui/<inbound-service-name>/v<version>/...
+        `^\\/[^/]+\\.[^/]+\\/external-ui\\/[^/]+\\/v\\d+\\/${expectedSufixPath}$`
+    ];
+
+    return patterns.some((pattern) => new RegExp(pattern).test(path));
+}
+
+/**
  * Find a service in a list of services ignoring leading and trailing slashes.
  *
  * @param services - list of services from cds.compile.to['serviceinfo'](model)
@@ -435,10 +463,12 @@ function findServiceByUri(
     uri: string
 ): { name: string; urlPath: string } | undefined {
     const searchUri = normalizeServiceUrlPath(uniformUrl(uri));
+    // Try to find a service by exact path match
     let service = services.find((srv) => normalizeServiceUrlPath(srv.urlPath) === searchUri);
+    // If no exact match is found, try matching while ignoring the service prefix
     service ??= services.find((srv) => {
-        const normalizedPath = normalizeServiceUrlPath(srv.urlPath);
-        return searchUri.endsWith(`/${normalizedPath}`);
+        const normalizedServiceUrlPath = normalizeServiceUrlPath(srv.urlPath);
+        return isMatchingServiceUri(`/${searchUri}`, normalizedServiceUrlPath);
     });
     return service;
 }
