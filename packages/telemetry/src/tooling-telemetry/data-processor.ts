@@ -346,10 +346,16 @@ async function getOSNodeVersion(): Promise<string> {
  * Identifies VSCode, VSCode Insiders, Cursor, Windsurf, Antigravity, Trae, Kiro,
  * VSCodium, code-server, SAP Business Application Studio, and standalone Node.js processes (CLI, MCP servers).
  *
+ * Note: AppStudio is checked first because it is a VS Code fork that sets VSCODE_PID.
+ * Without the early return, it would fall through to 'vscode'.
+ *
+ * Detection priority: VSCODE_APPNAME (Electron product name) is checked first as the most
+ * reliable signal, then fork-specific env vars, then VSCODE_CWD path matching as a fallback.
+ *
  * @returns The detected IDE type
  */
 export function getIdeType(): IdeType {
-    // Check for SAP Business Application Studio first
+    // AppStudio is a VS Code fork that sets VSCODE_PID — check first to avoid misdetection as 'vscode'
     if (isAppStudio()) {
         return 'appstudio';
     }
@@ -357,49 +363,62 @@ export function getIdeType(): IdeType {
     const vscodeCwd = process.env.VSCODE_CWD?.toLowerCase() ?? '';
     const vscodePid = process.env.VSCODE_PID;
     const termProgram = process.env.TERM_PROGRAM ?? '';
+    const appName = process.env.VSCODE_APPNAME?.toLowerCase() ?? '';
 
-    // No VSCode environment detected - likely a standalone Node.js process (CLI, MCP, etc.)
+    // No VS Code environment detected — none of VSCODE_PID, VSCODE_CWD, or a vscode-related
+    // TERM_PROGRAM are set. This is likely a standalone Node.js process (CLI, MCP server, etc.)
     if (!vscodePid && !vscodeCwd && termProgram !== 'vscode' && termProgram !== 'vscode-insiders') {
         return 'unknown';
     }
 
-    // Cursor detection - has its own environment variable or path indicator
-    if (process.env.CURSOR_TRACE_ID || vscodeCwd.includes('cursor')) {
+    // Cursor detection — dedicated env var or VSCODE_APPNAME / CWD fallback
+    if (process.env.CURSOR_TRACE_ID || appName.includes('cursor') || vscodeCwd.includes('cursor')) {
         return 'cursor';
     }
 
     // Windsurf detection (Codeium's IDE)
-    if (vscodeCwd.includes('windsurf') || vscodeCwd.includes('codeium')) {
+    if (appName.includes('windsurf') || vscodeCwd.includes('windsurf') || vscodeCwd.includes('codeium')) {
         return 'windsurf';
     }
 
-    // Antigravity detection (Googles's IDE)
-    if (vscodeCwd.includes('antigravity')) {
+    // Antigravity detection (Google's IDE)
+    if (appName.includes('antigravity') || vscodeCwd.includes('antigravity')) {
         return 'antigravity';
     }
 
     // Trae detection (ByteDance's IDE)
-    if (vscodeCwd.includes('trae')) {
+    if (appName.includes('trae') || vscodeCwd.includes('trae')) {
         return 'trae';
     }
 
     // Kiro detection (AWS's IDE)
-    if (vscodeCwd.includes('kiro')) {
+    if (appName.includes('kiro') || vscodeCwd.includes('kiro')) {
         return 'kiro';
     }
 
-    // VSCodium detection (open-source VSCode without MS telemetry)
-    if (vscodeCwd.includes('vscodium') || vscodeCwd.includes('codium')) {
+    // VSCodium detection (open-source VS Code without MS telemetry)
+    if (
+        appName.includes('vscodium') ||
+        appName.includes('codium') ||
+        vscodeCwd.includes('vscodium') ||
+        vscodeCwd.includes('codium')
+    ) {
         return 'vscodium';
     }
 
-    // code-server detection (browser-based VSCode)
-    if (vscodeCwd.includes('code-server') || process.env.CODE_SERVER_SESSION) {
+    // code-server detection (browser-based VS Code)
+    if (appName.includes('code-server') || vscodeCwd.includes('code-server') || process.env.CODE_SERVER_SESSION) {
         return 'code-server';
     }
 
-    // VSCode Insiders detection
-    if (vscodeCwd.includes('insiders') || termProgram === 'vscode-insiders') {
+    // VSCode Insiders detection — match specific product names to avoid false positives
+    // from paths that merely contain the substring "insiders"
+    if (
+        appName.includes('insiders') ||
+        vscodeCwd.includes('code - insiders') ||
+        vscodeCwd.includes('vscode-insiders') ||
+        termProgram === 'vscode-insiders'
+    ) {
         return 'vscode-insiders';
     }
 

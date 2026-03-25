@@ -619,7 +619,6 @@ describe('getIdeType', () => {
     const originalEnv = process.env;
 
     beforeEach(() => {
-        jest.resetModules();
         process.env = { ...originalEnv };
         // Clear all VSCode-related env vars
         delete process.env.VSCODE_PID;
@@ -627,6 +626,7 @@ describe('getIdeType', () => {
         delete process.env.TERM_PROGRAM;
         delete process.env.CURSOR_TRACE_ID;
         delete process.env.CODE_SERVER_SESSION;
+        delete process.env.VSCODE_APPNAME;
     });
 
     afterAll(() => {
@@ -650,7 +650,7 @@ describe('getIdeType', () => {
         expect(getIdeType()).toBe('vscode');
     });
 
-    it('should return "vscode-insiders" when VSCODE_CWD contains "insiders"', () => {
+    it('should return "vscode-insiders" when VSCODE_CWD contains "code - insiders"', () => {
         isAppStudioMock.mockReturnValue(false);
         process.env.VSCODE_PID = '12345';
         process.env.VSCODE_CWD = '/Applications/Visual Studio Code - Insiders.app/Contents';
@@ -750,5 +750,40 @@ describe('getIdeType', () => {
         process.env.VSCODE_PID = '12345';
         process.env.CODE_SERVER_SESSION = 'session-id';
         expect(getIdeType()).toBe('code-server');
+    });
+
+    it('should return "vscode" when VSCODE_PID is set with a non-matching VSCODE_CWD', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/opt/editors/my-custom-vscode/';
+        expect(getIdeType()).toBe('vscode');
+    });
+
+    it('should return "cursor" when VSCODE_APPNAME is "Cursor"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_APPNAME = 'Cursor';
+        expect(getIdeType()).toBe('cursor');
+    });
+
+    it('should return "windsurf" when VSCODE_APPNAME is "Windsurf"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_APPNAME = 'Windsurf';
+        expect(getIdeType()).toBe('windsurf');
+    });
+
+    it('should return "vscode-insiders" when VSCODE_APPNAME contains "insiders"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_APPNAME = 'Visual Studio Code - Insiders';
+        expect(getIdeType()).toBe('vscode-insiders');
+    });
+
+    it('should not false-positive on "insiders" in an unrelated VSCODE_CWD path', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/home/user/projects/insiders-project';
+        expect(getIdeType()).toBe('vscode');
     });
 });
