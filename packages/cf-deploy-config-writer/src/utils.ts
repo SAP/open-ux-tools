@@ -90,6 +90,7 @@ export function toPosixPath(dirPath: string): string {
  *
  * @param destination The destination name to look up in BTP destination service
  * @param cache Mutable object that holds the cached destinations list; pass a new `{}` per generator run
+ * @param cache.list
  * @returns Object containing destination URL format flag and authentication type
  * @returns {boolean} destinationIsFullUrl - True if destination uses full URL format
  * @returns {Authentication | undefined} destinationAuthentication - Authentication type configured for the destination
@@ -115,6 +116,7 @@ export async function getDestinationProperties(
  * Caching is scoped to the provided cache object; pass a new `{}` per generator run.
  *
  * @param cache Mutable object that holds the cached list across multiple calls within one run
+ * @param cache.list
  * @returns Destinations list
  */
 export async function getBTPDestinations(cache: { list?: Destinations } = {}): Promise<Destinations> {

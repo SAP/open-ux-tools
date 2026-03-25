@@ -1,4 +1,10 @@
-import { validateVersion, toMtaModuleName, runCommand, getBTPDestinations, getDestinationProperties } from '../../src/utils';
+import {
+    validateVersion,
+    toMtaModuleName,
+    runCommand,
+    getBTPDestinations,
+    getDestinationProperties
+} from '../../src/utils';
 import { MTAVersion } from '../../src/constants';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import * as btp from '@sap-ux/btp-utils';
