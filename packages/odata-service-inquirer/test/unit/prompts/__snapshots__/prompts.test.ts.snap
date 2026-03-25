@@ -95,6 +95,7 @@ exports[`getQuestions getQuestions 1`] = `
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "mandatory": true,
+      "showOutputTabLink": true,
     },
     "guiType": "login",
     "mask": "*",
@@ -124,11 +125,7 @@ exports[`getQuestions getQuestions 1`] = `
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Service",
       "mandatory": true,
-      "showOutputTabLink": {
-        "command": {
-          "id": "sap.ux.appWizard.showOutputChannel",
-        },
-      },
+      "showOutputTabLink": true,
     },
     "message": [Function],
     "name": "systemSelection:serviceSelection",
@@ -197,6 +194,7 @@ exports[`getQuestions getQuestions 1`] = `
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "mandatory": true,
+      "showOutputTabLink": true,
     },
     "guiType": "login",
     "mask": "*",
@@ -240,11 +238,7 @@ exports[`getQuestions getQuestions 1`] = `
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Service",
       "mandatory": true,
-      "showOutputTabLink": {
-        "command": {
-          "id": "sap.ux.appWizard.showOutputChannel",
-        },
-      },
+      "showOutputTabLink": true,
     },
     "message": [Function],
     "name": "abapOnPrem:serviceSelection",
@@ -326,11 +320,7 @@ exports[`getQuestions getQuestions 1`] = `
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Service",
       "mandatory": true,
-      "showOutputTabLink": {
-        "command": {
-          "id": "sap.ux.appWizard.showOutputChannel",
-        },
-      },
+      "showOutputTabLink": true,
     },
     "message": [Function],
     "name": "abapOnBtp:serviceSelection",
@@ -389,11 +379,7 @@ exports[`getQuestions getQuestions 1`] = `
       "applyDefaultWhenDirty": true,
       "breadcrumb": true,
       "mandatory": true,
-      "showOutputTabLink": {
-        "command": {
-          "id": "sap.ux.appWizard.showOutputChannel",
-        },
-      },
+      "showOutputTabLink": true,
     },
     "message": "OData Service",
     "name": "capService",
@@ -411,6 +397,7 @@ exports[`getQuestions getQuestions 1`] = `
       "breadcrumb": true,
       "hint": "https://<hostname>:<port>/path/to/odata/service/",
       "mandatory": true,
+      "showOutputTabLink": true,
     },
     "message": "OData service URL",
     "name": "serviceUrl",

@@ -123,11 +123,7 @@ describe('Test new system prompt', () => {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": "Service",
                   "mandatory": true,
-                  "showOutputTabLink": {
-                    "command": {
-                      "id": "sap.ux.appWizard.showOutputChannel",
-                    },
-                  },
+                  "showOutputTabLink": true,
                 },
                 "message": [Function],
                 "name": "someNamespace:serviceSelection",
@@ -778,21 +774,13 @@ describe('Test new system prompt', () => {
         const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService);
         expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(selectedService.servicePath));
         expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to get metadata'));
-        // Validation result should be a ValidationLink object with output channel command
-        expect(validationResult).toMatchObject({
-            message: t('errors.serviceMetadataErrorUI', {
+        // Validation result should be the error message string
+        expect(validationResult).toBe(
+            t('errors.serviceMetadataErrorUI', {
                 servicePath: selectedService.servicePath,
                 errorText: 'An error occurred: Failed to get metadata'
-            }),
-            link: {
-                text: expect.any(String),
-                icon: expect.any(String), // SVG icon as base64 string
-                command: {
-                    id: 'sap.ux.appWizard.showOutputChannel',
-                    params: {}
-                }
-            }
-        });
+            })
+        );
     });
 
     test('should show a guided answer link when no services are returned and an error was logged', async () => {

@@ -10,7 +10,7 @@ import LoggerHelper from '../../../../src/prompts/logger-helper';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-project/types';
 import os from 'node:os';
-import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { PathLike } from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -334,10 +334,9 @@ describe('cap-helper', () => {
         );
     });
 
-    test('getCapServiceChoices: long error messages use output channel link', async () => {
+    test('getCapServiceChoices: long error messages are logged and passed to error handler', async () => {
         const errorHandlerSpy = jest.spyOn(errorHandler, 'logErrorMsgs');
         const logErrorSpy = jest.spyOn(LoggerHelper.logger, 'error');
-        const getOutputChannelLinkSpy = jest.spyOn(ErrorHandler, 'getOutputChannelLink');
 
         // Create a long error message that will exceed 150 characters
         const longError = `Error: Module '@sap/cds' not installed in project '/Users/test/very/long/path/to/project/that/makes/this/error/message/exceed/the/character/limit'. Error: Path to module not found.`;
@@ -355,14 +354,9 @@ describe('cap-helper', () => {
 
         expect(await getCapServiceChoices(capProjectPaths)).toEqual([]);
 
-        // Verify that error is logged first
+        // Verify error is logged and passed to error handler
+        expect(errorHandlerSpy).toHaveBeenCalledWith(ERROR_TYPE.UNKNOWN, fullErrorMsg);
         expect(logErrorSpy).toHaveBeenCalledWith(fullErrorMsg);
-
-        // Verify that output channel link was created
-        expect(getOutputChannelLinkSpy).toHaveBeenCalledWith(fullErrorMsg);
-
-        // Verify that errorHandler was called with output channel link
-        expect(errorHandlerSpy).toHaveBeenCalledWith(ERROR_TYPE.UNKNOWN, expect.any(Object));
     });
 
     /**
