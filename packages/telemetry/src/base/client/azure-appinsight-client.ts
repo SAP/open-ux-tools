@@ -134,16 +134,8 @@ class ApplicationInsightClient extends Client {
             return;
         }
 
-        return new Promise((resolve, reject) => {
-            try {
-                client.trackEvent(event);
-                client.flush({
-                    callback: () => resolve()
-                });
-            } catch (error) {
-                reject(error);
-            }
-        });
+        client.trackEvent(event);
+        await client.flush();
     }
 
     /**

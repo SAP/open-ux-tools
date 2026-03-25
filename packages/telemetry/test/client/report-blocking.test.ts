@@ -2,8 +2,7 @@ import { ClientFactory } from '../../src/base/client';
 import { TelemetrySettings } from '../../src/base/config-state';
 import { EventName } from '../../src/base/types/event-name';
 import { SampleRate } from '../../src/base/types/sample-rate';
-import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
-import type FlushOptions from 'applicationinsights/out/Library/FlushOptions';
+import type { EventTelemetry } from 'applicationinsights/out/src/declarations/contracts';
 
 const trackEventMock = jest.fn();
 const flushMock = jest.fn();
@@ -11,27 +10,23 @@ const flushMock = jest.fn();
 jest.mock('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
-        public channel: any;
         public addTelemetryProcessor: any;
         public trackEvent: any;
         public flush: any;
+        public setUseDiskRetryCaching: any;
 
         constructor() {
             this.config = {
                 samplingPercentage: 0
             };
-            this.channel = {
-                setUseDiskRetryCaching: jest.fn()
-            };
+            this.setUseDiskRetryCaching = jest.fn();
             this.addTelemetryProcessor = (fn: any) => {
                 fn({ tags: {} });
             };
             this.trackEvent = (event: EventTelemetry) => trackEventMock(event);
-            this.flush = (options: FlushOptions | undefined) => {
-                flushMock(options);
-                if (options?.callback) {
-                    options.callback('testCallbackValue');
-                }
+            this.flush = () => {
+                flushMock();
+                return Promise.resolve();
             };
         }
     }
