@@ -1,5 +1,69 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.90
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/adp-tooling@0.18.100
+
+## 0.0.89
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.99
+
+## 0.0.88
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+
+## 0.0.87
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.97
+- @sap-ux/project-access@1.35.14
+
+## 0.0.86
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.96
+
+## 0.0.85
+
+### Patch Changes
+
+- Updated dependencies [4f86250]
+    - @sap-ux/adp-tooling@0.18.95
+
+## 0.0.84
+
+### Patch Changes
+
+- Updated dependencies [3626b55]
+    - @sap-ux/adp-tooling@0.18.94
+
+## 0.0.83
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/adp-tooling@0.18.93
+
+## 0.0.82
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/adp-tooling@0.18.92
+
 ## 0.0.81
 
 ### Patch Changes

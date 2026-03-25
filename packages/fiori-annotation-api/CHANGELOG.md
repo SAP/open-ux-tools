@@ -1,5 +1,33 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.36
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/cds-odata-annotation-converter@0.7.14
+
+## 0.9.35
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/cds-odata-annotation-converter@0.7.14
+
+## 0.9.34
+
+### Patch Changes
+
+- 436cad8: fix: Fixed an issue where path to external metadata is incorrectly resolved for actions or functions with ValueListReferences annotations applied.
+
+## 0.9.33
+
+### Patch Changes
+
+- Updated dependencies [55417bb]
+    - @sap-ux/cds-odata-annotation-converter@0.7.14
+
 ## 0.9.32
 
 ### Patch Changes
