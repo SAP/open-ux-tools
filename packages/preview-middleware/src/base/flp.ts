@@ -57,7 +57,8 @@ import {
     addApp,
     getAppName,
     sanitizeRtaConfig,
-    CARD_GENERATOR_DEFAULT
+    CARD_GENERATOR_DEFAULT,
+    remapResourcesForPath
 } from './config';
 import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
@@ -338,6 +339,8 @@ export class FlpSandbox {
             pluginScript: editor.pluginScript
         };
         config.features = FeatureToggleAccess.getAllFeatureToggles();
+        const appId = this.manifest['sap.app']?.id ?? '';
+        remapResourcesForPath(config, editor.path, appId);
 
         return render(this.getSandboxTemplate(ui5Version), config);
     }

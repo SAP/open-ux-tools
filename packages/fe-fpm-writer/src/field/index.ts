@@ -64,7 +64,7 @@ export async function generateCustomField(basePath: string, customField: CustomF
     fs ??= create(createStorage());
     await validateBasePath(basePath, fs);
 
-    const generateId = await createIdGenerator(basePath, fs);
+    const generateId = await createIdGenerator({ basePath, fsEditor: fs });
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 

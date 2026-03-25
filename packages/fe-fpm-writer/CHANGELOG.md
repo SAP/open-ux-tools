@@ -1,5 +1,18 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.13
+
+### Patch Changes
+
+- 08f3a5c: Refactored createIdGenerator to use object parameters for reusing for v2 scenarios.
+
+## 0.43.12
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/fiori-annotation-api@0.9.35
+
 ## 0.43.11
 
 ### Patch Changes

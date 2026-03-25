@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.3
+
+### Patch Changes
+
+- 7f2689f: `UITranslationInput` - removed unnecessary <span> elements and left-aligned message content.
+
 ## 2.1.2
 
 ### Patch Changes
