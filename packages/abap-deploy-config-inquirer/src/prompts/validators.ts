@@ -92,6 +92,7 @@ async function validateAdpDestinationQuestion(
  *
  * @param props - properties to update
  * @param props.url - url
+ * @param props.connectPath - connect path
  * @param props.client - client
  * @param props.isAbapCloud - Cloud based Abap (either Steampunk or Embedded Steampunk)
  * @param props.scp - is SCP
@@ -99,18 +100,21 @@ async function validateAdpDestinationQuestion(
  */
 function updatePromptState({
     url,
+    connectPath,
     client,
     isAbapCloud,
     scp,
     target
 }: {
     url: string;
+    connectPath?: string;
     client?: string;
     isAbapCloud?: boolean;
     scp?: boolean;
     target?: string;
 }): void {
     PromptState.abapDeployConfig.url = url;
+    PromptState.abapDeployConfig.connectPath = connectPath;
     PromptState.abapDeployConfig.client = client;
     PromptState.abapDeployConfig.isAbapCloud = isAbapCloud;
     PromptState.abapDeployConfig.scp = scp;
@@ -162,8 +166,13 @@ export async function validateTargetSystem(
 
     const choice = choices?.find((choice) => choice.value === target);
     if (isValidSystemUrl && choice) {
+        const url = new URL(choice.value);
+        const targetUrl = url.origin;
+        const connectPath = url.pathname === '/' ? undefined : url.pathname;
+
         updatePromptState({
-            url: choice.value,
+            url: targetUrl,
+            connectPath,
             client: choice.client ?? '',
             scp: choice.scp,
             isAbapCloud: choice.isAbapCloud,

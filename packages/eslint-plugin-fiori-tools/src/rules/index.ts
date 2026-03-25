@@ -9,6 +9,7 @@ import {
     ENABLE_EXPORT,
     ENABLE_PASTE,
     STATE_PRESERVATION_MODE,
+    CONDENSED_TABLE_LAYOUT,
     STRICT_UOM_FILTERING,
     TABLE_PERSONALIZATION,
     TABLE_COLUMN_VERTICAL_ALIGNMENT
@@ -75,6 +76,7 @@ import enableExport from './sap-enable-export';
 import enablePaste from './sap-enable-paste';
 import tablePersonalization from './sap-table-personalization';
 import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment';
+import condensedTableLayout from './sap-condensed-table-layout';
 
 import type { Rule } from 'eslint';
 
@@ -135,6 +137,7 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [ENABLE_PASTE]: enablePaste,
     [CREATION_MODE_FOR_TABLE]: creationModeForTable,
     [STATE_PRESERVATION_MODE]: statePreservationMode,
+    [CONDENSED_TABLE_LAYOUT]: condensedTableLayout,
     [STRICT_UOM_FILTERING]: strictUomFilteringRule,
     [TABLE_PERSONALIZATION]: tablePersonalization,
     [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment

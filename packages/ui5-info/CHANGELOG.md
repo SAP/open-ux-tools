@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.13.15
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+
 ## 0.13.14
 
 ### Patch Changes

@@ -17,8 +17,11 @@ import { getInstance } from '@sap-ux/store/dist/services/backend-system';
 jest.mock('@sap-ux/store/dist/services/api-hub', () => ({
     getInstance: jest.fn().mockReturnValue({ read: () => {} })
 }));
+const mockBackendSystemRead = jest.fn();
 jest.mock('@sap-ux/store/dist/services/backend-system', () => ({
-    getInstance: jest.fn().mockReturnValue({ read: () => {} })
+    getInstance: jest.fn().mockImplementation(() => ({
+        read: mockBackendSystemRead
+    }))
 }));
 const mockGetService = getInstance as jest.Mock;
 
@@ -566,6 +569,22 @@ describe('proxy', () => {
                 proxyOptions.on.error(undefined as any, {} as any, {} as any);
                 expect(debugSpy).toHaveBeenCalledTimes(1);
             }
+        });
+
+        test('options are updated for backend with a connectPath', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path',
+                connectPath: '/test/path'
+            };
+
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            expect(options).toBeDefined();
+            expect(mockBackendSystemRead).toHaveBeenCalledWith({
+                url: 'http://backend.example/test/path',
+                client: undefined
+            });
         });
 
         test('generate proxy middleware despite an error when accessing the store', async () => {
