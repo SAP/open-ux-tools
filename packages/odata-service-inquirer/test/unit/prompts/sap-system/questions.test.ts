@@ -71,6 +71,7 @@ describe('questions', () => {
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
                   "mandatory": true,
+                  "showOutputTabLink": true,
                 },
                 "guiType": "login",
                 "mask": "*",
@@ -114,11 +115,7 @@ describe('questions', () => {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": "Service",
                   "mandatory": true,
-                  "showOutputTabLink": {
-                    "command": {
-                      "id": "sap.ux.appWizard.showOutputChannel",
-                    },
-                  },
+                  "showOutputTabLink": true,
                 },
                 "message": [Function],
                 "name": "abapOnPrem:serviceSelection",
@@ -200,11 +197,7 @@ describe('questions', () => {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": "Service",
                   "mandatory": true,
-                  "showOutputTabLink": {
-                    "command": {
-                      "id": "sap.ux.appWizard.showOutputChannel",
-                    },
-                  },
+                  "showOutputTabLink": true,
                 },
                 "message": [Function],
                 "name": "abapOnBtp:serviceSelection",

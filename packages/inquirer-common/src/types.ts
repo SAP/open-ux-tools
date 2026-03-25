@@ -73,7 +73,7 @@ export interface GuiOptions {
         url?: string;
     };
     /**
-     * When set to `true`, a "View Details in the Output Tab" link is shown below a clamped validation
+     * When set to `true`, a "View details in the output tab." link is shown below a clamped validation
      * error message (one that overflows 2 lines). The consumer application (e.g. App Wizard) is
      * responsible for wiring the link click to the appropriate output-channel command.
      */

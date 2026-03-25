@@ -58,6 +58,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "mandatory": true,
+      "showOutputTabLink": true,
     },
     "guiType": "login",
     "mask": "*",
@@ -75,11 +76,7 @@ exports[`Test system selection prompts should return system selection prompts an
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Service",
       "mandatory": true,
-      "showOutputTabLink": {
-        "command": {
-          "id": "sap.ux.appWizard.showOutputChannel",
-        },
-      },
+      "showOutputTabLink": true,
     },
     "message": [Function],
     "name": "systemSelection:serviceSelection",
@@ -109,11 +106,7 @@ exports[`Test system selection prompts should return system selection prompts an
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Service",
       "mandatory": true,
-      "showOutputTabLink": {
-        "command": {
-          "id": "sap.ux.appWizard.showOutputChannel",
-        },
-      },
+      "showOutputTabLink": true,
     },
     "message": [Function],
     "name": "cfAbapBas:serviceSelection",
@@ -180,6 +173,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "mandatory": true,
+      "showOutputTabLink": true,
     },
     "guiType": "login",
     "mask": "*",
@@ -209,11 +203,7 @@ exports[`Test system selection prompts should return system selection prompts an
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Service",
       "mandatory": true,
-      "showOutputTabLink": {
-        "command": {
-          "id": "sap.ux.appWizard.showOutputChannel",
-        },
-      },
+      "showOutputTabLink": true,
     },
     "message": [Function],
     "name": "systemSelection:serviceSelection",
@@ -278,6 +268,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "mandatory": true,
+      "showOutputTabLink": true,
     },
     "guiType": "login",
     "mask": "*",
@@ -321,11 +312,7 @@ exports[`Test system selection prompts should return system selection prompts an
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Service",
       "mandatory": true,
-      "showOutputTabLink": {
-        "command": {
-          "id": "sap.ux.appWizard.showOutputChannel",
-        },
-      },
+      "showOutputTabLink": true,
     },
     "message": [Function],
     "name": "abapOnPrem:serviceSelection",
@@ -399,11 +386,7 @@ exports[`Test system selection prompts should return system selection prompts an
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Service",
       "mandatory": true,
-      "showOutputTabLink": {
-        "command": {
-          "id": "sap.ux.appWizard.showOutputChannel",
-        },
-      },
+      "showOutputTabLink": true,
     },
     "message": [Function],
     "name": "abapOnBtp:serviceSelection",

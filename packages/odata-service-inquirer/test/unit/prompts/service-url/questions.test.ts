@@ -55,6 +55,7 @@ describe('Service URL prompts', () => {
                   "breadcrumb": true,
                   "hint": "https://<hostname>:<port>/path/to/odata/service/",
                   "mandatory": true,
+                  "showOutputTabLink": true,
                 },
                 "message": "OData service URL",
                 "name": "serviceUrl",
