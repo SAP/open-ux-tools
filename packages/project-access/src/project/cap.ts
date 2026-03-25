@@ -439,13 +439,13 @@ function normalizeServiceUrlPath(urlPath: string): string {
  */
 export function isMatchingServiceUri(path: string, expectedSufixPath: string): boolean {
     // Escapes special regex characters in a string so it can be embedded into regular expression
-    expectedSufixPath = expectedSufixPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    expectedSufixPath = expectedSufixPath.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 
     const patterns = [
         // regex for pattern -> /ui/<inbound-service-name>/v<version>/...
-        `^\\/ui\\/[^/]+\\/v\\d+\\/${expectedSufixPath}$`,
+        String.raw`^/ui/[^/]+/v\d+/${expectedSufixPath}$`,
         // regex for pattern -> /<string>.<string>/external-ui/<inbound-service-name>/v<version>/...
-        `^\\/[^/]+\\.[^/]+\\/external-ui\\/[^/]+\\/v\\d+\\/${expectedSufixPath}$`
+        String.raw`^/[^/]+\.[^/]+/external-ui/[^/]+/v\d+/${expectedSufixPath}$`
     ];
 
     return patterns.some((pattern) => new RegExp(pattern).test(path));
