@@ -1397,4 +1397,91 @@ describe('FLPConfigGenerator Integration Tests', () => {
             expect.anything()
         );
     });
+
+    it('Should generate FLP configuration successfully in CF standalone mode', async () => {
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
+        const mockCfConfig = {
+            org: { GUID: 'test-org-guid', Name: 'test-org' },
+            space: { GUID: 'test-space-guid', Name: 'test-space' },
+            url: '/test.cf',
+            token: 'test-token'
+        };
+        jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
+        jest.spyOn(adpTooling, 'getAppParamsFromUI5Yaml').mockReturnValueOnce({
+            appHostId: 'cf-host-id',
+            appName: 'test-app',
+            appVersion: '1.0.0',
+            spaceGuid: 'test-space-guid'
+        });
+        const cfInbounds = {
+            'cf-inbound': {
+                semanticObject: 'cfSO',
+                action: 'cfAction',
+                title: 'CF Title',
+                subTitle: 'CF SubTitle',
+                icon: 'sap-icon://cf-icon',
+                signature: {
+                    parameters: {}
+                }
+            }
+        } as unknown as projectAccess.ManifestNamespace.Inbound;
+        jest.spyOn(adpTooling, 'getCfBaseAppInbounds').mockResolvedValueOnce(cfInbounds);
+        const sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
+
+        const testPath = join(testOutputDir, 'test_project_cf_standalone');
+        fs.mkdirSync(testPath, { recursive: true });
+        fsextra.copySync(join(__dirname, 'fixtures/app.variant1'), join(testPath, 'app.variant1'));
+        const testProjectPath = join(testPath, 'app.variant1');
+
+        const cfAnswers = {
+            ...answers,
+            tileHandlingAction: 'replace',
+            inboundId: cfInbounds['cf-inbound'] as unknown as InboundContent,
+            semanticObject: 'cfSO',
+            action: 'cfAction',
+            title: 'CF Title',
+            subTitle: 'CF SubTitle',
+            confirmReplace: true
+        };
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(cfAnswers);
+
+        await expect(runContext.run()).resolves.not.toThrow();
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
+            EventName.ADP_FLP_CONFIG_ADDED,
+            expect.objectContaining({
+                OperatingSystem: 'testOS',
+                Platform: 'testPlatform'
+            }),
+            testProjectPath
+        );
+        expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
+        expect(generateInboundConfigSpy).toHaveBeenCalledWith(
+            testProjectPath,
+            expect.arrayContaining([
+                expect.objectContaining({
+                    semanticObject: 'cfSO',
+                    action: 'cfAction',
+                    title: 'CF Title',
+                    subTitle: 'CF SubTitle'
+                })
+            ]),
+            expect.anything()
+        );
+    });
 });
