@@ -373,7 +373,7 @@ export function getIdeType(): IdeType {
         return 'windsurf';
     }
 
-    // Antigravity detection (Salesforce's IDE)
+    // Antigravity detection (Googles's IDE)
     if (vscodeCwd.includes('antigravity')) {
         return 'antigravity';
     }
