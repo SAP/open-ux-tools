@@ -16,8 +16,8 @@ module.exports = [
     {
         languageOptions: {
             parser: tsParser,
-            ecmaVersion: 5,
-            sourceType: 'script',
+            ecmaVersion: 2020,
+            sourceType: 'script'
         },
         rules: {
             'quotes': ['error', 'single', { 'allowTemplateLiterals': true }],
