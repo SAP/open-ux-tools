@@ -440,7 +440,7 @@ function normalizeServiceUrlPath(urlPath: string): string {
 export function isMatchingServiceUri(path: string, expectedSuffixPath: string): boolean {
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;
     // Escapes special regex characters in a string so it can be embedded into regular expression
-    const escapedSuffix = expectedSuffixPath.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    const escapedSuffix = expectedSuffixPath.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 
     const patterns = [
         // regex for pattern -> /ui/<inbound-service-name>/v<version>/...
