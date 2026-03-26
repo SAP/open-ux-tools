@@ -617,12 +617,7 @@ export default class extends Generator {
                     this.logger
                 );
                 // Register FLP wizard pages now that we know if inbounds are available
-                updateFlpWizardSteps(
-                    !!cfInbounds,
-                    this.prompts,
-                    this.attributeAnswers.projectName,
-                    true
-                );
+                updateFlpWizardSteps(!!cfInbounds, this.prompts, this.attributeAnswers.projectName, true);
                 if (cfInbounds) {
                     await addFlpGen(
                         {
