@@ -3,7 +3,7 @@ import type { ParsedService } from '../parser';
 import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
-import { collectTables, collectSections } from './annotations';
+import { collectTables, collectSections, collectHeaderSections } from './annotations';
 
 export interface ApplicationSetting {
     createMode: string;
@@ -286,13 +286,9 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                 sections.filter((section) => section.type === 'table-section'),
                 target
             );
-            linkObjectPageHeaderSections(
-                page,
-                path,
-                name,
-                sections.filter((section) => section.type === 'header-section'),
-                target
-            );
+            for (const section of sections.filter((section) => section.type === 'header-section')) {
+                collectHeaderSections(section, page, [...path, name]);
+            }
             linkObjectPageHeader(page, target);
             linkedApp.pages.push(page);
         }
@@ -478,40 +474,6 @@ function collectTableSections(
 }
 
 /**
- * Collects header sections from annotation nodes and builds section structure.
- *
- * @param section - The header section node to process
- * @param controls - Record of controls indexed by type and key
- * @param _pagePath - Configuration path segments to the page
- */
-function collectHeaderSections(
-    section: HeaderSectionNode,
-    controls: Record<string, Section | Table | FieldGroup>,
-    _pagePath: string[]
-): void {
-    if (section.type !== 'header-section') {
-        return;
-    }
-    const fieldGroup = section.children[0];
-    if (fieldGroup.type !== 'field-group') {
-        return;
-    }
-    const configurationKey = fieldGroup.annotationPath;
-    const linkedSection: HeaderSection = {
-        type: section.type,
-        annotation: section,
-        configuration: {},
-        children: []
-    };
-    controls[`${section.type}|${configurationKey}`] = linkedSection;
-    const linkedFG: FieldGroup = { type: fieldGroup.type, annotation: fieldGroup, children: [], configuration: {} };
-    if (linkedFG.type === 'field-group') {
-        linkedSection.children.push(linkedFG);
-        controls[`${linkedFG.type}|${configurationKey}`] = linkedFG;
-    }
-}
-
-/**
  * Links object page sections with their tables and configurations for Fiori Elements V4.
  *
  * @param page - The object page being linked
@@ -572,37 +534,6 @@ function linkObjectPageSections(
     }
     for (const control of Object.values(controls)) {
         if (control.type === 'table-section') {
-            page.sections.push(control);
-        }
-        page.lookup[control.type] ??= [];
-        (page.lookup[control.type]! as Extract<Section | Table, { type: typeof control.type }>[]).push(control);
-    }
-}
-
-/**
- * Links object page header sections with their field group annotations for Fiori Elements V4.
- *
- * @param page - The object page being linked
- * @param pathToPage - Configuration path segments to the page
- * @param pageName - The name of the page
- * @param sections - Array of header section nodes to link
- * @param _configuration - The routing target configuration
- */
-function linkObjectPageHeaderSections(
-    page: FeV4ObjectPage,
-    pathToPage: string[],
-    pageName: string,
-    sections: HeaderSectionNode[],
-    _configuration: Target
-): void {
-    const controls: Record<string, Section | Table> = {};
-
-    for (const section of sections) {
-        collectHeaderSections(section, controls, [...pathToPage, pageName]);
-    }
-
-    for (const control of Object.values(controls)) {
-        if (control.type === 'header-section') {
             page.sections.push(control);
         }
         page.lookup[control.type] ??= [];

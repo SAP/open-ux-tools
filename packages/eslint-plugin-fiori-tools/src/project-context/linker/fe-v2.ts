@@ -3,7 +3,7 @@ import type { LinkerContext, ConfigurationBase } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { ParsedService } from '../parser';
 import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
-import { collectSections, collectTables } from './annotations';
+import { collectHeaderSections, collectSections, collectTables, getConfigurationKey } from './annotations';
 
 export interface FlexibleColumnLayoutSettings {
     defaultTwoColumnLayoutType: string;
@@ -78,18 +78,6 @@ export interface AnnotationBasedNode<T extends AnnotationNode, Configuration ext
 const createModeValues = ['creationRows', 'creationRowsHiddenInEditMode', 'newPage'];
 const tableTypeValues = ['Table', 'ResponsiveTable', 'AnalyticalTable', 'GridTable'];
 const statePreservationModeValues = ['persistence', 'discovery'];
-
-/**
- * Creates a configuration key from an annotation path
- *
- * @param annotationPath
- */
-function getConfigurationKey(annotationPath: string): string {
-    return annotationPath
-        .split('/')
-        .map((segment) => segment.replace('@', ''))
-        .join('::');
-}
 
 /**
  * Creates table configuration object
@@ -437,7 +425,6 @@ function linkObjectPagePage(
         fieldGroups: [],
         lookup: {}
     };
-
     linkObjectPageSections(
         page,
         [...path, name],
@@ -446,14 +433,9 @@ function linkObjectPagePage(
         sections.filter((section) => section.type === 'table-section'),
         target
     );
-    linkObjectPageHeaderSections(
-        page,
-        [...path, name],
-        entity,
-        mainService,
-        sections.filter((section) => section.type === 'header-section'),
-        target
-    );
+    for (const section of sections.filter((section) => section.type === 'header-section')) {
+        collectHeaderSections(section, page, [...path, name]);
+    }
     linkedApp.pages.push(page);
 }
 
@@ -611,65 +593,6 @@ function linkObjectPageSections(
 
     for (const control of Object.values(controls)) {
         if (control.type === 'table-section') {
-            page.sections.push(control);
-        }
-        page.lookup[control.type] ??= [] as any;
-        (page.lookup[control.type] as any[]).push(control);
-    }
-}
-
-/**
- * Links object page header sections with their field group annotations for Fiori Elements V2.
- *
- * @param page - The object page being linked
- * @param pathToPage - Configuration path segments to the page
- * @param entity - The metadata element representing the entity
- * @param service - The parsed OData service
- * @param sections - Array of header section nodes to link
- * @param _configuration - Manifest page settings
- */
-function linkObjectPageHeaderSections(
-    page: FeV2ObjectPage,
-    pathToPage: string[],
-    entity: MetadataElement,
-    service: ParsedService,
-    sections: HeaderSectionNode[],
-    _configuration: ManifestPageSettings
-): void {
-    const controls: Record<string, Section | Table | FieldGroup> = {};
-
-    for (const section of sections) {
-        if (section.type !== 'header-section') {
-            continue;
-        }
-
-        const fieldGroup = section.children[0];
-        if (fieldGroup.type !== 'field-group') {
-            continue;
-        }
-
-        const configurationKey = getConfigurationKey(fieldGroup.annotationPath);
-        const linkedSection: HeaderSection = {
-            type: section.type,
-            annotation: section,
-            configuration: {},
-            children: []
-        };
-        controls[`${section.type}|${configurationKey}`] = linkedSection;
-
-        const linkedfieldGroup = {
-            type: fieldGroup.type,
-            annotation: fieldGroup,
-            configuration: {},
-            children: []
-        };
-
-        linkedSection.children.push(linkedfieldGroup);
-        controls[`${linkedfieldGroup.type}|${configurationKey}`] = linkedfieldGroup;
-    }
-
-    for (const control of Object.values(controls)) {
-        if (control.type === 'header-section') {
             page.sections.push(control);
         }
         page.lookup[control.type] ??= [] as any;
