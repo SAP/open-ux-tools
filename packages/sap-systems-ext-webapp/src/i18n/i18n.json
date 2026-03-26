@@ -60,6 +60,6 @@
     },
     "tooltips": {
         "servicePathDescription": "You can enter a service path to test the connection.",
-        "contentNotSaved": "The content in this field will not be saved."
+        "contentNotSaved": "The content in this field is not saved."
     }
 }
