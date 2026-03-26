@@ -14,7 +14,7 @@ import { type ParsedService } from '../project-context/parser';
  *
  * @param tableOrFieldGroup - Page table or FieldGroup annotation to check for DataFields
  * @param aliasInfo - Alias information for resolving qualified names
- * @returns Array of data fild with/for intent based navigation
+ * @returns Array of data field with/for intent based navigation
  */
 function getIntentBasedNavDataFields(
     tableOrFieldGroup: FeV2Table | FeV4Table | FieldGroup,
@@ -24,15 +24,16 @@ function getIntentBasedNavDataFields(
         return [];
     }
 
-    let collection: Element;
+    let collection: Element | undefined;
     if (tableOrFieldGroup.type == 'table') {
         [collection] = elementsWithName(Edm.Collection, tableOrFieldGroup.annotation.annotation.top.value);
     } else {
         const [record] = elementsWithName(Edm.Record, tableOrFieldGroup.annotation.annotation.top.value);
         const [propertyValue] = elementsWithName(Edm.PropertyValue, record);
-        [collection] = elementsWithName(Edm.Collection, propertyValue);
+        if (propertyValue.attributes.Property.value === 'Data') {
+            [collection] = elementsWithName(Edm.Collection, propertyValue);
+        }
     }
-
     if (!collection) {
         return [];
     }
@@ -96,6 +97,7 @@ function checkTablesAndFieldGroupsInPage(
                             uri: tableOrFieldGroup.annotation.annotation.top.uri,
                             value: dataField
                         },
+                        recordType: getRecordType(aliasInfo, dataField) ?? '',
                         reportedParent: tableOrFieldGroup.annotation.annotation.top.value
                     }
                 });
@@ -155,16 +157,14 @@ const rule: FioriRuleDefinition = createFioriRule({
                     .filter((result) => result.annotation.reportedParent === node)
                     .forEach((result) => {
                         const dfNode = result.annotation.reference.value;
-                        if (result.annotation.reportedParent === node) {
-                            context.report({
-                                node: dfNode,
-                                messageId:
-                                    result.annotation.reference.value.attributes.Type.value ===
-                                    'UI.DataFieldForIntentBasedNavigation'
-                                        ? 'no-data-field-for-intent-based-navigation'
-                                        : 'no-data-field-with-intent-based-navigation'
-                            });
-                        }
+                        context.report({
+                            node: dfNode,
+                            messageId:
+                                result.annotation.recordType ===
+                                'com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation'
+                                    ? 'no-data-field-for-intent-based-navigation'
+                                    : 'no-data-field-with-intent-based-navigation'
+                        });
                     });
             }
         };
