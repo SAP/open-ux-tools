@@ -9,7 +9,7 @@ import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
 import { readFileSync, promises } from 'node:fs';
 import path, { join } from 'node:path';
-import type { SuperTest, Test } from 'supertest';
+
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
 import type { EnhancedRequest } from '../../../src/base/flp';
@@ -320,7 +320,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             flp: {
                 enhancedHomePage: false,
@@ -864,10 +864,140 @@ describe('FlpSandbox', () => {
                 .expect(200);
             expect(response.text).toMatchSnapshot();
         });
+
+        test('test/flp.html UI5 1.108 removes flexExtensionPointEnabled from applicationDependencies', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.108.51' }]
+                });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1'
+            };
+            const url = 'http://sap.example';
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            const adpToolingMock = {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {
+                        'sap.ui5': {
+                            flexExtensionPointEnabled: true,
+                            dependencies: { libs: {} }
+                        }
+                    },
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn()
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
+
+            const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
+            expect(appDeps?.manifest?.['sap.ui5']?.flexExtensionPointEnabled).toBeUndefined();
+        });
+
+        test('test/flp.html UI5 1.142 preserves flexExtensionPointEnabled in applicationDependencies', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.142.9' }]
+                });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1'
+            };
+            const url = 'http://sap.example';
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            const adpToolingMock = {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {
+                        'sap.ui5': {
+                            flexExtensionPointEnabled: true,
+                            dependencies: { libs: {} }
+                        }
+                    },
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn()
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
+
+            const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
+            expect(appDeps?.manifest?.['sap.ui5']?.flexExtensionPointEnabled).toBe(true);
+        });
     });
 
     describe('router with enableCardGenerator', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             editors: {
                 cardGenerator: {
@@ -1088,7 +1218,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router with enableCardGenerator for CAP projects', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const webappPath = join(tmpdir(), 'webapp');
         const mockCAPUtils = {
             getProject() {
@@ -1207,7 +1337,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router with test suite', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
@@ -1256,7 +1386,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router with test suite (negative)', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
@@ -1294,7 +1424,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router - existing FlpSandbox', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
@@ -1328,7 +1458,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router - connect API', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             flp: {
                 enhancedHomePage: false,
@@ -1400,7 +1530,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('rta with new config', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             flp: {
                 apps: [
@@ -1509,7 +1639,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('cds-plugin-ui5', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const baseUrl = '/ui5.patched.router.base';
         const mockConfig = {
             flp: {
