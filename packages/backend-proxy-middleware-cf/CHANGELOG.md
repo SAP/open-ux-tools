@@ -1,5 +1,12 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.93
+
+### Patch Changes
+
+- Updated dependencies [96a689b]
+    - @sap-ux/adp-tooling@0.18.103
+
 ## 0.0.92
 
 ### Patch Changes

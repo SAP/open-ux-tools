@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.41
+
+### Patch Changes
+
+- 96a689b: fix(ADP): Change prompt's order, first appear applications then projectType if applicable.
+- Updated dependencies [96a689b]
+    - @sap-ux/adp-tooling@0.18.103
+
 ## 0.9.40
 
 ### Patch Changes

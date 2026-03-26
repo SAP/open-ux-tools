@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.103
+
+### Patch Changes
+
+- 96a689b: fix(ADP): Change prompt's order, first appear applications then projectType if applicable.
+
 ## 0.18.102
 
 ### Patch Changes
