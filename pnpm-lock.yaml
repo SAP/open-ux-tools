@@ -4225,8 +4225,8 @@ importers:
         specifier: 2.4.1
         version: 2.4.1
       css-loader:
-        specifier: 6.8.1
-        version: 6.8.1(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
+        specifier: 7.1.4
+        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
       enzyme:
         specifier: 3.11.0
         version: 3.11.0
@@ -4264,8 +4264,8 @@ importers:
         specifier: 1.98.0
         version: 1.98.0
       sass-loader:
-        specifier: 13.3.2
-        version: 13.3.2(sass-embedded@1.97.3)(sass@1.98.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
+        specifier: 16.0.7
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.98.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
       storybook:
         specifier: 8.6.17
         version: 8.6.17(prettier@3.8.1)
@@ -4273,8 +4273,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
       style-loader:
-        specifier: 3.3.3
-        version: 3.3.3(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
+        specifier: 4.0.0
+        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
       ts-loader:
         specifier: 9.5.4
         version: 9.5.4(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
@@ -4346,8 +4346,8 @@ importers:
         specifier: 2.4.1
         version: 2.4.1
       css-loader:
-        specifier: 6.8.1
-        version: 6.8.1(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
+        specifier: 7.1.4
+        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
       eslint:
         specifier: 9.39.1
         version: 9.39.1
@@ -4376,8 +4376,8 @@ importers:
         specifier: 1.98.0
         version: 1.98.0
       sass-loader:
-        specifier: 13.3.2
-        version: 13.3.2(sass-embedded@1.97.3)(sass@1.98.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
+        specifier: 16.0.7
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.98.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
       storybook:
         specifier: 8.6.17
         version: 8.6.17(prettier@3.8.1)
@@ -4385,8 +4385,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
       style-loader:
-        specifier: 3.3.3
-        version: 3.3.3(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
+        specifier: 4.0.0
+        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
       ts-loader:
         specifier: 9.5.4
         version: 9.5.4(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
@@ -11438,6 +11438,18 @@ packages:
     peerDependencies:
       webpack: ^5.0.0
 
+  css-loader@7.1.4:
+    resolution: {integrity: sha512-vv3J9tlOl04WjiMvHQI/9tmIrCxVrj6PFbHemBB1iihpeRbi/I4h033eoFIhwxBBqLhI0KYFS7yvynBFhIZfTw==}
+    engines: {node: '>= 18.12.0'}
+    peerDependencies:
+      '@rspack/core': 0.x || ^1.0.0 || ^2.0.0-0
+      webpack: ^5.27.0
+    peerDependenciesMeta:
+      '@rspack/core':
+        optional: true
+      webpack:
+        optional: true
+
   css-select@4.3.0:
     resolution: {integrity: sha512-wPpOYtnsVontu2mODhA19JrqWxNsfdatRKd64kmpRbQgh1KtItko5sTnEpPdpSaJszTOhEMlF/RPz28qj4HqhQ==}
 
@@ -16783,6 +16795,27 @@ packages:
       sass-embedded:
         optional: true
 
+  sass-loader@16.0.7:
+    resolution: {integrity: sha512-w6q+fRHourZ+e+xA1kcsF27iGM6jdB8teexYCfdUw0sYgcDNeZESnDNT9sUmmPm3ooziwUJXGwZJSTF3kOdBfA==}
+    engines: {node: '>= 18.12.0'}
+    peerDependencies:
+      '@rspack/core': 0.x || ^1.0.0 || ^2.0.0-0
+      node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
+      sass: ^1.3.0
+      sass-embedded: '*'
+      webpack: ^5.0.0
+    peerDependenciesMeta:
+      '@rspack/core':
+        optional: true
+      node-sass:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      webpack:
+        optional: true
+
   sass@1.97.3:
     resolution: {integrity: sha512-fDz1zJpd5GycprAbu4Q2PV/RprsRtKC/0z82z0JLgdytmcq0+ujJbJ/09bPGDxCLkKY3Np5cRAOcWiVkLXJURg==}
     engines: {node: '>=14.0.0'}
@@ -17377,6 +17410,12 @@ packages:
     engines: {node: '>= 12.13.0'}
     peerDependencies:
       webpack: ^5.0.0
+
+  style-loader@4.0.0:
+    resolution: {integrity: sha512-1V4WqhhZZgjVAVJyt7TdDPZoPBPNHbekX4fWnCJL1yQukhCeZhJySUL+gL9y6sNdN95uEOS83Y55SqHcP7MzLA==}
+    engines: {node: '>= 18.12.0'}
+    peerDependencies:
+      webpack: ^5.27.0
 
   stylis@4.2.0:
     resolution: {integrity: sha512-Orov6g6BB1sDfYgzWfTHDOxamtX1bE/zo104Dh9e6fqJ3PooipYyfJ0pUmrZO2wAvO8YbEyeFrkV91XTsGMSrw==}
@@ -27012,6 +27051,19 @@ snapshots:
       semver: 7.7.4
       webpack: 5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)
 
+  css-loader@7.1.4(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)):
+    dependencies:
+      icss-utils: 5.1.0(postcss@8.5.8)
+      postcss: 8.5.8
+      postcss-modules-extract-imports: 3.1.0(postcss@8.5.8)
+      postcss-modules-local-by-default: 4.2.0(postcss@8.5.8)
+      postcss-modules-scope: 3.2.1(postcss@8.5.8)
+      postcss-modules-values: 4.0.0(postcss@8.5.8)
+      postcss-value-parser: 4.2.0
+      semver: 7.7.4
+    optionalDependencies:
+      webpack: 5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)
+
   css-select@4.3.0:
     dependencies:
       boolbase: 1.0.0
@@ -33837,6 +33889,14 @@ snapshots:
       sass: 1.98.0
       sass-embedded: 1.97.3
 
+  sass-loader@16.0.7(sass-embedded@1.97.3)(sass@1.98.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)):
+    dependencies:
+      neo-async: 2.6.2
+    optionalDependencies:
+      sass: 1.98.0
+      sass-embedded: 1.97.3
+      webpack: 5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)
+
   sass@1.97.3:
     dependencies:
       chokidar: 4.0.3
@@ -34641,6 +34701,10 @@ snapshots:
   stubborn-utils@1.0.2: {}
 
   style-loader@3.3.3(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)):
+    dependencies:
+      webpack: 5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)
+
+  style-loader@4.0.0(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)):
     dependencies:
       webpack: 5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)
 

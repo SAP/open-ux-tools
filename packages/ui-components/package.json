@@ -64,7 +64,7 @@
         "babel-jest": "30.3.0",
         "babel-loader": "10.1.1",
         "copyfiles": "2.4.1",
-        "css-loader": "6.8.1",
+        "css-loader": "7.1.4",
         "enzyme": "3.11.0",
         "enzyme-adapter-react-16": "1.15.8",
         "eslint": "9.39.1",
@@ -77,10 +77,10 @@
         "react-dom": "16.14.0",
         "require-from-string": "2.0.2",
         "sass": "1.98.0",
-        "sass-loader": "13.3.2",
+        "sass-loader": "16.0.7",
         "storybook": "8.6.17",
         "storybook-addon-turbo-build": "2.0.1",
-        "style-loader": "3.3.3",
+        "style-loader": "4.0.0",
         "ts-loader": "9.5.4"
     },
     "engines": {
