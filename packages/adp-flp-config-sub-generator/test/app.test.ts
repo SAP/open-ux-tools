@@ -626,7 +626,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
     });
 
-    it('Should result in an error message if the project is a CF project without CF config', async () => {
+    it('Should result in an error message if the project is a CF project without CF login', async () => {
         jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
@@ -655,10 +655,10 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await initI18n();
         await runContext.run();
-        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.cfConfigRequired'));
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.cfLoginRequired'));
     });
 
-    it('Should result in an error message if the project is a CF project without CF config and use the logger in case of CLI', async () => {
+    it('Should result in an error message if the project is a CF project without CF login and use the logger in case of CLI', async () => {
         jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
@@ -688,7 +688,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await initI18n();
         await runContext.run();
-        expect(toolsLoggerErrorSpy).toHaveBeenCalledWith(t('error.cfConfigRequired'));
+        expect(toolsLoggerErrorSpy).toHaveBeenCalledWith(t('error.cfLoginRequired'));
     });
 
     it('Should result in an error message if the project is not a CloudReady project', async () => {
@@ -1266,7 +1266,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         const mockCfConfig = {
             org: { GUID: 'test-org-guid', Name: 'test-org' },
             space: { GUID: 'test-space-guid', Name: 'test-space' },
-            url: 'https://test.cf.com',
+            url: '/test.cf',
             token: 'test-token'
         };
         const mockInbounds = { 'inbound-1': { semanticObject: 'SO', action: 'display' } };
@@ -1314,7 +1314,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         const mockCfConfig = {
             org: { GUID: 'test-org-guid', Name: 'test-org' },
             space: { GUID: 'test-space-guid', Name: 'test-space' },
-            url: 'https://test.cf.com',
+            url: '/test.cf',
             token: 'test-token'
         };
         jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
@@ -1355,7 +1355,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         const mockCfConfig = {
             org: { GUID: 'test-org-guid', Name: 'test-org' },
             space: { GUID: 'test-space-guid', Name: 'test-space' },
-            url: 'https://test.cf.com',
+            url: '/test.cf',
             token: 'test-token'
         };
         jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);

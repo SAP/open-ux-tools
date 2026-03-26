@@ -222,9 +222,9 @@ export async function getCfBaseAppInbounds(
         } else {
             throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
         }
-    } catch (error) {
-        logger?.error(`Getting inbounds failed. Request url: ${url}. ${error}`);
-        throw new Error(t('error.failedToGetFDCInbounds', { error: error.message }));
+    } catch (e) {
+        logger?.debug(e);
+        throw new Error(t('error.failedToGetFDCInbounds', { error: e.message }));
     }
 }
 

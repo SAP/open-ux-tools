@@ -528,17 +528,21 @@ export default class AdpFlpConfigGenerator extends Generator {
      */
     private async _initializeCfGenerator(): Promise<void> {
         const cfConfig = loadCfConfig(this.toolsLogger);
-        const appParams = getAppParamsFromUI5Yaml(this.projectRootPath);
-        const appHostId = appParams.appHostId;
+        if (!cfConfig?.token) {
+            this._abortExecution(t('error.cfLoginRequired'));
+            return;
+        }
 
-        if (!cfConfig?.token || !appHostId) {
-            this._abortExecution(t('error.cfConfigRequired'));
+        const appParams = getAppParamsFromUI5Yaml(this.projectRootPath);
+        if (!appParams.appHostId) {
+            this._abortExecution(t('error.cfAppHostIdMissing'));
             return;
         }
 
         try {
             this.inbounds =
-                this.inbounds ?? (await getCfBaseAppInbounds(this.appId, appHostId, cfConfig, this.toolsLogger));
+                this.inbounds ??
+                (await getCfBaseAppInbounds(this.appId, appParams.appHostId, cfConfig, this.toolsLogger));
         } catch (e) {
             this.toolsLogger.error(`CF inbounds fetching failed: ${e}`);
             this._abortExecution(t('error.cfInboundsFetchFailed', { error: (e as Error).message }));

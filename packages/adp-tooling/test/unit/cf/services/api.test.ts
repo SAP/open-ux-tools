@@ -65,7 +65,8 @@ const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.Mock
 describe('CF Services API', () => {
     const mockLogger = {
         log: jest.fn(),
-        error: jest.fn()
+        error: jest.fn(),
+        debug: jest.fn()
     } as unknown as ToolsLogger;
 
     beforeAll(async () => {
@@ -378,13 +379,14 @@ describe('CF Services API', () => {
 
         test('should throw on network error', async () => {
             const errorMsg = 'Network error';
+            const error = new Error(errorMsg);
             mockIsAppStudio.mockReturnValue(false);
-            mockAxios.get.mockRejectedValue(new Error(errorMsg));
+            mockAxios.get.mockRejectedValue(error);
 
             await expect(getCfBaseAppInbounds(appId, appHostId, config, mockLogger)).rejects.toThrow(
                 t('error.failedToGetFDCInbounds', { error: errorMsg })
             );
-            expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Getting inbounds failed'));
+            expect(mockLogger.debug).toHaveBeenCalledWith(error);
         });
 
         test('should use custom language param in URL', async () => {
