@@ -4525,8 +4525,8 @@ importers:
         specifier: 2.5.1
         version: 2.5.1
       '@sap/subaccount-destination-service-provider':
-        specifier: 2.14.1
-        version: 2.14.1(typescript@5.9.3)
+        specifier: 2.16.0
+        version: 2.16.0(typescript@5.9.3)
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -6217,6 +6217,10 @@ packages:
     resolution: {integrity: sha512-05WQkdpL9COIMz4LjTxGpPNCdlpyimKppYNoJ5Di5EUObifl8t4tuLuUBBZEpoLYOmfvIWrsp9fCl0HoPRVTdA==}
     engines: {node: '>=6.9.0'}
 
+  '@babel/runtime@7.29.2':
+    resolution: {integrity: sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g==}
+    engines: {node: '>=6.9.0'}
+
   '@babel/template@7.28.6':
     resolution: {integrity: sha512-YA6Ma2KsCdGb+WC6UpBVFJGXL58MDA6oyONbjyF/+5sBgxY/dwkhLogbMT2GXXyU84/IhRw/2D1Os1B/giz+BQ==}
     engines: {node: '>=6.9.0'}
@@ -7289,8 +7293,8 @@ packages:
     resolution: {integrity: sha512-Xnwi4xEKEtZcGwjW5xpZVP/Dc+WckFxULMShETuCpD6TxNFS6yRM+FhNUO1DDCkRkGn9b1fuzVZrNYb9W7F32A==}
     engines: {node: '>=20'}
 
-  '@langchain/langgraph-checkpoint@1.0.0':
-    resolution: {integrity: sha512-xrclBGvNCXDmi0Nz28t3vjpxSH6UYx6w5XAXSiiB1WEdc2xD2iY/a913I3x3a31XpInUW/GGfXXfePfaghV54A==}
+  '@langchain/langgraph-checkpoint@1.0.1':
+    resolution: {integrity: sha512-HM0cJLRpIsSlWBQ/xuDC67l52SqZ62Bh2Y61DX+Xorqwoh5e1KxYvfCD7GnSTbWWhjBOutvnR0vPhu4orFkZfw==}
     engines: {node: '>=18'}
     peerDependencies:
       '@langchain/core': ^1.0.1
@@ -8387,12 +8391,8 @@ packages:
     resolution: {integrity: sha512-PPSsqt8QBZIMipp5mUuYl159eoXIbPfRAhz4zaPbN+oaEeS/DH/DkkPqzJW2sj3MPy1025zztEuU3Ebt8zLkpw==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/logger@0.7.0':
-    resolution: {integrity: sha512-1SoumSMkMCNRbO58IdI0+IwO1JUGq0cBtqZOS/BTbpZhGLaZ8X6Sd2ZkhLVG6eVQC+hn4rGelrnD2L2Bbgjx/A==}
-    engines: {node: '>=20.x'}
-
-  '@sap-ux/logger@0.7.2':
-    resolution: {integrity: sha512-1VrGrFykTa/HMxCFOI674zU+EZQD4EUgDjw21/ua7gTb0PO9tM/NFhuFUsnoXCDQ/3Gg1SMfW/VA1hZ7LjpqGw==}
+  '@sap-ux/logger@0.8.1':
+    resolution: {integrity: sha512-BPS8/ZODQ7s7r1K4+eo0ynXGk85nio2CBZlT3HdWUT75MwwNAwUeUEpC+SUq/IWVrwBpxHApkyYH+NZYqMRmMw==}
     engines: {node: '>=20.x'}
 
   '@sap-ux/logger@0.8.2':
@@ -8419,8 +8419,8 @@ packages:
     resolution: {integrity: sha512-hGeBdU+SHqkY/s+OYb08C0PiwBVk6uvrxu0hIgMMP40Czv//sfhRmSEnWwIOJF58O8HYzAJF0mhFxjotUmbqdg==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/store@1.4.0':
-    resolution: {integrity: sha512-YdsVm4x6WZTwayZvDr9cRIjMLHUM4KPbUhBX82uYT2Fa/VK+TdYz/vyTpD9/AQwgOBFPdiuiJdG/uZVMIFziYw==}
+  '@sap-ux/store@1.5.8':
+    resolution: {integrity: sha512-DtwX9AmBzg08cHAqoeh8kf+vsOWg08lk4HtYBi7en8rsDSMWh/nsp3gcV2clovR1wdG9GEgM8YvoQgHwzdao6g==}
     engines: {node: '>=20.x'}
 
   '@sap-ux/text-document-utils@0.3.3':
@@ -8465,11 +8465,11 @@ packages:
   '@sap/service-provider-apis@2.5.1':
     resolution: {integrity: sha512-KSZTBxs2PLG8FntD0QXcOF66P0REg6o2/vzhv+xNz35lTbtmvfERhX2wzU1ZqlWIFQ92KQwxqy/T1IuGlWb/1w==}
 
-  '@sap/service-provider-apis@2.7.1':
-    resolution: {integrity: sha512-xdL/m04grQWX0Mai0Gx/kQUgrBhHSfbjxZN6hXdJqKKhfU19HC8+iw/UfVZheGaHgfck7D0oyP/U8yRwGUpnlQ==}
+  '@sap/service-provider-apis@2.8.0':
+    resolution: {integrity: sha512-+IxA43KIdxKt+by6sKwPlLf+WG2yHjQQLWKD4KR2GaHcG+APP7Ak4xn6nK/hWHdjI4wZ3a/r03pkfy8zo4atfQ==}
 
-  '@sap/subaccount-destination-service-provider@2.14.1':
-    resolution: {integrity: sha512-P23fwTlPcaG3Y8s4ykMM+b6KrC59/fldxAFAYub9gge+5BBVp5O+JSogswcBuwXPw6KhuXbvWrKIBR4oc32AIg==}
+  '@sap/subaccount-destination-service-provider@2.16.0':
+    resolution: {integrity: sha512-y0kcSoGH4FRot1bcdd1pH1aZFwb0SepXNK3opOkaaBCallnI7NGMFoasXBnmOqRasAGc8IPVcgwsi7DrOXJmIg==}
 
   '@sap/ux-cds-compiler-facade@1.21.0':
     resolution: {integrity: sha512-oo2QlVPV4ZAcWjqflLsqzp8fBL2Fy0TW9Hco1Gjr8yj2AlW+/x2/Qd2QDMw5CRSNFawVsB+GAaCqknqhPk8EXA==}
@@ -9389,8 +9389,8 @@ packages:
   '@types/node@20.0.0':
     resolution: {integrity: sha512-cD2uPTDnQQCVpmRefonO98/PPijuOnnEy5oytWJFPY1N9aJCz2wJ5kSGWO+zJoed2cY2JxQh6yBuUq4vIn61hw==}
 
-  '@types/node@20.19.35':
-    resolution: {integrity: sha512-Uarfe6J91b9HAUXxjvSOdiO2UPOKLm07Q1oh0JHxoZ1y8HoqxDAu3gVrsrOHeiio0kSsoVBt4wFrKOm0dKxVPQ==}
+  '@types/node@20.19.37':
+    resolution: {integrity: sha512-8kzdPJ3FsNsVIurqBs7oodNnCEVbni9yUEkaHbgptDACOPW04jimGagZ51E6+lXUwJjgnBw+hyko/lkFWCldqw==}
 
   '@types/node@22.19.10':
     resolution: {integrity: sha512-tF5VOugLS/EuDlTBijk0MqABfP8UxgYazTLo3uIn3b4yJgg26QRbVYJYsDtHrjdDUIRfP70+VfhTTc+CE1yskw==}
@@ -10069,10 +10069,6 @@ packages:
     resolution: {integrity: sha512-nrUSn7hzt7J6JWgWGz78ZYI8wj+gdIJdk0Ynjpp8l+trkn58Uqsf6RYrYkEK+3X18EX+TNdtJI0WxAtc+L84SQ==}
     hasBin: true
 
-  '@zowe/secrets-for-zowe-sdk@8.1.2':
-    resolution: {integrity: sha512-cE8rlBADL48wmiQr+fdQdxczW4wLsmv5BQa03QepKiydBBE7TLrG2Anx/F4uZ+sVIZQuN95SHvwkt8VZaTzuyw==}
-    engines: {node: '>=14'}
-
   '@zowe/secrets-for-zowe-sdk@8.29.4':
     resolution: {integrity: sha512-fiRfuEuFNapwhVbN3LJIA2ZgVajNB+QNFN7O7ES/fIYGM612PKcXuvbZUJSlU69IZ8eUF8SP+9OnveK4s+GLgw==}
     engines: {node: '>=14'}
@@ -10326,8 +10322,8 @@ packages:
     resolution: {integrity: sha512-TkuxA4UCOvxuDK6NZYXCalszEzj+TLszyASooky+i742l9TqsOdYCMJJupxRic61hwquNtppB3hgcuq9SVSH1Q==}
     engines: {node: '>=6'}
 
-  array-back@6.2.2:
-    resolution: {integrity: sha512-gUAZ7HPyb4SJczXAMUXMGAvI976JoK3qEx9v1FTmeYuJj0IBiaKttG1ydtGKdkfqWkIkouke7nG8ufGy77+Cvw==}
+  array-back@6.2.3:
+    resolution: {integrity: sha512-SGDvmg6QTYiTxCBkYVmThcoa67uLl35pyzRHdpCGBOcqFy6BtwnphoFPk7LhJshD+Yk1Kt35WGWeZPTgwR4Fhw==}
     engines: {node: '>=12.17'}
 
   array-buffer-byte-length@1.0.2:
@@ -13166,14 +13162,6 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  i18next@25.3.0:
-    resolution: {integrity: sha512-ZSQIiNGfqSG6yoLHaCvrkPp16UejHI8PCDxFYaNG/1qxtmqNmqEg4JlWKlxkrUmrin2sEjsy+Mjy1TRozBhOgw==}
-    peerDependencies:
-      typescript: ^5
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   i18next@25.8.12:
     resolution: {integrity: sha512-hw59RF5QaH9i3l47hTXjeLLtzgVO8OtznlTJZbulmaLbz+itA1hIKWHTEiajY9W2SNPzvL8U5nTBVt7SsOGNRA==}
     peerDependencies:
@@ -13254,6 +13242,9 @@ packages:
 
   immutable@5.1.4:
     resolution: {integrity: sha512-p6u1bG3YSnINT5RQmx/yRZBpenIl30kVxkTLDyHLIMk0gict704Q9n+thfDI7lTRm9vXdDYutVzXhzcThxTnXA==}
+
+  immutable@5.1.5:
+    resolution: {integrity: sha512-t7xcm2siw+hlUM68I+UEOK+z84RzmN59as9DZ7P1l0994DKUWV7UXBMQZVxaoMSRQ+PBZbHCOoBt7a2wxOMt+A==}
 
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
@@ -20300,6 +20291,8 @@ snapshots:
 
   '@babel/runtime@7.28.6': {}
 
+  '@babel/runtime@7.29.2': {}
+
   '@babel/template@7.28.6':
     dependencies:
       '@babel/code-frame': 7.29.0
@@ -21606,7 +21599,7 @@ snapshots:
       - '@opentelemetry/sdk-trace-base'
       - openai
 
-  '@langchain/langgraph-checkpoint@1.0.0(@langchain/core@1.1.26(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.27.0(ws@8.19.0)(zod@4.1.13)))':
+  '@langchain/langgraph-checkpoint@1.0.1(@langchain/core@1.1.26(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.27.0(ws@8.19.0)(zod@4.1.13)))':
     dependencies:
       '@langchain/core': 1.1.26(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.27.0(ws@8.19.0)(zod@4.1.13))
       uuid: 10.0.0
@@ -21625,7 +21618,7 @@ snapshots:
   '@langchain/langgraph@1.1.4(@langchain/core@1.1.26(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.27.0(ws@8.19.0)(zod@4.1.13)))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.1.13))(zod@4.1.13)':
     dependencies:
       '@langchain/core': 1.1.26(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.27.0(ws@8.19.0)(zod@4.1.13))
-      '@langchain/langgraph-checkpoint': 1.0.0(@langchain/core@1.1.26(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.27.0(ws@8.19.0)(zod@4.1.13)))
+      '@langchain/langgraph-checkpoint': 1.0.1(@langchain/core@1.1.26(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.27.0(ws@8.19.0)(zod@4.1.13)))
       '@langchain/langgraph-sdk': 1.6.5(@langchain/core@1.1.26(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.27.0(ws@8.19.0)(zod@4.1.13)))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)
       '@standard-schema/spec': 1.1.0
       uuid: 10.0.0
@@ -22940,14 +22933,7 @@ snapshots:
       jsonc-parser: 3.3.1
       vscode-languageserver-textdocument: 1.0.11
 
-  '@sap-ux/logger@0.7.0':
-    dependencies:
-      chalk: 4.1.2
-      lodash: 4.17.23
-      winston: 3.11.0
-      winston-transport: 4.7.0
-
-  '@sap-ux/logger@0.7.2':
+  '@sap-ux/logger@0.8.1':
     dependencies:
       chalk: 4.1.2
       lodash: 4.17.23
@@ -22989,14 +22975,14 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@sap-ux/store@1.4.0(typescript@5.9.3)':
+  '@sap-ux/store@1.5.8(typescript@5.9.3)':
     dependencies:
-      '@sap-ux/logger': 0.7.2
-      i18next: 25.3.0(typescript@5.9.3)
+      '@sap-ux/logger': 0.8.1
+      i18next: 25.8.12(typescript@5.9.3)
       pluralize: 8.0.0
       reflect-metadata: 0.1.13
     optionalDependencies:
-      '@zowe/secrets-for-zowe-sdk': 8.1.2
+      '@zowe/secrets-for-zowe-sdk': 8.29.4
     transitivePeerDependencies:
       - typescript
 
@@ -23075,7 +23061,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@sap/service-provider-apis@2.7.1':
+  '@sap/service-provider-apis@2.8.0':
     dependencies:
       axios: 1.13.5(debug@4.4.3)
       lodash: 4.17.23
@@ -23083,12 +23069,12 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@sap/subaccount-destination-service-provider@2.14.1(typescript@5.9.3)':
+  '@sap/subaccount-destination-service-provider@2.16.0(typescript@5.9.3)':
     dependencies:
-      '@sap-ux/logger': 0.7.0
-      '@sap-ux/store': 1.4.0(typescript@5.9.3)
+      '@sap-ux/logger': 0.8.1
+      '@sap-ux/store': 1.5.8(typescript@5.9.3)
       '@sap/bas-sdk': 3.13.3
-      '@sap/service-provider-apis': 2.7.1
+      '@sap/service-provider-apis': 2.8.0
       stream-json: 1.9.1
       vkbeautify: 0.99.3
     transitivePeerDependencies:
@@ -24433,7 +24419,7 @@ snapshots:
 
   '@types/node@20.0.0': {}
 
-  '@types/node@20.19.35':
+  '@types/node@20.19.37':
     dependencies:
       undici-types: 6.21.0
 
@@ -25370,9 +25356,6 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  '@zowe/secrets-for-zowe-sdk@8.1.2':
-    optional: true
-
   '@zowe/secrets-for-zowe-sdk@8.29.4': {}
 
   a-sync-waterfall@1.0.1: {}
@@ -25559,7 +25542,7 @@ snapshots:
       '@swc/helpers': 0.5.19
       '@types/command-line-args': 5.2.3
       '@types/command-line-usage': 5.0.4
-      '@types/node': 20.19.35
+      '@types/node': 20.19.37
       command-line-args: 5.2.1
       command-line-usage: 7.0.4
       flatbuffers: 24.12.23
@@ -25644,7 +25627,7 @@ snapshots:
 
   array-back@3.1.0: {}
 
-  array-back@6.2.2: {}
+  array-back@6.2.3: {}
 
   array-buffer-byte-length@1.0.2:
     dependencies:
@@ -26616,7 +26599,7 @@ snapshots:
 
   command-line-usage@7.0.4:
     dependencies:
-      array-back: 6.2.2
+      array-back: 6.2.3
       chalk-template: 0.4.0
       table-layout: 4.1.1
       typical: 7.3.0
@@ -29004,15 +28987,9 @@ snapshots:
 
   husky@8.0.3: {}
 
-  i18next@25.3.0(typescript@5.9.3):
-    dependencies:
-      '@babel/runtime': 7.28.6
-    optionalDependencies:
-      typescript: 5.9.3
-
   i18next@25.8.12(typescript@5.9.3):
     dependencies:
-      '@babel/runtime': 7.28.6
+      '@babel/runtime': 7.29.2
     optionalDependencies:
       typescript: 5.9.3
 
@@ -29090,6 +29067,8 @@ snapshots:
   immutable@4.3.7: {}
 
   immutable@5.1.4: {}
+
+  immutable@5.1.5: {}
 
   import-fresh@3.3.1:
     dependencies:
@@ -33539,7 +33518,7 @@ snapshots:
     dependencies:
       '@bufbuild/protobuf': 2.11.0
       colorjs.io: 0.5.2
-      immutable: 5.1.4
+      immutable: 5.1.5
       rxjs: 7.8.2
       supports-color: 8.1.1
       sync-child-process: 1.0.2
@@ -34430,7 +34409,7 @@ snapshots:
 
   table-layout@4.1.1:
     dependencies:
-      array-back: 6.2.2
+      array-back: 6.2.3
       wordwrapjs: 5.1.1
 
   table@6.9.0:
