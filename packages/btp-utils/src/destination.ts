@@ -114,9 +114,9 @@ export interface ListDestinationOpts {
 export function isAbapSystem(destination: Partial<Destination>): boolean {
     return Boolean(
         destination.WebIDEUsage?.includes('abap') ||
-            destination['sap-client'] ||
-            destination['sap-platform']?.toLocaleLowerCase() === 'abap' ||
-            destination.ProxyType === 'OnPremise'
+        destination['sap-client'] ||
+        destination['sap-platform']?.toLocaleLowerCase() === 'abap' ||
+        destination.ProxyType === 'OnPremise'
     );
 }
 
@@ -129,7 +129,7 @@ export function isAbapSystem(destination: Partial<Destination>): boolean {
 export function isAbapEnvironmentOnBtp(destination: Destination): boolean {
     return Boolean(
         destination.WebIDEUsage?.includes(WebIDEUsage.ABAP_CLOUD) ||
-            destination['sap-platform']?.toLocaleLowerCase() === 'abap'
+        destination['sap-platform']?.toLocaleLowerCase() === 'abap'
     );
 }
 
@@ -144,7 +144,7 @@ export function isAbapEnvironmentOnBtp(destination: Destination): boolean {
 export function isGenericODataDestination(destination: Destination): boolean {
     return Boolean(
         destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_GENERIC) &&
-            !destination.WebIDEUsage.includes(WebIDEUsage.ODATA_ABAP)
+        !destination.WebIDEUsage.includes(WebIDEUsage.ODATA_ABAP)
     );
 }
 
@@ -157,7 +157,7 @@ export function isGenericODataDestination(destination: Destination): boolean {
 export function isPartialUrlDestination(destination: Destination): boolean {
     return Boolean(
         !destination.WebIDEAdditionalData?.includes(WebIDEAdditionalData.FULL_URL) &&
-            isGenericODataDestination(destination)
+        isGenericODataDestination(destination)
     );
 }
 
@@ -170,7 +170,7 @@ export function isPartialUrlDestination(destination: Destination): boolean {
 export function isFullUrlDestination(destination: Destination): boolean {
     return Boolean(
         destination.WebIDEAdditionalData?.includes(WebIDEAdditionalData.FULL_URL) &&
-            isGenericODataDestination(destination)
+        isGenericODataDestination(destination)
     );
 }
 
@@ -247,8 +247,8 @@ export function getDisplayName(destination: Destination, displayUsername?: strin
 export function isS4HC(destination: Destination): boolean {
     return Boolean(
         destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) &&
-            destination.Authentication === Authentication.SAML_ASSERTION &&
-            destination.ProxyType === ProxyType.INTERNET
+        destination.Authentication === Authentication.SAML_ASSERTION &&
+        destination.ProxyType === ProxyType.INTERNET
     );
 }
 

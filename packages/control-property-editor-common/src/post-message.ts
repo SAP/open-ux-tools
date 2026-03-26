@@ -54,7 +54,7 @@ export function startPostMessageCommunication<T>(
      */
     function postMessageListener(event: MessageEvent): void {
         const target = getTarget();
-        if (!target || event.origin !== target.origin || event.source !== target) {
+        if (event.origin !== target?.origin || event.source !== target) {
             // Ignore messages from unknown sources
             return;
         }

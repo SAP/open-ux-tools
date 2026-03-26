@@ -147,7 +147,7 @@ export default class ManualTestCaseReporter implements Reporter {
         if (!shouldSkip) {
             this.manualTestCases[test.title].steps ??= [];
             const lastStep = this.manualTestCases[test.title].steps[this.manualTestCases[test.title].steps.length - 1];
-            const isDuplicate = lastStep && step.title === lastStep.name;
+            const isDuplicate = step.title === lastStep?.name;
             if (!isDuplicate) {
                 this.manualTestCases[test.title].steps.push({ name: step.title });
             }
