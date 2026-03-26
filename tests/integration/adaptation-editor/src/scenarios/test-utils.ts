@@ -2116,12 +2116,13 @@ export class AdpDialog {
      *
      * @param fieldName - name of input field
      * @param value - value to fill in.
+     * @param regEx - to check pattern
      */
-    async fillField(fieldName: string, value: string): Promise<void> {
+    async fillField(fieldName: string, value: string, regEx = false): Promise<void> {
         const title = await this.getName();
         await test.step(`Fill \`${fieldName}\` field with \`${value}\` in the dialog \`${title}\``, async () => {
             // Create a regex pattern that makes trailing colon and whitespace optional
-            const namePattern = new RegExp(`^${fieldName.replace(/:\s*$/, '')}:?\\s*$`);
+            const namePattern = regEx ? new RegExp(`^${fieldName.replace(/:*$/, '')}:?\\s*$`) : fieldName;
             const field = this.frame.getByRole('textbox', { name: namePattern });
             await field.fill(value);
         });
