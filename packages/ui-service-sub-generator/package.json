@@ -30,7 +30,7 @@
         "!generators/**/*.map"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.22.0",
+        "@sap-devx/yeoman-ui-types": "1.23.0",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
@@ -40,7 +40,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui-service-inquirer": "workspace:*",
-        "i18next": "25.8.20",
+        "i18next": "25.10.10",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {

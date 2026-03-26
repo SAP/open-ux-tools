@@ -30,7 +30,7 @@
         "!generators/**/*.map"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.22.0",
+        "@sap-devx/yeoman-ui-types": "1.23.0",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/cf-deploy-config-sub-generator": "workspace:*",
         "@sap-ux/abap-deploy-config-sub-generator": "workspace:*",
@@ -43,7 +43,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "dotenv": "17.3.1",
         "hasbin": "1.2.3",
-        "i18next": "25.8.20",
+        "i18next": "25.10.10",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {

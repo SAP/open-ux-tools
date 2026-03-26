@@ -37,7 +37,7 @@
         "@sap-ux/vocabularies-types": "0.15.0",
         "@xmldom/xmldom": "0.8.11",
         "ejs": "3.1.10",
-        "i18next": "25.8.20",
+        "i18next": "25.10.10",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "semver": "7.7.4",

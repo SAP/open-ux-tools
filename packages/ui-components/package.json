@@ -61,7 +61,7 @@
         "@types/react-virtualized": "9.22.3",
         "@types/sanitize-html": "2.16.1",
         "@types/uuid": "11.0.0",
-        "babel-jest": "30.2.0",
+        "babel-jest": "30.3.0",
         "babel-loader": "10.1.1",
         "copyfiles": "2.4.1",
         "css-loader": "6.8.1",
