@@ -12,6 +12,9 @@
     ],
     "scripts": {
         "build": "tsc --build",
+        "build:btp": "pnpm build && pnpm postbuild:btp",
+        "postbuild:btp": "node btp/btp-build-artefacts.js",
+        "deploy:btp": "cf push -p dist",
         "start": "ts-node ./src/index.ts --start",
         "stop": "ts-node ./src/index.ts --stop",
         "start:record": "ts-node ./src/index.ts --start --record",
@@ -27,6 +30,8 @@
     },
     "license": "Apache-2.0",
     "dependencies": {
+        "@sap-cloud-sdk/connectivity": "4.5.1",
+        "@sap-cloud-sdk/http-client": "4.5.1",
         "@sap-ux/logger": "workspace:*",
         "adm-zip": "0.5.10",
         "dotenv": "16.3.1",

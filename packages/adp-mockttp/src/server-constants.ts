@@ -1,4 +1,4 @@
-export const MOCK_SERVER_PORT = 1080;
+export const MOCK_SERVER_PORT = Number(process.env.PORT) || 1080;
 export const DEFAULT_SAP_SYSTEM_PORT = 44355;
 
 export const MOCK_DATA_FOLDER_PATH = './mock-data';
