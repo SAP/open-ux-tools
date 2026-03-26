@@ -126,7 +126,24 @@ export function SystemStatus({
                                         ? 'system-status-info status-msg'
                                         : 'system-status-error status-msg'
                                 }>
-                                {updateSystemStatus.message}
+                                {updateSystemStatus.existingSystem ? (
+                                    <>
+                                        {t('systemStatus.connectionExists.prefix')}
+                                        <UILink
+                                            onClick={() =>
+                                                actions.openExistingSystem(
+                                                    updateSystemStatus.existingSystem!.url,
+                                                    updateSystemStatus.existingSystem!.client
+                                                )
+                                            }
+                                            className="output-link-error">
+                                            {updateSystemStatus.existingSystem.name}
+                                        </UILink>
+                                        {t('systemStatus.connectionExists.suffix')}
+                                    </>
+                                ) : (
+                                    updateSystemStatus.message
+                                )}
                             </label>
                         </div>
                     )}

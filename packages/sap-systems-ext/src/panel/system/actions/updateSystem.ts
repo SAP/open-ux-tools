@@ -11,7 +11,13 @@ import {
     compareSystems,
     shouldStoreSystemInfo
 } from '../../../utils';
-import { getSystemInfo, updateSystemStatus, validateSystemName, validateSystemUrl } from '../utils';
+import {
+    getSystemInfo,
+    updateSystemStatus,
+    validateSystemName,
+    validateSystemUrl,
+    ConnectionExistsError
+} from '../utils';
 import {
     SystemAction,
     SystemActionStatus,
@@ -56,7 +62,14 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
         }
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        await postSavingError(message, context.postMessage, backendSystem.systemType, context.panelViewType);
+        const existingSystem = error instanceof ConnectionExistsError ? error.existingSystem : undefined;
+        await postSavingError(
+            message,
+            context.postMessage,
+            backendSystem.systemType,
+            context.panelViewType,
+            existingSystem
+        );
     }
 }
 
@@ -108,7 +121,7 @@ async function updateHandler(
     // Scenario 1: User is creating a new system or importing a system
     if (panelViewType === SystemPanelViewType.Create || panelViewType === SystemPanelViewType.Import) {
         if (existingSystem) {
-            throw new Error(t('error.connectionExists', { name: existingSystem.name }));
+            throw new ConnectionExistsError(existingSystem);
         }
         context.disposePanel();
         newPanelMsg = t('info.connectionSaved', { system: newSystem.name });
@@ -127,7 +140,7 @@ async function updateHandler(
                 })
             );
         } else {
-            throw new Error(t('error.connectionExists', { name: existingSystem.name }));
+            throw new ConnectionExistsError(existingSystem);
         }
     }
 
@@ -151,19 +164,28 @@ async function updateHandler(
  * @param postMessage - function to post a message to the webview
  * @param systemType - optional system type for telemetry logging
  * @param panelViewType - the current panel view type
+ * @param existingSystem - optional existing system that caused a conflict
  */
 async function postSavingError(
     errorMsg: string,
     postMessage: PanelContext['postMessage'],
     systemType = 'unknown',
-    panelViewType?: SystemPanelViewType
+    panelViewType?: SystemPanelViewType,
+    existingSystem?: BackendSystem
 ): Promise<void> {
     const isUpdate = panelViewType === SystemPanelViewType.View;
 
     await postMessage(
         updateSystemStatus({
             message: t(isUpdate ? 'error.updateFailure' : 'error.creationFailure', { error: errorMsg }),
-            updateSuccess: false
+            updateSuccess: false,
+            ...(existingSystem && {
+                existingSystem: {
+                    name: existingSystem.name,
+                    url: existingSystem.url,
+                    client: existingSystem.client
+                }
+            })
         })
     );
 

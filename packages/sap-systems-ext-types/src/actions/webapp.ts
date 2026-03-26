@@ -8,6 +8,7 @@ export type WebAppActions =
     | CreateFioriProject
     | ExportSystem
     | FireGALinkClickedTelemetry
+    | OpenExistingSystem
     | OpenGuidedAnswers
     | OpenOutputChannel
     | WebviewReady
@@ -17,6 +18,7 @@ export type WebAppActions =
 export const CREATE_FIORI_PROJECT = 'CREATE_FIORI_PROJECT' as const;
 export const EXPORT_SYSTEM = 'EXPORT_SYSTEM' as const;
 export const FIRE_GA_LINK_CLICKED_TELEMETRY = 'FIRE_GA_LINK_CLICKED_TELEMETRY' as const;
+export const OPEN_EXISTING_SYSTEM = 'OPEN_EXISTING_SYSTEM' as const;
 export const OPEN_GUIDED_ANSWERS = 'OPEN_GUIDED_ANSWERS' as const;
 export const OPEN_OUTPUT_CHANNEL = 'OPEN_OUTPUT_CHANNEL' as const;
 export const WEBVIEW_READY = 'WEBVIEW_READY' as const;
@@ -29,6 +31,7 @@ const WEB_APP_ACTION_TYPES = {
     [CREATE_FIORI_PROJECT]: 'CREATE_FIORI_PROJECT',
     [EXPORT_SYSTEM]: 'EXPORT_SYSTEM',
     [FIRE_GA_LINK_CLICKED_TELEMETRY]: 'FIRE_GA_LINK_CLICKED_TELEMETRY',
+    [OPEN_EXISTING_SYSTEM]: 'OPEN_EXISTING_SYSTEM',
     [OPEN_GUIDED_ANSWERS]: 'OPEN_GUIDED_ANSWERS',
     [OPEN_OUTPUT_CHANNEL]: 'OPEN_OUTPUT_CHANNEL',
     [WEBVIEW_READY]: 'WEBVIEW_READY',
@@ -65,6 +68,11 @@ export interface TestConnection {
 export interface UpdateSystem {
     type: typeof UPDATE_SYSTEM;
     payload: { system: BackendSystem };
+}
+
+export interface OpenExistingSystem {
+    type: typeof OPEN_EXISTING_SYSTEM;
+    payload: { url: string; client?: string };
 }
 
 export interface OpenOutputChannel {

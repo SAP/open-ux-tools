@@ -159,9 +159,13 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message:
-                    'Failed to create the connection information: A connection [Test System] already exists with the same URL and Client.',
-                updateSuccess: false
+                message: 'Failed to create the connection information: Connection already exists',
+                updateSuccess: false,
+                existingSystem: {
+                    name: backendSystem.name,
+                    url: backendSystem.url,
+                    client: backendSystem.client
+                }
             }
         });
         expect(systemServiceWriteMock).not.toHaveBeenCalled();
@@ -224,9 +228,13 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message:
-                    'Failed to update the connection information: A connection [Test System] already exists with the same URL and Client.',
-                updateSuccess: false
+                message: 'Failed to update the connection information: Connection already exists',
+                updateSuccess: false,
+                existingSystem: {
+                    name: backendSystem.name,
+                    url: backendSystem.url,
+                    client: backendSystem.client
+                }
             }
         });
         expect(systemServiceWriteMock).not.toHaveBeenCalled();
