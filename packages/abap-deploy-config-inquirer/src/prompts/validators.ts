@@ -922,13 +922,9 @@ async function validateSystemSupportAdpProjectType(
         if (!adaptationProjectTypes.length) {
             return t('errors.validators.invalidAdpProjectTypes');
         }
-        const supportedAdpProjectTypes = adaptationProjectTypes.join(',');
         return adaptationProjectTypes.includes(adpProjectType)
             ? true
-            : t('errors.validators.unsupportedAdpProjectType', {
-                  adpProjectType,
-                  supportedAdpProjectTypes
-              });
+            : getUnsupportedAdpProjectTypeErrorText(adpProjectType, adaptationProjectTypes);
     } catch (error) {
         if (!isAxiosError(error)) {
             return error.message;
@@ -945,10 +941,7 @@ async function validateSystemSupportAdpProjectType(
         if (status === 404) {
             return adpProjectType === AdaptationProjectType.ON_PREMISE
                 ? true
-                : t('errors.validators.unsupportedAdpProjectType', {
-                      adpProjectType,
-                      supportedAdpProjectTypes: AdaptationProjectType.ON_PREMISE
-                  });
+                : getUnsupportedAdpProjectTypeErrorText(adpProjectType, [AdaptationProjectType.ON_PREMISE]);
         }
 
         return error.message;
@@ -981,4 +974,35 @@ async function getSystemInfo(
     const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget, credentials);
     const lrep = provider.getLayeredRepository();
     return lrep.getSystemInfo(undefined, packageName);
+}
+
+/**
+ * Used to retreive the localized label for an Adaptation project type.
+ *
+ * @param {AdaptationProjectType} adpProjectType - The Adaptation project type.
+ * @returns {string} The localized project type.
+ */
+const toAdpProjectTypeLabel = (adpProjectType: AdaptationProjectType): string =>
+    adpProjectType === AdaptationProjectType.CLOUD_READY
+        ? t('errors.validators.adpCloudProjectType')
+        : t('errors.validators.adpOnPremProjectType');
+
+/**
+ * Util method used to localize the unsupported project type error text.
+ *
+ * @param {AdaptationProjectType} adpProjectType - The selected Adaptation project type.
+ * @param {AdaptationProjectType[]} supportedAdpProjectTypes - The supported adaptation project types by the system.
+ * @returns {string} Localized error text explaining to the user that the selected Adaptation project type
+ * is not among the supported project type.
+ */
+function getUnsupportedAdpProjectTypeErrorText(
+    adpProjectType: AdaptationProjectType,
+    supportedAdpProjectTypes: AdaptationProjectType[]
+): string {
+    const adpProjectTypeLabel = toAdpProjectTypeLabel(adpProjectType);
+    const supportedAdpProjectTypesList = supportedAdpProjectTypes.map(toAdpProjectTypeLabel).join(',');
+    return t('errors.validators.unsupportedAdpProjectType', {
+        adpProjectTypeLabel,
+        supportedAdpProjectTypesList
+    });
 }
