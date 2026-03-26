@@ -1,5 +1,36 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.215
+
+### Patch Changes
+
+- a41533f: chore(ui-service-sub-generator): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/ui-service-inquirer@0.2.152
+    - @sap-ux/system-access@0.7.2
+    - @sap-ux/telemetry@0.6.90
+
+## 0.1.214
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.25
+- @sap-ux/fiori-generator-shared@0.13.89
+- @sap-ux/inquirer-common@0.11.27
+- @sap-ux/system-access@0.7.1
+- @sap-ux/telemetry@0.6.89
+- @sap-ux/ui-service-inquirer@0.2.151
+
 ## 0.1.213
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui-service-sub-generator",
     "description": "Generator for creating UI Service",
-    "version": "0.1.213",
+    "version": "0.1.215",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -40,14 +40,14 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui-service-inquirer": "workspace:*",
-        "i18next": "25.8.18",
+        "i18next": "25.8.20",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@sap-ux/store": "workspace:*",
-        "@sap/service-provider-apis": "2.5.1",
-        "@sap/subaccount-destination-service-provider": "2.14.1",
+        "@sap/service-provider-apis": "2.8.0",
+        "@sap/subaccount-destination-service-provider": "2.16.0",
         "@types/mem-fs": "1.1.2",
         "@types/yeoman-test": "4.0.6",
         "@types/mem-fs-editor": "7.0.1",

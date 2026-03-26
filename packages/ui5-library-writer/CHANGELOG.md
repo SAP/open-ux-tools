@@ -1,5 +1,22 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.73
+
+### Patch Changes
+
+- a41533f: chore(ui5-library-writer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.6.72
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
 ## 0.6.71
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.3.3
+
+### Patch Changes
+
+- a41533f: chore(abap-deploy-config-writer): upgrade fast-glob 3.3.1 → 3.3.3
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/system-access@0.7.2
+
+## 0.3.2
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/system-access@0.7.1
+
 ## 0.3.1
 
 ### Patch Changes

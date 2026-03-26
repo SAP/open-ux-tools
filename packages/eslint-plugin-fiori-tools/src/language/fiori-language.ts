@@ -49,15 +49,12 @@ export type FioriParseResultAst = {
  * Provides parsing and validation for manifest.json, XML annotations, and CDS annotation files.
  * Unlike typical ESLint languages, this operates on a set of related files that comprise a Fiori app.
  */
-export class FioriLanguage
-    implements
-        Language<{
-            LangOptions: FioriLanguageOptions;
-            Code: FioriSourceCode;
-            RootNode: FioriParseResultAst;
-            Node: Node;
-        }>
-{
+export class FioriLanguage implements Language<{
+    LangOptions: FioriLanguageOptions;
+    Code: FioriSourceCode;
+    RootNode: FioriParseResultAst;
+    Node: Node;
+}> {
     fileType = 'text' as const;
     lineStart = 1 as const;
     columnStart = 1 as const;
