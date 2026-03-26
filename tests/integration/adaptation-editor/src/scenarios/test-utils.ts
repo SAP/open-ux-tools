@@ -2120,7 +2120,9 @@ export class AdpDialog {
     async fillField(fieldName: string, value: string): Promise<void> {
         const title = await this.getName();
         await test.step(`Fill \`${fieldName}\` field with \`${value}\` in the dialog \`${title}\``, async () => {
-            const field = this.frame.getByRole('textbox', { name: fieldName });
+            // Create a regex pattern that makes trailing colon and whitespace optional
+            const namePattern = new RegExp(`^${fieldName.replace(/:\s*$/, '')}:?\\s*$`);
+            const field = this.frame.getByRole('textbox', { name: namePattern });
             await field.fill(value);
         });
     }

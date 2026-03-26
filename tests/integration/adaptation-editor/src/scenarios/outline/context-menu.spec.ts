@@ -59,7 +59,7 @@ test.describe(`@outline @context-menu`, () => {
 
             await editor.outlinePanel.clickOnNode('Create', 'right');
             await editor.outlinePanel.clickOnContextMenu('Rename');
-            await dialog.fillField('Selected Label:', 'Add New');
+            await dialog.fillField('Selected Label', 'Add New');
             await editor.reloadCompleted();
             await dialog.clickOnOk();
 
