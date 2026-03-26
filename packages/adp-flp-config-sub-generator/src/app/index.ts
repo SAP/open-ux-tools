@@ -459,7 +459,7 @@ export default class AdpFlpConfigGenerator extends Generator {
             this._abortExecution(t('error.projectNotSupported'));
             return;
         }
-        this.isCfProject = this.options.isCfProject ?? (await isCFEnvironment(this.projectRootPath));
+        this.isCfProject = await isCFEnvironment(this.projectRootPath);
     }
 
     /**
