@@ -65,9 +65,9 @@ function getServiceUrlPrompt(
         guiOptions: {
             hint: 'https://<hostname>:<port>/path/to/odata/service/',
             mandatory: true,
-            breadcrumb: true,
-            showOutputTabLink: true
+            breadcrumb: true
         },
+        showOutputTabLink: 'validationMessageOverflow',
         message: t('prompts.odataServiceUrl.message', { odataVersion: requiredVersion }),
         validate: async (url: string) => {
             showAnnotationWarning = false;
