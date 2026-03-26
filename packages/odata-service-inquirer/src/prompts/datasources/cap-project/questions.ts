@@ -147,9 +147,9 @@ export function getLocalCapProjectPrompts(
             guiOptions: {
                 applyDefaultWhenDirty: true,
                 mandatory: true,
-                breadcrumb: true,
-                showOutputTabLink: true
+                breadcrumb: true
             },
+            showOutputTabLink: 'validationMessageOverflow',
             default: () => {
                 return capServiceChoices?.length > 1 ? defaultServiceIndex : 0;
             },

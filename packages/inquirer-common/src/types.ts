@@ -72,13 +72,18 @@ export interface GuiOptions {
          */
         url?: string;
     };
-    /**
-     * When set to `true`, a "View details in the output tab." link is shown below a clamped validation
-     * error message (one that overflows 2 lines). The consumer application (e.g. App Wizard) is
-     * responsible for wiring the link click to the appropriate output-channel command.
-     */
-    showOutputTabLink?: boolean;
 }
+
+/**
+ * Controls visibility of the "View details in the output tab." link below a question.
+ * - `'validationMessageOverflow'` — link appears only when a validation error text overflows 2 lines (clamped).
+ * - A function `() => boolean | Promise<boolean>` — called at runtime (via RPC) to dynamically
+ *   determine whether the link should be shown. The consumer controls visibility.
+ *
+ * The consumer application (e.g. App Wizard) is responsible for wiring the link click
+ * to the appropriate output-channel command.
+ */
+export type ShowOutputTabLink = 'validationMessageOverflow' | (() => boolean | Promise<boolean>);
 
 export type PromptSeverityMessage = (
     input?: unknown,
@@ -89,12 +94,14 @@ export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
     name: string;
     guiOptions?: GuiOptions;
     additionalMessages?: PromptSeverityMessage;
+    showOutputTabLink?: ShowOutputTabLink;
 };
 
 export interface PasswordQuestion<A extends Answers = Answers> extends BasePasswordQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
     additionalMessages?: YUIQuestion['additionalMessages'];
+    showOutputTabLink?: YUIQuestion['showOutputTabLink'];
 }
 
 export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
@@ -107,12 +114,14 @@ export interface ListQuestion<A extends Answers = Answers> extends BaseListQuest
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
     additionalMessages?: YUIQuestion['additionalMessages'];
+    showOutputTabLink?: YUIQuestion['showOutputTabLink'];
 }
 
 export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfirmQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
     additionalMessages?: PromptSeverityMessage;
+    showOutputTabLink?: YUIQuestion['showOutputTabLink'];
 }
 
 export interface EditorQuestion<A extends Answers = Answers> extends BaseEditorQuestion<A> {
@@ -124,12 +133,14 @@ export interface InputQuestion<A extends Answers = Answers> extends BaseInputQue
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
     additionalMessages?: YUIQuestion['additionalMessages'];
+    showOutputTabLink?: YUIQuestion['showOutputTabLink'];
 }
 
 export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheckBoxQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
     additionalMessages?: YUIQuestion['additionalMessages'];
+    showOutputTabLink?: YUIQuestion['showOutputTabLink'];
 }
 
 export interface NumberQuestion<A extends Answers = Answers> extends BaseNumberQuestion<A> {
