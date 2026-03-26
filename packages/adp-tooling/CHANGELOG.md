@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.102
+
+### Patch Changes
+
+- 3dcd3f7: Annotation changes are not generated from Replace OData
+
 ## 0.18.101
 
 ### Patch Changes
