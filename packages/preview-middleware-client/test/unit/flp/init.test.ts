@@ -107,16 +107,40 @@ describe('flp/init', () => {
         });
 
         test('single app, no reuse libs', async () => {
-            fetchMock.mockResolvedValueOnce({ json: () => testManifest });
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => testManifest });
             await registerComponentDependencyPaths(['/'], new URLSearchParams());
             expect(loaderMock).not.toHaveBeenCalled();
         });
 
         test('single app, one reuse lib', async () => {
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
             const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
             manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
-            fetchMock.mockResolvedValueOnce({ json: () => manifest });
+            manifest['sap.ui5'].dependencies.libs['sap.m'] = {};
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
             fetchMock.mockResolvedValueOnce({
+                ok: true,
+                json: () => ({
+                    'test.lib': {
+                        dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
+                    }
+                })
+            });
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+            expect(loaderMock).toHaveBeenCalledWith({ paths: { 'test/lib/component': '~url' } });
+        });
+
+        test('single app, one reuse lib, no VersionInfo', async () => {
+            VersionInfo.load.mockResolvedValue(undefined);
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            manifest['sap.ui5'].dependencies.libs['sap.m'] = {};
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                ok: true,
                 json: () => ({
                     'test.lib': {
                         dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
@@ -136,8 +160,9 @@ describe('flp/init', () => {
                     'lazy': true
                 }
             };
-            fetchMock.mockResolvedValueOnce({ json: () => manifest });
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
             fetchMock.mockResolvedValueOnce({
+                ok: true,
                 json: () => ({
                     'test.lib': {
                         dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
@@ -151,11 +176,12 @@ describe('flp/init', () => {
             expect(loaderMock).toHaveBeenCalledWith({ paths: { 'test/lib/component': '~url' } });
         });
 
-        test('registerComponentDependencyPaths: error case', async () => {
+        test('registerComponentDependencyPaths: error case 1 (invalid manifest json)', async () => {
             const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
             manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
-            fetchMock.mockResolvedValueOnce({ json: () => manifest });
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
             fetchMock.mockResolvedValueOnce({
+                ok: true,
                 json: () => {
                     throw new Error('Error');
                 }
@@ -167,6 +193,34 @@ describe('flp/init', () => {
             } catch (error) {
                 expect(error).toEqual('Error');
             }
+        });
+
+        test('registerComponentDependencyPaths: error case 2 (no app index data)', async () => {
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                ok: false,
+                json: () => {
+                    throw new Error('Error');
+                }
+            });
+            CommunicationService.sendAction = jest.fn();
+
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+
+            expect(loaderMock).not.toHaveBeenCalled();
+        });
+
+        test('registerComponentDependencyPaths: error case 3 (no manifest json)', async () => {
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            fetchMock.mockResolvedValueOnce({ ok: false });
+            CommunicationService.sendAction = jest.fn();
+
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+
+            expect(loaderMock).not.toHaveBeenCalled();
         });
     });
 

@@ -42,6 +42,9 @@
     },
     {
       "path": "../i18n"
+    },
+    {
+      "path": "../project-access"
     }
   ]
 }

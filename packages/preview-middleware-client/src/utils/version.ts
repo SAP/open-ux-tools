@@ -2,12 +2,26 @@ import VersionInfo from 'sap/ui/VersionInfo';
 import Log from 'sap/base/Log';
 import { sendInfoCenterMessage } from './info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import type { Manifest } from '@sap-ux/project-access';
+import type { LibraryInfo } from 'sap/ui/core/Core';
 
-type SingleVersionInfo =
-    | {
-          name: string;
-          version: string;
-      };
+type UI5VersionDetails = {
+    /**
+     * Contains either
+     * - the name of the distribution or
+     * - the id of the application in case the UI5 sources have beeng loaded from npmjs.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    name: 'SAPUI5 Distribution' | Manifest['sap.app']['id'];
+    /**
+     * Contains either
+     * - the version of the UI5 framework or
+     * - the version of the application in case the UI5 sources have been loaded from npmjs.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
+    version: string | Manifest['sap.app']['applicationVersion']['version'];
+    libraries: LibraryInfo[]
+};
 
 export type Ui5VersionInfo = {
     major: number;
@@ -55,8 +69,8 @@ function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
  * @returns Ui5VersionInfo
  */
 export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui5VersionInfo> {
-    const versionInfo = await VersionInfo.load() as { name: string; libraries: SingleVersionInfo[] } | undefined;
-    let version = versionInfo?.libraries?.find((lib) => lib.name === library)?.version;
+    const versionInfo = await VersionInfo.load() as UI5VersionDetails | undefined;
+    let version = versionInfo?.libraries.find((lib) => lib.name === library)?.version;
     const isCdn = versionInfo?.name === 'SAPUI5 Distribution';
     if (!version) {
         Log.error('Could not get UI5 version of application. Using version: 1.130.9 as fallback.');
@@ -136,3 +150,56 @@ export function isVersionEqualOrHasNewerPatch(
 export function getFullyQualifiedUi5Version(ui5VersionInfo: Ui5VersionInfo): string {
     return `${ui5VersionInfo.major}.${ui5VersionInfo.minor}`;
 }
+
+/** Retrieve the SAPUI5 delivered namespaces for the current UI5 version.
+ *
+ * @returns Promise of a Set of SAPUI5 delivered namespaces
+ */
+export const getUI5Libs = (() => {
+    let cachedLibs: Set<string> | undefined;
+    return async function (): Promise<Set<string>> {
+        if (!cachedLibs) {
+            const versionInfo = await VersionInfo.load() as UI5VersionDetails | undefined;
+            const libNames = versionInfo?.libraries.map(lib => lib.name).filter((name): name is string => !!name);
+            if (libNames) {
+                cachedLibs = new Set(libNames);
+            }
+        }
+        if (!cachedLibs) {
+            Log.error('Could not get UI5 libraries of application. Using fallback libraries from UI5 version 1.130.9.');
+            cachedLibs = UI5_LIBS_1_130_9;
+        }
+        return cachedLibs;
+    };
+})();
+
+const UI5_LIBS_1_130_9 = new Set([
+    'sap.f',
+    'sap.fileviewer',
+    'sap.gantt',
+    'sap.m',
+    'sap.ndc',
+    'sap.suite.ui.commons',
+    'sap.tnt',
+    'sap.ui.comp',
+    'sap.ui.core',
+    'sap.ui.documentation',
+    'sap.ui.dt',
+    'sap.ui.fl',
+    'sap.ui.integration',
+    'sap.ui.layout',
+    'sap.ui.mdc',
+    'sap.ui.rta',
+    'sap.ui.suite',
+    'sap.ui.table',
+    'sap.ui.unified',
+    'sap.ui.ux3',
+    'sap.uxap',
+    'themelib_sap_belize',
+    'themelib_sap_bluecrystal',
+    'themelib_sap_fiori_3',
+    'themelib_sap_horizon',
+    'themelib_sap_hcb',
+    'themelib_sap_hcw',
+    'themelib_sap_quartz'
+]);
