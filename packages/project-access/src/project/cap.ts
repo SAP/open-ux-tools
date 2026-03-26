@@ -420,7 +420,7 @@ export async function readCapServiceMetadataEdmx(
  * @returns The normalized path without leading or trailing slashes.
  */
 function normalizeServiceUrlPath(urlPath: string): string {
-    return urlPath.replace(/(?:^\/)|(?:\/$)/g, '');
+    return urlPath.replaceAll(/(?:^\/)|(?:\/$)/g, '');
 }
 
 /**
