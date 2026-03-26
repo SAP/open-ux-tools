@@ -41,7 +41,9 @@ describe('destination', () => {
         });
 
         it('ProxyType is OnPremise', () => {
-            expect(isAbapSystem({ ...destination, ProxyType: 'OnPremise', WebIDEUsage: WebIDEUsage.ODATA_GENERIC })).toBe(true);
+            expect(
+                isAbapSystem({ ...destination, ProxyType: 'OnPremise', WebIDEUsage: WebIDEUsage.ODATA_GENERIC })
+            ).toBe(true);
         });
 
         it('not an ABAP system', () => {
