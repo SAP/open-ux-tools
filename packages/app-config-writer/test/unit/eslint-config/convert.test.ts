@@ -403,7 +403,10 @@ describe('convertEslintConfig', () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             const eslintrcPath = join(basePath, '.eslintrc.json');
             const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            eslintConfig.extends = ['plugin:@typescript-eslint/recommended', 'plugin:@typescript-eslint/recommended-type-checked'];
+            eslintConfig.extends = [
+                'plugin:@typescript-eslint/recommended',
+                'plugin:@typescript-eslint/recommended-type-checked'
+            ];
             fs.writeJSON(eslintrcPath, eslintConfig);
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });

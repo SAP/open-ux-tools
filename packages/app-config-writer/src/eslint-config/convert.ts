@@ -170,7 +170,9 @@ async function removeFioriToolsFromExistingConfig(
     if (typeof eslintConfig.extends === 'string') {
         if (eslintConfig.extends.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)) {
             delete eslintConfig.extends;
-        } else if (NATIVE_FLAT_CONFIG_EXTENDS.includes(eslintConfig.extends as (typeof NATIVE_FLAT_CONFIG_EXTENDS)[number])) {
+        } else if (
+            NATIVE_FLAT_CONFIG_EXTENDS.includes(eslintConfig.extends as (typeof NATIVE_FLAT_CONFIG_EXTENDS)[number])
+        ) {
             hadEslintRecommended = true;
             delete eslintConfig.extends;
         } else if (eslintConfig.extends in TYPESCRIPT_ESLINT_EXTENDS) {
