@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.25.4
+
+### Patch Changes
+
+- 8e7d529: fix(preview-middleware): ADP Extension Points: blank iframe on reload for UI5 < 1.120
+
 ## 0.25.3
 
 ### Patch Changes
