@@ -222,9 +222,38 @@ export type NodeLookup<T extends Node> = {
 };
 
 /**
+ * Links OData V4 object page table and header sections with their tables and FieldGroup configurations.
+ *
+ * @param page - The object page being linked
+ * @param path - Configuration path segments to the page
+ * @param name - The name of the page
+ * @param sections - Array of table and header section nodes to link
+ * @param target - The routing target configuration
+ */
+function linkV4ObjectPageSections(
+    page: FeV4ObjectPage,
+    path: string[],
+    name: string,
+    sections: (TableSectionNode | HeaderSectionNode)[],
+    target: Target
+): void {
+    linkObjectPageSections(
+        page,
+        path,
+        name,
+        sections.filter((section) => section.type === 'table-section'),
+        target
+    );
+    for (const section of sections.filter((section) => section.type === 'header-section')) {
+        collectHeaderSections(section, page, [...path, name]);
+    }
+}
+
+/**
  * Runs the Fiori Elements V4 linker to build linked app structure.
  *
  * @param context - The linker context containing app and service information
+ * @returns - V4 app pages with linked annotations
  */
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
     const linkedApp = linkApplicationSettings(context);
@@ -276,16 +305,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                     }
                 }
             };
-            linkObjectPageSections(
-                page,
-                path,
-                name,
-                sections.filter((section) => section.type === 'table-section'),
-                target
-            );
-            for (const section of sections.filter((section) => section.type === 'header-section')) {
-                collectHeaderSections(section, page, [...path, name]);
-            }
+            linkV4ObjectPageSections(page, path, name, sections, target);
             linkObjectPageHeader(page, target);
             linkedApp.pages.push(page);
         }
