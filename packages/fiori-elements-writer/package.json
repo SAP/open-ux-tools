@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-elements-writer",
     "description": "SAP Fiori elements application writer",
-    "version": "2.8.109",
+    "version": "2.8.110",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",

@@ -1,5 +1,39 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.13.4
+
+### Patch Changes
+
+- a41533f: chore(fiori-app-sub-generator): upgrade runtime dependencies (@sap/service-provider-apis 2.8.0, i18next 25.8.20)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/cap-config-writer@0.12.82
+    - @sap-ux/fiori-elements-writer@2.8.110
+    - @sap-ux/fiori-freestyle-writer@2.5.80
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/launch-config@0.10.79
+    - @sap-ux/odata-service-inquirer@2.20.3
+    - @sap-ux/odata-service-writer@0.31.2
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/store@1.5.11
+    - @sap-ux/ui5-application-inquirer@0.17.4
+    - @sap-ux/ui5-info@0.13.16
+    - @sap-ux/telemetry@0.6.90
+    - @sap-ux/annotation-generator@0.4.44
+
 ## 0.13.3
 
 ### Patch Changes

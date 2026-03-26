@@ -1,5 +1,15 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.137
+
+### Patch Changes
+
+- a41533f: chore(ui5-library-reference-inquirer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/project-access@1.35.16
+
 ## 0.4.136
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.82
+
+### Patch Changes
+
+- a41533f: chore(cap-config-writer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/yaml@0.17.6
+
 ## 0.12.81
 
 ### Patch Changes
