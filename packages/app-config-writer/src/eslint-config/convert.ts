@@ -26,10 +26,31 @@ export type EslintRcJson = {
 
 const packageName = {
     ESLINT: 'eslint',
+    ESLINT_JS: '@eslint/js',
+    TYPESCRIPT_ESLINT_PLUGIN: '@typescript-eslint/eslint-plugin',
     ESLINT_MIGRATE_CONFIG: '@eslint/migrate-config',
     ESLINT_PLUGIN_FIORI_TOOLS: '@sap-ux/eslint-plugin-fiori-tools',
     ESLINT_PLUGIN_FIORI_CUSTOM: 'eslint-plugin-fiori-custom'
 } as const;
+
+/**
+ * Extends entries that have a direct native ESLint 9 flat config equivalent and are also
+ * spread natively inside `@sap-ux/eslint-plugin-fiori-tools`. These must be stripped from
+ * the legacy config before migration to avoid the FlatCompat compat shim producing a different
+ * rule source identity than the native registration inside the fiori-tools plugin, which would
+ * cause ESLint to throw a rule source conflict error (e.g. "sources mismatch for no-irregular-whitespace").
+ */
+const NATIVE_FLAT_CONFIG_EXTENDS = ['eslint:recommended'] as const;
+
+/**
+ * Legacy `plugin:@typescript-eslint/*` extends entries that map to native flat config equivalents
+ * spread inside `@sap-ux/eslint-plugin-fiori-tools/typescriptConfig`. Subject to the same compat
+ * shim conflict as NATIVE_FLAT_CONFIG_EXTENDS when present in a legacy config.
+ */
+const TYPESCRIPT_ESLINT_EXTENDS: Record<string, string> = {
+    'plugin:@typescript-eslint/recommended': 'typescriptEslint.configs.recommended',
+    'plugin:@typescript-eslint/recommended-type-checked': "typescriptEslint.configs['recommended-type-checked']"
+};
 
 const MIGRATION_ERROR_TEXT = `Migration to eslint version 9 failed. Check if there are error messages above. You can also delete the existing eslint \`devDependency\` and run \`create add eslint\` to create a eslint.config.mjs file with the flat config where you can transfer your old eslint config manually.\` For more information, see [https://eslint.org/docs/latest/use/migrate-to-9.0.0#flat-config](Migrate to v9.x).`;
 
@@ -58,9 +79,9 @@ export async function convertEslintConfig(
         throw new Error('The prerequisites are not met. For more information, see the log messages above.');
     }
 
-    await removeFioriToolsFromExistingConfig(basePath, fs, logger);
+    const { hadEslintRecommended, tsExtends } = await removeFioriToolsFromExistingConfig(basePath, fs, logger);
     await runMigrationCommand(basePath, fs);
-    await injectFioriToolsIntoMigratedConfig(basePath, fs, options.config, logger);
+    await injectFioriToolsIntoMigratedConfig(basePath, fs, options.config, logger, hadEslintRecommended, tsExtends);
     await updatePackageJson(basePath, fs, logger);
 
     return fs;
@@ -107,15 +128,22 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
 }
 
 /**
- * Removes all traces of the SAP Fiori tools plugin from the existing legacy eslint configuration,
- * so that the migration tool does not attempt to translate it and produce broken output.
+ * Removes all traces of the SAP Fiori tools plugin and known native-flat-config extends entries
+ * (e.g. `eslint:recommended`, `plugin:@typescript-eslint/recommended`) from the existing legacy
+ * eslint configuration, so that the migration tool does not wrap them in a FlatCompat compat shim
+ * that would conflict with the native rule registrations inside `@sap-ux/eslint-plugin-fiori-tools`.
  *
  * @param basePath - base path to be used for the conversion
  * @param fs - file system reference
  * @param logger - logger to report info to the user
+ * @returns object indicating which native extends were present and removed
  * @throws {Error} if the existing .eslintrc.json file is not a valid JSON object
  */
-async function removeFioriToolsFromExistingConfig(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<void> {
+async function removeFioriToolsFromExistingConfig(
+    basePath: string,
+    fs: Editor,
+    logger?: ToolsLogger
+): Promise<{ hadEslintRecommended: boolean; tsExtends: string[] }> {
     const eslintrcJsonPath = join(basePath, '.eslintrc.json');
     const eslintrcPath = join(basePath, '.eslintrc');
     const configPath = fs.exists(eslintrcJsonPath) ? eslintrcJsonPath : eslintrcPath;
@@ -135,14 +163,34 @@ async function removeFioriToolsFromExistingConfig(basePath: string, fs: Editor, 
         }
     }
 
-    // Remove fiori-tools entries from extends
+    let hadEslintRecommended = false;
+    const tsExtends: string[] = [];
+
+    // Remove fiori-tools entries and native-flat-config entries from extends
     if (typeof eslintConfig.extends === 'string') {
         if (eslintConfig.extends.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)) {
             delete eslintConfig.extends;
+        } else if (NATIVE_FLAT_CONFIG_EXTENDS.includes(eslintConfig.extends as (typeof NATIVE_FLAT_CONFIG_EXTENDS)[number])) {
+            hadEslintRecommended = true;
+            delete eslintConfig.extends;
+        } else if (eslintConfig.extends in TYPESCRIPT_ESLINT_EXTENDS) {
+            tsExtends.push(eslintConfig.extends);
+            delete eslintConfig.extends;
         }
     } else if (Array.isArray(eslintConfig.extends)) {
+        hadEslintRecommended = eslintConfig.extends.some((ext) =>
+            NATIVE_FLAT_CONFIG_EXTENDS.includes(ext as (typeof NATIVE_FLAT_CONFIG_EXTENDS)[number])
+        );
+        for (const ext of eslintConfig.extends) {
+            if (ext in TYPESCRIPT_ESLINT_EXTENDS) {
+                tsExtends.push(ext);
+            }
+        }
         eslintConfig.extends = eslintConfig.extends.filter(
-            (ext) => !ext.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)
+            (ext) =>
+                !ext.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS) &&
+                !NATIVE_FLAT_CONFIG_EXTENDS.includes(ext as (typeof NATIVE_FLAT_CONFIG_EXTENDS)[number]) &&
+                !(ext in TYPESCRIPT_ESLINT_EXTENDS)
         );
         if (eslintConfig.extends.length === 0) {
             delete eslintConfig.extends;
@@ -151,6 +199,8 @@ async function removeFioriToolsFromExistingConfig(basePath: string, fs: Editor, 
 
     fs.writeJSON(configPath, eslintConfig);
     logger?.debug(`Removed SAP Fiori tools plugin references from ${configPath}`);
+
+    return { hadEslintRecommended, tsExtends };
 }
 
 /**
@@ -158,22 +208,47 @@ async function removeFioriToolsFromExistingConfig(basePath: string, fs: Editor, 
  *
  * After the migration tool produces `eslint.config.mjs`, this function:
  * 1. Prepends `import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';` to the imports section.
- * 2. Inserts `...fioriTools.configs.recommended` (or the requested config variant) as the last
+ * 2. Optionally prepends `import js from '@eslint/js';` and inserts `js.configs.recommended` as a
+ *    native flat config entry when `eslint:recommended` was present in the legacy config. This avoids
+ *    the FlatCompat compat shim that `@eslint/migrate-config` would otherwise generate, which causes
+ *    a rule source conflict with the native `js.configs.recommended` spread inside the fiori-tools plugin.
+ * 3. Optionally prepends `import typescriptEslint from '@typescript-eslint/eslint-plugin';` and inserts
+ *    the corresponding native config spreads for any `plugin:@typescript-eslint/*` entries that were
+ *    present in the legacy config, for the same reason.
+ * 4. Inserts `...fioriTools.configs.recommended` (or the requested config variant) as the last
  *    element of the exported config array, right before the closing `]);`.
  *
  * @param basePath - base path of the project
  * @param fs - file system reference
  * @param config - the name of the SAP Fiori tools eslint plugin config to be used
  * @param logger - logger to report info to the user
+ * @param injectJsRecommended - whether to inject js.configs.recommended natively
+ * @param tsExtends - list of @typescript-eslint legacy extends that need native injection
  */
 async function injectFioriToolsIntoMigratedConfig(
     basePath: string,
     fs: Editor,
     config = 'recommended',
-    logger?: ToolsLogger
+    logger?: ToolsLogger,
+    injectJsRecommended = false,
+    tsExtends: string[] = []
 ): Promise<void> {
     const migratedConfigPath = join(basePath, 'eslint.config.mjs');
     let content = fs.read(migratedConfigPath);
+
+    if (tsExtends.length > 0) {
+        const tsImportStatement = `import typescriptEslint from '${packageName.TYPESCRIPT_ESLINT_PLUGIN}';\n`;
+        if (!content.includes(tsImportStatement)) {
+            content = tsImportStatement + content;
+        }
+    }
+
+    if (injectJsRecommended) {
+        const jsImportStatement = `import js from '${packageName.ESLINT_JS}';\n`;
+        if (!content.includes(jsImportStatement)) {
+            content = jsImportStatement + content;
+        }
+    }
 
     const importStatement = `import fioriTools from '${packageName.ESLINT_PLUGIN_FIORI_TOOLS}';\n`;
     if (!content.includes(importStatement)) {
@@ -186,8 +261,14 @@ async function injectFioriToolsIntoMigratedConfig(
             'Unexpected format of migrated eslint config. Could not inject the SAP Fiori tools plugin configuration.'
         );
     } else {
+        const jsRecommendedEntry = injectJsRecommended ? `,\n    js.configs.recommended` : '';
+        const tsRecommendedEntries = tsExtends
+            .map((ext) => `,\n    ...${TYPESCRIPT_ESLINT_EXTENDS[ext]}.rules`)
+            .join('');
         content =
             content.slice(0, lastBracketIndex) +
+            jsRecommendedEntry +
+            tsRecommendedEntries +
             `,\n    ...fioriTools.configs['${config}'],\n` +
             content.slice(lastBracketIndex);
     }
