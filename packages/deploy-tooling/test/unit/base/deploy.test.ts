@@ -392,6 +392,7 @@ describe('base/deploy', () => {
                 await deploy(archive, { app, target: { ...target, destination: 'MYTESTDEST' } }, nullLogger);
                 fail('Should have thrown an error');
             } catch (error) {
+                expect(error).toBeInstanceOf(TypeError);
                 expect(error.message).toContain('MYTESTDEST');
                 expect(error.message).toContain('not recognised as an ABAP system');
             }

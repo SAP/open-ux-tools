@@ -178,7 +178,7 @@ function getDeployService<T extends Ui5AbapRepositoryService | LayeredRepository
     logger: Logger
 ): T {
     if (typeof factoryFn !== 'function') {
-        throw new Error(
+        throw new TypeError(
             `The destination '${config.target?.destination}' is not recognised as an ABAP system. ` +
                 `Ensure the destination has one of the following properties configured: ` +
                 `WebIDEUsage including 'odata_abap', a 'sap-client' value, 'sap-platform' set to 'abap', or 'ProxyType' set to 'OnPremise'.`
