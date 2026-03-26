@@ -52,7 +52,6 @@ export interface FeV2ListReport extends ConfigurationBase<'list-report-page', Pa
     entitySetName: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
-    fieldGroups: FieldGroup[];
     lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
 }
 
@@ -62,7 +61,6 @@ export interface FeV2ObjectPage extends ConfigurationBase<'object-page', PageSet
     entitySetName: string;
     entity: MetadataElement;
     sections: Section[];
-    fieldGroups: FieldGroup[];
     lookup: NodeLookup<Table | Section | FieldGroup>;
 }
 
@@ -371,7 +369,6 @@ function linkListReportPage(
         entitySetName,
         entity,
         tables: [],
-        fieldGroups: [],
         lookup: {}
     };
 
@@ -422,7 +419,6 @@ function linkObjectPagePage(
         entitySetName,
         entity,
         sections: [],
-        fieldGroups: [],
         lookup: {}
     };
     linkObjectPageSections(

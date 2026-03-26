@@ -21,7 +21,6 @@ export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
     contextPath: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
-    fieldGroups: FieldGroup[];
     lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
 }
 
@@ -31,7 +30,6 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     contextPath: string;
     entity: MetadataElement;
     sections: Section[];
-    fieldGroups: FieldGroup[];
     lookup: NodeLookup<Table | Section | FieldGroup>;
     header: {
         anchorBarVisible: ConfigurationProperty<boolean>;
@@ -266,7 +264,6 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                 entity: entity,
                 configuration: {},
                 sections: [],
-                fieldGroups: [],
                 lookup: {},
                 header: {
                     anchorBarVisible: {
@@ -375,7 +372,6 @@ function linkListReport(
         entity: entity,
         configuration: {},
         tables: [],
-        fieldGroups: [],
         lookup: {}
     };
     linkListReportTable(page, [...path, name], tables, target);
