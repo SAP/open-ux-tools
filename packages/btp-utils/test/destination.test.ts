@@ -40,6 +40,10 @@ describe('destination', () => {
             expect(isAbapSystem({ ...destination, 'sap-platform': 'abap' })).toBe(true);
         });
 
+        it('ProxyType is OnPremise', () => {
+            expect(isAbapSystem({ ...destination, ProxyType: 'OnPremise', WebIDEUsage: WebIDEUsage.ODATA_GENERIC })).toBe(true);
+        });
+
         it('not an ABAP system', () => {
             expect(isAbapSystem(destination)).toBe(false);
             expect(isAbapSystem({ ...destination, WebIDEUsage: 'anything' })).toBe(false);

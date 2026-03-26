@@ -115,7 +115,8 @@ export function isAbapSystem(destination: Partial<Destination>): boolean {
     return Boolean(
         destination.WebIDEUsage?.includes('abap') ||
             destination['sap-client'] ||
-            destination['sap-platform']?.toLocaleLowerCase() === 'abap'
+            destination['sap-platform']?.toLocaleLowerCase() === 'abap' ||
+            destination.ProxyType === 'OnPremise'
     );
 }
 

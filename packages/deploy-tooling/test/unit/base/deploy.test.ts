@@ -382,6 +382,20 @@ describe('base/deploy', () => {
                 }
             });
         });
+
+        test('throws actionable error when provider is not an AbapServiceProvider', async () => {
+            // Simulate a destination where isAbapSystem returned false, resulting in a plain
+            // ServiceProvider without getUi5AbapRepository (e.g. WebIDEUsage=odata_gen only)
+            const nonAbapProvider = { defaults: {} } as unknown as AbapServiceProvider;
+            mockCreateForAbap.mockReturnValueOnce(nonAbapProvider);
+            try {
+                await deploy(archive, { app, target: { ...target, destination: 'MYTESTDEST' } }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error.message).toContain('MYTESTDEST');
+                expect(error.message).toContain('not recognised as an ABAP system');
+            }
+        });
     });
 
     describe('undeploy', () => {
