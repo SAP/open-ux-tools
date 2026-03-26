@@ -15,7 +15,6 @@ import {
     HELP_NODES,
     HELP_TREE
 } from '@sap-ux/guided-answers-helper';
-import { OUTPUT_ICON } from '../icons';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import type { AxiosError } from 'axios';
 import { t } from '../i18n';
@@ -25,9 +24,6 @@ import { ValidationLink } from '../types';
 // Telemetry event names specific to odata service error handling
 const telemEventGALinkCreated = 'GA_LINK_CREATED';
 const telemBasError = 'SERVICE_INQUIRER_BAS_ERROR';
-
-// Output channel command ID for showing detailed error logs
-export const OUTPUT_CHANNEL_CMD_ID = 'sap.ux.appWizard.showOutputChannel';
 
 /**
  * Constants specific to error handling
@@ -706,28 +702,6 @@ export class ErrorHandler {
             nodeIdPath: `${helpNode}`,
             Platform: this.platform ?? getHostEnvironment().technical
         });
-        return new ValidationLink(valLink);
-    }
-
-    /**
-     * Creates a validation link that opens the output channel to view detailed error logs.
-     * This is useful for showing clickable error messages that redirect users to the output console.
-     *
-     * @param errorMsg The error message to display with the output channel link
-     * @returns A validation link with a command to open the output channel
-     */
-    public static getOutputChannelLink(errorMsg: string): ValidationLink {
-        const valLink: IValidationLink = {
-            message: errorMsg,
-            link: {
-                text: t('outputChannel.viewDetailsText'),
-                icon: OUTPUT_ICON,
-                command: {
-                    id: OUTPUT_CHANNEL_CMD_ID,
-                    params: {}
-                }
-            }
-        };
         return new ValidationLink(valLink);
     }
 }
