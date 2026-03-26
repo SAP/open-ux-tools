@@ -434,21 +434,22 @@ function normalizeServiceUrlPath(urlPath: string): string {
  * The `<suffix>` (e.g. `odata/v4/myService`) must match exactly.
  *
  * @param path - The full request path to validate.
- * @param expectedSufixPath - The expected service path (e.g. `odata/v4/myService`).
+ * @param expectedSuffixPath - The expected service path (e.g. `odata/v4/myService`).
  * @returns `true` if the path matches one of the supported patterns and ends with the expected suffix.
  */
-export function isMatchingServiceUri(path: string, expectedSufixPath: string): boolean {
+export function isMatchingServiceUri(path: string, expectedSuffixPath: string): boolean {
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
     // Escapes special regex characters in a string so it can be embedded into regular expression
-    expectedSufixPath = expectedSufixPath.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    const escapedSuffix = expectedSuffixPath.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 
     const patterns = [
         // regex for pattern -> /ui/<inbound-service-name>/v<version>/...
-        String.raw`^/ui/[^/]+/v\d+/${expectedSufixPath}$`,
+        String.raw`^/ui/[^/]+/v\d+/${escapedSuffix}$`,
         // regex for pattern -> /<string>.<string>/external-ui/<inbound-service-name>/v<version>/...
-        String.raw`^/[^/]+\.[^/]+/external-ui/[^/]+/v\d+/${expectedSufixPath}$`
+        String.raw`^/[^/]+\.[^/]+/external-ui/[^/]+/v\d+/${escapedSuffix}$`
     ];
 
-    return patterns.some((pattern) => new RegExp(pattern).test(path));
+    return patterns.some((pattern) => new RegExp(pattern).test(normalizedPath));
 }
 
 /**
@@ -468,7 +469,7 @@ function findServiceByUri(
     // If no exact match is found, try matching while ignoring the service prefix
     service ??= services.find((srv) => {
         const normalizedServiceUrlPath = normalizeServiceUrlPath(srv.urlPath);
-        return isMatchingServiceUri(`/${searchUri}`, normalizedServiceUrlPath);
+        return isMatchingServiceUri(searchUri, normalizedServiceUrlPath);
     });
     return service;
 }
