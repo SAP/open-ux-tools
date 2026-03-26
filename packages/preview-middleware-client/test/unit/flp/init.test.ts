@@ -356,7 +356,7 @@ describe('flp/init', () => {
                         callback({}); // WorkspaceConnector
                         return;
                     }
-                    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+                     
                     await callback(() => Promise.reject('Reload triggered'));
                     resolve(undefined);
                 });

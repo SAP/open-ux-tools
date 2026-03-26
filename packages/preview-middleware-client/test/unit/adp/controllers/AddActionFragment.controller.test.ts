@@ -319,7 +319,7 @@ describe('AddActionFragment', () => {
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
                 1,
-                "An action with the ''testId''  ID is already defined. Please choose a different ID."
+                'An action with the \'\'testId\'\'  ID is already defined. Please choose a different ID.'
             );
         });
 
