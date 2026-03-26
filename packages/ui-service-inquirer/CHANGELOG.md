@@ -1,5 +1,24 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.152
+
+### Patch Changes
+
+- a41533f: chore(ui-service-inquirer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/abap-deploy-config-inquirer@1.8.3
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/odata-service-inquirer@2.20.3
+    - @sap-ux/telemetry@0.6.90
+
 ## 0.2.151
 
 ### Patch Changes

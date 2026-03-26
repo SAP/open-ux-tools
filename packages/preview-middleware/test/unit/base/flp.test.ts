@@ -9,7 +9,7 @@ import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
 import { readFileSync, promises } from 'node:fs';
 import path, { join } from 'node:path';
-import type { SuperTest, Test } from 'supertest';
+
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
 import type { EnhancedRequest } from '../../../src/base/flp';
@@ -320,7 +320,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             flp: {
                 enhancedHomePage: false,
@@ -867,7 +867,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router with enableCardGenerator', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             editors: {
                 cardGenerator: {
@@ -1088,7 +1088,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router with enableCardGenerator for CAP projects', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const webappPath = join(tmpdir(), 'webapp');
         const mockCAPUtils = {
             getProject() {
@@ -1207,7 +1207,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router with test suite', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
@@ -1256,7 +1256,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router with test suite (negative)', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
@@ -1294,7 +1294,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router - existing FlpSandbox', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
@@ -1328,7 +1328,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router - connect API', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             flp: {
                 enhancedHomePage: false,
@@ -1400,7 +1400,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('rta with new config', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             flp: {
                 apps: [
@@ -1509,7 +1509,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('cds-plugin-ui5', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const baseUrl = '/ui5.patched.router.base';
         const mockConfig = {
             flp: {

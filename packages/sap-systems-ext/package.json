@@ -57,18 +57,18 @@
         "@sap-ux/sap-systems-ext-types": "workspace:*",
         "@sap-ux/sap-systems-ext-webapp": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
-        "@types/normalize-path": "3.0.0",
-        "@types/vscode": "1.102.0",
+        "@types/normalize-path": "3.0.2",
+        "@types/vscode": "1.110.0",
         "@zowe/secrets-for-zowe-sdk": "8.29.4",
         "cross-env": "10.1.0",
-        "fast-glob": "3.3.1",
-        "i18next": "25.8.18",
+        "fast-glob": "3.3.3",
+        "i18next": "25.8.20",
         "jsonc-parser": "3.3.1",
         "normalize-path": "3.0.0",
         "npm-run-all2": "8.0.4",
         "os-name": "4.0.1",
         "vscode-uri": "3.1.0",
-        "@vscode/vsce": "3.6.0"
+        "@vscode/vsce": "3.7.1"
     },
     "contributes": {
         "viewsContainers": {
