@@ -322,6 +322,9 @@ export class FlpSandbox {
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
             this.removeAsyncHintsRequests();
         }
+        if (ui5Version.major === 1 && ui5Version.minor < 120) {
+            this.removeFlexExtensionPointEnabled();
+        }
 
         const config = structuredClone(this.templateConfig);
         if (!config.ui5.libs.includes('sap.ui.rta')) {
@@ -515,6 +518,9 @@ export class FlpSandbox {
                 this.templateConfig.baseUrl
             );
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
+            if (ui5Version.major === 1 && ui5Version.minor < 120) {
+                this.removeFlexExtensionPointEnabled();
+            }
             //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
             const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
@@ -647,6 +653,19 @@ export class FlpSandbox {
             const appDependencies = this.templateConfig.apps[app].applicationDependencies;
             if (appDependencies?.asyncHints.requests) {
                 appDependencies.asyncHints.requests = [];
+            }
+        }
+    }
+
+    /**
+     * For UI5 versions below 1.120, flexExtensionPointEnabled must be removed from the application
+     * dependencies manifest. Older UI5 versions cannot handle this property at bootstrap time.
+     */
+    private removeFlexExtensionPointEnabled(): void {
+        for (const app in this.templateConfig.apps) {
+            const manifest = this.templateConfig.apps[app].applicationDependencies?.manifest;
+            if (manifest?.['sap.ui5']?.flexExtensionPointEnabled !== undefined) {
+                delete manifest['sap.ui5'].flexExtensionPointEnabled;
             }
         }
     }
