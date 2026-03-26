@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.5
+
+### Patch Changes
+
+- b4b4447: fix(deploy-tooling): suppress 'Change logging level' hint when debug logging is already enabled via config.log
+
 ## 0.18.4
 
 ### Patch Changes
