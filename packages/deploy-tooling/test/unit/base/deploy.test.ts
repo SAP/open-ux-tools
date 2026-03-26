@@ -394,7 +394,7 @@ describe('base/deploy', () => {
             } catch (error) {
                 expect(error).toBeInstanceOf(TypeError);
                 expect(error.message).toContain('MYTESTDEST');
-                expect(error.message).toContain('not recognised as an ABAP system');
+                expect(error.message).toContain('not recognized as an ABAP system');
             }
         });
     });
