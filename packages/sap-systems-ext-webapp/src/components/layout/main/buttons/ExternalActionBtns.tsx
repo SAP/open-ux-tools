@@ -1,5 +1,5 @@
 import React from 'react';
-import type { BackendSystem } from '@sap-ux/store';
+import type { SystemInfo } from '../../../../types';
 import type { ReactElement } from 'react';
 import { UIDefaultButton, UiIcons } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,7 @@ import { actions } from '../../../../state';
 import '../../../../styles/Buttons.scss';
 
 interface ExternalActionBtnsProps {
-    systemInfo?: BackendSystem;
+    systemInfo?: SystemInfo;
     systemUnSaved?: boolean;
 }
 

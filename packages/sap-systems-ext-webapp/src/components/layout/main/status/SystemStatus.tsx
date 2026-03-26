@@ -94,8 +94,11 @@ export function SystemStatus({
                             <UIIcon className="status-icon" iconName={UiIcons.Error} />
                             <label className="system-status-error status-msg">
                                 {connectionStatus.message}
-                                <br />
-                                {outputTabLogMsg(true)}
+                                {connectionStatus?.showOutputChannelLink && (
+                                    <>
+                                        <br /> {outputTabLogMsg(true)}
+                                    </>
+                                )}
                             </label>
                         </div>
                     )}

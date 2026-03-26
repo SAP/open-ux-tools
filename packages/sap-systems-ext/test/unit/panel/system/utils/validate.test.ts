@@ -42,6 +42,31 @@ describe('Test the panel action utils', () => {
                 })
             ).toBe('Please provide a valid URL to test the connection.');
         });
+
+        it('should return error message for generic_host without servicePath', () => {
+            expect(
+                validateSystemInfo({
+                    url: 'https://example.com',
+                    name: 'Generic Host System',
+                    systemType: 'OnPrem',
+                    connectionType: 'generic_host'
+                })
+            ).toBe('Please provide a service path to test the connection for a generic host.');
+        });
+
+        it('should return true for generic_host with servicePath', () => {
+            expect(
+                validateSystemInfo(
+                    {
+                        url: 'https://example.com',
+                        name: 'Generic Host System',
+                        systemType: 'OnPrem',
+                        connectionType: 'generic_host'
+                    },
+                    '/sap/opu/odata/sap/MY_SERVICE'
+                )
+            ).toBe(true);
+        });
     });
 
     describe('validateSystemName', () => {

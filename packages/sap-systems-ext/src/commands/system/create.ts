@@ -1,8 +1,6 @@
 import type { SystemCommandContext } from '../../types/system';
-import { SystemPanelViewType } from '../../utils/constants';
+import { NEW_SYSTEM_PANEL_KEY, SystemPanelViewType } from '../../utils/constants';
 import { SystemPanel } from '../../panel';
-
-const NEW_SYSTEM_PANEL_KEY = '__NEW_SYSTEM_PANEL__';
 
 /**
  * Returns a command handler function that creates or reveals the system panel.

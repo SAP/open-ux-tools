@@ -18,6 +18,7 @@ describe('<SystemStaus />', () => {
                     count: 0
                 }
             },
+            showOutputChannelLink: false,
             connected: true
         };
         const openOutputChannelSpy = jest.spyOn(actions, 'openOutputChannel');
@@ -36,7 +37,8 @@ describe('<SystemStaus />', () => {
     it('Test Connection status (failure)', () => {
         const connectionStatus: ConnectionStatus = {
             message: 'System could not connect',
-            connected: false
+            connected: false,
+            showOutputChannelLink: false
         };
 
         render(<SystemStatus connectionStatus={connectionStatus} showConnectionStatus={true} />);
@@ -47,7 +49,8 @@ describe('<SystemStaus />', () => {
     it('Test Connection status with Guided Answer link (failure with Guided Answers link)', () => {
         const connectionStatus: ConnectionStatus = {
             message: 'System could not connect',
-            connected: false
+            connected: false,
+            showOutputChannelLink: false
         };
 
         const gaLink: IActionCalloutDetail = {

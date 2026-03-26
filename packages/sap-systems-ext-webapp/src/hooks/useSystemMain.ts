@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { LoadingState } from '../types';
-import type { SystemState } from '../types';
-import type { AuthenticationType, BackendSystem, ConnectionType, SystemType } from '@sap-ux/store';
+import type { SystemState, SystemInfo } from '../types';
+import type { AuthenticationType, ConnectionType, SystemType } from '@sap-ux/store';
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
+import type { ConnectionStatus } from '@sap-ux/sap-systems-ext-types';
 
 /**
  * Custom React hook that manages the main store state and UI interactions for SAP system configuration.
@@ -11,7 +12,7 @@ import type { IActionCalloutDetail } from '@sap-ux/ui-components';
  * @returns An object containing system information, field setters, UI states, loading states, status objects, configuration flags, and utility functions.
  */
 export function useSystemMain(): {
-    systemInfo?: BackendSystem;
+    systemInfo?: SystemInfo;
     systemUnSaved?: boolean;
     defaultName: string;
     setName: (name: string | undefined) => void;
@@ -19,6 +20,7 @@ export function useSystemMain(): {
     setAuthenticationType: (authenticationType: AuthenticationType | undefined) => void;
     setConnectionType: (connectionType: ConnectionType | undefined) => void;
     setUrl: (url: string | undefined) => void;
+    setServicePath: (servicePath: string | undefined) => void;
     setClient: (client: string | undefined) => void;
     setUsername: (username: string) => void;
     setPassword: (password: string) => void;
@@ -32,7 +34,7 @@ export function useSystemMain(): {
     setIsDetailsValid: (isValid: boolean) => void;
     systemState: LoadingState;
     testConnectionState?: LoadingState;
-    connectionStatus?: { connected: boolean; message?: string };
+    connectionStatus?: ConnectionStatus;
     updateSystemStatus?: { message: string; updateSuccess: boolean };
     addNewSapSystem?: boolean;
     guidedAnswerLink?: IActionCalloutDetail;
@@ -87,6 +89,11 @@ export function useSystemMain(): {
     );
 
     const setUrl = useCallback((url: string | undefined) => setSystemFields((fields) => ({ ...fields, url })), []);
+
+    const setServicePath = useCallback(
+        (servicePath: string | undefined) => setSystemFields((fields) => ({ ...fields, servicePath })),
+        []
+    );
 
     const setClient = useCallback(
         (client: string | undefined) => setSystemFields((fields) => ({ ...fields, client })),
@@ -186,7 +193,7 @@ export function useSystemMain(): {
 
     // Expose only systemInfo and other UI/setter fields
     return {
-        systemInfo: systemFields as BackendSystem,
+        systemInfo: systemFields as SystemInfo,
         systemUnSaved: unSaved,
         defaultName,
         setName,
@@ -194,6 +201,7 @@ export function useSystemMain(): {
         setAuthenticationType,
         setConnectionType,
         setUrl,
+        setServicePath,
         setClient,
         setUsername,
         setPassword,

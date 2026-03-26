@@ -40,7 +40,7 @@
         "connectionNotFound": "Connection [{{- backendKey}}] not found in the secure store. Please ensure the connection is saved correctly.",
         "exportFailure": "Failed to export connection information: {{- error}}.",
         "connectionInfo": "An error occurred during processing of the connection information: {{- error}}",
-        "keyExists": "Connection (URL + Client) already exists",
+        "connectionExists": "A connection [{{- name}}] already exists with the same URL and Client.",
         "updateFailure": "Failed to update the connection information: {{- error}}",
         "creationFailure": "Failed to create the connection information: {{- error}}",
         "noServices": "This SAP system failed to return any services.",
@@ -70,6 +70,7 @@
     },
     "validation": {
         "provideUrl": "Please provide a valid URL to test the connection.",
+        "provideServicePath": "Please provide a service path to test the connection for a generic host.",
         "connectionNameExists": "This connection name already exists. Choose a different name.",
         "urlInvalid": "The URL '{{- url}}' provided is invalid"
     },

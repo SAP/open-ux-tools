@@ -42,6 +42,7 @@ export interface CreateFioriProject {
     type: typeof CREATE_FIORI_PROJECT;
     payload: { system: BackendSystem };
 }
+
 export interface ExportSystem {
     type: typeof EXPORT_SYSTEM;
     payload: { system: BackendSystem };
@@ -58,7 +59,7 @@ export interface OpenGuidedAnswers {
 
 export interface TestConnection {
     type: typeof TEST_CONNECTION;
-    payload: { system: BackendSystem };
+    payload: { system: BackendSystem; servicePath?: string };
 }
 
 export interface UpdateSystem {

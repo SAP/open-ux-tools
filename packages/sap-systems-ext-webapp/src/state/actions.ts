@@ -38,9 +38,9 @@ export const exportSystem = (backendSystem: BackendSystem): ExportSystem => ({
     payload: { system: backendSystem }
 });
 
-export const testConnection = (backendSystem: BackendSystem): TestConnection => ({
+export const testConnection = (backendSystem: BackendSystem, servicePath?: string): TestConnection => ({
     type: 'TEST_CONNECTION',
-    payload: { system: backendSystem }
+    payload: { system: backendSystem, servicePath }
 });
 
 export const updateSystem = (backendSystem: BackendSystem): UpdateSystem => ({

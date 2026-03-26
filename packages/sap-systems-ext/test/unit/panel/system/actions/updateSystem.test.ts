@@ -159,7 +159,8 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: 'Failed to create the connection information: Connection (URL + Client) already exists',
+                message:
+                    'Failed to create the connection information: A connection [Test System] already exists with the same URL and Client.',
                 updateSuccess: false
             }
         });
@@ -223,7 +224,8 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: 'Failed to update the connection information: Connection (URL + Client) already exists',
+                message:
+                    'Failed to update the connection information: A connection [Test System] already exists with the same URL and Client.',
                 updateSuccess: false
             }
         });
