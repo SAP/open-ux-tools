@@ -118,9 +118,57 @@
             groupName: 'dependencies [mem-fs]'
         },
         {
+            matchPackageNames: ['mem-fs-editor{/,}**', '@types/mem-fs-editor{/,}**'],
+            groupName: 'dependencies [mem-fs-editor]',
+            allowedVersions: '<10.0.0',
+            description: 'mem-fs-editor v10+ requires mem-fs v3 which has breaking API changes'
+        },
+        {
+            matchPackageNames: ['inquirer{/,}**', '@types/inquirer{/,}**'],
+            groupName: 'dependencies [inquirer]',
+            allowedVersions: '<9.0.0',
+            description: 'inquirer v9+ is ESM-only'
+        },
+        {
+            matchPackageNames: ['memfs{/,}**'],
+            allowedVersions: '<4.0.0',
+            description: 'memfs v4+ is ESM-only'
+        },
+        {
+            matchPackageNames: [
+                'yeoman-generator{/,}**',
+                '@types/yeoman-generator{/,}**',
+                'yeoman-environment{/,}**',
+                '@types/yeoman-environment{/,}**',
+                'yeoman-test{/,}**',
+                '@types/yeoman-test{/,}**'
+            ],
+            groupName: 'dependencies [yeoman]',
+            allowedVersions: '<6.0.0',
+            description: 'yeoman-environment v4+ is ESM-only; yeoman-generator v6+ requires ESM setup'
+        },
+        {
+            matchPackageNames: ['react-markdown{/,}**'],
+            allowedVersions: '<6.0.0',
+            description: 'react-markdown v6+ is ESM-only'
+        },
+        {
+            matchPackageNames: ['express{/,}**', '@types/express{/,}**'],
+            groupName: 'dependencies [express]',
+            allowedVersions: '<5.0.0',
+            description: 'express v5 has significant API changes; upgrade requires explicit decision'
+        },
+        {
             matchPackageNames: ['enzyme{/,}**', '@types/enzyme{/,}**'],
             groupName: 'dev dependencies [enzyme]',
             matchDepTypes: ['devDependencies']
+        },
+        {
+            // jest-environment-jsdom v30 bundles jsdom 26 which hangs with enzyme-adapter-react-16
+            matchPackageNames: ['jest-environment-jsdom'],
+            matchFileNames: ['packages/ui-components/package.json', 'packages/ui-prompting/package.json'],
+            allowedVersions: '<30.0.0',
+            description: 'jsdom 26 (bundled in jest-environment-jsdom v30) hangs with enzyme-adapter-react-16'
         },
         {
             matchPackageNames: ['lodash{/,}**', '@types/lodash{/,}**'],
