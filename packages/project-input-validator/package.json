@@ -26,12 +26,12 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "i18next": "25.8.18",
+        "i18next": "25.8.20",
         "validate-npm-package-name": "7.0.2",
         "@sap-ux/project-access": "workspace:*"
     },
     "devDependencies": {
-        "@types/validate-npm-package-name": "4.0.1",
+        "@types/validate-npm-package-name": "4.0.2",
         "jest-extended": "6.0.0"
     },
     "files": [
