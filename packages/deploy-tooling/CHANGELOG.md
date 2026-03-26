@@ -1,5 +1,20 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.3
+
+### Patch Changes
+
+- c7ce73f: Normalize $tmp package name to $TMP with a warning message to prevent deployment failures
+
+## 0.18.2
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.25
+- @sap-ux/inquirer-common@0.11.27
+- @sap-ux/project-input-validator@0.6.70
+- @sap-ux/system-access@0.7.1
+
 ## 0.18.1
 
 ### Patch Changes
