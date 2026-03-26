@@ -607,8 +607,8 @@ importers:
         specifier: 2.10.11
         version: 2.10.11
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
@@ -1252,8 +1252,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
@@ -1612,8 +1612,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
 
   packages/deploy-config-sub-generator:
     dependencies:
@@ -1694,8 +1694,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
@@ -2465,8 +2465,8 @@ importers:
         specifier: 2.10.11
         version: 2.10.11
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
 
   packages/fiori-mcp-server:
     dependencies:
@@ -2552,9 +2552,6 @@ importers:
       '@sap/ux-specification':
         specifier: 1.144.0
         version: 1.144.0(typescript@5.9.3)
-      '@types/diff':
-        specifier: 5.0.9
-        version: 5.0.9
       '@types/json-schema':
         specifier: 7.0.15
         version: 7.0.15
@@ -2706,8 +2703,8 @@ importers:
         specifier: 2.10.11
         version: 2.10.11
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
@@ -2812,8 +2809,8 @@ importers:
         specifier: 2.10.11
         version: 2.10.11
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
@@ -2887,8 +2884,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@vscode-logging/logger':
         specifier: 2.0.8
         version: 2.0.8
@@ -3826,8 +3823,8 @@ importers:
         specifier: 2.10.11
         version: 2.10.11
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
@@ -4243,7 +4240,7 @@ importers:
         specifier: 0.6.15
         version: 0.6.15(eslint@9.39.1)(typescript@5.9.3)
       jest-environment-jsdom:
-        specifier: 29.7.0
+        specifier: ^29.7.0
         version: 29.7.0
       jest-scss-transform:
         specifier: 1.0.4
@@ -4358,7 +4355,7 @@ importers:
         specifier: 0.6.15
         version: 0.6.15(eslint@9.39.1)(typescript@5.9.3)
       jest-environment-jsdom:
-        specifier: 29.7.0
+        specifier: ^29.7.0
         version: 29.7.0
       jest-scss-transform:
         specifier: 1.0.4
@@ -4449,8 +4446,8 @@ importers:
         specifier: 2.10.11
         version: 2.10.11
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
@@ -4531,8 +4528,8 @@ importers:
         specifier: 2.10.11
         version: 2.10.11
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
@@ -4814,8 +4811,8 @@ importers:
         specifier: 2.10.11
         version: 2.10.11
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
@@ -4906,8 +4903,8 @@ importers:
         specifier: 2.10.11
         version: 2.10.11
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
@@ -24957,11 +24954,11 @@ snapshots:
 
   '@types/yeoman-generator@5.2.14':
     dependencies:
-      '@types/debug': 4.1.12
+      '@types/debug': 4.1.13
       '@types/ejs': 3.1.5
       '@types/inquirer': 8.2.6
       '@types/mem-fs-editor': 7.0.1
-      '@types/node': 20.0.0
+      '@types/node': 20.19.37
       '@types/yeoman-environment': 2.10.11
       rxjs: 6.6.7
 

@@ -59,7 +59,7 @@
         "@sap-ux/vocabularies-types": "0.15.0",
         "@sap/ux-specification": "1.144.0",
         "@types/inquirer": "8.2.6",
-        "@types/yeoman-generator": "5.2.11",
+        "@types/yeoman-generator": "5.2.14",
         "@vscode-logging/logger": "2.0.8",
         "deepmerge": "4.3.1",
         "i18next": "25.10.10",

@@ -70,7 +70,6 @@
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
-        "@types/diff": "5.0.9",
         "@types/json-schema": "7.0.15",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",

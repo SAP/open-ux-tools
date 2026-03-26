@@ -64,7 +64,7 @@
         "@types/vscode": "1.110.0",
         "@sap-ux/deploy-config-sub-generator": "workspace:*",
         "@types/yeoman-environment": "2.10.11",
-        "@types/yeoman-generator": "5.2.11",
+        "@types/yeoman-generator": "5.2.14",
         "@types/yeoman-test": "4.0.6",
         "@types/uuid": "11.0.0",
         "@vscode-logging/logger": "2.0.8",
