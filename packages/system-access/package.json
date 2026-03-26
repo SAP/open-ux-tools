@@ -42,7 +42,7 @@
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
-        "@types/prompts": "2.4.4",
+        "@types/prompts": "2.4.9",
         "nock": "14.0.11",
         "rimraf": "6.1.3"
     },

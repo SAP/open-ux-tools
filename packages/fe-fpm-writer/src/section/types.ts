@@ -30,11 +30,7 @@ export interface CustomSection extends CustomElement, EventHandler, CustomFragme
 }
 
 export interface InternalCustomSection
-    extends CustomHeaderSection,
-        CustomSection,
-        CustomSubSection,
-        InternalCustomElement,
-        FragmentContentData {
+    extends CustomHeaderSection, CustomSection, CustomSubSection, InternalCustomElement, FragmentContentData {
     dependencies?: string;
 }
 

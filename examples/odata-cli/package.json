@@ -19,7 +19,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "dotenv": "17.3.1",
-        "fast-xml-parser": "5.4.1"
+        "fast-xml-parser": "5.5.9"
     },
     "files": [
         "dist",
