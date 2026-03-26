@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.3
+
+### Patch Changes
+
+- c7ce73f: Normalize $tmp package name to $TMP with a warning message to prevent deployment failures
+
 ## 0.18.2
 
 ### Patch Changes
