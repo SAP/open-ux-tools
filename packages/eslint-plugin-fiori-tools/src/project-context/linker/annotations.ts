@@ -119,30 +119,6 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
 }
 
 /**
- * Collects fieldGroup annotations
- *
- * @param entityType - The entity type name
- * @param service - The parsed OData service
- * @returns array of field group annotations
- */
-export function collectFieldGroups(entityType: string, service: ParsedService): FieldGroupNode[] {
-    const fieldGroups: FieldGroupNode[] = [];
-    const fgKey = buildAnnotationIndexKey(entityType, UI_FIELD_GROUP);
-    const fieldGroupsByKey = service.index.annotations[fgKey];
-
-    for (const key of Object.keys(fieldGroupsByKey ?? {})) {
-        const fieldGroup: FieldGroupNode = {
-            type: 'field-group',
-            annotation: fieldGroupsByKey[key],
-            annotationPath: UI_FIELD_GROUP,
-            children: []
-        };
-        fieldGroups.push(fieldGroup);
-    }
-    return fieldGroups;
-}
-
-/**
  * Collects section nodes from UI.Facets an UI.HeaderFacet annotations for an entity type.
  *
  * @param feVersion - The Fiori Elements version ('v2' or 'v4')
