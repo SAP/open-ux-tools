@@ -1,5 +1,17 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.109
+
+### Patch Changes
+
+- a41533f: chore(deploy-config-generator-shared): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/nodejs-utils@0.2.18
+
 ## 0.1.108
 
 ### Patch Changes

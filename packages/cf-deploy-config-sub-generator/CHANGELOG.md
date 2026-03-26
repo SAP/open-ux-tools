@@ -1,5 +1,25 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.157
+
+### Patch Changes
+
+- a41533f: chore(cf-deploy-config-sub-generator): simplify apiHubConfig null check with optional chaining
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/cf-deploy-config-inquirer@0.5.110
+    - @sap-ux/cf-deploy-config-writer@0.3.87
+    - @sap-ux/deploy-config-generator-shared@0.1.109
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/project-access@1.35.16
+
 ## 0.2.156
 
 ### Patch Changes

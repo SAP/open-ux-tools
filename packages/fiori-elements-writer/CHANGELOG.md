@@ -1,5 +1,28 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.110
+
+### Patch Changes
+
+- a41533f: chore(fiori-elements-writer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/cap-config-writer@0.12.82
+    - @sap-ux/fe-fpm-writer@0.43.15
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/odata-service-writer@0.31.2
+    - @sap-ux/ui5-application-writer@1.8.2
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/ui5-test-writer@0.7.93
+    - @sap-ux/annotation-generator@0.4.44
+
 ## 2.8.109
 
 ### Patch Changes
