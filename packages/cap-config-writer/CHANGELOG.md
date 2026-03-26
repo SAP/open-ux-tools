@@ -1,5 +1,69 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.81
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/fiori-generator-shared@0.13.89
+
+## 0.12.80
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/fiori-generator-shared@0.13.88
+
+## 0.12.79
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+
+## 0.12.78
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [55417bb]
+    - @sap-ux/fiori-generator-shared@0.13.86
+
+## 0.12.77
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/fiori-generator-shared@0.13.85
+
+## 0.12.76
+
+### Patch Changes
+
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+    - @sap-ux/yaml@0.17.5
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/fiori-generator-shared@0.13.84
+
+## 0.12.75
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/project-access@1.35.11
+
+## 0.12.74
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/fiori-generator-shared@0.13.82
+
 ## 0.12.73
 
 ### Patch Changes

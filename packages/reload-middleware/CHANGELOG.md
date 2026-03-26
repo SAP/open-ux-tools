@@ -1,5 +1,26 @@
 # @sap-ux/reload-middleware
 
+## 0.3.19
+
+### Patch Changes
+
+- 1cb2748: fix: Trigger manifest sync on appdescr_ui5_setFlexExtensionPointEnabled change
+
+## 0.3.18
+
+### Patch Changes
+
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+
+## 0.3.17
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/btp-utils@1.1.9
+
 ## 0.3.16
 
 ### Patch Changes

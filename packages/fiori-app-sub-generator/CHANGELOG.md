@@ -1,5 +1,376 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.13.3
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/annotation-generator@0.4.43
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/cap-config-writer@0.12.81
+    - @sap-ux/fiori-elements-writer@2.8.109
+    - @sap-ux/fiori-generator-shared@0.13.89
+    - @sap-ux/launch-config@0.10.78
+    - @sap-ux/odata-service-inquirer@2.20.2
+    - @sap-ux/odata-service-writer@0.31.1
+    - @sap-ux/telemetry@0.6.89
+    - @sap-ux/ui5-application-inquirer@0.17.3
+    - @sap-ux/fiori-freestyle-writer@2.5.79
+
+## 0.13.2
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.108
+- @sap-ux/odata-service-inquirer@2.20.1
+
+## 0.13.1
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/fiori-generator-shared@0.13.88
+    - @sap-ux/odata-service-inquirer@2.20.1
+    - @sap-ux/odata-service-writer@0.31.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/odata-service-inquirer@2.20.0
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/fiori-elements-writer@2.8.107
+    - @sap-ux/fiori-freestyle-writer@2.5.78
+    - @sap-ux/launch-config@0.10.77
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/telemetry@0.6.88
+    - @sap-ux/ui5-application-inquirer@0.17.2
+    - @sap-ux/annotation-generator@0.4.42
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/cap-config-writer@0.12.80
+    - @sap-ux/fiori-generator-shared@0.13.88
+
+## 0.12.3
+
+### Patch Changes
+
+- b516f01: add new opa tests for LR and OP, refactor file writing
+- Updated dependencies [b516f01]
+    - @sap-ux/fiori-elements-writer@2.8.106
+    - @sap-ux/odata-service-inquirer@2.19.14
+    - @sap-ux/fiori-freestyle-writer@2.5.77
+
+## 0.12.2
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+    - @sap-ux/cap-config-writer@0.12.79
+    - @sap-ux/fiori-elements-writer@2.8.105
+    - @sap-ux/fiori-freestyle-writer@2.5.76
+    - @sap-ux/odata-service-inquirer@2.19.14
+    - @sap-ux/ui5-application-inquirer@0.17.1
+
+## 0.12.1
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.41
+- @sap-ux/fiori-elements-writer@2.8.104
+- @sap-ux/fiori-freestyle-writer@2.5.75
+- @sap-ux/odata-service-inquirer@2.19.13
+
+## 0.12.0
+
+### Minor Changes
+
+- b5c7d47: Enable ESLint by default for new applications.
+
+### Patch Changes
+
+- Updated dependencies [b5c7d47]
+    - @sap-ux/ui5-application-inquirer@0.17.0
+    - @sap-ux/fiori-elements-writer@2.8.103
+    - @sap-ux/fiori-freestyle-writer@2.5.75
+    - @sap-ux/odata-service-inquirer@2.19.13
+
+## 0.11.107
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/odata-service-inquirer@2.19.13
+    - @sap-ux/odata-service-writer@0.30.1
+
+## 0.11.106
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/ui5-info@0.13.15
+    - @sap-ux/cap-config-writer@0.12.78
+    - @sap-ux/fiori-elements-writer@2.8.102
+    - @sap-ux/fiori-freestyle-writer@2.5.74
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/launch-config@0.10.76
+    - @sap-ux/odata-service-inquirer@2.19.12
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/store@1.5.10
+    - @sap-ux/ui5-application-inquirer@0.16.46
+    - @sap-ux/telemetry@0.6.87
+    - @sap-ux/annotation-generator@0.4.40
+
+## 0.11.105
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.101
+- @sap-ux/fiori-freestyle-writer@2.5.73
+- @sap-ux/odata-service-inquirer@2.19.11
+
+## 0.11.104
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.39
+- @sap-ux/fiori-elements-writer@2.8.100
+- @sap-ux/fiori-freestyle-writer@2.5.72
+- @sap-ux/odata-service-inquirer@2.19.11
+
+## 0.11.103
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.99
+- @sap-ux/fiori-freestyle-writer@2.5.72
+- @sap-ux/annotation-generator@0.4.38
+- @sap-ux/odata-service-inquirer@2.19.11
+
+## 0.11.102
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.98
+- @sap-ux/odata-service-inquirer@2.19.11
+
+## 0.11.101
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.97
+- @sap-ux/odata-service-inquirer@2.19.11
+
+## 0.11.100
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.37
+- @sap-ux/fiori-elements-writer@2.8.96
+- @sap-ux/fiori-freestyle-writer@2.5.72
+- @sap-ux/odata-service-inquirer@2.19.11
+
+## 0.11.99
+
+### Patch Changes
+
+- Updated dependencies [32d028b]
+    - @sap-ux/odata-service-inquirer@2.19.11
+
+## 0.11.98
+
+### Patch Changes
+
+- Updated dependencies [3edf6d7]
+    - @sap-ux/odata-service-writer@0.30.0
+    - @sap-ux/fiori-elements-writer@2.8.95
+    - @sap-ux/fiori-freestyle-writer@2.5.72
+    - @sap-ux/odata-service-inquirer@2.19.10
+    - @sap-ux/ui5-application-inquirer@0.16.45
+
+## 0.11.97
+
+### Patch Changes
+
+- 295cacc: fix: remove sap-no-global-define eslint annotations from testsuite templates
+- Updated dependencies [295cacc]
+    - @sap-ux/fiori-freestyle-writer@2.5.71
+    - @sap-ux/fiori-elements-writer@2.8.94
+    - @sap-ux/odata-service-inquirer@2.19.9
+
+## 0.11.96
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+    - @sap-ux/fiori-generator-shared@0.13.85
+    - @sap-ux/odata-service-inquirer@2.19.9
+    - @sap-ux/odata-service-writer@0.29.34
+
+## 0.11.95
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/annotation-generator@0.4.36
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/cap-config-writer@0.12.77
+    - @sap-ux/fiori-elements-writer@2.8.93
+    - @sap-ux/fiori-generator-shared@0.13.85
+    - @sap-ux/launch-config@0.10.75
+    - @sap-ux/odata-service-inquirer@2.19.8
+    - @sap-ux/odata-service-writer@0.29.34
+    - @sap-ux/telemetry@0.6.86
+    - @sap-ux/ui5-application-inquirer@0.16.44
+    - @sap-ux/fiori-freestyle-writer@2.5.70
+
+## 0.11.94
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
+## 0.11.93
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.92
+- @sap-ux/fiori-freestyle-writer@2.5.69
+- @sap-ux/odata-service-inquirer@2.19.7
+
+## 0.11.92
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+- Updated dependencies [fdd57de]
+    - @sap-ux/telemetry@0.6.85
+    - @sap-ux/annotation-generator@0.4.35
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/odata-service-inquirer@2.19.7
+    - @sap-ux/odata-service-writer@0.29.33
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/fiori-elements-writer@2.8.91
+    - @sap-ux/fiori-freestyle-writer@2.5.68
+    - @sap-ux/fiori-generator-shared@0.13.84
+    - @sap-ux/cap-config-writer@0.12.76
+    - @sap-ux/ui5-application-inquirer@0.16.43
+    - @sap-ux/launch-config@0.10.74
+
+## 0.11.91
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux/fiori-elements-writer@2.8.90
+    - @sap-ux/fiori-freestyle-writer@2.5.67
+    - @sap-ux/odata-service-writer@0.29.32
+    - @sap-ux/odata-service-inquirer@2.19.6
+    - @sap-ux/ui5-application-inquirer@0.16.42
+
+## 0.11.90
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- Updated dependencies [f5f9a78]
+- Updated dependencies [ac58145]
+    - @sap-ux/odata-service-inquirer@2.19.5
+    - @sap-ux/ui5-application-inquirer@0.16.41
+    - @sap-ux/fiori-elements-writer@2.8.89
+    - @sap-ux/fiori-freestyle-writer@2.5.66
+    - @sap-ux/odata-service-writer@0.29.31
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/cap-config-writer@0.12.75
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/launch-config@0.10.73
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/telemetry@0.6.84
+    - @sap-ux/ui5-info@0.13.14
+    - @sap-ux/annotation-generator@0.4.34
+
+## 0.11.89
+
+### Patch Changes
+
+- 2302698: fix(deps): update dependency @sap-ux/edmx-parser to v0.10.0
+- Updated dependencies [2302698]
+- Updated dependencies [96e9b9e]
+    - @sap-ux/odata-service-inquirer@2.19.4
+    - @sap-ux/odata-service-writer@0.29.30
+    - @sap-ux/axios-extension@1.25.19
+    - @sap-ux/fiori-elements-writer@2.8.88
+    - @sap-ux/fiori-freestyle-writer@2.5.65
+    - @sap-ux/ui5-application-inquirer@0.16.40
+    - @sap-ux/fiori-generator-shared@0.13.82
+
+## 0.11.88
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.87
+- @sap-ux/fiori-freestyle-writer@2.5.64
+- @sap-ux/launch-config@0.10.72
+- @sap-ux/odata-service-writer@0.29.29
+- @sap-ux/project-access@1.35.11
+- @sap-ux/telemetry@0.6.83
+- @sap-ux/odata-service-inquirer@2.19.3
+- @sap-ux/annotation-generator@0.4.33
+- @sap-ux/axios-extension@1.25.18
+- @sap-ux/cap-config-writer@0.12.74
+- @sap-ux/fiori-generator-shared@0.13.82
+- @sap-ux/ui5-application-inquirer@0.16.39
+
+## 0.11.87
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.86
+- @sap-ux/fiori-freestyle-writer@2.5.63
+- @sap-ux/odata-service-inquirer@2.19.2
+
+## 0.11.86
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.85
+- @sap-ux/odata-service-inquirer@2.19.2
+
+## 0.11.85
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.32
+- @sap-ux/fiori-elements-writer@2.8.84
+- @sap-ux/fiori-freestyle-writer@2.5.62
+- @sap-ux/odata-service-inquirer@2.19.2
+
+## 0.11.84
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.83
+- @sap-ux/odata-service-inquirer@2.19.2
+
 ## 0.11.83
 
 ### Patch Changes

@@ -41,6 +41,12 @@ describe('<UIMessageText />', () => {
             text: 'dummy {{{unknown}}} test',
             values: values,
             expectedResult: 'dummy {{{unknown}}} test'
+        },
+        {
+            name: 'Without values',
+            text: 'dummy {{{unknown}}} test',
+            values: undefined,
+            expectedResult: 'dummy {{{unknown}}} test'
         }
     ];
     describe('UIMessageText component', () => {

@@ -170,4 +170,14 @@ describe('adp backend sync', () => {
 
         expect(global.__SAP_UX_MANIFEST_SYNC_REQUIRED__).toBe(true);
     });
+
+    test('sync on appdescr_ui5_setFlexExtensionPointEnabled change', async () => {
+        const server = await getLivereloadServer({});
+
+        watchManifestChanges(server);
+
+        onSpy.mock.calls[0][1]('add', 'id_1234567890_appdescr_ui5_setFlexExtensionPointEnabled.change');
+
+        expect(global.__SAP_UX_MANIFEST_SYNC_REQUIRED__).toBe(true);
+    });
 });

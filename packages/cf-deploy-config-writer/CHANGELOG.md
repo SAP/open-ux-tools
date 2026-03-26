@@ -1,5 +1,85 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.86
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.3.85
+
+### Patch Changes
+
+- 55d833f: fix i18next init showSupportNotice: false.
+
+## 0.3.84
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/project-access@1.35.14
+
+## 0.3.83
+
+### Patch Changes
+
+- 0e856a7: Ensure mta service-name is handled
+
+## 0.3.82
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/nodejs-utils@0.2.17
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.3.81
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+
+## 0.3.80
+
+### Patch Changes
+
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+    - @sap-ux/yaml@0.17.5
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.3.79
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+
+## 0.3.78
+
+### Patch Changes
+
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/nodejs-utils@0.2.16
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/ui5-config@0.29.20
+
+## 0.3.77
+
+### Patch Changes
+
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+    - @sap-ux/project-access@1.35.11
+
 ## 0.3.76
 
 ### Patch Changes

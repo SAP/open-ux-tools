@@ -1,4 +1,3 @@
-import { promises as fs, readFileSync } from 'node:fs';
 import { join, normalize, posix } from 'node:path';
 import { coerce, satisfies } from 'semver';
 import type { Editor } from 'mem-fs-editor';
@@ -35,7 +34,6 @@ import {
     MAX_MTA_PREFIX_LENGTH
 } from './constants';
 import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types';
-import merge from 'lodash/merge';
 
 let cachedDestinationsList: Destinations = {};
 
@@ -43,8 +41,9 @@ let cachedDestinationsList: Destinations = {};
  * Read manifest file for processing.
  *
  * @param manifestPath Path to the manifest file
- * @param fs reference to a mem-fs editor
+ * @param fs Reference to a mem-fs editor
  * @returns Manifest object
+ * @throws {Error} If the manifest file cannot be read or parsed as valid JSON
  */
 export function readManifest(manifestPath: string, fs: Editor): Manifest {
     return fs.readJSON(manifestPath) as unknown as Manifest;
@@ -54,23 +53,25 @@ export function readManifest(manifestPath: string, fs: Editor): Manifest {
  * Locates template files relative to the dist folder.
  * This helps to locate templates when this module is bundled and the dir structure is flattened, maintaining the relative paths.
  *
- * @param relativeTemplatePath - optional, the path of the required template relative to the ./templates folder. If not specified the root templates folder is returned.
- * @returns the path of the template specified or templates root folder
+ * @param relativeTemplatePath The path of the required template relative to the ./templates folder
+ * @returns The path of the template specified or templates root folder
  */
 export function getTemplatePath(relativeTemplatePath: string): string {
     return join(__dirname, '../templates', relativeTemplatePath);
 }
 
 /**
- * Convert an app name to an MTA ID that is suitable for CF deployment.
+ * Convert an app name to an MTA module name that is suitable for CF deployment.
  * Removes special characters that are not allowed in MTA module names.
+ * MTA module names can only contain: letters, numbers, dots (.), hyphens (-), and underscores (_).
  *
  * @param id Name of the app, like `sap.ux.app`
  * @returns Name that's acceptable in an mta.yaml (special characters removed)
  */
 export function toMtaModuleName(id: string): string {
     // Remove special characters not allowed in MTA module names
-    // Keep alphanumeric, underscore, hyphen, and dot
+    // Keep: alphanumeric, underscore, hyphen, and dot
+    // Remove: all other special characters including backticks, currency symbols, brackets, operators, etc.
     // Using replaceAll for global replacement (Sonar S7781)
     return id.replaceAll(/[`~!@#$%^&*£()|+=?;:'",.<>]/gi, '');
 }
@@ -87,9 +88,12 @@ export function toPosixPath(dirPath: string): string {
 
 /**
  * Get the destination properties, based on the destination value.
+ * Retrieves destination configuration from SAP BTP when running in Business Application Studio.
  *
- * @param destination destination name
- * @returns Destination properties, default properties returned if not found
+ * @param destination The destination name to look up in BTP destination service
+ * @returns Object containing destination URL format flag and authentication type
+ * @returns {boolean} destinationIsFullUrl - True if destination uses full URL format
+ * @returns {Authentication | undefined} destinationAuthentication - Authentication type configured for the destination
  */
 export async function getDestinationProperties(
     destination: string | undefined
@@ -121,8 +125,9 @@ export async function getBTPDestinations(): Promise<Destinations> {
 /**
  * Validates the MTA version passed in the config.
  *
- * @param mtaVersion MTA version
- * @returns true if the version is valid
+ * @param mtaVersion MTA version to validate
+ * @returns True if the version is valid
+ * @throws {Error} If the MTA version is invalid or below minimum required version (0.0.1)
  */
 export function validateVersion(mtaVersion?: string): boolean {
     const version = coerce(mtaVersion);
@@ -135,12 +140,11 @@ export function validateVersion(mtaVersion?: string): boolean {
 /**
  * Appends xs-security.json to the project folder.
  *
- * @param {MTABaseConfig} config - MTA base configuration
- * @param {string} config.mtaPath - Path to the MTA project
- * @param {string} config.mtaId - MTA ID
- * @param {Editor} fs - Reference to a mem-fs editor
- * @param {boolean} [addTenant] - If true, append tenant to the xs-security.json file
- * @returns {void}
+ * @param config MTA base configuration
+ * @param config.mtaPath Path to the MTA project
+ * @param config.mtaId MTA ID used for security configuration
+ * @param fs Reference to a mem-fs editor
+ * @param addTenant If true, append tenant configuration to the xs-security.json file (default: true)
  */
 export function addXSSecurityConfig({ mtaPath, mtaId }: MTABaseConfig, fs: Editor, addTenant: boolean = true): void {
     fs.copyTpl(getTemplatePath(`common/${FileName.XSSecurityJson}`), join(mtaPath, FileName.XSSecurityJson), {
@@ -150,10 +154,10 @@ export function addXSSecurityConfig({ mtaPath, mtaId }: MTABaseConfig, fs: Edito
 }
 
 /**
- *  Append .gitignore to project folder.
+ * Appends .gitignore to project folder.
  *
  * @param targetPath Path to the project folder
- * @param fs reference to a mem-fs editor
+ * @param fs Reference to a mem-fs editor
  */
 export function addGitIgnore(targetPath: string, fs: Editor): void {
     fs.copyTpl(getTemplatePath('gitignore.tmpl'), join(targetPath, FileName.DotGitIgnore), {});
@@ -162,11 +166,10 @@ export function addGitIgnore(targetPath: string, fs: Editor): void {
 /**
  * Appends server package.json to the project folder.
  *
- * @param {MTABaseConfig} config - MTA base configuration
- * @param {string} config.mtaPath - Path to the MTA project
- * @param {string} config.mtaId - MTA ID
- * @param {Editor} fs - Reference to a mem-fs editor
- * @returns {void}
+ * @param config MTA base configuration
+ * @param config.mtaPath Path to the MTA project
+ * @param config.mtaId MTA ID used in package.json
+ * @param fs Reference to a mem-fs editor
  */
 export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): void {
     fs.copyTpl(getTemplatePath(FileName.Package), join(mtaPath, FileName.Package), {
@@ -178,7 +181,7 @@ export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): v
  * Add common dependencies to the HTML5 app package.json.
  *
  * @param targetPath Path to the package.json file
- * @param fs reference to a mem-fs editor
+ * @param fs Reference to a mem-fs editor
  */
 export async function addCommonPackageDependencies(targetPath: string, fs: Editor): Promise<void> {
     await addPackageDevDependency(targetPath, UI5TaskZipperPackage, UI5TaskZipperPackageVersion, fs);
@@ -188,9 +191,9 @@ export async function addCommonPackageDependencies(targetPath: string, fs: Edito
 /**
  * Generate CF specific configurations to support deployment and undeployment.
  *
- * @param config writer configuration
- * @param fs reference to a mem-fs editor
- * @param addTenant If true, append tenant to the xs-security.json file
+ * @param config Writer configuration
+ * @param fs Reference to a mem-fs editor
+ * @param addTenant If true, append tenant configuration to the xs-security.json file (default: true)
  */
 export async function generateSupportingConfig(
     config: MTABaseConfig,
@@ -212,7 +215,7 @@ export async function generateSupportingConfig(
 /**
  * Update the writer configuration with defaults.
  *
- * @param config writer configuration
+ * @param config Writer configuration to be updated with default values
  */
 export function setMtaDefaults(config: CFBaseConfig): void {
     config.mtaPath = config.mtaPath.replace(/\/$/, '');
@@ -222,25 +225,26 @@ export function setMtaDefaults(config: CFBaseConfig): void {
 
 /**
  * Update the root package.json with scripts to deploy the MTA.
+ * Note: The fs editor is not passed to `addPackageDevDependency` since the package.json could be updated by other third party tools.
  *
- * @param {object} Options Input params
- * @param {string} Options.mtaId - MTA ID to be written to package.json
- * @param {string} Options.rootPath - MTA project path
- * @param memFs - optional reference to a mem-fs editor
+ * @param options Input parameters
+ * @param options.mtaId MTA ID to be written to package.json
+ * @param options.rootPath MTA project path
+ * @param fs Reference to a mem-fs editor
  */
 export async function updateRootPackage(
     { mtaId, rootPath }: { mtaId: string; rootPath: string },
-    memFs: Editor
+    fs: Editor
 ): Promise<void> {
-    const packageFilePath = join(rootPath, FileName.Package);
-    // In case of newly created projects, package.json will only exist in memory
-    if (await fileExists(packageFilePath, memFs)) {
+    const packageExists = fileExists(fs, join(rootPath, FileName.Package));
+    // Append package.json only if mta.yaml is at a different level to the HTML5 app
+    if (packageExists) {
         // Align CDS versions if missing otherwise mta.yaml before-all scripts will fail
-        await alignCdsVersions(rootPath, memFs);
-        await addPackageDevDependency(rootPath, Rimraf, RimrafVersion, memFs);
-        await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion, memFs);
+        await alignCdsVersions(rootPath, fs);
+        await addPackageDevDependency(rootPath, Rimraf, RimrafVersion, fs);
+        await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion, fs);
         let deployArgs: string[] = [];
-        if (memFs?.exists(join(rootPath, FileName.MtaExtYaml))) {
+        if (fs?.exists(join(rootPath, FileName.MtaExtYaml))) {
             deployArgs = ['-e', FileName.MtaExtYaml];
         }
         for (const script of [
@@ -248,22 +252,7 @@ export async function updateRootPackage(
             { name: 'build', run: `${MTABuildScript} --mtar archive` },
             { name: 'deploy', run: rootDeployMTAScript(deployArgs) }
         ]) {
-            await updatePackageScript(rootPath, script.name, script.run, memFs);
-        }
-        // Handle external changes to package.json, introduced by cds
-        if (await fileExists(packageFilePath)) {
-            // package.json might not exist on disk, for example, when creating a new project from scratch.
-            let diskJson: Package = {} as Package;
-            try {
-                const fileContent = readFileSync(packageFilePath, 'utf8');
-                diskJson = (fileContent ? JSON.parse(fileContent) : {}) as Package;
-            } catch {
-                // Not much we can do here!
-            }
-            // Get latest changes
-            const memoryJson = (memFs?.readJSON(packageFilePath, {}) ?? {}) as Package;
-            // Merge disk changes into memory and write back to memFs, memory changes take precedence
-            memFs.writeJSON(packageFilePath, merge({}, memoryJson, diskJson));
+            await updatePackageScript(rootPath, script.name, script.run, fs);
         }
     }
 }
@@ -291,7 +280,7 @@ export function enforceValidRouterConfig(config: CFAppConfig): void {
  * Append devDependency if missing, required by mta `cds build` step.
  *
  * @param rootPath Path to the project folder
- * @param fs reference to a mem-fs editor
+ * @param fs Reference to a mem-fs editor
  */
 export async function alignCdsVersions(rootPath: string, fs: Editor): Promise<void> {
     const filePath = join(rootPath, FileName.Package);
@@ -306,12 +295,10 @@ export async function alignCdsVersions(rootPath: string, fs: Editor): Promise<vo
 /**
  * Executes a command in the specified project directory.
  *
- * @async
- * @param {string} cwd - Working directory where the command will be executed
- * @param {string} cmd - Command to execute
- * @param {string[]} args - Arguments to pass to the command
- * @param {string} errorMsg - Error message prefix to display if the command fails
- * @returns {Promise<void>} - A promise that resolves when the command completes successfully
+ * @param cwd Working directory where the command will be executed
+ * @param cmd Command to execute
+ * @param args Arguments to pass to the command
+ * @param errorMsg Error message prefix to display if the command fails
  * @throws {Error} Throws an error with the provided error message concatenated with the original error if execution fails
  * @example
  * // Execute npm install in the project directory
@@ -330,19 +317,10 @@ export async function runCommand(cwd: string, cmd: string, args: string[], error
 /**
  * Check if a file exists in the file system.
  *
+ * @param fs Reference to a mem-fs editor
  * @param filePath Path to the file
- * @param memFs reference to a mem-fs editor
- * @returns true if the file exists, false otherwise
+ * @returns True if the file exists, false otherwise
  */
-export async function fileExists(filePath: string, memFs?: Editor): Promise<boolean> {
-    try {
-        if (memFs) {
-            return memFs.exists(filePath);
-        } else {
-            await fs.access(filePath);
-            return true;
-        }
-    } catch {
-        return false;
-    }
+export function fileExists(fs: Editor, filePath: string): boolean {
+    return fs.exists(filePath);
 }

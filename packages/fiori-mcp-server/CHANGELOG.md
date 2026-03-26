@@ -1,5 +1,61 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.45
+
+### Patch Changes
+
+- 55d833f: fix i18next init showSupportNotice: false.
+
+## 0.6.44
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [55417bb]
+    - @sap-ux/store@1.5.10
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.43
+
+### Patch Changes
+
+- 1b7094e: fix(deps): update dependency @sap/ux-specification to v1.144.0
+
+## 0.6.42
+
+### Patch Changes
+
+- 681f169: fix: MCP server title
+
+## 0.6.41
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.40
+
+### Patch Changes
+
+- e773022: fix(deps): update dependency @sap-ai-sdk/foundation-models to v2.8.0
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+    - @sap-ux/store@1.5.9
+
+## 0.6.39
+
+### Patch Changes
+
+- afd2fa2: feat: add icon and title to mcp server
+
+## 0.6.38
+
+### Patch Changes
+
+- a8f4e03: fix(deps): update dependency @sap-ai-sdk/langchain to v2.8.0
+- 2302698: fix(deps): update dependency @sap-ux/edmx-parser to v0.10.0
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
 ## 0.6.37
 
 ### Patch Changes

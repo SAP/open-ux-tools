@@ -1,5 +1,24 @@
 # @sap-ux/ui5-config
 
+## 0.30.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+## 0.29.21
+
+### Patch Changes
+
+- Updated dependencies [2917c4c]
+    - @sap-ux/yaml@0.17.5
+
+## 0.29.20
+
+### Patch Changes
+
+- c09b843: (ADP) Add small refactoring to deployment validatiors and remove the redundant ui5 config hasBuilderKey() method.
+
 ## 0.29.19
 
 ### Patch Changes

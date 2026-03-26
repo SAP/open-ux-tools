@@ -1,5 +1,144 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.10.2
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/fiori-annotation-api@0.9.36
+
+## 9.10.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/fiori-annotation-api@0.9.35
+
+## 9.10.0
+
+### Minor Changes
+
+- 8ec22c9: [rule] add sap-condensed-table-layout eslint rule
+
+## 9.9.4
+
+### Patch Changes
+
+- Updated dependencies [436cad8]
+    - @sap-ux/fiori-annotation-api@0.9.34
+
+## 9.9.3
+
+### Patch Changes
+
+- 9afb66a: feat: add plugin version number to rule in readme
+
+## 9.9.2
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.33
+
+## 9.9.1
+
+### Patch Changes
+
+- Updated dependencies [dfa433e]
+    - @sap-ux/fiori-annotation-api@0.9.32
+    - @sap-ux/odata-entity-model@0.3.7
+    - @sap-ux/odata-annotation-core@0.2.17
+    - @sap-ux/odata-vocabularies@0.4.29
+
+## 9.9.0
+
+### Minor Changes
+
+- 5055dde: Feat: add sap-strict-uom-filtering eslint rule
+
+## 9.8.0
+
+### Minor Changes
+
+- af65902: Add table personalization rule that checks that all table customization settings are available in OData V4 applications.
+
+## 9.7.8
+
+### Patch Changes
+
+- Updated dependencies [79e69b9]
+    - @sap-ux/odata-vocabularies@0.4.28
+    - @sap-ux/fiori-annotation-api@0.9.31
+
+## 9.7.7
+
+### Patch Changes
+
+- a9322c9: fix(deps): update dependency globals to v17
+
+## 9.7.6
+
+### Patch Changes
+
+- Updated dependencies [e1ef0ba]
+    - @sap-ux/fiori-annotation-api@0.9.30
+
+## 9.7.5
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/fiori-annotation-api@0.9.29
+
+## 9.7.4
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- fa74f92: fix(deps): update dependency c8 to v11
+- 83ca0e9: fix(deps): update dependency cross-env to v10
+- Updated dependencies [7c06ef0]
+    - @sap-ux/fiori-annotation-api@0.9.28
+    - @sap-ux/project-access@1.35.12
+
+## 9.7.3
+
+### Patch Changes
+
+- f90fcca: fix(deps): update dependency @eslint/json to v0.14.0
+    - @sap-ux/fiori-annotation-api@0.9.27
+    - @sap-ux/project-access@1.35.11
+
+## 9.7.2
+
+### Patch Changes
+
+- 4dcf980: fix(deps): update dependency @eslint/config-helpers to v0.5.2
+
+## 9.7.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/fiori-annotation-api@0.9.26
+
+## 9.7.0
+
+### Minor Changes
+
+- 51236d3: Add sap-anchor-bar-visible eslint rule.
+
+## 9.6.10
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.25
+- @sap-ux/odata-annotation-core@0.2.16
+- @sap-ux/odata-entity-model@0.3.6
+- @sap-ux/odata-vocabularies@0.4.27
+
 ## 9.6.9
 
 ### Patch Changes

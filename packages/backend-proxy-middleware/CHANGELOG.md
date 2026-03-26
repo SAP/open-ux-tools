@@ -1,5 +1,74 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.11.1
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+
+## 0.11.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.24
+
+## 0.10.56
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+
+## 0.10.55
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/store@1.5.10
+
+## 0.10.54
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+
+## 0.10.53
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+
+## 0.10.52
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/store@1.5.9
+
+## 0.10.51
+
+### Patch Changes
+
+- Updated dependencies [96e9b9e]
+    - @sap-ux/axios-extension@1.25.19
+
 ## 0.10.50
 
 ### Patch Changes

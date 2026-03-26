@@ -1,5 +1,219 @@
 # @sap-ux/adp-tooling
 
+## 0.18.100
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/inquirer-common@0.11.27
+    - @sap-ux/odata-service-writer@0.31.1
+    - @sap-ux/project-input-validator@0.6.70
+    - @sap-ux/system-access@0.7.1
+
+## 0.18.99
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/system-access@0.7.1
+
+## 0.18.98
+
+### Patch Changes
+
+- 2cd2544: feat: Change the way business service credentials are retrieved in the ADP generator
+
+## 0.18.97
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/inquirer-common@0.11.26
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/project-input-validator@0.6.69
+
+## 0.18.96
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.25
+
+## 0.18.95
+
+### Patch Changes
+
+- 4f86250: feat: Adjust mini wizard behavior for CF scenario
+
+## 0.18.94
+
+### Patch Changes
+
+- 3626b55: fix: Add New Card flow broken for OVP adaptation projects
+
+## 0.18.93
+
+### Patch Changes
+
+- a854433: feat: Handle i18n translations from key user changes in ADP generator
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/system-access@0.6.66
+
+## 0.18.92
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/system-access@0.6.65
+    - @sap-ux/ui5-info@0.13.15
+    - @sap-ux/inquirer-common@0.11.24
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/project-input-validator@0.6.68
+    - @sap-ux/store@1.5.10
+    - @sap-ux/nodejs-utils@0.2.17
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.18.91
+
+### Patch Changes
+
+- 53af342: feat: Create service keys
+
+## 0.18.90
+
+### Patch Changes
+
+- 05f3f4c: fix: Various ADP Generator fixes for CF flow
+
+## 0.18.89
+
+### Patch Changes
+
+- Updated dependencies [3edf6d7]
+    - @sap-ux/odata-service-writer@0.30.0
+    - @sap-ux/inquirer-common@0.11.23
+
+## 0.18.88
+
+### Patch Changes
+
+- f14a3d1: fix: Use the cloudDevAdaptationStatus property in the app filter only for cloud apps.
+
+## 0.18.87
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+    - @sap-ux/odata-service-writer@0.29.34
+    - @sap-ux/system-access@0.6.64
+
+## 0.18.86
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/inquirer-common@0.11.22
+    - @sap-ux/odata-service-writer@0.29.34
+    - @sap-ux/project-input-validator@0.6.67
+    - @sap-ux/system-access@0.6.63
+
+## 0.18.85
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
+## 0.18.84
+
+### Patch Changes
+
+- 83ca0e9: fix(deps): update dependency cross-env to v10
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/inquirer-common@0.11.21
+    - @sap-ux/odata-service-writer@0.29.33
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+    - @sap-ux/system-access@0.6.63
+    - @sap-ux/project-input-validator@0.6.66
+
+## 0.18.83
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux/odata-service-writer@0.29.32
+    - @sap-ux/inquirer-common@0.11.20
+
+## 0.18.82
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- Updated dependencies [f5f9a78]
+- Updated dependencies [ac58145]
+- Updated dependencies [45d4797]
+    - @sap-ux/inquirer-common@0.11.19
+    - @sap-ux/odata-service-writer@0.29.31
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/nodejs-utils@0.2.16
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/system-access@0.6.62
+    - @sap-ux/ui5-info@0.13.14
+    - @sap-ux/ui5-config@0.29.20
+
+## 0.18.81
+
+### Patch Changes
+
+- Updated dependencies [2302698]
+- Updated dependencies [96e9b9e]
+    - @sap-ux/inquirer-common@0.11.18
+    - @sap-ux/odata-service-writer@0.29.30
+    - @sap-ux/axios-extension@1.25.19
+    - @sap-ux/system-access@0.6.61
+
+## 0.18.80
+
+### Patch Changes
+
+- c09b843: (ADP) Add small refactoring to deployment validatiors and remove the redundant ui5 config hasBuilderKey() method.
+- Updated dependencies [c09b843]
+    - @sap-ux/ui5-config@0.29.20
+    - @sap-ux/odata-service-writer@0.29.29
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/inquirer-common@0.11.17
+    - @sap-ux/axios-extension@1.25.18
+    - @sap-ux/project-input-validator@0.6.65
+    - @sap-ux/system-access@0.6.60
+
+## 0.18.79
+
+### Patch Changes
+
+- 2d42592: fix: Various fixes for Adaptation Project for Cloud Foundry scenario
+
 ## 0.18.78
 
 ### Patch Changes

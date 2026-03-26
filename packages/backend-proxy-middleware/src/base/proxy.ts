@@ -412,11 +412,18 @@ async function updateProxyConfigFromStore(
     // check if system credentials are stored in the store
     try {
         const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
+        let backendUrl = localBackend.url;
+        if (localBackend.connectPath) {
+            const normalizedPath = localBackend.connectPath.startsWith('/')
+                ? localBackend.connectPath
+                : `/${localBackend.connectPath}`;
+            backendUrl = new URL(normalizedPath, localBackend.url).href;
+        }
         const system =
-            (await systemStore.read(new BackendSystemKey({ url: localBackend.url, client: localBackend.client }))) ??
+            (await systemStore.read(new BackendSystemKey({ url: backendUrl, client: localBackend.client }))) ??
             ({
                 name: '<unknown>',
-                url: localBackend.url,
+                url: backendUrl,
                 authenticationType: validateAuthType(localBackend.authenticationType)
             } as BackendSystem);
         // Auth type is determined from app config as we may have multiple stored systems with the same url/client using different auth types

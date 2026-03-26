@@ -59,12 +59,32 @@ export async function validateDestinationQuestion(
     PromptState.resetAbapDeployConfig();
     updateDestinationPromptState(destination, destinations);
 
+    if (adpProjectType) {
+        return validateAdpDestinationQuestion(destination, adpProjectType, backendTarget);
+    }
+
+    return !!destination?.trim();
+}
+
+/**
+ * Validates internally the destination when in ADP workflow.
+ *
+ * @param destination - The destination.
+ * @param adpProjectType - The adaptation project type.
+ * @param backendTarget The backend target.
+ * @returns Promise<boolean|string>
+ */
+async function validateAdpDestinationQuestion(
+    destination: string,
+    adpProjectType: AdaptationProjectType,
+    backendTarget?: BackendTarget
+): Promise<boolean | string> {
     const adpProjectTypeValidation = await validateSystemSupportAdpProjectType(adpProjectType, backendTarget);
     if (typeof adpProjectTypeValidation === 'string') {
         return adpProjectTypeValidation;
     }
 
-    return !!destination?.trim();
+    return !!destination.trim();
 }
 
 /**
@@ -72,6 +92,7 @@ export async function validateDestinationQuestion(
  *
  * @param props - properties to update
  * @param props.url - url
+ * @param props.connectPath - connect path
  * @param props.client - client
  * @param props.isAbapCloud - Cloud based Abap (either Steampunk or Embedded Steampunk)
  * @param props.scp - is SCP
@@ -79,18 +100,21 @@ export async function validateDestinationQuestion(
  */
 function updatePromptState({
     url,
+    connectPath,
     client,
     isAbapCloud,
     scp,
     target
 }: {
     url: string;
+    connectPath?: string;
     client?: string;
     isAbapCloud?: boolean;
     scp?: boolean;
     target?: string;
 }): void {
     PromptState.abapDeployConfig.url = url;
+    PromptState.abapDeployConfig.connectPath = connectPath;
     PromptState.abapDeployConfig.client = client;
     PromptState.abapDeployConfig.isAbapCloud = isAbapCloud;
     PromptState.abapDeployConfig.scp = scp;
@@ -142,8 +166,13 @@ export async function validateTargetSystem(
 
     const choice = choices?.find((choice) => choice.value === target);
     if (isValidSystemUrl && choice) {
+        const url = new URL(choice.value);
+        const targetUrl = url.origin;
+        const connectPath = url.pathname === '/' ? undefined : url.pathname;
+
         updatePromptState({
-            url: choice.value,
+            url: targetUrl,
+            connectPath,
             client: choice.client ?? '',
             scp: choice.scp,
             isAbapCloud: choice.isAbapCloud,
@@ -151,14 +180,30 @@ export async function validateTargetSystem(
         });
     }
 
-    // If ADP project type is not relevant, URL validity is enough.
-    if (!adpProjectType) {
-        return isValidSystemUrl || t('errors.invalidUrl', { url: targetSystemUrl });
+    if (adpProjectType) {
+        return validateAdpTargetSystem(targetSystemUrl, adpProjectType, backendTarget);
     }
 
-    // ADP also requires a valid system URL.
+    return isValidSystemUrl || t('errors.invalidUrl', { url: targetSystemUrl });
+}
+
+/**
+ * Validates internally the target system when in ADP workflow.
+ *
+ * @param url - The system url.
+ * @param adpProjectType - The adaptation project type.
+ * @param backendTarget - The backend target.
+ * @returns Promise<boolean|string>
+ */
+async function validateAdpTargetSystem(
+    url: string,
+    adpProjectType: AdaptationProjectType,
+    backendTarget?: BackendTarget
+): Promise<boolean | string> {
+    const isValidSystemUrl = isValidUrl(url);
+
     if (!isValidSystemUrl) {
-        return t('errors.invalidUrl', { url: targetSystemUrl });
+        return t('errors.invalidUrl', { url });
     }
 
     const adpProjectTypeValidation = await validateSystemSupportAdpProjectType(adpProjectType, backendTarget);
@@ -297,6 +342,39 @@ export async function validateCredentials(
 
     PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
 
+    if (adpProjectType) {
+        return validateAdpCredentials({
+            transportConfigNeedsCreds,
+            adpProjectType,
+            backendTarget,
+            credentials
+        });
+    }
+
+    return transportConfigNeedsCreds ? t('errors.incorrectCredentials') : true;
+}
+
+/**
+ * Validates internally the password prompt when in ADP workflow.
+ *
+ * @param params - Function parameters as an object literal.
+ * @param params.transportConfigNeedsCreds - Boolean flag which indicates whether we need to enter credentials or not.
+ * @param params.adpProjectType - The adaptation project type.
+ * @param params.backendTarget - The backend target.
+ * @param params.credentials - The boject containing the credentials.
+ * @returns Promise<boolean|string>
+ */
+async function validateAdpCredentials({
+    transportConfigNeedsCreds,
+    adpProjectType,
+    backendTarget,
+    credentials
+}: {
+    transportConfigNeedsCreds?: boolean;
+    adpProjectType: AdaptationProjectType;
+    backendTarget?: BackendTarget;
+    credentials: Credentials;
+}): Promise<boolean | string> {
     const adpProjectTypeValidation = await validateSystemSupportAdpProjectType(
         adpProjectType,
         backendTarget,
@@ -305,10 +383,8 @@ export async function validateCredentials(
     if (typeof adpProjectTypeValidation === 'string') {
         return adpProjectTypeValidation;
     }
-
     return transportConfigNeedsCreds ? t('errors.incorrectCredentials') : true;
 }
-
 /**
  * Validates the ui5 app repository name.
  *
@@ -830,23 +906,18 @@ function shouldValidatePackageForStartingPrefix(
  * Validates whether the provided type of an adaptation project can be deployed on the
  * system with destination: {@link PromptState.abapDeployConfig.destination}.
  *
- * @param {AdaptationProjectType | undefined} adpProjectType - The adaptation project type.
+ * @param {AdaptationProjectType} adpProjectType - The adaptation project type.
  * @param {BackendTarget | undefined} backendTarget - The system on which the Adaptation project is created.
  * @param {Credentials | undefined} [credentials] - Optional credentials to the ABAP system.
  * @returns {Promise<boolean | string>} Promise resolved with true in case the validation succeed otherwise with a string
- * containing an error message or undefined if the project type is not provided. If the deployment destination
- * requires authentication the function resolves with true.
+ * containing an error message. If the deployment destination requires authentication the function resolves with true.
  */
 async function validateSystemSupportAdpProjectType(
-    adpProjectType?: AdaptationProjectType,
+    adpProjectType: AdaptationProjectType,
     backendTarget?: BackendTarget,
     credentials?: Credentials
-): Promise<boolean | string | undefined> {
+): Promise<boolean | string> {
     try {
-        if (!adpProjectType) {
-            return undefined;
-        }
-
         const { adaptationProjectTypes } = await getSystemInfo(undefined, backendTarget, credentials);
         if (!adaptationProjectTypes.length) {
             return t('errors.validators.invalidAdpProjectTypes');

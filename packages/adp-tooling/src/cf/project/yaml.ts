@@ -34,6 +34,7 @@ interface AdjustMtaYamlParams {
     businessSolutionName: string;
     businessService: string;
     serviceKeys?: ServiceKeys[];
+    spaceGuid: string;
 }
 
 /**
@@ -94,7 +95,7 @@ export function getAppParamsFromUI5Yaml(projectPath: string): AppParamsExtended 
     const appConfiguration = parsedYaml?.builder?.customTasks?.[0]?.configuration;
     const appParams: AppParamsExtended = {
         appHostId: appConfiguration?.appHostId || '',
-        appName: appConfiguration?.appVersion || '',
+        appName: appConfiguration?.appName || '',
         appVersion: appConfiguration?.appVersion || '',
         spaceGuid: appConfiguration?.space || ''
     };
@@ -433,6 +434,7 @@ function adjustMtaYamlFlpModule(yamlContent: MtaYaml, projectName: string, busin
  *
  * @param {AdjustMtaYamlParams} params - The parameters.
  * @param {Editor} memFs - The mem-fs editor instance.
+ * @param {string} timestamp - The timestamp.
  * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>} The promise.
@@ -444,14 +446,14 @@ export async function adjustMtaYaml(
         appRouterType,
         businessSolutionName,
         businessService,
-        serviceKeys
+        serviceKeys,
+        spaceGuid
     }: AdjustMtaYamlParams,
     memFs: Editor,
+    timestamp: string,
     templatePathOverwrite?: string,
     logger?: ToolsLogger
-): Promise<void> {
-    const timestamp = Date.now().toString();
-
+): Promise<MtaYaml> {
     const mtaYamlPath = path.join(projectPath, 'mta.yaml');
     const loadedYamlContent = getYamlContent(mtaYamlPath);
 
@@ -489,7 +491,7 @@ export async function adjustMtaYaml(
     adjustMtaYamlOwnModule(yamlContent, adpProjectName);
     // should go last since it sorts the modules (workaround, should be removed after fixed in deployment module)
     adjustMtaYamlFlpModule(yamlContent, mtaProjectName, businessService);
-    await createServices(yamlContent, initialServices, timestamp, templatePathOverwrite, logger);
+    await createServices(yamlContent, initialServices, timestamp, spaceGuid, templatePathOverwrite, logger);
 
     const updatedYamlContent = yaml.dump(yamlContent, {
         lineWidth: -1 // Disable line wrapping to keep URLs on single lines
@@ -497,6 +499,8 @@ export async function adjustMtaYaml(
 
     memFs.write(mtaYamlPath, updatedYamlContent);
     logger?.debug(`Adjusted MTA YAML for project ${projectPath}`);
+
+    return yamlContent;
 }
 
 /**
@@ -522,11 +526,20 @@ export async function addServeStaticMiddleware(
         paths.push(...getReusableLibraryPaths(basePath, logger));
 
         const variant = await getVariant(basePath);
-        paths.push({
-            path: `/changes/${variant.id.replaceAll('.', '_')}`,
-            src: './webapp/changes',
-            fallthrough: true
-        });
+        const builtVariantId = variant.id.replaceAll('.', '_');
+
+        paths.push(
+            {
+                path: `/changes/${builtVariantId}`,
+                src: './webapp/changes',
+                fallthrough: true
+            },
+            {
+                path: `/${builtVariantId}/i18n`,
+                src: './webapp/i18n',
+                fallthrough: true
+            }
+        );
 
         ui5Config.addCustomMiddleware([
             {

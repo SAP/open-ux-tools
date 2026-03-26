@@ -148,6 +148,18 @@
             allowedVersions: '1.73.1'
         },
         {
+            // Packages from https://github.com/SAP/open-ux-odata
+            matchPackageNames: [
+                '@sap-ux/vocabularies-types',
+                '@sap-ux/edmx-parser',
+                '@sap-ux/annotation-converter',
+                '@sap-ux/fe-mockserver-core',
+                '@sap-ux/fe-mockserver-plugin-cds',
+                '@sap-ux/ui5-middleware-fe-mockserver'
+            ],
+            groupName: 'dependencies [open-ux-odata]'
+        },
+        {
             matchPackageNames: [
                 'webpack{/,}**',
                 'ts-loader{/,}**',

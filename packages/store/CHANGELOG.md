@@ -1,5 +1,18 @@
 # @sap-ux/store
 
+## 1.5.10
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
+## 1.5.9
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+
 ## 1.5.8
 
 ### Patch Changes

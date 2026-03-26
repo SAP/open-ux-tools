@@ -1,5 +1,18 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.4.11
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core@0.2.17
+
+## 0.4.10
+
+### Patch Changes
+
+- a2cbf4e: Include `Partner` and `ContainsTarget` attributes from `NavigationProperty` to converted object of `MetadataElementProperties`
+    - @sap-ux/odata-annotation-core@0.2.16
+
 ## 0.4.9
 
 ### Patch Changes
