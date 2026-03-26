@@ -63,7 +63,7 @@
         "@sap-ux/vocabularies-types": "0.15.0",
         "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/inquirer": "8.2.6",
-        "jest-extended": "6.0.0"
+        "jest-extended": "7.0.0"
     },
     "engines": {
         "node": ">=20.x"

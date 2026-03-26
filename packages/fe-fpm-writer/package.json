@@ -41,7 +41,7 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "semver": "7.7.4",
-        "xml-formatter": "2.6.1",
+        "xml-formatter": "3.7.0",
         "xpath": "0.0.34"
     },
     "devDependencies": {

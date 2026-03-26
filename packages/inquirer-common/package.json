@@ -57,7 +57,7 @@
         "@types/inquirer": "8.2.6",
         "@types/semver": "7.7.1",
         "@types/lodash": "4.17.24",
-        "jest-extended": "6.0.0"
+        "jest-extended": "7.0.0"
     },
     "engines": {
         "node": ">=20.x"

@@ -50,8 +50,8 @@
         "@sap/cf-tools": "3.3.0",
         "@sap-ux/axios-extension": "workspace:*",
         "chalk": "4.1.2",
-        "commander": "9.4.0",
-        "diff": "5.2.2",
+        "commander": "14.0.3",
+        "diff": "8.0.4",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2"
@@ -59,7 +59,7 @@
     "devDependencies": {
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/store": "workspace:*",
-        "@types/diff": "5.0.9",
+        "@types/diff": "8.0.0",
         "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",

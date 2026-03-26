@@ -1538,11 +1538,11 @@ importers:
         specifier: 4.1.2
         version: 4.1.2
       commander:
-        specifier: 9.4.0
-        version: 9.4.0
+        specifier: 14.0.3
+        version: 14.0.3
       diff:
-        specifier: 5.2.2
-        version: 5.2.2
+        specifier: 8.0.4
+        version: 8.0.4
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1560,8 +1560,8 @@ importers:
         specifier: workspace:*
         version: link:../store
       '@types/diff':
-        specifier: 5.0.9
-        version: 5.0.9
+        specifier: 8.0.0
+        version: 8.0.0
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -1754,8 +1754,8 @@ importers:
         specifier: 4.1.2
         version: 4.1.2
       commander:
-        specifier: 9.4.0
-        version: 9.4.0
+        specifier: 14.0.3
+        version: 14.0.3
       dotenv:
         specifier: 17.3.1
         version: 17.3.1
@@ -1970,8 +1970,8 @@ importers:
         specifier: 7.7.4
         version: 7.7.4
       xml-formatter:
-        specifier: 2.6.1
-        version: 2.6.1
+        specifier: 3.7.0
+        version: 3.7.0
       xpath:
         specifier: 0.0.34
         version: 0.0.34
@@ -2000,15 +2000,12 @@ importers:
 
   packages/feature-toggle:
     devDependencies:
-      '@types/jest-when':
-        specifier: 3.5.5
-        version: 3.5.5
       '@types/vscode':
         specifier: 1.110.0
         version: 1.110.0
       jest-when:
-        specifier: 3.7.0
-        version: 3.7.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))
+        specifier: 4.0.1
+        version: 4.0.1(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -2207,8 +2204,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       jest-extended:
-        specifier: 6.0.0
-        version: 6.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 7.0.0
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       jest-mock:
         specifier: 30.2.0
         version: 30.2.0
@@ -3032,8 +3029,8 @@ importers:
         specifier: 7.7.1
         version: 7.7.1
       jest-extended:
-        specifier: 6.0.0
-        version: 6.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 7.0.0
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
 
   packages/jest-environment-ui5:
     dependencies:
@@ -3041,8 +3038,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0
       tsconfig-paths:
-        specifier: ^3.15.0
-        version: 3.15.0
+        specifier: ^4.2.0
+        version: 4.2.0
     devDependencies:
       '@ui5/cli':
         specifier: 4.0.50
@@ -3156,8 +3153,8 @@ importers:
         specifier: 1.110.0
         version: 1.110.0
       jest-extended:
-        specifier: 6.0.0
-        version: 6.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 7.0.0
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       logform:
         specifier: 2.7.0
         version: 2.7.0
@@ -3350,8 +3347,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       jest-extended:
-        specifier: 6.0.0
-        version: 6.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 7.0.0
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
 
   packages/odata-service-writer:
     dependencies:
@@ -3674,8 +3671,8 @@ importers:
         specifier: 4.0.2
         version: 4.0.2
       jest-extended:
-        specifier: 6.0.0
-        version: 6.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 7.0.0
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
 
   packages/project-integrity:
     dependencies:
@@ -4053,8 +4050,8 @@ importers:
         specifier: 2.25.0
         version: 2.25.0
       jest-extended:
-        specifier: 6.0.0
-        version: 6.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 7.0.0
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -4134,8 +4131,8 @@ importers:
         specifier: 17.3.1
         version: 17.3.1
       jest-extended:
-        specifier: 6.0.0
-        version: 6.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 7.0.0
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -4461,8 +4458,8 @@ importers:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.19.10)
       jest-extended:
-        specifier: 6.0.0
-        version: 6.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 7.0.0
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       nock:
         specifier: 14.0.11
         version: 14.0.11
@@ -4543,8 +4540,8 @@ importers:
         specifier: 2.0.8
         version: 2.0.8
       jest-extended:
-        specifier: 6.0.0
-        version: 6.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 7.0.0
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -4918,8 +4915,8 @@ importers:
         specifier: 2.0.8
         version: 2.0.8
       jest-extended:
-        specifier: 6.0.0
-        version: 6.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 7.0.0
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
@@ -9458,6 +9455,10 @@ packages:
   '@types/diff@5.0.9':
     resolution: {integrity: sha512-RWVEhh/zGXpAVF/ZChwNnv7r4rvqzJ7lYNSmZSVTxjV0PBLf6Qu7RNg+SUtkpzxmiNkjCx0Xn2tPp7FIkshJwQ==}
 
+  '@types/diff@8.0.0':
+    resolution: {integrity: sha512-o7jqJM04gfaYrdCecCVMbZhNdG6T1MHg/oQoRFdERLV+4d+V7FijhiEAbFu0Usww84Yijk9yH58U4Jk4HbtzZw==}
+    deprecated: This is a stub types definition. diff provides its own type definitions, so you do not need this installed.
+
   '@types/doctrine@0.0.9':
     resolution: {integrity: sha512-eOIHzCUSH7SMfonMG1LsC2f8vxBFtho6NGBznK41R84YzPuvSBzrhEps33IsQiOW9+VL6NQ9DbjQJznk/S4uRA==}
 
@@ -9532,9 +9533,6 @@ packages:
 
   '@types/istanbul-reports@3.0.4':
     resolution: {integrity: sha512-pk2B1NWalF9toCRu6gjBzR69syFjP4Od8WRAX+0mmf9lAjCRicLOWc+ZrxZHx/0XRjotgkF9t6iaMJ+aXcOdZQ==}
-
-  '@types/jest-when@3.5.5':
-    resolution: {integrity: sha512-H9MDPIrz7NOu6IXP9OHExNN9LnJbGYAzRsGIDKxWr7Fth9vovemNV8yFbkUWLSEmuA8PREvAEvt9yK0PPLmFHA==}
 
   '@types/jest@30.0.0':
     resolution: {integrity: sha512-XTYugzhuwqWjws0CVz8QpM36+T+Dz5mTEBKhNs/esGLnCIlGdRy+Dq78NRjd7ls7r8BC8ZRMOrKlkO1hU0JOwA==}
@@ -11716,16 +11714,16 @@ packages:
   diagnostic-channel@1.1.1:
     resolution: {integrity: sha512-r2HV5qFkUICyoaKlBEpLKHjxMXATUf/l+h8UZPGBHGLy4DDiY2sOLcIctax4eRnTw5wH2jTMExLntGPJ8eOJxw==}
 
-  diff-sequences@29.6.3:
-    resolution: {integrity: sha512-EjePK1srD3P08o2j4f0ExnylqRs5B9tJjcp9t1krH2qRi8CCdsYfwe9JgSLurFBWwq4uOlipzfk5fHNvwFKr8Q==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-
   diff@4.0.4:
     resolution: {integrity: sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ==}
     engines: {node: '>=0.3.1'}
 
   diff@5.2.2:
     resolution: {integrity: sha512-vtcDfH3TOjP8UekytvnHH1o1P4FcUdt4eQ1Y+Abap1tk/OB2MWQvcwS2ClCd1zuIhc3JKOx6p3kod8Vfys3E+A==}
+    engines: {node: '>=0.3.1'}
+
+  diff@8.0.4:
+    resolution: {integrity: sha512-DPi0FmjiSU5EvQV0++GFDOJ9ASQUVFh5kD+OzOnYdi7n3Wpm9hWWGfB/O2blfHcMVTL5WkQXSnRiK9makhrcnw==}
     engines: {node: '>=0.3.1'}
 
   dijkstrajs@1.0.3:
@@ -13871,10 +13869,6 @@ packages:
     resolution: {integrity: sha512-a54rw3uEzsPckyiXo2rPji9R/5z0d0qhXtru+NwCP8cDxOFk/BIP9PNgmcLh0DU8UTl8s6Lg1u+ri5uQsTJTmw==}
     engines: {node: '>=18'}
 
-  jest-diff@29.7.0:
-    resolution: {integrity: sha512-LMIgiIrhigmPrs03JHpxUh2yISK3vLFPkAodPeo0+BuF7wA2FoQbkEg1u8gBYBThncu7e1oEDUfIXVuTqLRUjw==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-
   jest-diff@30.2.0:
     resolution: {integrity: sha512-dQHFo3Pt4/NLlG5z4PxZ/3yZTZ1C7s9hveiOj+GCN+uT109NC2QgsoVZsVOAvbJ3RgKkvyLGXZV9+piDpWbm6A==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
@@ -13908,19 +13902,15 @@ packages:
     resolution: {integrity: sha512-4i6HItw/JSiJVsC5q0hnKIe/hbYfZLVG9YJ/0pU9Hz2n/9qZe3Rhn5s5CUZA5ORZlcdT/vmAXRMyONXJwPrmYQ==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
-  jest-extended@6.0.0:
-    resolution: {integrity: sha512-SM249N/q33YQ9XE8E06qZSnFuuV4GQFx7WrrmIj4wQUAP43jAo6budLT482jdBhf8ASwUiEEfJNjej0UusYs5A==}
-    engines: {node: ^18.12.0 || ^20.9.0 || ^22.11.0 || >=23.0.0}
+  jest-extended@7.0.0:
+    resolution: {integrity: sha512-96jBsVJDxZKFh+kWY7E18Is2usUsUYtBn97MxCtb4COnbgD4aE1h+P0fdFQNeJaI6KOeduas4Numc9yTuk0+Gw==}
+    engines: {node: ^20.9.0 || ^22.11.0 || ^24.11.0 || >=25.0.0}
     peerDependencies:
       jest: '>=27.2.5'
       typescript: '>=5.0.0'
     peerDependenciesMeta:
       jest:
         optional: true
-
-  jest-get-type@29.6.3:
-    resolution: {integrity: sha512-zrteXnqYxfQh7l5FHyL38jL39di8H8rHoecLH3JNxH3BwOrBsNeabdap5e0I23lD4HHI8W5VFBZqG4Eaq5LNcw==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
   jest-haste-map@30.3.0:
     resolution: {integrity: sha512-mMi2oqG4KRU0R9QEtscl87JzMXfUhbKaFqOxmjb2CKcbHcUGFrJCBWHmnTiUqi6JcnzoBlO4rWfpdl2k/RfLCA==}
@@ -14027,10 +14017,10 @@ packages:
     resolution: {integrity: sha512-PJ1d9ThtTR8aMiBWUdcownq9mDdLXsQzJayTk4kmaBRHKvwNQn+ANveuhEBUyNI2hR1TVhvQ8D5kHubbzBHR/w==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
-  jest-when@3.7.0:
-    resolution: {integrity: sha512-aLbiyxmtksijcrKFir7n+t+XPbqSLV01eDkRyX28WM4VgA/iSc3mG8R8O2evDtOAa6SefrJiTIt/rTqqyrwVZg==}
+  jest-when@4.0.1:
+    resolution: {integrity: sha512-1GlU6L8fAp6OL6vJjp9viv8q+X5gjgpiyDN9l6QtkLoA1YmEhP17Ve2fY9Eh8mrpOSp5pURQNmPB8SlUzhqv6g==}
     peerDependencies:
-      jest: '>= 25'
+      jest: '>= 27'
 
   jest-worker@27.5.1:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
@@ -18463,6 +18453,10 @@ packages:
     resolution: {integrity: sha512-dOiGwoqm8y22QdTNI7A+N03tyVfBlQ0/oehAzxIZtwnFAHGeSlrfjF73YQvzSsa/Kt6+YZasKsrdu6OIpuBggw==}
     engines: {node: '>= 10'}
 
+  xml-formatter@3.7.0:
+    resolution: {integrity: sha512-+8qTc3zv2UcJ1v9IsSIce37Dl4MQG14Cp7tWrwmy202UaI1wqRukw5QMX1JHsV+DX64yw77EgGsj2s5wGvuMbQ==}
+    engines: {node: '>= 16'}
+
   xml-js@1.6.11:
     resolution: {integrity: sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==}
     hasBin: true
@@ -18478,6 +18472,10 @@ packages:
   xml-parser-xo@3.2.0:
     resolution: {integrity: sha512-8LRU6cq+d7mVsoDaMhnkkt3CTtAs4153p49fRo+HIB3I1FD1o5CeXRjRH29sQevIfVJIcPjKSsPU/+Ujhq09Rg==}
     engines: {node: '>= 10'}
+
+  xml-parser-xo@4.1.5:
+    resolution: {integrity: sha512-TxyRxk9sTOUg3glxSIY6f0nfuqRll2OEF8TspLgh5mZkLuBgheCn3zClcDSGJ58TvNmiwyCCuat4UajPud/5Og==}
+    engines: {node: '>= 16'}
 
   xml2js@0.5.0:
     resolution: {integrity: sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA==}
@@ -24543,6 +24541,10 @@ snapshots:
 
   '@types/diff@5.0.9': {}
 
+  '@types/diff@8.0.0':
+    dependencies:
+      diff: 8.0.4
+
   '@types/doctrine@0.0.9': {}
 
   '@types/ejs@3.1.2': {}
@@ -24630,10 +24632,6 @@ snapshots:
   '@types/istanbul-reports@3.0.4':
     dependencies:
       '@types/istanbul-lib-report': 3.0.3
-
-  '@types/jest-when@3.5.5':
-    dependencies:
-      '@types/jest': 30.0.0
 
   '@types/jest@30.0.0':
     dependencies:
@@ -27258,11 +27256,11 @@ snapshots:
     dependencies:
       semver: 7.7.4
 
-  diff-sequences@29.6.3: {}
-
   diff@4.0.4: {}
 
   diff@5.2.2: {}
+
+  diff@8.0.4: {}
 
   dijkstrajs@1.0.3: {}
 
@@ -29972,13 +29970,6 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  jest-diff@29.7.0:
-    dependencies:
-      chalk: 4.1.2
-      diff-sequences: 29.6.3
-      jest-get-type: 29.6.3
-      pretty-format: 29.7.0
-
   jest-diff@30.2.0:
     dependencies:
       '@jest/diff-sequences': 30.0.1
@@ -30040,14 +30031,12 @@ snapshots:
       jest-util: 30.3.0
       jest-validate: 30.3.0
 
-  jest-extended@6.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3):
+  jest-extended@7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
-      jest-diff: 29.7.0
+      jest-diff: 30.2.0
       typescript: 5.9.3
     optionalDependencies:
       jest: 30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3))
-
-  jest-get-type@29.6.3: {}
 
   jest-haste-map@30.3.0:
     dependencies:
@@ -30306,7 +30295,7 @@ snapshots:
       jest-util: 30.3.0
       string-length: 4.0.2
 
-  jest-when@3.7.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3))):
+  jest-when@4.0.1(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3))):
     dependencies:
       jest: 30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3))
 
@@ -35934,6 +35923,10 @@ snapshots:
     dependencies:
       xml-parser-xo: 3.2.0
 
+  xml-formatter@3.7.0:
+    dependencies:
+      xml-parser-xo: 4.1.5
+
   xml-js@1.6.11:
     dependencies:
       sax: 1.4.4
@@ -35943,6 +35936,8 @@ snapshots:
   xml-name-validator@5.0.0: {}
 
   xml-parser-xo@3.2.0: {}
+
+  xml-parser-xo@4.1.5: {}
 
   xml2js@0.5.0:
     dependencies:
