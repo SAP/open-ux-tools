@@ -657,6 +657,10 @@ export class FlpSandbox {
         }
     }
 
+    /**
+     * For UI5 versions below 1.120, flexExtensionPointEnabled must be removed from the application
+     * dependencies manifest. Older UI5 versions cannot handle this property at bootstrap time.
+     */
     private removeFlexExtensionPointEnabled(): void {
         for (const app in this.templateConfig.apps) {
             const manifest = this.templateConfig.apps[app].applicationDependencies?.manifest;
