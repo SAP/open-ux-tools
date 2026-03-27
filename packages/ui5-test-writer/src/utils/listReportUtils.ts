@@ -333,7 +333,12 @@ function extractAllActionStates(
 function buildActionButtonState(item: any, metadata: ConvertedMetadata, entityTypeName: string): ActionButtonState {
     const actionMethod = extractActionMethodName(item.Action || '');
     const operationAvailable = findOperationAvailableAnnotation(metadata, entityTypeName, actionMethod);
-    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable);
+    // Bound actions whose binding parameter is a single entity (not a collection) require
+    // row selection to be invoked, so they are disabled by default (no row selected).
+    // Collection-bound actions operate on the entity set and are always enabled.
+    const isEntityBound =
+        item.ActionTarget?.isBound === true && item.ActionTarget?.parameters?.[0]?.isCollection !== true;
+    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isEntityBound);
 
     return {
         label: item.Label || '',
@@ -347,16 +352,21 @@ function buildActionButtonState(item: any, metadata: ConvertedMetadata, entityTy
 
 /**
  * Analyzes Core.OperationAvailable annotation to determine action availability.
+ * Single-entity bound actions (requiring row selection) are disabled by default when no annotation is present.
  *
  * @param operationAvailable The OperationAvailable annotation value
+ * @param isEntityBound Whether the action is bound to a single entity (requires row selection to enable)
  * @returns Object containing enabled state and optional dynamic path
  */
-function analyzeOperationAvailability(operationAvailable: any): {
+function analyzeOperationAvailability(
+    operationAvailable: any,
+    isEntityBound?: boolean
+): {
     enabled: boolean | 'dynamic';
     dynamicPath?: string;
 } {
     if (operationAvailable === undefined) {
-        return { enabled: true };
+        return { enabled: !isEntityBound };
     }
 
     if (typeof operationAvailable === 'boolean') {
