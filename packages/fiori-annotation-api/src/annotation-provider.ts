@@ -194,8 +194,6 @@ export class CdsAnnotationProvider {
         const services = processServices(facade.getServiceInfo());
         this.serviceInfoCache.set(rootPath, services);
         this.cdsCache.set(rootPath, facade);
-        performance.mark('cds-compile-end');
-        performance.measure('cds-compile', 'cds-compile-start', 'cds-compile-end');
         return facade;
     }
 }
