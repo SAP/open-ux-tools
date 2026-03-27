@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 0.6.93
+
+### Patch Changes
+
+- e92850e: IDE Type Detection for Telemetry
+
 ## 0.6.92
 
 ### Patch Changes
