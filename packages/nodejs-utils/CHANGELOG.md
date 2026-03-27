@@ -1,5 +1,20 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.19
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+
+## 0.2.18
+
+### Patch Changes
+
+- a41533f: chore(nodejs-utils): upgrade fast-glob 3.3.1 → 3.3.3
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+
 ## 0.2.17
 
 ### Patch Changes

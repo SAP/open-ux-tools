@@ -1,5 +1,54 @@
 # @sap-ux/inquirer-common
 
+## 0.11.30
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/fiori-generator-shared@0.13.92
+    - @sap-ux/telemetry@0.6.92
+    - @sap-ux/odata-service-writer@0.31.3
+
+## 0.11.29
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/fiori-generator-shared@0.13.91
+    - @sap-ux/odata-service-writer@0.31.3
+    - @sap-ux/telemetry@0.6.91
+
+## 0.11.28
+
+### Patch Changes
+
+- a41533f: chore(inquirer-common): upgrade runtime dependencies (axios 1.13.6, i18next 25.8.20)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/odata-service-writer@0.31.2
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-info@0.13.16
+    - @sap-ux/telemetry@0.6.90
+
+## 0.11.27
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/fiori-generator-shared@0.13.89
+    - @sap-ux/odata-service-writer@0.31.1
+    - @sap-ux/telemetry@0.6.89
+
 ## 0.11.26
 
 ### Patch Changes

@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Adeploy-tooling"
     },
-    "version": "0.18.1",
+    "version": "0.18.7",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -45,17 +45,17 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
-        "axios": "1.13.5",
+        "axios": "1.13.6",
         "commander": "9.4.0",
         "dotenv": "17.3.1",
         "prompts": "2.4.2",
-        "adm-zip": "0.5.10",
+        "adm-zip": "0.5.16",
         "chalk": "4.1.2"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
-        "@types/prompts": "2.4.4",
-        "@types/adm-zip": "0.5.5"
+        "@types/prompts": "2.4.9",
+        "@types/adm-zip": "0.5.8"
     },
     "engines": {
         "node": ">=20.x"

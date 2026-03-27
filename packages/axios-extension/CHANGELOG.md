@@ -1,5 +1,22 @@
 # @sap-ux/axios-extension
 
+## 1.25.27
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+
+## 1.25.26
+
+### Patch Changes
+
+- a41533f: chore(axios-extension): upgrade runtime dependencies (axios 1.13.6, fast-xml-parser 5.5.9, qs 6.15.0, xpath 0.0.34, @xmldom/xmldom 0.8.11)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/logger@0.8.3
+
 ## 1.25.25
 
 ### Patch Changes
