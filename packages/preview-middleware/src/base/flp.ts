@@ -1179,7 +1179,7 @@ export class FlpSandbox {
     private getI18nPathFromConfig(i18nConfig: NonNullable<Exclude<Manifest['sap.app']['i18n'], string>>): string {
         if ('bundleName' in i18nConfig && i18nConfig.bundleName) {
             const appId = this.manifest['sap.app'].id;
-            const bundlePath = i18nConfig.bundleName.startsWith(appId + '.')
+            const bundlePath = i18nConfig.bundleName.startsWith(`${appId}.`)
                 ? i18nConfig.bundleName.substring(appId.length + 1)
                 : i18nConfig.bundleName;
             if ('bundleUrl' in i18nConfig && i18nConfig.bundleUrl) {
