@@ -179,7 +179,7 @@ const rule: RuleDefinition = {
          */
         function validateFunctionOptions(node: ASTNode): void {
             const callExpr = asCallExpression(node);
-            if (!callExpr || callExpr.arguments.length !== 2) {
+            if (callExpr?.arguments.length !== 2) {
                 return;
             }
 

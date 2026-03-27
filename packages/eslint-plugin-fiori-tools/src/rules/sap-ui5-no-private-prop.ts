@@ -171,7 +171,7 @@ const rule: RuleDefinition = {
             'VariableDeclarator': processVariableDeclarator,
             'MemberExpression'(node: ASTNode): void {
                 const memberExpr = asMemberExpression(node);
-                if (!memberExpr || !memberExpr.property) {
+                if (!memberExpr?.property) {
                     return;
                 }
                 const propertyNode = memberExpr.property as any;

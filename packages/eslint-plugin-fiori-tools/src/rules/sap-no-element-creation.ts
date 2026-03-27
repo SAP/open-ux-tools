@@ -66,8 +66,7 @@ const rule: RuleDefinition = {
                 const isValid =
                     !contains(FORBIDDEN_DOM_INSERTION, methodName) ||
                     (methodName === 'createElement' &&
-                        parentCall &&
-                        parentCall.arguments &&
+                        parentCall?.arguments &&
                         parentCall.arguments.length > 0 &&
                         isLiteral(parentCall.arguments[0]) &&
                         asLiteral(parentCall.arguments[0])?.value === 'a');
