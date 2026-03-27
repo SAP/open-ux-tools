@@ -1,5 +1,28 @@
 # @sap-ux/generator-adp
 
+## 0.9.42
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/adp-tooling@0.18.104
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/fiori-generator-shared@0.13.91
+    - @sap-ux/inquirer-common@0.11.29
+    - @sap-ux/odata-service-writer@0.31.3
+    - @sap-ux/project-input-validator@0.6.72
+    - @sap-ux/system-access@0.7.2
+    - @sap-ux/telemetry@0.6.91
+
+## 0.9.41
+
+### Patch Changes
+
+- 96a689b: fix(ADP): Change prompt's order, first appear applications then projectType if applicable.
+- Updated dependencies [96a689b]
+    - @sap-ux/adp-tooling@0.18.103
+
 ## 0.9.40
 
 ### Patch Changes
