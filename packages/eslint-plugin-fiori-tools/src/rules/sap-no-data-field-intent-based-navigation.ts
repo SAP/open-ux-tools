@@ -29,10 +29,11 @@ function getIntentBasedNavDataFields(
         [collection] = elementsWithName(Edm.Collection, tableOrFieldGroup.annotation.annotation.top.value);
     } else {
         const [record] = elementsWithName(Edm.Record, tableOrFieldGroup.annotation.annotation.top.value);
-        const [propertyValue] = elementsWithName(Edm.PropertyValue, record);
-        if (propertyValue.attributes.Property.value === 'Data') {
-            [collection] = elementsWithName(Edm.Collection, propertyValue);
-        }
+        const [propertyValue] = elements(
+            (el) => el.name === Edm.PropertyValue && el.attributes[Edm.Property]?.value === 'Data',
+            record
+        );
+        [collection] = elementsWithName(Edm.Collection, propertyValue);
     }
     if (!collection) {
         return [];
