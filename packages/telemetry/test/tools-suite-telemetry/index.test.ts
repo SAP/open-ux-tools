@@ -685,10 +685,24 @@ describe('getIdeType', () => {
         expect(getIdeType()).toBe('cursor');
     });
 
+    it('should return "cursor" when VSCODE_CWD contains Windows-style cursor path', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = 'C:\\Users\\user\\AppData\\Local\\Programs\\cursor\\resources\\app';
+        expect(getIdeType()).toBe('cursor');
+    });
+
     it('should return "windsurf" when VSCODE_CWD contains "windsurf"', () => {
         isAppStudioMock.mockReturnValue(false);
         process.env.VSCODE_PID = '12345';
         process.env.VSCODE_CWD = '/Applications/Windsurf.app/Contents';
+        expect(getIdeType()).toBe('windsurf');
+    });
+
+    it('should return "windsurf" when VSCODE_CWD contains Windows-style windsurf path', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = 'C:\\Users\\user\\AppData\\Local\\Programs\\Windsurf\\resources\\app';
         expect(getIdeType()).toBe('windsurf');
     });
 
