@@ -90,9 +90,28 @@ async function backendProxyMiddlewareCf({
 
     const basUrlTemplate = await fetchBasUrlTemplate(logger);
 
+    // Serve webapp/changes and webapp/i18n directly so edits are reflected without a build.
+    // Checks at request time, so directories created mid-session (e.g. first change) are picked up.
+    let changesPrefix: string | undefined;
+    let i18nPrefix: string | undefined;
+    let webappDir: string | undefined;
+    const manifestPath = path.resolve(rootPath, 'webapp', 'manifest.appdescr_variant');
+    if (fs.existsSync(manifestPath)) {
+        try {
+            const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+            const variantId = (manifest.id as string).replaceAll('.', '_');
+            changesPrefix = `/${variantId}/changes/`;
+            i18nPrefix = `/${variantId}/i18n/`;
+            webappDir = path.resolve(rootPath, 'webapp');
+            logger.info(`ADP live-reload: serving ${changesPrefix}* and ${i18nPrefix}* from webapp/`);
+        } catch (e) {
+            logger.warn(`Failed to read manifest.appdescr_variant: ${(e as Error).message}`);
+        }
+    }
+
     let initialized = false;
     let proxyMiddleware: RequestHandler | null = null;
-    return function lazyApprouterMiddleware(req: Request, res: Response, next: NextFunction): void {
+    function lazyApprouterMiddleware(req: Request, res: Response, next: NextFunction): void {
         if (!initialized) {
             const actualPort = req.socket.localPort ?? 8080;
 
@@ -113,6 +132,32 @@ async function backendProxyMiddlewareCf({
         }
 
         proxyMiddleware!(req, res, next);
+    }
+
+    function serveFromWebapp(req: Request, res: Response, next: NextFunction): void {
+        if (!webappDir) {
+            next();
+            return;
+        }
+
+        const url = (req.url ?? '').split('?')[0];
+        let filePath: string | undefined;
+
+        if (changesPrefix && url.startsWith(changesPrefix)) {
+            filePath = path.join(webappDir, 'changes', url.slice(changesPrefix.length));
+        } else if (i18nPrefix && url.startsWith(i18nPrefix)) {
+            filePath = path.join(webappDir, 'i18n', url.slice(i18nPrefix.length));
+        }
+
+        if (filePath && fs.existsSync(filePath)) {
+            res.sendFile(filePath);
+            return;
+        }
+        next();
+    }
+
+    return function adpLiveReloadMiddleware(req: Request, res: Response, next: NextFunction): void {
+        serveFromWebapp(req, res, () => lazyApprouterMiddleware(req, res, next));
     };
 }
 
