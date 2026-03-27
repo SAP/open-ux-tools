@@ -336,7 +336,8 @@ function buildActionButtonState(item: any, metadata: ConvertedMetadata, entityTy
     // Bound actions whose binding parameter is a single entity (not a collection) require
     // row selection to be invoked, so they are disabled by default (no row selected).
     // Collection-bound actions operate on the entity set and are always enabled.
-    const isEntityBound = item.ActionTarget?.isBound === true && item.ActionTarget?.parameters?.[0]?.isCollection !== true;
+    const isEntityBound =
+        item.ActionTarget?.isBound === true && item.ActionTarget?.parameters?.[0]?.isCollection !== true;
     const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isEntityBound);
 
     return {
