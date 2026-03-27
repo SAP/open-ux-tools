@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 1.1.11
+
+### Patch Changes
+
+- a41533f: chore(btp-utils): fix indentation in boolean expressions (Prettier upgrade autofix)
+
 ## 1.1.10
 
 ### Patch Changes

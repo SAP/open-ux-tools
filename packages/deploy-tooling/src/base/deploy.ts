@@ -5,6 +5,7 @@ import type {
     LayeredRepositoryService
 } from '@sap-ux/axios-extension';
 import { isAxiosError, TransportRequestService } from '@sap-ux/axios-extension';
+import { LogLevel } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
 import { writeFileSync } from 'node:fs';
 import type { AbapDeployConfig } from '../types';
@@ -61,7 +62,7 @@ async function handleError(
     }
     logger.error(`${command === tryDeploy ? 'Deployment' : 'Undeployment'} has failed.`);
     logger.debug(getConfigForLogging(config));
-    if (!config.verbose) {
+    if (!config.verbose && !(config.log !== undefined && config.log >= LogLevel.Debug)) {
         logger.error(
             'Change logging level to debug your issue\n\t(see examples https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-tooling#configuration-with-logging-enabled)'
         );

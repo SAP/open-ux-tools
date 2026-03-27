@@ -2,7 +2,7 @@ import prompts from 'prompts';
 import AdmZip from 'adm-zip';
 import { join } from 'node:path';
 import { createTransportRequest, deploy, undeploy } from '../../../src/base/deploy';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { LogLevel, NullTransport, ToolsLogger } from '@sap-ux/logger';
 import {
     mockedStoreService,
     mockedUi5RepoService,
@@ -258,6 +258,58 @@ describe('base/deploy', () => {
                 expect(error).toBe(certError);
                 expect(logInfoSpy).toHaveBeenNthCalledWith(2, expect.stringContaining('https://ga.support.sap.com/'));
             }
+        });
+
+        test('Does not show debug hint when config.log is at Debug level', async () => {
+            const unknownError = new Error('~error');
+            mockedUi5RepoService.deploy.mockRejectedValue(unknownError);
+            const logErrorSpy = jest.spyOn(nullLogger, 'error');
+            try {
+                await deploy(archive, { app, target, log: LogLevel.Debug }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toBe(unknownError);
+            }
+            expect(logErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining('Change logging level'));
+        });
+
+        test('Does not show debug hint when config.log is above Debug level', async () => {
+            const unknownError = new Error('~error');
+            mockedUi5RepoService.deploy.mockRejectedValue(unknownError);
+            const logErrorSpy = jest.spyOn(nullLogger, 'error');
+            try {
+                await deploy(archive, { app, target, log: LogLevel.Silly }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toBe(unknownError);
+            }
+            expect(logErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining('Change logging level'));
+        });
+
+        test('Shows debug hint when config.log is below Debug level', async () => {
+            const unknownError = new Error('~error');
+            mockedUi5RepoService.deploy.mockRejectedValue(unknownError);
+            const logErrorSpy = jest.spyOn(nullLogger, 'error');
+            try {
+                await deploy(archive, { app, target, log: LogLevel.Info }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toBe(unknownError);
+            }
+            expect(logErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Change logging level'));
+        });
+
+        test('Does not show debug hint when config.verbose is true', async () => {
+            const unknownError = new Error('~error');
+            mockedUi5RepoService.deploy.mockRejectedValue(unknownError);
+            const logErrorSpy = jest.spyOn(nullLogger, 'error');
+            try {
+                await deploy(archive, { app, target, verbose: true }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toBe(unknownError);
+            }
+            expect(logErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining('Change logging level'));
         });
 
         test('Creates new transport request during deployment and reset createTransport param', async () => {
