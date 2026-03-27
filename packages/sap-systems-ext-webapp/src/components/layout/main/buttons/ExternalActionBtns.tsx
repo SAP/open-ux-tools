@@ -24,7 +24,8 @@ export function ExternalActionBtns({ systemInfo, systemUnSaved }: Readonly<Exter
     const { t } = useTranslation();
     // show export button only if the system is on-prem
     const showExport = systemInfo?.systemType === 'OnPrem';
-    const showFioriProjectBtn = systemInfo?.connectionType === 'abap_catalog';
+    const showFioriProjectBtn =
+        systemInfo?.connectionType === 'abap_catalog' || systemInfo?.connectionType === 'odata_service';
     return (
         <div>
             {!systemUnSaved && (
