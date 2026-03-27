@@ -141,17 +141,29 @@ async function backendProxyMiddlewareCf({
         }
 
         const url = (req.url ?? '').split('?')[0];
-        let filePath: string | undefined;
+        let relativePath: string | undefined;
+        let subDir: string | undefined;
 
         if (changesPrefix && url.startsWith(changesPrefix)) {
-            filePath = path.join(webappDir, 'changes', url.slice(changesPrefix.length));
+            subDir = 'changes';
+            relativePath = url.slice(changesPrefix.length);
         } else if (i18nPrefix && url.startsWith(i18nPrefix)) {
-            filePath = path.join(webappDir, 'i18n', url.slice(i18nPrefix.length));
+            subDir = 'i18n';
+            relativePath = url.slice(i18nPrefix.length);
         }
 
-        if (filePath && fs.existsSync(filePath)) {
-            res.sendFile(filePath);
-            return;
+        if (subDir && relativePath) {
+            // Try webapp/ first (live edits), then fall back to dist/ (last build)
+            const webappFile = path.join(webappDir, subDir, relativePath);
+            if (fs.existsSync(webappFile)) {
+                res.sendFile(webappFile);
+                return;
+            }
+            const distFile = path.join(rootPath, 'dist', subDir, relativePath);
+            if (fs.existsSync(distFile)) {
+                res.sendFile(distFile);
+                return;
+            }
         }
         next();
     }
