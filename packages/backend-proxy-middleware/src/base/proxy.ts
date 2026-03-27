@@ -178,7 +178,7 @@ export const PathRewriters = {
             if (!queryString) {
                 return path;
             }
-            return path.indexOf('?') !== -1 ? `${path}&${queryString}` : `${path}?${queryString}`;
+            return path.includes('?') ? `${path}&${queryString}` : `${path}?${queryString}`;
         };
     },
 
