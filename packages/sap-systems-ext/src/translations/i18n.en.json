@@ -40,7 +40,6 @@
         "connectionNotFound": "Connection [{{- backendKey}}] not found in the secure store. Please ensure the connection is saved correctly.",
         "exportFailure": "Failed to export connection information: {{- error}}.",
         "connectionInfo": "An error occurred during processing of the connection information: {{- error}}",
-        "connectionExists": "A connection [{{- name}}] already exists with the same URL and Client.",
         "updateFailure": "Failed to update the connection information: {{- error}}",
         "creationFailure": "Failed to create the connection information: {{- error}}",
         "noServices": "This SAP system failed to return any services.",

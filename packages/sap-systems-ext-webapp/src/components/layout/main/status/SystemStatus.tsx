@@ -133,7 +133,7 @@ export function SystemStatus({
                                             onClick={() =>
                                                 actions.openExistingSystem(
                                                     updateSystemStatus.existingSystem!.url,
-                                                    updateSystemStatus.existingSystem!.client
+                                                    updateSystemStatus.existingSystem?.client
                                                 )
                                             }
                                             className="output-link-error">

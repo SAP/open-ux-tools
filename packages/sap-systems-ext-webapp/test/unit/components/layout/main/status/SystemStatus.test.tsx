@@ -115,9 +115,9 @@ describe('<SystemStaus />', () => {
 
         // The label contains the prefix, link, and suffix as sibling nodes
         const label = systemLink.closest('label');
-        expect(label?.textContent).toContain('A connection [');
+        expect(label?.textContent).toContain('The [');
         expect(label?.textContent).toContain('Existing System');
-        expect(label?.textContent).toContain('] already exists with the same URL and Client.');
+        expect(label?.textContent).toContain('] connection already exists with the same URL and Client.');
 
         fireEvent.click(systemLink);
         expect(openExistingSystemSpy).toHaveBeenCalledWith('https://existing.system.com', '100');
