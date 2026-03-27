@@ -1,5 +1,64 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.140
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.31
+
+## 0.4.139
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.30
+
+## 0.4.138
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/inquirer-common@0.11.29
+
+## 0.4.137
+
+### Patch Changes
+
+- a41533f: chore(ui5-library-reference-inquirer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/project-access@1.35.16
+
+## 0.4.136
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/inquirer-common@0.11.27
+
+## 0.4.135
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.26
+- @sap-ux/project-access@1.35.14
+
+## 0.4.134
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.25
+
+## 0.4.133
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [55417bb]
+    - @sap-ux/inquirer-common@0.11.24
+
 ## 0.4.132
 
 ### Patch Changes

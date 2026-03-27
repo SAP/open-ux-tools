@@ -72,5 +72,8 @@
             "name": "Value Help selection",
             "description": "Value Help selection"
         }
+    },
+    "telemetry": {
+        "unknownOs": "Unknown"
     }
 }

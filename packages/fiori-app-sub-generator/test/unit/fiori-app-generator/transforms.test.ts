@@ -144,6 +144,25 @@ describe('Test transform state', () => {
         expect(feApp.service.previewSettings).toMatchObject({ apiHub: true });
     });
 
+    test('should return preview settings for connection type of odata_service', async () => {
+        const state: State = {
+            ...baseState,
+            service: {
+                source: DatasourceType.sapSystem,
+                connectedSystem: {
+                    backendSystem: {
+                        name: 'some-backend-system',
+                        url: 'https://example.com/odata/service',
+                        connectionType: 'odata_service',
+                        systemType: 'OnPrem'
+                    }
+                } as Service['connectedSystem']
+            }
+        };
+        const feApp = await transformState<FioriElementsApp<unknown>>(state);
+        expect(feApp.service.previewSettings).toMatchObject({ connectPath: '/odata/service' });
+    });
+
     test('should correctly map entity related config and page building block title for FPM floorplan', async () => {
         const state: State = {
             ...baseState,

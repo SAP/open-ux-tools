@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/mockserver-config-writer",
     "description": "Add or update configuration for SAP Fiori tools mockserver",
-    "version": "0.9.62",
+    "version": "0.9.67",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -30,14 +30,14 @@
     "dependencies": {
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "i18next": "25.8.12",
+        "i18next": "25.8.20",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0"
     },
     "devDependencies": {
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/prompts": "2.4.4",
+        "@types/prompts": "2.4.9",
         "prompts": "2.4.2"
     },
     "engines": {

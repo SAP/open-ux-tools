@@ -1,5 +1,71 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.3.5
+
+### Patch Changes
+
+- @sap-ux/system-access@0.7.3
+
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/system-access@0.7.2
+
+## 0.3.3
+
+### Patch Changes
+
+- a41533f: chore(abap-deploy-config-writer): upgrade fast-glob 3.3.1 → 3.3.3
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/system-access@0.7.2
+
+## 0.3.2
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/system-access@0.7.1
+
+## 0.3.1
+
+### Patch Changes
+
+- @sap-ux/system-access@0.7.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/project-access@1.35.14
+
+## 0.2.93
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.66
+
+## 0.2.92
+
+### Patch Changes
+
+- Updated dependencies [5d452e5]
+    - @sap-ux/system-access@0.6.65
+    - @sap-ux/ui5-config@0.29.21
+
 ## 0.2.91
 
 ### Patch Changes

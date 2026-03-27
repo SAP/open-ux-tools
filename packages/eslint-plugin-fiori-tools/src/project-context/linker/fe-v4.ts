@@ -39,8 +39,11 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
 
 export type FeV4PageType = FeV4ListReport | FeV4ObjectPage;
 
-export interface AnnotationBasedNode<T extends AnnotationNode, Configuration extends object = {}, Children = never>
-    extends ConfigurationBase<T['type'], Configuration> {
+export interface AnnotationBasedNode<
+    T extends AnnotationNode,
+    Configuration extends object = {},
+    Children = never
+> extends ConfigurationBase<T['type'], Configuration> {
     annotation?: T;
 
     children: Children[];
@@ -56,6 +59,7 @@ export interface TableSettings {
     disableCopyToClipboard: boolean;
     enableExport: boolean;
     enablePaste: boolean;
+    condensedTableLayout: boolean;
     personalization: boolean | { column?: boolean; filter?: boolean; sort?: boolean; group?: boolean };
 }
 
@@ -143,6 +147,18 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
                     configurationKey,
                     'tableSettings',
                     'enablePaste'
+                ],
+                values: [true, false]
+            },
+            condensedTableLayout: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'condensedTableLayout'
                 ],
                 values: [true, false]
             },
@@ -292,6 +308,7 @@ interface TableConfiguration {
         disableCopyToClipboard?: boolean;
         enableExport?: boolean;
         enablePaste?: boolean;
+        condensedTableLayout?: boolean;
         creationMode?: {
             name?: string;
         };
@@ -389,6 +406,8 @@ function linkListReportTable(
                 tableControl.configuration.enableExport.valueInFile = enableExportValue;
                 const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
                 tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
+                const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
+                tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
                 const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
                 tableControl.configuration.creationMode.valueInFile = creationModeValue;
                 tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
@@ -484,6 +503,8 @@ function linkObjectPageSections(
             tableControl.configuration.enableExport.valueInFile = enableExportValue;
             const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
             tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
+            const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
+            tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
             const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
             tableControl.configuration.creationMode.valueInFile = creationModeValue;
             tableControl.configuration.creationMode.values = getCreationModeValues(tableType);

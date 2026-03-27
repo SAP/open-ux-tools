@@ -17,6 +17,7 @@ export interface Adp {
 
 export interface UrlAbapTarget {
     url: string;
+    connectPath?: string;
     client?: string;
     scp?: boolean;
     authenticationType?: AuthenticationType;

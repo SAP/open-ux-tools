@@ -124,7 +124,7 @@ function processReferenceFacetRecord(
     const id = properties['ID']?.value;
     const target = properties['Target'];
 
-    if (!id || !target || target.kind !== Edm.AnnotationPath) {
+    if (!id || target?.kind !== Edm.AnnotationPath) {
         return undefined;
     }
 

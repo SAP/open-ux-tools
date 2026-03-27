@@ -1,5 +1,115 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.96
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.106
+
+## 0.0.95
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.105
+
+## 0.0.94
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/adp-tooling@0.18.104
+
+## 0.0.93
+
+### Patch Changes
+
+- Updated dependencies [96a689b]
+    - @sap-ux/adp-tooling@0.18.103
+
+## 0.0.92
+
+### Patch Changes
+
+- Updated dependencies [3dcd3f7]
+    - @sap-ux/adp-tooling@0.18.102
+
+## 0.0.91
+
+### Patch Changes
+
+- a41533f: chore(backend-proxy-middleware-cf): upgrade axios 1.13.5 → 1.13.6
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/adp-tooling@0.18.101
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+
+## 0.0.90
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/adp-tooling@0.18.100
+
+## 0.0.89
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.99
+
+## 0.0.88
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+
+## 0.0.87
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.97
+- @sap-ux/project-access@1.35.14
+
+## 0.0.86
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.96
+
+## 0.0.85
+
+### Patch Changes
+
+- Updated dependencies [4f86250]
+    - @sap-ux/adp-tooling@0.18.95
+
+## 0.0.84
+
+### Patch Changes
+
+- Updated dependencies [3626b55]
+    - @sap-ux/adp-tooling@0.18.94
+
+## 0.0.83
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/adp-tooling@0.18.93
+
+## 0.0.82
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/adp-tooling@0.18.92
+
 ## 0.0.81
 
 ### Patch Changes

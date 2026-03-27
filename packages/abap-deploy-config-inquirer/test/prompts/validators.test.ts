@@ -87,8 +87,8 @@ describe('Test validators', () => {
 
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes
+                    adpProjectTypeLabel: t('errors.validators.adpOnPremProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpCloudProjectType')
                 })
             );
         });
@@ -102,8 +102,8 @@ describe('Test validators', () => {
 
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });
@@ -127,8 +127,8 @@ describe('Test validators', () => {
 
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes: AdaptationProjectType.ON_PREMISE
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });
@@ -173,6 +173,7 @@ describe('Test validators', () => {
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.url.target1.com',
                 client: '001',
+                connectPath: undefined,
                 isAbapCloud: false,
                 scp: false,
                 targetSystem: 'https://mock.url.target1.com'
@@ -221,8 +222,8 @@ describe('Test validators', () => {
             );
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType: AdaptationProjectType.CLOUD_READY,
-                    supportedAdpProjectTypes: [AdaptationProjectType.ON_PREMISE]
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });
@@ -243,6 +244,7 @@ describe('Test validators', () => {
             expect(result).toBe(true);
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.url.target1.com',
+                connectPath: undefined,
                 client: '001',
                 isAbapCloud: true,
                 scp: true,
@@ -256,6 +258,7 @@ describe('Test validators', () => {
             expect(result).toBe(true);
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.notfound.url.target1.com',
+                connectPath: undefined,
                 isAbapCloud: false,
                 scp: false,
                 targetSystem: undefined,
@@ -398,8 +401,8 @@ describe('Test validators', () => {
                 await validateCredentials('pass1', { ...previousAnswers, username: 'user1' }, undefined, adpProjectType)
             ).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });

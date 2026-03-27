@@ -237,7 +237,7 @@ export const configs: Record<string, Linter.Config[]> = {
             plugins: {
                 '@sap-ux/fiori-tools': {
                     meta,
-                    rules
+                    rules: rules as Plugin['rules']
                 }
             }
         },
@@ -253,7 +253,7 @@ export const configs: Record<string, Linter.Config[]> = {
                 '@sap-ux/fiori-tools': {
                     meta,
                     languages,
-                    rules
+                    rules: rules as Plugin['rules']
                 }
             }
         },
@@ -266,6 +266,7 @@ export const configs: Record<string, Linter.Config[]> = {
             language: '@sap-ux/fiori-tools/fiori',
             rules: {
                 '@sap-ux/fiori-tools/sap-anchor-bar-visible': 'warn',
+                '@sap-ux/fiori-tools/sap-condensed-table-layout': 'warn',
                 '@sap-ux/fiori-tools/sap-flex-enabled': 'warn',
                 '@sap-ux/fiori-tools/sap-width-including-column-header': 'warn',
                 '@sap-ux/fiori-tools/sap-copy-to-clipboard': 'warn',

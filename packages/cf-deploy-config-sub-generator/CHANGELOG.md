@@ -1,5 +1,119 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.160
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.93
+- @sap-ux/inquirer-common@0.11.31
+- @sap-ux/deploy-config-generator-shared@0.1.112
+- @sap-ux/cf-deploy-config-inquirer@0.5.113
+
+## 0.2.159
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/cf-deploy-config-inquirer@0.5.112
+    - @sap-ux/cf-deploy-config-writer@0.3.89
+    - @sap-ux/deploy-config-generator-shared@0.1.111
+    - @sap-ux/fiori-generator-shared@0.13.92
+    - @sap-ux/inquirer-common@0.11.30
+
+## 0.2.158
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/cf-deploy-config-writer@0.3.88
+    - @sap-ux/fiori-generator-shared@0.13.91
+    - @sap-ux/inquirer-common@0.11.29
+    - @sap-ux/deploy-config-generator-shared@0.1.110
+    - @sap-ux/cf-deploy-config-inquirer@0.5.111
+
+## 0.2.157
+
+### Patch Changes
+
+- a41533f: chore(cf-deploy-config-sub-generator): simplify apiHubConfig null check with optional chaining
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/cf-deploy-config-inquirer@0.5.110
+    - @sap-ux/cf-deploy-config-writer@0.3.87
+    - @sap-ux/deploy-config-generator-shared@0.1.109
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/project-access@1.35.16
+
+## 0.2.156
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/cf-deploy-config-writer@0.3.86
+    - @sap-ux/fiori-generator-shared@0.13.89
+    - @sap-ux/inquirer-common@0.11.27
+    - @sap-ux/deploy-config-generator-shared@0.1.108
+    - @sap-ux/cf-deploy-config-inquirer@0.5.109
+
+## 0.2.155
+
+### Patch Changes
+
+- Updated dependencies [55d833f]
+    - @sap-ux/cf-deploy-config-writer@0.3.85
+
+## 0.2.154
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.26
+- @sap-ux/cf-deploy-config-writer@0.3.84
+- @sap-ux/project-access@1.35.14
+- @sap-ux/cf-deploy-config-inquirer@0.5.108
+- @sap-ux/deploy-config-generator-shared@0.1.107
+- @sap-ux/fiori-generator-shared@0.13.88
+
+## 0.2.153
+
+### Patch Changes
+
+- Updated dependencies [0e856a7]
+    - @sap-ux/cf-deploy-config-writer@0.3.83
+
+## 0.2.152
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+    - @sap-ux/deploy-config-generator-shared@0.1.106
+    - @sap-ux/inquirer-common@0.11.25
+    - @sap-ux/cf-deploy-config-inquirer@0.5.107
+
+## 0.2.151
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/cf-deploy-config-inquirer@0.5.106
+    - @sap-ux/cf-deploy-config-writer@0.3.82
+    - @sap-ux/deploy-config-generator-shared@0.1.105
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/inquirer-common@0.11.24
+
 ## 0.2.150
 
 ### Patch Changes

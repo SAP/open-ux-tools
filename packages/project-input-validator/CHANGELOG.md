@@ -1,5 +1,39 @@
 # @sap-ux/project-input-validator
 
+## 0.6.72
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.6.71
+
+### Patch Changes
+
+- a41533f: chore(project-input-validator): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+
+## 0.6.70
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.6.69
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+
+## 0.6.68
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
 ## 0.6.67
 
 ### Patch Changes

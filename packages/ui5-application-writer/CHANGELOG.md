@@ -1,5 +1,33 @@
 # @sap-ux/ui5-application-writer
 
+## 1.8.2
+
+### Patch Changes
+
+- a41533f: chore(ui5-application-writer): upgrade runtime dependencies (@ui5/manifest 1.84.0, i18next 25.8.20)
+- Updated dependencies [a41533f]
+    - @sap-ux/ui5-config@0.30.1
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+
+## 1.8.0
+
+### Minor Changes
+
+- b5c7d47: The eslint option now accepts both boolean (for backwards compatibility) and object with profile property. ESLint is now enabled by default for all new applications unless explicitly disabled.
+
+## 1.7.20
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+    - @sap-ux/ui5-config@0.29.21
+
 ## 1.7.19
 
 ### Patch Changes
