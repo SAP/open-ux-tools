@@ -608,34 +608,36 @@ export default class extends Generator {
         this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
 
         const selectedApp = this.cfServicesAnswers.baseApp;
-        if (selectedApp && this.attributeAnswers?.addFlpConfig) {
-            try {
-                const cfInbounds = await getCfBaseAppInbounds(
-                    selectedApp.appId,
-                    selectedApp.appHostId,
-                    this.cfConfig,
-                    this.logger
+        if (!selectedApp || !this.attributeAnswers?.addFlpConfig) {
+            return;
+        }
+
+        try {
+            const cfInbounds = await getCfBaseAppInbounds(
+                selectedApp.appId,
+                selectedApp.appHostId,
+                this.cfConfig,
+                this.logger
+            );
+            // Register FLP wizard pages now that we know if inbounds are available
+            updateFlpWizardSteps(!!cfInbounds, this.prompts, this.attributeAnswers.projectName, true);
+            if (cfInbounds) {
+                await addFlpGen(
+                    {
+                        vscode: this.vscode,
+                        projectRootPath: this._getProjectPath(),
+                        inbounds: cfInbounds,
+                        layer: this.layer,
+                        prompts: this.prompts,
+                        isCfProject: true
+                    },
+                    this.composeWith.bind(this),
+                    this.logger,
+                    this.appWizard
                 );
-                // Register FLP wizard pages now that we know if inbounds are available
-                updateFlpWizardSteps(!!cfInbounds, this.prompts, this.attributeAnswers.projectName, true);
-                if (cfInbounds) {
-                    await addFlpGen(
-                        {
-                            vscode: this.vscode,
-                            projectRootPath: this._getProjectPath(),
-                            inbounds: cfInbounds,
-                            layer: this.layer,
-                            prompts: this.prompts,
-                            isCfProject: true
-                        },
-                        this.composeWith.bind(this),
-                        this.logger,
-                        this.appWizard
-                    );
-                }
-            } catch (error) {
-                this.logger.warn(`Could not fetch CF inbounds for FLP configuration: ${error.message}`);
             }
+        } catch (e) {
+            this.logger.warn(`Could not fetch CF inbounds for FLP configuration: ${e.message}`);
         }
     }
 

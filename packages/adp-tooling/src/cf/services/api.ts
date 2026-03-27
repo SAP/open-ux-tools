@@ -206,22 +206,22 @@ export async function getCfBaseAppInbounds(
 ): Promise<ManifestNamespace.Inbound | undefined> {
     const requestArguments = getFDCRequestArguments(cfConfig);
 
-    const url = `${requestArguments.url}/api/business-service/inbounds?appId=${encodeURIComponent(appId)}&appHostId=${encodeURIComponent(appHostId)}&sap-language=${encodeURIComponent(lang)}`;
+    const params = new URLSearchParams({ appId, appHostId, 'sap-language': lang });
+    const url = `${requestArguments.url}/api/business-service/inbounds?${params}`;
 
     logger?.log(`Fetching inbounds from FDC: ${url}`);
 
     try {
         const response = await axios.get<FDCInboundsResponse>(url, requestArguments.options);
 
-        if (response.status === 200) {
-            logger?.log('Successfully retrieved inbounds from FDC');
-            if (Object.keys(response.data.inbounds).length === 0) {
-                return undefined;
-            }
-            return response.data.inbounds;
-        } else {
+        if (response.status !== 200) {
             throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
         }
+
+        logger?.log('Successfully retrieved inbounds from FDC');
+
+        const inbounds = response.data.inbounds;
+        return inbounds && Object.keys(inbounds).length > 0 ? inbounds : undefined;
     } catch (e) {
         logger?.debug(e);
         throw new Error(t('error.failedToGetFDCInbounds', { error: e.message }));
