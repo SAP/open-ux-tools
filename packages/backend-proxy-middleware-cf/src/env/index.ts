@@ -44,6 +44,17 @@ function loadEnvOptionsFromFile(rootPath: string, envOptionsPath: string): AppRo
  * @param options - Env options to apply.
  */
 function applyToProcessEnv(options: AppRouterEnvOptions): void {
+    if (options.VCAP_SERVICES) {
+        const connectivity = options.VCAP_SERVICES['connectivity'];
+        if (Array.isArray(connectivity)) {
+            for (const entry of connectivity) {
+                if (entry.credentials?.onpremise_proxy_host) {
+                    entry.credentials.onpremise_proxy_host = 'localhost';
+                }
+            }
+        }
+    }
+
     const envOptions = {
         ...options,
         ...(options.destinations ? { destinations: JSON.stringify(options.destinations) } : {}),
