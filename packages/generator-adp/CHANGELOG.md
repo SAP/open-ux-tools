@@ -1,5 +1,15 @@
 # @sap-ux/generator-adp
 
+## 0.9.44
+
+### Patch Changes
+
+- Updated dependencies [e92850e]
+    - @sap-ux/telemetry@0.6.93
+    - @sap-ux/fiori-generator-shared@0.13.93
+    - @sap-ux/inquirer-common@0.11.31
+    - @sap-ux/adp-tooling@0.18.106
+
 ## 0.9.43
 
 ### Patch Changes
