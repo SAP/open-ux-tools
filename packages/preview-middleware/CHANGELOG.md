@@ -1,5 +1,20 @@
 # @sap-ux/preview-middleware
 
+## 0.25.8
+
+### Patch Changes
+
+- 3013bf0: fix: i18n configuration handling for CAP projects
+
+## 0.25.7
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/adp-tooling@0.18.105
+    - @sap-ux/system-access@0.7.3
+
 ## 0.25.6
 
 ### Patch Changes
