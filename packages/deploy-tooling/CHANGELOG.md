@@ -1,5 +1,20 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.6
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.26
+- @sap-ux/inquirer-common@0.11.29
+- @sap-ux/project-input-validator@0.6.72
+- @sap-ux/system-access@0.7.2
+
+## 0.18.5
+
+### Patch Changes
+
+- b4b4447: fix(deploy-tooling): suppress 'Change logging level' hint when debug logging is already enabled via config.log
+
 ## 0.18.4
 
 ### Patch Changes

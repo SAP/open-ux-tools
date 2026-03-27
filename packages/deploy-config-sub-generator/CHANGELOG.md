@@ -1,5 +1,30 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.125
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/abap-deploy-config-sub-generator@0.3.7
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.158
+    - @sap-ux/fiori-generator-shared@0.13.91
+    - @sap-ux/inquirer-common@0.11.29
+    - @sap-ux/odata-service-inquirer@2.20.4
+    - @sap-ux/deploy-config-generator-shared@0.1.110
+
+## 0.5.124
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-sub-generator@0.3.6
+
+## 0.5.123
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-sub-generator@0.3.5
+
 ## 0.5.122
 
 ### Patch Changes
