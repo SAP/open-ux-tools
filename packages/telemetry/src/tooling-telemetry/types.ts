@@ -42,7 +42,7 @@ export enum DeployTarget {
 }
 
 /**
- * IDE/editor/ types that can host the telemetry client.
+ * IDE/editor types that can host the telemetry client.
  * Used to identify VSCode, its forks (Cursor, Windsurf, etc..), and other environments.
  */
 export type IdeType =

@@ -349,8 +349,11 @@ async function getOSNodeVersion(): Promise<string> {
  * Note: AppStudio is checked first because it is a VS Code fork that sets VSCODE_PID.
  * Without the early return, it would fall through to 'vscode'.
  *
- * Detection priority: VSCODE_APPNAME (Electron product name) is checked first as the most
- * reliable signal, then fork-specific env vars, then VSCODE_CWD path matching as a fallback.
+ * Detection priority: VSCODE_APPNAME is checked as an opportunistic hint — it is set by some
+ * VS Code forks (e.g. Cursor, Windsurf) that expose their Electron productName via this variable,
+ * but it is not a standard VS Code environment variable and may be absent in plain VS Code or CLI
+ * contexts. Fork-specific env vars (e.g. CURSOR_TRACE_ID) and VSCODE_CWD path matching are used
+ * as complementary fallbacks.
  *
  * @returns The detected IDE type
  */
@@ -416,6 +419,7 @@ export function getIdeType(): IdeType {
     if (
         appName.includes('insiders') ||
         vscodeCwd.includes('code - insiders') ||
+        vscodeCwd.includes('code insiders') ||
         vscodeCwd.includes('vscode-insiders') ||
         termProgram === 'vscode-insiders'
     ) {

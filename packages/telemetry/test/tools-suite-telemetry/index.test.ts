@@ -657,6 +657,13 @@ describe('getIdeType', () => {
         expect(getIdeType()).toBe('vscode-insiders');
     });
 
+    it('should return "vscode-insiders" when VSCODE_CWD contains Windows-style "code insiders" path', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = 'C:\\Users\\user\\AppData\\Local\\Programs\\Microsoft VS Code Insiders\\resources\\app';
+        expect(getIdeType()).toBe('vscode-insiders');
+    });
+
     it('should return "vscode-insiders" when TERM_PROGRAM is vscode-insiders', () => {
         isAppStudioMock.mockReturnValue(false);
         process.env.TERM_PROGRAM = 'vscode-insiders';
