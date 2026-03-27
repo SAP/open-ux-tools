@@ -414,6 +414,45 @@ export async function readCapServiceMetadataEdmx(
 }
 
 /**
+ * Normalizes a service URL path by removing a leading and/or trailing slash.
+ *
+ * @param urlPath - The URL path to normalize.
+ * @returns The normalized path without leading or trailing slashes.
+ */
+function normalizeServiceUrlPath(urlPath: string): string {
+    return urlPath.replaceAll(/(?:^\/)|(?:\/$)/g, '');
+}
+
+/**
+ * Checks whether a given URL path matches one of the supported service prefix patterns
+ * and ends with the expected service suffix path.
+ *
+ * Currently method validates against DwC service patterns, supported patterns:
+ * - `/ui/<inbound-service-name>/v<version>/<suffix>`
+ * - `/<string>.<string>/external-ui/<inbound-service-name>/v<version>/<suffix>`
+ *
+ * The `<suffix>` (e.g. `odata/v4/myService`) must match exactly.
+ *
+ * @param path - The full request path to validate.
+ * @param expectedSuffixPath - The expected service path (e.g. `odata/v4/myService`).
+ * @returns `true` if the path matches one of the supported patterns and ends with the expected suffix.
+ */
+export function isMatchingServiceUri(path: string, expectedSuffixPath: string): boolean {
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+    // Escapes special regex characters in a string so it can be embedded into regular expression
+    const escapedSuffix = expectedSuffixPath.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+
+    const patterns = [
+        // regex for pattern -> /ui/<inbound-service-name>/v<version>/...
+        String.raw`^/ui/[^/]+/v\d+/${escapedSuffix}$`,
+        // regex for pattern -> /<string>.<string>/external-ui/<inbound-service-name>/v<version>/...
+        String.raw`^/[^/]+\.[^/]+/external-ui/[^/]+/v\d+/${escapedSuffix}$`
+    ];
+
+    return patterns.some((pattern) => new RegExp(pattern).test(normalizedPath));
+}
+
+/**
  * Find a service in a list of services ignoring leading and trailing slashes.
  *
  * @param services - list of services from cds.compile.to['serviceinfo'](model)
@@ -424,8 +463,15 @@ function findServiceByUri(
     services: { name: string; urlPath: string }[],
     uri: string
 ): { name: string; urlPath: string } | undefined {
-    const searchUri = uniformUrl(uri).replace(/(?:^\/)|(?:\/$)/g, '');
-    return services.find((srv) => srv.urlPath.replace(/(?:^\/)|(?:\/$)/g, '') === searchUri);
+    const searchUri = normalizeServiceUrlPath(uniformUrl(uri));
+    // Try to find a service by exact path match
+    let service = services.find((srv) => normalizeServiceUrlPath(srv.urlPath) === searchUri);
+    // If no exact match is found, try matching while ignoring the service prefix
+    service ??= services.find((srv) => {
+        const normalizedServiceUrlPath = normalizeServiceUrlPath(srv.urlPath);
+        return isMatchingServiceUri(searchUri, normalizedServiceUrlPath);
+    });
+    return service;
 }
 
 /**
@@ -646,9 +692,7 @@ async function loadGlobalCdsModule(): Promise<CdsFacade> {
     globalCdsModulePromise =
         globalCdsModulePromise ??
         new Promise<CdsFacade>((resolve, reject) => {
-            return getCdsEnvData().then((data) => {
-                // Handle output of `cds env --json`
-                const home = data['_home_cds-dk'];
+            return getGlobalCdsHomePath().then((home) => {
                 if (home) {
                     // "@sap/cds" module is inside node_modules of "@sap/cds-dk"
                     resolve(loadModuleFromProject<CdsFacade>(join(home, 'node_modules', '@sap', 'cds'), '@sap/cds'));
@@ -700,6 +744,19 @@ async function getCdsEnvData(cwd?: string): Promise<Record<string, string>> {
             reject(error);
         });
     });
+}
+
+/**
+ * Retrieves the global CDS home path from the environment.
+ *
+ * Uses the output of `cds env --json` to determine the location of the global @sap/cds-dk installation.
+ *
+ * @returns {Promise<string | undefined>} The absolute path to the global CDS home directory, or undefined if not found.
+ */
+export async function getGlobalCdsHomePath(): Promise<string | undefined> {
+    const cdsEnvData = await getCdsEnvData();
+    // Handle output of `cds env --json`
+    return cdsEnvData['_home_cds-dk'];
 }
 
 /**

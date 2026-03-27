@@ -25,7 +25,7 @@ import {
     loadApps,
     loadCfConfig,
     storeCredentials,
-    getServiceInstanceKeys
+    getOrCreateServiceInstanceKeys
 } from '@sap-ux/adp-tooling';
 import {
     getDefaultTargetFolder,
@@ -284,11 +284,12 @@ export default class extends Generator {
             await this._promptForCfEnvironment();
         } else {
             const isExtensibilityExtInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
-            const isInternalUsage = isInternalFeaturesSettingEnabled();
             const configQuestions = this.prompter.getPrompts({
                 projectType: {
-                    default: isInternalUsage ? AdaptationProjectType.ON_PREMISE : AdaptationProjectType.CLOUD_READY
+                    default: AdaptationProjectType.CLOUD_READY
                 },
+                projectTypeCli: { hide: !this.isCli },
+                projectTypeClassicLabel: { hide: this.isCli },
                 appValidationCli: { hide: !this.isCli },
                 systemValidationCli: { hide: !this.isCli },
                 shouldCreateExtProject: { isExtensibilityExtInstalled }
@@ -639,7 +640,7 @@ export default class extends Generator {
         const backendUrls = this.cfPrompter.backendUrls;
         const oauthPaths = this.cfPrompter.oauthPaths;
 
-        const serviceInfo = await getServiceInstanceKeys(
+        const serviceInfo = await getOrCreateServiceInstanceKeys(
             {
                 names: [this.cfServicesAnswers.businessService ?? '']
             },
@@ -660,7 +661,8 @@ export default class extends Generator {
             publicVersions,
             packageJson: getPackageInfo(),
             toolsId: this.toolsId,
-            serviceInfo
+            serviceInfo,
+            spaceGuid: this.cfConfig.space.GUID
         });
 
         if (config.options) {
@@ -750,13 +752,16 @@ export default class extends Generator {
         const supportedProject = await getSupportedProject(this.abapProvider);
         let selectedProjectType = AdaptationProjectType.ON_PREMISE;
         if (supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM) {
-            selectedProjectType = projectType ?? AdaptationProjectType.CLOUD_READY;
+            const isInternalUsage = isInternalFeaturesSettingEnabled();
+            selectedProjectType = isInternalUsage
+                ? AdaptationProjectType.ON_PREMISE
+                : (projectType ?? AdaptationProjectType.CLOUD_READY);
         } else if (supportedProject === SupportedProject.CLOUD_READY) {
             selectedProjectType = AdaptationProjectType.CLOUD_READY;
         }
         this.projectType = selectedProjectType;
 
-        const applications = await loadApps(this.abapProvider, this.isCustomerBase, selectedProjectType);
+        const applications = await loadApps(this.abapProvider, this.isCustomerBase, supportedProject);
         this.telemetryCollector.setBatch({ numberOfApplications: applications.length });
         const application = applications.find((application) => application.id === baseApplicationName);
         if (!application) {

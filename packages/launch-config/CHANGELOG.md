@@ -1,5 +1,71 @@
 # @sap-ux/launch-config
 
+## 0.10.80
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.10.79
+
+### Patch Changes
+
+- a41533f: chore(launch-config): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/ui5-info@0.13.16
+
+## 0.10.78
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.10.77
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/project-access@1.35.14
+
+## 0.10.76
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+    - @sap-ux/ui5-info@0.13.15
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.10.75
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+
+## 0.10.74
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.10.73
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/ui5-info@0.13.14
+- @sap-ux/ui5-config@0.29.20
+
 ## 0.10.72
 
 ### Patch Changes

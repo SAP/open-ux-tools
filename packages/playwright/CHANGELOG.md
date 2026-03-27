@@ -1,5 +1,26 @@
 # @sap-ux-private/playwright
 
+## 0.2.13
+
+### Patch Changes
+
+- a41533f: fix(playwright): fix invalid @param JSDoc tags in interface property comments
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+
+## 0.2.12
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+
+## 0.2.11
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+
 ## 0.2.10
 
 ### Patch Changes

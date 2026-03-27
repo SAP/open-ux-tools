@@ -1,5 +1,70 @@
 # @sap-ux/odata-cli
 
+## 0.17.53
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/axios-extension@1.25.27
+
+## 0.17.52
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/logger@0.8.3
+
+## 0.17.51
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+
+## 0.17.50
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+
+## 0.17.49
+
+### Patch Changes
+
+- Updated dependencies [5d452e5]
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+
+## 0.17.48
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+
+## 0.17.47
+
+### Patch Changes
+
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+
+## 0.17.46
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+
 ## 0.17.45
 
 ### Patch Changes

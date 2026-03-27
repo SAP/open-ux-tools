@@ -1,5 +1,17 @@
 # @sap-ux/yaml
 
+## 0.17.6
+
+### Patch Changes
+
+- a41533f: chore(yaml): upgrade yaml 2.8.2 → 2.8.3
+
+## 0.17.5
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+
 ## 0.17.4
 
 ### Patch Changes

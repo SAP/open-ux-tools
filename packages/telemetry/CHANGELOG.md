@@ -1,5 +1,98 @@
 # @sap-ux/telemetry
 
+## 0.6.93
+
+### Patch Changes
+
+- e92850e: IDE Type Detection for Telemetry
+
+## 0.6.92
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+
+## 0.6.91
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.6.90
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/nodejs-utils@0.2.18
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/store@1.5.11
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.6.89
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.6.88
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/project-access@1.35.14
+
+## 0.6.87
+
+### Patch Changes
+
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/store@1.5.10
+    - @sap-ux/nodejs-utils@0.2.17
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.6.86
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+
+## 0.6.85
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.6.84
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/nodejs-utils@0.2.16
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/ui5-config@0.29.20
+
 ## 0.6.83
 
 ### Patch Changes

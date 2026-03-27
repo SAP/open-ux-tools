@@ -1,5 +1,29 @@
 # @sap-ux/control-property-editor
 
+## 0.7.22
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
+## 0.7.21
+
+### Patch Changes
+
+- 1d8ab37: fix(deps): update dependency body-parser to v2
+
+## 0.7.20
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
+## 0.7.19
+
+### Patch Changes
+
+- 0cf8a97: fix(deps): update dependency @ui5/fs to v4
+
 ## 0.7.18
 
 ### Patch Changes

@@ -42,7 +42,10 @@ export async function getAbapSystems(): Promise<{
             logger: LoggerHelper.logger,
             entityName: 'system'
         });
-        backendSystems = await systemStore?.getAll();
+        backendSystems = await systemStore?.getAll({
+            includeSensitiveData: false,
+            backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+        });
         cachedBackendSystems = backendSystems;
     }
 
@@ -83,7 +86,7 @@ export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: s
         (abapSystem?.url &&
             abapSystem.url.trim()?.replace(/\/$/, '') === url?.trim()?.replace(/\/$/, '') &&
             abapSystem.client === client) ||
-            (!!abapSystem?.destination && destination === abapSystem?.destination)
+        (!!abapSystem?.destination && destination === abapSystem?.destination)
     );
 }
 
@@ -237,6 +240,10 @@ export function reconcileAnswers(
 
     if (answers.targetSystem && answers.targetSystem !== TargetSystemType.Url) {
         reconciledAnswers.url = answers.targetSystem;
+    }
+
+    if (answers.connectPath !== undefined) {
+        reconciledAnswers.connectPath = answers.connectPath;
     }
 
     if (answers.client || state.client) {

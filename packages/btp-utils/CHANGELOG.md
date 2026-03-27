@@ -1,5 +1,25 @@
 # @sap-ux/btp-utils
 
+## 1.1.12
+
+### Patch Changes
+
+- 2e17a6b: fix: allow deployment to OnPremise destinations with WebIDEUsage odata_gen
+
+    isAbapSystem now returns true for destinations with ProxyType=OnPremise, fixing deployments that failed with a cryptic 'bind' error when WebIDEUsage was set to odata_gen. deploy-tooling also now surfaces an actionable error message if a non-ABAP provider is resolved.
+
+## 1.1.11
+
+### Patch Changes
+
+- a41533f: chore(btp-utils): fix indentation in boolean expressions (Prettier upgrade autofix)
+
+## 1.1.10
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+
 ## 1.1.9
 
 ### Patch Changes

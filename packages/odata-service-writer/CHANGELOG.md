@@ -1,5 +1,93 @@
 # @sap-ux/odata-service-writer
 
+## 0.31.3
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/mockserver-config-writer@0.9.67
+
+## 0.31.2
+
+### Patch Changes
+
+- a41533f: chore(odata-service-writer): simplify array element null check with optional chaining
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/mockserver-config-writer@0.9.66
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.31.1
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/mockserver-config-writer@0.9.65
+
+## 0.31.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/mockserver-config-writer@0.9.64
+    - @sap-ux/project-access@1.35.14
+
+## 0.30.1
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [55417bb]
+    - @sap-ux/mockserver-config-writer@0.9.63
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.30.0
+
+### Minor Changes
+
+- 3edf6d7: Preserve preview path during service sync
+
+## 0.29.34
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/mockserver-config-writer@0.9.62
+
+## 0.29.33
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+    - @sap-ux/mockserver-config-writer@0.9.61
+
+## 0.29.32
+
+### Patch Changes
+
+- 5aff25c: fix(deps): update dependency fs-extra to v11
+
+## 0.29.31
+
+### Patch Changes
+
+- ac58145: fix(deps): update dependency fs-extra to v10.1.0
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/ui5-config@0.29.20
+
 ## 0.29.30
 
 ### Patch Changes

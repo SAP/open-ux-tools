@@ -1,5 +1,47 @@
 # @sap-ux/project-integrity
 
+## 0.2.64
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.2.63
+
+### Patch Changes
+
+- a41533f: fix(project-integrity): fix ReadStream data event handler for @types/node 20.x (chunk type widened to `string | Buffer`)
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+
+## 0.2.62
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.2.61
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+
+## 0.2.60
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+
+## 0.2.59
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+
 ## 0.2.58
 
 ### Patch Changes

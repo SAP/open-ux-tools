@@ -1,5 +1,144 @@
 # @sap-ux/inquirer-common
 
+## 0.11.31
+
+### Patch Changes
+
+- Updated dependencies [e92850e]
+    - @sap-ux/telemetry@0.6.93
+    - @sap-ux/fiori-generator-shared@0.13.93
+
+## 0.11.30
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/fiori-generator-shared@0.13.92
+    - @sap-ux/telemetry@0.6.92
+    - @sap-ux/odata-service-writer@0.31.3
+
+## 0.11.29
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/fiori-generator-shared@0.13.91
+    - @sap-ux/odata-service-writer@0.31.3
+    - @sap-ux/telemetry@0.6.91
+
+## 0.11.28
+
+### Patch Changes
+
+- a41533f: chore(inquirer-common): upgrade runtime dependencies (axios 1.13.6, i18next 25.8.20)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/odata-service-writer@0.31.2
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-info@0.13.16
+    - @sap-ux/telemetry@0.6.90
+
+## 0.11.27
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/fiori-generator-shared@0.13.89
+    - @sap-ux/odata-service-writer@0.31.1
+    - @sap-ux/telemetry@0.6.89
+
+## 0.11.26
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/telemetry@0.6.88
+    - @sap-ux/fiori-generator-shared@0.13.88
+
+## 0.11.25
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+
+## 0.11.24
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/ui5-info@0.13.15
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/telemetry@0.6.87
+
+## 0.11.23
+
+### Patch Changes
+
+- Updated dependencies [3edf6d7]
+    - @sap-ux/odata-service-writer@0.30.0
+
+## 0.11.22
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/fiori-generator-shared@0.13.85
+    - @sap-ux/odata-service-writer@0.29.34
+    - @sap-ux/telemetry@0.6.86
+
+## 0.11.21
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+- Updated dependencies [fdd57de]
+    - @sap-ux/telemetry@0.6.85
+    - @sap-ux/odata-service-writer@0.29.33
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/fiori-generator-shared@0.13.84
+
+## 0.11.20
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux/odata-service-writer@0.29.32
+
+## 0.11.19
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- Updated dependencies [ac58145]
+- Updated dependencies [45d4797]
+    - @sap-ux/odata-service-writer@0.29.31
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/telemetry@0.6.84
+    - @sap-ux/ui5-info@0.13.14
+
 ## 0.11.18
 
 ### Patch Changes

@@ -1,5 +1,62 @@
 # @sap-ux/axios-extension
 
+## 1.25.27
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+
+## 1.25.26
+
+### Patch Changes
+
+- a41533f: chore(axios-extension): upgrade runtime dependencies (axios 1.13.6, fast-xml-parser 5.5.9, qs 6.15.0, xpath 0.0.34, @xmldom/xmldom 0.8.11)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/logger@0.8.3
+
+## 1.25.25
+
+### Patch Changes
+
+- c0e05ab: Updates catalog services dedup logic to include url
+
+## 1.25.24
+
+### Patch Changes
+
+- a854433: feat: Handle i18n translations from key user changes in ADP generator
+
+## 1.25.23
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+
+## 1.25.22
+
+### Patch Changes
+
+- 2d21925: fix(deps): Update dependency open to v8.4.2 (latest CommonJS version)
+
+## 1.25.21
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+
+## 1.25.20
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/btp-utils@1.1.9
+
 ## 1.25.19
 
 ### Patch Changes

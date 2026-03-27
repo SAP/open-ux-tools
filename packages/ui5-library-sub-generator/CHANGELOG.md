@@ -1,5 +1,124 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.151
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.93
+- @sap-ux/ui5-library-inquirer@0.6.90
+
+## 0.1.150
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.92
+- @sap-ux/nodejs-utils@0.2.19
+- @sap-ux/ui5-library-inquirer@0.6.89
+
+## 0.1.149
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.91
+- @sap-ux/ui5-library-writer@0.6.74
+- @sap-ux/ui5-library-inquirer@0.6.88
+
+## 0.1.148
+
+### Patch Changes
+
+- a41533f: chore(ui5-library-sub-generator): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/nodejs-utils@0.2.18
+    - @sap-ux/ui5-info@0.13.16
+    - @sap-ux/ui5-library-inquirer@0.6.87
+    - @sap-ux/ui5-library-writer@0.6.73
+
+## 0.1.147
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.89
+- @sap-ux/ui5-library-writer@0.6.72
+- @sap-ux/ui5-library-inquirer@0.6.86
+
+## 0.1.146
+
+### Patch Changes
+
+- @sap-ux/ui5-library-writer@0.6.71
+- @sap-ux/ui5-library-inquirer@0.6.85
+- @sap-ux/fiori-generator-shared@0.13.88
+
+## 0.1.145
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+    - @sap-ux/ui5-library-inquirer@0.6.84
+
+## 0.1.144
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/ui5-info@0.13.15
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/ui5-library-inquirer@0.6.83
+    - @sap-ux/ui5-library-writer@0.6.70
+    - @sap-ux/nodejs-utils@0.2.17
+
+## 0.1.143
+
+### Patch Changes
+
+- @sap-ux/ui5-library-inquirer@0.6.82
+
+## 0.1.142
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.85
+- @sap-ux/ui5-library-writer@0.6.69
+- @sap-ux/ui5-library-inquirer@0.6.81
+
+## 0.1.141
+
+### Patch Changes
+
+- @sap-ux/ui5-library-writer@0.6.68
+- @sap-ux/fiori-generator-shared@0.13.84
+- @sap-ux/ui5-library-inquirer@0.6.80
+
+## 0.1.140
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux/ui5-library-writer@0.6.67
+    - @sap-ux/ui5-library-inquirer@0.6.79
+
+## 0.1.139
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- 4fc1fe5: fix(deps): update dependency @jest/types to v30.2.0
+- Updated dependencies [ac58145]
+    - @sap-ux/ui5-library-writer@0.6.66
+    - @sap-ux/ui5-library-inquirer@0.6.78
+    - @sap-ux/fiori-generator-shared@0.13.83
+    - @sap-ux/nodejs-utils@0.2.16
+    - @sap-ux/ui5-info@0.13.14
+
 ## 0.1.138
 
 ### Patch Changes

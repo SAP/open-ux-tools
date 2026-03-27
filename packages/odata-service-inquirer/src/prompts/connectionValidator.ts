@@ -96,8 +96,10 @@ export class ConnectionValidator {
     private _connectedUserName: string | undefined;
     private _connectedSystemName: string | undefined;
     private _refreshToken: string | undefined;
-    // For the current validated URL connection attempts will ignore cert errors
+    // For the current validated URL connection attempts will ignore cert error
     private _ignoreCertError: boolean | undefined;
+    // The endpoint used to probe for access can be an abap catalog endpoint where service listing would be required, or a direct url, typically a service enpoint
+    private _connectType: ConnectionType = 'abap_catalog'; // Default to use catalog request to authenticate
 
     /**
      * Get the ignoreCertError value.
@@ -233,6 +235,15 @@ export class ConnectionValidator {
      */
     public get destination(): Destination | undefined {
         return this._destination;
+    }
+
+    /**
+     * Get the connection type.
+     *
+     * @returns the connection type, either 'abap_catalog' or 'odata_path'
+     */
+    public get connectType(): ConnectionType {
+        return this._connectType;
     }
 
     /**
@@ -432,6 +443,7 @@ export class ConnectionValidator {
         this._axiosConfig = axiosConfig;
         this._serviceProvider = create(this._axiosConfig);
         this._odataService = this._serviceProvider.service<ODataService>(servicePath);
+        this._connectType = 'odata_path';
         LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
         await this._odataService.get('');
     }
@@ -451,6 +463,7 @@ export class ConnectionValidator {
         this._refreshToken = undefined;
         this._connectedSystemName = undefined;
         this._ignoreCertError = undefined;
+        this._connectType = 'abap_catalog';
 
         if (resetValidity) {
             this.resetValidity();
@@ -514,7 +527,7 @@ export class ConnectionValidator {
         serviceInfo,
         destination,
         odataVersion,
-        connectType = `abap_catalog`
+        connectType = this._connectType // Default to the currently set approach to ensure consistent connect type across multiple calls (e.g. validateAuth)
     }: {
         axiosConfig?: AxiosExtensionRequestConfig & ProviderConfiguration;
         url?: URL;
@@ -529,8 +542,14 @@ export class ConnectionValidator {
             this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
         } else if (destination) {
             // Assumption: the destination configured URL is a valid URL, will be needed later for basic auth error handling
-            this._validatedUrl = getDestinationUrlForAppStudio(destination.Name);
-            this._destinationUrl = destination.Host;
+            const connectPath = url ? url.pathname : undefined;
+            this._validatedUrl = getDestinationUrlForAppStudio(destination.Name, connectPath);
+            this._destinationUrl = connectPath
+                ? this._validatedUrl.replace(
+                      `https://${destination.Name.toLowerCase()}.dest`,
+                      destination.Host.replace(/\/{1,10}$/, '')
+                  )
+                : destination.Host;
             this._serviceProvider = createForDestination({}, destination);
         } else if (axiosConfig) {
             // Abap-on-prem on VSCode specific handling of cert errors from system connections.
@@ -570,7 +589,8 @@ export class ConnectionValidator {
             // System (backend system or destination) that uses a service for auth since catalog may not be accessible
             // No need to validate service version here as it will be validated by the service prompt
             // Here we only validate connectivity by throwing and handling request errors
-            LoggerHelper.logger.debug(`Using service request: ${url} to validate authentication.`);
+            LoggerHelper.logger.debug(`Using provided url path: ${url.pathname} to validate authentication.`);
+            this._connectType = 'odata_path'; // Update for subsequent auth attempts
             this._odataService = (this._serviceProvider as AbapServiceProvider).service<ODataService>(
                 `${url?.pathname}`
             );
@@ -727,12 +747,22 @@ export class ConnectionValidator {
             // So while we actually dont know we assume its basic for now since thats the only supported mechanism
             this.systemAuthType = destination.Authentication === Authentication.NO_AUTHENTICATION ? 'basic' : 'unknown';
             // Since a destination may be a system or a service connection, we need to determine the connection request (catalog or service)
-            if (isFullUrlDestination(destination) || isPartialUrlDestination(destination) || servicePath) {
+            if (isFullUrlDestination(destination) || isPartialUrlDestination(destination)) {
                 return await this.validateOdataServiceDestination(destination, servicePath);
             } else {
+                let connectUrl: URL | undefined;
+                if (servicePath) {
+                    const connectUrlAsString = getDestinationUrlForAppStudio(
+                        destination.Name.toLowerCase(),
+                        servicePath
+                    );
+                    connectUrl = new URL(connectUrlAsString);
+                }
                 await this.createSystemConnection({
                     destination,
-                    odataVersion
+                    odataVersion,
+                    url: connectUrl,
+                    connectType: connectUrl ? 'odata_path' : undefined
                 });
             }
             return {
@@ -1053,7 +1083,7 @@ export class ConnectionValidator {
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
      * @param options.sapClient the sap client to use for the connection
      * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
-     * @param options.connectType if specified this will determine how a connection is authenticated, catalog or service metadata, overiding the default approach
+     * @param options.connectType if specified this will determine how a system connection is authenticated, catalog or service metadata, overiding the default approach
      * @returns true if the authentication is successful, false if not, or an error message string
      */
     public async validateAuth(

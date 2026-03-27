@@ -1,5 +1,53 @@
 # @sap-ux/ui-components
 
+## 2.1.4
+
+### Patch Changes
+
+- a41533f: chore(ui-components): upgrade runtime dependencies (@fluentui/react 8.125.5, sanitize-html 2.17.2)
+
+## 2.1.3
+
+### Patch Changes
+
+- 7f2689f: `UITranslationInput` - removed unnecessary <span> elements and left-aligned message content.
+
+## 2.1.2
+
+### Patch Changes
+
+- addfdee: Add `GoToData` icon to `UiIcons` enum and `initIcons()` function
+
+## 2.1.1
+
+### Patch Changes
+
+- 59c6ac3: `UITranslationInput` — new property `invertedCalloutTheme` to toggle between normal and inverted callout styles. Default is `false`. Previously `invertedCalloutTheme` was applied by default.
+
+## 2.1.0
+
+### Minor Changes
+
+- 24bd091: feat(ui-component): add form, form field and mighty pen icons
+
+## 2.0.3
+
+### Patch Changes
+
+- 12b8b2e: Change icon color to use default color variable
+
+## 2.0.2
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
+## 2.0.1
+
+### Patch Changes
+
+- 14d8ab3: fix(deps): update dependency babel-loader to v10
+
 ## 2.0.0
 
 ### Major Changes

@@ -92,6 +92,7 @@ async function validateAdpDestinationQuestion(
  *
  * @param props - properties to update
  * @param props.url - url
+ * @param props.connectPath - connect path
  * @param props.client - client
  * @param props.isAbapCloud - Cloud based Abap (either Steampunk or Embedded Steampunk)
  * @param props.scp - is SCP
@@ -99,18 +100,21 @@ async function validateAdpDestinationQuestion(
  */
 function updatePromptState({
     url,
+    connectPath,
     client,
     isAbapCloud,
     scp,
     target
 }: {
     url: string;
+    connectPath?: string;
     client?: string;
     isAbapCloud?: boolean;
     scp?: boolean;
     target?: string;
 }): void {
     PromptState.abapDeployConfig.url = url;
+    PromptState.abapDeployConfig.connectPath = connectPath;
     PromptState.abapDeployConfig.client = client;
     PromptState.abapDeployConfig.isAbapCloud = isAbapCloud;
     PromptState.abapDeployConfig.scp = scp;
@@ -162,8 +166,13 @@ export async function validateTargetSystem(
 
     const choice = choices?.find((choice) => choice.value === target);
     if (isValidSystemUrl && choice) {
+        const url = new URL(choice.value);
+        const targetUrl = url.origin;
+        const connectPath = url.pathname === '/' ? undefined : url.pathname;
+
         updatePromptState({
-            url: choice.value,
+            url: targetUrl,
+            connectPath,
             client: choice.client ?? '',
             scp: choice.scp,
             isAbapCloud: choice.isAbapCloud,
@@ -913,13 +922,9 @@ async function validateSystemSupportAdpProjectType(
         if (!adaptationProjectTypes.length) {
             return t('errors.validators.invalidAdpProjectTypes');
         }
-        const supportedAdpProjectTypes = adaptationProjectTypes.join(',');
         return adaptationProjectTypes.includes(adpProjectType)
             ? true
-            : t('errors.validators.unsupportedAdpProjectType', {
-                  adpProjectType,
-                  supportedAdpProjectTypes
-              });
+            : getUnsupportedAdpProjectTypeErrorText(adpProjectType, adaptationProjectTypes);
     } catch (error) {
         if (!isAxiosError(error)) {
             return error.message;
@@ -936,10 +941,7 @@ async function validateSystemSupportAdpProjectType(
         if (status === 404) {
             return adpProjectType === AdaptationProjectType.ON_PREMISE
                 ? true
-                : t('errors.validators.unsupportedAdpProjectType', {
-                      adpProjectType,
-                      supportedAdpProjectTypes: AdaptationProjectType.ON_PREMISE
-                  });
+                : getUnsupportedAdpProjectTypeErrorText(adpProjectType, [AdaptationProjectType.ON_PREMISE]);
         }
 
         return error.message;
@@ -972,4 +974,35 @@ async function getSystemInfo(
     const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget, credentials);
     const lrep = provider.getLayeredRepository();
     return lrep.getSystemInfo(undefined, packageName);
+}
+
+/**
+ * Used to retreive the localized label for an Adaptation project type.
+ *
+ * @param {AdaptationProjectType} adpProjectType - The Adaptation project type.
+ * @returns {string} The localized project type.
+ */
+const toAdpProjectTypeLabel = (adpProjectType: AdaptationProjectType): string =>
+    adpProjectType === AdaptationProjectType.CLOUD_READY
+        ? t('errors.validators.adpCloudProjectType')
+        : t('errors.validators.adpOnPremProjectType');
+
+/**
+ * Util method used to localize the unsupported project type error text.
+ *
+ * @param {AdaptationProjectType} adpProjectType - The selected Adaptation project type.
+ * @param {AdaptationProjectType[]} supportedAdpProjectTypes - The supported adaptation project types by the system.
+ * @returns {string} Localized error text explaining to the user that the selected Adaptation project type
+ * is not among the supported project type.
+ */
+function getUnsupportedAdpProjectTypeErrorText(
+    adpProjectType: AdaptationProjectType,
+    supportedAdpProjectTypes: AdaptationProjectType[]
+): string {
+    const adpProjectTypeLabel = toAdpProjectTypeLabel(adpProjectType);
+    const supportedAdpProjectTypesList = supportedAdpProjectTypes.map(toAdpProjectTypeLabel).join(',');
+    return t('errors.validators.unsupportedAdpProjectType', {
+        adpProjectTypeLabel,
+        supportedAdpProjectTypesList
+    });
 }

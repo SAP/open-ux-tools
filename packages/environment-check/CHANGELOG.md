@@ -1,5 +1,119 @@
 # @sap-ux/environment-check
 
+## 0.18.114
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/axios-extension@1.25.27
+
+## 0.18.113
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/axios-extension@1.25.26
+
+## 0.18.112
+
+### Patch Changes
+
+- a41533f: chore(environment-check): upgrade runtime dependencies (axios 1.13.6, glob-gitignore 1.0.15, i18next 25.8.20)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/store@1.5.11
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.18.111
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/axios-extension@1.25.25
+
+## 0.18.110
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+
+## 0.18.109
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/axios-extension@1.25.24
+
+## 0.18.108
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+
+## 0.18.107
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/store@1.5.10
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.18.106
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+
+## 0.18.105
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/axios-extension@1.25.21
+
+## 0.18.104
+
+### Patch Changes
+
+- 5485dd9: fix(deps): update dependency @types/archiver to v7
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/project-access@1.35.12
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.18.103
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/project-access@1.35.11
+    - @sap-ux/store@1.5.9
+    - @sap-ux/ui5-config@0.29.20
+
 ## 0.18.102
 
 ### Patch Changes

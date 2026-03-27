@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/jest-environment-ui5",
-    "version": "5.3.18",
+    "version": "5.3.19",
     "description": "Jest matchers for files and folders",
     "repository": {
         "type": "git",
@@ -43,9 +43,9 @@
         "@ui5/project": "^3.9.0 || ^4.0.11"
     },
     "devDependencies": {
-        "@ui5/cli": "4.0.46",
-        "@ui5/project": "4.0.11",
-        "cross-env": "^7.0.3"
+        "@ui5/cli": "4.0.49",
+        "@ui5/project": "4.0.14",
+        "cross-env": "10.1.0"
     },
     "engines": {
         "node": ">=20.x"

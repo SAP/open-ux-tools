@@ -1,5 +1,83 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.70
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.0.69
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux-private/playwright@0.2.13
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-info@0.13.16
+    - @sap-ux/yaml@0.17.6
+
+## 0.0.68
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.0.67
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+
+## 0.0.66
+
+### Patch Changes
+
+- Updated dependencies [5d452e5]
+    - @sap-ux/ui5-info@0.13.15
+
+## 0.0.65
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+
+## 0.0.64
+
+### Patch Changes
+
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+    - @sap-ux/yaml@0.17.5
+    - @sap-ux/project-access@1.35.12
+
+## 0.0.63
+
+### Patch Changes
+
+- Updated dependencies [5aff25c]
+    - @sap-ux-private/playwright@0.2.12
+
+## 0.0.62
+
+### Patch Changes
+
+- afc03e2: fix(deps): update dependency jest-dev-server to v11
+
+## 0.0.61
+
+### Patch Changes
+
+- @sap-ux-private/playwright@0.2.11
+- @sap-ux/project-access@1.35.11
+- @sap-ux/ui5-info@0.13.14
+
 ## 0.0.60
 
 ### Patch Changes

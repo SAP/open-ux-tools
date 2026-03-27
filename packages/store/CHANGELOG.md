@@ -1,5 +1,26 @@
 # @sap-ux/store
 
+## 1.5.11
+
+### Patch Changes
+
+- a41533f: chore(store): upgrade runtime dependencies (i18next 25.8.20, reflect-metadata 0.2.2)
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+
+## 1.5.10
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
+## 1.5.9
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+
 ## 1.5.8
 
 ### Patch Changes

@@ -60,6 +60,16 @@ const backendSystemServiceKeys: BackendSystem = {
     systemType: 'AbapCloud',
     connectionType: 'abap_catalog'
 };
+const backendSystemODataService: BackendSystem = {
+    name: 'http://odata.service:1234',
+    url: 'http://odata.service:1234/sap/opu/odata/sap/TEST_SRV',
+    client: '100',
+    authenticationType: 'basic',
+    systemType: 'OnPrem',
+    connectionType: 'odata_service',
+    username: 'user1',
+    password: 'password1'
+};
 
 const backendSystems: BackendSystem[] = [backendSystemBasic];
 let mockIsAppStudio = false;
@@ -395,7 +405,21 @@ describe('Test system selection prompts', () => {
             undefined
         );
         connectWithBackendSystemSpy.mockClear();
-
+        systemServiceReadMock.mockResolvedValueOnce(backendSystemODataService);
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'backendSystem',
+                system: backendSystemODataService
+            } as SystemSelectionAnswerType)
+        ).toBe(true);
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            { url: backendSystemODataService.url, client: backendSystemODataService.client },
+            connectionValidatorMock,
+            undefined,
+            undefined,
+            'http://odata.service:1234/sap/opu/odata/sap/TEST_SRV'
+        );
+        connectWithBackendSystemSpy.mockClear();
         // If auth failed using creds from BackendSystem, the creds prompts should be displayed and the user notified that the backend system creds will be updated
         validateAuthResultMock = { valResult: t('errors.authenticationFailed'), errorType: ERROR_TYPE.AUTH };
         const loggerErrorSpy = jest.spyOn(LoggerHelper.logger, 'error');
@@ -726,14 +750,13 @@ describe('Test system selection prompts', () => {
 
         // Test with connectPath in defaultChoice object
         const connectPath = '/sap/opu/odata/sap/TEST_SERVICE';
-        const defaultChoiceWithConnectPath = {
-            value: backendSystemReentrance.name,
-            connectPath
+        const defaultChoiceOpt = {
+            value: backendSystemReentrance.name
         };
 
         systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemReentrance);
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator, {
-            [promptNames.systemSelection]: { defaultChoice: defaultChoiceWithConnectPath }
+            [promptNames.systemSelection]: { defaultChoice: defaultChoiceOpt, connectPath: { value: connectPath } }
         });
 
         const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
@@ -770,16 +793,15 @@ describe('Test system selection prompts', () => {
         backendSystems.push(backendSystemReentrance);
 
         const connectPath = '/sap/opu/odata/sap/ANOTHER_SERVICE';
-        const defaultChoiceWithConnectPath = {
-            value: backendSystemReentrance.name,
-            connectPath
+        const defaultChoiceOpt = {
+            value: backendSystemReentrance.name
         };
 
         systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemReentrance);
         validateUrlResultMock = true;
 
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator, {
-            [promptNames.systemSelection]: { defaultChoice: defaultChoiceWithConnectPath }
+            [promptNames.systemSelection]: { defaultChoice: defaultChoiceOpt, connectPath: { value: connectPath } }
         });
 
         // Call default to set the connectPath

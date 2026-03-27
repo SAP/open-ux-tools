@@ -1,5 +1,178 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.8
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.31
+
+## 0.18.7
+
+### Patch Changes
+
+- 2e17a6b: fix: allow deployment to OnPremise destinations with WebIDEUsage odata_gen
+
+    isAbapSystem now returns true for destinations with ProxyType=OnPremise, fixing deployments that failed with a cryptic 'bind' error when WebIDEUsage was set to odata_gen. deploy-tooling also now surfaces an actionable error message if a non-ABAP provider is resolved.
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/axios-extension@1.25.27
+    - @sap-ux/inquirer-common@0.11.30
+    - @sap-ux/system-access@0.7.3
+
+## 0.18.6
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.26
+- @sap-ux/inquirer-common@0.11.29
+- @sap-ux/project-input-validator@0.6.72
+- @sap-ux/system-access@0.7.2
+
+## 0.18.5
+
+### Patch Changes
+
+- b4b4447: fix(deploy-tooling): suppress 'Change logging level' hint when debug logging is already enabled via config.log
+
+## 0.18.4
+
+### Patch Changes
+
+- a41533f: chore(deploy-tooling): reformat CliOptions interface extends clause (Prettier upgrade autofix)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-input-validator@0.6.71
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/system-access@0.7.2
+
+## 0.18.3
+
+### Patch Changes
+
+- c7ce73f: Normalize $tmp package name to $TMP with a warning message to prevent deployment failures
+
+## 0.18.2
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.25
+- @sap-ux/inquirer-common@0.11.27
+- @sap-ux/project-input-validator@0.6.70
+- @sap-ux/system-access@0.7.1
+
+## 0.18.1
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/system-access@0.7.1
+
+## 0.18.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/inquirer-common@0.11.26
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/project-input-validator@0.6.69
+
+## 0.17.74
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.25
+
+## 0.17.73
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/system-access@0.6.66
+
+## 0.17.72
+
+### Patch Changes
+
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/system-access@0.6.65
+    - @sap-ux/inquirer-common@0.11.24
+    - @sap-ux/project-input-validator@0.6.68
+    - @sap-ux/ui5-config@0.29.21
+
+## 0.17.71
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.23
+
+## 0.17.70
+
+### Patch Changes
+
+- Updated dependencies [2d21925]
+    - @sap-ux/axios-extension@1.25.22
+    - @sap-ux/system-access@0.6.64
+
+## 0.17.69
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.21
+- @sap-ux/inquirer-common@0.11.22
+- @sap-ux/project-input-validator@0.6.67
+- @sap-ux/system-access@0.6.63
+
+## 0.17.68
+
+### Patch Changes
+
+- fdd57de: fix(deps): update dependency dotenv to v17
+- Updated dependencies [7c06ef0]
+    - @sap-ux/axios-extension@1.25.21
+    - @sap-ux/inquirer-common@0.11.21
+    - @sap-ux/ui5-config@0.29.21
+    - @sap-ux/system-access@0.6.63
+    - @sap-ux/project-input-validator@0.6.66
+
+## 0.17.67
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.20
+
+## 0.17.66
+
+### Patch Changes
+
+- Updated dependencies [f5f9a78]
+- Updated dependencies [45d4797]
+    - @sap-ux/inquirer-common@0.11.19
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/axios-extension@1.25.20
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/system-access@0.6.62
+    - @sap-ux/ui5-config@0.29.20
+
 ## 0.17.65
 
 ### Patch Changes

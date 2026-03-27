@@ -63,7 +63,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     // Validate the base and view paths
     fs ??= create(createStorage());
     await validateBasePath(basePath, fs, []);
-    const fnGenerateId = config.buildingBlockData.generateId ?? (await createIdGenerator(basePath, fs));
+    const fnGenerateId = config.buildingBlockData.generateId ?? (await createIdGenerator({ basePath, fsEditor: fs }));
 
     if (!fs.exists(join(basePath, viewOrFragmentPath))) {
         throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
@@ -426,9 +426,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
         return {};
     }
     // Validate the base and view paths
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs = fs ?? create(createStorage());
     // Read the view xml and template files and get content of the view xml file
     const xmlDocument = viewOrFragmentPath ? getUI5XmlDocument(basePath, viewOrFragmentPath, fs) : undefined;
     const { content: manifest, path: manifestPath } = await getManifest(basePath, fs, false);
