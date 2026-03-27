@@ -1,5 +1,33 @@
 # @sap-ux/odata-service-writer
 
+## 0.31.3
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/mockserver-config-writer@0.9.67
+
+## 0.31.2
+
+### Patch Changes
+
+- a41533f: chore(odata-service-writer): simplify array element null check with optional chaining
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/mockserver-config-writer@0.9.66
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.31.1
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/mockserver-config-writer@0.9.65
+
 ## 0.31.0
 
 ### Minor Changes

@@ -1,5 +1,46 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.8.4
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.26
+- @sap-ux/fiori-generator-shared@0.13.91
+- @sap-ux/inquirer-common@0.11.29
+- @sap-ux/system-access@0.7.2
+
+## 1.8.3
+
+### Patch Changes
+
+- a41533f: chore(abap-deploy-config-inquirer): fix indentation in boolean expression (Prettier upgrade autofix)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/nodejs-utils@0.2.18
+    - @sap-ux/store@1.5.11
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/system-access@0.7.2
+
+## 1.8.2
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.25
+- @sap-ux/fiori-generator-shared@0.13.89
+- @sap-ux/inquirer-common@0.11.27
+- @sap-ux/system-access@0.7.1
+
 ## 1.8.1
 
 ### Patch Changes

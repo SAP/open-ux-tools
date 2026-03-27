@@ -1,5 +1,69 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.125
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/abap-deploy-config-sub-generator@0.3.7
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.158
+    - @sap-ux/fiori-generator-shared@0.13.91
+    - @sap-ux/inquirer-common@0.11.29
+    - @sap-ux/odata-service-inquirer@2.20.4
+    - @sap-ux/deploy-config-generator-shared@0.1.110
+
+## 0.5.124
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-sub-generator@0.3.6
+
+## 0.5.123
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-sub-generator@0.3.5
+
+## 0.5.122
+
+### Patch Changes
+
+- a41533f: chore(deploy-config-sub-generator): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/abap-deploy-config-sub-generator@0.3.4
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.157
+    - @sap-ux/deploy-config-generator-shared@0.1.109
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/odata-service-inquirer@2.20.3
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/store@1.5.11
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.5.121
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/abap-deploy-config-sub-generator@0.3.3
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.156
+    - @sap-ux/fiori-generator-shared@0.13.89
+    - @sap-ux/inquirer-common@0.11.27
+    - @sap-ux/odata-service-inquirer@2.20.2
+    - @sap-ux/deploy-config-generator-shared@0.1.108
+
 ## 0.5.120
 
 ### Patch Changes

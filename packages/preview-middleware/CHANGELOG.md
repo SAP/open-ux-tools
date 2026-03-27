@@ -1,5 +1,66 @@
 # @sap-ux/preview-middleware
 
+## 0.25.6
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/adp-tooling@0.18.104
+    - @sap-ux/system-access@0.7.2
+
+## 0.25.5
+
+### Patch Changes
+
+- Updated dependencies [96a689b]
+    - @sap-ux/adp-tooling@0.18.103
+
+## 0.25.4
+
+### Patch Changes
+
+- 8e7d529: fix(preview-middleware): ADP Extension Points: blank iframe on reload for UI5 < 1.120
+
+## 0.25.3
+
+### Patch Changes
+
+- Updated dependencies [3dcd3f7]
+    - @sap-ux/adp-tooling@0.18.102
+
+## 0.25.2
+
+### Patch Changes
+
+- a41533f: fix(preview-middleware): cast ParsedQs to Record<string,string> for URLSearchParams (stricter @types/qs 6.15)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/adp-tooling@0.18.101
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/i18n@0.3.10
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/system-access@0.7.2
+
+## 0.25.1
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/adp-tooling@0.18.100
+    - @sap-ux/system-access@0.7.1
+
+## 0.25.0
+
+### Minor Changes
+
+- 997f605: fix: adjust resource-roots for rta editor endpoints
+
 ## 0.24.6
 
 ### Patch Changes

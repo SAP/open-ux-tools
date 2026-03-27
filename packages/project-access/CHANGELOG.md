@@ -1,5 +1,27 @@
 # @sap-ux/project-access
 
+## 1.35.17
+
+### Patch Changes
+
+- b66e827: Enhance `getCapServiceName` to return service by ignoring prefix for service URL in parameter `datasourceUri`.
+
+## 1.35.16
+
+### Patch Changes
+
+- a41533f: chore(project-access): upgrade runtime dependencies (fast-xml-parser 5.5.9, json-parse-even-better-errors 5.0.0)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/i18n@0.3.10
+    - @sap-ux/ui5-config@0.30.1
+
+## 1.35.15
+
+### Patch Changes
+
+- f384ace: fix: npm command execution error detection
+
 ## 1.35.14
 
 ### Patch Changes

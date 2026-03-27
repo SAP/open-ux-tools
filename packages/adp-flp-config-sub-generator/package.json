@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/adp-flp-config-sub-generator",
     "description": "Generator for adding FLP configuration to an Adaptation Project",
-    "version": "0.1.211",
+    "version": "0.1.216",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -42,14 +42,14 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
-        "i18next": "25.8.18",
+        "i18next": "25.8.20",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
         "@jest/types": "30.2.0",
         "@types/fs-extra": "11.0.4",
         "@types/inquirer": "8.2.6",
-        "@types/vscode": "1.73.1",
+        "@types/vscode": "1.110.0",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.11",
         "@types/yeoman-test": "4.0.6",

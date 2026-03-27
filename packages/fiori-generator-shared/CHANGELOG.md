@@ -1,5 +1,32 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.91
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/telemetry@0.6.91
+
+## 0.13.90
+
+### Patch Changes
+
+- a41533f: chore(fiori-generator-shared): upgrade runtime dependencies (i18next 25.8.20, logform 2.7.0)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/telemetry@0.6.90
+
+## 0.13.89
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/telemetry@0.6.89
+
 ## 0.13.88
 
 ### Patch Changes
