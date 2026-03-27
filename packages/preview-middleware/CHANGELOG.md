@@ -1,5 +1,49 @@
 # @sap-ux/preview-middleware
 
+## 0.25.8
+
+### Patch Changes
+
+- 3013bf0: fix: i18n configuration handling for CAP projects
+
+## 0.25.7
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/adp-tooling@0.18.105
+    - @sap-ux/system-access@0.7.3
+
+## 0.25.6
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/adp-tooling@0.18.104
+    - @sap-ux/system-access@0.7.2
+
+## 0.25.5
+
+### Patch Changes
+
+- Updated dependencies [96a689b]
+    - @sap-ux/adp-tooling@0.18.103
+
+## 0.25.4
+
+### Patch Changes
+
+- 8e7d529: fix(preview-middleware): ADP Extension Points: blank iframe on reload for UI5 < 1.120
+
+## 0.25.3
+
+### Patch Changes
+
+- Updated dependencies [3dcd3f7]
+    - @sap-ux/adp-tooling@0.18.102
+
 ## 0.25.2
 
 ### Patch Changes

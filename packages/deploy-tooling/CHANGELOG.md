@@ -1,5 +1,34 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.7
+
+### Patch Changes
+
+- 2e17a6b: fix: allow deployment to OnPremise destinations with WebIDEUsage odata_gen
+
+    isAbapSystem now returns true for destinations with ProxyType=OnPremise, fixing deployments that failed with a cryptic 'bind' error when WebIDEUsage was set to odata_gen. deploy-tooling also now surfaces an actionable error message if a non-ABAP provider is resolved.
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/axios-extension@1.25.27
+    - @sap-ux/inquirer-common@0.11.30
+    - @sap-ux/system-access@0.7.3
+
+## 0.18.6
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.26
+- @sap-ux/inquirer-common@0.11.29
+- @sap-ux/project-input-validator@0.6.72
+- @sap-ux/system-access@0.7.2
+
+## 0.18.5
+
+### Patch Changes
+
+- b4b4447: fix(deploy-tooling): suppress 'Change logging level' hint when debug logging is already enabled via config.log
+
 ## 0.18.4
 
 ### Patch Changes
