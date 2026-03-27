@@ -1308,9 +1308,6 @@ importers:
       i18next:
         specifier: 25.8.20
         version: 25.8.20(typescript@5.9.3)
-      lodash:
-        specifier: '>=4.17.23'
-        version: 4.17.23
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1336,9 +1333,6 @@ importers:
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
-      '@types/lodash':
-        specifier: 4.14.202
-        version: 4.14.202
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -9550,9 +9544,6 @@ packages:
 
   '@types/livereload@0.9.5':
     resolution: {integrity: sha512-2RXcRKdivPmn67pwjytvHoRv46AeXaLYVUWA0zkel1XSAOH5i71G0KfUdE5u3g80T155gR3Fo3ilVaqparLsVA==}
-
-  '@types/lodash@4.14.202':
-    resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
 
   '@types/lodash@4.17.24':
     resolution: {integrity: sha512-gIW7lQLZbue7lRSWEFql49QJJWThrTFFeIMJdp3eH4tKoxm1OvEPg02rm4wCCSHS0cL3/Fizimb35b7k8atwsQ==}
@@ -24898,8 +24889,6 @@ snapshots:
   '@types/livereload@0.9.5':
     dependencies:
       '@types/ws': 8.18.1
-
-  '@types/lodash@4.14.202': {}
 
   '@types/lodash@4.17.24': {}
 
