@@ -36,7 +36,7 @@ export function ServicePath({ setServicePath, setIsDetailsUpdated }: Readonly<Se
                 <UIIcon className="service-path-info-icon" iconName={UiIcons.Info} />
             </UITooltip>
             <UITextInput
-                name="sysemServicePath"
+                name="systemServicePath"
                 id="sysServicePath"
                 onChange={(e) => {
                     setServicePath((e.target as HTMLInputElement).value);
