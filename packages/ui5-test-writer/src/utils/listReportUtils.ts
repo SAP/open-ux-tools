@@ -333,7 +333,8 @@ function extractAllActionStates(
 function buildActionButtonState(item: any, metadata: ConvertedMetadata, entityTypeName: string): ActionButtonState {
     const actionMethod = extractActionMethodName(item.Action || '');
     const operationAvailable = findOperationAvailableAnnotation(metadata, entityTypeName, actionMethod);
-    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable);
+    const isBound = item.ActionTarget?.isBound === true;
+    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isBound);
 
     return {
         label: item.Label || '',
@@ -347,16 +348,21 @@ function buildActionButtonState(item: any, metadata: ConvertedMetadata, entityTy
 
 /**
  * Analyzes Core.OperationAvailable annotation to determine action availability.
+ * Bound actions (requiring row selection) are disabled by default when no annotation is present.
  *
  * @param operationAvailable The OperationAvailable annotation value
+ * @param isBound Whether the action is bound (requires row selection to enable)
  * @returns Object containing enabled state and optional dynamic path
  */
-function analyzeOperationAvailability(operationAvailable: any): {
+function analyzeOperationAvailability(
+    operationAvailable: any,
+    isBound?: boolean
+): {
     enabled: boolean | 'dynamic';
     dynamicPath?: string;
 } {
     if (operationAvailable === undefined) {
-        return { enabled: true };
+        return { enabled: !isBound };
     }
 
     if (typeof operationAvailable === 'boolean') {

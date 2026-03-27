@@ -1041,6 +1041,56 @@ describe('Test internal helper function coverage through public APIs', () => {
         expect(result.entityType).toBeDefined();
         expect(Array.isArray(result.actions)).toBe(true);
     });
+
+    test('should return enabled:false for bound actions without OperationAvailable annotation', () => {
+        // Bound actions require row selection — they must be disabled by default (no row selected)
+        const metadata = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TestEntity">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+            </EntityType>
+            <Action Name="BoundAction" IsBound="true">
+                <Parameter Name="_it" Type="TestService.TestEntity" Nullable="false"/>
+            </Action>
+            <Action Name="UnboundAction" IsBound="false"/>
+            <EntityContainer Name="Container">
+                <EntitySet Name="TestSet" EntityType="TestService.TestEntity"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TestEntity">
+                <Annotation Term="com.sap.vocabularies.UI.v1.LineItem">
+                    <Collection>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Bound Action"/>
+                            <PropertyValue Property="Action" String="TestService.BoundAction(TestService.TestEntity)"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Unbound Action"/>
+                            <PropertyValue Property="Action" String="TestService.UnboundAction"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+        const result = checkActionButtonStates(metadata, 'TestSet');
+        expect(result.actions).toBeDefined();
+        expect(Array.isArray(result.actions)).toBe(true);
+
+        const boundAction = result.actions.find((a) => a.label === 'Bound Action');
+        const unboundAction = result.actions.find((a) => a.label === 'Unbound Action');
+
+        if (boundAction) {
+            expect(boundAction.enabled).toBe(false);
+        }
+        if (unboundAction) {
+            expect(unboundAction.enabled).toBe(true);
+        }
+    });
 });
 
 describe('Test getToolBarActionNames()', () => {
