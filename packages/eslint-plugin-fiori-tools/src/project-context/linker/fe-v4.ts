@@ -3,7 +3,7 @@ import type { ParsedService } from '../parser';
 import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
-import { collectTables, collectSections, collectHeaderSections } from './annotations';
+import { collectTables, collectSections } from './annotations';
 
 export interface ApplicationSetting {
     createMode: string;
@@ -246,6 +246,47 @@ function linkV4ObjectPageSections(
     );
     for (const section of sections.filter((section) => section.type === 'header-section')) {
         collectHeaderSections(section, page, [...path, name]);
+    }
+}
+
+/**
+ * Links object page header sections with their field group annotations for Fiori Elements V4.
+ *
+ * @param section - Header section node to link
+ * @param page - The object page being linked
+ * @param _pagePath - Configuration path segments to the page
+ */
+export function collectHeaderSections(section: HeaderSectionNode, page: FeV4ObjectPage, _pagePath: string[]): void {
+    const controls: Record<string, Section | Table | FieldGroup> = {};
+    if (section.type !== 'header-section') {
+        return;
+    }
+    const fieldGroup = section.children[0];
+    if (fieldGroup.type !== 'field-group') {
+        return;
+    }
+    const configurationKey = fieldGroup.annotationPath;
+    const linkedSection: HeaderSection = {
+        type: section.type,
+        annotation: section,
+        configuration: {},
+        children: []
+    };
+    controls[`${section.type}|${configurationKey}`] = linkedSection;
+    const linkedfieldGroup = {
+        type: fieldGroup.type,
+        annotation: fieldGroup,
+        configuration: {},
+        children: []
+    };
+    linkedSection.children.push(linkedfieldGroup);
+    controls[`${linkedfieldGroup.type}|${configurationKey}`] = linkedfieldGroup;
+    for (const control of Object.values(controls)) {
+        if (control.type === 'header-section') {
+            page.sections.push(control);
+        }
+        page.lookup[control.type] ??= [];
+        (page.lookup[control.type] as any[]).push(control);
     }
 }
 
