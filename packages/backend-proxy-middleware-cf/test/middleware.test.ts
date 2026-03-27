@@ -31,7 +31,7 @@ const mockSetupProxyRoutes = proxy.setupProxyRoutes as jest.Mock;
 const mockValidateConfig = validation.validateConfig as jest.Mock;
 const mockCreateTokenProvider = tokenFactory.createTokenProvider as jest.Mock;
 
-async function getTestServer(configuration: CfOAuthMiddlewareConfig): Promise<supertest.SuperTest<supertest.Test>> {
+async function getTestServer(configuration: CfOAuthMiddlewareConfig): Promise<supertest.Agent> {
     const router = await (middleware as any).default({
         options: { configuration }
     });
