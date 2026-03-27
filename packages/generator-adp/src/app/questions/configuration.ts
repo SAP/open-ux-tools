@@ -42,6 +42,7 @@ import type {
     ConfigQuestion,
     FioriIdPromptOptions,
     PasswordPromptOptions,
+    ProjectTypeClassicLabelPromptOptions,
     ShouldCreateExtProjectPromptOptions,
     StoreCredentialsPromptOptions,
     SystemPromptOptions,
@@ -62,12 +63,14 @@ import { validateExtensibilityExtension } from './helper/validators';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { Severity } from '@sap-devx/yeoman-ui-types';
+import type { Answers } from 'inquirer';
 
 /**
  * A stateful prompter class that creates configuration questions.
  * It exposes a single public method {@link getPrompts} to retrieve the configuration questions.
  */
 export class ConfigPrompter {
+    private readonly CLOUD_DEV_ADP_STATUS_RELEASED = 'released';
     /**
      * Indicates if the current layer is based on a customer base.
      */
@@ -263,13 +266,17 @@ export class ConfigPrompter {
             [configPromptNames.storeCredentials]: this.getStoreCredentialsPrompt(
                 promptOptions?.[configPromptNames.storeCredentials]
             ),
-            [configPromptNames.projectType]: this.getProjectTypeListPrompt(
-                promptOptions?.[configPromptNames.projectType]
-            ),
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
             ),
             [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli(),
+            [configPromptNames.projectType]: this.getProjectTypeListPrompt(
+                promptOptions?.[configPromptNames.projectType]
+            ),
+            [configPromptNames.projectTypeCli]: this.getProjectTypeListPromptForCli(),
+            [configPromptNames.projectTypeClassicLabel]: this.getProjectTypeClassicLabelPrompt(
+                promptOptions?.[configPromptNames.projectTypeClassicLabel]
+            ),
             [configPromptNames.fioriId]: this.getFioriIdPrompt(),
             [configPromptNames.ach]: this.getAchPrompt(),
             [configPromptNames.shouldCreateExtProject]: this.getShouldCreateExtProjectPrompt(
@@ -443,28 +450,71 @@ export class ConfigPrompter {
             },
             choices: getProjectTypeChoices,
             default: options?.default,
-            // We include the system in the validation to avoid prompt appearance
-            // after pressing start over from the template wizard. This is needed
-            // because the prompter is cached adn we do not want to reset cached data, because
-            // back/forward navigation will be affected if we do so.
-            when: ({ system }: ConfigAnswers) =>
-                !!system && this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM,
-            validate: async (projectType: AdaptationProjectType) => {
-                this.selectedProjectType = projectType;
+            when: ({ application }: ConfigAnswers) => this.shouldDisplayProjectTypePrompt(application),
+            validate: async (projectType: AdaptationProjectType, { application }: ConfigAnswers) =>
+                this.validateProjectTypePrompt(projectType, application),
+            additionalMessages: (_, answers: Answers | undefined) =>
+                getAppAdditionalMessages(
+                    answers?.application as SourceApplication,
+                    {
+                        hasSyncViews: this.containsSyncViews,
+                        isV4AppInternalMode: this.isV4AppInternalMode,
+                        isSupported: this.isSupported && !this.isPartiallySupported,
+                        isPartiallySupported: this.isPartiallySupported
+                    },
+                    this.isApplicationSupported
+                )
+        };
+    }
 
-                const isInternalUsage = isInternalFeaturesSettingEnabled();
-                if (this.selectedProjectType === AdaptationProjectType.CLOUD_READY && isInternalUsage) {
-                    return t('error.cloudSystemsForInternalUsers');
+    /**
+     * Prompt with `when` hook only, which runs the project type propmt validation in a CLI context only.
+     * This overcomes yeoman limitation for prompts of type `list` for which the validation hook is not
+     * triggered by design in a CLI context.
+     *
+     * @returns {YUIQuestion} The project type for cli prompt configuration.
+     */
+    private getProjectTypeListPromptForCli(): YUIQuestion {
+        return {
+            name: configPromptNames.projectTypeCli,
+            when: async ({ application, projectType }: ConfigAnswers): Promise<boolean> => {
+                if (!application || !projectType) {
+                    return false;
                 }
 
-                try {
-                    this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.selectedProjectType);
-                } catch (error) {
-                    return error.message;
+                const projectTypeValidationResult = await this.validateProjectTypePrompt(projectType, application);
+                if (typeof projectTypeValidationResult === 'string') {
+                    throw new Error(projectTypeValidationResult);
                 }
 
-                return true;
+                return false;
             }
+        } as YUIQuestion;
+    }
+
+    /**
+     * Creates a label for the project type `classic`.
+     *
+     * @param {ProjectTypeClassicLabelPromptOptions} options - The project type `classic` label options.
+     * @returns {InputQuestion<ConfigAnswers>} The project type `classic` label configurations.
+     */
+    private getProjectTypeClassicLabelPrompt(
+        options?: ProjectTypeClassicLabelPromptOptions
+    ): InputQuestion<ConfigAnswers> {
+        return {
+            type: 'input',
+            name: configPromptNames.projectTypeClassicLabel,
+            message: '',
+            guiOptions: {
+                type: 'label',
+                mandatory: false
+            },
+            when: ({ application }: ConfigAnswers) =>
+                !options?.hide && this.shouldDisplayProjectTypeClassicLabel(application),
+            additionalMessages: () => ({
+                message: t('prompts.projectTypeClassicLabel'),
+                severity: Severity.information
+            })
         };
     }
 
@@ -487,7 +537,18 @@ export class ConfigPrompter {
             },
             choices: () => getApplicationChoices(this.targetApps),
             default: options?.default,
-            validate: async (value: SourceApplication) => await this.validateAppPrompt(value),
+            validate: (application: SourceApplication) => {
+                if (this.shouldDisplayProjectTypePrompt(application)) {
+                    // Move the app validation into the projectType prompt.
+                    return true;
+                }
+
+                if (this.isClassicAppOnMixedSystem(application)) {
+                    this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
+                }
+
+                return this.validateAppPrompt(application);
+            },
             when: (answers: ConfigAnswers) =>
                 showApplicationQuestion(
                     answers,
@@ -495,9 +556,13 @@ export class ConfigPrompter {
                     this.isAuthRequired,
                     this.isLoginSuccessful
                 ),
-            additionalMessages: (app) =>
-                getAppAdditionalMessages(
-                    app as SourceApplication,
+            additionalMessages: (input) => {
+                const application = input as SourceApplication;
+                if (this.shouldDisplayProjectTypePrompt(application)) {
+                    return undefined;
+                }
+                return getAppAdditionalMessages(
+                    application,
                     {
                         hasSyncViews: this.containsSyncViews,
                         isV4AppInternalMode: this.isV4AppInternalMode,
@@ -505,7 +570,8 @@ export class ConfigPrompter {
                         isPartiallySupported: this.isPartiallySupported
                     },
                     this.isApplicationSupported
-                )
+                );
+            }
         };
     }
 
@@ -517,12 +583,16 @@ export class ConfigPrompter {
     private getApplicationValidationPromptForCli() {
         return {
             name: configPromptNames.appValidationCli,
-            when: async (answers: ConfigAnswers): Promise<boolean> => {
-                if (!answers.application) {
+            when: async ({ application }: ConfigAnswers): Promise<boolean> => {
+                if (!application || this.shouldDisplayProjectTypePrompt(application)) {
                     return false;
                 }
 
-                const result = await this.validateAppPrompt(answers.application);
+                if (this.isClassicAppOnMixedSystem(application)) {
+                    this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
+                }
+
+                const result = await this.validateAppPrompt(application);
                 if (typeof result === 'string') {
                     throw new Error(result);
                 }
@@ -697,7 +767,7 @@ export class ConfigPrompter {
             }
 
             this.telemetryCollector.startTiming('applicationListLoadingTime');
-            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.selectedProjectType);
+            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.supportedProject);
             this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
             this.telemetryCollector.endTiming('applicationListLoadingTime');
             this.isLoginSuccessful = true;
@@ -749,7 +819,7 @@ export class ConfigPrompter {
             }
 
             this.telemetryCollector.startTiming('applicationListLoadingTime');
-            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.selectedProjectType);
+            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.supportedProject);
             this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
             this.telemetryCollector.endTiming('applicationListLoadingTime');
 
@@ -767,6 +837,8 @@ export class ConfigPrompter {
      */
     private async validateAppData(app: SourceApplication): Promise<boolean | string> {
         try {
+            // Reset the flag when we are selecting a new application from the list.
+            this.isApplicationSupported = false;
             const sourceManifest = new SourceManifest(this.abapProvider, app.id, this.logger);
             const isSupported = await isAppSupported(this.abapProvider, app.id, this.logger);
 
@@ -820,6 +892,11 @@ export class ConfigPrompter {
             if (this.supportedProject === SupportedProject.CLOUD_READY) {
                 this.selectedProjectType = AdaptationProjectType.CLOUD_READY;
             } else if (this.supportedProject === SupportedProject.ON_PREM) {
+                this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
+            } else if (
+                this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM &&
+                isInternalFeaturesSettingEnabled()
+            ) {
                 this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
             }
         } catch (error) {
@@ -906,6 +983,27 @@ export class ConfigPrompter {
     }
 
     /**
+     * Validates the project type prompt.
+     *
+     * @param {AdaptationProjectType} projectType - The selected project type.
+     * @param {SourceApplication} application - The selected application.
+     * @returns {Promise<string|boolean>} A promise that resolves to true if valid, or an error message string if validation fails.
+     */
+    private async validateProjectTypePrompt(
+        projectType: AdaptationProjectType,
+        application: SourceApplication
+    ): Promise<boolean | string> {
+        this.selectedProjectType = projectType;
+
+        const appValidationResult = await this.validateAppPrompt(application);
+        if (typeof appValidationResult === 'string') {
+            return appValidationResult;
+        }
+
+        return true;
+    }
+
+    /**
      * Sets the support flags for given application.
      *
      * @param {SourceApplication} application - The application to validate.
@@ -918,5 +1016,55 @@ export class ConfigPrompter {
         this.isPartiallySupported = isPartialSupport && application.fileType === 'appdescr_variant';
         this.isV4AppInternalMode = isV4Application(this.appManifest) && !this.isCustomerBase;
         this.containsSyncViews = isSyncLoadedView(this.appManifest?.['sap.ui5']);
+    }
+
+    /**
+     * Checks if the application is a released app on a mixed system that requires
+     * explicit project type selection by the user.
+     *
+     * @param {SourceApplication} application - The selected application.
+     * @returns {boolean} True if the application is released on a mixed system.
+     */
+    private isReleasedAppOnMixedSystem(application: SourceApplication | undefined): boolean {
+        return (
+            application?.cloudDevAdaptationStatus === this.CLOUD_DEV_ADP_STATUS_RELEASED &&
+            this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM
+        );
+    }
+
+    /**
+     * Checks if the application is a classic (non-released) app on a mixed system
+     * that should default to on-premise project type.
+     *
+     * @param {SourceApplication} application - The selected application.
+     * @returns {boolean} True if the application is classic on a mixed system.
+     */
+    private isClassicAppOnMixedSystem(application: SourceApplication | undefined): boolean {
+        return (
+            this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM &&
+            application?.cloudDevAdaptationStatus === ''
+        );
+    }
+
+    /**
+     * Determines the project type prompt visibility. In case the user is external,
+     * the selected application is released and the system is mixed the prompt need to be visible.
+     *
+     * @param {SourceApplication} application - The selected application.
+     * @returns {boolean} True if the project type must be displayed.
+     */
+    private shouldDisplayProjectTypePrompt(application: SourceApplication | undefined): boolean {
+        return !isInternalFeaturesSettingEnabled() && this.isReleasedAppOnMixedSystem(application);
+    }
+
+    /**
+     * Determines the project type classic label visibility. In case the user is external,
+     * the selected application is NOT released and the system is mixed the label need to be visible.
+     *
+     * @param {SourceApplication} application - The selected application.
+     * @returns {boolean} True if the project type classic label must be displayed.
+     */
+    private shouldDisplayProjectTypeClassicLabel(application: SourceApplication | undefined): boolean {
+        return !isInternalFeaturesSettingEnabled() && this.isClassicAppOnMixedSystem(application);
     }
 }

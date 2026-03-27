@@ -1,5 +1,22 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.9.67
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.9.66
+
+### Patch Changes
+
+- a41533f: chore(mockserver-config-writer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+
 ## 0.9.65
 
 ### Patch Changes
