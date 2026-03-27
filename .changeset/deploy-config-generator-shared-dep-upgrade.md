@@ -2,4 +2,4 @@
 "@sap-ux/deploy-config-generator-shared": patch
 ---
 
-chore(deploy-config-generator-shared): upgrade shared devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+chore(deploy-config-generator-shared): upgrade @sap-devx/yeoman-ui-types 1.22.0 → 1.23.0 (runtime dep); upgrade devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
