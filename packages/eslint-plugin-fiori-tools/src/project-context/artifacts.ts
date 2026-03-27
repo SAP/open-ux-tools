@@ -10,7 +10,7 @@ import type { WorkerResult } from './types';
  */
 export async function getProjectArtifacts(filePath: string): Promise<WorkerResult> {
     try {
-        const projectRoot = await findProjectRoot(filePath, false);
+        const projectRoot = await findProjectRoot(filePath, true);
         const projectType = await getProjectType(projectRoot);
         const artifacts = await findFioriArtifacts({
             wsFolders: [projectRoot],
