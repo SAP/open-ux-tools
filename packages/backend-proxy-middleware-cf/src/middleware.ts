@@ -17,7 +17,9 @@ import type { BackendProxyMiddlewareCfConfig } from './types';
 import { fetchBasUrlTemplate, resolveBasExternalUrl } from './bas';
 import { buildRouteEntries, loadAndPrepareXsappConfig } from './routes';
 import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from './env';
-import { startSshTunnelIfNeeded } from './ssh-tunnel';
+import { startSshTunnelIfNeeded, ensureTunnelAppExists } from './ssh-tunnel';
+import { hasOnPremiseDestination } from './destination-check';
+import { DEFAULT_TUNNEL_APP_NAME } from './constants';
 
 dotenv.config();
 
@@ -60,10 +62,17 @@ async function backendProxyMiddlewareCf({
     const connectivityInfo = await loadAndApplyEnvOptions(rootPath, effectiveOptions, logger);
 
     if (!effectiveOptions.disableSshTunnel && connectivityInfo) {
-        await startSshTunnelIfNeeded(connectivityInfo, effectiveOptions.tunnelAppName ?? 'tunnel-app', logger, {
-            localPort: effectiveOptions.tunnelLocalPort,
-            skipSshEnable: effectiveOptions.skipSshEnable
-        });
+        const needsSshTunnel = await hasOnPremiseDestination(rootPath, logger);
+        if (needsSshTunnel) {
+            const tunnelAppName = effectiveOptions.tunnelAppName ?? DEFAULT_TUNNEL_APP_NAME;
+            await ensureTunnelAppExists(tunnelAppName, logger);
+            await startSshTunnelIfNeeded(connectivityInfo, tunnelAppName, logger, {
+                localPort: effectiveOptions.tunnelLocalPort,
+                skipSshEnable: effectiveOptions.skipSshEnable
+            });
+        } else {
+            logger.info('No OnPremise destination found in webapp/xs-app.json, skipping SSH tunnel setup.');
+        }
     }
 
     await updateXsuaaService(rootPath, logger);

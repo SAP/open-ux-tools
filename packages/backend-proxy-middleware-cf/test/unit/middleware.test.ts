@@ -5,6 +5,8 @@ import { nextFreePort } from '../../src/utils';
 import { loadExtensions } from '../../src/extensions';
 import { loadAndApplyEnvOptions } from '../../src/env';
 import { startApprouter } from '../../src/approuter';
+import { startSshTunnelIfNeeded, ensureTunnelAppExists } from '../../src/ssh-tunnel';
+import { hasOnPremiseDestination } from '../../src/destination-check';
 import type { BackendProxyMiddlewareCfConfig } from '../../src/types';
 import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../src/routes';
 import { fetchBasUrlTemplate, resolveBasExternalUrl } from '../../src/bas';
@@ -41,6 +43,15 @@ jest.mock('../../src/approuter', () => ({
 
 jest.mock('../../src/proxy', () => ({ createProxy: jest.fn() }));
 
+jest.mock('../../src/ssh-tunnel', () => ({
+    startSshTunnelIfNeeded: jest.fn().mockResolvedValue(undefined),
+    ensureTunnelAppExists: jest.fn().mockResolvedValue(undefined)
+}));
+
+jest.mock('../../src/destination-check', () => ({
+    hasOnPremiseDestination: jest.fn().mockResolvedValue(false)
+}));
+
 jest.mock('../../src/bas', () => ({
     fetchBasUrlTemplate: jest.fn().mockResolvedValue(''),
     resolveBasExternalUrl: jest.fn().mockReturnValue(undefined)
@@ -54,6 +65,9 @@ const buildRouteEntriesMock = buildRouteEntries as jest.Mock;
 const loadAndApplyEnvOptionsMock = loadAndApplyEnvOptions as jest.Mock;
 const loadAndPrepareXsappConfigMock = loadAndPrepareXsappConfig as jest.Mock;
 const startApprouterMock = startApprouter as jest.Mock;
+const startSshTunnelIfNeededMock = startSshTunnelIfNeeded as jest.Mock;
+const ensureTunnelAppExistsMock = ensureTunnelAppExists as jest.Mock;
+const hasOnPremiseDestinationMock = hasOnPremiseDestination as jest.Mock;
 const fetchBasUrlTemplateMock = fetchBasUrlTemplate as jest.Mock;
 const resolveBasExternalUrlMock = resolveBasExternalUrl as jest.Mock;
 
@@ -301,5 +315,86 @@ describe('middleware', () => {
         expect(resolveBasExternalUrlMock).toHaveBeenCalledWith('https://port0-workspaces-xxx/', 8080);
         const [proxyOptions] = createProxyMock.mock.calls[0] as [{ basExternalUrl?: URL }];
         expect(proxyOptions.basExternalUrl).toBe(basUrl);
+    });
+
+    test('should start SSH tunnel when connectivityInfo is present and hasOnPremiseDestination returns true', async () => {
+        const connectivityInfo = { host: 'proxy.example.com', port: 20003 };
+        loadAndApplyEnvOptionsMock.mockResolvedValue(connectivityInfo);
+        hasOnPremiseDestinationMock.mockResolvedValue(true);
+
+        await middleware({
+            options: { configuration: { xsappJsonPath: './xs-app.json' } },
+            middlewareUtil: { getProject }
+        });
+
+        expect(hasOnPremiseDestinationMock).toHaveBeenCalledWith(rootPath, expect.any(Object));
+        expect(ensureTunnelAppExistsMock).toHaveBeenCalledWith('adp-ssh-tunnel-app', expect.any(Object));
+        expect(startSshTunnelIfNeededMock).toHaveBeenCalledWith(
+            connectivityInfo,
+            'adp-ssh-tunnel-app',
+            expect.any(Object),
+            expect.objectContaining({})
+        );
+    });
+
+    test('should skip SSH tunnel when hasOnPremiseDestination returns false', async () => {
+        const connectivityInfo = { host: 'proxy.example.com', port: 20003 };
+        loadAndApplyEnvOptionsMock.mockResolvedValue(connectivityInfo);
+        hasOnPremiseDestinationMock.mockResolvedValue(false);
+
+        await middleware({
+            options: { configuration: { xsappJsonPath: './xs-app.json' } },
+            middlewareUtil: { getProject }
+        });
+
+        expect(hasOnPremiseDestinationMock).toHaveBeenCalled();
+        expect(ensureTunnelAppExistsMock).not.toHaveBeenCalled();
+        expect(startSshTunnelIfNeededMock).not.toHaveBeenCalled();
+    });
+
+    test('should not call hasOnPremiseDestination when disableSshTunnel is true', async () => {
+        const connectivityInfo = { host: 'proxy.example.com', port: 20003 };
+        loadAndApplyEnvOptionsMock.mockResolvedValue(connectivityInfo);
+
+        await middleware({
+            options: { configuration: { xsappJsonPath: './xs-app.json', disableSshTunnel: true } },
+            middlewareUtil: { getProject }
+        });
+
+        expect(hasOnPremiseDestinationMock).not.toHaveBeenCalled();
+        expect(ensureTunnelAppExistsMock).not.toHaveBeenCalled();
+        expect(startSshTunnelIfNeededMock).not.toHaveBeenCalled();
+    });
+
+    test('should not call hasOnPremiseDestination when connectivityInfo is undefined', async () => {
+        loadAndApplyEnvOptionsMock.mockResolvedValue(undefined);
+
+        await middleware({
+            options: { configuration: { xsappJsonPath: './xs-app.json' } },
+            middlewareUtil: { getProject }
+        });
+
+        expect(hasOnPremiseDestinationMock).not.toHaveBeenCalled();
+        expect(ensureTunnelAppExistsMock).not.toHaveBeenCalled();
+        expect(startSshTunnelIfNeededMock).not.toHaveBeenCalled();
+    });
+
+    test('should use custom tunnelAppName when configured', async () => {
+        const connectivityInfo = { host: 'proxy.example.com', port: 20003 };
+        loadAndApplyEnvOptionsMock.mockResolvedValue(connectivityInfo);
+        hasOnPremiseDestinationMock.mockResolvedValue(true);
+
+        await middleware({
+            options: { configuration: { xsappJsonPath: './xs-app.json', tunnelAppName: 'my-custom-app' } },
+            middlewareUtil: { getProject }
+        });
+
+        expect(ensureTunnelAppExistsMock).toHaveBeenCalledWith('my-custom-app', expect.any(Object));
+        expect(startSshTunnelIfNeededMock).toHaveBeenCalledWith(
+            connectivityInfo,
+            'my-custom-app',
+            expect.any(Object),
+            expect.objectContaining({})
+        );
     });
 });

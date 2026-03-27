@@ -12,4 +12,4 @@ export const PROXY_MARKER_HEADER = 'x-backend-proxy-middleware-cf';
 /**
  * Default CF app name used for SSH tunneling to the connectivity proxy.
  */
-export const DEFAULT_TUNNEL_APP_NAME = 'tunnel-app';
+export const DEFAULT_TUNNEL_APP_NAME = 'adp-ssh-tunnel-app';

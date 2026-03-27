@@ -16,6 +16,7 @@ describe('config', () => {
             expect(result.appendAuthRoute).toBe(false);
             expect(result.disableWelcomeFile).toBe(false);
             expect(result.extensions).toEqual([]);
+            expect(result.tunnelAppName).toBe('adp-ssh-tunnel-app');
         });
 
         test('overrides defaults with configuration', () => {

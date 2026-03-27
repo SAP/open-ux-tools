@@ -72,7 +72,9 @@ export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): X
                 }
             );
 
-            logger.info(`ADP live-reload: injected localDir routes for /changes/${variantId}/* and /${variantId}/i18n/*`);
+            logger.info(
+                `ADP live-reload: injected localDir routes for /changes/${variantId}/* and /${variantId}/i18n/*`
+            );
         } catch (e) {
             logger.warn(`Failed to read manifest.appdescr_variant: ${(e as Error).message}`);
         }

@@ -1,4 +1,7 @@
+import fs from 'node:fs';
+import os from 'node:os';
 import net from 'node:net';
+import path from 'node:path';
 import { spawn } from 'node:child_process';
 import type { ChildProcess } from 'node:child_process';
 
@@ -64,6 +67,57 @@ function waitForPort(port: number, timeoutMs: number): Promise<boolean> {
         }
         attempt();
     });
+}
+
+/**
+ * Ensure the tunnel app exists in CF. If not found, deploy a minimal no-route app
+ * using the binary_buildpack with minimum memory so it can serve as an SSH target.
+ *
+ * @param appName - CF app name.
+ * @param logger - Logger instance.
+ */
+export async function ensureTunnelAppExists(appName: string, logger: ToolsLogger): Promise<void> {
+    const checkResult = await Cli.execute(['app', appName], CF_ENV);
+    if (checkResult.exitCode === 0) {
+        logger.debug(`Tunnel app "${appName}" already exists.`);
+        return;
+    }
+
+    logger.info(`Tunnel app "${appName}" not found. Deploying minimal app...`);
+
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'adp-tunnel-'));
+    fs.writeFileSync(path.join(tmpDir, '.keep'), '');
+
+    try {
+        const pushResult = await Cli.execute(
+            [
+                'push',
+                appName,
+                '--no-route',
+                '-m',
+                '64M',
+                '-k',
+                '256M',
+                '-b',
+                'binary_buildpack',
+                '-c',
+                'sleep infinity',
+                '--health-check-type',
+                'process',
+                '-p',
+                tmpDir
+            ],
+            CF_ENV
+        );
+
+        if (pushResult.exitCode !== 0) {
+            throw new Error(`cf push failed: ${pushResult.stderr}`);
+        }
+
+        logger.info(`Tunnel app "${appName}" deployed successfully.`);
+    } finally {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
 }
 
 /**

@@ -1,4 +1,5 @@
 import type { BackendProxyMiddlewareCfConfig, EffectiveOptions } from '../types';
+import { DEFAULT_TUNNEL_APP_NAME } from '../constants';
 
 export const DEFAULT_REWRITE_CONTENT_TYPES = [
     'text/html',
@@ -27,7 +28,7 @@ export function mergeEffectiveOptions(configuration: BackendProxyMiddlewareCfCon
         disableWelcomeFile: false,
         disableUi5ServerRoutes: false,
         extensions: [],
-        tunnelAppName: 'tunnel-app',
+        tunnelAppName: DEFAULT_TUNNEL_APP_NAME,
         disableSshTunnel: false,
         skipSshEnable: false,
         ...configuration
