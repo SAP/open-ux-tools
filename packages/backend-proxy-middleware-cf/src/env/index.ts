@@ -64,6 +64,40 @@ function applyToProcessEnv(options: AppRouterEnvOptions): void {
 }
 
 /**
+ * Connectivity proxy coordinates from VCAP_SERVICES.
+ */
+export interface ConnectivityProxyInfo {
+    host: string;
+    port: number;
+}
+
+/**
+ * Extract connectivity proxy host and port from VCAP_SERVICES.
+ *
+ * @param vcapServices - Parsed VCAP_SERVICES object.
+ * @returns Proxy info or undefined if no connectivity service is present.
+ */
+export function getConnectivityProxyInfo(
+    vcapServices: Record<string, unknown> | undefined
+): ConnectivityProxyInfo | undefined {
+    if (!vcapServices) {
+        return undefined;
+    }
+    const connectivity = vcapServices['connectivity'];
+    if (!Array.isArray(connectivity)) {
+        return undefined;
+    }
+    for (const entry of connectivity) {
+        const host = entry.credentials?.onpremise_proxy_host;
+        const port = entry.credentials?.onpremise_proxy_port;
+        if (host && port) {
+            return { host: String(host), port: Number(port) };
+        }
+    }
+    return undefined;
+}
+
+/**
  * Load env options from file or CF, apply to process.env, and add destinations from effectiveOptions.
  *
  * When effectiveOptions.envOptionsPath is set, loads that JSON file. When null, loads mta.yaml one level
@@ -73,13 +107,13 @@ function applyToProcessEnv(options: AppRouterEnvOptions): void {
  * @param rootPath - Project root path.
  * @param effectiveOptions - Merged config; envOptionsPath and destinations are used.
  * @param logger - Logger for CF path.
- * @returns Promise resolving when env options are loaded and applied.
+ * @returns Connectivity proxy info (original host/port before localhost override), or undefined.
  */
 export async function loadAndApplyEnvOptions(
     rootPath: string,
     effectiveOptions: EffectiveOptions,
     logger: ToolsLogger
-): Promise<void> {
+): Promise<ConnectivityProxyInfo | undefined> {
     const { envOptionsPath, destinations: middlewareDestinations } = effectiveOptions;
     let options: AppRouterEnvOptions;
 
@@ -109,7 +143,9 @@ export async function loadAndApplyEnvOptions(
         };
     }
 
+    const connectivityInfo = getConnectivityProxyInfo(options.VCAP_SERVICES as Record<string, unknown>);
     applyToProcessEnv(options);
+    return connectivityInfo;
 }
 
 /**

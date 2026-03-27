@@ -31,6 +31,7 @@
     ],
     "dependencies": {
         "@sap/approuter": "^20.8.0",
+        "@sap/cf-tools": "3.3.0",
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",

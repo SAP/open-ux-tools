@@ -17,6 +17,7 @@ import type { BackendProxyMiddlewareCfConfig } from './types';
 import { fetchBasUrlTemplate, resolveBasExternalUrl } from './bas';
 import { buildRouteEntries, loadAndPrepareXsappConfig } from './routes';
 import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from './env';
+import { startSshTunnelIfNeeded } from './ssh-tunnel';
 
 dotenv.config();
 
@@ -56,7 +57,15 @@ async function backendProxyMiddlewareCf({
         throw new Error(`xs-app.json not found at "${xsappJsonPath}"`);
     }
 
-    await loadAndApplyEnvOptions(rootPath, effectiveOptions, logger);
+    const connectivityInfo = await loadAndApplyEnvOptions(rootPath, effectiveOptions, logger);
+
+    if (!effectiveOptions.disableSshTunnel && connectivityInfo) {
+        await startSshTunnelIfNeeded(connectivityInfo, effectiveOptions.tunnelAppName ?? 'tunnel-app', logger, {
+            localPort: effectiveOptions.tunnelLocalPort,
+            skipSshEnable: effectiveOptions.skipSshEnable
+        });
+    }
+
     await updateXsuaaService(rootPath, logger);
 
     const sourcePath = project.getSourcePath();

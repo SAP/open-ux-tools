@@ -55,6 +55,14 @@ export interface BackendProxyMiddlewareCfConfig {
     disableWelcomeFile?: boolean;
     /** Disable automatic injection of ui5-server routes (resources, test-resources, catch-all) */
     disableUi5ServerRoutes?: boolean;
+    /** CF app name used for SSH tunneling to the connectivity proxy (default: 'tunnel-app') */
+    tunnelAppName?: string;
+    /** Disable automatic SSH tunnel setup for the connectivity proxy */
+    disableSshTunnel?: boolean;
+    /** Local port for the SSH tunnel (defaults to the connectivity service's onpremise_proxy_port) */
+    tunnelLocalPort?: number;
+    /** Skip cf enable-ssh and cf restart (assume SSH is already enabled on the tunnel app) */
+    skipSshEnable?: boolean;
 }
 
 /** Effective options with defaults applied. */

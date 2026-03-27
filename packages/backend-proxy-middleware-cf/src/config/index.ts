@@ -27,6 +27,9 @@ export function mergeEffectiveOptions(configuration: BackendProxyMiddlewareCfCon
         disableWelcomeFile: false,
         disableUi5ServerRoutes: false,
         extensions: [],
+        tunnelAppName: 'tunnel-app',
+        disableSshTunnel: false,
+        skipSshEnable: false,
         ...configuration
     } as EffectiveOptions;
 }
