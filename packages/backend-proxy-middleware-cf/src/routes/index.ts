@@ -48,6 +48,36 @@ export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): X
         return true;
     });
 
+    // Serve adaptation project changes and i18n from webapp/ so edits are reflected
+    // without a build. Uses localDir 'webapp' (always exists) with target including
+    // the subdirectory, so the approuter resolves the full path at request time.
+    const manifestPath = path.join(rootPath, 'webapp', 'manifest.appdescr_variant');
+    if (fs.existsSync(manifestPath)) {
+        try {
+            const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+            const variantId = (manifest.id as string).replaceAll('.', '_');
+
+            xsappConfig.routes.unshift(
+                {
+                    source: `^/changes/${variantId}/(.*)$`,
+                    target: 'changes/$1',
+                    localDir: 'webapp',
+                    authenticationType: 'none'
+                },
+                {
+                    source: `^/${variantId}/i18n/(.*)$`,
+                    target: 'i18n/$1',
+                    localDir: 'webapp',
+                    authenticationType: 'none'
+                }
+            );
+
+            logger.info(`ADP live-reload: injected localDir routes for /changes/${variantId}/* and /${variantId}/i18n/*`);
+        } catch (e) {
+            logger.warn(`Failed to read manifest.appdescr_variant: ${(e as Error).message}`);
+        }
+    }
+
     if (effectiveOptions.disableWelcomeFile) {
         delete xsappConfig.welcomeFile;
     }
