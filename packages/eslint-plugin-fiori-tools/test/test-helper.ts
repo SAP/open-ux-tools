@@ -16,6 +16,7 @@ export interface FileChange {
 
 const ROOT = join(__dirname, '..');
 
+export const V4_PROJECT_PATH = join(ROOT, 'test', 'data', 'v4-xml-start');
 export const V4_MANIFEST_PATH = join(ROOT, 'test', 'data', 'v4-xml-start', 'webapp', 'manifest.json');
 export const V4_MANIFEST = Object.freeze(JSON.parse(readFileSync(V4_MANIFEST_PATH, 'utf-8'))) as Manifest;
 export const V4_ANNOTATIONS_PATH = join(
@@ -58,6 +59,7 @@ export const V4_FACETS_ANNOTATIONS = `
             `;
 export const V4_METADATA = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
 
+export const V2_PROJECT_PATH = join(ROOT, 'test', 'data', 'v2-xml-start');
 export const V2_MANIFEST_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'manifest.json');
 export const V2_MANIFEST = Object.freeze(JSON.parse(readFileSync(V2_MANIFEST_PATH, 'utf-8'))) as Manifest;
 export const V2_ANNOTATIONS_PATH = join(
@@ -71,13 +73,13 @@ export const V2_ANNOTATIONS_PATH = join(
 );
 export const V2_ANNOTATIONS = readFileSync(V2_ANNOTATIONS_PATH, 'utf-8');
 
-export function setup(name: string) {
-    const lookup: Record<string, FileChange[]> = {};
+export function setup(name: string, appPath?: string) {
+    const lookup: Record<string, { changes: FileChange[]; filename: string }> = {};
 
-    function createTestFunction<T extends { name: string }>(prefix: string) {
+    function createTestFunction<T extends { name: string; filename: string }>(prefix: string) {
         return function (testCode: T, changes: FileChange[]): T {
             const key = [name, prefix, testCode.name].join(' ');
-            lookup[key] = changes;
+            lookup[key] = { changes, filename: testCode.filename };
             return {
                 ...testCode
             };
@@ -89,7 +91,9 @@ export function setup(name: string) {
         if (!key) {
             return;
         }
-        const changes = lookup[key] ?? [];
+        const { changes, filename } = lookup[key] ?? [];
+        const cwd = (appPath ?? filename.includes(V4_PROJECT_PATH)) ? V4_PROJECT_PATH : V2_PROJECT_PATH;
+        jest.spyOn(process, 'cwd').mockReturnValue(cwd);
         for (const change of changes) {
             const path = normalizePath(change.filename);
             const uri = pathToFileURL(path).toString();
@@ -97,9 +101,15 @@ export function setup(name: string) {
         }
     });
 
+    afterAll(() => {
+        jest.restoreAllMocks();
+    });
+
     return {
-        createValidTest: createTestFunction<RuleTester.ValidTestCase & { name: string }>('valid'),
-        createInvalidTest: createTestFunction<RuleTester.InvalidTestCase & { name: string }>('invalid')
+        createValidTest: createTestFunction<RuleTester.ValidTestCase & { name: string; filename: string }>('valid'),
+        createInvalidTest: createTestFunction<RuleTester.InvalidTestCase & { name: string; filename: string }>(
+            'invalid'
+        )
     };
 }
 
