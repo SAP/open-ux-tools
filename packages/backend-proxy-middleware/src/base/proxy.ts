@@ -174,7 +174,12 @@ export const PathRewriters = {
         const queryString = Object.entries(params)
             .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
             .join('&');
-        return (path: string) => (path.indexOf('?') !== -1 ? `${path}&${queryString}` : `${path}?${queryString}`);
+        return (path: string) => {
+            if (!queryString) {
+                return path;
+            }
+            return path.indexOf('?') !== -1 ? `${path}&${queryString}` : `${path}?${queryString}`;
+        };
     },
 
     /**
@@ -203,7 +208,7 @@ export const PathRewriters = {
             }
             functions.push(PathRewriters.replaceClient(config.client));
         }
-        if (config.params && Object.keys(config.params).length > 0) {
+        if (config.params) {
             functions.push(PathRewriters.appendParams(config.params));
         }
         if (config.bsp) {

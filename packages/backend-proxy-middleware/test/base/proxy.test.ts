@@ -102,6 +102,10 @@ describe('proxy', () => {
 
             const rewriteEncoded = appendParams({ key: 'value with spaces' });
             expect(rewriteEncoded('/test')).toBe('/test?key=value%20with%20spaces');
+
+            const rewriteEmpty = appendParams({});
+            expect(rewriteEmpty('/test')).toBe('/test');
+            expect(rewriteEmpty('/test?sap-client=100')).toBe('/test?sap-client=100');
         });
 
         test('convertAppDescriptorToManifest', () => {
