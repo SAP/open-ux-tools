@@ -44,4 +44,4 @@ If you encounter an issue with this rule, please open a [GitHub issue](https://g
 
 ## Further Reading
 
-- [UI5 UI Adaptation Documentation](https://ui5.sap.com/sdk/#/topic/4bab6f2043814257974b52d4dafe1dcd)
+- [UI5 UI Adaptation Documentation](https://ui5.sap.com/#/topic/4bab6f2043814257974b52d4dafe1dcd)

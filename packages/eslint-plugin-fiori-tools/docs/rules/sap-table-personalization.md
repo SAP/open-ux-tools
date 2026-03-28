@@ -105,4 +105,4 @@ If you encounter an issue with this rule, please open a [GitHub issue](https://g
 
 ## Further Reading
 
-- [UI5 UI Adaptation Documentation](https://ui5.sap.com/sdk/#/topic/3e2b4d212b66481a829ccef1dc0ca16b)
+- [UI5 UI Adaptation Documentation](https://ui5.sap.com/#/topic/3e2b4d212b66481a829ccef1dc0ca16b)

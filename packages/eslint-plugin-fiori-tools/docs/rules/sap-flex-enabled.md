@@ -82,4 +82,4 @@ If you encounter an issue with this rule, please open a [GitHub issue](https://g
 
 ## Further Reading
 
-- [UI5 UI Adaptation Documentation](https://ui5.sap.com/sdk/#/topic/f1430c0337534d469da3a56307ff76a)
+- [UI5 UI Adaptation Documentation](https://ui5.sap.com/#/topic/f1430c0337534d469da3a56307ff76af)
