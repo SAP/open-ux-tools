@@ -9,7 +9,7 @@ import type { FioriRuleDefinition } from '../types';
 import { FioriAnnotationSourceCode } from './annotations/source-code';
 import type { AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
 import { DiagnosticCache } from './diagnostic-cache';
-import type { Diagnostic } from './diagnostics';
+import type { Diagnostic, ManifestPropertyDiagnosticData } from './diagnostics';
 import type { DeepestExistingPathResult } from '../utils/helpers';
 import { findDeepestExistingPath } from '../utils/helpers';
 import { pathToFileURL } from 'node:url';
@@ -175,7 +175,10 @@ function createJsonVisitorWithMatchers<
         deepestPathResult: DeepestExistingPathResult
     ) => (node: MemberNode) => void
 ): RuleVisitor {
-    const applicableDiagnostics = cachedDiagnostics.filter((diagnostic) => diagnostic.manifest.uri === sourceCode.uri);
+    const applicableDiagnostics = cachedDiagnostics.filter(
+        (d): d is Extract<Diagnostic, { type: T }> & { manifest: ManifestPropertyDiagnosticData } =>
+            'manifest' in d && (d as { manifest: ManifestPropertyDiagnosticData }).manifest.uri === sourceCode.uri
+    );
     if (applicableDiagnostics.length === 0) {
         return {};
     }

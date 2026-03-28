@@ -3,6 +3,7 @@ import type { AnnotationReference } from '../project-context/parser';
 import type { SourceLocation } from '@eslint/core';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
 export const ANCHOR_BAR_VISIBLE = 'sap-anchor-bar-visible';
+export const TEXT_ARRANGEMENT_HIDDEN = 'sap-text-arrangement-hidden';
 export const FLEX_ENABLED = 'sap-flex-enabled';
 export const COPY_TO_CLIPBOARD = 'sap-copy-to-clipboard';
 export const ENABLE_EXPORT = 'sap-enable-export';
@@ -122,6 +123,15 @@ export interface StrictUomFiltering {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export interface TextArrangementHidden {
+    type: typeof TEXT_ARRANGEMENT_HIDDEN;
+    annotation: {
+        reference: AnnotationReference;
+        textPropertyPath: string;
+        targetWithTextArrangement: string;
+    };
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
@@ -134,4 +144,5 @@ export type Diagnostic =
     | CondensedTableLayout
     | StrictUomFiltering
     | TablePersonalization
-    | TableColumnVerticalAlignment;
+    | TableColumnVerticalAlignment
+    | TextArrangementHidden;
