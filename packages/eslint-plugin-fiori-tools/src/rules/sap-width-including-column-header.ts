@@ -10,6 +10,7 @@ import { getRecordType } from '../project-context/linker/annotations';
 import type { FeV4ObjectPage, FeV4ListReport, Table } from '../project-context/linker/fe-v4';
 import type { ParsedApp, ParsedService } from '../project-context/parser';
 import { createJsonFixer } from '../language/rule-fixer';
+import { isLowerThanMinimalUi5Version } from '../utils/version';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
@@ -110,8 +111,14 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (app.type !== 'fe-v4') {
                 continue;
             }
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+            if (
+                !parsedApp.manifest.minUI5Version ||
+                isLowerThanMinimalUi5Version(parsedApp.manifest.minUI5Version, { major: 1, minor: 120 })
+            ) {
+                continue;
+            }
             for (const page of app.pages) {
-                const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
                 const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
                 if (!parsedService) {
                     continue;
