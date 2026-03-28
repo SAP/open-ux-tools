@@ -1,5 +1,8 @@
 import dotenv from 'dotenv';
 import path from 'path';
+
+dotenv.config({ path: path.join(__dirname, '../.env') });
+
 import { getEndpoint, getProxy } from './proxy';
 import { MOCK_DATA_FOLDER_PATH, MOCK_SERVER_PORT } from './server-constants';
 import { getCliParamValueByName } from './utils/cli-utils';
@@ -16,8 +19,6 @@ const CLI_PARAM_STOP = 'stop';
 const CLI_PARAM_RECORD = 'record';
 const NOOP = new Promise(() => {});
 
-dotenv.config({ path: path.join(__dirname, '../.env') });
-
 async function start(isRecordOrReplayMode: boolean): Promise<void> {
     await createMockDataFolderIfNeeded();
     if (isRecordOrReplayMode) {
@@ -31,7 +32,6 @@ async function startInRecordMode(): Promise<void> {
     logger.info(`✅ Server running on port ${MOCK_SERVER_PORT} in record mode.`);
     const proxy = await getProxy();
     await proxy.start(MOCK_SERVER_PORT);
-    await getEndpoint();
 
     const reqMap = new Map<string, CompletedRequest>();
     await proxy.on('request', (req) => {
@@ -50,9 +50,18 @@ async function startInRecordMode(): Promise<void> {
     const responsesStream = fs.createWriteStream(`${MOCK_DATA_FOLDER_PATH}/responses.json`, { flags: 'w' });
     responsesStream.write('[\n');
     let isFirstResposne = true;
+    let isRecording = true;
     await proxy.on('response', async (response) => {
         const req = reqMap.get(response.id);
         logger.info(`[<=] ${req?.path}`);
+
+        if (req?.path === '/adp-stop' && isRecording) {
+            logger.info('Stop recording');
+            responsesStream.end(']');
+            isRecording = false;
+            return;
+        }
+
         const url = new URL(req?.path ?? '', 'http://dummy.com');
         const responseDelimiter = isFirstResposne ? '' : ',\n';
         isFirstResposne = false;
@@ -68,6 +77,8 @@ async function startInRecordMode(): Promise<void> {
             response.headers['content-type'] === 'image/jpeg'
                 ? response.body.buffer.toString('base64')
                 : await response.body.getText();
+
+        logger.info(`Stream is stopped: ${responsesStream.writableEnded}`);
 
         responsesStream.write(
             responseDelimiter +
@@ -88,12 +99,31 @@ async function startInRecordMode(): Promise<void> {
                     }
                 })
         );
+
+        logger.info('Write complete.');
     });
 
     process.on('SIGINT', async () => {
         responsesStream.end(']');
         process.exit(0);
     });
+
+    // TODO Do not forward to the abap system the stop get call, be careful if there is /stop
+    // route in the abap that is in use we should pick the /stop /download endpoitns careful.
+    await proxy
+        .forGet('/adp-stop')
+        .times(Infinity)
+        .thenCallback(async () => {
+            return {
+                statusCode: 200,
+                headers: {
+                    'content-type': 'text/plain'
+                },
+                body: 'Recording stopped'
+            };
+        });
+
+    await getEndpoint();
 }
 
 async function startInReplayMode(): Promise<void> {
