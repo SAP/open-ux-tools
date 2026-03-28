@@ -121,14 +121,18 @@ describe('Common utilities', () => {
         expect(integrationCard.manifest['sap.card']?.data?.request?.url).toBe('/odata/v4/Service/$batch');
     });
 
-    test('getIntegrationCard - skips URL sanitization when sap.card.data.request is absent', () => {
+    test('getIntegrationCard - does not modify url when no double slashes are present', () => {
+        const url = '{{destinations.service}}/odata/v4/CapFeTsSampleService/$batch';
         const aMultipleCards = [
             {
                 type: 'integration',
                 manifest: {
                     '_version': '1.15.0',
                     'sap.card': {
-                        'type': 'Object'
+                        'type': 'Object',
+                        'data': {
+                            'request': { 'url': url }
+                        }
                     },
                     'sap.insights': {
                         'versions': {},
@@ -140,6 +144,7 @@ describe('Common utilities', () => {
             }
         ];
 
-        expect(() => getIntegrationCard(aMultipleCards as MultiCardsPayload[])).not.toThrow();
+        const integrationCard = getIntegrationCard(aMultipleCards as MultiCardsPayload[]);
+        expect(integrationCard.manifest['sap.card']?.data?.request?.url).toBe(url);
     });
 });
