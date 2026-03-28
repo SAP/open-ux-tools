@@ -1064,6 +1064,9 @@ export class FlpSandbox {
             const fullPath = join(webappPath, localPath);
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
             const integrationCard = getIntegrationCard(manifests);
+
+            // sanitize URL to avoid issues with double slashes when joining paths
+            integrationCard.manifest['sap.card']?.data?.request?.url.replace(/\/{2,}/g, '/');
             this.fs.write(filePath, JSON.stringify(integrationCard.manifest, null, 2));
 
             const entitySet = integrationCard.entitySet;
