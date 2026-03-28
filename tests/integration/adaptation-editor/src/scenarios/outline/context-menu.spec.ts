@@ -59,7 +59,7 @@ test.describe(`@outline @context-menu`, () => {
 
             await editor.outlinePanel.clickOnNode('Create', 'right');
             await editor.outlinePanel.clickOnContextMenu('Rename');
-            await dialog.fillField('Selected Label:', 'Add New');
+            await dialog.fillField('Selected Label', 'Add New', true);
             await editor.reloadCompleted();
             await dialog.clickOnOk();
 
@@ -111,7 +111,7 @@ test.describe(`@outline @context-menu`, () => {
             await editor.toolbar.uiAdaptationModeButton.click();
             await editor.outlinePanel.clickOnNode('ObjectPageSubSection', 'right');
             await editor.outlinePanel.clickOnContextMenu('Rename');
-            await dialog.fillField('Selected Label:', 'Basic information');
+            await dialog.fillField('Selected Label:', 'Basic information', true);
             await dialog.clickOnOk();
 
             await editor.toolbar.saveButton.click();
