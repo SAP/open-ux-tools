@@ -284,7 +284,7 @@ describe('convertEslintConfig', () => {
             );
         });
 
-        test('should handle .eslintrc.json with string extends that is not Fiori Tools — keep it unchanged', async () => {
+        test('should remove eslint:recommended from string extends to avoid FlatCompat compat shim conflict', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             const eslintrcPath = join(basePath, '.eslintrc.json');
             const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
@@ -294,7 +294,158 @@ describe('convertEslintConfig', () => {
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
             const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            expect(updatedConfig.extends).toBe('eslint:recommended');
+            expect(updatedConfig.extends).toBeUndefined();
+        });
+
+        test('should remove eslint:recommended from extends array while keeping other entries', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            eslintConfig.extends = ['eslint:recommended', 'plugin:other-plugin/recommended'];
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            expect(updatedConfig.extends).toEqual(['plugin:other-plugin/recommended']);
+        });
+
+        test('should inject js.configs.recommended import and entry when eslint:recommended was present as string', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            eslintConfig.extends = 'eslint:recommended';
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            const migratedPath = join(basePath, 'eslint.config.mjs');
+            const migratedContent = fs.read(migratedPath);
+            expect(migratedContent).toContain("import js from '@eslint/js';");
+            expect(migratedContent).toContain('js.configs.recommended');
+        });
+
+        test('should inject js.configs.recommended before ...fioriTools spread when eslint:recommended was present', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            eslintConfig.extends = 'eslint:recommended';
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            const migratedPath = join(basePath, 'eslint.config.mjs');
+            const migratedContent = fs.read(migratedPath);
+            const jsIndex = migratedContent.indexOf('js.configs.recommended');
+            const fioriIndex = migratedContent.indexOf("...fioriTools.configs['recommended']");
+            expect(jsIndex).toBeGreaterThan(-1);
+            expect(fioriIndex).toBeGreaterThan(-1);
+            expect(jsIndex).toBeLessThan(fioriIndex);
+        });
+
+        test('should NOT inject js.configs.recommended when eslint:recommended was absent', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            delete eslintConfig.extends;
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            const migratedPath = join(basePath, 'eslint.config.mjs');
+            const migratedContent = fs.read(migratedPath);
+            expect(migratedContent).not.toContain("import js from '@eslint/js';");
+            expect(migratedContent).not.toContain('js.configs.recommended');
+        });
+
+        test('should remove plugin:@typescript-eslint/recommended from string extends', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            eslintConfig.extends = 'plugin:@typescript-eslint/recommended';
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            expect(updatedConfig.extends).toBeUndefined();
+        });
+
+        test('should remove plugin:@typescript-eslint entries from extends array while keeping others', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            eslintConfig.extends = ['plugin:@typescript-eslint/recommended', 'plugin:other/recommended'];
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            expect(updatedConfig.extends).toEqual(['plugin:other/recommended']);
+        });
+
+        test('should inject typescriptEslint import and rules spread when plugin:@typescript-eslint/recommended was present', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            eslintConfig.extends = 'plugin:@typescript-eslint/recommended';
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            const migratedPath = join(basePath, 'eslint.config.mjs');
+            const migratedContent = fs.read(migratedPath);
+            expect(migratedContent).toContain("import typescriptEslint from '@typescript-eslint/eslint-plugin';");
+            expect(migratedContent).toContain('typescriptEslint.configs.recommended.rules');
+        });
+
+        test('should inject typescriptEslint rules spread for recommended-type-checked when present', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            eslintConfig.extends = [
+                'plugin:@typescript-eslint/recommended',
+                'plugin:@typescript-eslint/recommended-type-checked'
+            ];
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            const migratedPath = join(basePath, 'eslint.config.mjs');
+            const migratedContent = fs.read(migratedPath);
+            expect(migratedContent).toContain("typescriptEslint.configs['recommended-type-checked'].rules");
+        });
+
+        test('should inject typescript entries before ...fioriTools spread', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            eslintConfig.extends = 'plugin:@typescript-eslint/recommended';
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            const migratedPath = join(basePath, 'eslint.config.mjs');
+            const migratedContent = fs.read(migratedPath);
+            const tsIndex = migratedContent.indexOf('typescriptEslint.configs.recommended.rules');
+            const fioriIndex = migratedContent.indexOf("...fioriTools.configs['recommended']");
+            expect(tsIndex).toBeGreaterThan(-1);
+            expect(tsIndex).toBeLessThan(fioriIndex);
+        });
+
+        test('should NOT inject typescriptEslint when no @typescript-eslint extends were present', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            delete eslintConfig.extends;
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            const migratedPath = join(basePath, 'eslint.config.mjs');
+            const migratedContent = fs.read(migratedPath);
+            expect(migratedContent).not.toContain("import typescriptEslint from '@typescript-eslint/eslint-plugin';");
+            expect(migratedContent).not.toContain('typescriptEslint.configs');
         });
 
         test('should delete extends when string extends is a Fiori Tools config', async () => {
@@ -314,13 +465,13 @@ describe('convertEslintConfig', () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             const eslintrcPath = join(basePath, '.eslintrc.json');
             const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            eslintConfig.extends = ['eslint:recommended', 'plugin:@sap-ux/eslint-plugin-fiori-tools/oldConfig'];
+            eslintConfig.extends = ['plugin:other/recommended', 'plugin:@sap-ux/eslint-plugin-fiori-tools/oldConfig'];
             fs.writeJSON(eslintrcPath, eslintConfig);
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
             const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            expect(updatedConfig.extends).toEqual(['eslint:recommended']);
+            expect(updatedConfig.extends).toEqual(['plugin:other/recommended']);
         });
 
         test('should delete extends when all entries are Fiori Tools configs', async () => {
