@@ -257,7 +257,7 @@ export class ApplicationParser {
                     type: 'cap',
                     name: dataSourceName,
                     path: uniformUrl(dataSource.uri),
-                    version: dataSource.settings?.odataVersion ?? '2.0'
+                    version: dataSource.settings?.odataVersion ?? '4.0'
                 });
                 continue;
             }

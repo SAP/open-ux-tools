@@ -272,6 +272,22 @@ function getRecordPropertyValue(record: Element): Record<string, RecordProperty>
         if (child.name === Edm.PropertyValue) {
             const name = getElementAttributeValue(child, Edm.Property);
             const annotationPathAttribute = getElementAttribute(child, Edm.AnnotationPath);
+            if (!annotationPathAttribute) {
+                const cdsAnnotationPathAttribute = child.content.find((c) => (c as Element).name === 'AnnotationPath');
+                if (cdsAnnotationPathAttribute) {
+                    const annotationValue = (cdsAnnotationPathAttribute as Element).content.find(
+                        (c) => c.type === 'text'
+                    )?.text;
+                    if (annotationValue) {
+                        properties[name] = {
+                            name,
+                            value: annotationValue,
+                            kind: Edm.AnnotationPath
+                        };
+                        continue;
+                    }
+                }
+            }
             if (annotationPathAttribute) {
                 properties[name] = {
                     name,
@@ -281,6 +297,19 @@ function getRecordPropertyValue(record: Element): Record<string, RecordProperty>
                 continue;
             }
             const stringAttribute = getElementAttribute(child, Edm.String);
+            if (!stringAttribute) {
+                const cdsStringAttribute = child.content.find((c) => (c as Element).name === 'String');
+                if (cdsStringAttribute) {
+                    const textValue = (cdsStringAttribute as Element).content.find((c) => c.type === 'text')?.text;
+                    if (textValue) {
+                        properties[name] = {
+                            name,
+                            value: textValue,
+                            kind: Edm.String
+                        };
+                    }
+                }
+            }
             if (stringAttribute) {
                 properties[name] = {
                     name,
