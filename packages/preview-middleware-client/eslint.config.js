@@ -1,4 +1,3 @@
-const { tsParser } = require('typescript-eslint');
 const fioriTools = require('@sap-ux/eslint-plugin-fiori-tools');
 
 module.exports = [
@@ -15,7 +14,6 @@ module.exports = [
     ...fioriTools.configs['recommended'],
     {
         languageOptions: {
-            parser: tsParser,
             ecmaVersion: 5,
             sourceType: 'script',
         },

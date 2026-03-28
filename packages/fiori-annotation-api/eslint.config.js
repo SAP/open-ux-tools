@@ -1,5 +1,4 @@
 const base = require('../../eslint.config.js');
-const { tsParser } = require('typescript-eslint');
 
 module.exports = [
     ...base,
@@ -7,7 +6,6 @@ module.exports = [
         files: ['src/**/*.ts'],
         ignores: ['dist', 'test/fixtures/**', 'coverage', 'node_modules/**', 'eslint.config.js'],
         languageOptions: {
-            parser: tsParser,
             parserOptions: {
                 tsconfigRootDir: __dirname,
                 project: './tsconfig.eslint.json'
@@ -34,7 +32,6 @@ module.exports = [
         files: ['test/**/*.ts'],
         ignores: ['dist', 'test/fixtures/**', 'coverage', 'node_modules/**', 'eslint.config.js'],
         languageOptions: {
-            parser: tsParser,
             parserOptions: {
                 tsconfigRootDir: __dirname,
                 project: './tsconfig.eslint.json'
