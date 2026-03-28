@@ -16,6 +16,9 @@ import {
     flpConfigurationExists,
     SystemLookup,
     getBaseAppInbounds,
+    getCfBaseAppInbounds,
+    loadCfConfig,
+    getAppParamsFromUI5Yaml,
     type InternalInboundNavigation,
     type AdpPreviewConfigWithTarget,
     type DescriptorVariant,
@@ -82,6 +85,7 @@ export default class AdpFlpConfigGenerator extends Generator {
     private variant: DescriptorVariant;
     private tileSettingsAnswers?: TileSettingsAnswers;
     private provider: AbapServiceProvider;
+    private isCfProject: boolean = false;
 
     /**
      * Creates an instance of the generator.
@@ -100,6 +104,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         this.vscode = opts.vscode;
         this.inbounds = opts.inbounds;
         this.layer = opts.layer;
+        this.isCfProject = !!opts.isCfProject;
 
         initAppWizardCache(this.logger, this.appWizard);
         this._setupFLPConfigPrompts();
@@ -141,7 +146,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         if (this.abort) {
             return;
         }
-        if (!this.launchAsSubGen) {
+        if (!this.launchAsSubGen && !this.isCfProject) {
             await this._validateCloudProject();
             if (this.abort) {
                 return;
@@ -450,9 +455,11 @@ export default class AdpFlpConfigGenerator extends Generator {
      */
     private async _validateProjectType(): Promise<void> {
         const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
-        if (!isFioriAdaptation || (await isCFEnvironment(this.projectRootPath))) {
+        if (!isFioriAdaptation) {
             this._abortExecution(t('error.projectNotSupported'));
+            return;
         }
+        this.isCfProject = await isCFEnvironment(this.projectRootPath);
     }
 
     /**
@@ -474,14 +481,31 @@ export default class AdpFlpConfigGenerator extends Generator {
      */
     private async _initializeStandAloneGenerator(): Promise<void> {
         await this._validateProjectType();
+        if (this.abort) {
+            return;
+        }
 
+        this.variant = await getVariant(this.projectRootPath, this.fs);
+        this.appId = this.variant.reference;
+        this.layer = this.variant.layer;
+
+        if (this.isCfProject) {
+            await this._initializeCfGenerator();
+        } else {
+            await this._initializeAbapGenerator();
+        }
+    }
+
+    /**
+     * Initializes the ABAP-specific parts of the standalone generator.
+     *
+     * @returns {Promise<void>} A promise that resolves when initialization is complete.
+     */
+    private async _initializeAbapGenerator(): Promise<void> {
         this.ui5Yaml = await getAdpConfig<AdpPreviewConfigWithTarget>(
             this.projectRootPath,
             join(this.projectRootPath, FileName.Ui5Yaml)
         );
-        this.variant = await getVariant(this.projectRootPath, this.fs);
-        this.appId = this.variant.reference;
-        this.layer = this.variant.layer;
 
         await this._initAbapServiceProvider();
 
@@ -493,6 +517,34 @@ export default class AdpFlpConfigGenerator extends Generator {
                 return;
             }
             this._handleFetchingError(error);
+        }
+    }
+
+    /**
+     * Initializes the CF-specific parts of the standalone generator.
+     *
+     * @returns {Promise<void>} A promise that resolves when initialization is complete.
+     */
+    private async _initializeCfGenerator(): Promise<void> {
+        const cfConfig = loadCfConfig(this.toolsLogger);
+        if (!cfConfig?.token) {
+            this._abortExecution(t('error.cfLoginRequired'));
+            return;
+        }
+
+        const appParams = getAppParamsFromUI5Yaml(this.projectRootPath);
+        if (!appParams.appHostId) {
+            this._abortExecution(t('error.cfAppHostIdMissing'));
+            return;
+        }
+
+        try {
+            this.inbounds =
+                this.inbounds ??
+                (await getCfBaseAppInbounds(this.appId, appParams.appHostId, cfConfig, this.toolsLogger));
+        } catch (e) {
+            this.toolsLogger.error(`CF inbounds fetching failed: ${e}`);
+            this._abortExecution(t('error.cfInboundsFetchFailed', { error: (e as Error).message }));
         }
     }
 

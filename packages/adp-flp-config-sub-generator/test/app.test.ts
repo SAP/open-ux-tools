@@ -42,6 +42,9 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getAdpConfig: jest.fn(),
     generateInboundConfig: jest.fn(),
     getBaseAppInbounds: jest.fn(),
+    getCfBaseAppInbounds: jest.fn(),
+    loadCfConfig: jest.fn().mockReturnValue({}),
+    getAppParamsFromUI5Yaml: jest.fn().mockReturnValue({ appHostId: '', appName: '', appVersion: '', spaceGuid: '' }),
     SystemLookup: jest.fn().mockImplementation(() => ({
         getSystemByName: jest.fn().mockResolvedValue({
             name: 'testDestination'
@@ -623,7 +626,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
     });
 
-    it('Should result in an error message if the project is a CF project', async () => {
+    it('Should result in an error message if the project is a CF project without CF login', async () => {
         jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
@@ -652,10 +655,10 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await initI18n();
         await runContext.run();
-        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.projectNotSupported'));
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.cfLoginRequired'));
     });
 
-    it('Should result in an error message if the project is a CF project and use the logger in case of CLI', async () => {
+    it('Should result in an error message if the project is a CF project without CF login and use the logger in case of CLI', async () => {
         jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
@@ -685,7 +688,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await initI18n();
         await runContext.run();
-        expect(toolsLoggerErrorSpy).toHaveBeenCalledWith(t('error.projectNotSupported'));
+        expect(toolsLoggerErrorSpy).toHaveBeenCalledWith(t('error.cfLoginRequired'));
     });
 
     it('Should result in an error message if the project is not a CloudReady project', async () => {
@@ -1201,5 +1204,197 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await runContext.run();
         expect(vsCodeMessageSpy).toHaveBeenCalledWith('Network Error');
+    });
+
+    it('Should work in CF sub-gen mode with pre-fetched inbounds', async () => {
+        const mockPrompts = {
+            items: [
+                {
+                    name: 'Tile settings',
+                    description: 'Configure the tile settings for the application'
+                },
+                {
+                    name: 'SAP Fiori Launchpad Configuration',
+                    description: ''
+                }
+            ],
+            splice: jest.fn()
+        };
+        const testPath = join(testOutputDir, 'test_project_cf_subgen');
+        fs.mkdirSync(testPath, { recursive: true });
+        fsextra.copySync(join(__dirname, 'fixtures/app.variant1'), join(testPath, 'app.variant1'));
+        const testProjectPath = join(testPath, 'app.variant1');
+
+        const sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                loggerMock,
+                launchAsSubGen: true,
+                inbounds: inbounds,
+                layer: adpTooling.FlexLayer.CUSTOMER_BASE,
+                prompts: mockPrompts,
+                isCfProject: true
+            })
+            .withPrompts(answers);
+
+        await expect(runContext.run()).resolves.not.toThrow();
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
+            EventName.ADP_FLP_CONFIG_ADDED,
+            expect.objectContaining({
+                OperatingSystem: 'testOS',
+                Platform: 'testPlatform'
+            }),
+            testProjectPath
+        );
+        expect(generateInboundConfigSpy).toHaveBeenCalled();
+    });
+
+    it('Should fetch CF inbounds when CF config is available', async () => {
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
+        const mockCfConfig = {
+            org: { GUID: 'test-org-guid', Name: 'test-org' },
+            space: { GUID: 'test-space-guid', Name: 'test-space' },
+            url: '/test.cf',
+            token: 'test-token'
+        };
+        const mockInbounds = { 'inbound-1': { semanticObject: 'SO', action: 'display' } };
+        jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
+        jest.spyOn(adpTooling, 'getAppParamsFromUI5Yaml').mockReturnValueOnce({
+            appHostId: 'test-host',
+            appName: 'test-app',
+            appVersion: '1.0.0',
+            spaceGuid: 'test-space-guid'
+        });
+        const getCfBaseAppInboundsSpy = jest
+            .spyOn(adpTooling, 'getCfBaseAppInbounds')
+            .mockResolvedValueOnce(mockInbounds as unknown as projectAccess.ManifestNamespace.Inbound);
+
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await runContext.run();
+        expect(getCfBaseAppInboundsSpy).toHaveBeenCalledWith(
+            'mockReference',
+            'test-host',
+            mockCfConfig,
+            expect.anything()
+        );
+    });
+
+    it('Should abort when CF inbound fetch fails', async () => {
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
+        const mockCfConfig = {
+            org: { GUID: 'test-org-guid', Name: 'test-org' },
+            space: { GUID: 'test-space-guid', Name: 'test-space' },
+            url: '/test.cf',
+            token: 'test-token'
+        };
+        jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
+        jest.spyOn(adpTooling, 'getAppParamsFromUI5Yaml').mockReturnValueOnce({
+            appHostId: 'test-host',
+            appName: 'test-app',
+            appVersion: '1.0.0',
+            spaceGuid: 'test-space-guid'
+        });
+        jest.spyOn(adpTooling, 'getCfBaseAppInbounds').mockRejectedValueOnce(new Error('Connection failed'));
+
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await initI18n();
+        await runContext.run();
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.cfInboundsFetchFailed', { error: 'Connection failed' }));
+    });
+
+    it('Should load CF config from local environment in standalone mode', async () => {
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
+        const mockCfConfig = {
+            org: { GUID: 'test-org-guid', Name: 'test-org' },
+            space: { GUID: 'test-space-guid', Name: 'test-space' },
+            url: '/test.cf',
+            token: 'test-token'
+        };
+        jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
+        jest.spyOn(adpTooling, 'getAppParamsFromUI5Yaml').mockReturnValueOnce({
+            appHostId: 'auto-detected-host',
+            appName: 'test-app',
+            appVersion: '1.0.0',
+            spaceGuid: 'test-space-guid'
+        });
+        const mockInbounds = { 'inbound-1': { semanticObject: 'SO', action: 'display' } };
+        const getCfBaseAppInboundsSpy = jest
+            .spyOn(adpTooling, 'getCfBaseAppInbounds')
+            .mockResolvedValueOnce(mockInbounds as unknown as projectAccess.ManifestNamespace.Inbound);
+
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await runContext.run();
+        expect(getCfBaseAppInboundsSpy).toHaveBeenCalledWith(
+            'mockReference',
+            'auto-detected-host',
+            mockCfConfig,
+            expect.anything()
+        );
     });
 });
