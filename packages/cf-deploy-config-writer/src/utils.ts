@@ -35,8 +35,6 @@ import {
 } from './constants';
 import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types';
 
-let cachedDestinationsList: Destinations = {};
-
 /**
  * Read manifest file for processing.
  *
@@ -91,17 +89,20 @@ export function toPosixPath(dirPath: string): string {
  * Retrieves destination configuration from SAP BTP when running in Business Application Studio.
  *
  * @param destination The destination name to look up in BTP destination service
+ * @param cache Mutable object that holds the cached destinations list; pass a new `{}` per generator run
+ * @param cache.list
  * @returns Object containing destination URL format flag and authentication type
  * @returns {boolean} destinationIsFullUrl - True if destination uses full URL format
  * @returns {Authentication | undefined} destinationAuthentication - Authentication type configured for the destination
  */
 export async function getDestinationProperties(
-    destination: string | undefined
+    destination: string | undefined,
+    cache: { list?: Destinations } = {}
 ): Promise<{ destinationIsFullUrl: boolean; destinationAuthentication: Authentication | undefined }> {
     let destinationIsFullUrl = false;
     let destinationAuthentication;
     if (isAppStudio() && destination) {
-        const destinations = await getBTPDestinations();
+        const destinations = await getBTPDestinations(cache);
         if (destinations[destination]) {
             destinationIsFullUrl = isFullUrlDestination(destinations[destination]);
             destinationAuthentication = destinations[destination].Authentication as Authentication;
@@ -112,14 +113,15 @@ export async function getDestinationProperties(
 
 /**
  * Retrieve the list of destinations from SAP BTP.
+ * Caching is scoped to the provided cache object; pass a new `{}` per generator run.
  *
+ * @param cache Mutable object that holds the cached list across multiple calls within one run
+ * @param cache.list
  * @returns Destinations list
  */
-export async function getBTPDestinations(): Promise<Destinations> {
-    if (Object.keys(cachedDestinationsList).length === 0) {
-        cachedDestinationsList = await listDestinations({ stripS4HCApiHosts: true });
-    }
-    return cachedDestinationsList;
+export async function getBTPDestinations(cache: { list?: Destinations } = {}): Promise<Destinations> {
+    cache.list ??= await listDestinations({ stripS4HCApiHosts: true });
+    return cache.list;
 }
 
 /**
