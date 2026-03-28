@@ -88,7 +88,7 @@ export function ViewChanger(): ReactElement {
         } else if (value) {
             const match = SCALE_INPUT_PATTERN.exec(value);
             if (match) {
-                const percent = parseInt(match[1], 10);
+                const percent = Number.parseInt(match[1], 10);
                 const newScale = percent / 100;
                 if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
                     dispatch(changePreviewScale(newScale));

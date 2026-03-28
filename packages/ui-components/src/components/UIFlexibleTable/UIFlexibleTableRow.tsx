@@ -34,38 +34,10 @@ function renderRowTitle<T>(
             <div className="flexible-table-content-table-row-header-text-content" title={row.tooltip}>
                 {row.title || <span></span>}
             </div>
-            {props.layout === UIFlexibleTableLayout.Wrapping &&
-                getActionsContainer(false, rowIndex, rowActions, 'flexible-table-content-table-row-header-actions')}
+            {props.layout === UIFlexibleTableLayout.Wrapping && (
+                <div className="flexible-table-content-table-row-header-actions">{rowActions}</div>
+            )}
         </div>
-    );
-}
-
-/**
- *
- * @param {boolean} useFocusZone
- * @param {number | undefined} rowIndex
- * @param {React.ReactElement} rowActions
- * @param {string} className
- * @returns {JSX.Element}
- */
-function getActionsContainer(
-    useFocusZone: boolean,
-    rowIndex: number | undefined,
-    rowActions: React.ReactElement,
-    className: string
-) {
-    return useFocusZone ? (
-        <UIFocusZone
-            as="div"
-            key={`cell-actions-${rowIndex ?? 'unknown'}`}
-            className={className}
-            direction={UIFocusZoneDirection.horizontal}
-            isCircularNavigation={true}
-            shouldEnterInnerZone={(ev: React.KeyboardEvent<HTMLElement>): boolean => ev.key === 'Enter'}>
-            {rowActions}
-        </UIFocusZone>
-    ) : (
-        <div className={className}>{rowActions}</div>
     );
 }
 
@@ -262,7 +234,15 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
         if (tableProps.layout === UIFlexibleTableLayout.InlineFlex) {
             // Add row actions
             rowCells.push(
-                getActionsContainer(true, rowIndex, rowActions, 'flexible-table-content-table-row-item-actions')
+                <UIFocusZone
+                    as="div"
+                    key={`cell-actions-${rowIndex ?? 'unknown'}`}
+                    className="flexible-table-content-table-row-item-actions"
+                    direction={UIFocusZoneDirection.horizontal}
+                    isCircularNavigation={true}
+                    shouldEnterInnerZone={(ev: React.KeyboardEvent<HTMLElement>): boolean => ev.key === 'Enter'}>
+                    {rowActions}
+                </UIFocusZone>
             );
         }
     }
