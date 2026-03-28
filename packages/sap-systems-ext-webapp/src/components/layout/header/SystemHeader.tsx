@@ -31,7 +31,7 @@ export function SystemHeader(): ReactElement {
     const connectionTypeTitles: Record<ConnectionType, string | undefined> = {
         ['abap_catalog']: t('titles.catalog'),
         ['odata_service']: t('titles.serviceUrl'),
-        ['generic_host']: undefined
+        ['generic_host']: t('titles.genericHost')
     };
 
     const systemTypeTitle = systemInfo?.systemType ? systemTypeTitles[systemInfo.systemType] : undefined;

@@ -1,5 +1,6 @@
 import {
     createFioriProject,
+    openExistingSystem,
     openOutputChannel,
     openGuidedAnswers
 } from '../../../../../src/panel/system/actions/executeCommads';
@@ -37,6 +38,32 @@ describe('Test the executeCommands actions', () => {
 
         await openOutputChannel();
         expect(executeCommandSpy).toHaveBeenCalledWith('sap.ux.tools.sapSystems.openOutputChannel');
+    });
+
+    it('should open an existing system panel', async () => {
+        const executeCommandSpy = jest.spyOn(vsCodeCommands, 'executeCommand');
+
+        await openExistingSystem({} as any, {
+            type: 'OPEN_EXISTING_SYSTEM',
+            payload: { url: 'https://existing.system.com', client: '200' }
+        });
+        expect(executeCommandSpy).toHaveBeenCalledWith('sap.ux.tools.sapSystems.show', {
+            url: 'https://existing.system.com',
+            client: '200'
+        });
+    });
+
+    it('should open an existing system panel without client', async () => {
+        const executeCommandSpy = jest.spyOn(vsCodeCommands, 'executeCommand');
+
+        await openExistingSystem({} as any, {
+            type: 'OPEN_EXISTING_SYSTEM',
+            payload: { url: 'https://existing.system.com' }
+        });
+        expect(executeCommandSpy).toHaveBeenCalledWith('sap.ux.tools.sapSystems.show', {
+            url: 'https://existing.system.com',
+            client: undefined
+        });
     });
 
     it('should open the guided answers extension', async () => {
