@@ -1,5 +1,6 @@
 import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser';
+import type { Element } from '@sap-ux/odata-annotation-core';
 import type { SourceLocation } from '@eslint/core';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
 export const ANCHOR_BAR_VISIBLE = 'sap-anchor-bar-visible';
@@ -11,6 +12,7 @@ export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 export const TABLE_PERSONALIZATION = 'sap-table-personalization';
 export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignment';
+export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-based-navigation';
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 
@@ -112,11 +114,24 @@ export interface TableColumnVerticalAlignment {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export interface NoDataFieldIntentBasedNavigation {
+    type: typeof NO_DATA_FIELD_INTENT_BASED_NAVIGATION;
+    pageNames: string[];
+    annotation: {
+        file: string;
+        recordType: string;
+        annotationPath: string;
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
+
 export interface CondensedTableLayout {
     type: typeof CONDENSED_TABLE_LAYOUT;
     pageName: string;
     manifest: ManifestPropertyDiagnosticData;
 }
+
 export interface StrictUomFiltering {
     type: typeof STRICT_UOM_FILTERING;
     manifest: ManifestPropertyDiagnosticData;
@@ -131,7 +146,8 @@ export type Diagnostic =
     | EnableExport
     | EnablePaste
     | StatePreservationMode
+    | TableColumnVerticalAlignment
+    | NoDataFieldIntentBasedNavigation
     | CondensedTableLayout
-    | StrictUomFiltering
     | TablePersonalization
-    | TableColumnVerticalAlignment;
+    | StrictUomFiltering;
