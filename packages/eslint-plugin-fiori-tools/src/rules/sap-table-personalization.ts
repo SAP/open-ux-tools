@@ -42,14 +42,14 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [TABLE_PERSONALIZATION]:
-                'Table personalization should be enabled. Currently every table personalization setting is disabled.',
-            [TABLE_PERSONALIZATION_COLUMN]: 'Adding or removing table columns should be enabled.',
-            [TABLE_PERSONALIZATION_FILTER]: 'Table data filtering should be enabled.',
-            [TABLE_PERSONALIZATION_SORT]: 'Table data sorting should be enabled.',
+                'All table personalization settings are disabled. Table personalization must be enabled.',
+            [TABLE_PERSONALIZATION_COLUMN]: 'Adding or removing table columns must be enabled.',
+            [TABLE_PERSONALIZATION_FILTER]: 'Table data filtering must be enabled.',
+            [TABLE_PERSONALIZATION_SORT]: 'Table data sorting must be enabled.',
             [TABLE_PERSONALIZATION_GROUP]:
-                'Table data grouping should be enabled for analytical and responsive type tables.',
+                'Table data grouping must be enabled for analytical and responsive type tables.',
             [MISSING_PERSONALIZATION_PROPERTIES]:
-                'In case of using an object, omitting a setting is treated as false. {{undefinedPropertiesString}}.'
+                'When using an object, omitting a setting is treated as false. {{undefinedPropertiesString}}.'
         },
         fixable: 'code'
     },
@@ -79,11 +79,26 @@ const rule: FioriRuleDefinition = createFioriRule({
     createJsonVisitorHandler: (context, diagnostic, deepestPathResult) => {
         return function report(node: MemberNode): void {
             diagnostic.manifest.loc = node.loc;
-            let undefinedPropertiesString = '';
+            let undefinedPropertiesString = 'The ';
             let messageId = MessageIdByProperty[diagnostic.property ?? ''];
-            if (diagnostic.undefinedProperties?.length) {
-                undefinedPropertiesString = `Currently ${diagnostic.undefinedProperties.join(', ')} ${diagnostic.undefinedProperties.length === 1 ? 'is disabled' : 'are disabled'}`;
+            const undefinedPropertiesLength = diagnostic.undefinedProperties?.length;
+            if (undefinedPropertiesLength) {
                 messageId = MISSING_PERSONALIZATION_PROPERTIES;
+                diagnostic.undefinedProperties?.forEach((property, index) => {
+                    switch (index) {
+                        case undefinedPropertiesLength - 2: // second to last property
+                            undefinedPropertiesString += property + ', and ';
+                            break;
+                        case undefinedPropertiesLength - 1: // last property
+                            undefinedPropertiesString += property + ' ';
+                            break;
+                        default:
+                            undefinedPropertiesString += property + ', ';
+                            break;
+                    }
+                });
+                undefinedPropertiesString +=
+                    undefinedPropertiesLength === 1 ? 'property is disabled' : 'properties are disabled';
             }
             return context.report({
                 node,
