@@ -2,14 +2,15 @@
  * @file Detect the overriding of the innerHTML.
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     type ASTNode,
     type IdentifierNode,
     type LiteralNode,
     isIdentifier,
     isLiteral,
-    isMember
+    asAssignmentExpression,
+    asMemberExpression
 } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -22,16 +23,6 @@ import {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-
-/**
- * Check if a left-hand side expression is interesting for analysis.
- *
- * @param left The left-hand side expression to check
- * @returns True if the expression is interesting for analysis
- */
-function isInteresting(left: ASTNode): boolean {
-    return isMember(left);
-}
 
 /**
  * Check if a property access is valid (not innerHTML).
@@ -49,7 +40,7 @@ function isValid(property: ASTNode): boolean {
     return true;
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -62,17 +53,18 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
         return {
             'AssignmentExpression'(node: ASTNode): void {
-                if (
-                    isInteresting((node as any).left) &&
-                    'property' in (node as any).left &&
-                    !isValid((node as any).left.property)
-                ) {
+                const assignExpr = asAssignmentExpression(node);
+                if (!assignExpr) {
+                    return;
+                }
+                const leftMember = asMemberExpression(assignExpr.left);
+                if (leftMember && !isValid(leftMember.property)) {
                     context.report({ node: node, messageId: 'innerHtmlWrite' });
                 }
             }
