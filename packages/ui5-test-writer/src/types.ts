@@ -79,12 +79,28 @@ export type ObjectPageNavigationParents = {
     parentOPTableSection?: string;
 };
 
+export type BodySubSectionFeatureData = {
+    id: string;
+    isTable: boolean;
+    custom: boolean;
+    order: number;
+};
+
+export type BodySectionFeatureData = {
+    id: string;
+    isTable: boolean;
+    custom: boolean;
+    order: number;
+    subSections: BodySubSectionFeatureData[];
+};
+
 export type ObjectPageFeatures = {
     name?: string;
     navigationParents?: ObjectPageNavigationParents;
     headerTitle?: string;
     headerDescription?: string;
     headerSections?: HeaderSectionFeatureData[];
+    bodySections?: BodySectionFeatureData[];
 };
 
 export type ListReportFeatures = {
