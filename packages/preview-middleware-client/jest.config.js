@@ -1,6 +1,6 @@
 const path = require('path');
 const config = require('../../jest.base');
-config.testEnvironment = 'jsdom';
+config.testEnvironment = '<rootDir>/test/jest-environment-jsdom-writablelocation.js';
 // Resolve vscode-languageserver-types CJS/UMD from its sibling package (avoids ESM exports condition in jsdom)
 const vscodeTextdocDir = path.dirname(path.dirname(require.resolve('vscode-languageserver-textdocument')));
 config.moduleNameMapper = {

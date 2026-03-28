@@ -30,7 +30,7 @@
         "!generators/**/*.map"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.22.0",
+        "@sap-devx/yeoman-ui-types": "1.23.0",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
@@ -40,7 +40,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui-service-inquirer": "workspace:*",
-        "i18next": "25.8.20",
+        "i18next": "25.10.10",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
@@ -52,9 +52,9 @@
         "@types/yeoman-test": "4.0.6",
         "@types/mem-fs-editor": "7.0.1",
         "@types/yeoman-environment": "2.10.11",
-        "@types/yeoman-generator": "5.2.11",
+        "@types/yeoman-generator": "5.2.14",
         "@vscode-logging/logger": "2.0.8",
-        "jest-extended": "6.0.0",
+        "jest-extended": "7.0.0",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "rimraf": "6.1.3",

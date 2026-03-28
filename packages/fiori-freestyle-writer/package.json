@@ -40,7 +40,7 @@
         "@sap-ux/ui5-test-writer": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "ejs": "3.1.10",
-        "i18next": "25.8.20",
+        "i18next": "25.10.10",
         "lodash": "4.17.23",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",

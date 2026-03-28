@@ -26,8 +26,8 @@
         "c8": "^11.0.0",
         "cross-env": "10.1.0",
         "eslint": "9.39.1",
-        "@typescript-eslint/rule-tester": "8.46.2",
-        "eslint-plugin-eslint-plugin": "7.2.0"
+        "@typescript-eslint/rule-tester": "8.57.2",
+        "eslint-plugin-eslint-plugin": "7.3.2"
     },
     "dependencies": {
         "@babel/core": "7.29.0",
@@ -36,8 +36,8 @@
         "@eslint/json": "0.14.0",
         "@eslint/core": "0.17.0",
         "@eslint/config-helpers": "0.5.3",
-        "@typescript-eslint/eslint-plugin": ">=8.49.0",
-        "@typescript-eslint/parser": ">=8.49.0",
+        "@typescript-eslint/eslint-plugin": ">=8.57.2",
+        "@typescript-eslint/parser": ">=8.57.2",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
@@ -57,7 +57,7 @@
     },
     "peerDependencies": {
         "eslint": "9.39.1",
-        "typescript-eslint": "^8.46.2",
+        "typescript-eslint": "^8.57.2",
         "@types/semver": "7.7.1"
     },
     "engines": {

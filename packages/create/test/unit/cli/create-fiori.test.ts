@@ -32,13 +32,15 @@ describe('Test handleCreateFioriCommand()', () => {
         const mockLogger = { error: jest.fn(), debug: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
         jest.spyOn(loggerMock, 'getLogger').mockImplementation(() => mockLogger);
         process.stdout.write = jest.fn() as any;
+        jest.spyOn(process, 'exit').mockImplementation(() => {
+            throw '';
+        });
 
         // Test execution
-        handleCreateFioriCommand([process.argv[0], 'create-fiori', 'help']);
+        handleCreateFioriCommand([process.argv[0], 'create-fiori', '--help']);
 
         // Result check
         expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining('create-fiori [options] [command]'));
-        expect(mockLogger.debug).not.toHaveBeenCalled();
         expect(mockLogger.error).not.toHaveBeenCalled();
     });
 

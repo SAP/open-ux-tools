@@ -33,7 +33,7 @@ export async function initI18n(): Promise<void> {
  * @returns {string} localized string stored for the given key
  */
 export function t(key: string, options?: TOptions): string {
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 // Initialize i18n on module load

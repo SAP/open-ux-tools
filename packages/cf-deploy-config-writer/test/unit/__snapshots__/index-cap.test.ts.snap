@@ -26,7 +26,7 @@ modules:
     provides:
       - name: srv-api
         properties:
-          srv-url: '\${default-url}'
+          srv-url: \${default-url}
     requires:
       - name: captestproject-connectivity
       - name: captestproject-destination
@@ -111,14 +111,14 @@ resources:
             existing_destinations_policy: update
             destinations:
               - Name: captestproject-srv-api
-                URL: '~{srv-api/srv-url}'
+                URL: ~{srv-api/srv-url}
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
                 HTML5.ForwardAuthToken: true
                 HTML5.DynamicDestination: true
               - Name: ui5
-                URL: 'https://ui5.sap.com'
+                URL: https://ui5.sap.com
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
@@ -140,7 +140,7 @@ resources:
       service-plan: application
       path: ./xs-security.json
       config:
-        xsappname: 'captestproject-\${org}-\${space}'
+        xsappname: captestproject-\${org}-\${space}
         tenant-mode: dedicated
       service-name: captestproject-xsuaa-service
 "
@@ -210,7 +210,7 @@ modules:
     provides:
       - name: srv-api
         properties:
-          srv-url: '\${default-url}'
+          srv-url: \${default-url}
     requires:
       - name: captestproject-connectivity
       - name: captestproject-destination
@@ -260,7 +260,7 @@ modules:
         group: destinations
         properties:
           name: ui5
-          url: 'https://ui5.sap.com'
+          url: https://ui5.sap.com
           forwardAuthToken: false
 resources:
   - name: captestproject-connectivity
@@ -280,14 +280,14 @@ resources:
             existing_destinations_policy: update
             destinations:
               - Name: captestproject-srv-api
-                URL: '~{srv-api/srv-url}'
+                URL: ~{srv-api/srv-url}
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
                 HTML5.ForwardAuthToken: true
                 HTML5.DynamicDestination: true
               - Name: ui5
-                URL: 'https://ui5.sap.com'
+                URL: https://ui5.sap.com
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
@@ -308,7 +308,7 @@ resources:
       service-plan: application
       path: ./xs-security.json
       config:
-        xsappname: 'captestproject-\${org}-\${space}'
+        xsappname: captestproject-\${org}-\${space}
         tenant-mode: dedicated
   - name: captestproject-uaa
     type: org.cloudfoundry.managed-service
@@ -316,7 +316,7 @@ resources:
       service-plan: application
       service: xsuaa
       config:
-        xsappname: 'captestproject-\${space-guid}'
+        xsappname: captestproject-\${space-guid}
         tenant-mode: dedicated
   - name: captestproject-html5-repo-runtime
     type: org.cloudfoundry.managed-service

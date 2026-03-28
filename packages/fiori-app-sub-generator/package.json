@@ -50,7 +50,7 @@
         "@sap-ux/ui5-application-inquirer": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
         "@sap/service-provider-apis": "2.8.0",
-        "i18next": "25.8.20",
+        "i18next": "25.10.10",
         "inquirer": "8.2.7",
         "lodash": "4.17.23",
         "mem-fs": "2.1.0",
@@ -59,7 +59,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
-        "@sap-devx/yeoman-ui-types": "1.22.0",
+        "@sap-devx/yeoman-ui-types": "1.23.0",
         "@sap-ux/deploy-config-sub-generator": "workspace:*",
         "@sap-ux/flp-config-sub-generator": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
@@ -73,7 +73,7 @@
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.14",
         "@types/yeoman-test": "4.0.6",
-        "jest-extended": "6.0.0",
+        "jest-extended": "7.0.0",
         "jest-mock": "30.2.0",
         "mock-spawn": "0.2.6",
         "rimraf": "6.1.3",
