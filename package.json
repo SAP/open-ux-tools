@@ -62,7 +62,7 @@
         "unlink": "pnpm recursive run unlink",
         "prepare": "husky install",
         "cset": "pnpm validate:changesets && changeset",
-        "ci:version": "changeset version && pnpm install --lockfile-only",
+        "ci:version": "changeset version && node scripts/changelog-add-dates.js && pnpm install --lockfile-only",
         "ci:publish": " node --max_old_space_size=20336 node_modules/@changesets/cli/bin.js publish",
         "run:pretty-quick": "pretty-quick --ignore-path .prettierignore",
         "run:pretty": "prettier --write .",

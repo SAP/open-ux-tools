@@ -2,11 +2,15 @@
 
 ## 5.3.19
 
+*Released: 2026-03-05T12:30:25Z*
+
 ### Patch Changes
 
 - 83ca0e9: fix(deps): update dependency cross-env to v10
 
 ## 5.3.18
+
+*Released: 2026-03-02T19:30:12Z*
 
 ### Patch Changes
 
@@ -16,11 +20,15 @@
 
 ## 5.3.17
 
+*Released: 2026-02-19T22:23:51Z*
+
 ### Patch Changes
 
 - 88c68c9: fix(deps): update dependency @ui5/cli to v4.0.44
 
 ## 5.3.16
+
+*Released: 2026-02-10T21:03:43Z*
 
 ### Patch Changes
 
@@ -28,11 +36,15 @@
 
 ## 5.3.15
 
+*Released: 2026-01-09T11:35:48Z*
+
 ### Patch Changes
 
 - e111d0d: fix sonar issues
 
 ## 5.3.14
+
+*Released: 2025-12-18T21:05:02Z*
 
 ### Patch Changes
 
@@ -40,11 +52,15 @@
 
 ## 5.3.13
 
+*Released: 2025-12-15T10:50:50Z*
+
 ### Patch Changes
 
 - 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
 
 ## 5.3.12
+
+*Released: 2025-11-12T16:47:06Z*
 
 ### Patch Changes
 
@@ -52,11 +68,15 @@
 
 ## 5.3.11
 
+*Released: 2025-11-05T06:53:42Z*
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
 
 ## 5.3.10
+
+*Released: 2025-08-28T13:37:07Z*
 
 ### Patch Changes
 
@@ -64,11 +84,15 @@
 
 ## 5.3.9
 
+*Released: 2025-08-22T10:10:41Z*
+
 ### Patch Changes
 
 - cefd15e: We improved the support the ui5 legacy free
 
 ## 5.3.8
+
+*Released: 2025-07-30T06:34:41Z*
 
 ### Patch Changes
 
@@ -76,11 +100,15 @@
 
 ## 5.3.7
 
+*Released: 2025-01-28T15:13:21Z*
+
 ### Patch Changes
 
 - 642d507: Fix the canvas dependency issue
 
 ## 5.3.6
+
+*Released: 2025-01-24T10:35:19Z*
 
 ### Patch Changes
 
@@ -88,11 +116,15 @@
 
 ## 5.3.5
 
+*Released: 2025-01-08T14:39:24Z*
+
 ### Patch Changes
 
 - 264458a: Do not reassign global.navigator
 
 ## 5.3.4
+
+*Released: 2024-12-11T14:54:19Z*
 
 ### Patch Changes
 
@@ -100,17 +132,23 @@
 
 ## 5.3.3
 
+*Released: 2024-12-06T10:22:57Z*
+
 ### Patch Changes
 
 - a0f9244: fix: impossible snapshots due to version
 
 ## 5.3.2
 
+*Released: 2024-12-06T08:51:59Z*
+
 ### Patch Changes
 
 - 9a80888: We now properly generate a sap-ui-version.json for ui5 mapping strategy
 
 ## 5.3.1
+
+*Released: 2024-11-28T15:00:20Z*
 
 ### Patch Changes
 

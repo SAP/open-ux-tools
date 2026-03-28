@@ -8,11 +8,15 @@
 
 ## 0.17.5
 
+*Released: 2026-03-05T12:30:25Z*
+
 ### Patch Changes
 
 - 2917c4c: fix(deps): update dependency yaml to v2.8.2
 
 ## 0.17.4
+
+*Released: 2026-01-30T16:59:27Z*
 
 ### Patch Changes
 
@@ -20,11 +24,15 @@
 
 ## 0.17.3
 
+*Released: 2025-12-15T10:50:50Z*
+
 ### Patch Changes
 
 - 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
 
 ## 0.17.2
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -32,11 +40,15 @@
 
 ## 0.17.1
 
+*Released: 2025-10-06T17:09:01Z*
+
 ### Patch Changes
 
 - 43a2446: chore: fix Sonar issues
 
 ## 0.17.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -44,11 +56,15 @@
 
 ## 0.16.0
 
+*Released: 2024-07-05T15:03:05Z*
+
 ### Minor Changes
 
 - c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
 
 ## 0.15.1
+
+*Released: 2024-06-25T14:41:22Z*
 
 ### Patch Changes
 
@@ -56,11 +72,15 @@
 
 ## 0.15.0
 
+*Released: 2024-06-07T14:16:07Z*
+
 ### Minor Changes
 
 - 64a95bd1: Add additional cap configuration writing functionalities
 
 ## 0.14.2
+
+*Released: 2024-05-27T13:04:53Z*
 
 ### Patch Changes
 
@@ -68,11 +88,15 @@
 
 ## 0.14.1
 
+*Released: 2024-02-27T22:07:50Z*
+
 ### Patch Changes
 
 - c15435b6: fix: remove engines pnpm from package.json
 
 ## 0.14.0
+
+*Released: 2023-10-19T12:06:19Z*
 
 ### Minor Changes
 
@@ -80,11 +104,15 @@
 
 ## 0.13.9
 
+*Released: 2023-10-17T08:28:48Z*
+
 ### Patch Changes
 
 - 4052822f: Corrected license reference in package.json (no license change)
 
 ## 0.13.8
+
+*Released: 2023-09-20T13:13:51Z*
 
 ### Patch Changes
 
@@ -92,11 +120,15 @@
 
 ## 0.13.7
 
+*Released: 2023-06-27T14:58:54Z*
+
 ### Patch Changes
 
 - 4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
 
 ## 0.13.6
+
+*Released: 2023-06-12T06:59:29Z*
 
 ### Patch Changes
 
@@ -104,11 +136,15 @@
 
 ## 0.13.5
 
+*Released: 2023-04-26T14:34:08Z*
+
 ### Patch Changes
 
 - 100248f3: fix(security): upgrade yaml
 
 ## 0.13.4
+
+*Released: 2023-02-23T13:56:23Z*
 
 ### Patch Changes
 
@@ -116,11 +152,15 @@
 
 ## 0.13.3
 
+*Released: 2023-02-17T07:56:11Z*
+
 ### Patch Changes
 
 - 3327a3f: Do not throw exception for multi document yaml
 
 ## 0.13.2
+
+*Released: 2023-02-10T14:09:06Z*
 
 ### Patch Changes
 
@@ -128,11 +168,15 @@
 
 ## 0.13.1
 
+*Released: 2022-12-05T07:50:58Z*
+
 ### Patch Changes
 
 - 070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
 
 ## 0.13.0
+
+*Released: 2022-11-04T17:06:16Z*
 
 ### Minor Changes
 
@@ -140,11 +184,15 @@
 
 ## 0.12.4
 
+*Released: 2022-10-21T07:04:47Z*
+
 ### Patch Changes
 
 - f3cbe4d: Remove dependency to i18n libraries in Yaml module
 
 ## 0.12.3
+
+*Released: 2022-10-04T15:02:00Z*
 
 ### Patch Changes
 
@@ -152,11 +200,15 @@
 
 ## 0.12.2
 
+*Released: 2022-07-21T14:10:31Z*
+
 ### Patch Changes
 
 - 09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
 
 ## 0.12.1
+
+*Released: 2022-07-04T13:03:56Z*
 
 ### Patch Changes
 
@@ -164,11 +216,15 @@
 
 ## 0.12.0
 
+*Released: 2022-06-13T09:53:27Z*
+
 ### Minor Changes
 
 - 6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
 
 ## 0.11.5
+
+*Released: 2022-05-19T14:38:34Z*
 
 ### Patch Changes
 
@@ -176,11 +232,15 @@
 
 ## 0.11.4
 
+*Released: 2022-03-29T13:57:37Z*
+
 ### Patch Changes
 
 - c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
 
 ## 0.11.3
+
+*Released: 2022-03-24T07:10:57Z*
 
 ### Patch Changes
 
@@ -188,11 +248,15 @@
 
 ## 0.11.2
 
+*Released: 2022-03-22T19:34:16Z*
+
 ### Patch Changes
 
 - 7107fbc: chore - use import type in TS code.
 
 ## 0.11.1
+
+*Released: 2022-01-17T14:31:10Z*
 
 ### Patch Changes
 
@@ -200,11 +264,15 @@
 
 ## 0.11.0
 
+*Released: 2021-12-14T12:31:46Z*
+
 ### Minor Changes
 
 - 3783887: Enhance ui5-config module allowing to add the abap-deploy-task and remove any middleware
 
 ## 0.10.3
+
+*Released: 2021-11-03T14:20:52Z*
 
 ### Patch Changes
 
@@ -212,11 +280,15 @@
 
 ## 0.10.2
 
+*Released: 2021-11-01T18:18:45Z*
+
 ### Patch Changes
 
 - 8de261b: Update npm dep and devDeps
 
 ## 0.10.1
+
+*Released: 2021-10-28T12:12:48Z*
 
 ### Patch Changes
 
@@ -224,11 +296,15 @@
 
 ## 0.10.0
 
+*Released: 2021-10-27T16:42:33Z*
+
 ### Minor Changes
 
 - d37c8bd: Added support for selecting a custom view name for Fiori freestyle - Basic template
 
 ## 0.9.2
+
+*Released: 2021-10-22T16:07:57Z*
 
 ### Patch Changes
 

@@ -31,6 +31,8 @@
 
 ## 0.11.0
 
+*Released: 2026-03-20T16:07:49Z*
+
 ### Minor Changes
 
 - 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
@@ -41,12 +43,16 @@
 
 ## 0.10.56
 
+*Released: 2026-03-17T07:55:04Z*
+
 ### Patch Changes
 
 - Updated dependencies [a854433]
     - @sap-ux/axios-extension@1.25.24
 
 ## 0.10.55
+
+*Released: 2026-03-17T01:04:22Z*
 
 ### Patch Changes
 
@@ -60,12 +66,16 @@
 
 ## 0.10.54
 
+*Released: 2026-03-05T23:21:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [2d21925]
     - @sap-ux/axios-extension@1.25.22
 
 ## 0.10.53
+
+*Released: 2026-03-05T12:30:25Z*
 
 ### Patch Changes
 
@@ -75,6 +85,8 @@
     - @sap-ux/axios-extension@1.25.21
 
 ## 0.10.52
+
+*Released: 2026-03-04T22:42:20Z*
 
 ### Patch Changes
 
@@ -86,12 +98,16 @@
 
 ## 0.10.51
 
+*Released: 2026-03-04T15:52:08Z*
+
 ### Patch Changes
 
 - Updated dependencies [96e9b9e]
     - @sap-ux/axios-extension@1.25.19
 
 ## 0.10.50
+
+*Released: 2026-03-03T08:27:12Z*
 
 ### Patch Changes
 
@@ -100,12 +116,16 @@
 
 ## 0.10.49
 
+*Released: 2026-02-27T15:42:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [ca2566b]
     - @sap-ux/axios-extension@1.25.17
 
 ## 0.10.48
+
+*Released: 2026-02-26T10:46:59Z*
 
 ### Patch Changes
 
@@ -116,6 +136,8 @@
 
 ## 0.10.47
 
+*Released: 2026-02-23T22:35:31Z*
+
 ### Patch Changes
 
 - c043712: fix(deps): update dependency supertest to v7.2.2
@@ -124,11 +146,15 @@
 
 ## 0.10.46
 
+*Released: 2026-02-20T20:20:17Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.15
 
 ## 0.10.45
+
+*Released: 2026-02-20T16:17:11Z*
 
 ### Patch Changes
 
@@ -138,12 +164,16 @@
 
 ## 0.10.44
 
+*Released: 2026-02-18T21:45:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [d57cc47]
     - @sap-ux/axios-extension@1.25.14
 
 ## 0.10.43
+
+*Released: 2026-02-16T18:48:13Z*
 
 ### Patch Changes
 
@@ -153,6 +183,8 @@
 
 ## 0.10.42
 
+*Released: 2026-02-16T16:08:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [bda7356]
@@ -160,12 +192,16 @@
 
 ## 0.10.41
 
+*Released: 2026-02-13T16:18:58Z*
+
 ### Patch Changes
 
 - Updated dependencies [9f94937]
     - @sap-ux/store@1.5.6
 
 ## 0.10.40
+
+*Released: 2026-02-10T23:50:15Z*
 
 ### Patch Changes
 
@@ -175,6 +211,8 @@
 
 ## 0.10.39
 
+*Released: 2026-02-05T13:53:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [38e215e]
@@ -182,12 +220,16 @@
 
 ## 0.10.38
 
+*Released: 2026-02-05T11:39:04Z*
+
 ### Patch Changes
 
 - Updated dependencies [83e3b70]
     - @sap-ux/store@1.5.4
 
 ## 0.10.37
+
+*Released: 2026-02-04T22:31:27Z*
 
 ### Patch Changes
 
@@ -197,12 +239,16 @@
 
 ## 0.10.36
 
+*Released: 2026-02-03T15:42:23Z*
+
 ### Patch Changes
 
 - Updated dependencies [89175fe]
     - @sap-ux/axios-extension@1.25.9
 
 ## 0.10.35
+
+*Released: 2026-01-30T16:59:27Z*
 
 ### Patch Changes
 
@@ -214,12 +260,16 @@
 
 ## 0.10.34
 
+*Released: 2026-01-28T00:19:05Z*
+
 ### Patch Changes
 
 - Updated dependencies [be6ea11]
     - @sap-ux/store@1.5.2
 
 ## 0.10.33
+
+*Released: 2026-01-26T09:14:13Z*
 
 ### Patch Changes
 
@@ -228,17 +278,23 @@
 
 ## 0.10.32
 
+*Released: 2026-01-23T23:57:30Z*
+
 ### Patch Changes
 
 - c707af1: fix(deps): update dependency dotenv to v16.6.1
 
 ## 0.10.31
 
+*Released: 2026-01-23T22:30:10Z*
+
 ### Patch Changes
 
 - d11943d: fix(deps): update dependency i18next to v25.8.0
 
 ## 0.10.30
+
+*Released: 2026-01-23T12:49:27Z*
 
 ### Patch Changes
 
@@ -247,6 +303,8 @@
 
 ## 0.10.29
 
+*Released: 2026-01-16T12:32:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [c9fd939]
@@ -254,11 +312,15 @@
 
 ## 0.10.28
 
+*Released: 2026-01-14T13:30:42Z*
+
 ### Patch Changes
 
 - ce4b29c: Upgrade qs/body-parser/express
 
 ## 0.10.27
+
+*Released: 2026-01-09T11:35:48Z*
 
 ### Patch Changes
 
@@ -267,12 +329,16 @@
 
 ## 0.10.26
 
+*Released: 2026-01-08T17:12:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [2204ad3]
     - @sap-ux/axios-extension@1.25.5
 
 ## 0.10.25
+
+*Released: 2026-01-07T16:03:58Z*
 
 ### Patch Changes
 
@@ -281,12 +347,16 @@
 
 ## 0.10.24
 
+*Released: 2025-12-22T17:36:43Z*
+
 ### Patch Changes
 
 - Updated dependencies [14a1bc2]
     - @sap-ux/axios-extension@1.25.3
 
 ## 0.10.23
+
+*Released: 2025-12-19T11:36:13Z*
 
 ### Patch Changes
 
@@ -297,6 +367,8 @@
     - @sap-ux/store@1.4.2
 
 ## 0.10.22
+
+*Released: 2025-12-18T21:05:02Z*
 
 ### Patch Changes
 
@@ -309,12 +381,16 @@
 
 ## 0.10.21
 
+*Released: 2025-12-18T08:56:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [5287327]
     - @sap-ux/axios-extension@1.25.0
 
 ## 0.10.20
+
+*Released: 2025-12-16T11:43:52Z*
 
 ### Patch Changes
 
@@ -323,6 +399,8 @@
     - @sap-ux/store@1.4.0
 
 ## 0.10.19
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -335,6 +413,8 @@
 
 ## 0.10.18
 
+*Released: 2025-12-08T17:56:48Z*
+
 ### Patch Changes
 
 - 037a430: fix high severity Sonar issues
@@ -344,6 +424,8 @@
 
 ## 0.10.17
 
+*Released: 2025-12-08T11:51:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [f71a139]
@@ -351,11 +433,15 @@
 
 ## 0.10.16
 
+*Released: 2025-12-02T08:59:04Z*
+
 ### Patch Changes
 
 - 67e2b43: add 'express' as peerDependency
 
 ## 0.10.15
+
+*Released: 2025-11-28T09:52:06Z*
 
 ### Patch Changes
 
@@ -363,11 +449,15 @@
 
 ## 0.10.14
 
+*Released: 2025-11-27T13:18:34Z*
+
 ### Patch Changes
 
 - bf7e266: Add missing 'express' dependency
 
 ## 0.10.13
+
+*Released: 2025-11-26T14:39:37Z*
 
 ### Patch Changes
 
@@ -375,6 +465,8 @@
     - @sap-ux/axios-extension@1.24.3
 
 ## 0.10.12
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -387,6 +479,8 @@
 
 ## 0.10.11
 
+*Released: 2025-10-31T13:35:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [cc65eec]
@@ -394,11 +488,15 @@
 
 ## 0.10.10
 
+*Released: 2025-10-30T16:57:38Z*
+
 ### Patch Changes
 
 - edd0b4c: fix: wrong 'pathReplace' in case of appStudio
 
 ## 0.10.9
+
+*Released: 2025-10-30T10:09:21Z*
 
 ### Patch Changes
 
@@ -407,12 +505,16 @@
 
 ## 0.10.8
 
+*Released: 2025-10-29T17:02:38Z*
+
 ### Patch Changes
 
 - Updated dependencies [ae8dbc6]
     - @sap-ux/store@1.3.1
 
 ## 0.10.7
+
+*Released: 2025-10-29T11:04:17Z*
 
 ### Patch Changes
 
@@ -421,12 +523,16 @@
 
 ## 0.10.6
 
+*Released: 2025-10-28T13:36:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [cdeb18b]
     - @sap-ux/axios-extension@1.24.0
 
 ## 0.10.5
+
+*Released: 2025-10-22T18:56:41Z*
 
 ### Patch Changes
 
@@ -435,12 +541,16 @@
 
 ## 0.10.4
 
+*Released: 2025-10-17T11:37:38Z*
+
 ### Patch Changes
 
 - Updated dependencies [f8c596d]
     - @sap-ux/store@1.2.1
 
 ## 0.10.3
+
+*Released: 2025-10-14T13:22:30Z*
 
 ### Patch Changes
 
@@ -451,11 +561,15 @@
 
 ## 0.10.2
 
+*Released: 2025-10-08T15:07:22Z*
+
 ### Patch Changes
 
 - 2e1fd75: fix: bsp scenario broken
 
 ## 0.10.1
+
+*Released: 2025-10-06T17:09:01Z*
 
 ### Patch Changes
 
@@ -467,11 +581,15 @@
 
 ## 0.10.0
 
+*Released: 2025-09-30T12:44:29Z*
+
 ### Minor Changes
 
 - 64250ed: migrate to http-proxy-middleware v3
 
 ## 0.9.19
+
+*Released: 2025-09-23T20:14:56Z*
 
 ### Patch Changes
 
@@ -481,6 +599,8 @@
 
 ## 0.9.18
 
+*Released: 2025-09-19T16:36:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [9872384]
@@ -489,11 +609,15 @@
 
 ## 0.9.17
 
+*Released: 2025-09-02T13:22:05Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.22.7
 
 ## 0.9.16
+
+*Released: 2025-09-02T08:17:24Z*
 
 ### Patch Changes
 
@@ -501,12 +625,16 @@
 
 ## 0.9.15
 
+*Released: 2025-09-01T12:06:20Z*
+
 ### Patch Changes
 
 - Updated dependencies [77c1459]
     - @sap-ux/store@1.1.4
 
 ## 0.9.14
+
+*Released: 2025-08-28T13:37:07Z*
 
 ### Patch Changes
 
@@ -516,12 +644,16 @@
 
 ## 0.9.13
 
+*Released: 2025-08-21T14:27:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [c6a0062]
     - @sap-ux/store@1.1.3
 
 ## 0.9.12
+
+*Released: 2025-08-01T13:45:39Z*
 
 ### Patch Changes
 
@@ -530,12 +662,16 @@
 
 ## 0.9.11
 
+*Released: 2025-07-28T08:36:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [ffac61c]
     - @sap-ux/axios-extension@1.22.4
 
 ## 0.9.10
+
+*Released: 2025-07-04T15:18:17Z*
 
 ### Patch Changes
 
@@ -545,12 +681,16 @@
 
 ## 0.9.9
 
+*Released: 2025-06-27T07:08:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [77b3b22]
     - @sap-ux/store@1.1.1
 
 ## 0.9.8
+
+*Released: 2025-06-24T07:18:46Z*
 
 ### Patch Changes
 
@@ -559,12 +699,16 @@
 
 ## 0.9.7
 
+*Released: 2025-06-23T22:19:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [14214a3]
     - @sap-ux/axios-extension@1.22.2
 
 ## 0.9.6
+
+*Released: 2025-06-19T10:31:56Z*
 
 ### Patch Changes
 
@@ -573,12 +717,16 @@
 
 ## 0.9.5
 
+*Released: 2025-06-19T04:44:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [aaf0c14]
     - @sap-ux/axios-extension@1.22.0
 
 ## 0.9.4
+
+*Released: 2025-06-11T12:23:45Z*
 
 ### Patch Changes
 
@@ -587,12 +735,16 @@
 
 ## 0.9.3
 
+*Released: 2025-06-10T17:08:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [4303f99]
     - @sap-ux/axios-extension@1.21.3
 
 ## 0.9.2
+
+*Released: 2025-06-04T10:59:54Z*
 
 ### Patch Changes
 
@@ -601,12 +753,16 @@
 
 ## 0.9.1
 
+*Released: 2025-05-23T13:35:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [2224d63]
     - @sap-ux/axios-extension@1.21.1
 
 ## 0.9.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -622,11 +778,15 @@
 
 ## 0.8.44
 
+*Released: 2025-05-13T10:46:10Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.20.3
 
 ## 0.8.43
+
+*Released: 2025-05-02T10:00:21Z*
 
 ### Patch Changes
 
@@ -635,6 +795,8 @@
 
 ## 0.8.42
 
+*Released: 2025-04-30T08:50:36Z*
+
 ### Patch Changes
 
 - Updated dependencies [a3a43b2]
@@ -642,11 +804,15 @@
 
 ## 0.8.41
 
+*Released: 2025-04-17T14:55:33Z*
+
 ### Patch Changes
 
 - a4cb2f6: chore(deps): update dependency http-proxy-middleware to v2.0.9
 
 ## 0.8.40
+
+*Released: 2025-04-15T14:18:17Z*
 
 ### Patch Changes
 
@@ -654,6 +820,8 @@
     - @sap-ux/axios-extension@1.20.0
 
 ## 0.8.39
+
+*Released: 2025-04-14T22:24:07Z*
 
 ### Patch Changes
 
@@ -663,12 +831,16 @@
 
 ## 0.8.38
 
+*Released: 2025-03-26T12:15:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [ced5edf]
     - @sap-ux/axios-extension@1.19.2
 
 ## 0.8.37
+
+*Released: 2025-03-10T20:40:35Z*
 
 ### Patch Changes
 
@@ -678,12 +850,16 @@
 
 ## 0.8.36
 
+*Released: 2025-03-03T08:50:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [aaa432a]
     - @sap-ux/axios-extension@1.19.0
 
 ## 0.8.35
+
+*Released: 2025-02-17T11:44:22Z*
 
 ### Patch Changes
 
@@ -692,11 +868,15 @@
 
 ## 0.8.34
 
+*Released: 2025-02-06T22:08:41Z*
+
 ### Patch Changes
 
 - 59453ba: fix(security): security findings from github
 
 ## 0.8.33
+
+*Released: 2025-02-05T14:44:29Z*
 
 ### Patch Changes
 
@@ -706,6 +886,8 @@
 
 ## 0.8.32
 
+*Released: 2025-02-04T14:25:43Z*
+
 ### Patch Changes
 
 - Updated dependencies [9980073]
@@ -713,6 +895,8 @@
     - @sap-ux/axios-extension@1.18.4
 
 ## 0.8.31
+
+*Released: 2025-01-29T13:31:31Z*
 
 ### Patch Changes
 
@@ -722,12 +906,16 @@
 
 ## 0.8.30
 
+*Released: 2025-01-28T10:44:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [e516306]
     - @sap-ux/axios-extension@1.18.2
 
 ## 0.8.29
+
+*Released: 2025-01-14T16:54:17Z*
 
 ### Patch Changes
 
@@ -736,12 +924,16 @@
 
 ## 0.8.28
 
+*Released: 2025-01-08T10:44:36Z*
+
 ### Patch Changes
 
 - Updated dependencies [2e3c15e]
     - @sap-ux/axios-extension@1.18.0
 
 ## 0.8.27
+
+*Released: 2024-12-17T13:32:02Z*
 
 ### Patch Changes
 
@@ -751,6 +943,8 @@
 
 ## 0.8.26
 
+*Released: 2024-12-10T16:04:29Z*
+
 ### Patch Changes
 
 - Updated dependencies [3ebd767]
@@ -758,12 +952,16 @@
 
 ## 0.8.25
 
+*Released: 2024-12-10T10:48:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [727fd86]
     - @sap-ux/axios-extension@1.17.7
 
 ## 0.8.24
+
+*Released: 2024-12-04T12:27:41Z*
 
 ### Patch Changes
 
@@ -773,11 +971,15 @@
 
 ## 0.8.23
 
+*Released: 2024-12-04T11:05:53Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.17.5
 
 ## 0.8.22
+
+*Released: 2024-11-25T12:18:22Z*
 
 ### Patch Changes
 
@@ -785,11 +987,15 @@
 
 ## 0.8.21
 
+*Released: 2024-11-19T15:25:45Z*
+
 ### Patch Changes
 
 - 2a72ad2: chore - Fix audit issues
 
 ## 0.8.20
+
+*Released: 2024-11-18T22:28:16Z*
 
 ### Patch Changes
 
@@ -799,12 +1005,16 @@
 
 ## 0.8.19
 
+*Released: 2024-11-17T22:14:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [8237f83]
     - @sap-ux/axios-extension@1.17.3
 
 ## 0.8.18
+
+*Released: 2024-11-11T17:55:13Z*
 
 ### Patch Changes
 
@@ -814,12 +1024,16 @@
 
 ## 0.8.17
 
+*Released: 2024-11-08T15:21:08Z*
+
 ### Patch Changes
 
 - Updated dependencies [7551316]
     - @sap-ux/axios-extension@1.17.1
 
 ## 0.8.16
+
+*Released: 2024-11-07T09:36:42Z*
 
 ### Patch Changes
 
@@ -828,6 +1042,8 @@
 
 ## 0.8.15
 
+*Released: 2024-11-01T22:26:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [ff75382]
@@ -835,11 +1051,15 @@
 
 ## 0.8.14
 
+*Released: 2024-10-22T22:47:19Z*
+
 ### Patch Changes
 
 - bc75111: Upgrade http-proxy-middleware
 
 ## 0.8.13
+
+*Released: 2024-10-22T09:03:13Z*
 
 ### Patch Changes
 
@@ -848,6 +1068,8 @@
 
 ## 0.8.12
 
+*Released: 2024-10-04T15:21:13Z*
+
 ### Patch Changes
 
 - Updated dependencies [93f8a83]
@@ -855,12 +1077,16 @@
 
 ## 0.8.11
 
+*Released: 2024-09-11T10:59:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [aa72f3c]
     - @sap-ux/axios-extension@1.16.6
 
 ## 0.8.10
+
+*Released: 2024-08-23T10:57:41Z*
 
 ### Patch Changes
 
@@ -870,6 +1096,8 @@
 
 ## 0.8.9
 
+*Released: 2024-08-19T09:48:14Z*
+
 ### Patch Changes
 
 - Updated dependencies [9c8dc5c]
@@ -878,12 +1106,16 @@
 
 ## 0.8.8
 
+*Released: 2024-08-16T14:27:07Z*
+
 ### Patch Changes
 
 - Updated dependencies [08b788c]
     - @sap-ux/store@0.9.1
 
 ## 0.8.7
+
+*Released: 2024-08-14T12:04:43Z*
 
 ### Patch Changes
 
@@ -892,6 +1124,8 @@
 
 ## 0.8.6
 
+*Released: 2024-08-14T08:37:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [dced368]
@@ -899,12 +1133,16 @@
 
 ## 0.8.5
 
+*Released: 2024-08-07T08:31:04Z*
+
 ### Patch Changes
 
 - Updated dependencies [0084205]
     - @sap-ux/axios-extension@1.16.3
 
 ## 0.8.4
+
+*Released: 2024-08-01T17:28:17Z*
 
 ### Patch Changes
 
@@ -914,12 +1152,16 @@
 
 ## 0.8.3
 
+*Released: 2024-07-25T12:05:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [ad9b56d]
     - @sap-ux/axios-extension@1.16.1
 
 ## 0.8.2
+
+*Released: 2024-07-18T09:34:40Z*
 
 ### Patch Changes
 
@@ -928,12 +1170,16 @@
 
 ## 0.8.1
 
+*Released: 2024-07-05T16:16:30Z*
+
 ### Patch Changes
 
 - Updated dependencies [abf491a7]
     - @sap-ux/axios-extension@1.15.1
 
 ## 0.8.0
+
+*Released: 2024-07-05T15:03:05Z*
 
 ### Minor Changes
 
@@ -949,12 +1195,16 @@
 
 ## 0.7.41
 
+*Released: 2024-07-01T14:53:05Z*
+
 ### Patch Changes
 
 - Updated dependencies [4492fe10]
     - @sap-ux/axios-extension@1.14.4
 
 ## 0.7.40
+
+*Released: 2024-07-01T13:51:23Z*
 
 ### Patch Changes
 
@@ -963,12 +1213,16 @@
 
 ## 0.7.39
 
+*Released: 2024-06-27T07:14:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [65bfb244]
     - @sap-ux/axios-extension@1.14.2
 
 ## 0.7.38
+
+*Released: 2024-06-26T11:28:03Z*
 
 ### Patch Changes
 
@@ -977,12 +1231,16 @@
 
 ## 0.7.37
 
+*Released: 2024-06-26T10:58:33Z*
+
 ### Patch Changes
 
 - Updated dependencies [31cc53f8]
     - @sap-ux/axios-extension@1.14.0
 
 ## 0.7.36
+
+*Released: 2024-06-19T15:33:01Z*
 
 ### Patch Changes
 
@@ -991,12 +1249,16 @@
 
 ## 0.7.35
 
+*Released: 2024-06-11T10:45:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [869c1c0d]
     - @sap-ux/axios-extension@1.13.1
 
 ## 0.7.34
+
+*Released: 2024-06-06T11:57:02Z*
 
 ### Patch Changes
 
@@ -1005,12 +1267,16 @@
 
 ## 0.7.33
 
+*Released: 2024-05-29T09:49:51Z*
+
 ### Patch Changes
 
 - Updated dependencies [558891c2]
     - @sap-ux/axios-extension@1.12.6
 
 ## 0.7.32
+
+*Released: 2024-05-29T09:17:16Z*
 
 ### Patch Changes
 
@@ -1019,12 +1285,16 @@
 
 ## 0.7.31
 
+*Released: 2024-05-22T13:22:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [6e3d4da4]
     - @sap-ux/axios-extension@1.12.4
 
 ## 0.7.30
+
+*Released: 2024-05-14T06:33:50Z*
 
 ### Patch Changes
 
@@ -1033,12 +1303,16 @@
 
 ## 0.7.29
 
+*Released: 2024-05-14T05:14:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [a41bbd95]
     - @sap-ux/axios-extension@1.12.2
 
 ## 0.7.28
+
+*Released: 2024-05-10T13:30:56Z*
 
 ### Patch Changes
 
@@ -1047,12 +1321,16 @@
 
 ## 0.7.27
 
+*Released: 2024-05-08T23:06:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [312919ec]
     - @sap-ux/axios-extension@1.12.0
 
 ## 0.7.26
+
+*Released: 2024-05-06T12:14:11Z*
 
 ### Patch Changes
 
@@ -1062,12 +1340,16 @@
 
 ## 0.7.25
 
+*Released: 2024-05-03T11:18:51Z*
+
 ### Patch Changes
 
 - Updated dependencies [56b77fd9]
     - @sap-ux/axios-extension@1.11.8
 
 ## 0.7.24
+
+*Released: 2024-04-23T06:17:08Z*
 
 ### Patch Changes
 
@@ -1076,11 +1358,15 @@
 
 ## 0.7.23
 
+*Released: 2024-04-16T06:40:59Z*
+
 ### Patch Changes
 
 - 6291bc37: chore - update dependencies to fix audit warnings
 
 ## 0.7.22
+
+*Released: 2024-04-12T08:47:33Z*
 
 ### Patch Changes
 
@@ -1089,6 +1375,8 @@
 
 ## 0.7.21
 
+*Released: 2024-04-10T11:03:28Z*
+
 ### Patch Changes
 
 - 1db4c60c: FIX: use correct url for reentrance tickets and enhance config to support it
@@ -1096,6 +1384,8 @@
     - @sap-ux/axios-extension@1.11.5
 
 ## 0.7.20
+
+*Released: 2024-03-22T08:51:54Z*
 
 ### Patch Changes
 
@@ -1106,12 +1396,16 @@
 
 ## 0.7.19
 
+*Released: 2024-03-06T14:41:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [e443e534]
     - @sap-ux/store@0.5.0
 
 ## 0.7.18
+
+*Released: 2024-02-28T11:01:55Z*
 
 ### Patch Changes
 
@@ -1120,6 +1414,8 @@
     - @sap-ux/axios-extension@1.11.3
 
 ## 0.7.17
+
+*Released: 2024-02-27T22:07:50Z*
 
 ### Patch Changes
 
@@ -1132,12 +1428,16 @@
 
 ## 0.7.16
 
+*Released: 2024-02-23T08:01:15Z*
+
 ### Patch Changes
 
 - Updated dependencies [efd2f6d4]
     - @sap-ux/axios-extension@1.11.1
 
 ## 0.7.15
+
+*Released: 2024-02-21T13:16:24Z*
 
 ### Patch Changes
 
@@ -1147,6 +1447,8 @@
 
 ## 0.7.14
 
+*Released: 2024-02-20T12:39:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [64f9c513]
@@ -1154,11 +1456,15 @@
 
 ## 0.7.13
 
+*Released: 2024-02-12T16:54:27Z*
+
 ### Patch Changes
 
 - 9f1836b2: Remove 'Partitioned' from cookies
 
 ## 0.7.12
+
+*Released: 2024-02-08T13:37:06Z*
 
 ### Patch Changes
 
@@ -1169,6 +1475,8 @@
 
 ## 0.7.11
 
+*Released: 2024-02-07T11:10:48Z*
+
 ### Patch Changes
 
 - eb0b7b37: Chore - TypeScript 5 upgrade
@@ -1177,12 +1485,16 @@
 
 ## 0.7.10
 
+*Released: 2024-02-06T22:32:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [ecd5275d]
     - @sap-ux/axios-extension@1.10.0
 
 ## 0.7.9
+
+*Released: 2024-02-06T09:17:39Z*
 
 ### Patch Changes
 
@@ -1192,11 +1504,15 @@
 
 ## 0.7.8
 
+*Released: 2024-01-16T15:41:51Z*
+
 ### Patch Changes
 
 - 10ad4b51: Use token in backend-proxy-middleware when connecting to abap cloud
 
 ## 0.7.7
+
+*Released: 2024-01-16T14:33:35Z*
 
 ### Patch Changes
 
@@ -1205,12 +1521,16 @@
 
 ## 0.7.6
 
+*Released: 2024-01-16T12:59:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [62232236]
     - @sap-ux/axios-extension@1.8.0
 
 ## 0.7.5
+
+*Released: 2023-11-13T08:06:13Z*
 
 ### Patch Changes
 
@@ -1220,12 +1540,16 @@
 
 ## 0.7.4
 
+*Released: 2023-11-09T16:10:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [db918804]
     - @sap-ux/axios-extension@1.7.2
 
 ## 0.7.3
+
+*Released: 2023-10-25T10:10:33Z*
 
 ### Patch Changes
 
@@ -1234,6 +1558,8 @@
 
 ## 0.7.2
 
+*Released: 2023-10-20T09:47:31Z*
+
 ### Patch Changes
 
 - Updated dependencies [aa2ff95b]
@@ -1241,12 +1567,16 @@
 
 ## 0.7.1
 
+*Released: 2023-10-19T14:36:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [3cfaba52]
     - @sap-ux/axios-extension@1.6.1
 
 ## 0.7.0
+
+*Released: 2023-10-19T12:06:19Z*
 
 ### Minor Changes
 
@@ -1262,6 +1592,8 @@
 
 ## 0.6.77
 
+*Released: 2023-10-18T13:59:49Z*
+
 ### Patch Changes
 
 - cbcad88d: fix(deps): update dependencies [i18next]
@@ -1269,6 +1601,8 @@
     - @sap-ux/store@0.3.16
 
 ## 0.6.76
+
+*Released: 2023-10-17T08:28:48Z*
 
 ### Patch Changes
 
@@ -1279,6 +1613,8 @@
 
 ## 0.6.75
 
+*Released: 2023-10-16T17:12:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [d7492b53]
@@ -1286,12 +1622,16 @@
 
 ## 0.6.74
 
+*Released: 2023-09-20T15:32:03Z*
+
 ### Patch Changes
 
 - Updated dependencies [0760c9f8]
     - @sap-ux/axios-extension@1.4.8
 
 ## 0.6.73
+
+*Released: 2023-09-20T13:13:51Z*
 
 ### Patch Changes
 
@@ -1304,12 +1644,16 @@
 
 ## 0.6.72
 
+*Released: 2023-09-19T16:14:25Z*
+
 ### Patch Changes
 
 - Updated dependencies [7b156515]
     - @sap-ux/axios-extension@1.4.6
 
 ## 0.6.71
+
+*Released: 2023-09-19T15:51:30Z*
 
 ### Patch Changes
 
@@ -1318,6 +1662,8 @@
 
 ## 0.6.70
 
+*Released: 2023-09-19T15:06:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [0dbad1b8]
@@ -1325,11 +1671,15 @@
 
 ## 0.6.69
 
+*Released: 2023-09-08T22:35:34Z*
+
 ### Patch Changes
 
 - 118692c3: update dependency http-proxy-middleware to v2.0.6
 
 ## 0.6.68
+
+*Released: 2023-09-08T14:35:37Z*
 
 ### Patch Changes
 
@@ -1338,6 +1688,8 @@
 
 ## 0.6.67
 
+*Released: 2023-09-01T07:49:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [6e403f27]
@@ -1345,12 +1697,16 @@
 
 ## 0.6.66
 
+*Released: 2023-08-24T15:31:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [29e71f68]
     - @sap-ux/axios-extension@1.4.2
 
 ## 0.6.65
+
+*Released: 2023-08-10T12:54:14Z*
 
 ### Patch Changes
 
@@ -1360,12 +1716,16 @@
 
 ## 0.6.64
 
+*Released: 2023-07-20T22:24:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [d2fd9a58]
     - @sap-ux/axios-extension@1.4.0
 
 ## 0.6.63
+
+*Released: 2023-07-18T17:23:22Z*
 
 ### Patch Changes
 
@@ -1374,12 +1734,16 @@
 
 ## 0.6.62
 
+*Released: 2023-07-17T22:41:30Z*
+
 ### Patch Changes
 
 - Updated dependencies [69b88bcc]
     - @sap-ux/axios-extension@1.3.5
 
 ## 0.6.61
+
+*Released: 2023-07-14T13:06:36Z*
 
 ### Patch Changes
 
@@ -1388,12 +1752,16 @@
 
 ## 0.6.60
 
+*Released: 2023-06-28T08:45:23Z*
+
 ### Patch Changes
 
 - Updated dependencies [1599efac]
     - @sap-ux/axios-extension@1.3.3
 
 ## 0.6.59
+
+*Released: 2023-06-27T14:58:54Z*
 
 ### Patch Changes
 
@@ -1406,6 +1774,8 @@
 
 ## 0.6.58
 
+*Released: 2023-06-26T15:34:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [d9355692]
@@ -1413,12 +1783,16 @@
 
 ## 0.6.57
 
+*Released: 2023-06-19T08:09:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [42dc7395]
     - @sap-ux/axios-extension@1.3.0
 
 ## 0.6.56
+
+*Released: 2023-06-12T06:59:29Z*
 
 ### Patch Changes
 
@@ -1431,6 +1805,8 @@
 
 ## 0.6.55
 
+*Released: 2023-06-09T06:11:17Z*
+
 ### Patch Changes
 
 - e4f9748b: Upgrade vulnerable module fast-xml-parser
@@ -1439,12 +1815,16 @@
 
 ## 0.6.54
 
+*Released: 2023-06-06T13:23:15Z*
+
 ### Patch Changes
 
 - Updated dependencies [2d279633]
     - @sap-ux/axios-extension@1.2.6
 
 ## 0.6.53
+
+*Released: 2023-05-31T11:36:12Z*
 
 ### Patch Changes
 
@@ -1453,12 +1833,16 @@
 
 ## 0.6.52
 
+*Released: 2023-05-16T12:35:03Z*
+
 ### Patch Changes
 
 - Updated dependencies [aeba5509]
     - @sap-ux/axios-extension@1.2.4
 
 ## 0.6.51
+
+*Released: 2023-05-10T20:24:42Z*
 
 ### Patch Changes
 
@@ -1467,11 +1851,15 @@
 
 ## 0.6.50
 
+*Released: 2023-04-26T14:34:08Z*
+
 ### Patch Changes
 
 - 100248f3: fix(security): upgrade yaml
 
 ## 0.6.49
+
+*Released: 2023-04-25T14:46:05Z*
 
 ### Patch Changes
 
@@ -1480,12 +1868,16 @@
 
 ## 0.6.48
 
+*Released: 2023-04-19T18:02:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [3d3d8c64]
     - @sap-ux/axios-extension@1.2.1
 
 ## 0.6.47
+
+*Released: 2023-04-17T14:44:21Z*
 
 ### Patch Changes
 
@@ -1494,6 +1886,8 @@
 
 ## 0.6.46
 
+*Released: 2023-04-03T13:53:13Z*
+
 ### Patch Changes
 
 - Updated dependencies [0fa9c31e]
@@ -1501,11 +1895,15 @@
 
 ## 0.6.45
 
+*Released: 2023-03-10T14:15:30Z*
+
 ### Patch Changes
 
 - 03abc1f: Fix - enables flp embedded preview to load in case of decoding failure
 
 ## 0.6.44
+
+*Released: 2023-03-03T18:59:12Z*
 
 ### Patch Changes
 
@@ -1514,12 +1912,16 @@
 
 ## 0.6.43
 
+*Released: 2023-02-28T11:20:19Z*
+
 ### Patch Changes
 
 - Updated dependencies [8e059ae]
     - @sap-ux/axios-extension@1.0.2
 
 ## 0.6.42
+
+*Released: 2023-02-23T13:56:23Z*
 
 ### Patch Changes
 
@@ -1532,12 +1934,16 @@
 
 ## 0.6.41
 
+*Released: 2023-02-22T17:18:23Z*
+
 ### Patch Changes
 
 - Updated dependencies [77ac998]
     - @sap-ux/axios-extension@1.0.0
 
 ## 0.6.40
+
+*Released: 2023-02-10T14:09:06Z*
 
 ### Patch Changes
 
@@ -1550,12 +1956,16 @@
 
 ## 0.6.39
 
+*Released: 2022-12-22T09:52:07Z*
+
 ### Patch Changes
 
 - Updated dependencies [3748963]
     - @sap-ux/axios-extension@0.14.0
 
 ## 0.6.38
+
+*Released: 2022-12-16T11:48:52Z*
 
 ### Patch Changes
 
@@ -1566,12 +1976,16 @@
 
 ## 0.6.37
 
+*Released: 2022-12-16T00:26:20Z*
+
 ### Patch Changes
 
 - Updated dependencies [b727719]
     - @sap-ux/axios-extension@0.13.3
 
 ## 0.6.36
+
+*Released: 2022-12-07T07:48:12Z*
 
 ### Patch Changes
 
@@ -1580,6 +1994,8 @@
     - @sap-ux/axios-extension@0.13.2
 
 ## 0.6.35
+
+*Released: 2022-12-05T07:50:58Z*
 
 ### Patch Changes
 
@@ -1592,12 +2008,16 @@
 
 ## 0.6.34
 
+*Released: 2022-11-17T07:22:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [9b9b3d7]
     - @sap-ux/axios-extension@0.13.0
 
 ## 0.6.33
+
+*Released: 2022-11-16T17:10:24Z*
 
 ### Patch Changes
 
@@ -1606,12 +2026,16 @@
 
 ## 0.6.32
 
+*Released: 2022-11-02T14:24:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [703dc96]
     - @sap-ux/axios-extension@0.11.1
 
 ## 0.6.31
+
+*Released: 2022-10-26T17:24:19Z*
 
 ### Patch Changes
 
@@ -1620,11 +2044,15 @@
 
 ## 0.6.30
 
+*Released: 2022-10-25T12:22:11Z*
+
 ### Patch Changes
 
 - ee7f9a9: Refactor to use getProxyForUrl directly
 
 ## 0.6.29
+
+*Released: 2022-10-25T02:04:00Z*
 
 ### Patch Changes
 
@@ -1632,6 +2060,8 @@
     - @sap-ux/store@0.3.6
 
 ## 0.6.28
+
+*Released: 2022-10-21T07:04:47Z*
 
 ### Patch Changes
 
@@ -1641,11 +2071,15 @@
 
 ## 0.6.27
 
+*Released: 2022-10-20T06:37:40Z*
+
 ### Patch Changes
 
 - 748d24f: Consider ports when checking if a host is excluded from corporate proxy
 
 ## 0.6.26
+
+*Released: 2022-10-12T08:59:54Z*
 
 ### Patch Changes
 
@@ -1653,6 +2087,8 @@
     - @sap-ux/axios-extension@0.10.2
 
 ## 0.6.25
+
+*Released: 2022-10-11T14:06:32Z*
 
 ### Patch Changes
 
@@ -1665,11 +2101,15 @@
 
 ## 0.6.24
 
+*Released: 2022-10-07T11:20:49Z*
+
 ### Patch Changes
 
 - ba34b64: Makes the proxy request handler more robust
 
 ## 0.6.23
+
+*Released: 2022-10-05T17:11:40Z*
 
 ### Patch Changes
 
@@ -1677,6 +2117,8 @@
     - @sap-ux/axios-extension@0.10.0
 
 ## 0.6.22
+
+*Released: 2022-09-20T15:47:25Z*
 
 ### Patch Changes
 
@@ -1686,6 +2128,8 @@
 
 ## 0.6.21
 
+*Released: 2022-09-20T11:29:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [dd98509]
@@ -1693,11 +2137,15 @@
 
 ## 0.6.20
 
+*Released: 2022-09-12T13:23:21Z*
+
 ### Patch Changes
 
 - 8f82b54: Make backend-proxy-middleware more robust
 
 ## 0.6.19
+
+*Released: 2022-09-08T17:04:29Z*
 
 ### Patch Changes
 
@@ -1707,12 +2155,16 @@
 
 ## 0.6.18
 
+*Released: 2022-08-29T06:06:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [12e4686]
     - @sap-ux/axios-extension@0.9.6
 
 ## 0.6.17
+
+*Released: 2022-08-26T23:41:09Z*
 
 ### Patch Changes
 
@@ -1724,12 +2176,16 @@
 
 ## 0.6.16
 
+*Released: 2022-08-25T08:03:54Z*
+
 ### Patch Changes
 
 - Updated dependencies [2896b77]
     - @sap-ux/axios-extension@0.9.4
 
 ## 0.6.15
+
+*Released: 2022-08-24T14:12:45Z*
 
 ### Patch Changes
 
@@ -1738,12 +2194,16 @@
 
 ## 0.6.14
 
+*Released: 2022-08-16T17:30:03Z*
+
 ### Patch Changes
 
 - Updated dependencies [d7b3e4f]
     - @sap-ux/axios-extension@0.9.2
 
 ## 0.6.13
+
+*Released: 2022-08-02T14:32:30Z*
 
 ### Patch Changes
 
@@ -1754,11 +2214,15 @@
 
 ## 0.6.12
 
+*Released: 2022-07-26T08:47:10Z*
+
 ### Patch Changes
 
 - 5b46c30: Improve error handling of proxy middlewares
 
 ## 0.6.11
+
+*Released: 2022-07-25T18:08:51Z*
 
 ### Patch Changes
 
@@ -1766,6 +2230,8 @@
     - @sap-ux/axios-extension@0.9.0
 
 ## 0.6.10
+
+*Released: 2022-07-21T14:10:31Z*
 
 ### Patch Changes
 
@@ -1778,6 +2244,8 @@
 
 ## 0.6.9
 
+*Released: 2022-07-20T05:54:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [732171b]
@@ -1785,17 +2253,23 @@
 
 ## 0.6.8
 
+*Released: 2022-07-15T14:01:24Z*
+
 ### Patch Changes
 
 - fa232ad: Add optonal url property to the type DestinationBackendConfig
 
 ## 0.6.7
 
+*Released: 2022-07-13T13:00:36Z*
+
 ### Patch Changes
 
 - 7f339ca: Support using direct OData service URLs in BAS
 
 ## 0.6.6
+
+*Released: 2022-07-04T13:03:56Z*
 
 ### Patch Changes
 
@@ -1808,11 +2282,15 @@
 
 ## 0.6.5
 
+*Released: 2022-06-29T07:07:37Z*
+
 ### Patch Changes
 
 - 6fae741: Support setting credentials via .env file
 
 ## 0.6.4
+
+*Released: 2022-06-28T06:38:34Z*
 
 ### Patch Changes
 
@@ -1820,12 +2298,16 @@
 
 ## 0.6.3
 
+*Released: 2022-06-24T14:55:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [ebc59b4]
     - @sap-ux/store@0.3.0
 
 ## 0.6.2
+
+*Released: 2022-06-23T12:02:11Z*
 
 ### Patch Changes
 
@@ -1835,11 +2317,15 @@
 
 ## 0.6.1
 
+*Released: 2022-06-16T09:49:08Z*
+
 ### Patch Changes
 
 - 5c5c904: Add author to package.json
 
 ## 0.6.0
+
+*Released: 2022-06-13T09:53:27Z*
 
 ### Minor Changes
 
@@ -1855,12 +2341,16 @@
 
 ## 0.5.2
 
+*Released: 2022-05-20T08:03:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [9864fb5]
     - @sap-ux/axios-extension@0.6.0
 
 ## 0.5.1
+
+*Released: 2022-05-19T14:38:34Z*
 
 ### Patch Changes
 
