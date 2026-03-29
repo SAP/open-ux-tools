@@ -256,9 +256,16 @@ export async function getServiceDetails(
 
     let systemName;
     if (backendConfig) {
+        let backendUrl =  backendConfig.url;
+        if (backendConfig.connectPath) {
+            const normalizedPath = backendConfig.connectPath.startsWith('/')
+                ? backendConfig.connectPath
+                : `/${backendConfig.connectPath}`;
+            backendUrl = new URL(normalizedPath, backendConfig.url).href;
+        }
         systemName = isAppStudio()
             ? backendConfig?.destination
-            : await getSystemNameFromStore(backendConfig.url, backendConfig?.client);
+            : await getSystemNameFromStore(backendUrl, backendConfig?.client);
     }
 
     return {

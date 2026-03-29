@@ -417,7 +417,7 @@ function getKeyPrompts(
             name: `entityKeyIdx:${keypart}`,
             message: () =>
                 t('prompts.entityKey.message', {
-                    keyName: appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name
+                    keyName: `${appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name} (${appConfig.referencedEntities?.listEntity.entitySetName})` 
                 }),
             type: 'input',
             guiOptions: {
@@ -448,8 +448,8 @@ function getKeyPrompts(
                 }
 
                 const filterAndParts = keyValue.split(',');
-                // Dont validate as range if its a UUID, its not supported
-                if (keyRef?.type !== 'Edm.UUID') {
+                // Dont validate as range if its a UUID/GUID, its not supported
+                if (keyRef?.type && !['Edm.UUID', 'Edm.Guid'].includes(keyRef.type)) {
                     for (const filterPart of filterAndParts) {
                         const filterRangeParts = filterPart.split('-');
                         if (filterRangeParts.length > 2) {
