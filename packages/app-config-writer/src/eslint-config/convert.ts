@@ -128,6 +128,26 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
 }
 
 /**
+ * Classifies a single legacy extends entry as kept or removed, and flags whether it was
+ * `eslint:recommended` or a `plugin:@typescript-eslint/*` entry.
+ *
+ * @param ext - a single legacy extends string to classify
+ * @returns object with kept flag and detected native extends
+ */
+function classifyExtend(ext: string): { kept: boolean; hadEslintRec: boolean; tsExts: string[] } {
+    if (ext.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)) {
+        return { kept: false, hadEslintRec: false, tsExts: [] };
+    }
+    if (NATIVE_FLAT_CONFIG_EXTENDS.includes(ext as (typeof NATIVE_FLAT_CONFIG_EXTENDS)[number])) {
+        return { kept: false, hadEslintRec: true, tsExts: [] };
+    }
+    if (ext in TYPESCRIPT_ESLINT_EXTENDS) {
+        return { kept: false, hadEslintRec: false, tsExts: [ext] };
+    }
+    return { kept: true, hadEslintRec: false, tsExts: [] };
+}
+
+/**
  * Removes all traces of the SAP Fiori tools plugin and known native-flat-config extends entries
  * (e.g. `eslint:recommended`, `plugin:@typescript-eslint/recommended`) from the existing legacy
  * eslint configuration, so that the migration tool does not wrap them in a FlatCompat compat shim
@@ -168,33 +188,24 @@ async function removeFioriToolsFromExistingConfig(
 
     // Remove fiori-tools entries and native-flat-config entries from extends
     if (typeof eslintConfig.extends === 'string') {
-        if (eslintConfig.extends.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)) {
-            delete eslintConfig.extends;
-        } else if (
-            NATIVE_FLAT_CONFIG_EXTENDS.includes(eslintConfig.extends as (typeof NATIVE_FLAT_CONFIG_EXTENDS)[number])
-        ) {
-            hadEslintRecommended = true;
-            delete eslintConfig.extends;
-        } else if (eslintConfig.extends in TYPESCRIPT_ESLINT_EXTENDS) {
-            tsExtends.push(eslintConfig.extends);
+        const { kept, hadEslintRec, tsExts } = classifyExtend(eslintConfig.extends);
+        hadEslintRecommended = hadEslintRec;
+        tsExtends.push(...tsExts);
+        if (!kept) {
             delete eslintConfig.extends;
         }
     } else if (Array.isArray(eslintConfig.extends)) {
-        hadEslintRecommended = eslintConfig.extends.some((ext) =>
-            NATIVE_FLAT_CONFIG_EXTENDS.includes(ext as (typeof NATIVE_FLAT_CONFIG_EXTENDS)[number])
-        );
+        const remaining: string[] = [];
         for (const ext of eslintConfig.extends) {
-            if (ext in TYPESCRIPT_ESLINT_EXTENDS) {
-                tsExtends.push(ext);
+            const { kept, hadEslintRec, tsExts } = classifyExtend(ext);
+            hadEslintRecommended ||= hadEslintRec;
+            tsExtends.push(...tsExts);
+            if (kept) {
+                remaining.push(ext);
             }
         }
-        eslintConfig.extends = eslintConfig.extends.filter(
-            (ext) =>
-                !ext.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS) &&
-                !NATIVE_FLAT_CONFIG_EXTENDS.includes(ext as (typeof NATIVE_FLAT_CONFIG_EXTENDS)[number]) &&
-                !(ext in TYPESCRIPT_ESLINT_EXTENDS)
-        );
-        if (eslintConfig.extends.length === 0) {
+        eslintConfig.extends = remaining.length > 0 ? remaining : undefined;
+        if (!eslintConfig.extends) {
             delete eslintConfig.extends;
         }
     }
