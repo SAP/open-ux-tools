@@ -1,5 +1,5 @@
 import { omit, once } from 'lodash';
-import { getLocal, generateCACertificate, Mockttp, MockedEndpoint } from 'mockttp';
+import { getLocal, generateCACertificate, Mockttp, MockedEndpoint, CompletedRequest } from 'mockttp';
 import { MOCK_DATA_FOLDER_PATH, MOCK_SERVER_PORT, RESPONSES_JSON_PATH } from './server-constants';
 import { getSapSystemPort, isBtpEnvironment } from './utils/sap-system-utils';
 import { executeHttpRequest, Method } from '@sap-cloud-sdk/http-client';
@@ -25,7 +25,7 @@ async function getProxyInternal(): Promise<Mockttp> {
         destinationName
     });
 
-    logger.info('Destination: ' + JSON.stringify(destination, null, 2));
+    logger.info(`Destination: ${JSON.stringify(destination)}`);
 
     await initRoutes(proxy);
 
@@ -88,12 +88,19 @@ async function getEndpointInternal(): Promise<MockedEndpoint> {
     logger.info(`Destination name: ${destinationName} ${typeof destinationName}`);
     return proxy.forAnyRequest().thenCallback(async (req) => {
         logger.info(`[=>] ${req.method} ${req.path}`);
+        const isZipFile = req.headers['content-type'] === 'application/zip';
         const response = await executeHttpRequest(
             { destinationName },
             {
                 method: req.method as Method,
                 url: req.path,
-                data: req.body
+                data: isZipFile ? req.body.buffer : req.body,
+                ...(isZipFile
+                    ? {
+                          'Content-Type': 'application/zip',
+                          'Content-Length': req.body.buffer.length
+                      }
+                    : {})
             }
         );
 

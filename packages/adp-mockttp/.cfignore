@@ -1,3 +1,7 @@
 *.d.ts
 *.d.ts.map
 *.js.map
+
+# Include mock-data JSON files explicitly
+!mock-data/
+!mock-data/*.json

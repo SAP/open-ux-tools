@@ -29,7 +29,7 @@ if (!fs.existsSync(manifestPath)) {
 }
 
 copyFileToDistFolder(cfignorePath);
-copyFileToDistFolder(manifestPath);
+// copyFileToDistFolder(manifestPath);
 createPackageJsonFile();
 
 function copyFileToDistFolder(filePath) {

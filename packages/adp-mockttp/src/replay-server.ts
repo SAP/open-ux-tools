@@ -3,6 +3,7 @@ import { once } from 'lodash';
 import { CompletedRequest, getLocal, Mockttp } from 'mockttp';
 import path from 'path';
 import { logger } from './utils/logger';
+import { isBtpEnvironment } from './utils/sap-system-utils';
 
 interface RecordedInteraction {
     httpRequest: {
@@ -24,9 +25,11 @@ export const getReplayServer = once(getReplayServerInternal);
 async function getReplayServerInternal(): Promise<Mockttp> {
     const server = getLocal({ debug: true });
 
-    const interactions: RecordedInteraction[] = JSON.parse(
-        fs.readFileSync(path.resolve(__dirname, '..', 'mock-data', 'responses.json'), 'utf8')
-    );
+    const resPath = isBtpEnvironment()
+        ? path.join(process.cwd(), 'mock-data', 'responses.json')
+        : path.resolve(__dirname, '..', 'mock-data', 'responses.json');
+
+    const interactions: RecordedInteraction[] = JSON.parse(fs.readFileSync(resPath, 'utf8'));
 
     /*
     // Group by method + path + query + body
