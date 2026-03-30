@@ -62,7 +62,7 @@ import type { Window } from 'types/global';
                 adapter: {
                     config: {
                         ignoreSiteDataPersonalization: true,
-                        siteDataUrl: '/cdm.json'
+                        siteDataUrl: `${basePath}/cdm.json`
                     }
                 }
             },
