@@ -34,7 +34,7 @@
         "@types/debug": "4.1.13",
         "@types/lodash": "4.17.24",
         "@types/vscode": "1.110.0",
-        "jest-extended": "6.0.0",
+        "jest-extended": "7.0.0",
         "logform": "2.7.0"
     },
     "files": [

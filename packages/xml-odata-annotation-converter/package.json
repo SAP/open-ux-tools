@@ -37,10 +37,9 @@
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@xml-tools/ast": "5.0.5",
         "@xml-tools/parser": "1.0.11",
-        "@types/prettier": "2.7.3",
-        "prettier": "2.5.1",
         "chevrotain": "7.1.1",
-        "npm-run-all2": "8.0.4"
+        "npm-run-all2": "8.0.4",
+        "prettier": "3.8.1"
     },
     "engines": {
         "node": ">=20.x"

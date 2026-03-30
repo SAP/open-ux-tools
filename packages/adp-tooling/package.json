@@ -35,7 +35,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.22.0",
+        "@sap-devx/yeoman-ui-types": "1.23.0",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
@@ -53,7 +53,7 @@
         "adm-zip": "0.5.16",
         "axios": "1.13.6",
         "ejs": "3.1.10",
-        "i18next": "25.8.20",
+        "i18next": "25.10.10",
         "inquirer": "8.2.7",
         "js-yaml": "4.1.1",
         "mem-fs": "2.1.0",
