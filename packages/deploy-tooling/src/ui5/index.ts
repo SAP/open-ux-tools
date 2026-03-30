@@ -45,15 +45,12 @@ function resolveLogLevel(value: string | number | undefined, logger: Logger): Lo
  */
 async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): Promise<void> {
     loadEnvConfig();
-    const bootstrapLogger = new ToolsLogger({
-        transports: [new UI5ToolingTransport({ moduleName: `${NAME} ${options.projectName}` })],
-        logLevel: LogLevel.Info
-    });
-    const logLevel = resolveLogLevel(options.configuration?.log as string | number | undefined, bootstrapLogger);
-    const logger = new ToolsLogger({
-        transports: [new UI5ToolingTransport({ moduleName: `${NAME} ${options.projectName}` })],
-        logLevel
-    });
+    const moduleName = `${NAME} ${options.projectName}`;
+    const logLevel = resolveLogLevel(
+        options.configuration?.log as string | number | undefined,
+        new ToolsLogger({ transports: [new UI5ToolingTransport({ moduleName })], logLevel: LogLevel.Info })
+    );
+    const logger = new ToolsLogger({ transports: [new UI5ToolingTransport({ moduleName })], logLevel });
 
     if (logLevel >= LogLevel.Debug) {
         logger.debug({ ...options.configuration, credentials: undefined });
