@@ -1,6 +1,5 @@
 import { sapMock } from 'mock/window';
 import { Window } from 'types/global';
-import initCdm from '../../../src/flp/initCdm';
 
 describe('flp/initCdm', () => {
     afterEach(() => {
@@ -9,7 +8,7 @@ describe('flp/initCdm', () => {
     });
 
     test('ensure that ushell config is set properly', async () => {
-        await initCdm();
+        await import('../../../src/flp/initCdm');
 
         expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();
     });
