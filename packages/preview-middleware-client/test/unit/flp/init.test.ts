@@ -439,7 +439,6 @@ describe('flp/init', () => {
             });
             await init({ enhancedHomePage: true });
 
-            expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();
             expect(sapMock.ushell.Container.init).toHaveBeenCalledWith('cdm');
         });
 

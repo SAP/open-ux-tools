@@ -77,7 +77,8 @@ describe('Test Connection Action', () => {
                         catalogResults: {
                             v2Request: { count: 5, error: undefined },
                             v4Request: { count: 3, error: undefined }
-                        }
+                        },
+                        showOutputChannelLink: true
                     }
                 }
             })
@@ -101,7 +102,8 @@ describe('Test Connection Action', () => {
                 payload: {
                     connectionStatus: {
                         connected: false,
-                        message: 'Invalid system'
+                        message: 'Invalid system',
+                        showOutputChannelLink: false
                     }
                 }
             })
@@ -138,7 +140,8 @@ describe('Test Connection Action', () => {
                     connectionStatus: {
                         catalogResults: undefined,
                         connected: false,
-                        message: 'This SAP system failed to return any services.'
+                        message: 'This SAP system failed to return any services.',
+                        showOutputChannelLink: true
                     },
                     guidedAnswerLink: undefined
                 }
@@ -171,7 +174,8 @@ describe('Test Connection Action', () => {
                     connectionStatus: {
                         catalogResults: undefined,
                         connected: false,
-                        message: 'This SAP system failed to return any services.'
+                        message: 'This SAP system failed to return any services.',
+                        showOutputChannelLink: true
                     },
                     guidedAnswerLink: undefined
                 }
@@ -219,7 +223,8 @@ describe('Test Connection Action', () => {
                     connectionStatus: {
                         catalogResults: undefined,
                         connected: false,
-                        message: 'This SAP system failed to return any services.'
+                        message: 'This SAP system failed to return any services.',
+                        showOutputChannelLink: true
                     },
                     guidedAnswerLink: gaLink
                 }
@@ -326,7 +331,7 @@ describe('Test Connection Action', () => {
             payload: { system: odataServiceSystem }
         });
 
-        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem);
+        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem, undefined);
         expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
         expect(postMessageMock).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -334,7 +339,8 @@ describe('Test Connection Action', () => {
                 payload: {
                     connectionStatus: {
                         connected: true,
-                        message: 'Service metadata retrieved successfully.'
+                        message: 'Service metadata retrieved successfully.',
+                        showOutputChannelLink: true
                     }
                 }
             })
@@ -368,7 +374,7 @@ describe('Test Connection Action', () => {
             payload: { system: odataServiceSystem }
         });
 
-        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem);
+        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem, undefined);
         expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
         expect(postMessageMock).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -376,7 +382,94 @@ describe('Test Connection Action', () => {
                 payload: {
                     connectionStatus: {
                         connected: false,
-                        message: 'Service metadata not available.'
+                        message: 'Service metadata not available.',
+                        showOutputChannelLink: true
+                    }
+                }
+            })
+        );
+    });
+
+    it('should test generic_host connection with servicePath successfully', async () => {
+        const genericHostSystem = new BackendSystem({
+            name: 'Generic Host System',
+            systemType: 'OnPrem',
+            url: 'https://test-system.example.com',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'generic_host'
+        });
+
+        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        jest.spyOn(utils, 'hasServiceMetadata').mockResolvedValue(true);
+
+        const postMessageMock = jest.fn();
+        const panelContext = {
+            postMessage: postMessageMock,
+            isGuidedAnswersEnabled: false,
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn(),
+            disposePanel: jest.fn()
+        } as unknown as PanelContext;
+
+        await testSystemConnection(panelContext, {
+            type: 'TEST_CONNECTION',
+            payload: { system: genericHostSystem, servicePath: '/sap/opu/odata/sap/MY_SERVICE' }
+        });
+
+        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(genericHostSystem, '/sap/opu/odata/sap/MY_SERVICE');
+        expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
+        expect(postMessageMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'TEST_CONNECTION_STATUS',
+                payload: {
+                    connectionStatus: {
+                        connected: true,
+                        message: 'Service metadata retrieved successfully.',
+                        showOutputChannelLink: true
+                    }
+                }
+            })
+        );
+    });
+
+    it('should handle generic_host connection with servicePath failure', async () => {
+        const genericHostSystem = new BackendSystem({
+            name: 'Generic Host System',
+            systemType: 'OnPrem',
+            url: 'https://test-system.example.com',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'generic_host'
+        });
+
+        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        jest.spyOn(utils, 'hasServiceMetadata').mockRejectedValue(new Error('Metadata not found'));
+
+        const postMessageMock = jest.fn();
+        const panelContext = {
+            postMessage: postMessageMock,
+            isGuidedAnswersEnabled: false,
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn(),
+            disposePanel: jest.fn()
+        } as unknown as PanelContext;
+
+        await testSystemConnection(panelContext, {
+            type: 'TEST_CONNECTION',
+            payload: { system: genericHostSystem, servicePath: '/sap/opu/odata/sap/MY_SERVICE' }
+        });
+
+        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(genericHostSystem, '/sap/opu/odata/sap/MY_SERVICE');
+        expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
+        expect(postMessageMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'TEST_CONNECTION_STATUS',
+                payload: {
+                    connectionStatus: {
+                        connected: false,
+                        message: 'Service metadata not available.',
+                        showOutputChannelLink: true
                     }
                 }
             })
