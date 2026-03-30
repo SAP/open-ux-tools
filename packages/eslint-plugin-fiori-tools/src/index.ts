@@ -87,6 +87,57 @@ const testPathRelative =
         ? posix.join(webappPathRelative, 'test')
         : uniformUrl(relative(process.cwd(), pathMappingsAbsolute.test ?? join(process.cwd(), 'webapp/test')));
 
+// Base Fiori Tools rules (common across both configs)
+const baseFioriToolsRules = {
+    // Error rules (alphabetical)
+    '@sap-ux/fiori-tools/sap-no-absolute-component-path': 'error',
+    '@sap-ux/fiori-tools/sap-no-br-on-return': 'error',
+    '@sap-ux/fiori-tools/sap-no-commons-usage': 'error',
+    '@sap-ux/fiori-tools/sap-no-dynamic-style-insertion': 'error',
+    '@sap-ux/fiori-tools/sap-no-element-creation': 'error',
+    '@sap-ux/fiori-tools/sap-no-exec-command': 'error',
+    '@sap-ux/fiori-tools/sap-no-global-define': 'error',
+    '@sap-ux/fiori-tools/sap-no-global-event': 'error',
+    '@sap-ux/fiori-tools/sap-no-global-variable': 'error',
+    '@sap-ux/fiori-tools/sap-no-hardcoded-color': 'error',
+    '@sap-ux/fiori-tools/sap-no-hardcoded-url': 'error',
+    '@sap-ux/fiori-tools/sap-no-inner-html-write': 'error',
+    '@sap-ux/fiori-tools/sap-no-localstorage': 'error',
+    '@sap-ux/fiori-tools/sap-no-location-reload': 'error',
+    '@sap-ux/fiori-tools/sap-no-navigator': 'error',
+    '@sap-ux/fiori-tools/sap-no-override-rendering': 'error',
+    '@sap-ux/fiori-tools/sap-no-override-storage-prototype': 'error',
+    '@sap-ux/fiori-tools/sap-no-sessionstorage': 'error',
+    '@sap-ux/fiori-tools/sap-no-ui5base-prop': 'error',
+    // Warning rules (alphabetical)
+    '@sap-ux/fiori-tools/sap-bookmark-performance': 'warn',
+    '@sap-ux/fiori-tools/sap-browser-api-warning': 'warn',
+    '@sap-ux/fiori-tools/sap-cross-application-navigation': 'warn',
+    '@sap-ux/fiori-tools/sap-forbidden-window-property': 'warn',
+    '@sap-ux/fiori-tools/sap-message-toast': 'warn',
+    '@sap-ux/fiori-tools/sap-no-dom-access': 'warn',
+    '@sap-ux/fiori-tools/sap-no-dom-insertion': 'warn',
+    '@sap-ux/fiori-tools/sap-no-encode-file-service': 'warn',
+    '@sap-ux/fiori-tools/sap-no-global-selection': 'warn',
+    '@sap-ux/fiori-tools/sap-no-history-manipulation': 'warn',
+    '@sap-ux/fiori-tools/sap-no-inner-html-access': 'warn',
+    '@sap-ux/fiori-tools/sap-no-jquery-device-api': 'warn',
+    '@sap-ux/fiori-tools/sap-no-localhost': 'warn',
+    '@sap-ux/fiori-tools/sap-no-location-usage': 'warn',
+    '@sap-ux/fiori-tools/sap-no-proprietary-browser-api': 'warn',
+    '@sap-ux/fiori-tools/sap-no-ui5-prop-warning': 'warn',
+    '@sap-ux/fiori-tools/sap-timeout-usage': 'warn',
+    '@sap-ux/fiori-tools/sap-ui5-forms': 'warn',
+    '@sap-ux/fiori-tools/sap-ui5-global-eval': 'warn',
+    '@sap-ux/fiori-tools/sap-ui5-legacy-factories': 'warn',
+    '@sap-ux/fiori-tools/sap-ui5-legacy-jquerysap-usage': 'warn',
+    '@sap-ux/fiori-tools/sap-usage-basemastercontroller': 'warn',
+    // Off rules (alphabetical)
+    '@sap-ux/fiori-tools/sap-browser-api-error': 'off',
+    '@sap-ux/fiori-tools/sap-no-window-alert': 'off',
+    '@sap-ux/fiori-tools/sap-ui5-no-private-prop': 'off'
+} as Linter.RulesRecord;
+
 const prodConfig: Linter.Config[] = [
     {
         files: [`./${webappPathRelative}/**/*.js`, `./${webappPathRelative}/**/*.ts`],
@@ -116,53 +167,49 @@ const prodConfig: Linter.Config[] = [
 
         rules: {
             ...js.configs.recommended.rules,
-            // Error rules (alphabetical)
-            '@sap-ux/fiori-tools/sap-no-absolute-component-path': 'error',
-            '@sap-ux/fiori-tools/sap-no-br-on-return': 'error',
-            '@sap-ux/fiori-tools/sap-no-commons-usage': 'error',
-            '@sap-ux/fiori-tools/sap-no-dynamic-style-insertion': 'error',
-            '@sap-ux/fiori-tools/sap-no-element-creation': 'error',
-            '@sap-ux/fiori-tools/sap-no-exec-command': 'error',
-            '@sap-ux/fiori-tools/sap-no-global-define': 'error',
-            '@sap-ux/fiori-tools/sap-no-global-event': 'error',
-            '@sap-ux/fiori-tools/sap-no-global-variable': 'error',
-            '@sap-ux/fiori-tools/sap-no-hardcoded-color': 'error',
-            '@sap-ux/fiori-tools/sap-no-hardcoded-url': 'error',
-            '@sap-ux/fiori-tools/sap-no-inner-html-write': 'error',
-            '@sap-ux/fiori-tools/sap-no-localstorage': 'error',
-            '@sap-ux/fiori-tools/sap-no-location-reload': 'error',
-            '@sap-ux/fiori-tools/sap-no-navigator': 'error',
-            '@sap-ux/fiori-tools/sap-no-override-rendering': 'error',
-            '@sap-ux/fiori-tools/sap-no-override-storage-prototype': 'error',
-            '@sap-ux/fiori-tools/sap-no-sessionstorage': 'error',
-            '@sap-ux/fiori-tools/sap-no-ui5base-prop': 'error',
-            // Warning rules (alphabetical)
-            '@sap-ux/fiori-tools/sap-bookmark-performance': 'warn',
-            '@sap-ux/fiori-tools/sap-browser-api-warning': 'warn',
-            '@sap-ux/fiori-tools/sap-cross-application-navigation': 'warn',
-            '@sap-ux/fiori-tools/sap-forbidden-window-property': 'warn',
-            '@sap-ux/fiori-tools/sap-message-toast': 'warn',
-            '@sap-ux/fiori-tools/sap-no-dom-access': 'warn',
-            '@sap-ux/fiori-tools/sap-no-dom-insertion': 'warn',
-            '@sap-ux/fiori-tools/sap-no-encode-file-service': 'warn',
-            '@sap-ux/fiori-tools/sap-no-global-selection': 'warn',
-            '@sap-ux/fiori-tools/sap-no-history-manipulation': 'warn',
-            '@sap-ux/fiori-tools/sap-no-inner-html-access': 'warn',
-            '@sap-ux/fiori-tools/sap-no-jquery-device-api': 'warn',
-            '@sap-ux/fiori-tools/sap-no-localhost': 'warn',
-            '@sap-ux/fiori-tools/sap-no-location-usage': 'warn',
-            '@sap-ux/fiori-tools/sap-no-proprietary-browser-api': 'warn',
-            '@sap-ux/fiori-tools/sap-no-ui5-prop-warning': 'warn',
-            '@sap-ux/fiori-tools/sap-timeout-usage': 'warn',
-            '@sap-ux/fiori-tools/sap-ui5-forms': 'warn',
-            '@sap-ux/fiori-tools/sap-ui5-global-eval': 'warn',
-            '@sap-ux/fiori-tools/sap-ui5-legacy-factories': 'warn',
-            '@sap-ux/fiori-tools/sap-ui5-legacy-jquerysap-usage': 'warn',
-            '@sap-ux/fiori-tools/sap-usage-basemastercontroller': 'warn',
-            // Off rules (alphabetical)
-            '@sap-ux/fiori-tools/sap-browser-api-error': 'off',
-            '@sap-ux/fiori-tools/sap-no-window-alert': 'off',
-            '@sap-ux/fiori-tools/sap-ui5-no-private-prop': 'off'
+            ...baseFioriToolsRules
+        }
+    }
+];
+
+// Convert ESLint recommended rules to 'warn' for S/4HANA config
+const eslintRecommendedAsWarnings = Object.keys(js.configs.recommended.rules || {}).reduce((acc, key) => {
+    acc[key] = 'warn';
+    return acc;
+}, {} as Linter.RulesRecord);
+
+const prodConfigS4Hana: Linter.Config[] = [
+    {
+        files: [`./${webappPathRelative}/**/*.js`, `./${webappPathRelative}/**/*.ts`],
+
+        ignores: [
+            'target/**',
+            `${testPathRelative}/**`,
+            `${posix.join(webappPathRelative, 'localservice')}/**`, // Ignore everything in the 'localservice' folder
+            `!${posix.join(webappPathRelative, 'localservice')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${posix.join(webappPathRelative, 'localservice', 'mockserver.js')}`, // But DO ignore mockserver.js specifically
+            `${posix.join(webappPathRelative, 'localService')}/**`, // Ignore everything in the 'localService' folder
+            `!${posix.join(webappPathRelative, 'localService')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${posix.join(webappPathRelative, 'localService', 'mockserver.js')}`, // But DO ignore mockserver.js specifically
+            'backup/**',
+            '**/Gruntfile.js',
+            '**/changes_preview.js',
+            '**/changes_preview.ts',
+            '**/gulpfile.js',
+            '**/*.d.ts',
+            'test/**'
+        ],
+
+        languageOptions: {
+            parser: babelParser,
+            parserOptions: {
+                requireConfigFile: false
+            }
+        },
+
+        rules: {
+            ...eslintRecommendedAsWarnings,
+            ...baseFioriToolsRules
         }
     }
 ];
@@ -229,6 +276,29 @@ const typescriptConfig: Linter.Config[] = [
     }
 ];
 
+// Fiori language rules (for manifest.json, XML views, CDS files)
+const fioriLanguageConfig: Linter.Config[] = [
+    {
+        files: ['**/manifest.json', '**/*.xml', '**/*.cds'],
+        language: '@sap-ux/fiori-tools/fiori',
+        rules: {
+            // fiori tools specific rules
+            '@sap-ux/fiori-tools/sap-anchor-bar-visible': 'warn',
+            '@sap-ux/fiori-tools/sap-condensed-table-layout': 'warn',
+            '@sap-ux/fiori-tools/sap-flex-enabled': 'warn',
+            '@sap-ux/fiori-tools/sap-width-including-column-header': 'warn',
+            '@sap-ux/fiori-tools/sap-copy-to-clipboard': 'warn',
+            '@sap-ux/fiori-tools/sap-enable-export': 'warn',
+            '@sap-ux/fiori-tools/sap-enable-paste': 'warn',
+            '@sap-ux/fiori-tools/sap-creation-mode-for-table': 'warn',
+            '@sap-ux/fiori-tools/sap-state-preservation-mode': 'warn',
+            '@sap-ux/fiori-tools/sap-strict-uom-filtering': 'warn',
+            '@sap-ux/fiori-tools/sap-table-personalization': 'warn',
+            '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn'
+        }
+    }
+];
+
 // Named configs for easy consumption
 export const configs: Record<string, Linter.Config[]> = {
     // Recommended config for JavaScript & TypeScript projects (prod + test)
@@ -246,7 +316,6 @@ export const configs: Record<string, Linter.Config[]> = {
         ...prodConfig,
         ...testConfig
     ],
-    // Recommended for S/4HANA config for JavaScript & TypeScript projects
     'recommended-for-s4hana': [
         {
             plugins: {
@@ -259,26 +328,9 @@ export const configs: Record<string, Linter.Config[]> = {
         },
         ...commonConfig,
         ...typescriptConfig,
-        ...prodConfig,
+        ...prodConfigS4Hana,
         ...testConfig,
-        {
-            files: ['**/manifest.json', '**/*.xml', '**/*.cds'],
-            language: '@sap-ux/fiori-tools/fiori',
-            rules: {
-                '@sap-ux/fiori-tools/sap-anchor-bar-visible': 'warn',
-                '@sap-ux/fiori-tools/sap-condensed-table-layout': 'warn',
-                '@sap-ux/fiori-tools/sap-flex-enabled': 'warn',
-                '@sap-ux/fiori-tools/sap-width-including-column-header': 'warn',
-                '@sap-ux/fiori-tools/sap-copy-to-clipboard': 'warn',
-                '@sap-ux/fiori-tools/sap-enable-export': 'warn',
-                '@sap-ux/fiori-tools/sap-enable-paste': 'warn',
-                '@sap-ux/fiori-tools/sap-creation-mode-for-table': 'warn',
-                '@sap-ux/fiori-tools/sap-state-preservation-mode': 'warn',
-                '@sap-ux/fiori-tools/sap-strict-uom-filtering': 'warn',
-                '@sap-ux/fiori-tools/sap-table-personalization': 'warn',
-                '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn'
-            }
-        }
+        ...fioriLanguageConfig
     ]
 };
 
