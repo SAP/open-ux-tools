@@ -39,7 +39,7 @@
         "yaml": "2.8.3"
     },
     "devDependencies": {
-        "jest-extended": "6.0.0",
+        "jest-extended": "7.0.0",
         "memfs": "3.4.13",
         "unionfs": "4.6.0",
         "dotenv": "17.3.1"
