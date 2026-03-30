@@ -11,12 +11,6 @@ import {
 } from './modelUtils';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
 
-enum FieldDataType {
-    Contact = 'Contact',
-    ChartDefinition = 'ChartDefinition',
-    Guid = 'Guid'
-}
-
 /**
  * Extracts feature data for object pages from the application model.
  *
@@ -246,7 +240,7 @@ function getFieldGroupQualifier(formAggregation: AggregationItem): string | unde
  * @returns true if the section seems to contain a microChart, false otherwise
  */
 function isSectionMicroChart(section: SectionItem): boolean {
-    return section?.schema?.dataType === FieldDataType.ChartDefinition;
+    return section?.schema?.dataType === 'ChartDefinition';
 }
 
 /**
