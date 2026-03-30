@@ -1,4 +1,4 @@
-import { LogLevel } from '@sap-ux/logger';
+import { LogLevel, ToolsLogger } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../../../src/types';
 import ui5Task from '../../../src/ui5';
 import { task } from '../../../src';
@@ -70,11 +70,13 @@ describe('ui5', () => {
         ).resolves.not.toThrow();
     });
 
-    test('unrecognised string log level falls back to Info without throwing', async () => {
+    test('unrecognised string log level falls back to Info and warns with valid options', async () => {
         mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+        const warnSpy = jest.spyOn(ToolsLogger.prototype, 'warn');
         const configWithStringLog = { ...configuration, log: 'unknown' as unknown as LogLevel };
-        await expect(
-            task({ workspace, options: { projectName, configuration: configWithStringLog } } as any)
-        ).resolves.not.toThrow();
+        await task({ workspace, options: { projectName, configuration: configWithStringLog } } as any);
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Invalid log level 'unknown'"));
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Change logging level to debug your issue'));
+        warnSpy.mockRestore();
     });
 });

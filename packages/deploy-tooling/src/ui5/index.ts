@@ -1,6 +1,7 @@
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { TaskParameters } from '@ui5/builder';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../types';
 import { NAME } from '../types';
 import { deploy, validateConfig } from '../base';
@@ -13,18 +14,24 @@ import { replaceEnvVariables } from '@sap-ux/ui5-config';
  * ui5.yaml delivers all scalar values as strings (e.g. "verbose"), but LogLevel is
  * a numeric enum. A numeric value is returned as-is; a string is matched
  * case-insensitively against the enum keys. Falls back to LogLevel.Info if
- * the value is absent or unrecognised.
+ * the value is absent or unrecognised, and logs a warning with valid options.
  *
  * @param value - raw value from options.configuration.log
+ * @param logger - logger instance used to warn on unrecognised values
  * @returns resolved LogLevel
  */
-function resolveLogLevel(value: string | number | undefined): LogLevel {
+function resolveLogLevel(value: string | number | undefined, logger: Logger): LogLevel {
     if (typeof value === 'number') {
         return value;
     }
     if (typeof value === 'string') {
         const key = Object.keys(LogLevel).find((k) => k.toLowerCase() === value.toLowerCase());
-        return key !== undefined ? LogLevel[key as keyof typeof LogLevel] : LogLevel.Info;
+        if (key !== undefined) {
+            return LogLevel[key as keyof typeof LogLevel];
+        }
+        logger.warn(
+            `Invalid log level '${value}'. Change logging level to debug your issue\n\t(see examples https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-tooling#configuration-with-logging-enabled)`
+        );
     }
     return LogLevel.Info;
 }
@@ -38,7 +45,11 @@ function resolveLogLevel(value: string | number | undefined): LogLevel {
  */
 async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): Promise<void> {
     loadEnvConfig();
-    const logLevel = resolveLogLevel(options.configuration?.log as string | number | undefined);
+    const bootstrapLogger = new ToolsLogger({
+        transports: [new UI5ToolingTransport({ moduleName: `${NAME} ${options.projectName}` })],
+        logLevel: LogLevel.Info
+    });
+    const logLevel = resolveLogLevel(options.configuration?.log as string | number | undefined, bootstrapLogger);
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: `${NAME} ${options.projectName}` })],
         logLevel
