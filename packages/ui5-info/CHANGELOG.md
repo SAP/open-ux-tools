@@ -1,5 +1,13 @@
 # @sap-ux/ui5-info
 
+## 0.13.16
+
+### Patch Changes
+
+- a41533f: chore(ui5-info): upgrade axios 1.13.5 → 1.13.6
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+
 ## 0.13.15
 
 ### Patch Changes

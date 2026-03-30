@@ -54,9 +54,7 @@ export interface ManifestControllerExtension {
 }
 
 export interface InternalControllerExtension
-    extends ControllerExtension,
-        ManifestControllerExtension,
-        InternalCustomElement {
+    extends ControllerExtension, ManifestControllerExtension, InternalCustomElement {
     /**
      * Derived full extension key/id in manifest "sap.ui.controllerExtensions" object.
      */

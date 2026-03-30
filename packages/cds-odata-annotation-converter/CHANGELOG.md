@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.15
+
+### Patch Changes
+
+- a41533f: chore(cds-odata-annotation-converter): upgrade i18next 25.8.18 → 25.8.20
+
 ## 0.7.14
 
 ### Patch Changes

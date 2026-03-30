@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.4
+
+### Patch Changes
+
+- a41533f: chore(ui-components): upgrade runtime dependencies (@fluentui/react 8.125.5, sanitize-html 2.17.2)
+
 ## 2.1.3
 
 ### Patch Changes

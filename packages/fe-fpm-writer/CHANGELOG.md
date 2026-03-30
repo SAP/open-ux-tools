@@ -1,5 +1,35 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.16
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/fiori-annotation-api@0.9.38
+
+## 0.43.15
+
+### Patch Changes
+
+- a41533f: chore(fe-fpm-writer): reformat interface extends clauses (Prettier upgrade autofix)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/fiori-annotation-api@0.9.37
+    - @sap-ux/i18n@0.3.10
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+
+## 0.43.14
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/fiori-annotation-api@0.9.36
+
 ## 0.43.13
 
 ### Patch Changes
