@@ -3901,8 +3901,8 @@ importers:
         specifier: 3.0.2
         version: 3.0.2
       '@types/vscode':
-        specifier: 1.110.0
-        version: 1.110.0
+        specifier: 1.102.0
+        version: 1.102.0
       '@vscode/vsce':
         specifier: 3.7.1
         version: 3.7.1
@@ -9748,6 +9748,9 @@ packages:
 
   '@types/vinyl@2.0.12':
     resolution: {integrity: sha512-Sr2fYMBUVGYq8kj3UthXFAu5UN6ZW+rYr4NACjZQJvHvj+c8lYv0CahmZ2P/r7iUkN44gGUBwqxZkrKXYPb7cw==}
+
+  '@types/vscode@1.102.0':
+    resolution: {integrity: sha512-V9sFXmcXz03FtYTSUsYsu5K0Q9wH9w9V25slddcxrh5JgORD14LpnOA7ov0L9ALi+6HrTjskLJ/tY5zeRF3TFA==}
 
   '@types/vscode@1.110.0':
     resolution: {integrity: sha512-AGuxUEpU4F4mfuQjxPPaQVyuOMhs+VT/xRok1jiHVBubHK7lBRvCuOMZG0LKUwxncrPorJ5qq/uil3IdZBd5lA==}
@@ -25103,6 +25106,8 @@ snapshots:
     dependencies:
       '@types/expect': 1.20.4
       '@types/node': 20.19.37
+
+  '@types/vscode@1.102.0': {}
 
   '@types/vscode@1.110.0': {}
 
