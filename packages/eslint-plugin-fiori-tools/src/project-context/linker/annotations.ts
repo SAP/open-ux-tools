@@ -1,4 +1,4 @@
-import type { AliasInformation, Element, MetadataElement } from '@sap-ux/odata-annotation-core';
+import type { AliasInformation, Element, ElementChild, MetadataElement } from '@sap-ux/odata-annotation-core';
 import {
     Edm,
     elementsWithName,
@@ -120,7 +120,11 @@ function processReferenceFacetRecord(
         return undefined;
     }
 
-    const properties = getRecordPropertyValue(record);
+    let properties = getRecordPropertyValue(record);
+    if (!properties['ID'] || !properties['Target']) {
+        properties = getRecordContentPropertyValue(record.content);
+    }
+
     const id = properties['ID']?.value;
     const target = properties['Target'];
 
@@ -258,6 +262,12 @@ interface RecordProperty {
     kind: Edm.String | Edm.AnnotationPath;
 }
 
+const findContentByName = (content: ElementChild[], name: string): ElementChild | undefined =>
+    content.find((c) => (c as Element).name === name);
+
+const getElementText = (element: ElementChild): string | undefined =>
+    (element as Element).content.find((c) => c.type === 'text')?.text;
+
 /**
  * Extracts property values from a record element.
  *
@@ -272,22 +282,6 @@ function getRecordPropertyValue(record: Element): Record<string, RecordProperty>
         if (child.name === Edm.PropertyValue) {
             const name = getElementAttributeValue(child, Edm.Property);
             const annotationPathAttribute = getElementAttribute(child, Edm.AnnotationPath);
-            if (!annotationPathAttribute) {
-                const cdsAnnotationPathAttribute = child.content.find((c) => (c as Element).name === 'AnnotationPath');
-                if (cdsAnnotationPathAttribute) {
-                    const annotationValue = (cdsAnnotationPathAttribute as Element).content.find(
-                        (c) => c.type === 'text'
-                    )?.text;
-                    if (annotationValue) {
-                        properties[name] = {
-                            name,
-                            value: annotationValue,
-                            kind: Edm.AnnotationPath
-                        };
-                        continue;
-                    }
-                }
-            }
             if (annotationPathAttribute) {
                 properties[name] = {
                     name,
@@ -297,25 +291,53 @@ function getRecordPropertyValue(record: Element): Record<string, RecordProperty>
                 continue;
             }
             const stringAttribute = getElementAttribute(child, Edm.String);
-            if (!stringAttribute) {
-                const cdsStringAttribute = child.content.find((c) => (c as Element).name === 'String');
-                if (cdsStringAttribute) {
-                    const textValue = (cdsStringAttribute as Element).content.find((c) => c.type === 'text')?.text;
-                    if (textValue) {
-                        properties[name] = {
-                            name,
-                            value: textValue,
-                            kind: Edm.String
-                        };
-                    }
-                }
-            }
             if (stringAttribute) {
                 properties[name] = {
                     name,
                     value: stringAttribute.value,
                     kind: Edm.String
                 };
+            }
+        }
+    }
+    return properties;
+}
+
+/**
+ * Extracts property values from a record content elements.
+ *
+ * @param content - The record content elements to extract properties from
+ */
+function getRecordContentPropertyValue(content: ElementChild[]): Record<string, RecordProperty> {
+    const properties: Record<string, RecordProperty> = {};
+    for (const child of content) {
+        if (child.type !== ELEMENT_TYPE) {
+            continue;
+        }
+        if (child.name === Edm.PropertyValue) {
+            const name = getElementAttributeValue(child, Edm.Property);
+            const annotationPathContent = findContentByName(child.content, 'AnnotationPath');
+            if (annotationPathContent) {
+                const annotationValue = getElementText(annotationPathContent);
+                if (annotationValue) {
+                    properties[name] = {
+                        name,
+                        value: annotationValue,
+                        kind: Edm.AnnotationPath
+                    };
+                    continue;
+                }
+            }
+            const cdsStringAttribute = findContentByName(child.content, 'String');
+            if (cdsStringAttribute) {
+                const textValue = getElementText(cdsStringAttribute);
+                if (textValue) {
+                    properties[name] = {
+                        name,
+                        value: textValue,
+                        kind: Edm.String
+                    };
+                }
             }
         }
     }
