@@ -205,6 +205,9 @@ function getHeaderSectionFormFields(section: HeaderSectionItem): HeaderSectionFe
  * @returns field data including its identifier, bound property, and target annotation for OPA5 tests; can be undefined if the field type is not supported or necessary information is missing
  */
 function getFormFieldData(field: FieldItem, formAggregation: AggregationItem): FormField | undefined {
+    if (!field.name) {
+        return undefined;
+    }
     let [_, propertyName, targetAnnotation]: (string | undefined)[] = field.name.split('::');
 
     // fall back to Value property in case of malformed or otherwise irregular field name
