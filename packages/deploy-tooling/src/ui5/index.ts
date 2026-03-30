@@ -18,15 +18,15 @@ import { replaceEnvVariables } from '@sap-ux/ui5-config';
  * @param value - raw value from options.configuration.log
  * @returns resolved LogLevel
  */
-function resolveLogLevel(value: LogLevel | undefined): LogLevel {
-    if (value === undefined || value === null) {
-        return LogLevel.Info;
-    }
+function resolveLogLevel(value: string | number | undefined): LogLevel {
     if (typeof value === 'number') {
         return value;
     }
-    const key = Object.keys(LogLevel).find((k) => k.toLowerCase() === (value as unknown as string).toLowerCase());
-    return key !== undefined ? (LogLevel[key as keyof typeof LogLevel] as unknown as LogLevel) : LogLevel.Info;
+    if (typeof value === 'string') {
+        const key = Object.keys(LogLevel).find((k) => k.toLowerCase() === value.toLowerCase());
+        return key !== undefined ? LogLevel[key as keyof typeof LogLevel] : LogLevel.Info;
+    }
+    return LogLevel.Info;
 }
 
 /**
@@ -38,7 +38,7 @@ function resolveLogLevel(value: LogLevel | undefined): LogLevel {
  */
 async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): Promise<void> {
     loadEnvConfig();
-    const logLevel = resolveLogLevel(options.configuration?.log);
+    const logLevel = resolveLogLevel(options.configuration?.log as string | number | undefined);
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: `${NAME} ${options.projectName}` })],
         logLevel
