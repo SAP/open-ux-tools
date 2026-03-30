@@ -7,7 +7,7 @@ import type { Window } from 'types/global';
  */
 ((): void => {
     const initScript = document.getElementById('init-cdm');
-    const basePath = initScript?.getAttribute('data-base-path') ?? '';
+    const basePath = initScript?.dataset.basePath ?? '';
 
     (window as unknown as Window)['sap-ushell-config'] = {
         defaultRenderer: 'fiori2',
