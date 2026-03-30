@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 0.4.1
+
+### Patch Changes
+
+- e976fdb: bump vscode version to align with @types/vscode
+
+## 0.4.0
+
+### Minor Changes
+
+- 2d20f19: adds support for the generic host connection type
+
 ## 0.3.11
 
 ### Patch Changes

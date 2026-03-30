@@ -4,3 +4,4 @@ export * from './vscode';
 export * from './webview';
 export * from './systemActions';
 export * from './errorMapping';
+export * from './connectionExistsError';
