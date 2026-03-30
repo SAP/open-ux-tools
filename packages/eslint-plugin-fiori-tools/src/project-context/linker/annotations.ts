@@ -440,3 +440,45 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
     }
     return current;
 }
+
+export interface ObjectPageLike {
+    sections: Array<{ type: string }>;
+    lookup: { [key: string]: any[] | undefined };
+}
+
+/**
+ * Links an object page header section with its field group annotation.
+ * Used by both FE v2 and v4 linkers.
+ *
+ * @param section - Header section node to link
+ * @param page - The object page being linked
+ */
+export function collectHeaderSections(section: HeaderSectionNode, page: ObjectPageLike): void {
+    if (section.type !== 'header-section') {
+        return;
+    }
+    const fieldGroup = section.children[0];
+    if (fieldGroup.type !== 'field-group') {
+        return;
+    }
+    const linkedSection = {
+        type: section.type,
+        annotation: section,
+        configuration: {},
+        children: [] as (typeof linkedFieldGroup)[]
+    };
+    const linkedFieldGroup = {
+        type: fieldGroup.type,
+        annotation: fieldGroup,
+        configuration: {},
+        children: [] as never[]
+    };
+    linkedSection.children.push(linkedFieldGroup);
+    for (const control of [linkedSection, linkedFieldGroup] as const) {
+        if (control.type === 'header-section') {
+            page.sections.push(control);
+        }
+        page.lookup[control.type] ??= [];
+        page.lookup[control.type]!.push(control);
+    }
+}
