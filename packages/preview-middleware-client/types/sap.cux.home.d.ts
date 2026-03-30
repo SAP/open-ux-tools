@@ -51,3 +51,8 @@ declare module 'sap/ushell/ui/shell/SysInfoBar' {
         constructor(id?: string, settings?: SysInfoBarSettings);
     }
 }
+
+declare module "sap/cux/home/App" {
+    import Element from "sap/ui/core/Element";
+    export default class App extends Element {}
+}

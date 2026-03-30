@@ -17,7 +17,10 @@ import Title from 'sap/m/Title';
 import GridContainer from 'sap/f/GridContainer';
 import UI5Element from 'sap/ui/core/Element';
 import SysInfoBar from 'sap/ushell/ui/shell/SysInfoBar';
-import { URLHelper } from 'sap/m/library';
+import { GenericTileScope, URLHelper } from 'sap/m/library';
+import GenericTile from 'sap/m/GenericTile';
+import App from 'sap/cux/home/App';
+import Event from 'sap/ui/base/Event';
 
 const CARDS_GAP = 16;
 const MIN_CARD_WIDTH = 304;
@@ -326,6 +329,11 @@ export default class MyHomeController extends Controller {
         } else {
             Log.error('Card generator path is not available.');
         }
+    }
+
+    onAppsLoaded(event: Event<{ apps: App[], tiles: GenericTile[] }>) {
+        const tiles = event.getParameter('tiles');
+        tiles.forEach(tile => tile.setScope(GenericTileScope.Display));
     }
 
     onTerminalWarningsButtonPress(): void {}

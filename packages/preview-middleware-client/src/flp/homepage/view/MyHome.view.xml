@@ -43,7 +43,7 @@
             </m:OverflowToolbar>
         </m:customHeader>
 
-        <AppsContainer id="appsContainer">
+        <AppsContainer id="appsContainer" appsLoaded=".onAppsLoaded">
             <FavAppPanel id="favoriteApps" />
         </AppsContainer>
 
