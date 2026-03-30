@@ -177,6 +177,11 @@ type FLPAppVisualization = {
                 }[];
             };
         };
+        'sap.ui': {
+            icons: {
+                icon: string;
+            };
+        };
     };
 };
 

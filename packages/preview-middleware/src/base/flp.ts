@@ -731,7 +731,7 @@ export class FlpSandbox {
         if (this.rta?.endpoints) {
             for (const editor of this.rta.endpoints) {
                 const editorPath = editor.path.startsWith('/') ? editor.path : `/${editor.path}`;
-                paths.push({ path: editorPath, type: 'editor', name: 'Runtime Adaptation' });
+                paths.push({ path: editorPath, type: 'editor', name: 'Runtime Adaptation', icon: 'sap-icon://edit' });
             }
         }
 
@@ -739,7 +739,7 @@ export class FlpSandbox {
         if (this.test) {
             for (const testConfig of this.test) {
                 const merged = mergeTestConfigDefaults(testConfig);
-                paths.push({ path: merged.path, type: 'test', name: merged.framework });
+                paths.push({ path: merged.path, type: 'test', name: merged.framework, icon: 'sap-icon://lab' });
             }
         }
 
@@ -748,7 +748,7 @@ export class FlpSandbox {
             const cgPath = this.cardGenerator.path.startsWith('/')
                 ? this.cardGenerator.path
                 : `/${this.cardGenerator.path}`;
-            paths.push({ path: cgPath, type: 'editor', name: 'Card Generator' });
+            paths.push({ path: cgPath, type: 'editor', name: 'Card Generator', icon: 'sap-icon://business-objects-experience' });
         }
 
         return paths;

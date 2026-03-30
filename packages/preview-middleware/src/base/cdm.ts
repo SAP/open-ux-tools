@@ -45,6 +45,7 @@ function createUrlTarget(url: string): FlpTarget {
  * @param options.object - semantic object
  * @param options.action - semantic action
  * @param options.title - tile title
+ * @param options.icon - tile icon
  * @param options.subTitle - tile subtitle
  * @param options.url - application URL
  * @param options.flpTarget - FLP target configuration (inbound or URL based)
@@ -56,6 +57,7 @@ function addCdmEntry(
         object,
         action,
         title,
+        icon,
         subTitle,
         url,
         flpTarget
@@ -64,6 +66,7 @@ function addCdmEntry(
         object: string;
         action: string;
         title: string;
+        icon: string;
         subTitle: string;
         url: string;
         flpTarget: FlpTarget;
@@ -79,7 +82,8 @@ function addCdmEntry(
         businessApp: appId,
         vizConfig: {
             'sap.app': { title, subTitle },
-            'sap.flp': { target: flpTarget }
+            'sap.flp': { target: flpTarget },
+            'sap.ui': { icons: { icon } }
         }
     };
 
@@ -131,6 +135,7 @@ export function generateCdm(apps: TemplateConfig['apps'] = {}, additionalConfig:
             action,
             title,
             subTitle: description,
+            icon: 'sap-icon://vds-file',
             url,
             flpTarget: createInboundTarget(appId, `${object}-${action}`)
         });
@@ -147,6 +152,7 @@ export function generateCdm(apps: TemplateConfig['apps'] = {}, additionalConfig:
                     action,
                     title,
                     subTitle: configPath.name,
+                    icon: configPath.icon,
                     url,
                     flpTarget: createUrlTarget(targetUrl)
                 });

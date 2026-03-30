@@ -47,6 +47,7 @@ export type PreviewUrls = {
 
 export type CdmPreviewUrl = PreviewUrls & {
     name: string;
+    icon: string;
 };
 
 export type CdmAdditionalConfig = {
