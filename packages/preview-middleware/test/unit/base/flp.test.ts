@@ -864,6 +864,136 @@ describe('FlpSandbox', () => {
                 .expect(200);
             expect(response.text).toMatchSnapshot();
         });
+
+        test('test/flp.html UI5 1.108 removes flexExtensionPointEnabled from applicationDependencies', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.108.51' }]
+                });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1'
+            };
+            const url = 'http://sap.example';
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            const adpToolingMock = {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {
+                        'sap.ui5': {
+                            flexExtensionPointEnabled: true,
+                            dependencies: { libs: {} }
+                        }
+                    },
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn()
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
+
+            const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
+            expect(appDeps?.manifest?.['sap.ui5']?.flexExtensionPointEnabled).toBeUndefined();
+        });
+
+        test('test/flp.html UI5 1.142 preserves flexExtensionPointEnabled in applicationDependencies', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.142.9' }]
+                });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1'
+            };
+            const url = 'http://sap.example';
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            const adpToolingMock = {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {
+                        'sap.ui5': {
+                            flexExtensionPointEnabled: true,
+                            dependencies: { libs: {} }
+                        }
+                    },
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn()
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
+
+            const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
+            expect(appDeps?.manifest?.['sap.ui5']?.flexExtensionPointEnabled).toBe(true);
+        });
     });
 
     describe('router with enableCardGenerator', () => {
@@ -1081,6 +1211,89 @@ describe('FlpSandbox', () => {
                     expect.objectContaining({
                         key: 'HELLO',
                         value: 'Hello World'
+                    })
+                ])
+            );
+        });
+
+        test('should handle bundleName (CAP project style) i18n config', async () => {
+            createPropertiesI18nEntriesMock.mockClear();
+            const newI18nEntry = [{ key: 'CAP_KEY', value: 'CAP Value' }];
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            // bundleName should start with the app ID prefix for correct path resolution
+            manifest['sap.app'].i18n = {
+                bundleName: 'test.fe.v2.app.i18n.i18n',
+                supportedLocales: ['en', 'de'],
+                fallbackLocale: 'en'
+            };
+            await flp.init(manifest);
+
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
+            // bundleName "test.fe.v2.app.i18n.i18n" should convert to "i18n/i18n.properties" by removing the app ID prefix
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n_de.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'CAP_KEY',
+                        value: 'CAP Value'
+                    })
+                ])
+            );
+        });
+
+        test('should use fallbackLocale when no locale provided', async () => {
+            createPropertiesI18nEntriesMock.mockClear();
+            const newI18nEntry = [{ key: 'FALLBACK_KEY', value: 'Fallback Value' }];
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            manifest['sap.app'].i18n = {
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: ['en', 'de'],
+                fallbackLocale: 'en'
+            };
+            await flp.init(manifest);
+
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n_en.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'FALLBACK_KEY',
+                        value: 'Fallback Value'
+                    })
+                ])
+            );
+        });
+
+        test('should use first supportedLocale when no locale and no fallbackLocale', async () => {
+            createPropertiesI18nEntriesMock.mockClear();
+            const newI18nEntry = [{ key: 'FIRST_LOCALE_KEY', value: 'First Locale Value' }];
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            manifest['sap.app'].i18n = {
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: ['fr', 'de']
+            };
+            await flp.init(manifest);
+
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n_fr.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'FIRST_LOCALE_KEY',
+                        value: 'First Locale Value'
                     })
                 ])
             );

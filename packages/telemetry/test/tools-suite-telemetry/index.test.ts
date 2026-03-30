@@ -1,6 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import * as memfs from 'memfs';
-import { processToolsSuiteTelemetry } from '../../src/tooling-telemetry';
+import { processToolsSuiteTelemetry, getIdeType } from '../../src/tooling-telemetry';
 import { ToolingTelemetrySettings } from '../../src/tooling-telemetry/config-state';
 import fs from 'node:fs';
 import { join } from 'node:path';
@@ -56,7 +56,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.devspace': '',
             'cmn.internalFeatures': 'external',
             internalVsExternal: 'external',
-            'cmn.nodeVersion': expect.any(String)
+            'cmn.nodeVersion': expect.any(String),
+            'cmn.ideType': expect.any(String)
         });
     });
 
@@ -72,7 +73,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.devspace': '',
             'cmn.internalFeatures': 'external',
             internalVsExternal: 'external',
-            'cmn.nodeVersion': 'unknown'
+            'cmn.nodeVersion': 'unknown',
+            'cmn.ideType': expect.any(String)
         });
         expect(cmdRunnerSpy).toHaveBeenCalledWith('node', ['-v']);
         cmdRunnerSpy.mockRestore();
@@ -100,7 +102,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.devspace': 'SAP Fiori',
             'cmn.internalFeatures': 'external',
             internalVsExternal: 'external',
-            'cmn.nodeVersion': expect.any(String)
+            'cmn.nodeVersion': expect.any(String),
+            'cmn.ideType': 'appstudio'
         });
     });
 
@@ -127,7 +130,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.appstudio': true,
             'cmn.devspace': 'SAP Fiori',
             'cmn.internalFeatures': 'external',
-            'cmn.nodeVersion': expect.any(String)
+            'cmn.nodeVersion': expect.any(String),
+            'cmn.ideType': 'appstudio'
         });
 
         commonProperties = await processToolsSuiteTelemetry(undefined);
@@ -137,7 +141,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.appstudio': true,
             'cmn.devspace': 'SAP Fiori',
             'cmn.internalFeatures': 'external',
-            'cmn.nodeVersion': expect.any(String)
+            'cmn.nodeVersion': expect.any(String),
+            'cmn.ideType': 'appstudio'
         });
 
         ToolingTelemetrySettings.internalFeature = true;
@@ -148,7 +153,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.appstudio': true,
             'cmn.devspace': 'SAP Fiori',
             'cmn.internalFeatures': 'internal',
-            'cmn.nodeVersion': expect.any(String)
+            'cmn.nodeVersion': expect.any(String),
+            'cmn.ideType': 'appstudio'
         });
 
         ToolingTelemetrySettings.internalFeature = false;
@@ -159,7 +165,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.appstudio': true,
             'cmn.devspace': 'SAP Fiori',
             'cmn.internalFeatures': 'external',
-            'cmn.nodeVersion': expect.any(String)
+            'cmn.nodeVersion': expect.any(String),
+            'cmn.ideType': 'appstudio'
         });
     });
 
@@ -200,7 +207,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.templateId': '',
             'cmn.templateVersion': '',
             'cmn.appLanguage': '',
-            'cmn.applicationType': 'SAP Fiori elements'
+            'cmn.applicationType': 'SAP Fiori elements',
+            'cmn.ideType': expect.any(String)
         });
     });
 
@@ -245,7 +253,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.appLanguage': '',
             'cmn.templateId': '',
             'cmn.templateVersion': '',
-            'cmn.applicationType': 'SAP Fiori elements'
+            'cmn.applicationType': 'SAP Fiori elements',
+            'cmn.ideType': expect.any(String)
         });
     });
 
@@ -294,7 +303,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.nodeVersion': expect.any(String),
             'cmn.templateId': '',
             'cmn.templateVersion': '',
-            'cmn.applicationType': 'SAP Fiori elements'
+            'cmn.applicationType': 'SAP Fiori elements',
+            'cmn.ideType': expect.any(String)
         });
     });
 
@@ -339,7 +349,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.templateId': '',
             'cmn.templateVersion': '',
             'cmn.appLanguage': 'JavaScript',
-            'cmn.applicationType': 'SAP Fiori elements'
+            'cmn.applicationType': 'SAP Fiori elements',
+            'cmn.ideType': expect.any(String)
         });
     });
 
@@ -384,7 +395,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.templateId': '',
             'cmn.templateVersion': '',
             'cmn.appLanguage': '',
-            'cmn.applicationType': 'SAPUI5 freestyle'
+            'cmn.applicationType': 'SAPUI5 freestyle',
+            'cmn.ideType': expect.any(String)
         });
     });
 
@@ -425,7 +437,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.templateId': '',
             'cmn.templateVersion': '',
             'cmn.appLanguage': '',
-            'cmn.applicationType': 'SAPUI5 freestyle'
+            'cmn.applicationType': 'SAPUI5 freestyle',
+            'cmn.ideType': expect.any(String)
         });
     });
 
@@ -470,7 +483,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.templateId': '@sap/generator-fiori:basic',
             'cmn.templateVersion': '1.7.1',
             'cmn.appLanguage': '',
-            'cmn.applicationType': 'SAPUI5 freestyle'
+            'cmn.applicationType': 'SAPUI5 freestyle',
+            'cmn.ideType': expect.any(String)
         });
     });
 
@@ -512,7 +526,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.templateId': '',
             'cmn.templateVersion': '',
             'cmn.appLanguage': '',
-            'cmn.applicationType': 'Fiori Reuse'
+            'cmn.applicationType': 'Fiori Reuse',
+            'cmn.ideType': expect.any(String)
         });
     });
 
@@ -551,7 +566,8 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.templateVersion': '1.1.57',
             'cmn.toolsId': '421a7e6d-4507-4f66-9369-f80bdd3c6877',
             'cmn.appLanguage': '',
-            'cmn.applicationType': 'Fiori Adaptation'
+            'cmn.applicationType': 'Fiori Adaptation',
+            'cmn.ideType': expect.any(String)
         });
     });
 
@@ -593,7 +609,203 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.templateVersion': '',
             'cmn.toolsId': 'NO_TOOLS_ID',
             'cmn.appLanguage': '',
-            'cmn.applicationType': 'Fiori Adaptation'
+            'cmn.applicationType': 'Fiori Adaptation',
+            'cmn.ideType': expect.any(String)
         });
+    });
+});
+
+describe('getIdeType', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+        process.env = { ...originalEnv };
+        // Clear all VSCode-related env vars
+        delete process.env.VSCODE_PID;
+        delete process.env.VSCODE_CWD;
+        delete process.env.TERM_PROGRAM;
+        delete process.env.CURSOR_TRACE_ID;
+        delete process.env.CODE_SERVER_SESSION;
+        delete process.env.VSCODE_APPNAME;
+    });
+
+    afterAll(() => {
+        process.env = originalEnv;
+    });
+
+    it('should return "appstudio" when running in SAP Business Application Studio', () => {
+        isAppStudioMock.mockReturnValue(true);
+        expect(getIdeType()).toBe('appstudio');
+    });
+
+    it('should return "vscode" when VSCODE_PID is set', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        expect(getIdeType()).toBe('vscode');
+    });
+
+    it('should return "vscode" when TERM_PROGRAM is vscode', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.TERM_PROGRAM = 'vscode';
+        expect(getIdeType()).toBe('vscode');
+    });
+
+    it('should return "vscode-insiders" when VSCODE_CWD contains "code - insiders"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/Applications/Visual Studio Code - Insiders.app/Contents';
+        expect(getIdeType()).toBe('vscode-insiders');
+    });
+
+    it('should return "vscode-insiders" when VSCODE_CWD contains Windows-style "code insiders" path', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD =
+            'C:\\Users\\user\\AppData\\Local\\Programs\\Microsoft VS Code Insiders\\resources\\app';
+        expect(getIdeType()).toBe('vscode-insiders');
+    });
+
+    it('should return "vscode-insiders" when TERM_PROGRAM is vscode-insiders', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.TERM_PROGRAM = 'vscode-insiders';
+        expect(getIdeType()).toBe('vscode-insiders');
+    });
+
+    it('should return "cursor" when CURSOR_TRACE_ID is set', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.CURSOR_TRACE_ID = 'some-trace-id';
+        expect(getIdeType()).toBe('cursor');
+    });
+
+    it('should return "cursor" when VSCODE_CWD contains "cursor"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/Applications/Cursor.app/Contents';
+        expect(getIdeType()).toBe('cursor');
+    });
+
+    it('should return "cursor" when VSCODE_CWD contains Windows-style cursor path', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = 'C:\\Users\\user\\AppData\\Local\\Programs\\cursor\\resources\\app';
+        expect(getIdeType()).toBe('cursor');
+    });
+
+    it('should return "windsurf" when VSCODE_CWD contains "windsurf"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/Applications/Windsurf.app/Contents';
+        expect(getIdeType()).toBe('windsurf');
+    });
+
+    it('should return "windsurf" when VSCODE_CWD contains Windows-style windsurf path', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = 'C:\\Users\\user\\AppData\\Local\\Programs\\Windsurf\\resources\\app';
+        expect(getIdeType()).toBe('windsurf');
+    });
+
+    it('should return "windsurf" when VSCODE_CWD contains "codeium"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/home/user/.codeium/windsurf';
+        expect(getIdeType()).toBe('windsurf');
+    });
+
+    it('should return "unknown" when no VSCode environment is detected (CLI/MCP)', () => {
+        isAppStudioMock.mockReturnValue(false);
+        // No VSCode-related env vars set - simulates Node.js CLI or MCP server
+        expect(getIdeType()).toBe('unknown');
+    });
+
+    it('should return "unknown" when only unrelated TERM_PROGRAM is set', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.TERM_PROGRAM = 'iTerm.app';
+        expect(getIdeType()).toBe('unknown');
+    });
+
+    it('should return "antigravity" when VSCODE_CWD contains "antigravity"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/Applications/Antigravity.app/Contents';
+        expect(getIdeType()).toBe('antigravity');
+    });
+
+    it('should return "trae" when VSCODE_CWD contains "trae"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/Applications/Trae.app/Contents';
+        expect(getIdeType()).toBe('trae');
+    });
+
+    it('should return "kiro" when VSCODE_CWD contains "kiro"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/Applications/Kiro.app/Contents';
+        expect(getIdeType()).toBe('kiro');
+    });
+
+    it('should return "vscodium" when VSCODE_CWD contains "vscodium"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/Applications/VSCodium.app/Contents';
+        expect(getIdeType()).toBe('vscodium');
+    });
+
+    it('should return "vscodium" when VSCODE_CWD contains "codium"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/usr/share/codium/bin';
+        expect(getIdeType()).toBe('vscodium');
+    });
+
+    it('should return "code-server" when VSCODE_CWD contains "code-server"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/home/user/.local/lib/code-server';
+        expect(getIdeType()).toBe('code-server');
+    });
+
+    it('should return "code-server" when CODE_SERVER_SESSION is set', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.CODE_SERVER_SESSION = 'session-id';
+        expect(getIdeType()).toBe('code-server');
+    });
+
+    it('should return "vscode" when VSCODE_PID is set with a non-matching VSCODE_CWD', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/opt/editors/my-custom-vscode/';
+        expect(getIdeType()).toBe('vscode');
+    });
+
+    it('should return "cursor" when VSCODE_APPNAME is "Cursor"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_APPNAME = 'Cursor';
+        expect(getIdeType()).toBe('cursor');
+    });
+
+    it('should return "windsurf" when VSCODE_APPNAME is "Windsurf"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_APPNAME = 'Windsurf';
+        expect(getIdeType()).toBe('windsurf');
+    });
+
+    it('should return "vscode-insiders" when VSCODE_APPNAME contains "insiders"', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_APPNAME = 'Visual Studio Code - Insiders';
+        expect(getIdeType()).toBe('vscode-insiders');
+    });
+
+    it('should not false-positive on "insiders" in an unrelated VSCODE_CWD path', () => {
+        isAppStudioMock.mockReturnValue(false);
+        process.env.VSCODE_PID = '12345';
+        process.env.VSCODE_CWD = '/home/user/projects/insiders-project';
+        expect(getIdeType()).toBe('vscode');
     });
 });

@@ -27,7 +27,7 @@
     },
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "i18next": "25.8.20",
+        "i18next": "25.10.10",
         "pluralize": "8.0.0",
         "reflect-metadata": "0.2.2"
     },
@@ -38,7 +38,7 @@
         "@types/pluralize": "0.0.33",
         "@types/qs": "6.15.0",
         "fast-check": "2.25.0",
-        "jest-extended": "6.0.0",
+        "jest-extended": "7.0.0",
         "memfs": "3.4.13",
         "unionfs": "4.6.0"
     },

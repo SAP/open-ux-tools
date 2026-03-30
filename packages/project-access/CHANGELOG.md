@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.35.17
+
+### Patch Changes
+
+- b66e827: Enhance `getCapServiceName` to return service by ignoring prefix for service URL in parameter `datasourceUri`.
+
 ## 1.35.16
 
 ### Patch Changes
