@@ -45,6 +45,10 @@
     flex-shrink: 1;
 }
 
+.sapCuxGroupDetailDialog .sapMIBar .sapMBarChild.sapMBtn {
+    display: none;
+}
+
 /* Mobile */
 @media (min-width: 320px) and (max-width: 599px) {
     :root {
