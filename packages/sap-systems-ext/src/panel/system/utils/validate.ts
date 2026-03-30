@@ -37,10 +37,10 @@ export async function validateSystemName(
     const systemService = await getBackendSystemService();
     const allSystems = await systemService.getAll({
         includeSensitiveData: false,
-        backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+        backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service', 'generic_host'] }
     });
-    const newSystemName = newName.trim();
-    const nameExists = allSystems.some((sys) => sys.name.toLowerCase() === newSystemName.toLowerCase());
+    const newSystemName = newName.trim().toLowerCase();
+    const nameExists = allSystems.some((sys) => sys.name.toLowerCase() === newSystemName);
 
     if (nameExists) {
         if (panelViewType === SystemPanelViewType.Create || panelViewType === SystemPanelViewType.Import) {

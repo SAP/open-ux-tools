@@ -107,6 +107,17 @@ describe('Test the panel action utils', () => {
                 validateSystemName('Existing System 2 ', 'Existing System 1', SystemPanelViewType.View)
             ).rejects.toBe('This connection name already exists. Choose a different name.');
         });
+
+        it('should allow changing case of current system name when editing (case-insensitive comparison)', async () => {
+            systemServiceGetAllMock.mockResolvedValue([
+                { name: 'existing system 1', url: 'https://existing.com', systemType: 'OnPrem' }
+            ]);
+
+            // Should allow renaming "existing system 1" to "Existing System 1" (same name, different case)
+            expect(await validateSystemName('Existing System 1', 'existing system 1', SystemPanelViewType.View)).toBe(
+                true
+            );
+        });
     });
 
     describe('validateSystemUrl', () => {
