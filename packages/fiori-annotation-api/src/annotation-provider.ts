@@ -219,18 +219,3 @@ function getAliasInfo(
     }
     return aliasInformation;
 }
-
-/**
- * Normalizes a URL by replacing backslashes with forward slashes and removing leading slashes.
- *
- * @param url - The URL to normalize.
- * @returns The normalized URL.
- */
-
-// NOSONAR: Commented code kept for future CDS implementation reference
-// function uniformUrl(url: string): string {
-//     return url
-//         .replaceAll(/\\/g, '/')
-//         .replaceAll(/\/\//g, '/')
-//         .replaceAll(/(?:^\/)/g, '');
-// }
