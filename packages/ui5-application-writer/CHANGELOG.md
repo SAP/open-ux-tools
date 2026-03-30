@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 1.8.2
+
+### Patch Changes
+
+- a41533f: chore(ui5-application-writer): upgrade runtime dependencies (@ui5/manifest 1.84.0, i18next 25.8.20)
+- Updated dependencies [a41533f]
+    - @sap-ux/ui5-config@0.30.1
+
 ## 1.8.1
 
 ### Patch Changes

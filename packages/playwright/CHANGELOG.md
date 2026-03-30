@@ -1,5 +1,13 @@
 # @sap-ux-private/playwright
 
+## 0.2.13
+
+### Patch Changes
+
+- a41533f: fix(playwright): fix invalid @param JSDoc tags in interface property comments
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+
 ## 0.2.12
 
 ### Patch Changes

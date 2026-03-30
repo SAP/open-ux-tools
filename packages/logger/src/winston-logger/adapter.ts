@@ -55,9 +55,10 @@ const ui5ToolingFormat = (moduleName: string): Format =>
         format.colorize(),
         format.label({ label: moduleName }),
         format.printf(({ level, message, label }) => {
+            const lbl = label as string | undefined;
             let msg = typeof message === 'string' ? message : inspect(message);
-            msg = msg.split(/\r?\n/).join(`\n${level} ${chalk.magenta(label)} `);
-            return `${level} ${chalk.magenta(label)} ${msg}`;
+            msg = msg.split(/\r?\n/).join(`\n${level} ${chalk.magenta(lbl)} `);
+            return `${level} ${chalk.magenta(lbl)} ${msg}`;
         })
     );
 const decorateLevel = (level: string): string => {
@@ -93,7 +94,7 @@ const consoleFormat = format.combine(
     format.printf(({ timestamp, level, message, label, labelColor, ...meta }) => {
         const msg = typeof message === 'string' ? message : inspect(message);
         const lvl = decorateLevel(level);
-        return `${timestamp} ${lvl} ${decorateLabel(label, labelColor)}: ${msg} ${
+        return `${timestamp} ${lvl} ${decorateLabel(label as string | undefined, labelColor as string | undefined)}: ${msg} ${
             Object.keys(meta).length ? inspect(meta) : ''
         }`;
     })

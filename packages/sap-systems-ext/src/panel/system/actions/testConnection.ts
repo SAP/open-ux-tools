@@ -34,21 +34,25 @@ import SystemsLogger from '../../../utils/logger';
  */
 export async function testSystemConnection(context: PanelContext, action: TestConnection): Promise<void> {
     const { postMessage, isGuidedAnswersEnabled } = context;
-    const { system } = action.payload;
+    const { system, servicePath } = action.payload;
 
     await postMessage(loadingTestConnectionInfo());
     logTestTelemetry(TestConnectionStatus.STARTED, system.systemType);
 
-    const validationResult = validateSystemInfo(system);
+    const validationResult = validateSystemInfo(system, servicePath);
     if (typeof validationResult === 'string') {
-        await postMessage(connectionStatusMsg({ connectionStatus: { connected: false, message: validationResult } }));
+        await postMessage(
+            connectionStatusMsg({
+                connectionStatus: { connected: false, message: validationResult, showOutputChannelLink: false }
+            })
+        );
         return;
     }
 
     if (system.connectionType === 'abap_catalog') {
         await testCatalog(system, isGuidedAnswersEnabled, postMessage);
-    } else if (system.connectionType === 'odata_service') {
-        await testODataService(system, postMessage);
+    } else if (system.connectionType === 'odata_service' || system.connectionType === 'generic_host') {
+        await testODataService(system, postMessage, servicePath);
     }
 
     try {
@@ -96,10 +100,15 @@ async function testCatalog(
  *
  * @param system - the backend system
  * @param postMessage - function to post message to the webview
+ * @param servicePath - optional explicit service path
  */
-async function testODataService(system: BackendSystem, postMessage: (msg: unknown) => void): Promise<void> {
+async function testODataService(
+    system: BackendSystem,
+    postMessage: (msg: unknown) => void,
+    servicePath?: string
+): Promise<void> {
     try {
-        await hasServiceMetadata(system);
+        await hasServiceMetadata(system, servicePath);
         postConnectionStatus({ connected: true, message: t('info.serviceMetadata'), postMessage });
         logTestTelemetry(TestConnectionStatus.SUCCEED, system.systemType);
     } catch (e) {
@@ -136,7 +145,12 @@ function postConnectionStatus({
     message?: string;
     guidedAnswerLink?: IActionCalloutDetail;
 }): void {
-    postMessage(connectionStatusMsg({ connectionStatus: { connected, catalogResults, message }, guidedAnswerLink }));
+    postMessage(
+        connectionStatusMsg({
+            connectionStatus: { connected, catalogResults, message, showOutputChannelLink: true },
+            guidedAnswerLink
+        })
+    );
 }
 
 /**
