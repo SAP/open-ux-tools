@@ -20,14 +20,6 @@ import {
     setI18nTitle
 } from '../../../src/flp/init';
 
-Object.defineProperty(window, 'location', {
-    value: {
-        ...window.location,
-        reload: jest.fn()
-    },
-    writable: true
-});
-
 describe('flp/init', () => {
     afterEach(() => {
         sapMock.ushell.Container.getServiceAsync.mockReset();
@@ -210,23 +202,16 @@ describe('flp/init', () => {
 
     describe('init', () => {
         const reloadSpy = jest.fn();
-        const location = window.location;
         beforeEach(() => {
             sapMock.ushell.Container.attachRendererCreatedEvent.mockReset();
             sapMock.ui.require.mockReset();
             jest.clearAllMocks();
 
-            Object.defineProperty(window, 'location', {
-                value: {
-                    reload: reloadSpy
-                }
-            });
+            (window as any).__locationImpl.reload = reloadSpy;
         });
 
         afterEach(() => {
-            Object.defineProperty(window, 'location', {
-                value: location
-            });
+            (window as any).__locationImpl.reload = (window as any).__locationImplOriginalReload;
         });
 
         test('nothing configured', async () => {
@@ -371,7 +356,7 @@ describe('flp/init', () => {
                         callback({}); // WorkspaceConnector
                         return;
                     }
-                    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+                     
                     await callback(() => Promise.reject('Reload triggered'));
                     resolve(undefined);
                 });

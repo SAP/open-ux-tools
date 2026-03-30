@@ -243,7 +243,7 @@ export default class MyHomeController extends Controller {
             }).addStyleClass('homeNewsContainer');
 
             const page = view.byId('page') as Page;
-            page?.insertContent(newsContainer, 0);
+            page?.insertContent(newsContainer, 1);
         }
     }
 
