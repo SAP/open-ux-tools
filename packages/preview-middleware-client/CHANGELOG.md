@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.10
+
+### Patch Changes
+
+- 8408e10: enhancedHomePage - initialize cdm before bootstrap
+
 ## 0.19.1
 
 ### Patch Changes
