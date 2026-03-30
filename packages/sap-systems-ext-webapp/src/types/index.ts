@@ -7,8 +7,13 @@ export enum LoadingState {
     Loading = 'loading',
     Error = 'error'
 }
+
+export interface SystemInfo extends BackendSystem {
+    servicePath?: string;
+}
+
 export interface SystemState {
-    systemInfo?: BackendSystem;
+    systemInfo?: SystemInfo;
     unSaved?: boolean;
     loadingState?: LoadingState;
     testConnectionLoadingState?: LoadingState;

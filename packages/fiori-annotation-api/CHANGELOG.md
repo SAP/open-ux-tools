@@ -1,5 +1,25 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.38
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/cds-odata-annotation-converter@0.7.15
+
+## 0.9.37
+
+### Patch Changes
+
+- a41533f: chore(fiori-annotation-api): upgrade vscode-languageserver-textdocument 1.0.11 → 1.0.12
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/cds-odata-annotation-converter@0.7.15
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+
 ## 0.9.36
 
 ### Patch Changes

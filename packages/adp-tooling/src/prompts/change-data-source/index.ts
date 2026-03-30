@@ -6,6 +6,27 @@ import { filterDataSourcesByType } from '@sap-ux/project-access';
 import { validateEmptyString, isDataSourceURI } from '@sap-ux/project-input-validator';
 
 /**
+ * Checks if the selected service has server-side annotations.
+ * A server-side annotation is detected when:
+ * 1. The service has annotations referenced in its settings
+ * 2. The referenced annotation data source has a URI starting with '/'
+ *
+ * @param {Record<string, ManifestNamespace.DataSource>} dataSources - All data sources from the manifest.
+ * @param {string} serviceId - The selected service ID.
+ * @returns {boolean} True if server-side annotations are detected for the selected service.
+ */
+function hasServerSideAnnotations(
+    dataSources: Record<string, ManifestNamespace.DataSource>,
+    serviceId: string
+): boolean {
+    const annotationId = dataSources[serviceId]?.settings?.annotations?.[0];
+    if (!annotationId) {
+        return false;
+    }
+    return !!dataSources[annotationId]?.uri?.startsWith('/');
+}
+
+/**
  * Validates the OData Source URI prompt.
  *
  * @param value The value to validate.
@@ -94,7 +115,8 @@ export function getPrompts(
             guiOptions: {
                 hint: t('prompts.oDataAnnotationSourceURITooltip')
             },
-            validate: validatePromptAnnotationURI
+            validate: validatePromptAnnotationURI,
+            when: (answers: ChangeDataSourceAnswers) => hasServerSideAnnotations(dataSources, answers.id)
         } as InputQuestion<ChangeDataSourceAnswers>
     ];
 }

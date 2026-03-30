@@ -133,7 +133,7 @@ async function prepareRun(cmd: Command) {
 
     // Handle empty config when not passed in
     const taskConfig = options.config ? await getDeploymentConfig(options.config) : ({} as AbapDeployConfig);
-    const config = await mergeConfig(taskConfig, options);
+    const config = await mergeConfig(taskConfig, options, logger);
     if (logLevel >= LogLevel.Debug) {
         logger.debug(getConfigForLogging(config));
     }

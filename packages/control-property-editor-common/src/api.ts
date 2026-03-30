@@ -93,8 +93,11 @@ export type FloatControlProperty = ControlPropertyBase<typeof FLOAT_VALUE_TYPE, 
 
 export type StringControlProperty = ControlPropertyBase<typeof STRING_VALUE_TYPE, string, typeof INPUT_EDITOR_TYPE>;
 
-export interface StringControlPropertyWithOptions
-    extends ControlPropertyBase<typeof STRING_VALUE_TYPE, string, typeof DROPDOWN_EDITOR_TYPE> {
+export interface StringControlPropertyWithOptions extends ControlPropertyBase<
+    typeof STRING_VALUE_TYPE,
+    string,
+    typeof DROPDOWN_EDITOR_TYPE
+> {
     options: { key: string; text: string }[];
 }
 

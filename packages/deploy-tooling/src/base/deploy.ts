@@ -5,6 +5,7 @@ import type {
     LayeredRepositoryService
 } from '@sap-ux/axios-extension';
 import { isAxiosError, TransportRequestService } from '@sap-ux/axios-extension';
+import { LogLevel } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
 import { writeFileSync } from 'node:fs';
 import type { AbapDeployConfig } from '../types';
@@ -61,7 +62,7 @@ async function handleError(
     }
     logger.error(`${command === tryDeploy ? 'Deployment' : 'Undeployment'} has failed.`);
     logger.debug(getConfigForLogging(config));
-    if (!config.verbose) {
+    if (!config.verbose && !(config.log !== undefined && config.log >= LogLevel.Debug)) {
         logger.error(
             'Change logging level to debug your issue\n\t(see examples https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-tooling#configuration-with-logging-enabled)'
         );
@@ -173,10 +174,17 @@ async function axiosErrorRetryHandler(
  * @returns service returns the UI5 ABAP Repository service
  */
 function getDeployService<T extends Ui5AbapRepositoryService | LayeredRepositoryService>(
-    factoryFn: (alias?: string) => T,
+    factoryFn: ((alias?: string) => T) | undefined,
     config: AbapDeployConfig,
     logger: Logger
 ): T {
+    if (typeof factoryFn !== 'function') {
+        throw new TypeError(
+            `The '${config.target?.destination}' destination is not recognized as an ABAP system. ` +
+                `Ensure the destination has one of the following properties configured: ` +
+                `WebIDEUsage including 'odata_abap', a 'sap-client' value, 'sap-platform' set to 'abap', or 'ProxyType' set to 'OnPremise'.`
+        );
+    }
     const service = factoryFn(config.target?.service);
     service.log = logger;
     if (!config.strictSsl) {
@@ -302,7 +310,7 @@ async function tryDeploy(
                     )}`
                 );
             }
-            const service = getDeployService(provider.getUi5AbapRepository.bind(provider), config, logger);
+            const service = getDeployService(provider.getUi5AbapRepository?.bind(provider), config, logger);
             await service.deploy({
                 archive,
                 bsp: config.app,
@@ -365,7 +373,7 @@ async function tryUndeploy(provider: AbapServiceProvider, config: AbapDeployConf
                 transport: config.app.transport
             });
         } else if (isBspConfig(config.app)) {
-            const service = getDeployService(provider.getUi5AbapRepository.bind(provider), config, logger);
+            const service = getDeployService(provider.getUi5AbapRepository?.bind(provider), config, logger);
             await service.undeploy({ bsp: config.app, testMode: config.test });
         } else {
             throwConfigMissingError('app-name');
