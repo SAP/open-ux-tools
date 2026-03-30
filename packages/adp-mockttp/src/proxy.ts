@@ -7,6 +7,8 @@ import { getDestination } from '@sap-cloud-sdk/connectivity';
 import { logger } from './utils/logger';
 import path from 'path';
 import fs from 'fs';
+import { getStorage } from './storage';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 
 export const getProxy = once(getProxyInternal);
 
@@ -27,12 +29,12 @@ async function getProxyInternal(): Promise<Mockttp> {
 
     logger.info(`Destination: ${JSON.stringify(destination)}`);
 
-    await initRoutes(proxy);
+    await initBtpRoutes(proxy);
 
     return proxy;
 }
 
-async function initRoutes(proxy: Mockttp): Promise<void> {
+async function initBtpRoutes(proxy: Mockttp): Promise<void> {
     await proxy
         .forGet('/adp-download')
         .times(Infinity)
@@ -47,6 +49,44 @@ async function initRoutes(proxy: Mockttp): Promise<void> {
                     'content-disposition': 'attachment; filename="responses.json"'
                 },
                 body: file
+            };
+        });
+
+    await proxy
+        .forGet(/^\/adp-upload\/[^/]+\/[^/]+\.json$/)
+        .times(Infinity)
+        .thenCallback(async (req) => {
+            // Extract params from regex match
+            const match = req.url.match(/\/adp-upload\/([^/]+)\/([^/]+)/);
+            if (!match) {
+                return {
+                    statusCode: 400,
+                    body: 'Invalid path, expected /adp-upload/:testName/:fileName'
+                };
+            }
+
+            const testName = match[1];
+            const fileName = match[2];
+
+            logger.info(`Upload: ${testName} ${fileName}`);
+
+            const responsesPath = path.join(process.cwd(), RESPONSES_JSON_PATH);
+            const file = fs.readFileSync(responsesPath);
+
+            const { storage, bucket } = await getStorage();
+
+            await storage?.send(
+                new PutObjectCommand({
+                    Bucket: bucket,
+                    Key: `${testName}/${fileName}`,
+                    Body: file.toString('utf-8'),
+                    ContentType: 'application/json'
+                })
+            );
+
+            return {
+                statusCode: 200,
+                body: 'Uploaded'
             };
         });
 }

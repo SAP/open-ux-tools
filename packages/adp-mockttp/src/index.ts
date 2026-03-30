@@ -8,7 +8,7 @@ import { MOCK_DATA_FOLDER_PATH, MOCK_SERVER_PORT } from './server-constants';
 import { getCliParamValueByName } from './utils/cli-utils';
 import { createMockDataFolderIfNeeded, normalizeZipFileContent } from './utils/file-utils';
 import { logger } from './utils/logger';
-import { getSapSystemPort } from './utils/sap-system-utils';
+import { getSapSystemPort, isBtpEnvironment } from './utils/sap-system-utils';
 import fs from 'fs';
 import { CompletedRequest, Request } from 'mockttp';
 import { getReplayServer } from './replay-server';
@@ -123,7 +123,7 @@ async function startInRecordMode(): Promise<void> {
             };
         });
 
-    await getEndpoint();
+    const endpoint = await getEndpoint();
 }
 
 async function startInReplayMode(): Promise<void> {
