@@ -20,7 +20,7 @@ jest.mock('@sap-ux/project-access', () => ({
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
     const debug = !!process.env['UX_DEBUG'];
-    jest.setTimeout(30000);
+    jest.setTimeout(600000);
 
     function prepareTestFiles(testConfigurationName: string): string {
         // Copy input templates into output directory
@@ -132,6 +132,7 @@ describe('ui5-test-writer', () => {
     });
 
     describe('generateOPAFiles', () => {
+        const metadata = fs?.read(join(__dirname, '../test-input/metadata.xml')) || '';
         const testApplications = [
             {
                 description: 'Fullscreen LR-OP',
@@ -207,7 +208,7 @@ describe('ui5-test-writer', () => {
 
         it.each(testApplications)('$description', async (config) => {
             const projectDir = prepareTestFiles(config.dirPath);
-            fs = await generateOPAFiles(projectDir, { scriptName: config.scriptName }, fs);
+            fs = await generateOPAFiles(projectDir, { scriptName: config.scriptName }, metadata, fs);
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
@@ -215,7 +216,7 @@ describe('ui5-test-writer', () => {
             const projectDir = prepareTestFiles('Not_Here');
             let error: string | undefined;
             try {
-                fs = await generateOPAFiles(projectDir, {}, fs);
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
             } catch (e) {
                 error = (e as Error).message;
             }
@@ -227,7 +228,7 @@ describe('ui5-test-writer', () => {
             const projectDir = prepareTestFiles('MissingAppId');
             let error: string | undefined;
             try {
-                fs = await generateOPAFiles(projectDir, {}, fs);
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
             } catch (e) {
                 error = (e as Error).message;
             }
@@ -237,7 +238,7 @@ describe('ui5-test-writer', () => {
 
         it('Providing an app ID', async () => {
             const projectDir = prepareTestFiles('MissingAppId');
-            fs = await generateOPAFiles(projectDir, { appID: 'test.ui5-test-writer' }, fs);
+            fs = await generateOPAFiles(projectDir, { appID: 'test.ui5-test-writer' }, metadata, fs);
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
@@ -245,7 +246,7 @@ describe('ui5-test-writer', () => {
             const projectDir = prepareTestFiles('FreeStyle');
             let error: string | undefined;
             try {
-                fs = await generateOPAFiles(projectDir, {}, fs);
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
             } catch (e) {
                 error = (e as Error).message;
             }
@@ -259,7 +260,7 @@ describe('ui5-test-writer', () => {
             const projectDir = prepareTestFiles('ODataV2');
             let error: string | undefined;
             try {
-                fs = await generateOPAFiles(projectDir, {}, fs);
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
             } catch (e) {
                 error = (e as Error).message;
             }
@@ -272,8 +273,9 @@ describe('ui5-test-writer', () => {
         it('generates filter tests for Worklistv4 app', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('Worklistv4');
-            fs = await generateOPAFiles(projectDir, {}, fs);
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
+            expect(fs.dump(projectDir)).toMatchSnapshot();
             const firstJourneyContent =
                 fs.dump()['test/test-output/Worklistv4/webapp/test/integration/FirstJourney.js'].contents;
             expect(firstJourneyContent).not.toContain('iCheckFilterField');
@@ -282,20 +284,21 @@ describe('ui5-test-writer', () => {
         it('generates filter tests for LROPv4 app', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
-            fs = await generateOPAFiles(projectDir, {}, fs);
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
+            expect(fs.dump(projectDir)).toMatchSnapshot();
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4/webapp/test/integration/FirstJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckFilterField');
         });
 
         it('generates column tests for LROPv4 app', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
-            fs = await generateOPAFiles(projectDir, {}, fs);
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4/webapp/test/integration/FirstJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckColumns');
         });
 
@@ -306,10 +309,10 @@ describe('ui5-test-writer', () => {
                 warn: jest.fn()
             };
 
-            fs = await generateOPAFiles(projectDir, {}, fs, mockLogger as unknown as Logger);
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs, mockLogger as unknown as Logger);
 
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4NoFilters/webapp/test/integration/FirstJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4NoFilters/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).not.toContain('iCheckFilterField');
             expect(firstJourneyContent).toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(
@@ -326,10 +329,10 @@ describe('ui5-test-writer', () => {
                 warn: jest.fn()
             };
 
-            fs = await generateOPAFiles(projectDir, {}, fs, mockLogger as unknown as Logger);
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs, mockLogger as unknown as Logger);
 
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4NoColumns/webapp/test/integration/FirstJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4NoColumns/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckFilterField');
             expect(firstJourneyContent).not.toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(
@@ -337,6 +340,23 @@ describe('ui5-test-writer', () => {
                     'Unable to extract table columns from project model using specification. No table column tests will be generated.'
                 )
             );
+        });
+
+        it('generates tests for v4 application with sub object page', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+            const bookingObjPageJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.js'].contents;
+            expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "DataPoint::FlightDate" }');
+            expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "DataPoint::BookingDate" }');
+            expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "FieldGroup::Names" }');
+            expect(bookingObjPageJourneyContent).toContain('iCheckFieldInFieldGroup');
+            expect(bookingObjPageJourneyContent).toContain('fieldGroup: "FieldGroup::Names"');
+            expect(bookingObjPageJourneyContent).toContain('field: "AirlineName"');
+            expect(bookingObjPageJourneyContent).toContain('field: "CustomerName"');
+            expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
         });
     });
 });

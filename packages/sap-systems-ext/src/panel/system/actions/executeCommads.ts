@@ -1,5 +1,5 @@
 import type { PanelContext } from '../../../types/system';
-import type { CreateFioriProject, OpenGuidedAnswers } from '@sap-ux/sap-systems-ext-types';
+import type { CreateFioriProject, OpenExistingSystem, OpenGuidedAnswers } from '@sap-ux/sap-systems-ext-types';
 import { commands } from 'vscode';
 import { t } from '../../../utils';
 import { ExtensionCommands, SystemCommands } from '../../../utils/constants';
@@ -24,6 +24,17 @@ export const createFioriProject = async (_context: PanelContext, action: CreateF
  */
 export const openOutputChannel = async (): Promise<void> => {
     await commands.executeCommand(ExtensionCommands.OpenOutputChannel);
+};
+
+/**
+ * Opens the panel of an existing system.
+ *
+ * @param _context - the panel context (unused)
+ * @param action - action containing the system URL and client
+ */
+export const openExistingSystem = async (_context: PanelContext, action: OpenExistingSystem): Promise<void> => {
+    const { url, client } = action.payload;
+    await commands.executeCommand(SystemCommands.Show, { url, client });
 };
 
 /**

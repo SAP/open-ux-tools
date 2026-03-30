@@ -1,5 +1,22 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.29
+
+### Patch Changes
+
+- a41533f: chore(ui5-proxy-middleware): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/ui5-config@0.30.1
+
+## 1.6.28
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+
 ## 1.6.27
 
 ### Patch Changes

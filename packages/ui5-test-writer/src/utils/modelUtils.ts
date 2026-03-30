@@ -1,6 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
 import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type {
@@ -9,31 +10,82 @@ import type {
     TreeModel,
     ApplicationModel
 } from '@sap/ux-specification/dist/types/src/parser';
-import type { FeatureData } from '../types';
+import type { AppFeatures, FPMFeatures } from '../types';
+import { getObjectPageFeatures, getObjectPages } from './objectPageUtils';
+import { getFilterFieldNames, getListReportFeatures } from './listReportUtils';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
+    schema: {
+        keys: { name: string; value: string }[];
+    };
+}
+
+export interface FieldItem extends AggregationItem {
+    name: string;
+}
+
+export interface SectionItem extends AggregationItem {
+    title?: string;
+    custom?: boolean;
+    name?: string;
+    schema: {
+        keys: { name: string; value: string }[];
+        dataType?: string;
+    };
+}
+
+export interface HeaderSectionItem extends SectionItem {
+    properties: {
+        stashed: {
+            freeText: string | boolean;
+        };
+    };
+}
+
+export interface PageWithModelV4WithProperties extends PageWithModelV4 {
+    routePattern?: string;
 }
 
 /**
- * Gets feature data from the application model using ux-specification.
+ * Gets app features from the application model using ux-specification.
  *
  * @param basePath - the absolute target path where the application will be generated
  * @param fs - optional mem-fs editor instance
  * @param log - optional logger instance
+ * @param metadata - optional metadata for the OPA test generation
  * @returns feature data extracted from the application model
  */
-export async function getFeatureData(basePath: string, fs?: Editor, log?: Logger): Promise<FeatureData> {
-    const featureData: FeatureData = {};
+export async function getAppFeatures(
+    basePath: string,
+    fs?: Editor,
+    log?: Logger,
+    metadata?: string
+): Promise<AppFeatures> {
+    const featureData: AppFeatures = {};
+
     let listReportPage: PageWithModelV4 | null = null;
+    let objectPages: PageWithModelV4[] | null = null;
+    let fpmPage: PageWithModelV4 | null = null;
+    let projectMetadata = metadata;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
         // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
         const appAccess = await createApplicationAccess(basePath, { fs: fs });
         const specification = await appAccess.getSpecification<Specification>();
-        const appResult: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
-        listReportPage = appResult.applicationModel ? getListReportPage(appResult.applicationModel) : listReportPage;
+        const appModel: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
+
+        if (!projectMetadata) {
+            const metadataPath = appAccess.project?.apps['']?.services?.mainService?.local;
+            if (metadataPath) {
+                projectMetadata = fs?.read(metadataPath);
+            }
+        }
+
+        listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
+        objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
+        fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel, log) : fpmPage;
     } catch (error) {
         log?.warn(
             'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
@@ -42,14 +94,27 @@ export async function getFeatureData(basePath: string, fs?: Editor, log?: Logger
         return featureData;
     }
 
-    if (!listReportPage) {
-        log?.warn('List Report page not found in application model. Dynamic tests will not be generated.');
+    if (!listReportPage && !objectPages && !fpmPage) {
+        log?.warn('Pages not found in application model. Dynamic tests will not be generated.');
         return featureData;
     }
 
     // attempt to get individual feature data
-    featureData.filterBarItems = getFilterFieldNames(listReportPage.model, log);
-    featureData.tableColumns = getTableColumnData(listReportPage.model, log);
+    try {
+        if (listReportPage) {
+            featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata);
+        }
+        if (objectPages) {
+            log?.warn('Extracting Object Page features from application model');
+            featureData.objectPages = await getObjectPageFeatures(objectPages, listReportPage?.name, log);
+            log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
+        }
+        if (fpmPage) {
+            featureData.fpm = getFPMFeatures(fpmPage, log);
+        }
+    } catch (error) {
+        // do noting here, as individual feature extraction methods already log warnings
+    }
 
     return featureData;
 }
@@ -93,39 +158,13 @@ function transformTableColumns(columnAggregations: Record<string, any>): Record<
 }
 
 /**
- * Retrieves filter field names from the page model using ux-specification.
- *
- * @param pageModel - the tree model containing filter bar definitions
- * @param log - optional logger instance
- * @returns - an array of filter field names
- */
-function getFilterFieldNames(pageModel: TreeModel, log?: Logger): string[] {
-    let filterBarItems: string[] = [];
-
-    try {
-        const filterBarAggregations = getFilterFields(pageModel);
-        filterBarItems = getSelectionFieldItems(filterBarAggregations);
-    } catch (error) {
-        log?.debug(error);
-    }
-
-    if (!filterBarItems?.length) {
-        log?.warn(
-            'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
-        );
-    }
-
-    return filterBarItems;
-}
-
-/**
  * Retrieves table column data from the page model using ux-specification.
  *
  * @param pageModel - the tree model containing table column definitions
  * @param log - optional logger instance
  * @returns - a map of table columns
  */
-function getTableColumnData(
+export function getTableColumnData(
     pageModel: TreeModel,
     log?: Logger
 ): Record<string, Record<string, string | number | boolean>> {
@@ -148,36 +187,55 @@ function getTableColumnData(
 }
 
 /**
- * Retrieves all List Report definitions from the given application model.
+ * Retrieves List Report definition from the given application model.
+ * Only a single List Report page is expected, so the first match is returned.
  *
  * @param applicationModel - The application model containing page definitions.
- * @returns An array of List Report definitions.
+ * @returns An object containing the key and page definition of the List Report, or null if not found.
  */
-export function getListReportPage<T = ApplicationModel['pages'][string]>(applicationModel: ApplicationModel): T | null {
+export function getListReportPage(applicationModel: ApplicationModel): PageWithModelV4 | null {
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
-        if (page.pageType === 'ListReport') {
-            return page as T;
+        if (page.pageType === PageTypeV4.ListReport) {
+            page.name = pageKey; // store page key as name for later identification
+            return page;
         }
     }
     return null;
 }
 
 /**
- * Retrieves all Object Page definitions from the given application model.
+ * Retrieves all FPM Custom Page definitions from the given application model.
  *
  * @param applicationModel - The application model containing page definitions.
- * @returns An array of Object Page definitions.
+ * @param log - optional logger instance
+ * @returns An array of FPM Custom Page definitions.
  */
-export function getObjectPages<T = ApplicationModel['pages'][string]>(applicationModel: ApplicationModel): T[] {
-    const objectPages: T[] = [];
+export function getFPMPage(applicationModel: ApplicationModel, log?: Logger): PageWithModelV4 | null {
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
-        if (page.pageType === 'ObjectPage') {
-            objectPages.push(page as T);
+        log?.warn('pageType:' + page.pageType);
+        if (page.pageType === PageTypeV4.FPMCustomPage) {
+            page.name = pageKey; // store page key as name for later identification
+            return page;
         }
     }
-    return objectPages;
+    return null;
+}
+
+/**
+ * Gets FPM features from the page model using ux-specification.
+ *
+ * @param page - the FPM Custom Page containing model definitions
+ * @param log - optional logger instance
+ * @returns feature data extracted from the FPM Custom Page model
+ */
+export function getFPMFeatures(page: PageWithModelV4, log?: Logger): FPMFeatures {
+    return {
+        name: page.name,
+        filterBarItems: getFilterFieldNames(page.model, log),
+        tableColumns: getTableColumnData(page.model, log)
+    };
 }
 
 /**

@@ -1,4 +1,16 @@
-# @sap-ux/generator-odata-download
+# @sap-ux/generator-odata-downloader
+
+## 0.0.9
+
+### Patch Changes
+
+- 55d833f: fix i18next init showSupportNotice: false.
+
+## 0.0.8
+
+### Patch Changes
+
+- 42b558b: Updates readme. Move deps tto devDeps
 
 ## 0.0.7
 
@@ -54,4 +66,4 @@
 
 ### Patch Changes
 
-- b7461bc: Adds new package @sap-ux/generator-odata-download
+- b7461bc: Adds new package @sap-ux/generator-odata-downloader

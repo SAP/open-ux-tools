@@ -1,5 +1,19 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.46
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+    - @sap-ux/store@1.5.11
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.45
+
+### Patch Changes
+
+- 55d833f: fix i18next init showSupportNotice: false.
+
 ## 0.6.44
 
 ### Patch Changes
