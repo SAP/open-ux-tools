@@ -41,7 +41,7 @@ describe('App test', () => {
         store.dispatch({
             type: TEST_CONNECTION_STATUS,
             payload: {
-                connectionStatus: { message: 'Provide URL', connected: false }
+                connectionStatus: { message: 'Provide URL', connected: false, showOutputChannelLink: false }
             }
         });
 
