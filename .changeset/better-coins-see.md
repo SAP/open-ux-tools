@@ -1,5 +1,4 @@
 ---
 '@sap-ux/eslint-plugin-fiori-tools': patch
 ---
-
-Make eslint recommended as warning for `recommended-for-s4hana`
+Add legacy eslint config from file `fiori_tools_configure.eslintrc` and `fiori_tools_testcode.eslintrc` for recommended-for-s4hana
