@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.6
+
+### Patch Changes
+
+- 6b622e0: error, warning, info boxes have rounded corners
+
 ## 2.1.5
 
 ### Patch Changes
