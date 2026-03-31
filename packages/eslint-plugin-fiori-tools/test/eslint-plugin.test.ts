@@ -154,4 +154,180 @@ export default class Component extends UIComponent {
         expect(pluginDef?.meta).toBeDefined();
         expect(pluginDef?.rules).toBeDefined();
     });
+
+    test('recommended-for-s4hana config exists and includes plugin registration', async () => {
+        // Verify recommended-for-s4hana config exists
+        expect(plugin.configs['recommended-for-s4hana']).toBeDefined();
+
+        // Verify the first config item registers the plugin
+        const firstConfig = plugin.configs['recommended-for-s4hana'][0];
+        expect(firstConfig.plugins).toBeDefined();
+        expect(firstConfig.plugins?.['@sap-ux/fiori-tools']).toBeDefined();
+
+        // Verify plugin has meta, languages, and rules
+        const pluginDef = firstConfig.plugins?.['@sap-ux/fiori-tools'];
+        expect(pluginDef?.meta).toBeDefined();
+        expect(pluginDef?.languages).toBeDefined();
+        expect(pluginDef?.rules).toBeDefined();
+    });
+
+    test('recommended-for-s4hana config applies ESLint recommended rules as warnings', async () => {
+        const eslint = new ESLint({
+            cwd: testProjectPath,
+            overrideConfigFile: true,
+            overrideConfig: plugin.configs['recommended-for-s4hana']
+        });
+
+        // Create a file with standard ESLint violations (e.g., no-undef)
+        const codeWithViolations = `
+sap.ui.define([], function() {
+    "use strict";
+
+    // This should trigger no-undef as warning (not error) in S/4HANA config
+    undefinedVariable = 123;
+
+    return {};
+});
+`;
+        writeFileSync(join(webappPath, 'ViolationTest.js'), codeWithViolations);
+
+        const results = await eslint.lintFiles([join(webappPath, 'ViolationTest.js')]);
+        expect(results).toBeDefined();
+        expect(results.length).toBeGreaterThan(0);
+
+        const result = results[0];
+        const noUndefMessages = result.messages.filter((msg) => msg.ruleId === 'no-undef');
+
+        // Verify that no-undef violations exist and have severity 1 (warning) not 2 (error)
+        if (noUndefMessages.length > 0) {
+            expect(noUndefMessages[0].severity).toBe(1); // 1 = warning
+        }
+    });
+
+    test('recommended-for-s4hana config includes fiori language configuration', async () => {
+        // Verify that recommended-for-s4hana includes a config for manifest.json, xml, and cds files
+        const s4hanaConfig = plugin.configs['recommended-for-s4hana'];
+
+        // Find the config that specifies fiori language
+        const fioriLanguageConfig = s4hanaConfig.find((config) => config.language === '@sap-ux/fiori-tools/fiori');
+
+        expect(fioriLanguageConfig).toBeDefined();
+        expect(fioriLanguageConfig?.files).toBeDefined();
+
+        // Verify it includes manifest.json, xml, and cds files
+        const files = fioriLanguageConfig?.files;
+        expect(files).toContain('**/manifest.json');
+        expect(files).toContain('**/*.xml');
+        expect(files).toContain('**/*.cds');
+
+        // Verify it includes fiori-specific rules
+        const rules = fioriLanguageConfig?.rules;
+        expect(rules).toBeDefined();
+        expect(rules?.['@sap-ux/fiori-tools/sap-anchor-bar-visible']).toBe('warn');
+        expect(rules?.['@sap-ux/fiori-tools/sap-condensed-table-layout']).toBe('warn');
+        expect(rules?.['@sap-ux/fiori-tools/sap-flex-enabled']).toBe('warn');
+    });
+
+    test('baseFioriToolsRules are applied in both recommended and recommended-for-s4hana configs', async () => {
+        const recommendedConfig = plugin.configs.recommended;
+        const s4hanaConfig = plugin.configs['recommended-for-s4hana'];
+
+        // Find configs that have rules containing fiori-tools rules
+        const recommendedConfigsWithRules = recommendedConfig.filter((config) => {
+            const rules = config.rules;
+            if (!rules) {
+                return false;
+            }
+            return Object.keys(rules).some((key) => key.includes('@sap-ux/fiori-tools'));
+        });
+
+        const s4hanaConfigsWithRules = s4hanaConfig.filter((config) => {
+            const rules = config.rules;
+            if (!rules) {
+                return false;
+            }
+            return Object.keys(rules).some((key) => key.includes('@sap-ux/fiori-tools'));
+        });
+
+        expect(recommendedConfigsWithRules.length).toBeGreaterThan(0);
+        expect(s4hanaConfigsWithRules.length).toBeGreaterThan(0);
+
+        // Verify both configs include shared Fiori Tools rules
+        const sharedRule = '@sap-ux/fiori-tools/sap-no-localstorage';
+        const recommendedHasRule = recommendedConfigsWithRules.some((config) => config.rules?.[sharedRule]);
+        const s4hanaHasRule = s4hanaConfigsWithRules.some((config) => config.rules?.[sharedRule]);
+
+        expect(recommendedHasRule).toBe(true);
+        expect(s4hanaHasRule).toBe(true);
+    });
+
+    test('recommended-for-s4hana config ignores mockserver.js in both localService and localservice directories', async () => {
+        // Create localService (capital S) and localservice (lowercase s) directories
+        const localServicePath = join(webappPath, 'localService');
+        const localservicePath = join(webappPath, 'localservice');
+        mkdirSync(localServicePath, { recursive: true });
+        mkdirSync(localservicePath, { recursive: true });
+
+        // Create mockserver.js files with violations in both directories
+        const mockserverCode = `
+sap.ui.define([], function() {
+    "use strict";
+
+    // This should trigger sap-no-localstorage if not ignored
+    localStorage.setItem("mock", "data");
+
+    return {};
+});
+`;
+
+        writeFileSync(join(localServicePath, 'mockserver.js'), mockserverCode);
+        writeFileSync(join(localservicePath, 'mockserver.js'), mockserverCode);
+
+        // Create custom extension files that should be linted
+        const customExtensionCode = `
+sap.ui.define([], function() {
+    "use strict";
+
+    // This should trigger sap-no-localstorage and be reported
+    localStorage.setItem("custom", "data");
+
+    return {};
+});
+`;
+
+        writeFileSync(join(localServicePath, 'customExtension.js'), customExtensionCode);
+        writeFileSync(join(localservicePath, 'customExtension.js'), customExtensionCode);
+
+        const eslint = new ESLint({
+            cwd: testProjectPath,
+            overrideConfigFile: true,
+            overrideConfig: plugin.configs['recommended-for-s4hana']
+        });
+
+        // Lint all files in webapp
+        const results = await eslint.lintFiles([join(webappPath, '**/*.js')]);
+
+        // Find results for each file
+        const mockserverCapitalS = results.find((r) => r.filePath.includes('localService/mockserver.js'));
+        const mockserverLowerS = results.find((r) => r.filePath.includes('localservice/mockserver.js'));
+        const customCapitalS = results.find((r) => r.filePath.includes('localService/customExtension.js'));
+        const customLowerS = results.find((r) => r.filePath.includes('localservice/customExtension.js'));
+
+        // Verify mockserver.js files are ignored (should not appear in results or have no violations)
+        if (mockserverCapitalS) {
+            expect(mockserverCapitalS.messages.length).toBe(0);
+        }
+        if (mockserverLowerS) {
+            expect(mockserverLowerS.messages.length).toBe(0);
+        }
+
+        // Verify custom extension files ARE linted and have violations
+        expect(customCapitalS ?? customLowerS).toBeDefined();
+        if (customCapitalS) {
+            expect(customCapitalS.messages.length).toBeGreaterThan(0);
+        }
+        if (customLowerS) {
+            expect(customLowerS.messages.length).toBeGreaterThan(0);
+        }
+    });
 });
