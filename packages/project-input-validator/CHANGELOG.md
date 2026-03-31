@@ -1,5 +1,19 @@
 # @sap-ux/project-input-validator
 
+## 0.6.73
+
+### Patch Changes
+
+- c53a4ba: chore(project-input-validator): upgrade shared devDependencies (jest 30, i18next 25)
+    - @sap-ux/project-access@1.35.17
+
+## 0.6.72
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
 ## 0.6.71
 
 ### Patch Changes

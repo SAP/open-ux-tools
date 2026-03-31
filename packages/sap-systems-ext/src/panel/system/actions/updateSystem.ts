@@ -11,7 +11,13 @@ import {
     compareSystems,
     shouldStoreSystemInfo
 } from '../../../utils';
-import { getSystemInfo, updateSystemStatus, validateSystemName, validateSystemUrl } from '../utils';
+import {
+    getSystemInfo,
+    updateSystemStatus,
+    validateSystemName,
+    validateSystemUrl,
+    ConnectionExistsError
+} from '../utils';
 import {
     SystemAction,
     SystemActionStatus,
@@ -29,10 +35,10 @@ import SystemsLogger from '../../../utils/logger';
  */
 export async function updateSystem(context: PanelContext, action: UpdateSystem): Promise<void> {
     const { system: backendSystemPayload } = action.payload;
-    const systemExistsInStore = !!(await getBackendSystem({
+    const existingSystem = await getBackendSystem({
         url: backendSystemPayload.url,
         client: backendSystemPayload.client
-    }));
+    });
 
     let systemInfo: { systemId: string; client: string } | undefined;
 
@@ -49,19 +55,20 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
         await validateSystemName(backendSystem.name, context.backendSystem?.name, context.panelViewType);
         validateSystemUrl(backendSystem.url);
 
-        const newPanelMsg = await updateHandler(context, backendSystem, systemExistsInStore);
-        await saveSystem(backendSystem, systemExistsInStore, context.panelViewType);
+        const newPanelMsg = await updateHandler(context, backendSystem, existingSystem);
+        await saveSystem(backendSystem, context.panelViewType, existingSystem);
         if (newPanelMsg) {
             await commands.executeCommand(SystemCommands.Show, backendSystem, newPanelMsg);
         }
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
+        const existingSystem = error instanceof ConnectionExistsError ? error.existingSystem : undefined;
         await postSavingError(
             message,
             context.postMessage,
-            systemExistsInStore,
             backendSystem.systemType,
-            context.panelViewType
+            context.panelViewType,
+            existingSystem
         );
     }
 }
@@ -100,28 +107,28 @@ async function fetchSystemInfo(
  *
  * @param context - the panel context
  * @param newSystem - the the new system details
- * @param systemExistsInStore - boolean indicating if the new system already exists in the store
+ * @param existingSystem - instance of an existing system with same url and client, if it exists
  * @returns a message if a new panel will be opened and requires a message or undefined
  */
 async function updateHandler(
     context: PanelContext,
     newSystem: BackendSystem,
-    systemExistsInStore: boolean
+    existingSystem?: BackendSystem
 ): Promise<string | undefined> {
     const panelViewType = context.panelViewType;
     let newPanelMsg: string | undefined;
 
     // Scenario 1: User is creating a new system or importing a system
     if (panelViewType === SystemPanelViewType.Create || panelViewType === SystemPanelViewType.Import) {
-        if (systemExistsInStore) {
-            throw t('error.keyExists');
+        if (existingSystem) {
+            throw new ConnectionExistsError(existingSystem);
         }
         context.disposePanel();
         newPanelMsg = t('info.connectionSaved', { system: newSystem.name });
     }
 
     // Scenario 2: User is updating an existing system
-    if (panelViewType === SystemPanelViewType.View && systemExistsInStore) {
+    if (panelViewType === SystemPanelViewType.View && existingSystem) {
         // we need to determine if the current panel is the one being updated
         if (compareSystems(context.backendSystem as BackendSystem, newSystem)) {
             // Update the panel context's backend system to the new system details
@@ -133,14 +140,14 @@ async function updateHandler(
                 })
             );
         } else {
-            throw t('error.keyExists');
+            throw new ConnectionExistsError(existingSystem);
         }
     }
 
     // Scenario 3: User is creating a new system by updating an existing one
     // i.e. they opened an existing system and changed the key (url+client) so it's now a new system
     // this requires us to delete the existing system, dispose of the panel, and create and load a new one
-    if (panelViewType === SystemPanelViewType.View && !systemExistsInStore && context.backendSystem) {
+    if (panelViewType === SystemPanelViewType.View && !existingSystem && context.backendSystem) {
         context.disposePanel();
         const systemService = await getBackendSystemService();
         await systemService.delete(context.backendSystem);
@@ -155,31 +162,37 @@ async function updateHandler(
  *
  * @param errorMsg - the error message to post
  * @param postMessage - function to post a message to the webview
- * @param systemExistsInStore - boolean indicating if the system already exists in the store
  * @param systemType - optional system type for telemetry logging
  * @param panelViewType - the current panel view type
+ * @param existingSystem - optional existing system that caused a conflict
  */
 async function postSavingError(
     errorMsg: string,
-    postMessage: (msg: unknown) => void,
-    systemExistsInStore: boolean,
+    postMessage: PanelContext['postMessage'],
     systemType = 'unknown',
-    panelViewType?: SystemPanelViewType
+    panelViewType?: SystemPanelViewType,
+    existingSystem?: BackendSystem
 ): Promise<void> {
-    const message = t(panelViewType === SystemPanelViewType.View ? 'error.updateFailure' : 'error.creationFailure', {
-        error: errorMsg
-    });
-    postMessage(
+    const isUpdate = panelViewType === SystemPanelViewType.View;
+
+    await postMessage(
         updateSystemStatus({
-            message,
-            updateSuccess: false
+            message: t(isUpdate ? 'error.updateFailure' : 'error.creationFailure', { error: errorMsg }),
+            updateSuccess: false,
+            ...(existingSystem && {
+                existingSystem: {
+                    name: existingSystem.name,
+                    url: existingSystem.url,
+                    client: existingSystem.client
+                }
+            })
         })
     );
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
-        status: systemExistsInStore ? SystemActionStatus.UPDATED_FAIL : SystemActionStatus.CREATED_FAIL,
+        status: isUpdate ? SystemActionStatus.UPDATED_FAIL : SystemActionStatus.CREATED_FAIL,
         systemType
     });
 }
@@ -188,14 +201,14 @@ async function postSavingError(
  * Calls the store system service and saves the backend system.
  *
  * @param backendSystem - the backend system to save
- * @param systemExistsInStore - boolean indicating if the system already exists in the store
  * @param systemPanelViewType - the current panel view type
+ * @param existingSystem - instance of an existing system with same url and client, if it exists
  * @returns - the saved backend system or undefined if saving failed
  */
 async function saveSystem(
     backendSystem: BackendSystem,
-    systemExistsInStore: boolean,
-    systemPanelViewType: SystemPanelViewType
+    systemPanelViewType: SystemPanelViewType,
+    existingSystem?: BackendSystem
 ): Promise<void> {
     // ensure the user display name is set to the username
     const newBackendSystem: BackendSystem = {
@@ -204,7 +217,7 @@ async function saveSystem(
     };
     const systemService = await getBackendSystemService();
     await systemService.write(newBackendSystem, {
-        force: systemExistsInStore
+        force: !!existingSystem
     });
     const i18nKey =
         systemPanelViewType === SystemPanelViewType.Create ? 'info.connectionSaved' : 'info.connectionUpdated';
@@ -214,7 +227,7 @@ async function saveSystem(
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
-        status: systemExistsInStore ? SystemActionStatus.UPDATED_SUCCESS : SystemActionStatus.CREATED_SUCCESS,
+        status: existingSystem ? SystemActionStatus.UPDATED_SUCCESS : SystemActionStatus.CREATED_SUCCESS,
         systemType: backendSystem.systemType || 'unknown'
     });
 }

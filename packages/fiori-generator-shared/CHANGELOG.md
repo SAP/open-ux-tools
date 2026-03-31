@@ -1,5 +1,38 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.94
+
+### Patch Changes
+
+- c53a4ba: chore(fiori-generator-shared): upgrade shared devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/telemetry@0.6.94
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+
+## 0.13.93
+
+### Patch Changes
+
+- Updated dependencies [e92850e]
+    - @sap-ux/telemetry@0.6.93
+
+## 0.13.92
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/telemetry@0.6.92
+
+## 0.13.91
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/telemetry@0.6.91
+
 ## 0.13.90
 
 ### Patch Changes
