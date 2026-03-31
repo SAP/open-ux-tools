@@ -1,5 +1,15 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.10.5
+
+### Patch Changes
+
+- c53a4ba: chore(eslint-plugin-fiori-tools): upgrade typescript-eslint 8.46.2 → 8.57.2; upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/odata-vocabularies@0.4.30
+    - @sap-ux/fiori-annotation-api@0.9.39
+    - @sap-ux/project-access@1.35.17
+
 ## 9.10.4
 
 ### Patch Changes

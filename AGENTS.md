@@ -205,12 +205,31 @@ pnpm audit
 - ✅ Breaking changes
 - ✅ Changes to README.md
 - ✅ Formatting or lint autofix changes to `src/` files (even if purely cosmetic, they touch published source)
+- ✅ **Private packages** (`"private": true`) — they still need changesets even though they are not published to npm. Changesets drive internal versioning and CHANGELOG generation.
 
 **When NOT to create a changeset:**
 - ❌ Changes only to tests (test files in `test/` directories)
 - ❌ Changes only to `devDependencies` (unless the package uses esbuild for bundling, as bundled devDependencies affect runtime)
 - ❌ Configuration changes (eslint, prettier, jest configs) that don't touch `src/`
 - ❌ CI/CD pipeline updates (.github/workflows)
+
+**Private packages and changesets:**
+
+Packages with `"private": true` in their `package.json` are NOT published to npm, but they **still require changesets** when their source code or runtime dependencies change. Use the package's exact `name` field from its `package.json` in the changeset frontmatter — for example:
+
+```markdown
+---
+"@sap-ux-private/preview-middleware-client": patch
+---
+
+chore(preview-middleware-client): upgrade shared devDependencies (jest 30)
+```
+
+To identify private packages in the repo:
+```bash
+# List all private packages
+grep -l '"private": true' packages/*/package.json | xargs -I{} node -e "const p=require('{}');console.log(p.name)"
+```
 
 **How to identify which packages need a changeset:**
 

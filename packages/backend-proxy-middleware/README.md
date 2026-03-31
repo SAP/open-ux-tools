@@ -18,6 +18,7 @@ It can be used either with the `ui5 serve` or the `fiori run` commands.
 | `pathReplace`  | `string` optional      | If provided then the path will be replaced with this value before forwarding |
 | `connectPath` | `string` optional      | Path used to fetch the correct credentials from the store when a full odata service url 'system' is used. |
 | `client`      | `string` optional      | sap-client parameter |
+| `params`      | `object` optional      | Map of additional query parameters appended to every proxied request (e.g. `{ saml2: 'disabled' }`) |
 | `scp`         | `boolean` optional      | If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP |
 | `apiHub`      | `boolean` optional      | If set to true then the proxy will connect to the SAP API Business Hub |
 | `proxy`       | `string` optional      | If set then it will override the proxy settings from node. |
@@ -124,6 +125,21 @@ If you want to configure the proxy to send requests from a certain path `/servic
       pathReplace: /my/entry/path
       url: https://my.backend.example:1234
       destination: my_example_destination
+```
+
+### [Appending additional query parameters to proxied requests](#appending-additional-query-parameters)
+If you need to append extra query parameters to all proxied backend requests (e.g. to disable SAML authentication for Basic Auth flows), use the `params` property. This is the recommended approach instead of injecting parameters via the `client` property.
+
+```yaml
+- name: backend-proxy-middleware
+  afterMiddleware: compression
+  configuration:
+    backend:
+      path: /sap
+      url: https://my.backend.example:1234
+      client: '100'
+      params:
+        saml2: disabled
 ```
 
 ### [Providing Proxy Configuration](#providing-proxy-configuration)

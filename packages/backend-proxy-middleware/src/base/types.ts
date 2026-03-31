@@ -15,6 +15,12 @@ export interface BaseBackendConfig {
      */
     client?: string;
     /**
+     * Optional map of additional query parameters to append to every proxied request.
+     * Aligned with the `params` property in `UrlAbapTarget` from `@sap-ux/system-access`.
+     * Example: { saml2: 'disabled' }
+     */
+    params?: Record<string, string>;
+    /**
      * If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP
      */
     scp?: boolean;
