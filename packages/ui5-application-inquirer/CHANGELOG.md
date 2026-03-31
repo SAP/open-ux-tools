@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.17.8
+
+### Patch Changes
+
+- c53a4ba: chore(ui5-application-inquirer): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-info@0.13.17
+
 ## 0.17.7
 
 ### Patch Changes

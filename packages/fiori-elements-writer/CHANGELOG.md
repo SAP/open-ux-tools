@@ -1,5 +1,27 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.115
+
+### Patch Changes
+
+- c53a4ba: chore(fiori-elements-writer): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/cap-config-writer@0.12.86
+    - @sap-ux/fe-fpm-writer@0.43.17
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/odata-service-writer@0.31.4
+    - @sap-ux/ui5-application-writer@1.8.3
+    - @sap-ux/ui5-test-writer@0.7.96
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/annotation-generator@0.4.46
+
 ## 2.8.114
 
 ### Patch Changes

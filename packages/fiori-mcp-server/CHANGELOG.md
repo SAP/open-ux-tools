@@ -1,5 +1,14 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.47
+
+### Patch Changes
+
+- c53a4ba: chore(fiori-mcp-server): remove stale @types/diff devDependency (diff v8 ships own types); upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/store@1.5.12
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
 ## 0.6.46
 
 ### Patch Changes

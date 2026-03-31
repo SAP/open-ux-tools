@@ -1,5 +1,28 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.20.7
+
+### Patch Changes
+
+- c53a4ba: chore(odata-service-inquirer): upgrade @sap-devx/yeoman-ui-types 1.22.0 → 1.23.0 (runtime dep); upgrade devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/store@1.5.12
+    - @sap-ux/telemetry@0.6.94
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.17
+
 ## 2.20.6
 
 ### Patch Changes

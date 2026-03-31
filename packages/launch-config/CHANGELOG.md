@@ -1,5 +1,14 @@
 # @sap-ux/launch-config
 
+## 0.10.81
+
+### Patch Changes
+
+- c53a4ba: chore(launch-config): upgrade shared devDependencies (jest 30, i18next 25)
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-info@0.13.17
+    - @sap-ux/ui5-config@0.30.1
+
 ## 0.10.80
 
 ### Patch Changes
