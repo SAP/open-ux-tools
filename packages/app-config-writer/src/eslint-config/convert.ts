@@ -195,7 +195,7 @@ function warnIfFileScopeDropped(
         removed.push("'plugin:@typescript-eslint/*'");
     }
     logger?.warn(
-        `${removed.join(' and ')} was removed from the legacy config and will not be re-injected. Its rules are already covered by '@sap-ux/eslint-plugin-fiori-tools', so no manual re-addition is needed. The legacy config had a 'files' scope (${JSON.stringify(files)}) that cannot be automatically preserved.`
+        `${removed.join(' and ')} ${removed.length > 1 ? 'were' : 'was'} removed from the legacy config and will not be re-injected. Its rules are already covered by '@sap-ux/eslint-plugin-fiori-tools', so no manual re-addition is needed. The legacy config had a 'files' scope (${JSON.stringify(files)}) that cannot be automatically preserved.`
     );
 }
 
