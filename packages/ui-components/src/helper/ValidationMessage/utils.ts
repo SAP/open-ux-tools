@@ -9,6 +9,7 @@ export const enum ErrorMessageType {
 export interface UIMessagesExtendedProps {
     warningMessage?: string;
     infoMessage?: string;
+    isAbsolute?: boolean;
 }
 
 export interface UIComponentMessagesProps extends UIMessagesExtendedProps {
@@ -21,8 +22,13 @@ export interface InputErrorMessageStyles {
     info: IRawStyle;
 }
 
+export interface InputValidationMessageStyle {
+    message: IRawStyle;
+    container?: IRawStyle;
+}
+
 export interface InputValidationMessageInfo {
-    style: IRawStyle;
+    style: InputValidationMessageStyle;
     type: ErrorMessageType;
     message?: string;
 }
@@ -55,7 +61,8 @@ const messagesStyles: InputErrorMessageStyles = {
         paddingTop: 4,
         paddingBottom: 5,
         paddingLeft: 8,
-        margin: 0
+        margin: 0,
+        position: 'static'
     },
     warning: {},
     info: {}
@@ -91,7 +98,7 @@ export const MESSAGE_TYPES_CLASSNAME_MAP = new Map<ErrorMessageType | undefined,
  * @param {ErrorMessageType} [type] Message type.
  * @returns {IRawStyle} Object with styles for message.
  */
-const getMessageStyle = (type?: ErrorMessageType): IRawStyle => {
+const getMessageStyle = (type?: ErrorMessageType, isAbsolute?: boolean): InputValidationMessageStyle => {
     let style: IRawStyle;
     switch (type) {
         case ErrorMessageType.Warning: {
@@ -107,7 +114,12 @@ const getMessageStyle = (type?: ErrorMessageType): IRawStyle => {
             break;
         }
     }
-    return style;
+    if (isAbsolute) {
+        return { message: { ...style, position: 'absolute', zIndex: 9999 }, container: { position: 'relative' } };
+    }
+    return {
+        message: style
+    };
 };
 
 /**
@@ -160,7 +172,7 @@ export const getMessageInfo = (props?: UIMessagesExtendedProps): InputValidation
     const errorType = getMessageType(props);
     return {
         type: errorType,
-        style: getMessageStyle(errorType),
+        style: getMessageStyle(errorType, props?.isAbsolute),
         message: getErrorMessage(props)
     };
 };
