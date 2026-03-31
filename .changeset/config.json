@@ -3,6 +3,9 @@
     "changelog": "@changesets/cli/changelog",
     "commit": false,
     "linked": [],
+    "fixed": [
+        ["@sap-ux/preview-middleware", "@sap-ux-private/preview-middleware-client"]
+    ],
     "access": "public",
     "baseBranch": "origin/main",
     "updateInternalDependencies": "patch",

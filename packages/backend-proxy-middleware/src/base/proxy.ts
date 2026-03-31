@@ -165,6 +165,24 @@ export const PathRewriters = {
     },
 
     /**
+     * Append additional query parameters to every proxied request path.
+     *
+     * @param params map of query parameter key-value pairs
+     * @returns a path rewrite function
+     */
+    appendParams(params: Record<string, string>): (path: string) => string {
+        const queryString = Object.entries(params)
+            .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+            .join('&');
+        return (path: string) => {
+            if (!queryString) {
+                return path;
+            }
+            return path.includes('?') ? `${path}&${queryString}` : `${path}?${queryString}`;
+        };
+    },
+
+    /**
      * Create a chain of rewrite function calls based on the provided configuration.
      *
      * @param config backend configuration
@@ -182,7 +200,16 @@ export const PathRewriters = {
             functions.push(PathRewriters.replacePrefix(config.path, config.pathReplace));
         }
         if (config.client) {
+            if (!/^\d{1,3}$/.test(config.client)) {
+                log.warn(
+                    `Invalid "client" value "${config.client}": expected a 1-3 digit SAP client number. ` +
+                        `Use the "params" property to append additional query parameters.`
+                );
+            }
             functions.push(PathRewriters.replaceClient(config.client));
+        }
+        if (config.params) {
+            functions.push(PathRewriters.appendParams(config.params));
         }
         if (config.bsp) {
             functions.push(PathRewriters.convertAppDescriptorToManifest(config.bsp));

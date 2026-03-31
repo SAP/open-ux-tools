@@ -113,9 +113,9 @@ nested:
 [31mrootProperty: 'prop on root'[39m
 [31m[39m[32mrootProperty: 'changed prop on root'[39m
 [32m[39m[90mnested:[39m
-[90m- item: one[39m
-[90m[39m[31m- item: two[39m
-[31m[39m[32m- item: three[39m
+[90m    - item: one[39m
+[90m[39m[31m    - item: two[39m
+[31m[39m[32m    - item: three[39m
 [32m[39m`
         );
     });

@@ -1,5 +1,25 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.161
+
+### Patch Changes
+
+- c53a4ba: chore(cf-deploy-config-sub-generator): upgrade @sap-devx/yeoman-ui-types 1.22.0 → 1.23.0 (runtime dep); upgrade devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/cf-deploy-config-inquirer@0.5.114
+    - @sap-ux/cf-deploy-config-writer@0.3.90
+    - @sap-ux/deploy-config-generator-shared@0.1.113
+    - @sap-ux/feature-toggle@0.3.8
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+
 ## 0.2.160
 
 ### Patch Changes

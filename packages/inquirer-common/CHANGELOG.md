@@ -1,5 +1,24 @@
 # @sap-ux/inquirer-common
 
+## 0.11.32
+
+### Patch Changes
+
+- c53a4ba: chore(inquirer-common): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/feature-toggle@0.3.8
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/odata-service-writer@0.31.4
+    - @sap-ux/telemetry@0.6.94
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-info@0.13.17
+
 ## 0.11.31
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @sap-ux/ui-prompting
 
+## 0.6.18
+
+### Patch Changes
+
+- c53a4ba: chore(ui-prompting): upgrade @testing-library/jest-dom 5.17.0 → 6.9.1
+
+    chore(ui-prompting): replace deprecated @storybook/addons 7.6.20 with @storybook/manager-api 8.6.17; align @storybook/react + @storybook/react-webpack5 8.4.2 → 8.6.17
+
+    Note: jest-environment-jsdom kept at 29.7.0 — jsdom 26 (bundled in v30) hangs with enzyme-adapter-react-16
+
+- Updated dependencies [c53a4ba]
+    - @sap-ux/ui-components@2.1.5
+
 ## 0.6.17
 
 ### Patch Changes
