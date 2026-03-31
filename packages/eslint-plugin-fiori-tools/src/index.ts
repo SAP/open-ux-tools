@@ -150,8 +150,10 @@ const prodConfig: Linter.Config[] = [
             `${testPathRelative}/**`,
             `${localServiceLowerCase}/**`, // Ignore everything in the 'localservice' folder
             `!${localServiceLowerCase}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${posix.join(localServiceLowerCase, 'mockserver.js')}`, // But DO ignore mockserver.js specifically
             `${localServiceUpperCase}/**`, // Ignore everything in the 'localService' folder
             `!${localServiceUpperCase}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${posix.join(localServiceUpperCase, 'mockserver.js')}`, // But DO ignore mockserver.js specifically
             'backup/**',
             '**/Gruntfile.js',
             '**/changes_preview.js',

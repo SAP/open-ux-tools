@@ -199,9 +199,7 @@ sap.ui.define([], function() {
         const noUndefMessages = result.messages.filter((msg) => msg.ruleId === 'no-undef');
 
         // Verify that no-undef violations exist and have severity 1 (warning) not 2 (error)
-        if (noUndefMessages.length > 0) {
-            expect(noUndefMessages[0].severity).toBe(1); // 1 = warning
-        }
+        expect(noUndefMessages[0].severity).toBe(1); // 1 = warning
     });
 
     test('recommended-for-s4hana config includes fiori language configuration', async () => {
