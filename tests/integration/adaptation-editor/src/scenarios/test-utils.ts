@@ -2121,7 +2121,7 @@ export class AdpDialog {
         const title = await this.getName();
         await test.step(`Fill \`${fieldName}\` field with \`${value}\` in the dialog \`${title}\``, async () => {
             let field = this.frame.getByRole('textbox', { name: fieldName });
-            let count = await field.count();
+            const count = await field.count();
 
             // In newer versions found that colon is in different element, so try both ways to find the field
             if (count === 0) {
