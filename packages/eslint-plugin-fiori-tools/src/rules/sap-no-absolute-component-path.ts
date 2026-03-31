@@ -3,7 +3,7 @@
  */
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
-import { type ASTNode, asCallExpression, asObjectExpression, asArrayExpression } from '../utils/helpers';
+import { type ASTNode, type BaseNode, asCallExpression, asObjectExpression, asArrayExpression } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Helper Functions
@@ -50,7 +50,7 @@ const rule: RuleDefinition = {
          * @returns The name extracted from the literal or identifier node
          */
         function getLiteralOrIdentifiertName(node: ASTNode): string {
-            const n = node as { type: string; name?: string; value?: string };
+            const n = node as BaseNode & { name?: string; value?: string };
             let result = '';
             if (n && typeof n === 'object' && n.type === T_IDENTIFIER) {
                 result = n.name ?? '';
@@ -67,17 +67,17 @@ const rule: RuleDefinition = {
          * @returns The identifier path extracted from the node
          */
         function getIdentifierPath(node: ASTNode): string {
-            const n = node as { type?: string; name?: string; object?: any; property?: any };
+            const baseNode = node as { type?: string; name?: string; object?: unknown; property?: unknown };
             let result = '';
-            if (!n || typeof n !== 'object') {
+            if (!baseNode || typeof baseNode !== 'object') {
                 return result;
             }
-            switch (n.type) {
+            switch (baseNode.type) {
                 case T_IDENTIFIER:
-                    result = n.name ?? '';
+                    result = baseNode.name ?? '';
                     break;
                 case T_MEMBER:
-                    result = `${getIdentifierPath(n.object)}.${getLiteralOrIdentifiertName(n.property)}`;
+                    result = `${getIdentifierPath(baseNode.object)}.${getLiteralOrIdentifiertName(baseNode.property)}`;
                     break;
                 default:
             }
@@ -96,19 +96,19 @@ const rule: RuleDefinition = {
             const objectExpr = asObjectExpression(node);
             if (objectExpr) {
                 // Get property list from object expression
-                const propertyList = objectExpr.properties;
+                const propertyList = objectExpr.properties as unknown[];
                 // Go through the properties
-                let property: { type?: string; key?: unknown; value?: unknown };
+                let property: unknown;
                 for (const key in propertyList) {
                     // Check if element is of type we are looking for
                     // all in one if-statement to reach code coverage
                     if (
                         propertyList.hasOwnProperty(key) &&
-                        (property = propertyList[key] as { type?: string; key?: unknown; value?: unknown }) &&
-                        property.type === T_PROPERTY &&
-                        getLiteralOrIdentifiertName(property.key) === propertyName
+                        (property = propertyList[key]) &&
+                        (property as { type?: string }).type === T_PROPERTY &&
+                        getLiteralOrIdentifiertName((property as { key?: ASTNode }).key) === propertyName
                     ) {
-                        return property.value;
+                        return (property as { value?: ASTNode }).value;
                     }
                 }
             }

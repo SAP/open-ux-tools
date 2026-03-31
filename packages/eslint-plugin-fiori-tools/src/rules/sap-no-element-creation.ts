@@ -66,10 +66,9 @@ const rule: RuleDefinition = {
                 const isValid =
                     !contains(FORBIDDEN_DOM_INSERTION, methodName) ||
                     (methodName === 'createElement' &&
-                        parentCall?.arguments &&
-                        parentCall.arguments.length > 0 &&
-                        isLiteral(parentCall.arguments[0]) &&
-                        asLiteral(parentCall.arguments[0])?.value === 'a');
+                        (parentCall?.arguments?.length ?? 0) > 0 &&
+                        isLiteral(parentCall?.arguments[0]) &&
+                        asLiteral(parentCall?.arguments[0])?.value === 'a');
                 return !!isValid;
             },
             messageId: 'elementCreation'

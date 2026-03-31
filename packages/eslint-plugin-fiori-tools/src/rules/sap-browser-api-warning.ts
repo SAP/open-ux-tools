@@ -11,6 +11,9 @@ import {
     buildCalleePath,
     isForbiddenObviousApi,
     type ASTNode,
+    type BaseNode,
+    type MemberExpressionNode,
+    type VariableDeclaratorNode,
     getLiteralOrIdentifierName,
     asCallExpression,
     asMemberExpression,
@@ -189,28 +192,38 @@ const rule: RuleDefinition = {
          * @param node The variable declarator node
          * @param init The init node (member expression)
          */
-        function processMemberInit(node: any, init: any): void {
-            let firstElement = init.object.name;
-            const secondElement = init.property.name;
+        function processMemberInit(node: VariableDeclaratorNode, init: MemberExpressionNode): void {
+            const initObject = init.object as BaseNode & { name?: string; property?: BaseNode & { name?: string } };
+            const initProperty = init.property as BaseNode & { name?: string };
+            let firstElement = initObject.name;
+            const secondElement = initProperty.name;
             const fullPath = `${firstElement}.${secondElement}`;
-            const varName = node.id.name;
+            const varName = (node.id as BaseNode & { name?: string }).name;
 
             switch (fullPath) {
                 case 'window.document':
-                    FORBIDDEN_DOCUMENT_OBJECT.push(varName);
+                    if (varName) {
+                        FORBIDDEN_DOCUMENT_OBJECT.push(varName);
+                    }
                     break;
                 case 'window.history':
-                    FORBIDDEN_HISTORY_OBJECT.push(varName);
+                    if (varName) {
+                        FORBIDDEN_HISTORY_OBJECT.push(varName);
+                    }
                     break;
                 case 'window.screen':
-                    FORBIDDEN_SCREEN_OBJECT.push(varName);
+                    if (varName) {
+                        FORBIDDEN_SCREEN_OBJECT.push(varName);
+                    }
                     break;
                 default:
-                    if (secondElement === 'body' && init.object.property) {
-                        firstElement = init.object.property.name;
+                    if (secondElement === 'body' && initObject.property) {
+                        firstElement = initObject.property.name;
                         if (`${firstElement}.${secondElement}` === 'document.body') {
                             context.report({ node: node, messageId: 'windowUsages' });
-                            FORBIDDEN_BODY_OBJECT.push(varName);
+                            if (varName) {
+                                FORBIDDEN_BODY_OBJECT.push(varName);
+                            }
                         }
                     }
             }
@@ -257,7 +270,7 @@ const rule: RuleDefinition = {
             }
 
             if (isMember(init)) {
-                processMemberInit(node, init);
+                processMemberInit(declarator, init as MemberExpressionNode);
             } else if (isIdentifier(init)) {
                 processIdentifierInit(node, init);
             }

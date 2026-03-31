@@ -166,10 +166,9 @@ const rule: RuleDefinition = {
                 if (
                     !(
                         methodName === 'createElement' &&
-                        parentArgs &&
-                        parentArgs.length > 0 &&
-                        isLiteral(parentArgs[0]) &&
-                        asLiteral(parentArgs[0])?.value === 'a'
+                        (parentArgs?.length ?? 0) > 0 &&
+                        isLiteral(parentArgs?.[0]) &&
+                        asLiteral(parentArgs?.[0])?.value === 'a'
                     )
                 ) {
                     context.report({ node: node, messageId: 'domInsertion' });
@@ -178,9 +177,8 @@ const rule: RuleDefinition = {
                 context.report({ node: node, messageId: 'domManipulation' });
             } else if (
                 contains(FORBIDDEN_DOCUMENT_USAGE, methodName) &&
-                parentArgs &&
-                parentArgs.length !== 0 &&
-                asLiteral(parentArgs[0])?.value === 'insertBrOnReturn'
+                parentArgs?.length !== 0 &&
+                asLiteral(parentArgs?.[0])?.value === 'insertBrOnReturn'
             ) {
                 context.report({ node: node, messageId: 'forbiddenDocumentUsage' });
             }

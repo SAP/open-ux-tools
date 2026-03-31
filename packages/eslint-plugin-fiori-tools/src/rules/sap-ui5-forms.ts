@@ -3,7 +3,7 @@
 // ------------------------------------------------------------------------------
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
-import { type ASTNode } from '../utils/helpers';
+import { type ASTNode, type BaseNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -17,7 +17,7 @@ import { type ASTNode } from '../utils/helpers';
  * @returns True if the node is of the specified type
  */
 function isType(node: ASTNode | undefined, type: string): boolean {
-    return (node as { type?: string })?.type === type;
+    return (node as BaseNode | undefined)?.type === type;
 }
 
 /**

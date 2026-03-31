@@ -6,6 +6,7 @@ import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     getLiteralOrIdentifierName,
     type ASTNode,
+    type BaseNode,
     asCallExpression,
     asMemberExpression,
     asIdentifier
@@ -23,7 +24,7 @@ import {
  * @returns True if the node is of the specified type
  */
 function isType(node: ASTNode | undefined, type: string): boolean {
-    return !!(node && typeof node === 'object' && node !== null && 'type' in node && node.type === type);
+    return (node as BaseNode | undefined)?.type === type;
 }
 
 /**

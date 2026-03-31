@@ -6,7 +6,7 @@
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
 
-import { contains, type ASTNode } from '../utils/helpers';
+import { contains, type ASTNode, type BaseNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -60,10 +60,10 @@ function calculateObjectName(memberExpressionObject: any): string {
  * @param ancestors The array of ancestor nodes to check
  * @returns The position of the NewExpression or -1 if not found
  */
-function checkIfAncestorsContainsNewExpression(ancestors: any[]): number {
+function checkIfAncestorsContainsNewExpression(ancestors: unknown[]): number {
     const ancestorsLength = ancestors.length;
     for (let i = 0; i < ancestorsLength; i++) {
-        if (ancestors[i].type === 'NewExpression') {
+        if ((ancestors[i] as BaseNode).type === 'NewExpression') {
             return i;
         }
     }
@@ -101,7 +101,7 @@ const rule: RuleDefinition = {
     create(context: RuleContext) {
         const sourceCode = context.sourceCode;
 
-        const customNS = ((context.options[0] as any)?.ns as string[] | undefined) ?? [];
+        const customNS = ((context.options[0] as { ns?: string[] } | undefined)?.ns as string[] | undefined) ?? [];
         const configuration = {
             'ns': uniquifyArray(
                 [

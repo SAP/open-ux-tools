@@ -5,6 +5,7 @@
 import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     type ASTNode,
+    type BaseNode,
     getLiteralOrIdentifierName,
     asCallExpression,
     asLiteral,
@@ -26,7 +27,7 @@ import {
  * @returns True if the node is of the specified type
  */
 function isType(node: ASTNode | undefined, type: string): boolean {
-    return (node as { type?: string })?.type === type;
+    return (node as BaseNode | undefined)?.type === type;
 }
 
 /**
@@ -166,8 +167,8 @@ function isInterestingAssignment(node: ASTNode | undefined): boolean {
  */
 function isValid(node: ASTNode): boolean {
     const callNode = node as { arguments?: unknown[] };
-    if (callNode.arguments && callNode.arguments?.length > 0) {
-        const target = getProperty(callNode.arguments[0], 'target');
+    if ((callNode.arguments?.length ?? 0) > 0) {
+        const target = getProperty(callNode.arguments![0], 'target');
         if (target) {
             // get property target from first argument, get property shellHash from property target
             const shellHash = getProperty(target, 'shellHash');

@@ -3,8 +3,16 @@
  */
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
-import type { ASTNode } from '../utils/helpers';
-import { isIdentifier, isMember, isWindow, contains } from '../utils/helpers';
+import {
+    type ASTNode,
+    type CallExpressionNode,
+    type BaseNode,
+    asLiteral,
+    isIdentifier,
+    isMember,
+    isWindow,
+    contains
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -33,14 +41,12 @@ function isTimeout(node: ASTNode): boolean {
  * @param node The AST node to check
  * @returns True if the setTimeout call has valid timeout arguments
  */
-function isValid(node: ASTNode): boolean {
-    const args = (node as { arguments: ASTNode[] }).arguments;
+function isValid(node: CallExpressionNode): boolean {
+    const args = node.arguments;
     return (
         args &&
         (args.length === 1 ||
-            (args.length > 1 &&
-                ((args[1] as { value: string | number }).value === 0 ||
-                    (args[1] as { value: string | number }).value === '0')))
+            (args.length > 1 && (asLiteral(args[1])?.value === 0 || asLiteral(args[1])?.value === '0')))
     );
 }
 
@@ -69,10 +75,10 @@ const rule: RuleDefinition = {
          * @param node The AST node to check
          * @returns True if the node represents an interesting setTimeout call
          */
-        function isInteresting(node: ASTNode): boolean {
-            let obj = (node as { callee: ASTNode }).callee;
+        function isInteresting(node: CallExpressionNode): boolean {
+            let obj = node.callee as ASTNode;
             if (isMember(obj)) {
-                const memberObj = obj as { object: ASTNode; property: ASTNode };
+                const memberObj = obj as BaseNode & { object: ASTNode; property: ASTNode };
                 if (
                     isWindow(memberObj.object) ||
                     (isIdentifier(memberObj.object) &&
@@ -116,7 +122,8 @@ const rule: RuleDefinition = {
                 rememberWindow(assignmentNode.left, assignmentNode.right);
             },
             'CallExpression': function (node: ASTNode): void {
-                if (isInteresting(node) && !isValid(node)) {
+                const callNode = node as CallExpressionNode;
+                if (isInteresting(callNode) && !isValid(callNode)) {
                     context.report({ node: node, messageId: 'timeoutUsage' });
                 }
             }
