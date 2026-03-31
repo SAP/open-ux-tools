@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.7
+
+### Patch Changes
+
+- f101671: Add line-height to UITranslationInput text
+
 ## 2.1.6
 
 ### Patch Changes
