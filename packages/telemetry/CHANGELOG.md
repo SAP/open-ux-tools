@@ -1,5 +1,19 @@
 # @sap-ux/telemetry
 
+## 0.6.94
+
+### Patch Changes
+
+- c53a4ba: chore(telemetry): upgrade shared devDependencies (jest 30, i18next 25, axios 1.13.6)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/store@1.5.12
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-config@0.30.1
+
 ## 0.6.93
 
 ### Patch Changes

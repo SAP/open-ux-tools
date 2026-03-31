@@ -1,5 +1,20 @@
 # @sap-ux/environment-check
 
+## 0.18.115
+
+### Patch Changes
+
+- c53a4ba: chore(environment-check): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/store@1.5.12
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-config@0.30.1
+
 ## 0.18.114
 
 ### Patch Changes
