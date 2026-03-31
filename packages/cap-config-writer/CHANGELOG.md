@@ -1,5 +1,16 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.86
+
+### Patch Changes
+
+- c53a4ba: chore(cap-config-writer): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/project-access@1.35.17
+
 ## 0.12.85
 
 ### Patch Changes

@@ -1,5 +1,36 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.300
+
+### Patch Changes
+
+- c53a4ba: chore(repo-app-import-sub-generator): upgrade @sap-devx/yeoman-ui-types 1.22.0 → 1.23.0 (runtime dep); upgrade devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/feature-toggle@0.3.8
+    - @sap-ux/fiori-elements-writer@2.8.115
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/launch-config@0.10.81
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/odata-service-inquirer@2.20.7
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/store@1.5.12
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-info@0.13.17
+    - @sap-ux/abap-deploy-config-writer@0.3.6
+
 ## 0.3.299
 
 ### Patch Changes

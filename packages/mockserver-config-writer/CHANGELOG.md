@@ -1,5 +1,13 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.9.68
+
+### Patch Changes
+
+- c53a4ba: chore(mockserver-config-writer): upgrade shared devDependencies (jest 30, i18next 25)
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-config@0.30.1
+
 ## 0.9.67
 
 ### Patch Changes
