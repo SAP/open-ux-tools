@@ -1105,4 +1105,195 @@ describe('Test getObjectPageFeatures()', () => {
         const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
         expect(result[0].navigationParents?.parentLRName).toBe('');
     });
+
+    test('should return empty array when no pages exist and no logger provided', async () => {
+        const result = await getObjectPageFeatures([]);
+        expect(result).toEqual([]);
+    });
+
+    test('should return body sections data for object page with body sections', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: {
+                                    aggregations: {}
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 1,
+                                    schema: {
+                                        keys: [{ name: 'ID', value: 'GeneralInformation' }]
+                                    },
+                                    aggregations: {
+                                        subSections: {
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        expect(result[0].bodySections).toHaveLength(1);
+        expect(result[0].bodySections?.[0].id).toBe('GeneralInformation');
+        expect(result[0].bodySections?.[0].isTable).toBe(false);
+        expect(result[0].bodySections?.[0].subSections).toEqual([]);
+    });
+
+    test('should return body section identifier from Key schema entry', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: {
+                                    aggregations: {}
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 1,
+                                    schema: {
+                                        keys: [{ name: 'Key', value: 'SalesOrder' }]
+                                    },
+                                    aggregations: {
+                                        subSections: {
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        expect(result[0].bodySections?.[0].id).toBe('SalesOrder');
+    });
+
+    test('should return body sections with sub-sections having identifiers', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: {
+                                    aggregations: {}
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 1,
+                                    schema: {
+                                        keys: [{ name: 'ID', value: 'GeneralInformation' }]
+                                    },
+                                    aggregations: {
+                                        subSections: {
+                                            aggregations: {
+                                                subSection1: {
+                                                    isTable: false,
+                                                    custom: false,
+                                                    order: 1,
+                                                    schema: {
+                                                        keys: [{ name: 'ID', value: 'SubSection1' }]
+                                                    },
+                                                    aggregations: {}
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        expect(result[0].bodySections?.[0].subSections).toHaveLength(1);
+        expect(result[0].bodySections?.[0].subSections?.[0].id).toBe('SubSection1');
+    });
+
+    test('should use section key as fallback for subsection id when subsection has no identifier', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: {
+                                    aggregations: {}
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 1,
+                                    schema: {
+                                        keys: [{ name: 'ID', value: 'GeneralInformation' }]
+                                    },
+                                    aggregations: {
+                                        subSections: {
+                                            aggregations: {
+                                                subSection1: {
+                                                    isTable: false,
+                                                    custom: false,
+                                                    order: 1,
+                                                    schema: { keys: [] },
+                                                    aggregations: {}
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        expect(result[0].bodySections?.[0].subSections?.[0].id).toBe('GeneralInformation_subSection1');
+    });
 });
