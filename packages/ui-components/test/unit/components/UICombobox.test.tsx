@@ -73,6 +73,12 @@ describe('<UIComboBox />', () => {
             {},
             `
             Object {
+              "__shadowConfig__": Object {
+                "__isShadowConfig__": true,
+                "inShadow": false,
+                "stylesheetKey": "ComboBox",
+                "window": [Window],
+              },
               "errorMessage": Array [
                 Object {
                   "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
@@ -108,6 +114,12 @@ describe('<UIComboBox />', () => {
             {},
             `
             Object {
+              "__shadowConfig__": Object {
+                "__isShadowConfig__": true,
+                "inShadow": false,
+                "stylesheetKey": "ComboBox",
+                "window": [Window],
+              },
               "errorMessage": Array [
                 Object {
                   "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
