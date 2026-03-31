@@ -797,14 +797,35 @@ export class FlpSandbox {
                 subTitle: 'Your locally served Fiori launchpad',
                 description: 'This is a locally served Fiori launchpad for development and testing.',
                 footerText: 'Powered by @sap-ux/preview-middleware',
-                image: 'https://picsum.photos/900/600?blur'
+                image: 'https://picsum.photos/900/600?blur',
+                articles: [
+                    {
+                        title: 'Getting Started',
+                        subTitle: 'Learn how to use the local FLP',
+                        description: 'Learn how to use the local FLP and its features in our documentation.'
+                    },
+                    {
+                        title: 'Runtime Adaptation',
+                        subTitle: 'Edit your app in runtime with RTA',
+                        description:
+                            'Use the Runtime Adaptation editor to make changes to your app in runtime and see the results immediately in the local FLP.'
+                    }
+                ]
             },
             {
                 title: 'Enhanced Home Page',
                 subTitle: 'Additional features for your local FLP',
                 description:
                     'The enhanced home page is available for UI5 versions 1.123 and above. It provides additional features like news and a card catalog.',
-                footerText: 'Check out the documentation for more details.'
+                footerText: 'Check out the documentation for more details.',
+                articles: [
+                    {
+                        title: 'News',
+                        subTitle: 'Stay up to date with the latest news',
+                        description:
+                            'The news section provides you with the latest news and updates about the local FLP and related tools.'
+                    }
+                ]
             },
             {
                 title: 'Card Catalog',

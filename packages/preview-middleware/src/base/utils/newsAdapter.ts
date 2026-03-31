@@ -3,6 +3,15 @@ import { readFileSync, existsSync } from 'node:fs';
 import { basename } from 'node:path';
 
 /**
+ * A single article within a news group.
+ */
+export interface NewsArticle {
+    title: string;
+    subTitle?: string;
+    description?: string;
+}
+
+/**
  * Human-readable news item to be displayed on the enhanced FLP homepage.
  */
 export interface NewsItem {
@@ -11,6 +20,7 @@ export interface NewsItem {
     description?: string;
     footerText?: string;
     image?: string;
+    articles?: NewsArticle[];
 }
 
 /**
@@ -104,21 +114,31 @@ export class NewsAdapter {
     private async mapNewsItem(item: NewsItem, index: number): Promise<ODataNewsGroup> {
         const groupId = `Transient_Group_${index + 1}`;
         const imageData = await this.resolveImage(item.image);
+        const imageId = imageData?.image_id ?? null;
+
+        const articles: ODataArticle[] = item.articles?.length
+            ? item.articles.map((article) => ({
+                  bg_image_id: imageId,
+                  title: article.title,
+                  subTitle: article.subTitle ?? '',
+                  description: article.description ?? ''
+              }))
+            : [
+                  {
+                      bg_image_id: imageId,
+                      title: item.title,
+                      subTitle: item.subTitle ?? '',
+                      description: item.description ?? ''
+                  }
+              ];
 
         return {
             group_id: groupId,
             title: item.title,
             description: item.subTitle ?? '',
             footer_text: item.footerText ?? '',
-            bg_image_id: imageData?.image_id ?? null,
-            _group_to_article: [
-                {
-                    bg_image_id: imageData?.image_id ?? null,
-                    title: item.title,
-                    subTitle: item.subTitle ?? '',
-                    description: item.description ?? ''
-                }
-            ],
+            bg_image_id: imageId,
+            _group_to_article: articles,
             _group_to_image: imageData
         };
     }
