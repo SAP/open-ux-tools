@@ -1,5 +1,16 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.114
+
+### Patch Changes
+
+- c53a4ba: chore(cf-deploy-config-inquirer): upgrade shared devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/btp-utils@1.1.12
+
 ## 0.5.113
 
 ### Patch Changes

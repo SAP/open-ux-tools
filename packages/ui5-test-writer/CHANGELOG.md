@@ -1,5 +1,22 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.97
+
+### Patch Changes
+
+- 791e9b9: Generate OPA5 existence checks for object page sections & subsections
+
+## 0.7.96
+
+### Patch Changes
+
+- c53a4ba: chore(ui5-test-writer): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/ui5-application-writer@1.8.3
+    - @sap-ux/project-access@1.35.17
+
 ## 0.7.95
 
 ### Patch Changes
