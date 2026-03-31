@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.8
+
+### Patch Changes
+
+- 10f83b6: UIActionButton, UIDefaultButton - adjust `min height` after latest Fluent UI update
+
 ## 2.1.7
 
 ### Patch Changes
