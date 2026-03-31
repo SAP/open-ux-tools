@@ -1,5 +1,12 @@
 # @sap-ux/ui5-application-writer
 
+## 1.8.3
+
+### Patch Changes
+
+- c53a4ba: chore(ui5-application-writer): upgrade shared devDependencies (jest 30, i18next 25)
+    - @sap-ux/ui5-config@0.30.1
+
 ## 1.8.2
 
 ### Patch Changes

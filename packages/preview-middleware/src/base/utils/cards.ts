@@ -38,6 +38,12 @@ export function getIntegrationCard(multipleCard: MultiCardsPayload[]): MultiCard
         },
         entitySet: ''
     };
+    // sanitize URL to avoid issues with double slashes when joining paths
+    if (integrationCard.manifest['sap.card']?.data?.request) {
+        integrationCard.manifest['sap.card'].data.request.url = integrationCard.manifest[
+            'sap.card'
+        ].data.request.url.replaceAll(/\/{2,}/g, '/');
+    }
 
     prepareIntegrationCardForSaving(integrationCard.manifest);
     return integrationCard;

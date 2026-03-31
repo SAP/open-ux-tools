@@ -276,7 +276,8 @@ export const configs: Record<string, Linter.Config[]> = {
                 '@sap-ux/fiori-tools/sap-state-preservation-mode': 'warn',
                 '@sap-ux/fiori-tools/sap-strict-uom-filtering': 'warn',
                 '@sap-ux/fiori-tools/sap-table-personalization': 'warn',
-                '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn'
+                '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn',
+                '@sap-ux/fiori-tools/sap-no-data-field-intent-based-navigation': 'warn'
             }
         }
     ]

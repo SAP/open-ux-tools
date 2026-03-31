@@ -1,5 +1,13 @@
 # @sap-ux/store
 
+## 1.5.12
+
+### Patch Changes
+
+- c53a4ba: chore(store): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+
 ## 1.5.11
 
 ### Patch Changes
