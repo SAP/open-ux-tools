@@ -22,6 +22,13 @@ import GenericTile from 'sap/m/GenericTile';
 import App from 'sap/cux/home/App';
 import Event from 'sap/ui/base/Event';
 import Control from 'sap/ui/core/Control';
+import Dialog from 'sap/m/Dialog';
+import Bar from 'sap/m/Bar';
+import Button from 'sap/m/Button';
+import List from 'sap/m/List';
+import StandardListItem from 'sap/m/StandardListItem';
+import HBox from 'sap/m/HBox';
+import Icon from 'sap/ui/core/Icon';
 
 const CARDS_GAP = 16;
 const MIN_CARD_WIDTH = 304;
@@ -87,6 +94,8 @@ export default class MyHomeController extends Controller {
         LargeDesktop: 1440
     };
 
+    private terminalWarningsDialog: Dialog | undefined;
+
     private static calculateDeviceType(width: number): string {
         const { DeviceWidth } = MyHomeController;
         if (width < DeviceWidth.Mobile || Device.system.phone) {
@@ -108,7 +117,9 @@ export default class MyHomeController extends Controller {
             const oViewModel = new JSONModel({
                 deviceType: MyHomeController.calculateDeviceType(Device.resize.width),
                 insightsCardWidth: `${MIN_CARD_WIDTH / 16}rem`,
-                cards: []
+                cards: [],
+                hasWarnings: false,
+                warnings: []
             });
             view.setModel(oViewModel, 'view');
 
@@ -124,6 +135,7 @@ export default class MyHomeController extends Controller {
         void this.initSalutationBar();
         void this.initializeNewsContainer();
         void this.initializeInsightsContainer();
+        void this.initializeWarnings();
     }
 
     onBeforeRendering(): void {
@@ -324,5 +336,84 @@ export default class MyHomeController extends Controller {
         });
     }
 
-    onTerminalWarningsButtonPress(): void {}
+    onTerminalWarningsButtonPress(): void {
+        if (!this.terminalWarningsDialog) {
+            this.terminalWarningsDialog = this.createTerminalWarningsDialog();
+        }
+        void this.fetchWarnings();
+        this.terminalWarningsDialog.open();
+    }
+
+    private createTerminalWarningsDialog(): Dialog {
+        const warningsList = new List({
+            items: {
+                path: 'view>/warnings',
+                template: new StandardListItem({
+                    title: '{view>message}'
+                })
+            }
+        });
+
+        const dialog = new Dialog({
+            contentWidth: '32rem',
+            customHeader: new Bar({
+                contentLeft: [
+                    new HBox({
+                        alignItems: 'Center',
+                        items: [
+                            new Icon({ src: 'sap-icon://alert', color: '#e76500' }).addStyleClass('sapUiTinyMarginEnd'),
+                            new Title({ text: this.getText('terminalMessagesDialogTitle'), level: 'H5' })
+                        ]
+                    })
+                ],
+                contentRight: [
+                    new Button({
+                        icon: 'sap-icon://refresh',
+                        tooltip: this.getText('refreshWarnings'),
+                        type: 'Transparent',
+                        press: () => {
+                            void this.fetchWarnings();
+                        }
+                    })
+                ]
+            }),
+            content: [warningsList],
+            endButton: new Button({
+                text: this.getText('closeDialog'),
+                type: 'Transparent',
+                press: () => {
+                    dialog.close();
+                }
+            })
+        });
+
+        const view = this.getView();
+        if (view) {
+            dialog.setModel(view.getModel('view'), 'view');
+        }
+
+        return dialog;
+    }
+
+    private async initializeWarnings(): Promise<void> {
+        await this.fetchWarnings();
+    }
+
+    private async fetchWarnings(): Promise<void> {
+        try {
+            const response = await fetch('/homepage/warnings');
+            if (!response.ok) {
+                Log.error('Failed to fetch terminal warnings: ' + response.statusText);
+                return;
+            }
+            const warnings = (await response.json()) as { message: string }[];
+            const viewModel = this.getView()?.getModel('view') as JSONModel;
+            viewModel?.setProperty('/warnings', warnings);
+            viewModel?.setProperty('/hasWarnings', warnings.length > 0);
+        } catch (error: unknown) {
+            Log.error('Failed to fetch terminal warnings', error instanceof Error ? error : new Error(String(error)));
+        }
+    }
+
+    onShowVersionsButtonPress(): void {}
 }

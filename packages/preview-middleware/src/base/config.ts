@@ -1,4 +1,5 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
+import type { LogCollector } from './utils/logCollector';
 import type {
     App,
     DefaultFlpPath,
@@ -216,19 +217,22 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
  *
  * @param config configurations from the ui5.yaml
  * @param logger logger instance
+ * @param logCollector log collector instance
  */
-export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): void {
+export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger, logCollector?: LogCollector): void {
     //prettier-ignore
     if (config.rta) { //NOSONAR
         config.editors ??= {};
-        config.editors.rta = sanitizeRtaConfig(config.rta, logger); //NOSONAR
+        config.editors.rta = sanitizeRtaConfig(config.rta, logger, logCollector); //NOSONAR
         delete config.rta; //NOSONAR
     }
     if (config.editors?.rta && config.adp === undefined) {
         config.editors.rta.endpoints = config.editors.rta.endpoints.map((editor) => {
             if (editor.developerMode) {
                 logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
+                logCollector?.addLog('error', 'developerMode is ONLY supported for SAP UI5 adaptation projects.');
                 logger.warn(`developerMode for ${editor.path} disabled`);
+                logCollector?.addLog('warn', `developerMode for ${editor.path} disabled`);
                 editor.developerMode = false;
             }
             return editor;
@@ -241,15 +245,17 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
  *
  * @param deprecatedRtaConfig deprecated RTA configuration
  * @param logger logger instance
+ * @param logCollector
  * @returns sanitized RTA configuration
  */
 //prettier-ignore
-export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], logger?: Logger): RtaConfig | undefined { //NOSONAR
+export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], logger?: Logger, logCollector?: LogCollector): RtaConfig | undefined { //NOSONAR
     let rtaConfig: RtaConfig | undefined;
     if (deprecatedRtaConfig) {
         const { editors, ...rta } = deprecatedRtaConfig;
         rtaConfig = { ...rta, endpoints: [...editors] };
         logger?.warn(`The configuration option 'rta' is deprecated. Please use 'editors.rta' instead.`);
+        logCollector?.addLog('warn', `The configuration option 'rta' is deprecated. Please use 'editors.rta' instead.`);
     }
     return rtaConfig;
 }

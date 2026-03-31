@@ -25,9 +25,9 @@
                     />
                 </m:VBox>
                 <m:ToolbarSpacer id="headerToolbarSpacer"/>
-                <m:VBox
+                <m:HBox
                     id="headerRightContainer"
-                    gap="0.125rem"
+                    gap="0.5rem"
                     alignItems="End"
                     renderType="Bare"
                     class="hideOverflow"
@@ -39,8 +39,16 @@
                         text="{i18n>terminalWarnings}"
                         tooltip="{i18n>terminalWarnings}"
                         press=".onTerminalWarningsButtonPress"
+                        visible="{view>/hasWarnings}"
                     />
-                </m:VBox>
+                    <m:Button
+                        id="showVersionsBtn"
+                        type="Ghost"
+                        text="{i18n>showVersions}"
+                        tooltip="{i18n>showVersions}"
+                        press=".onShowVersionsButtonPress"
+                    />
+                </m:HBox>
             </m:OverflowToolbar>
         </m:customHeader>
 

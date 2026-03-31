@@ -65,6 +65,7 @@ import { generateCdm } from './cdm';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { NewsAdapter, type ODataNewsResponse, type NewsItem } from './utils/newsAdapter';
+import { LogCollector } from './utils/logCollector';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
@@ -130,6 +131,7 @@ export class FlpSandbox {
     private readonly project: ReaderCollection;
     private readonly cardGenerator?: CardGeneratorConfig;
     private readonly newsAdapter: NewsAdapter;
+    public readonly logCollector: LogCollector;
     private readonly objectCardCache = new Map<string, object>();
     private projectType: ProjectType;
 
@@ -140,15 +142,23 @@ export class FlpSandbox {
      * @param project reference to the project provided by the UI5 CLI
      * @param utils middleware utilities provided by the UI5 CLI
      * @param logger logger instance
+     * @param logCollector optional log collector for the enhanced homepage
      */
-    constructor(config: Partial<MiddlewareConfig>, project: ReaderCollection, utils: MiddlewareUtils, logger: Logger) {
+    constructor(
+        config: Partial<MiddlewareConfig>,
+        project: ReaderCollection,
+        utils: MiddlewareUtils,
+        logger: Logger,
+        logCollector?: LogCollector
+    ) {
         this.fs = create(createStorage());
         this.logger = logger;
         this.project = project;
         this.utils = utils;
         this.flpConfig = getFlpConfigWithDefaults(config.flp);
         this.test = config.test;
-        this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
+        this.logCollector = logCollector ?? new LogCollector();
+        this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger, this.logCollector); //NOSONAR
         logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
         this.cardGenerator = config.editors?.cardGenerator;
@@ -227,6 +237,7 @@ export class FlpSandbox {
         if (this.flpConfig.enhancedHomePage) {
             this.addCDMRoute();
             this.addNewsRoute();
+            this.addLogsRoute();
         }
         await this.addRoutesForAdditionalApps();
 
@@ -288,6 +299,10 @@ export class FlpSandbox {
             );
             if (!isCDN) {
                 this.logger.warn(
+                    `The preview with virtual endpoints does not support flex changes for the current UI5 version ${ui5VersionMajor}.${ui5VersionMinor} from npmjs. Consider using a proxy to load UI5 resources from the CDN (e.g., https://ui5.sap.com), or upgrade the UI5 version in the yaml configuration to at least 1.84.`
+                );
+                this.logCollector.addLog(
+                    'warn',
                     `The preview with virtual endpoints does not support flex changes for the current UI5 version ${ui5VersionMajor}.${ui5VersionMinor} from npmjs. Consider using a proxy to load UI5 resources from the CDN (e.g., https://ui5.sap.com), or upgrade the UI5 version in the yaml configuration to at least 1.84.`
                 );
             }
@@ -610,6 +625,10 @@ export class FlpSandbox {
         }
         if (!version) {
             this.logger.error('Could not get UI5 version of application. Using version: 1.130.9 as fallback.');
+            this.logCollector.addLog(
+                'error',
+                'Could not get UI5 version of application. Using version: 1.130.9 as fallback.'
+            );
             version = '1.130.9';
             isCdn = false;
         }
@@ -622,6 +641,10 @@ export class FlpSandbox {
         ) {
             this.flpConfig.enhancedHomePage = this.templateConfig.enhancedHomePage = false;
             this.logger.warn(`Feature enhancedHomePage disabled: UI5 version: ${version} not supported.`);
+            this.logCollector.addLog(
+                'warn',
+                `Feature enhancedHomePage disabled: UI5 version: ${version} not supported.`
+            );
         }
 
         return {
@@ -747,7 +770,12 @@ export class FlpSandbox {
             const cgPath = this.cardGenerator.path.startsWith('/')
                 ? this.cardGenerator.path
                 : `/${this.cardGenerator.path}`;
-            paths.push({ path: cgPath, type: 'editor', name: 'Card Generator', icon: 'sap-icon://business-objects-experience' });
+            paths.push({
+                path: cgPath,
+                type: 'editor',
+                name: 'Card Generator',
+                icon: 'sap-icon://business-objects-experience'
+            });
         }
 
         return paths;
@@ -780,6 +808,19 @@ export class FlpSandbox {
             async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
                 const news = await this.fetchHomepageNews();
                 this.sendResponse(res, 'application/json', 200, JSON.stringify(news));
+            }
+        );
+    }
+
+    /**
+     * Add route for warnings API required by the enhanced FLP homepage.
+     */
+    private addLogsRoute(): void {
+        this.router.get(
+            '/homepage/warnings',
+            (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                const logs = this.logCollector.getLogs();
+                this.sendResponse(res, 'application/json', 200, JSON.stringify(logs));
             }
         );
     }

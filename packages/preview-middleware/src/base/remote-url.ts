@@ -3,15 +3,17 @@ import { networkInterfaces } from 'node:os';
 import { devspace } from '@sap/bas-sdk';
 import type { ToolsLogger } from '@sap-ux/logger';
 import QRCode from 'qrcode';
+import type { LogCollector } from './utils/logCollector';
 
 /**
  * Log remote URL for mobile device access.
  *
  * @param logger ToolsLogger instance
+ * @param logCollector optional log collector for the enhanced homepage
  */
-export async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
+export async function logRemoteUrl(logger: ToolsLogger, logCollector?: LogCollector): Promise<void> {
     try {
-        const remoteUrl = await getRemoteUrl(logger);
+        const remoteUrl = await getRemoteUrl(logger, logCollector);
 
         const generateQRCode = async (text: string): Promise<void> => {
             try {
@@ -41,14 +43,15 @@ export async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
  * Get the remote URL for mobile device access.
  *
  * @param logger ToolsLogger instance
+ * @param logCollector optional log collector for the enhanced homepage
  * @returns The remote URL or undefined if not available
  */
-export async function getRemoteUrl(logger: ToolsLogger): Promise<string | undefined> {
+export async function getRemoteUrl(logger: ToolsLogger, logCollector?: LogCollector): Promise<string | undefined> {
     try {
         if (isAppStudio()) {
-            return await getBASRemoteUrl(logger);
+            return await getBASRemoteUrl(logger, logCollector);
         } else {
-            return getIdeRemoteUrl(logger);
+            return getIdeRemoteUrl(logger, logCollector);
         }
     } catch (error) {
         logger.error(`Failed to generate remote URL: ${error.message}`);
@@ -60,9 +63,10 @@ export async function getRemoteUrl(logger: ToolsLogger): Promise<string | undefi
  * Get remote URL for BAS environment using BAS SDK.
  *
  * @param logger  ToolsLogger instance instance
+ * @param logCollector optional log collector for the enhanced homepage
  * @returns The remote URL from BAS SDK
  */
-async function getBASRemoteUrl(logger: ToolsLogger): Promise<string | undefined> {
+async function getBASRemoteUrl(logger: ToolsLogger, logCollector?: LogCollector): Promise<string | undefined> {
     try {
         const devspaceInfo = await devspace.getDevspaceInfo();
         if (devspaceInfo?.url) {
@@ -74,6 +78,7 @@ async function getBASRemoteUrl(logger: ToolsLogger): Promise<string | undefined>
             return remoteUrl;
         }
         logger.warn('Could not retrieve BAS remote URL from devspace info');
+        logCollector?.addLog('warn', 'Could not retrieve BAS remote URL from devspace info');
         return undefined;
     } catch (error) {
         logger.error(`Failed to get BAS remote URL: ${error.message}`);
@@ -86,13 +91,15 @@ async function getBASRemoteUrl(logger: ToolsLogger): Promise<string | undefined>
  * Only works if --accept-remote-connections is enabled.
  *
  * @param logger  ToolsLogger instance
+ * @param logCollector optional log collector for the enhanced homepage
  * @returns The remote URL based on network IP
  */
-function getIdeRemoteUrl(logger: ToolsLogger): string | undefined {
+function getIdeRemoteUrl(logger: ToolsLogger, logCollector?: LogCollector): string | undefined {
     try {
         const networkIP = getNetworkIP();
         if (!networkIP) {
             logger.warn('Could not determine network IP address for remote access');
+            logCollector?.addLog('warn', 'Could not determine network IP address for remote access');
             return undefined;
         }
         const protocol = 'http';

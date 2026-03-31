@@ -6,6 +6,7 @@ import { type EnhancedRouter, FlpSandbox } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
 import { getPreviewPaths, sanitizeConfig } from '../base/config';
 import { logRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url';
+import { LogCollector } from '../base/utils/logCollector';
 
 /**
  * Create the router that is to be exposed as UI5 middleware.
@@ -24,10 +25,11 @@ async function createRouter(
     // setting defaults
     const config = (options.configuration as MiddlewareConfig) ?? {};
     config.flp ??= {};
-    sanitizeConfig(config, logger);
+    const logCollector = new LogCollector();
+    sanitizeConfig(config, logger, logCollector);
 
     // configure the FLP sandbox based on information from the manifest
-    const flp = new FlpSandbox(config, resources.rootProject, middlewareUtil, logger);
+    const flp = new FlpSandbox(config, resources.rootProject, middlewareUtil, logger, logCollector);
 
     if (config.adp) {
         await flp.initAdp(config.adp);
@@ -42,7 +44,7 @@ async function createRouter(
     }
 
     if (isRemoteConnectionsEnabled()) {
-        await logRemoteUrl(logger);
+        await logRemoteUrl(logger, logCollector);
     }
 
     // add exposed endpoints for cds-plugin-ui5
