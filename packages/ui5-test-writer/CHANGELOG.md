@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.97
+
+### Patch Changes
+
+- 791e9b9: Generate OPA5 existence checks for object page sections & subsections
+
 ## 0.7.96
 
 ### Patch Changes
