@@ -6,7 +6,8 @@ import * as types from '@sap-ux/sap-systems-ext-types';
 
 const connectionStatus = {
     message: '',
-    connected: true
+    connected: true,
+    showOutputChannelLink: false
 };
 
 const updateStatus = {
@@ -32,7 +33,8 @@ describe('Test getInitialState', () => {
                         count: 0
                     }
                 },
-                connected: false
+                connected: false,
+                showOutputChannelLink: false
             },
             updateSystemStatus: {
                 message: '',

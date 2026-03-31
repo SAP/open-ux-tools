@@ -1,6 +1,6 @@
 import express from 'express';
 import supertest from 'supertest';
-import type { SuperTest, Test } from 'supertest';
+
 import { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import OvpRoutesHandler from '../../../src/preview/ovp-routes-handler';
@@ -47,7 +47,7 @@ const mockProvider = {
 } as unknown as AbapServiceProvider;
 
 describe('OvpRoutesHandler', () => {
-    let server: SuperTest<Test>;
+    let server: supertest.Agent;
     const logger = new ToolsLogger();
 
     beforeEach(() => {

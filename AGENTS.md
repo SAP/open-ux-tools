@@ -198,18 +198,53 @@ pnpm audit
 
 **When to create a changeset:**
 - ✅ Any changes to files in `src/` directory
-- ✅ Adding, removing, or updating dependencies (not devDependencies)
+- ✅ Adding, removing, or updating runtime `dependencies` in `package.json` (version bumps, additions, or removals)
 - ✅ Changes to templates or runtime assets
 - ✅ Bug fixes
 - ✅ New features
 - ✅ Breaking changes
 - ✅ Changes to README.md
+- ✅ Formatting or lint autofix changes to `src/` files (even if purely cosmetic, they touch published source)
+- ✅ **Private packages** (`"private": true`) — they still need changesets even though they are not published to npm. Changesets drive internal versioning and CHANGELOG generation.
 
 **When NOT to create a changeset:**
 - ❌ Changes only to tests (test files in `test/` directories)
-- ❌ Changes only to devDependencies (unless the package uses esbuild for bundling, as bundled devDependencies affect runtime)
-- ❌ Configuration changes (eslint, prettier, jest configs)
+- ❌ Changes only to `devDependencies` (unless the package uses esbuild for bundling, as bundled devDependencies affect runtime)
+- ❌ Configuration changes (eslint, prettier, jest configs) that don't touch `src/`
 - ❌ CI/CD pipeline updates (.github/workflows)
+
+**Private packages and changesets:**
+
+Packages with `"private": true` in their `package.json` are NOT published to npm, but they **still require changesets** when their source code or runtime dependencies change. Use the package's exact `name` field from its `package.json` in the changeset frontmatter — for example:
+
+```markdown
+---
+"@sap-ux-private/preview-middleware-client": patch
+---
+
+chore(preview-middleware-client): upgrade shared devDependencies (jest 30)
+```
+
+To identify private packages in the repo:
+```bash
+# List all private packages
+grep -l '"private": true' packages/*/package.json | xargs -I{} node -e "const p=require('{}');console.log(p.name)"
+```
+
+**How to identify which packages need a changeset:**
+
+When reviewing a branch or PR, check **both** source code and dependency changes — it is a common mistake to only check `src/` files and miss runtime dependency bumps in `package.json`:
+
+1. **Source code changes** — files in `src/` or `templates/`:
+   ```bash
+   git diff main HEAD -- 'packages/*/src/' 'packages/*/templates/' | grep '^diff --git' | sed 's|^diff --git a/packages/\([^/]*\)/.*|\1|' | sort -u
+   ```
+2. **Runtime dependency changes** — `"dependencies"` section (not `"devDependencies"`) in `package.json`:
+   ```bash
+   # List all packages with package.json changes, then inspect each for runtime dep diffs
+   gh pr diff <PR_NUMBER> --repo SAP/open-ux-tools | grep -B2 -A30 '"dependencies"'
+   ```
+3. **Cross-reference** both lists against existing `.changeset/*.md` files to find uncovered packages.
 
 **Create a changeset:**
 ```bash
@@ -217,6 +252,23 @@ pnpm cset
 # or
 pnpm changeset
 ```
+
+You can also create changeset files manually in `.changeset/`. Use a descriptive filename (e.g., `package-name-short-description.md`):
+
+```markdown
+---
+"@sap-ux/package-name": patch
+---
+
+chore(package-name): upgrade i18next 25.8.18 → 25.8.20
+```
+
+**Changeset message conventions:**
+- Use conventional commit prefixes: `fix`, `feat`, `chore`, etc.
+- For dependency-only upgrades: `chore(package-name): upgrade <dep> <old> → <new>`
+- For multiple dep upgrades: `chore(package-name): upgrade runtime dependencies (<dep1> <ver>, <dep2> <ver>)`
+- For formatting/lint autofixes: `chore(package-name): reformat <description> (Prettier upgrade autofix)`
+- For type compatibility fixes: `fix(package-name): <description> for <@types/package> <version> compatibility`
 
 **Changeset workflow:**
 1. Interactive CLI prompts for:
