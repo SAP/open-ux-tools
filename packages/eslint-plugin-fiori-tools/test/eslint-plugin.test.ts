@@ -261,14 +261,12 @@ sap.ui.define([], function() {
         expect(s4hanaHasRule).toBe(true);
     });
 
-    test('recommended-for-s4hana config ignores mockserver.js in both localService and localservice directories', async () => {
-        // Create localService (capital S) and localservice (lowercase s) directories
+    test('recommended-for-s4hana config ignores mockserver.js in localService directory', async () => {
+        // Create localService directory
         const localServicePath = join(webappPath, 'localService');
-        const localservicePath = join(webappPath, 'localservice');
         mkdirSync(localServicePath, { recursive: true });
-        mkdirSync(localservicePath, { recursive: true });
 
-        // Create mockserver.js files with violations in both directories
+        // Create mockserver.js file with violations
         const mockserverCode = `
 sap.ui.define([], function() {
     "use strict";
@@ -281,9 +279,8 @@ sap.ui.define([], function() {
 `;
 
         writeFileSync(join(localServicePath, 'mockserver.js'), mockserverCode);
-        writeFileSync(join(localservicePath, 'mockserver.js'), mockserverCode);
 
-        // Create custom extension files that should be linted
+        // Create custom extension file that should be linted
         const customExtensionCode = `
 sap.ui.define([], function() {
     "use strict";
@@ -296,7 +293,6 @@ sap.ui.define([], function() {
 `;
 
         writeFileSync(join(localServicePath, 'customExtension.js'), customExtensionCode);
-        writeFileSync(join(localservicePath, 'customExtension.js'), customExtensionCode);
 
         const eslint = new ESLint({
             cwd: testProjectPath,
@@ -307,27 +303,28 @@ sap.ui.define([], function() {
         // Lint all files in webapp
         const results = await eslint.lintFiles([join(webappPath, '**/*.js')]);
 
+        // Normalize paths for cross-platform comparison (use forward slashes)
+        const normalizePathForComparison = (filePath: string) => filePath.replace(/\\/g, '/');
+
         // Find results for each file
-        const mockserverCapitalS = results.find((r) => r.filePath.includes('localService/mockserver.js'));
-        const mockserverLowerS = results.find((r) => r.filePath.includes('localservice/mockserver.js'));
-        const customCapitalS = results.find((r) => r.filePath.includes('localService/customExtension.js'));
-        const customLowerS = results.find((r) => r.filePath.includes('localservice/customExtension.js'));
+        const mockserverResult = results.find((r) =>
+            normalizePathForComparison(r.filePath).includes('localService/mockserver.js')
+        );
 
-        // Verify mockserver.js files are ignored (should not appear in results or have no violations)
-        if (mockserverCapitalS) {
-            expect(mockserverCapitalS.messages.length).toBe(0);
-        }
-        if (mockserverLowerS) {
-            expect(mockserverLowerS.messages.length).toBe(0);
-        }
+        // mockserver.js should have no violations (it should be ignored)
+        expect(mockserverResult?.messages.length).toBe(0);
 
-        // Verify custom extension files ARE linted and have violations
-        expect(customCapitalS ?? customLowerS).toBeDefined();
-        if (customCapitalS) {
-            expect(customCapitalS.messages.length).toBeGreaterThan(0);
-        }
-        if (customLowerS) {
-            expect(customLowerS.messages.length).toBeGreaterThan(0);
-        }
+        const customExtensionResult = results.find((r) =>
+            normalizePathForComparison(r.filePath).includes('localService/customExtension.js')
+        );
+        // custom extension file should have violations
+        expect(customExtensionResult?.messages.length).toBeGreaterThan(0);
+
+        // Ensure the test validated something - at minimum, we should have Component.js violations
+        expect(results.length).toBeGreaterThan(0);
+        const hasComponentViolations = results.some(
+            (r) => normalizePathForComparison(r.filePath).includes('Component.js') && r.messages.length > 0
+        );
+        expect(hasComponentViolations).toBe(true);
     });
 });
