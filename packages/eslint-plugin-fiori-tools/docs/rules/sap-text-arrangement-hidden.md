@@ -9,9 +9,7 @@ When a field uses `UI.TextArrangement` (together with `Common.Text`) to display 
 The rule checks:
 1. Every property whose `Common.Text` annotation contains an inline `UI.TextArrangement` child annotation (property-level placement).
 2. Every property that has a `Common.Text` annotation on an entity type which has `UI.TextArrangement` applied directly (entity-type level fallback — applies when no inline `UI.TextArrangement` is present on the property's `Common.Text`).
-3. Whether the referenced description property has `UI.Hidden` present and not explicitly set to `false`.
-
-Dynamic `UI.Hidden` path expressions (e.g. `Path="IsHidden"`) are not flagged since visibility cannot be determined statically.
+3. Whether the referenced description property has `UI.Hidden` present and not explicitly set to `false`. Dynamic path expressions (e.g. `Path="IsHidden"`) are also flagged — the presence of `UI.Hidden` on the text property is considered problematic regardless of the runtime value.
 
 ### Why Was This Rule Introduced?
 
