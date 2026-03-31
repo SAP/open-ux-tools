@@ -146,14 +146,6 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
         ),
         createValidTest(
             {
-                name: 'text property hidden with dynamic path expression - skip static check',
-                filename: V4_ANNOTATIONS_PATH,
-                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_WITH_DYNAMIC_HIDDEN)
-            },
-            [MANIFEST_FILE_CHANGE]
-        ),
-        createValidTest(
-            {
                 name: 'Common.Text without TextArrangement - hidden text property is not flagged',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, COMMON_TEXT_ONLY_WITH_HIDDEN)
@@ -171,6 +163,15 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
     ],
 
     invalid: [
+        createInvalidTest(
+            {
+                name: 'text property hidden via dynamic path expression',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_WITH_DYNAMIC_HIDDEN),
+                errors: [{ messageId: TEXT_ARRANGEMENT_HIDDEN }]
+            },
+            [MANIFEST_FILE_CHANGE]
+        ),
         createInvalidTest(
             {
                 name: 'text property referenced via Common.Text is hidden (default true)',

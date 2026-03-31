@@ -189,15 +189,11 @@ const rule: FioriRuleDefinition = createFioriRule({
                         for (const hiddenAnnotation of Object.values(hiddenAnnotations)) {
                             const hiddenElement = hiddenAnnotation.top.value;
 
-                            // Skip when explicitly set to false (Bool="false" means not hidden)
+                            // Skip only when explicitly set to false (Bool="false" means not hidden)
+                            // Dynamic path expressions (Path="...") are still warned — presence of
+                            // UI.Hidden on the text property is considered problematic regardless
                             const boolVal = getElementAttributeValue(hiddenElement, Edm.Bool);
                             if (boolVal === 'false') {
-                                continue;
-                            }
-
-                            // Skip dynamic path expressions — visibility cannot be determined statically
-                            const dynamicPath = getElementAttributeValue(hiddenElement, Edm.Path);
-                            if (dynamicPath) {
                                 continue;
                             }
 
