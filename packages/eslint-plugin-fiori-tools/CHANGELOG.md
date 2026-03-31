@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.11.0
+
+### Minor Changes
+
+- a61cb9b: [rule] Add rule to check that intent-based navigation data fields are not used.
+
 ## 9.10.5
 
 ### Patch Changes
