@@ -21,6 +21,7 @@ import { GenericTileScope } from 'sap/m/library';
 import GenericTile from 'sap/m/GenericTile';
 import App from 'sap/cux/home/App';
 import Event from 'sap/ui/base/Event';
+import Control from 'sap/ui/core/Control';
 
 const CARDS_GAP = 16;
 const MIN_CARD_WIDTH = 304;
@@ -298,7 +299,16 @@ export default class MyHomeController extends Controller {
 
     onAppsLoaded(event: Event<{ apps: App[], tiles: GenericTile[] }>) {
         const tiles = event.getParameter('tiles');
-        tiles.forEach(tile => tile.setScope(GenericTileScope.Display));
+        tiles.forEach(tile => {
+            // prevent tile-level actions
+            tile.setScope(GenericTileScope.Display)
+
+            // remove dnd configuration from parent
+            const parentContainer = tile.getParent() as Control;
+            if (parentContainer?.getAggregation('dragDropConfig')) {
+                parentContainer.removeAllAggregation('dragDropConfig');
+            }
+        });
     }
 
     onTerminalWarningsButtonPress(): void {}
