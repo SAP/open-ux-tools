@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.11.1
+
+### Patch Changes
+
+- 896be16: Add legacy eslint config from file `fiori_tools_configure.eslintrc` and `fiori_tools_testcode.eslintrc` for recommended-for-s4hana
+
+## 9.11.0
+
+### Minor Changes
+
+- a61cb9b: [rule] Add rule to check that intent-based navigation data fields are not used.
+
 ## 9.10.5
 
 ### Patch Changes

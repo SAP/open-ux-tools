@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.25.12
+
+### Patch Changes
+
+- f305285: fix: sanitize cards generator manifest URL to avoid issues with double slashes when joining paths
+
 ## 0.25.11
 
 ### Patch Changes
