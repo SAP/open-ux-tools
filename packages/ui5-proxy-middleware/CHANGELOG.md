@@ -1,5 +1,14 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.30
+
+### Patch Changes
+
+- c53a4ba: chore(ui5-proxy-middleware): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/ui5-config@0.30.1
+
 ## 1.6.29
 
 ### Patch Changes

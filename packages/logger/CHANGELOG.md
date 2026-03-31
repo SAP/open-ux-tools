@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.8.4
+
+### Patch Changes
+
+- c53a4ba: chore(logger): upgrade shared devDependencies (jest 30)
+
 ## 0.8.3
 
 ### Patch Changes
