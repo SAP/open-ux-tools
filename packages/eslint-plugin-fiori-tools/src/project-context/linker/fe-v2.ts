@@ -65,8 +65,11 @@ export interface FeV2ObjectPage extends ConfigurationBase<'object-page', PageSet
 
 export type FeV2PageType = FeV2ListReport | FeV2ObjectPage;
 
-export interface AnnotationBasedNode<T extends AnnotationNode, Configuration extends object = {}, Children = never>
-    extends ConfigurationBase<T['type'], Configuration> {
+export interface AnnotationBasedNode<
+    T extends AnnotationNode,
+    Configuration extends object = {},
+    Children = never
+> extends ConfigurationBase<T['type'], Configuration> {
     annotation?: T;
 
     children: Children[];
