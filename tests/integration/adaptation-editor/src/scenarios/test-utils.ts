@@ -2116,7 +2116,6 @@ export class AdpDialog {
      *
      * @param fieldName - name of input field
      * @param value - value to fill in.
-     * @param regEx - to check pattern
      */
     async fillField(fieldName: string, value: string): Promise<void> {
         const title = await this.getName();
