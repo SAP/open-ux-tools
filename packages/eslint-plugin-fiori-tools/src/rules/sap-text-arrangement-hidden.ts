@@ -12,7 +12,7 @@ import type { FioriRuleDefinition } from '../types';
 import { TEXT_ARRANGEMENT_HIDDEN, type TextArrangementHidden } from '../language/diagnostics';
 import { buildAnnotationIndexKey } from '../project-context/parser';
 import type { ParsedService } from '../project-context/parser';
-import { COMMON_TEXT, UI_HIDDEN } from '../constants';
+import { COMMON_TEXT, UI_HIDDEN, UI_TEXT_ARRANGEMENT } from '../constants';
 
 /**
  * Resolves a path expression relative to an entity type to find the entity type and property of the target.
@@ -115,6 +115,21 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         for (const parsedApp of Object.values(context.sourceCode.projectContext.index.apps)) {
             for (const parsedService of Object.values(parsedApp.services)) {
+                // Pre-pass: collect entity types that have UI.TextArrangement applied directly
+                // (entity-type level acts as a fallback for all Common.Text properties on that type)
+                const entityTypesWithTextArrangement = new Set<string>();
+                for (const key of Object.keys(parsedService.index.annotations)) {
+                    const atIdx = key.indexOf('/@');
+                    if (atIdx === -1) {
+                        continue;
+                    }
+                    const targetPath = key.substring(0, atIdx);
+                    const term = key.substring(atIdx + 2);
+                    if (term === UI_TEXT_ARRANGEMENT && !targetPath.includes('/')) {
+                        entityTypesWithTextArrangement.add(targetPath);
+                    }
+                }
+
                 for (const [annotationKey, qualifiedAnnotations] of Object.entries(parsedService.index.annotations)) {
                     const atIdx = annotationKey.indexOf('/@');
                     if (atIdx === -1) {
@@ -144,10 +159,13 @@ const rule: FioriRuleDefinition = createFioriRule({
                             continue;
                         }
 
-                        // UI.TextArrangement must appear as a nested inline annotation
-                        // inside the Common.Text element — the only valid form per the vocabulary spec
+                        // UI.TextArrangement may be a nested inline annotation inside Common.Text
+                        // (property level, takes precedence) or applied directly on the entity type
+                        // (entity-type level fallback per vocabulary spec)
                         const aliasInfo = parsedService.artifacts.aliasInfo[textAnnotation.top.uri];
-                        const hasTextArrangement = hasInlineTextArrangement(textElement, aliasInfo);
+                        const hasTextArrangement =
+                            hasInlineTextArrangement(textElement, aliasInfo) ||
+                            entityTypesWithTextArrangement.has(entityTypeName);
 
                         if (!hasTextArrangement) {
                             continue;

@@ -84,6 +84,27 @@ const COMMON_TEXT_ONLY_WITH_HIDDEN = `
         <Annotation Term="UI.Hidden"/>
     </Annotations>`;
 
+// UI.TextArrangement applied at entity-type level triggers check for all Common.Text properties
+// on that entity type (fallback when no inline TextArrangement is present in Common.Text)
+const TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_WITH_HIDDEN = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/>
+    </Annotations>
+    <Annotations Target="IncidentService.Incidents/title">
+        <Annotation Term="Common.Text" Path="description"/>
+    </Annotations>
+    <Annotations Target="IncidentService.Incidents/description">
+        <Annotation Term="UI.Hidden"/>
+    </Annotations>`;
+
+const TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_WITHOUT_HIDDEN = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/>
+    </Annotations>
+    <Annotations Target="IncidentService.Incidents/title">
+        <Annotation Term="Common.Text" Path="description"/>
+    </Annotations>`;
+
 const MANIFEST_FILE_CHANGE = {
     filename: V4_MANIFEST_PATH,
     code: JSON.stringify(V4_MANIFEST, undefined, 2)
@@ -138,6 +159,14 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, COMMON_TEXT_ONLY_WITH_HIDDEN)
             },
             [MANIFEST_FILE_CHANGE]
+        ),
+        createValidTest(
+            {
+                name: 'entity-type level TextArrangement with text property not hidden',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_WITHOUT_HIDDEN)
+            },
+            [MANIFEST_FILE_CHANGE]
         )
     ],
 
@@ -160,6 +189,19 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 name: 'text property referenced via Common.Text is hidden (Bool=true)',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_WITH_EXPLICITLY_HIDDEN_TEXT_PROPERTY),
+                errors: [
+                    {
+                        messageId: TEXT_ARRANGEMENT_HIDDEN
+                    }
+                ]
+            },
+            [MANIFEST_FILE_CHANGE]
+        ),
+        createInvalidTest(
+            {
+                name: 'entity-type level TextArrangement with hidden text property',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_WITH_HIDDEN),
                 errors: [
                     {
                         messageId: TEXT_ARRANGEMENT_HIDDEN
