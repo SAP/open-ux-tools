@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/jest-environment-ui5",
-    "version": "5.3.19",
+    "version": "5.3.20",
     "description": "Jest matchers for files and folders",
     "repository": {
         "type": "git",

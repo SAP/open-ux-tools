@@ -227,7 +227,6 @@ export class FlpSandbox {
         if (this.flpConfig.enhancedHomePage) {
             this.addCDMRoute();
             this.addNewsRoute();
-            this.addCardGeneratorAvailabilityRoute();
         }
         await this.addRoutesForAdditionalApps();
 
@@ -833,21 +832,6 @@ export class FlpSandbox {
 
         this.newsAdapter.setNewsItems(rawNews);
         return await this.newsAdapter.getNewsResponse();
-    }
-
-    /**
-     * Add route for card generator availability check required by the enhanced FLP homepage.
-     * The route returns whether the card generator is available and its path if it is available.
-     */
-    private addCardGeneratorAvailabilityRoute(): void {
-        this.router.get(
-            CARD_GENERATOR_DEFAULT.generatorAvailability,
-            async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
-                const isAvailable = this.cardGenerator?.path !== undefined;
-                const generatorPath = `${this.cardGenerator?.path}?#${this.flpConfig.intent.object}-${this.flpConfig.intent.action}`;
-                this.sendResponse(res, 'application/json', 200, JSON.stringify({ isAvailable, generatorPath }));
-            }
-        );
     }
 
     /**
