@@ -310,39 +310,6 @@ describe('convertEslintConfig', () => {
             expect(updatedConfig.extends).toEqual(['plugin:other-plugin/recommended']);
         });
 
-        test('should inject js.configs.recommended import and entry when eslint:recommended was present as string', async () => {
-            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
-            const eslintrcPath = join(basePath, '.eslintrc.json');
-            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            eslintConfig.extends = 'eslint:recommended';
-            fs.writeJSON(eslintrcPath, eslintConfig);
-
-            await convertEslintConfig(basePath, { logger: loggerMock, fs });
-
-            const migratedPath = join(basePath, 'eslint.config.mjs');
-            const migratedContent = fs.read(migratedPath);
-            expect(migratedContent).toContain("import js from '@eslint/js';");
-            expect(migratedContent).toContain('js.configs.recommended');
-        });
-
-        test('should inject js.configs.recommended before ...fioriTools spread when eslint:recommended was present', async () => {
-            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
-            const eslintrcPath = join(basePath, '.eslintrc.json');
-            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            eslintConfig.extends = 'eslint:recommended';
-            fs.writeJSON(eslintrcPath, eslintConfig);
-
-            await convertEslintConfig(basePath, { logger: loggerMock, fs });
-
-            const migratedPath = join(basePath, 'eslint.config.mjs');
-            const migratedContent = fs.read(migratedPath);
-            const jsIndex = migratedContent.indexOf('js.configs.recommended');
-            const fioriIndex = migratedContent.indexOf("...fioriTools.configs['recommended']");
-            expect(jsIndex).toBeGreaterThan(-1);
-            expect(fioriIndex).toBeGreaterThan(-1);
-            expect(jsIndex).toBeLessThan(fioriIndex);
-        });
-
         test('should NOT inject js.configs.recommended when eslint:recommended was absent', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             const eslintrcPath = join(basePath, '.eslintrc.json');
@@ -356,6 +323,35 @@ describe('convertEslintConfig', () => {
             const migratedContent = fs.read(migratedPath);
             expect(migratedContent).not.toContain("import js from '@eslint/js';");
             expect(migratedContent).not.toContain('js.configs.recommended');
+        });
+
+        test('should warn when eslint:recommended is stripped and the legacy config has a files property', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            eslintConfig.extends = 'eslint:recommended';
+            eslintConfig.files = ['**/*.{js,mjs,cjs}'];
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining("'eslint:recommended' was removed"));
+            expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('files'));
+        });
+
+        test('should NOT warn when eslint:recommended is stripped but the legacy config has no files property', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            eslintConfig.extends = 'eslint:recommended';
+            delete eslintConfig.files;
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            expect(loggerMock.warn).not.toHaveBeenCalledWith(
+                expect.stringContaining("'eslint:recommended' was removed")
+            );
         });
 
         test('should remove plugin:@typescript-eslint/recommended from string extends', async () => {
@@ -382,55 +378,6 @@ describe('convertEslintConfig', () => {
 
             const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
             expect(updatedConfig.extends).toEqual(['plugin:other/recommended']);
-        });
-
-        test('should inject typescriptEslint import and rules spread when plugin:@typescript-eslint/recommended was present', async () => {
-            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
-            const eslintrcPath = join(basePath, '.eslintrc.json');
-            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            eslintConfig.extends = 'plugin:@typescript-eslint/recommended';
-            fs.writeJSON(eslintrcPath, eslintConfig);
-
-            await convertEslintConfig(basePath, { logger: loggerMock, fs });
-
-            const migratedPath = join(basePath, 'eslint.config.mjs');
-            const migratedContent = fs.read(migratedPath);
-            expect(migratedContent).toContain("import typescriptEslint from '@typescript-eslint/eslint-plugin';");
-            expect(migratedContent).toContain('typescriptEslint.configs.recommended.rules');
-        });
-
-        test('should inject typescriptEslint rules spread for recommended-type-checked when present', async () => {
-            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
-            const eslintrcPath = join(basePath, '.eslintrc.json');
-            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            eslintConfig.extends = [
-                'plugin:@typescript-eslint/recommended',
-                'plugin:@typescript-eslint/recommended-type-checked'
-            ];
-            fs.writeJSON(eslintrcPath, eslintConfig);
-
-            await convertEslintConfig(basePath, { logger: loggerMock, fs });
-
-            const migratedPath = join(basePath, 'eslint.config.mjs');
-            const migratedContent = fs.read(migratedPath);
-            expect(migratedContent).toContain("typescriptEslint.configs['recommended-type-checked'].rules");
-        });
-
-        test('should inject typescript entries before ...fioriTools spread', async () => {
-            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
-            const eslintrcPath = join(basePath, '.eslintrc.json');
-            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            eslintConfig.extends = 'plugin:@typescript-eslint/recommended';
-            fs.writeJSON(eslintrcPath, eslintConfig);
-
-            await convertEslintConfig(basePath, { logger: loggerMock, fs });
-
-            const migratedPath = join(basePath, 'eslint.config.mjs');
-            const migratedContent = fs.read(migratedPath);
-            const tsIndex = migratedContent.indexOf('typescriptEslint.configs.recommended.rules');
-            const fioriIndex = migratedContent.indexOf("...fioriTools.configs['recommended']");
-            expect(tsIndex).toBeGreaterThan(-1);
-            expect(tsIndex).toBeLessThan(fioriIndex);
         });
 
         test('should NOT inject typescriptEslint when no @typescript-eslint extends were present', async () => {
