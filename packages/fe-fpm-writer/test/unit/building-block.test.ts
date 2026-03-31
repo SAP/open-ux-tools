@@ -12,6 +12,7 @@ import type {
     Table,
     CustomColumn,
     CustomFilterField,
+    CustomFormField,
     Action
 } from '../../src';
 
@@ -2989,6 +2990,145 @@ describe('Building Blocks', () => {
         });
     });
 
+    describe('CustomFormField building block', () => {
+        const testXmlViewContentWithForm = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:Form id="myForm" metaPath="@com.sap.vocabularies.UI.v1.FieldGroup#General">
+            </macros:Form>
+        </content>
+    </Page>
+</mvc:View>`;
+
+        const testXmlViewContentWithFormFields = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:Form id="myForm" metaPath="@com.sap.vocabularies.UI.v1.FieldGroup#General">
+                <macros:fields>
+                    <macros:FormElement label="Existing Field" />
+                </macros:fields>
+            </macros:Form>
+        </content>
+    </Page>
+</mvc:View>`;
+
+        test('generate CustomFormField with macros:fields aggregation', async () => {
+            const basePath = join(testAppPath, 'generate-custom-form-field-with-fields');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Form`;
+            const customFormFieldData: CustomFormField = {
+                id: 'testCustomFormField',
+                buildingBlockType: BuildingBlockType.CustomFormField,
+                generateId,
+                label: 'Custom Form Field',
+                anchor: 'DataField::TestProperty',
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Input value="{testProperty}"/></core:FragmentDefinition>',
+                    name: 'CustomFormField1'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithFormFields);
+
+            await generateBuildingBlock<CustomFormField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFormFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/CustomFormField1.fragment.xml');
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('FormElement');
+            expect(viewContent).toContain('Custom Form Field');
+            expect(viewContent).toContain('my.test.App.ext.fragment.CustomFormField1');
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate CustomFormField without macros:fields - creates aggregation', async () => {
+            const basePath = join(testAppPath, 'generate-custom-form-field-without-fields');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Form`;
+            const customFormFieldData: CustomFormField = {
+                id: 'testCustomFormField2',
+                buildingBlockType: BuildingBlockType.CustomFormField,
+                generateId,
+                label: 'Custom Form Field 2',
+                anchor: 'DataField::AnotherProperty',
+                position: {
+                    placement: Placement.Before
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Custom"/></core:FragmentDefinition>',
+                    name: 'CustomFormField2'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithForm);
+
+            await generateBuildingBlock<CustomFormField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFormFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/CustomFormField2.fragment.xml');
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('FormElement');
+            expect(viewContent).toContain('Custom Form Field 2');
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('CustomFormField processor with wrong type throws error', () => {
+            const mockFs = create(createStorage());
+
+            const customFormFieldProcessor = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFormField]!.processor;
+
+            const wrongTypeBuildingBlock = {
+                id: 'wrongType',
+                buildingBlockType: BuildingBlockType.Chart,
+                generateId,
+                title: 'Wrong Type'
+            };
+
+            expect(() => {
+                const context = {
+                    fs: mockFs,
+                    viewPath: '/mock/path'
+                };
+                customFormFieldProcessor(wrongTypeBuildingBlock, context);
+            }).toThrow('Expected CustomFormField building block data');
+        });
+    });
+
     describe('Building Block Configuration and Type Safety', () => {
         test('BUILDING_BLOCK_CONFIG export contains correct configuration', () => {
             // Test CustomColumn configuration
@@ -3010,8 +3150,17 @@ describe('Building Blocks', () => {
             expect(customFilterFieldConfig.templateFile).toBe('filter/fragment.xml');
             expect(customFilterFieldConfig.namespace.uri).toBe('sap.fe.macros.filterBar');
             expect(customFilterFieldConfig.namespace.prefix).toBe('macros');
-            // expect(customFilterFieldConfig.resultPropertyName).toBe('hasFilterFields');
             expect(typeof customFilterFieldConfig.processor).toBe('function');
+
+            // Test CustomFormField configuration
+            const customFormFieldConfig = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFormField]!;
+            expect(customFormFieldConfig).toBeDefined();
+            expect(customFormFieldConfig.aggregationConfig.aggregationName).toBe('fields');
+            expect(customFormFieldConfig.aggregationConfig.elementName).toBe('FormElement');
+            expect(customFormFieldConfig.templateFile).toBe('common/Fragment.xml');
+            expect(customFormFieldConfig.namespace.uri).toBe('sap.fe.macros');
+            expect(customFormFieldConfig.namespace.prefix).toBe('macros');
+            expect(typeof customFormFieldConfig.processor).toBe('function');
         });
 
         test('processor function type validation - CustomColumn with wrong type throws error', async () => {
