@@ -1,5 +1,12 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.11
+
+### Patch Changes
+
+- c53a4ba: chore(preview-middleware-client): implement custom jsdom env for writable window.location; fix eslint config plugin scoping; upgrade shared devDependencies (jest 30)
+    - @sap-ux-private/control-property-editor-common@0.7.7
+
 ## 0.25.10
 
 ### Patch Changes

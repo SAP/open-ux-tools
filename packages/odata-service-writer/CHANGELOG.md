@@ -1,5 +1,15 @@
 # @sap-ux/odata-service-writer
 
+## 0.31.4
+
+### Patch Changes
+
+- c53a4ba: chore(odata-service-writer): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/mockserver-config-writer@0.9.68
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-config@0.30.1
+
 ## 0.31.3
 
 ### Patch Changes

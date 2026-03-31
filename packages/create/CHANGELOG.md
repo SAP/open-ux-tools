@@ -1,5 +1,35 @@
 # @sap-ux/create
 
+## 0.15.61
+
+### Patch Changes
+
+- c53a4ba: chore(create): upgrade diff 5.x → 8.x, commander 9.x → 14.x; upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/abap-deploy-config-inquirer@1.8.7
+    - @sap-ux/adp-tooling@0.18.107
+    - @sap-ux/app-config-writer@0.6.131
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/cap-config-writer@0.12.86
+    - @sap-ux/flp-config-inquirer@0.4.166
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/mockserver-config-writer@0.9.68
+    - @sap-ux/odata-service-writer@0.31.4
+    - @sap-ux/preview-middleware@0.25.11
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/abap-deploy-config-writer@0.3.6
+
 ## 0.15.60
 
 ### Patch Changes

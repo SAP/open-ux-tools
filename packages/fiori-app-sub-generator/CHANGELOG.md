@@ -1,5 +1,39 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.13.9
+
+### Patch Changes
+
+- c53a4ba: chore(fiori-app-sub-generator): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/cap-config-writer@0.12.86
+    - @sap-ux/feature-toggle@0.3.8
+    - @sap-ux/fiori-elements-writer@2.8.115
+    - @sap-ux/fiori-freestyle-writer@2.5.85
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/launch-config@0.10.81
+    - @sap-ux/odata-service-inquirer@2.20.7
+    - @sap-ux/odata-service-writer@0.31.4
+    - @sap-ux/store@1.5.12
+    - @sap-ux/telemetry@0.6.94
+    - @sap-ux/ui5-application-inquirer@0.17.8
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-info@0.13.17
+    - @sap-ux/annotation-generator@0.4.46
+
 ## 0.13.8
 
 ### Patch Changes
