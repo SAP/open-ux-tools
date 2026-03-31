@@ -76,7 +76,8 @@ describe('proxy', () => {
     });
 
     describe('PathRewriters', () => {
-        const { replacePrefix, replaceClient, getPathRewrite, convertAppDescriptorToManifest } = PathRewriters;
+        const { replacePrefix, replaceClient, appendParams, getPathRewrite, convertAppDescriptorToManifest } =
+            PathRewriters;
 
         test('replacePrefix', () => {
             const rewrite = replacePrefix('/old', '/my/new');
@@ -89,6 +90,22 @@ describe('proxy', () => {
             expect(rewrite('/test')).toBe('/test?sap-client=012');
             expect(rewrite('/test?sap-language=en')).toBe('/test?sap-language=en&sap-client=012');
             expect(rewrite('/test?sap-client=000')).toBe('/test?sap-client=012');
+        });
+
+        test('appendParams', () => {
+            const rewriteSingle = appendParams({ saml2: 'disabled' });
+            expect(rewriteSingle('/test')).toBe('/test?saml2=disabled');
+            expect(rewriteSingle('/test?sap-client=100')).toBe('/test?sap-client=100&saml2=disabled');
+
+            const rewriteMultiple = appendParams({ saml2: 'disabled', 'sap-language': 'EN' });
+            expect(rewriteMultiple('/test')).toBe('/test?saml2=disabled&sap-language=EN');
+
+            const rewriteEncoded = appendParams({ key: 'value with spaces' });
+            expect(rewriteEncoded('/test')).toBe('/test?key=value%20with%20spaces');
+
+            const rewriteEmpty = appendParams({});
+            expect(rewriteEmpty('/test')).toBe('/test');
+            expect(rewriteEmpty('/test?sap-client=100')).toBe('/test?sap-client=100');
         });
 
         test('convertAppDescriptorToManifest', () => {
@@ -129,6 +146,55 @@ describe('proxy', () => {
                     originalUrl: '/my/bsp/manifest.appdescr'
                 } as EnhancedIncomingMessage)
             ).toBe('/manifest.json');
+        });
+
+        test('getPathRewrite with params', () => {
+            const writerChain = getPathRewrite(
+                {
+                    path: '/sap',
+                    url: 'https://example.com',
+                    params: { saml2: 'disabled' }
+                } as BackendConfig,
+                logger
+            );
+            expect(writerChain).toBeDefined();
+            expect(writerChain!('/sap/test', { originalUrl: '/sap/test' } as EnhancedIncomingMessage)).toBe(
+                '/sap/test?saml2=disabled'
+            );
+            expect(
+                writerChain!('/sap/test?sap-client=100', {
+                    originalUrl: '/sap/test?sap-client=100'
+                } as EnhancedIncomingMessage)
+            ).toBe('/sap/test?sap-client=100&saml2=disabled');
+        });
+
+        test('getPathRewrite warns on invalid client value', () => {
+            const warnSpy = jest.spyOn(logger, 'warn');
+            getPathRewrite(
+                {
+                    path: '/sap',
+                    url: 'https://example.com',
+                    client: '100&saml2=disabled'
+                } as BackendConfig,
+                logger
+            );
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"client" value "100&saml2=disabled"'));
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"params"'));
+            warnSpy.mockRestore();
+        });
+
+        test('getPathRewrite does not warn on valid client value', () => {
+            const warnSpy = jest.spyOn(logger, 'warn');
+            getPathRewrite(
+                {
+                    path: '/sap',
+                    url: 'https://example.com',
+                    client: '100'
+                } as BackendConfig,
+                logger
+            );
+            expect(warnSpy).not.toHaveBeenCalled();
+            warnSpy.mockRestore();
         });
     });
 

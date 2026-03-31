@@ -1,5 +1,22 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.9
+
+### Patch Changes
+
+- c53a4ba: chore(deploy-tooling): upgrade commander 9.x → 14.x; upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/ui5-config@0.30.1
+
 ## 0.18.8
 
 ### Patch Changes
