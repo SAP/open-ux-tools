@@ -87,6 +87,9 @@ const testPathRelative =
         ? posix.join(webappPathRelative, 'test')
         : uniformUrl(relative(process.cwd(), pathMappingsAbsolute.test ?? join(process.cwd(), 'webapp/test')));
 
+const localServiceUpperCase = posix.join(webappPathRelative, 'localService');
+const localServiceLowerCase = posix.join(webappPathRelative, 'localservice');
+
 // Base Fiori Tools rules (common across both configs)
 const baseFioriToolsRules = {
     // Error rules (alphabetical)
@@ -145,10 +148,10 @@ const prodConfig: Linter.Config[] = [
         ignores: [
             'target/**',
             `${testPathRelative}/**`,
-            `${posix.join(webappPathRelative, 'localservice')}/**`, // Ignore everything in the 'localservice' folder
-            `!${posix.join(webappPathRelative, 'localservice')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
-            `${posix.join(webappPathRelative, 'localService')}/**`, // Ignore everything in the 'localService' folder
-            `!${posix.join(webappPathRelative, 'localService')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${localServiceLowerCase}/**`, // Ignore everything in the 'localservice' folder
+            `!${localServiceLowerCase}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${localServiceUpperCase}/**`, // Ignore everything in the 'localService' folder
+            `!${localServiceUpperCase}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
             'backup/**',
             '**/Gruntfile.js',
             '**/changes_preview.js',
@@ -185,12 +188,12 @@ const prodConfigS4Hana: Linter.Config[] = [
         ignores: [
             'target/**',
             `${testPathRelative}/**`,
-            `${posix.join(webappPathRelative, 'localservice')}/**`, // Ignore everything in the 'localservice' folder
-            `!${posix.join(webappPathRelative, 'localservice')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
-            `${posix.join(webappPathRelative, 'localservice', 'mockserver.js')}`, // But DO ignore mockserver.js specifically
-            `${posix.join(webappPathRelative, 'localService')}/**`, // Ignore everything in the 'localService' folder
-            `!${posix.join(webappPathRelative, 'localService')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
-            `${posix.join(webappPathRelative, 'localService', 'mockserver.js')}`, // But DO ignore mockserver.js specifically
+            `${localServiceLowerCase}/**`, // Ignore everything in the 'localservice' folder
+            `!${localServiceLowerCase}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${posix.join(localServiceLowerCase, 'mockserver.js')}`, // But DO ignore mockserver.js specifically
+            `${localServiceUpperCase}/**`, // Ignore everything in the 'localService' folder
+            `!${localServiceUpperCase}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${posix.join(localServiceUpperCase, 'mockserver.js')}`, // But DO ignore mockserver.js specifically
             'backup/**',
             '**/Gruntfile.js',
             '**/changes_preview.js',
@@ -240,10 +243,10 @@ const typescriptConfig: Linter.Config[] = [
             'target/**',
             `${testPathRelative}/changes_loader.ts`,
             `${testPathRelative}/changes_preview.ts`,
-            `${posix.join(webappPathRelative, 'localservice')}/**`, // Ignore everything in the 'localservice' folder
-            `!${posix.join(webappPathRelative, 'localservice')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
-            `${posix.join(webappPathRelative, 'localService')}/**`, // Ignore everything in the 'localService' folder
-            `!${posix.join(webappPathRelative, 'localService')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${localServiceLowerCase}/**`, // Ignore everything in the 'localservice' folder
+            `!${localServiceLowerCase}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${localServiceUpperCase}/**`, // Ignore everything in the 'localService' folder
+            `!${localServiceUpperCase}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
             'undefined/**/Example.qunit.ts',
             'backup/**',
             '**/*.d.ts'
