@@ -175,6 +175,7 @@ export interface ConfigAnswers {
     password: string;
     storeCredentials?: boolean;
     application: SourceApplication;
+    projectType?: AdaptationProjectType;
     fioriId?: string;
     ach?: string;
     shouldCreateExtProject?: boolean;
@@ -903,6 +904,8 @@ export interface CfAppParams {
 export interface AppParamsExtended extends CfAppParams {
     spaceGuid: string;
 }
+
+export type ServiceKeySortField = 'updated_at' | 'created_at';
 
 export interface ServiceKeys {
     credentials: {

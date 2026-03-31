@@ -15,6 +15,12 @@ export interface BaseBackendConfig {
      */
     client?: string;
     /**
+     * Optional map of additional query parameters to append to every proxied request.
+     * Aligned with the `params` property in `UrlAbapTarget` from `@sap-ux/system-access`.
+     * Example: { saml2: 'disabled' }
+     */
+    params?: Record<string, string>;
+    /**
      * If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP
      */
     scp?: boolean;
@@ -59,6 +65,11 @@ export interface LocalBackendConfig extends BaseBackendConfig {
      * Mandatory URL pointing to the backend system
      */
     url: string;
+    /**
+     * Path used to connect to a specific service in the backend system.
+     * This is required to fetch the correct credentials from the store when a full odata service url 'system' is used.
+     */
+    connectPath?: string;
 }
 
 export type BackendConfig = LocalBackendConfig | DestinationBackendConfig;

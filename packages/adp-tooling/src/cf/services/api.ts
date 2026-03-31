@@ -378,14 +378,14 @@ export async function getOrCreateServiceKeys(
 ): Promise<ServiceKeys[]> {
     const serviceInstanceName = serviceInstance.name;
     try {
-        const credentials = await getServiceKeys(serviceInstance.guid);
+        const credentials = await getServiceKeys(serviceInstance.guid, 'updated_at', logger);
         if (credentials?.length > 0) {
             return credentials;
         } else {
             const serviceKeyName = serviceInstanceName + '_key';
             logger?.log(`Creating service key '${serviceKeyName}' for service instance '${serviceInstanceName}'`);
             await createServiceKey(serviceInstanceName, serviceKeyName);
-            return getServiceKeys(serviceInstance.guid);
+            return getServiceKeys(serviceInstance.guid, 'updated_at', logger);
         }
     } catch (e) {
         throw new Error(t('error.failedToGetOrCreateServiceKeys', { serviceInstanceName, error: e.message }));

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Validate common flows Validate adding managed approuter 2`] = `
-"_schema-version: '3.2'
+"_schema-version: \\"3.2\\"
 ID: basicApp
 version: 0.0.1
 parameters:
@@ -60,7 +60,7 @@ modules:
       build-result: dist
       commands:
         - npm install
-        - 'npm run build:cf'
+        - npm run build:cf
       supported-platforms: []
 resources:
   - name: basicApp-destination-service
@@ -78,7 +78,7 @@ resources:
             destinations:
               - Name: ui5
                 Type: HTTP
-                URL: 'https://ui5.sap.com'
+                URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
   - name: basicApp-uaa
@@ -103,7 +103,7 @@ resources:
 `;
 
 exports[`Validate common flows Validate adding managed approuter and destinations to cds generated mta.yaml 2`] = `
-"_schema-version: '3.1'
+"_schema-version: \\"3.1\\"
 ID: managedAppCAPProject
 version: 1.0.0
 description: A simple CAP project.
@@ -129,7 +129,7 @@ modules:
     provides:
       - name: srv-api
         properties:
-          srv-url: '\${default-url}'
+          srv-url: \${default-url}
     requires:
       - name: managedAppCAPProject-db
       - name: managedAppCAPProject-uaa
@@ -192,7 +192,7 @@ modules:
       build-result: dist
       commands:
         - npm install
-        - 'npm run build:cf'
+        - npm run build:cf
       supported-platforms: []
 resources:
   - name: managedAppCAPProject-db
@@ -215,12 +215,12 @@ resources:
             destinations:
               - Name: ui5
                 Type: HTTP
-                URL: 'https://ui5.sap.com'
+                URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
               - Name: srv-api
                 Type: HTTP
-                URL: '~{srv-api/srv-url}'
+                URL: ~{srv-api/srv-url}
                 ProxyType: Internet
                 Authentication: NoAuthentication
                 HTML5.DynamicDestination: true
@@ -244,7 +244,7 @@ resources:
 `;
 
 exports[`Validate common flows Validate adding standalone approuter 2`] = `
-"_schema-version: '3.2'
+"_schema-version: \\"3.2\\"
 ID: standaloneBasic
 description: Fiori elements app
 version: 0.0.1
@@ -270,7 +270,7 @@ modules:
         group: destinations
         properties:
           name: ui5
-          url: 'https://ui5.sap.com'
+          url: https://ui5.sap.com
           forwardAuthToken: false
       - name: standaloneBasic-abap-abapservice
       - name: standaloneBasic-connectivity
@@ -296,7 +296,7 @@ modules:
       build-result: dist
       commands:
         - npm install
-        - 'npm run build:cf'
+        - npm run build:cf
       supported-platforms: []
 resources:
   - name: standaloneBasic-uaa
@@ -305,7 +305,7 @@ resources:
       service-plan: application
       service: xsuaa
       config:
-        xsappname: 'standaloneBasic-\${space-guid}'
+        xsappname: standaloneBasic-\${space-guid}
         tenant-mode: dedicated
   - name: standaloneBasic-html5-repo-runtime
     type: org.cloudfoundry.managed-service
@@ -327,7 +327,7 @@ resources:
             destinations:
               - Name: ui5
                 Type: HTTP
-                URL: 'https://ui5.sap.com'
+                URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
   - name: standaloneBasic-repo-host
@@ -353,7 +353,7 @@ resources:
 `;
 
 exports[`Validate common flows Validate adding standalone approuter with missing module destination 1`] = `
-"_schema-version: '3.2'
+"_schema-version: \\"3.2\\"
 ID: standaloneApp
 description: Fiori elements app
 version: 0.0.1
@@ -369,7 +369,7 @@ modules:
         properties:
           forwardAuthToken: false
           name: ui5
-          url: 'https://ui5.sap.com'
+          url: https://ui5.sap.com
     parameters:
       disk-quota: 256M
       memory: 256M
@@ -389,7 +389,7 @@ resources:
     parameters:
       config:
         tenant-mode: dedicated
-        xsappname: 'standaloneApp-\${org}'
+        xsappname: standaloneApp-\${org}
       service: xsuaa
       service-plan: application
   - name: standaloneApp-html5-repo-runtime
@@ -410,7 +410,7 @@ resources:
             destinations:
               - Name: ui5
                 Type: HTTP
-                URL: 'https://ui5.sap.com'
+                URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
   - name: standaloneApp-repo-host
@@ -431,7 +431,7 @@ build-parameters:
 `;
 
 exports[`Validate common flows Validate destination service is correctly updated if missing instances 1`] = `
-"_schema-version: '3.2'
+"_schema-version: \\"3.2\\"
 ID: managedApp
 version: 0.0.1
 modules:
@@ -488,7 +488,7 @@ resources:
             destinations:
               - Name: ui5
                 Type: HTTP
-                URL: 'https://ui5.sap.com'
+                URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
       service: destination

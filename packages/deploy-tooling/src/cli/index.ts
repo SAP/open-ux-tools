@@ -29,6 +29,9 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
             )
         )
         .addOption(new Option('--url <target-url>', 'URL of target ABAP system').conflicts('destination'))
+        .addOption(
+            new Option('--connect-path <path>', 'Service URL path used to retrieve credentials from secure storage')
+        )
         .addOption(new Option('--client <sap-client>', 'Client number of target ABAP system').conflicts('destination'))
         .addOption(new Option('--cloud', 'Target is an ABAP Cloud system').conflicts('destination'))
         .addOption(new Option('--service <service-path>', 'Target alias for deployment service'))
@@ -130,7 +133,7 @@ async function prepareRun(cmd: Command) {
 
     // Handle empty config when not passed in
     const taskConfig = options.config ? await getDeploymentConfig(options.config) : ({} as AbapDeployConfig);
-    const config = await mergeConfig(taskConfig, options);
+    const config = await mergeConfig(taskConfig, options, logger);
     if (logLevel >= LogLevel.Debug) {
         logger.debug(getConfigForLogging(config));
     }

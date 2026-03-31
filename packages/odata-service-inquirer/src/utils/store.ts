@@ -25,7 +25,10 @@ export async function getAllBackendSystems(includeSensitiveData = false): Promis
     try {
         const backendService = await getBackendSystemService();
         backendSystems = await backendService.getAll({
-            includeSensitiveData
+            includeSensitiveData,
+            backendSystemFilter: {
+                connectionType: ['abap_catalog', 'odata_service']
+            }
         });
     } catch (error) {
         LoggerHelper.logger.error(t('errors.backendSystemRetrieval', { error: error.message }));

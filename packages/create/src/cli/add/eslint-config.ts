@@ -55,19 +55,18 @@ async function addEslintConfig(
         const fs = await generateEslintConfig(basePath, { logger, config });
         await traceChanges(fs);
         if (!simulate) {
-            fs.commit(() => {
+            await new Promise<void>((resolve) => fs.commit(resolve));
+            logger.info(
+                `ESlint configuration written. Ensure you install the new dependency by executing 'npm install'.`
+            );
+            if (skipInstall) {
                 logger.info(
-                    `ESlint configuration written. Ensure you install the new dependency by executing 'npm install'.`
+                    `\`npm install\` will be skipped. Please make sure to install the dependencies before executing any linting commands.`
                 );
-                if (skipInstall) {
-                    logger.info(
-                        `\`npm install\` will be skipped. Please make sure to install the dependencies before executing any linting commands.`
-                    );
-                } else {
-                    logger.info(`Executing \`npm install\`.`);
-                    runNpmInstallCommand(basePath, undefined, { logger });
-                }
-            });
+            } else {
+                logger.info(`Executing \`npm install\`.`);
+                runNpmInstallCommand(basePath, undefined, { logger });
+            }
         }
     } catch (error) {
         logger.error(`Error while executing add eslint-config. '${(error as Error).message}'`);

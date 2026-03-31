@@ -1,5 +1,55 @@
 # @sap-ux/system-access
 
+## 0.7.4
+
+### Patch Changes
+
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/store@1.5.12
+    - @sap-ux/btp-utils@1.1.12
+
+## 0.7.3
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/axios-extension@1.25.27
+
+## 0.7.2
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/store@1.5.11
+
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+
+## 0.7.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.24
+
 ## 0.6.66
 
 ### Patch Changes
