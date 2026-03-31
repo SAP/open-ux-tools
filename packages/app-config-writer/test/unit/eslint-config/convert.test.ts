@@ -388,9 +388,7 @@ describe('convertEslintConfig', () => {
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            expect(loggerMock.warn).not.toHaveBeenCalledWith(
-                expect.stringContaining("'plugin:@typescript-eslint/*'")
-            );
+            expect(loggerMock.warn).not.toHaveBeenCalledWith(expect.stringContaining("'plugin:@typescript-eslint/*'"));
         });
 
         test('should delete extends when string extends is a Fiori Tools config', async () => {
