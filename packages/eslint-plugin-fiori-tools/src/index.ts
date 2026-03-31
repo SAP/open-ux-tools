@@ -175,11 +175,239 @@ const prodConfig: Linter.Config[] = [
     }
 ];
 
-// Convert ESLint recommended rules to 'warn' for S/4HANA config
-const eslintRecommendedAsWarnings = Object.keys(js.configs.recommended.rules || {}).reduce((acc, key) => {
-    acc[key] = 'warn';
-    return acc;
-}, {} as Linter.RulesRecord);
+// Shared globals for S/4HANA config (used in both prod and test configs)
+const s4hanaGlobals = {
+    ...globals.browser,
+    ...globals.node,
+    ...globals.amd,
+    ...globals.mocha,
+    // SAP-specific globals (from legacy S/4HANA eslintrc)
+    com: 'readonly',
+    oData: 'off',
+    sakp: 'off',
+    fin: 'readonly',
+    cloud: 'readonly',
+    bsuite: 'off',
+    cordova: 'off',
+    ui: 'readonly',
+    webide: 'off',
+    asyncTest: 'off',
+    i2d: 'readonly',
+    gltrade: 'off',
+    drilldown: 'readonly',
+    opaTest: 'off',
+    ux: 'readonly',
+    test: 'off',
+    $: 'off',
+    module: 'off',
+    ai: 'off',
+    notEqual: 'off',
+    throws: 'off',
+    ssuite: 'off',
+    deepEqual: 'off',
+    s2p: 'off',
+    Promise: 'off',
+    ehs: 'off',
+    sinon: 'off',
+    stop: 'off',
+    util: 'readonly',
+    slo: 'off',
+    mdm: 'off',
+    mytravelandexpense: 'off',
+    strictEqual: 'off',
+    cec: 'off',
+    cus: 'off',
+    notStrictEqual: 'off',
+    fscm: 'off',
+    fm: 'readonly',
+    nw: 'readonly',
+    shcm: 'off',
+    fcg: 'readonly',
+    URI: 'off',
+    fs: 'readonly',
+    retail: 'off',
+    d3: 'off',
+    hcm: 'off',
+    oil: 'readonly',
+    assert: 'off',
+    hpa: 'off',
+    ok: 'off',
+    sap: 'readonly',
+    QUnit: 'off',
+    cross: 'readonly',
+    srm: 'off',
+    equal: 'off',
+    expect: 'off',
+    jQuery: 'off',
+    publicservices: 'readonly',
+    uxcc: 'off',
+    equals: 'off',
+    tl: 'off',
+    travel: 'readonly'
+} as const;
+
+/**
+ * Standard ESLint rules for S/4HANA config (based on legacy "fiori_tools_configure.eslintrc" configuration)
+ *
+ * These rules were completely removed from ESLint 9 and have no direct replacement:
+ * valid-jsdoc - Originally: ['warn', { requireReturn: false }]
+ * no-catch-shadow - Originally: 'warn'
+ * handle-callback-err - Originally: 'off'
+ * no-process-exit - Originally: 'off'
+ * no-process-env - Originally: 'off'
+ * no-new-require - Originally: 'off'
+ * no-path-concat - Originally: 'off'
+ * newline-after-var - Originally: 'off'
+ *
+ * These rules were replaced with a different rule in ESLint 9:
+ * no-spaced-func → func-call-spacing
+ * no-native-reassign → no-global-assign
+ * no-negated-in-lhs → no-unsafe-negation
+ */
+const standardEslintRulesForS4Hana: Linter.RulesRecord = {
+    'no-unreachable': 'warn',
+    'no-regex-spaces': 'error',
+    'no-shadow': 'warn',
+    'quotes': ['warn', 'double', 'avoid-escape'],
+    'no-return-assign': 'warn',
+    'max-len': ['warn', 200],
+    'no-mixed-spaces-and-tabs': 'off',
+    'no-param-reassign': 'warn',
+    'strict': 'off',
+    'eol-last': 'off',
+    'no-new-func': 'error',
+    'constructor-super': 'off',
+    'no-eval': 'error',
+    'new-parens': 'warn',
+    'yoda': ['warn', 'never'],
+    'no-delete-var': 'warn',
+    'no-ternary': 'off',
+    'no-nested-ternary': 'warn',
+    'no-dupe-args': 'error',
+    'complexity': ['warn', 20],
+    'no-control-regex': 'error',
+    'no-invalid-regexp': 'error',
+    'no-iterator': 'warn',
+    'no-with': 'error',
+    'func-call-spacing': 'warn', // Replaces deprecated no-spaced-func
+    'curly': ['warn', 'all'],
+    'no-debugger': 'error',
+    'no-extend-native': 'warn',
+    'no-constant-condition': 'error',
+    'no-redeclare': 'warn',
+    'one-var': 'off',
+    'radix': 'warn',
+    'sort-vars': 'off',
+    'no-new': 'warn',
+    'no-obj-calls': 'error',
+    'accessor-pairs': 'off',
+    'no-bitwise': 'off',
+    'wrap-iife': ['warn', 'any'],
+    'no-alert': 'error',
+    'no-script-url': 'warn',
+    'func-style': 'off',
+    'max-depth': ['warn', 4],
+    'no-undefined': 'off',
+    'no-unexpected-multiline': 'off',
+    'no-dupe-keys': 'error',
+    'no-loop-func': 'warn',
+    'no-shadow-restricted-names': 'warn',
+    'guard-for-in': 'warn',
+    'vars-on-top': 'off',
+    'no-extra-semi': 'warn',
+    'no-global-assign': 'error', // Replaces deprecated no-native-reassign
+    'comma-dangle': 'warn',
+    'no-extra-parens': 'off',
+    'no-else-return': 'off',
+    'no-array-constructor': 'warn',
+    'use-isnan': 'error',
+    'quote-props': 'off',
+    'no-multi-str': 'warn',
+    'object-shorthand': 'off',
+    'no-throw-literal': 'warn',
+    'no-var': 'off',
+    'consistent-return': 'warn',
+    'no-func-assign': 'error',
+    'no-self-compare': 'warn',
+    'operator-assignment': 'off',
+    'no-new-wrappers': 'warn',
+    'padded-blocks': 'off',
+    'no-unsafe-negation': 'error', // Replaces deprecated no-negated-in-lhs
+    'no-implied-eval': 'error',
+    'no-div-regex': 'off',
+    'no-void': 'off',
+    'no-extra-bind': 'warn',
+    'no-unneeded-ternary': 'off',
+    'no-plusplus': 'off',
+    'no-ex-assign': 'error',
+    'default-case': 'off',
+    'no-lonely-if': 'off',
+    'no-inner-declarations': ['error', 'functions'],
+    'max-statements': ['warn', 40],
+    'valid-typeof': 'error',
+    'no-inline-comments': 'off',
+    'semi': 'error',
+    'no-empty-character-class': 'warn',
+    'no-empty': 'warn',
+    'no-proto': 'warn',
+    'no-continue': 'off',
+    'no-cond-assign': 'error',
+    'no-octal': 'warn',
+    'no-new-object': 'warn',
+    'func-names': 'off',
+    'no-irregular-whitespace': 'error',
+    'consistent-this': ['warn', 'that'],
+    'camelcase': 'warn',
+    'space-infix-ops': 'warn',
+    'no-fallthrough': 'warn',
+    'no-warning-comments': [
+        'warn',
+        {
+            terms: ['todo', 'fixme', 'xxx'],
+            location: 'start'
+        }
+    ],
+    'no-octal-escape': 'warn',
+    'no-unused-vars': [
+        'warn',
+        {
+            args: 'none',
+            vars: 'all'
+        }
+    ],
+    'no-sparse-arrays': 'error',
+    'operator-linebreak': 'off',
+    'no-sequences': 'warn',
+    'no-undef': 'warn',
+    'eqeqeq': 'warn',
+    'indent': 'off',
+    'no-multi-spaces': 'off',
+    'new-cap': [
+        'warn',
+        {
+            capIsNew: false
+        }
+    ],
+    'no-console': 'error',
+    'no-extra-boolean-cast': 'warn',
+    'block-scoped-var': 'off',
+    'no-labels': 'warn',
+    'no-eq-null': 'warn',
+    'no-label-var': 'warn',
+    'no-use-before-define': 'warn',
+    'semi-spacing': 'warn',
+    'linebreak-style': ['error', 'unix'],
+    'max-params': ['warn', 8],
+    'no-caller': 'error',
+    'no-lone-blocks': 'warn',
+    'wrap-regex': 'off',
+    'no-unused-expressions': 'error',
+    'dot-notation': 'warn',
+    'no-undef-init': 'warn',
+    'no-duplicate-case': 'error',
+    'prefer-const': 'off',
+    'no-this-before-super': 'off'
+};
 
 const prodConfigS4Hana: Linter.Config[] = [
     {
@@ -207,11 +435,12 @@ const prodConfigS4Hana: Linter.Config[] = [
             parser: babelParser,
             parserOptions: {
                 requireConfigFile: false
-            }
+            },
+            globals: s4hanaGlobals
         },
 
         rules: {
-            ...eslintRecommendedAsWarnings,
+            ...standardEslintRulesForS4Hana,
             ...baseFioriToolsRules
         }
     }
@@ -226,11 +455,14 @@ const testConfig: Linter.Config[] = [
             parser: babelParser,
             parserOptions: {
                 requireConfigFile: false
-            }
+            },
+            globals: s4hanaGlobals
         },
 
         rules: {
-            '@sap-ux/fiori-tools/sap-opa5-autowait-true': 'warn'
+            '@sap-ux/fiori-tools/sap-opa5-autowait-true': 'warn',
+            'semi': 'warn',
+            'linebreak-style': ['warn', 'unix']
         }
     }
 ];
