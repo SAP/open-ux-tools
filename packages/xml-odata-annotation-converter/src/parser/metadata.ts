@@ -299,6 +299,54 @@ function getEdmTargetKinds(elementKind: string, isCollectionValued = false): Tar
 }
 
 /**
+ * Enrich metadata element properties with NavigationProperty-specific data.
+ *
+ * @param context - conversion context
+ * @param element - source XML element
+ * @param type - fully qualified type name
+ * @param props - metadata element properties to mutate
+ */
+function enrichNavigationPropertyMetadata(
+    context: Context,
+    element: XMLElement,
+    type: string | undefined,
+    props: MetadataElementProperties
+): void {
+    const referentialConstraints = getElementsWithName(Edm.ReferentialConstraint, element) ?? [];
+    props.referentialConstraints = referentialConstraints.map((constraint): ReferentialConstraint => {
+        const property = getAttributeValue(Edm.Property, constraint);
+        const referencedProperty = getAttributeValue(Edm.ReferencedProperty, constraint);
+        return {
+            sourceProperty: property,
+            sourceTypeName: context.parent?.name ?? '',
+            targetProperty: referencedProperty,
+            targetTypeName: type ?? ''
+        };
+    });
+    const metadataElementPartner = getAttributeValue(Edm.Partner, element);
+    if (metadataElementPartner) {
+        props.partner = metadataElementPartner;
+    }
+    const metadataElementContainsTarget = getAttributeValue(Edm.ContainsTarget, element);
+    if (metadataElementContainsTarget) {
+        props.containsTarget = stringToBoolean(metadataElementContainsTarget);
+    }
+}
+
+/**
+ * Enrich metadata element properties with EntityType-specific data (keys).
+ *
+ * @param element - source XML element
+ * @param props - metadata element properties to mutate
+ */
+function enrichEntityTypeMetadata(element: XMLElement, props: MetadataElementProperties): void {
+    const keys = getKeys(element);
+    if (keys?.length) {
+        props.keys = keys;
+    }
+}
+
+/**
  * @param context Conversion context
  * @param element Source XML element
  * @param type Fully qualified type name
@@ -331,35 +379,13 @@ function createMetadataElementNodeForType(
     }
 
     if (element.name === Edm.NavigationProperty) {
-        const referentialConstraints = getElementsWithName(Edm.ReferentialConstraint, element) ?? [];
-        metadataElementProperties.referentialConstraints = referentialConstraints.map(
-            (constraint): ReferentialConstraint => {
-                const property = getAttributeValue(Edm.Property, constraint);
-                const referencedProperty = getAttributeValue(Edm.ReferencedProperty, constraint);
-                return {
-                    sourceProperty: property,
-                    sourceTypeName: context.parent?.name ?? '',
-                    targetProperty: referencedProperty,
-                    targetTypeName: type ?? ''
-                };
-            }
-        );
-        const metadataElementPartner = getAttributeValue(Edm.Partner, element);
-        if (metadataElementPartner) {
-            metadataElementProperties.partner = metadataElementPartner;
-        }
-        const metadataElementContainsTarget = getAttributeValue(Edm.ContainsTarget, element);
-        if (metadataElementContainsTarget) {
-            metadataElementProperties.containsTarget = stringToBoolean(metadataElementContainsTarget);
-        }
+        enrichNavigationPropertyMetadata(context, element, type, metadataElementProperties);
     }
 
     if (element.name === Edm.EntityType) {
-        const keys = getKeys(element);
-        if (keys?.length) {
-            metadataElementProperties.keys = keys;
-        }
+        enrichEntityTypeMetadata(element, metadataElementProperties);
     }
+
     const targetKinds = getEdmTargetKinds(metadataElementProperties.kind, metadataElementProperties.isCollectionValued);
     metadataElementProperties.targetKinds.push(...targetKinds);
 

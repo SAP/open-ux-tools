@@ -430,6 +430,70 @@ class ChangePreprocessor {
     }
 
     /**
+     * Build the pointer for an INSERT_ANNOTATION change and merge with a matching deletion if present.
+     *
+     * @param change - insert annotation change
+     * @param parent - parent AST node
+     * @param i - index in input array
+     */
+    private handleAnnotationInsert(change: InsertAnnotation, parent: AstNode, i: number): void {
+        const pointerFragments = [change.pointer];
+        if (parent.type === ANNOTATION_GROUP_ITEMS_TYPE) {
+            const index = change.index ?? (parent as AnnotationGroupItems).items.length - 1;
+            pointerFragments.push(index.toString());
+        } else {
+            const index = change.index ?? (parent as Target).assignments.length - 1;
+            pointerFragments.push('assignments');
+            pointerFragments.push(index.toString());
+        }
+        const pointer = pointerFragments.join('/');
+        const deletionChangeIndex = this.input.findIndex(
+            (c) => c.pointer === pointer && c.type === DELETE_ANNOTATION_CHANGE_TYPE
+        );
+        if (this.commands.get(deletionChangeIndex)?.type === 'drop') {
+            return;
+        }
+        if (deletionChangeIndex !== -1) {
+            this.createReplaceCommand(pointer, change, deletionChangeIndex, i);
+        }
+    }
+
+    /**
+     * Build the pointer for an INSERT_EMBEDDED_ANNOTATION change and merge with a matching deletion if present.
+     *
+     * @param change - insert embedded annotation change
+     * @param parent - parent AST node
+     * @param grandParent - grandparent AST node
+     * @param i - index in input array
+     */
+    private handleEmbeddedAnnotationInsert(
+        change: InsertEmbeddedAnnotation,
+        parent: AstNode,
+        grandParent: AstNode,
+        i: number
+    ): void {
+        // currently this is not supported for longer deeper structures
+        // e.g multiple levels of annotations on an annotation with a primitive value
+        const index =
+            change.index ??
+            (grandParent.type === ANNOTATION_GROUP_ITEMS_TYPE
+                ? (grandParent as AnnotationGroupItems).items.length - 1
+                : (grandParent as Target).assignments.length - 1);
+
+        const pointer = `${change.pointer.split('/').slice(0, -1).join('/')}/${index}`;
+        const deletionChangeIndex = this.input.findIndex(
+            (c) => c.pointer === pointer && c.type === DELETE_ANNOTATION_CHANGE_TYPE
+        );
+        if (this.commands.get(deletionChangeIndex)?.type === 'drop') {
+            return;
+        }
+        if (deletionChangeIndex !== -1) {
+            this.flattenAnnotationTerm(change, parent);
+            this.createReplaceCommand(pointer, change, deletionChangeIndex, i);
+        }
+    }
+
+    /**
      * Avoid conflicting insert and deletion changes for the same position.
      */
     private combineInsertsWithDeletions(): void {
@@ -441,51 +505,12 @@ class ChangePreprocessor {
                 change.type === INSERT_ANNOTATION_CHANGE_TYPE &&
                 (parent?.type === TARGET_TYPE || parent?.type === ANNOTATION_GROUP_ITEMS_TYPE)
             ) {
-                const pointerFragments = [change.pointer];
-                if (parent.type === ANNOTATION_GROUP_ITEMS_TYPE) {
-                    const index = change.index ?? parent.items.length - 1;
-                    pointerFragments.push(index.toString());
-                } else {
-                    const index = change.index ?? parent.assignments.length - 1;
-                    pointerFragments.push('assignments');
-                    pointerFragments.push(index.toString());
-                }
-                const pointer = pointerFragments.join('/');
-                // merge inserts and deletions
-                const deletionChangeIndex = this.input.findIndex(
-                    (c) => c.pointer === pointer && c.type === DELETE_ANNOTATION_CHANGE_TYPE
-                );
-                const command = this.commands.get(deletionChangeIndex);
-                if (command?.type === 'drop') {
-                    continue;
-                }
-                if (deletionChangeIndex !== -1) {
-                    this.createReplaceCommand(pointer, change, deletionChangeIndex, i);
-                }
+                this.handleAnnotationInsert(change, parent, i);
             } else if (
                 change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE &&
                 (grandParent?.type === TARGET_TYPE || grandParent?.type === ANNOTATION_GROUP_ITEMS_TYPE)
             ) {
-                // currently this is not supported for longer deeper structures
-                // e.g multiple levels of annotations on an annotation with a primitive value
-                const index =
-                    change.index ??
-                    (grandParent.type === ANNOTATION_GROUP_ITEMS_TYPE
-                        ? grandParent.items.length - 1
-                        : grandParent.assignments.length - 1);
-
-                const pointer = `${change.pointer.split('/').slice(0, -1).join('/')}/${index}`;
-                const deletionChangeIndex = this.input.findIndex(
-                    (c) => c.pointer === pointer && c.type === DELETE_ANNOTATION_CHANGE_TYPE
-                );
-                const command = this.commands.get(deletionChangeIndex);
-                if (command?.type === 'drop') {
-                    continue;
-                }
-                if (deletionChangeIndex !== -1) {
-                    this.flattenAnnotationTerm(change, parent);
-                    this.createReplaceCommand(pointer, change, deletionChangeIndex, i);
-                }
+                this.handleEmbeddedAnnotationInsert(change, parent, grandParent, i);
             }
         }
     }
@@ -519,6 +544,79 @@ class ChangePreprocessor {
         }
     }
 
+    /**
+     * Resolve the effective pointer and target for a change that may need compound annotation expansion.
+     * Returns undefined if the change should be skipped.
+     *
+     * @param change - the document change
+     * @param parent - parent AST node
+     * @param grandParent - grandparent AST node
+     * @param path - full AST path from root
+     * @returns `{ pointer, target }` or undefined
+     */
+    private resolveCompoundTarget(
+        change: CDSDocumentChange,
+        parent: AstNode,
+        grandParent: AstNode,
+        path: AstNode[]
+    ): { pointer: string; target: AstNode } | undefined {
+        if (
+            change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE &&
+            parent.type === ANNOTATION_TYPE &&
+            grandParent.type === TARGET_TYPE &&
+            path.length === 2
+        ) {
+            // annotations on top level annotations will be appended to the current assignment
+            return {
+                target: grandParent,
+                pointer: change.pointer.split('/').slice(0, -2).join('/')
+            };
+        }
+        if (change.type === INSERT_ANNOTATION_CHANGE_TYPE && parent?.type === TARGET_TYPE) {
+            return { pointer: change.pointer, target: parent };
+        }
+        return undefined;
+    }
+
+    /**
+     * Emit a compound annotation conversion command for the given change.
+     * Returns false if a token guard prevents conversion.
+     *
+     * @param change - the insert change
+     * @param target - the resolved target node
+     * @param pointer - the resolved pointer
+     * @param i - index in input array
+     */
+    private applyCompoundAnnotationCommand(
+        change: InsertAnnotation | InsertEmbeddedAnnotation,
+        target: AstNode,
+        pointer: string,
+        i: number
+    ): void {
+        // make sure that the assignment isn't already a compound assignment
+        const startPosition =
+            (target as Target).assignments[(target as Target).assignments.length - 1]?.range?.start ??
+            target.range?.start;
+        if (!startPosition) {
+            return;
+        }
+        const startToken = findLastTokenBeforePosition(/^@/i, this.tokens, startPosition);
+        if (!startToken) {
+            return;
+        }
+        const nextToken = this.tokens[startToken.tokenIndex + 1];
+        if (!nextToken || nextToken.text === '(') {
+            return;
+        }
+        const deletion = this.input.find(
+            (c) => (c.type.startsWith('delete') || c.type.startsWith('replace')) && c.pointer.startsWith(pointer)
+        );
+        this.commands.set(i, {
+            type: 'replace',
+            changes: [change, createConvertToCompoundAnnotationChange(pointer, deletion === undefined)]
+        });
+    }
+
     private expandToCompoundAnnotations(): void {
         // Inserts are usually merged together, so we need to replace the last insert of the batch for the same index
         const handledAssignments = new Set<string>();
@@ -527,21 +625,11 @@ class ChangePreprocessor {
             const change = this.input[i];
             const path = getAstNodesFromPointer(this.document, change.pointer);
             const [parent, grandParent] = path.toReversed();
-            let pointer = change.pointer;
-            let target = parent;
-            if (
-                change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE &&
-                parent.type === ANNOTATION_TYPE &&
-                grandParent.type === TARGET_TYPE &&
-                path.length === 2
-            ) {
-                // annotations on top level annotations will be appended to the current assignment
-                // update pointer to target
-                target = grandParent;
-                pointer = change.pointer.split('/').slice(0, -2).join('/');
-            } else if (change.type !== INSERT_ANNOTATION_CHANGE_TYPE || target?.type !== TARGET_TYPE) {
+            const resolved = this.resolveCompoundTarget(change, parent, grandParent, path);
+            if (!resolved) {
                 continue;
             }
+            const { pointer, target } = resolved;
             const command = this.commands.get(i);
             if (command && command.type !== 'pick') {
                 // if the change is replaced or dropped we shouldn't do anything
@@ -549,29 +637,12 @@ class ChangePreprocessor {
             }
             if (!handledAssignments.has(pointer)) {
                 handledAssignments.add(pointer);
-
-                // make sure that the assignment isn't already a compound assignment
-                const startPosition =
-                    target.assignments[target.assignments.length - 1]?.range?.start ?? target.range?.start;
-                if (!startPosition) {
-                    continue;
-                }
-                const startToken = findLastTokenBeforePosition(/^@/i, this.tokens, startPosition);
-                if (!startToken) {
-                    continue;
-                }
-                const nextToken = this.tokens[startToken.tokenIndex + 1];
-                if (!nextToken || nextToken.text === '(') {
-                    continue;
-                }
-                const deletion = this.input.find(
-                    (c) =>
-                        (c.type.startsWith('delete') || c.type.startsWith('replace')) && c.pointer.startsWith(pointer)
+                this.applyCompoundAnnotationCommand(
+                    change as InsertAnnotation | InsertEmbeddedAnnotation,
+                    target,
+                    pointer,
+                    i
                 );
-                this.commands.set(i, {
-                    type: 'replace',
-                    changes: [change, createConvertToCompoundAnnotationChange(pointer, deletion === undefined)]
-                });
             }
         }
     }

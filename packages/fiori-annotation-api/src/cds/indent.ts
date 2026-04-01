@@ -1,5 +1,6 @@
 import { printOptions as defaultPrintOptions } from '@sap-ux/odata-annotation-core';
 import { TARGET_TYPE } from '@sap-ux/cds-odata-annotation-converter';
+import type { Target } from '@sap-ux/cds-odata-annotation-converter';
 
 import type { AstNode, CDSDocument } from './document';
 import { getAstNodesFromPointer } from './pointer';
@@ -41,23 +42,35 @@ export function getIndentLevelFromNode(tokens: CompilerToken[], node: AstNode): 
     return Math.floor(indentLevel);
 }
 
+/**
+ * Get the start character (column) for a TARGET_TYPE node.
+ *
+ * @param node - target AST node (already narrowed to Target type)
+ * @param tokens - all tokens in the document
+ * @returns column number
+ */
+function getTargetNodeLineStartCharacter(node: Target, tokens: CompilerToken[]): number {
+    const token = findLastTokenBeforePosition(ANNOTATE_PATTERN, tokens, node.range!.end);
+    if (node.kind === 'element' && node.nameRange) {
+        const range = token ? createTokenRange(token) : undefined;
+        if (token && range?.start?.line === node.nameRange.start.line) {
+            // element is in the same line as the annotate statement, so we should use the indent level of the annotate statement
+            return tokenColumn(token);
+        }
+        return node.nameRange.start.character;
+    }
+    if (token) {
+        return tokenColumn(token);
+    }
+    return 0;
+}
+
 function getLineStartCharacter(node: AstNode, tokens: CompilerToken[]): number {
     if (!node?.range) {
         return 0;
     }
     if (node.type === TARGET_TYPE && node.range) {
-        const token = findLastTokenBeforePosition(ANNOTATE_PATTERN, tokens, node.range.end);
-        if (node.kind === 'element' && node.nameRange) {
-            const range = token ? createTokenRange(token) : undefined;
-            if (token && range?.start?.line === node.nameRange.start.line) {
-                // element is in the same line as the annotate statement, so we should use the indent level of the annotate statement
-                return tokenColumn(token);
-            }
-            return node.nameRange.start.character;
-        }
-        if (token) {
-            return tokenColumn(token);
-        }
+        return getTargetNodeLineStartCharacter(node as Target, tokens);
     }
     const token = findFirstTokenOfLine(tokens, node.range.start.line);
     return token ? tokenColumn(token) : 0;

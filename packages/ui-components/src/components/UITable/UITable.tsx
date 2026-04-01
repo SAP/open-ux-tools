@@ -449,6 +449,33 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     }
 
     /**
+     * Get the current string value from a cell editor ref.
+     *
+     * @param compRef - React ref to the cell editor control
+     * @param columnControlType - type of the cell editor control
+     * @returns current string value from the control
+     */
+    private getRefValue(
+        compRef: React.RefObject<ITextField | IDropdown | HTMLDivElement> | undefined,
+        columnControlType: ColumnControlType | undefined
+    ): string {
+        if (
+            columnControlType === ColumnControlType.UITextInput ||
+            columnControlType === ColumnControlType.UIDatePicker
+        ) {
+            return (compRef as React.RefObject<ITextField>)?.current?.value || '';
+        }
+        if (
+            columnControlType === ColumnControlType.UICombobox ||
+            columnControlType === ColumnControlType.UIBooleanSelect
+        ) {
+            const combo = compRef as React.RefObject<HTMLDivElement>;
+            return getComboBoxInput(combo)?.value || '';
+        }
+        return '';
+    }
+
+    /**
      * On save cell event.
      *
      * @param cancelEdit
@@ -466,19 +493,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 }
                 const currentValue = column && this.props.items[rowIndex][column.key];
 
-                let refValue = '';
-                if (column?.columnControlType === ColumnControlType.UITextInput) {
-                    refValue = (compRef as React.RefObject<ITextField>)?.current?.value || '';
-                } else if (column?.columnControlType === ColumnControlType.UIDatePicker) {
-                    refValue = (compRef as React.RefObject<ITextField>)?.current?.value || '';
-                } else if (
-                    column?.columnControlType === ColumnControlType.UICombobox ||
-                    column?.columnControlType === ColumnControlType.UIBooleanSelect
-                ) {
-                    const combo = compRef as React.RefObject<HTMLDivElement>;
-                    refValue = getComboBoxInput(combo)?.value || '';
-                }
-
+                const refValue = this.getRefValue(compRef, column?.columnControlType);
                 const newValue = value ?? refValue;
 
                 if (currentValue !== newValue) {

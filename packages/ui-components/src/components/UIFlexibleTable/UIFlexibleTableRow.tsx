@@ -70,6 +70,97 @@ function getActionsContainer(
 }
 
 /**
+ * Render the index column header cell for the title row.
+ *
+ * @param {UIFlexibleTableProps<T>} props
+ * @returns {React.ReactElement}
+ */
+function renderIndexColumnCell<T>(props: UIFlexibleTableProps<T>): React.ReactElement {
+    if (props.onRenderTitleColumnCell) {
+        const { content, cellClassNames, tooltip } = props.onRenderTitleColumnCell({ isIndexColumn: true });
+        const className = composeClassNames('flexible-table-content-table-title-row-item-index', [cellClassNames]);
+        return (
+            <div key="title-cell-index" className={className} title={tooltip}>
+                {content}
+            </div>
+        );
+    }
+    return (
+        <div key="title-cell-index" className="flexible-table-content-table-title-row-item-index">
+            <span className="flexible-table-content-table-title-row-item-index-value">#</span>
+        </div>
+    );
+}
+
+/**
+ * Render a data column header cell for the title row.
+ *
+ * @param {UIFlexibleTableProps<T>} props
+ * @param column - column definition
+ * @param {number} i - column index
+ * @returns {React.ReactNode | null} rendered cell or null if a span break was encountered
+ */
+function renderColumnCell<T>(
+    props: UIFlexibleTableProps<T>,
+    column: UIFlexibleTableProps<T>['columns'][number],
+    i: number
+): { node: React.ReactNode; isSpan: boolean } {
+    const key = column.key;
+    const tableId = props.id;
+    if (props.onRenderTitleColumnCell) {
+        const { content, isSpan, cellClassNames, tooltip } = props.onRenderTitleColumnCell({
+            colIndex: i,
+            colKey: key
+        });
+        const className = composeClassNames('flexible-table-content-table-title-row-item-data-cells-value', [
+            cellClassNames,
+            column.className
+        ]);
+        if (isSpan) {
+            return {
+                isSpan: true,
+                node: (
+                    <div
+                        key={`title-cell-unknown`}
+                        className={className}
+                        title={tooltip || column.tooltip}
+                        id={`${tableId}-header-column-${key}`}>
+                        {content}
+                    </div>
+                )
+            };
+        }
+        return {
+            isSpan: false,
+            node: (
+                <div
+                    key={`cell-${key}-${i}`}
+                    className={className}
+                    title={tooltip || column.tooltip}
+                    id={`${tableId}-header-column-${key}`}>
+                    {content}
+                </div>
+            )
+        };
+    }
+    const className = composeClassNames('flexible-table-content-table-title-row-item-data-cells-value', [
+        column.className
+    ]);
+    return {
+        isSpan: false,
+        node: (
+            <div
+                key={`title-cell-${key}-${i}`}
+                className={className}
+                title={column.tooltip}
+                id={`${tableId}-header-column-${key}`}>
+                {column.title}
+            </div>
+        )
+    };
+}
+
+/**
  * On render title row.
  *
  * @param {UIFlexibleTableProps<T>} props
@@ -80,77 +171,19 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
     const rowCells: Array<React.ReactElement> = [];
 
     if (props.showIndexColumn) {
-        if (props.onRenderTitleColumnCell) {
-            const { content, cellClassNames, tooltip } = props.onRenderTitleColumnCell({
-                isIndexColumn: true
-            });
-            const className = composeClassNames('flexible-table-content-table-title-row-item-index', [cellClassNames]);
-            rowCells.push(
-                <div key="title-cell-index" className={className} title={tooltip}>
-                    {content}
-                </div>
-            );
-        } else {
-            rowCells.push(
-                <div key="title-cell-index" className="flexible-table-content-table-title-row-item-index">
-                    <span className="flexible-table-content-table-title-row-item-index-value">#</span>
-                </div>
-            );
-        }
+        rowCells.push(renderIndexColumnCell(props));
     }
 
     const rowCellsData: React.ReactNode[] = [];
-    const tableId = props.id;
     for (let i = 0; i < props.columns.length; i++) {
         const column = props.columns[i];
         if (column.hidden) {
             continue;
         }
-        const key = column.key;
-        if (props.onRenderTitleColumnCell) {
-            const { content, isSpan, cellClassNames, tooltip } = props.onRenderTitleColumnCell({
-                colIndex: i,
-                colKey: key
-            });
-            const className = composeClassNames('flexible-table-content-table-title-row-item-data-cells-value', [
-                cellClassNames,
-                column.className
-            ]);
-            if (isSpan) {
-                rowCellsData.push(
-                    <div
-                        key={`title-cell-unknown`}
-                        className={className}
-                        title={tooltip || column.tooltip}
-                        id={`${tableId}-header-column-${key}`}>
-                        {content}
-                    </div>
-                );
-                break;
-            } else {
-                rowCellsData.push(
-                    <div
-                        key={`cell-${key}-${i}`}
-                        className={className}
-                        title={tooltip || column.tooltip}
-                        id={`${tableId}-header-column-${key}`}>
-                        {content}
-                    </div>
-                );
-            }
-        } else {
-            const className = composeClassNames('flexible-table-content-table-title-row-item-data-cells-value', [
-                column.className
-            ]);
-            rowCellsData.push(
-                <div
-                    key={`title-cell-${key}-${i}`}
-                    className={className}
-                    title={column.tooltip}
-                    id={`${tableId}-header-column-${key}`}>
-                    {column.title}
-                </div>
-            );
+        const { node, isSpan } = renderColumnCell(props, column, i);
+        rowCellsData.push(node);
+        if (isSpan) {
+            break;
         }
     }
 
@@ -242,6 +275,55 @@ function getParityClassName(rowIndex?: number): string {
 }
 
 /**
+ * Build the inline style for a row, including drag/loading state overrides.
+ *
+ * @param params - drag and drop params
+ * @param isDragDisabled - whether drag is disabled for this row
+ * @param isTouchDragDisabled - whether touch drag is disabled
+ * @param isContentLoading - whether table content is loading
+ * @returns CSSProperties
+ */
+function buildRowStyle(
+    params: NodeDragAndDropSortingParams,
+    isDragDisabled: boolean,
+    isTouchDragDisabled: boolean | undefined,
+    isContentLoading: boolean | undefined
+): CSSProperties {
+    const style: CSSProperties = {
+        ...params.props.style,
+        ...getRowStyles(isDragDisabled, params.isDragged, !!isTouchDragDisabled)
+    };
+    if (isContentLoading) {
+        style.pointerEvents = 'none';
+        style.cursor = 'none';
+    }
+    return style;
+}
+
+/**
+ * Build touch event handlers to disable drag via touch when configured.
+ *
+ * @param isDragDisabled - whether drag is disabled for this row
+ * @param isTouchDragDisabled - whether touch drag is disabled
+ * @returns object with optional onTouchStart and onTouchEnd handlers
+ */
+function buildTouchHandlers(
+    isDragDisabled: boolean,
+    isTouchDragDisabled: boolean | undefined
+): {
+    onTouchStart?: (event: React.TouchEvent) => void;
+    onTouchEnd?: (event: React.TouchEvent) => void;
+} {
+    if (!isDragDisabled && isTouchDragDisabled) {
+        const stopPropagation = (event: React.TouchEvent) => {
+            event.nativeEvent.stopImmediatePropagation();
+        };
+        return { onTouchStart: stopPropagation, onTouchEnd: stopPropagation };
+    }
+    return {};
+}
+
+/**
  * UIFlexibleTableRow component.
  *
  * @exports
@@ -286,26 +368,9 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
 
     const showRowTitle = isRow && (tableProps.showRowTitles || tableProps.layout === UIFlexibleTableLayout.Wrapping);
 
-    const style: CSSProperties = {
-        ...params.props.style,
-        ...getRowStyles(isDragDisabled, isDragged, !!tableProps.isTouchDragDisabled)
-    };
+    const style = buildRowStyle(params, isDragDisabled, tableProps.isTouchDragDisabled, tableProps.isContentLoading);
+    const { onTouchStart, onTouchEnd } = buildTouchHandlers(isDragDisabled, tableProps.isTouchDragDisabled);
 
-    if (tableProps.isContentLoading) {
-        style.pointerEvents = 'none';
-        style.cursor = 'none';
-    }
-    let onTouchStart: ((event: React.TouchEvent) => void) | undefined;
-    let onTouchEnd: ((event: React.TouchEvent) => void) | undefined;
-    // Disable drag using touch events
-    if (!isDragDisabled && tableProps.isTouchDragDisabled) {
-        onTouchStart = (event: React.TouchEvent) => {
-            event.nativeEvent.stopImmediatePropagation();
-        };
-        onTouchEnd = (event: React.TouchEvent) => {
-            event.nativeEvent.stopImmediatePropagation();
-        };
-    }
     return (
         <li
             {...params.props}

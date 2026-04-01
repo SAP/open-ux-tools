@@ -48,23 +48,29 @@ export function focusEditedCell(
         const rowsLen = props.items.length;
         const colIdx = editableColumnKeys.indexOf(colKey);
 
-        if (direction === 'right') {
-            if (colIdx < editableColumnKeys.length - 1) {
-                newColKey = editableColumnKeys[colIdx + 1];
+        const moves: Record<string, () => void> = {
+            right: () => {
+                if (colIdx < editableColumnKeys.length - 1) {
+                    newColKey = editableColumnKeys[colIdx + 1];
+                }
+            },
+            left: () => {
+                if (colIdx > 0) {
+                    newColKey = editableColumnKeys[colIdx - 1];
+                }
+            },
+            down: () => {
+                if (rowIndex < rowsLen - 1) {
+                    newRowIndex = rowIndex + 1;
+                }
+            },
+            up: () => {
+                if (rowIndex > 0) {
+                    newRowIndex = rowIndex - 1;
+                }
             }
-        } else if (direction === 'left') {
-            if (colIdx > 0) {
-                newColKey = editableColumnKeys[colIdx - 1];
-            }
-        } else if (direction === 'down') {
-            if (rowIndex < rowsLen - 1) {
-                newRowIndex = rowIndex + 1;
-            }
-        } else if (direction === 'up') {
-            if (rowIndex > 0) {
-                newRowIndex = rowIndex - 1;
-            }
-        }
+        };
+        moves[direction]?.();
     }
 
     return new Promise((resolve) => {

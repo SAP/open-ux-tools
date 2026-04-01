@@ -71,47 +71,25 @@ export class UIToolbar extends React.Component<UIToolbarProps, UIToolbarState> {
     public onResize = (): void => {
         const toolbarWidth = this.toolbarRef.current?.clientWidth;
 
-        let breakPointLarge = 800;
-        let breakPointMedium = 660;
-        let breakPointSmall = 420;
+        const breakPointLarge = this.props.breakPointLarge ?? 800;
+        const breakPointMedium = this.props.breakPointMedium ?? 660;
+        const breakPointSmall = this.props.breakPointSmall ?? 420;
 
-        if (this.props.breakPointLarge) {
-            breakPointLarge = this.props.breakPointLarge;
-        }
-        if (this.props.breakPointMedium) {
-            breakPointMedium = this.props.breakPointMedium;
-        }
-        if (this.props.breakPointSmall) {
-            breakPointSmall = this.props.breakPointSmall;
+        if (!toolbarWidth) {
+            return;
         }
 
-        let toolbarWidthClassName = this.state.toolbarWidthClassName;
-        let widthName = '';
+        const breakpoints: Array<{ min: number; max: number; className: string; name: string }> = [
+            { min: breakPointLarge + 1, max: Infinity, className: 'column-wide', name: 'wide' },
+            { min: breakPointMedium + 1, max: breakPointLarge, className: 'column-large', name: 'large' },
+            { min: breakPointSmall, max: breakPointMedium, className: 'column-medium', name: 'medium' },
+            { min: 0, max: breakPointSmall - 1, className: 'column-small', name: 'small' }
+        ];
 
-        if (toolbarWidth) {
-            if (toolbarWidth > breakPointLarge) {
-                toolbarWidthClassName = 'column-wide';
-                widthName = 'wide';
-            }
-            if (toolbarWidth > breakPointMedium && toolbarWidth <= breakPointLarge) {
-                toolbarWidthClassName = 'column-large';
-                widthName = 'large';
-            }
-            if (toolbarWidth >= breakPointSmall && toolbarWidth <= breakPointMedium) {
-                toolbarWidthClassName = 'column-medium';
-                widthName = 'medium';
-            }
-            if (toolbarWidth < breakPointSmall) {
-                toolbarWidthClassName = 'column-small';
-                widthName = 'small';
-            }
-            this.setState({
-                toolbarWidthClassName: toolbarWidthClassName
-            });
-
-            if (this.props.onResize) {
-                this.props.onResize(toolbarWidth, widthName);
-            }
+        const match = breakpoints.find((bp) => toolbarWidth >= bp.min && toolbarWidth <= bp.max);
+        if (match) {
+            this.setState({ toolbarWidthClassName: match.className });
+            this.props.onResize?.(toolbarWidth, match.name);
         }
     };
 
