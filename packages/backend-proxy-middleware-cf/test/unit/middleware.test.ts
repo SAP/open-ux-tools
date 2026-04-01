@@ -74,7 +74,6 @@ const loadAndPrepareXsappConfigMock = loadAndPrepareXsappConfig as jest.Mock;
 const startApprouterMock = startApprouter as jest.Mock;
 const fetchBasUrlTemplateMock = fetchBasUrlTemplate as jest.Mock;
 const resolveBasExternalUrlMock = resolveBasExternalUrl as jest.Mock;
-const updateXsuaaServiceMock = updateXsuaaService as jest.Mock;
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports -- middleware is CommonJS
 const middleware = require('../../src/middleware') as (params: {
