@@ -41,7 +41,7 @@ describe('proxy', () => {
 
         test('invoked callback sets content-type and returns a Buffer', async () => {
             const route = {
-                re: /^\/api\//,
+                sourcePattern: /^\/api\//,
                 path: 'api/',
                 url: 'http://backend:8080',
                 source: '^/api/',
@@ -77,7 +77,7 @@ describe('proxy', () => {
 
         test('returns response buffer unchanged when content-type is not in rewriteContentTypes', async () => {
             const route = {
-                re: /^\/api\//,
+                sourcePattern: /^\/api\//,
                 path: 'api/',
                 url: 'http://backend:8080',
                 source: '^/api/',
@@ -119,7 +119,7 @@ describe('proxy', () => {
 
         test('returns a request handler and passes pathFilter and target to middleware', () => {
             const route = {
-                re: /^\/api\//,
+                sourcePattern: /^\/api\//,
                 path: 'api/',
                 url: 'http://backend:8080',
                 source: '^/api/',

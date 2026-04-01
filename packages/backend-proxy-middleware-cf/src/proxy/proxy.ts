@@ -48,7 +48,7 @@ export function createResponseInterceptor(
         } = getMimeInfo(pathname, proxyRes.headers['content-type'] as string | undefined);
         res.setHeader('content-type', ct);
 
-        const route = routes.find((routeEntry) => routeEntry.re.test(url));
+        const route = routes.find((routeEntry) => routeEntry.sourcePattern.test(url));
         if (route?.path && route.url && effectiveOptions?.rewriteContentTypes?.includes(type?.toLowerCase() ?? '')) {
             const encoding = (charset ?? 'utf8') as BufferEncoding;
             let data = responseBuffer.toString(encoding);

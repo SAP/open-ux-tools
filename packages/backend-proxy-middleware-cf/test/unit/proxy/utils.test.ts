@@ -47,7 +47,7 @@ describe('proxy utils', () => {
          */
         test('returns true for pathname matching a destination route regex', () => {
             const route = {
-                re: /^\/api\//,
+                sourcePattern: /^\/api\//,
                 path: 'api/',
                 url: 'http://backend.test:8080',
                 source: '^/api/',
@@ -62,7 +62,7 @@ describe('proxy utils', () => {
 
         test('returns false when pathname matches neither custom routes nor destination routes', () => {
             const route = {
-                re: /^\/api\//,
+                sourcePattern: /^\/api\//,
                 path: 'api/',
                 url: 'http://backend.test:8080',
                 source: '^/api/',

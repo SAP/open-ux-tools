@@ -68,7 +68,7 @@ export interface EffectiveOptions extends BackendProxyMiddlewareCfConfig {
 
 /** Route entry with compiled regex and resolved destination URL. */
 export interface RouteEntry {
-    re: RegExp;
+    sourcePattern: RegExp;
     path: string;
     url?: string;
     source: string;

@@ -29,7 +29,10 @@ export function replaceUrl(text: string, oldUrl: string, newUrl: string): string
 export function createPathFilter(customRoutes: string[], routes: RouteEntry[]): (pathname: string) => boolean {
     const compiledCustomRoutes = customRoutes.map((r) => new RegExp(String.raw`^${r}(\?.*)?$`));
     return (pathname: string): boolean => {
-        return compiledCustomRoutes.some((re) => re.test(pathname)) || routes.some((route) => route.re.test(pathname));
+        return (
+            compiledCustomRoutes.some((customRoute) => customRoute.test(pathname)) ||
+            routes.some((route) => route.sourcePattern.test(pathname))
+        );
     };
 }
 
