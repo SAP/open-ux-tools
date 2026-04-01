@@ -121,5 +121,17 @@
             "selectFromWorkspace": "Select annotation file from workspace",
             "createTemplateFile": "Create local annotation file from template"
         }
+    },
+    "deploy": {
+        "cfNotInstalled": "CF CLI is not installed. Please install it and try again.",
+        "notLoggedIn": "Not logged in to Cloud Foundry. Please log in with 'cf login' and try again.",
+        "mtaNotFound": "No mta.yaml found at project path: {{projectPath}}. Ensure this is a valid MTA project.",
+        "confirmPrompt": "Deployment action will deploy all listed projects. Confirm (Y/N)?",
+        "cancelled": "Deployment cancelled by user.",
+        "buildStarted": "Starting MTA build...",
+        "buildFailed": "MTA build failed: {{error}}",
+        "deployStarted": "Starting CF deployment...",
+        "deployFailed": "CF deployment failed: {{error}}",
+        "success": "Deployment completed successfully."
     }
 }
