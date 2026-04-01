@@ -61,6 +61,7 @@ const plugin: Plugin = {
 const globalsConfig = {
     ...globals.browser,
     ...globals.node,
+    ...globals.es2020,
     ...globals.amd,
     ...globals.mocha,
     // SAP-specific globals (from legacy S/4HANA eslintrc)
