@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.11.3
+
+### Patch Changes
+
+- 0153757: add es2020 globals
+
 ## 9.11.2
 
 ### Patch Changes
