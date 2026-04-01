@@ -2,4 +2,4 @@
 '@sap-ux/eslint-plugin-fiori-tools': patch
 ---
 
-Fix: Check min UI5 version for rule sap-width-including-column-header
+Fix: Check minUI5 version for the sap-width-including-column-header rule
