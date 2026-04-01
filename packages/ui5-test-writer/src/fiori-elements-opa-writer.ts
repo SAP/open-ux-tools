@@ -1,21 +1,16 @@
 import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { Manifest } from '@sap-ux/project-access';
-import type {
-    FEV4OPAConfig,
-    FEV4OPAPageConfig,
-    FEV4ManifestTarget,
-    ListReportFeatures,
-    FPMFeatures,
-    ObjectPageFeatures
-} from './types';
+import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget, JourneyParams, AppFeatures } from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
 import { FileName, DirName } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { getAppFeatures } from './utils/modelUtils';
+import { addIntegrationOldToGitignore, addPathsToQUnitJs, readHtmlTargetFromQUnitJs } from './utils/opaQUnitUtils';
 
 /**
  * Reads the manifest for an app.
@@ -251,12 +246,7 @@ function writeCommonAndPageFiles(
     rootV4TemplateDirPath: string,
     testOutDirPath: string,
     editor: Editor,
-    journeyParams: {
-        startPages: string[];
-        startLR: string | undefined;
-        navigatedOP: string | undefined;
-        hideFilterBar: boolean;
-    }
+    journeyParams: JourneyParams
 ): void {
     // Common test files
     editor.copyTpl(
@@ -275,16 +265,9 @@ function writeCommonAndPageFiles(
         writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor);
     });
 
-    // const journeyParams = {
-    //     startPages,
-    //     startLR: LROP.pageLR?.targetKey,
-    //     navigatedOP: LROP.pageOP?.targetKey,
-    //     hideFilterBar: config.hideFilterBar
-    // };
-
     editor.copyTpl(
-        join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),
-        join(testOutDirPath, `integration/${config.opaJourneyFileName}.js`),
+        join(rootV4TemplateDirPath, 'integration', 'FirstJourney.js'),
+        join(testOutDirPath, 'integration', `${config.opaJourneyFileName}.js`),
         journeyParams,
         undefined,
         {
@@ -302,60 +285,52 @@ function writeCommonAndPageFiles(
             globOptions: { dot: true }
         }
     );
-
-    //return journeyParams;
 }
 
 /**
  * Writes journey files for list report, object pages and FPM pages.
  *
- * @param listReport - list report feature data, or undefined if not present
- * @param objectPages - object pages feature data, or undefined if not present
- * @param fpm - FPM feature data, or undefined if not present
+ * @param appFeatures - object containing feature data for list report, object pages, and FPM
  * @param journeyParams - parameters passed to the journey templates
  * @param rootV4TemplateDirPath - template root directory for v4
  * @param testOutDirPath - output test directory (.../webapp/test)
  * @param editor - a reference to a mem-fs editor
+ * @param basePath - the absolute target path where the application will be generated
  * @param config - optional OPA test configuration object
  */
 function writeJourneyFiles(
-    listReport: ListReportFeatures | undefined,
-    objectPages: ObjectPageFeatures[] | undefined,
-    fpm: FPMFeatures | undefined,
-    journeyParams: {
-        startPages: string[];
-        startLR: string | undefined;
-        navigatedOP: string | undefined;
-        hideFilterBar: boolean;
-    },
+    appFeatures: AppFeatures,
+    journeyParams: JourneyParams,
     rootV4TemplateDirPath: string,
     testOutDirPath: string,
     editor: Editor,
-    config?: FEV4OPAConfig
+    basePath: string,
+    config: FEV4OPAConfig,
+    hasJourneyRunner = false
 ): void {
     const generatedJourneyPages: string[] = [];
 
-    if (listReport) {
+    if (appFeatures.listReport) {
         editor.copyTpl(
-            join(rootV4TemplateDirPath, 'integration/ListReportJourney.js'),
-            join(testOutDirPath, `integration/${listReport.name!}Journey.js`),
+            join(rootV4TemplateDirPath, 'integration', 'ListReportJourney.js'),
+            join(testOutDirPath, 'integration', `${appFeatures.listReport.name!}Journey.js`),
             {
                 ...journeyParams,
-                ...listReport
+                ...appFeatures.listReport
             },
             undefined,
             {
                 globOptions: { dot: true }
             }
         );
-        generatedJourneyPages.push(listReport.name!);
+        generatedJourneyPages.push(appFeatures.listReport.name!);
     }
 
-    if (objectPages && objectPages.length > 0) {
-        objectPages.forEach((objectPage) => {
+    if (appFeatures.objectPages && appFeatures.objectPages.length > 0) {
+        appFeatures.objectPages.forEach((objectPage) => {
             editor.copyTpl(
-                join(rootV4TemplateDirPath, 'integration/ObjectPageJourney.js'),
-                join(testOutDirPath, `integration/${objectPage.name!}Journey.js`),
+                join(rootV4TemplateDirPath, 'integration', 'ObjectPageJourney.js'),
+                join(testOutDirPath, 'integration', `${objectPage.name!}Journey.js`),
                 {
                     ...journeyParams,
                     ...objectPage
@@ -369,34 +344,41 @@ function writeJourneyFiles(
         });
     }
 
-    if (fpm) {
+    if (appFeatures.fpm) {
         editor.copyTpl(
-            join(rootV4TemplateDirPath, 'integration/FPMJourney.js'),
-            join(testOutDirPath, `integration/${fpm.name!}Journey.js`),
+            join(rootV4TemplateDirPath, 'integration', 'FPMJourney.js'),
+            join(testOutDirPath, 'integration', `${appFeatures.fpm.name!}Journey.js`),
             {
                 ...journeyParams,
-                ...fpm
+                ...appFeatures.fpm
             },
             undefined,
             {
                 globOptions: { dot: true }
             }
         );
-        generatedJourneyPages.push(fpm.name!);
+        generatedJourneyPages.push(appFeatures.fpm.name!);
     }
 
-    // Integration (OPA) test files - version-specific
-    editor.copyTpl(
-        join(rootV4TemplateDirPath, 'integration', 'opaTests.*.*'),
-        join(testOutDirPath, 'integration'),
-        { ...config, generatedJourneyPages },
-        undefined,
-        {
-            globOptions: { dot: true }
-        }
-    );
-
-    //return generatedJourneyPages;
+    if (hasJourneyRunner) {
+        addPathsToQUnitJs(
+            generatedJourneyPages.map((page) => {
+                return `${config.appPath}/test/integration/${page}Journey`;
+            }),
+            testOutDirPath,
+            editor
+        );
+    } else {
+        editor.copyTpl(
+            join(rootV4TemplateDirPath, 'integration', 'opaTests.*.*'),
+            join(testOutDirPath, 'integration'),
+            { ...config, generatedJourneyPages },
+            undefined,
+            {
+                globOptions: { dot: true }
+            }
+        );
+    }
 }
 
 /**
@@ -414,8 +396,8 @@ function writePageObject(
     fs: Editor
 ): void {
     fs.copyTpl(
-        join(rootTemplateDirPath, `integration/pages/${pageConfig.template}.js`),
-        join(testOutDirPath, `integration/pages/${pageConfig.targetKey}.js`),
+        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}.js`),
+        join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}.js`),
         pageConfig,
         undefined,
         {
@@ -433,10 +415,10 @@ function writePageObject(
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
  * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
- * @param standalone - opa test generation run standalone, not during app generation
  * @param metadata - optional metadata for the OPA test generation
  * @param fs - an optional reference to a mem-fs editor
  * @param log - optional logger instance
+ * @param standalone - opa test generation run standalone, not during app generation
  * @returns Reference to a mem-fs-editor
  */
 export async function generateOPAFiles(
@@ -459,12 +441,12 @@ export async function generateOPAFiles(
     const testOutDirPath = join(basePath, 'webapp/test');
 
     // Access ux-specification to get feature data for OPA test generation
-    const { listReport, objectPages, fpm } = await getAppFeatures(basePath, editor, log, metadata);
+    const appFeatures = await getAppFeatures(basePath, editor, log, metadata);
     //let generatedJourneyPages: string[] = [];
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
-    const journeyParams = {
+    const journeyParams: JourneyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
@@ -472,16 +454,48 @@ export async function generateOPAFiles(
     };
 
     if (standalone) {
-        writeJourneyFiles(
-            listReport,
-            objectPages,
-            fpm,
-            journeyParams,
-            rootV4TemplateDirPath,
-            testOutDirPath,
-            editor,
-            config
+        const hasJourneyRunner = existsSync(
+            join(basePath, 'webapp', 'test', 'integration', 'pages', 'JourneyRunner.js')
         );
+        if (hasJourneyRunner) {
+            writeJourneyFiles(
+                appFeatures,
+                journeyParams,
+                rootV4TemplateDirPath,
+                testOutDirPath,
+                editor,
+                basePath,
+                config,
+                hasJourneyRunner
+            );
+        } else {
+            editor.move(
+                join(basePath, 'webapp', 'test', 'integration', '**'),
+                join(basePath, 'webapp', 'test', 'integration_old')
+            );
+
+            addIntegrationOldToGitignore(basePath, editor);
+            const htmlTarget = readHtmlTargetFromQUnitJs(basePath, editor) ?? config.htmlTarget;
+            config.htmlTarget = htmlTarget;
+
+            writeCommonAndPageFiles(
+                config,
+                rootCommonTemplateDirPath,
+                rootV4TemplateDirPath,
+                testOutDirPath,
+                editor,
+                journeyParams
+            );
+            writeJourneyFiles(
+                appFeatures,
+                journeyParams,
+                rootV4TemplateDirPath,
+                testOutDirPath,
+                editor,
+                basePath,
+                config
+            );
+        }
     } else {
         writeCommonAndPageFiles(
             config,
@@ -491,17 +505,7 @@ export async function generateOPAFiles(
             editor,
             journeyParams
         );
-
-        writeJourneyFiles(
-            listReport,
-            objectPages,
-            fpm,
-            journeyParams,
-            rootV4TemplateDirPath,
-            testOutDirPath,
-            editor,
-            config
-        );
+        writeJourneyFiles(appFeatures, journeyParams, rootV4TemplateDirPath, testOutDirPath, editor, basePath, config);
     }
 
     return editor;

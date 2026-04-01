@@ -25,6 +25,13 @@ export type FEV4OPAConfig = {
     filterBarItems?: string[];
 };
 
+export type JourneyParams = {
+    startPages: string[];
+    startLR: string | undefined;
+    navigatedOP: string | undefined;
+    hideFilterBar: boolean;
+};
+
 export type FEV4ManifestTarget = {
     type?: string;
     name?: string;
