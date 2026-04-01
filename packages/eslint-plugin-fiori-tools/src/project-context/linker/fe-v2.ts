@@ -2,9 +2,8 @@ import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { LinkerContext, ConfigurationBase } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { ParsedService } from '../parser';
-
-import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
-import { collectSections, collectTables } from './annotations';
+import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
+import { collectHeaderSections, collectSections, collectTables, getConfigurationKey } from './annotations';
 
 export interface FlexibleColumnLayoutSettings {
     defaultTwoColumnLayoutType: string;
@@ -25,7 +24,8 @@ export interface PageSetting {
 
 export type OrphanSection = ConfigurationBase<'orphan-section', TableSettings>;
 export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
-export type Section = TableSection | OrphanSection;
+export type HeaderSection = AnnotationBasedNode<HeaderSectionNode, {}, FieldGroup>;
+export type Section = TableSection | OrphanSection | HeaderSection;
 
 export interface TableSettings {
     createMode: string;
@@ -35,8 +35,9 @@ export interface TableSettings {
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
+export type FieldGroup = AnnotationBasedNode<FieldGroupNode, {}>;
 
-export type Node = Section | Table | OrphanTable;
+export type Node = Section | Table | OrphanTable | FieldGroup;
 export type NodeLookup<T extends Node> = {
     [K in T['type']]?: Extract<T, { type: K }>[];
 };
@@ -51,7 +52,7 @@ export interface FeV2ListReport extends ConfigurationBase<'list-report-page', Pa
     entitySetName: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
-    lookup: NodeLookup<Table | OrphanTable>;
+    lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
 }
 
 export interface FeV2ObjectPage extends ConfigurationBase<'object-page', PageSetting> {
@@ -60,7 +61,7 @@ export interface FeV2ObjectPage extends ConfigurationBase<'object-page', PageSet
     entitySetName: string;
     entity: MetadataElement;
     sections: Section[];
-    lookup: NodeLookup<Table | Section>;
+    lookup: NodeLookup<Table | Section | FieldGroup>;
 }
 
 export type FeV2PageType = FeV2ListReport | FeV2ObjectPage;
@@ -78,18 +79,6 @@ export interface AnnotationBasedNode<
 const createModeValues = ['creationRows', 'creationRowsHiddenInEditMode', 'newPage'];
 const tableTypeValues = ['Table', 'ResponsiveTable', 'AnalyticalTable', 'GridTable'];
 const statePreservationModeValues = ['persistence', 'discovery'];
-
-/**
- * Creates a configuration key from an annotation path
- *
- * @param annotationPath
- */
-function getConfigurationKey(annotationPath: string): string {
-    return annotationPath
-        .split('/')
-        .map((segment) => segment.replace('@', ''))
-        .join('::');
-}
 
 /**
  * Creates table configuration object
@@ -435,8 +424,17 @@ function linkObjectPagePage(
         sections: [],
         lookup: {}
     };
-
-    linkObjectPageSections(page, [...path, name], entity, mainService, sections, target);
+    linkObjectPageSections(
+        page,
+        [...path, name],
+        entity,
+        mainService,
+        sections.filter((section) => section.type === 'table-section'),
+        target
+    );
+    for (const section of sections.filter((section) => section.type === 'header-section')) {
+        collectHeaderSections(section, page);
+    }
     linkedApp.pages.push(page);
 }
 

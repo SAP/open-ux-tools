@@ -9,7 +9,7 @@ import type { FioriRuleDefinition } from '../types';
 import { FioriAnnotationSourceCode } from './annotations/source-code';
 import type { AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
 import { DiagnosticCache } from './diagnostic-cache';
-import type { Diagnostic, ManifestPropertyDiagnosticData } from './diagnostics';
+import type { Diagnostic } from './diagnostics';
 import type { DeepestExistingPathResult } from '../utils/helpers';
 import { findDeepestExistingPath } from '../utils/helpers';
 import { pathToFileURL } from 'node:url';
@@ -176,15 +176,17 @@ function createJsonVisitorWithMatchers<
     ) => (node: MemberNode) => void
 ): RuleVisitor {
     const applicableDiagnostics = cachedDiagnostics.filter(
-        (d): d is Extract<Diagnostic, { type: T }> & { manifest: ManifestPropertyDiagnosticData } =>
-            'manifest' in d && (d as { manifest: ManifestPropertyDiagnosticData }).manifest.uri === sourceCode.uri
+        (diagnostic) => (diagnostic as any).manifest?.uri === sourceCode.uri
     );
     if (applicableDiagnostics.length === 0) {
         return {};
     }
     const matchers: RuleVisitor = {};
     for (const diagnostic of applicableDiagnostics) {
-        const paths = findDeepestExistingPath(diagnostic.manifest.object, diagnostic.manifest.propertyPath);
+        const paths = findDeepestExistingPath(
+            (diagnostic as any).manifest?.object,
+            (diagnostic as any).manifest?.propertyPath
+        );
         if (paths?.validatedPath && paths.validatedPath.length > 0) {
             matchers[sourceCode.createMatcherString(paths.validatedPath)] = createJsonVisitorHandler(
                 context,
