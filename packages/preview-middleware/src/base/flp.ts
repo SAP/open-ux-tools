@@ -63,6 +63,7 @@ import {
 } from './config';
 import { generateCdm } from './cdm';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import middlewarePackageJson from '../../package.json';
 import { getIntegrationCard } from './utils/cards';
 import { NewsAdapter, type ODataNewsResponse, type NewsItem } from './utils/newsAdapter';
 import { LogCollector } from './utils/logCollector';
@@ -238,6 +239,7 @@ export class FlpSandbox {
             this.addCDMRoute();
             this.addNewsRoute();
             this.addLogsRoute();
+            this.addVersionsRoute();
         }
         await this.addRoutesForAdditionalApps();
 
@@ -823,6 +825,75 @@ export class FlpSandbox {
                 this.sendResponse(res, 'application/json', 200, JSON.stringify(logs));
             }
         );
+    }
+
+    /**
+     * Add route for versions API required by the enhanced FLP homepage.
+     */
+    private addVersionsRoute(): void {
+        this.router.get(
+            '/homepage/versions',
+            (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                const versions = this.collectVersionInfo();
+                this.sendResponse(res, 'application/json', 200, JSON.stringify(versions));
+            }
+        );
+    }
+
+    /**
+     * Collect version information from the preview middleware and the application under test.
+     *
+     * @returns an array of version entries with name and version
+     */
+    private collectVersionInfo(): { name: string; version: string }[] {
+        const versions: { name: string; version: string }[] = [];
+        const relevantPrefixes = ['@ui5/', '@sap-ux/', '@sap/'];
+
+        // Preview middleware version (from our own package.json)
+        versions.push({ name: '@sap-ux/preview-middleware', version: middlewarePackageJson.version });
+
+        // Read versions from the application under test
+        try {
+            const appRootPath = this.utils.getProject().getRootPath();
+            const appPkgPath = join(appRootPath, 'package.json');
+            if (existsSync(appPkgPath)) {
+                const appPkg = JSON.parse(readFileSync(appPkgPath, 'utf-8')) as {
+                    dependencies?: Record<string, string>;
+                    devDependencies?: Record<string, string>;
+                };
+                const allDeps = { ...appPkg.dependencies, ...appPkg.devDependencies };
+                for (const [name, range] of Object.entries(allDeps)) {
+                    if (relevantPrefixes.some((prefix) => name.startsWith(prefix))) {
+                        const resolved = this.resolvePackageVersion(appRootPath, name);
+                        versions.push({ name, version: resolved ?? range });
+                    }
+                }
+            }
+        } catch (error) {
+            this.logger.debug(`Failed to read application package.json: ${error}`);
+        }
+
+        return versions;
+    }
+
+    /**
+     * Resolve the installed version of a package from the application's node_modules.
+     *
+     * @param appRootPath the root path of the application
+     * @param packageName the name of the package to resolve
+     * @returns the resolved version or undefined if not found
+     */
+    private resolvePackageVersion(appRootPath: string, packageName: string): string | undefined {
+        try {
+            const pkgJsonPath = join(appRootPath, 'node_modules', packageName, 'package.json');
+            if (existsSync(pkgJsonPath)) {
+                const pkg = JSON.parse(readFileSync(pkgJsonPath, 'utf-8')) as { version?: string };
+                return pkg.version;
+            }
+        } catch {
+            // ignore — fallback to range from package.json
+        }
+        return undefined;
     }
 
     /**

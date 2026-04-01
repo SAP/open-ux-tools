@@ -2120,7 +2120,18 @@ export class AdpDialog {
     async fillField(fieldName: string, value: string): Promise<void> {
         const title = await this.getName();
         await test.step(`Fill \`${fieldName}\` field with \`${value}\` in the dialog \`${title}\``, async () => {
-            const field = this.frame.getByRole('textbox', { name: fieldName });
+            let field = this.frame.getByRole('textbox', { name: fieldName });
+            const count = await field.count();
+
+            // In newer versions found that colon is in different element, so try both ways to find the field
+            if (count === 0) {
+                const alternativeFieldName = fieldName.endsWith(':')
+                    ? fieldName.slice(0, -1) // Remove colon if present
+                    : `${fieldName}:`; // Add colon if not present
+
+                field = this.frame.getByRole('textbox', { name: alternativeFieldName });
+            }
+
             await field.fill(value);
         });
     }

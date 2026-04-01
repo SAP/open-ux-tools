@@ -9,7 +9,7 @@ import Formatting from 'sap/base/i18n/Formatting';
 import Locale from 'sap/ui/core/Locale';
 import type ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import type ResourceModel from 'sap/ui/model/resource/ResourceModel';
-import type Text from 'sap/m/Text';
+import Text from 'sap/m/Text';
 import type NewsContainer from 'sap/cux/home/NewsContainer';
 import type NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
 import { getSalutationBarBackground } from '../utils/salutationBarUtils';
@@ -29,6 +29,7 @@ import List from 'sap/m/List';
 import StandardListItem from 'sap/m/StandardListItem';
 import HBox from 'sap/m/HBox';
 import Icon from 'sap/ui/core/Icon';
+import FormattedText from 'sap/m/FormattedText';
 
 const CARDS_GAP = 16;
 const MIN_CARD_WIDTH = 304;
@@ -95,6 +96,8 @@ export default class MyHomeController extends Controller {
     };
 
     private terminalWarningsDialog: Dialog | undefined;
+    private showVersionsDialog: Dialog | undefined;
+    private versionsFormattedText: FormattedText | undefined;
 
     private static calculateDeviceType(width: number): string {
         const { DeviceWidth } = MyHomeController;
@@ -119,7 +122,8 @@ export default class MyHomeController extends Controller {
                 insightsCardWidth: `${MIN_CARD_WIDTH / 16}rem`,
                 cards: [],
                 hasWarnings: false,
-                warnings: []
+                warnings: [],
+                versions: []
             });
             view.setModel(oViewModel, 'view');
 
@@ -136,6 +140,7 @@ export default class MyHomeController extends Controller {
         void this.initializeNewsContainer();
         void this.initializeInsightsContainer();
         void this.initializeWarnings();
+        void this.initializeVersions();
     }
 
     onBeforeRendering(): void {
@@ -415,5 +420,51 @@ export default class MyHomeController extends Controller {
         }
     }
 
-    onShowVersionsButtonPress(): void {}
+    private async initializeVersions(): Promise<void> {
+        this.showVersionsDialog = this.createShowVersionsDialog();
+        await this.fetchVersions();
+    }
+
+    onShowVersionsButtonPress(): void {
+        if (!this.showVersionsDialog) {
+            this.showVersionsDialog = this.createShowVersionsDialog();
+        }
+        this.showVersionsDialog.open();
+    }
+
+    private createShowVersionsDialog(): Dialog {
+        this.versionsFormattedText = new FormattedText({ htmlText: '' });
+
+        const dialog = new Dialog({
+            title: this.getText('showVersionsDialogTitle'),
+            contentWidth: '32rem',
+            content: [this.versionsFormattedText.addStyleClass('sapUiSmallMargin')],
+            endButton: new Button({
+                text: this.getText('closeDialog'),
+                type: 'Transparent',
+                press: () => {
+                    dialog.close();
+                }
+            })
+        });
+
+        return dialog;
+    }
+
+    private async fetchVersions(): Promise<void> {
+        try {
+            const response = await fetch('/homepage/versions');
+            if (!response.ok) {
+                Log.error('Failed to fetch version information: ' + response.statusText);
+                return;
+            }
+            const backendVersions = (await response.json()) as { name: string; version: string }[];
+            const versions = [{ name: 'UI5 Version', version: sap.ui.version }, ...backendVersions];
+            const listItems = versions.map((v) => `<li>${v.name}: ${v.version}</li>`).join('');
+            const html = `<p>${this.getText('showVersionsDescription')}</p><ul>${listItems}</ul>`;
+            this.versionsFormattedText?.setHtmlText(html);
+        } catch (error: unknown) {
+            Log.error('Failed to fetch version information', error instanceof Error ? error : new Error(String(error)));
+        }
+    }
 }
