@@ -234,6 +234,23 @@ describe('convertEslintConfig', () => {
         });
     });
 
+    /**
+     * Helper: returns the parsed JSON that was written to the temp-dir config file.
+     * Since removeFioriToolsFromExistingConfig no longer stages a write to mem-fs, the
+     * stripped config is only visible via the writeFileSync call made into the temp dir.
+     */
+    const getStrippedConfig = (): EslintRcJson => {
+        const calls = (writeFileSync as jest.Mock).mock.calls;
+        // The first writeFileSync call in runMigrationCommand writes the stripped eslintrc to the temp dir
+        const strippedCall = calls.find(
+            ([path]: [string]) => path.includes('eslint-migration-') && !path.endsWith('eslint.config.mjs')
+        );
+        if (!strippedCall) {
+            throw new Error('writeFileSync was not called with the stripped config');
+        }
+        return JSON.parse(strippedCall[1] as string) as EslintRcJson;
+    };
+
     describe('Removing Fiori Tools from existing config', () => {
         test('should remove Fiori Tools plugin from .eslintrc.json plugins array', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
@@ -244,9 +261,12 @@ describe('convertEslintConfig', () => {
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            expect(updatedConfig.plugins).not.toContain('@sap-ux/eslint-plugin-fiori-tools');
-            expect(updatedConfig.plugins).toContain('other-plugin');
+            const strippedConfig = getStrippedConfig();
+            expect(strippedConfig.plugins).not.toContain('@sap-ux/eslint-plugin-fiori-tools');
+            expect(strippedConfig.plugins).toContain('other-plugin');
+            // The original mem-fs entry must NOT have been overwritten
+            const memFsConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            expect(memFsConfig.plugins).toContain('@sap-ux/eslint-plugin-fiori-tools');
         });
 
         test('should delete plugins key when only Fiori Tools plugin was present', async () => {
@@ -258,18 +278,19 @@ describe('convertEslintConfig', () => {
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            expect(updatedConfig.plugins).toBeUndefined();
+            const strippedConfig = getStrippedConfig();
+            expect(strippedConfig.plugins).toBeUndefined();
+            // The original mem-fs entry must NOT have been overwritten
+            const memFsConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            expect(memFsConfig.plugins).toEqual(['@sap-ux/eslint-plugin-fiori-tools']);
         });
 
         test('should remove Fiori Tools config from .eslintrc.json extends array', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const eslintrcPath = join(basePath, '.eslintrc.json');
-            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-
-            const rawExtends = eslintConfig.extends;
+            const strippedConfig = getStrippedConfig();
+            const rawExtends = strippedConfig.extends;
             // eslint-disable-next-line no-nested-ternary
             const extendsArray: string[] = Array.isArray(rawExtends) ? rawExtends : rawExtends ? [rawExtends] : [];
             expect(extendsArray.some((e) => e.includes('@sap-ux/eslint-plugin-fiori-tools'))).toBe(false);
@@ -293,8 +314,8 @@ describe('convertEslintConfig', () => {
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            expect(updatedConfig.extends).toBeUndefined();
+            const strippedConfig = getStrippedConfig();
+            expect(strippedConfig.extends).toBeUndefined();
         });
 
         test('should remove eslint:recommended from extends array while keeping other entries', async () => {
@@ -306,8 +327,8 @@ describe('convertEslintConfig', () => {
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            expect(updatedConfig.extends).toEqual(['plugin:other-plugin/recommended']);
+            const strippedConfig = getStrippedConfig();
+            expect(strippedConfig.extends).toEqual(['plugin:other-plugin/recommended']);
         });
 
         test('should NOT warn about files scope when eslint:recommended was absent from extends', async () => {
@@ -361,8 +382,8 @@ describe('convertEslintConfig', () => {
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            expect(updatedConfig.extends).toBeUndefined();
+            const strippedConfig = getStrippedConfig();
+            expect(strippedConfig.extends).toBeUndefined();
         });
 
         test('should remove plugin:@typescript-eslint entries from extends array while keeping others', async () => {
@@ -374,8 +395,8 @@ describe('convertEslintConfig', () => {
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            expect(updatedConfig.extends).toEqual(['plugin:other/recommended']);
+            const strippedConfig = getStrippedConfig();
+            expect(strippedConfig.extends).toEqual(['plugin:other/recommended']);
         });
 
         test('should NOT warn about files scope when no @typescript-eslint extends were present', async () => {
@@ -400,8 +421,8 @@ describe('convertEslintConfig', () => {
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            expect(updatedConfig.extends).toBeUndefined();
+            const strippedConfig = getStrippedConfig();
+            expect(strippedConfig.extends).toBeUndefined();
         });
 
         test('should remove Fiori Tools entries from extends array while keeping others', async () => {
@@ -413,8 +434,8 @@ describe('convertEslintConfig', () => {
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            expect(updatedConfig.extends).toEqual(['plugin:other/recommended']);
+            const strippedConfig = getStrippedConfig();
+            expect(strippedConfig.extends).toEqual(['plugin:other/recommended']);
         });
 
         test('should delete extends when all entries are Fiori Tools configs', async () => {
@@ -426,8 +447,8 @@ describe('convertEslintConfig', () => {
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const updatedConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            expect(updatedConfig.extends).toBeUndefined();
+            const strippedConfig = getStrippedConfig();
+            expect(strippedConfig.extends).toBeUndefined();
         });
 
         test('should not touch extends if it is absent', async () => {
@@ -722,14 +743,27 @@ describe('convertEslintConfig', () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             const result = await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            // Phase 1: Verify fiori-tools references are removed from the old .eslintrc.json
-            const eslintrcPath = join(basePath, '.eslintrc.json');
-            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            const rawExtends = eslintConfig.extends;
+            // Phase 1: Verify fiori-tools references are removed in the stripped config passed to the migration tool
+            const strippedConfig = getStrippedConfig();
+            const rawExtends = strippedConfig.extends;
             // eslint-disable-next-line no-nested-ternary
             const extendsArray: string[] = Array.isArray(rawExtends) ? rawExtends : rawExtends ? [rawExtends] : [];
             expect(extendsArray.some((e) => e.includes('@sap-ux/eslint-plugin-fiori-tools'))).toBe(false);
-            expect(eslintConfig.plugins ?? []).not.toContain('@sap-ux/eslint-plugin-fiori-tools');
+            expect(strippedConfig.plugins ?? []).not.toContain('@sap-ux/eslint-plugin-fiori-tools');
+
+            // The original .eslintrc.json in mem-fs must remain untouched (fiori-tools refs still present)
+            const eslintrcPath = join(basePath, '.eslintrc.json');
+            const originalMemFsConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
+            const rawOriginalExtends = originalMemFsConfig.extends;
+            let originalExtends: string[];
+            if (Array.isArray(rawOriginalExtends)) {
+                originalExtends = rawOriginalExtends;
+            } else if (rawOriginalExtends) {
+                originalExtends = [rawOriginalExtends];
+            } else {
+                originalExtends = [];
+            }
+            expect(originalExtends.some((e) => e.includes('@sap-ux/eslint-plugin-fiori-tools'))).toBe(true);
 
             // Phase 2: Verify spawn was called (migration ran)
             expect(spawnMock).toHaveBeenCalled();

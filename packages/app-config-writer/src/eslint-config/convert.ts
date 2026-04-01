@@ -80,8 +80,8 @@ export async function convertEslintConfig(
         throw new Error('The prerequisites are not met. For more information, see the log messages above.');
     }
 
-    await removeFioriToolsFromExistingConfig(basePath, fs, logger);
-    await runMigrationCommand(basePath, fs);
+    const strippedConfig = await removeFioriToolsFromExistingConfig(basePath, fs, logger);
+    await runMigrationCommand(basePath, fs, strippedConfig);
     await injectFioriToolsIntoMigratedConfig(basePath, fs, options.config, logger);
     await updatePackageJson(basePath, fs, logger);
 
@@ -210,12 +210,16 @@ function warnIfFileScopeDropped(
  * automatically preserved — the converted project uses `@sap-ux/eslint-plugin-fiori-tools` which
  * already applies the equivalent rules scoped to the webapp directory.
  *
+ * The modified config is returned as a serialized JSON string and is not written back to
+ * mem-fs, so the original legacy config file is never staged for a disk write.
+ *
  * @param basePath - base path to be used for the conversion
  * @param fs - file system reference
  * @param logger - logger to report info to the user
+ * @returns the stripped config serialized as a JSON string, ready to be passed to the migration command
  * @throws {Error} if the existing .eslintrc.json file is not a valid JSON object
  */
-async function removeFioriToolsFromExistingConfig(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<void> {
+async function removeFioriToolsFromExistingConfig(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<string> {
     const eslintrcJsonPath = join(basePath, '.eslintrc.json');
     const eslintrcPath = join(basePath, '.eslintrc');
     const configPath = fs.exists(eslintrcJsonPath) ? eslintrcJsonPath : eslintrcPath;
@@ -238,8 +242,8 @@ async function removeFioriToolsFromExistingConfig(basePath: string, fs: Editor, 
     const { eslintRecommended, tsStripped } = stripNativeExtendsFromConfig(eslintConfig);
     warnIfFileScopeDropped(eslintConfig.files, eslintRecommended, tsStripped, logger);
 
-    fs.writeJSON(configPath, eslintConfig);
     logger?.debug(`Removed SAP Fiori tools plugin references from ${configPath}`);
+    return JSON.stringify(eslintConfig, null, 2);
 }
 
 /**
@@ -290,21 +294,19 @@ async function injectFioriToolsIntoMigratedConfig(
  *
  * @param basePath - base path to be used for the conversion
  * @param fs - file system reference
+ * @param strippedConfigContent - the stripped legacy eslint config content as a JSON string
  * @returns a promise that resolves when the migration command finishes successfully, or rejects if the command fails
  */
-async function runMigrationCommand(basePath: string, fs: Editor): Promise<void> {
+async function runMigrationCommand(basePath: string, fs: Editor, strippedConfigContent: string): Promise<void> {
     const tempDir = mkdtempSync(join(tmpdir(), 'eslint-migration-'));
 
     try {
         // 1. Copy necessary files to temp directory
         const eslintrcJsonPath = join(basePath, '.eslintrc.json');
-        const eslintrcPath = join(basePath, '.eslintrc');
-        const configPath = fs.exists(eslintrcJsonPath) ? eslintrcJsonPath : eslintrcPath;
         const configFileName = fs.exists(eslintrcJsonPath) ? '.eslintrc.json' : '.eslintrc';
 
-        // Read from mem-fs (which has the modified content) and write to temp directory
-        const eslintrcContent = fs.read(configPath);
-        writeFileSync(join(tempDir, configFileName), eslintrcContent, 'utf-8');
+        // Write the already-stripped config content (never staged in mem-fs) to temp directory
+        writeFileSync(join(tempDir, configFileName), strippedConfigContent, 'utf-8');
 
         const eslintignorePath = join(basePath, '.eslintignore');
         if (existsSync(eslintignorePath)) {
