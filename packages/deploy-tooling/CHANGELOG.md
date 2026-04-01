@@ -1,5 +1,76 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.9
+
+### Patch Changes
+
+- c53a4ba: chore(deploy-tooling): upgrade commander 9.x → 14.x; upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.18.8
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.31
+
+## 0.18.7
+
+### Patch Changes
+
+- 2e17a6b: fix: allow deployment to OnPremise destinations with WebIDEUsage odata_gen
+
+    isAbapSystem now returns true for destinations with ProxyType=OnPremise, fixing deployments that failed with a cryptic 'bind' error when WebIDEUsage was set to odata_gen. deploy-tooling also now surfaces an actionable error message if a non-ABAP provider is resolved.
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/axios-extension@1.25.27
+    - @sap-ux/inquirer-common@0.11.30
+    - @sap-ux/system-access@0.7.3
+
+## 0.18.6
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.26
+- @sap-ux/inquirer-common@0.11.29
+- @sap-ux/project-input-validator@0.6.72
+- @sap-ux/system-access@0.7.2
+
+## 0.18.5
+
+### Patch Changes
+
+- b4b4447: fix(deploy-tooling): suppress 'Change logging level' hint when debug logging is already enabled via config.log
+
+## 0.18.4
+
+### Patch Changes
+
+- a41533f: chore(deploy-tooling): reformat CliOptions interface extends clause (Prettier upgrade autofix)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-input-validator@0.6.71
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/system-access@0.7.2
+
 ## 0.18.3
 
 ### Patch Changes

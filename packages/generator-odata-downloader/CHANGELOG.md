@@ -1,5 +1,11 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.0.10
+
+### Patch Changes
+
+- c53a4ba: chore(generator-odata-downloader): upgrade shared devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+
 ## 0.0.9
 
 ### Patch Changes

@@ -42,7 +42,16 @@ const manifestServiceCFInitMock = ManifestServiceCF.init as jest.MockedFunction<
 const manifest = {
     'sap.app': {
         dataSources: {
-            Z_SRV: { uri: '/sap/opu/odata', type: 'OData', settings: {} }
+            Z_SRV: {
+                uri: '/sap/opu/odata',
+                type: 'OData',
+                settings: { annotations: ['Z_SRV_ANNO'] }
+            },
+            Z_SRV_ANNO: {
+                uri: '/sap/opu/odata/annotation',
+                type: 'ODataAnnotation',
+                settings: {}
+            }
         }
     }
 } as unknown as Manifest;

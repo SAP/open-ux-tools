@@ -1,5 +1,108 @@
 # @sap-ux/adp-tooling
 
+## 0.18.108
+
+### Patch Changes
+
+- 68b5523: feat: Adjust FLP configuration wizard for CF scenario
+
+## 0.18.107
+
+### Patch Changes
+
+- c53a4ba: chore(adp-tooling): upgrade @sap-devx/yeoman-ui-types 1.22.0 → 1.23.0 (runtime dep); upgrade devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/odata-service-writer@0.31.4
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/store@1.5.12
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-info@0.13.17
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.18.106
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.31
+
+## 0.18.105
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/axios-extension@1.25.27
+    - @sap-ux/inquirer-common@0.11.30
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/system-access@0.7.3
+    - @sap-ux/odata-service-writer@0.31.3
+
+## 0.18.104
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/inquirer-common@0.11.29
+    - @sap-ux/odata-service-writer@0.31.3
+    - @sap-ux/project-input-validator@0.6.72
+    - @sap-ux/system-access@0.7.2
+
+## 0.18.103
+
+### Patch Changes
+
+- 96a689b: fix(ADP): Change prompt's order, first appear applications then projectType if applicable.
+
+## 0.18.102
+
+### Patch Changes
+
+- 3dcd3f7: Annotation changes are not generated from Replace OData
+
+## 0.18.101
+
+### Patch Changes
+
+- a41533f: chore(adp-tooling): upgrade runtime dependencies (adm-zip 0.5.16, axios 1.13.6, i18next 25.8.20, sanitize-filename 1.6.4)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/i18n@0.3.10
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/nodejs-utils@0.2.18
+    - @sap-ux/odata-service-writer@0.31.2
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/project-input-validator@0.6.71
+    - @sap-ux/store@1.5.11
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/ui5-info@0.13.16
+    - @sap-ux/system-access@0.7.2
+
 ## 0.18.100
 
 ### Patch Changes
