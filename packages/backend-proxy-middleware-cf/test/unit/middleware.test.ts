@@ -5,9 +5,23 @@ import { nextFreePort } from '../../src/utils';
 import { loadExtensions } from '../../src/extensions';
 import { loadAndApplyEnvOptions } from '../../src/env';
 import { startApprouter } from '../../src/approuter';
+import { updateXsuaaService } from '../../src/xssecurity';
 import type { BackendProxyMiddlewareCfConfig } from '../../src/types';
 import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../src/routes';
 import { fetchBasUrlTemplate, resolveBasExternalUrl } from '../../src/bas';
+
+const noopFn = jest.fn();
+jest.mock('@sap-ux/logger', () => ({
+    LogLevel: { Debug: 'debug', Info: 'info' },
+    ToolsLogger: jest.fn().mockImplementation(() => ({
+        debug: noopFn,
+        info: noopFn,
+        warn: noopFn,
+        error: noopFn,
+        log: noopFn
+    })),
+    UI5ToolingTransport: jest.fn()
+}));
 
 jest.mock('node:fs', () => ({
     ...jest.requireActual('node:fs'),
@@ -46,6 +60,10 @@ jest.mock('../../src/bas', () => ({
     resolveBasExternalUrl: jest.fn().mockReturnValue(undefined)
 }));
 
+jest.mock('../../src/xssecurity', () => ({
+    updateXsuaaService: jest.fn().mockResolvedValue(undefined)
+}));
+
 const createProxyMock = createProxy as jest.Mock;
 const existsSyncMock = fs.existsSync as jest.Mock;
 const nextFreePortMock = nextFreePort as jest.Mock;
@@ -56,6 +74,7 @@ const loadAndPrepareXsappConfigMock = loadAndPrepareXsappConfig as jest.Mock;
 const startApprouterMock = startApprouter as jest.Mock;
 const fetchBasUrlTemplateMock = fetchBasUrlTemplate as jest.Mock;
 const resolveBasExternalUrlMock = resolveBasExternalUrl as jest.Mock;
+const updateXsuaaServiceMock = updateXsuaaService as jest.Mock;
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports -- middleware is CommonJS
 const middleware = require('../../src/middleware') as (params: {
