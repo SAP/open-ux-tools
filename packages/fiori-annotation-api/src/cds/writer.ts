@@ -765,7 +765,11 @@ export class CDSWriter implements ChangeHandler {
                 level: indentLevel + 1,
                 skipFirstLine: true
             });
-            firstInsert ? this.insertFirstText(range, text, indentLevel) : this.insertAdditionalText(range, text);
+            if (firstInsert) {
+                this.insertFirstText(range, text, indentLevel);
+            } else {
+                this.insertAdditionalText(range, text);
+            }
         } else {
             const anchor = this.findInsertPosition(content, parent, change.pointer, index ?? -1);
             if (!anchor) {

@@ -157,6 +157,18 @@ export const CONFIG = {
 };
 
 /**
+ * Checks whether an element ID is available (not already used) in the given XML content.
+ *
+ * @param id - The element ID to check for availability.
+ * @param xmlContent - The XML content to search for existing element IDs.
+ * @returns `true` if the ID is not found in the XML content, `false` otherwise.
+ */
+function checkElementIdAvailable(id: string, xmlContent: string): boolean {
+    const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent);
+    return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
+}
+
+/**
  * Generates a unique element ID that is not already used in any view or fragment file.
  * Uses an incremental counter for predictable, readable IDs.
  *
@@ -165,11 +177,6 @@ export const CONFIG = {
  * @param validatedIds - A list of IDs that have already been validated in the current session to avoid duplicates
  * @returns A unique ID that is available across all view and fragment files
  */
-function checkElementIdAvailable(id: string, xmlContent: string): boolean {
-    const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent);
-    return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
-}
-
 function generateUniqueElementId(baseId: string, filteredFilesContent: string[], validatedIds: string[] = []): string {
     const maxAttempts = 1000;
 
