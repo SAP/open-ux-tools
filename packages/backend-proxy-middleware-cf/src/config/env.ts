@@ -49,7 +49,7 @@ function applyToProcessEnv(options: AppRouterEnvOptions): void {
         ...(options.destinations ? { destinations: JSON.stringify(options.destinations) } : {}),
         ...(options.VCAP_SERVICES ? { VCAP_SERVICES: JSON.stringify(options.VCAP_SERVICES) } : {})
     };
-    process.env = { ...process.env, ...envOptions } as Record<string, string>;
+    Object.assign(process.env, envOptions);
 }
 
 /**
