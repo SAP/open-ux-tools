@@ -57,10 +57,10 @@ export function createResponseInterceptor(
                 (req.headers.referrer as string) ?? (req.headers.referer as string) ?? getRequestOrigin(req);
             const referrerUrl = new URL(route.path, referrer).toString();
 
-            data = replaceUrl(data, `https://${route.url.slice(8)}`, referrerUrl);
-            if (route.url.startsWith('https://')) {
-                data = replaceUrl(data, `http://${route.url.slice(8)}`, referrerUrl);
-            }
+            const routeUrlParsed = new URL(route.url);
+            const hostAndPath = `${routeUrlParsed.host}${routeUrlParsed.pathname}`;
+            data = replaceUrl(data, `https://${hostAndPath}`, referrerUrl);
+            data = replaceUrl(data, `http://${hostAndPath}`, referrerUrl);
 
             return Buffer.from(data);
         }

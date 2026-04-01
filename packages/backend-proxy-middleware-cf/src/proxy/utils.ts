@@ -6,6 +6,16 @@ import type { MimeInfo, RouteEntry } from '../types';
 import { PROXY_MARKER_HEADER } from '../config/constants';
 
 /**
+ * Escape a string so it can be safely embedded in a RegExp.
+ *
+ * @param value - Raw string.
+ * @returns Regex-safe string with all metacharacters escaped.
+ */
+export function escapeRegExp(value: string): string {
+    return value.replaceAll(/[-/\\^$*+?.()|[\]{}]/g, String.raw`\$&`);
+}
+
+/**
  * Replaces oldUrl with newUrl in text (regex-safe).
  *
  * @param text - Full text to replace in.
@@ -14,8 +24,7 @@ import { PROXY_MARKER_HEADER } from '../config/constants';
  * @returns Text with URLs replaced.
  */
 export function replaceUrl(text: string, oldUrl: string, newUrl: string): string {
-    const escaped = oldUrl.replaceAll(/[-/\\^$*+?.()|[\]{}]/g, String.raw`\$&`);
-    const regex = new RegExp(escaped, 'gi');
+    const regex = new RegExp(escapeRegExp(oldUrl), 'gi');
     return text.replace(regex, newUrl);
 }
 
@@ -27,7 +36,7 @@ export function replaceUrl(text: string, oldUrl: string, newUrl: string): string
  * @returns Filter function (pathname) => boolean.
  */
 export function createPathFilter(customRoutes: string[], routes: RouteEntry[]): (pathname: string) => boolean {
-    const compiledCustomRoutes = customRoutes.map((r) => new RegExp(String.raw`^${r}(\?.*)?$`));
+    const compiledCustomRoutes = customRoutes.map((route) => new RegExp(String.raw`^${escapeRegExp(route)}(\?.*)?$`));
     return (pathname: string): boolean => {
         return (
             compiledCustomRoutes.some((customRoute) => customRoute.test(pathname)) ||
