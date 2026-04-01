@@ -224,9 +224,10 @@ export function createForAbapOnCloud(options: AbapCloudOptions & Partial<Provide
             }
             break;
         }
-        default:
+        default: {
             const opts: never = options;
             throw new Error(`Unknown environment type supplied: ${inspect(opts)}`);
+        }
     }
     return provider;
 }

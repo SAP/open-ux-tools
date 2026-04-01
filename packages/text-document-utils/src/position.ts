@@ -103,17 +103,22 @@ export function getIndentLevel(startPosition: number, tabWidth: number): number 
 }
 
 /**
- * Indents based on tabs or tab width.
+ * Returns an indentation string using tabs.
+ *
+ * @param level
+ * @returns indentation string
+ */
+export function indentWithTabs(level: number): string {
+    return '\t'.repeat(level);
+}
+
+/**
+ * Returns an indentation string using spaces.
  *
  * @param tabWidth
- * @param useTabs
  * @param level
- * @returns intentation string
+ * @returns indentation string
  */
-export function indent(tabWidth: number, useTabs: boolean, level: number): string {
-    if (useTabs) {
-        return '\t'.repeat(level);
-    } else {
-        return ' '.repeat(tabWidth * level);
-    }
+export function indentWithSpaces(tabWidth: number, level: number): string {
+    return ' '.repeat(tabWidth * level);
 }

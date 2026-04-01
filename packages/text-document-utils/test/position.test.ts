@@ -4,7 +4,8 @@ import {
     rangeContained,
     getIndentLevel,
     positionContainedStrict,
-    indent,
+    indentWithTabs,
+    indentWithSpaces,
     positionAt
 } from '../src/position';
 import { printOptions } from '../src/text-formatting';
@@ -93,12 +94,12 @@ describe('position.ts', () => {
     });
 
     test('indent with tabs', () => {
-        const result = indent(4, true, 2);
+        const result = indentWithTabs(2);
         expect(result).toBe('\t'.repeat(2));
     });
 
     test('indent with spaces', () => {
-        const result = indent(4, false, 2);
+        const result = indentWithSpaces(4, 2);
         expect(result).toMatchInlineSnapshot(`"        "`);
     });
 });

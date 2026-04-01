@@ -116,6 +116,14 @@ import { getIndentLevelFromPointer, getIndentLevelFromNode } from './indent';
 
 const printOptions: typeof defaultPrintOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
 
+interface WriterContext {
+    textDocument: TextDocument;
+    comments: Comment[];
+    tokens: CompilerToken[];
+    changes: CDSDocumentChange[];
+    cdsDocument: CDSDocument;
+}
+
 const ANNOTATION_START_PATTERN = /^@/i;
 
 type ChangeHandlerFunction<T extends CDSDocumentChange> = (change: T, reversePath: AstNode[]) => void | Promise<void>;
@@ -686,11 +694,13 @@ export class CDSWriter implements ChangeHandler {
             }
             const ranges = createElementRanges(this.document, this.tokens, change.fromPointers);
             const moveEdits = getTextEditsForMove(
-                this.textDocument,
-                this.comments,
-                this.tokens,
-                this.processedChanges,
-                this.document,
+                {
+                    textDocument: this.textDocument,
+                    comments: this.comments,
+                    tokens: this.tokens,
+                    changes: this.processedChanges,
+                    cdsDocument: this.document
+                },
                 anchor.position,
                 ranges,
                 indentLevel
@@ -755,7 +765,7 @@ export class CDSWriter implements ChangeHandler {
                 level: indentLevel + 1,
                 skipFirstLine: true
             });
-            this.insertText(range, text, indentLevel, firstInsert);
+            firstInsert ? this.insertFirstText(range, text, indentLevel) : this.insertAdditionalText(range, text);
         } else {
             const anchor = this.findInsertPosition(content, parent, change.pointer, index ?? -1);
             if (!anchor) {
@@ -781,18 +791,18 @@ export class CDSWriter implements ChangeHandler {
         }
     }
 
-    private insertText(range: Range, text: string, indentLevel: number, firstInsert: boolean): void {
-        if (firstInsert) {
-            this.edits.push(TextEdit.replace(range, text + indent('\n', { level: indentLevel, skipFirstLine: true })));
-        } else {
-            // Multiple inserts will have the same replacement range, we need to group them because
-            // only one text edit with that replacement range can be applied.
-            const edit = this.edits.find((edit) => isRangesEqual(edit.range, range));
-            if (edit) {
-                const lines = edit.newText.split('\n');
-                lines[lines.length - 2] += text;
-                edit.newText = lines.join('\n');
-            }
+    private insertFirstText(range: Range, text: string, indentLevel: number): void {
+        this.edits.push(TextEdit.replace(range, text + indent('\n', { level: indentLevel, skipFirstLine: true })));
+    }
+
+    private insertAdditionalText(range: Range, text: string): void {
+        // Multiple inserts will have the same replacement range, we need to group them because
+        // only one text edit with that replacement range can be applied.
+        const edit = this.edits.find((edit) => isRangesEqual(edit.range, range));
+        if (edit) {
+            const lines = edit.newText.split('\n');
+            lines[lines.length - 2] += text;
+            edit.newText = lines.join('\n');
         }
     }
 
@@ -1253,11 +1263,7 @@ function createElementRanges(document: CDSDocument, tokens: CompilerToken[], poi
 }
 
 function getTextEditsForMove(
-    document: TextDocument,
-    comments: Comment[],
-    tokens: CompilerToken[],
-    changes: CDSDocumentChange[],
-    cdsDocument: CDSDocument,
+    writerContext: WriterContext,
     position: Position,
     ranges: ReturnType<typeof createElementRanges>,
     indentLevel: number
@@ -1265,8 +1271,8 @@ function getTextEditsForMove(
     const edits: TextEdit[] = [];
     const text: string[] = [];
     for (const range of ranges) {
-        const sourceContent = getContainerContent(range.parent, comments, tokens);
-        cutRange(document, changes, cdsDocument, sourceContent, range, indentLevel, text, edits);
+        const sourceContent = getContainerContent(range.parent, writerContext.comments, writerContext.tokens);
+        cutRange(writerContext, sourceContent, range, indentLevel, text, edits);
     }
     edits.push(TextEdit.insert(position, ''.concat(...text)));
     return edits;
@@ -1326,9 +1332,7 @@ function findDeletionChange(document: CDSDocument, changes: CDSDocumentChange[],
 }
 
 function cutRange(
-    textDocument: TextDocument,
-    changes: CDSDocumentChange[],
-    cdsDocument: CDSDocument,
+    writerContext: WriterContext,
     content: ContainerContentBlock[],
     cutRange: CutRange,
     indentLevel: number,
@@ -1360,10 +1364,10 @@ function cutRange(
             //  |        |
             // cut    suffix  range
             const range = copyRange(Range.create(endElement.element.range.end, endElement.trailingComment.range.end));
-            if (!findDeletionChange(cdsDocument, changes, range)) {
+            if (!findDeletionChange(writerContext.cdsDocument, writerContext.changes, range)) {
                 edits.push(TextEdit.del(range));
             }
-            suffix = ',' + textDocument.getText(range);
+            suffix = ',' + writerContext.textDocument.getText(range);
             updatePosition(endPosition, endElement.element.range.end);
         } else if (!endElement.trailingComma) {
             // ...}
@@ -1372,9 +1376,9 @@ function cutRange(
     }
 
     const range = copyRange(Range.create(startPosition, endPosition));
-    const originalText = textDocument.getText(range);
+    const originalText = writerContext.textDocument.getText(range);
     text.push(makeCut(originalText, suffix, cutRange, indentLevel));
-    if (!findDeletionChange(cdsDocument, changes, range)) {
+    if (!findDeletionChange(writerContext.cdsDocument, writerContext.changes, range)) {
         edits.push(TextEdit.del(range));
     }
 }

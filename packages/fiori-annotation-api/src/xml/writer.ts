@@ -1,6 +1,6 @@
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
-import { getIndentLevel, indent, isBefore, rangeContained } from '@sap-ux/odata-annotation-core';
+import { getIndentLevel, indentWithTabs, indentWithSpaces, isBefore, rangeContained } from '@sap-ux/odata-annotation-core';
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { copyPosition, copyRange } from '@sap-ux/cds-annotation-parser';
 import {
@@ -584,7 +584,9 @@ function insertIntoElementWithContent(
             edits.push(TextEdit.insert(anchor.position, fragments.join('')));
             continue;
         }
-        const childIndent = indent(printOptions.tabWidth, printOptions.useTabs, childIndentLevel);
+        const childIndent = printOptions.useTabs
+            ? indentWithTabs(childIndentLevel)
+            : indentWithSpaces(printOptions.tabWidth, childIndentLevel);
         fragments.push(childIndent);
         if (anchor.redundantWhitespace) {
             edits.push(TextEdit.del(anchor.redundantWhitespace));

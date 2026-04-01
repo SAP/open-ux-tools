@@ -5,6 +5,13 @@
 "@sap-ux/system-access": patch
 "@sap-ux/ui-components": patch
 "@sap-ux/xml-odata-annotation-converter": patch
+"@sap-ux/control-property-editor": patch
+"@sap-ux/fe-fpm-writer": patch
+"@sap-ux/text-document-utils": patch
+"@sap-ux/odata-annotation-core": patch
+"@sap-ux/backend-proxy-middleware": patch
+"@sap-ux/telemetry": patch
+"@sap-ux/axios-extension": patch
 ---
 
-fix: reduce cognitive complexity in 16 HIGH severity functions by extracting helper functions
+fix: SONAR issues

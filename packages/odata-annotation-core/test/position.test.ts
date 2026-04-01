@@ -4,7 +4,8 @@ import {
     rangeContained,
     getIndentLevel,
     positionContainedStrict,
-    indent
+    indentWithTabs,
+    indentWithSpaces
 } from '@sap-ux/text-document-utils';
 import { Position, printOptions } from '@sap-ux/odata-annotation-core-types';
 
@@ -91,12 +92,12 @@ describe('position.ts', () => {
     });
 
     test('indent with tabs', () => {
-        const result = indent(4, true, 2);
+        const result = indentWithTabs(2);
         expect(result).toBe('\t'.repeat(2));
     });
 
     test('indent with spaces', () => {
-        const result = indent(4, false, 2);
+        const result = indentWithSpaces(4, 2);
         expect(result).toMatchInlineSnapshot(`"        "`);
     });
 });

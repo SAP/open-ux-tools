@@ -4,7 +4,7 @@ import { TelemetrySettings } from '../config-state';
 import { EventName } from '../types';
 
 const parseErrorStack = (errorStack: string): string[] => {
-    const regexps = [/sap-ux.+/gi, /[a-zA-Z-]+\/ide-extension\/.+/gi, /(\/telemetry\/.+)/gi];
+    const regexps = [/sap-ux.+/gi, /[-a-zA-Z]+\/ide-extension\/.+/gi, /(\/telemetry\/.+)/gi];
     const parsedStack: string[] = [];
 
     const filtered = errorStack.split('\n').filter((line: string) => !!/^\s*at .*(\S+:\d+|\(native\))/m.exec(line));

@@ -165,13 +165,13 @@ export const CONFIG = {
  * @param validatedIds - A list of IDs that have already been validated in the current session to avoid duplicates
  * @returns A unique ID that is available across all view and fragment files
  */
+function checkElementIdAvailable(id: string, xmlContent: string): boolean {
+    const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent);
+    return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
+}
+
 function generateUniqueElementId(baseId: string, filteredFilesContent: string[], validatedIds: string[] = []): string {
     const maxAttempts = 1000;
-
-    function checkElementIdAvailable(id: string, xmlContent: string): boolean {
-        const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent);
-        return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
-    }
 
     if (
         filteredFilesContent.every((content) => content === '' || checkElementIdAvailable(baseId, content)) &&

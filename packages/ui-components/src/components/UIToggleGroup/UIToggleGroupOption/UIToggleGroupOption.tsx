@@ -48,7 +48,6 @@ export class UIToggleGroupOption extends React.Component<UIToggleGroupOptionProp
 
         return (
             <button
-                role="button"
                 {...(this.props.title && { title: this.props.title })}
                 data-is-focusable="true"
                 className={[
