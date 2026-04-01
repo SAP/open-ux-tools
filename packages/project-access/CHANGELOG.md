@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.35.18
+
+### Patch Changes
+
+- 3291f6c: Fix: guard against undefined URL in uniformUrl to prevent TypeError when service endpoints have no path
+
 ## 1.35.17
 
 ### Patch Changes

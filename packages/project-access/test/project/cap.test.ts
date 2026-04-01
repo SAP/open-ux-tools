@@ -23,6 +23,7 @@ import {
     isCapJavaProject,
     getCapModelAndServices,
     getCapProjectType,
+    processServices,
     readCapServiceMetadataEdmx,
     toReferenceUri,
     isCapProject,
@@ -1828,6 +1829,94 @@ describe('Test hasMinCdsVersion()', () => {
                 dependencies: { '@sap/cds': '^7' }
             })
         ).toBe(true);
+    });
+});
+
+describe('Test processServices()', () => {
+    test('should return empty array for undefined input', () => {
+        expect(processServices(undefined)).toEqual([]);
+    });
+
+    test('should return empty array for non-array input', () => {
+        expect(processServices({})).toEqual([]);
+    });
+
+    test('should handle services where endpoint path and urlPath are both undefined', () => {
+        const services = [
+            {
+                name: 'TestService',
+                endpoints: [
+                    {
+                        kind: 'odata',
+                        path: undefined
+                    }
+                ],
+                urlPath: undefined
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([
+            {
+                name: 'TestService',
+                urlPath: '',
+                runtime: undefined
+            }
+        ]);
+    });
+
+    test('should use endpoint path when available', () => {
+        const services = [
+            {
+                name: 'TestService',
+                endpoints: [
+                    {
+                        kind: 'odata',
+                        path: 'odata/v4/test'
+                    }
+                ]
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([
+            {
+                name: 'TestService',
+                urlPath: 'odata/v4/test',
+                runtime: undefined
+            }
+        ]);
+    });
+
+    test('should fall back to urlPath when no odata endpoint path', () => {
+        const services = [
+            {
+                name: 'TestService',
+                urlPath: 'service/path'
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([
+            {
+                name: 'TestService',
+                urlPath: 'service/path',
+                runtime: undefined
+            }
+        ]);
+    });
+
+    test('should filter out non-odata services with endpoints', () => {
+        const services = [
+            {
+                name: 'WebSocketService',
+                endpoints: [
+                    {
+                        kind: 'websocket',
+                        path: 'ws/test'
+                    }
+                ]
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([]);
     });
 });
 
