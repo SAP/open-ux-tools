@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.108
+
+### Patch Changes
+
+- 68b5523: feat: Adjust FLP configuration wizard for CF scenario
+
 ## 0.18.107
 
 ### Patch Changes

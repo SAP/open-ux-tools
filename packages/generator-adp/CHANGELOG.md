@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.46
+
+### Patch Changes
+
+- 68b5523: feat: Adjust FLP configuration wizard for CF scenario
+- Updated dependencies [68b5523]
+    - @sap-ux/adp-tooling@0.18.108
+
 ## 0.9.45
 
 ### Patch Changes
