@@ -2,7 +2,7 @@ import portfinder from 'portfinder';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { nextFreePort } from '../../../src/utils';
+import { nextFreePort } from '../../src/utils';
 
 describe('utils', () => {
     const logger = { info: jest.fn(), warn: jest.fn() } as unknown as ToolsLogger;

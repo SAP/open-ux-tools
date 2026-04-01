@@ -2,8 +2,8 @@ import mime from 'mime-types';
 import contentType from 'content-type';
 import type { IncomingMessage } from 'node:http';
 
-import { PROXY_MARKER_HEADER } from '../constants';
 import type { MimeInfo, RouteEntry } from '../types';
+import { PROXY_MARKER_HEADER } from '../config/constants';
 
 /**
  * Replaces oldUrl with newUrl in text (regex-safe).

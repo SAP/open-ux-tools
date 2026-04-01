@@ -1,4 +1,4 @@
-import { mergeEffectiveOptions, DEFAULT_REWRITE_CONTENT_TYPES } from '../../../src/config';
+import { mergeEffectiveOptions, DEFAULT_REWRITE_CONTENT_TYPES } from '../../../src/config/config';
 
 describe('config', () => {
     describe('mergeEffectiveOptions', () => {

@@ -4,9 +4,9 @@ import { createProxyMiddleware, responseInterceptor } from 'http-proxy-middlewar
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
+import { PROXY_MARKER_HEADER } from '../config/constants';
 import type { CreateProxyOptions, EffectiveOptions, RouteEntry } from '../types';
 import { createProxyFilter, getMimeInfo, getRequestOrigin, replaceUrl } from './utils';
-import { PROXY_MARKER_HEADER } from '../constants';
 
 /**
  * Request in proxyReq callback, extended with UI5 server middleware properties.

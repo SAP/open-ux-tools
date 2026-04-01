@@ -6,7 +6,7 @@ import type { AppRouterEnvOptions } from '@sap-ux/adp-tooling';
 import { buildVcapServicesFromResources, getSpaceGuidFromUi5Yaml, getYamlContent } from '@sap-ux/adp-tooling';
 
 import type { EffectiveOptions } from '../types';
-import { UI5_SERVER_DESTINATION } from '../constants';
+import { UI5_SERVER_DESTINATION } from './constants';
 
 /**
  * Destination entry as stored in process.env.destinations.

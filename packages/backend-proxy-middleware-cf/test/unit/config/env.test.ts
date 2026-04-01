@@ -4,7 +4,7 @@ import path from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { EffectiveOptions } from '../../../src/types';
-import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from '../../../src/env';
+import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from '../../../src/config/env';
 
 jest.mock('node:fs', () => ({
     ...jest.requireActual('node:fs'),

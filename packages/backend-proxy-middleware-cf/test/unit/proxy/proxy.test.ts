@@ -1,7 +1,7 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { mergeEffectiveOptions } from '../../../src/config';
-import { createResponseInterceptor, createProxy } from '../../../src/proxy';
+import { mergeEffectiveOptions } from '../../../src/config/config';
+import { createResponseInterceptor, createProxy } from '../../../src/proxy/proxy';
 
 type InterceptorCallback = (
     responseBuffer: Buffer,

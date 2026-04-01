@@ -1,14 +1,14 @@
 import fs from 'node:fs';
 
-import { createProxy } from '../../src/proxy';
+import { createProxy } from '../../src/proxy/proxy';
 import { nextFreePort } from '../../src/utils';
-import { loadExtensions } from '../../src/extensions';
-import { loadAndApplyEnvOptions } from '../../src/env';
-import { startApprouter } from '../../src/approuter';
-import { updateXsuaaService } from '../../src/xssecurity';
+import { loadExtensions } from '../../src/approuter/extensions';
+import { loadAndApplyEnvOptions } from '../../src/config/env';
+import { startApprouter } from '../../src/approuter/approuter';
+import { updateXsuaaService } from '../../src/platform/xssecurity';
 import type { BackendProxyMiddlewareCfConfig } from '../../src/types';
-import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../src/routes';
-import { fetchBasUrlTemplate, resolveBasExternalUrl } from '../../src/bas';
+import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../src/proxy/routes';
+import { fetchBasUrlTemplate, resolveBasExternalUrl } from '../../src/platform/bas';
 
 const noopFn = jest.fn();
 jest.mock('@sap-ux/logger', () => ({
@@ -33,34 +33,34 @@ jest.mock('../../src/utils', () => ({
     nextFreePort: jest.fn()
 }));
 
-jest.mock('../../src/env', () => ({
-    ...jest.requireActual('../../src/env'),
+jest.mock('../../src/config/env', () => ({
+    ...jest.requireActual('../../src/config/env'),
     loadAndApplyEnvOptions: jest.fn().mockResolvedValue([])
 }));
 
-jest.mock('../../src/routes', () => ({
-    ...jest.requireActual('../../src/routes'),
+jest.mock('../../src/proxy/routes', () => ({
+    ...jest.requireActual('../../src/proxy/routes'),
     loadAndPrepareXsappConfig: jest.fn(),
     buildRouteEntries: jest.fn()
 }));
 
-jest.mock('../../src/extensions', () => ({
-    ...jest.requireActual('../../src/extensions'),
+jest.mock('../../src/approuter/extensions', () => ({
+    ...jest.requireActual('../../src/approuter/extensions'),
     loadExtensions: jest.fn()
 }));
 
-jest.mock('../../src/approuter', () => ({
+jest.mock('../../src/approuter/approuter', () => ({
     startApprouter: jest.fn()
 }));
 
-jest.mock('../../src/proxy', () => ({ createProxy: jest.fn() }));
+jest.mock('../../src/proxy/proxy', () => ({ createProxy: jest.fn() }));
 
-jest.mock('../../src/bas', () => ({
+jest.mock('../../src/platform/bas', () => ({
     fetchBasUrlTemplate: jest.fn().mockResolvedValue(''),
     resolveBasExternalUrl: jest.fn().mockReturnValue(undefined)
 }));
 
-jest.mock('../../src/xssecurity', () => ({
+jest.mock('../../src/platform/xssecurity', () => ({
     updateXsuaaService: jest.fn().mockResolvedValue(undefined)
 }));
 
