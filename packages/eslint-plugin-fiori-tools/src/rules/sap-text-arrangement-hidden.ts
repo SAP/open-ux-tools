@@ -57,10 +57,6 @@ function resolveTextPropertyPath(
 
 /**
  * Checks whether a Common.Text annotation element has a nested UI.TextArrangement inline annotation.
- * This is the standard real-world pattern:
- *   <Annotation Term="Common.Text" Path="...">
- *     <Annotation Term="UI.TextArrangement" .../>
- *   </Annotation>
  *
  * @param textElement - The Common.Text annotation element
  * @param aliasInfo - Alias information for the file containing the annotation
@@ -301,7 +297,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
 
         return {
-            ['target>element[name="Annotation"]'](node: Element) {
+            ['target>element[name="Annotation"]'](node: Element): void {
                 const diagnostic = lookup.get(node);
                 if (!diagnostic) {
                     return;

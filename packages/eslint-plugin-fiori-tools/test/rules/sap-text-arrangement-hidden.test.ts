@@ -61,7 +61,7 @@ const TEXT_ARRANGEMENT_WITH_DYNAMIC_HIDDEN = `
         <Annotation Term="UI.Hidden" Path="IsHidden"/>
     </Annotations>`;
 
-const TEXT_ARRANGEMENT_WITHOUT_TEXT = `
+const COMMON_TEXT_WITHOUT_TEXT_ARRANGEMENT = `
     <Annotations Target="IncidentService.Incidents/category_code">
         <Annotation Term="Common.Text" Path="category/name"/>
     </Annotations>`;
@@ -130,9 +130,9 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
         ),
         createValidTest(
             {
-                name: 'text arrangement without Common.Text - no text property to check',
+                name: 'Common.Text without inline TextArrangement - not flagged',
                 filename: V4_ANNOTATIONS_PATH,
-                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_WITHOUT_TEXT)
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, COMMON_TEXT_WITHOUT_TEXT_ARRANGEMENT)
             },
             [MANIFEST_FILE_CHANGE]
         ),
