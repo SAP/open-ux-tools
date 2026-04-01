@@ -6,6 +6,7 @@ import { Cli } from '@sap/cf-tools';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 import type {
     CfConfig,
@@ -28,6 +29,10 @@ import { createServiceKey, getServiceKeys, requestCfApi } from './cli';
 
 interface FDCResponse {
     results: CFApp[];
+}
+
+interface FDCInboundsResponse {
+    inbounds: ManifestNamespace.Inbound;
 }
 
 interface CreateServiceOptions {
@@ -180,6 +185,47 @@ export async function getCfUi5AppInfo(
     } catch (error) {
         logger?.error(`Getting ui5AppInfo.json failed. Request url: ${url}. ${error}`);
         throw new Error(`Failed to get ui5AppInfo.json from FDC: ${error.message}`);
+    }
+}
+
+/**
+ * Get inbounds for a base application from the FDC service.
+ *
+ * @param {string} appId - The application ID.
+ * @param {string} appHostId - The app host ID.
+ * @param {CfConfig} cfConfig - The CF config.
+ * @param {ToolsLogger} logger - The logger.
+ * @param {string} lang - The language parameter (defaults to 'en').
+ * @returns {Promise<ManifestNamespace.Inbound | undefined>} The inbounds or undefined if empty.
+ */
+export async function getCfBaseAppInbounds(
+    appId: string,
+    appHostId: string,
+    cfConfig: CfConfig,
+    logger?: ToolsLogger,
+    lang: string = 'en'
+): Promise<ManifestNamespace.Inbound | undefined> {
+    const requestArguments = getFDCRequestArguments(cfConfig);
+
+    const params = new URLSearchParams({ appId, appHostId, 'sap-language': lang });
+    const url = `${requestArguments.url}/api/business-service/inbounds?${params}`;
+
+    logger?.log(`Fetching inbounds from FDC: ${url}`);
+
+    try {
+        const response = await axios.get<FDCInboundsResponse>(url, requestArguments.options);
+
+        if (response.status !== 200) {
+            throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
+        }
+
+        logger?.log('Successfully retrieved inbounds from FDC');
+
+        const inbounds = response.data.inbounds;
+        return inbounds && Object.keys(inbounds).length > 0 ? inbounds : undefined;
+    } catch (e) {
+        logger?.debug(e);
+        throw new Error(t('error.failedToGetFDCInbounds', { error: e.message }));
     }
 }
 
@@ -379,14 +425,14 @@ export async function getOrCreateServiceKeys(
 ): Promise<ServiceKeys[]> {
     const serviceInstanceName = serviceInstance.name;
     try {
-        const credentials = await getServiceKeys(serviceInstance.guid);
+        const credentials = await getServiceKeys(serviceInstance.guid, 'updated_at', logger);
         if (credentials?.length > 0) {
             return credentials;
         } else {
             const serviceKeyName = serviceInstanceName + '_key';
             logger?.log(`Creating service key '${serviceKeyName}' for service instance '${serviceInstanceName}'`);
             await createServiceKey(serviceInstanceName, serviceKeyName);
-            return getServiceKeys(serviceInstance.guid);
+            return getServiceKeys(serviceInstance.guid, 'updated_at', logger);
         }
     } catch (e) {
         throw new Error(t('error.failedToGetOrCreateServiceKeys', { serviceInstanceName, error: e.message }));

@@ -63,7 +63,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     // Validate the base and view paths
     fs ??= create(createStorage());
     await validateBasePath(basePath, fs, []);
-    const fnGenerateId = config.buildingBlockData.generateId ?? (await createIdGenerator(basePath, fs));
+    const fnGenerateId = config.buildingBlockData.generateId ?? (await createIdGenerator({ basePath, fsEditor: fs }));
 
     if (!fs.exists(join(basePath, viewOrFragmentPath))) {
         throw new Error(`Invalid view path ${viewOrFragmentPath}.`);

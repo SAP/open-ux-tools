@@ -1,9 +1,9 @@
-import { Cli, cfGetInstanceCredentials, eFilters } from '@sap/cf-tools';
+import { type CFResource, Cli, cfGetServiceKeys, eFilters } from '@sap/cf-tools';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n';
-import type { ServiceKeys } from '../../types';
+import type { ServiceKeys, ServiceKeySortField } from '../../types';
 
 const ENV = { env: { 'CF_COLOR': 'false' } };
 
@@ -27,14 +27,20 @@ export async function isCfInstalled(logger: ToolsLogger): Promise<boolean> {
 }
 
 /**
- * Gets the service instance credentials.
+ * Gets the service instance credentials, sorted by the specified metadata field.
  *
- * @param {string} serviceInstanceGuid - The service instance GUID.
- * @returns {Promise<ServiceKeys[]>} The service instance credentials.
+ * @param serviceInstanceGuid - The service instance GUID.
+ * @param sortBy - The metadata field to sort by, defaults to 'updated_at'.
+ * @param logger - Optional logger.
+ * @returns The service instance credentials sorted by the specified field (newest first).
  */
-export async function getServiceKeys(serviceInstanceGuid: string): Promise<ServiceKeys[]> {
+export async function getServiceKeys(
+    serviceInstanceGuid: string,
+    sortBy: ServiceKeySortField = 'updated_at',
+    logger?: ToolsLogger
+): Promise<ServiceKeys[]> {
     try {
-        return await cfGetInstanceCredentials({
+        const resources = await cfGetServiceKeys({
             filters: [
                 {
                     value: serviceInstanceGuid,
@@ -42,6 +48,42 @@ export async function getServiceKeys(serviceInstanceGuid: string): Promise<Servi
                 }
             ]
         });
+
+        logger?.info(`Found ${resources.length} service key(s) for instance '${serviceInstanceGuid}'`);
+
+        const sorted = [...resources].sort((a, b) => {
+            const dateA = a[sortBy as keyof CFResource];
+            const dateB = b[sortBy as keyof CFResource];
+            if (!dateA && !dateB) {
+                return 0;
+            }
+            if (!dateA) {
+                return 1;
+            }
+            if (!dateB) {
+                return -1;
+            }
+            return new Date(dateB).getTime() - new Date(dateA).getTime();
+        });
+
+        if (sorted.length > 0) {
+            logger?.debug(`Service keys sorted by '${sortBy}', using key '${sorted[0].name}' as primary`);
+        }
+
+        const results = await Promise.all(
+            sorted.map(async (resource) => {
+                try {
+                    return await requestCfApi<ServiceKeys>(`/v3/service_credential_bindings/${resource.guid}/details`);
+                } catch (e) {
+                    logger?.warn(`Failed to fetch credentials for service key '${resource.name}': ${e.message}`);
+                    return undefined;
+                }
+            })
+        );
+
+        const filtered = results.filter((r): r is ServiceKeys => r !== undefined);
+        logger?.debug(`Retrieved credentials for ${filtered.length} of ${sorted.length} service key(s)`);
+        return filtered;
     } catch (e) {
         throw new Error(t('error.cfGetInstanceCredentialsFailed', { serviceInstanceGuid, error: e.message }));
     }

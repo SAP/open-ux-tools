@@ -105,6 +105,7 @@
         "failedToCreateServiceInstance": "Failed to create the service instance: '{{serviceInstanceName}}'. Error: {{error}}",
         "failedToUpdateServiceInstance": "Failed to update the service instance: '{{serviceInstanceName}}'. Error: {{error}}",
         "failedToGetFDCApps": "Retrieving FDC apps failed: {{error}}",
+        "failedToGetFDCInbounds": "Retrieving inbounds from the UI5 Flexibility Design and Configuration service failed: {{error}}", 
         "failedToConnectToFDCService": "Failed to connect to the FDC service: '{{status}}'",
         "baseAppRequired": "A base app is required for Cloud Foundry project generation. Please select a base app and try again.",
         "projectTypeNotProvided": "The project type is missing." ,

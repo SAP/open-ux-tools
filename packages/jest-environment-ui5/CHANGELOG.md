@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.20
+
+### Patch Changes
+
+- c53a4ba: chore(jest-environment-ui5): upgrade tsconfig-paths 3.x → 4.x; pin jest-environment-jsdom to ^29.7.0 for UI5 Core compatibility
+
 ## 5.3.19
 
 ### Patch Changes

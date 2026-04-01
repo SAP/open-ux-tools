@@ -20,10 +20,11 @@ jest.mock('fs', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
-    _fs.constants = fsLib.constants;
-    _fs.realpath = fsLib.realpath;
-    _fs.realpathSync = fsLib.realpathSync;
-    return _fs.use(vol as unknown as typeof fs);
+    const memfs = _fs.use(vol as unknown as typeof fs);
+    memfs.constants = fsLib.constants;
+    memfs.realpath = fsLib.realpath;
+    memfs.realpathSync = fsLib.realpathSync;
+    return memfs;
 });
 
 jest.mock('hasbin', () => ({
