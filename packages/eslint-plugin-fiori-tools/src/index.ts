@@ -389,7 +389,6 @@ const prodConfig: Linter.Config[] = [
             globals: globalsConfig
         },
         rules: {
-            ...js.configs.recommended.rules,
             ...standardEslintRules,
             ...baseFioriToolsRules
         }
