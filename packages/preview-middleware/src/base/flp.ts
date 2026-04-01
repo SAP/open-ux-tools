@@ -66,6 +66,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import middlewarePackageJson from '../../package.json';
 import { getIntegrationCard } from './utils/cards';
 import { NewsAdapter, type ODataNewsResponse, type NewsItem } from './utils/newsAdapter';
+import { WhatsNewSource } from './dataSources/whatsNewSource';
 import { LogCollector } from './utils/logCollector';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
@@ -132,6 +133,7 @@ export class FlpSandbox {
     private readonly project: ReaderCollection;
     private readonly cardGenerator?: CardGeneratorConfig;
     private readonly newsAdapter: NewsAdapter;
+    private readonly newsSource: WhatsNewSource;
     public readonly logCollector: LogCollector;
     private readonly objectCardCache = new Map<string, object>();
     private projectType: ProjectType;
@@ -164,6 +166,7 @@ export class FlpSandbox {
         this.router = createRouter();
         this.cardGenerator = config.editors?.cardGenerator;
         this.newsAdapter = new NewsAdapter();
+        this.newsSource = new WhatsNewSource(this.logger);
     }
 
     /**
@@ -897,57 +900,15 @@ export class FlpSandbox {
     }
 
     /**
-     * Fetch the news to be displayed on the enhanced FLP homepage.
+     * Fetches news from all registered data sources and merges them into a single list.
+     * Currently fetches from the SAP What's New source. Additional sources can be
+     * added here in the future.
      *
-     * @returns a list of news items to be displayed on the enhanced FLP homepage
+     * @returns a combined list of news items from all data sources
      */
-    private async fetchRawNews(): Promise<NewsItem[]> {
-        // add dummy data for now
-        return Promise.resolve([
-            {
-                title: 'Welcome to the Local FLP',
-                subTitle: 'Your locally served Fiori launchpad',
-                description: 'This is a locally served Fiori launchpad for development and testing.',
-                footerText: 'Powered by @sap-ux/preview-middleware',
-                image: 'https://picsum.photos/900/600?blur',
-                articles: [
-                    {
-                        title: 'Getting Started',
-                        subTitle: 'Learn how to use the local FLP',
-                        description: 'Learn how to use the local FLP and its features in our documentation.'
-                    },
-                    {
-                        title: 'Runtime Adaptation',
-                        subTitle: 'Edit your app in runtime with RTA',
-                        description:
-                            'Use the Runtime Adaptation editor to make changes to your app in runtime and see the results immediately in the local FLP.'
-                    }
-                ]
-            },
-            {
-                title: 'Enhanced Home Page',
-                subTitle: 'Additional features for your local FLP',
-                description:
-                    'The enhanced home page is available for UI5 versions 1.123 and above. It provides additional features like news and a card catalog.',
-                footerText: 'Check out the documentation for more details.',
-                articles: [
-                    {
-                        title: 'News',
-                        subTitle: 'Stay up to date with the latest news',
-                        description:
-                            'The news section provides you with the latest news and updates about the local FLP and related tools.'
-                    }
-                ]
-            },
-            {
-                title: 'Card Catalog',
-                subTitle: 'Try out the Card Generator',
-                description:
-                    'The Card Generator allows you to easily create and test cards in your local FLP. It is available as a dev dependency for your project.',
-                footerText: 'Generate your first card and find it in the catalog!',
-                image: 'https://picsum.photos/900/600?grayscale'
-            }
-        ]);
+    private async fetchAllNews(): Promise<NewsItem[]> {
+        const whatsNew = await this.newsSource.fetchNews();
+        return [...whatsNew];
     }
 
     /**
@@ -958,7 +919,7 @@ export class FlpSandbox {
     private async fetchHomepageNews(): Promise<ODataNewsResponse> {
         let rawNews: NewsItem[] = [];
         try {
-            rawNews = await this.fetchRawNews();
+            rawNews = await this.fetchAllNews();
         } catch (error) {
             this.logger.debug(`Error while fetching news for enhanced FLP homepage: ${error}`);
         }

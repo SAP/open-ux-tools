@@ -1,5 +1,12 @@
 # @sap-ux/preview-middleware
 
+## 0.25.13
+
+### Patch Changes
+
+- Updated dependencies [68b5523]
+    - @sap-ux/adp-tooling@0.18.108
+
 ## 0.25.12
 
 ### Patch Changes
