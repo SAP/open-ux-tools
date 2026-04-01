@@ -45,10 +45,50 @@ Using `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavi
 </Annotation>
 ```
 
-#### Correct: Semantic Link or Smart Link Navigation Is Used
+### Correct: Semantic Link or Smart Link Navigation Is Used (via `Common.SemanticObject` on Entity Property)
 
-The `sap.ui.comp.navpopover.SmartLink` control provides a popover with navigation links to related applications, for example, more detailed information about customer data.
-For more information about this control, see the [API Reference](https://ui5.sap.com/#/api/sap.ui.comp.navpopover.SmartLink) and the [samples](https://ui5.sap.com/#/entity/sap.ui.comp.navpopover.SmartLink).
+Annotate the entity property (e.g., `CustomerId`) with `Common.SemanticObject` before using it in `UI.LineItem` or `UI.FieldGroup`. SAP Fiori Elements automatically detects this and renders the field as a Semantic Link with Smart Link popover support.
+
+#### Step 1: Annotate the Entity Property:
+
+```xml
+<!-- Applied to the actual OData property, NOT inside DataField -->
+<Annotation Term="Common.SemanticObject" String="Customer" Target="YourEntityType/CustomerId"/>
+```
+
+#### Step 2: Reference the Property in UI Annotations (no special navigation annotation needed):
+
+For `UI.LineItem` (Table Column):
+
+```xml
+<Annotation Term="UI.LineItem">
+    <Collection>
+        <Record Type="UI.DataField">
+            <PropertyValue Property="Value" Path="CustomerId"/>
+            <PropertyValue Property="Label" String="Customer"/>
+            <!-- Semantic Link rendered automatically due to Common.SemanticObject on CustomerId property -->
+        </Record>
+    </Collection>
+</Annotation>
+```
+
+For `UI.FieldGroup` (Form Field):
+
+```xml
+<Annotation Term="UI.FieldGroup" Qualifier="GeneralInformation">
+    <Record Type="UI.FieldGroupType">
+        <PropertyValue Property="Data">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="CustomerId"/>
+                    <PropertyValue Property="Label" String="Customer"/>
+                    <!-- Semantic Link rendered automatically due to Common.SemanticObject on CustomerId property -->
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+```
 
 ## Bug Report
 
@@ -56,4 +96,5 @@ If you encounter an issue with this rule, please open a [GitHub issue](https://g
 
 ## Further Reading
 
-- [UI5 UI Adaptation Documentation: Smart Link](https://ui5.sap.com/#/topic/f638884d0d624ad8a243f4005f8e9972)
+- [Semantic Link implementation in Fiori Elements](https://ui5.sap.com/#/topic/c18ada4bc56e427a9a2df2d1898f28a5)
+- [Smart Link / Navigation Intents](https://ui5.sap.com/#/topic/d782acf8bfd74107ad6a04f0361c5f62)
