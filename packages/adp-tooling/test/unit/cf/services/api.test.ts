@@ -1052,7 +1052,7 @@ describe('CF Services API', () => {
                 credentials: mockCredentials
             });
             expect(mockRequestCfApi).toHaveBeenCalledTimes(2);
-            expect(mockGetServiceKeys).toHaveBeenCalledWith('instance-guid-123');
+            expect(mockGetServiceKeys).toHaveBeenCalledWith('instance-guid-123', 'updated_at', mockLogger);
         });
 
         test('should return null and log error when service instance is not found', async () => {
