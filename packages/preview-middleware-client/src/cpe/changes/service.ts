@@ -477,7 +477,7 @@ export class ChangeService extends EventTarget {
         if (changeType === 'appdescr_fe_changePageConfiguration') {
             const configChangePath = (changeDefinition as ConfigChange).content.entityPropertyChange.propertyPath;
             if (genericChange.isActive) {
-                    this.configPropertyPath.add(configChangePath);
+                this.configPropertyPath.add(configChangePath);
             } else {
                 // remove value from set if change is undone
                 this.configPropertyPath.delete(configChangePath);
