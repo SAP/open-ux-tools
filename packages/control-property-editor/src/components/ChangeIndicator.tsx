@@ -22,13 +22,7 @@ export function ChangeIndicator(props: ChangeIndicatorProps): ReactElement {
 
     if (saved > 0 && pending === 0) {
         return (
-            <svg
-                width="8"
-                height="8"
-                viewBox="0 0 8 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                {...rest}>
+            <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
                 <ChangeIndicatorTooltip {...props} />
                 <circle cx="4" cy="4" r="4" fill={color} />
             </svg>
@@ -37,13 +31,7 @@ export function ChangeIndicator(props: ChangeIndicatorProps): ReactElement {
 
     if (pending > 0 && saved === 0) {
         return (
-            <svg
-                width="8"
-                height="8"
-                viewBox="0 0 8 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                {...rest}>
+            <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
                 <ChangeIndicatorTooltip {...props} />
                 <circle cx="4" cy="4" r="3.5" stroke={color} />
             </svg>

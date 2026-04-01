@@ -1,6 +1,12 @@
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
-import { getIndentLevel, indentWithTabs, indentWithSpaces, isBefore, rangeContained } from '@sap-ux/odata-annotation-core';
+import {
+    getIndentLevel,
+    indentWithTabs,
+    indentWithSpaces,
+    isBefore,
+    rangeContained
+} from '@sap-ux/odata-annotation-core';
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { copyPosition, copyRange } from '@sap-ux/cds-annotation-parser';
 import {

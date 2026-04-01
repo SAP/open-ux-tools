@@ -58,10 +58,7 @@ export const ProxyEventHandlers = {
         const header = proxyRes?.headers?.['set-cookie'];
         if (header?.length) {
             for (let i = header.length - 1; i >= 0; i--) {
-                const cookie = header[i].replace(
-                    /\s?(?:Domain|SameSite|Secure|Partitioned)[^\s]*\s?/gi,
-                    ''
-                );
+                const cookie = header[i].replace(/\s?(?:Domain|SameSite|Secure|Partitioned)[^\s]*\s?/gi, '');
                 header[i] = cookie;
             }
         }
