@@ -154,6 +154,12 @@ export type AppFeatures = {
     fpm?: FPMFeatures;
 };
 
+export type FormField = {
+    fieldGroupQualifier?: string;
+    field?: string;
+    targetAnnotation?: string;
+};
+
 export type HeaderSectionFeatureData = {
     facetId?: string;
     title?: string;
@@ -162,10 +168,7 @@ export type HeaderSectionFeatureData = {
     microChart?: boolean;
     form?: boolean;
     stashed?: boolean | string;
-    fields?: {
-        fieldGroupQualifier?: string;
-        field?: string;
-    }[];
+    fields?: FormField[];
 };
 
 export interface ButtonState {

@@ -9,6 +9,7 @@ import {
     getBusinessServiceInfo,
     getFDCApps,
     getCfUi5AppInfo,
+    getCfBaseAppInbounds,
     getFDCRequestArguments,
     createServiceInstance,
     getServiceNameByTags,
@@ -64,7 +65,8 @@ const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.Mock
 describe('CF Services API', () => {
     const mockLogger = {
         log: jest.fn(),
-        error: jest.fn()
+        error: jest.fn(),
+        debug: jest.fn()
     } as unknown as ToolsLogger;
 
     beforeAll(async () => {
@@ -306,6 +308,138 @@ describe('CF Services API', () => {
                 `Failed to get ui5AppInfo.json from FDC: ${errorMsg}`
             );
             expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Getting ui5AppInfo.json failed'));
+        });
+    });
+
+    describe('getCfBaseAppInbounds', () => {
+        const config: CfConfig = {
+            org: { GUID: 'test-org-guid', Name: 'test-org' },
+            space: { GUID: 'test-space-guid', Name: 'test-space' },
+            url: 'test.cf.com',
+            token: 'test-token'
+        };
+        const appId = 'test-app-id';
+        const appHostId = 'test-app-host-id';
+
+        test('should return inbounds on 200 with data', async () => {
+            const mockInbounds = {
+                'intent-1': {
+                    semanticObject: 'SalesOrder',
+                    action: 'display',
+                    title: 'Sales Order'
+                }
+            };
+
+            mockIsAppStudio.mockReturnValue(false);
+            mockAxios.get.mockResolvedValue({
+                data: { inbounds: mockInbounds },
+                status: 200
+            });
+
+            const result = await getCfBaseAppInbounds(appId, appHostId, config, mockLogger);
+
+            expect(result).toEqual(mockInbounds);
+            expect(mockAxios.get).toHaveBeenCalledWith(
+                'https://ui5-flexibility-design-and-configuration.sapui5flex.cfapps.test.cf.com/api/business-service/inbounds?appId=test-app-id&appHostId=test-app-host-id&sap-language=en',
+                expect.objectContaining({
+                    headers: expect.objectContaining({
+                        'Authorization': 'Bearer test-token'
+                    } as Record<string, string>)
+                } as Record<string, unknown>)
+            );
+            expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('Fetching inbounds from FDC'));
+            expect(mockLogger.log).toHaveBeenCalledWith('Successfully retrieved inbounds from FDC');
+        });
+
+        test('should return undefined on 200 with empty inbounds', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            mockAxios.get.mockResolvedValue({
+                data: { inbounds: {} },
+                status: 200
+            });
+
+            const result = await getCfBaseAppInbounds(appId, appHostId, config, mockLogger);
+
+            expect(result).toBeUndefined();
+        });
+
+        test('should throw on non-200 status', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            mockAxios.get.mockResolvedValue({
+                data: { inbounds: {} },
+                status: 404
+            });
+
+            await expect(getCfBaseAppInbounds(appId, appHostId, config, mockLogger)).rejects.toThrow(
+                t('error.failedToGetFDCInbounds', {
+                    error: t('error.failedToConnectToFDCService', { status: 404 })
+                })
+            );
+        });
+
+        test('should throw on network error', async () => {
+            const errorMsg = 'Network error';
+            const error = new Error(errorMsg);
+            mockIsAppStudio.mockReturnValue(false);
+            mockAxios.get.mockRejectedValue(error);
+
+            await expect(getCfBaseAppInbounds(appId, appHostId, config, mockLogger)).rejects.toThrow(
+                t('error.failedToGetFDCInbounds', { error: errorMsg })
+            );
+            expect(mockLogger.debug).toHaveBeenCalledWith(error);
+        });
+
+        test('should use custom language param in URL', async () => {
+            const mockInbounds = {
+                'intent-1': {
+                    semanticObject: 'SalesOrder',
+                    action: 'display'
+                }
+            };
+
+            mockIsAppStudio.mockReturnValue(false);
+            mockAxios.get.mockResolvedValue({
+                data: { inbounds: mockInbounds },
+                status: 200
+            });
+
+            await getCfBaseAppInbounds(appId, appHostId, config, mockLogger, 'de');
+
+            expect(mockAxios.get).toHaveBeenCalledWith(expect.stringContaining('sap-language=de'), expect.any(Object));
+        });
+
+        test('should use BAS cert domain when isAppStudio() is true', async () => {
+            const basConfig: CfConfig = {
+                org: { GUID: 'test-org-guid', Name: 'test-org' },
+                space: { GUID: 'test-space-guid', Name: 'test-space' },
+                url: 'us10.hana.ondemand.com',
+                token: 'test-token'
+            };
+            const mockInbounds = {
+                'intent-1': {
+                    semanticObject: 'SalesOrder',
+                    action: 'display'
+                }
+            };
+
+            mockIsAppStudio.mockReturnValue(true);
+            mockAxios.get.mockResolvedValue({
+                data: { inbounds: mockInbounds },
+                status: 200
+            });
+
+            await getCfBaseAppInbounds(appId, appHostId, basConfig, mockLogger);
+
+            expect(mockAxios.get).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    'https://ui5-flexibility-design-and-configuration.cert.cfapps.us10.hana.ondemand.com'
+                ),
+                expect.objectContaining({
+                    headers: expect.not.objectContaining({
+                        'Authorization': expect.any(String)
+                    })
+                })
+            );
         });
     });
 

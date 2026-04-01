@@ -1,5 +1,14 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.220
+
+### Patch Changes
+
+- 68b5523: feat: Adjust FLP configuration wizard for CF scenario
+- Updated dependencies [68b5523]
+    - @sap-ux/adp-tooling@0.18.108
+    - @sap-ux/flp-config-inquirer@0.4.167
+
 ## 0.1.219
 
 ### Patch Changes
