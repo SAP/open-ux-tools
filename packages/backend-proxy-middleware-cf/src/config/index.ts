@@ -17,6 +17,7 @@ export function mergeEffectiveOptions(configuration: BackendProxyMiddlewareCfCon
     return {
         debug: false,
         port: 5000,
+        xsappJsonPath: './xs-app.json',
         destinations: [],
         allowServices: false,
         authenticationMethod: 'none',
