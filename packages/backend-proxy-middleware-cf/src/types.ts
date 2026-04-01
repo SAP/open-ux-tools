@@ -29,8 +29,8 @@ export interface BackendProxyMiddlewareCfConfig {
     debug?: boolean;
     /** Port to run the underlying approuter on */
     port?: number;
-    /** Path to xs-app.json (relative to project root) */
-    xsappJsonPath: string;
+    /** Path to xs-app.json (relative to project root). Defaults to './xs-app.json'. */
+    xsappJsonPath?: string;
     /** Path to the environment options file (relative to project root) */
     envOptionsPath?: string;
     /** Destinations: array of { name, url } (e.g. from default-env.json). Destination names must match routes in xs-app.json. */
@@ -60,6 +60,7 @@ export interface BackendProxyMiddlewareCfConfig {
 /** Effective options with defaults applied. */
 export interface EffectiveOptions extends BackendProxyMiddlewareCfConfig {
     port: number;
+    xsappJsonPath: string;
     destinations: ApprouterDestination[];
     rewriteContentTypes: string[];
     extensions: ApprouterExtension[];
