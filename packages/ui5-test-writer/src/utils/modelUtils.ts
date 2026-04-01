@@ -18,6 +18,7 @@ export interface AggregationItem extends TreeAggregation {
     description: string;
     schema: {
         keys: { name: string; value: string }[];
+        dataType?: string;
     };
 }
 

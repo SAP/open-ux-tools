@@ -71,7 +71,8 @@ export function getPrompts(
         [attributePromptNames.addFlpConfig]: getFlpConfigPrompt(
             prompts,
             projectType,
-            promptOptions?.[attributePromptNames.addFlpConfig]
+            promptOptions?.[attributePromptNames.addFlpConfig],
+            isCfEnv
         ),
         [attributePromptNames.importKeyUserChanges]: getImportKeyUserChangesPrompt(
             prompts,
@@ -297,14 +298,16 @@ export function getAddDeployConfigPrompt(prompts: YeomanUiSteps, _?: AddDeployCo
  * Creates the Add FLP Config confirm prompt.
  *
  * @param {YeomanUiSteps} prompts - The Yeoman UI pages.
- * @param {boolean} projectType - The project type.
+ * @param {AdaptationProjectType} projectType - The project type.
  * @param {AddFlpConfigPromptOptions} options - Optional prompt options to control visibility.
+ * @param {boolean} isCfEnv - Whether the project targets Cloud Foundry.
  * @returns {AttributesQuestion} The prompt configuration for Add FLP config confirmation.
  */
 export function getFlpConfigPrompt(
     prompts: YeomanUiSteps,
     projectType?: AdaptationProjectType,
-    options?: AddFlpConfigPromptOptions
+    options?: AddFlpConfigPromptOptions,
+    isCfEnv?: boolean
 ): AttributesQuestion {
     return {
         type: 'confirm',
@@ -314,7 +317,7 @@ export function getFlpConfigPrompt(
         guiOptions: {
             breadcrumb: true
         },
-        when: () => projectType === AdaptationProjectType.CLOUD_READY,
+        when: () => isCfEnv || projectType === AdaptationProjectType.CLOUD_READY,
         validate: (value: boolean, answers: AttributesAnswers) => {
             updateFlpWizardSteps(!!options?.hasBaseAppInbounds, prompts, answers.projectName, value);
             return true;
