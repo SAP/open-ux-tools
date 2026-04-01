@@ -4,6 +4,7 @@ import { ActionButton } from '@fluentui/react';
 
 import { UIContextualMenu } from '../UIContextualMenu';
 import type { UIIContextualMenuProps } from '../UIContextualMenu';
+import { BASE_STYLES } from './UIDefaultButton';
 
 interface UIButtonProps extends IButtonProps {
     menuProps?: UIIContextualMenuProps;
@@ -31,7 +32,8 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
         return {
             root: {
                 minWidth: 'initial',
-                height: 22,
+                minHeight: BASE_STYLES.height,
+                height: BASE_STYLES.height,
                 fontSize: '13px',
                 fontWeight: 400,
                 color: 'var(--vscode-foreground)',
