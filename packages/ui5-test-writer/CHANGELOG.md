@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.98
+
+### Patch Changes
+
+- 9d272d7: Fix header form field identifier values
+
 ## 0.7.97
 
 ### Patch Changes

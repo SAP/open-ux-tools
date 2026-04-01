@@ -356,6 +356,9 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('fieldGroup: "FieldGroup::Names"');
             expect(bookingObjPageJourneyContent).toContain('field: "AirlineName"');
             expect(bookingObjPageJourneyContent).toContain('field: "CustomerName"');
+            expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
+            expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
+            expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
 
             expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "BookingDetails" })');
