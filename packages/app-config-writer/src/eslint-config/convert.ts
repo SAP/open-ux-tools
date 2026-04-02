@@ -170,8 +170,8 @@ function stripNativeExtendsFromConfig(eslintConfig: EslintRcJson): { eslintRecom
 }
 
 /**
- * Logs a warning when a native extends entry that was stripped had a `files` scope in the legacy
- * config that cannot be automatically preserved after conversion.
+ * Logs a warning when native extends entries were stripped from the legacy config,
+ * and additionally notes when a `files` scope cannot be automatically preserved.
  *
  * @param files - the `files` property from the legacy config, if any
  * @param eslintRecommended - whether `eslint:recommended` was stripped
@@ -184,7 +184,7 @@ function warnIfFileScopeDropped(
     tsStripped: boolean,
     logger?: ToolsLogger
 ): void {
-    if (!files || (!eslintRecommended && !tsStripped)) {
+    if (!eslintRecommended && !tsStripped) {
         return;
     }
     const removed: string[] = [];
@@ -194,9 +194,11 @@ function warnIfFileScopeDropped(
     if (tsStripped) {
         removed.push("'plugin:@typescript-eslint/*'");
     }
-    logger?.warn(
-        `${removed.join(' and ')} ${removed.length > 1 ? 'were' : 'was'} removed from the legacy config and will not be re-injected. Its rules are already covered by '@sap-ux/eslint-plugin-fiori-tools', so no manual re-addition is needed. The legacy config had a 'files' scope (${JSON.stringify(files)}) that cannot be automatically preserved.`
-    );
+    const baseMessage = `${removed.join(' and ')} ${removed.length > 1 ? 'were' : 'was'} removed from the legacy config and will not be re-injected. Its rules are already covered by '@sap-ux/eslint-plugin-fiori-tools', so no manual re-addition is needed.`;
+    const fileScopeMessage = files
+        ? ` The legacy config had a 'files' scope (${JSON.stringify(files)}) that cannot be automatically preserved.`
+        : '';
+    logger?.warn(baseMessage + fileScopeMessage);
 }
 
 /**

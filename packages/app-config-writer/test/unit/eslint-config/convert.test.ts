@@ -358,21 +358,6 @@ describe('convertEslintConfig', () => {
             expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('files'));
         });
 
-        test('should NOT warn when eslint:recommended is stripped but the legacy config has no files property', async () => {
-            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
-            const eslintrcPath = join(basePath, '.eslintrc.json');
-            const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson;
-            eslintConfig.extends = 'eslint:recommended';
-            delete eslintConfig.files;
-            fs.writeJSON(eslintrcPath, eslintConfig);
-
-            await convertEslintConfig(basePath, { logger: loggerMock, fs });
-
-            expect(loggerMock.warn).not.toHaveBeenCalledWith(
-                expect.stringContaining("'eslint:recommended' was removed")
-            );
-        });
-
         test('should remove plugin:@typescript-eslint/recommended from string extends', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             const eslintrcPath = join(basePath, '.eslintrc.json');
