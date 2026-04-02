@@ -35,7 +35,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "fast-glob": "3.3.3",
-        "lodash": "4.17.23",
+        "lodash": "4.18.1",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "semver": "7.7.4"
