@@ -1,5 +1,37 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.76
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+
+## 0.6.75
+
+### Patch Changes
+
+- c53a4ba: chore(ui5-library-writer): upgrade shared devDependencies (jest 30, i18next 25)
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.6.74
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.6.73
+
+### Patch Changes
+
+- a41533f: chore(ui5-library-writer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+
 ## 0.6.72
 
 ### Patch Changes
