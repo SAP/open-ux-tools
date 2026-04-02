@@ -204,6 +204,36 @@ describe('executeFunctionality', () => {
         expect(config.project.sapux).toEqual(false);
     });
 
+    test('executeFunctionality - success with floorplan="FF_SIMPLE" without service (no data source)', async () => {
+        let generatedConfigContent: string;
+        mockExec.mockImplementation((_cmd, _opts, callback) => {
+            callback(null, 'mock stdout', 'mock stderr');
+        });
+        mockFileWrite((content) => {
+            generatedConfigContent = content;
+        });
+        const result = await generateFioriUIApplicationCapHandlers.executeFunctionality({
+            appPath: join(testOutputDir, 'app1'),
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
+            parameters: {
+                floorplan: 'FF_SIMPLE',
+                project: {
+                    name: 'app1',
+                    targetFolder: join(testOutputDir, 'app1'),
+                    title: 'App 1',
+                    description: 'Description for App 1',
+                    ui5Version: '1.136.7',
+                    sapux: true
+                }
+            }
+        });
+        expect(result.status).toBe('Success');
+        const config = JSON.parse(generatedConfigContent!);
+        expect(config.project.sapux).toEqual(false);
+        expect(config.service).toBeUndefined();
+        expect(config.entityConfig).toBeUndefined();
+    });
+
     test('executeFunctionality - unsuccess', async () => {
         mockExec.mockImplementation((cmd, opts, callback) => {
             throw new Error('Dummy');
@@ -239,14 +269,6 @@ describe('executeFunctionality', () => {
         ).rejects.toThrowErrorMatchingInlineSnapshot(`
             "Missing required fields in parameters. [
                 {
-                    \\"expected\\": \\"object\\",
-                    \\"code\\": \\"invalid_type\\",
-                    \\"path\\": [
-                        \\"entityConfig\\"
-                    ],
-                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
-                },
-                {
                     \\"code\\": \\"invalid_value\\",
                     \\"values\\": [
                         \\"FE_FPM\\",
@@ -267,14 +289,6 @@ describe('executeFunctionality', () => {
                     \\"code\\": \\"invalid_type\\",
                     \\"path\\": [
                         \\"project\\"
-                    ],
-                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
-                },
-                {
-                    \\"expected\\": \\"object\\",
-                    \\"code\\": \\"invalid_type\\",
-                    \\"path\\": [
-                        \\"service\\"
                     ],
                     \\"message\\": \\"Invalid input: expected object, received undefined\\"
                 }

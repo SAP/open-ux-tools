@@ -17,7 +17,16 @@ export const PREDEFINED_GENERATOR_VALUES = {
 
 export const floorplan = z
     .literal(['FE_FPM', 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_FEOP', 'FE_WORKLIST', 'FF_SIMPLE'])
-    .describe('SAP Fiori Elements floor plan type.');
+    .describe(
+        'SAP Fiori elements application template / floor plan type. ' +
+            'FE_LROP = List Report Object Page (OData V2/V4). ' +
+            'FE_ALP = Analytical List Page (OData V2/V4). ' +
+            'FE_OVP = Overview Page (OData V2/V4). ' +
+            'FE_WORKLIST = Worklist (OData V2/V4). ' +
+            'FE_FEOP = Form Entry Object Page (OData V4 only). ' +
+            'FE_FPM = Flexible Programming Model / Custom Page (OData V4 only). ' +
+            'FF_SIMPLE = Basic (SAPUI5 Freestyle template) — data source is optional for this template, supports "None".'
+    );
 
 export const project = z.object({
     name: z
@@ -33,7 +42,9 @@ export const project = z.object({
 export const serviceOdata = z.object({
     servicePath: z
         .string()
-        .describe('The odata endpoint. If the parameter is not provided, the agent should ask the user for it.')
+        .describe(
+            'The odata endpoint. Required for all floorplans except FF_SIMPLE. If the parameter is not provided, the agent should ask the user for it.'
+        )
         .meta({
             examples: ['/sap/opu/odata/sap/<servicename>/', '/<servicename>/']
         }),
@@ -85,7 +96,9 @@ export const entityConfig = z.object({
     mainEntity: z.object({
         entityName: z
             .string()
-            .describe('The name of the main entity. EntitySet Name attribute in OData Metadata.')
+            .describe(
+                'The name of the main entity. EntitySet Name attribute in OData Metadata. Required for all floorplans except FF_SIMPLE.'
+            )
             .meta({ examples: ["'SalesOrder'", "'PurchaseOrderHeader'", "'MyEntity'"] })
     }),
     generateFormAnnotations: z

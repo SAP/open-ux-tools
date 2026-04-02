@@ -30,7 +30,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
         throw new Error('Please provide a valid path to the CAP project folder.');
     }
 
-    if (generatorConfig?.service.capService.serviceCdsPath) {
+    if (generatorConfig?.service?.capService?.serviceCdsPath) {
         generatorConfig.service.capService.serviceCdsPath =
             generatorConfig?.service.capService.serviceCdsPath?.startsWith('/')
                 ? generatorConfig?.service.capService.serviceCdsPath

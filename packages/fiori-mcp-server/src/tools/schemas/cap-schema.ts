@@ -5,12 +5,14 @@ import { convertToSchema } from '../../utils';
 import { entityConfig, floorplan, project, serviceCap as service } from './appgen-config-schema-props';
 
 export const generatorConfigCAP = z.object({
-    entityConfig,
+    entityConfig: entityConfig.optional(),
     floorplan,
     project,
-    service
+    service: service.optional()
 }).describe(`The configuration that will be used for the Application UI generation.
-            The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the functionality.`);
+            The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the functionality.
+            For floorplan FF_SIMPLE (Basic/SAPUI5 Freestyle template), service and entityConfig are optional (data source may be "None").
+            For all other floorplans, service and entityConfig are required.`);
 
 // Input type for functionality parameters
 export type GeneratorConfigCAP = z.infer<typeof generatorConfigCAP>;
