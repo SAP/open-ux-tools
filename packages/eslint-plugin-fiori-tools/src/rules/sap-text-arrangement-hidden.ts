@@ -120,21 +120,30 @@ function buildAnnotationEntityTypeMap(parsedService: ParsedService): Map<Indexed
 }
 
 /**
- * Collects the entity type names that are actually used on pages in the app.
+ * Collects the entity type names that are actually used on pages in the app,
+ * mapped to the list of page target names where each entity type appears.
  * Includes the main entity type of each page and entity types from sub-tables (e.g. via nav props on OPs).
  * Only annotations on these entity types will be checked by the rule.
  *
  * @param pages - Pages from the linked app model
  * @param parsedService - The parsed OData service
- * @returns Set of fully-qualified entity type names used on at least one page
+ * @returns Map from fully-qualified entity type name to the page target names it appears on
  */
-function collectRelevantEntityTypes(pages: AnyPage[], parsedService: ParsedService): Set<string> {
-    const entityTypes = new Set<string>();
+function collectRelevantEntityTypes(pages: AnyPage[], parsedService: ParsedService): Map<string, string[]> {
+    const entityTypePages = new Map<string, string[]>();
     const annotationEntityTypeMap = buildAnnotationEntityTypeMap(parsedService);
+
+    const addEntityType = (entityTypeName: string, pageName: string): void => {
+        const pageNames = entityTypePages.get(entityTypeName) ?? [];
+        if (!pageNames.includes(pageName)) {
+            pageNames.push(pageName);
+        }
+        entityTypePages.set(entityTypeName, pageNames);
+    };
 
     for (const page of pages) {
         if (page.entity?.structuredType) {
-            entityTypes.add(page.entity.structuredType);
+            addEntityType(page.entity.structuredType, page.targetName);
         }
         // Also collect entity types from sub-tables (e.g. navigation-based tables on OPs)
         for (const table of page.lookup['table'] ?? []) {
@@ -143,11 +152,11 @@ function collectRelevantEntityTypes(pages: AnyPage[], parsedService: ParsedServi
             }
             const entityType = annotationEntityTypeMap.get(table.annotation.annotation);
             if (entityType) {
-                entityTypes.add(entityType);
+                addEntityType(entityType, page.targetName);
             }
         }
     }
-    return entityTypes;
+    return entityTypePages;
 }
 
 /**
@@ -177,12 +186,14 @@ function collectEntityTypesWithTextArrangement(parsedService: ParsedService): Se
  *
  * @param textPropertyTarget - Fully-qualified target path of the text property (e.g. "Service.Entity/prop")
  * @param targetPath - The annotation target path that has Common.Text and UI.TextArrangement
+ * @param pageNames - Page target names where the annotated entity type is used
  * @param parsedService - The parsed OData service
  * @returns Array of diagnostics (empty if the property is not hidden)
  */
 function checkHiddenProperty(
     textPropertyTarget: string,
     targetPath: string,
+    pageNames: string[],
     parsedService: ParsedService
 ): TextArrangementHidden[] {
     const problems: TextArrangementHidden[] = [];
@@ -201,6 +212,7 @@ function checkHiddenProperty(
         }
         problems.push({
             type: TEXT_ARRANGEMENT_HIDDEN,
+            pageNames,
             annotation: {
                 reference: hiddenAnnotation.top,
                 textPropertyPath: textPropertyTarget,
@@ -217,6 +229,7 @@ function checkHiddenProperty(
  * @param textAnnotation - The indexed Common.Text annotation to process
  * @param entityTypeName - Fully-qualified name of the entity type that owns the annotated property
  * @param targetPath - The annotation target path (e.g. "Service.Entity/property")
+ * @param pageNames - Page target names where the entity type is used
  * @param entityTypesWithTextArrangement - Entity types with UI.TextArrangement at entity-type level
  * @param parsedService - The parsed OData service
  * @returns Array of diagnostics (empty if no violation found)
@@ -225,6 +238,7 @@ function processTextAnnotation(
     textAnnotation: IndexedAnnotation,
     entityTypeName: string,
     targetPath: string,
+    pageNames: string[],
     entityTypesWithTextArrangement: Set<string>,
     parsedService: ParsedService
 ): TextArrangementHidden[] {
@@ -247,7 +261,7 @@ function processTextAnnotation(
         return [];
     }
     const textPropertyTarget = `${resolved.entityTypeName}/${resolved.propertyName}`;
-    return checkHiddenProperty(textPropertyTarget, targetPath, parsedService);
+    return checkHiddenProperty(textPropertyTarget, targetPath, pageNames, parsedService);
 }
 
 /**
@@ -257,7 +271,7 @@ function processTextAnnotation(
  * @param qualifiedAnnotations - All qualified annotations for this key, keyed by qualifier
  * @param entityTypesWithTextArrangement - Entity types with UI.TextArrangement at entity-type level
  * @param parsedService - The parsed OData service
- * @param relevantEntityTypes - Entity types that are actually used on pages
+ * @param relevantEntityTypes - Map from entity type name to page target names where it is used
  * @returns Array of diagnostics (empty if no violation found)
  */
 function processAnnotationEntry(
@@ -265,7 +279,7 @@ function processAnnotationEntry(
     qualifiedAnnotations: Record<string, IndexedAnnotation>,
     entityTypesWithTextArrangement: Set<string>,
     parsedService: ParsedService,
-    relevantEntityTypes: Set<string>
+    relevantEntityTypes: Map<string, string[]>
 ): TextArrangementHidden[] {
     const atIdx = annotationKey.indexOf('/@');
     if (atIdx === -1) {
@@ -284,7 +298,8 @@ function processAnnotationEntry(
     }
     const entityTypeName = targetPath.substring(0, slashIdx);
     // Only check entity types that are actually used on pages
-    if (!relevantEntityTypes.has(entityTypeName)) {
+    const pageNames = relevantEntityTypes.get(entityTypeName);
+    if (!pageNames) {
         return [];
     }
     const problems: TextArrangementHidden[] = [];
@@ -294,6 +309,7 @@ function processAnnotationEntry(
                 textAnnotation,
                 entityTypeName,
                 targetPath,
+                pageNames,
                 entityTypesWithTextArrangement,
                 parsedService
             )
@@ -306,12 +322,12 @@ function processAnnotationEntry(
  * Collects all TextArrangementHidden diagnostics for a single parsed OData service.
  *
  * @param parsedService - The parsed OData service to check
- * @param relevantEntityTypes - Entity types that are actually used on pages
+ * @param relevantEntityTypes - Map from entity type name to page target names where it is used
  * @returns Array of diagnostics found in the service
  */
 function collectProblemsForService(
     parsedService: ParsedService,
-    relevantEntityTypes: Set<string>
+    relevantEntityTypes: Map<string, string[]>
 ): TextArrangementHidden[] {
     // Pre-pass: collect entity types that have UI.TextArrangement applied directly
     // (entity-type level acts as a fallback for all Common.Text properties on that type)

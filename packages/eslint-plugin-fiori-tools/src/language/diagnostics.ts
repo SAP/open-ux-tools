@@ -140,6 +140,7 @@ export interface StrictUomFiltering {
 
 export interface TextArrangementHidden {
     type: typeof TEXT_ARRANGEMENT_HIDDEN;
+    pageNames: string[];
     annotation: {
         reference: AnnotationReference;
         textPropertyPath: string;
