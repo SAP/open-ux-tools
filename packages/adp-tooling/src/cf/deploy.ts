@@ -1,12 +1,12 @@
 import path from 'node:path';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
+import { getMtaPath } from '@sap-ux/project-access';
 import { isCfInstalled } from './services/cli';
 import { isLoggedInCf } from './core/auth';
 import { loadCfConfig } from './core/config';
 import { getYamlContent } from './project/yaml-loader';
-import { isMtaProject } from './project/yaml';
 import { t } from '../i18n';
-import type { CfDeploymentInfo, DeployCfOptions, MtaYaml } from '../types';
+import type { CfConfig, CfDeploymentInfo, DeployCfOptions, MtaYaml } from '../types';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 const SEPARATOR = '------------------------------------';
@@ -15,17 +15,12 @@ const SEPARATOR = '------------------------------------';
  * Gathers MTA project and CF environment information needed for deployment.
  *
  * @param {string} projectPath - Path to the MTA project root (containing mta.yaml).
- * @param {ToolsLogger} [logger] - Optional logger instance.
+ * @param {CfConfig} cfConfig - The CF configuration.
  * @returns {CfDeploymentInfo} Deployment information for the MTA project.
  */
-export function getCfDeploymentInfo(projectPath: string, logger?: ToolsLogger): CfDeploymentInfo {
-    if (!isMtaProject(projectPath)) {
-        throw new Error(t('deploy.mtaNotFound', { projectPath }));
-    }
-
+export function getCfDeploymentInfo(projectPath: string, cfConfig: CfConfig): CfDeploymentInfo {
     const mtaYamlPath = path.join(projectPath, 'mta.yaml');
     const mtaYaml = getYamlContent<MtaYaml>(mtaYamlPath);
-    const cfConfig = loadCfConfig(logger);
 
     return {
         mtaProjectName: mtaYaml.ID ?? '',
@@ -74,90 +69,110 @@ export function formatDeploymentSummary(info: CfDeploymentInfo): string {
 }
 
 /**
- * Finds the MTA project root by checking the given path and its parent for mta.yaml.
+ * Finds the MTA project root by recursively searching the given path and its ancestors for mta.yaml.
  *
  * @param {string} projectPath - The starting project path.
- * @returns {string | undefined} The MTA root path, or undefined if not found.
+ * @returns {Promise<string | undefined>} The MTA root path, or undefined if not found.
  */
-export function findMtaRoot(projectPath: string): string | undefined {
-    if (isMtaProject(projectPath)) {
-        return projectPath;
-    }
-    const parent = path.dirname(projectPath);
-    if (parent !== projectPath && isMtaProject(parent)) {
-        return parent;
-    }
-    return undefined;
+export async function findMtaRoot(projectPath: string): Promise<string | undefined> {
+    const result = await getMtaPath(projectPath);
+    return result ? path.dirname(result.mtaPath) : undefined;
 }
 
 /**
- * Deploys a CF ADP project by building the MTA archive and deploying it to Cloud Foundry.
+ * Validates the CF environment: checks CF CLI is installed, user is logged in, and locates the MTA root.
  *
- * The function:
- * 1. Validates CF CLI is installed and user is logged in.
- * 2. Locates the MTA root from the given project path.
- * 3. Gathers and displays MTA project attributes.
- * 4. Requests user confirmation (via callback or auto-confirms if no callback provided).
- * 5. Runs `mbt build` to create the MTA archive.
- * 6. Runs `cf deploy` to push the archive to Cloud Foundry.
- *
- * @param {string} projectPath - Path to the ADP project (or MTA root).
- * @param {DeployCfOptions} [options] - Deployment options (confirmation callback, output callback).
- * @param {ToolsLogger} [logger] - Optional logger instance.
- * @returns {Promise<void>} Resolves when deployment completes.
+ * @param {string} projectPath - Path to the ADP project root.
+ * @param {ToolsLogger} logger - Logger instance.
+ * @returns {Promise<{ cfConfig: CfConfig; mtaRoot: string }>} The validated CF config and MTA root path.
  */
-export async function deployCf(
+async function validateCfEnvironment(
     projectPath: string,
-    options: DeployCfOptions = {},
-    logger?: ToolsLogger
-): Promise<void> {
-    const cfInstalled = await isCfInstalled(logger as ToolsLogger);
+    logger: ToolsLogger
+): Promise<{ cfConfig: CfConfig; mtaRoot: string }> {
+    const cfInstalled = await isCfInstalled(logger);
     if (!cfInstalled) {
         throw new Error(t('deploy.cfNotInstalled'));
     }
 
     const cfConfig = loadCfConfig(logger);
-    const loggedIn = await isLoggedInCf(cfConfig, logger as ToolsLogger);
+    const loggedIn = await isLoggedInCf(cfConfig, logger);
     if (!loggedIn) {
         throw new Error(t('deploy.notLoggedIn'));
     }
 
-    const mtaRoot = findMtaRoot(projectPath);
+    const mtaRoot = await findMtaRoot(projectPath);
     if (!mtaRoot) {
         throw new Error(t('deploy.mtaNotFound', { projectPath }));
     }
 
-    const info = getCfDeploymentInfo(mtaRoot, logger);
+    return { cfConfig, mtaRoot };
+}
+
+/**
+ * Builds the MTA archive by running the project's build-mta npm script.
+ *
+ * @param {string} projectPath - Path to the ADP project root.
+ * @param {ToolsLogger} logger - Logger instance.
+ */
+export async function buildMtaArchive(projectPath: string, logger: ToolsLogger): Promise<void> {
+    const commandRunner = new CommandRunner();
+    try {
+        await commandRunner.run('npm', ['run', 'build-mta'], { cwd: projectPath }, logger);
+    } catch (e) {
+        throw new Error(t('deploy.buildFailed', { error: String(e) }));
+    }
+}
+
+/**
+ * Deploys the MTA archive to Cloud Foundry by running the project's deploy npm script.
+ *
+ * @param {string} projectPath - Path to the ADP project root.
+ * @param {ToolsLogger} logger - Logger instance.
+ */
+export async function deployMtaArchive(projectPath: string, logger: ToolsLogger): Promise<void> {
+    const commandRunner = new CommandRunner();
+    try {
+        await commandRunner.run('npm', ['run', 'deploy'], { cwd: projectPath }, logger);
+    } catch (e) {
+        throw new Error(t('deploy.deployFailed', { error: String(e) }));
+    }
+}
+
+/**
+ * Deploys a CF ADP project by building the MTA archive and deploying it to Cloud Foundry.
+ *
+ * @param {string} projectPath - Path to the ADP project root.
+ * @param {ToolsLogger} logger - Logger instance.
+ * @param {DeployCfOptions} [options] - Deployment options (confirmation callback, output callback).
+ * @returns {Promise<void>} Resolves when deployment completes.
+ */
+export async function deployCf(
+    projectPath: string,
+    options: DeployCfOptions = {},
+    logger: ToolsLogger
+
+): Promise<void> {
+    const { cfConfig, mtaRoot } = await validateCfEnvironment(projectPath, logger);
+
+    const info = getCfDeploymentInfo(mtaRoot, cfConfig);
     const summary = formatDeploymentSummary(info);
 
-    const output = options.onOutput ?? ((data: string) => logger?.info(data));
+    const output = options.onOutput ?? ((data: string) => logger.info(data));
     output(summary);
 
     if (options.confirmDeployment) {
         const confirmed = await options.confirmDeployment(summary);
         if (!confirmed) {
-            logger?.info(t('deploy.cancelled'));
+            logger.info(t('deploy.cancelled'));
             return;
         }
     }
+    logger.info(t('deploy.buildStarted'));
+    await buildMtaArchive(projectPath, logger);
+    
+    logger.info(t('deploy.deployStarted'));
+    await deployMtaArchive(projectPath, logger);
 
-    const commandRunner = new CommandRunner();
-    const spawnOpts = { cwd: mtaRoot };
-    const mtaArchivePath = path.join(mtaRoot, 'mta_archives', 'archive.mtar');
-
-    logger?.info(t('deploy.buildStarted'));
-    try {
-        await commandRunner.run('mbt', ['build', '--mtar', 'archive', '--source', mtaRoot], spawnOpts, logger);
-    } catch (e) {
-        throw new Error(t('deploy.buildFailed', { error: String(e) }));
-    }
-
-    logger?.info(t('deploy.deployStarted'));
-    try {
-        await commandRunner.run('cf', ['deploy', mtaArchivePath], spawnOpts, logger);
-    } catch (e) {
-        throw new Error(t('deploy.deployFailed', { error: String(e) }));
-    }
-
-    logger?.info(t('deploy.success'));
+    logger.info(t('deploy.success'));
 }
