@@ -105,6 +105,18 @@ const TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_WITHOUT_HIDDEN = `
         <Annotation Term="Common.Text" Path="description"/>
     </Annotations>`;
 
+// Priority entity set is not on any page in the manifest — should never be flagged
+// even though the pattern (inline TA + hidden text property) would otherwise be invalid
+const TEXT_ARRANGEMENT_ENTITY_TYPE_NOT_ON_PAGE = `
+    <Annotations Target="IncidentService.Priority/code">
+        <Annotation Term="Common.Text" Path="name">
+            <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="IncidentService.Priority/name">
+        <Annotation Term="UI.Hidden"/>
+    </Annotations>`;
+
 const MANIFEST_FILE_CHANGE = {
     filename: V4_MANIFEST_PATH,
     code: JSON.stringify(V4_MANIFEST, undefined, 2)
@@ -157,6 +169,14 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 name: 'entity-type level TextArrangement with text property not hidden',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_WITHOUT_HIDDEN)
+            },
+            [MANIFEST_FILE_CHANGE]
+        ),
+        createValidTest(
+            {
+                name: 'entity type not used on any page - not flagged',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_ENTITY_TYPE_NOT_ON_PAGE)
             },
             [MANIFEST_FILE_CHANGE]
         )

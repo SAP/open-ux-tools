@@ -103,6 +103,18 @@ Or if the property should not be hidden in this context, explicitly set `UI.Hidd
 </Annotations>
 ```
 
+## Bug Report
+
+If you encounter an issue with this rule, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
+
 ## When Not to Disable This Rule
 
 This rule should not be disabled unless you have a specific scenario where the text property needs to be hidden globally but the annotation is intentionally kept for a different consumption context (e.g. a back-end consumer that processes annotations directly). Such cases are very uncommon, and a `Bool="false"` override is the preferred solution.
+
+## Further Reading
+
+- [UI5 Further Features of the Field - OData V4](https://ui5.sap.com/#/topic/f49a0f7eaafe444daf4cd62d48120ad0)
+- [UI5 Displaying Text and ID for Value Help Input Fields - OData V2](https://ui5.sap.com/#/topic/080886d8d4af4ac6a68a476beab17da3)
+
+- [UI5 Hiding Features Using the UI.Hidden Annotation - OData V4](https://ui5.sap.com/#/topic/ca00ee45fe344a73998f482cb2e669bb)
+- [UI5 Hiding Features Using the UI.Hidden Annotation - OData V2](https://ui5.sap.com/#/topic/5f12ebd4d09b4c81a572337bf5569e01)

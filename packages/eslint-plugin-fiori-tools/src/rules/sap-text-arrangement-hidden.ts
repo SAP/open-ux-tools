@@ -13,6 +13,10 @@ import { TEXT_ARRANGEMENT_HIDDEN, type TextArrangementHidden } from '../language
 import { buildAnnotationIndexKey } from '../project-context/parser';
 import type { IndexedAnnotation, ParsedService } from '../project-context/parser';
 import { COMMON_TEXT, UI_HIDDEN, UI_TEXT_ARRANGEMENT } from '../constants';
+import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4';
+import type { FeV2ListReport, FeV2ObjectPage } from '../project-context/linker/fe-v2';
+
+type AnyPage = FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage;
 
 /**
  * Resolves a path expression relative to an entity type to find the entity type and property of the target.
@@ -88,6 +92,52 @@ function hasInlineTextArrangement(textElement: Element, aliasInfo: AliasInformat
         }
     }
     return false;
+}
+
+/**
+ * Collects the entity type names that are actually used on pages in the app.
+ * Includes the main entity type of each page and entity types from sub-tables (e.g. via nav props on OPs).
+ * Only annotations on these entity types will be checked by the rule.
+ *
+ * @param pages - Pages from the linked app model
+ * @param parsedService - The parsed OData service
+ * @returns Set of fully-qualified entity type names used on at least one page
+ */
+function collectRelevantEntityTypes(pages: AnyPage[], parsedService: ParsedService): Set<string> {
+    const entityTypes = new Set<string>();
+
+    // Build reverse map: IndexedAnnotation → entity type name (entity-type level annotations only)
+    const annotationEntityTypeMap = new Map<IndexedAnnotation, string>();
+    for (const [key, qualifiedAnnotations] of Object.entries(parsedService.index.annotations)) {
+        const atIdx = key.indexOf('/@');
+        if (atIdx === -1) {
+            continue;
+        }
+        const targetPath = key.substring(0, atIdx);
+        if (targetPath.includes('/')) {
+            continue; // property-level annotation, skip
+        }
+        for (const annotation of Object.values(qualifiedAnnotations)) {
+            annotationEntityTypeMap.set(annotation, targetPath);
+        }
+    }
+
+    for (const page of pages) {
+        if (page.entity?.structuredType) {
+            entityTypes.add(page.entity.structuredType);
+        }
+        // Also collect entity types from sub-tables (e.g. navigation-based tables on OPs)
+        for (const table of page.lookup['table'] ?? []) {
+            if (table.type !== 'table' || !table.annotation) {
+                continue;
+            }
+            const entityType = annotationEntityTypeMap.get(table.annotation.annotation);
+            if (entityType) {
+                entityTypes.add(entityType);
+            }
+        }
+    }
+    return entityTypes;
 }
 
 /**
@@ -197,13 +247,15 @@ function processTextAnnotation(
  * @param qualifiedAnnotations - All qualified annotations for this key, keyed by qualifier
  * @param entityTypesWithTextArrangement - Entity types with UI.TextArrangement at entity-type level
  * @param parsedService - The parsed OData service
+ * @param relevantEntityTypes - Entity types that are actually used on pages
  * @returns Array of diagnostics (empty if no violation found)
  */
 function processAnnotationEntry(
     annotationKey: string,
     qualifiedAnnotations: Record<string, IndexedAnnotation>,
     entityTypesWithTextArrangement: Set<string>,
-    parsedService: ParsedService
+    parsedService: ParsedService,
+    relevantEntityTypes: Set<string>
 ): TextArrangementHidden[] {
     const atIdx = annotationKey.indexOf('/@');
     if (atIdx === -1) {
@@ -221,6 +273,10 @@ function processAnnotationEntry(
         return [];
     }
     const entityTypeName = targetPath.substring(0, slashIdx);
+    // Only check entity types that are actually used on pages
+    if (!relevantEntityTypes.has(entityTypeName)) {
+        return [];
+    }
     const problems: TextArrangementHidden[] = [];
     for (const textAnnotation of Object.values(qualifiedAnnotations)) {
         problems.push(
@@ -240,9 +296,13 @@ function processAnnotationEntry(
  * Collects all TextArrangementHidden diagnostics for a single parsed OData service.
  *
  * @param parsedService - The parsed OData service to check
+ * @param relevantEntityTypes - Entity types that are actually used on pages
  * @returns Array of diagnostics found in the service
  */
-function collectProblemsForService(parsedService: ParsedService): TextArrangementHidden[] {
+function collectProblemsForService(
+    parsedService: ParsedService,
+    relevantEntityTypes: Set<string>
+): TextArrangementHidden[] {
     // Pre-pass: collect entity types that have UI.TextArrangement applied directly
     // (entity-type level acts as a fallback for all Common.Text properties on that type)
     const entityTypesWithTextArrangement = collectEntityTypesWithTextArrangement(parsedService);
@@ -253,7 +313,8 @@ function collectProblemsForService(parsedService: ParsedService): TextArrangemen
                 annotationKey,
                 qualifiedAnnotations,
                 entityTypesWithTextArrangement,
-                parsedService
+                parsedService,
+                relevantEntityTypes
             )
         );
     }
@@ -278,10 +339,14 @@ const rule: FioriRuleDefinition = createFioriRule({
 
     check(context) {
         const problems: TextArrangementHidden[] = [];
-        for (const parsedApp of Object.values(context.sourceCode.projectContext.index.apps)) {
-            for (const parsedService of Object.values(parsedApp.services)) {
-                problems.push(...collectProblemsForService(parsedService));
+        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+            const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
+            if (!parsedService) {
+                continue;
             }
+            const relevantEntityTypes = collectRelevantEntityTypes(app.pages as AnyPage[], parsedService);
+            problems.push(...collectProblemsForService(parsedService, relevantEntityTypes));
         }
         return problems;
     },
