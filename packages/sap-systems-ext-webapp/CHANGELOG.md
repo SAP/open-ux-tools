@@ -1,5 +1,11 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.2.1
+
+### Patch Changes
+
+- c53a4ba: chore(sap-systems-ext-webapp): upgrade shared devDependencies (jest 30, i18next 25)
+
 ## 0.2.0
 
 ### Minor Changes

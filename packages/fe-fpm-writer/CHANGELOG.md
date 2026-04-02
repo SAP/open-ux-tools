@@ -1,5 +1,23 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.18
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/fiori-annotation-api@0.9.40
+
+## 0.43.17
+
+### Patch Changes
+
+- c53a4ba: chore(fe-fpm-writer): upgrade xml-formatter 2.x → 3.x; upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/fiori-annotation-api@0.9.39
+    - @sap-ux/project-access@1.35.17
+
 ## 0.43.16
 
 ### Patch Changes
