@@ -51,6 +51,7 @@ sap.ui.define([
             Then.onThe<%- name%>.onHeader().iCheckFieldInFieldGroup({
                 fieldGroup: "FieldGroup::<%- field.fieldGroupQualifier %>",
                 field: "<%- field.field %>",
+                targetAnnotation: "<%- field.targetAnnotation %>"
             });
 <% }) -%>
 <% } -%>

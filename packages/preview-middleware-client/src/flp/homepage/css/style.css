@@ -45,7 +45,7 @@
     flex-shrink: 1;
 }
 
-.sapCuxGroupDetailDialog .sapMIBar .sapMBarChild.sapMBtn {
+.sapCuxGroupDetailDialog .sapMHeader-CTX.sapMIBar .sapMBarChild.sapMBtn {
     display: none;
 }
 
