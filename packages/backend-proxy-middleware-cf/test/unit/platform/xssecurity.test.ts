@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { getServicesForFile, updateServiceInstance } from '@sap-ux/adp-tooling';
 
-import { updateXsuaaService } from '../../../src/xssecurity';
+import { updateXsuaaService } from '../../../src/platform/xssecurity';
 
 jest.mock('node:fs', () => ({
     ...jest.requireActual('node:fs'),

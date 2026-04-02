@@ -3,6 +3,7 @@ import type { IncomingMessage } from 'node:http';
 import {
     createPathFilter,
     createProxyFilter,
+    escapeRegExp,
     getMimeInfo,
     getRequestOrigin,
     isRequestFromApprouter,
@@ -10,6 +11,16 @@ import {
 } from '../../../src/proxy/utils';
 
 describe('proxy utils', () => {
+    describe('escapeRegExp', () => {
+        test('escapes all regex metacharacters', () => {
+            expect(escapeRegExp('a.b+c(d)')).toBe(String.raw`a\.b\+c\(d\)`);
+        });
+
+        test('returns alphanumeric string unchanged', () => {
+            expect(escapeRegExp('logincallback')).toBe('logincallback');
+        });
+    });
+
     describe('replaceUrl', () => {
         test('replaces oldUrl with newUrl in text', () => {
             const text = 'Link: /backend/api/foo';
@@ -47,7 +58,7 @@ describe('proxy utils', () => {
          */
         test('returns true for pathname matching a destination route regex', () => {
             const route = {
-                re: /^\/api\//,
+                sourcePattern: /^\/api\//,
                 path: 'api/',
                 url: 'http://backend.test:8080',
                 source: '^/api/',
@@ -62,7 +73,7 @@ describe('proxy utils', () => {
 
         test('returns false when pathname matches neither custom routes nor destination routes', () => {
             const route = {
-                re: /^\/api\//,
+                sourcePattern: /^\/api\//,
                 path: 'api/',
                 url: 'http://backend.test:8080',
                 source: '^/api/',
@@ -72,6 +83,13 @@ describe('proxy utils', () => {
             const filter = createPathFilter(['/login/callback'], [route]);
 
             expect(filter('/other')).toBe(false);
+        });
+
+        test('escapes regex metacharacters in custom routes', () => {
+            const filter = createPathFilter(['/ext.v1+beta'], []);
+
+            expect(filter('/ext.v1+beta')).toBe(true);
+            expect(filter('/extXv1Xbeta')).toBe(false);
         });
     });
 

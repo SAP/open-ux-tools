@@ -25,6 +25,26 @@ import { getAdaptationChoices, getKeyUserSystemChoices } from './helper/choices'
 
 export const DEFAULT_ADAPTATION_ID = 'DEFAULT';
 
+const UNSUPPORTED_STATUS_CODES = new Set([400, 404, 405]);
+
+/**
+ * Returns a user-friendly error message if the error is an axios error with a status code
+ * indicating the API is not supported (400, 404, 405), or the original error message otherwise.
+ *
+ * @param e - The error to check.
+ * @param userMessage - The user-friendly message to return if the error matches.
+ * @returns The user-friendly message or the original error message.
+ */
+function getUnsupportedApiMessage(e: Error, userMessage: string): string {
+    if (isAxiosError(e)) {
+        const status = e.response?.status;
+        if (status !== undefined && UNSUPPORTED_STATUS_CODES.has(status)) {
+            return userMessage;
+        }
+    }
+    return e.message;
+}
+
 /**
  * Determines the flex version to be used. If the first version is the draft (versionId "0"), use the second version (active version).
  *
@@ -218,13 +238,16 @@ export class KeyUserImportPrompter {
      * Loads adaptations for the current provider.
      */
     private async loadAdaptations(): Promise<void> {
-        const version = determineFlexVersion(this.flexVersions);
-        const lrep = this.provider?.getLayeredRepository();
-        const response = await lrep?.listAdaptations(this.componentId, version);
-        this.adaptations = response?.adaptations ?? [];
-        this.logger.log(`Loaded adaptations: ${JSON.stringify(this.adaptations, null, 2)}`);
-        if (!this.adaptations.length) {
-            throw new Error(t('error.keyUserNoAdaptations'));
+        try {
+            const version = determineFlexVersion(this.flexVersions);
+            const lrep = this.provider?.getLayeredRepository();
+            const response = await lrep?.listAdaptations(this.componentId, version);
+            this.adaptations = response?.adaptations ?? [];
+            this.logger.log(`Loaded adaptations: ${JSON.stringify(this.adaptations, null, 2)}`);
+        } catch (e) {
+            this.logger.error(`Error loading adaptations for component ${this.componentId}: ${e.message}`);
+            this.logger.debug(e);
+            throw new Error(getUnsupportedApiMessage(e, t('error.keyUserAdaptationsNotSupported')));
         }
     }
 
@@ -232,10 +255,16 @@ export class KeyUserImportPrompter {
      * Loads flex versions for the current provider.
      */
     private async loadFlexVersions(): Promise<void> {
-        const lrep = this.provider?.getLayeredRepository();
-        const response = await lrep?.getFlexVersions(this.componentId);
-        this.flexVersions = response?.versions ?? [];
-        this.logger.log(`Loaded flex versions: ${JSON.stringify(this.flexVersions, null, 2)}`);
+        try {
+            const lrep = this.provider?.getLayeredRepository();
+            const response = await lrep?.getFlexVersions(this.componentId);
+            this.flexVersions = response?.versions ?? [];
+            this.logger.log(`Loaded flex versions: ${JSON.stringify(this.flexVersions, null, 2)}`);
+        } catch (e) {
+            this.logger.error(`Error loading flex versions for component ${this.componentId}: ${e.message}`);
+            this.logger.debug(e);
+            throw new Error(getUnsupportedApiMessage(e, t('error.keyUserFlexVersionsNotSupported')));
+        }
     }
 
     /**
@@ -260,6 +289,10 @@ export class KeyUserImportPrompter {
 
         await this.loadFlexVersions();
         await this.loadAdaptations();
+
+        if (!this.adaptations.length) {
+            throw new Error(t('error.keyUserNoAdaptations'));
+        }
 
         if (this.adaptations.length === 1 && this.adaptations[0]?.id === DEFAULT_ADAPTATION_ID) {
             return await this.validateKeyUserChanges(DEFAULT_ADAPTATION_ID);
@@ -365,15 +398,7 @@ export class KeyUserImportPrompter {
         } catch (e) {
             this.logger.error(`Error validating key-user changes for adaptation ${adaptationId}: ${e.message}`);
             this.logger.debug(e);
-
-            if (isAxiosError(e)) {
-                const status = e.response?.status;
-                if (status === 400 || status === 404 || status === 405) {
-                    return t('error.keyUserNotSupported');
-                }
-            }
-
-            return e.message;
+            return getUnsupportedApiMessage(e, t('error.keyUserNotSupported'));
         }
     }
 }

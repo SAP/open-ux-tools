@@ -4,9 +4,9 @@ import { createProxyMiddleware, responseInterceptor } from 'http-proxy-middlewar
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
+import { PROXY_MARKER_HEADER } from '../config/constants';
 import type { CreateProxyOptions, EffectiveOptions, RouteEntry } from '../types';
 import { createProxyFilter, getMimeInfo, getRequestOrigin, replaceUrl } from './utils';
-import { PROXY_MARKER_HEADER } from '../constants';
 
 /**
  * Request in proxyReq callback, extended with UI5 server middleware properties.
@@ -48,7 +48,7 @@ export function createResponseInterceptor(
         } = getMimeInfo(pathname, proxyRes.headers['content-type'] as string | undefined);
         res.setHeader('content-type', ct);
 
-        const route = routes.find((routeEntry) => routeEntry.re.test(url));
+        const route = routes.find((routeEntry) => routeEntry.sourcePattern.test(url));
         if (route?.path && route.url && effectiveOptions?.rewriteContentTypes?.includes(type?.toLowerCase() ?? '')) {
             const encoding = (charset ?? 'utf8') as BufferEncoding;
             let data = responseBuffer.toString(encoding);
@@ -57,10 +57,10 @@ export function createResponseInterceptor(
                 (req.headers.referrer as string) ?? (req.headers.referer as string) ?? getRequestOrigin(req);
             const referrerUrl = new URL(route.path, referrer).toString();
 
-            data = replaceUrl(data, `https://${route.url.slice(8)}`, referrerUrl);
-            if (route.url.startsWith('https://')) {
-                data = replaceUrl(data, `http://${route.url.slice(8)}`, referrerUrl);
-            }
+            const routeUrlParsed = new URL(route.url);
+            const hostAndPath = `${routeUrlParsed.host}${routeUrlParsed.pathname}`;
+            data = replaceUrl(data, `https://${hostAndPath}`, referrerUrl);
+            data = replaceUrl(data, `http://${hostAndPath}`, referrerUrl);
 
             return Buffer.from(data);
         }

@@ -6,7 +6,8 @@ import {
     createTestTemplateConfig,
     generatePreviewFiles,
     getFlpConfigWithDefaults,
-    getPreviewPaths
+    getPreviewPaths,
+    remapResourcesForPath
 } from '../../../src/base/config';
 import { mergeTestConfigDefaults } from '../../../src/base/test';
 import type { MiddlewareConfig } from '../../../src';
@@ -200,6 +201,101 @@ describe('config', () => {
             } satisfies MiddlewareConfig;
             const fs = await generatePreviewFiles(basePath, config);
             expect(fs.dump(basePath)).toMatchSnapshot();
+        });
+    });
+
+    describe('remapResourcesForPath', () => {
+        const appId = 'my.app';
+
+        /**
+         * Helper: build a TemplateConfig based on a given FLP path so we have a realistic
+         * starting point for each remapping scenario.
+         */
+        function buildConfig(flpPath: string) {
+            const flpConfig = getFlpConfigWithDefaults({ path: flpPath });
+            return createFlpTemplateConfig(flpConfig, manifest);
+        }
+
+        test('editor at root level when FLP is one level deep (test/flp.html → editor.html)', () => {
+            // FLP at test/flp.html  → basePath ".."
+            // Editor at editor.html → newBasePath should be "."
+            const config = buildConfig('/test/flp.html');
+            // Simulate addApp: primary app resource root is set to basePath ".."
+            config.ui5.resources[appId] = config.basePath;
+
+            remapResourcesForPath(config, '/editor.html', appId);
+
+            expect(config.basePath).toBe('.');
+            expect(config.ui5.resources[appId]).toBe('.');
+            // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
+            expect(config.ui5.resources['open.ux.preview.client']).toBe('preview/client');
+        });
+
+        test('editor at same depth as FLP (test/flp.html → test/editor.html)', () => {
+            // FLP at test/flp.html    → basePath ".."
+            // Editor at test/editor.html → newBasePath should still be ".."
+            const config = buildConfig('/test/flp.html');
+            config.ui5.resources[appId] = config.basePath;
+
+            remapResourcesForPath(config, '/test/editor.html', appId);
+
+            expect(config.basePath).toBe('..');
+            expect(config.ui5.resources[appId]).toBe('..');
+            expect(config.ui5.resources['open.ux.preview.client']).toBe('../preview/client');
+        });
+
+        test('editor two levels deep when FLP is one level deep (test/flp.html → a/b/editor.html)', () => {
+            // FLP at test/flp.html  → basePath ".."
+            // Editor at a/b/editor.html → newBasePath should be "../.."
+            const config = buildConfig('/test/flp.html');
+            config.ui5.resources[appId] = config.basePath;
+
+            remapResourcesForPath(config, '/a/b/editor.html', appId);
+
+            expect(config.basePath).toBe('../..');
+            expect(config.ui5.resources[appId]).toBe('../..');
+            expect(config.ui5.resources['open.ux.preview.client']).toBe('../../preview/client');
+        });
+
+        test('editor at root level when FLP is two levels deep (a/b/flp.html → editor.html)', () => {
+            // FLP at a/b/flp.html   → basePath "../.."
+            // Editor at editor.html → newBasePath should be "."
+            const config = buildConfig('/a/b/flp.html');
+            config.ui5.resources[appId] = config.basePath;
+
+            remapResourcesForPath(config, '/editor.html', appId);
+
+            expect(config.basePath).toBe('.');
+            expect(config.ui5.resources[appId]).toBe('.');
+            // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
+            expect(config.ui5.resources['open.ux.preview.client']).toBe('preview/client');
+        });
+
+        test('additional app targets with absolute paths are not affected', () => {
+            // Additional apps always have absolute target values and must not be remapped
+            const config = buildConfig('/test/flp.html');
+            config.ui5.resources[appId] = config.basePath;
+            const absoluteTarget = '/apps/my-other-app';
+            config.ui5.resources['other.app'] = absoluteTarget;
+
+            remapResourcesForPath(config, '/editor.html', appId);
+
+            // The additional app's absolute target must remain unchanged
+            expect(config.ui5.resources['other.app']).toBe(absoluteTarget);
+        });
+
+        test('unknown appId does not throw and leaves other resources intact', () => {
+            const config = buildConfig('/test/flp.html');
+            config.ui5.resources[appId] = config.basePath;
+
+            // Use an appId that is not in resources
+            expect(() => remapResourcesForPath(config, '/editor.html', 'unknown.app')).not.toThrow();
+            // The known appId entry is untouched because it was not matched
+            expect(config.ui5.resources[appId]).toBe('..');
+            // basePath and client ns are still updated
+            expect(config.basePath).toBe('.');
+            // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
+            expect(config.ui5.resources['open.ux.preview.client']).toBe('preview/client');
         });
     });
 });

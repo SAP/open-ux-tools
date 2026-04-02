@@ -5,7 +5,7 @@ import { renderWebApp } from './renderWebapp';
 import { updateSystem } from './updateSystem';
 import { testSystemConnection } from './testConnection';
 import { fireGALinkClickedTelemetry } from './sendTelemetry';
-import { createFioriProject, openGuidedAnswers, openOutputChannel } from './executeCommads';
+import { createFioriProject, openExistingSystem, openGuidedAnswers, openOutputChannel } from './executeCommads';
 
 export const actionHandlerMap: ActionHandlerMap = {
     WEBVIEW_READY: renderWebApp,
@@ -14,6 +14,7 @@ export const actionHandlerMap: ActionHandlerMap = {
     EXPORT_SYSTEM: exportSystem,
     FIRE_GA_LINK_CLICKED_TELEMETRY: fireGALinkClickedTelemetry,
     CREATE_FIORI_PROJECT: createFioriProject,
+    OPEN_EXISTING_SYSTEM: openExistingSystem,
     OPEN_GUIDED_ANSWERS: openGuidedAnswers,
     OPEN_OUTPUT_CHANNEL: openOutputChannel
 };

@@ -16,10 +16,10 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - authenticationType: reentranceTicket # SAML support for vscode
-            path: /sap
+          - path: /sap
             url: https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com
             destination: mock_saml_assertion_dest
+            authenticationType: reentranceTicket # SAML support for vscode
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

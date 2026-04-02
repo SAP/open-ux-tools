@@ -8,7 +8,7 @@ import type {
     XsappConfig,
     XsappRoute
 } from '../types';
-import { UI5_SERVER_DESTINATION } from '../constants';
+import { UI5_SERVER_DESTINATION } from '../config/constants';
 
 /**
  * Auth route for HTML pages - triggers XSUAA login.
@@ -98,19 +98,22 @@ export function buildRouteEntries(options: BuildRouteEntriesOptions): RouteEntry
 
     for (const route of xsappConfig.routes ?? []) {
         const routeMatch = /[^/]*\/(.*\/)?[^/]*/.exec(route.source);
-        if (routeMatch) {
-            const url = destList.find((d) => d.name === route.destination)?.url;
-            routes.push({
-                ...route,
-                re: new RegExp(route.source),
-                path: routeMatch[1],
-                url
-            });
+        if (!routeMatch) {
+            logger.warn(`Skipping route with source "${route.source}": could not extract path prefix.`);
+            continue;
+        }
 
-            if (effectiveOptions.debug) {
-                const destination = route.destination ?? route.endpoint ?? '';
-                logger.debug(`Adding destination "${destination}" proxying to ${route.source}`);
-            }
+        const url = destList.find((d) => d.name === route.destination)?.url;
+        routes.push({
+            ...route,
+            sourcePattern: new RegExp(route.source),
+            path: routeMatch[1],
+            url
+        });
+
+        if (effectiveOptions.debug) {
+            const destination = route.destination ?? route.endpoint ?? '';
+            logger.debug(`Adding destination "${destination}" proxying to ${route.source}`);
         }
     }
 

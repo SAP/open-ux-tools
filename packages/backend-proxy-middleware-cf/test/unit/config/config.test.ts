@@ -1,9 +1,9 @@
-import { mergeEffectiveOptions, DEFAULT_REWRITE_CONTENT_TYPES } from '../../../src/config';
+import { mergeEffectiveOptions, DEFAULT_REWRITE_CONTENT_TYPES } from '../../../src/config/config';
 
 describe('config', () => {
     describe('mergeEffectiveOptions', () => {
         test('returns defaults when given empty configuration', () => {
-            const result = mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' });
+            const result = mergeEffectiveOptions({});
             expect(result.debug).toBe(false);
             expect(result.port).toBe(5000);
             expect(result.xsappJsonPath).toBe('./xs-app.json');

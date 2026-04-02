@@ -1,5 +1,180 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.222
+
+### Patch Changes
+
+- Updated dependencies [6b74074]
+    - @sap-ux/adp-tooling@0.18.110
+    - @sap-ux/flp-config-inquirer@0.4.169
+
+## 0.1.221
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/adp-tooling@0.18.109
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/fiori-generator-shared@0.13.95
+    - @sap-ux/flp-config-inquirer@0.4.168
+    - @sap-ux/inquirer-common@0.11.33
+    - @sap-ux/system-access@0.7.4
+
+## 0.1.220
+
+### Patch Changes
+
+- 68b5523: feat: Adjust FLP configuration wizard for CF scenario
+- Updated dependencies [68b5523]
+    - @sap-ux/adp-tooling@0.18.108
+    - @sap-ux/flp-config-inquirer@0.4.167
+
+## 0.1.219
+
+### Patch Changes
+
+- c53a4ba: chore(adp-flp-config-sub-generator): upgrade @sap-devx/yeoman-ui-types 1.22.0 → 1.23.0 (runtime dep); upgrade devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/adp-tooling@0.18.107
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/feature-toggle@0.3.8
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/flp-config-inquirer@0.4.166
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/store@1.5.12
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+
+## 0.1.218
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.93
+- @sap-ux/inquirer-common@0.11.31
+- @sap-ux/flp-config-inquirer@0.4.165
+- @sap-ux/adp-tooling@0.18.106
+
+## 0.1.217
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/adp-tooling@0.18.105
+    - @sap-ux/axios-extension@1.25.27
+    - @sap-ux/fiori-generator-shared@0.13.92
+    - @sap-ux/flp-config-inquirer@0.4.164
+    - @sap-ux/inquirer-common@0.11.30
+    - @sap-ux/system-access@0.7.3
+
+## 0.1.216
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/adp-tooling@0.18.104
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/fiori-generator-shared@0.13.91
+    - @sap-ux/flp-config-inquirer@0.4.163
+    - @sap-ux/inquirer-common@0.11.29
+    - @sap-ux/system-access@0.7.2
+
+## 0.1.215
+
+### Patch Changes
+
+- Updated dependencies [96a689b]
+    - @sap-ux/adp-tooling@0.18.103
+    - @sap-ux/flp-config-inquirer@0.4.162
+
+## 0.1.214
+
+### Patch Changes
+
+- Updated dependencies [3dcd3f7]
+    - @sap-ux/adp-tooling@0.18.102
+    - @sap-ux/flp-config-inquirer@0.4.161
+
+## 0.1.213
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/adp-tooling@0.18.101
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/flp-config-inquirer@0.4.160
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/store@1.5.11
+    - @sap-ux/system-access@0.7.2
+
+## 0.1.212
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/adp-tooling@0.18.100
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/fiori-generator-shared@0.13.89
+    - @sap-ux/flp-config-inquirer@0.4.159
+    - @sap-ux/inquirer-common@0.11.27
+    - @sap-ux/system-access@0.7.1
+
+## 0.1.211
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/adp-tooling@0.18.99
+    - @sap-ux/fiori-generator-shared@0.13.88
+    - @sap-ux/flp-config-inquirer@0.4.158
+    - @sap-ux/system-access@0.7.1
+
+## 0.1.210
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+    - @sap-ux/flp-config-inquirer@0.4.157
+
+## 0.1.209
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/adp-tooling@0.18.97
+    - @sap-ux/inquirer-common@0.11.26
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/flp-config-inquirer@0.4.156
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.88
+
 ## 0.1.208
 
 ### Patch Changes

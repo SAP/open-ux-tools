@@ -1,4 +1,4 @@
-import { startApprouter } from '../../../src/approuter';
+import { startApprouter } from '../../../src/approuter/approuter';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 const mockApprouterStart = jest.fn();

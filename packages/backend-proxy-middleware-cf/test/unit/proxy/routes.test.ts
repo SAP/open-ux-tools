@@ -3,8 +3,8 @@ import path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { mergeEffectiveOptions } from '../../../src/config';
-import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../../src/routes';
+import { mergeEffectiveOptions } from '../../../src/config/config';
+import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../../src/proxy/routes';
 
 describe('routes', () => {
     const rootPath = '/project/root';
@@ -175,7 +175,7 @@ describe('routes', () => {
             jest.clearAllMocks();
         });
 
-        test('builds route entries with re and path from xsappConfig', () => {
+        test('builds route entries with sourcePattern and path from xsappConfig', () => {
             const xsappConfig = {
                 routes: [{ source: '^/api/(.*)$', destination: 'api' }],
                 authenticationMethod: 'none'
@@ -192,10 +192,28 @@ describe('routes', () => {
             });
 
             expect(result).toHaveLength(1);
-            expect(result[0].re).toBeInstanceOf(RegExp);
+            expect(result[0].sourcePattern).toBeInstanceOf(RegExp);
             expect(result[0].path).toBeDefined();
             expect(result[0].url).toBe('/api');
             expect(mockLogger.debug).toHaveBeenCalledWith('Adding destination "api" proxying to ^/api/(.*)$');
+        });
+
+        test('logs warning and skips route when source pattern has no slash', () => {
+            const xsappConfig = {
+                routes: [{ source: '^$', destination: 'root' }],
+                authenticationMethod: 'none'
+            };
+
+            const result = buildRouteEntries({
+                xsappConfig,
+                effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }),
+                logger: mockLogger
+            });
+
+            expect(result).toEqual([]);
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                'Skipping route with source "^$": could not extract path prefix.'
+            );
         });
 
         test('returns empty array when xsappConfig has no routes', () => {

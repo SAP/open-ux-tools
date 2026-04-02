@@ -1,5 +1,55 @@
 # @sap-ux/launch-config
 
+## 0.10.82
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+
+## 0.10.81
+
+### Patch Changes
+
+- c53a4ba: chore(launch-config): upgrade shared devDependencies (jest 30, i18next 25)
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-info@0.13.17
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.10.80
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.10.79
+
+### Patch Changes
+
+- a41533f: chore(launch-config): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/ui5-info@0.13.16
+
+## 0.10.78
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.10.77
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/project-access@1.35.14
+
 ## 0.10.76
 
 ### Patch Changes

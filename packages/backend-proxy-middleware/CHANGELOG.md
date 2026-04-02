@@ -1,5 +1,61 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.12.0
+
+### Minor Changes
+
+- fe8e66f: feat(backend-proxy-middleware): add `params` property to append custom query parameters to proxied backend requests
+
+### Patch Changes
+
+- c53a4ba: chore(backend-proxy-middleware): upgrade shared devDependencies (jest 30, https-proxy-agent 7.0.6)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/store@1.5.12
+    - @sap-ux/btp-utils@1.1.12
+
+## 0.11.3
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/axios-extension@1.25.27
+
+## 0.11.2
+
+### Patch Changes
+
+- a41533f: chore(backend-proxy-middleware): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/store@1.5.11
+
+## 0.11.1
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+
+## 0.11.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.24
+
 ## 0.10.56
 
 ### Patch Changes

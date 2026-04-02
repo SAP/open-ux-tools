@@ -42,7 +42,7 @@ describe('generate/adaptation-project', () => {
 
     // mocks
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
-    const npmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => undefined);
+    const npmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => Promise.resolve());
     const generateSpy = jest.spyOn(adp, 'generate');
     const promptSpy = jest.spyOn(adp, 'promptGeneratorInput');
     const getArgv = (...arg: string[]) => ['', '', 'adaptation-project', ...arg];

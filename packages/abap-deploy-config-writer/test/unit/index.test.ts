@@ -30,6 +30,7 @@ describe('generate', () => {
                 ...config,
                 target: {
                     ...config.target,
+                    connectPath: '/sap/bc/test',
                     authenticationType: 'reentranceTicket'
                 }
             },

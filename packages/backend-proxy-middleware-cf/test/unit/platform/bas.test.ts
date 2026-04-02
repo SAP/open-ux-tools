@@ -1,6 +1,6 @@
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 
-import { fetchBasUrlTemplate, resolveBasExternalUrl } from '../../../src/bas';
+import { fetchBasUrlTemplate, resolveBasExternalUrl } from '../../../src/platform/bas';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn().mockReturnValue(false),

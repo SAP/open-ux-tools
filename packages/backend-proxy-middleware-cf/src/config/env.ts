@@ -6,7 +6,7 @@ import type { AppRouterEnvOptions } from '@sap-ux/adp-tooling';
 import { buildVcapServicesFromResources, getSpaceGuidFromUi5Yaml, getYamlContent } from '@sap-ux/adp-tooling';
 
 import type { EffectiveOptions } from '../types';
-import { UI5_SERVER_DESTINATION } from '../constants';
+import { UI5_SERVER_DESTINATION } from './constants';
 
 /**
  * Destination entry as stored in process.env.destinations.
@@ -49,7 +49,7 @@ function applyToProcessEnv(options: AppRouterEnvOptions): void {
         ...(options.destinations ? { destinations: JSON.stringify(options.destinations) } : {}),
         ...(options.VCAP_SERVICES ? { VCAP_SERVICES: JSON.stringify(options.VCAP_SERVICES) } : {})
     };
-    process.env = { ...process.env, ...envOptions } as Record<string, string>;
+    Object.assign(process.env, envOptions);
 }
 
 /**

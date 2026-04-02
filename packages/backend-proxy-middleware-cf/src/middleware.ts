@@ -1,22 +1,22 @@
 import fs from 'node:fs';
 import dotenv from 'dotenv';
 import path from 'node:path';
-import type { RequestHandler, Request, Response, NextFunction } from 'express';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareParameters } from '@ui5/server';
+import type { RequestHandler, Request, Response, NextFunction } from 'express';
 
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 
-import { createProxy } from './proxy';
 import { nextFreePort } from './utils';
-import { startApprouter } from './approuter';
-import { loadExtensions } from './extensions';
-import { mergeEffectiveOptions } from './config';
-import { updateXsuaaService } from './xssecurity';
+import { createProxy } from './proxy/proxy';
+import { startApprouter } from './approuter/approuter';
+import { loadExtensions } from './approuter/extensions';
+import { mergeEffectiveOptions } from './config/config';
+import { updateXsuaaService } from './platform/xssecurity';
 import type { BackendProxyMiddlewareCfConfig } from './types';
-import { fetchBasUrlTemplate, resolveBasExternalUrl } from './bas';
-import { buildRouteEntries, loadAndPrepareXsappConfig } from './routes';
-import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from './env';
+import { fetchBasUrlTemplate, resolveBasExternalUrl } from './platform/bas';
+import { buildRouteEntries, loadAndPrepareXsappConfig } from './proxy/routes';
+import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from './config/env';
 
 dotenv.config();
 
@@ -94,22 +94,29 @@ async function backendProxyMiddlewareCf({
     let proxyMiddleware: RequestHandler | null = null;
     return function lazyApprouterMiddleware(req: Request, res: Response, next: NextFunction): void {
         if (!initialized) {
-            const actualPort = req.socket.localPort ?? 8080;
+            try {
+                const actualPort = req.socket.localPort ?? 8080;
 
-            const basExternalUrl = resolveBasExternalUrl(basUrlTemplate, actualPort);
-            if (basExternalUrl) {
-                logger.info(`BAS detected. External URL: ${basExternalUrl.href}`);
+                const basExternalUrl = resolveBasExternalUrl(basUrlTemplate, actualPort);
+                if (basExternalUrl) {
+                    logger.info(`BAS detected. External URL: ${basExternalUrl.href}`);
+                }
+
+                if (updateUi5ServerDestinationPort(effectiveOptions, actualPort, basExternalUrl)) {
+                    logger.info(`Auto-configured ui5-server destination to port ${actualPort}`);
+                }
+
+                const routes = buildRouteEntries({ xsappConfig, effectiveOptions, logger });
+                startApprouter({ port, xsappConfig, rootPath, modules, logger });
+
+                proxyMiddleware = createProxy(
+                    { customRoutes, routes, baseUri, effectiveOptions, basExternalUrl },
+                    logger
+                );
+                initialized = true;
+            } catch (err) {
+                return next(err);
             }
-
-            if (updateUi5ServerDestinationPort(effectiveOptions, actualPort, basExternalUrl)) {
-                logger.info(`Auto-configured ui5-server destination to port ${actualPort}`);
-            }
-
-            const routes = buildRouteEntries({ xsappConfig, effectiveOptions, logger });
-            startApprouter({ port, xsappConfig, rootPath, modules, logger });
-
-            proxyMiddleware = createProxy({ customRoutes, routes, baseUri, effectiveOptions, basExternalUrl }, logger);
-            initialized = true;
         }
 
         proxyMiddleware!(req, res, next);
