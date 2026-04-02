@@ -103,6 +103,7 @@
         "emptyCFAPIResponse": "Empty response from CF API. Please verify your CF login status with 'cf target' and re-authenticate if needed with 'cf login'.",
         "xsSecurityJsonCouldNotBeParsed": "The xs-security.json file could not be parsed. Ensure the xs-security.json file exists and try again.",
         "failedToCreateServiceInstance": "Failed to create the service instance: '{{serviceInstanceName}}'. Error: {{error}}",
+        "failedToUpdateServiceInstance": "Failed to update the service instance: '{{serviceInstanceName}}'. Error: {{error}}",
         "failedToGetFDCApps": "Retrieving FDC apps failed: {{error}}",
         "failedToGetFDCInbounds": "Retrieving inbounds from the UI5 Flexibility Design and Configuration service failed: {{error}}", 
         "failedToConnectToFDCService": "Failed to connect to the FDC service: '{{status}}'",

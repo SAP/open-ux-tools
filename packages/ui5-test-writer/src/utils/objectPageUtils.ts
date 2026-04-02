@@ -1,6 +1,7 @@
 import type { Logger } from '@sap-ux/logger';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
 import type {
+    FormField,
     BodySectionFeatureData,
     BodySubSectionFeatureData,
     HeaderSectionFeatureData,
@@ -247,15 +248,41 @@ function getHeaderSectionFormFields(section: HeaderSectionItem): HeaderSectionFe
     if (fields) {
         Object.keys(fields).forEach((fieldKey) => {
             const field = fields[fieldKey];
-            if (field?.name) {
-                formFields.push({
-                    fieldGroupQualifier: getFieldGroupQualifier(formAggregation),
-                    field: field.schema.keys.find((key) => key.name === 'Value')?.value
-                });
+            const fieldData = getFormFieldData(field, formAggregation);
+            if (fieldData) {
+                formFields.push(fieldData);
             }
         });
     }
     return formFields;
+}
+
+/**
+ * Gets field data for a form field in a header section for OPA5 tests, including its identifier, bound property, and target annotation.
+ *
+ * @param field - field entry from ux specification
+ * @param formAggregation - form aggregation entry from ux specification, used to get field group qualifier for the field
+ * @returns field data including its identifier, bound property, and target annotation for OPA5 tests; can be undefined if the field type is not supported or necessary information is missing
+ */
+function getFormFieldData(field: FieldItem, formAggregation: AggregationItem): FormField | undefined {
+    if (!field.name) {
+        return undefined;
+    }
+    let [_, propertyName, targetAnnotation]: (string | undefined)[] = field.name.split('::');
+
+    // fall back to Value property in case of malformed or otherwise irregular field name
+    if (!propertyName) {
+        propertyName = field.schema.keys.find((key) => key.name === 'Value')?.value;
+    }
+
+    const fieldIdentifier = {
+        fieldGroupQualifier: getFieldGroupQualifier(formAggregation),
+        field: propertyName,
+        targetAnnotation: targetAnnotation
+    };
+
+    // avoid creating identifier if field property could not be determined
+    return fieldIdentifier.field ? fieldIdentifier : undefined;
 }
 
 /**

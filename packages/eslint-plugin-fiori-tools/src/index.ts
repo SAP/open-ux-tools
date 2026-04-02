@@ -66,6 +66,7 @@ const commonConfig: Linter.Config[] = [
             globals: {
                 ...globals.browser,
                 ...globals.node,
+                ...globals.es2020,
                 sap: 'readonly'
             }
         }

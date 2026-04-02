@@ -1,5 +1,19 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.99
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/ui5-application-writer@1.8.3
+
+## 0.7.98
+
+### Patch Changes
+
+- 9d272d7: Fix header form field identifier values
+
 ## 0.7.97
 
 ### Patch Changes
