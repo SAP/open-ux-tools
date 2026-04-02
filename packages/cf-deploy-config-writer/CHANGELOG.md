@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.92
+
+### Patch Changes
+
+- 551ae9a: Align mta.yaml for standalone and ensure external package.json changes are refected
+
 ## 0.3.91
 
 ### Patch Changes
