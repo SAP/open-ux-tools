@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 0.4.4
+
+### Patch Changes
+
+- 6379785: fix name validation
+
+## 0.4.3
+
+### Patch Changes
+
+- c53a4ba: chore(sap-systems-ext): upgrade shared devDependencies (jest 30, i18next 25)
+
 ## 0.4.2
 
 ### Patch Changes

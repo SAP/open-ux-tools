@@ -1,5 +1,39 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.11
+
+### Patch Changes
+
+- 56239c2: fix(deploy-tooling): normalize package name to uppercase in task (ui5-deploy) flow (#4453)
+
+    Moves package name normalization from `mergeConfig` (CLI-only) into `validateConfig` (shared), ensuring lowercase ABAP package names are uppercased with a warning in both the CLI and ui5-deploy task flows.
+
+## 0.18.10
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.28
+- @sap-ux/inquirer-common@0.11.33
+- @sap-ux/project-input-validator@0.6.74
+- @sap-ux/system-access@0.7.4
+
+## 0.18.9
+
+### Patch Changes
+
+- c53a4ba: chore(deploy-tooling): upgrade commander 9.x → 14.x; upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/ui5-config@0.30.1
+
 ## 0.18.8
 
 ### Patch Changes

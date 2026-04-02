@@ -79,12 +79,28 @@ export type ObjectPageNavigationParents = {
     parentOPTableSection?: string;
 };
 
+export type BodySubSectionFeatureData = {
+    id: string;
+    isTable: boolean;
+    custom: boolean;
+    order: number;
+};
+
+export type BodySectionFeatureData = {
+    id: string;
+    isTable: boolean;
+    custom: boolean;
+    order: number;
+    subSections: BodySubSectionFeatureData[];
+};
+
 export type ObjectPageFeatures = {
     name?: string;
     navigationParents?: ObjectPageNavigationParents;
     headerTitle?: string;
     headerDescription?: string;
     headerSections?: HeaderSectionFeatureData[];
+    bodySections?: BodySectionFeatureData[];
 };
 
 export type ListReportFeatures = {
@@ -138,6 +154,12 @@ export type AppFeatures = {
     fpm?: FPMFeatures;
 };
 
+export type FormField = {
+    fieldGroupQualifier?: string;
+    field?: string;
+    targetAnnotation?: string;
+};
+
 export type HeaderSectionFeatureData = {
     facetId?: string;
     title?: string;
@@ -146,10 +168,7 @@ export type HeaderSectionFeatureData = {
     microChart?: boolean;
     form?: boolean;
     stashed?: boolean | string;
-    fields?: {
-        fieldGroupQualifier?: string;
-        field?: string;
-    }[];
+    fields?: FormField[];
 };
 
 export interface ButtonState {

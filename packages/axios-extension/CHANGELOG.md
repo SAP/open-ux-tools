@@ -1,5 +1,16 @@
 # @sap-ux/axios-extension
 
+## 1.25.28
+
+### Patch Changes
+
+- c53a4ba: chore(axios-extension): upgrade shared devDependencies (jest 30, axios 1.13.6, ws 8.20.0)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/feature-toggle@0.3.8
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/btp-utils@1.1.12
+
 ## 1.25.27
 
 ### Patch Changes
