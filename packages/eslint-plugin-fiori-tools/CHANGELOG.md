@@ -1,5 +1,41 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.11.3
+
+### Patch Changes
+
+- 0153757: add es2020 globals
+
+## 9.11.2
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/fiori-annotation-api@0.9.40
+
+## 9.11.1
+
+### Patch Changes
+
+- 896be16: Add legacy eslint config from file `fiori_tools_configure.eslintrc` and `fiori_tools_testcode.eslintrc` for recommended-for-s4hana
+
+## 9.11.0
+
+### Minor Changes
+
+- a61cb9b: [rule] Add rule to check that intent-based navigation data fields are not used.
+
+## 9.10.5
+
+### Patch Changes
+
+- c53a4ba: chore(eslint-plugin-fiori-tools): upgrade typescript-eslint 8.46.2 → 8.57.2; upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/odata-vocabularies@0.4.30
+    - @sap-ux/fiori-annotation-api@0.9.39
+    - @sap-ux/project-access@1.35.17
+
 ## 9.10.4
 
 ### Patch Changes

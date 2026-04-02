@@ -1,5 +1,60 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.179
+
+### Patch Changes
+
+- @sap-ux/flp-config-inquirer@0.4.169
+- @sap-ux/app-config-writer@0.6.132
+
+## 0.3.178
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/app-config-writer@0.6.132
+    - @sap-ux/fiori-generator-shared@0.13.95
+    - @sap-ux/flp-config-inquirer@0.4.168
+    - @sap-ux/inquirer-common@0.11.33
+    - @sap-ux/deploy-config-generator-shared@0.1.114
+
+## 0.3.177
+
+### Patch Changes
+
+- @sap-ux/flp-config-inquirer@0.4.167
+- @sap-ux/app-config-writer@0.6.131
+
+## 0.3.176
+
+### Patch Changes
+
+- c53a4ba: chore(flp-config-sub-generator): upgrade @sap-devx/yeoman-ui-types 1.22.0 → 1.23.0 (runtime dep); upgrade devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/app-config-writer@0.6.131
+    - @sap-ux/deploy-config-generator-shared@0.1.113
+    - @sap-ux/feature-toggle@0.3.8
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/flp-config-inquirer@0.4.166
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/project-access@1.35.17
+
+## 0.3.175
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.93
+- @sap-ux/inquirer-common@0.11.31
+- @sap-ux/deploy-config-generator-shared@0.1.112
+- @sap-ux/flp-config-inquirer@0.4.165
+- @sap-ux/app-config-writer@0.6.130
+
 ## 0.3.174
 
 ### Patch Changes

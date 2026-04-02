@@ -1041,6 +1041,68 @@ describe('Test internal helper function coverage through public APIs', () => {
         expect(result.entityType).toBeDefined();
         expect(Array.isArray(result.actions)).toBe(true);
     });
+
+    test('should return enabled:false for bound actions without OperationAvailable annotation', () => {
+        // Single-entity bound actions require row selection — disabled by default (no row selected).
+        // Collection-bound actions operate on the entity set — always enabled.
+        const metadata = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TestEntity">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+            </EntityType>
+            <Action Name="EntityBoundAction" IsBound="true">
+                <Parameter Name="_it" Type="TestService.TestEntity" Nullable="false"/>
+            </Action>
+            <Action Name="CollectionBoundAction" IsBound="true">
+                <Parameter Name="_it" Type="Collection(TestService.TestEntity)" Nullable="false"/>
+            </Action>
+            <Action Name="UnboundAction" IsBound="false"/>
+            <EntityContainer Name="Container">
+                <EntitySet Name="TestSet" EntityType="TestService.TestEntity"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TestEntity">
+                <Annotation Term="com.sap.vocabularies.UI.v1.LineItem">
+                    <Collection>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Entity Bound Action"/>
+                            <PropertyValue Property="Action" String="TestService.EntityBoundAction(TestService.TestEntity)"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Collection Bound Action"/>
+                            <PropertyValue Property="Action" String="TestService.CollectionBoundAction(Collection(TestService.TestEntity))"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Unbound Action"/>
+                            <PropertyValue Property="Action" String="TestService.UnboundAction"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+        const result = checkActionButtonStates(metadata, 'TestSet');
+        expect(result.actions).toBeDefined();
+        expect(Array.isArray(result.actions)).toBe(true);
+
+        const entityBoundAction = result.actions.find((a) => a.label === 'Entity Bound Action');
+        const collectionBoundAction = result.actions.find((a) => a.label === 'Collection Bound Action');
+        const unboundAction = result.actions.find((a) => a.label === 'Unbound Action');
+
+        if (entityBoundAction) {
+            expect(entityBoundAction.enabled).toBe(false);
+        }
+        if (collectionBoundAction) {
+            expect(collectionBoundAction.enabled).toBe(true);
+        }
+        if (unboundAction) {
+            expect(unboundAction.enabled).toBe(true);
+        }
+    });
 });
 
 describe('Test getToolBarActionNames()', () => {

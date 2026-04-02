@@ -2,8 +2,8 @@ import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { ParsedService } from '../parser';
 import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
 import { getParsedServiceByName } from '../utils';
-import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
-import { collectTables, collectSections } from './annotations';
+import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
+import { collectTables, collectSections, collectHeaderSections } from './annotations';
 
 export interface ApplicationSetting {
     createMode: string;
@@ -21,7 +21,7 @@ export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
     contextPath: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
-    lookup: NodeLookup<Table | OrphanTable>;
+    lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
 }
 
 export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
@@ -30,7 +30,7 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     contextPath: string;
     entity: MetadataElement;
     sections: Section[];
-    lookup: NodeLookup<Table | Section>;
+    lookup: NodeLookup<Table | Section | FieldGroup>;
     header: {
         anchorBarVisible: ConfigurationProperty<boolean>;
         visible: ConfigurationProperty<boolean>;
@@ -45,13 +45,14 @@ export interface AnnotationBasedNode<
     Children = never
 > extends ConfigurationBase<T['type'], Configuration> {
     annotation?: T;
-
     children: Children[];
 }
 
 export type OrphanSection = ConfigurationBase<'orphan-section', {}>;
 export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
-export type Section = TableSection | OrphanSection;
+export type HeaderSection = AnnotationBasedNode<HeaderSectionNode, {}, FieldGroup>;
+export type Section = TableSection | OrphanSection | HeaderSection;
+
 export interface TableSettings {
     creationMode: string;
     tableType: string;
@@ -65,6 +66,7 @@ export interface TableSettings {
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
+export type FieldGroup = AnnotationBasedNode<FieldGroupNode, {}>;
 
 interface ManifestApplicationSettings {
     macros?: {
@@ -216,15 +218,44 @@ function getCreationModeValues(tableType?: string): string[] {
     return ['InlineCreationRows', 'NewPage'];
 }
 
-export type Node = Section | Table | OrphanTable;
+export type Node = Section | Table | OrphanTable | FieldGroup;
 export type NodeLookup<T extends Node> = {
     [K in T['type']]?: Extract<T, { type: K }>[];
 };
 
 /**
+ * Links OData V4 object page table and header sections with their tables and FieldGroup configurations.
+ *
+ * @param page - The object page being linked
+ * @param path - Configuration path segments to the page
+ * @param name - The name of the page
+ * @param sections - Array of table and header section nodes to link
+ * @param target - The routing target configuration
+ */
+function linkV4ObjectPageSections(
+    page: FeV4ObjectPage,
+    path: string[],
+    name: string,
+    sections: (TableSectionNode | HeaderSectionNode)[],
+    target: Target
+): void {
+    linkObjectPageSections(
+        page,
+        path,
+        name,
+        sections.filter((section) => section.type === 'table-section'),
+        target
+    );
+    for (const section of sections.filter((section) => section.type === 'header-section')) {
+        collectHeaderSections(section, page);
+    }
+}
+
+/**
  * Runs the Fiori Elements V4 linker to build linked app structure.
  *
  * @param context - The linker context containing app and service information
+ * @returns - V4 app pages with linked annotations
  */
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
     const linkedApp = linkApplicationSettings(context);
@@ -276,7 +307,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                     }
                 }
             };
-            linkObjectPageSections(page, path, name, sections, target);
+            linkV4ObjectPageSections(page, path, name, sections, target);
             linkObjectPageHeader(page, target);
             linkedApp.pages.push(page);
         }
