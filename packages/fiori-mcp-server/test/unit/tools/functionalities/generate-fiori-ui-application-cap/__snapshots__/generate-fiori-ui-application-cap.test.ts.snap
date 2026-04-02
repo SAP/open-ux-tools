@@ -74,6 +74,7 @@ Object {
             "type": "string",
           },
           "name": Object {
+            "description": "Must be lowercase with dashes, e.g., 'sales-order-management'.",
             "pattern": "^[a-z0-9-]+$",
             "type": "string",
           },

@@ -113,7 +113,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
 }
 
 /**
- * Prepare the run of the task based on on the configured command i.e. read and validate configuration and create logger.
+ * Prepare the run of the task based on the configured command i.e. read and validate configuration and create logger.
  *
  * @param cmd - CLI command configuration to be executed
  * @returns a set of objects required for the command execution

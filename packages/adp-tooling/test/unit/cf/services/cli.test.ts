@@ -5,7 +5,13 @@ import type { CFResource } from '@sap/cf-tools/out/src/types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { isCfInstalled, getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
+import {
+    isCfInstalled,
+    getServiceKeys,
+    createServiceKey,
+    requestCfApi,
+    updateServiceInstance
+} from '../../../../src/cf/services/cli';
 import { initI18n, t } from '../../../../src/i18n';
 import type { ServiceKeys } from '../../../../src/types';
 
@@ -482,6 +488,56 @@ describe('CF Services CLI', () => {
 
             expect(result).toEqual(mockJsonResponse);
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
+        });
+    });
+
+    describe('updateServiceInstance', () => {
+        const serviceInstanceName = 'test-xsuaa-service';
+        const parameters = {
+            xsappname: 'test-app',
+            'tenant-mode': 'dedicated',
+            'oauth2-configuration': { 'redirect-uris': ['https://**.applicationstudio.cloud.sap/**'] }
+        };
+
+        test('should update service instance successfully', async () => {
+            const mockResponse = {
+                exitCode: 0,
+                stdout: 'OK',
+                stderr: ''
+            };
+            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+
+            await updateServiceInstance(serviceInstanceName, parameters);
+
+            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
+                ['update-service', serviceInstanceName, '-c', JSON.stringify(parameters), '--wait'],
+                { env: { 'CF_COLOR': 'false' } }
+            );
+        });
+
+        test('should throw error when update-service command fails', async () => {
+            const mockResponse = {
+                exitCode: 1,
+                stdout: '',
+                stderr: 'Service instance not found'
+            };
+            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+
+            await expect(updateServiceInstance(serviceInstanceName, parameters)).rejects.toThrow(
+                t('error.failedToUpdateServiceInstance', {
+                    serviceInstanceName,
+                    error: mockResponse.stderr
+                })
+            );
+        });
+
+        test('should throw error when update-service command throws exception', async () => {
+            const error = new Error('Network error');
+            mockCFToolsCliExecute.mockRejectedValue(error);
+
+            await expect(updateServiceInstance(serviceInstanceName, parameters)).rejects.toThrow(
+                t('error.failedToUpdateServiceInstance', { serviceInstanceName, error: error.message })
+            );
         });
     });
 });

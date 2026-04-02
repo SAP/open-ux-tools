@@ -5,6 +5,7 @@ import type {
     CreateFioriProject,
     ExportSystem,
     FireGALinkClickedTelemetry,
+    OpenExistingSystem,
     OpenGuidedAnswers,
     OpenOutputChannel,
     TestConnection,
@@ -24,6 +25,11 @@ export const openOutputChannel = (): OpenOutputChannel => ({
     type: 'OPEN_OUTPUT_CHANNEL'
 });
 
+export const openExistingSystem = (url: string, client?: string): OpenExistingSystem => ({
+    type: 'OPEN_EXISTING_SYSTEM',
+    payload: { url, client }
+});
+
 export const fireGALinkTelemetry = (): FireGALinkClickedTelemetry => ({
     type: 'FIRE_GA_LINK_CLICKED_TELEMETRY'
 });
@@ -38,9 +44,9 @@ export const exportSystem = (backendSystem: BackendSystem): ExportSystem => ({
     payload: { system: backendSystem }
 });
 
-export const testConnection = (backendSystem: BackendSystem): TestConnection => ({
+export const testConnection = (backendSystem: BackendSystem, servicePath?: string): TestConnection => ({
     type: 'TEST_CONNECTION',
-    payload: { system: backendSystem }
+    payload: { system: backendSystem, servicePath }
 });
 
 export const updateSystem = (backendSystem: BackendSystem): UpdateSystem => ({

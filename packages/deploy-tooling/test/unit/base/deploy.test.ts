@@ -2,7 +2,7 @@ import prompts from 'prompts';
 import AdmZip from 'adm-zip';
 import { join } from 'node:path';
 import { createTransportRequest, deploy, undeploy } from '../../../src/base/deploy';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { LogLevel, NullTransport, ToolsLogger } from '@sap-ux/logger';
 import {
     mockedStoreService,
     mockedUi5RepoService,
@@ -260,6 +260,58 @@ describe('base/deploy', () => {
             }
         });
 
+        test('Does not show debug hint when config.log is at Debug level', async () => {
+            const unknownError = new Error('~error');
+            mockedUi5RepoService.deploy.mockRejectedValue(unknownError);
+            const logErrorSpy = jest.spyOn(nullLogger, 'error');
+            try {
+                await deploy(archive, { app, target, log: LogLevel.Debug }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toBe(unknownError);
+            }
+            expect(logErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining('Change logging level'));
+        });
+
+        test('Does not show debug hint when config.log is above Debug level', async () => {
+            const unknownError = new Error('~error');
+            mockedUi5RepoService.deploy.mockRejectedValue(unknownError);
+            const logErrorSpy = jest.spyOn(nullLogger, 'error');
+            try {
+                await deploy(archive, { app, target, log: LogLevel.Silly }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toBe(unknownError);
+            }
+            expect(logErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining('Change logging level'));
+        });
+
+        test('Shows debug hint when config.log is below Debug level', async () => {
+            const unknownError = new Error('~error');
+            mockedUi5RepoService.deploy.mockRejectedValue(unknownError);
+            const logErrorSpy = jest.spyOn(nullLogger, 'error');
+            try {
+                await deploy(archive, { app, target, log: LogLevel.Info }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toBe(unknownError);
+            }
+            expect(logErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Change logging level'));
+        });
+
+        test('Does not show debug hint when config.verbose is true', async () => {
+            const unknownError = new Error('~error');
+            mockedUi5RepoService.deploy.mockRejectedValue(unknownError);
+            const logErrorSpy = jest.spyOn(nullLogger, 'error');
+            try {
+                await deploy(archive, { app, target, verbose: true }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toBe(unknownError);
+            }
+            expect(logErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining('Change logging level'));
+        });
+
         test('Creates new transport request during deployment and reset createTransport param', async () => {
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
@@ -381,6 +433,21 @@ describe('base/deploy', () => {
                     expect(error.message).toMatch(/Invalid deployment configuration/);
                 }
             });
+        });
+
+        test('throws actionable error when provider is not an AbapServiceProvider', async () => {
+            // Simulate a destination where isAbapSystem returned false, resulting in a plain
+            // ServiceProvider without getUi5AbapRepository (e.g. WebIDEUsage=odata_gen only)
+            const nonAbapProvider = { defaults: {} } as unknown as AbapServiceProvider;
+            mockCreateForAbap.mockReturnValueOnce(nonAbapProvider);
+            try {
+                await deploy(archive, { app, target: { ...target, destination: 'MYTESTDEST' } }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toBeInstanceOf(TypeError);
+                expect(error.message).toContain('MYTESTDEST');
+                expect(error.message).toContain('not recognized as an ABAP system');
+            }
         });
     });
 

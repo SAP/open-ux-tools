@@ -41,7 +41,7 @@ export class ManifestServiceCF implements IManifestService {
         const service = new ManifestServiceCF(logger);
 
         logger.debug('Triggering project build to generate dist folder');
-        await runBuild(projectPath, { ADP_BUILDER_MODE: 'preview' });
+        await runBuild(projectPath);
 
         const manifestPath = join(projectPath, CF_BUILD_PATH, 'manifest.json');
         logger.debug(`Reading manifest from '${manifestPath}'`);

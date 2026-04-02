@@ -87,8 +87,8 @@ describe('Test validators', () => {
 
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes
+                    adpProjectTypeLabel: t('errors.validators.adpOnPremProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpCloudProjectType')
                 })
             );
         });
@@ -102,8 +102,8 @@ describe('Test validators', () => {
 
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });
@@ -127,8 +127,8 @@ describe('Test validators', () => {
 
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes: AdaptationProjectType.ON_PREMISE
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });
@@ -222,8 +222,8 @@ describe('Test validators', () => {
             );
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType: AdaptationProjectType.CLOUD_READY,
-                    supportedAdpProjectTypes: [AdaptationProjectType.ON_PREMISE]
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });
@@ -401,8 +401,8 @@ describe('Test validators', () => {
                 await validateCredentials('pass1', { ...previousAnswers, username: 'user1' }, undefined, adpProjectType)
             ).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });
