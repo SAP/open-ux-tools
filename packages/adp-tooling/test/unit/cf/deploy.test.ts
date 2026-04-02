@@ -308,12 +308,7 @@ describe('CF Deploy', () => {
         test('should run npm run deploy', async () => {
             await deployMtaArchive(appPath, mockLogger);
 
-            expect(mockCommandRunnerRun).toHaveBeenCalledWith(
-                'npm',
-                ['run', 'deploy'],
-                { cwd: appPath },
-                mockLogger
-            );
+            expect(mockCommandRunnerRun).toHaveBeenCalledWith('npm', ['run', 'deploy'], { cwd: appPath }, mockLogger);
         });
 
         test('should throw when deploy fails', async () => {

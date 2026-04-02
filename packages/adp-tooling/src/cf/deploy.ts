@@ -143,16 +143,11 @@ export async function deployMtaArchive(projectPath: string, logger: ToolsLogger)
  * Deploys a CF ADP project by building the MTA archive and deploying it to Cloud Foundry.
  *
  * @param {string} projectPath - Path to the ADP project root.
- * @param {ToolsLogger} logger - Logger instance.
  * @param {DeployCfOptions} [options] - Deployment options (confirmation callback, output callback).
+ * @param {ToolsLogger} logger - Logger instance.
  * @returns {Promise<void>} Resolves when deployment completes.
  */
-export async function deployCf(
-    projectPath: string,
-    options: DeployCfOptions = {},
-    logger: ToolsLogger
-
-): Promise<void> {
+export async function deployCf(projectPath: string, options: DeployCfOptions = {}, logger: ToolsLogger): Promise<void> {
     const { cfConfig, mtaRoot } = await validateCfEnvironment(projectPath, logger);
 
     const info = getCfDeploymentInfo(mtaRoot, cfConfig);
@@ -170,7 +165,7 @@ export async function deployCf(
     }
     logger.info(t('deploy.buildStarted'));
     await buildMtaArchive(projectPath, logger);
-    
+
     logger.info(t('deploy.deployStarted'));
     await deployMtaArchive(projectPath, logger);
 
