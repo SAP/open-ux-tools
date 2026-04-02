@@ -1,6 +1,6 @@
 [![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/backend-proxy-middleware-cf/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/backend-proxy-middleware-cf)
 
-# `@sap-ux/backend-proxy-middleware-cf`
+# [`@sap-ux/backend-proxy-middleware-cf`](https://github.com/SAP/open-ux-tools/tree/main/packages/backend-proxy-middleware-cf)
 
 UI5 server middleware that uses `@sap/approuter` to make destinations configured in SAP Business Technology Platform (BTP) available for local development. Requests to destination routes are proxied to a local approuter instance via `http-proxy-middleware`.
 
@@ -35,9 +35,7 @@ pnpm add -D @sap-ux/backend-proxy-middleware-cf
 | `disableWelcomeFile` | `boolean` | `false` | Disable welcome file handling from `xs-app.json`. |
 | `disableUi5ServerRoutes` | `boolean` | `false` | Disable automatic injection of the `ui5-server` HTML auth route for `/test/*` and `/local/*` pages. |
 
-```bash
-pnpm add -D @sap-ux/backend-proxy-middleware-cf
-```
+## [Usage](#usage)
 
 1. Add the middleware in `ui5.yaml`:
 
