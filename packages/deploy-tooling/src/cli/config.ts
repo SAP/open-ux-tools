@@ -4,7 +4,6 @@ import { readFileSync } from 'node:fs';
 import { dirname, isAbsolute, join } from 'node:path';
 import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
 import { NAME } from '../types';
-import type { Logger } from '@sap-ux/logger';
 
 /**
  * Tries to read the version of the modules package.json but in case of an error, it returns the manually maintained version matching major.minor of the module.
@@ -162,28 +161,15 @@ function mergeCredentials(taskConfig: AbapDeployConfig, options: CliOptions) {
  *
  * @param taskConfig - base configuration from the file
  * @param options - CLI options
- * @param logger - optional logger for warnings
  * @returns the merged config
  */
-export async function mergeConfig(
-    taskConfig: AbapDeployConfig,
-    options: CliOptions,
-    logger?: Logger
-): Promise<AbapDeployConfig> {
+export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOptions): Promise<AbapDeployConfig> {
     const app: Partial<BspConfig> = {
         name: options.name ?? taskConfig.app?.name,
         description: options.description ?? taskConfig.app?.description,
         package: options.package ?? taskConfig.app?.package,
         transport: options.transport ?? taskConfig.app?.transport
     };
-
-    if (app.package && app.package !== app.package.toUpperCase()) {
-        const normalized = app.package.toUpperCase();
-        logger?.warn(
-            `Package name '${app.package}' was normalized to '${normalized}'. Lowercase package names may cause deployment failures.`
-        );
-        app.package = normalized;
-    }
     const target = mergeTarget(taskConfig.target, options);
     const config: AbapDeployConfig = { app, target, credentials: mergeCredentials(taskConfig, options) };
     config.test = mergeFlag(options.test, taskConfig.test);

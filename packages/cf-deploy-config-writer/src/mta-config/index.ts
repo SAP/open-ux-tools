@@ -22,9 +22,9 @@ import {
     CDSDestinationService,
     CDSHTML5RepoService,
     RouterModule,
-    MAX_MTA_ID_LENGTH,
-    MTA_FILE_OPERATION_DELAY_MS
+    MAX_MTA_ID_LENGTH
 } from '../constants';
+import { waitForMtaFile } from './wait-for-mta';
 import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, type CAPConfig, RouterModuleType } from '../types';
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
@@ -45,26 +45,21 @@ export async function getMtaId(rootPath: string): Promise<string | undefined> {
 
 /**
  * Get the MTA configuration from the target folder.
- * Retries up to 5 times with delays to handle file system timing issues.
+ * Waits for mta.yaml to be fully written and parseable before reading,
+ * replacing the previous retry-with-delay approach.
  *
  * @param rootPath Path to the root folder
  * @returns MtaConfig instance if found
  */
 export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefined> {
-    let mtaConfig;
-    const MAX_RETRIES = 5;
-    for (let retries = MAX_RETRIES; retries >= 0; retries--) {
-        try {
-            mtaConfig = await MtaConfig.newInstance(rootPath, LoggerHelper.logger);
-            if (mtaConfig?.prefix) {
-                break;
-            }
-        } catch (error) {
-            LoggerHelper.logger?.debug(t('debug.errorReadingMta', { error: error.message }));
-            // Delay before retry to allow file system operations to complete
-            await new Promise((resolve) => setTimeout(resolve, MTA_FILE_OPERATION_DELAY_MS));
-        }
+    try {
+        await waitForMtaFile(rootPath);
+    } catch {
+        // File did not become ready — return undefined (same behaviour as before)
+        LoggerHelper.logger?.debug(t('debug.mtaReadWithPrefix', { prefix: undefined }));
+        return undefined;
     }
+    const mtaConfig = await MtaConfig.newInstance(rootPath, LoggerHelper.logger);
     LoggerHelper.logger?.debug(t('debug.mtaReadWithPrefix', { prefix: mtaConfig?.prefix }));
     return mtaConfig;
 }
