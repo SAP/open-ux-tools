@@ -1,5 +1,13 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.93
+
+### Patch Changes
+
+- 9858ad4: refactor: replace hardcoded MTA file operation delays with predicate-based polling
+
+    Introduces `waitForMtaFile()` in `src/mta-config/wait-for-mta.ts` that polls `fs.existsSync` + `Mta.getMtaID()` with a configurable timeout instead of sleeping for a fixed duration. Both `getMtaConfig()` and `generateCAPConfig()` now use this mechanism, eliminating up to 5 × 1000ms silent delays on slow file systems while still handling the mta-lib file-readiness requirement correctly.
+
 ## 0.3.92
 
 ### Patch Changes
