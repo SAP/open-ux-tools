@@ -95,19 +95,14 @@ function hasInlineTextArrangement(textElement: Element, aliasInfo: AliasInformat
 }
 
 /**
- * Collects the entity type names that are actually used on pages in the app.
- * Includes the main entity type of each page and entity types from sub-tables (e.g. via nav props on OPs).
- * Only annotations on these entity types will be checked by the rule.
+ * Builds a reverse map from IndexedAnnotation to entity type name,
+ * covering only entity-type level annotations (non-property targets).
  *
- * @param pages - Pages from the linked app model
  * @param parsedService - The parsed OData service
- * @returns Set of fully-qualified entity type names used on at least one page
+ * @returns Map from annotation object to its entity type name
  */
-function collectRelevantEntityTypes(pages: AnyPage[], parsedService: ParsedService): Set<string> {
-    const entityTypes = new Set<string>();
-
-    // Build reverse map: IndexedAnnotation → entity type name (entity-type level annotations only)
-    const annotationEntityTypeMap = new Map<IndexedAnnotation, string>();
+function buildAnnotationEntityTypeMap(parsedService: ParsedService): Map<IndexedAnnotation, string> {
+    const map = new Map<IndexedAnnotation, string>();
     for (const [key, qualifiedAnnotations] of Object.entries(parsedService.index.annotations)) {
         const atIdx = key.indexOf('/@');
         if (atIdx === -1) {
@@ -118,9 +113,24 @@ function collectRelevantEntityTypes(pages: AnyPage[], parsedService: ParsedServi
             continue; // property-level annotation, skip
         }
         for (const annotation of Object.values(qualifiedAnnotations)) {
-            annotationEntityTypeMap.set(annotation, targetPath);
+            map.set(annotation, targetPath);
         }
     }
+    return map;
+}
+
+/**
+ * Collects the entity type names that are actually used on pages in the app.
+ * Includes the main entity type of each page and entity types from sub-tables (e.g. via nav props on OPs).
+ * Only annotations on these entity types will be checked by the rule.
+ *
+ * @param pages - Pages from the linked app model
+ * @param parsedService - The parsed OData service
+ * @returns Set of fully-qualified entity type names used on at least one page
+ */
+function collectRelevantEntityTypes(pages: AnyPage[], parsedService: ParsedService): Set<string> {
+    const entityTypes = new Set<string>();
+    const annotationEntityTypeMap = buildAnnotationEntityTypeMap(parsedService);
 
     for (const page of pages) {
         if (page.entity?.structuredType) {
