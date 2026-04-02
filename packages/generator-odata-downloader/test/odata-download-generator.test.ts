@@ -205,7 +205,12 @@ describe('ODataDownloadGenerator', () => {
             await generator.writing();
 
             expect(mockDestinationRoot).toHaveBeenCalledWith(join('/test/app'));
-            expect(createEntitySetData).toHaveBeenCalledWith([{ TravelID: '1' }], { Travel: 'Travel' }, 'Travel');
+            expect(createEntitySetData).toHaveBeenCalledWith(
+                [{ TravelID: '1' }],
+                { Travel: 'Travel' },
+                'Travel',
+                undefined
+            );
             expect(mockWriteDestinationJSON).toHaveBeenCalledTimes(2);
             expect(mockWriteDestinationJSON).toHaveBeenCalledWith(
                 join('webapp', 'localService', 'mockdata', 'Travel.json'),

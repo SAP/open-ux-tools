@@ -8,12 +8,15 @@
         "noServiceEntityData": "No service entity data to write.",
         "noValueHelpData": "No Value Help service data to write.",
         "entityFilesToBeGenerated": "The following entity files will be created: {{entities}}",
-        "noListEntityDefined": "No list entity defined. A main list entity is required for data downloading."
+        "noListEntityDefined": "No list entity defined. A main list entity is required for data downloading.",
+        "hierarchyEntityQuery": "Fetching hierarchy data for entity set: {{entitySetName}}",
+        "hierarchyFilesGenerated": "The following hierarchy data files were created: {{entities}}"
     },
     "texts": {
         "seeLogForDetails": "For more information, view the logs.",
         "rows_one": "{{count}} row",
-        "rows_other": "{{count}} rows"
+        "rows_other": "{{count}} rows",
+        "generatorTitle": "Fiori Elements Data Downloader"
     },
     "prompts": {
         "appSelection": {
@@ -26,7 +29,8 @@
             }
         },
         "relatedEntitySelection": {
-            "message": "Select entities for data download (pre-selected entities are referenced by the application)"
+            "message": "Select entities for data download (pre-selected entities are referenced by the application)",
+            "hierarchyAutoQueried": "auto-queried via descendants"
         },
         "toggleSelection": {
             "message": "Reset selection",
@@ -39,7 +43,8 @@
             "validation": {
                 "invalidKeyValueChars": "Invalid key value contain not allowed characters: {{chars}}",
                 "invalidRangeSpecified": "Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'",
-                "invalidBooleanValue": "Invalid boolean value entered. Please enter true or false."
+                "invalidBooleanValue": "Invalid boolean value entered. Please enter true or false.",
+                "invalidGuidValue": "Invalid GUID format. Expected format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             }
         },
         "skipDataDownload": {
@@ -65,7 +70,7 @@
     },
     "steps": {
         "odataDownloader": {
-            "name": "OData Downloader",
+            "name": "Configure Data Download",
             "description": "Download data from an OData service for use with the UX Tools Mockdata Server"
         },
         "valueHelpSelection": {

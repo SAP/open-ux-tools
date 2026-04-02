@@ -133,6 +133,13 @@ export class ODataDownloadGenerator extends Generator {
                 this.prompts.setCallback(fn);
             }
         };
+
+        if (typeof opts.appWizard?.setHeaderTitle === 'function') {
+            opts.appWizard.setHeaderTitle(
+                t('texts.generatorTitle'),
+                `${this.rootGeneratorName()}@${this.rootGeneratorVersion()}`
+            );
+        }
     }
 
     /**
@@ -226,7 +233,8 @@ export class ODataDownloadGenerator extends Generator {
                     const entityFileData = createEntitySetData(
                         this.state.entityOData,
                         this.state.entityPropertyToEntitySet,
-                        this.state.appEntities.listEntity.entitySetName
+                        this.state.appEntities.listEntity.entitySetName,
+                        this.state.appEntities.hierarchyEntities
                     );
                     ODataDownloadGenerator.logger.info(
                         t('info.entityFilesToBeGenerated', { entities: Object.keys(entityFileData).join(', ') })
@@ -238,6 +246,7 @@ export class ODataDownloadGenerator extends Generator {
                         // Writes relative to destination root path
                         this.writeDestinationJSON(join(this.state.mockDataRootPath!, `${entityName}.json`), entityData);
                     });
+
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITE_DATA_FILES_END', {
                         'writeFileDuration': `${Date.now() - writeStartTime} ms`,

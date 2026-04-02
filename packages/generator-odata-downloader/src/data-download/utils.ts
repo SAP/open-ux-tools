@@ -9,7 +9,7 @@ import type { PagesV4 } from '@sap/ux-specification/dist/types/src/v4';
 import { t } from '../utils/i18n';
 import { ODataDownloadGenerator } from './odata-download-generator';
 import type { EntitySetsFlat } from './odata-query';
-import type { Entity, ReferencedEntities, SemanticKeyFilter } from './types';
+import type { Entity, ReferencedEntities, SemanticKeyFilter, HierarchyEntity } from './types';
 import { navPropNameExclusions } from './types';
 
 /**
@@ -45,12 +45,14 @@ function mergeEntitySetData(
  * @param odataResult - The OData result to process
  * @param entitySetsFlat - Map of entity paths to entity set names
  * @param entitySetName - The name of the entity set
+ * @param hierarchyEntities - Optional hierarchy descriptors; when provided, root node parent properties are cleared
  * @returns Object keyed on entity set name containing entity data arrays
  */
 export function createEntitySetData(
     odataResult: object | unknown[],
     entitySetsFlat: EntitySetsFlat,
-    entitySetName: string
+    entitySetName: string,
+    hierarchyEntities?: HierarchyEntity[]
 ): { [key: string]: object[] } {
     const resultDataByEntitySet: { [key: string]: object[] } = {};
     const odataRestulAsArray: Record<string, unknown>[] = Array.isArray(odataResult)
@@ -92,7 +94,99 @@ export function createEntitySetData(
         }
     });
 
+    if (hierarchyEntities?.length) {
+        normalizeHierarchyNodeIds(resultDataByEntitySet, hierarchyEntities);
+        clearRootHierarchyParentProperty(resultDataByEntitySet, hierarchyEntities);
+    }
+
     return resultDataByEntitySet;
+}
+
+/** Regex matching a 32-character uppercase hex string (ABAP RAW16 GUID without dashes). */
+const upperHexGuidPattern = /^[0-9A-F]{32}$/;
+
+/**
+ * Converts a 32-character uppercase hex string to standard GUID format (lowercase, 8-4-4-4-12 dashes).
+ *
+ * @param hex - The 32-character hex string
+ * @returns The GUID-formatted string
+ */
+function hexToGuid(hex: string): string {
+    const h = hex.toLowerCase();
+    return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+}
+
+/**
+ * Normalizes hierarchy NodeId values to match the parent property GUID format.
+ * ABAP exposes the same underlying GUID in different formats depending on the EDM type:
+ * Edm.Guid properties use lowercase with dashes, while Edm.String NodeId values use uppercase
+ * hex without dashes. The mock data server uses strict equality to match parent-child relationships,
+ * so the formats must be aligned.
+ *
+ * @param entityFileData - The entity set data map keyed by entity set name
+ * @param hierarchyEntities - The detected hierarchy entity descriptors
+ */
+export function normalizeHierarchyNodeIds(
+    entityFileData: { [key: string]: object[] },
+    hierarchyEntities: HierarchyEntity[]
+): void {
+    for (const hierarchy of hierarchyEntities) {
+        if (!['Edm.Guid', 'Edm.UUID'].includes(hierarchy.parentPropertyType)) {
+            continue;
+        }
+        const pathParts = hierarchy.nodeProperty.split('/');
+        for (const entityData of Object.values(entityFileData)) {
+            for (const entity of entityData) {
+                const record = entity as Record<string, unknown>;
+                let nodeValue: string | undefined;
+                if (pathParts.length > 1) {
+                    const complexObj = record[pathParts[0]] as Record<string, unknown> | undefined;
+                    nodeValue = complexObj?.[pathParts[1]] as string | undefined;
+                } else {
+                    nodeValue = record[pathParts[0]] as string | undefined;
+                }
+                if (typeof nodeValue === 'string' && upperHexGuidPattern.test(nodeValue)) {
+                    const guidValue = hexToGuid(nodeValue);
+                    if (pathParts.length > 1) {
+                        (record[pathParts[0]] as Record<string, unknown>)[pathParts[1]] = guidValue;
+                    } else {
+                        record[pathParts[0]] = guidValue;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Clears the parent property on root hierarchy nodes (DistanceFromRoot === 0).
+ * The mock data server uses an empty parent property to determine the root of the hierarchy from the data.
+ *
+ * @param entityFileData - The entity set data map keyed by entity set name
+ * @param hierarchyEntities - The detected hierarchy entity descriptors
+ */
+export function clearRootHierarchyParentProperty(
+    entityFileData: { [key: string]: object[] },
+    hierarchyEntities: HierarchyEntity[]
+): void {
+    for (const hierarchy of hierarchyEntities) {
+        const pathParts = hierarchy.nodeProperty.split('/');
+        for (const entityData of Object.values(entityFileData)) {
+            for (const entity of entityData) {
+                const record = entity as Record<string, unknown>;
+                if (!(hierarchy.parentProperty in record)) {
+                    continue;
+                }
+                const distanceFromRoot =
+                    pathParts.length > 1
+                        ? (record[pathParts[0]] as Record<string, unknown>)?.DistanceFromRoot
+                        : record.DistanceFromRoot;
+                if (distanceFromRoot === 0) {
+                    record[hierarchy.parentProperty] = '';
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -204,6 +298,61 @@ function getNavPropsForExpansion(
 }
 
 /**
+ * Scans converted metadata for entity sets with Aggregation.RecursiveHierarchy annotations.
+ * Extracts the node identifier property and parent reference property for each.
+ *
+ * @param convertedMetadata - The converted metadata object
+ * @returns Array of hierarchy entity descriptors
+ */
+export function getHierarchyEntities(convertedMetadata: ConvertedMetadata): HierarchyEntity[] {
+    const hierarchyEntities: HierarchyEntity[] = [];
+    for (const entitySet of convertedMetadata.entitySets) {
+        const aggregationAnnotations = entitySet.entityType?.annotations?.Aggregation;
+        if (!aggregationAnnotations) {
+            continue;
+        }
+        const hierarchyKey = Object.keys(aggregationAnnotations).find((key) => key.startsWith('RecursiveHierarchy'));
+        if (!hierarchyKey) {
+            continue;
+        }
+        const qualifier = hierarchyKey.split('#')[1] ?? '';
+        const aggregationAnnotation = aggregationAnnotations[hierarchyKey as keyof typeof aggregationAnnotations];
+        if (!aggregationAnnotation) {
+            continue;
+        }
+        const nodeProperty = (aggregationAnnotation as { NodeProperty?: { value?: string } }).NodeProperty?.value;
+        const parentNavProp = (
+            aggregationAnnotation as {
+                ParentNavigationProperty?: { $target?: { referentialConstraint?: { sourceProperty: string }[] } };
+            }
+        ).ParentNavigationProperty?.$target;
+        const parentProperty = parentNavProp?.referentialConstraint?.[0]?.sourceProperty;
+
+        if (nodeProperty && parentProperty) {
+            const isDraft = entitySet.entityType.keys.some((key) => key.name === 'IsActiveEntity');
+            const parentPropertyType =
+                entitySet.entityType.entityProperties.find((prop) => prop.name === parentProperty)?.type ??
+                'Edm.String';
+            hierarchyEntities.push({
+                entitySetName: entitySet.name,
+                entityTypeName: entitySet.entityType.fullyQualifiedName,
+                qualifier,
+                nodeProperty,
+                parentProperty,
+                parentPropertyType,
+                isDraft
+            });
+        }
+    }
+    if (hierarchyEntities.length) {
+        ODataDownloadGenerator.logger.debug(
+            `Hierarchy entities found: ${hierarchyEntities.map((h) => h.entitySetName).join(', ')}`
+        );
+    }
+    return hierarchyEntities;
+}
+
+/**
  * Load the entity model for processing to determine the odata queries that are relevant for the application.
  *
  * @param appAccess - Application access reference
@@ -280,6 +429,7 @@ export async function getEntityModel(
                 return undefined;
             }
             entities.pageObjectEntities = pageObjectEntities;
+            entities.hierarchyEntities = getHierarchyEntities(convertedMetadata);
         }
     }
     return entities;

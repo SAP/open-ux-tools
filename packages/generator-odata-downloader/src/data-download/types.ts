@@ -8,12 +8,23 @@ import type { EntitySetsFlat } from './odata-query';
 
 export type SemanticKeyFilter = { name: string; type: string; value: string | undefined };
 
+export type HierarchyEntity = {
+    entitySetName: string;
+    entityTypeName: string;
+    qualifier: string;
+    nodeProperty: string; // From Aggregation.RecursiveHierarchy.NodeProperty
+    parentProperty: string; // Resolved from ParentNavigationProperty referential constraint
+    parentPropertyType: string; // EDM type of the parent property (e.g. Edm.Guid, Edm.String)
+    isDraft: boolean; // Entity has IsActiveEntity key — requires ancestors() wrapper
+};
+
 export type ReferencedEntities = {
     listEntity: Entity & {
         semanticKeys: SemanticKeyFilter[]; // The query filters for the list entity
     };
     pageObjectEntities?: Entity[];
     navPropEntities?: Map<Entity, Entity[]>;
+    hierarchyEntities?: HierarchyEntity[];
 };
 export type Entity = {
     entitySetName: string;

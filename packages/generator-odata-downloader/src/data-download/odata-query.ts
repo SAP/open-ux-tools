@@ -3,10 +3,13 @@ import buildQuery, { type Filter } from 'odata-query';
 import { t } from '../utils/i18n';
 import { ODataDownloadGenerator } from './odata-download-generator';
 import { type SelectedEntityAnswer } from './prompts/prompts';
-import type { ReferencedEntities } from './types';
+import type { ReferencedEntities, HierarchyEntity } from './types';
 
 export type EntitySetsFlat = { [entityPath: string]: string };
 type ExpandTree = { expand?: Record<string, ExpandTree> };
+
+/** Default number of hierarchy levels to fetch in a descendants query. */
+const defaultHierarchyLevels = 3;
 
 /**
  * Builds the expands object used to create an odata query.
@@ -49,12 +52,14 @@ export function getExpands(entityPaths: { entityPath: string; entitySetName: str
  * @param listEntity - The list entity to query from
  * @param selectedEntities - The selected entities to include in the query
  * @param top - The maximum number of records to return
+ * @param hierarchyEntity
  * @returns The generated query string
  */
 export function createQueryFromEntities(
     listEntity: ReferencedEntities['listEntity'],
     selectedEntities: SelectedEntityAnswer[],
-    top = 1
+    top = 1,
+    hierarchyEntity?: HierarchyEntity
 ): { query: string } {
     const selectedPaths = selectedEntities?.map((entity) => {
         return { entityPath: entity.fullPath, entitySetName: entity.entity.entitySetName };
@@ -74,13 +79,62 @@ export function createQueryFromEntities(
     ODataDownloadGenerator.logger.info(t('info.entityFilesToBeGenerated', { entities: entitySetNames.join(', ') }));
 
     const mainEntity = listEntity;
+
+    // Hierarchy entities use a descendants query instead of top/filter
+    if (hierarchyEntity) {
+        // Build filter from semantic key values
+        const filterParts: string[] = [];
+        mainEntity.semanticKeys.forEach((key) => {
+            if (key.value !== undefined && key.value !== '') {
+                if (key.type === 'Edm.Boolean') {
+                    filterParts.push(`${key.name} eq ${key.value}`);
+                } else {
+                    const values = String(key.value).split(',');
+                    const isGuid = ['Edm.UUID', 'Edm.Guid'].includes(key.type);
+                    const wrap = (v: string): string => (isGuid ? v.trim() : `'${v.trim()}'`);
+                    if (values.length === 1) {
+                        filterParts.push(`${key.name} eq ${wrap(values[0])}`);
+                    } else {
+                        const orParts = values.map((v) => `${key.name} eq ${wrap(v)}`);
+                        filterParts.push(`(${orParts.join(' or ')})`);
+                    }
+                }
+            }
+        });
+        const filterParam = filterParts.length > 0 ? `,filter(${filterParts.join(' and ')})` : '';
+
+        const hierarchyArgs = `$root/${mainEntity.entitySetName},${hierarchyEntity.qualifier},${hierarchyEntity.nodeProperty}`;
+        const descendantsPart = `descendants(${hierarchyArgs}${filterParam},${defaultHierarchyLevels},keep start)`;
+
+        // Draft-enabled hierarchies require an ancestors() wrapper to scope to active entities
+        const applyPart = hierarchyEntity.isDraft
+            ? `$apply=ancestors(${hierarchyArgs}${filterParam},keep start)/${descendantsPart}`
+            : `$apply=${descendantsPart}`;
+
+        const expandQuery = entitiesToExpand ? buildQuery(entitiesToExpand) : '';
+        const expandPart = expandQuery ? `&${expandQuery.substring(1)}` : '';
+        const query = `${mainEntity.entitySetName}?${applyPart}${expandPart}`;
+        ODataDownloadGenerator.logger.debug(`Query for odata: ${query}`);
+        return { query };
+    }
+
     const mainEntityFilters: Filter<string>[] = [];
     mainEntity.semanticKeys.forEach((key) => {
         // Process ranges and/or comma seperated values
-        if (key.value) {
-            if (key.type === 'Edm.String') {
+        if (key.value !== undefined && key.value !== '') {
+            if (['Edm.UUID', 'Edm.Guid'].includes(key.type)) {
+                const filterParts = String(key.value).split(',');
+                const filters: Filter<string>[] = filterParts.map((part) => ({
+                    [key.name]: { type: 'guid' as const, value: part.trim() }
+                }));
+                mainEntityFilters.push(filters.length === 1 ? filters[0] : { or: filters });
+            } else if (key.type === 'Edm.Boolean') {
+                mainEntityFilters.push({
+                    [key.name]: String(key.value)
+                });
+            } else if (key.type === 'Edm.String') {
                 // Create the range and set values
-                const filterParts = key.value.split(',');
+                const filterParts = String(key.value).split(',');
                 const filters: Filter<string>[] = [];
                 filterParts.forEach((filterPart) => {
                     const filterRangeParts = filterPart.trim().split('-');
@@ -144,15 +198,17 @@ export function createQueryFromEntities(
  * @param odataService - The OData service to use for fetching
  * @param selectedEntities - The selected entities to include in the query
  * @param top - The maximum number of records to return
+ * @param hierarchyEntity
  * @returns The fetched OData result
  */
 export async function fetchData(
     listEntity: ReferencedEntities['listEntity'],
     odataService: ODataService,
     selectedEntities: SelectedEntityAnswer[],
-    top?: number
+    top?: number,
+    hierarchyEntity?: HierarchyEntity
 ): Promise<{ odataResult: { entityData?: []; error?: string } }> {
-    const query = createQueryFromEntities(listEntity, selectedEntities, top);
+    const query = createQueryFromEntities(listEntity, selectedEntities, top, hierarchyEntity);
     const odataResult = await executeQuery(odataService, query.query);
     return {
         odataResult

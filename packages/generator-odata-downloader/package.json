@@ -39,8 +39,8 @@
         "prebuilds",
         "yeoman.png"
     ],
-    "dependencies": {},
-    "devDependencies": {
+    "devDependencies": {},
+    "dependencies": {
         "@sap-devx/yeoman-ui-types": "1.22.0",
         "@sap-ux/annotation-converter": "0.10.21",
         "@sap-ux/axios-extension": "workspace:*",

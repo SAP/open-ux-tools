@@ -669,6 +669,9 @@ describe('Test prompts', () => {
 
             const result = await getODataDownloaderPrompts();
             result.answers.application.relatedEntityChoices.choices = mockChoices;
+            result.answers.application.referencedEntities = {
+                listEntity: createListEntity([{ name: 'TravelID', type: 'Edm.String', value: 'testKey' }])
+            };
 
             const freshEntityPrompt = result.questions.find(
                 (q: any) => q.name === promptNames.relatedEntitySelection
@@ -698,6 +701,9 @@ describe('Test prompts', () => {
 
             const result = await getODataDownloaderPrompts();
             result.answers.application.relatedEntityChoices.choices = mockChoices;
+            result.answers.application.referencedEntities = {
+                listEntity: createListEntity([{ name: 'TravelID', type: 'Edm.String', value: 'testKey' }])
+            };
 
             const freshEntityPrompt = result.questions.find(
                 (q: any) => q.name === promptNames.relatedEntitySelection
@@ -734,6 +740,9 @@ describe('Test prompts', () => {
 
                 const result = await getODataDownloaderPrompts();
                 result.answers.application.relatedEntityChoices.choices = mockChoices;
+                result.answers.application.referencedEntities = {
+                    listEntity: createListEntity([{ name: 'TravelID', type: 'Edm.String', value: 'testKey' }])
+                };
 
                 const freshEntityPrompt = result.questions.find(
                     (q: any) => q.name === promptNames.relatedEntitySelection
@@ -917,7 +926,8 @@ describe('Test prompts', () => {
                 await whenFn({});
                 expect(promptHelpers.createEntityChoices).toHaveBeenCalledWith(
                     appConfig.referencedEntities?.listEntity,
-                    appConfig.referencedEntities?.pageObjectEntities
+                    appConfig.referencedEntities?.pageObjectEntities,
+                    appConfig.referencedEntities?.hierarchyEntities
                 );
             });
 
@@ -1207,17 +1217,45 @@ describe('Test prompts', () => {
         });
 
         it('should validate range values', async () => {
-            const keyPrompt = keyPrompts[0];
-            const result = await keyPrompt.validate!('1-10');
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+            appConfig.referencedEntities = {
+                listEntity: {
+                    entitySetName: 'TestSet',
+                    semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
+                    entityPath: 'TestSet',
+                    entityType: undefined
+                }
+            };
+            const rangeKeyPrompts = result.questions.filter((q: any) =>
+                q.name?.startsWith('entityKeyIdx:')
+            ) as InputQuestion[];
+            const keyPrompt = rangeKeyPrompts[0];
+            const validateResult = await keyPrompt.validate!('1-10');
 
-            expect(result).toBe(true);
+            expect(validateResult).toBe(true);
         });
 
         it('should reject invalid range specification', async () => {
-            const keyPrompt = keyPrompts[0];
-            const result = await keyPrompt.validate!('1-10-20');
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+            appConfig.referencedEntities = {
+                listEntity: {
+                    entitySetName: 'TestSet',
+                    semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
+                    entityPath: 'TestSet',
+                    entityType: undefined
+                }
+            };
+            const rangeKeyPrompts = result.questions.filter((q: any) =>
+                q.name?.startsWith('entityKeyIdx:')
+            ) as InputQuestion[];
+            const keyPrompt = rangeKeyPrompts[0];
+            const validateResult = await keyPrompt.validate!('1-10-20');
 
-            expect(result).toBe("Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'");
+            expect(validateResult).toBe(
+                "Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'"
+            );
         });
 
         it('should not validate UUIDs as ranges', async () => {
@@ -1249,6 +1287,99 @@ describe('Test prompts', () => {
             const validateResult = await keyPrompt.validate!('550e8400-e29b-41d4-a716-446655440000');
 
             expect(validateResult).toBe(true);
+        });
+
+        it('should reject invalid GUID format', async () => {
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+                prompts: [],
+                answers: {}
+            });
+
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+
+            appConfig.referencedEntities = {
+                listEntity: {
+                    entitySetName: 'TestSet',
+                    semanticKeys: [{ name: 'ID', type: 'Edm.Guid', value: undefined }],
+                    entityPath: 'TestSet',
+                    entityType: undefined
+                }
+            };
+
+            const newKeyPrompts = result.questions.filter((q: any) =>
+                q.name?.startsWith('entityKeyIdx:')
+            ) as InputQuestion[];
+            const keyPrompt = newKeyPrompts[0];
+
+            const validateResult = await keyPrompt.validate!('not-a-valid-guid');
+
+            expect(validateResult).toBe('Invalid GUID format. Expected format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+        });
+
+        it('should accept valid GUID format', async () => {
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+                prompts: [],
+                answers: {}
+            });
+
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+
+            appConfig.referencedEntities = {
+                listEntity: {
+                    entitySetName: 'TestSet',
+                    semanticKeys: [{ name: 'ID', type: 'Edm.Guid', value: undefined }],
+                    entityPath: 'TestSet',
+                    entityType: undefined
+                }
+            };
+
+            const newKeyPrompts = result.questions.filter((q: any) =>
+                q.name?.startsWith('entityKeyIdx:')
+            ) as InputQuestion[];
+            const keyPrompt = newKeyPrompts[0];
+
+            const validateResult = await keyPrompt.validate!('550e8400-e29b-41d4-a716-446655440000');
+
+            expect(validateResult).toBe(true);
+        });
+
+        it('should validate comma-separated GUIDs', async () => {
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+                prompts: [],
+                answers: {}
+            });
+
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+
+            appConfig.referencedEntities = {
+                listEntity: {
+                    entitySetName: 'TestSet',
+                    semanticKeys: [{ name: 'ID', type: 'Edm.Guid', value: undefined }],
+                    entityPath: 'TestSet',
+                    entityType: undefined
+                }
+            };
+
+            const newKeyPrompts = result.questions.filter((q: any) =>
+                q.name?.startsWith('entityKeyIdx:')
+            ) as InputQuestion[];
+            const keyPrompt = newKeyPrompts[0];
+
+            // Valid comma-separated GUIDs
+            const validResult = await keyPrompt.validate!(
+                '550e8400-e29b-41d4-a716-446655440000,a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+            );
+            expect(validResult).toBe(true);
+
+            // One invalid GUID in comma-separated list
+            const invalidResult = await keyPrompt.validate!('550e8400-e29b-41d4-a716-446655440000,invalid-guid');
+            expect(invalidResult).toBe('Invalid GUID format. Expected format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
         });
 
         it('should validate boolean values', async () => {

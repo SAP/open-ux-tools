@@ -36,6 +36,7 @@ export const promptNames = {
     updateMainServiceMetadata: 'updateMainServiceMetadata'
 };
 
+const guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const invalidEntityKeyFilterChars = ['.'];
 
 /**
@@ -51,10 +52,10 @@ async function validateKeysAndFetchData(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
     appConfig: AppConfig
 ): Promise<string | { odataQueryResult: [] }> {
-    const hasKeyInput = Object.entries(answers).find(
-        ([key, value]) => key.startsWith('entityKeyIdx:') && !!value?.trim()
+    const hasValidKeyInput = appConfig.referencedEntities?.listEntity.semanticKeys.some(
+        (key) => key.value !== undefined
     );
-    if (!hasKeyInput) {
+    if (!hasValidKeyInput) {
         return t('prompts.skipDataDownload.validation.keyRequired');
     }
 
@@ -296,6 +297,9 @@ function getEntitySelectionPrompt(
         choices: () => relatedEntityChoices.choices,
         validate: async (selectedEntities, answers: Answers): Promise<boolean | string> => {
             relatedEntityChoices.choices.forEach((entityChoice) => {
+                if (entityChoice.disabled) {
+                    return;
+                }
                 entityChoice.checked = selectedEntities.some(
                     (selectedEntity: SelectedEntityAnswer) => selectedEntity.fullPath === entityChoice.value.fullPath
                 );
@@ -350,7 +354,8 @@ function getResetSelectionPrompt(
                 if (appConfig.referencedEntities?.listEntity) {
                     const entityChoices = createEntityChoices(
                         appConfig.referencedEntities.listEntity,
-                        appConfig.referencedEntities.pageObjectEntities
+                        appConfig.referencedEntities.pageObjectEntities,
+                        appConfig.referencedEntities.hierarchyEntities
                     );
                     if (entityChoices) {
                         relatedEntityChoices.choices = entityChoices.choices;
@@ -372,6 +377,9 @@ function getResetSelectionPrompt(
             // Dont apply a reset unless the value was changed as this validate function is triggered by any earlier prompt inputs
             if (reset !== previousReset) {
                 relatedEntityChoices.choices.forEach((entityChoice) => {
+                    if (entityChoice.disabled) {
+                        return;
+                    }
                     const entityChoiceValue = entityChoice.value as SelectedEntityAnswer;
                     entityChoice.checked = reset === false ? entityChoiceValue.entity.defaultSelected : false; // Restore default selection
                 });
@@ -417,22 +425,23 @@ function getKeyPrompts(
             name: `entityKeyIdx:${keypart}`,
             message: () =>
                 t('prompts.entityKey.message', {
-                    keyName: `${appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name} (${appConfig.referencedEntities?.listEntity.entitySetName})` 
+                    keyName: `${appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name} (${appConfig.referencedEntities?.listEntity.entitySetName})`
                 }),
             type: 'input',
             guiOptions: {
                 hint: t('prompts.entityKey.hint')
             },
             validate: async (keyValue: string, answers: Answers): Promise<boolean | string> => {
+                const keyRef = appConfig.referencedEntities?.listEntity.semanticKeys[keypart];
+                // Clear validated value upfront; only re-set if validation passes
+                if (keyRef) {
+                    delete keyRef.value;
+                }
+
                 if (invalidEntityKeyFilterChars.includes(keyValue)) {
                     return t('prompts.entityKey.validation.invalidKeyValueChars', {
                         chars: invalidEntityKeyFilterChars.join()
                     });
-                }
-                const keyRef = appConfig.referencedEntities?.listEntity.semanticKeys[keypart];
-                // Clear key values
-                if (!keyValue && keyRef) {
-                    delete keyRef.value;
                 }
 
                 if (keyValue && keyRef) {
@@ -442,6 +451,14 @@ function getKeyPrompts(
                         } catch {
                             return t('prompts.entityKey.validation.invalidBooleanValue');
                         }
+                    } else if (['Edm.UUID', 'Edm.Guid'].includes(keyRef.type)) {
+                        const guidParts = keyValue.split(',');
+                        for (const part of guidParts) {
+                            if (!guidRegex.test(part.trim())) {
+                                return t('prompts.entityKey.validation.invalidGuidValue');
+                            }
+                        }
+                        keyRef.value = keyValue.trim();
                     } else {
                         keyRef.value = keyValue.trim();
                     }
@@ -453,6 +470,9 @@ function getKeyPrompts(
                     for (const filterPart of filterAndParts) {
                         const filterRangeParts = filterPart.split('-');
                         if (filterRangeParts.length > 2) {
+                            if (keyRef) {
+                                delete keyRef.value;
+                            }
                             return t('prompts.entityKey.validation.invalidRangeSpecified');
                         }
                     }

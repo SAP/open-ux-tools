@@ -14,7 +14,7 @@ import { t } from '../../utils/i18n';
 import { fetchData, type EntitySetsFlat } from '../odata-query';
 import { ODataDownloadGenerator } from '../odata-download-generator';
 import type { SelectedEntityAnswer } from './prompts';
-import type { AppConfig, Entity } from '../types';
+import type { AppConfig, Entity, HierarchyEntity } from '../types';
 import { getSystemNameFromStore } from '../utils';
 import { PromptState } from '../prompt-state';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
@@ -44,11 +44,16 @@ export async function getData(
                 const queryStartTime = Date.now();
                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 TelemetryHelper.sendTelemetry('ODATA_DOWNLOAD_SEND_QUERY', { 'time': Date() });
+                // Use descendants query when the list entity is a hierarchy entity
+                const hierarchyEntity = appConfig.referencedEntities.hierarchyEntities?.find(
+                    (h) => h.entitySetName === appConfig.referencedEntities!.listEntity.entitySetName
+                );
                 const { odataResult } = await fetchData(
                     appConfig.referencedEntities.listEntity,
                     odataServiceProvider,
                     selectedEntities,
-                    1
+                    hierarchyEntity ? undefined : 1,
+                    hierarchyEntity
                 );
                 if (odataResult.entityData) {
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -57,6 +62,7 @@ export async function getData(
                         'resultSize': `${odataResult.entityData.length} rows`
                     });
                     ODataDownloadGenerator.logger.debug(`Got result rows: ${odataResult.entityData.length}`);
+
                     return { odataQueryResult: odataResult.entityData };
                 } else if (odataResult.error) {
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -154,10 +160,14 @@ function getEntitySelectionChoices(
             : [];
         for (const navEntity of navEntities) {
             const expandPath = navEntity.entityPath;
-            // For hierarchies this may be ok but we currently do not detect hierarchies
-            // Dont re-include entities that are referenced on the path already (this will need to change with hiereachy support)
-            if (navEntity.entityType?.name === listPageEntity?.entityType?.name || parentPath.includes(expandPath)) {
+            // Allow self-referential navigation properties when they are the ParentNavigationProperty of a detected hierarchy
+            const effectiveListEntity = listPageEntity ?? currentEntity;
+            if (
+                navEntity.entityType?.name === effectiveListEntity?.entityType?.name ||
+                parentPath.includes(expandPath)
+            ) {
                 // Stop the tree traversal if the current nodes entity type is the same as the list
+                // Hierarchy self-referential nav props are also skipped here; hierarchy data is fetched via a separate descendants query
                 continue;
             }
             const fullPath = parentPath.concat(`${parentPath ? '/' : ''}${expandPath}`);
@@ -207,11 +217,13 @@ function getEntitySelectionChoices(
  *
  * @param rootEntity - The root entity to create choices for
  * @param pageObjectEntities - Optional page object entities for pre-selection
+ * @param hierarchyEntities - Optional hierarchy entities detected from metadata
  * @returns Object containing entity sets flat map and checkbox choices, or undefined
  */
 export function createEntityChoices(
     rootEntity: Entity,
-    pageObjectEntities?: Entity[]
+    pageObjectEntities?: Entity[],
+    hierarchyEntities?: HierarchyEntity[]
 ): { entitySetsFlat: EntitySetsFlat; choices: CheckboxChoiceOptions<SelectedEntityAnswer>[] } | undefined {
     // Get all PO entity paths for pre-selection
     const poEntityPaths = pageObjectEntities
@@ -229,6 +241,16 @@ export function createEntityChoices(
 
     if (rootEntity.navPropEntities) {
         const entityChoices = getEntitySelectionChoices(rootEntity, undefined, undefined, poEntityPaths);
+
+        // Add disabled indicator for detected hierarchy entities
+        if (hierarchyEntities?.length) {
+            for (const h of hierarchyEntities) {
+                entityChoices.choices.unshift({
+                    name: `${h.entitySetName} [Hierarchy]`,
+                    disabled: t('prompts.relatedEntitySelection.hierarchyAutoQueried')
+                } as CheckboxChoiceOptions<SelectedEntityAnswer>);
+            }
+        }
 
         entityChoices.choices.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
         return entityChoices;
@@ -256,7 +278,7 @@ export async function getServiceDetails(
 
     let systemName;
     if (backendConfig) {
-        let backendUrl =  backendConfig.url;
+        let backendUrl = backendConfig.url;
         if (backendConfig.connectPath) {
             const normalizedPath = backendConfig.connectPath.startsWith('/')
                 ? backendConfig.connectPath
