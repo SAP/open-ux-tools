@@ -18,6 +18,7 @@ import {
     filterAndMapInboundsToManifest,
     readUi5Config,
     extractCfBuildTask,
+    getSpaceGuidFromUi5Yaml,
     readManifestFromBuildPath,
     loadAppVariant,
     getBaseAppId,
@@ -335,6 +336,37 @@ describe('helper', () => {
             const result = filterAndMapInboundsToManifest([]);
 
             expect(result).toBeUndefined();
+        });
+    });
+
+    describe('getSpaceGuidFromUi5Yaml', () => {
+        const rootPath = join(__dirname, '../../fixtures', 'adaptation-project');
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('returns space GUID when ui5.yaml has app-variant-bundler-build space', async () => {
+            const spaceGuid = 'my-space-guid-123';
+            const mockBuildTask = { space: spaceGuid };
+            readUi5YamlMock.mockResolvedValue({
+                findCustomTask: jest.fn().mockReturnValue({ configuration: mockBuildTask })
+            } as unknown as UI5Config);
+
+            const result = await getSpaceGuidFromUi5Yaml(rootPath);
+
+            expect(readUi5YamlMock).toHaveBeenCalledWith(rootPath, 'ui5.yaml');
+            expect(result).toBe(spaceGuid);
+        });
+
+        test('returns undefined and calls logger.warn when space cannot be read', async () => {
+            readUi5YamlMock.mockRejectedValue(new Error('File not found'));
+            const logger = { warn: jest.fn() };
+
+            const result = await getSpaceGuidFromUi5Yaml(rootPath, logger as never);
+
+            expect(result).toBeUndefined();
+            expect(logger.warn).toHaveBeenCalledWith('Could not read space from ui5.yaml (app-variant-bundler-build).');
         });
     });
 

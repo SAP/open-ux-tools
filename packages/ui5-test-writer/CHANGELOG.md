@@ -1,5 +1,70 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.99
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/ui5-application-writer@1.8.3
+
+## 0.7.98
+
+### Patch Changes
+
+- 9d272d7: Fix header form field identifier values
+
+## 0.7.97
+
+### Patch Changes
+
+- 791e9b9: Generate OPA5 existence checks for object page sections & subsections
+
+## 0.7.96
+
+### Patch Changes
+
+- c53a4ba: chore(ui5-test-writer): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/ui5-application-writer@1.8.3
+    - @sap-ux/project-access@1.35.17
+
+## 0.7.95
+
+### Patch Changes
+
+- aa2baf3: fix action button state test based on line item selection
+
+## 0.7.94
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-application-writer@1.8.2
+
+## 0.7.93
+
+### Patch Changes
+
+- a41533f: chore(ui5-test-writer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-application-writer@1.8.2
+
+## 0.7.92
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/ui5-application-writer@1.8.1
+
 ## 0.7.91
 
 ### Patch Changes

@@ -86,7 +86,7 @@ export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: s
         (abapSystem?.url &&
             abapSystem.url.trim()?.replace(/\/$/, '') === url?.trim()?.replace(/\/$/, '') &&
             abapSystem.client === client) ||
-            (!!abapSystem?.destination && destination === abapSystem?.destination)
+        (!!abapSystem?.destination && destination === abapSystem?.destination)
     );
 }
 
