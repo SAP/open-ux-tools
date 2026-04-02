@@ -56,7 +56,7 @@
         "semver": "7.7.4"
     },
     "peerDependencies": {
-        "eslint": "9.39.1",
+        "eslint": "^9",
         "typescript-eslint": "^8.57.2",
         "@types/semver": "7.7.1"
     },
