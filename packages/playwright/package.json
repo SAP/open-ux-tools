@@ -10,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aplaywright"
     },
-    "version": "0.2.13",
+    "version": "0.2.14",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -34,7 +34,7 @@
     ],
     "dependencies": {
         "@playwright/test": "1.58.2",
-        "@sap-ux/logger": "0.8.3",
+        "@sap-ux/logger": "0.8.4",
         "fs-extra": "11.3.4",
         "jest-dev-server": "11.0.0",
         "folder-hash": "4.1.2",

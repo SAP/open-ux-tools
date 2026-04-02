@@ -1,5 +1,29 @@
 # sap-ux-sap-systems-ext
 
+## 0.4.4
+
+### Patch Changes
+
+- 6379785: fix name validation
+
+## 0.4.3
+
+### Patch Changes
+
+- c53a4ba: chore(sap-systems-ext): upgrade shared devDependencies (jest 30, i18next 25)
+
+## 0.4.2
+
+### Patch Changes
+
+- 26fd5de: Align VS Code minimum supported version (^1.102.0) with Fiori tools
+
+## 0.4.1
+
+### Patch Changes
+
+- e976fdb: bump vscode version to align with @types/vscode
+
 ## 0.4.0
 
 ### Minor Changes

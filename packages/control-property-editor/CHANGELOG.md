@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.7.23
+
+### Patch Changes
+
+- c53a4ba: chore(control-property-editor): upgrade http-proxy-middleware 2.x → 3.x; upgrade shared devDependencies (jest 30)
+
 ## 0.7.22
 
 ### Patch Changes

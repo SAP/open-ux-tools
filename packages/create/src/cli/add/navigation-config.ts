@@ -8,6 +8,10 @@ import {
     getInboundsFromManifest,
     getVariant,
     getBaseAppInbounds,
+    getCfBaseAppInbounds,
+    isCFEnvironment,
+    loadCfConfig,
+    getAppParamsFromUI5Yaml,
     type InternalInboundNavigation,
     type DescriptorVariant,
     type AdpPreviewConfigWithTarget
@@ -137,6 +141,9 @@ async function getInbounds(
     variant: Variant
 ): Promise<ManifestNamespace.Inbound | undefined> {
     if (variant.isAdp) {
+        if (await isCFEnvironment(basePath)) {
+            return getCfInbounds(basePath, variant.content, logger);
+        }
         const { target, ignoreCertErrors = false } = await getAdpConfig<AdpPreviewConfigWithTarget>(basePath, yamlPath);
         const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
         return getBaseAppInbounds(variant.content.reference as string, provider);
@@ -144,6 +151,30 @@ async function getInbounds(
 
     const manifest = await retrieveManifest(basePath, fs);
     return getInboundsFromManifest(manifest);
+}
+
+/**
+ * Retrieves the inbounds for a CF adaptation project using the FDC service.
+ *
+ * @param basePath - The base path to the project.
+ * @param variant - The descriptor variant.
+ * @param logger - The logger instance.
+ * @returns The inbounds from the FDC service.
+ */
+async function getCfInbounds(
+    basePath: string,
+    variant: DescriptorVariant,
+    logger: ToolsLogger
+): Promise<ManifestNamespace.Inbound | undefined> {
+    const cfConfig = loadCfConfig(logger);
+    if (!cfConfig?.token) {
+        throw new Error('CF login required. Please run "cf login" and try again.');
+    }
+    const appParams = getAppParamsFromUI5Yaml(basePath);
+    if (!appParams.appHostId) {
+        throw new Error('Could not determine appHostId from project ui5.yaml configuration.');
+    }
+    return getCfBaseAppInbounds(variant.reference as string, appParams.appHostId, cfConfig, logger);
 }
 
 /**

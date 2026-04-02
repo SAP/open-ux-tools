@@ -378,6 +378,9 @@ function extractCdsFilesFromMessage(sources: Record<string, { filename?: string 
  * @returns - uniform url
  */
 function uniformUrl(url: string): string {
+    if (!url) {
+        return '';
+    }
     return url
         .replace(/\\/g, '/')
         .replace(/\/\//g, '/')

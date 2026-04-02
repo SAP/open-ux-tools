@@ -1,5 +1,22 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.12.0
+
+### Minor Changes
+
+- fe8e66f: feat(backend-proxy-middleware): add `params` property to append custom query parameters to proxied backend requests
+
+### Patch Changes
+
+- c53a4ba: chore(backend-proxy-middleware): upgrade shared devDependencies (jest 30, https-proxy-agent 7.0.6)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/store@1.5.12
+    - @sap-ux/btp-utils@1.1.12
+
 ## 0.11.3
 
 ### Patch Changes
