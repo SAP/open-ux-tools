@@ -3,6 +3,11 @@ import { CdsAnnotationProvider, getXmlServiceArtifacts } from '../../src';
 import { fileURLToPath } from 'node:url';
 import { adaptedUrl, normalizeAnnotationNode, normalizeUriInKey } from './raw-metadata-serializer';
 import { PROJECTS } from './projects';
+import * as cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
+import * as projectAccess from '@sap-ux/project-access';
+import { join } from 'node:path';
+
+jest.mock('child_process');
 
 describe('annotation provider', () => {
     describe('xml', () => {
@@ -59,14 +64,39 @@ describe('annotation provider', () => {
                 [project.files.metadata, metadata],
                 [project.files.annotations, annotations]
             ]);
+            const filePath = join(project.root, 'test.cds');
+            const facade = await cdsCompilerFacade.createCdsCompilerFacadeForRoot(project.root, [filePath], fileCache);
+            jest.spyOn(cdsCompilerFacade, 'createCdsCompilerFacadeForRootSync').mockReturnValue({
+                ...facade,
+                getCsn: jest.fn().mockReturnValue([])
+            });
+            jest.spyOn(projectAccess, 'processServices').mockReturnValue([
+                { urlPath: '/here/goes/your/serviceurl/', name: 'IncidentService' }
+            ]);
+            const artifacts = CdsAnnotationProvider.getCdsServiceArtifacts(
+                '4.0',
+                '/here/goes/your/serviceurl/',
+                fileCache
+            );
+            expect(artifacts).toBeDefined();
+            if (!artifacts) {
+                return;
+            }
+            expect(artifacts?.path).toStrictEqual('here/goes/your/serviceurl/');
+            expect(normalizeUriInKey(artifacts.aliasInfo, project.root)).toMatchSnapshot();
+            expect(artifacts.fileSequence.map((uri) => adaptedUrl(uri, project.root))).toMatchSnapshot();
+            const annotationFiles = normalizeUriInKey(artifacts.annotationFiles, project.root);
 
-            expect(() => {
-                const artifacts = CdsAnnotationProvider.getCdsServiceArtifacts(
-                    '4.0',
-                    '/here/goes/your/serviceurl/',
-                    fileCache
-                );
-            }).toThrow();
+            for (const file of Object.values(annotationFiles)) {
+                file.uri = adaptedUrl(file.uri, project.root);
+                for (const target of file.targets) {
+                    for (const annotation of target.terms) {
+                        annotation.content = [];
+                    }
+                }
+                normalizeAnnotationNode(file);
+            }
+            expect(annotationFiles).toMatchSnapshot();
         });
     });
 });
