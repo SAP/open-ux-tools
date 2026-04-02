@@ -8,9 +8,9 @@ import {
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { randomUUID } from 'node:crypto';
 import osName from 'os-name';
-import i18next from 'i18next';
 import { version } from '../../package.json';
 import { ODataDownloadGenerator } from '../data-download';
+import { t } from '../utils/i18n';
 
 const generatorName = '@sap-ux/odata-download-sub-generator';
 
@@ -61,7 +61,7 @@ export abstract class TelemetryHelper {
      */
     private static createTelemetryData(additionalData?: Partial<TelemetryData>): TelemetryData {
         if (!this._telemetryData) {
-            let osVersionName = i18next.t('telemetry.unknownOs');
+            let osVersionName = t('telemetry.unknownOs');
             try {
                 osVersionName = osName();
             } catch {

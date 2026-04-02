@@ -44,6 +44,10 @@
                 }
             }
         }
+        &__text {
+            text-align: left;
+            line-height: 16px;
+        }
     }
     &__field {
         width: 100%;

@@ -57,7 +57,7 @@ describe('ManifestServiceCF', () => {
 
             const service = await ManifestServiceCF.init('/project/path', mockLogger);
 
-            expect(mockRunBuild).toHaveBeenCalledWith('/project/path', { ADP_BUILDER_MODE: 'preview' });
+            expect(mockRunBuild).toHaveBeenCalledWith('/project/path');
             expect(mockReadFileSync).toHaveBeenCalledWith(join('/project/path', 'dist', 'manifest.json'), 'utf-8');
             expect(service.getManifest()).toEqual(manifest);
         });

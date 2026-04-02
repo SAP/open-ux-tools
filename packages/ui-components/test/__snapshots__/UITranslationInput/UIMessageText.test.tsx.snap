@@ -1,11 +1,13 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`<UIMessageText /> UIMessageText component Multiple matches 1 1`] = `"<span>dummy <b>testValue</b></span><span> test <b>testKey</b></span>"`;
+exports[`<UIMessageText /> UIMessageText component Multiple matches 1 1`] = `"dummy <b>testValue</b> test <b>testKey</b>"`;
 
-exports[`<UIMessageText /> UIMessageText component Multiple matches 2 1`] = `"<span>My <b>testKey</b></span><span> dummy <b>testValue</b></span><span> test <b>dummy</b></span><span> scenario with multiple <b>testValue</b></span><span> matches</span>"`;
+exports[`<UIMessageText /> UIMessageText component Multiple matches 2 1`] = `"My <b>testKey</b> dummy <b>testValue</b> test <b>dummy</b> scenario with multiple <b>testValue</b> matches"`;
 
-exports[`<UIMessageText /> UIMessageText component No key and matches 1`] = `"<span>dummy test</span>"`;
+exports[`<UIMessageText /> UIMessageText component No key and matches 1`] = `"dummy test"`;
 
-exports[`<UIMessageText /> UIMessageText component No matches 1`] = `"<span>dummy {{{unknown}}} test</span>"`;
+exports[`<UIMessageText /> UIMessageText component No matches 1`] = `"dummy {{{unknown}}} test"`;
 
-exports[`<UIMessageText /> UIMessageText component Single match 1`] = `"<span>dummy <b>testValue</b></span><span> test</span>"`;
+exports[`<UIMessageText /> UIMessageText component Single match 1`] = `"dummy <b>testValue</b> test"`;
+
+exports[`<UIMessageText /> UIMessageText component Without values 1`] = `"dummy {{{unknown}}} test"`;
