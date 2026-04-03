@@ -64,7 +64,7 @@ jobs:
               run: pnpm build
 
             - name: Run update script (fixtures & fallbacks)
-              run: node scripts/update-ui5manifest-version.js
+              run: node scripts/update-ui5manifest-version.mjs
 
             - name: Check for changes
               id: check-changes

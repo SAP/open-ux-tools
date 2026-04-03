@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig-esm.json",
     "include": [
         "../../types/mem-fs-editor.d.ts",
         "src",

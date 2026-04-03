@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/open-ux-tools-root",
     "version": "0.9.0",
+    "type": "module",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "private": true,
@@ -49,7 +50,7 @@
         "clean": "npm-run-all clean:nx:reset clean:nx:all",
         "clean:nx:all": "nx run-many --target=clean --all",
         "clean:nx:reset": "nx reset --only-cache",
-        "validate:changesets": "node scripts/validate-changesets.js",
+        "validate:changesets": "node scripts/validate-changesets.mjs",
         "build": "pnpm validate:changesets && nx run-many --target=build --all",
         "build:force": "nx run-many --target=build --all --skip-nx-cache",
         "format": "pnpm recursive run format",

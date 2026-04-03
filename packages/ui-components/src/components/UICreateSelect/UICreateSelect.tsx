@@ -28,7 +28,7 @@ export { MultiValue as UICreateSelectMultiValue };
 export { ActionMeta as UICreateSelectActionMeta };
 export { Options as UICreateSelectOptions };
 export { OptionsOrGroups as UICreateSelectOptionsOrGroups };
-export { SelectInstance as UICreateSelectInstance };
+export type { SelectInstance as UICreateSelectInstance };
 
 export interface UICreateSelectOptionEntry {
     readonly label: string;

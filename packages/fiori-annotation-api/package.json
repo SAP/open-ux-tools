@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/fiori-annotation-api",
     "version": "0.9.40",
+    "type": "module",
     "description": "Library that provides API for reading and writing annotations in SAP Fiori elements projects.",
     "publisher": "SAPSE",
     "author": "SAP SE",
@@ -19,7 +20,7 @@
         "lint": "eslint",
         "lint:fix": "eslint --fix",
         "pre-commit": "lint-staged --quiet",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=3",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=3",
         "watch": "tsc  --build ./ -watch"
     },
     "dependencies": {

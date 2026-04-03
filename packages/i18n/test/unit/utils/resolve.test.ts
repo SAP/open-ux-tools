@@ -5,6 +5,10 @@ import fs from 'node:fs';
 import type { CdsEnvironment } from '../../../src';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const DATA_ROOT = join(__dirname, '..', 'data');
 const PROJECT_ROOT = join(DATA_ROOT, 'project');

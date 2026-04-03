@@ -1,6 +1,6 @@
 import { join, dirname } from 'node:path';
 import { platform } from 'node:os';
-import hasbin = require('hasbin');
+import * as hasbin from 'hasbin';
 import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
     sendTelemetry,

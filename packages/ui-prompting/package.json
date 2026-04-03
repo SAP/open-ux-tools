@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/ui-prompting",
     "version": "0.6.22",
+    "type": "module",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -30,7 +31,7 @@
         "storybook": "npm-run-all -l -p storybook:prepare storybook:run",
         "storybook:prepare": "ts-node ./scripts/index.js",
         "storybook:run": "storybook dev",
-        "test": "jest --ci --forceExit --colors --silent"
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --colors --silent"
     },
     "dependencies": {
         "@sap-ux/ui-components": "workspace:*",

@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/telemetry",
     "version": "0.6.95",
+    "type": "module",
     "description": "Library for sending usage telemetry data",
     "repository": {
         "type": "git",
@@ -20,7 +21,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",

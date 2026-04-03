@@ -30,10 +30,10 @@ import { isHTMLInputElement, debounce } from '../../utilities';
 import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 export {
-    IComboBoxOption as UIComboBoxOption,
-    ISelectableOption as UISelectableOption,
-    IComboBox as UIComboBoxRef,
-    IOnRenderComboBoxLabelProps as UIOnRenderComboBoxLabelProps,
+    type IComboBoxOption as UIComboBoxOption,
+    type ISelectableOption as UISelectableOption,
+    type IComboBox as UIComboBoxRef,
+    type IOnRenderComboBoxLabelProps as UIOnRenderComboBoxLabelProps,
     SelectableOptionMenuItemType as UISelectableOptionMenuItemType
 };
 

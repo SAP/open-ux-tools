@@ -7,7 +7,7 @@ import { getMessageInfo } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
 import { REQUIRED_LABEL_INDICATOR } from '../types';
 
-export { ITextField, ITextFieldProps } from '@fluentui/react';
+export type { ITextField, ITextFieldProps } from '@fluentui/react';
 
 export type UITextInputProps = ITextFieldProps & UIMessagesExtendedProps;
 

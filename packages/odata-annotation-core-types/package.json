@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/odata-annotation-core-types",
     "version": "0.5.7",
+    "type": "module",
     "description": "Annotation Core types",
     "repository": {
         "type": "git",
@@ -24,7 +25,7 @@
         "lint:fix": "eslint --fix",
         "lint:report": "eslint . -f multiple ",
         "pre-commit": "lint-staged --quiet",
-        "test": "jest --ci --forceExit --detectOpenHandles --maxWorkers=2",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --maxWorkers=2",
         "watch": "tsc --build ./ -watch"
     },
     "dependencies": {

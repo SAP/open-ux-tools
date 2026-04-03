@@ -17,7 +17,7 @@ import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 import './UIDropdown.scss';
 
-export { IDropdownOption as UIDropdownOption };
+export type { IDropdownOption as UIDropdownOption };
 export { DropdownMenuItemType as UIDropdownMenuItemType };
 
 export interface UIDropdownProps extends IDropdownProps, UIMessagesExtendedProps {

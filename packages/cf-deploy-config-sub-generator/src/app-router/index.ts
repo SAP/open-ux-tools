@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import hasbin = require('hasbin');
+import * as hasbin from 'hasbin';
 import { platform } from 'node:os';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import {

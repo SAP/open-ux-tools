@@ -4,6 +4,10 @@ import { getPropertiesI18nBundle } from '../../../../src';
 import { replaceBundleWithUnifiedFileUri } from '../../helper';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('bundle', () => {
     const DATA_ROOT = join(__dirname, '..', '..', 'data');

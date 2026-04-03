@@ -8,10 +8,10 @@ import type {
     IContextualMenuStyleProps
 } from '@fluentui/react';
 import { ContextualMenu, ContextualMenuItemType, IContextualMenuProps, IContextualMenuItem } from '@fluentui/react';
-export { IContextualMenuItem } from '@fluentui/react';
+export type { IContextualMenuItem } from '@fluentui/react';
 
-export { IContextualMenuItem as UIContextualMenuItem };
-export { IContextualMenuProps as UIContextualMenuProps };
+export type { IContextualMenuItem as UIContextualMenuItem };
+export type { IContextualMenuProps as UIContextualMenuProps };
 export { ContextualMenuItemType as UIContextualMenuItemType };
 
 import { UiIcons } from '../Icons';

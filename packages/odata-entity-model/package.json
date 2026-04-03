@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/odata-entity-model",
     "version": "0.3.7",
+    "type": "module",
     "description": "OData model representation without annotations",
     "repository": {
         "type": "git",
@@ -21,7 +22,7 @@
         "lint:summary": "eslint . -f summary",
         "lint:fix": "eslint --fix",
         "lint:report": "eslint . -f multiple ",
-        "test": "jest  --maxWorkers=1 --ci --forceExit --detectOpenHandles",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest  --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "watch": "tsc  --build ./ -watch"
     },
     "files": [

@@ -12,7 +12,7 @@ export * from './base/constants';
 export * from './base/project-builder';
 export * from './base/abap/manifest-service';
 export { writeKeyUserChanges } from './base/change-utils';
-export { promptGeneratorInput, PromptDefaults } from './base/prompt';
+export { promptGeneratorInput, type PromptDefaults } from './base/prompt';
 export * from './preview/adp-preview';
 export * from './writer/cf';
 export * from './writer/manifest';

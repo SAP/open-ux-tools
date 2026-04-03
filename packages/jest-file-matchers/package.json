@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/jest-file-matchers",
     "version": "0.2.11",
+    "type": "module",
     "description": "Jest matchers for files and folders",
     "repository": {
         "type": "git",
@@ -10,6 +11,13 @@
     "license": "Apache-2.0",
     "private": false,
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
@@ -17,7 +25,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },

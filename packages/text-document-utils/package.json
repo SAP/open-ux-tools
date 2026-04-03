@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/text-document-utils",
     "version": "0.3.3",
+    "type": "module",
     "description": "Library for text document utility functions and types",
     "repository": {
         "type": "git",
@@ -10,13 +11,20 @@
     "license": "Apache-2.0",
     "private": false,
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
     "scripts": {
         "build": "tsc --build",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --watch"
     },
     "files": [

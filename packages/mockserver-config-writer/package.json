@@ -2,6 +2,7 @@
     "name": "@sap-ux/mockserver-config-writer",
     "description": "Add or update configuration for SAP Fiori tools mockserver",
     "version": "0.9.69",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -18,7 +19,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --watch"
     },
     "files": [

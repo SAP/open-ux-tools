@@ -14,7 +14,7 @@ export {
     printPropertiesI18nAnnotation
 } from './utils';
 
-export {
+export type {
     CdsEnvironment,
     CdsI18nConfiguration,
     CdsI18nEnv,
@@ -23,10 +23,10 @@ export {
     I18nBundle,
     I18nEntry,
     NewI18nEntry,
-    SapLongTextType,
-    SapShortTextType,
     SapTextType,
     ValueNode
 } from './types';
+
+export { SapLongTextType, SapShortTextType } from './types';
 
 export { csvToI18nBundle, jsonToI18nBundle, propertiesToI18nEntry } from './transformer';

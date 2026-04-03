@@ -9,7 +9,7 @@ import type { ServiceInfo } from '@sap-ux/btp-utils';
 export * from './connection';
 export * from './error';
 
-export { ServiceInfo, RefreshTokenChanged, Uaa };
+export { ServiceInfo, type RefreshTokenChanged, Uaa };
 
 /**
  * @param provider Basic Auth Provider

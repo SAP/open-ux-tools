@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/i18n",
     "version": "0.3.10",
+    "type": "module",
     "description": "Library for i18n",
     "repository": {
         "type": "git",
@@ -13,8 +14,10 @@
     "license": "Apache-2.0",
     "private": false,
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
             "browser": "./dist/web/index.js",
             "import": "./dist/index.js",
             "default": "./dist/index.js"
@@ -27,7 +30,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --maxWorkers=1 --colors --silent",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --colors --silent",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
         "test:update": "npm-run-all -l -s test:update-properties test:update-csv",

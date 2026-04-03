@@ -10,6 +10,7 @@
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-vocabularies"
     },
     "version": "0.4.30",
+    "type": "module",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -24,7 +25,7 @@
         "lint:fix": "eslint --fix",
         "lint:report": "eslint . -f multiple ",
         "pre-commit": "lint-staged --quiet",
-        "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "update:vocabularies": "ts-node --project tsconfig.eslint.json --cwdMode tools/run-update.ts",
         "watch": "tsc --build ./ -watch"
     },

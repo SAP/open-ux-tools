@@ -1,5 +1,5 @@
 // Legacy package, dependent on external dependencies for async operations and no 'type: module' defined in package.json
-import hasbin = require('hasbin');
+import * as hasbin from 'hasbin';
 import {
     API_BUSINESS_HUB_ENTERPRISE_PREFIX,
     ApiHubType,

@@ -3,6 +3,7 @@
     "displayName": "Fiori Elements Data Downloader",
     "description": "Yeoman generator that supports download of app data, typically for mock data server use.",
     "version": "0.0.10",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -23,13 +24,13 @@
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
-        "bundle": "node esbuild.js",
-        "bundle:dev": "pnpm clean && node esbuild.js --development && pnpm pack",
-        "bundle:prod": "node esbuild.js --production"
+        "bundle": "node esbuild.mjs",
+        "bundle:dev": "pnpm clean && node esbuild.mjs --development && pnpm pack",
+        "bundle:prod": "node esbuild.mjs --production"
     },
     "files": [
         "LICENSE",

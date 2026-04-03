@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/project-integrity",
     "version": "0.2.65",
+    "type": "module",
     "description": "Library to check the integrity of projects",
     "repository": {
         "type": "git",
@@ -19,7 +20,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --watch"
     },
     "files": [

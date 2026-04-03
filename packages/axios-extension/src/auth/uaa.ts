@@ -1,4 +1,4 @@
-import open = require('open');
+import open from 'open';
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import http from 'node:http';

@@ -1,6 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { AddressInfo } from 'node:net';
-import open = require('open');
+import open from 'open';
 import { defaultTimeout } from '../connection';
 import { ABAPVirtualHostProvider } from './abap-virtual-host-provider';
 import { setupRedirectHandling } from './redirect';

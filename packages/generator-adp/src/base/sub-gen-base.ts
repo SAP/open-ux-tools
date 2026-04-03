@@ -1,4 +1,4 @@
-import Generator = require('yeoman-generator');
+import Generator from 'yeoman-generator';
 import type { Prompts } from '@sap-devx/yeoman-ui-types';
 import { AppWizard } from '@sap-devx/yeoman-ui-types';
 

@@ -1,16 +1,9 @@
-export {
-    AppInfo,
-    BspConfig,
-    DeployConfig,
-    Ui5AbapRepositoryService,
-    UndeployConfig
-} from './ui5-abap-repository-service';
-export {
-    LayeredRepositoryService,
+export type { AppInfo, BspConfig, DeployConfig, UndeployConfig } from './ui5-abap-repository-service';
+export { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
+export type {
     AdaptationConfig,
     MergedAppDescriptor,
     SystemInfo,
-    AdaptationProjectType,
     Inbound,
     InboundContent,
     AdaptationsResponse,
@@ -20,13 +13,14 @@ export {
     KeyUserTextTranslations,
     FlexVersion
 } from './lrep-service';
+export { LayeredRepositoryService, AdaptationProjectType } from './lrep-service';
 export { AbapServiceProvider } from './abap-service-provider';
-export { AppIndex, AppIndexService, Ui5AppInfo, Ui5AppInfoContent, App } from './app-index-service';
+export { AppIndexService } from './app-index-service';
+export type { AppIndex, Ui5AppInfo, Ui5AppInfoContent, App } from './app-index-service';
 export * from './message';
 export * from './catalog';
 export * from './adt-catalog';
-export {
-    TenantType,
+export type {
     ArchiveFileNode,
     AtoSettings,
     BusinessObject,
@@ -38,3 +32,4 @@ export {
     ExternalServiceReference,
     ExternalService
 } from './types';
+export { TenantType } from './types';

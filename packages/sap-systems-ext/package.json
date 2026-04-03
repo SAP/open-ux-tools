@@ -1,6 +1,7 @@
 {
     "name": "sap-ux-sap-systems-ext",
     "version": "0.4.4",
+    "type": "module",
     "displayName": "Connection Manager for SAP Systems",
     "description": "Enables you to store connection information for remote SAP systems.",
     "main": "./dist/extension.js",
@@ -24,12 +25,12 @@
     "scripts": {
         "vscode:prepublish": "pnpm run build",
         "build": "npm-run-all -l -s clean -p check-types bundle:dev",
-        "bundle:dev": "node esbuild.js --development",
-        "bundle:prod": "node esbuild.js --production",
+        "bundle:dev": "node esbuild.mjs --development",
+        "bundle:prod": "node esbuild.mjs --production",
         "clean": "rimraf dist",
         "clean:coverage": "rimraf coverage",
         "watch": "npm-run-all -p watch:*",
-        "watch:esbuild": "node esbuild.js --watch",
+        "watch:esbuild": "node esbuild.mjs --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
         "check-types": "tsc --noEmit",
         "lint": "eslint",

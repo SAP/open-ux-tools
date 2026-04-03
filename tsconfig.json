@@ -11,7 +11,7 @@
       "dom",
       "dom.iterable"
     ],
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
     "noEmit": false,
     "sourceMap": true,

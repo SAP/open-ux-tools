@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/eslint-plugin-fiori-tools",
     "version": "9.11.3",
+    "type": "module",
     "description": "Custom linting plugin for Fiori tools apps",
     "repository": {
         "type": "git",
@@ -20,7 +21,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "c8 --reporter=text --reporter=lcov --exclude='test/**' --exclude='**/*.test.ts'  --include='src/**/*.ts' cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors"
+        "test": "c8 --reporter=text --reporter=lcov --exclude='test/**' --exclude='**/*.test.ts'  --include='src/**/*.ts' NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors"
     },
     "devDependencies": {
         "c8": "^11.0.0",

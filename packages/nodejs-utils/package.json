@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/nodejs-utils",
     "version": "0.2.19",
+    "type": "module",
     "description": "Nodejs utility wrappers",
     "repository": {
         "type": "git",
@@ -20,7 +21,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --silent",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --silent",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"

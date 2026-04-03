@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux-private/preview-middleware-client",
     "version": "0.25.16",
+    "type": "module",
     "description": "Client-side coding hosted by the preview middleware",
     "repository": {
         "type": "git",
@@ -18,7 +19,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u"
     },
     "files": [

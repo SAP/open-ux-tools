@@ -7,6 +7,7 @@
         "directory": "packages/abap-deploy-config-writer"
     },
     "version": "0.3.7",
+    "type": "module",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -16,7 +17,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"

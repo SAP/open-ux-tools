@@ -5,4 +5,4 @@ export {
     enableFeature
 } from './featureToggle';
 export { FeatureToggleKey, ExperimentalFeatures } from './constants';
-export { FeatureToggle } from './types';
+export type { FeatureToggle } from './types';

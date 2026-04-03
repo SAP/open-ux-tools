@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/launch-config",
     "version": "0.10.82",
+    "type": "module",
     "description": "SAP Fiori tools launch config administration",
     "repository": {
         "type": "git",
@@ -19,7 +20,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --watch"
     },
     "files": [

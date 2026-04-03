@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/annotation-generator",
     "version": "0.4.47",
+    "type": "module",
     "description": "Library that provides API for generation of annotations by SAP Fiori App Generator",
     "publisher": "SAPSE",
     "repository": {
@@ -19,7 +20,7 @@
         "lint": "eslint",
         "lint:fix": "eslint --fix",
         "pre-commit": "lint-staged --quiet",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=3",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=3",
         "watch": "tsc  --build ./ -watch"
     },
     "dependencies": {

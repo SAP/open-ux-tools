@@ -167,11 +167,11 @@ export async function remove(basePath: string, service: OdataService, fs?: Edito
 
 export {
     OdataVersion,
-    OdataService,
+    type OdataService,
     ServiceType,
-    EdmxAnnotationsInfo,
-    CdsAnnotationsInfo,
-    ExternalServiceCollectionOptions,
-    NamespaceAlias
+    type EdmxAnnotationsInfo,
+    type CdsAnnotationsInfo,
+    type ExternalServiceCollectionOptions,
+    type NamespaceAlias
 } from './types';
 export { getExternalServiceReferences, getAnnotationNamespaces, writeExternalServiceMetadata } from './data';

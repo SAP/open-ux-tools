@@ -6,7 +6,7 @@ export * from './text-formatting';
 export * from './general';
 export * from './diagnostics';
 export * from './specification';
-export {
+export type {
     IMetadataService,
     MetadataMap,
     Path,
@@ -20,7 +20,7 @@ export {
     Facets
 } from './types';
 
-export { Constraints } from './types/vocabularies';
+export type { Constraints } from './types/vocabularies';
 
 export {
     Location,

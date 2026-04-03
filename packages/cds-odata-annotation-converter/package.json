@@ -7,6 +7,7 @@
         "directory": "packages/cds-odata-annotation-converter"
     },
     "version": "0.7.16",
+    "type": "module",
     "publisher": "SAPSE",
     "author": "SAP SE",
     "license": "Apache-2.0",
@@ -22,7 +23,7 @@
         "lint:report": "eslint . -f multiple ",
         "lint:summary": "eslint . -f summary",
         "pre-commit": "lint-staged --quiet",
-        "test": "jest --maxWorkers=2",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=2",
         "test:update": "node scripts/update-test-data.js",
         "watch": "tsc --build ./ -watch"
     },

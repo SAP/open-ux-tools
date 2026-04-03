@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig-esm.json",
   "include": [
     "../../types/ui5.d.ts",
     "src",

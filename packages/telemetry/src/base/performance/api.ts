@@ -1,7 +1,9 @@
 import { Mark, Measurement } from './entries';
 import type { EntriesArray, Mark as IMark, Measurement as IMeasurement } from './types';
 import { EntryType, PerformanceMeasurement } from './types';
-import performanceNow = require('performance-now');
+import { performance } from 'node:perf_hooks';
+
+const performanceNow = () => performance.now();
 
 /**
  *

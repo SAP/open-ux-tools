@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig-esm.json",
     "include": ["src", "src/translations/ux-store.i18n.json"],
     "compilerOptions": {
         "rootDir": "src",
