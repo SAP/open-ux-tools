@@ -4,10 +4,11 @@ import type {
     IComboBoxState,
     IAutofillProps,
     IButtonProps,
-    ISelectableDroppableTextProps
+    ISelectableDroppableTextProps,
+    IComboBox,
+    IComboBoxOption
 } from '@fluentui/react';
 import { ComboBox, initializeComponentRef, KeyCodes, SelectableOptionMenuItemType } from '@fluentui/react';
-import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption';
 import './UIComboBox.scss';
 import './Callout.scss';

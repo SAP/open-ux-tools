@@ -7,11 +7,11 @@ import type {
     LoadingIndicatorProps,
     OptionProps,
     GetOptionLabel,
-    GetOptionValue
+    GetOptionValue,
+    SelectInstance
 } from 'react-select';
 import type { CreatableProps } from 'react-select/creatable';
 import { components } from 'react-select';
-import type { SelectInstance } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
 import { UIIcon } from '../UIIcon';

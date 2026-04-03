@@ -5,10 +5,11 @@ import type {
     ICalloutContentStyles,
     IRawStyle,
     IStyleFunctionOrObject,
-    IContextualMenuStyleProps
+    IContextualMenuStyleProps,
+    IContextualMenuProps,
+    IContextualMenuItem
 } from '@fluentui/react';
 import { ContextualMenu } from '@fluentui/react';
-import type { IContextualMenuProps, IContextualMenuItem } from '@fluentui/react';
 export { IContextualMenuItem } from '@fluentui/react';
 
 export { IContextualMenuItem as UIContextualMenuItem } from '@fluentui/react';
