@@ -90,7 +90,7 @@ function processStringDoc(fragments: string[], indent: IndentInfo, doc: string):
         if (fragments.length === 0) {
             fragments.push(indent.value);
         }
-        if (TRAILING_WHITESPACE_PATTERN.test(fragments[fragments.length - 1]) && doc.startsWith(indent.value)) {
+        if (TRAILING_WHITESPACE_PATTERN.test(fragments.at(-1)) && doc.startsWith(indent.value)) {
             fragments[fragments.length - 1] = fragments[fragments.length - 1].replace(
                 TRAILING_WHITESPACE_PATTERN,
                 '\n'
@@ -132,7 +132,7 @@ function processComplexDoc(
         }
         case 'line': {
             // trim trailing whitespace of previous line
-            if (TRAILING_WHITESPACE_PATTERN.test(fragments[fragments.length - 1])) {
+            if (TRAILING_WHITESPACE_PATTERN.test(fragments.at(-1))) {
                 fragments[fragments.length - 1] = fragments[fragments.length - 1].replace(
                     TRAILING_WHITESPACE_PATTERN,
                     '\n'

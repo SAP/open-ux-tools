@@ -172,7 +172,7 @@ describe('AddFragment', () => {
             escapeHandlerCb({ resolve: jest.fn() });
 
             expect(openSpy).toHaveBeenCalledTimes(1);
-            const lastCall = setPropertySpy.mock.calls[setPropertySpy.mock.calls.length - 1];
+            const lastCall = setPropertySpy.mock.calls.at(-1);
             expect(lastCall[0]).toBe('/selectedIndex');
             expect(lastCall[1]).toBe(1);
         });

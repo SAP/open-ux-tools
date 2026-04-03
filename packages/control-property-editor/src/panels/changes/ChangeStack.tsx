@@ -289,7 +289,7 @@ const filterGenericChange = (changes: Change[], query: string): Change[] => {
 
 const isQueryMatchesChange = (item: UnknownChangeProps, query: string): boolean => {
     const parts = item.fileName.split('_');
-    const changeName = parts[parts.length - 1];
+    const changeName = parts.at(-1);
     const name = convertCamelCaseToPascalCase(changeName);
     let dateTime = '';
     if (item.timestamp) {

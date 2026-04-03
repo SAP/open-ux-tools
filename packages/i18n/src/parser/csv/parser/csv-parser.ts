@@ -114,7 +114,7 @@ class ParseCsv {
 
         if (row.fields.length) {
             const start = row.fields[0].range.start;
-            const end = row.fields[row.fields.length - 1].range.end;
+            const end = row.fields.at(-1).range.end;
             row.range = Range.create(start.line, start.character, end.line, end.character);
         }
         return row;

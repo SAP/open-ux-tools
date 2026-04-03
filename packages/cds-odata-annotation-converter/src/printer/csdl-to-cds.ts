@@ -108,7 +108,7 @@ export const printTarget = (target: Target, complexTypePathSegments?: string[]):
     const options: FormatterOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
 
     const terms = [...target.terms.flatMap((term) => internalPrint(term, options))];
-    if (terms.length > 1 && !terms[terms.length - 1].endsWith(',')) {
+    if (terms.length > 1 && !terms.at(-1).endsWith(',')) {
         // make sure there is trailing comma
         terms[terms.length - 1] += ',';
     }

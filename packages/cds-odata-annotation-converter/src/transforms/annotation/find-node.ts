@@ -296,7 +296,7 @@ function adjustReturnValue(
     position: Position
 ): VisitorReturnValue {
     const astNodes = getAstNodes(assignment, astPath);
-    const node = astNodes?.[astNodes.length - 1];
+    const node = astNodes?.at(-1);
     if (!node) {
         return value;
     }
@@ -495,9 +495,9 @@ function edmJsonContent(astNodes: ChildNode[], value: VisitorReturnValue, positi
         return value;
     }
 
-    if (value.path[value.path.length - 1].startsWith('$')) {
+    if (value.path.at(-1).startsWith('$')) {
         // content pointer
-        const node = astNodes[astNodes.length - 1];
+        const node = astNodes.at(-1);
         if (Array.isArray(node)) {
             return value;
         }
@@ -538,7 +538,7 @@ function edmJsonContent(astNodes: ChildNode[], value: VisitorReturnValue, positi
  * @returns Returns the adjusted VisitorReturnValue for an enum text node.
  */
 function enumTextNode(value: VisitorReturnValue): VisitorReturnValue {
-    if (value.path[value.path.length - 1].startsWith('$')) {
+    if (value.path.at(-1).startsWith('$')) {
         return value;
     }
     const path = value.path.slice(0, -1);

@@ -35,7 +35,7 @@ export class AddCustomSectionQuickAction
         const pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop() as string;
         if (sections.length > 0) {
             // Use the first section as the anchor if available
-            anchor = (this.context.view.getLocalId(sections[sections.length - 1].getId()) ?? '')
+            anchor = (this.context.view.getLocalId(sections.at(-1).getId()) ?? '')
                 .split('::')
                 .pop() as string;
         }

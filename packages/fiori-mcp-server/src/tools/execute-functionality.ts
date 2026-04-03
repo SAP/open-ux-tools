@@ -101,7 +101,7 @@ async function generateChanges(
         return [];
     }
     const { propertyPath } = resolveFunctionality(functionalityId);
-    const changedParameterInfo = findParameterById(functionality, propertyPath[propertyPath.length - 1]);
+    const changedParameterInfo = findParameterById(functionality, propertyPath.at(-1));
 
     // Common way to change property - AI passes precise property id and parameters
     const exportResult = await editor.changeProperty(
@@ -148,7 +148,7 @@ function resolveParameterValue(
     parametersValue: { [key: string]: unknown },
     parameterInfo?: Parameter
 ): unknown {
-    const propertyName = propertyPath[propertyPath.length - 1];
+    const propertyName = propertyPath.at(-1);
     if (parameterInfo?.type === 'object') {
         let value: unknown = parametersValue;
         if (propertyName in parametersValue) {

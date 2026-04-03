@@ -91,7 +91,7 @@ function cleanSpacesAfterEscape(text: string): string {
 function isValue(tokens: Token[]): boolean {
     const tokensCleaned = tokens.filter((t) => t.type !== 'whitespace');
     // if previous token is separator, nex token must be value
-    if (tokensCleaned[tokensCleaned.length - 1]?.type === 'separator') {
+    if (tokensCleaned.at(-1)?.type === 'separator') {
         return true;
     }
 

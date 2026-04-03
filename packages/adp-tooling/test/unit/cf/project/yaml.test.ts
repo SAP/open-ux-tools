@@ -751,7 +751,7 @@ describe('YAML Project Functions', () => {
             );
 
             // Verify the FLP module was moved to the last position
-            const lastModule = mockYamlContent.modules![mockYamlContent.modules!.length - 1];
+            const lastModule = mockYamlContent.modules!.at(-1);
             expect(lastModule.name).toBe('test-flp-module');
 
             // Verify required modules were added to the FLP module

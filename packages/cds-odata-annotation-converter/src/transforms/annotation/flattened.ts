@@ -103,7 +103,7 @@ interface ExpandedStructure {
  * @returns new context
  */
 function createNewContext(expandedStructures: ExpandedStructure[]): Context {
-    const last = expandedStructures[expandedStructures.length - 1];
+    const last = expandedStructures.at(-1);
     const newContext: Context = {
         valueType: last.vocabularyObject?.type,
         isCollection: last.vocabularyObject?.isCollection
@@ -136,7 +136,7 @@ function convertToExpandedStructure(
     const valueRange = value?.range;
     const expandedStructure: ExpandedStructure[] = [];
     const initialType = state.context.recordType ?? state.context.termType;
-    const lastSegment = valueRange ? undefined : segments[segments.length - 1];
+    const lastSegment = valueRange ? undefined : segments.at(-1);
     let i = 0;
     while (i < segments.length) {
         const segment = segments[i];
@@ -190,7 +190,7 @@ function convertToExpandedStructure(
                 }
             });
 
-            const parentType = expandedStructure[expandedStructure.length - 1]?.vocabularyObject?.type ?? initialType;
+            const parentType = expandedStructure.at(-1)?.vocabularyObject?.type ?? initialType;
             expandedStructure.push({
                 kind: 'property',
                 name: segment.value,
@@ -213,7 +213,7 @@ function convertToExpandedStructure(
  */
 function adjustLastSegmentRange(expandedStructure: ExpandedStructure[], valueRange?: Range): void {
     // the leaf element should only include the values range in it's contentRange
-    const last = expandedStructure[expandedStructure.length - 1];
+    const last = expandedStructure.at(-1);
     if (last) {
         if (valueRange && last.kind !== 'record-type') {
             last.element.contentRange = copyRange(valueRange);
@@ -235,7 +235,7 @@ function adjustLastSegmentRange(expandedStructure: ExpandedStructure[], valueRan
 function addDiagnosticForSegmentAfterType(state: VisitorState, segments: Identifier[], valueRange?: Range): void {
     if (segments.length >= 1) {
         const message = i18n.t('No_segments_after_type');
-        const lastSegment = segments[segments.length - 1];
+        const lastSegment = segments.at(-1);
         const propertyRange = createRange(segments[0].range?.start, valueRange?.end ?? lastSegment?.range?.end);
         if (propertyRange) {
             state.addDiagnostic({

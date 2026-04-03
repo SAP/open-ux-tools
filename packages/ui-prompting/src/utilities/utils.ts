@@ -93,7 +93,7 @@ export function setAnswer(answers: Answers, path: string, value: unknown): Answe
     }
 
     if (validPath) {
-        const key = keys[keys.length - 1];
+        const key = keys.at(-1);
         if (!['__proto__', 'constructor', 'prototype'].includes(key)) {
             current[key] = value;
         }

@@ -32,7 +32,7 @@ export class Visitor {
         }
 
         const [root, leaf] = processConversionResult(
-            state.elementStack[state.elementStack.length - 1],
+            state.elementStack.at(-1),
             conversionResult
         );
 

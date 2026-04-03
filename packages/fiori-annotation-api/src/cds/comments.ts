@@ -49,7 +49,7 @@ function getCommentRangeAndValue(token: CompilerToken): { value: string; range?:
                 start: { line: token.line - 1, character: token.column },
                 end: {
                     line: token.line - 2 + lines.length,
-                    character: value.split('\n')[value.split('\n').length - 1].length
+                    character: value.split('\n').at(-1)!.length
                 }
             };
         } else if (token.type === 32) {

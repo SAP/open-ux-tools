@@ -240,13 +240,13 @@ function handleXmlAttributeChanges(
         // if attribute is deleted, then we can ignore updates
         const nameRange = transformRange(element.syntax.key);
         if (nameRange && attributeNameUpdates.length > 0) {
-            const newName = attributeNameUpdates[attributeNameUpdates.length - 1].newName;
+            const newName = attributeNameUpdates.at(-1).newName;
             edits.push(TextEdit.replace(nameRange, newName));
         }
 
         const valueRange = transformRange(element.syntax.value);
         if (valueRange && attributeValueUpdates.length > 0) {
-            const newValue = attributeValueUpdates[attributeValueUpdates.length - 1].newValue;
+            const newValue = attributeValueUpdates.at(-1).newValue;
             // shift from start quote
             valueRange.start.character++;
             // shift from end quote
@@ -443,7 +443,7 @@ function convertUpdateElementNameToTextEdits(
 ): TextEdit[] {
     const edits: TextEdit[] = [];
     if (elementNameUpdates.length > 0 && element?.type === 'XMLElement') {
-        const newName = elementNameUpdates[elementNameUpdates.length - 1].newName;
+        const newName = elementNameUpdates.at(-1).newName;
         const openTagRange = transformRange(element.syntax.openBody);
         const closeTagRange = transformRange(element.syntax.closeBody);
         if (openTagRange) {
@@ -813,7 +813,7 @@ function getElementContent(element: XMLElement, comments: Comment[]): ElementCon
             elementRange: range,
             range: copyRange(range)
         };
-        const previousItem = content[content.length - 1];
+        const previousItem = content.at(-1);
         const previousLine = element.range.start.line - 1;
         if (
             previousItem?.type === 'comment' &&
@@ -978,7 +978,7 @@ function findInsertPositionForMove(
         const range = transformRange(element.syntax.openBody);
         return range?.end;
     } else if (index === undefined || index >= element.subElements.length) {
-        const child = element.subElements[element.subElements.length - 1];
+        const child = element.subElements.at(-1);
         if (!child) {
             return undefined;
         }

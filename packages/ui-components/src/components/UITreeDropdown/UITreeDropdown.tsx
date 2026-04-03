@@ -599,7 +599,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
             if (container.children[0] === item) {
                 position.push(EdgePosition.First);
             }
-            if (container.children[container.children.length - 1] === item) {
+            if (container.children.at(-1) === item) {
                 position.push(EdgePosition.Last);
             }
         }

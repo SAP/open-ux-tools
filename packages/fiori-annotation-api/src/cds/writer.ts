@@ -869,7 +869,7 @@ function convertToCompoundAnnotation(
     }
 
     // All assignments are grouped to the same target, but we only need to replace the last one.
-    const startPosition = node.assignments[node.assignments.length - 1]?.range?.start ?? node.range?.start;
+    const startPosition = node.assignments.at(-1)?.range?.start ?? node.range?.start;
     const startToken = findLastTokenBeforePosition(ANNOTATION_START_PATTERN, tokens, startPosition);
     if (!startToken) {
         return [];
@@ -1195,7 +1195,7 @@ function deIndent(text: string): string {
 }
 
 function getInsertReferencePosition(references: Reference[]): { position: Position; prependNewLine: boolean } {
-    const range = references[references.length - 1]?.uriRange;
+    const range = references.at(-1)?.uriRange;
     if (!range) {
         return { position: Position.create(0, 0), prependNewLine: false };
     }
@@ -1437,7 +1437,7 @@ function getContainerContent(
 }
 
 function processNode(content: ContainerContentBlock[], item: Comment | AstNode): void {
-    const previousItem = content[content.length - 1];
+    const previousItem = content.at(-1);
 
     if (!item.range) {
         return;
@@ -1486,7 +1486,7 @@ function skipCommaInsertion(
             return false;
         }
         const astNodes = getAstNodesFromPointer(document, change.pointer);
-        const toBeDeletedNodes = astNodes[astNodes.length - 1];
+        const toBeDeletedNodes = astNodes.at(-1);
         const node = content[insertAfterIndex];
         if (node.type === 'element' && node?.element === toBeDeletedNodes) {
             if (toBeDeletedNodes.type === ANNOTATION_TYPE && content.length === 1) {

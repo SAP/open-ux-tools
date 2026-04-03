@@ -23,8 +23,8 @@ describe('prepare-storybook.ts', () => {
             const sourceParts = call[0].split(sep);
             const targetParts = call[1].split(sep);
             return {
-                source: sourceParts[sourceParts.length - 1],
-                target: targetParts[targetParts.length - 1]
+                source: sourceParts.at(-1),
+                target: targetParts.at(-1)
             };
         });
     };
