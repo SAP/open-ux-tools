@@ -6,12 +6,12 @@ import { Text } from '@fluentui/react';
 import { sectionHeaderFontSize } from '../properties/constants';
 
 export interface ChangeStackHeaderProps {
-    backgroundColor: string;
-    color: string;
-    text: string;
-    tooltip?: string;
-    fontSize?: string;
-    isMessageHeader?: boolean;
+    readonly backgroundColor: string;
+    readonly color: string;
+    readonly text: string;
+    readonly tooltip?: string;
+    readonly fontSize?: string;
+    readonly isMessageHeader?: boolean;
 }
 
 /**

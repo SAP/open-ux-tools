@@ -13,11 +13,11 @@ import type { RootState } from '../../store';
 import styles from './PropertyDocumentation.module.scss';
 
 export interface PropertyDocumentationProps {
-    defaultValue: string;
-    title?: string;
-    description: string;
-    propertyName: string;
-    propertyType: string | undefined;
+    readonly defaultValue: string;
+    readonly title?: string;
+    readonly description: string;
+    readonly propertyName: string;
+    readonly propertyType: string | undefined;
     /**
      * Optional callback function for delete event.
      *
@@ -134,8 +134,8 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
 }
 
 interface DocumentationRowProps {
-    label: string;
-    value?: string;
+    readonly label: string;
+    readonly value?: string;
 }
 
 /**

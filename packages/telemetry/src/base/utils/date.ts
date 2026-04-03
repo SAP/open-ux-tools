@@ -1,4 +1,4 @@
 export const localDatetimeToUTC = (): string => {
-    const timeInMs = new Date().getTime();
+    const timeInMs = Date.now();
     return new Date(timeInMs).toISOString();
 };

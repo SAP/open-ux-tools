@@ -4,10 +4,10 @@ import type { UIFlexibleTableProps, UIFlexibleTableRowType } from './types';
 import { composeClassNames } from './utils';
 
 interface RowDataCellsProps<T> {
-    tableProps: UIFlexibleTableProps<T>;
-    row: UIFlexibleTableRowType<T>;
-    rowIndex: number;
-    isInRowLayout: boolean;
+    readonly tableProps: UIFlexibleTableProps<T>;
+    readonly row: UIFlexibleTableRowType<T>;
+    readonly rowIndex: number;
+    readonly isInRowLayout: boolean;
 }
 
 /**

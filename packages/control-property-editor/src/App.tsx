@@ -17,8 +17,8 @@ import './App.scss';
 import './Workarounds.scss';
 
 export interface AppProps {
-    previewUrl: string;
-    scenario: Scenario;
+    readonly previewUrl: string;
+    readonly scenario: Scenario;
 }
 
 /**

@@ -6,12 +6,12 @@ import type { UIFlexibleTableProps, UIFlexibleTableRowType, NodeDragAndDropSorti
 import { composeClassNames } from './utils';
 
 export interface UIFlexibleTableRowProps<T> {
-    dragAndDropParams: NodeDragAndDropSortingParams;
-    rowActions: React.ReactElement;
-    rowData: React.ReactElement;
-    rowRef?: React.RefObject<HTMLDivElement>;
-    tableProps: UIFlexibleTableProps<T>;
-    className?: string;
+    readonly dragAndDropParams: NodeDragAndDropSortingParams;
+    readonly rowActions: React.ReactElement;
+    readonly rowData: React.ReactElement;
+    readonly rowRef?: React.RefObject<HTMLDivElement>;
+    readonly tableProps: UIFlexibleTableProps<T>;
+    readonly className?: string;
 }
 
 /**

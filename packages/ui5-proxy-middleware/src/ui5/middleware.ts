@@ -55,7 +55,7 @@ async function loadManifest(rootProject: ReaderCollection): Promise<Manifest | u
     }
 }
 
-module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyConfig>): Promise<RequestHandler> => {
+const ui5ProxyMiddleware = async ({ resources, options }: MiddlewareParameters<UI5ProxyConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         logLevel: options.configuration?.debug ? LogLevel.Debug : LogLevel.Info,
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
@@ -117,3 +117,5 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
 
     return createRequestHandler(routes);
 };
+
+module.exports = ui5ProxyMiddleware;

@@ -22,7 +22,7 @@ import type { Ui5LibGenerator } from './types';
  *
  * @extends Generator
  */
-export default class extends Generator implements Ui5LibGenerator {
+export default class UI5LibraryGenerator extends Generator implements Ui5LibGenerator {
     answers: UI5LibraryAnswers = {};
     prompts: Prompts;
     appWizard: AppWizard;

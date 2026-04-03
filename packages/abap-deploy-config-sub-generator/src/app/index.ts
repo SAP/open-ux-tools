@@ -46,7 +46,7 @@ import { AdaptationProjectType } from '@sap-ux/axios-extension';
 /**
  * ABAP deploy config generator.
  */
-export default class extends DeploymentGenerator {
+export default class AbapDeployConfigGenerator extends DeploymentGenerator {
     private readonly appWizard: AppWizard;
     private readonly vscode: unknown;
     private readonly launchDeployConfigAsSubGenerator: boolean;

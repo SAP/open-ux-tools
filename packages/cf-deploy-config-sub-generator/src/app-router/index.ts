@@ -25,7 +25,7 @@ import type {
  *
  * @extends DeploymentGenerator
  */
-export default class extends DeploymentGenerator {
+export default class CfAppRouterGenerator extends DeploymentGenerator {
     private readonly appWizard: AppWizard;
     private readonly prompts: Prompts;
     private answers: CfAppRouterDeployConfigAnswers;

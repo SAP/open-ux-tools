@@ -3,10 +3,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface ChangeIndicatorProps {
-    saved: number;
-    pending: number;
-    id?: string;
-    type: string;
+    readonly saved: number;
+    readonly pending: number;
+    readonly id?: string;
+    readonly type: string;
 }
 
 /**

@@ -49,7 +49,6 @@ export class UI5ToolingTransport extends Transport {
         } else {
             this.options = this.copy<UI5ToolingTransportOptions>(opts);
             UI5ToolingTransport.instances.set(opts.moduleName, this);
-            return this;
         }
     }
 }
@@ -131,7 +130,6 @@ export class VSCodeTransport extends Transport {
         } else {
             this.options = this.copy<VSCodeTransportOptions>(opts);
             VSCodeTransport.instances.set(opts.channelName, this);
-            return this;
         }
     }
 }

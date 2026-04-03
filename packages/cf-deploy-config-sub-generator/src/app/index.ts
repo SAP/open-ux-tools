@@ -50,7 +50,7 @@ import type { Answers } from 'inquirer';
 /**
  * Cloud Foundry deployment configuration generator.
  */
-export default class extends DeploymentGenerator {
+export default class CfDeployConfigGenerator extends DeploymentGenerator {
     private readonly appWizard: AppWizard;
     private readonly vscode: unknown;
     private readonly launchDeployConfigAsSubGenerator: boolean;

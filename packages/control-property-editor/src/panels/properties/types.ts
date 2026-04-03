@@ -10,10 +10,10 @@ import type {
 import type { PropertyChangeStats } from '../../slice';
 
 export interface PropertyInputProps<T extends ControlProperty = ControlProperty> {
-    controlId: string;
-    controlName: string;
-    property: T;
-    changes?: PropertyChangeStats;
+    readonly controlId: string;
+    readonly controlName: string;
+    readonly property: T;
+    readonly changes?: PropertyChangeStats;
 }
 
 export const enum InputType {

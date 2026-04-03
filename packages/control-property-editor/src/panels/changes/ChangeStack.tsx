@@ -32,7 +32,7 @@ import { ControlChange } from './ControlChange';
 import { GenericGroup, type GenericGroupProps } from './GenericGroup';
 
 export interface ChangeStackProps {
-    changes: Change[];
+    readonly changes: Change[];
 }
 
 /**

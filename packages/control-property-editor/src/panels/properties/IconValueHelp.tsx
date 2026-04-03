@@ -12,19 +12,19 @@ import { InputType } from './types';
 import { useDispatch } from 'react-redux';
 
 export interface IconValueHelpProps {
-    icons:
+    readonly icons:
         | {
               name: string;
               content: string;
               fontFamily: string;
           }[]
         | [];
-    value: string;
-    controlId: string;
-    controlName: string;
-    propertyName: string;
-    disabled: boolean;
-    propertyType: PropertyType;
+    readonly value: string;
+    readonly controlId: string;
+    readonly controlName: string;
+    readonly propertyName: string;
+    readonly disabled: boolean;
+    readonly propertyType: PropertyType;
 }
 
 /**
@@ -161,8 +161,8 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
     );
 }
 interface IconColumnProps {
-    fontFamily: string;
-    content: string;
+    readonly fontFamily: string;
+    readonly content: string;
 }
 
 /**
@@ -186,7 +186,7 @@ function IconColumn(props: IconColumnProps): React.JSX.Element {
     return <span className="sapUiIcon icon-span" data-sap-ui-icon-content={content} style={style}></span>;
 }
 interface LabelColumnProps {
-    name: string;
+    readonly name: string;
 }
 /**
  * React element for showing ui5 label column.

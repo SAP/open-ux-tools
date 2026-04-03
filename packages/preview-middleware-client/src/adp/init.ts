@@ -24,7 +24,7 @@ import { initDialogs } from './init-dialogs';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
 import { CommunicationService } from '../cpe/communication-service';
 
-export default async function (rta: RuntimeAuthoring) {
+export default async function initAdp(rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
     if (flexSettings.telemetry === true) {
         enableTelemetry();

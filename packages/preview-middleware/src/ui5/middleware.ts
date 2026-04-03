@@ -56,7 +56,7 @@ async function createRouter(
  * @param params middleware configuration
  * @returns a promise for the request handler
  */
-module.exports = async (params: MiddlewareParameters<MiddlewareConfig>): Promise<RequestHandler> => {
+const previewMiddleware = async (params: MiddlewareParameters<MiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'preview-middleware' })],
         logLevel: params.options.configuration?.debug ? LogLevel.Debug : LogLevel.Info
@@ -69,3 +69,5 @@ module.exports = async (params: MiddlewareParameters<MiddlewareConfig>): Promise
         throw error;
     }
 };
+
+module.exports = previewMiddleware;

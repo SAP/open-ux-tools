@@ -4,7 +4,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 
 import { initI18n } from './i18n';
-import { promptNames } from './types';
+import type { promptNames } from './types';
 import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types';
 import { getQuestions } from './prompts';
 
@@ -95,7 +95,8 @@ function getDefaultValue(
     return promptDefault;
 }
 
-export { getPrompts, prompt, promptNames };
+export { getPrompts, prompt };
+export { promptNames } from './types';
 export type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 export type { FLPConfigAnswers, FLPConfigPromptOptions, FLPConfigQuestion, TileSettingsAnswers } from './types';
 

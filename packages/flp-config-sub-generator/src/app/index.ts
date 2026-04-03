@@ -32,7 +32,7 @@ const flpConfigSubGenNamespace = '@sap-ux/flp-config-sub-generator';
 /**
  * FLP config generator adds an inbound navigation config to an existing manifest.json.
  */
-export default class extends Generator {
+export default class FlpConfigGenerator extends Generator {
     private readonly appWizard: AppWizard;
     private readonly vscode?: VSCodeInstance;
     private readonly launchFlpConfigAsSubGenerator: boolean;

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { defaultFontSize } from './constants';
 
 export interface ClipboardProps {
-    label: string;
+    readonly label: string;
 }
 
 /**
