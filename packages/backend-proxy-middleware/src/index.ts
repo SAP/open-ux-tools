@@ -1,6 +1,6 @@
-import { generateProxyMiddlewareOptions, createProxy, initI18n } from './base/proxy';
+import { initI18n } from './base/proxy';
 
-export { generateProxyMiddlewareOptions, createProxy };
+export { generateProxyMiddlewareOptions, createProxy } from './base/proxy';
 export type {
     LocalBackendConfig,
     DestinationBackendConfig,

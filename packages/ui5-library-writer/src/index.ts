@@ -36,8 +36,8 @@ async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: Edito
         processDestinationPath: (filePath: string) =>
             filePath
                 .replace('baselibrary', libInput.libraryNamespaceURI)
-                .replace(/gitignore.tmpl/g, '.gitignore')
-                .replace(/karma.conf.tmpl/g, 'karma.conf.js')
+                .replaceAll('gitignore.tmpl', '.gitignore')
+                .replaceAll('karma.conf.tmpl', 'karma.conf.js')
     });
 
     if (reuseLib.typescript) {

@@ -33,5 +33,5 @@ export function unescapeText(input: string): string {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/''/g, "'");
+    return input.replaceAll("''", "'");
 }

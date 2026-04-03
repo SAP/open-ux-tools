@@ -302,7 +302,7 @@ sap.ui.define([], function() {
         const results = await eslint.lintFiles([join(webappPath, '**/*.js')]);
 
         // Normalize paths for cross-platform comparison (use forward slashes)
-        const normalizePathForComparison = (filePath: string) => filePath.replace(/\\/g, '/');
+        const normalizePathForComparison = (filePath: string) => filePath.replaceAll('\\', '/');
 
         // Find results for each file
         const mockserverResult = results.find((r) =>

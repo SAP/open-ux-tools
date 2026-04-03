@@ -14,7 +14,7 @@ export type TemplateOptions = {
 
 // Specific escaping is required for FLP texts in flpSandbox.html template file
 // Escapes '\' with '\\\\' and '"' with '\"' to correctly render inputs in a secure way
-export const escapeFLPText = (s: string): string => s.replace(/\\/g, '\\\\').replace(/(")/g, '\\$&');
+export const escapeFLPText = (s: string): string => s.replaceAll('\\', '\\\\').replace(/(")/g, '\\$&');
 
 const appComponentLibGeneric = 'sap/suite/ui/generic/template/lib/AppComponent';
 const appComponentLibOVP = 'sap/ovp/app/Component';

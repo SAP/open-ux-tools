@@ -47,7 +47,7 @@ export function ThemeSelectorCallout(): ReactElement {
      */
     function createThemeButton(themeButtonProps: ThemeButtonProps): ReactElement {
         const { name, tooltip } = themeButtonProps;
-        const nameSlug = name.replace(/ /g, '-');
+        const nameSlug = name.replaceAll(' ', '-');
         const isCurrentTheme = theme === name;
         return (
             <div

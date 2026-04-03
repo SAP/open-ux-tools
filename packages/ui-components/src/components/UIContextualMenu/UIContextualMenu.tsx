@@ -7,12 +7,13 @@ import type {
     IStyleFunctionOrObject,
     IContextualMenuStyleProps
 } from '@fluentui/react';
-import { ContextualMenu, ContextualMenuItemType, IContextualMenuProps, IContextualMenuItem } from '@fluentui/react';
+import { ContextualMenu } from '@fluentui/react';
+import type { IContextualMenuProps, IContextualMenuItem } from '@fluentui/react';
 export { IContextualMenuItem } from '@fluentui/react';
 
-export { IContextualMenuItem as UIContextualMenuItem };
-export { IContextualMenuProps as UIContextualMenuProps };
-export { ContextualMenuItemType as UIContextualMenuItemType };
+export { IContextualMenuItem as UIContextualMenuItem } from '@fluentui/react';
+export { IContextualMenuProps as UIContextualMenuProps } from '@fluentui/react';
+export { ContextualMenuItemType as UIContextualMenuItemType } from '@fluentui/react';
 
 import { UiIcons } from '../Icons';
 

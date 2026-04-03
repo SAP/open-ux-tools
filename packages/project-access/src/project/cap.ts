@@ -382,8 +382,8 @@ function uniformUrl(url: string): string {
         return '';
     }
     return url
-        .replace(/\\/g, '/')
-        .replace(/\/\//g, '/')
+        .replaceAll('\\', '/')
+        .replaceAll('//', '/')
         .replace(/(?:^\/)/g, '');
 }
 
@@ -832,7 +832,7 @@ async function cleanupCdsFiles(
                 if (cdsFile.indexOf(usingEntry) !== -1) {
                     logger?.info(`Removing using statement for './${appName}/annotations' from '${cdsFilePath}'.`);
                     cdsFile = cdsFile.replace(usingEntry, '');
-                    if (cdsFile.replace(/\n/g, '').trim() === '') {
+                    if (cdsFile.replaceAll('\n', '').trim() === '') {
                         logger?.info(`File '${cdsFilePath}' is now empty, removing it.`);
                         await deleteFile(cdsFilePath, memFs);
                     } else {
@@ -868,8 +868,8 @@ export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Log
     logger?.info(`Deleting app '${appName}' from CAP project '${projectRoot}'.`);
     // Update `sapux` array if presented in package.json
     if (Array.isArray(packageJson.sapux)) {
-        const posixAppPath = appPath.replace(/\\/g, '/');
-        packageJson.sapux = packageJson.sapux.filter((a) => !posixAppPath.endsWith(a.replace(/\\/g, '/')));
+        const posixAppPath = appPath.replaceAll('\\', '/');
+        packageJson.sapux = packageJson.sapux.filter((a) => !posixAppPath.endsWith(a.replaceAll('\\', '/')));
         if (packageJson.sapux.length === 0) {
             logger?.info(
                 `This was the last app in this CAP project. Deleting property 'sapux' from '${packageJsonPath}'.`

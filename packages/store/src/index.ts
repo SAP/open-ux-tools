@@ -1,6 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
 import { ServiceOptions } from './types';
-import { Entity } from './constants';
 import { initI18n, text } from './i18n';
 import type { Service } from './services';
 import { getInstance as getSystemService } from './services/backend-system';
@@ -45,7 +44,7 @@ export * from './entities/api-hub';
 // Support any filesystem watchers
 export { getFilesystemWatcherFor } from './data-access';
 export { ServiceOptions };
-export { Entity };
+export { Entity } from './constants';
 export { getBackendSystemType } from './utils';
 export { getFioriToolsDirectory, getSapToolsDirectory, FioriToolsSettings, SapTools } from './utils';
 export { SystemType, AuthenticationType, ConnectionType } from './types';

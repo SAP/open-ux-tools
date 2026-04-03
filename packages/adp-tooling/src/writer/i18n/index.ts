@@ -63,7 +63,7 @@ export function extractResourceModelPath(ui5Model: SapModel, modelObjectKey: str
         const bundleName = ui5Model.settings?.bundleName;
         if (bundleName?.indexOf(appId) === 0) {
             const fileLocation = bundleName.slice(appId.length, bundleName.length);
-            resourceModelPath = fileLocation.replace(/\./g, '/').substring(1, fileLocation.length) + '.properties';
+            resourceModelPath = fileLocation.replaceAll('.', '/').substring(1, fileLocation.length) + '.properties';
         } else {
             resourceModelPath = `i18n/${modelObjectKey}.properties`;
         }

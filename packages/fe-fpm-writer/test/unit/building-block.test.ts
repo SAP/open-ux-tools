@@ -477,7 +477,7 @@ describe('Building Blocks', () => {
             contextPath: 'testContextPath',
             metaPath: 'testMetaPath',
             generateId,
-            formatOptions: JSON.stringify({ displayMode: 'Value' }).replace(/\"/g, `'`),
+            formatOptions: JSON.stringify({ displayMode: 'Value' }).replaceAll('"', `'`),
             readOnly: true,
             semanticObject: 'testSemanticObject'
         } as Field;

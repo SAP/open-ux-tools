@@ -19,7 +19,7 @@ export {
     IGroupedListProps as UIGroupedListProps,
     IGroupHeaderProps as UIGroupHeaderProps,
     IGroupRenderProps as UIGroupRenderProps
-};
+} from '@fluentui/react';
 
 export type ListProps = Omit<IGroupedListProps, 'onRenderCell'> & {
     groups: IGroup[];

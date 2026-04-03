@@ -16,8 +16,7 @@ import {
     generatorNamespace,
     getBackendConfig,
     getSupportedTargets,
-    generatorTitle,
-    promptNames
+    generatorTitle
 } from '../utils';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { promptDeployConfigQuestions } from './prompting';
@@ -237,5 +236,5 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
     }
 }
 
-export { promptNames };
+export { promptNames } from '../utils';
 export type { DeployConfigOptions, DeployConfigSubGenPromptOptions };

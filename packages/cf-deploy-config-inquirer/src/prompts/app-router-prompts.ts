@@ -47,7 +47,7 @@ function getMtaIdPrompt(): CfAppRouterDeployConfigQuestions {
         message: t('prompts.mtaIdMessage'),
         validate: (input: string, previousAnswers: CfAppRouterDeployConfigAnswers): boolean | string =>
             validateMtaId(input, previousAnswers),
-        filter: (input: string): string => input.replace(/\./g, '-')
+        filter: (input: string): string => input.replaceAll('.', '-')
     } as InputQuestion<CfAppRouterDeployConfigAnswers>;
 }
 

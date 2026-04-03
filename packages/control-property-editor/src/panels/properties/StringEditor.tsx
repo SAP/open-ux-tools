@@ -114,7 +114,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
                     let value: string | number = String(newValue ?? '');
                     if (type === FLOAT_VALUE_TYPE && !isExpression(value)) {
                         const index = value.search(/\./) + 1;
-                        const result = value.substring(0, index) + value.slice(index).replace(/\./g, '');
+                        const result = value.substring(0, index) + value.slice(index).replaceAll('.', '');
                         value = result.trim().replace(/(^-)|[^0-9.]+/g, '$1');
                     } else {
                         if (type === INTEGER_VALUE_TYPE && !isExpression(value)) {

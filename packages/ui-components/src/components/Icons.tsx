@@ -1,5 +1,5 @@
 import React from 'react';
-import { registerIcons, unregisterIcons, initializeIcons, setIconOptions } from '@fluentui/react';
+import { registerIcons, initializeIcons } from '@fluentui/react';
 
 const COLORS = {
     'default': 'var(--vscode-icon-foreground, var(--vscode-foreground))',
@@ -2536,7 +2536,7 @@ export function initIcons(): void {
     initializeIcons(undefined, { disableWarnings: true });
 }
 
-export { registerIcons as UIregisterIcons };
-export { unregisterIcons as UIunregisterIcons };
-export { initializeIcons as UIinitializeIcons };
-export { setIconOptions as UIsetIconOptions };
+export { registerIcons as UIregisterIcons } from '@fluentui/react';
+export { unregisterIcons as UIunregisterIcons } from '@fluentui/react';
+export { initializeIcons as UIinitializeIcons } from '@fluentui/react';
+export { setIconOptions as UIsetIconOptions } from '@fluentui/react';

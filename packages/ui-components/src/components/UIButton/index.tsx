@@ -1,6 +1,4 @@
-import { IButton } from '@fluentui/react';
-
-export { IButton as UIButtonInterface };
+export { IButton as UIButtonInterface } from '@fluentui/react';
 export * from './UIActionButton';
 export * from './UIDefaultButton';
 export * from './UIIconButton';

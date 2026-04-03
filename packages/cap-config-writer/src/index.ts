@@ -1,5 +1,4 @@
-import { checkCdsUi5PluginEnabled } from '@sap-ux/project-access';
-export { checkCdsUi5PluginEnabled };
+export { checkCdsUi5PluginEnabled } from '@sap-ux/project-access';
 export { enableCdsUi5Plugin } from './cap-config';
 export type { CapService } from './cap-config/types';
 export type { CapRuntime } from '@sap-ux/fiori-generator-shared';

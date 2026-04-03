@@ -315,7 +315,7 @@ export function getAppName(manifest: Partial<Manifest>, intent?: Intent): string
     const id = manifest['sap.app']?.id ?? '';
 
     intent ??= {
-        object: id.replace(/\./g, ''),
+        object: id.replaceAll('.', ''),
         action: 'preview'
     };
 
@@ -401,7 +401,7 @@ export function createFlpTemplateConfig(
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
     const id = manifest['sap.app']?.id ?? '';
-    const ns = id.replace(/\./g, '/');
+    const ns = id.replaceAll('.', '/');
     const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
     let initPath: string | undefined;
     if (config.init) {

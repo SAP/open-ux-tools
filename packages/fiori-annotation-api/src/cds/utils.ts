@@ -21,7 +21,7 @@ import { matchTokenByStart, tokenColumn, tokenLine, type CompilerToken } from '.
  * @returns Normalized file URI.
  */
 export function toUnifiedUri(fileUri: string | undefined, removeGhostFilePrefix = true): string {
-    const unifiedUri = (fileUri ?? '').replace(/\\/g, '/').replace(/\/\//g, '/');
+    const unifiedUri = (fileUri ?? '').replaceAll('\\', '/').replaceAll('//', '/');
     return removeGhostFilePrefix ? unifiedUri.replace(GHOST_FILENAME_PREFIX, '') : unifiedUri;
 }
 

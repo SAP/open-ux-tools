@@ -149,7 +149,7 @@ function registerModules(dataFromAppIndex: AppIndexData) {
             moduleDefinition.dependencies.forEach(function (dependency) {
                 if (dependency.url && dependency.url.length > 0 && dependency.type === 'UI5LIB') {
                     Log.info('Registering Library ' + dependency.componentId + ' from server ' + dependency.url);
-                    const compId = dependency.componentId.replace(/\./g, '/');
+                    const compId = dependency.componentId.replaceAll('.', '/');
                     const config = {
                         paths: {} as Record<string, string>
                     };

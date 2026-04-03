@@ -3,12 +3,10 @@ import isNil from 'lodash/isNil';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 
-import { initI18n, addi18nResourceBundle } from './i18n';
+import { initI18n } from './i18n';
 import { promptNames } from './types';
-import { getExistingFlpConfigInfoPrompt } from './prompts/questions';
-import { getQuestions, getTileSettingsQuestions } from './prompts';
 import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions, TileSettingsAnswers } from './types';
-import { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } from './utils';
+import { getQuestions } from './prompts';
 
 /**
  * Retrieves the inquirer prompts for the FLP configuration.
@@ -99,19 +97,19 @@ function getDefaultValue(
 
 export {
     getPrompts,
-    getExistingFlpConfigInfoPrompt,
     prompt,
-    addi18nResourceBundle,
     promptNames,
     type InquirerAdapter,
     type PromptDefaultValue,
     type FLPConfigAnswers,
     type FLPConfigPromptOptions,
     type FLPConfigQuestion,
-    type TileSettingsAnswers,
-    getAdpFlpConfigPromptOptions,
-    getAdpFlpInboundsWriterConfig,
-    getTileSettingsQuestions
+    type TileSettingsAnswers
 };
+
+export { getExistingFlpConfigInfoPrompt } from './prompts/questions';
+export { addi18nResourceBundle } from './i18n';
+export { getTileSettingsQuestions } from './prompts';
+export { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } from './utils';
 
 export { tileActions, tilePromptNames } from './types';

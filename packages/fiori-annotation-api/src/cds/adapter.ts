@@ -291,7 +291,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
     public getInitialFileContent(serviceName: string, uri: string): string {
         if (this.facade) {
             const fileName = this.facade.getFileName(serviceName) ?? '';
-            let path = relative(dirname(uri), join(this.project.root, dirname(fileName))).replace(/\\/g, '/');
+            let path = relative(dirname(uri), join(this.project.root, dirname(fileName))).replaceAll('\\', '/');
             path = join(path, basename(fileName, '.cds'));
             path = path.split(sep).join('/'); // always use '/' instead of platform specific separator
             return `using ${serviceName} as service from '${path}';\n`;

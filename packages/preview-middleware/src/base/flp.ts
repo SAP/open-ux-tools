@@ -1000,7 +1000,7 @@ export class FlpSandbox {
      * @param id application id from manifest
      */
     private addTestRoutes(configs: TestConfig[], id: string): void {
-        const ns = id.replace(/\./g, '/');
+        const ns = id.replaceAll('.', '/');
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
         for (const testConfig of configs) {
             const config = mergeTestConfigDefaults(testConfig);

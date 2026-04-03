@@ -1,6 +1,6 @@
 import { type InquirerAdapter, ERROR_TYPE, ErrorHandler, setTelemetryClient } from '@sap-ux/inquirer-common';
 import { type Logger } from '@sap-ux/logger';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+export { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import type { Question } from 'inquirer';
 import autocomplete from 'inquirer-autocomplete-prompt';
@@ -11,14 +11,14 @@ import {
     type SystemSelectionAnswers,
     getSystemSelectionQuestions as getSystemSelectionQuestionsBase
 } from './prompts/datasources/sap-system/system-selection';
-import type {
+export type {
     CfAbapEnvServiceChoice,
     NewSystemChoice,
     SystemSelectionAnswerType
 } from './prompts/datasources/sap-system/system-selection/prompt-helpers';
 
 import type { Annotations } from '@sap-ux/axios-extension';
-import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
+export type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import type { TemplateType } from '@sap-ux/fiori-elements-writer';
 import { getEntitySelectionQuestions } from './prompts/edmx/questions';
 import LoggerHelper from './prompts/logger-helper';
@@ -27,12 +27,12 @@ import {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     type OdataServiceQuestion,
-    type SapSystemType,
     type ConnectedSystem,
     DatasourceType,
     EntityRelatedAnswers,
     promptNames
 } from './types';
+export type { SapSystemType } from './types';
 import { getPromptHostEnvironment, PromptState } from './utils';
 
 /**
@@ -167,7 +167,6 @@ async function prompt(
 }
 
 export {
-    CfAbapEnvServiceChoice,
     // @deprecated - temp export to support to support open source migration
     DatasourceType,
     EntityRelatedAnswers,
@@ -178,19 +177,10 @@ export {
     getEntityRelatedPrompts,
     getPrompts,
     getSystemSelectionQuestions,
-    NewSystemChoice,
-    // @deprecated - temp export to support to support open source migration
-    OdataVersion,
     prompt,
     promptNames,
-    // @deprecated - temp export to support to support open source migration
-    SystemSelectionAnswerType,
-    type CapRuntime,
-    type CapService,
     type InquirerAdapter,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    // @deprecated - temp export to support to support open source migration
-    type SapSystemType,
     type ConnectedSystem
 };

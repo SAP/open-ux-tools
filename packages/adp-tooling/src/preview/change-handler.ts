@@ -182,7 +182,7 @@ export const moduleNameContentMap: { [key: string]: (change: CommonChangePropert
  */
 export function tryFixChange(change: CommonChangeProperties, logger: Logger) {
     try {
-        const prefix = change.reference.replace(/\./g, '/');
+        const prefix = change.reference.replaceAll('.', '/');
         change.moduleName = `${prefix}/changes/${moduleNameContentMap[change.changeType](change)}`;
     } catch (error) {
         logger.warn('Could not fix missing module name.');

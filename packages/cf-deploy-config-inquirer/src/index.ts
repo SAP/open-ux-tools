@@ -2,15 +2,18 @@ import { getQuestions, getAppRouterQuestions } from './prompts';
 import type {
     CfDeployConfigPromptOptions,
     CfDeployConfigQuestions,
-    CfSystemChoice,
     CfDeployConfigAnswers,
     CfAppRouterDeployConfigPromptOptions,
-    CfAppRouterDeployConfigQuestions,
+    CfAppRouterDeployConfigQuestions
+} from './types';
+import { promptNames } from './types';
+export type {
+    CfSystemChoice,
     CfAppRouterDeployConfigAnswers,
     CfDeployConfigRouterAnswers,
     CfDeployConfigRouterQuestions
 } from './types';
-import { promptNames, appRouterPromptNames, RouterModuleType } from './types';
+export { appRouterPromptNames, RouterModuleType } from './types';
 import { initI18nCfDeployConfigInquirer } from './i18n';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import autocomplete from 'inquirer-autocomplete-prompt';
@@ -81,17 +84,11 @@ async function prompt(
 export {
     getPrompts,
     type CfDeployConfigPromptOptions,
-    type CfSystemChoice,
     promptNames,
     prompt,
-    appRouterPromptNames,
     getAppRouterPrompts,
     type CfAppRouterDeployConfigPromptOptions,
-    RouterModuleType,
     type CfDeployConfigQuestions,
     type CfDeployConfigAnswers,
-    type CfAppRouterDeployConfigAnswers,
-    type CfAppRouterDeployConfigQuestions,
-    type CfDeployConfigRouterAnswers,
-    type CfDeployConfigRouterQuestions
+    type CfAppRouterDeployConfigQuestions
 };

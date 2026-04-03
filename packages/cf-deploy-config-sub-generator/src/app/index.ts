@@ -42,7 +42,6 @@ import { CfDeployConfigOptions } from './types';
 import {
     type CfAppRouterDeployConfigAnswers,
     type CfDeployConfigQuestions,
-    type CfDeployConfigPromptOptions,
     CfDeployConfigAnswers,
     RouterModuleType
 } from '@sap-ux/cf-deploy-config-inquirer';
@@ -411,7 +410,7 @@ export {
     CfDeployConfigOptions,
     CfDeployConfigAnswers,
     CfDeployConfigQuestions,
-    CfDeployConfigPromptOptions,
     ApiHubConfig,
     ApiHubType
 };
+export type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-inquirer';

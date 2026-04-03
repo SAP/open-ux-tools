@@ -206,7 +206,7 @@ const escapeText = (input: string): string => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/'/g, "''");
+    return input.replaceAll("'", "''");
 };
 
 export const printCsdlNode = (node: Element | TextNode, context: Element[], options: FormatterOptions): string => {
@@ -382,7 +382,7 @@ const annotationFilter = (node: Element | TextNode): node is Element =>
     node.type === ELEMENT_TYPE && node.name === Edm.Annotation;
 
 const encodeSnippet = (options: FormatterOptions, text: string): string =>
-    options.useSnippetSyntax ? text.replace(/\$/g, '\\$') : text;
+    options.useSnippetSyntax ? text.replaceAll('$', '\\$') : text;
 
 const printValue = (element: Element, context: Element[], options: FormatterOptions): string | undefined => {
     const valueElement =

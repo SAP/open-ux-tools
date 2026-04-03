@@ -151,7 +151,7 @@ export async function getCdsAnnotations(
     const { appPath: capAppPath = 'app', projectPath, serviceCdsPath, serviceName } = capService;
     if (serviceCdsPath) {
         // Construct the annotation path and service cds URI
-        const annotationPath = join(capAppPath, projectName, 'annotation.cds').replace(/\\/g, '/');
+        const annotationPath = join(capAppPath, projectName, 'annotation.cds').replaceAll('\\', '/');
         const serviceCdsUri = await toReferenceUri(projectPath, annotationPath, serviceCdsPath);
         // Create the contents of the annotation CDS file
         const annotationCdsContents = `using ${serviceName} as service from '${serviceCdsUri}';`;

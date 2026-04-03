@@ -1,5 +1,3 @@
-import type { AxiosError, AxiosRequestConfig } from 'axios';
-import { isAxiosError } from './base/odata-request-error';
 export * from './base/odata-service';
 export * from './base/service-provider';
 export * from './base/patchTls';
@@ -8,4 +6,5 @@ export * from './factory';
 export * from './auth';
 export * from './abap/message';
 export { ServiceType } from './abap/catalog/base';
-export { AxiosError, AxiosRequestConfig, isAxiosError };
+export type { AxiosError, AxiosRequestConfig } from 'axios';
+export { isAxiosError } from './base/odata-request-error';

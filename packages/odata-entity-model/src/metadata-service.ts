@@ -366,7 +366,7 @@ export class MetadataService implements IMetadataService {
             result.forEach((location) => {
                 if (location.uri.indexOf('node_modules') > -1) {
                     const values = [...this.uriMap.values()];
-                    const item = values.find((val) => val.endsWith(location.uri.replace(/\\/g, '/')));
+                    const item = values.find((val) => val.endsWith(location.uri.replaceAll('\\', '/')));
                     if (item) {
                         location.uri = item;
                     }

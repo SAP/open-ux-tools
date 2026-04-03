@@ -3,7 +3,7 @@ import Generator from 'yeoman-generator';
 import FlpGenLogger from '../utils/logger';
 import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 import { handleErrorMessage, getExtensionGenPromptOpts } from '@sap-ux/deploy-config-generator-shared';
-import { getPrompts, promptNames } from '@sap-ux/flp-config-inquirer';
+import { getPrompts } from '@sap-ux/flp-config-inquirer';
 import { generateInboundNavigationConfig } from '@sap-ux/app-config-writer';
 import { FileName, getWebappPath, getI18nPropertiesPaths } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
@@ -290,5 +290,5 @@ export default class extends Generator {
     }
 }
 
-export { promptNames };
+export { promptNames } from '@sap-ux/flp-config-inquirer';
 export type { FlpConfigOptions, FLPConfigPromptOptions };

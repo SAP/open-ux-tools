@@ -31,7 +31,7 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
     configWithDefaults.app.layer ??= FlexLayer.CUSTOMER_BASE;
 
     configWithDefaults.package ??= config.package ? { ...config.package } : {};
-    configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/\./g, '-');
+    configWithDefaults.package.name ??= config.app.id.toLowerCase().replaceAll('.', '-');
     configWithDefaults.package.description ??= configWithDefaults.app.title;
     configWithDefaults.app.i18nModels ??= getI18nModels(
         configWithDefaults.app.manifest,

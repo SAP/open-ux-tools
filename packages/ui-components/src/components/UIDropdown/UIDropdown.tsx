@@ -5,7 +5,8 @@ import type {
     ICalloutContentStyleProps,
     ICalloutContentStyles
 } from '@fluentui/react';
-import { Dropdown, DropdownMenuItemType, IDropdownOption, ResponsiveMode } from '@fluentui/react';
+import { Dropdown, DropdownMenuItemType, ResponsiveMode } from '@fluentui/react';
+import type { IDropdownOption } from '@fluentui/react';
 
 import { UIIcon } from '../UIIcon';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
@@ -17,8 +18,8 @@ import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 import './UIDropdown.scss';
 
-export { IDropdownOption as UIDropdownOption };
-export { DropdownMenuItemType as UIDropdownMenuItemType };
+export { IDropdownOption as UIDropdownOption } from '@fluentui/react';
+export { DropdownMenuItemType as UIDropdownMenuItemType } from '@fluentui/react';
 
 export interface UIDropdownProps extends IDropdownProps, UIMessagesExtendedProps {
     /**

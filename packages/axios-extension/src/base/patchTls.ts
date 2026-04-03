@@ -39,7 +39,7 @@ export class TlsPatch {
         const origCreateSecureContext = tls.createSecureContext;
         tls.createSecureContext = (options): SecureContext => {
             const context = origCreateSecureContext(options);
-            const pem = sapGlobalRootCaCert.replace(/\r\n/g, '\n');
+            const pem = sapGlobalRootCaCert.replaceAll('\r\n', '\n');
             const certs = pem.match(/-----BEGIN CERTIFICATE-----\n[\s\S]+?\n-----END CERTIFICATE-----/g);
             certs.forEach((cert) => {
                 context.context.addCACert(cert.trim());

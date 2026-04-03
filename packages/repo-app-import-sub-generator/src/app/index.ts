@@ -30,7 +30,6 @@ import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { PromptState } from '../prompts/prompt-state';
-import { PromptNames } from './types';
 import { getAbapDeployConfig, getAppConfig, type AppDownloadContext } from './app-config';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import { makeValidJson } from '../utils/file-helpers';
@@ -342,5 +341,5 @@ export default class extends Generator {
     }
 }
 
-export { PromptNames };
+export { PromptNames } from './types';
 export type { RepoAppDownloadOptions };

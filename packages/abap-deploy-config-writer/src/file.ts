@@ -83,7 +83,7 @@ export const writeUi5RepositoryFile = (
  * @returns the typescript file paths
  */
 async function getTypescriptFilePaths(typescriptPattern: string): Promise<string[]> {
-    const normalisedPath = platform() === 'win32' ? typescriptPattern.replace(/\\/g, '/') : typescriptPattern;
+    const normalisedPath = platform() === 'win32' ? typescriptPattern.replaceAll('\\', '/') : typescriptPattern;
     const typeScriptFilesPaths: string[] = await fg(normalisedPath);
     return typeScriptFilesPaths;
 }

@@ -68,7 +68,7 @@ export function getRuntimeControl(overlayControl: ElementOverlay): ManagedObject
  */
 export async function getLibrary(controlName: string): Promise<string> {
     return new Promise((resolve) => {
-        const controlPath = controlName.replace(/\./g, '/');
+        const controlPath = controlName.replaceAll('.', '/');
         sap.ui.require([controlPath], (control: Control) => {
             const contMetadata = control.getMetadata();
             // getLibraryName method does not exist on events

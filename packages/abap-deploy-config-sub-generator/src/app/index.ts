@@ -37,8 +37,7 @@ import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5
 import type { AbapDeployConfigOptions } from './types';
 import type {
     AbapDeployConfigAnswersInternal,
-    AbapDeployConfigPromptOptions,
-    AbapDeployConfigQuestion
+    AbapDeployConfigPromptOptions
 } from '@sap-ux/abap-deploy-config-inquirer';
 import { getVariantNamespace } from '../utils/project';
 import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
@@ -376,7 +375,8 @@ export default class extends DeploymentGenerator {
     }
 }
 
-export { AbapDeployConfigQuestion, AbapDeployConfigAnswersInternal };
+export { AbapDeployConfigAnswersInternal };
+export type { AbapDeployConfigQuestion } from '@sap-ux/abap-deploy-config-inquirer';
 export { getAbapQuestions } from './questions';
 export { indexHtmlExists } from '../utils';
 export { AbapDeployConfigOptions, DeployProjectType } from './types';

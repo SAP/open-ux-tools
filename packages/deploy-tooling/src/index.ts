@@ -1,6 +1,4 @@
-import task from './ui5';
-import { createTransportRequest } from './base';
 export * from './types';
 export * from './cli';
-
-export { task, createTransportRequest };
+export { default as task } from './ui5';
+export { createTransportRequest } from './base';

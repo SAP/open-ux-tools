@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { App, Package } from '@sap-ux/ui5-application-writer';
+import type { Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import {
     generate as addOdataService,
@@ -20,12 +20,8 @@ import {
     getTemplateOptions,
     setVirtualEndpointDefaults
 } from './data/defaults';
-import {
-    TemplateTypeAttributes,
-    minSupportedUI5Version,
-    minSupportedUI5VersionV4,
-    escapeFLPText
-} from './data/templateAttributes';
+import { escapeFLPText } from './data/templateAttributes';
+export { TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
@@ -281,5 +277,6 @@ async function generate<T extends {}>(
     return fs;
 }
 
-export { generate, FioriElementsApp, App, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
+export { generate, FioriElementsApp };
+export type { App } from '@sap-ux/ui5-application-writer';
 export * from './types';
