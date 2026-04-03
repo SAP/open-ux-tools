@@ -151,10 +151,10 @@ export function validateNamespaceAdp(
     }
 
     if (isCustomerBase) {
-        if (namespace.toLowerCase().startsWith('customer.') !== true) {
-            return t('adp.namespaceSameAsProjectNameError');
-        } else {
+        if (namespace.toLowerCase().startsWith('customer.')) {
             namespace = namespace.slice('customer.'.length, namespace.length);
+        } else {
+            return t('adp.namespaceSameAsProjectNameError');
         }
     } else if (namespace !== projectName) {
         return t('adp.differentNamespaceThanProjectName');

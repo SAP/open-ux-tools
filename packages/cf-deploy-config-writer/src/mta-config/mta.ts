@@ -1254,7 +1254,8 @@ export class MtaConfig {
      */
     public async addMtaDeployParameters(): Promise<void> {
         let params = await this.getParameters();
-        params = { ...(params ?? {}) } as mta.Parameters;
+        params ??= {} as mta.Parameters;
+        params = { ...params } as mta.Parameters;
         params[deployMode] = 'html5-repo';
         params[enableParallelDeployments] = true;
         await this.updateParameters(params);

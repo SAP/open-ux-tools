@@ -95,17 +95,9 @@ function getDefaultValue(
     return promptDefault;
 }
 
-export {
-    getPrompts,
-    prompt,
-    promptNames,
-    type InquirerAdapter,
-    type PromptDefaultValue,
-    type FLPConfigAnswers,
-    type FLPConfigPromptOptions,
-    type FLPConfigQuestion
-};
-export type { TileSettingsAnswers } from './types';
+export { getPrompts, prompt, promptNames };
+export type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
+export type { FLPConfigAnswers, FLPConfigPromptOptions, FLPConfigQuestion, TileSettingsAnswers } from './types';
 
 export { getExistingFlpConfigInfoPrompt } from './prompts/questions';
 export { addi18nResourceBundle } from './i18n';

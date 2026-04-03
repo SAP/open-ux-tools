@@ -377,26 +377,24 @@ export class VocabularyService {
         const namespace = this.getVocabularyNamespace(termName);
         if (!term && !this.supportedVocabularies.has(namespace as VocabularyNamespace)) {
             return TermApplicability.UnSupportedVocabulary;
-        } else if (term) {
-            let applicable = this.byTarget.get('')?.has(termName);
-            for (let i = 0; i < targetKinds.length && !applicable; i++) {
-                applicable = this.byTarget.get(targetKinds[i])?.has(termName);
-            }
-            if (applicable) {
-                if (targetType && term.constraints?.requiresType) {
-                    const requiredType = term.constraints.requiresType;
-                    return this.isOfType(requiredType, targetType)
-                        ? TermApplicability.Applicable
-                        : TermApplicability.TypeNotApplicable;
-                } else {
-                    return TermApplicability.Applicable;
-                }
-            } else {
-                return TermApplicability.TermNotApplicable;
-            }
-        } else {
+        }
+        if (!term) {
             return TermApplicability.UnknownTerm;
         }
+        let applicable = this.byTarget.get('')?.has(termName);
+        for (let i = 0; i < targetKinds.length && !applicable; i++) {
+            applicable = this.byTarget.get(targetKinds[i])?.has(termName);
+        }
+        if (!applicable) {
+            return TermApplicability.TermNotApplicable;
+        }
+        if (targetType && term.constraints?.requiresType) {
+            const requiredType = term.constraints.requiresType;
+            return this.isOfType(requiredType, targetType)
+                ? TermApplicability.Applicable
+                : TermApplicability.TypeNotApplicable;
+        }
+        return TermApplicability.Applicable;
     }
 
     /**
