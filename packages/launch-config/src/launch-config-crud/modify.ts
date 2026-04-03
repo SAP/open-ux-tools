@@ -54,10 +54,12 @@ function moveOldArgsToEnv(launchConfig: LaunchConfig): LaunchConfig {
  */
 function addArgs(scriptArgs: string[]) {
     const args: string[] = [];
-    const openIndex =
-        scriptArgs.includes(Arguments.Open) ? scriptArgs.indexOf(Arguments.Open) : scriptArgs.indexOf('-o');
-    const configIndex =
-        scriptArgs.includes(Arguments.Config) ? scriptArgs.indexOf(Arguments.Config) : scriptArgs.indexOf('-c');
+    const openIndex = scriptArgs.includes(Arguments.Open)
+        ? scriptArgs.indexOf(Arguments.Open)
+        : scriptArgs.indexOf('-o');
+    const configIndex = scriptArgs.includes(Arguments.Config)
+        ? scriptArgs.indexOf(Arguments.Config)
+        : scriptArgs.indexOf('-c');
     if (openIndex !== -1) {
         args.push(Arguments.Open, scriptArgs[openIndex + 1]);
     }

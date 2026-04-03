@@ -38,11 +38,11 @@ import { EventName } from '../telemetryEvents';
 import { getCFQuestions, getCAPMTAQuestions } from './questions';
 import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
-import { CfDeployConfigOptions } from './types';
-import {
+import type { CfDeployConfigOptions } from './types';
+import type {
+    CfDeployConfigAnswers,
     type CfAppRouterDeployConfigAnswers,
     type CfDeployConfigQuestions,
-    CfDeployConfigAnswers,
     RouterModuleType
 } from '@sap-ux/cf-deploy-config-inquirer';
 import type { Answers } from 'inquirer';

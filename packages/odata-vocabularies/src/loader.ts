@@ -428,12 +428,10 @@ const addToUpperCaseNameMap = (
         }
         newEntry.set(propertyName.toUpperCase(), propertyName);
         upperCaseNameMap.set(upperCaseName, newEntry);
-    } else {
-        if (!currentEntry || typeof currentEntry === 'string') {
-            upperCaseNameMap.set(upperCaseName, name);
-        } else if (typeof currentEntry === 'object') {
-            upperCaseNameMap.set(upperCaseName, Object.assign(currentEntry, { $Self: name }));
-        }
+    } else if (!currentEntry || typeof currentEntry === 'string') {
+        upperCaseNameMap.set(upperCaseName, name);
+    } else if (typeof currentEntry === 'object') {
+        upperCaseNameMap.set(upperCaseName, Object.assign(currentEntry, { $Self: name }));
     }
 };
 

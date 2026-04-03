@@ -156,10 +156,8 @@ export function validateNamespaceAdp(
         } else {
             namespace = namespace.slice('customer.'.length, namespace.length);
         }
-    } else {
-        if (namespace !== projectName) {
-            return t('adp.differentNamespaceThanProjectName');
-        }
+    } else if (namespace !== projectName) {
+        return t('adp.differentNamespaceThanProjectName');
     }
 
     if (namespace.length > 61 || namespace.toLowerCase().endsWith('component') === true) {
