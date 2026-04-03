@@ -296,7 +296,7 @@ function writeCommonAndPageFiles(
  * @param testOutDirPath - output test directory (.../webapp/test)
  * @param editor - a reference to a mem-fs editor
  * @param basePath - the absolute target path where the application will be generated
- * @param config - optional OPA test configuration object
+ * @param config - OPA test configuration object
  */
 function writeJourneyFiles(
     appFeatures: AppFeatures,
@@ -442,7 +442,6 @@ export async function generateOPAFiles(
 
     // Access ux-specification to get feature data for OPA test generation
     const appFeatures = await getAppFeatures(basePath, editor, log, metadata);
-    //let generatedJourneyPages: string[] = [];
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
@@ -466,7 +465,7 @@ export async function generateOPAFiles(
                 editor,
                 basePath,
                 config,
-                hasJourneyRunner
+                true
             );
         } else {
             editor.move(
@@ -476,25 +475,19 @@ export async function generateOPAFiles(
 
             addIntegrationOldToGitignore(basePath, editor);
             const htmlTarget = readHtmlTargetFromQUnitJs(basePath, editor) ?? config.htmlTarget;
-            config.htmlTarget = htmlTarget;
 
             writeCommonAndPageFiles(
-                config,
+                { ...config, htmlTarget },
                 rootCommonTemplateDirPath,
                 rootV4TemplateDirPath,
                 testOutDirPath,
                 editor,
                 journeyParams
             );
-            writeJourneyFiles(
-                appFeatures,
-                journeyParams,
-                rootV4TemplateDirPath,
-                testOutDirPath,
-                editor,
-                basePath,
-                config
-            );
+            writeJourneyFiles(appFeatures, journeyParams, rootV4TemplateDirPath, testOutDirPath, editor, basePath, {
+                ...config,
+                htmlTarget
+            });
         }
     } else {
         writeCommonAndPageFiles(

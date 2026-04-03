@@ -81,7 +81,7 @@ const LAUNCH_URL_REGEX = /\.toUrl\s*\([^)]+\)\s*\+\s*'([^']+)'/;
 /**
  * Reads opaTests.qunit.js from webapp/test/integration_old and extracts the html
  * launch target (path, query parameters, and hash fragment) from the launchUrl
- * line, e.g. `/test/flpSandbox.html?sap-ui-xx-viewCache=false#myApp-tile`.
+ * line, e.g. `test/flpSandbox.html?sap-ui-xx-viewCache=false#myApp-tile`.
  * Returns undefined if the file cannot be read or the pattern is not found.
  *
  * @param basePath - project root (contains webapp/)
@@ -103,9 +103,8 @@ export function readHtmlTargetFromQUnitJs(basePath: string, fs: Editor): string 
 const INTEGRATION_OLD_GITIGNORE_ENTRY = '/webapp/test/integration_old';
 
 /**
- * Appends `/webapp/test/integration_old` to the project's `.gitignore` file.
- * If the entry is already present it is not added again.
- * If the file does not exist it is created with just this entry.
+ * Appends `/webapp/test/integration_old` to the project's `.gitignore`.
+ * Creates the file if it does not exist. Skips if the entry is already present.
  *
  * @param basePath - project root (contains .gitignore)
  * @param fs - mem-fs-editor instance used to read and write the file
@@ -131,7 +130,7 @@ export function addIntegrationOldToGitignore(basePath: string, fs: Editor): void
  * All other file content is preserved exactly.
  *
  * @param filePaths - module paths to add (e.g. ["myApp/test/integration/SomeJourney"])
- * @param projectPath - project path (.../webapp/test)
+ * @param projectPath - path to the test output directory (`.../webapp/test`)
  * @param fs - mem-fs-editor instance used to read and write the file
  */
 export function addPathsToQUnitJs(filePaths: string[], projectPath: string, fs: Editor): void {
