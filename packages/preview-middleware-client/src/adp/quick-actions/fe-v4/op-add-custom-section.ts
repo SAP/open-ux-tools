@@ -33,11 +33,10 @@ export class AddCustomSectionQuickAction
         const sections = objectPageLayout.getSections();
         let anchor: string | null = null;
         const pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop() as string;
-        if (sections.length > 0) {
-            // Use the first section as the anchor if available
-            anchor = (this.context.view.getLocalId(sections.at(-1).getId()) ?? '')
-                .split('::')
-                .pop() as string;
+        const lastSection = sections.at(-1);
+        if (lastSection !== undefined) {
+            // Use the last section as the anchor if available
+            anchor = (this.context.view.getLocalId(lastSection.getId()) ?? '').split('::').pop() ?? null;
         }
         if (!pageId) {
             throw new Error('pageId is not defined');
@@ -49,7 +48,7 @@ export class AddCustomSectionQuickAction
             throw new Error('appComponent is not defined');
         }
         if (!anchor) {
-            throw new Error('appComponent is not defined');
+            throw new Error('anchor is not defined');
         }
         return {
             appType: 'fe-v4',
