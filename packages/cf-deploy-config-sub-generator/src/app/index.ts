@@ -39,11 +39,11 @@ import { getCFQuestions, getCAPMTAQuestions } from './questions';
 import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import type { CfDeployConfigOptions } from './types';
+import { RouterModuleType } from '@sap-ux/cf-deploy-config-inquirer';
 import type {
     CfDeployConfigAnswers,
-    type CfAppRouterDeployConfigAnswers,
-    type CfDeployConfigQuestions,
-    RouterModuleType
+    CfAppRouterDeployConfigAnswers,
+    CfDeployConfigQuestions
 } from '@sap-ux/cf-deploy-config-inquirer';
 import type { Answers } from 'inquirer';
 
