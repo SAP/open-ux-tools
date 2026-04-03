@@ -943,6 +943,35 @@ export interface ServiceKeyCredentialsWithTags {
     credentials: ServiceKeys['credentials'] | undefined;
 }
 
+/**
+ * Credentials extracted from VCAP_SERVICES for the BTP destination service instance on Cloud Foundry.
+ */
+export interface CfDestinationServiceCredentials {
+    clientid: string;
+    clientsecret: string;
+    /** OAuth token URL (e.g. https://mysubaccount.authentication.us20.hana.ondemand.com) */
+    url: string;
+    /** Destination Configuration API base URI (e.g. https://destination-configuration.cfapps.us20.hana.ondemand.com) */
+    uri: string;
+}
+
+/**
+ * Destination configuration returned by the BTP Destination Configuration API.
+ * Contains the known properties; additional custom properties may also be present.
+ */
+export interface BtpDestinationConfig {
+    Name: string;
+    Type: string;
+    URL: string;
+    Authentication: string;
+    ProxyType: string;
+    Description?: string;
+    User?: string;
+    Password?: string;
+    'sap-client'?: string;
+    [key: string]: string | undefined;
+}
+
 export interface AppRouterEnvOptions {
     'VCAP_SERVICES'?: Record<string, unknown>;
     destinations?: { name: string; url: string }[];

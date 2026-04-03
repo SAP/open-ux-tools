@@ -21,7 +21,10 @@ import type {
     MtaYaml,
     ServiceInfo,
     CfUi5AppInfo,
-    ServiceKeyCredentialsWithTags
+    ServiceKeyCredentialsWithTags,
+    CfDestinationServiceCredentials,
+    BtpDestinationConfig,
+    Uaa
 } from '../../types';
 import { t } from '../../i18n';
 import { getProjectNameForXsSecurity } from '../project';
@@ -498,5 +501,54 @@ export async function getServiceKeyCredentialsWithTags(
             `Failed to get credentials and tags for service '${serviceName}' (instance: '${serviceInstanceName}'): ${e.message}`
         );
         return null;
+    }
+}
+
+/**
+ * Obtain an OAuth2 access token using the client credentials grant.
+ *
+ * @param uaa - UAA service credentials (clientid, clientsecret, url).
+ * @returns OAuth2 access token.
+ */
+export async function getToken(uaa: Uaa): Promise<string> {
+    const auth = Buffer.from(`${uaa.clientid}:${uaa.clientsecret}`);
+    const options = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic ' + auth.toString('base64')
+        }
+    };
+    const uri = `${uaa.url}/oauth/token`;
+    try {
+        const response = await axios.post(uri, 'grant_type=client_credentials', options);
+        return response.data['access_token'];
+    } catch (e) {
+        throw new Error(t('error.failedToGetAuthKey', { error: e.message }));
+    }
+}
+
+/**
+ * Get a single destination's configuration from the BTP Destination Configuration API.
+ * Note: This calls the BTP Destination Configuration API, not the BAS listDestinations API.
+ *
+ * @param credentials - CF destination service credentials (provides the API base URI).
+ * @param token - OAuth2 bearer token obtained via {@link getToken}.
+ * @param destinationName - Name of the destination to look up.
+ * @returns The destinationConfiguration object (e.g. Name, ProxyType, URL, Authentication) or undefined on failure.
+ */
+export async function getBtpDestinationConfig(
+    credentials: CfDestinationServiceCredentials,
+    token: string,
+    destinationName: string
+): Promise<BtpDestinationConfig | undefined> {
+    const url = `${credentials.uri}/destination-configuration/v1/destinations/${encodeURIComponent(destinationName)}`;
+
+    try {
+        const response = await axios.get<{ destinationConfiguration?: BtpDestinationConfig }>(url, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        return response.data.destinationConfiguration;
+    } catch {
+        return undefined;
     }
 }

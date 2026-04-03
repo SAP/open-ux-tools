@@ -5,8 +5,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AppRouterEnvOptions } from '@sap-ux/adp-tooling';
 import { buildVcapServicesFromResources, getSpaceGuidFromUi5Yaml, getYamlContent } from '@sap-ux/adp-tooling';
 
-import type { EffectiveOptions } from '../types';
 import { UI5_SERVER_DESTINATION } from './constants';
+import type { ConnectivityProxyInfo, EffectiveOptions } from '../types';
 
 /**
  * Destination entry as stored in process.env.destinations.
@@ -14,6 +14,32 @@ import { UI5_SERVER_DESTINATION } from './constants';
 interface EnvDestination {
     name: string;
     url: string;
+}
+
+/**
+ * Extract connectivity proxy host and port from VCAP_SERVICES.
+ *
+ * @param vcapServices - Parsed VCAP_SERVICES object.
+ * @returns Proxy info or undefined if no connectivity service is present.
+ */
+export function getConnectivityProxyInfo(
+    vcapServices: Record<string, unknown> | undefined
+): ConnectivityProxyInfo | undefined {
+    if (!vcapServices) {
+        return undefined;
+    }
+    const connectivity = vcapServices['connectivity'];
+    if (!Array.isArray(connectivity)) {
+        return undefined;
+    }
+    for (const entry of connectivity) {
+        const host = entry.credentials?.onpremise_proxy_host;
+        const port = entry.credentials?.onpremise_proxy_port;
+        if (host && port) {
+            return { host: String(host), port: Number(port) };
+        }
+    }
+    return undefined;
 }
 
 /**
@@ -40,10 +66,22 @@ function loadEnvOptionsFromFile(rootPath: string, envOptionsPath: string): AppRo
 
 /**
  * Apply options to process.env with JSON-stringified destinations and VCAP_SERVICES.
+ * Overrides the connectivity proxy host to localhost so traffic flows through the local SSH tunnel.
  *
  * @param options - Env options to apply.
  */
 function applyToProcessEnv(options: AppRouterEnvOptions): void {
+    if (options.VCAP_SERVICES) {
+        const connectivity = options.VCAP_SERVICES['connectivity'];
+        if (Array.isArray(connectivity)) {
+            for (const entry of connectivity) {
+                if (entry.credentials?.onpremise_proxy_host) {
+                    entry.credentials.onpremise_proxy_host = 'localhost';
+                }
+            }
+        }
+    }
+
     const envOptions = {
         ...options,
         ...(options.destinations ? { destinations: JSON.stringify(options.destinations) } : {}),
@@ -62,13 +100,13 @@ function applyToProcessEnv(options: AppRouterEnvOptions): void {
  * @param rootPath - Project root path.
  * @param effectiveOptions - Merged config; envOptionsPath and destinations are used.
  * @param logger - Logger for CF path.
- * @returns Promise resolving when env options are loaded and applied.
+ * @returns Connectivity proxy info (original host/port before localhost override), or undefined.
  */
 export async function loadAndApplyEnvOptions(
     rootPath: string,
     effectiveOptions: EffectiveOptions,
     logger: ToolsLogger
-): Promise<void> {
+): Promise<ConnectivityProxyInfo | undefined> {
     const { envOptionsPath, destinations: middlewareDestinations } = effectiveOptions;
     let options: AppRouterEnvOptions;
 
@@ -98,7 +136,9 @@ export async function loadAndApplyEnvOptions(
         };
     }
 
+    const connectivityInfo = getConnectivityProxyInfo(options.VCAP_SERVICES as Record<string, unknown>);
     applyToProcessEnv(options);
+    return connectivityInfo;
 }
 
 /**

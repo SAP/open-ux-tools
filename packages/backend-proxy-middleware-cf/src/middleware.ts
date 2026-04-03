@@ -17,6 +17,9 @@ import type { BackendProxyMiddlewareCfConfig } from './types';
 import { fetchBasUrlTemplate, resolveBasExternalUrl } from './platform/bas';
 import { buildRouteEntries, loadAndPrepareXsappConfig } from './proxy/routes';
 import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from './config/env';
+import { hasOnPremiseDestination } from './tunnel/destination-check';
+import { ensureTunnelAppExists, startSshTunnelIfNeeded } from './tunnel/tunnel';
+import { DEFAULT_TUNNEL_APP_NAME } from './config/constants';
 
 dotenv.config();
 
@@ -56,8 +59,22 @@ async function backendProxyMiddlewareCf({
         throw new Error(`xs-app.json not found at "${xsappJsonPath}"`);
     }
 
-    await loadAndApplyEnvOptions(rootPath, effectiveOptions, logger);
+    const connectivityInfo = await loadAndApplyEnvOptions(rootPath, effectiveOptions, logger);
     await updateXsuaaService(rootPath, logger);
+
+    if (!effectiveOptions.disableSshTunnel && connectivityInfo) {
+        const needsSshTunnel = await hasOnPremiseDestination(rootPath, logger);
+        if (needsSshTunnel) {
+            const tunnelAppName = effectiveOptions.tunnelAppName ?? DEFAULT_TUNNEL_APP_NAME;
+            await ensureTunnelAppExists(tunnelAppName, logger);
+            await startSshTunnelIfNeeded(connectivityInfo, tunnelAppName, logger, {
+                localPort: effectiveOptions.tunnelLocalPort,
+                skipSshEnable: effectiveOptions.skipSshEnable
+            });
+        } else {
+            logger.info('No OnPremise destination found in webapp/xs-app.json, skipping SSH tunnel setup.');
+        }
+    }
 
     const sourcePath = project.getSourcePath();
     const xsappConfig = loadAndPrepareXsappConfig({
