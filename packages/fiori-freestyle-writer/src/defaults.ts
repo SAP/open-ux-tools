@@ -90,4 +90,5 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
 
 // Specific escaping is required for FLP texts in flpSandbox.html template file
 // Escapes '\' with '\\\\' and '"' with '\"' to correctly render inputs in a secure way
-export const escapeFLPText = (s: string): string => s.replaceAll('\\', '\\\\').replace(/(")/g, '\\$&');
+export const escapeFLPText = (s: string): string =>
+    s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
