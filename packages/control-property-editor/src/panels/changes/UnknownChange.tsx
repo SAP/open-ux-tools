@@ -42,7 +42,7 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
     }
 
     const parts = fileName.split('_');
-    const changeName = parts.at(-1);
+    const changeName = parts.at(-1) ?? '';
     const name = convertCamelCaseToPascalCase(changeName);
     const headerText = title ?? `${name} ${t('CHANGE')}`;
     return (

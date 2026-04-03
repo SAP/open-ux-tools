@@ -33,7 +33,7 @@ export async function writeToExistingI18nPropertiesFile(
 
     const lines = content.split(/\r\n|\n/);
     // check if file does not end with new line
-    if (lines.length > 0 && lines.at(-1).trim()) {
+    if (lines.length > 0 && lines.at(-1)?.trim()) {
         // If there no end line - add new gap line before new content
         newContent = `\n${newContent}`;
     }

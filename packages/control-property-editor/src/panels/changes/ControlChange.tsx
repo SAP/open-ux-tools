@@ -51,7 +51,7 @@ export function ControlChange({
 
     const name = useMemo(() => {
         const parts = fileName.split('_');
-        const changeName = parts.at(-1);
+        const changeName = parts.at(-1) ?? '';
         return convertCamelCaseToPascalCase(changeName);
     }, [fileName]);
 
