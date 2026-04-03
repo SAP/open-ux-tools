@@ -25,9 +25,7 @@ export class UIOverlay extends React.Component<IOverlayProps, {}> {
      */
     render(): JSX.Element {
         const overlayStyles = (): Partial<IOverlayStyles> => ({
-            ...{
-                root: {}
-            }
+            root: {}
         });
 
         return (

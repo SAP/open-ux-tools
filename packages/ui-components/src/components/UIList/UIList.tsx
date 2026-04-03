@@ -56,82 +56,75 @@ export class UIList extends React.Component<ListProps, {}> {
      */
     render(): JSX.Element {
         const HeaderStyles = (): Partial<IGroupHeaderStyles> => ({
-            ...{
-                root: [
-                    {
-                        cursor: 'pointer',
-                        padding: '0 10px 0 10px',
-                        selectors: {
-                            '&:hover': {
-                                backgroundColor: 'var(--vscode-dropdown-background)',
-                                color: 'var(--vscode-dropdown-foreground)'
-                            }
+            root: [
+                {
+                    cursor: 'pointer',
+                    padding: '0 10px 0 10px',
+                    selectors: {
+                        '&:hover': {
+                            backgroundColor: 'var(--vscode-dropdown-background)',
+                            color: 'var(--vscode-dropdown-foreground)'
                         }
                     }
-                ],
-                groupHeaderContainer: {
-                    height: 20
-                },
-                expandIsCollapsed: {
-                    height: 16
-                },
-                expand: [
-                    {
-                        height: 20,
-                        width: 30,
-                        selectors: {
-                            '&:hover': {
-                                backgroundColor: 'var(--vscode-dropdown-background)',
-                                color: 'var(--vscode-dropdown-foreground)'
-                            },
-                            '&:active': {
-                                backgroundColor: 'var(--vscode-dropdown-background)',
-                                color: 'var(--vscode-dropdown-foreground)'
-                            }
-                        }
-                    }
-                ],
-                title: {
-                    fontSize: 13,
-                    fontWeight: 'normal',
-                    paddingLeft: 0,
-                    height: 20,
-                    color: 'var(--vscode-settings-textInputForeground)'
                 }
+            ],
+            groupHeaderContainer: {
+                height: 20
+            },
+            expandIsCollapsed: {
+                height: 16
+            },
+            expand: [
+                {
+                    height: 20,
+                    width: 30,
+                    selectors: {
+                        '&:hover': {
+                            backgroundColor: 'var(--vscode-dropdown-background)',
+                            color: 'var(--vscode-dropdown-foreground)'
+                        },
+                        '&:active': {
+                            backgroundColor: 'var(--vscode-dropdown-background)',
+                            color: 'var(--vscode-dropdown-foreground)'
+                        }
+                    }
+                }
+            ],
+            title: {
+                fontSize: 13,
+                fontWeight: 'normal',
+                paddingLeft: 0,
+                height: 20,
+                color: 'var(--vscode-settings-textInputForeground)'
             }
         });
 
         const HeaderProps: IGroupHeaderProps = {
-            ...{
-                root: {},
-                expandButtonIcon: UiIcons.ArrowRight,
-                expandButtonProps: {
-                    style: {
-                        width: 20,
-                        paddingRight: 5
-                    }
-                },
-                indentWidth: 10,
-                styles: HeaderStyles,
-                onGroupHeaderClick: this.onGroupHeaderClick
-            }
+            expandButtonIcon: UiIcons.ArrowRight,
+            expandButtonProps: {
+                style: {
+                    width: 20,
+                    paddingRight: 5
+                }
+            },
+            indentWidth: 10,
+            styles: HeaderStyles,
+            onGroupHeaderClick: this.onGroupHeaderClick
         };
 
         const GroupeListStyles = (): Partial<IGroupedListStyles> => ({
-            ...{
-                root: [
-                    {
-                        color: 'var(--vscode-dropdown-foreground)',
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        selectors: {
-                            '.ms-List-cell': {
-                                minHeight: 20
-                            }
+            root: [
+                {
+                    color: 'var(--vscode-dropdown-foreground)',
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    selectors: {
+                        '.ms-List-cell': {
+                            minHeight: 20
                         }
                     }
-                ]
-            }
+                }
+            ]
         });
 
         const GroupProps: IGroupRenderProps = {

@@ -117,7 +117,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public setConfiguration(config: Configuration): UI5Config {
+    public setConfiguration(config: Configuration): this {
         this.document.setIn({
             path: 'resources',
             value: { configuration: config }
@@ -133,7 +133,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public setMetadata(value: Ui5Document['metadata']): UI5Config {
+    public setMetadata(value: Ui5Document['metadata']): this {
         this.document.setIn({ path: 'metadata', value });
         return this;
     }
@@ -156,7 +156,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public setType(value: Ui5Document['type']): UI5Config {
+    public setType(value: Ui5Document['type']): this {
         this.document.setIn({ path: 'type', value });
         return this;
     }
@@ -220,7 +220,7 @@ export class UI5Config {
         ui5Version: string,
         ui5Libraries: string[],
         ui5Theme = 'sap_fiori_3'
-    ): UI5Config {
+    ): this {
         const libraryObjs = [];
         for (const library of ui5Libraries) {
             libraryObjs.push({ name: library });
@@ -243,7 +243,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addCustomTasks(tasks: CustomTask<any>[], comments?: NodeComment<CustomMiddleware<any>>[]): UI5Config {
+    public addCustomTasks(tasks: CustomTask<any>[], comments?: NodeComment<CustomMiddleware<any>>[]): this {
         for (const task of tasks) {
             this.document.appendTo({ path: 'builder.customTasks', value: task, comments });
         }
@@ -261,7 +261,7 @@ export class UI5Config {
     public addCustomMiddleware(
         middlewares: CustomMiddleware<unknown>[],
         comments?: NodeComment<CustomMiddleware<unknown>>[]
-    ): UI5Config {
+    ): this {
         for (const mw of middlewares) {
             this.document.appendTo({ path: 'server.customMiddleware', value: mw, comments });
         }
@@ -274,7 +274,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addFioriToolsAppReloadMiddleware(): UI5Config {
+    public addFioriToolsAppReloadMiddleware(): this {
         this.document.appendTo({
             path: 'server.customMiddleware',
             value: getAppReloadMiddlewareConfig()
@@ -290,7 +290,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addFioriToolsProxyMiddleware(proxyConfig: FioriToolsProxyConfig, afterMiddleware?: string): UI5Config {
+    public addFioriToolsProxyMiddleware(proxyConfig: FioriToolsProxyConfig, afterMiddleware?: string): this {
         // Support both old and new property names for backward compatibility
         const resolvedIgnoreCertErrors = proxyConfig?.ignoreCertErrors ?? proxyConfig?.ignoreCertError ?? false; // NOSONAR
 
@@ -732,7 +732,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public removeCustomMiddleware(name: string): UI5Config {
+    public removeCustomMiddleware(name: string): this {
         this.document.deleteAt({
             path: 'server.customMiddleware',
             matcher: { key: 'name', value: name }
@@ -747,7 +747,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public removeCustomTask(name: string): UI5Config {
+    public removeCustomTask(name: string): this {
         this.document.deleteAt({
             path: 'builder.customTasks',
             matcher: { key: 'name', value: name }
@@ -832,7 +832,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public updateCustomMiddleware(middleware: CustomMiddleware<unknown>): UI5Config {
+    public updateCustomMiddleware(middleware: CustomMiddleware<unknown>): this {
         const name = middleware.name;
         if (this.findCustomMiddleware(name)) {
             this.document.updateAt({

@@ -86,13 +86,7 @@ export class YamlDocument {
      * @returns {YamlDocument} the YamlDocument instance
      * @memberof YamlDocument
      */
-    addDocumentComment({
-        comment,
-        location = 'beginning'
-    }: {
-        comment: string;
-        location?: 'beginning' | 'end';
-    }): YamlDocument {
+    addDocumentComment({ comment, location = 'beginning' }: { comment: string; location?: 'beginning' | 'end' }): this {
         switch (location) {
             case 'beginning':
                 this.documents[0].commentBefore = comment;
@@ -163,7 +157,7 @@ export class YamlDocument {
         value: unknown;
         createIntermediateKeys?: boolean;
         comment?: string;
-    }): YamlDocument {
+    }): this {
         const pathArray = this.toPathArray(path);
 
         if (pathArray.length > 1) {
@@ -209,7 +203,7 @@ export class YamlDocument {
         createIntermediateKeys?: boolean;
         nodeComment?: string;
         comments?: Array<NodeComment<T>>;
-    }): YamlDocument {
+    }): this {
         const pathArray = this.toPathArray(path);
         // Create a copy to work to modify
         const documentCopy = this.documents[0].clone();
@@ -282,7 +276,7 @@ export class YamlDocument {
         matcher: { key: string; value: string };
         value: T;
         mode?: 'merge' | 'overwrite';
-    }): YamlDocument {
+    }): this {
         const pathArray = this.toPathArray(path);
         const seq = this.documents[0].getIn(pathArray) as YAMLSeq<yaml.Node>;
         if (!seq) {
@@ -324,7 +318,7 @@ export class YamlDocument {
      * @returns {YamlDocument} the YamlDocument instance
      * @memberof YamlDocument
      */
-    deleteAt({ path, matcher }: { path: string; matcher: { key: string; value: string } }): YamlDocument {
+    deleteAt({ path, matcher }: { path: string; matcher: { key: string; value: string } }): this {
         const pathArray = this.toPathArray(path);
         const seq = this.documents[0].getIn(pathArray) as YAMLSeq<yaml.Node>;
         if (!seq?.items) {

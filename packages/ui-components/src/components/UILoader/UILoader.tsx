@@ -35,41 +35,37 @@ export class UILoader extends React.Component<UILoaderProps, {}> {
     render(): JSX.Element {
         const { blockDOM, delayed } = this.props;
         const loaderStyles = (): Partial<ISpinnerStyles> => ({
-            ...{
-                root: {
-                    ...(blockDOM && { height: '100%' })
-                },
-                circle: [
-                    {
-                        borderColor:
-                            'var(--vscode-progressBar-background) var(--vscode-terminal-ansiBrightWhite) var(--vscode-terminal-ansiBrightWhite)',
-                        borderWidth: 2,
-                        zIndex: 1
-                    }
-                ],
-                label: {
-                    color: 'var(--vscode-foreground)',
-                    fontSize: 14,
-                    fontWeight: 'bold',
+            root: {
+                ...(blockDOM && { height: '100%' })
+            },
+            circle: [
+                {
+                    borderColor:
+                        'var(--vscode-progressBar-background) var(--vscode-terminal-ansiBrightWhite) var(--vscode-terminal-ansiBrightWhite)',
+                    borderWidth: 2,
                     zIndex: 1
                 }
+            ],
+            label: {
+                color: 'var(--vscode-foreground)',
+                fontSize: 14,
+                fontWeight: 'bold',
+                zIndex: 1
             }
         });
         const spinner = <Spinner {...this.props} styles={loaderStyles} />;
         if (blockDOM) {
             const overlayStyles = (): Partial<IOverlayStyles> => ({
-                ...{
-                    root: {
-                        backgroundColor: 'transparent',
-                        selectors: {
-                            '&:before': {
-                                content: '""',
-                                position: 'absolute',
-                                inset: 0,
-                                backgroundColor: 'var(--vscode-editor-background)',
-                                opacity: 0.6,
-                                zIndex: 1
-                            }
+                root: {
+                    backgroundColor: 'transparent',
+                    selectors: {
+                        '&:before': {
+                            content: '""',
+                            position: 'absolute',
+                            inset: 0,
+                            backgroundColor: 'var(--vscode-editor-background)',
+                            opacity: 0.6,
+                            zIndex: 1
                         }
                     }
                 }

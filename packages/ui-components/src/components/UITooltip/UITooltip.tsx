@@ -45,13 +45,8 @@ export class UITooltip extends React.Component<UITooltipProps, {}> {
         const maxWidth = this.props.maxWidth ?? 200;
         const TooltipHostStyles = (): Partial<ITooltipHostStyles> => ({
             ...{
-                root: {
-                    display: 'inline-block'
-                },
-                content: {
-                    backgroundColor: CALLOUT_STYLES.background,
-                    color: CALLOUT_STYLES.text
-                }
+                root: { display: 'inline-block' },
+                content: { backgroundColor: CALLOUT_STYLES.background, color: CALLOUT_STYLES.text }
             },
             ...this.props.styles
         });

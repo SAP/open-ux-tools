@@ -22,7 +22,7 @@ export class Cookies {
      * @param response http response containing a headers object
      * @returns cookies object
      */
-    public setCookies(response: AxiosResponse): Cookies {
+    public setCookies(response: AxiosResponse): this {
         if (response.headers?.['set-cookie']) {
             response.headers['set-cookie'].forEach((cookieString) => this.addCookie(cookieString));
         }
@@ -35,7 +35,7 @@ export class Cookies {
      * @param cookieString string representing a cookie
      * @returns cookies object
      */
-    public addCookie(cookieString: string): Cookies {
+    public addCookie(cookieString: string): this {
         const cookie = cookieString.split(';');
         const [key, ...values] = cookie[0]?.split('=') || [];
         const value = values?.join('='); // Account for embedded '=' in the value

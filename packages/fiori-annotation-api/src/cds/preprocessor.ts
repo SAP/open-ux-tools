@@ -304,7 +304,7 @@ class ChangePreprocessor {
         deletionMap: Record<string, DeletionIndex[]>,
         insertionMap: Record<string, boolean>
     ): void {
-        const childPointers = new Set([...parent.assignments.map((_, i) => `${parentPointer}/assignments/${i}`)]);
+        const childPointers = new Set(parent.assignments.map((_, i) => `${parentPointer}/assignments/${i}`));
         for (const indexedValue of deletionMap[parentPointer]) {
             childPointers.delete(indexedValue.change.pointer);
         }
@@ -333,7 +333,7 @@ class ChangePreprocessor {
         deletionMap: Record<string, DeletionIndex[]>,
         insertionMap: Record<string, boolean>
     ): void {
-        const childPointers = new Set([...parent.items.map((_, i) => `${parentPointer}/items/${i}`)]);
+        const childPointers = new Set(parent.items.map((_, i) => `${parentPointer}/items/${i}`));
         for (const indexedValue of deletionMap[parentPointer]) {
             childPointers.delete(indexedValue.change.pointer);
         }

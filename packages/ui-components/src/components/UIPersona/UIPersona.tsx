@@ -26,15 +26,13 @@ export class UIPersona extends React.Component<IPersonaProps, {}> {
 
     private readonly personaStyles = (_props: IPersonaStyleProps): Partial<IPersonaStyles> => {
         return {
-            ...{
-                root: {},
-                details: {},
-                primaryText: {},
-                secondaryText: {},
-                tertiaryText: {},
-                optionalText: {},
-                textContent: {}
-            }
+            root: {},
+            details: {},
+            primaryText: {},
+            secondaryText: {},
+            tertiaryText: {},
+            optionalText: {},
+            textContent: {}
         };
     };
 

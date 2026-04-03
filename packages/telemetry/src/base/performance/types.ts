@@ -22,19 +22,19 @@ type EntriesArray = (Mark | Measurement)[];
  *
  */
 abstract class PerformanceMeasurement {
-    static initTiming: number;
-    static enteries: EntriesArray;
+    static readonly initTiming: number;
+    static readonly enteries: EntriesArray;
 
-    static initialize: () => void;
-    static startMark: (name: string) => string;
-    static endMark: (name: string) => void;
-    static measure: (name: string) => void;
-    static getEntries: () => EntriesArray;
-    static getEntriesByName: (name: string) => EntriesArray;
-    static getEntriesByType: (type: EntryType) => EntriesArray;
-    static getEntriesByNameType: (name: string, type: EntryType) => EntriesArray;
-    static getMeasurementDuration: (name: string) => number;
-    static clearEntries: () => void;
+    static readonly initialize: () => void;
+    static readonly startMark: (name: string) => string;
+    static readonly endMark: (name: string) => void;
+    static readonly measure: (name: string) => void;
+    static readonly getEntries: () => EntriesArray;
+    static readonly getEntriesByName: (name: string) => EntriesArray;
+    static readonly getEntriesByType: (type: EntryType) => EntriesArray;
+    static readonly getEntriesByNameType: (name: string, type: EntryType) => EntriesArray;
+    static readonly getMeasurementDuration: (name: string) => number;
+    static readonly clearEntries: () => void;
 }
 
 export { EntryType, Mark, Measurement, EntriesArray, PerformanceMeasurement };

@@ -636,7 +636,7 @@ function collectRelativePaths(
             baseEntry = metadataCollector.metadataElementMap.get(baseKey);
             nodeKind = getNodeKind(baseEntry, metadataCollector);
         }
-        for (const relativePath of [...mdPathSet]) {
+        for (const relativePath of mdPathSet) {
             metadataCollector?.facade?.collectMetadataForRelativePath(
                 relativePath,
                 baseKey,

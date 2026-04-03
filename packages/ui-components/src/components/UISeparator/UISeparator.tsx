@@ -29,34 +29,32 @@ export class UISeparator extends React.Component<ISeparatorProps, {}> {
      */
     render(): JSX.Element {
         const separatorStyles = (props: ISeparatorStyleProps): Partial<ISeparatorStyles> => ({
-            ...{
-                root: [
-                    {
-                        height: '100%',
-                        width: 1,
-                        padding: '0 10px',
-                        selectors: {
-                            ':before': {
-                                backgroundColor: 'var(--vscode-editorWidget-border)',
-                                top: 1,
-                                bottom: 1
-                            }
-                        }
-                    },
-                    props.vertical && {
-                        height: '100%',
-                        width: 1,
-                        padding: '0 10px',
-                        selectors: {
-                            ':after': {
-                                backgroundColor: 'var(--vscode-editorWidget-border)',
-                                top: 1,
-                                bottom: 1
-                            }
+            root: [
+                {
+                    height: '100%',
+                    width: 1,
+                    padding: '0 10px',
+                    selectors: {
+                        ':before': {
+                            backgroundColor: 'var(--vscode-editorWidget-border)',
+                            top: 1,
+                            bottom: 1
                         }
                     }
-                ]
-            }
+                },
+                props.vertical && {
+                    height: '100%',
+                    width: 1,
+                    padding: '0 10px',
+                    selectors: {
+                        ':after': {
+                            backgroundColor: 'var(--vscode-editorWidget-border)',
+                            top: 1,
+                            bottom: 1
+                        }
+                    }
+                }
+            ]
         });
 
         return <Separator {...this.props} styles={separatorStyles} />;

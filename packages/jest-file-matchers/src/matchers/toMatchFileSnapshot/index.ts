@@ -175,11 +175,9 @@ export function toMatchFile(
         ...options,
         // Options for jest-diff
         diff: {
-            ...{
-                expand: false,
-                contextLines: 5,
-                aAnnotation: 'Snapshot'
-            },
+            expand: false,
+            contextLines: 5,
+            aAnnotation: 'Snapshot',
             ...options.diff
         }
     };

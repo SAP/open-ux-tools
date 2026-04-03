@@ -37,26 +37,24 @@ export class UILabel extends React.Component<UILabelProps> {
     render(): JSX.Element {
         const labelStyles = (props: ILabelStyleProps): Partial<ILabelStyles> => {
             return {
-                ...{
-                    root: [
-                        {
-                            marginTop: 25,
-                            ...labelGlobalStyle
-                        },
-                        props.disabled && {
-                            opacity: '0.4'
-                        },
-                        props.required && {
-                            selectors: {
-                                '::after': {
-                                    content: REQUIRED_LABEL_INDICATOR,
-                                    color: 'var(--vscode-inputValidation-errorBorder)',
-                                    paddingRight: 12
-                                }
+                root: [
+                    {
+                        marginTop: 25,
+                        ...labelGlobalStyle
+                    },
+                    props.disabled && {
+                        opacity: '0.4'
+                    },
+                    props.required && {
+                        selectors: {
+                            '::after': {
+                                content: REQUIRED_LABEL_INDICATOR,
+                                color: 'var(--vscode-inputValidation-errorBorder)',
+                                paddingRight: 12
                             }
                         }
-                    ]
-                }
+                    }
+                ]
             };
         };
 

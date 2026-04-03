@@ -143,7 +143,7 @@ interface ComboBoxRef extends IComboBox {
  */
 export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState> {
     // Default values for public component properties
-    static defaultProps = { openMenuOnClick: true };
+    static readonly defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
     private readonly comboBox = React.createRef<ComboBoxRef>();
     private readonly comboboxDomRef = React.createRef<HTMLDivElement>();

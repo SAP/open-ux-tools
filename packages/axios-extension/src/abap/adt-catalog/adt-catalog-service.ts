@@ -10,7 +10,7 @@ import { XMLParser, XMLValidator } from 'fast-xml-parser';
  */
 export class AdtCatalogService extends Axios {
     // Discovery service url provided by ADT team
-    public static ADT_DISCOVERY_SERVICE_PATH = '/sap/bc/adt/discovery';
+    public static readonly ADT_DISCOVERY_SERVICE_PATH = '/sap/bc/adt/discovery';
     // Cache of fetched discovery schema
     protected schemaStore = new AdtSchemaStore();
     // Instantiated by calling ServiceProvider.createService()

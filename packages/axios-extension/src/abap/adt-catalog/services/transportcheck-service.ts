@@ -26,7 +26,7 @@ export class TransportChecksService extends AdtService {
         return TransportChecksService.adtCategory;
     }
 
-    public static LocalPackageError = 'LocalPackageError';
+    public static readonly LocalPackageError = 'LocalPackageError';
 
     /**
      * TransportChecksService API function to fetch a list of available transport requests.
