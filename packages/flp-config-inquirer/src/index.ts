@@ -4,8 +4,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 
 import { initI18n } from './i18n';
-import type { promptNames } from './types';
-import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types';
+import type { promptNames, FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types';
 import { getQuestions } from './prompts';
 
 /**

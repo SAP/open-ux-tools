@@ -1419,7 +1419,8 @@ function getContainerContent(
         const items = getItems(collection);
         const commas = getCommas(collection, tokens);
         const commentsInContent = comments
-            .filter((comment) => rangeContained(collectionRange, comment.range)).filter((comment) => !items.some((item) => item.range && rangeContained(item.range, comment.range)));
+            .filter((comment) => rangeContained(collectionRange, comment.range))
+            .filter((comment) => !items.some((item) => item.range && rangeContained(item.range, comment.range)));
         const source = [...commas, ...items, ...commentsInContent].sort(compareByRange);
         const content: ContainerContentBlock[] = [];
         for (const node of source) {

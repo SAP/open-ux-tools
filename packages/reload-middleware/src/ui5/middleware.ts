@@ -12,7 +12,10 @@ import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import { resolve } from 'node:path';
 import { watchManifestChanges } from '../base/livereload';
 
-const reloadMiddleware = async ({ options, middlewareUtil }: MiddlewareParameters<ReloaderConfig>): Promise<RequestHandler> => {
+const reloadMiddleware = async ({
+    options,
+    middlewareUtil
+}: MiddlewareParameters<ReloaderConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'reload-middleware' })]
     });

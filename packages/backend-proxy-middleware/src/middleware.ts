@@ -33,7 +33,9 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
  * @param params.options configuration options
  * @returns {*}  {(Promise<RequestHandler>)}
  */
-const backendProxyMiddleware = async ({ options }: MiddlewareParameters<BackendMiddlewareConfig>): Promise<RequestHandler> => {
+const backendProxyMiddleware = async ({
+    options
+}: MiddlewareParameters<BackendMiddlewareConfig>): Promise<RequestHandler> => {
     const backend = options.configuration?.backend;
     if (!backend) {
         throw new Error('no backend configuration found.');
