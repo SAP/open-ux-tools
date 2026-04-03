@@ -184,7 +184,8 @@ describe('Test utils', () => {
             entityType: Partial<EntityType>,
             hierarchyKey?: string,
             keys?: { name: string; type: string }[],
-            entityProperties?: { name: string; type: string }[]
+            entityProperties?: { name: string; type: string }[],
+            isDraft?: boolean
         ): EntitySet {
             const annotations: Record<string, unknown> = {};
             if (hierarchyKey) {
@@ -207,9 +208,15 @@ describe('Test utils', () => {
                 };
             }
 
+            const entitySetAnnotations: Record<string, unknown> = {};
+            if (isDraft) {
+                entitySetAnnotations.Common = { DraftRoot: { type: 'Org.OData.Common.V1.DraftRootType' } };
+            }
+
             return {
                 name,
                 entityTypeName: entityType.fullyQualifiedName ?? name + 'Type',
+                annotations: entitySetAnnotations,
                 entityType: {
                     ...entityType,
                     keys: keys ?? [{ name: 'ID', type: 'Edm.String' }],
@@ -294,7 +301,8 @@ describe('Test utils', () => {
                         { fullyQualifiedName: 'CompanyType' },
                         'RecursiveHierarchy#CompanyHierarchy',
                         draftKeys,
-                        [{ name: 'Parent', type: 'Edm.Guid' }]
+                        [{ name: 'Parent', type: 'Edm.Guid' }],
+                        true
                     )
                 ]
             } as ConvertedMetadata;

@@ -14,7 +14,7 @@ import { t } from '../../utils/i18n';
 import { fetchData, type EntitySetsFlat } from '../odata-query';
 import { ODataDownloadGenerator } from '../odata-download-generator';
 import type { SelectedEntityAnswer } from './prompts';
-import type { AppConfig, Entity, HierarchyEntity } from '../types';
+import type { AppConfig, Entity } from '../types';
 import { getSystemNameFromStore } from '../utils';
 import { PromptState } from '../prompt-state';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
@@ -217,13 +217,11 @@ function getEntitySelectionChoices(
  *
  * @param rootEntity - The root entity to create choices for
  * @param pageObjectEntities - Optional page object entities for pre-selection
- * @param hierarchyEntities - Optional hierarchy entities detected from metadata
  * @returns Object containing entity sets flat map and checkbox choices, or undefined
  */
 export function createEntityChoices(
     rootEntity: Entity,
-    pageObjectEntities?: Entity[],
-    hierarchyEntities?: HierarchyEntity[]
+    pageObjectEntities?: Entity[]
 ): { entitySetsFlat: EntitySetsFlat; choices: CheckboxChoiceOptions<SelectedEntityAnswer>[] } | undefined {
     // Get all PO entity paths for pre-selection
     const poEntityPaths = pageObjectEntities
@@ -241,16 +239,6 @@ export function createEntityChoices(
 
     if (rootEntity.navPropEntities) {
         const entityChoices = getEntitySelectionChoices(rootEntity, undefined, undefined, poEntityPaths);
-
-        // Add disabled indicator for detected hierarchy entities
-        if (hierarchyEntities?.length) {
-            for (const h of hierarchyEntities) {
-                entityChoices.choices.unshift({
-                    name: `${h.entitySetName} [Hierarchy]`,
-                    disabled: t('prompts.relatedEntitySelection.hierarchyAutoQueried')
-                } as CheckboxChoiceOptions<SelectedEntityAnswer>);
-            }
-        }
 
         entityChoices.choices.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
         return entityChoices;

@@ -329,7 +329,7 @@ export function getHierarchyEntities(convertedMetadata: ConvertedMetadata): Hier
         const parentProperty = parentNavProp?.referentialConstraint?.[0]?.sourceProperty;
 
         if (nodeProperty && parentProperty) {
-            const isDraft = entitySet.entityType.keys.some((key) => key.name === 'IsActiveEntity');
+            const isDraft = !!(entitySet.annotations?.Common?.DraftRoot ?? entitySet.annotations?.Common?.DraftNode);
             const parentPropertyType =
                 entitySet.entityType.entityProperties.find((prop) => prop.name === parentProperty)?.type ??
                 'Edm.String';
@@ -364,73 +364,79 @@ export async function getEntityModel(
     appAccess: ApplicationAccess,
     specification: Specification,
     remoteMetadata: string
-): Promise<ReferencedEntities | undefined> {
+): Promise<ReferencedEntities | undefined | string> {
     let entities: ReferencedEntities | undefined;
     const mainService = appAccess.app.services['mainService'];
 
-    if (mainService.local) {
-        const convertedMetadata = convert(parse(remoteMetadata));
-        const appConfig = await specification.readApp({ app: appAccess });
+    try {
+        if (mainService.local) {
+            const convertedMetadata = convert(parse(remoteMetadata));
+            const appConfig = await specification.readApp({ app: appAccess });
 
-        if (
-            appConfig.applicationModel &&
-            appConfig.applicationModel?.target?.fioriElements == FioriElementsVersion.v4
-        ) {
-            const appModel = appConfig.applicationModel;
-            const pages = appModel.pages as unknown as PagesV4;
-            let mainListEntityType: EntityType | undefined;
-            const pageObjectEntities: Entity[] = [];
+            if (
+                appConfig.applicationModel &&
+                appConfig.applicationModel?.target?.fioriElements == FioriElementsVersion.v4
+            ) {
+                const appModel = appConfig.applicationModel;
+                const pages = appModel.pages as unknown as PagesV4;
+                let mainListEntityType: EntityType | undefined;
+                const pageObjectEntities: Entity[] = [];
 
-            // Get all the app referenced pages and list entity
-            Object.values(pages).forEach((page) => {
-                // Get the main list entity
-                if (page.pageType === PageTypeV4.ListReport && page.entityType && page.entitySet) {
-                    mainListEntityType = convertedMetadata.entityTypes.find(
-                        (et) => et.fullyQualifiedName === page.entityType
-                    );
-                    if (mainListEntityType) {
-                        const entityKeys = getSemanticKeyProperties(mainListEntityType);
-                        entities = {
-                            listEntity: {
-                                entitySetName: page.entitySet,
-                                semanticKeys: entityKeys,
-                                entityPath: page.entitySet,
-                                entityType: mainListEntityType
-                            }
-                        };
-
-                        // Add nav props of the list entity
-                        entities.listEntity.navPropEntities = getNavPropsForExpansion(
-                            mainListEntityType,
-                            convertedMetadata
+                // Get all the app referenced pages and list entity
+                Object.values(pages).forEach((page) => {
+                    // Get the main list entity
+                    if (page.pageType === PageTypeV4.ListReport && page.entityType && page.entitySet) {
+                        mainListEntityType = convertedMetadata.entityTypes.find(
+                            (et) => et.fullyQualifiedName === page.entityType
                         );
-                    }
-                } else if (page.pageType === PageTypeV4.ObjectPage && page.entityType && page.entitySet) {
-                    // Dont add the page object for the main entity since it will be the query root entity set
-                    if (
-                        page.entitySet &&
-                        page.entityType &&
-                        page.entityType !== mainListEntityType?.fullyQualifiedName
-                    ) {
-                        const objectPageEntitySet = findEntitySet(convertedMetadata.entitySets, page.entityType);
-                        const pageEntity: Entity = {
-                            entityPath: page.navigationProperty!,
-                            entitySetName: page.entitySet,
-                            entityType: objectPageEntitySet?.entityType,
-                            page
-                        };
-                        pageObjectEntities.push(pageEntity);
-                    }
-                }
-            });
+                        if (mainListEntityType) {
+                            const entityKeys = getSemanticKeyProperties(mainListEntityType);
+                            entities = {
+                                listEntity: {
+                                    entitySetName: page.entitySet,
+                                    semanticKeys: entityKeys,
+                                    entityPath: page.entitySet,
+                                    entityType: mainListEntityType
+                                }
+                            };
 
-            if (!entities?.listEntity) {
-                ODataDownloadGenerator.logger.info(t('info.noListEntityDefined'));
-                return undefined;
+                            // Add nav props of the list entity
+                            entities.listEntity.navPropEntities = getNavPropsForExpansion(
+                                mainListEntityType,
+                                convertedMetadata
+                            );
+                        }
+                    } else if (page.pageType === PageTypeV4.ObjectPage && page.entityType && page.entitySet) {
+                        // Dont add the page object for the main entity since it will be the query root entity set
+                        if (
+                            page.entitySet &&
+                            page.entityType &&
+                            page.entityType !== mainListEntityType?.fullyQualifiedName
+                        ) {
+                            const objectPageEntitySet = findEntitySet(convertedMetadata.entitySets, page.entityType);
+                            const pageEntity: Entity = {
+                                entityPath: page.navigationProperty!,
+                                entitySetName: page.entitySet,
+                                entityType: objectPageEntitySet?.entityType,
+                                page
+                            };
+                            pageObjectEntities.push(pageEntity);
+                        }
+                    }
+                });
+
+                if (!entities?.listEntity) {
+                    ODataDownloadGenerator.logger.info(t('info.noListEntityDefined'));
+                    return t('info.noListEntityDefined');
+                }
+                entities.pageObjectEntities = pageObjectEntities;
+                entities.hierarchyEntities = getHierarchyEntities(convertedMetadata);
             }
-            entities.pageObjectEntities = pageObjectEntities;
-            entities.hierarchyEntities = getHierarchyEntities(convertedMetadata);
         }
+        return entities;
+    } catch (error) {
+        const errLog = t('errors.entityModelLoading', { error });
+        ODataDownloadGenerator.logger.error(errLog);
+        return errLog;
     }
-    return entities;
 }

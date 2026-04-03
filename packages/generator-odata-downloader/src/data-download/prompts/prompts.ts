@@ -354,8 +354,7 @@ function getResetSelectionPrompt(
                 if (appConfig.referencedEntities?.listEntity) {
                     const entityChoices = createEntityChoices(
                         appConfig.referencedEntities.listEntity,
-                        appConfig.referencedEntities.pageObjectEntities,
-                        appConfig.referencedEntities.hierarchyEntities
+                        appConfig.referencedEntities.pageObjectEntities
                     );
                     if (entityChoices) {
                         relatedEntityChoices.choices = entityChoices.choices;
@@ -428,6 +427,13 @@ function getKeyPrompts(
                     keyName: `${appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name} (${appConfig.referencedEntities?.listEntity.entitySetName})`
                 }),
             type: 'input',
+            default: () => {
+                const keyRef = appConfig.referencedEntities?.listEntity.semanticKeys[keypart];
+                if (keyRef?.name === 'IsActiveEntity') {
+                    return 'true';
+                }
+                return undefined;
+            },
             guiOptions: {
                 hint: t('prompts.entityKey.hint')
             },
@@ -543,7 +549,7 @@ function getUpdateMainServiceMetadataPrompt(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
     appConfig: AppConfig
 ): ConfirmQuestion {
-    let entityModelResult: ReferencedEntities | undefined;
+    let entityModelResult: ReferencedEntities | undefined | string;
     const question: ConfirmQuestion = {
         when: async () => {
             if (appConfig.appAccess && appConfig.specification && odataServiceAnswers?.metadata) {

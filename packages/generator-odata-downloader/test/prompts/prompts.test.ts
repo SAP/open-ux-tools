@@ -926,8 +926,7 @@ describe('Test prompts', () => {
                 await whenFn({});
                 expect(promptHelpers.createEntityChoices).toHaveBeenCalledWith(
                     appConfig.referencedEntities?.listEntity,
-                    appConfig.referencedEntities?.pageObjectEntities,
-                    appConfig.referencedEntities?.hierarchyEntities
+                    appConfig.referencedEntities?.pageObjectEntities
                 );
             });
 

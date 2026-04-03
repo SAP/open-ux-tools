@@ -441,29 +441,12 @@ describe('Test createEntityChoices', () => {
             ]
         };
 
-        const hierarchyEntities = [
-            {
-                entitySetName: 'SalesOrganizations',
-                entityTypeName: 'SalesOrgType',
-                qualifier: 'SalesOrgHierarchy',
-                nodeProperty: 'ID',
-                parentProperty: 'Parent',
-                parentPropertyType: 'Edm.String',
-                isDraft: false
-            }
-        ];
-
-        const result = createEntityChoices(rootEntity, undefined, hierarchyEntities);
+        const result = createEntityChoices(rootEntity);
 
         expect(result).toBeDefined();
         // Self-ref nav prop should NOT be a selectable choice; only _Country is selectable
-        const selectableChoices = result!.choices.filter((c) => !(c as { disabled?: string }).disabled);
-        expect(selectableChoices).toHaveLength(1);
-        expect(selectableChoices[0].name).toBe('_Country');
-        // A disabled hierarchy indicator should be present
-        const disabledChoice = result!.choices.find((c) => (c.name as string).includes('[Hierarchy]'));
-        expect(disabledChoice).toBeDefined();
-        expect((disabledChoice as { disabled?: string }).disabled).toBeTruthy();
+        expect(result!.choices).toHaveLength(1);
+        expect(result!.choices[0].name).toBe('_Country');
     });
 
     test('should skip self-referential nav prop when no hierarchy entities provided', () => {
