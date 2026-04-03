@@ -725,6 +725,7 @@ pnpm outdated
 13. ❌ **Don't run all tests when working on a single package** - Use `pnpm --filter @sap-ux/[package-name] test` instead of `pnpm test` at root
 14. ❌ **Don't hardcode version numbers in documentation** - Reference source files (like package.json) instead, as versions change frequently
 15. ❌ **Don't pin peerDependencies to exact versions** - Use open semver ranges (e.g., `^9` not `9.39.1`) so consumers can use any compatible release
+16. ❌ **Don't add `// NOSONAR` comments without explicit user confirmation** - We prefer to handle false positives and won't-fix cases directly in SonarCloud (via "False Positive" or "Won't Fix" markings) rather than suppressing issues in source code. Adding `// NOSONAR` hides issues from all future scans and pollutes the codebase. Always ask the user before adding any `// NOSONAR` suppression.
 
 ## Summary Checklist
 

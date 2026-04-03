@@ -58,9 +58,7 @@ export function generateRoutePattern(
         if (sourceRoute?.pattern) {
             const basePattern = sourceRoute.pattern.replace(PATTERN_SUFFIX, '');
             if (basePattern) {
-                parts.push(basePattern);
-                parts.push('/');
-                parts.push(nav.navEntity);
+                parts.push(basePattern, '/', nav.navEntity);
             } else {
                 parts.push(targetEntity);
             }

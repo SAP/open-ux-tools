@@ -67,14 +67,11 @@ export function generateRoutePattern(sourceRoutePattern: string, navProperty: st
     const parts: string[] = [];
     const basePattern = sourceRoutePattern.replace(PATTERN_SUFFIX, '');
     if (basePattern) {
-        parts.push(basePattern);
-        parts.push('/');
-        parts.push(navProperty);
+        parts.push(basePattern, '/', navProperty);
     } else {
         parts.push(targetEntitySet);
     }
-    parts.push(`({${targetEntitySet}Key})`);
-    parts.push(PATTERN_SUFFIX);
+    parts.push(`({${targetEntitySet}Key})`, PATTERN_SUFFIX);
     return parts.join('');
 }
 

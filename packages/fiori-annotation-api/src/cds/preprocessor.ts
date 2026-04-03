@@ -447,8 +447,7 @@ class ChangePreprocessor {
                     pointerFragments.push(index.toString());
                 } else {
                     const index = change.index ?? parent.assignments.length - 1;
-                    pointerFragments.push('assignments');
-                    pointerFragments.push(index.toString());
+                    pointerFragments.push('assignments', index.toString());
                 }
                 const pointer = pointerFragments.join('/');
                 // merge inserts and deletions

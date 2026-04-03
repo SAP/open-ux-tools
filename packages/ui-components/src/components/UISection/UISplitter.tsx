@@ -103,9 +103,9 @@ export class UISplitter extends React.Component<UISplitterProps> {
     private doResize(deltaPosition: number): void {
         const cssPropertyName = this.props.vertical ? 'top' : 'left';
         if (this.animationFrame) {
-            window.cancelAnimationFrame(this.animationFrame);
+            globalThis.cancelAnimationFrame(this.animationFrame);
         }
-        this.animationFrame = window.requestAnimationFrame(() => {
+        this.animationFrame = globalThis.requestAnimationFrame(() => {
             // Call callback
             if (this.props.onResize(deltaPosition)) {
                 // Update resizer DOM

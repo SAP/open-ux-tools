@@ -748,9 +748,7 @@ export class CDSWriter implements ChangeHandler {
             range.start.character++; // range includes '{' or '[' characters
             range.end.character--; // range includes '}' or ']' characters
 
-            fragments.push('\n');
-            fragments.push(newElements);
-            fragments.push(',');
+            fragments.push('\n', newElements, ',');
             const text = indent(deIndent(fragments.join('')), {
                 level: indentLevel + 1,
                 skipFirstLine: true
@@ -768,9 +766,7 @@ export class CDSWriter implements ChangeHandler {
                 this.edits.push(TextEdit.insert(anchor.commaPosition, ','));
             }
 
-            fragments.push('\n');
-            fragments.push(newElements);
-            fragments.push(',');
+            fragments.push('\n', newElements, ',');
             let finalText = fragments.join('');
             finalText = deIndent(finalText);
             const text = indent(finalText, {

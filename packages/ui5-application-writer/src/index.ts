@@ -34,10 +34,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     }
     const isEdmxProjectType = ui5AppConfig.app.projectType === 'EDMXBackend';
     if (!isEdmxProjectType) {
-        // ignore the ui5-local.yaml file for CAP applications
-        ignore.push('**/ui5-local.yaml');
-        // ignore the .gitignore.tmpl file for CAP applications
-        ignore.push('**/gitignore.tmpl');
+        // ignore the ui5-local.yaml and .gitignore.tmpl files for CAP applications
+        ignore.push('**/ui5-local.yaml', '**/gitignore.tmpl');
     }
     // Determine the UI5 resource URL based on project type and UI5 framework details
     const ui5ResourceUrl = getTemplateOptions(isEdmxProjectType, ui5App.ui5?.frameworkUrl, ui5App.ui5?.version);

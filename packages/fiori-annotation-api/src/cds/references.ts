@@ -254,11 +254,13 @@ function getPathsInAnnotation(
     const qualifier = getElementAttributeValue(element, Edm.Qualifier);
 
     // new target/term/qualifier: add path pointing to this term, then using statement will be created if this combination exists elsewhere
-    paths.push({
-        path: targetName + '/@' + termName + (qualifier ? '#' + qualifier : ''),
-        forOverriding: true
-    });
-    paths.push(...getPathsInElement(element, pathBase));
+    paths.push(
+        {
+            path: targetName + '/@' + termName + (qualifier ? '#' + qualifier : ''),
+            forOverriding: true
+        },
+        ...getPathsInElement(element, pathBase)
+    );
 }
 
 function addAvailableNamespaces(

@@ -43,26 +43,28 @@ const addAppStudioQuestions = (questions: PromptObject[], target?: DeployTarget)
         });
     }
     // Offer destination or url configuration
-    questions.push({
-        name: 'select',
-        type: (prev) => (prev ? null : 'select'),
-        message: t('questions.target', { type: '', file: '' }),
-        choices: [
-            { title: t('questions.enter', { type: TargetType.destination }), value: TargetType.destination },
-            { title: t('questions.enter', { type: TargetType.url }), value: TargetType.url }
-        ]
-    });
-    // destination
-    questions.push({
-        type: (prev) => (prev === TargetType.destination ? 'text' : null),
-        name: TargetType.destination,
-        initial: target?.destination,
-        message: t('questions.target', {
-            type: TargetType.destination,
-            file: target?.destination ? `(${FileName.UI5DeployYaml})` : ''
-        }),
-        validate: (value: string) => validator(value, 'error.target')
-    });
+    questions.push(
+        {
+            name: 'select',
+            type: (prev) => (prev ? null : 'select'),
+            message: t('questions.target', { type: '', file: '' }),
+            choices: [
+                { title: t('questions.enter', { type: TargetType.destination }), value: TargetType.destination },
+                { title: t('questions.enter', { type: TargetType.url }), value: TargetType.url }
+            ]
+        },
+        // destination
+        {
+            type: (prev) => (prev === TargetType.destination ? 'text' : null),
+            name: TargetType.destination,
+            initial: target?.destination,
+            message: t('questions.target', {
+                type: TargetType.destination,
+                file: target?.destination ? `(${FileName.UI5DeployYaml})` : ''
+            }),
+            validate: (value: string) => validator(value, 'error.target')
+        }
+    );
 };
 
 /**

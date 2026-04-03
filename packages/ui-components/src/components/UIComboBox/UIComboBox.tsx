@@ -299,7 +299,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             const input = event.target;
             const selectionEnd = input.selectionEnd;
             if (selectionEnd !== input.value.length) {
-                window.requestAnimationFrame(() => {
+                globalThis.requestAnimationFrame(() => {
                     input.selectionStart = selectionEnd;
                     input.selectionEnd = selectionEnd;
                 });

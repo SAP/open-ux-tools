@@ -653,18 +653,20 @@ export class ChangeConverter {
             };
             this.annotationFileChanges.push(internalChange);
         } else if (content.value.type === Edm.Null) {
-            this.annotationFileChanges.push({
-                type: DELETE_ATTRIBUTE,
-                uri: fileUri,
-                pointer: pointer
-            });
-            this.annotationFileChanges.push({
-                type: INSERT_ELEMENT,
-                uri: fileUri,
-                target: targetName,
-                pointer: pointer.split('/').slice(0, -2).join('/'),
-                element: createElementNode({ name: Edm.Null })
-            });
+            this.annotationFileChanges.push(
+                {
+                    type: DELETE_ATTRIBUTE,
+                    uri: fileUri,
+                    pointer: pointer
+                },
+                {
+                    type: INSERT_ELEMENT,
+                    uri: fileUri,
+                    target: targetName,
+                    pointer: pointer.split('/').slice(0, -2).join('/'),
+                    element: createElementNode({ name: Edm.Null })
+                }
+            );
         } else {
             // attribute notation
             const internalChange: ReplaceAttribute = {

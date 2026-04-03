@@ -469,24 +469,24 @@ export class VocabularyService {
         }`;
         const languageDependentDesc = this.getTerm('Org.OData.Core.V1.IsLanguageDependent')?.description ?? '';
 
-        values.push(...this.checkExperimentalElement(element, experimentalDescription));
-        values.push(...this.checkDeprecatedElement(element));
-        values.push(...this.getElementKindIsProperty(element));
-        values.push(...this.getElementDescription(element));
-        values.push(...this.getElementLongDescription(element));
+        values.push(
+            ...this.checkExperimentalElement(element, experimentalDescription),
+            ...this.checkDeprecatedElement(element),
+            ...this.getElementKindIsProperty(element),
+            ...this.getElementDescription(element),
+            ...this.getElementLongDescription(element)
+        );
 
         if (element.kind === TERM_KIND && element.baseTerm) {
             values.push(`**Base Term:** ${element.baseTerm} \n`);
         }
-        values.push(...this.getElementAppliesToValue(element));
-
-        values.push(...this.getElementKindIsMemberAndTerm(element, elementType, aliasInfo));
-
-        values.push(...this.getElementTypeDescription(element, elementType, experimentalDescription, aliasInfo));
-
-        values.push(...this.getElementIsLanguageDependent(element, languageDependentDesc));
-
-        values.push(...this.getElementDefaultValue(element));
+        values.push(
+            ...this.getElementAppliesToValue(element),
+            ...this.getElementKindIsMemberAndTerm(element, elementType, aliasInfo),
+            ...this.getElementTypeDescription(element, elementType, experimentalDescription, aliasInfo),
+            ...this.getElementIsLanguageDependent(element, languageDependentDesc),
+            ...this.getElementDefaultValue(element)
+        );
 
         if (element.kind !== 'Member' && element.kind !== 'EnumType') {
             values.push(this.getFormattedNullableText(element));

@@ -574,15 +574,15 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * Method appends custom keydown and focus event listeners when context menu is opened.
      */
     applyCustomKeyDownHandlingEvents = () => {
-        window.addEventListener('keydown', this.onWindowKeyDown, true);
-        window.addEventListener('focus', this.handleCustomDownKey, true);
+        globalThis.addEventListener('keydown', this.onWindowKeyDown, true);
+        globalThis.addEventListener('focus', this.handleCustomDownKey, true);
     };
     /**
      * Method removes custom keydown and focus event listeners when context menu is dismissed.
      */
     removeCustomKeyDownHandlingEvents = () => {
-        window.removeEventListener('keydown', this.onWindowKeyDown, true);
-        window.removeEventListener('focus', this.handleCustomDownKey, true);
+        globalThis.removeEventListener('keydown', this.onWindowKeyDown, true);
+        globalThis.removeEventListener('focus', this.handleCustomDownKey, true);
     };
 
     /**

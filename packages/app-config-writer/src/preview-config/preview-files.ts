@@ -99,12 +99,14 @@ export async function deleteNoLongerUsedFiles(
         join(webappTestPath, 'initFlpSandbox.ts')
     ];
     if (convertTests) {
-        files.push(join(webappTestPath, 'testsuite.qunit.js'));
-        files.push(join(webappTestPath, 'testsuite.qunit.ts'));
-        files.push(join(webappTestPath, 'integration', 'opaTests.qunit.js'));
-        files.push(join(webappTestPath, 'integration', 'opaTests.qunit.ts'));
-        files.push(join(webappTestPath, 'unit', 'unitTests.qunit.js'));
-        files.push(join(webappTestPath, 'unit', 'unitTests.qunit.ts'));
+        files.push(
+            join(webappTestPath, 'testsuite.qunit.js'),
+            join(webappTestPath, 'testsuite.qunit.ts'),
+            join(webappTestPath, 'integration', 'opaTests.qunit.js'),
+            join(webappTestPath, 'integration', 'opaTests.qunit.ts'),
+            join(webappTestPath, 'unit', 'unitTests.qunit.js'),
+            join(webappTestPath, 'unit', 'unitTests.qunit.ts')
+        );
     }
     await deleteFiles(fs, files, logger);
 }

@@ -190,7 +190,7 @@ export class AdpPreview {
         if ('cfBuildPath' in this.config) {
             return;
         }
-        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
+        if (!globalThis.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
             return;
         }
         if (!this.lrep || !this.descriptorVariantId) {
@@ -204,7 +204,7 @@ export class AdpPreview {
         const buffer = zip.toBuffer();
 
         this.mergedDescriptor = (await this.lrep.mergeAppDescriptorVariant(buffer, '//'))[this.descriptorVariantId];
-        global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+        globalThis.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
     }
 
     /**

@@ -34,7 +34,7 @@ export default function App(appProps: AppProps): ReactElement {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        const sheet = window.document.styleSheets[0];
+        const sheet = globalThis.document.styleSheets[0];
         sheet.insertRule(
             '@font-face {font-family: "SAP-icons"; src: url("/resources/sap/ui/core/themes/base/fonts/SAP-icons.woff2") format("woff2"),' +
                 'local("SAP-icons"); font-weight: normal; font-style: normal}',

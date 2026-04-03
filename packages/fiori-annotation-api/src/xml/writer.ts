@@ -175,8 +175,10 @@ export class XMLWriter {
                     continue;
                 }
                 const { textEdits, text } = this.prepareXmlElementMoveChange(moveChange, changes);
-                edits.push(...textEdits);
-                edits.push(...handleXmlElementMoveChange(element, childIndentLevel, text, insertPosition));
+                edits.push(
+                    ...textEdits,
+                    ...handleXmlElementMoveChange(element, childIndentLevel, text, insertPosition)
+                );
             }
         } else {
             edits.push(...handleXmlElementAttributeInserts(element, attributeInserts));
