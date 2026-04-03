@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import { DestinationProxyType } from '@sap-ux/btp-utils';
-import type { CfDestinationServiceCredentials } from '@sap-ux/adp-tooling';
+import type { ServiceKeyCredentialsWithTags, ServiceKeys } from '@sap-ux/adp-tooling';
 import { getToken, getBtpDestinationConfig } from '@sap-ux/adp-tooling';
 
 import type { XsappConfig } from '../types';
@@ -39,37 +39,33 @@ function getWebappXsappDestinationNames(rootPath: string): string[] {
  *
  * @returns Credentials or undefined if no destination service is bound.
  */
-function getDestinationServiceCredentials(): CfDestinationServiceCredentials | undefined {
+function getDestinationServiceCredentials(): ServiceKeys['credentials'] | undefined {
     const raw = process.env.VCAP_SERVICES;
     if (!raw) {
         return undefined;
     }
 
-    let vcap: Record<string, unknown>;
+    let vcapServices: Record<string, ServiceKeyCredentialsWithTags[]>;
     try {
-        vcap = JSON.parse(raw);
+        vcapServices = JSON.parse(raw);
     } catch {
         return undefined;
     }
 
-    const entries = vcap['destination'];
-    if (!Array.isArray(entries)) {
+    const entries = vcapServices['destination'];
+    if (!Array.isArray(entries) || entries.length === 0) {
         return undefined;
     }
 
-    for (const entry of entries) {
-        const creds = entry?.credentials;
-        if (creds?.clientid && creds?.clientsecret && creds?.uri && creds?.url) {
-            return {
-                clientid: String(creds.clientid),
-                clientsecret: String(creds.clientsecret),
-                uri: String(creds.uri),
-                url: String(creds.url)
-            };
-        }
+    const credentials = entries[0].credentials;
+    if (!credentials) {
+        return undefined;
     }
 
-    return undefined;
+    return {
+        ...credentials,
+        uaa: { clientid: credentials.clientid, clientsecret: credentials.clientsecret, url: credentials.url }
+    };
 }
 
 /**
@@ -95,7 +91,7 @@ export async function hasOnPremiseDestination(rootPath: string, logger: ToolsLog
 
     let token: string;
     try {
-        token = await getToken(credentials);
+        token = await getToken(credentials.uaa, logger);
     } catch (e) {
         const message = e instanceof Error ? e.message : String(e);
         logger.warn(`Failed to obtain OAuth token for destination service: ${message}`);
@@ -104,7 +100,7 @@ export async function hasOnPremiseDestination(rootPath: string, logger: ToolsLog
 
     for (const name of destinationNames) {
         try {
-            const config = await getBtpDestinationConfig(credentials, token, name);
+            const config = await getBtpDestinationConfig(credentials.uri, token, name, logger);
             if (config?.ProxyType === DestinationProxyType.ON_PREMISE) {
                 logger.info(`Destination "${name}" is OnPremise, SSH tunnel is needed.`);
                 return true;

@@ -86,7 +86,7 @@ export async function downloadAppContent(
     try {
         const { serviceKeys, serviceInstance } = await getHtml5RepoCredentials(spaceGuid, logger);
 
-        const token = await getToken(serviceKeys[0]?.credentials.uaa);
+        const token = await getToken(serviceKeys[0]?.credentials.uaa, logger);
         const uri = `${serviceKeys[0]?.credentials.uri}/applications/content/${appNameVersion}?pathSuffixFilter=manifest.json,xs-app.json`;
         const zip = await downloadZip(token, appHostId, uri);
 

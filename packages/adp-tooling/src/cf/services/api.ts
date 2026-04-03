@@ -22,7 +22,6 @@ import type {
     ServiceInfo,
     CfUi5AppInfo,
     ServiceKeyCredentialsWithTags,
-    CfDestinationServiceCredentials,
     BtpDestinationConfig,
     Uaa
 } from '../../types';
@@ -508,9 +507,10 @@ export async function getServiceKeyCredentialsWithTags(
  * Obtain an OAuth2 access token using the client credentials grant.
  *
  * @param uaa - UAA service credentials (clientid, clientsecret, url).
+ * @param logger - Optional logger.
  * @returns OAuth2 access token.
  */
-export async function getToken(uaa: Uaa): Promise<string> {
+export async function getToken(uaa: Uaa, logger?: ToolsLogger): Promise<string> {
     const auth = Buffer.from(`${uaa.clientid}:${uaa.clientsecret}`);
     const options = {
         headers: {
@@ -519,10 +519,13 @@ export async function getToken(uaa: Uaa): Promise<string> {
         }
     };
     const uri = `${uaa.url}/oauth/token`;
+    logger?.debug(`Requesting OAuth token from ${uri}`);
     try {
         const response = await axios.post(uri, 'grant_type=client_credentials', options);
+        logger?.debug('OAuth token obtained successfully');
         return response.data['access_token'];
     } catch (e) {
+        logger?.error(`Failed to obtain OAuth token from ${uri}: ${e.message}`);
         throw new Error(t('error.failedToGetAuthKey', { error: e.message }));
     }
 }
@@ -531,24 +534,29 @@ export async function getToken(uaa: Uaa): Promise<string> {
  * Get a single destination's configuration from the BTP Destination Configuration API.
  * Note: This calls the BTP Destination Configuration API, not the BAS listDestinations API.
  *
- * @param credentials - CF destination service credentials (provides the API base URI).
+ * @param uri - Destination Configuration API base URI (e.g. https://destination-configuration.cfapps.us20.hana.ondemand.com).
  * @param token - OAuth2 bearer token obtained via {@link getToken}.
  * @param destinationName - Name of the destination to look up.
+ * @param logger - Optional logger.
  * @returns The destinationConfiguration object (e.g. Name, ProxyType, URL, Authentication) or undefined on failure.
  */
 export async function getBtpDestinationConfig(
-    credentials: CfDestinationServiceCredentials,
+    uri: string,
     token: string,
-    destinationName: string
+    destinationName: string,
+    logger?: ToolsLogger
 ): Promise<BtpDestinationConfig | undefined> {
-    const url = `${credentials.uri}/destination-configuration/v1/destinations/${encodeURIComponent(destinationName)}`;
+    const url = `${uri}/destination-configuration/v1/destinations/${encodeURIComponent(destinationName)}`;
+    logger?.debug(`Fetching BTP destination config for "${destinationName}" from ${url}`);
 
     try {
         const response = await axios.get<{ destinationConfiguration?: BtpDestinationConfig }>(url, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
+        logger?.debug(`Destination "${destinationName}" config: ProxyType=${response.data.destinationConfiguration?.ProxyType}`);
         return response.data.destinationConfiguration;
-    } catch {
+    } catch (e) {
+        logger?.error(`Failed to fetch destination config for "${destinationName}": ${e.message}`);
         return undefined;
     }
 }
