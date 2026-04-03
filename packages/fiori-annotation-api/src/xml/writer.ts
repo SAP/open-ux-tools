@@ -555,6 +555,29 @@ function convertInsertElementToTextEdits(
     }
 }
 
+function buildInsertFragments(
+    element: XMLElement,
+    anchor: Exclude<ReturnType<typeof findInsertPosition>, { type: 'none' }>,
+    newElements: string,
+    childIndentLevel: number
+): string[] {
+    const fragments: string[] = [];
+    if (element.syntax.openBody?.endLine === element.syntax.closeBody?.startLine && !anchor.requiresNewLine) {
+        fragments.push('\n');
+    }
+    if (anchor.requiresNewLine) {
+        fragments.push('\n');
+    }
+    fragments.push(newElements);
+    if (anchor.requiresNewLine) {
+        const childIndent = printOptions.useTabs
+            ? indentWithTabs(childIndentLevel)
+            : indentWithSpaces(printOptions.tabWidth, childIndentLevel);
+        fragments.push(childIndent);
+    }
+    return fragments;
+}
+
 function insertIntoElementWithContent(
     comments: Comment[],
     element: XMLElement,
@@ -576,24 +599,12 @@ function insertIntoElementWithContent(
             continue;
         }
 
-        const fragments: string[] = [];
-        if (element.syntax.openBody?.endLine === element.syntax.closeBody?.startLine && !anchor.requiresNewLine) {
-            fragments.push('\n');
-        }
-
         const newElements = insertElementToText(changeSet, childIndentLevel, namespaceMap) + '\n';
-        if (anchor.requiresNewLine) {
-            fragments.push('\n');
-        }
-        fragments.push(newElements);
+        const fragments = buildInsertFragments(element, anchor, newElements, childIndentLevel);
         if (!anchor.requiresNewLine) {
             edits.push(TextEdit.insert(anchor.position, fragments.join('')));
             continue;
         }
-        const childIndent = printOptions.useTabs
-            ? indentWithTabs(childIndentLevel)
-            : indentWithSpaces(printOptions.tabWidth, childIndentLevel);
-        fragments.push(childIndent);
         if (anchor.redundantWhitespace) {
             edits.push(TextEdit.del(anchor.redundantWhitespace));
         }
