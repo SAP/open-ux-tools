@@ -175,6 +175,7 @@ export interface ConfigAnswers {
     password: string;
     storeCredentials?: boolean;
     application: SourceApplication;
+    projectType?: AdaptationProjectType;
     fioriId?: string;
     ach?: string;
     shouldCreateExtProject?: boolean;
@@ -929,6 +930,22 @@ export interface HTML5Content {
 export interface ServiceInstance {
     name: string;
     guid: string;
+}
+
+/**
+ * Service key credentials with tags returned by the CF API.
+ */
+export interface ServiceKeyCredentialsWithTags {
+    label: string;
+    name: string;
+    tags: string[];
+    plan: string;
+    credentials: ServiceKeys['credentials'] | undefined;
+}
+
+export interface AppRouterEnvOptions {
+    'VCAP_SERVICES'?: Record<string, unknown>;
+    destinations?: { name: string; url: string }[];
 }
 
 export interface GetServiceInstanceParams {
