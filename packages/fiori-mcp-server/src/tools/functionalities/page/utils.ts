@@ -25,7 +25,7 @@ function generatePageIdV4(page: PageDef, parentPage: string | undefined, navigat
     if (page.pageType === PageTypeV4.CustomPage || page.pageType === PageTypeV4.FPMCustomPage) {
         const viewId = page.viewName ?? '';
         const names = viewId.split('.');
-        name = names.at(-1);
+        name = names.at(-1) ?? '';
     } else {
         name = page.contextPath ? page.contextPath.slice(1).replace(/\//g, '_') : page.entitySet;
     }

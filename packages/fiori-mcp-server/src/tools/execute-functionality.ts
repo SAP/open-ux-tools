@@ -149,6 +149,9 @@ function resolveParameterValue(
     parameterInfo?: Parameter
 ): unknown {
     const propertyName = propertyPath.at(-1);
+    if (propertyName === undefined) {
+        return undefined;
+    }
     if (parameterInfo?.type === 'object') {
         let value: unknown = parametersValue;
         if (propertyName in parametersValue) {
