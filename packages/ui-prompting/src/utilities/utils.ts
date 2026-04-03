@@ -94,7 +94,7 @@ export function setAnswer(answers: Answers, path: string, value: unknown): Answe
 
     if (validPath) {
         const key = keys.at(-1);
-        if (!['__proto__', 'constructor', 'prototype'].includes(key)) {
+        if (key !== undefined && !['__proto__', 'constructor', 'prototype'].includes(key)) {
             current[key] = value;
         }
     }

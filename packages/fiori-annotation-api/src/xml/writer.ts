@@ -239,14 +239,15 @@ function handleXmlAttributeChanges(
     } else {
         // if attribute is deleted, then we can ignore updates
         const nameRange = transformRange(element.syntax.key);
-        if (nameRange && attributeNameUpdates.length > 0) {
-            const newName = attributeNameUpdates.at(-1).newName;
-            edits.push(TextEdit.replace(nameRange, newName));
+        const lastNameUpdate = attributeNameUpdates.at(-1);
+        if (nameRange && lastNameUpdate) {
+            edits.push(TextEdit.replace(nameRange, lastNameUpdate.newName));
         }
 
         const valueRange = transformRange(element.syntax.value);
-        if (valueRange && attributeValueUpdates.length > 0) {
-            const newValue = attributeValueUpdates.at(-1).newValue;
+        const lastValueUpdate = attributeValueUpdates.at(-1);
+        if (valueRange && lastValueUpdate) {
+            const newValue = lastValueUpdate.newValue;
             // shift from start quote
             valueRange.start.character++;
             // shift from end quote
@@ -442,8 +443,12 @@ function convertUpdateElementNameToTextEdits(
     element: XMLAstNode | undefined
 ): TextEdit[] {
     const edits: TextEdit[] = [];
-    if (elementNameUpdates.length > 0 && element?.type === 'XMLElement') {
-        const newName = elementNameUpdates.at(-1).newName;
+    if (element?.type === 'XMLElement') {
+        const lastNameUpdate = elementNameUpdates.at(-1);
+        if (!lastNameUpdate) {
+            return edits;
+        }
+        const newName = lastNameUpdate.newName;
         const openTagRange = transformRange(element.syntax.openBody);
         const closeTagRange = transformRange(element.syntax.closeBody);
         if (openTagRange) {

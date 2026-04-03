@@ -551,8 +551,7 @@ class ChangePreprocessor {
                 handledAssignments.add(pointer);
 
                 // make sure that the assignment isn't already a compound assignment
-                const startPosition =
-                    target.assignments.at(-1)?.range?.start ?? target.range?.start;
+                const startPosition = target.assignments.at(-1)?.range?.start ?? target.range?.start;
                 if (!startPosition) {
                     continue;
                 }
