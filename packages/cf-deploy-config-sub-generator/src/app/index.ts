@@ -284,11 +284,11 @@ export default class extends DeploymentGenerator {
             return;
         }
 
-        if (!this.launchDeployConfigAsSubGenerator) {
-            await this._writing();
-        } else {
+        if (this.launchDeployConfigAsSubGenerator) {
             // Need to delay `init` as the yaml configurations won't be ready!
             await this._init();
+            await this._writing();
+        } else {
             await this._writing();
         }
     }
@@ -339,7 +339,9 @@ export default class extends DeploymentGenerator {
     }
 
     private async _install(): Promise<void> {
-        if (!this.options.skipInstall) {
+        if (this.options.skipInstall) {
+            DeploymentGenerator.logger?.info(t('cfGen.info.skippedInstallation'));
+        } else {
             try {
                 await this._runNpmInstall(this.projectRoot);
 
@@ -350,8 +352,6 @@ export default class extends DeploymentGenerator {
             } catch (error) {
                 handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.install', { error: error.message }) });
             }
-        } else {
-            DeploymentGenerator.logger?.info(t('cfGen.info.skippedInstallation'));
         }
     }
 
@@ -406,5 +406,7 @@ export default class extends DeploymentGenerator {
 
 export { getCFQuestions, loadManifest };
 export { API_BUSINESS_HUB_ENTERPRISE_PREFIX, DESTINATION_AUTHTYPE_NOTFOUND };
-export { CfDeployConfigOptions, CfDeployConfigAnswers, CfDeployConfigQuestions, ApiHubConfig, ApiHubType };
+export { CfDeployConfigOptions } from './types';
+export { CfDeployConfigAnswers, type CfDeployConfigQuestions } from '@sap-ux/cf-deploy-config-inquirer';
+export { type ApiHubConfig, ApiHubType } from '@sap-ux/cf-deploy-config-writer';
 export type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-inquirer';

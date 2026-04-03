@@ -89,6 +89,6 @@ export {
     getAppRouterPrompts,
     type CfAppRouterDeployConfigPromptOptions,
     type CfDeployConfigQuestions,
-    type CfDeployConfigAnswers,
-    type CfAppRouterDeployConfigQuestions
+    type CfDeployConfigAnswers
 };
+export type { CfAppRouterDeployConfigQuestions } from './types';

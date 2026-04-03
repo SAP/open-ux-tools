@@ -17,13 +17,13 @@ import type { MtaPath } from '../types/mta';
  */
 export async function getMtaPath(projectPath: string, fs?: Editor): Promise<MtaPath | undefined> {
     const mtaPath = await findFileUp(FileName.MtaYaml, projectPath, fs);
-    if (!mtaPath) {
-        return undefined;
-    } else {
+    if (mtaPath) {
         const mtaFolderPath = dirname(mtaPath);
         return {
             mtaPath,
             hasRoot: mtaFolderPath !== projectPath
         };
+    } else {
+        return undefined;
     }
 }

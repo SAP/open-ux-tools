@@ -70,9 +70,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
             while (targetObject && idx < segments.length) {
                 const navProp = segments[idx];
                 targetSetName = targetObject.$NavigationPropertyBinding[navProp];
-                if (!targetSetName) {
-                    targetObject = undefined;
-                } else {
+                if (targetSetName) {
                     targetObject = (await metaModel.requestObject(`/${targetSetName}`)) as
                         | {
                               $Type: string;
@@ -80,6 +78,8 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
                           }
                         | undefined; // NO SONAR;
                     idx++;
+                } else {
+                    targetObject = undefined;
                 }
             }
             if (targetObject) {

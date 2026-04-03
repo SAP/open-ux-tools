@@ -176,18 +176,18 @@ export class ChangeConverter {
         if (targetIndex === -1 || targetIndex === undefined) {
             // no existing target found, we need to create one
             const changesForUri = this.newTargetChanges.get(change.uri);
-            if (!changesForUri) {
-                this.newTargetChanges.set(
-                    change.uri,
-                    new Map<string, InsertAnnotationChange[]>([[targetName, [change]]])
-                );
-            } else {
+            if (changesForUri) {
                 const changesForTarget = changesForUri.get(targetName);
                 if (changesForTarget) {
                     changesForTarget.push(change);
                 } else {
                     changesForUri.set(targetName, [change]);
                 }
+            } else {
+                this.newTargetChanges.set(
+                    change.uri,
+                    new Map<string, InsertAnnotationChange[]>([[targetName, [change]]])
+                );
             }
         } else {
             // add annotation to existing target

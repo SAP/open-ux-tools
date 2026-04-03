@@ -1389,10 +1389,10 @@ function makeCut(originalText: string, suffix: string | undefined, cutRange: Cut
         const indent = '    '.repeat(difference * -1);
         cut = cut.replaceAll('\n' + indent, '\n');
     }
-    if (suffix !== undefined) {
-        return cut + suffix;
-    } else {
+    if (suffix === undefined) {
         return cut;
+    } else {
+        return cut + suffix;
     }
 }
 
@@ -1418,22 +1418,22 @@ function getContainerContent(
     comments: Comment[],
     tokens: CompilerToken[]
 ): ContainerContentBlock[] {
-    if (!collection.range) {
-        return [];
+    if (collection.range) {
+        const items = getItems(collection);
+        const commas = getCommas(collection, tokens);
+        const commentsInContent = (
+            collection.range === undefined
+                ? []
+                : comments.filter((comment) => rangeContained(collection.range!, comment.range))
+        ).filter((comment) => !items.some((item) => item.range && rangeContained(item.range, comment.range)));
+        const source = [...commas, ...items, ...commentsInContent].sort(compareByRange);
+        const content: ContainerContentBlock[] = [];
+        for (const node of source) {
+            processNode(content, node);
+        }
+        return content;
     }
-    const items = getItems(collection);
-    const commas = getCommas(collection, tokens);
-    const commentsInContent = (
-        collection.range !== undefined
-            ? comments.filter((comment) => rangeContained(collection.range!, comment.range))
-            : []
-    ).filter((comment) => !items.some((item) => item.range && rangeContained(item.range, comment.range)));
-    const source = [...commas, ...items, ...commentsInContent].sort(compareByRange);
-    const content: ContainerContentBlock[] = [];
-    for (const node of source) {
-        processNode(content, node);
-    }
-    return content;
+    return [];
 }
 
 function processNode(content: ContainerContentBlock[], item: Comment | AstNode): void {

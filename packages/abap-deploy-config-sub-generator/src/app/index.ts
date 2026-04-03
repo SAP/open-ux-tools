@@ -284,11 +284,11 @@ export default class extends DeploymentGenerator {
     }
 
     public async writing(): Promise<void> {
-        if (!this.launchDeployConfigAsSubGenerator) {
-            await this._writing();
-        } else {
+        if (this.launchDeployConfigAsSubGenerator) {
             // Needed to delay `init` as the yaml configurations won't be ready!
             await this._initializing();
+            await this._writing();
+        } else {
             await this._writing();
         }
     }
@@ -335,7 +335,9 @@ export default class extends DeploymentGenerator {
     }
 
     private _install(): void {
-        if (!this.options.skipInstall) {
+        if (this.options.skipInstall) {
+            DeploymentGenerator.logger?.info(t('info.skippedInstallation'));
+        } else {
             this.spawnCommand('npm', [
                 'install',
                 '--no-audit',
@@ -344,8 +346,6 @@ export default class extends DeploymentGenerator {
                 '--prefer-offline',
                 '--no-progress'
             ]);
-        } else {
-            DeploymentGenerator.logger?.info(t('info.skippedInstallation'));
         }
     }
 
@@ -375,7 +375,7 @@ export default class extends DeploymentGenerator {
     }
 }
 
-export { AbapDeployConfigAnswersInternal };
+export type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-inquirer';
 export type { AbapDeployConfigQuestion } from '@sap-ux/abap-deploy-config-inquirer';
 export { getAbapQuestions } from './questions';
 export { indexHtmlExists } from '../utils';

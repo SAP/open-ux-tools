@@ -27,9 +27,9 @@ async function getStartFileFromPackageFile(projectRoot: string): Promise<string 
                 const scriptParts = value?.split(' ');
                 // search for --open argument
                 const openIndex =
-                    scriptParts?.indexOf(Arguments.Open) !== -1
-                        ? scriptParts?.indexOf(Arguments.Open)
-                        : scriptParts.indexOf('-o');
+                    scriptParts?.indexOf(Arguments.Open) === -1
+                        ? scriptParts.indexOf('-o')
+                        : scriptParts?.indexOf(Arguments.Open);
                 if (openIndex !== undefined && openIndex !== -1 && scriptParts) {
                     startHtmlFile = scriptParts[openIndex + 1];
                 }

@@ -206,9 +206,9 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
                     padding: '0px 8px',
                     fontSize: '13px',
                     '&:hover': {
-                        backgroundColor: !state.isSelected
-                            ? 'var(--vscode-list-hoverBackground)'
-                            : getBackgroundColor(state),
+                        backgroundColor: state.isSelected
+                            ? getBackgroundColor(state)
+                            : 'var(--vscode-list-hoverBackground)',
                         color: state.isSelected
                             ? 'var(--vscode-editorSuggestWidget-selectedForeground, var(--vscode-quickInputList-focusForeground, var(--vscode-editorSuggestWidget-foreground)))'
                             : 'var(--vscode-editorSuggestWidget-foreground)',

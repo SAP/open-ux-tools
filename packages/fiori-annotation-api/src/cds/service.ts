@@ -21,7 +21,7 @@ export async function getCDSService(
 ): Promise<CDSService> {
     const files = await getCdsFiles(projectRoot, fileCache, clearCache);
     const serviceFiles = files.map((uri): TextFile => {
-        return { uri: pathToFileURL(uri).toString(), isReadOnly: uri.indexOf('node_modules') !== -1 };
+        return { uri: pathToFileURL(uri).toString(), isReadOnly: uri.includes('node_modules') };
     });
     return {
         type: 'cap-cds',

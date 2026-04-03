@@ -57,11 +57,11 @@ function snapshotSort(a: string, b: string): number {
     b = b.replace('snapshot-', '');
     const versions = [defaultVersion, 'snapshot', 'untested'];
     // Sort 'Latest', 'snapshot' and 'snapshot-untested' in order
-    if (versions.indexOf(a) > -1 && versions.indexOf(b) > -1) {
+    if (versions.includes(a) && versions.includes(b)) {
         return a.localeCompare(b);
     }
     // Sort 'Latest', 'snapshot' and 'snapshot-untested' to the top of the UI5 version list
-    if (versions.indexOf(a) > -1 || versions.indexOf(b) > -1) {
+    if (versions.includes(a) || versions.includes(b)) {
         return ui5VersionStrCmp(a, b);
     }
     // Ensure snapshot is sorted to top of patch versions

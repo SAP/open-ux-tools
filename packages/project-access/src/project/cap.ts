@@ -278,7 +278,7 @@ export async function getCdsFiles(
             }
         }
     } catch (error) {
-        throw Error(
+        throw new Error(
             `Error while retrieving the list of cds files for project ${projectRoot}, envRoot ${envRoot}. Error was: ${error}`
         );
     }
@@ -344,7 +344,7 @@ export async function getCdsServices(projectRoot: string, ignoreErrors = true): 
             });
         }
     } catch (error) {
-        throw Error(`Error while resolving cds roots for '${projectRoot}'. ${error}`);
+        throw new Error(`Error while resolving cds roots for '${projectRoot}'. ${error}`);
     }
     return cdsServices;
 }
@@ -404,13 +404,13 @@ export async function readCapServiceMetadataEdmx(
         const { model, services } = await getCapModelAndServices(root);
         const service = findServiceByUri(services, uri);
         if (!service) {
-            throw Error(`Service for uri: '${uri}' not found. Available services: ${JSON.stringify(services)}`);
+            throw new Error(`Service for uri: '${uri}' not found. Available services: ${JSON.stringify(services)}`);
         }
         const cds = await loadCdsModuleFromProject(root);
         const edmx = cds.compile.to.edmx(model, { service: service.name, version });
         return edmx;
     } catch (error) {
-        throw Error(
+        throw new Error(
             `Error while reading CAP service metadata. Path: '${root}', service uri: '${uri}', error: '${error.toString()}'}`
         );
     }
@@ -523,7 +523,7 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
         }
     }
     if (!module) {
-        throw Error(
+        throw new Error(
             `Could not load cds module. Attempt to load module @sap/cds from project threw error '${loadProjectError}', attempt to load module @sap/cds from @sap/cds-dk threw error '${loadError}'`
         );
     }
@@ -805,7 +805,7 @@ export async function getCapServiceName(projectRoot: string, datasourceUri: stri
         const errorMessage = `Service for uri: '${datasourceUri}' not found. Available services: ${JSON.stringify(
             services
         )}`;
-        throw Error(errorMessage);
+        throw new Error(errorMessage);
     }
     return service.name;
 }
@@ -859,7 +859,7 @@ export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Log
     if (!projectRoot) {
         const message = `Project root was not found for CAP application with path '${appPath}'`;
         logger?.error(message);
-        throw Error(message);
+        throw new Error(message);
     }
     const packageJsonPath = join(projectRoot, FileName.Package);
     const packageJson = await readJSON<Package>(packageJsonPath, memFs);

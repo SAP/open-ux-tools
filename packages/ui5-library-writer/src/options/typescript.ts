@@ -28,15 +28,15 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
         const relPath = tsTmplFilePath.replace(tsTmplDirPath, '');
         const outPath = join(basePath, relPath);
         // Extend or add
-        if (!fs.exists(outPath)) {
-            fs.copyTpl(tsTmplFilePath, outPath, tsLibInput, undefined, {
-                globOptions: { dot: true }
-            });
-        } else {
+        if (fs.exists(outPath)) {
             const add = JSON.parse(render(fs.read(tsTmplFilePath), tsLibInput, {}));
             const existingFile = JSON.parse(fs.read(outPath));
             const merged = mergeObjects(existingFile, add);
             fs.writeJSON(outPath, merged);
+        } else {
+            fs.copyTpl(tsTmplFilePath, outPath, tsLibInput, undefined, {
+                globOptions: { dot: true }
+            });
         }
     });
 

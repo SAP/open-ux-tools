@@ -18,7 +18,7 @@ const APP_CONFIG_CURRENT_VERSION = '0.2';
  */
 export function transformExtState(appConfig: FEAppConfig | FFAppConfig): State {
     if (appConfig.version !== APP_CONFIG_CURRENT_VERSION) {
-        throw Error(t('error.appConfigVersion', { versions: APP_CONFIG_CURRENT_VERSION }));
+        throw new Error(t('error.appConfigVersion', { versions: APP_CONFIG_CURRENT_VERSION }));
     }
     const { project: projectConfig, service: serviceConfig, floorplan } = appConfig;
 
@@ -132,7 +132,7 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
     if (service?.edmx) {
         version = getODataVersion(service.edmx);
     } else if (floorplan !== 'FF_SIMPLE' && !service?.capService?.projectPath) {
-        throw Error(t('error.appConfigMissingRequiredProperty', { propertyName: 'edmx' }));
+        throw new Error(t('error.appConfigMissingRequiredProperty', { propertyName: 'edmx' }));
     } else if (floorplan === 'FF_SIMPLE') {
         // FF_SIMPLE with no datasource
         return {
@@ -167,7 +167,7 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
     // and replaced with generic checks for servicePath + edmx and cap service name respectively - then there is no need to set here
     else if (service?.capService?.projectPath) {
         if (!service.capService.serviceName) {
-            throw Error(
+            throw new Error(
                 t('error.appConfigMissingRequiredProperty', {
                     propertyName: 'capService.serviceName'
                 })

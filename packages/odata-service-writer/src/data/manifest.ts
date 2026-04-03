@@ -356,7 +356,7 @@ function convertSingleService(
         // -> ["localService", "metadata.xml"]
         const localUriParts = localUri ? localUri.split('/') : undefined;
         if (localUriParts?.[0] === DirName.LocalService && localUriParts.length === 2) {
-            const localFileName = localUriParts.at(-1);
+            const localFileName = localUriParts[1];
             settings.localUri = `${DirName.LocalService}/${dataSourceKey}/${localFileName}`;
             // move related files to service folder
             const fromFilePath = join(webappPath, localUriParts.join(sep));

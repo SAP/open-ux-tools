@@ -112,10 +112,10 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
         this.entitySet = entitySetName;
 
         this.navProperties = [];
-        if (!this.isCurrentObjectPage()) {
-            await this.addNavigationOptionIfAvailable(metaModel, this.entitySet);
-        } else {
+        if (this.isCurrentObjectPage()) {
             await this.prepareNavigationData(metaModel);
+        } else {
+            await this.addNavigationOptionIfAvailable(metaModel, this.entitySet);
         }
         this.control = modifiedControl;
     }

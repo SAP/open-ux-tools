@@ -417,13 +417,7 @@ const addToUpperCaseNameMap = (
 ): void => {
     const upperCaseName = name.toUpperCase();
     const currentEntry = upperCaseNameMap.get(upperCaseName);
-    if (!propertyName) {
-        if (!currentEntry || typeof currentEntry === 'string') {
-            upperCaseNameMap.set(upperCaseName, name);
-        } else if (typeof currentEntry === 'object') {
-            upperCaseNameMap.set(upperCaseName, Object.assign(currentEntry, { $Self: name }));
-        }
-    } else {
+    if (propertyName) {
         let newEntry: Map<string, string> = new Map();
         if (!currentEntry) {
             newEntry.set('$Self', name);
@@ -434,6 +428,12 @@ const addToUpperCaseNameMap = (
         }
         newEntry.set(propertyName.toUpperCase(), propertyName);
         upperCaseNameMap.set(upperCaseName, newEntry);
+    } else {
+        if (!currentEntry || typeof currentEntry === 'string') {
+            upperCaseNameMap.set(upperCaseName, name);
+        } else if (typeof currentEntry === 'object') {
+            upperCaseNameMap.set(upperCaseName, Object.assign(currentEntry, { $Self: name }));
+        }
     }
 };
 

@@ -32,7 +32,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
             previousAnswers.ui5AbapRepo || options.ui5AbapRepo?.default,
         validate: (input: string): string | boolean => validateUi5AbapRepoName(input),
         filter: (input: string): string | undefined =>
-            !PromptState.isYUI ? input?.trim()?.toUpperCase() : input?.trim()
+            PromptState.isYUI ? input?.trim() : input?.trim()?.toUpperCase()
     } as InputQuestion<AbapDeployConfigAnswersInternal>;
 }
 

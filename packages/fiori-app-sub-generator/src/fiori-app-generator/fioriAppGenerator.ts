@@ -435,7 +435,9 @@ export class FioriAppGenerator extends Generator {
     }
 
     async install(): Promise<void> {
-        if (!this.options.skipInstall) {
+        if (this.options.skipInstall) {
+            FioriAppGenerator.logger.info(t('logMessages.installSkippedOptionSpecified'));
+        } else {
             await installDependencies(
                 {
                     appPackagePath: this.destinationPath(),
@@ -451,8 +453,6 @@ export class FioriAppGenerator extends Generator {
                 },
                 FioriAppGenerator.logger
             );
-        } else {
-            FioriAppGenerator.logger.info(t('logMessages.installSkippedOptionSpecified'));
         }
     }
 

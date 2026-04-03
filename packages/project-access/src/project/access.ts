@@ -423,7 +423,7 @@ export async function createApplicationAccess(
         const appId = relative(project.root, appRoot);
         return new ApplicationAccessImp(project, appId, options);
     } catch (error) {
-        throw Error(`Error when creating application access for ${appRoot}: ${error}`);
+        throw new Error(`Error when creating application access for ${appRoot}: ${error}`);
     }
 }
 
@@ -440,6 +440,6 @@ export async function createProjectAccess(root: string, options?: ProjectAccessO
         const projectAccess = new ProjectAccessImp(project, options);
         return projectAccess;
     } catch (error) {
-        throw Error(`Error when creating project access for ${root}: ${error}`);
+        throw new Error(`Error when creating project access for ${root}: ${error}`);
     }
 }

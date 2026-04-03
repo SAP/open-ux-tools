@@ -110,15 +110,15 @@ export async function getSubGenPrompts(
 
     // Combine all prompts
     let questions: Question[] = [];
-    if (!targetDeployment) {
+    if (targetDeployment) {
+        questions = targetDeployment === TargetName.ABAP ? (abapPrompts as Question[]) : (cfPrompts as Question[]);
+    } else {
         questions = combineAllPrompts(options.projectRoot, {
             supportedTargets,
             abapPrompts,
             cfPrompts,
             promptOptions
         });
-    } else {
-        questions = targetDeployment === TargetName.ABAP ? (abapPrompts as Question[]) : (cfPrompts as Question[]);
     }
 
     return { questions, abapAnswers: abapAnswers };

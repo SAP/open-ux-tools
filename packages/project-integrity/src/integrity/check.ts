@@ -31,10 +31,10 @@ async function checkFileIntegrity(fileIntegrity: FileIntegrity[]): Promise<Check
     const checkFiles: FileIntegrity[] = [];
 
     for (const integrity of fileIntegrity) {
-        if (!existsSync(integrity.filePath)) {
-            differentFiles.push({ filePath: integrity.filePath, oldContent: integrity.content, newContent: '' });
-        } else {
+        if (existsSync(integrity.filePath)) {
             checkFiles.push(integrity);
+        } else {
+            differentFiles.push({ filePath: integrity.filePath, oldContent: integrity.content, newContent: '' });
         }
     }
     const newFileIntegrityArray = await getFileIntegrity(checkFiles.map((fileIntegrity) => fileIntegrity.filePath));

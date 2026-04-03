@@ -203,7 +203,7 @@ export class MetadataService implements IMetadataService {
      */
     constructor(options?: MetadataServiceOptions) {
         this.ODataVersion = options?.ODataVersion ?? '';
-        this.isCds = options?.isCds !== undefined ? options.isCds : this.ODataVersion === '';
+        this.isCds = options?.isCds === undefined ? this.ODataVersion === '' : options.isCds;
         this.uriMap = options?.uriMap ?? new Map();
     }
 
@@ -290,7 +290,7 @@ export class MetadataService implements IMetadataService {
     getRootMetadataElements(): Map<Path, MetadataElement> {
         const map: Map<Path, MetadataElement> = new Map();
         for (const metadataElement of this.serviceMetadata.values()) {
-            if (metadataElement.path.indexOf('/') < 0) {
+            if (!metadataElement.path.includes('/')) {
                 map.set(metadataElement.path, metadataElement);
             }
         }
@@ -364,7 +364,7 @@ export class MetadataService implements IMetadataService {
         if (this.uriMap) {
             // map locations of result to external uri
             result.forEach((location) => {
-                if (location.uri.indexOf('node_modules') > -1) {
+                if (location.uri.includes('node_modules')) {
                     const values = [...this.uriMap.values()];
                     const item = values.find((val) => val.endsWith(location.uri.replaceAll('\\', '/')));
                     if (item) {

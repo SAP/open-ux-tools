@@ -117,10 +117,10 @@ export function RowDataCells<T>(props: RowDataCellsProps<T>): React.ReactElement
         );
     }
 
-    if (!alternativeContent) {
-        rowCellsData.push(...getRowDataCells(props));
-    } else {
+    if (alternativeContent) {
         rowCellsData.push(alternativeContent);
+    } else {
+        rowCellsData.push(...getRowDataCells(props));
     }
 
     // Add data cells

@@ -277,6 +277,7 @@ async function generate<T extends {}>(
     return fs;
 }
 
-export { generate, FioriElementsApp };
+export { generate };
+export type { FioriElementsApp } from './types';
 export type { App } from '@sap-ux/ui5-application-writer';
 export * from './types';

@@ -27,11 +27,11 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
 
         public async write(entity: BackendSystem): Promise<BackendSystem | undefined> {
             let e: BackendSystem;
-            if (!(entity instanceof BackendSystem)) {
+            if (entity instanceof BackendSystem) {
+                e = entity;
+            } else {
                 // We need to use the correct class otherwise the annotations are not effective
                 e = new BackendSystem({ ...(entity as BackendSystem) });
-            } else {
-                e = entity;
             }
             return this.dataAccessor.write({
                 entityName: this.entityName,

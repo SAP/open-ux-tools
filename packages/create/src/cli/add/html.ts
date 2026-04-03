@@ -53,10 +53,10 @@ async function addHtmlFiles(basePath: string, simulate: boolean, yamlPath: strin
             ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
 
         await generatePreviewFiles(basePath, preview?.configuration ?? {}, fs, logger);
-        if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
-        } else {
+        if (simulate) {
             await traceChanges(fs);
+        } else {
+            await new Promise((resolve) => fs.commit(resolve));
         }
     } catch (error) {
         logger.error(`Error while executing add html '${(error as Error).message}'`);

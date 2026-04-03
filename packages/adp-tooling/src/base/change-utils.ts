@@ -56,7 +56,12 @@ export async function writeAnnotationChange(
             writeChangeToFile(changeFilePath, change, fs);
         }
 
-        if (!annotation.filePath) {
+        if (annotation.filePath) {
+            const selectedDir = path.dirname(annotation.filePath);
+            if (selectedDir !== annotationsFolderPath) {
+                fs.copy(annotation.filePath, path.join(annotationsFolderPath, annotation.fileName ?? ''));
+            }
+        } else {
             const annotationsTemplate = templatesPath
                 ? path.join(templatesPath, 'changes', TemplateFileName.Annotation)
                 : path.join(__dirname, '..', '..', 'templates', 'changes', TemplateFileName.Annotation);
@@ -68,11 +73,6 @@ export async function writeAnnotationChange(
                 }
                 fs.write(path.join(annotationsFolderPath, annotation.fileName ?? ''), str);
             });
-        } else {
-            const selectedDir = path.dirname(annotation.filePath);
-            if (selectedDir !== annotationsFolderPath) {
-                fs.copy(annotation.filePath, path.join(annotationsFolderPath, annotation.fileName ?? ''));
-            }
         }
     } catch (e) {
         throw new Error(`Could not write annotation changes. Reason: ${e.message}`);

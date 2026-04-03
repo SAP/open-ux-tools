@@ -176,7 +176,10 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         const controllerExists = this.model.getProperty('/controllerExists');
 
-        if (!controllerExists) {
+        if (controllerExists) {
+            const controllerPath = this.model.getProperty('/controllerPath');
+            window.open(`vscode://file${controllerPath}`);
+        } else {
             source.setEnabled(false);
 
             const controllerName = this.model.getProperty('/newControllerName');
@@ -200,9 +203,6 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
                     type: MessageBarType.info
                 });
             }
-        } else {
-            const controllerPath = this.model.getProperty('/controllerPath');
-            window.open(`vscode://file${controllerPath}`);
         }
 
         this.handleDialogClose();

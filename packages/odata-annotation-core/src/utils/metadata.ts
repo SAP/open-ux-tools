@@ -89,7 +89,7 @@ export function getSegmentWithoutAlias(aliasInfo: AliasInformation, segment: str
     if (indexAt >= 0) {
         const term = resolveName(segment.substring(indexAt + 1), aliasInfo.aliasMap).qName;
         segmentWithoutAlias = segment.substring(0, indexAt) + '@' + term;
-    } else if (segment.indexOf('.') > -1) {
+    } else if (segment.includes('.')) {
         segmentWithoutAlias = resolveName(segment, aliasInfo.aliasMap).qName;
     } else {
         segmentWithoutAlias = segment;

@@ -129,7 +129,7 @@ export function getPackagePrompts(
             type: 'autocomplete',
             name: promptNames.packageAutocomplete,
             message: `${t('prompts.config.package.packageAutocomplete.message')}${
-                !PromptState.isYUI ? t('prompts.config.package.packageAutocomplete.messageTypeFilter') : ''
+                PromptState.isYUI ? '' : t('prompts.config.package.packageAutocomplete.messageTypeFilter')
             }`,
             guiOptions: {
                 hint: t('prompts.config.package.packageAutocomplete.hint'),

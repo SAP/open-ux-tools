@@ -12,13 +12,13 @@ export type StringMap = { [key: string]: any };
  */
 export function interpolate(template: string, replacements?: StringMap): string {
     try {
-        return !replacements
-            ? template
-            : template?.replace(/{{-?([^{}]*)}}/g, (match, captureGroup1) => {
+        return replacements
+            ? template?.replace(/{{-?([^{}]*)}}/g, (match, captureGroup1) => {
                   const key = captureGroup1?.trim();
                   // Use replacement only if it can be converted to a string
                   return replacements[key]?.toString() || match;
-              });
+              })
+            : template;
     } catch {
         return '';
     }

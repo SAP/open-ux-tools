@@ -55,7 +55,7 @@ function traverseProperty(
         if (current[paths[i]] === undefined && prepare) {
             // Check if next path is integer, then consider, that array should be created
             const isArray = paths[i + 1] !== undefined && typeof paths[i + 1] === 'number';
-            current[paths[i]] = !isArray ? {} : [];
+            current[paths[i]] = isArray ? [] : {};
         }
         current = current[paths[i]] as Record<string | number, unknown>;
         if (!current) {

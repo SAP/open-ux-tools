@@ -134,7 +134,7 @@ function createCapServiceChoice(
 
         const capService: CapService = {
             serviceName: serviceInfo.name,
-            urlPath: !serviceInfo.urlPath.startsWith('/') ? `/${serviceInfo.urlPath}` : serviceInfo.urlPath,
+            urlPath: serviceInfo.urlPath.startsWith('/') ? serviceInfo.urlPath : `/${serviceInfo.urlPath}`,
             serviceCdsPath: serviceCdsFilePath,
             projectPath,
             appPath,

@@ -31,10 +31,7 @@ export class Visitor {
             return undefined;
         }
 
-        const [root, leaf] = processConversionResult(
-            state.elementStack.at(-1),
-            conversionResult
-        );
+        const [root, leaf] = processConversionResult(state.elementStack.at(-1), conversionResult);
 
         if (conversionResult) {
             state.elementStack.push(leaf);
@@ -69,10 +66,10 @@ export class Visitor {
  *            - If the result is a subtree, returns [result.root, result.leaf].
  *            - Otherwise, returns [result, result].
  */
-function processConversionResult(leaf: Element, result: ConvertResult): [Element | undefined, Element] {
+function processConversionResult(leaf: Element | undefined, result: ConvertResult): [Element | undefined, Element] {
     if (result === undefined) {
         // Use element from previous call, when current node is not converted
-        return [undefined, leaf];
+        return [undefined, leaf as Element];
     }
     if (isSubtree(result)) {
         return [result.root, result.leaf];

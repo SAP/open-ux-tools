@@ -47,13 +47,15 @@ export async function addVariantsManagementScript(
     const startVariantsManagementScriptOld = packageJson.scripts['start-variants-management'] ?? undefined;
     const startVariantsManagementScriptNew = `${serveCommand}${yamlConfigFile} --open "${url}"`;
 
-    if (!startVariantsManagementScriptOld) {
-        logger?.debug(`Script 'start-variants-management' not found. Script will be added.`);
-    } else if (startVariantsManagementScriptOld !== startVariantsManagementScriptNew) {
-        logger?.warn(`Script 'start-variants-management' already exists but is outdated. Script will be updated.`);
+    if (startVariantsManagementScriptOld) {
+        if (startVariantsManagementScriptOld !== startVariantsManagementScriptNew) {
+            logger?.warn(`Script 'start-variants-management' already exists but is outdated. Script will be updated.`);
+        } else {
+            logger?.info(`Script 'start-variants-management' is already up-to-date.`);
+            return;
+        }
     } else {
-        logger?.info(`Script 'start-variants-management' is already up-to-date.`);
-        return;
+        logger?.debug(`Script 'start-variants-management' not found. Script will be added.`);
     }
 
     packageJson.scripts['start-variants-management'] = startVariantsManagementScriptNew;

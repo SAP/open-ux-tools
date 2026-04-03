@@ -135,10 +135,7 @@ export async function updateMiddlewaresForPreview(
     const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile, fs);
 
     let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
-    if (!previewMiddleware) {
-        logger?.warn(`No preview middleware found in ${ui5YamlFile}. Preview middleware will be added.`);
-        previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
-    } else {
+    if (previewMiddleware) {
         const script = getRunScriptForYamlConfig(ui5YamlFile, fs, basePath);
         if (script) {
             previewMiddleware = await updatePreviewMiddlewareConfig(previewMiddleware, script, basePath, fs, logger);
@@ -146,6 +143,9 @@ export async function updateMiddlewaresForPreview(
             //if we don't find a script for flp.path and intent we assume the default values and sanitize the config
             previewMiddleware = sanitizePreviewMiddleware(previewMiddleware) as CustomMiddleware<PreviewConfig>;
         }
+    } else {
+        logger?.warn(`No preview middleware found in ${ui5YamlFile}. Preview middleware will be added.`);
+        previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
     }
     const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);
     if (reloadMiddleware) {

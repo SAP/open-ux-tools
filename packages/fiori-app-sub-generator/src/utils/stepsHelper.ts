@@ -61,12 +61,7 @@ export function updateDependentStep(
                     ]);
                 }
             }
-        } else if (!action) {
-            const dependentStepIndex = getStepIndex(dependentStepName, stepConfig.activeSteps);
-            if (dependentStepIndex >= 0) {
-                stepConfig.activeSteps.splice(dependentStepIndex, 1, []);
-            }
-        } else {
+        } else if (action) {
             // Count number of dependent steps that are active
             let count = 0;
             let dependentStepToAdd: YeomanUiStep | undefined;
@@ -88,6 +83,11 @@ export function updateDependentStep(
                         { name: dependentStepToAdd.name, description: dependentStepToAdd.description }
                     ]);
                 }
+            }
+        } else {
+            const dependentStepIndex = getStepIndex(dependentStepName, stepConfig.activeSteps);
+            if (dependentStepIndex >= 0) {
+                stepConfig.activeSteps.splice(dependentStepIndex, 1, []);
             }
         }
     });

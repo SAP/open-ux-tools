@@ -65,11 +65,11 @@ function formatHtmlText(sHtml: string): string {
     const parts = (sHtml || '').split('<');
     let result = '';
     for (const part of parts) {
-        if (!result) {
-            result = part;
-        } else {
+        if (result) {
             const indexClosingBracket = part.indexOf('>');
             result += indexClosingBracket >= 0 ? part.substring(indexClosingBracket + 1) : `<${part}`;
+        } else {
+            result = part;
         }
     }
     return result;

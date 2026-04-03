@@ -44,14 +44,16 @@ export class AdtCatalogService extends Axios {
      * @returns boolean boolean result of schema validity
      */
     private validateServiceSchema(adtCategory: AdtCategory, serviceSchema: AdtCollection): boolean {
-        if (!serviceSchema) {
+        if (serviceSchema) {
+            if (serviceSchema.href) {
+                return true;
+            } else {
+                this.log.warn(`Empty href in schema: ${adtCategory.term} - ${adtCategory.scheme}`);
+                return false;
+            }
+        } else {
             this.log.warn(`Schema Not Found: ${adtCategory.term} - ${adtCategory.scheme}`);
             return false;
-        } else if (!serviceSchema.href) {
-            this.log.warn(`Empty href in schema: ${adtCategory.term} - ${adtCategory.scheme}`);
-            return false;
-        } else {
-            return true;
         }
     }
 

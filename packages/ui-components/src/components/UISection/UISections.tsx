@@ -136,7 +136,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             uiSizes = [];
             let start = 0;
             (sizes as number[]).forEach((size, index) => {
-                size = dynamicSectionIndex !== index ? size : availableSize;
+                size = dynamicSectionIndex === index ? availableSize : size;
                 uiSizes.push({
                     percentage: false,
                     size,
@@ -378,7 +378,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @returns {boolean} If resizing was happened - it can return false when splitter meets resizing limitation.
      */
     private onSplitterResize(index: number, position: number): boolean {
-        const resizeSections = position !== 0 ? this.resizeSections : [];
+        const resizeSections = position === 0 ? [] : this.resizeSections;
         const totalSize = this.rootSize;
         let left = this.getSiblingsSize(resizeSections, 0, index, true);
         this.refreshResizeSections(0, index, this.state.sizes);
@@ -697,7 +697,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             <div
                 key={index}
                 className={`sections__item${isSplitterVisible ? ' sections__item--' + splitterType : ''}${
-                    !sectionStyle.visible ? ' sections__item--hidden' : ''
+                    sectionStyle.visible ? '' : ' sections__item--hidden'
                 }`}
                 style={sectionStyle.style}>
                 {isSplitterVisible && childNode && (
@@ -734,7 +734,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @returns {number} Index of dynamicly sized section.
      */
     private getDynamicSectionIndex(): number {
-        return this.state.dynamicSection !== undefined ? this.state.dynamicSection : 0;
+        return this.state.dynamicSection === undefined ? 0 : this.state.dynamicSection;
     }
 
     /**

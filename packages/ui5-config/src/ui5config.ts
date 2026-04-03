@@ -51,7 +51,7 @@ export class UI5Config {
             const path = join(__dirname, '..', 'dist', 'schema', 'ui5.yaml.json');
             const schema = JSON.parse(await readFile(path, 'utf8')) as SomeJSONSchema | null;
             if (!schema) {
-                throw Error('The schema file was not found. Validation is not possible.');
+                throw new Error('The schema file was not found. Validation is not possible.');
             }
             UI5Config.validate = new Ajv({ strict: false }).compile<SomeJSONSchema>(schema);
         }
@@ -60,7 +60,7 @@ export class UI5Config {
         try {
             isValid = yaml.loadAll(this.document.toString()).every((document) => UI5Config.validate(document));
         } catch (error) {
-            throw Error(`No validation possible. Error: ${error}`);
+            throw new Error(`No validation possible. Error: ${error}`);
         }
         return isValid;
     }
@@ -413,9 +413,7 @@ export class UI5Config {
      */
     public removeBackendFromFioriToolsProxyMiddleware(path: string): this {
         const fioriToolsProxyMiddleware = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
-        if (!fioriToolsProxyMiddleware) {
-            throw new Error('Could not find fiori-tools-proxy');
-        } else {
+        if (fioriToolsProxyMiddleware) {
             const proxyMiddlewareConfig = fioriToolsProxyMiddleware?.configuration;
             // Remove backend from middleware configurations in yaml
             if (proxyMiddlewareConfig?.backend) {
@@ -432,6 +430,8 @@ export class UI5Config {
                 });
                 this.updateCustomMiddleware(fioriToolsProxyMiddleware);
             }
+        } else {
+            throw new Error('Could not find fiori-tools-proxy');
         }
         return this;
     }
@@ -529,9 +529,7 @@ export class UI5Config {
         annotationsConfig: MockserverConfig['annotations'] = []
     ): this {
         const mockserverMiddleware = this.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
-        if (!mockserverMiddleware) {
-            throw new Error('Could not find sap-fe-mockserver');
-        } else {
+        if (mockserverMiddleware) {
             // Else append new data to current middleware config and then run middleware update
             const serviceRoot = `.${posix.sep}${relative(
                 basePath,
@@ -570,6 +568,8 @@ export class UI5Config {
                 });
             }
             this.updateCustomMiddleware(mockserverMiddleware);
+        } else {
+            throw new Error('Could not find sap-fe-mockserver');
         }
         return this;
     }
@@ -584,9 +584,7 @@ export class UI5Config {
      */
     public removeServiceFromMockServerMiddleware(servicePath: string, annotationPaths: string[]): this {
         const mockserverMiddleware = this.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
-        if (!mockserverMiddleware) {
-            throw new Error('Could not find sap-fe-mockserver');
-        } else {
+        if (mockserverMiddleware) {
             const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
             // Remove service from middleware configurations in yaml
             if (mockserverMiddlewareConfig?.services) {
@@ -605,6 +603,8 @@ export class UI5Config {
                 });
             }
             this.updateCustomMiddleware(mockserverMiddleware);
+        } else {
+            throw new Error('Could not find sap-fe-mockserver');
         }
         return this;
     }

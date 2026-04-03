@@ -412,14 +412,14 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 props.title = props.text;
             }
             const selected = props.index !== undefined && this.getCurrentSelectedIndex() === props.index;
-            return !props.hidden ? (
+            return props.hidden ? null : (
                 <div
                     key={props.key}
                     ref={selected ? this.selectedElement : undefined}
                     className={`${selected ? 'ts-ComboBox--selected' : ''}`}>
                     {defaultRender(props)}
                 </div>
-            ) : null;
+            );
         }
         return null;
     };

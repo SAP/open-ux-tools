@@ -334,10 +334,10 @@ function getRootOperator(protoExpression: ProtoExpression): { name: string; oper
             lowestPrecedence = precedence;
         }
     }
-    if (!rootOperator) {
-        throw new Error('no root operator found');
-    } else {
+    if (rootOperator) {
         rootOperators.push(rootOperator);
+    } else {
+        throw new Error('no root operator found');
     }
     const operatorDef = operatorMap[rootOperatorName]; // ternary operators have unique name
     if (operatorDef.secondaryOperatorImage) {

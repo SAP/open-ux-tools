@@ -95,7 +95,7 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
         const allAggregations = Object.keys(controlMetadata.getAllAggregations());
         const hiddenAggregations = ['customData', 'layoutData', 'dependents'];
         const targetAggregation = allAggregations.filter((item) => {
-            if (hiddenAggregations.indexOf(item) === -1) {
+            if (!hiddenAggregations.includes(item)) {
                 return item;
             }
             return false;

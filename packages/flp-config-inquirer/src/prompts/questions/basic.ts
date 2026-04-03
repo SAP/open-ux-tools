@@ -138,7 +138,7 @@ export function getOverwritePrompt(
         default: options?.default ?? ((): boolean => !existingKeyRef.value),
         when: (previousAnswers: FLPConfigAnswers): boolean => {
             existingKeyRef.value =
-                inboundKeys.indexOf(`${previousAnswers.semanticObject}-${previousAnswers.action}`) > -1;
+                inboundKeys.includes(`${previousAnswers.semanticObject}-${previousAnswers.action}`);
             return existingKeyRef.value;
         },
         additionalMessages: (_, previousAnswers) => ({

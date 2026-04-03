@@ -81,11 +81,11 @@ export class TransportRequestService extends AdtService {
      */
     private getTransportNumberFromResponse(text: string): string | null {
         const responseStringPrefix = '/com.sap.cts/object_record/';
-        if (!text?.startsWith(responseStringPrefix)) {
-            return null;
-        } else {
+        if (text?.startsWith(responseStringPrefix)) {
             const newTransportNumber = text.replace(responseStringPrefix, '');
             return newTransportNumber;
+        } else {
+            return null;
         }
     }
 }

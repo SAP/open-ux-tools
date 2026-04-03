@@ -33,7 +33,7 @@ export async function generateInboundNavigationConfig(
     const inboundKey = `${semanticObject}-${action}`;
 
     if (!overwrite && manifest['sap.app'].crossNavigation?.inbounds[inboundKey]) {
-        throw Error(t('error.inboundExists', { inboundKey, ns: NAV_CONFIG_NS }));
+        throw new Error(t('error.inboundExists', { inboundKey, ns: NAV_CONFIG_NS }));
     }
 
     const inbound = {
@@ -72,11 +72,11 @@ export async function readManifest(appPath: string, fs: Editor): Promise<{ manif
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
 
     if (!manifest) {
-        throw Error(t('error.manifestNotFound', { path: manifestPath, ns: NAV_CONFIG_NS }));
+        throw new Error(t('error.manifestNotFound', { path: manifestPath, ns: NAV_CONFIG_NS }));
     }
 
     if (!manifest['sap.app']) {
-        throw Error(t('error.sapAppNotDefined', { ns: NAV_CONFIG_NS }));
+        throw new Error(t('error.sapAppNotDefined', { ns: NAV_CONFIG_NS }));
     }
 
     return {

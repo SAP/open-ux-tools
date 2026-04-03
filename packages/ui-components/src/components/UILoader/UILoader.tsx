@@ -56,9 +56,7 @@ export class UILoader extends React.Component<UILoaderProps, {}> {
             }
         });
         const spinner = <Spinner {...this.props} styles={loaderStyles} />;
-        if (!blockDOM) {
-            return spinner;
-        } else {
+        if (blockDOM) {
             const overlayStyles = (): Partial<IOverlayStyles> => ({
                 ...{
                     root: {
@@ -82,6 +80,8 @@ export class UILoader extends React.Component<UILoaderProps, {}> {
                     {spinner}
                 </Overlay>
             );
+        } else {
+            return spinner;
         }
     }
 }

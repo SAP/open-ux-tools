@@ -223,12 +223,12 @@ export async function writeSmartLinksConfig(
     let inboundTargets = await getTargetMappingsConfig(config, logger);
     const templatePath = getTemplatePath('smartlinks-config/fioriSandboxConfig.json');
     const appConfigPath = join(basePath, 'appconfig', 'fioriSandboxConfig.json');
-    if (!fs.exists(appConfigPath)) {
-        fs.copyTpl(templatePath, appConfigPath, { inboundTargets });
-    } else {
+    if (fs.exists(appConfigPath)) {
         inboundTargets = mergeTargetMappings(appConfigPath, inboundTargets, fs);
         const filledTemplate = render(fs.read(templatePath), { inboundTargets }, {});
         fs.extendJSON(appConfigPath, JSON.parse(filledTemplate));
+    } else {
+        fs.copyTpl(templatePath, appConfigPath, { inboundTargets });
     }
     await addUi5YamlServeStaticMiddleware(basePath, fs, logger);
 }

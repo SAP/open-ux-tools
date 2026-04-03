@@ -80,14 +80,14 @@ async function generateAdaptationProject(
         addChangeForResourceModel(config);
         const fs = await generate(basePath, config);
 
-        if (!simulate) {
+        if (simulate) {
+            await traceChanges(fs);
+        } else {
             await new Promise((resolve) => fs.commit(resolve));
             if (!skipInstall) {
                 runNpmInstallCommand(basePath);
                 logger.info('Executed npm install');
             }
-        } else {
-            await traceChanges(fs);
         }
     } catch (error) {
         logger.error(error.message);

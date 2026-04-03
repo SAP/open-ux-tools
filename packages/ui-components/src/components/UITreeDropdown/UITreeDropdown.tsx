@@ -272,19 +272,19 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>): void => {
         switch (event.key) {
             case 'Enter':
-                if (!this.state.isMenuOpen) {
-                    this.toggleMenu(false, event);
-                } else {
+                if (this.state.isMenuOpen) {
                     this.setState({ valueChanged: true });
                     this.handleSelection(this.state.value ? this.state.value : '');
+                } else {
+                    this.toggleMenu(false, event);
                 }
                 break;
             case 'ArrowDown':
-                if (!this.state.isMenuOpen) {
+                if (this.state.isMenuOpen) {
+                    this.focusDropdown(event, event.key);
+                } else {
                     // Open dropdown contextMenu if closed
                     this.toggleMenu(false, event);
-                } else {
-                    this.focusDropdown(event, event.key);
                 }
                 break;
             case 'Tab':

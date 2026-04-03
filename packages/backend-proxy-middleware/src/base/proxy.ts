@@ -159,7 +159,7 @@ export const PathRewriters = {
             if (path.match(/sap-client=\d{3}/)) {
                 return path.replace(/sap-client=\d{3}/, sapClient);
             } else {
-                return path.indexOf('?') !== -1 ? path + '&' + sapClient : path + '?' + sapClient;
+                return path.indexOf('?') === -1 ? path + '?' + sapClient : path + '&' + sapClient;
             }
         };
     },
@@ -220,10 +220,10 @@ export const PathRewriters = {
                 for (const func of functions) {
                     newPath = func(newPath, req as EnhancedIncomingMessage);
                 }
-                if (newPath !== path) {
-                    log.info(`Rewrite path ${path} > ${newPath}`);
-                } else {
+                if (newPath === path) {
                     log.info(path);
+                } else {
+                    log.info(`Rewrite path ${path} > ${newPath}`);
                 }
                 return newPath;
             };

@@ -344,7 +344,7 @@ export class ConnectionValidator {
         const isBAS = isAppStudio();
         try {
             // Auto add trailing '/' to path
-            url.pathname = !url.pathname?.endsWith('/') ? `${url.pathname}/` : url.pathname;
+            url.pathname = url.pathname?.endsWith('/') ? url.pathname : `${url.pathname}/`;
 
             // VSCode default extension proxy setting does not allow bypassing cert errors using httpsAgent (as used by Axios)
             // so we must use globalAgent to bypass cert validation
@@ -830,9 +830,9 @@ export class ConnectionValidator {
             return {
                 valResult: ErrorHandler.getErrorMsgFromType(
                     ERROR_TYPE.AUTH,
-                    destination.Authentication !== Authentication.NO_AUTHENTICATION
-                        ? t('texts.checkDestinationAuthConfig')
-                        : undefined
+                    destination.Authentication === Authentication.NO_AUTHENTICATION
+                        ? undefined
+                        : t('texts.checkDestinationAuthConfig')
                 )!,
                 errorType: ERROR_TYPE.AUTH
             };

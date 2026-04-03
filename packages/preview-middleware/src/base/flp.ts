@@ -588,9 +588,7 @@ export class FlpSandbox {
     ): Promise<Ui5Version> {
         let version: string | undefined;
         let isCdn = false;
-        if (!host) {
-            this.logger.error('Unable to fetch UI5 version: No host found in request header.');
-        } else {
+        if (host) {
             try {
                 const versionUrl = `${protocol}://${host}${baseUrl}/resources/sap-ui-version.json`;
                 const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
@@ -601,6 +599,8 @@ export class FlpSandbox {
             } catch (error) {
                 this.logger.debug(error);
             }
+        } else {
+            this.logger.error('Unable to fetch UI5 version: No host found in request header.');
         }
         if (!version) {
             this.logger.error('Could not get UI5 version of application. Using version: 1.130.9 as fallback.');

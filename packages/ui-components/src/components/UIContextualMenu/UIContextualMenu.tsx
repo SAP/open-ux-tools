@@ -280,24 +280,24 @@ function getSubMenu(
     zIndex?: number,
     subMenuProps?: IContextualMenuProps
 ): JSX.Element | null {
-    if (!subMenuProps) {
-        return null;
+    if (subMenuProps) {
+        const { iconToLeft } = rootMenuProps;
+        const zIndexOfSubmenu = zIndex !== undefined ? zIndex - 1 : undefined;
+        return (
+            <UIContextualMenu
+                iconToLeft={iconToLeft}
+                {...subMenuProps}
+                calloutProps={{
+                    gapSpace: 10,
+                    layerProps: {
+                        styles: { root: { zIndex } }
+                    },
+                    ...subMenuProps.calloutProps,
+                    className: getCalloutClassName(rootMenuProps, true)
+                }}
+                onRenderSubMenu={getSubMenu.bind(undefined, rootMenuProps, zIndexOfSubmenu)}
+            />
+        );
     }
-    const { iconToLeft } = rootMenuProps;
-    const zIndexOfSubmenu = zIndex !== undefined ? zIndex - 1 : undefined;
-    return (
-        <UIContextualMenu
-            iconToLeft={iconToLeft}
-            {...subMenuProps}
-            calloutProps={{
-                gapSpace: 10,
-                layerProps: {
-                    styles: { root: { zIndex } }
-                },
-                ...subMenuProps.calloutProps,
-                className: getCalloutClassName(rootMenuProps, true)
-            }}
-            onRenderSubMenu={getSubMenu.bind(undefined, rootMenuProps, zIndexOfSubmenu)}
-        />
-    );
+    return null;
 }

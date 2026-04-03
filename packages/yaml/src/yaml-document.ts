@@ -362,10 +362,10 @@ export class YamlDocument {
         const pathArray = this.toPathArray(path);
         const node = start || this.documents[0];
         const targetNode = node?.getIn(pathArray);
-        if (!targetNode) {
-            throw new YAMLError(interpolate(errorTemplate.nodeNotFound, { path }), errorCode.nodeNotFound);
-        } else {
+        if (targetNode) {
             return targetNode;
+        } else {
+            throw new YAMLError(interpolate(errorTemplate.nodeNotFound, { path }), errorCode.nodeNotFound);
         }
     }
 
@@ -377,10 +377,10 @@ export class YamlDocument {
      */
     getSequence({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLSeq {
         const a = this.getNode({ start, path });
-        if (!isSeq(a)) {
-            throw new YAMLError(interpolate(errorTemplate.seqDoesNotExist, { path }), errorCode.seqDoesNotExist);
-        } else {
+        if (isSeq(a)) {
             return a as YAMLSeq<Node>;
+        } else {
+            throw new YAMLError(interpolate(errorTemplate.seqDoesNotExist, { path }), errorCode.seqDoesNotExist);
         }
     }
 
@@ -392,10 +392,10 @@ export class YamlDocument {
      */
     getMap({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLMap {
         const a = this.getNode({ start, path });
-        if (!isMap(a)) {
-            throw new YAMLError(interpolate(errorTemplate.nodeNotAMap, { path }), errorCode.nodeNotAMap);
-        } else {
+        if (isMap(a)) {
             return a as YAMLMap<Node>;
+        } else {
+            throw new YAMLError(interpolate(errorTemplate.nodeNotAMap, { path }), errorCode.nodeNotAMap);
         }
     }
 

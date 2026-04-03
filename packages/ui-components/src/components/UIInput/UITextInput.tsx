@@ -123,13 +123,13 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         borderStyle: COLOR_STYLES.readOnly.borderStyle,
                         backgroundColor: COLOR_STYLES.readOnly.backgroundColor,
                         // No hover efect on input without value
-                        selectors: !this.props.value
-                            ? {
+                        selectors: this.props.value
+                            ? undefined
+                            : {
                                   '&:hover': {
                                       borderColor: 'var(--vscode-editorWidget-border)'
                                   }
                               }
-                            : undefined
                     },
                     // Error message
                     props.hasErrorMessage && {

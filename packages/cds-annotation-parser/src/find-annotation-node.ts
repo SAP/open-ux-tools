@@ -79,7 +79,7 @@ class PositionVisitor {
         const { position } = options;
         if (positionContained(nodeRange(node, options.includeDelimiterCharacters), position)) {
             if (LEAF_NODE_TYPES.has(node.type)) {
-                return segment !== undefined ? [segment] : [];
+                return segment === undefined ? [] : [segment];
             }
 
             if (this[node.type as VisitorEntry]) {

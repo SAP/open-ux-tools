@@ -386,13 +386,13 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 if (newFileChanges.length) {
                     state.lastExternalFileChangeTimestamp = Date.now();
                 }
-                if (!state.fileChanges) {
-                    state.fileChanges = newFileChanges;
-                } else {
+                if (state.fileChanges) {
                     state.fileChanges = [
                         ...state.fileChanges,
                         ...newFileChanges.filter((changedFile) => !state.fileChanges?.includes(changedFile))
                     ];
+                } else {
+                    state.fileChanges = newFileChanges;
                 }
             })
             .addMatcher(reloadApplication.match, (state): void => {

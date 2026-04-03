@@ -71,10 +71,10 @@ export function validateProjectName(
         return validateDuplicateProjectName(value, destinationPath);
     }
 
-    if (!isCustomerBase) {
-        return validateProjectNameInternal(value);
-    } else {
+    if (isCustomerBase) {
         return validateProjectNameExternal(value);
+    } else {
+        return validateProjectNameInternal(value);
     }
 }
 
@@ -150,14 +150,16 @@ export function validateNamespaceAdp(
         return validationResult;
     }
 
-    if (!isCustomerBase) {
+    if (isCustomerBase) {
+        if (namespace.toLowerCase().startsWith('customer.') !== true) {
+            return t('adp.namespaceSameAsProjectNameError');
+        } else {
+            namespace = namespace.slice('customer.'.length, namespace.length);
+        }
+    } else {
         if (namespace !== projectName) {
             return t('adp.differentNamespaceThanProjectName');
         }
-    } else if (namespace.toLowerCase().startsWith('customer.') !== true) {
-        return t('adp.namespaceSameAsProjectNameError');
-    } else {
-        namespace = namespace.slice('customer.'.length, namespace.length);
     }
 
     if (namespace.length > 61 || namespace.toLowerCase().endsWith('component') === true) {

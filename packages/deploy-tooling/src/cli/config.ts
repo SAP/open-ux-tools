@@ -77,7 +77,7 @@ function getServiceFromEnv(targetUrl: string | undefined): ServiceInfo {
  * @returns merged flag
  */
 function mergeFlag(cli?: boolean, file?: boolean): boolean | undefined {
-    return cli !== undefined ? cli : file;
+    return cli === undefined ? file : cli;
 }
 
 /**
@@ -128,7 +128,7 @@ function mergeTarget(baseTarget: AbapTarget & { cloud?: boolean }, options: CliO
         url: targetUrl,
         connectPath: options.connectPath ?? baseTarget?.connectPath,
         client: options.client ?? baseTarget?.client,
-        scp: options.cloud !== undefined ? options.cloud : baseTarget?.cloud,
+        scp: options.cloud === undefined ? baseTarget?.cloud : options.cloud,
         authenticationType: options.authenticationType ?? baseTarget?.authenticationType,
         destination: options.destination ?? baseTarget?.destination,
         serviceKey: getServiceKey(options, targetUrl),

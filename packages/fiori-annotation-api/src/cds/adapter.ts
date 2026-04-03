@@ -534,7 +534,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
     private updateFileSequence(facade: CdsCompilerFacade): void {
         this._fileSequence = facade.getFileSequence().map((uri) => ({
             uri: pathToFileURL(uri).toString(),
-            isReadOnly: uri.indexOf('node_modules') !== -1
+            isReadOnly: uri.includes('node_modules')
         }));
         this.service.serviceFiles = [...this._fileSequence];
     }

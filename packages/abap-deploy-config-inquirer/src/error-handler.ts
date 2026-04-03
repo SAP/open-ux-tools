@@ -16,10 +16,10 @@ export function bail(errorMessage: string): void {
  * @param errorMsg - error message
  */
 export function handleTransportConfigError(errorMsg: string): void {
-    if (!PromptState.isYUI) {
-        bail(errorMsg);
-    } else {
+    if (PromptState.isYUI) {
         PromptState.transportAnswers.transportConfigError = errorMsg;
         LoggerHelper.logger.debug(errorMsg);
+    } else {
+        bail(errorMsg);
     }
 }

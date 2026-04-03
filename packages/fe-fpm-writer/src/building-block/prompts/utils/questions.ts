@@ -329,7 +329,10 @@ export function transformChoices(
     defaultKey?: string
 ): PromptListChoices {
     let choices: PromptListChoices = [];
-    if (!Array.isArray(obj)) {
+    if (Array.isArray(obj)) {
+        obj = [...new Set(obj)];
+        return sort ? [...obj].sort((a, b) => a.localeCompare(b)) : obj;
+    } else {
         choices = Object.entries(obj).map(([key, value]) => {
             // Add checked if value matches defaultKey example: `/mvc:View/macro:Page/`
             if (key === defaultKey) {
@@ -340,9 +343,6 @@ export function transformChoices(
         if (sort) {
             choices = (choices as { name: string; value: string }[]).sort((a, b) => a.name.localeCompare(b.name));
         }
-    } else {
-        obj = [...new Set(obj)];
-        return sort ? [...obj].sort((a, b) => a.localeCompare(b)) : obj;
     }
     return choices;
 }
@@ -433,17 +433,17 @@ export function getBuildingBlockIdPrompt(
         type: 'input',
         name: 'buildingBlockData.id',
         validate: (value: string, answers?: Answers) => {
-            if (!project) {
-                return true;
+            if (project) {
+                if (value) {
+                    return answers?.viewOrFragmentPath &&
+                        !isElementIdAvailable(fs, join(appPath, answers.viewOrFragmentPath), value)
+                        ? (t('id.existingIdValidation') as string)
+                        : true;
+                } else {
+                    return validationErrorMessage;
+                }
             }
-            if (!value) {
-                return validationErrorMessage;
-            } else {
-                return answers?.viewOrFragmentPath &&
-                    !isElementIdAvailable(fs, join(appPath, answers.viewOrFragmentPath), value)
-                    ? (t('id.existingIdValidation') as string)
-                    : true;
-            }
+            return true;
         },
         guiOptions: {
             ...guiOptions,

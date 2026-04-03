@@ -57,7 +57,7 @@ export async function checkPrerequisites(
     let prerequisitesMet = true;
 
     if (!packageJson) {
-        throw Error(`File '${FileName.Package}' not found at '${basePath}'`);
+        throw new Error(`File '${FileName.Package}' not found at '${basePath}'`);
     }
 
     if (hasDependency(packageJson, packageName.SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD)) {

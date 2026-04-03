@@ -87,9 +87,9 @@ export function showClientChoiceQuestion(previousAnswers?: AbapDeployConfigAnswe
 export function showClientQuestion(previousAnswers?: AbapDeployConfigAnswersInternal): boolean {
     const clientCondition = showClientCondition(previousAnswers?.scp);
     const isTargetUrl = previousAnswers?.targetSystem === TargetSystemType.Url;
-    const showCli = !PromptState.isYUI
-        ? previousAnswers?.clientChoice === ClientChoiceValue.New || isTargetUrl
-        : isTargetUrl;
+    const showCli = PromptState.isYUI
+        ? isTargetUrl
+        : previousAnswers?.clientChoice === ClientChoiceValue.New || isTargetUrl;
     const showYui = PromptState.isYUI ? isTargetUrl : false;
     return (showYui && clientCondition) || (showCli && clientCondition);
 }
@@ -213,14 +213,14 @@ function defaultOrShowTransportQuestion(): boolean {
     if (PromptState.transportAnswers.transportRequired === false) {
         return false;
     }
-    if (PromptState.transportAnswers.transportConfig?.getDefaultTransport() !== undefined) {
-        PromptState.abapDeployConfig.transport = PromptState.transportAnswers.transportConfig.getDefaultTransport();
-        return false;
-    } else {
+    if (PromptState.transportAnswers.transportConfig?.getDefaultTransport() === undefined) {
         return (
             !PromptState.transportAnswers.transportConfigError &&
             !PromptState.transportAnswers.transportConfigNeedsCreds
         );
+    } else {
+        PromptState.abapDeployConfig.transport = PromptState.transportAnswers.transportConfig.getDefaultTransport();
+        return false;
     }
 }
 

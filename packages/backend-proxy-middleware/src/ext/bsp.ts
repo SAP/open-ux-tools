@@ -36,10 +36,10 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
                 name: 'username',
                 message: `${cyan(i18n.t('info.username'))}\n\n`,
                 validate: (value): boolean | string => {
-                    if (!value?.trim()) {
-                        return `${i18n.t('error.emptyUsername')}`;
-                    } else {
+                    if (value?.trim()) {
                         return true;
+                    } else {
+                        return `${i18n.t('error.emptyUsername')}`;
                     }
                 }
             },
@@ -48,10 +48,10 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
                 name: 'password',
                 message: `${cyan(i18n.t('info.password'))}\n\n`,
                 validate: (value): boolean | string => {
-                    if (!value?.trim()) {
-                        return `${i18n.t('error.emptyPassword')}`;
-                    } else {
+                    if (value?.trim()) {
                         return true;
+                    } else {
+                        return `${i18n.t('error.emptyPassword')}`;
                     }
                 }
             }

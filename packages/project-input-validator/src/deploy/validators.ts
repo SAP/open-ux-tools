@@ -102,9 +102,9 @@ export function validateTransportRequestNumber(transportRequest: string, package
  * @returns true or error message
  */
 export function validatePackage(input: string): boolean | string {
-    if (!input?.trim()) {
-        return t('deploy.abapPackageWarn');
-    } else {
+    if (input?.trim()) {
         return true;
+    } else {
+        return t('deploy.abapPackageWarn');
     }
 }

@@ -44,12 +44,12 @@ export class UI5ToolingTransport extends Transport {
     constructor(opts: UI5ToolingTransportOptions) {
         super();
         const instance = UI5ToolingTransport.instances.get(opts.moduleName);
-        if (!instance) {
+        if (instance) {
+            return instance;
+        } else {
             this.options = this.copy<UI5ToolingTransportOptions>(opts);
             UI5ToolingTransport.instances.set(opts.moduleName, this);
             return this;
-        } else {
-            return instance;
         }
     }
 }
@@ -126,12 +126,12 @@ export class VSCodeTransport extends Transport {
     constructor(opts: VSCodeTransportOptions) {
         super();
         const instance = VSCodeTransport.instances.get(opts.channelName);
-        if (!instance) {
+        if (instance) {
+            return instance;
+        } else {
             this.options = this.copy<VSCodeTransportOptions>(opts);
             VSCodeTransport.instances.set(opts.channelName, this);
             return this;
-        } else {
-            return instance;
         }
     }
 }

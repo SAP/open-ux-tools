@@ -55,9 +55,9 @@ function moveOldArgsToEnv(launchConfig: LaunchConfig): LaunchConfig {
 function addArgs(scriptArgs: string[]) {
     const args: string[] = [];
     const openIndex =
-        scriptArgs.indexOf(Arguments.Open) !== -1 ? scriptArgs.indexOf(Arguments.Open) : scriptArgs.indexOf('-o');
+        scriptArgs.includes(Arguments.Open) ? scriptArgs.indexOf(Arguments.Open) : scriptArgs.indexOf('-o');
     const configIndex =
-        scriptArgs.indexOf(Arguments.Config) !== -1 ? scriptArgs.indexOf(Arguments.Config) : scriptArgs.indexOf('-c');
+        scriptArgs.includes(Arguments.Config) ? scriptArgs.indexOf(Arguments.Config) : scriptArgs.indexOf('-c');
     if (openIndex !== -1) {
         args.push(Arguments.Open, scriptArgs[openIndex + 1]);
     }

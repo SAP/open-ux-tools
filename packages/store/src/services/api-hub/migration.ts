@@ -21,19 +21,19 @@ export async function migrateToLatestVersion({
 }): Promise<void> {
     // Migrates the key from  initial version where the key was written directly to the secure store
     const apiKey = await secureStore.retrieve<string>(LEGACY_API_HUB_API_SERVICE, LEGACY_API_HUB_API_KEY);
-    if (!apiKey) {
+    if (apiKey) {
+        logger.info(text('info.legacyApiHubKeyFound'));
+    } else {
         logger.debug(text('info.noLegacyApiHubKeyFound'));
         return;
-    } else {
-        logger.info(text('info.legacyApiHubKeyFound'));
     }
 
     const apiKeysNewFormat = await dataProvider.read(new ApiHubSettingsKey());
-    if (!apiKeysNewFormat) {
+    if (apiKeysNewFormat) {
+        logger.info(text('info.legacyApiHubKeyNotMigrated'));
+    } else {
         await dataProvider.write(new ApiHubSettings({ apiKey }));
         logger.info(text('info.legacyApiHubKeyMigrated'));
-    } else {
-        logger.info(text('info.legacyApiHubKeyNotMigrated'));
     }
 
     await secureStore.delete(LEGACY_API_HUB_API_SERVICE, LEGACY_API_HUB_API_KEY);

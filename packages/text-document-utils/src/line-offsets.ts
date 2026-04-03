@@ -9,14 +9,14 @@ export function getLineOffsets(text: string): number[] {
     let index = 0;
     while (index < text.length) {
         const match = /[\r\n]/.exec(text.slice(index));
-        if (match?.index !== undefined) {
+        if (match?.index === undefined) {
+            break;
+        } else {
             index += match.index + 1;
             if (text[index - 1] === '\r' && text[index] === '\n') {
                 index++;
             }
             lineOffsets.push(index);
-        } else {
-            break;
         }
     }
     return lineOffsets;

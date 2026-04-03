@@ -121,9 +121,9 @@ export function transformTemplateType(
             hierarchyQualifier: entityRelatedConfig?.hierarchyQualifier,
             autoHide: entityRelatedConfig?.tableAutoHide,
             multiSelect: entityRelatedConfig?.tableMultiSelect,
-            qualifier: !entityRelatedConfig?.presentationQualifier
-                ? undefined
-                : entityRelatedConfig?.presentationQualifier,
+            qualifier: entityRelatedConfig?.presentationQualifier
+                ? entityRelatedConfig?.presentationQualifier
+                : undefined,
             smartVariantManagement: entityRelatedConfig?.smartVariantManagement
         } as ALPSettings | ALPSettingsV2,
         [TemplateTypeFE.FormEntryObjectPage]: {
@@ -255,9 +255,9 @@ export async function transformState<T>(
             model: appConfig.template?.type === TemplateTypeFE.OverviewPage ? MAIN_MODEL_NAME : '', // OVP requires a named default model
             previewSettings: service.previewSettings ?? {},
             annotations:
-                project.skipAnnotations !== true
-                    ? await getAnnotations(project.name, service.annotations?.[0], service?.capService)
-                    : undefined,
+                project.skipAnnotations === true
+                    ? undefined
+                    : await getAnnotations(project.name, service.annotations?.[0], service?.capService),
             ignoreCertError: service.ignoreCertError,
             externalServices: service.valueListMetadata
         };

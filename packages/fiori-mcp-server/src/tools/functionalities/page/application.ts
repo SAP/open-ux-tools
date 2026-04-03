@@ -141,16 +141,16 @@ export class Application {
         let contextPath: string | undefined;
         const routePattern = parentPage.routePattern;
         const convertedParentPattern = routePattern?.replace(':?query:', '').replace(/\({[^}]*}\)/g, '');
-        if (!convertedParentPattern) {
-            contextPath =
-                navigationProperty && navigationProperty !== ''
-                    ? `/${parentPage.entitySet}/${navigationProperty}`
-                    : `/${parentPage.entitySet}`;
-        } else {
+        if (convertedParentPattern) {
             contextPath =
                 navigationProperty && navigationProperty !== ''
                     ? `/${convertedParentPattern}/${navigationProperty}`
                     : `/${convertedParentPattern}`;
+        } else {
+            contextPath =
+                navigationProperty && navigationProperty !== ''
+                    ? `/${parentPage.entitySet}/${navigationProperty}`
+                    : `/${parentPage.entitySet}`;
         }
         return contextPath;
     }

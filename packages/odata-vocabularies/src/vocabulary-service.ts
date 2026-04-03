@@ -377,23 +377,25 @@ export class VocabularyService {
         const namespace = this.getVocabularyNamespace(termName);
         if (!term && !this.supportedVocabularies.has(namespace as VocabularyNamespace)) {
             return TermApplicability.UnSupportedVocabulary;
-        } else if (!term) {
-            return TermApplicability.UnknownTerm;
-        } else {
+        } else if (term) {
             let applicable = this.byTarget.get('')?.has(termName);
             for (let i = 0; i < targetKinds.length && !applicable; i++) {
                 applicable = this.byTarget.get(targetKinds[i])?.has(termName);
             }
-            if (!applicable) {
-                return TermApplicability.TermNotApplicable;
-            } else if (targetType && term.constraints?.requiresType) {
-                const requiredType = term.constraints.requiresType;
-                return this.isOfType(requiredType, targetType)
-                    ? TermApplicability.Applicable
-                    : TermApplicability.TypeNotApplicable;
+            if (applicable) {
+                if (targetType && term.constraints?.requiresType) {
+                    const requiredType = term.constraints.requiresType;
+                    return this.isOfType(requiredType, targetType)
+                        ? TermApplicability.Applicable
+                        : TermApplicability.TypeNotApplicable;
+                } else {
+                    return TermApplicability.Applicable;
+                }
             } else {
-                return TermApplicability.Applicable;
+                return TermApplicability.TermNotApplicable;
             }
+        } else {
+            return TermApplicability.UnknownTerm;
         }
     }
 
@@ -788,7 +790,7 @@ export class VocabularyService {
      */
     getType(typeName: FullyQualifiedName): VocabularyType | undefined {
         const vocabularyObject = this.dictionary.get(typeName);
-        return vocabularyObject?.kind !== TERM_KIND ? vocabularyObject : undefined;
+        return vocabularyObject?.kind === TERM_KIND ? undefined : vocabularyObject;
     }
 
     /**

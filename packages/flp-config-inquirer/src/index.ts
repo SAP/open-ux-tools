@@ -5,7 +5,7 @@ import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-commo
 
 import { initI18n } from './i18n';
 import { promptNames } from './types';
-import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions, TileSettingsAnswers } from './types';
+import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types';
 import { getQuestions } from './prompts';
 
 /**
@@ -103,9 +103,9 @@ export {
     type PromptDefaultValue,
     type FLPConfigAnswers,
     type FLPConfigPromptOptions,
-    type FLPConfigQuestion,
-    type TileSettingsAnswers
+    type FLPConfigQuestion
 };
+export type { TileSettingsAnswers } from './types';
 
 export { getExistingFlpConfigInfoPrompt } from './prompts/questions';
 export { addi18nResourceBundle } from './i18n';

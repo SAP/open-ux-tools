@@ -305,8 +305,8 @@ function adjustReturnValue(
         value.path.filter((segment) => !segment.startsWith('$'))
     );
 
-    value = edmJsonContent(astNodes, value, position);
-    value = enumCollection(astNodes, nodes, value, position);
+    value = edmJsonContent(astNodes ?? [], value, position);
+    value = enumCollection(astNodes ?? [], nodes, value, position);
     if (Array.isArray(node)) {
         return value;
     }
@@ -342,7 +342,7 @@ function beforeValue(
     value: VisitorReturnValue,
     position: Position
 ): VisitorReturnValue {
-    const lastPathSegment = value.path.slice(-1)[0];
+    const lastPathSegment = value.path.at(-1);
     if (node.type === RECORD_PROPERTY_TYPE && node.name.value === ReservedProperties.Value) {
         // for $value pointer should not be adjusted
         return value;
@@ -377,7 +377,7 @@ function stringValue(
 ): VisitorReturnValue {
     const range = nodeRange(node, false);
 
-    const lastPathSegment = value.path.slice(-1)[0];
+    const lastPathSegment = value.path.at(-1);
     if (lastPathSegment !== 'text') {
         // we need to only update position for text nodes
         return value;
@@ -495,10 +495,10 @@ function edmJsonContent(astNodes: ChildNode[], value: VisitorReturnValue, positi
         return value;
     }
 
-    if (value.path.at(-1).startsWith('$')) {
+    if (value.path.at(-1)?.startsWith('$')) {
         // content pointer
         const node = astNodes.at(-1);
-        if (Array.isArray(node)) {
+        if (Array.isArray(node) || node === undefined) {
             return value;
         }
         const range = nodeRange(node, false);
@@ -538,7 +538,7 @@ function edmJsonContent(astNodes: ChildNode[], value: VisitorReturnValue, positi
  * @returns Returns the adjusted VisitorReturnValue for an enum text node.
  */
 function enumTextNode(value: VisitorReturnValue): VisitorReturnValue {
-    if (value.path.at(-1).startsWith('$')) {
+    if (value.path.at(-1)?.startsWith('$')) {
         return value;
     }
     const path = value.path.slice(0, -1);
@@ -557,7 +557,7 @@ function enumTextNode(value: VisitorReturnValue): VisitorReturnValue {
  * @returns Returns the adjusted VisitorReturnValue for a path text node.
  */
 function pathTextNode(node: Path, value: VisitorReturnValue, position: Position): VisitorReturnValue {
-    const lastPathSegment = value.path.slice(-1)[0];
+    const lastPathSegment = value.path.at(-1);
     if (lastPathSegment !== 'text') {
         // we need to only update position for text nodes
         return value;

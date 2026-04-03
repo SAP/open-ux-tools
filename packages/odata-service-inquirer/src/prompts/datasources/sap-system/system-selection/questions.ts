@@ -136,18 +136,18 @@ export async function getSystemSelectionQuestions(
     }
 
     // Create new system connection for storage only supported on non-App Studio environments
-    if (!isAppStudio()) {
+    if (isAppStudio()) {
         questions.push(
             ...withCondition(
-                getNewSystemQuestions(promptOptions, connectedSystem) as Question[],
-                (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
+                getCfAbapBASQuestions(promptOptions) as Question[],
+                (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'cfAbapEnvService'
             )
         );
     } else {
         questions.push(
             ...withCondition(
-                getCfAbapBASQuestions(promptOptions) as Question[],
-                (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'cfAbapEnvService'
+                getNewSystemQuestions(promptOptions, connectedSystem) as Question[],
+                (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
             )
         );
     }

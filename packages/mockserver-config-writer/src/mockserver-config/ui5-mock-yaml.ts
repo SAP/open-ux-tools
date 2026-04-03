@@ -239,7 +239,7 @@ async function getNewMockserverMiddleware(
     ui5MockYaml.addMockServerMiddleware(basePath, webappPath, dataSourcesConfig, annotationsConfig);
     const mockserverMiddleware = ui5MockYaml.findCustomMiddleware('sap-fe-mockserver');
     if (!mockserverMiddleware) {
-        throw Error('Could not create new mockserver config');
+        throw new Error('Could not create new mockserver config');
     }
     return mockserverMiddleware as CustomMiddleware<MockserverConfig>;
 }

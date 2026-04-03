@@ -222,14 +222,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                     isDest: this.isDest
                 });
             }
-            if (!testMode) {
-                // log url of created/updated app
-                const path = '/sap/bc/ui5_ui5' + (!bsp.name.startsWith('/') ? '/sap/' : '') + bsp.name.toLowerCase();
-                const query = this.defaults.params?.['sap-client']
-                    ? '?sap-client=' + this.defaults.params['sap-client']
-                    : '';
-                this.log.info(`App available at ${frontendUrl}${path}${query}`);
-            } else {
+            if (testMode) {
                 // Test mode returns a HTTP response code of 403 so we dont want to show all error messages
                 prettyPrintError(
                     {
@@ -240,6 +233,13 @@ export class Ui5AbapRepositoryService extends ODataService {
                     },
                     false
                 );
+            } else {
+                // log url of created/updated app
+                const path = '/sap/bc/ui5_ui5' + (bsp.name.startsWith('/') ? '' : '/sap/') + bsp.name.toLowerCase();
+                const query = this.defaults.params?.['sap-client']
+                    ? '?sap-client=' + this.defaults.params['sap-client']
+                    : '';
+                this.log.info(`App available at ${frontendUrl}${path}${query}`);
             }
             if (!!info && info.Package !== bsp.package) {
                 this.log.warn(`Cannot change package assignment from ${info.Package} to ${bsp.package}.`);

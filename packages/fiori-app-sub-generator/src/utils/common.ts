@@ -41,7 +41,7 @@ export function getODataVersion(edmx: string): OdataVersion {
         const convertedMetadata = convert(parse(edmx));
         return convertedMetadata.version.startsWith('4') ? OdataVersion.v4 : OdataVersion.v2;
     } catch (error) {
-        throw Error(t('error.appConfigUnparseableEdmx'));
+        throw new Error(t('error.appConfigUnparseableEdmx'));
     }
 }
 

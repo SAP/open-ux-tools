@@ -62,7 +62,7 @@ function getTargetProjectFolderPrompt(projectChoices?: ListChoiceOptions[]): UI5
             return projectChoices?.length ? 0 : undefined;
         },
         validate: () => {
-            return !projectChoices?.length ? t('error.noProjectsFound') : true;
+            return projectChoices?.length ? true : t('error.noProjectsFound');
         }
     } as ListQuestion<UI5LibraryReferenceAnswers>;
 }

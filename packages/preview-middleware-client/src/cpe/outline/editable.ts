@@ -8,12 +8,7 @@ import type { ChangeService } from '../changes';
 export const isEditable = (changeService: ChangeService, id = ''): boolean => {
     let editable = false;
     const control = sap.ui.getCore().byId(id);
-    if (!control) {
-        const component = getComponent(id);
-        if (component) {
-            return editable;
-        }
-    } else {
+    if (control) {
         let controlOverlay = OverlayRegistry.getOverlay(control);
         if (!controlOverlay?.getDomRef()) {
             //look for closest control
@@ -24,6 +19,11 @@ export const isEditable = (changeService: ChangeService, id = ''): boolean => {
             const controlData = buildControlData(runtimeControl, changeService, controlOverlay);
             const prop = controlData.properties.find((item) => item.isEnabled === true);
             editable = prop !== undefined;
+        }
+    } else {
+        const component = getComponent(id);
+        if (component) {
+            return editable;
         }
     }
     return editable;

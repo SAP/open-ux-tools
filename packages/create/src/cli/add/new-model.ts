@@ -54,10 +54,10 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
             createNewModelData(variant, answers)
         );
 
-        if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
-        } else {
+        if (simulate) {
             await traceChanges(fs);
+        } else {
+            await new Promise((resolve) => fs.commit(resolve));
         }
     } catch (error) {
         logger.error(error.message);

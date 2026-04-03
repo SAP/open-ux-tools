@@ -58,10 +58,10 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
             createComponentUsageData(variant, answers)
         );
 
-        if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
-        } else {
+        if (simulate) {
             await traceChanges(fs);
+        } else {
+            await new Promise((resolve) => fs.commit(resolve));
         }
     } catch (error) {
         logger.error(error.message);

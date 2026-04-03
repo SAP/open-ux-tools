@@ -203,7 +203,7 @@ function getPathsInElement(element: Element, basePath: string): { path: string }
     const paths: { path: string }[] = [];
     // add all paths in attributes
     Object.keys(element.attributes || {}).forEach((attrName) => {
-        if (attrName.indexOf('Path') >= 0) {
+        if (attrName.includes('Path')) {
             let path = element.attributes[attrName].value;
             if (!path.startsWith('/')) {
                 path = basePath + '/' + path;
@@ -213,7 +213,7 @@ function getPathsInElement(element: Element, basePath: string): { path: string }
     });
     // add all paths from content
     (element.content || []).forEach((entry) => {
-        if (entry.type === 'text' && element.name.indexOf('Path') >= 0) {
+        if (entry.type === 'text' && element.name.includes('Path')) {
             let path = entry.text;
             if (!path.startsWith('/')) {
                 path = basePath + '/' + path;

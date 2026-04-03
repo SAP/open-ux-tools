@@ -245,7 +245,9 @@ export default class extends Generator {
      * Installs npm dependencies for the project.
      */
     public async install(): Promise<void> {
-        if (!this.options.skipInstall) {
+        if (this.options.skipInstall) {
+            RepoAppDownloadLogger.logger?.info(t('info.installationErrors.skippedInstallation'));
+        } else {
             try {
                 RepoAppDownloadLogger.logger?.debug('Running npm install...');
                 await this._runNpmInstall(this.projectPath);
@@ -253,8 +255,6 @@ export default class extends Generator {
             } catch (error) {
                 RepoAppDownloadLogger.logger?.error(t('error.installationErrors.npmInstall', { error }));
             }
-        } else {
-            RepoAppDownloadLogger.logger?.info(t('info.installationErrors.skippedInstallation'));
         }
     }
 

@@ -225,7 +225,13 @@ function mergeProperties(
         const existingIndex = target.propertyValues.findIndex((p) => p.name === property.name);
         const mergedKey = mergedPaths[property.name] ?? `${targetPath}/${propertyName}/propertyValues/${i + offset}`;
         const key = `${sourcePath}/${propertyName}/propertyValues/${i}`;
-        if (existingIndex !== -1) {
+        if (existingIndex === -1) {
+            mergeMap[mergedKey] = key;
+            target.propertyValues.push(property);
+            if (target.propertyValuesOrigins && source.propertyValuesOrigins) {
+                target.propertyValuesOrigins.push(source.propertyValuesOrigins[i]);
+            }
+        } else {
             const existing = target.propertyValues[existingIndex];
             if (existing.value.type === 'Record' && property.value.type === 'Record') {
                 mergeRecord(
@@ -238,12 +244,6 @@ function mergeProperties(
                 );
             } else {
                 existing.value = property.value;
-            }
-        } else {
-            mergeMap[mergedKey] = key;
-            target.propertyValues.push(property);
-            if (target.propertyValuesOrigins && source.propertyValuesOrigins) {
-                target.propertyValuesOrigins.push(source.propertyValuesOrigins[i]);
             }
         }
     }

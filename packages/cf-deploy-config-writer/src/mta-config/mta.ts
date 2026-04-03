@@ -588,16 +588,16 @@ export class MtaConfig {
                 contentModule[MTABuildParams].requires?.findIndex(
                     (app: mta.Requires & { artifacts?: { [key: string]: any } }) =>
                         app.artifacts?.includes?.(artifactName)
-                ) !== -1
+                ) === -1
             ) {
-                this.log?.debug(t('debug.html5AlreadyExists', { appName }));
-                isHTML5AlreadyExisting = true;
-            } else {
                 contentModule[MTABuildParams].requires.push({
                     name: appName.slice(0, MAX_MTA_ID_LENGTH),
                     artifacts: [artifactName],
                     'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`.replace(/\/{2,}/g, '/') // Matches two or more consecutive slashes where at least 2 repetitions of /
                 });
+            } else {
+                this.log?.debug(t('debug.html5AlreadyExists', { appName }));
+                isHTML5AlreadyExisting = true;
             }
             await this.mta?.updateModule(contentModule);
             this.dirty = true;
@@ -894,22 +894,7 @@ export class MtaConfig {
             this.log?.info(t('info.existingMTAExtensionNotFound', { error: err.message }));
         }
 
-        // Create a new mta extension file
-        if (!mtaExtensionYamlFile) {
-            const mtaExt = {
-                appMtaId,
-                mtaExtensionId: `${appMtaId}-ext`,
-                destinationName: instanceDestName,
-                destinationUrl: destUrl,
-                headerKey: headerConfig.key,
-                headerValue: headerConfig.value,
-                destinationServiceName: destinationServiceName,
-                mtaVersion: '1.0.0'
-            };
-            const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${FileName.MtaExtYaml}`), 'utf-8');
-            writeFileSync(mtaExtFilePath, render(mtaExtTemplate, mtaExt));
-            this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: FileName.MtaExtYaml }));
-        } else {
+        if (mtaExtensionYamlFile) {
             // Create an entry in an existing mta extension file
             const resources: YAMLSeq = mtaExtensionYamlFile.getSequence({ path: 'resources' });
             const resIdx = resources.items.findIndex((item) => {
@@ -933,6 +918,21 @@ export class MtaConfig {
             } else {
                 this.log?.error(t('error.updatingMTAExtensionFailed', { mtaExtFilePath }));
             }
+        } else {
+            // Create a new mta extension file
+            const mtaExt = {
+                appMtaId,
+                mtaExtensionId: `${appMtaId}-ext`,
+                destinationName: instanceDestName,
+                destinationUrl: destUrl,
+                headerKey: headerConfig.key,
+                headerValue: headerConfig.value,
+                destinationServiceName: destinationServiceName,
+                mtaVersion: '1.0.0'
+            };
+            const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${FileName.MtaExtYaml}`), 'utf-8');
+            writeFileSync(mtaExtFilePath, render(mtaExtTemplate, mtaExt));
+            this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: FileName.MtaExtYaml }));
         }
     }
 

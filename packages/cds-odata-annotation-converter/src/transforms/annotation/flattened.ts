@@ -104,6 +104,9 @@ interface ExpandedStructure {
  */
 function createNewContext(expandedStructures: ExpandedStructure[]): Context {
     const last = expandedStructures.at(-1);
+    if (!last) {
+        return {};
+    }
     const newContext: Context = {
         valueType: last.vocabularyObject?.type,
         isCollection: last.vocabularyObject?.isCollection

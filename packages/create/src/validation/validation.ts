@@ -13,12 +13,12 @@ import { type DescriptorVariantContent, getVariant } from '@sap-ux/adp-tooling';
 export async function validateBasePath(basePath: string, ui5YamlPath?: string): Promise<void> {
     const packageJsonPath = join(basePath, 'package.json');
     if (!existsSync(packageJsonPath)) {
-        throw Error(`Required file '${packageJsonPath}' does not exist.`);
+        throw new Error(`Required file '${packageJsonPath}' does not exist.`);
     }
     ui5YamlPath ??= join(basePath, 'ui5.yaml');
     const webappPath = await getWebappPath(basePath);
     if (!existsSync(ui5YamlPath) && !existsSync(webappPath)) {
-        throw Error(`There must be either a folder '${webappPath}' or a config file '${ui5YamlPath}'`);
+        throw new Error(`There must be either a folder '${webappPath}' or a config file '${ui5YamlPath}'`);
     }
 }
 

@@ -36,7 +36,8 @@ export const correctExpressionHandler: NodeHandler<CorrectExpression> = {
         const noContentRange = { line: 0, character: 0 };
         const startRange = nodeRange(expression.operands[0], true);
         const contentRangeStart = startRange?.start;
-        const contentRangeEnd = nodeRange(expression.operands.at(-1), true)?.end;
+        const lastOperand = expression.operands.at(-1);
+        const contentRangeEnd = lastOperand ? nodeRange(lastOperand, true)?.end : undefined;
         const contentRange = { start: contentRangeStart ?? noContentRange, end: contentRangeEnd ?? noContentRange };
         return buildElementForOperator(expression, contentRange);
     }

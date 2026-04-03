@@ -372,9 +372,7 @@ function restoreFocus(
             getRowActionButtonId(tableId, currentFocusedRowIndex, currentFocusedRowAction)
         );
         if (actionElement) {
-            if (!actionElement.hasAttribute('disabled')) {
-                actionElement.focus();
-            } else {
+            if (actionElement.hasAttribute('disabled')) {
                 if (currentFocusedRowAction === 'up') {
                     actionElement = document.getElementById(
                         getRowActionButtonId(tableId, currentFocusedRowIndex, 'down')
@@ -387,6 +385,8 @@ function restoreFocus(
                 if (actionElement) {
                     actionElement.focus();
                 }
+            } else {
+                actionElement.focus();
             }
         }
     }

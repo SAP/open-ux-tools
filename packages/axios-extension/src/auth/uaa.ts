@@ -40,7 +40,7 @@ export class Uaa {
      */
     protected validatePropertyExists(property: string, errMsg: string): void {
         if (!property) {
-            throw Error(errMsg);
+            throw new Error(errMsg);
         }
     }
 

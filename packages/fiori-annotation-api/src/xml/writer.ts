@@ -517,12 +517,7 @@ function convertInsertElementToTextEdits(
         return [];
     }
 
-    if (!element) {
-        const change = changes.slice(-1)[0];
-        const namespaceMap = getNamespaceMapForNewRootNode(change.element);
-        const newElements = insertElementToText([change], childIndentLevel, namespaceMap);
-        return [TextEdit.insert(Position.create(0, 0), newElements)];
-    } else {
+    if (element) {
         const namespaceMap = getNamespaceMap(element);
         const openTagRange = transformRange(element.syntax.openBody);
         if (element.syntax.isSelfClosing && openTagRange) {
@@ -546,6 +541,11 @@ function convertInsertElementToTextEdits(
         } else {
             return insertIntoElementWithContent(comments, element, changes, childIndentLevel, namespaceMap);
         }
+    } else {
+        const change = changes.slice(-1)[0];
+        const namespaceMap = getNamespaceMapForNewRootNode(change.element);
+        const newElements = insertElementToText([change], childIndentLevel, namespaceMap);
+        return [TextEdit.insert(Position.create(0, 0), newElements)];
     }
 }
 
@@ -653,7 +653,7 @@ function findInsertPosition(
 ):
     | { position: Position; type: 'parent' | 'child'; requiresNewLine: boolean; redundantWhitespace?: Range }
     | { type: 'none' } {
-    const child = index !== -1 ? element.subElements[index] : undefined;
+    const child = index === -1 ? undefined : element.subElements[index];
 
     if (child) {
         const childRange = sourcePositionToRange(child.position);
@@ -1089,7 +1089,7 @@ function removeDuplicates(changes: XMLDocumentChange[]): XMLDocumentChange[] {
     const result: XMLDocumentChange[] = [];
     for (const change of changes) {
         if (change.type === 'delete-element') {
-            if (existingDeletions.indexOf(change.pointer) === -1) {
+            if (!existingDeletions.includes(change.pointer)) {
                 existingDeletions.push(change.pointer);
                 result.push(change);
             }

@@ -114,10 +114,7 @@ const handleExistingFile = (
 
     if (isNot) {
         // The matcher is being used with `.not`
-        if (!isEqual(content, output, filename, options).equal) {
-            // The value of `pass` is reversed when used with `.not`
-            return { pass: false, message: () => '' };
-        } else {
+        if (isEqual(content, output, filename, options).equal) {
             snapshotState.unmatched++;
             return {
                 pass: true,
@@ -126,6 +123,9 @@ const handleExistingFile = (
                         path.basename(filename)
                     )}.`
             };
+        } else {
+            // The value of `pass` is reversed when used with `.not`
+            return { pass: false, message: () => '' };
         }
     } else {
         const comparedContent = isEqual(content, output, filename, options);

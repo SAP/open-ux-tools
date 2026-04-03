@@ -161,9 +161,9 @@ export function getLocalCapProjectPrompts(
                     PromptState.odataService.metadata = await getCapEdmx(capService);
                     PromptState.odataService.servicePath = capService.urlPath;
                     PromptState.odataService.odataVersion = OdataVersion.v4;
-                    return PromptState.odataService.metadata !== undefined
-                        ? true
-                        : t('prompts.validationMessages.metadataInvalid');
+                    return PromptState.odataService.metadata === undefined
+                        ? t('prompts.validationMessages.metadataInvalid')
+                        : true;
                 }
                 return false;
             }
