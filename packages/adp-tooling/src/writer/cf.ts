@@ -170,10 +170,10 @@ export async function generateCfConfig(
     }
 
     await writeUi5AppInfo(basePath, ui5AppInfo, logger);
-    // await addServeStaticMiddleware(basePath, ui5Config, logger);
+    await addServeStaticMiddleware(basePath, ui5Config, logger);
     await runBuild(basePath, { ADP_BUILDER_MODE: 'preview' });
-    // addBackendProxyMiddleware(basePath, ui5Config, serviceInfo.serviceKeys, logger);
+    addBackendProxyMiddleware(basePath, ui5Config, serviceInfo.serviceKeys, logger);
 
-    // fs.write(join(basePath, yamlPath), ui5Config.toString());
+    fs.write(join(basePath, yamlPath), ui5Config.toString());
     return fs;
 }

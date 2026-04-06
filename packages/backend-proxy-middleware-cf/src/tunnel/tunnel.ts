@@ -1,15 +1,14 @@
-import fs from 'node:fs';
-import os from 'node:os';
 import net from 'node:net';
-import path from 'node:path';
 import { spawn } from 'node:child_process';
 import type { ChildProcess } from 'node:child_process';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { checkAppExists, pushApp, enableSsh, restartApp } from '@sap-ux/adp-tooling';
+import { ensureTunnelAppExists, enableSshAndRestart } from '@sap-ux/adp-tooling';
 
-import type { ConnectivityProxyInfo, SshTunnelOptions } from '../types';
+import { hasOnPremiseDestination } from './destination-check';
+import { DEFAULT_TUNNEL_APP_NAME } from '../config/constants';
+import type { ConnectivityProxyInfo, SshTunnelOptions, EffectiveOptions } from '../types';
 
 /**
  * Check if a port is already in use.
@@ -55,58 +54,6 @@ function waitForPort(port: number, timeoutMs: number): Promise<boolean> {
         }
         attempt();
     });
-}
-
-/**
- * Ensure the tunnel app exists in CF. If not found, deploy a minimal no-route app
- * using the binary_buildpack with minimum memory so it can serve as an SSH target.
- *
- * @param appName - CF app name.
- * @param logger - Logger instance.
- */
-export async function ensureTunnelAppExists(appName: string, logger: ToolsLogger): Promise<void> {
-    if (await checkAppExists(appName)) {
-        logger.info(`Tunnel app "${appName}" already exists.`);
-        return;
-    }
-
-    logger.debug(`Tunnel app "${appName}" not found. Deploying minimal app...`);
-
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'adp-tunnel-'));
-    fs.writeFileSync(path.join(tmpDir, '.keep'), '');
-
-    try {
-        await pushApp(appName, tmpDir, [
-            '--no-route',
-            '-m',
-            '64M',
-            '-k',
-            '256M',
-            '-b',
-            'binary_buildpack',
-            '-c',
-            'sleep infinity',
-            '--health-check-type',
-            'process'
-        ]);
-        logger.info(`Tunnel app "${appName}" deployed successfully.`);
-    } finally {
-        fs.rmSync(tmpDir, { recursive: true, force: true });
-    }
-}
-
-/**
- * Enable SSH on a CF app and restart it.
- *
- * @param appName - CF app name.
- * @param logger - Logger instance.
- */
-async function enableSshAndRestart(appName: string, logger: ToolsLogger): Promise<void> {
-    logger.info(`Enabling SSH on "${appName}"...`);
-    await enableSsh(appName);
-
-    logger.info(`Restarting "${appName}"...`);
-    await restartApp(appName);
 }
 
 /**
@@ -220,4 +167,33 @@ export async function startSshTunnelIfNeeded(
         logger.warn(`SSH tunnel setup failed: ${message}. On-premise connectivity may not work.`);
         return undefined;
     }
+}
+
+/**
+ * Check for OnPremise destinations and set up an SSH tunnel if needed.
+ * Handles the full lifecycle: destination check, tunnel app deployment, SSH enable, and tunnel spawn.
+ *
+ * @param rootPath - Project root path.
+ * @param connectivityInfo - Connectivity proxy host and port from VCAP_SERVICES.
+ * @param effectiveOptions - Merged middleware options.
+ * @param logger - Logger instance.
+ */
+export async function setupSshTunnel(
+    rootPath: string,
+    connectivityInfo: ConnectivityProxyInfo,
+    effectiveOptions: EffectiveOptions,
+    logger: ToolsLogger
+): Promise<void> {
+    const needsSshTunnel = await hasOnPremiseDestination(rootPath, logger);
+    if (!needsSshTunnel) {
+        logger.info('No OnPremise destination found in webapp/xs-app.json, skipping SSH tunnel setup.');
+        return;
+    }
+
+    const tunnelAppName = effectiveOptions.tunnelAppName ?? DEFAULT_TUNNEL_APP_NAME;
+    await ensureTunnelAppExists(tunnelAppName, logger);
+    await startSshTunnelIfNeeded(connectivityInfo, tunnelAppName, logger, {
+        localPort: effectiveOptions.tunnelLocalPort,
+        skipSshEnable: effectiveOptions.skipSshEnable
+    });
 }
