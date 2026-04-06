@@ -1,9 +1,12 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import * as CFToolsCli from '@sap/cf-tools/out/src/cli';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { ensureTunnelAppExists, enableSshAndRestart } from '../../../../src/cf/services/ssh';
+
+const mockTmpDir = path.join('/tmp', 'adp-tunnel-mock');
 
 jest.mock('@sap/cf-tools/out/src/cli', () => ({
     Cli: {
@@ -13,7 +16,7 @@ jest.mock('@sap/cf-tools/out/src/cli', () => ({
 
 jest.mock('node:fs', () => ({
     ...jest.requireActual('node:fs'),
-    mkdtempSync: jest.fn().mockReturnValue('/tmp/adp-tunnel-mock'),
+    mkdtempSync: jest.fn().mockReturnValue(mockTmpDir),
     writeFileSync: jest.fn(),
     rmSync: jest.fn()
 }));
@@ -59,13 +62,13 @@ describe('SSH Services', () => {
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledTimes(2);
             expect(mockMkdtempSync).toHaveBeenCalled();
-            expect(mockWriteFileSync).toHaveBeenCalledWith('/tmp/adp-tunnel-mock/.keep', '');
+            expect(mockWriteFileSync).toHaveBeenCalledWith(path.join(mockTmpDir, '.keep'), '');
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
                 [
                     'push',
                     'my-tunnel',
                     '-p',
-                    '/tmp/adp-tunnel-mock',
+                    mockTmpDir,
                     '--no-route',
                     '-m',
                     '64M',
@@ -90,7 +93,7 @@ describe('SSH Services', () => {
 
             await expect(ensureTunnelAppExists('my-tunnel', mockLogger)).rejects.toThrow();
 
-            expect(mockRmSync).toHaveBeenCalledWith('/tmp/adp-tunnel-mock', {
+            expect(mockRmSync).toHaveBeenCalledWith(mockTmpDir, {
                 recursive: true,
                 force: true
             });
