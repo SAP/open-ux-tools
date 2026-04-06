@@ -34,7 +34,7 @@ jest.mock('../../src/utils', () => ({
 
 jest.mock('../../src/config/env', () => ({
     ...jest.requireActual('../../src/config/env'),
-    loadEnvOptions: jest.fn().mockResolvedValue({}),
+    loadEnvOptions: jest.fn().mockResolvedValue({})
 }));
 
 jest.mock('../../src/proxy/routes', () => ({

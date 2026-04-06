@@ -5,7 +5,12 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { buildVcapServicesFromResources, getSpaceGuidFromUi5Yaml, getYamlContent } from '@sap-ux/adp-tooling';
 
 import type { EffectiveOptions } from '../../../src/types';
-import { loadEnvOptions, getConnectivityProxyInfo, applyToProcessEnv, updateUi5ServerDestinationPort } from '../../../src/config/env';
+import {
+    loadEnvOptions,
+    getConnectivityProxyInfo,
+    applyToProcessEnv,
+    updateUi5ServerDestinationPort
+} from '../../../src/config/env';
 
 jest.mock('node:fs', () => ({
     ...jest.requireActual('node:fs'),
@@ -210,7 +215,9 @@ describe('env', () => {
         test('should override connectivity proxy host to localhost', () => {
             const options = {
                 VCAP_SERVICES: {
-                    connectivity: [{ credentials: { onpremise_proxy_host: 'proxy.internal', onpremise_proxy_port: 20003 } }]
+                    connectivity: [
+                        { credentials: { onpremise_proxy_host: 'proxy.internal', onpremise_proxy_port: 20003 } }
+                    ]
                 },
                 destinations: []
             };
