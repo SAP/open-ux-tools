@@ -36,6 +36,7 @@
         "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
         "@sap-ux/abap-deploy-config-writer": "workspace:*",
         "@sap-ux/adp-tooling": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/app-config-writer": "workspace:*",
         "@sap-ux/cap-config-writer": "workspace:*",
         "@sap-ux/logger": "workspace:*",

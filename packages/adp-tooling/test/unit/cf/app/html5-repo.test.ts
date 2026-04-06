@@ -11,7 +11,8 @@ import {
     createServiceInstance,
     getOrCreateServiceInstanceKeys
 } from '../../../../src/cf/services/api';
-import { downloadAppContent, downloadZip, getHtml5RepoCredentials, getToken } from '../../../../src/cf/app/html5-repo';
+import { downloadAppContent, downloadZip, getHtml5RepoCredentials } from '../../../../src/cf/app/html5-repo';
+import { getToken } from '../../../../src/btp/api';
 
 jest.mock('axios');
 jest.mock('adm-zip');
@@ -96,22 +97,26 @@ describe('HTML5 Repository', () => {
                     access_token: 'test-access-token'
                 }
             };
-            mockAxios.get.mockResolvedValue(mockResponse);
+            mockAxios.post.mockResolvedValue(mockResponse);
 
             const result = await getToken(mockUaa);
 
             expect(result).toBe('test-access-token');
-            expect(mockAxios.get).toHaveBeenCalledWith('/test-uaa/oauth/token?grant_type=client_credentials', {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Basic ' + Buffer.from('test-client-id:test-client-secret').toString('base64')
+            expect(mockAxios.post).toHaveBeenCalledWith(
+                '/test-uaa/oauth/token',
+                'grant_type=client_credentials',
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Basic ' + Buffer.from('test-client-id:test-client-secret').toString('base64')
+                    }
                 }
-            });
+            );
         });
 
         test('should throw error when token request fails', async () => {
             const error = new Error('Network error');
-            mockAxios.get.mockRejectedValue(error);
+            mockAxios.post.mockRejectedValue(error);
 
             await expect(getToken(mockUaa)).rejects.toThrow(t('error.failedToGetAuthKey', { error: 'Network error' }));
         });
@@ -120,7 +125,7 @@ describe('HTML5 Repository', () => {
             const mockResponse = {
                 data: {}
             };
-            mockAxios.get.mockResolvedValue(mockResponse);
+            mockAxios.post.mockResolvedValue(mockResponse);
 
             const result = await getToken(mockUaa);
 
@@ -231,15 +236,14 @@ describe('HTML5 Repository', () => {
 
         beforeEach(() => {
             mockGetOrCreateServiceInstanceKeys.mockResolvedValue(mockServiceKeys);
-            mockAxios.get
-                .mockResolvedValueOnce({
-                    data: {
-                        access_token: 'test-token'
-                    }
-                })
-                .mockResolvedValueOnce({
-                    data: Buffer.from('test-zip-content')
-                });
+            mockAxios.post.mockResolvedValueOnce({
+                data: {
+                    access_token: 'test-token'
+                }
+            });
+            mockAxios.get.mockResolvedValueOnce({
+                data: Buffer.from('test-zip-content')
+            });
 
             const mockAdmZipInstance = {
                 getEntries: jest.fn().mockReturnValue(mockZipEntries)
@@ -279,7 +283,7 @@ describe('HTML5 Repository', () => {
         test('should throw error when zip parsing fails', async () => {
             jest.clearAllMocks();
             mockGetOrCreateServiceInstanceKeys.mockResolvedValue(mockServiceKeys);
-            mockAxios.get.mockResolvedValueOnce({
+            mockAxios.post.mockResolvedValueOnce({
                 data: {
                     access_token: 'test-token'
                 }
@@ -304,7 +308,7 @@ describe('HTML5 Repository', () => {
         test('should throw error when zip has no entries', async () => {
             jest.clearAllMocks();
             mockGetOrCreateServiceInstanceKeys.mockResolvedValue(mockServiceKeys);
-            mockAxios.get.mockResolvedValueOnce({
+            mockAxios.post.mockResolvedValueOnce({
                 data: {
                     access_token: 'test-token'
                 }
@@ -330,7 +334,7 @@ describe('HTML5 Repository', () => {
         test('should throw error when manifest.json not found', async () => {
             jest.clearAllMocks();
             mockGetOrCreateServiceInstanceKeys.mockResolvedValue(mockServiceKeys);
-            mockAxios.get.mockResolvedValueOnce({
+            mockAxios.post.mockResolvedValueOnce({
                 data: {
                     access_token: 'test-token'
                 }
@@ -361,7 +365,7 @@ describe('HTML5 Repository', () => {
         test('should throw error when manifest.json parsing fails', async () => {
             jest.clearAllMocks();
             mockGetOrCreateServiceInstanceKeys.mockResolvedValue(mockServiceKeys);
-            mockAxios.get.mockResolvedValueOnce({
+            mockAxios.post.mockResolvedValueOnce({
                 data: {
                     access_token: 'test-token'
                 }

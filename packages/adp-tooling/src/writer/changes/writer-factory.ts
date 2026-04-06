@@ -1,4 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
+import type { ToolsLogger } from '@sap-ux/logger';
 
 import { ChangeType } from '../../types';
 import type { Writer, IWriterData } from '../../types';
@@ -24,6 +25,7 @@ export class WriterFactory {
      * @param fs - The filesystem editor instance.
      * @param projectPath - The path to the project for which the writer is created.
      * @param templatesPath - The path to the templates used for generating changes.
+     * @param logger - Optional logger instance passed to writers that support it.
      * @returns An instance of the writer associated with the specified generator type.
      * @throws If the specified generator type is not supported.
      */
@@ -31,7 +33,8 @@ export class WriterFactory {
         type: T,
         fs: Editor,
         projectPath: string,
-        templatesPath?: string
+        templatesPath?: string,
+        logger?: ToolsLogger
     ): IWriterData<T> {
         const WriterClass = this.writers.get(type);
         if (!WriterClass) {
@@ -40,6 +43,10 @@ export class WriterFactory {
 
         if (type === ChangeType.ADD_ANNOTATIONS_TO_ODATA) {
             return new (WriterClass as typeof AnnotationsWriter)(fs, projectPath, templatesPath) as IWriterData<T>;
+        }
+
+        if (type === ChangeType.ADD_NEW_MODEL) {
+            return new (WriterClass as typeof NewModelWriter)(fs, projectPath, logger) as IWriterData<T>;
         }
 
         return new WriterClass(fs, projectPath);

@@ -33,7 +33,8 @@ describe('generateChange', () => {
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             expect.anything(),
             '/path/to/project',
-            '/path/to/templates'
+            '/path/to/templates',
+            undefined
         );
 
         expect(writeSpy).toHaveBeenCalledWith({ variant: {}, annotation: {} });
@@ -57,6 +58,7 @@ describe('generateChange', () => {
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             {},
             '/path/to/project',
+            undefined,
             undefined
         );
 

@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'path';
+
 import type {
     ListQuestion,
     InputQuestion,
@@ -6,17 +9,26 @@ import type {
     ConfirmQuestion
 } from '@sap-ux/inquirer-common';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { Destination } from '@sap-ux/btp-utils';
+import { listDestinations } from '@sap-ux/btp-utils';
+import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 import { t } from '../../i18n';
 import { getChangesByType } from '../../base/change-utils';
+import { getDestinations } from '../../cf/services/destinations';
 import {
     ChangeType,
     NamespacePrefix,
+    ServiceType,
     type NewModelAnswers,
     type ManifestChangeProperties,
-    FlexLayer
+    type AdpPreviewConfigWithTarget,
+    FlexLayer,
+    type XsApp,
+    type XsAppRoute
 } from '../../types';
 import { isCFEnvironment } from '../../base/cf';
+import { getAdpConfig } from '../../base/helper';
 import {
     validateEmptyString,
     validateEmptySpaces,
@@ -27,9 +39,27 @@ import {
     validateJSON
 } from '@sap-ux/project-input-validator';
 
-const oDataVersions = [
-    { name: '2.0', value: '2.0' },
-    { name: '4.0', value: '4.0' }
+/**
+ * Reads the routes array from the xs-app.json file in the project's webapp folder.
+ * Returns an empty array if the file does not exist or cannot be parsed.
+ *
+ * @param {string} projectPath - The root path of the project.
+ * @returns {XsAppRoute[]} The existing routes.
+ */
+function readXsAppRoutes(projectPath: string): XsAppRoute[] {
+    try {
+        const xsAppPath = join(projectPath, 'webapp', 'xs-app.json');
+        const content = JSON.parse(readFileSync(xsAppPath, 'utf-8')) as XsApp;
+        return Array.isArray(content?.routes) ? content.routes : [];
+    } catch {
+        return [];
+    }
+}
+
+const serviceTypeChoices = [
+    { name: ServiceType.ODATA_V2, value: ServiceType.ODATA_V2 },
+    { name: ServiceType.ODATA_V4, value: ServiceType.ODATA_V4 },
+    { name: ServiceType.HTTP, value: ServiceType.HTTP }
 ];
 
 /**
@@ -95,14 +125,12 @@ function validatePromptJSON(value: string): boolean | string {
  * Validates the OData Service name prompt.
  *
  * @param value The value to validate.
- * @param answers The answers object.
  * @param isCustomerBase Whether the validation is for customer usage.
  * @param changeFiles The list of existing change files to check against.
  * @returns {boolean | string} True if no duplication is found, or an error message if validation fails.
  */
 function validatePromptODataName(
     value: string,
-    answers: NewModelAnswers,
     isCustomerBase: boolean,
     changeFiles: ManifestChangeProperties[]
 ): boolean | string {
@@ -112,7 +140,7 @@ function validatePromptODataName(
     }
 
     if (isCustomerBase) {
-        validationResult = validateCustomerValue(value, 'prompts.oDataServiceNameLabel');
+        validationResult = validateCustomerValue(value, 'prompts.modelAndDatasourceNameLabel');
         if (typeof validationResult === 'string') {
             return validationResult;
         }
@@ -120,80 +148,6 @@ function validatePromptODataName(
 
     if (hasContentDuplication(value, 'dataSource', changeFiles)) {
         return t('validators.errorDuplicatedValueOData');
-    }
-
-    if (answers.addAnnotationMode && value === answers.dataSourceName) {
-        return t('validators.errorDuplicateNamesOData');
-    }
-
-    return true;
-}
-
-/**
- * Validates the OData Annotation name prompt.
- *
- * @param value The value to validate.
- * @param answers The answers object.
- * @param isCustomerBase Whether the validation is for customer usage.
- * @param changeFiles The list of existing change files to check against.
- * @returns {boolean | string} True if no duplication is found, or an error message if validation fails.
- */
-function validatePromptODataAnnotationsName(
-    value: string,
-    answers: NewModelAnswers,
-    isCustomerBase: boolean,
-    changeFiles: ManifestChangeProperties[]
-): boolean | string {
-    let validationResult = validatePromptInput(value);
-    if (typeof validationResult === 'string') {
-        return validationResult;
-    }
-
-    if (isCustomerBase) {
-        validationResult = validateCustomerValue(value, 'prompts.oDataAnnotationDataSourceNameLabel');
-        if (typeof validationResult === 'string') {
-            return validationResult;
-        }
-    }
-
-    if (hasContentDuplication(value, 'dataSource', changeFiles)) {
-        return t('validators.errorDuplicatedValueOData');
-    }
-
-    if (value === answers.name) {
-        return t('validators.errorDuplicateNamesOData');
-    }
-
-    return true;
-}
-
-/**
- * Validates the model name prompts.
- *
- * @param value The value to validate.
- * @param isCustomerBase Whether the validation is for customer usage.
- * @param changeFiles The list of existing change files to check against.
- * @returns {boolean | string} True if no duplication is found, or an error message if validation fails.
- */
-function validatePromptModelName(
-    value: string,
-    isCustomerBase: boolean,
-    changeFiles: ManifestChangeProperties[]
-): boolean | string {
-    let validationResult = validatePromptInput(value);
-    if (typeof validationResult === 'string') {
-        return validationResult;
-    }
-
-    if (isCustomerBase) {
-        validationResult = validateCustomerValue(value, 'prompts.oDataServiceModelNameLabel');
-        if (typeof validationResult === 'string') {
-            return validationResult;
-        }
-    }
-
-    if (hasContentDuplication(value, 'model', changeFiles)) {
-        return t('validators.errorDuplicatedValueSapui5Model');
     }
 
     return true;
@@ -219,6 +173,66 @@ function validatePromptURI(value: string): boolean | string {
 }
 
 /**
+ * Builds the full resulting service URL from a destination URL and a service URI.
+ * Returns undefined if either value is absent or the URI fails basic validation.
+ *
+ * @param {string | undefined} destinationUrl - The destination base URL.
+ * @param {string | undefined} serviceUri - The relative service URI from the prompt.
+ * @returns {string | undefined} The concatenated URL, or undefined if it cannot be formed.
+ */
+function buildResultingServiceUrl(destinationUrl: string | undefined, serviceUri: string | undefined): string | undefined {
+    if (!destinationUrl || !serviceUri || validatePromptURI(serviceUri) !== true) {
+        return undefined;
+    }
+    return destinationUrl.replace(/\/$/, '') + serviceUri;
+}
+
+/**
+ * Returns the OData version string for use in change content based on the selected service type.
+ * Returns undefined for HTTP service type as it has no OData version.
+ *
+ * @param {ServiceType} serviceType - The selected service type.
+ * @returns {string | undefined} The OData version string ('2.0' or '4.0'), or undefined for HTTP.
+ */
+export function getODataVersionFromServiceType(serviceType: ServiceType): string | undefined {
+    if (serviceType === ServiceType.ODATA_V2) {
+        return '2.0';
+    }
+    if (serviceType === ServiceType.ODATA_V4) {
+        return '4.0';
+    }
+    return undefined;
+}
+
+/**
+ * Resolves the backend base URL for ABAP (non-CF) projects.
+ * For VS Code projects the URL is read directly from the `target.url` field in ui5.yaml.
+ * For BAS projects the destination name is read from `target.destination` and the URL
+ * is resolved via the BAS destination service.
+ *
+ * @param {string} projectPath - The root path of the project.
+ * @returns {Promise<string | undefined>} The resolved base URL, or undefined if it cannot be determined.
+ */
+async function getAbapServiceUrl(projectPath: string): Promise<string | undefined> {
+    try {
+        const adpConf = await getAdpConfig(projectPath, 'ui5.yaml');
+        if ('target' in adpConf) {
+            const target = (adpConf as AdpPreviewConfigWithTarget).target as { url?: string; destination?: string };
+            if (target.url) {
+                return target.url;
+            }
+            if (target.destination) {
+                const destinations = await listDestinations();
+                return destinations[target.destination]?.Host;
+            }
+        }
+    } catch {
+        // unavailable — caller will simply not show the message
+    }
+    return undefined;
+}
+
+/**
  * Gets the prompts for adding the new model.
  *
  * @param {string} projectPath - The root path of the project.
@@ -229,68 +243,95 @@ export async function getPrompts(projectPath: string, layer: UI5FlexLayer): Prom
     const isCustomerBase = FlexLayer.CUSTOMER_BASE === layer;
     const defaultSeviceName = isCustomerBase ? NamespacePrefix.CUSTOMER : NamespacePrefix.EMPTY;
     const isCFEnv = await isCFEnvironment(projectPath);
+    const abapServiceUrl = isCFEnv ? undefined : await getAbapServiceUrl(projectPath);
 
     const changeFiles = getChangesByType(projectPath, ChangeType.ADD_NEW_MODEL, 'manifest');
+    let destinationError: string | undefined;
 
     return [
         {
-            type: 'input',
-            name: 'name',
-            message: t('prompts.oDataServiceNameLabel'),
-            default: defaultSeviceName,
-            store: false,
-            validate: (value: string, answers: NewModelAnswers) => {
-                return validatePromptODataName(value, answers, isCustomerBase, changeFiles);
-            },
-            guiOptions: {
-                mandatory: true,
-                hint: t('prompts.oDataServiceNameTooltip')
-            }
-        } as InputQuestion<NewModelAnswers>,
-        {
-            type: 'input',
-            name: 'uri',
-            message: t('prompts.oDataServiceUriLabel'),
-            guiOptions: {
-                mandatory: true,
-                hint: t('prompts.oDataServiceUriTooltip')
-            },
-            validate: validatePromptURI,
-            store: false
-        } as InputQuestion<NewModelAnswers>,
-        {
             type: 'list',
-            name: 'version',
-            message: t('prompts.oDataServiceVersionLabel'),
-            choices: oDataVersions,
-            default: (answers: NewModelAnswers) => {
-                if (answers.uri?.startsWith(isCFEnv ? '/odata/v4/' : '/sap/opu/odata4/')) {
-                    return oDataVersions[1].value;
-                }
-
-                return oDataVersions[0].value;
-            },
+            name: 'serviceType',
+            message: t('prompts.serviceTypeLabel'),
+            choices: isCFEnv ? serviceTypeChoices : serviceTypeChoices.filter((c) => c.value !== ServiceType.HTTP),
             store: false,
             validate: validateEmptyString,
             guiOptions: {
                 mandatory: true,
-                hint: t('prompts.oDataServiceVersionTooltip'),
-                applyDefaultWhenDirty: true
+                hint: t('prompts.serviceTypeTooltip')
             }
         } as ListQuestion<NewModelAnswers>,
         {
-            type: 'input',
-            name: 'modelName',
-            message: t('prompts.oDataServiceModelNameLabel'),
+            type: 'list',
+            name: 'destination',
+            message: t('prompts.destinationLabel'),
+            choices: async (): Promise<{ name: string; value: Destination }[]> => {
+                try {
+                    const destinations = await getDestinations(projectPath);
+                    destinationError = undefined;
+                    return Object.entries(destinations).map(([name, dest]) => ({ name, value: dest as Destination }));
+                } catch (e) {
+                    destinationError = (e as Error).message;
+                    return [];
+                }
+            },
+            when: () => isCFEnv,
             guiOptions: {
                 mandatory: true,
-                hint: t('prompts.oDataServiceModelNameTooltip')
+                hint: t('prompts.destinationTooltip')
             },
+            validate: (value: Destination): boolean | string => destinationError ?? validateEmptyString(value?.Name)
+        } as ListQuestion<NewModelAnswers>,
+        {
+            type: 'input',
+            name: 'uri',
+            message: t('prompts.serviceUriLabel'),
+            guiOptions: {
+                mandatory: true,
+                hint: t('prompts.oDataServiceUriTooltip')
+            },
+            validate: (value: string): boolean | string => {
+                const uriResult = validatePromptURI(value);
+                if (typeof uriResult === 'string') {
+                    return uriResult;
+                }
+                if (isCFEnv) {
+                    const routes = readXsAppRoutes(projectPath);
+                    if (routes.some((r) => r.target === `${value}$1`)) {
+                        return t('validators.errorRouteAlreadyExists');
+                    }
+                }
+                return true;
+            },
+            store: false,
+            additionalMessages: (serviceUri: unknown, previousAnswers?: NewModelAnswers): IMessageSeverity | undefined => {
+                const destinationUrl = isCFEnv ? previousAnswers?.destination?.Host : abapServiceUrl;
+                const resultingUrl = buildResultingServiceUrl(destinationUrl, serviceUri as string | undefined);
+                if (!resultingUrl) {
+                    return undefined;
+                }
+                return {
+                    message: t('prompts.resultingServiceUrl', { url: resultingUrl, interpolation: { escapeValue: false } }),
+                    severity: Severity.information
+                };
+            }
+        } as InputQuestion<NewModelAnswers>,
+        {
+            type: 'input',
+            name: 'modelAndDatasourceName',
+            message: (answers: NewModelAnswers) =>
+                answers.serviceType === ServiceType.HTTP
+                    ? t('prompts.datasourceNameLabel')
+                    : t('prompts.modelAndDatasourceNameLabel'),
             default: defaultSeviceName,
+            store: false,
             validate: (value: string) => {
-                return validatePromptModelName(value, isCustomerBase, changeFiles);
+                return validatePromptODataName(value, isCustomerBase, changeFiles);
             },
-            store: false
+            guiOptions: {
+                mandatory: true,
+                hint: t('prompts.modelAndDatasourceNameTooltip')
+            }
         } as InputQuestion<NewModelAnswers>,
         {
             type: 'editor',
@@ -298,6 +339,7 @@ export async function getPrompts(projectPath: string, layer: UI5FlexLayer): Prom
             message: t('prompts.oDataServiceModelSettingsLabel'),
             store: false,
             validate: validatePromptJSON,
+            when: (answers: NewModelAnswers) => answers.serviceType !== ServiceType.HTTP,
             guiOptions: {
                 hint: t('prompts.oDataServiceModelSettingsTooltip')
             }
@@ -306,23 +348,9 @@ export async function getPrompts(projectPath: string, layer: UI5FlexLayer): Prom
             type: 'confirm',
             name: 'addAnnotationMode',
             message: 'Do you want to add annotation?',
-            default: false
+            default: false,
+            when: (answers: NewModelAnswers) => answers.serviceType !== ServiceType.HTTP
         } as ConfirmQuestion<NewModelAnswers>,
-        {
-            type: 'input',
-            name: 'dataSourceName',
-            message: t('prompts.oDataAnnotationDataSourceNameLabel'),
-            validate: (value: string, answers: NewModelAnswers) => {
-                return validatePromptODataAnnotationsName(value, answers, isCustomerBase, changeFiles);
-            },
-            default: defaultSeviceName,
-            store: false,
-            guiOptions: {
-                mandatory: true,
-                hint: t('prompts.oDataAnnotationDataSourceNameTooltip')
-            },
-            when: (answers: NewModelAnswers) => answers.addAnnotationMode
-        } as InputQuestion<NewModelAnswers>,
         {
             type: 'input',
             name: 'dataSourceURI',

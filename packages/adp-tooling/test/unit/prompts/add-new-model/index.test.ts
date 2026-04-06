@@ -1,13 +1,22 @@
 import * as i18n from '../../../../src/i18n';
 import type { NewModelAnswers } from '../../../../src';
 import { isCFEnvironment } from '../../../../src/base/cf';
+import { getAdpConfig } from '../../../../src/base/helper';
 import { getPrompts } from '../../../../src/prompts/add-new-model';
 import * as validators from '@sap-ux/project-input-validator';
 import { getChangesByType } from '../../../../src/base/change-utils';
+import { listDestinations } from '@sap-ux/btp-utils';
+import { getDestinations } from '../../../../src/cf/services/destinations';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+import { readFileSync } from 'node:fs';
 
 const getChangesByTypeMock = getChangesByType as jest.Mock;
-
 const isCFEnvironmentMock = isCFEnvironment as jest.Mock;
+const getAdpConfigMock = getAdpConfig as jest.Mock;
+const listDestinationsMock = listDestinations as jest.Mock;
+const getDestinationsMock = getDestinations as jest.Mock;
+
+const readFileSyncMock = readFileSync as jest.Mock;
 
 jest.mock('../../../../src/base/change-utils.ts', () => ({
     ...jest.requireActual('../../../../src/base/change-utils.ts'),
@@ -16,6 +25,25 @@ jest.mock('../../../../src/base/change-utils.ts', () => ({
 
 jest.mock('../../../../src/base/cf.ts', () => ({
     isCFEnvironment: jest.fn()
+}));
+
+jest.mock('../../../../src/base/helper.ts', () => ({
+    ...jest.requireActual('../../../../src/base/helper.ts'),
+    getAdpConfig: jest.fn()
+}));
+
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
+    listDestinations: jest.fn()
+}));
+
+jest.mock('../../../../src/cf/services/destinations', () => ({
+    getDestinations: jest.fn()
+}));
+
+jest.mock('node:fs', () => ({
+    ...jest.requireActual('node:fs'),
+    readFileSync: jest.fn()
 }));
 
 jest.mock('@sap-ux/project-input-validator', () => ({
@@ -37,22 +65,29 @@ describe('getPrompts', () => {
 
     beforeEach(() => {
         getChangesByTypeMock.mockReturnValue([]);
+        isCFEnvironmentMock.mockResolvedValue(false);
+        getAdpConfigMock.mockRejectedValue(new Error('ui5.yaml not found'));
+        listDestinationsMock.mockResolvedValue({});
+        getDestinationsMock.mockResolvedValue({});
+        readFileSyncMock.mockClear();
+        readFileSyncMock.mockReturnValue('{"routes": []}');
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
     it('should generate prompts with default settings for non-customer layers', async () => {
-        isCFEnvironmentMock.mockReturnValue(false);
-
         const vendorPrompts = await getPrompts(mockPath, 'VENDOR');
 
         expect(vendorPrompts.length).toBeGreaterThan(0);
-        expect(vendorPrompts[0].default).toBe('');
-        expect(vendorPrompts.some((prompt) => prompt.name === 'version')).toBeTruthy();
+        expect(vendorPrompts.some((prompt) => prompt.name === 'serviceType')).toBeTruthy();
     });
 
     it('should adjust defaults based on customer layer', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
-        expect(prompts[0].default).toBe('customer.');
+        expect(prompts.find((p) => p.name === 'modelAndDatasourceName')?.default).toBe('customer.');
     });
 
     it('should return true when validating service name prompt', async () => {
@@ -60,10 +95,10 @@ describe('getPrompts', () => {
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers)).toBe(true);
+        expect(validation?.('customer.testName')).toBe(true);
         expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
     });
 
@@ -72,22 +107,22 @@ describe('getPrompts', () => {
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('testName', { dataSourceName: 'otherName' } as NewModelAnswers)).toBe(
-            "OData Service Name must start with 'customer.'."
+        expect(validation?.('testName')).toBe(
+            "Model and Datasource Name must start with 'customer.'."
         );
     });
 
     it('should return error message when validating service name prompt and name is only "customer."', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.', { dataSourceName: 'otherName' } as NewModelAnswers)).toBe(
-            "OData Service Name must contain at least one character in addition to 'customer.'."
+        expect(validation?.('customer.')).toBe(
+            "Model and Datasource Name must contain at least one character in addition to 'customer.'."
         );
     });
 
@@ -95,10 +130,10 @@ describe('getPrompts', () => {
         jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('general.invalidValueForSpecialChars');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName@', { dataSourceName: 'otherName' } as NewModelAnswers)).toBe(
+        expect(validation?.('customer.testName@')).toBe(
             'general.invalidValueForSpecialChars'
         );
     });
@@ -108,31 +143,11 @@ describe('getPrompts', () => {
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(
-            validation?.('customer.testName', {
-                dataSourceName: 'otherName'
-            } as NewModelAnswers)
-        ).toBe(
+        expect(validation?.('customer.testName')).toBe(
             'An OData annotation or service with the same name was already added to the project. Rename and try again.'
-        );
-    });
-
-    it('should return error message when validating service name prompt has name duplication', async () => {
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(
-            validation?.('customer.testName', {
-                addAnnotationMode: true,
-                dataSourceName: 'customer.testName'
-            } as NewModelAnswers)
-        ).toBe(
-            'An OData Service Name must be different from an OData Annotation Data Source Name. Rename and try again.'
         );
     });
 
@@ -167,106 +182,69 @@ describe('getPrompts', () => {
         expect(validation?.('/sap/opu /odata4/')).toBe(i18n.t('validators.errorInvalidDataSourceURI'));
     });
 
-    it('should return default value for odata version when uri answer is present', async () => {
-        isCFEnvironmentMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
-
-        const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const dafaultFn = result.find((prompt) => prompt.name === 'version')?.default;
-
-        expect(typeof dafaultFn).toBe('function');
-        expect(dafaultFn({ uri: '/odata/v4/example' })).toBe('4.0');
-    });
-
-    it('should return default value for odata version when uri answer is not present', async () => {
-        isCFEnvironmentMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
-
-        const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const dafaultFn = result.find((prompt) => prompt.name === 'version')?.default;
-
-        expect(typeof dafaultFn).toBe('function');
-        expect(dafaultFn({ uri: undefined })).toBe('2.0');
-    });
-
-    it('should return default value for odata version based on uri answer in CF environment', async () => {
-        isCFEnvironmentMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
-
-        const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const dafaultFn = result.find((prompt) => prompt.name === 'version')?.default;
-
-        expect(typeof dafaultFn).toBe('function');
-        expect(dafaultFn({ uri: '/odata/v4/' })).toBe('4.0');
-    });
-
-    it('should return default value for odata version based on uri answer not in CF environment', async () => {
-        isCFEnvironmentMock.mockReturnValueOnce(false).mockReturnValueOnce(false);
-
-        const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const dafaultFn = result.find((prompt) => prompt.name === 'version')?.default;
-
-        expect(typeof dafaultFn).toBe('function');
-        expect(dafaultFn({ uri: '/sap/opu/odata4/' })).toBe('4.0');
-    });
-
-    it('should return true when validating model name prompt', async () => {
-        const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
+    it('should return information message with resulting service URL for ABAP VS Code project (url in ui5.yaml)', async () => {
+        getAdpConfigMock.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
 
-        const validation = prompts.find((p) => p.name === 'modelName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName')).toBe(true);
-        expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.testName', 'model', []);
+        expect(typeof additionalMessages).toBe('function');
+        const result = await additionalMessages('/sap/odata/v4/', undefined);
+        expect(result).toEqual({
+            message: i18n.t('prompts.resultingServiceUrl', { url: 'https://abap.example.com/sap/odata/v4/', interpolation: { escapeValue: false } }),
+            severity: Severity.information
+        });
     });
 
-    it('should return error message when validating model name prompt without "customer." prefix', async () => {
-        jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
+    it('should return information message with resulting service URL for ABAP BAS project (destination in ui5.yaml)', async () => {
+        getAdpConfigMock.mockResolvedValue({ target: { destination: 'MY_DEST' } });
+        listDestinationsMock.mockResolvedValue({ MY_DEST: { Host: 'https://bas.dest.example.com', Name: 'MY_DEST' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
 
-        const validation = prompts.find((p) => p.name === 'modelName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('testName')).toBe("OData Service SAPUI5 Model Name must start with 'customer.'.");
+        expect(typeof additionalMessages).toBe('function');
+        const result = await additionalMessages('/sap/odata/v4/', undefined);
+        expect(result).toEqual({
+            message: i18n.t('prompts.resultingServiceUrl', { url: 'https://bas.dest.example.com/sap/odata/v4/', interpolation: { escapeValue: false } }),
+            severity: Severity.information
+        });
     });
 
-    it('should return error message when validating model name contains only "customer."', async () => {
+    it('should return information message with resulting service URL for CF project using selected destination', async () => {
+        isCFEnvironmentMock.mockResolvedValue(true);
+
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
 
-        const validation = prompts.find((p) => p.name === 'modelName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.')).toBe(
-            "OData Service SAPUI5 Model Name must contain at least one character in addition to 'customer.'."
-        );
+        expect(typeof additionalMessages).toBe('function');
+        const previousAnswers = { destination: { Host: 'https://cf.dest.example.com', Name: 'CF_DEST' } } as unknown as NewModelAnswers;
+        const result = await additionalMessages('/sap/odata/v4/', previousAnswers);
+        expect(result).toEqual({
+            message: i18n.t('prompts.resultingServiceUrl', { url: 'https://cf.dest.example.com/sap/odata/v4/', interpolation: { escapeValue: false } }),
+            severity: Severity.information
+        });
     });
 
-    it('should return error message when validating model name prompt and has special characters', async () => {
-        jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('general.invalidValueForSpecialChars');
+    it('should return undefined from additionalMessages when uri is invalid', async () => {
+        jest.spyOn(validators, 'isDataSourceURI').mockReturnValueOnce(false);
+        getAdpConfigMock.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
 
-        const validation = prompts.find((p) => p.name === 'modelName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName@')).toBe('general.invalidValueForSpecialChars');
+        expect(typeof additionalMessages).toBe('function');
+        const result = await additionalMessages('not-a-valid-uri', undefined);
+        expect(result).toBeUndefined();
     });
 
-    it('should return error message when validating model name prompt has content duplication', async () => {
-        jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
-
+    it('should return undefined from additionalMessages when no destination URL is available', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
 
-        const validation = prompts.find((p) => p.name === 'modelName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName')).toBe(
-            'An SAPUI5 model with the same name was already added to the project. Rename and try again.'
-        );
+        expect(typeof additionalMessages).toBe('function');
+        const result = await additionalMessages('/sap/odata/v4/', undefined);
+        expect(result).toBeUndefined();
     });
 
     it('should return true when validating model settings prompt', async () => {
@@ -300,77 +278,6 @@ describe('getPrompts', () => {
         expect(validation?.('{"key": "value"}')).toBe('general.invalidJSON');
     });
 
-    it('should return error message when validating data source name prompt without "customer." prefix', async () => {
-        jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
-
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('testName', { name: 'testName' } as NewModelAnswers)).toBe(
-            "OData Annotation Data Source Name must start with 'customer.'."
-        );
-    });
-
-    it('should return error message when validating data source name prompt with only "customer." prefix', async () => {
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.', { name: 'customer.testName' } as NewModelAnswers)).toBe(
-            "OData Annotation Data Source Name must contain at least one character in addition to 'customer.'."
-        );
-    });
-
-    it('should return true when validating data source name prompt', async () => {
-        const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
-
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
-        expect(validation?.('customer.testName', { name: 'otherName' } as NewModelAnswers)).toBe(true);
-    });
-
-    it('should return error message when validating data source name prompt and has special characters', async () => {
-        jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('general.invalidValueForSpecialChars');
-
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName@', { name: 'otherName' } as NewModelAnswers)).toBe(
-            'general.invalidValueForSpecialChars'
-        );
-    });
-
-    it('should return error message when validating data source name prompt has content duplication', async () => {
-        jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
-
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName', { name: 'otherName' } as NewModelAnswers)).toBe(
-            'An OData annotation or service with the same name was already added to the project. Rename and try again.'
-        );
-    });
-
-    it('should return error message when validating data source name prompt has name duplication', async () => {
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName', { name: 'customer.testName' } as NewModelAnswers)).toBe(
-            'An OData Service Name must be different from an OData Annotation Data Source Name. Rename and try again.'
-        );
-    });
-
     it('should return true when validating data source uri prompt', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -399,19 +306,97 @@ describe('getPrompts', () => {
         expect(validation?.('"key": "value"')).toBe(true);
     });
 
-    it('should display the dataSourceName, dataSourceURI, and annotationSettings prompts when addAnnotationMode is true', async () => {
+    it('should display the dataSourceURI and annotationSettings prompts when addAnnotationMode is true', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const answers = { addAnnotationMode: true } as NewModelAnswers;
 
-        const dataSourceNamePromptWhen = prompts.find((p) => p.name === 'dataSourceName')?.when as Function;
         const dataSourceURIPromptWhen = prompts.find((p) => p.name === 'dataSourceURI')?.when as Function;
         const annotationSettingsPromptWhen = prompts.find((p) => p.name === 'annotationSettings')?.when as Function;
 
-        expect(typeof dataSourceNamePromptWhen).toBe('function');
         expect(typeof dataSourceURIPromptWhen).toBe('function');
         expect(typeof annotationSettingsPromptWhen).toBe('function');
-        expect(dataSourceNamePromptWhen(answers)).toBe(true);
         expect(dataSourceURIPromptWhen(answers)).toBe(true);
         expect(annotationSettingsPromptWhen(answers)).toBe(true);
+    });
+
+    it('should show "Datasource Name" label for modelAndDatasourceName prompt when service type is HTTP', async () => {
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const messageFn = prompts.find((p) => p.name === 'modelAndDatasourceName')?.message as Function;
+
+        expect(typeof messageFn).toBe('function');
+        expect(messageFn({ serviceType: 'HTTP' })).toBe(i18n.t('prompts.datasourceNameLabel'));
+    });
+
+    it('should show "Model and Datasource Name" label for modelAndDatasourceName prompt when service type is OData', async () => {
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const messageFn = prompts.find((p) => p.name === 'modelAndDatasourceName')?.message as Function;
+
+        expect(typeof messageFn).toBe('function');
+        expect(messageFn({ serviceType: 'OData v2' })).toBe(i18n.t('prompts.modelAndDatasourceNameLabel'));
+    });
+
+    it('should hide modelSettings and addAnnotationMode prompts when service type is HTTP', async () => {
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const httpAnswers = { serviceType: 'HTTP' } as unknown as NewModelAnswers;
+
+        const modelSettingsWhen = prompts.find((p) => p.name === 'modelSettings')?.when as Function;
+        const addAnnotationModeWhen = prompts.find((p) => p.name === 'addAnnotationMode')?.when as Function;
+
+        expect(typeof modelSettingsWhen).toBe('function');
+        expect(typeof addAnnotationModeWhen).toBe('function');
+        expect(modelSettingsWhen(httpAnswers)).toBe(false);
+        expect(addAnnotationModeWhen(httpAnswers)).toBe(false);
+    });
+
+    it('should show modelSettings and addAnnotationMode prompts when service type is OData', async () => {
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const odataAnswers = { serviceType: 'OData v2' } as unknown as NewModelAnswers;
+
+        const modelSettingsWhen = prompts.find((p) => p.name === 'modelSettings')?.when as Function;
+        const addAnnotationModeWhen = prompts.find((p) => p.name === 'addAnnotationMode')?.when as Function;
+
+        expect(typeof modelSettingsWhen).toBe('function');
+        expect(typeof addAnnotationModeWhen).toBe('function');
+        expect(modelSettingsWhen(odataAnswers)).toBe(true);
+        expect(addAnnotationModeWhen(odataAnswers)).toBe(true);
+    });
+
+    it('should return error when xs-app.json already has a route with the same target for CF project', async () => {
+        isCFEnvironmentMock.mockResolvedValue(true);
+        readFileSyncMock.mockReturnValueOnce(
+            JSON.stringify({ routes: [{ source: '^some/route/(.*)', target: '/sap/opu/odata/v4/$1', destination: 'DEST' }] }) as any
+        );
+
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const validation = prompts.find((p) => p.name === 'uri')?.validate;
+
+        expect(typeof validation).toBe('function');
+        expect(validation?.('/sap/opu/odata/v4/')).toBe(i18n.t('validators.errorRouteAlreadyExists'));
+    });
+
+    it('should return true when xs-app.json has no matching route for CF project', async () => {
+        isCFEnvironmentMock.mockResolvedValue(true);
+        readFileSyncMock.mockReturnValueOnce(
+            JSON.stringify({ routes: [{ source: '^other/route/(.*)', target: '/other/route/$1', destination: 'DEST' }] }) as any
+        );
+
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const validation = prompts.find((p) => p.name === 'uri')?.validate;
+
+        expect(typeof validation).toBe('function');
+        expect(validation?.('/sap/opu/odata/v4/')).toBe(true);
+    });
+
+    it('should not check xs-app.json for duplicate routes in a non-CF project', async () => {
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const validation = prompts.find((p) => p.name === 'uri')?.validate;
+
+        expect(typeof validation).toBe('function');
+        validation?.('/sap/opu/odata/v4/');
+
+        expect(readFileSyncMock).not.toHaveBeenCalledWith(
+            expect.stringContaining('xs-app.json'),
+            expect.anything()
+        );
     });
 });

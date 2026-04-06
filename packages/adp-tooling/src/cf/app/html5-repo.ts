@@ -5,33 +5,11 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
+import { getToken } from '../../btp/api';
 import { getServiceNameByTags, getOrCreateServiceInstanceKeys, createServiceInstance } from '../services/api';
-import type { HTML5Content, ServiceInfo, Uaa, CfAppParams } from '../../types';
+import type { HTML5Content, ServiceInfo, CfAppParams } from '../../types';
 
 const HTML5_APPS_REPO_RUNTIME = 'html5-apps-repo-runtime';
-
-/**
- * Get the OAuth token from HTML5 repository.
- *
- * @param {Uaa} uaa UAA credentials
- * @returns {Promise<string>} OAuth token
- */
-export async function getToken(uaa: Uaa): Promise<string> {
-    const auth = Buffer.from(`${uaa.clientid}:${uaa.clientsecret}`);
-    const options = {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + auth.toString('base64')
-        }
-    };
-    const uri = `${uaa.url}/oauth/token?grant_type=client_credentials`;
-    try {
-        const response = await axios.get(uri, options);
-        return response.data['access_token'];
-    } catch (e) {
-        throw new Error(t('error.failedToGetAuthKey', { error: e.message }));
-    }
-}
 
 /**
  * Download zip from HTML5 repository.

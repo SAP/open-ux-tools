@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
@@ -8,20 +7,18 @@ import { readUi5Yaml } from '@sap-ux/project-access';
 
 import {
     adjustMtaYaml,
-    getAppHostIds,
     getOrCreateServiceInstanceKeys,
     addServeStaticMiddleware,
     addBackendProxyMiddleware,
-    getCfUi5AppInfo,
     getProjectNameForXsSecurity
 } from '../cf';
 import { getApplicationType } from '../source';
 import { fillDescriptorContent } from './manifest';
-import type { CfAdpWriterConfig, Content, CfUi5AppInfo, CfConfig } from '../types';
+import type { CfAdpWriterConfig, Content, CfConfig } from '../types';
 import { getCfVariant, writeCfTemplates, writeCfUI5Yaml } from './project-utils';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
-import { getBaseAppId } from '../base/helper';
 import { runBuild } from '../base/project-builder';
+import { downloadUi5AppInfo } from '../cf/project/ui5-app-info';
 
 /**
  * Writes the CF adp-project template to the mem-fs-editor instance.
@@ -103,24 +100,6 @@ function setDefaults(config: CfAdpWriterConfig): CfAdpWriterConfig {
 }
 
 /**
- * Fetch ui5AppInfo.json and write it to the project root.
- *
- * @param basePath - path to application root
- * @param ui5AppInfo - ui5AppInfo.json content
- * @param logger - logger instance
- */
-export async function writeUi5AppInfo(basePath: string, ui5AppInfo: CfUi5AppInfo, logger?: ToolsLogger): Promise<void> {
-    try {
-        const ui5AppInfoTargetPath = join(basePath, 'ui5AppInfo.json');
-        fs.writeFileSync(ui5AppInfoTargetPath, JSON.stringify(ui5AppInfo, null, 2), 'utf-8');
-        logger?.info(`Written ui5AppInfo.json to ${basePath}`);
-    } catch (error) {
-        logger?.error(`Failed to process ui5AppInfo.json: ${(error as Error).message}`);
-        throw error;
-    }
-}
-
-/**
  * Generate CF configuration for an adaptation project.
  *
  * @param basePath - path to project root
@@ -161,15 +140,7 @@ export async function generateCfConfig(
         throw new Error(`No service keys found for service instance: ${serviceInstanceName}`);
     }
 
-    const appId = await getBaseAppId(basePath);
-    const appHostIds = getAppHostIds(serviceInfo.serviceKeys);
-    const ui5AppInfo: CfUi5AppInfo = await getCfUi5AppInfo(appId, appHostIds, cfConfig, logger);
-
-    if (appHostIds.length === 0) {
-        throw new Error('No app host IDs found in service keys.');
-    }
-
-    await writeUi5AppInfo(basePath, ui5AppInfo, logger);
+    await downloadUi5AppInfo(basePath, cfConfig, logger);
     await addServeStaticMiddleware(basePath, ui5Config, logger);
     await runBuild(basePath, { ADP_BUILDER_MODE: 'preview' });
     addBackendProxyMiddleware(basePath, ui5Config, serviceInfo.serviceKeys, logger);

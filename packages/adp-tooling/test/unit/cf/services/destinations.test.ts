@@ -1,0 +1,132 @@
+import { getDestinations } from '../../../../src/cf/services/destinations';
+import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import { getOrCreateServiceInstanceKeys, listBtpDestinations } from '../../../../src/cf/services/api';
+import { getYamlContent } from '../../../../src/cf/project/yaml-loader';
+import { initI18n, t } from '../../../../src/i18n';
+
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
+    isAppStudio: jest.fn(),
+    listDestinations: jest.fn()
+}));
+
+jest.mock('../../../../src/cf/services/api', () => ({
+    getOrCreateServiceInstanceKeys: jest.fn(),
+    listBtpDestinations: jest.fn()
+}));
+
+jest.mock('../../../../src/cf/project/yaml-loader', () => ({
+    getYamlContent: jest.fn()
+}));
+
+const isAppStudioMock = isAppStudio as jest.Mock;
+const listDestinationsMock = listDestinations as jest.Mock;
+const getOrCreateServiceInstanceKeysMock = getOrCreateServiceInstanceKeys as jest.Mock;
+const listBtpDestinationsMock = listBtpDestinations as jest.Mock;
+const getYamlContentMock = getYamlContent as jest.Mock;
+
+const mockProjectPath = '/path/to/project';
+
+const mockMtaYaml = {
+    ID: 'test-project',
+    '_schema-version': '3.3.0',
+    version: '0.0.1',
+    resources: [
+        { name: 'test-project-destination', type: 'org.cloudfoundry.managed-service', parameters: { service: 'destination', 'service-plan': 'lite' } },
+        { name: 'test-project-uaa', type: 'org.cloudfoundry.managed-service', parameters: { service: 'xsuaa', 'service-plan': 'application' } }
+    ]
+};
+
+const mockDestinations = {
+    MY_DEST: { Name: 'MY_DEST', Host: 'https://dest.example.com', Type: 'HTTP', Authentication: 'NoAuthentication', ProxyType: 'Internet', Description: 'My destination' }
+};
+
+const mockCredentials = { uri: 'https://destination.cfapps.example.com', uaa: { clientid: 'client-id', clientsecret: 'client-secret', url: 'https://auth.example.com' } };
+
+const mockServiceInfo = {
+    serviceKeys: [{ credentials: mockCredentials }],
+    serviceInstance: { name: 'test-project-destination', guid: 'some-guid' }
+};
+
+describe('getDestinations', () => {
+    beforeAll(async () => {
+        await initI18n();
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should call listDestinations when running in BAS', async () => {
+        isAppStudioMock.mockReturnValue(true);
+        listDestinationsMock.mockResolvedValue(mockDestinations);
+
+        const result = await getDestinations(mockProjectPath);
+
+        expect(listDestinationsMock).toHaveBeenCalledTimes(1);
+        expect(getOrCreateServiceInstanceKeysMock).not.toHaveBeenCalled();
+        expect(result).toBe(mockDestinations);
+    });
+
+    it('should call listBtpDestinations with destination service credentials when running in VS Code', async () => {
+        isAppStudioMock.mockReturnValue(false);
+        getYamlContentMock.mockReturnValue(mockMtaYaml);
+        getOrCreateServiceInstanceKeysMock.mockResolvedValue(mockServiceInfo);
+        listBtpDestinationsMock.mockResolvedValue(mockDestinations);
+
+        const result = await getDestinations(mockProjectPath);
+
+        expect(listDestinationsMock).not.toHaveBeenCalled();
+        expect(getYamlContentMock).toHaveBeenCalledWith('/path/to/mta.yaml');
+        expect(getOrCreateServiceInstanceKeysMock).toHaveBeenCalledWith({ names: ['test-project-destination'] });
+        expect(listBtpDestinationsMock).toHaveBeenCalledWith(mockCredentials);
+        expect(result).toBe(mockDestinations);
+    });
+
+    it('should throw an error when no destination service is found in mta.yaml', async () => {
+        isAppStudioMock.mockReturnValue(false);
+        getYamlContentMock.mockReturnValue({
+            ...mockMtaYaml,
+            resources: [{ name: 'test-project-uaa', type: 'org.cloudfoundry.managed-service', parameters: { service: 'xsuaa', 'service-plan': 'application' } }]
+        });
+
+        await expect(getDestinations(mockProjectPath)).rejects.toThrow(t('error.destinationServiceNotFoundInMtaYaml'));
+
+        expect(getOrCreateServiceInstanceKeysMock).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error when mta.yaml cannot be read', async () => {
+        isAppStudioMock.mockReturnValue(false);
+        getYamlContentMock.mockImplementation(() => {
+            throw new Error('File not found');
+        });
+
+        await expect(getDestinations(mockProjectPath)).rejects.toThrow('File not found');
+
+        expect(getOrCreateServiceInstanceKeysMock).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error when no service keys are available', async () => {
+        isAppStudioMock.mockReturnValue(false);
+        getYamlContentMock.mockReturnValue(mockMtaYaml);
+        getOrCreateServiceInstanceKeysMock.mockResolvedValue({ serviceKeys: [], serviceInstance: { name: 'test-project-destination', guid: 'some-guid' } });
+
+        await expect(getDestinations(mockProjectPath)).rejects.toThrow(
+            t('error.noServiceKeysFoundForDestination', { serviceInstanceName: 'test-project-destination' })
+        );
+
+        expect(listBtpDestinationsMock).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error when getOrCreateServiceInstanceKeys returns null', async () => {
+        isAppStudioMock.mockReturnValue(false);
+        getYamlContentMock.mockReturnValue(mockMtaYaml);
+        getOrCreateServiceInstanceKeysMock.mockResolvedValue(null);
+
+        await expect(getDestinations(mockProjectPath)).rejects.toThrow(
+            t('error.noServiceKeysFoundForDestination', { serviceInstanceName: 'test-project-destination' })
+        );
+
+        expect(listBtpDestinationsMock).not.toHaveBeenCalled();
+    });
+});

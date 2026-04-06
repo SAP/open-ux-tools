@@ -1,14 +1,26 @@
+import { join } from 'node:path';
+
 import type { Editor } from 'mem-fs-editor';
+import { ToolsLogger } from '@sap-ux/logger';
 
 import { ChangeType } from '../../../types';
 import type { IWriter, NewModelData, DataSourceItem } from '../../../types';
 import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
+import { addConnectivityServiceToMta } from '../../../cf/project/yaml';
+import { ensureTunnelAppExists, DEFAULT_TUNNEL_APP_NAME } from '../../../cf/services/ssh';
+
+const CF_MODEL_SETTINGS = {
+    operationMode: 'Server',
+    autoExpandSelect: true,
+    earlyRequests: true
+} as const;
 
 type NewModelContent = {
     model: {
         [key: string]: {
             settings?: object;
             dataSource: string;
+            preload?: boolean;
         };
     };
     dataSource: {
@@ -23,10 +35,12 @@ export class NewModelWriter implements IWriter<NewModelData> {
     /**
      * @param {Editor} fs - The filesystem editor instance.
      * @param {string} projectPath - The root path of the project.
+     * @param {ToolsLogger} [logger] - Optional logger instance.
      */
     constructor(
         private readonly fs: Editor,
-        private readonly projectPath: string
+        private readonly projectPath: string,
+        private readonly logger?: ToolsLogger
     ) {}
 
     /**
@@ -36,31 +50,43 @@ export class NewModelWriter implements IWriter<NewModelData> {
      * @returns {object} The constructed content object for the new model change.
      */
     private constructContent(data: NewModelData): object {
-        const { service } = data;
-        const content: NewModelContent = {
-            dataSource: {
-                [service.name]: {
-                    uri: service.uri,
-                    type: 'OData',
-                    settings: {
-                        odataVersion: service.version
-                    }
-                }
-            },
-            model: {
-                [service.modelName]: {
-                    dataSource: service.name
-                }
-            }
+        const { service, isCloudFoundry } = data;
+
+        const uri = isCloudFoundry ? `/${service.name.replace(/\./g, '/')}${service.uri}` : service.uri;
+
+        const dataSourceEntry: DataSourceItem = {
+            uri,
+            type: 'OData',
+            settings: {}
         };
 
-        if (service.modelSettings && service.modelSettings.length !== 0) {
-            content.model[service.modelName].settings = parseStringToObject(service.modelSettings);
+        if (service.version) {
+            dataSourceEntry.settings.odataVersion = service.version;
+        }
+
+        const content: NewModelContent = {
+            dataSource: {
+                [service.name]: dataSourceEntry
+            },
+            model: {}
+        };
+
+        if (service.modelName) {
+            content.model[service.modelName] = { dataSource: service.name };
+
+            if (isCloudFoundry) {
+                content.model[service.modelName].preload = true;
+                content.model[service.modelName].settings = { ...CF_MODEL_SETTINGS };
+            } else if (service.modelSettings && service.modelSettings.length !== 0) {
+                content.model[service.modelName].settings = parseStringToObject(service.modelSettings);
+            }
         }
 
         if ('annotation' in data) {
             const { annotation } = data;
-            content.dataSource[service.name].settings.annotations = [`${annotation.dataSourceName}`];
+            (content.dataSource[service.name].settings as Record<string, unknown>).annotations = [
+                `${annotation.dataSourceName}`
+            ];
             content.dataSource[annotation.dataSourceName] = {
                 uri: annotation.dataSourceURI,
                 type: 'ODataAnnotation'
@@ -86,5 +112,33 @@ export class NewModelWriter implements IWriter<NewModelData> {
         const change = getChange(data.variant, timestamp, content, ChangeType.ADD_NEW_MODEL);
 
         await writeChangeToFolder(this.projectPath, change, this.fs);
+
+        if (data.isCloudFoundry) {
+            this.writeXsAppRoute(data);
+        }
+
+        if (data.isCloudFoundry && data.isOnPremiseDestination) {
+            await addConnectivityServiceToMta(this.projectPath, this.fs);
+            await ensureTunnelAppExists(DEFAULT_TUNNEL_APP_NAME, this.logger ?? new ToolsLogger());
+        }
+    }
+
+    /**
+     * Creates or updates the xs-app.json in the webapp folder with a new AppRouter route
+     * for the added OData service.
+     *
+     * @param {NewModelData} data - The new model data containing service name, URI and destination name.
+     */
+    private writeXsAppRoute(data: NewModelData): void {
+        const xsAppPath = join(this.projectPath, 'webapp', 'xs-app.json');
+        const source = `^/${data.service.name.replace(/\./g, '/')}${data.service.uri}(.*)`;
+        const newRoute = {
+            source,
+            target: `${data.service.uri}$1`,
+            destination: data.destinationName
+        };
+        const existing = this.fs.readJSON(xsAppPath, { routes: [] }) as { routes: object[] };
+        existing.routes.push(newRoute);
+        this.fs.writeJSON(xsAppPath, existing);
     }
 }

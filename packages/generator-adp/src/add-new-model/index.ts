@@ -1,10 +1,24 @@
 import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
-import type { NewModelAnswers, NewModelData, DescriptorVariant } from '@sap-ux/adp-tooling';
-import { generateChange, ChangeType, getPromptsForNewModel, getVariant } from '@sap-ux/adp-tooling';
+import type { NewModelAnswers, NewModelData, DescriptorVariant, CfConfig } from '@sap-ux/adp-tooling';
+import {
+    generateChange,
+    ChangeType,
+    getPromptsForNewModel,
+    getVariant,
+    getODataVersionFromServiceType,
+    ServiceType,
+    isCFEnvironment,
+    runBuild,
+    isLoggedInCf,
+    loadCfConfig,
+    downloadUi5AppInfo
+} from '@sap-ux/adp-tooling';
+import { isOnPremiseDestination } from '@sap-ux/btp-utils';
 
 import { GeneratorTypes } from '../types';
 import { initI18n, t } from '../utils/i18n';
 import type { GeneratorOpts } from '../utils/opts';
+import { installDependencies } from '../utils/deps';
 import SubGeneratorBase from '../base/sub-gen-base';
 
 /**
@@ -19,6 +33,10 @@ class AddNewModelGenerator extends SubGeneratorBase {
      * The variant.
      */
     private variant: DescriptorVariant;
+    /**
+     * The CF configuration, set when running in a CF environment.
+     */
+    private cfConfig: CfConfig | undefined;
     /**
      * The project path.
      */
@@ -41,6 +59,14 @@ class AddNewModelGenerator extends SubGeneratorBase {
         await initI18n();
 
         try {
+            if (await isCFEnvironment(this.projectPath)) {
+                this.cfConfig = loadCfConfig(this.logger);
+                const loggedIn = await isLoggedInCf(this.cfConfig, this.logger);
+                if (!loggedIn) {
+                    throw new Error(t('error.cfNotLoggedIn'));
+                }
+            }
+
             this._registerPrompts(
                 new Prompts([
                     { name: t('yuiNavSteps.addNewModelName'), description: t('yuiNavSteps.addNewModelDescr') }
@@ -69,35 +95,49 @@ class AddNewModelGenerator extends SubGeneratorBase {
         await generateChange<ChangeType.ADD_NEW_MODEL>(
             this.projectPath,
             ChangeType.ADD_NEW_MODEL,
-            this._createNewModelData(),
-            this.fs
+            await this._createNewModelData(),
+            this.fs,
+            undefined,
+            this.logger
         );
         this.logger.log('Change written to changes folder');
     }
 
-    end(): void {
+    async end(): Promise<void> {
         this.logger.log('Successfully created change!');
+        if (await isCFEnvironment(this.projectPath)) {
+            await installDependencies(this.projectPath);
+            await downloadUi5AppInfo(this.projectPath, this.cfConfig!, this.logger);
+            await runBuild(this.projectPath, { ADP_BUILDER_MODE: 'preview' });
+        }
     }
 
     /**
      * Creates the new model data.
      *
-     * @returns {NewModelData} The new model data.
+     * @returns {Promise<NewModelData>} The new model data.
      */
-    private _createNewModelData(): NewModelData {
-        const { name, uri, modelName, version, modelSettings, addAnnotationMode } = this.answers;
+    private async _createNewModelData(): Promise<NewModelData> {
+        const { modelAndDatasourceName, uri, serviceType, modelSettings, addAnnotationMode } = this.answers;
+        const isCloudFoundry = await isCFEnvironment(this.projectPath);
         return {
             variant: this.variant,
+            isCloudFoundry,
+            destinationName: isCloudFoundry ? this.answers.destination?.Name : undefined,
+            isOnPremiseDestination:
+                isCloudFoundry && this.answers.destination
+                    ? isOnPremiseDestination(this.answers.destination)
+                    : undefined,
             service: {
-                name,
+                name: modelAndDatasourceName,
                 uri,
-                modelName,
-                version,
+                modelName: serviceType !== ServiceType.HTTP ? modelAndDatasourceName : undefined,
+                version: getODataVersionFromServiceType(serviceType),
                 modelSettings
             },
             ...(addAnnotationMode && {
                 annotation: {
-                    dataSourceName: this.answers.dataSourceName,
+                    dataSourceName: `${modelAndDatasourceName}.annotation`,
                     dataSourceURI: this.answers.dataSourceURI,
                     settings: this.answers.annotationSettings
                 }

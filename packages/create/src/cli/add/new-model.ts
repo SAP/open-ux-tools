@@ -1,7 +1,16 @@
 import type { Command } from 'commander';
 
 import type { DescriptorVariant, NewModelAnswers, NewModelData } from '@sap-ux/adp-tooling';
-import { generateChange, ChangeType, getPromptsForNewModel, getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
+import {
+    generateChange,
+    ChangeType,
+    getPromptsForNewModel,
+    getVariant,
+    isCFEnvironment,
+    getODataVersionFromServiceType,
+    ServiceType
+} from '@sap-ux/adp-tooling';
+import { isOnPremiseDestination } from '@sap-ux/btp-utils';
 
 import { promptYUIQuestions } from '../../common';
 import { getLogger, traceChanges } from '../../tracing';
@@ -16,7 +25,6 @@ export function addNewModelCommand(cmd: Command): void {
     cmd.command('model [path]')
         .description(
             `Add a new OData service and SAPUI5 model to an existing adaptation project.\n
-            This command is not supported for Cloud Foundry projects.\n
 Example:
     \`npx --yes @sap-ux/create@latest add model\``
         )
@@ -40,9 +48,6 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
         }
 
         await validateAdpAppType(basePath);
-        if (await isCFEnvironment(basePath)) {
-            throw new Error('This command is not supported for Cloud Foundry projects.');
-        }
 
         const variant = await getVariant(basePath);
 
@@ -51,7 +56,10 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
         const fs = await generateChange<ChangeType.ADD_NEW_MODEL>(
             basePath,
             ChangeType.ADD_NEW_MODEL,
-            createNewModelData(variant, answers)
+            await createNewModelData(basePath, variant, answers),
+            null,
+            undefined,
+            logger
         );
 
         if (!simulate) {
@@ -68,24 +76,34 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
 /**
  * Returns the writer data for the new model change.
  *
+ * @param {string} basePath - The path to the adaptation project.
  * @param {DescriptorVariant} variant - The variant of the adaptation project.
  * @param {NewModelAnswers} answers - The answers to the prompts.
- * @returns {NewModelData} The writer data for the new model change.
+ * @returns {Promise<NewModelData>} The writer data for the new model change.
  */
-function createNewModelData(variant: DescriptorVariant, answers: NewModelAnswers): NewModelData {
-    const { name, uri, modelName, version, modelSettings, addAnnotationMode } = answers;
+async function createNewModelData(
+    basePath: string,
+    variant: DescriptorVariant,
+    answers: NewModelAnswers
+): Promise<NewModelData> {
+    const { modelAndDatasourceName, uri, serviceType, modelSettings, addAnnotationMode } = answers;
+    const isCloudFoundry = await isCFEnvironment(basePath);
     return {
         variant,
+        isCloudFoundry,
+        destinationName: isCloudFoundry ? answers.destination?.Name : undefined,
+        isOnPremiseDestination:
+            isCloudFoundry && answers.destination ? isOnPremiseDestination(answers.destination) : undefined,
         service: {
-            name,
+            name: modelAndDatasourceName,
             uri,
-            modelName,
-            version,
+            modelName: serviceType !== ServiceType.HTTP ? modelAndDatasourceName : undefined,
+            version: getODataVersionFromServiceType(serviceType),
             modelSettings
         },
         ...(addAnnotationMode && {
             annotation: {
-                dataSourceName: answers.dataSourceName,
+                dataSourceName: `${modelAndDatasourceName}.annotation`,
                 dataSourceURI: answers.dataSourceURI,
                 settings: answers.annotationSettings
             }
