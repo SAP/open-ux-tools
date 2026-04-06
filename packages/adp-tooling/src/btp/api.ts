@@ -55,8 +55,9 @@ export async function getBtpDestinationConfig(
         const response = await axios.get<{ destinationConfiguration?: BtpDestinationConfig }>(url, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        logger?.debug(`Destination "${destinationName}" config: ProxyType=${response.data.destinationConfiguration?.ProxyType}`);
-        return response.data.destinationConfiguration;
+        const config = response.data?.destinationConfiguration;
+        logger?.debug(`Destination "${destinationName}" config: ProxyType=${config?.ProxyType}`);
+        return config;
     } catch (e) {
         logger?.error(`Failed to fetch destination config for "${destinationName}": ${e.message}`);
         return undefined;
