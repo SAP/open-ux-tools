@@ -7,6 +7,11 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { checkAppExists, pushApp, enableSsh, restartApp } from './cli';
 
 /**
+ * Default CF app name used for SSH tunneling to the connectivity proxy.
+ */
+export const DEFAULT_TUNNEL_APP_NAME = 'adp-ssh-tunnel-app';
+
+/**
  * Ensure a tunnel app exists in CF. If not found, deploy a minimal no-route app
  * using the binary_buildpack with minimum memory so it can serve as an SSH target.
  *

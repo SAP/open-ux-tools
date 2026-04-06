@@ -20,7 +20,8 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 jest.mock('@sap-ux/adp-tooling', () => ({
     ensureTunnelAppExists: jest.fn(),
-    enableSshAndRestart: jest.fn()
+    enableSshAndRestart: jest.fn(),
+    DEFAULT_TUNNEL_APP_NAME: 'adp-ssh-tunnel-app'
 }));
 
 jest.mock('../../../src/tunnel/destination-check', () => ({

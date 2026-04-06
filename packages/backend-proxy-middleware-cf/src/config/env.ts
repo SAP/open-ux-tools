@@ -70,7 +70,7 @@ function loadEnvOptionsFromFile(rootPath: string, envOptionsPath: string): AppRo
  *
  * @param options - Env options to apply.
  */
-function applyToProcessEnv(options: AppRouterEnvOptions): void {
+export function applyToProcessEnv(options: AppRouterEnvOptions): void {
     if (options.VCAP_SERVICES) {
         const connectivity = options.VCAP_SERVICES['connectivity'];
         if (Array.isArray(connectivity)) {
@@ -91,54 +91,49 @@ function applyToProcessEnv(options: AppRouterEnvOptions): void {
 }
 
 /**
- * Load env options from file or CF, apply to process.env, and add destinations from effectiveOptions.
+ * Load env options from file or CF and merge destinations from effectiveOptions.
  *
  * When effectiveOptions.envOptionsPath is set, loads that JSON file. When null, loads mta.yaml one level
- * above rootPath and fetches VCAP_SERVICES from CF. effectiveOptions.destinations is applied so
+ * above rootPath and fetches VCAP_SERVICES from CF. effectiveOptions.destinations is appended so
  * middleware config takes precedence over file/env.
  *
  * @param rootPath - Project root path.
  * @param effectiveOptions - Merged config; envOptionsPath and destinations are used.
  * @param logger - Logger for CF path.
- * @returns Connectivity proxy info (original host/port before localhost override), or undefined.
+ * @returns Loaded and merged env options.
  */
-export async function loadAndApplyEnvOptions(
+export async function loadEnvOptions(
     rootPath: string,
     effectiveOptions: EffectiveOptions,
     logger: ToolsLogger
-): Promise<ConnectivityProxyInfo | undefined> {
+): Promise<AppRouterEnvOptions> {
     const { envOptionsPath, destinations: middlewareDestinations } = effectiveOptions;
-    let options: AppRouterEnvOptions;
 
     if (envOptionsPath) {
         const envOptions = loadEnvOptionsFromFile(rootPath, envOptionsPath);
         const destinations = envOptions.destinations
             ? [...envOptions.destinations, ...middlewareDestinations]
             : middlewareDestinations;
-        options = { ...envOptions, destinations };
-    } else {
-        const mtaPath = path.resolve(rootPath, '..', 'mta.yaml');
-        const spaceGuid = await getSpaceGuidFromUi5Yaml(rootPath, logger);
-
-        if (!spaceGuid) {
-            throw new Error('No space GUID (from config or ui5.yaml). Cannot load CF env options.');
-        }
-
-        if (!fs.existsSync(mtaPath)) {
-            throw new Error(`mta.yaml not found at "${mtaPath}". Cannot load CF env options.`);
-        }
-
-        const mtaYaml = getYamlContent(mtaPath);
-        const VCAP_SERVICES = await buildVcapServicesFromResources(mtaYaml.resources, spaceGuid, logger);
-        options = {
-            VCAP_SERVICES,
-            destinations: middlewareDestinations
-        };
+        return { ...envOptions, destinations };
     }
 
-    const connectivityInfo = getConnectivityProxyInfo(options.VCAP_SERVICES as Record<string, unknown>);
-    applyToProcessEnv(options);
-    return connectivityInfo;
+    const mtaPath = path.resolve(rootPath, '..', 'mta.yaml');
+    const spaceGuid = await getSpaceGuidFromUi5Yaml(rootPath, logger);
+
+    if (!spaceGuid) {
+        throw new Error('No space GUID (from config or ui5.yaml). Cannot load CF env options.');
+    }
+
+    if (!fs.existsSync(mtaPath)) {
+        throw new Error(`mta.yaml not found at "${mtaPath}". Cannot load CF env options.`);
+    }
+
+    const mtaYaml = getYamlContent(mtaPath);
+    const VCAP_SERVICES = await buildVcapServicesFromResources(mtaYaml.resources, spaceGuid, logger);
+    return {
+        VCAP_SERVICES,
+        destinations: middlewareDestinations
+    };
 }
 
 /**

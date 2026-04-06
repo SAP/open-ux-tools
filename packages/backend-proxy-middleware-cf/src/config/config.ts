@@ -1,4 +1,4 @@
-import { DEFAULT_TUNNEL_APP_NAME } from './constants';
+import { DEFAULT_TUNNEL_APP_NAME } from '@sap-ux/adp-tooling';
 import type { BackendProxyMiddlewareCfConfig, EffectiveOptions } from '../types';
 
 export const DEFAULT_REWRITE_CONTENT_TYPES = [

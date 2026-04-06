@@ -4,10 +4,9 @@ import type { ChildProcess } from 'node:child_process';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { ensureTunnelAppExists, enableSshAndRestart } from '@sap-ux/adp-tooling';
+import { ensureTunnelAppExists, enableSshAndRestart, DEFAULT_TUNNEL_APP_NAME } from '@sap-ux/adp-tooling';
 
 import { hasOnPremiseDestination } from './destination-check';
-import { DEFAULT_TUNNEL_APP_NAME } from '../config/constants';
 import type { ConnectivityProxyInfo, SshTunnelOptions, EffectiveOptions } from '../types';
 
 /**
