@@ -47,23 +47,22 @@ export function getCfDeploymentInfo(projectPath: string, cfConfig: CfConfig): Cf
 export function formatDeploymentSummary(info: CfDeploymentInfo): string {
     const lines: string[] = [];
 
-    lines.push(`mta-project-name: ${info.mtaProjectName}`);
-    lines.push(`mta-version: ${info.mtaVersion}`);
-    lines.push(`space: ${info.space}`);
-    lines.push(`org: ${info.org}`);
-    lines.push(`api-url: ${info.apiUrl}`);
+    lines.push(
+        `mta-project-name: ${info.mtaProjectName}`,
+        `mta-version: ${info.mtaVersion}`,
+        `space: ${info.space}`,
+        `org: ${info.org}`,
+        `api-url: ${info.apiUrl}`
+    );
 
     for (const mod of info.modules) {
-        lines.push(SEPARATOR);
-        lines.push(`project name: ${mod.name}`);
-        lines.push(`type: ${mod.type}`);
+        lines.push(SEPARATOR, `project name: ${mod.name}`, `type: ${mod.type}`);
         if (mod.path) {
             lines.push(`path: ${mod.path}`);
         }
     }
 
-    lines.push('');
-    lines.push(t('deploy.confirmPrompt'));
+    lines.push('', t('deploy.confirmPrompt'));
 
     return lines.join('\n');
 }
@@ -143,11 +142,11 @@ export async function deployMtaArchive(projectPath: string, logger: ToolsLogger)
  * Deploys a CF ADP project by building the MTA archive and deploying it to Cloud Foundry.
  *
  * @param {string} projectPath - Path to the ADP project root.
- * @param {DeployCfOptions} [options] - Deployment options (confirmation callback, output callback).
  * @param {ToolsLogger} logger - Logger instance.
+ * @param {DeployCfOptions} [options] - Deployment options (confirmation callback, output callback).
  * @returns {Promise<void>} Resolves when deployment completes.
  */
-export async function deployCf(projectPath: string, options: DeployCfOptions = {}, logger: ToolsLogger): Promise<void> {
+export async function deployCf(projectPath: string, logger: ToolsLogger, options: DeployCfOptions = {}): Promise<void> {
     const { cfConfig, mtaRoot } = await validateCfEnvironment(projectPath, logger);
 
     const info = getCfDeploymentInfo(mtaRoot, cfConfig);

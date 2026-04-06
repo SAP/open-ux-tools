@@ -335,7 +335,7 @@ describe('CF Deploy', () => {
         test('should throw when CF CLI is not installed', async () => {
             isCfInstalled.mockResolvedValue(false);
 
-            await expect(deployCf(appPath, {}, mockLogger)).rejects.toThrow(t('deploy.cfNotInstalled'));
+            await expect(deployCf(appPath, mockLogger)).rejects.toThrow(t('deploy.cfNotInstalled'));
         });
 
         test('should throw when not logged in to CF', async () => {
@@ -343,7 +343,7 @@ describe('CF Deploy', () => {
             loadCfConfig.mockReturnValue(sampleCfConfig);
             isLoggedInCf.mockResolvedValue(false);
 
-            await expect(deployCf(appPath, {}, mockLogger)).rejects.toThrow(t('deploy.notLoggedIn'));
+            await expect(deployCf(appPath, mockLogger)).rejects.toThrow(t('deploy.notLoggedIn'));
         });
 
         test('should throw when MTA root is not found', async () => {
@@ -353,7 +353,7 @@ describe('CF Deploy', () => {
             getMtaPath.mockResolvedValue(undefined);
 
             const noMtaPath = path.resolve('/projects/no-mta');
-            await expect(deployCf(noMtaPath, {}, mockLogger)).rejects.toThrow();
+            await expect(deployCf(noMtaPath, mockLogger)).rejects.toThrow();
         });
 
         test('should cancel when confirmDeployment returns false', async () => {
@@ -365,7 +365,7 @@ describe('CF Deploy', () => {
 
             const confirmDeployment = jest.fn().mockResolvedValue(false);
 
-            await deployCf(appPath, { confirmDeployment }, mockLogger);
+            await deployCf(appPath, mockLogger, { confirmDeployment });
             expect(mockCommandRunnerRun).not.toHaveBeenCalled();
             expect(mockLogger.info).toHaveBeenCalledWith(t('deploy.cancelled'));
         });
@@ -379,7 +379,7 @@ describe('CF Deploy', () => {
 
             const confirmDeployment = jest.fn().mockResolvedValue(true);
 
-            await deployCf(appPath, { confirmDeployment }, mockLogger);
+            await deployCf(appPath, mockLogger, { confirmDeployment });
 
             expect(mockCommandRunnerRun).toHaveBeenCalledTimes(2);
             expect(mockCommandRunnerRun).toHaveBeenNthCalledWith(
@@ -408,7 +408,7 @@ describe('CF Deploy', () => {
             getMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
             getYamlContent.mockReturnValue(sampleMtaYaml);
 
-            await deployCf(appPath, {}, mockLogger);
+            await deployCf(appPath, mockLogger);
 
             expect(mockCommandRunnerRun).toHaveBeenCalledTimes(2);
         });
@@ -421,7 +421,7 @@ describe('CF Deploy', () => {
             getYamlContent.mockReturnValue(sampleMtaYaml);
             mockCommandRunnerRun.mockRejectedValueOnce('Build error: missing dependency');
 
-            await expect(deployCf(appPath, {}, mockLogger)).rejects.toThrow(
+            await expect(deployCf(appPath, mockLogger)).rejects.toThrow(
                 t('deploy.buildFailed', { error: 'Build error: missing dependency' })
             );
         });
@@ -435,7 +435,7 @@ describe('CF Deploy', () => {
             mockCommandRunnerRun.mockResolvedValueOnce(undefined); // build succeeds
             mockCommandRunnerRun.mockRejectedValueOnce('Deploy error: insufficient permissions');
 
-            await expect(deployCf(appPath, {}, mockLogger)).rejects.toThrow(
+            await expect(deployCf(appPath, mockLogger)).rejects.toThrow(
                 t('deploy.deployFailed', { error: 'Deploy error: insufficient permissions' })
             );
         });
@@ -449,7 +449,7 @@ describe('CF Deploy', () => {
 
             const onOutput = jest.fn();
 
-            await deployCf(appPath, { onOutput }, mockLogger);
+            await deployCf(appPath, mockLogger, { onOutput });
 
             expect(onOutput).toHaveBeenCalledTimes(1);
             expect(onOutput).toHaveBeenCalledWith(expect.stringContaining('mta-project-name: my-mta-project'));
