@@ -16,7 +16,7 @@ jest.mock('@sap/cf-tools/out/src/cli', () => ({
 
 jest.mock('node:fs', () => ({
     ...jest.requireActual('node:fs'),
-    mkdtempSync: jest.fn().mockReturnValue(mockTmpDir),
+    mkdtempSync: jest.fn(),
     writeFileSync: jest.fn(),
     rmSync: jest.fn()
 }));
@@ -36,6 +36,7 @@ describe('SSH Services', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockMkdtempSync.mockReturnValue(mockTmpDir);
     });
 
     describe('ensureTunnelAppExists', () => {
