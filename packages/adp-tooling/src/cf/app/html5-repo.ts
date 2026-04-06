@@ -6,7 +6,8 @@ import type { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
 import type { HTML5Content, ServiceInfo, CfAppParams } from '../../types';
-import { getServiceNameByTags, getOrCreateServiceInstanceKeys, createServiceInstance, getToken } from '../services/api';
+import { getToken } from '../../btp/api';
+import { getServiceNameByTags, getOrCreateServiceInstanceKeys, createServiceInstance } from '../services/api';
 
 const HTML5_APPS_REPO_RUNTIME = 'html5-apps-repo-runtime';
 

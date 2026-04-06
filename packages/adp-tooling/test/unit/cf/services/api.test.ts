@@ -16,13 +16,12 @@ import {
     createServices,
     getServiceTags,
     getServiceKeyCredentialsWithTags,
-    getOrCreateServiceInstanceKeys,
-    getToken
+    getOrCreateServiceInstanceKeys
 } from '../../../../src/cf/services/api';
 import { initI18n, t } from '../../../../src/i18n';
 import { isLoggedInCf } from '../../../../src/cf/core/auth';
 import { getProjectNameForXsSecurity } from '../../../../src/cf/project';
-import type { CfConfig, ServiceInfo, MtaYaml, Uaa } from '../../../../src/types';
+import type { CfConfig, ServiceInfo, MtaYaml } from '../../../../src/types';
 import { getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
 
 jest.mock('fs', () => ({
@@ -1093,51 +1092,6 @@ describe('CF Services API', () => {
                     `Failed to get credentials and tags for service '${serviceName}' (instance: '${serviceInstanceName}'): CF API error`
                 )
             );
-        });
-    });
-
-    describe('getToken', () => {
-        const mockUaa: Uaa = {
-            clientid: 'test-client-id',
-            clientsecret: 'test-client-secret',
-            url: '/test-uaa'
-        };
-
-        test('should successfully get OAuth token', async () => {
-            const mockResponse = {
-                data: {
-                    access_token: 'test-access-token'
-                }
-            };
-            mockAxios.post.mockResolvedValue(mockResponse);
-
-            const result = await getToken(mockUaa);
-
-            expect(result).toBe('test-access-token');
-            expect(mockAxios.post).toHaveBeenCalledWith('/test-uaa/oauth/token', 'grant_type=client_credentials', {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': 'Basic ' + Buffer.from('test-client-id:test-client-secret').toString('base64')
-                }
-            });
-        });
-
-        test('should throw error when token request fails', async () => {
-            const error = new Error('Network error');
-            mockAxios.post.mockRejectedValue(error);
-
-            await expect(getToken(mockUaa)).rejects.toThrow(t('error.failedToGetAuthKey', { error: 'Network error' }));
-        });
-
-        test('should handle missing access_token in response', async () => {
-            const mockResponse = {
-                data: {}
-            };
-            mockAxios.post.mockResolvedValue(mockResponse);
-
-            const result = await getToken(mockUaa);
-
-            expect(result).toBeUndefined();
         });
     });
 });
