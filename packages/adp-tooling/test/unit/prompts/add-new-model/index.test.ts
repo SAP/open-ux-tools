@@ -111,9 +111,7 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('testName')).toBe(
-            "Model and Datasource Name must start with 'customer.'."
-        );
+        expect(validation?.('testName')).toBe("Model and Datasource Name must start with 'customer.'.");
     });
 
     it('should return error message when validating service name prompt and name is only "customer."', async () => {
@@ -134,9 +132,7 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName@')).toBe(
-            'general.invalidValueForSpecialChars'
-        );
+        expect(validation?.('customer.testName@')).toBe('general.invalidValueForSpecialChars');
     });
 
     it('should return error message when validating service name prompt has content duplication', async () => {
@@ -192,7 +188,10 @@ describe('getPrompts', () => {
         expect(typeof additionalMessages).toBe('function');
         const result = await additionalMessages('/sap/odata/v4/', undefined);
         expect(result).toEqual({
-            message: i18n.t('prompts.resultingServiceUrl', { url: 'https://abap.example.com/sap/odata/v4/', interpolation: { escapeValue: false } }),
+            message: i18n.t('prompts.resultingServiceUrl', {
+                url: 'https://abap.example.com/sap/odata/v4/',
+                interpolation: { escapeValue: false }
+            }),
             severity: Severity.information
         });
     });
@@ -207,7 +206,10 @@ describe('getPrompts', () => {
         expect(typeof additionalMessages).toBe('function');
         const result = await additionalMessages('/sap/odata/v4/', undefined);
         expect(result).toEqual({
-            message: i18n.t('prompts.resultingServiceUrl', { url: 'https://bas.dest.example.com/sap/odata/v4/', interpolation: { escapeValue: false } }),
+            message: i18n.t('prompts.resultingServiceUrl', {
+                url: 'https://bas.dest.example.com/sap/odata/v4/',
+                interpolation: { escapeValue: false }
+            }),
             severity: Severity.information
         });
     });
@@ -219,10 +221,15 @@ describe('getPrompts', () => {
         const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
 
         expect(typeof additionalMessages).toBe('function');
-        const previousAnswers = { destination: { Host: 'https://cf.dest.example.com', Name: 'CF_DEST' } } as unknown as NewModelAnswers;
+        const previousAnswers = {
+            destination: { Host: 'https://cf.dest.example.com', Name: 'CF_DEST' }
+        } as unknown as NewModelAnswers;
         const result = await additionalMessages('/sap/odata/v4/', previousAnswers);
         expect(result).toEqual({
-            message: i18n.t('prompts.resultingServiceUrl', { url: 'https://cf.dest.example.com/sap/odata/v4/', interpolation: { escapeValue: false } }),
+            message: i18n.t('prompts.resultingServiceUrl', {
+                url: 'https://cf.dest.example.com/sap/odata/v4/',
+                interpolation: { escapeValue: false }
+            }),
             severity: Severity.information
         });
     });
@@ -298,6 +305,82 @@ describe('getPrompts', () => {
         expect(validation?.('/sap/opu /odata4Ann/')).toBe(i18n.t('validators.errorInvalidDataSourceURI'));
     });
 
+    it('should return information message with resulting annotation URL for ABAP VS Code project (url in ui5.yaml)', async () => {
+        getAdpConfigMock.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
+
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const additionalMessages = prompts.find((p) => p.name === 'dataSourceURI')?.additionalMessages as Function;
+
+        expect(typeof additionalMessages).toBe('function');
+        const result = await additionalMessages('/sap/opu/odata4Ann/', undefined);
+        expect(result).toEqual({
+            message: i18n.t('prompts.resultingAnnotationUrl', {
+                url: 'https://abap.example.com/sap/opu/odata4Ann/',
+                interpolation: { escapeValue: false }
+            }),
+            severity: Severity.information
+        });
+    });
+
+    it('should return information message with resulting annotation URL for ABAP BAS project (destination in ui5.yaml)', async () => {
+        getAdpConfigMock.mockResolvedValue({ target: { destination: 'MY_DEST' } });
+        listDestinationsMock.mockResolvedValue({ MY_DEST: { Host: 'https://bas.dest.example.com', Name: 'MY_DEST' } });
+
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const additionalMessages = prompts.find((p) => p.name === 'dataSourceURI')?.additionalMessages as Function;
+
+        expect(typeof additionalMessages).toBe('function');
+        const result = await additionalMessages('/sap/opu/odata4Ann/', undefined);
+        expect(result).toEqual({
+            message: i18n.t('prompts.resultingAnnotationUrl', {
+                url: 'https://bas.dest.example.com/sap/opu/odata4Ann/',
+                interpolation: { escapeValue: false }
+            }),
+            severity: Severity.information
+        });
+    });
+
+    it('should return information message with resulting annotation URL for CF project using selected destination', async () => {
+        isCFEnvironmentMock.mockResolvedValue(true);
+
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const additionalMessages = prompts.find((p) => p.name === 'dataSourceURI')?.additionalMessages as Function;
+
+        expect(typeof additionalMessages).toBe('function');
+        const previousAnswers = {
+            destination: { Host: 'https://cf.dest.example.com', Name: 'CF_DEST' }
+        } as unknown as NewModelAnswers;
+        const result = await additionalMessages('/sap/opu/odata4Ann/', previousAnswers);
+        expect(result).toEqual({
+            message: i18n.t('prompts.resultingAnnotationUrl', {
+                url: 'https://cf.dest.example.com/sap/opu/odata4Ann/',
+                interpolation: { escapeValue: false }
+            }),
+            severity: Severity.information
+        });
+    });
+
+    it('should return undefined from dataSourceURI additionalMessages when uri is invalid', async () => {
+        jest.spyOn(validators, 'isDataSourceURI').mockReturnValueOnce(false);
+        getAdpConfigMock.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
+
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const additionalMessages = prompts.find((p) => p.name === 'dataSourceURI')?.additionalMessages as Function;
+
+        expect(typeof additionalMessages).toBe('function');
+        const result = await additionalMessages('not-a-valid-uri', undefined);
+        expect(result).toBeUndefined();
+    });
+
+    it('should return undefined from dataSourceURI additionalMessages when no destination URL is available', async () => {
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const additionalMessages = prompts.find((p) => p.name === 'dataSourceURI')?.additionalMessages as Function;
+
+        expect(typeof additionalMessages).toBe('function');
+        const result = await additionalMessages('/sap/opu/odata4Ann/', undefined);
+        expect(result).toBeUndefined();
+    });
+
     it('should return true when validating annotation settings prompt', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -365,7 +448,9 @@ describe('getPrompts', () => {
     it('should return error when xs-app.json already has a route with the same target for CF project', async () => {
         isCFEnvironmentMock.mockResolvedValue(true);
         readFileSyncMock.mockReturnValueOnce(
-            JSON.stringify({ routes: [{ source: '^some/route/(.*)', target: '/sap/opu/odata/v4/$1', destination: 'DEST' }] }) as any
+            JSON.stringify({
+                routes: [{ source: '^some/route/(.*)', target: '/sap/opu/odata/v4/$1', destination: 'DEST' }]
+            }) as any
         );
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
@@ -378,7 +463,9 @@ describe('getPrompts', () => {
     it('should return true when xs-app.json has no matching route for CF project', async () => {
         isCFEnvironmentMock.mockResolvedValue(true);
         readFileSyncMock.mockReturnValueOnce(
-            JSON.stringify({ routes: [{ source: '^other/route/(.*)', target: '/other/route/$1', destination: 'DEST' }] }) as any
+            JSON.stringify({
+                routes: [{ source: '^other/route/(.*)', target: '/other/route/$1', destination: 'DEST' }]
+            }) as any
         );
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
@@ -395,10 +482,7 @@ describe('getPrompts', () => {
         expect(typeof validation).toBe('function');
         validation?.('/sap/opu/odata/v4/');
 
-        expect(readFileSyncMock).not.toHaveBeenCalledWith(
-            expect.stringContaining('xs-app.json'),
-            expect.anything()
-        );
+        expect(readFileSyncMock).not.toHaveBeenCalledWith(expect.stringContaining('xs-app.json'), expect.anything());
     });
 
     it('should log the error and set a generic UI error message when fetching destinations fails in CF', async () => {

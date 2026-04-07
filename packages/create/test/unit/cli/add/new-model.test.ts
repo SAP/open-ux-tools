@@ -103,20 +103,27 @@ describe('add/model', () => {
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
         expect(traceSpy).not.toHaveBeenCalled();
-        expect(generateChangeMock).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
-            variant: descriptorVariant,
-            serviceType: 'OData v2',
-            isCloudFoundry: false,
-            destinationName: undefined,
-            isOnPremiseDestination: undefined,
-            service: {
-                name: 'customer.OData_ServiceName',
-                uri: '/sap/opu/odata/some-name',
-                modelName: 'customer.OData_ServiceName',
-                version: '2.0',
-                modelSettings: '"key": "value"'
-            }
-        });
+        expect(generateChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
+            'appdescr_ui5_addNewModel',
+            {
+                variant: descriptorVariant,
+                serviceType: 'OData v2',
+                isCloudFoundry: false,
+                destinationName: undefined,
+                isOnPremiseDestination: undefined,
+                service: {
+                    name: 'customer.OData_ServiceName',
+                    uri: '/sap/opu/odata/some-name',
+                    modelName: 'customer.OData_ServiceName',
+                    version: '2.0',
+                    modelSettings: '"key": "value"'
+                }
+            },
+            null,
+            undefined,
+            expect.anything()
+        );
     });
 
     test('should generate change with correct data and annotation', async () => {
@@ -128,25 +135,32 @@ describe('add/model', () => {
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
         expect(traceSpy).not.toHaveBeenCalled();
-        expect(generateChangeMock).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
-            variant: descriptorVariant,
-            serviceType: 'OData v2',
-            isCloudFoundry: false,
-            destinationName: undefined,
-            isOnPremiseDestination: undefined,
-            service: {
-                name: 'customer.OData_ServiceName',
-                uri: '/sap/opu/odata/some-name',
-                modelName: 'customer.OData_ServiceName',
-                version: '2.0',
-                modelSettings: '"key": "value"'
+        expect(generateChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
+            'appdescr_ui5_addNewModel',
+            {
+                variant: descriptorVariant,
+                serviceType: 'OData v2',
+                isCloudFoundry: false,
+                destinationName: undefined,
+                isOnPremiseDestination: undefined,
+                service: {
+                    name: 'customer.OData_ServiceName',
+                    uri: '/sap/opu/odata/some-name',
+                    modelName: 'customer.OData_ServiceName',
+                    version: '2.0',
+                    modelSettings: '"key": "value"'
+                },
+                annotation: {
+                    dataSourceName: 'customer.OData_ServiceName.annotation',
+                    dataSourceURI: '/sap/opu/odata/annotation/',
+                    settings: '"key2":"value2"'
+                }
             },
-            annotation: {
-                dataSourceName: 'customer.OData_ServiceName.annotation',
-                dataSourceURI: '/sap/opu/odata/annotation/',
-                settings: '"key2":"value2"'
-            }
-        });
+            null,
+            undefined,
+            expect.anything()
+        );
     });
 
     test('should generate change with correct data for CF project', async () => {
@@ -160,20 +174,27 @@ describe('add/model', () => {
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
         expect(traceSpy).not.toHaveBeenCalled();
-        expect(generateChangeMock).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
-            variant: descriptorVariant,
-            serviceType: 'OData v2',
-            isCloudFoundry: true,
-            destinationName: 'CF_DEST',
-            isOnPremiseDestination: true,
-            service: {
-                name: 'customer.OData_ServiceName',
-                uri: '/sap/opu/odata/some-name',
-                modelName: 'customer.OData_ServiceName',
-                version: '2.0',
-                modelSettings: '"key": "value"'
-            }
-        });
+        expect(generateChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
+            'appdescr_ui5_addNewModel',
+            {
+                variant: descriptorVariant,
+                serviceType: 'OData v2',
+                isCloudFoundry: true,
+                destinationName: 'CF_DEST',
+                isOnPremiseDestination: true,
+                service: {
+                    name: 'customer.OData_ServiceName',
+                    uri: '/sap/opu/odata/some-name',
+                    modelName: 'customer.OData_ServiceName',
+                    version: '2.0',
+                    modelSettings: '"key": "value"'
+                }
+            },
+            null,
+            undefined,
+            expect.anything()
+        );
     });
 
     test('should generate change with no base path and simulate true', async () => {
@@ -183,20 +204,27 @@ describe('add/model', () => {
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
         expect(traceSpy).toHaveBeenCalled();
-        expect(generateChangeMock).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
-            variant: descriptorVariant,
-            serviceType: 'OData v2',
-            isCloudFoundry: false,
-            destinationName: undefined,
-            isOnPremiseDestination: undefined,
-            service: {
-                name: 'customer.OData_ServiceName',
-                uri: '/sap/opu/odata/some-name',
-                modelName: 'customer.OData_ServiceName',
-                version: '2.0',
-                modelSettings: '"key": "value"'
-            }
-        });
+        expect(generateChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
+            'appdescr_ui5_addNewModel',
+            {
+                variant: descriptorVariant,
+                serviceType: 'OData v2',
+                isCloudFoundry: false,
+                destinationName: undefined,
+                isOnPremiseDestination: undefined,
+                service: {
+                    name: 'customer.OData_ServiceName',
+                    uri: '/sap/opu/odata/some-name',
+                    modelName: 'customer.OData_ServiceName',
+                    version: '2.0',
+                    modelSettings: '"key": "value"'
+                }
+            },
+            null,
+            undefined,
+            expect.anything()
+        );
     });
 
     test('should throw error and log it', async () => {

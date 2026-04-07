@@ -289,6 +289,22 @@ export async function getPrompts(
         destinationError = result.error;
     }
 
+    const buildResultingUrlMessage = (
+        i18nKey: string,
+        uri: unknown,
+        previousAnswers?: NewModelAnswers
+    ): IMessageSeverity | undefined => {
+        const destinationUrl = isCFEnv ? previousAnswers?.destination?.Host : abapServiceUrl;
+        const resultingUrl = buildResultingServiceUrl(destinationUrl, uri as string | undefined);
+        if (!resultingUrl) {
+            return undefined;
+        }
+        return {
+            message: t(i18nKey, { url: resultingUrl, interpolation: { escapeValue: false } }),
+            severity: Severity.information
+        };
+    };
+
     return [
         {
             type: 'list',
@@ -336,23 +352,8 @@ export async function getPrompts(
                 return true;
             },
             store: false,
-            additionalMessages: (
-                serviceUri: unknown,
-                previousAnswers?: NewModelAnswers
-            ): IMessageSeverity | undefined => {
-                const destinationUrl = isCFEnv ? previousAnswers?.destination?.Host : abapServiceUrl;
-                const resultingUrl = buildResultingServiceUrl(destinationUrl, serviceUri as string | undefined);
-                if (!resultingUrl) {
-                    return undefined;
-                }
-                return {
-                    message: t('prompts.resultingServiceUrl', {
-                        url: resultingUrl,
-                        interpolation: { escapeValue: false }
-                    }),
-                    severity: Severity.information
-                };
-            }
+            additionalMessages: (uri: unknown, previousAnswers?: NewModelAnswers): IMessageSeverity | undefined =>
+                buildResultingUrlMessage('prompts.resultingServiceUrl', uri, previousAnswers)
         } as InputQuestion<NewModelAnswers>,
         {
             type: 'input',
@@ -399,7 +400,9 @@ export async function getPrompts(
                 mandatory: true,
                 hint: t('prompts.oDataAnnotationDataSourceUriTooltip')
             },
-            when: (answers: NewModelAnswers) => answers.addAnnotationMode
+            when: (answers: NewModelAnswers) => answers.addAnnotationMode,
+            additionalMessages: (uri: unknown, previousAnswers?: NewModelAnswers): IMessageSeverity | undefined =>
+                buildResultingUrlMessage('prompts.resultingAnnotationUrl', uri, previousAnswers)
         } as InputQuestion<NewModelAnswers>,
         {
             type: 'editor',

@@ -13,6 +13,7 @@ import {
     downloadUi5AppInfo
 } from '@sap-ux/adp-tooling';
 import type { NewModelAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
+import { isOnPremiseDestination } from '@sap-ux/btp-utils';
 
 import newModelGen from '../../../src/add-new-model';
 
@@ -25,6 +26,11 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     isLoggedInCf: jest.fn(),
     loadCfConfig: jest.fn(),
     downloadUi5AppInfo: jest.fn()
+}));
+
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
+    isOnPremiseDestination: jest.fn()
 }));
 
 jest.mock('../../../src/utils/deps', () => ({
@@ -41,6 +47,7 @@ const isLoggedInCfMock = isLoggedInCf as jest.MockedFunction<typeof isLoggedInCf
 const loadCfConfigMock = loadCfConfig as jest.MockedFunction<typeof loadCfConfig>;
 const downloadUi5AppInfoMock = downloadUi5AppInfo as jest.MockedFunction<typeof downloadUi5AppInfo>;
 const installDependenciesMock = installDependencies as jest.MockedFunction<typeof installDependencies>;
+const isOnPremiseDestinationMock = isOnPremiseDestination as jest.MockedFunction<typeof isOnPremiseDestination>;
 
 const variant = {
     reference: 'customer.adp.variant',
@@ -72,6 +79,7 @@ describe('AddNewModelGenerator', () => {
         runBuildMock.mockResolvedValue(undefined);
         downloadUi5AppInfoMock.mockResolvedValue(undefined);
         installDependenciesMock.mockResolvedValue(undefined);
+        isOnPremiseDestinationMock.mockReturnValue(false);
     });
 
     afterEach(() => {
@@ -106,6 +114,8 @@ describe('AddNewModelGenerator', () => {
                     modelSettings: answers.modelSettings
                 }
             }),
+            expect.anything(),
+            undefined,
             expect.anything()
         );
     });
@@ -125,6 +135,8 @@ describe('AddNewModelGenerator', () => {
             tmpDir,
             ChangeType.ADD_NEW_MODEL,
             expect.objectContaining({ isCloudFoundry: true }),
+            expect.anything(),
+            undefined,
             expect.anything()
         );
     });
