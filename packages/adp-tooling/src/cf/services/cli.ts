@@ -107,6 +107,26 @@ export async function createServiceKey(serviceInstanceName: string, serviceKeyNa
 }
 
 /**
+ * Updates a Cloud Foundry service instance with the given parameters.
+ *
+ * @param {string} serviceInstanceName - The service instance name.
+ * @param {object} parameters - The configuration parameters to update.
+ */
+export async function updateServiceInstance(serviceInstanceName: string, parameters: object): Promise<void> {
+    try {
+        const cliResult = await Cli.execute(
+            ['update-service', serviceInstanceName, '-c', JSON.stringify(parameters), '--wait'],
+            ENV
+        );
+        if (cliResult.exitCode !== 0) {
+            throw new Error(cliResult.stderr);
+        }
+    } catch (e) {
+        throw new Error(t('error.failedToUpdateServiceInstance', { serviceInstanceName, error: e.message }));
+    }
+}
+
+/**
  * Request CF API.
  *
  * @param {string} url - The URL.

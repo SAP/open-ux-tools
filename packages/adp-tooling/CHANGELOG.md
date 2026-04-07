@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.110
+
+### Patch Changes
+
+- 6b74074: feat: Change `backend-proxy-middleware-cf` to use `approuter` instead of token exchange
+
 ## 0.18.109
 
 ### Patch Changes

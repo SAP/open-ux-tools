@@ -1,5 +1,13 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.11
+
+### Patch Changes
+
+- 56239c2: fix(deploy-tooling): normalize package name to uppercase in task (ui5-deploy) flow (#4453)
+
+    Moves package name normalization from `mergeConfig` (CLI-only) into `validateConfig` (shared), ensuring lowercase ABAP package names are uppercased with a warning in both the CLI and ui5-deploy task flows.
+
 ## 0.18.10
 
 ### Patch Changes

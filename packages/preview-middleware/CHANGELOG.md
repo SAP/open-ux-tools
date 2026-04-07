@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.25.17
+
+### Patch Changes
+
+- 4237e59: fix(preview-middleware): preserve developerMode for CPE and ADP scenarios in sanitizeConfig
+
+## 0.25.16
+
+### Patch Changes
+
+- Updated dependencies [6b74074]
+    - @sap-ux/adp-tooling@0.18.110
+
 ## 0.25.15
 
 ### Patch Changes
