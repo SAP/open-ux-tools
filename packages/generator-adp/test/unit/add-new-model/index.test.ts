@@ -7,10 +7,8 @@ import {
     generateChange,
     getVariant,
     isCFEnvironment,
-    runBuild,
     isLoggedInCf,
-    loadCfConfig,
-    downloadUi5AppInfo
+    loadCfConfig
 } from '@sap-ux/adp-tooling';
 import type { NewModelAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
 import { isOnPremiseDestination } from '@sap-ux/btp-utils';
@@ -22,10 +20,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     generateChange: jest.fn(),
     getVariant: jest.fn(),
     isCFEnvironment: jest.fn(),
-    runBuild: jest.fn(),
     isLoggedInCf: jest.fn(),
-    loadCfConfig: jest.fn(),
-    downloadUi5AppInfo: jest.fn()
+    loadCfConfig: jest.fn()
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -33,20 +29,11 @@ jest.mock('@sap-ux/btp-utils', () => ({
     isOnPremiseDestination: jest.fn()
 }));
 
-jest.mock('../../../src/utils/deps', () => ({
-    installDependencies: jest.fn()
-}));
-
-import { installDependencies } from '../../../src/utils/deps';
-
 const generateChangeMock = generateChange as jest.MockedFunction<typeof generateChange>;
 const getVariantMock = getVariant as jest.MockedFunction<typeof getVariant>;
 const isCFEnvironmentMock = isCFEnvironment as jest.MockedFunction<typeof isCFEnvironment>;
-const runBuildMock = runBuild as jest.MockedFunction<typeof runBuild>;
 const isLoggedInCfMock = isLoggedInCf as jest.MockedFunction<typeof isLoggedInCf>;
 const loadCfConfigMock = loadCfConfig as jest.MockedFunction<typeof loadCfConfig>;
-const downloadUi5AppInfoMock = downloadUi5AppInfo as jest.MockedFunction<typeof downloadUi5AppInfo>;
-const installDependenciesMock = installDependencies as jest.MockedFunction<typeof installDependencies>;
 const isOnPremiseDestinationMock = isOnPremiseDestination as jest.MockedFunction<typeof isOnPremiseDestination>;
 
 const variant = {
@@ -76,9 +63,6 @@ describe('AddNewModelGenerator', () => {
         isCFEnvironmentMock.mockResolvedValue(false);
         isLoggedInCfMock.mockResolvedValue(true);
         loadCfConfigMock.mockReturnValue(mockCfConfig as any);
-        runBuildMock.mockResolvedValue(undefined);
-        downloadUi5AppInfoMock.mockResolvedValue(undefined);
-        installDependenciesMock.mockResolvedValue(undefined);
         isOnPremiseDestinationMock.mockReturnValue(false);
     });
 
@@ -163,37 +147,5 @@ describe('AddNewModelGenerator', () => {
 
         writingSpy.mockRestore();
         handleCrashSpy.mockRestore();
-    });
-
-    it('stores cfConfig once and calls downloadUi5AppInfo + runBuild with ADP_BUILDER_MODE=preview in end()', async () => {
-        getVariantMock.mockResolvedValue(variant);
-        isCFEnvironmentMock.mockResolvedValue(true);
-
-        const runContext = yeomanTest
-            .create(newModelGen, { resolved: generatorPath }, { cwd: tmpDir })
-            .withOptions({ data: { path: tmpDir } })
-            .withPrompts(answers);
-
-        await expect(runContext.run()).resolves.not.toThrow();
-
-        expect(loadCfConfigMock).toHaveBeenCalledTimes(1);
-        expect(installDependenciesMock).toHaveBeenCalledWith(tmpDir);
-        expect(downloadUi5AppInfoMock).toHaveBeenCalledWith(tmpDir, mockCfConfig, expect.anything());
-        expect(runBuildMock).toHaveBeenCalledWith(tmpDir, { ADP_BUILDER_MODE: 'preview' });
-    });
-
-    it('does not call downloadUi5AppInfo or runBuild for non-CF projects', async () => {
-        getVariantMock.mockResolvedValue(variant);
-        isCFEnvironmentMock.mockResolvedValue(false);
-
-        const runContext = yeomanTest
-            .create(newModelGen, { resolved: generatorPath }, { cwd: tmpDir })
-            .withOptions({ data: { path: tmpDir } })
-            .withPrompts(answers);
-
-        await expect(runContext.run()).resolves.not.toThrow();
-
-        expect(downloadUi5AppInfoMock).not.toHaveBeenCalled();
-        expect(runBuildMock).not.toHaveBeenCalled();
     });
 });

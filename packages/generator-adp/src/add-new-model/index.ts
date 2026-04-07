@@ -8,10 +8,8 @@ import {
     getODataVersionFromServiceType,
     ServiceType,
     isCFEnvironment,
-    runBuild,
     isLoggedInCf,
-    loadCfConfig,
-    downloadUi5AppInfo
+    loadCfConfig
 } from '@sap-ux/adp-tooling';
 import { isOnPremiseDestination } from '@sap-ux/btp-utils';
 import { setYeomanEnvConflicterForce } from '@sap-ux/fiori-generator-shared';
@@ -19,7 +17,6 @@ import { setYeomanEnvConflicterForce } from '@sap-ux/fiori-generator-shared';
 import { GeneratorTypes } from '../types';
 import { initI18n, t } from '../utils/i18n';
 import type { GeneratorOpts } from '../utils/opts';
-import { installDependencies } from '../utils/deps';
 import SubGeneratorBase from '../base/sub-gen-base';
 
 /**
@@ -109,11 +106,6 @@ class AddNewModelGenerator extends SubGeneratorBase {
 
     async end(): Promise<void> {
         this.logger.log('Successfully created change!');
-        if (await isCFEnvironment(this.projectPath)) {
-            await installDependencies(this.projectPath);
-            await downloadUi5AppInfo(this.projectPath, this.cfConfig!, this.logger);
-            await runBuild(this.projectPath, { ADP_BUILDER_MODE: 'preview' });
-        }
     }
 
     /**

@@ -40,6 +40,11 @@ jest.mock('../../../../../src/cf/project/yaml', () => ({
     addConnectivityServiceToMta: jest.fn()
 }));
 
+jest.mock('../../../../../src/cf/services/ssh', () => ({
+    ensureTunnelAppExists: jest.fn().mockResolvedValue(undefined),
+    DEFAULT_TUNNEL_APP_NAME: 'adp-ssh-tunnel-app'
+}));
+
 const writeAnnotationChangeMock = writeAnnotationChange as jest.Mock;
 const getChangeMock = getChange as jest.Mock;
 const writeChangeToFolderMock = writeChangeToFolder as jest.Mock;
