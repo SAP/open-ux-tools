@@ -2,7 +2,7 @@
  * @file 	Check "sap-no-ui5eventprovider-prop" should detect direct usage of private property names of sap.ui.base.EventProvider
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 
 // THIS RULE IS DEPRECATED --> sap-no-ui5base-prop
 // ------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ function contains(a: unknown[], obj: unknown) {
     return a.includes(obj);
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -37,7 +37,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         // Alphabetical list of the "private property names" from UI5 event provider which this check shall detect
         const PRIVATE_MEMBERS = ['mEventRegistry', 'oEventPool'];
 

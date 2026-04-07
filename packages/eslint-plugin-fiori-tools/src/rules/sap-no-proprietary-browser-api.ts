@@ -2,7 +2,7 @@
  * @file Detect some warning for usages of (window.)document APIs
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -68,7 +68,7 @@ function isWindow(node: any): boolean {
     return node && isIdentifier(node) && node.name === 'window';
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -81,7 +81,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const WINDOW_OBJECTS: any[] = [];
         const DOCUMENT_OBJECTS: any[] = [];
         const BODY_OBJECTS: any[] = [];

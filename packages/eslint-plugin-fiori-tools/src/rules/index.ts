@@ -80,9 +80,9 @@ import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment'
 import noDataFieldIntentBasedNavigation from './sap-no-data-field-intent-based-navigation';
 import condensedTableLayout from './sap-condensed-table-layout';
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition } from '@eslint/core';
 
-export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | FioriXMLRuleDefinition> = {
+export const rules: Record<string, RuleDefinition | FioriRuleDefinition | FioriXMLRuleDefinition> = {
     'sap-bookmark-performance': sapBookmarkPerformance,
     'sap-browser-api-error': sapBrowserApiError,
     'sap-browser-api-warning': sapBrowserApiWarning,

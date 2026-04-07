@@ -2,8 +2,10 @@
  * @file Detect some warning for usages of (window.)document APIs
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
+    type ASTNode,
+    type BaseNode,
     isType,
     isIdentifier,
     isMember,
@@ -25,7 +27,7 @@ import {
  * @param node The AST node to check
  * @returns True if the node represents a condition statement
  */
-function isCondition(node: any): boolean {
+function isCondition(node: ASTNode): boolean {
     return isType(node, 'IfStatement') || isType(node, 'ConditionalExpression');
 }
 
@@ -35,7 +37,7 @@ function isCondition(node: any): boolean {
  * @param node The AST node to check
  * @returns True if the node represents a unary expression
  */
-function isUnary(node: any): boolean {
+function isUnary(node: ASTNode): boolean {
     return isType(node, 'UnaryExpression');
 }
 
@@ -46,11 +48,11 @@ function isUnary(node: any): boolean {
  * @param maxDepth Maximum depth to search for conditions
  * @returns True if the node is within a conditional statement
  */
-function isInCondition(node: any, maxDepth: number): boolean {
+function isInCondition(node: BaseNode, maxDepth: number): boolean {
     // we check the depth here because the call might be nested in a block statement and in an expression statement (http://jointjs.com/demos/javascript-ast)
     // (true?history.back():''); || if(true) history.back(); || if(true){history.back();} || if(true){}else{history.back();}
     if (maxDepth > 0) {
-        const parent = node.parent;
+        const parent = node.parent as BaseNode;
         return isCondition(parent) || isInCondition(parent, maxDepth - 1);
     }
     return false;
@@ -62,8 +64,11 @@ function isInCondition(node: any, maxDepth: number): boolean {
  * @param node The AST node to check
  * @returns True if the node represents the value -1
  */
-function isMinusOne(node: any): boolean {
-    return isUnary(node) && node.operator === '-' && isLiteral(node.argument) && node.argument.value === 1;
+function isMinusOne(node: ASTNode): boolean {
+    const unaryNode = node as BaseNode & { operator?: string; argument?: ASTNode & { value?: unknown } };
+    return (
+        isUnary(node) && unaryNode.operator === '-' && isLiteral(unaryNode.argument) && unaryNode.argument?.value === 1
+    );
 }
 
 /**
@@ -72,15 +77,19 @@ function isMinusOne(node: any): boolean {
  * @param node The call expression node to validate
  * @returns True if the history manipulation call is valid
  */
-function isValid(node: any): boolean {
-    switch (node.callee.property.name) {
+function isValid(node: BaseNode): boolean {
+    const callNode = node as BaseNode & {
+        callee?: BaseNode & { property?: BaseNode & { name?: string } };
+        arguments?: ASTNode[];
+    };
+    switch (callNode.callee?.property?.name) {
         case 'forward':
             return false;
         case 'back':
             return isInCondition(node, 3);
         case 'go': {
-            const args = node.arguments;
-            return args.length === 1 && isMinusOne(args[0]) && isInCondition(node, 3);
+            const args = callNode.arguments;
+            return !!args && args.length === 1 && isMinusOne(args[0]) && isInCondition(node, 3);
         }
         default:
     }
@@ -90,7 +99,7 @@ function isValid(node: any): boolean {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -104,7 +113,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const WINDOW_OBJECTS: string[] = [];
         const HISTORY_OBJECTS: string[] = [];
 
@@ -125,13 +134,14 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node to check
          * @returns True if the call expression is interesting for history manipulation detection
          */
-        function isInteresting(node: any): boolean {
+        function isInteresting(node: ASTNode): boolean {
             // check if callee is ref to history.back / .go / .forward
+            const callNode = node as BaseNode & { callee?: ASTNode };
             if (
-                node &&
-                isMember(node.callee) &&
-                isHistoryObject(node.callee.object) &&
-                isIdentifier(node.callee.property)
+                callNode &&
+                isMember(callNode.callee) &&
+                isHistoryObject((callNode.callee as BaseNode & { object?: ASTNode }).object) &&
+                isIdentifier((callNode.callee as BaseNode & { property?: ASTNode }).property)
             ) {
                 return true;
             }

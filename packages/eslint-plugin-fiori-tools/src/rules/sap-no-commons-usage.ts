@@ -2,8 +2,17 @@
  * @file Detects the usage of sap.ui.commons objects.
  */
 
-import type { Rule } from 'eslint';
-import { type ASTNode, isMember, isLiteral, isArray, startsWith, getMemberAsString } from '../utils/helpers';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
+import {
+    type ASTNode,
+    isLiteral,
+    isArray,
+    startsWith,
+    getMemberAsString,
+    asCallExpression,
+    asMemberExpression,
+    asArrayExpression
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Helper Functions
@@ -16,10 +25,32 @@ import { type ASTNode, isMember, isLiteral, isArray, startsWith, getMemberAsStri
  * @returns True if the node represents an interesting function call
  */
 function isInteresting(node: ASTNode): boolean {
-    const callee = (node as any).callee;
-    if (isMember(callee)) {
-        if (getMemberAsString(callee) === 'sap.ui.define') {
+    const callExpr = asCallExpression(node);
+    if (!callExpr) {
+        return false;
+    }
+    const memberCallee = asMemberExpression(callExpr.callee);
+    if (memberCallee) {
+        if (getMemberAsString(memberCallee) === 'sap.ui.define') {
             return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Check if an import list contains commons usage.
+ *
+ * @param importList The array of imports to check
+ * @returns True if commons usage is found
+ */
+function hasCommonsImport(importList: any[]): boolean {
+    for (const key in importList) {
+        if (importList.hasOwnProperty(key)) {
+            const lib = importList[key];
+            if (isLiteral(lib) && startsWith(lib.value, 'sap/ui/commons')) {
+                return true;
+            }
         }
     }
     return false;
@@ -32,16 +63,15 @@ function isInteresting(node: ASTNode): boolean {
  * @returns True if the function call has valid imports, false if it contains commons usage
  */
 function isValid(node: ASTNode): boolean {
-    const nodeWithArgs = node as any;
-    if (nodeWithArgs.arguments && isArray(nodeWithArgs.arguments[0])) {
-        const importList = nodeWithArgs.arguments[0].elements;
-        for (const key in importList) {
-            if (importList.hasOwnProperty(key)) {
-                const lib = importList[key];
-                if (isLiteral(lib) && startsWith(lib.value, 'sap/ui/commons')) {
-                    return false;
-                }
-            }
+    const callExpr = asCallExpression(node);
+    if (!callExpr) {
+        return true;
+    }
+    if (callExpr.arguments && isArray(callExpr.arguments[0])) {
+        const arrayExpr = asArrayExpression(callExpr.arguments[0]);
+        if (arrayExpr) {
+            const importList = arrayExpr.elements as unknown[];
+            return !hasCommonsImport(importList);
         }
     }
     return true;
@@ -50,7 +80,7 @@ function isValid(node: ASTNode): boolean {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -63,13 +93,12 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         return {
             'NewExpression'(node: ASTNode): void {
-                if (
-                    isMember((node as any).callee) &&
-                    startsWith(getMemberAsString((node as any).callee), 'sap.ui.commons')
-                ) {
+                const nodeCallee = (node as { callee?: unknown }).callee;
+                const memberCallee = nodeCallee ? asMemberExpression(nodeCallee) : undefined;
+                if (memberCallee && startsWith(getMemberAsString(memberCallee), 'sap.ui.commons')) {
                     context.report({ node: node, messageId: 'commonsUsage' });
                 }
             },

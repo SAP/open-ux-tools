@@ -3,7 +3,7 @@
  *               property names of UI5 data model
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import { type ASTNode, createPropertyChecker } from '../utils/helpers';
 
 // THIS RULE IS DEPRECATED --> sap-no-ui5base-prop
@@ -11,7 +11,7 @@ import { type ASTNode, createPropertyChecker } from '../utils/helpers';
 // Rule Definition
 // ------------------------------------------------------------------------------
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -25,7 +25,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         // Alphabetical list of the "property names" from UI5 data model which this
         // check shall detect
         const PRIVATE_MEMBERS = [

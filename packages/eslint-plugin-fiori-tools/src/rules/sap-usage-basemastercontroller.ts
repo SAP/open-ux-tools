@@ -2,17 +2,30 @@
  * @file     Check "sap-usage-basemastercontroller" should detect the usage of "sap.ca.scfld.md.controller.BaseMasterController" & "sap/ca/scfld/md/controller/BaseMasterController"..
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 
 // ------------------------------------------------------------------------------
-// Invoking global form of strict mode syntax for whole script
-// ------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------
-// Rule Disablement
+// Type definitions
 // ------------------------------------------------------------------------------
 
+interface IdentifierNode {
+    type: 'Identifier';
+    name: string;
+}
+
+interface MemberExpressionNode {
+    type: 'MemberExpression';
+    object: unknown;
+    property: unknown;
+}
+
+interface LiteralNode {
+    type: 'Literal';
+    value: string | number | boolean | null | RegExp;
+}
+
 // ------------------------------------------------------------------------------
-// Rule Definition
+// Helper functions
 // ------------------------------------------------------------------------------
 
 /**
@@ -36,7 +49,38 @@ function contains(string: string, substring: string): boolean {
     return string.includes(substring);
 }
 
-const rule: Rule.RuleModule = {
+/**
+ * Build a full member expression path.
+ *
+ * @param node The member expression node
+ * @returns The full path as a string (e.g., "sap.ca.scfld.md.controller.BaseMasterController")
+ */
+function getMemberExpressionPath(node: unknown): string {
+    const memberNode = node as MemberExpressionNode;
+
+    if (memberNode.type !== 'MemberExpression') {
+        return '';
+    }
+
+    const property = memberNode.property as IdentifierNode;
+    const propertyName = property?.type === 'Identifier' ? property.name : '';
+
+    const objectNode = memberNode.object as MemberExpressionNode | IdentifierNode;
+    if (objectNode.type === 'MemberExpression') {
+        const objectPath = getMemberExpressionPath(objectNode);
+        return objectPath ? `${objectPath}.${propertyName}` : propertyName;
+    } else if (objectNode.type === 'Identifier') {
+        return `${objectNode.name}.${propertyName}`;
+    }
+
+    return propertyName;
+}
+
+// ------------------------------------------------------------------------------
+// Rule Definition
+// ------------------------------------------------------------------------------
+
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -50,25 +94,28 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
-        const sourceCode = context.sourceCode ?? context.getSourceCode();
-
+    create(context: RuleContext) {
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
         return {
-            'MemberExpression': function (node): void {
-                const property = node.property;
+            'MemberExpression': function (node: unknown): void {
+                const memberNode = node as MemberExpressionNode;
+                const property = memberNode.property as IdentifierNode;
 
-                if (property.type === 'Identifier' && property.name === 'BaseMasterController') {
-                    const value = sourceCode.getText(node);
-                    if (isString(value) && contains(value, 'sap.ca.scfld.md.controller.BaseMasterController')) {
+                if (property?.type === 'Identifier' && property.name === 'BaseMasterController') {
+                    const fullPath = getMemberExpressionPath(node);
+                    if (fullPath === 'sap.ca.scfld.md.controller.BaseMasterController') {
                         context.report({ node: node, messageId: 'basemastercontroller' });
                     }
                 }
             },
-            'Literal': function (node): void {
-                if (isString(node.value) && contains(node.value, 'sap/ca/scfld/md/controller/BaseMasterController')) {
+            'Literal': function (node: unknown): void {
+                const literalNode = node as LiteralNode;
+                if (
+                    isString(literalNode.value) &&
+                    contains(literalNode.value, 'sap/ca/scfld/md/controller/BaseMasterController')
+                ) {
                     context.report({ node: node, messageId: 'basemastercontroller' });
                 }
             }

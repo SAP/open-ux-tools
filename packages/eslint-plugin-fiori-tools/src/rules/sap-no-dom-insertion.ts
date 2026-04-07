@@ -2,48 +2,13 @@
  * @file Detect direct DOM insertion
  */
 
-import type { Rule } from 'eslint';
-import { type ASTNode } from '../utils/helpers';
-
-// ------------------------------------------------------------------------------
-// Helper Functions
-// ------------------------------------------------------------------------------
-
-/**
- * Check if a node is of a specific type.
- *
- * @param node The AST node to check
- * @param type The type to check for
- * @returns True if the node is of the specified type
- */
-function isType(node: ASTNode | undefined, type: string): boolean {
-    return node?.type === type;
-}
-
-/**
- * Check if a node is an Identifier.
- *
- * @param node The AST node to check
- * @returns True if the node is an Identifier
- */
-function isIdentifier(node: ASTNode | undefined): boolean {
-    return isType(node, 'Identifier');
-}
-
-/**
- * Check if a node is a MemberExpression.
- *
- * @param node The AST node to check
- * @returns True if the node is a MemberExpression
- */
-function isMember(node: ASTNode | undefined): boolean {
-    return isType(node, 'MemberExpression');
-}
+import type { RuleDefinition, RuleContext } from '@eslint/core';
+import { type ASTNode, asCallExpression, asMemberExpression, asIdentifier } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -56,7 +21,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const FORBIDDEN_DOM_INSERTION = ['insertBefore', 'appendChild', 'replaceChild'],
             FORBIDDEN_DOM_JQUERY_INSERTION = [
                 'after',
@@ -80,12 +45,15 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node to process
          */
         function processDomInsertion(node: ASTNode): void {
-            const callee = (node as any).callee;
-            if (isMember(callee)) {
-                if (isIdentifier(callee.property) && 'name' in callee.property) {
-                    if (FORBIDDEN_METHODS.has(callee.property.name)) {
-                        context.report({ node: node, messageId: 'domInsertion' });
-                    }
+            const callExpr = asCallExpression(node);
+            if (!callExpr) {
+                return;
+            }
+            const memberCallee = asMemberExpression(callExpr.callee);
+            if (memberCallee) {
+                const identProp = asIdentifier(memberCallee.property);
+                if (identProp && FORBIDDEN_METHODS.has(identProp.name)) {
+                    context.report({ node: node, messageId: 'domInsertion' });
                 }
             }
         }

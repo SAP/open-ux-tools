@@ -2,7 +2,7 @@
  * @file     Check "sap-no-localhost" should detect the usage of "localhost".
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import { isString, containsString } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ function containsNot(string: string, substring: string): boolean {
     return !containsString(string, substring);
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -40,7 +40,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
