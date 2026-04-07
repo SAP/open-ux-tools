@@ -1,66 +1,66 @@
 {
-    "name": "@sap-ux/jest-file-matchers",
-    "version": "0.2.11",
-    "type": "module",
-    "description": "Jest matchers for files and folders",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/jest-matchers"
-    },
-    "license": "Apache-2.0",
-    "private": false,
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "default": "./dist/index.js"
-        }
-    },
-    "scripts": {
-        "build": "tsc --build",
-        "watch": "tsc --watch",
-        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
-        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint",
-        "lint:fix": "eslint --fix",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-        "link": "pnpm link --global",
-        "unlink": "pnpm unlink --global"
-    },
-    "files": [
-        "dist",
-        "LICENSE",
-        "!dist/*.map",
-        "!dist/**/*.map"
-    ],
-    "dependencies": {
-        "chalk": "4.1.2",
-        "dir-compare": "5.0.0",
-        "filenamify": "4.3.0",
-        "jest-diff": "30.2.0",
-        "minimatch": "3.1.5"
-    },
-    "engines": {
-        "node": ">=20.x"
-    },
-    "eslint-formatter-multiple": {
-        "formatters": [
-            {
-                "name": "stylish",
-                "output": "console"
-            },
-            {
-                "name": "json",
-                "output": "file",
-                "path": "reports/lint/eslint.json"
-            },
-            {
-                "name": "checkstyle",
-                "output": "file",
-                "path": "reports/lint/eslint.checkstyle.xml"
-            }
-        ]
+  "name": "@sap-ux/jest-file-matchers",
+  "version": "0.2.11",
+  "description": "Jest matchers for files and folders",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP/open-ux-tools.git",
+    "directory": "packages/jest-matchers"
+  },
+  "license": "Apache-2.0",
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+    "link": "pnpm link --global",
+    "unlink": "pnpm unlink --global"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "!dist/*.map",
+    "!dist/**/*.map"
+  ],
+  "dependencies": {
+    "chalk": "4.1.2",
+    "dir-compare": "5.0.0",
+    "filenamify": "4.3.0",
+    "jest-diff": "30.2.0",
+    "minimatch": "3.1.5"
+  },
+  "engines": {
+    "node": ">=20.x"
+  },
+  "eslint-formatter-multiple": {
+    "formatters": [
+      {
+        "name": "stylish",
+        "output": "console"
+      },
+      {
+        "name": "json",
+        "output": "file",
+        "path": "reports/lint/eslint.json"
+      },
+      {
+        "name": "checkstyle",
+        "output": "file",
+        "path": "reports/lint/eslint.checkstyle.xml"
+      }
+    ]
+  }
 }

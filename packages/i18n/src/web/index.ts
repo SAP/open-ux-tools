@@ -1,4 +1,4 @@
-export {
+export type {
     CdsEnvironment,
     CdsI18nConfiguration,
     CdsI18nEnv,
@@ -7,7 +7,6 @@ export {
     I18nBundle,
     I18nEntry,
     NewI18nEntry,
-    SapLongTextType,
-    SapShortTextType,
     SapTextType
 } from '../types';
+export { SapLongTextType, SapShortTextType } from '../types';

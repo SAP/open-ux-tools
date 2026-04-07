@@ -1,57 +1,57 @@
 {
-    "name": "@sap-ux/logger",
-    "version": "0.8.4",
-    "type": "module",
-    "description": "A simple logging module",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/logger"
-    },
-    "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Alogger"
-    },
-    "license": "Apache-2.0",
-    "private": false,
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "default": "./dist/index.js"
-        }
-    },
-    "scripts": {
-        "build": "tsc --build",
-        "watch": "tsc --watch",
-        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
-        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint",
-        "lint:fix": "eslint --fix",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --colors --silent",
-        "link": "pnpm link --global",
-        "unlink": "pnpm unlink --global"
-    },
-    "dependencies": {
-        "chalk": "4.1.2",
-        "lodash": "4.17.23",
-        "winston": "3.19.0",
-        "winston-transport": "4.9.0"
-    },
-    "devDependencies": {
-        "@types/debug": "4.1.13",
-        "@types/lodash": "4.17.24",
-        "@types/vscode": "1.110.0",
-        "jest-extended": "7.0.0",
-        "logform": "2.7.0"
-    },
-    "files": [
-        "dist",
-        "LICENSE",
-        "!dist/*.map",
-        "!dist/**/*.map"
-    ],
-    "engines": {
-        "node": ">=20.x"
+  "name": "@sap-ux/logger",
+  "version": "0.8.4",
+  "description": "A simple logging module",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP/open-ux-tools.git",
+    "directory": "packages/logger"
+  },
+  "bugs": {
+    "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Alogger"
+  },
+  "license": "Apache-2.0",
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --colors --silent",
+    "link": "pnpm link --global",
+    "unlink": "pnpm unlink --global"
+  },
+  "dependencies": {
+    "chalk": "4.1.2",
+    "lodash": "4.17.23",
+    "winston": "3.19.0",
+    "winston-transport": "4.9.0"
+  },
+  "devDependencies": {
+    "@types/debug": "4.1.13",
+    "@types/lodash": "4.17.24",
+    "@types/vscode": "1.110.0",
+    "jest-extended": "7.0.0",
+    "logform": "2.7.0"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "!dist/*.map",
+    "!dist/**/*.map"
+  ],
+  "engines": {
+    "node": ">=20.x"
+  }
 }

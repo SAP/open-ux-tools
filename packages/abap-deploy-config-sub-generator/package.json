@@ -1,61 +1,61 @@
 {
-    "name": "@sap-ux/abap-deploy-config-sub-generator",
-    "description": "Sub generator for ABAP deployment configuration",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/abap-deploy-config-sub-generator"
-    },
-    "version": "0.3.14",
-    "type": "module",
-    "license": "Apache-2.0",
-    "main": "generators/app/index.js",
-    "scripts": {
-        "build": "tsc --build",
-        "watch": "tsc --watch",
-        "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
-        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint",
-        "lint:fix": "eslint --fix",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
-        "link": "pnpm link --global",
-        "unlink": "pnpm unlink --global"
-    },
-    "files": [
-        "LICENSE",
-        "generators",
-        "!generators/*.map",
-        "!generators/**/*.map"
-    ],
-    "engines": {
-        "node": ">=20.x"
-    },
-    "dependencies": {
-        "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
-        "@sap-ux/abap-deploy-config-writer": "workspace:*",
-        "@sap-ux/btp-utils": "workspace:*",
-        "@sap-ux/deploy-config-generator-shared": "workspace:*",
-        "@sap-ux/feature-toggle": "workspace:*",
-        "@sap-ux/fiori-generator-shared": "workspace:*",
-        "@sap-ux/logger": "workspace:*",
-        "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/ui5-config": "workspace:*",
-        "@sap-ux/adp-tooling": "workspace:*",
-        "@sap-ux/axios-extension": "workspace:*",
-        "i18next": "25.10.10",
-        "@sap-devx/yeoman-ui-types": "1.23.0"
-    },
-    "devDependencies": {
-        "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1",
-        "@types/yeoman-test": "4.0.6",
-        "@sap-ux/store": "workspace:*",
-        "@sap-ux/system-access": "workspace:*",
-        "@sap-ux/telemetry": "workspace:*",
-        "memfs": "3.4.13",
-        "mem-fs-editor": "9.4.0",
-        "unionfs": "4.6.0",
-        "yeoman-test": "6.3.0"
-    }
+  "name": "@sap-ux/abap-deploy-config-sub-generator",
+  "version": "0.3.14",
+  "description": "Sub generator for ABAP deployment configuration",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP/open-ux-tools.git",
+    "directory": "packages/abap-deploy-config-sub-generator"
+  },
+  "license": "Apache-2.0",
+  "main": "generators/app/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
+    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+    "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+    "link": "pnpm link --global",
+    "unlink": "pnpm unlink --global"
+  },
+  "files": [
+    "LICENSE",
+    "generators",
+    "!generators/*.map",
+    "!generators/**/*.map"
+  ],
+  "engines": {
+    "node": ">=20.x"
+  },
+  "dependencies": {
+    "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
+    "@sap-ux/abap-deploy-config-writer": "workspace:*",
+    "@sap-ux/btp-utils": "workspace:*",
+    "@sap-ux/deploy-config-generator-shared": "workspace:*",
+    "@sap-ux/feature-toggle": "workspace:*",
+    "@sap-ux/fiori-generator-shared": "workspace:*",
+    "@sap-ux/logger": "workspace:*",
+    "@sap-ux/project-access": "workspace:*",
+    "@sap-ux/ui5-config": "workspace:*",
+    "@sap-ux/adp-tooling": "workspace:*",
+    "@sap-ux/axios-extension": "workspace:*",
+    "i18next": "25.10.10",
+    "@sap-devx/yeoman-ui-types": "1.23.0"
+  },
+  "devDependencies": {
+    "@types/mem-fs": "1.1.2",
+    "@types/mem-fs-editor": "7.0.1",
+    "@types/yeoman-test": "4.0.6",
+    "@sap-ux/store": "workspace:*",
+    "@sap-ux/system-access": "workspace:*",
+    "@sap-ux/telemetry": "workspace:*",
+    "memfs": "3.4.13",
+    "mem-fs-editor": "9.4.0",
+    "unionfs": "4.6.0",
+    "yeoman-test": "6.3.0"
+  }
 }

@@ -1,42 +1,42 @@
 {
-    "name": "@sap-ux/fiori-tools-settings",
-    "description": "Utilities for managing and persisting Fiori tools configuration settings in the hidden .fioritools folder.",
-    "version": "0.2.3",
-    "type": "module",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/fiori-tools-settings"
-    },
-    "license": "Apache-2.0",
-    "main": "dist/index.js",
-    "scripts": {
-        "build": "tsc --build",
-        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
-        "watch": "tsc --watch",
-        "lint": "eslint",
-        "lint:fix": "eslint --fix",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --silent",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
-        "link": "pnpm link --global",
-        "unlink": "pnpm unlink --global"
-    },
-    "files": [
-        "LICENSE",
-        "dist",
-        "templates",
-        "!dist/*.map",
-        "!dist/**/*.map"
-    ],
-    "dependencies": {
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0"
-    },
-    "devDependencies": {
-        "@types/mem-fs-editor": "7.0.1",
-        "@types/mem-fs": "1.1.2"
-    },
-    "engines": {
-        "node": ">=20.x"
-    }
+  "name": "@sap-ux/fiori-tools-settings",
+  "version": "0.2.3",
+  "description": "Utilities for managing and persisting Fiori tools configuration settings in the hidden .fioritools folder.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP/open-ux-tools.git",
+    "directory": "packages/fiori-tools-settings"
+  },
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+    "watch": "tsc --watch",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --silent",
+    "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+    "link": "pnpm link --global",
+    "unlink": "pnpm unlink --global"
+  },
+  "files": [
+    "LICENSE",
+    "dist",
+    "templates",
+    "!dist/*.map",
+    "!dist/**/*.map"
+  ],
+  "dependencies": {
+    "mem-fs": "2.1.0",
+    "mem-fs-editor": "9.4.0"
+  },
+  "devDependencies": {
+    "@types/mem-fs-editor": "7.0.1",
+    "@types/mem-fs": "1.1.2"
+  },
+  "engines": {
+    "node": ">=20.x"
+  }
 }

@@ -1,44 +1,44 @@
 {
-    "name": "@sap-ux/cds-annotation-parser",
-    "version": "0.2.35",
-    "type": "module",
-    "description": "Annotation Parser for CDS",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/cds-annotation-parser"
-    },
-    "publisher": "SAPSE",
-    "author": "SAP SE",
-    "license": "Apache-2.0",
-    "main": "dist/index.js",
-    "scripts": {
-        "build": "npm-run-all clean compile",
-        "compile": "tsc --build ",
-        "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo",
-        "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
-        "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
-        "lint": "eslint",
-        "lint:fix": "eslint --fix",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=2",
-        "test:update": "node scripts/updateTestData.js",
-        "test:create": "node scripts/createTestData.js",
-        "watch": "tsc  --build ./ -watch"
-    },
-    "dependencies": {
-        "@sap-ux/odata-annotation-core": "workspace:*",
-        "@sap-ux/odata-vocabularies": "workspace:*",
-        "@sap-ux/odata-entity-model": "workspace:*",
-        "chevrotain": "7.1.1",
-        "@sap-ux/text-document-utils": "workspace:*"
-    },
-    "devDependencies": {
-        "npm-run-all2": "8.0.4"
-    },
-    "engines": {
-        "node": ">=20.x"
-    },
-    "files": [
-        "dist/"
-    ]
+  "name": "@sap-ux/cds-annotation-parser",
+  "version": "0.2.35",
+  "description": "Annotation Parser for CDS",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP/open-ux-tools.git",
+    "directory": "packages/cds-annotation-parser"
+  },
+  "publisher": "SAPSE",
+  "author": "SAP SE",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npm-run-all clean compile",
+    "compile": "tsc --build ",
+    "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo",
+    "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
+    "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=2",
+    "test:update": "node scripts/updateTestData.js",
+    "test:create": "node scripts/createTestData.js",
+    "watch": "tsc  --build ./ -watch"
+  },
+  "dependencies": {
+    "@sap-ux/odata-annotation-core": "workspace:*",
+    "@sap-ux/odata-vocabularies": "workspace:*",
+    "@sap-ux/odata-entity-model": "workspace:*",
+    "chevrotain": "7.1.1",
+    "@sap-ux/text-document-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "npm-run-all2": "8.0.4"
+  },
+  "engines": {
+    "node": ">=20.x"
+  },
+  "files": [
+    "dist/"
+  ]
 }

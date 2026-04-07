@@ -1,64 +1,64 @@
 {
-    "name": "@sap-ux/fiori-freestyle-writer",
-    "description": "SAP Fiori freestyle application writer",
-    "version": "2.5.88",
-    "type": "module",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/fiori-freestyle-writer"
-    },
-    "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Afiori-freestyle-writer"
-    },
-    "license": "Apache-2.0",
-    "main": "dist/index.js",
-    "scripts": {
-        "build": "tsc --build",
-        "watch": "tsc --watch",
-        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
-        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint",
-        "lint:fix": "eslint --fix",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
-        "link": "pnpm link --global",
-        "unlink": "pnpm unlink --global"
-    },
-    "files": [
-        "LICENSE",
-        "dist",
-        "templates",
-        "!dist/*.map",
-        "!dist/**/*.map"
-    ],
-    "dependencies": {
-        "@sap-ux/odata-service-writer": "workspace:*",
-        "@sap-ux/ui5-application-writer": "workspace:*",
-        "@sap-ux/ui5-config": "workspace:*",
-        "@sap-ux/fiori-generator-shared": "workspace:*",
-        "@sap-ux/cap-config-writer": "workspace:*",
-        "@sap-ux/ui5-test-writer": "workspace:*",
-        "@sap-ux/logger": "workspace:*",
-        "ejs": "3.1.10",
-        "i18next": "25.10.10",
-        "lodash": "4.17.23",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
-        "read-pkg-up": "7.0.1",
-        "semver": "7.7.4"
-    },
-    "devDependencies": {
-        "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
-        "@types/ejs": "3.1.5",
-        "@types/fs-extra": "11.0.4",
-        "@types/lodash": "4.17.24",
-        "@types/mem-fs-editor": "7.0.1",
-        "@types/mem-fs": "1.1.2",
-        "@types/semver": "7.7.1",
-        "fs-extra": "11.3.4"
-    },
-    "engines": {
-        "node": ">=20.x"
-    }
+  "name": "@sap-ux/fiori-freestyle-writer",
+  "version": "2.5.88",
+  "description": "SAP Fiori freestyle application writer",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP/open-ux-tools.git",
+    "directory": "packages/fiori-freestyle-writer"
+  },
+  "bugs": {
+    "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Afiori-freestyle-writer"
+  },
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+    "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+    "link": "pnpm link --global",
+    "unlink": "pnpm unlink --global"
+  },
+  "files": [
+    "LICENSE",
+    "dist",
+    "templates",
+    "!dist/*.map",
+    "!dist/**/*.map"
+  ],
+  "dependencies": {
+    "@sap-ux/odata-service-writer": "workspace:*",
+    "@sap-ux/ui5-application-writer": "workspace:*",
+    "@sap-ux/ui5-config": "workspace:*",
+    "@sap-ux/fiori-generator-shared": "workspace:*",
+    "@sap-ux/cap-config-writer": "workspace:*",
+    "@sap-ux/ui5-test-writer": "workspace:*",
+    "@sap-ux/logger": "workspace:*",
+    "ejs": "3.1.10",
+    "i18next": "25.10.10",
+    "lodash": "4.17.23",
+    "mem-fs": "2.1.0",
+    "mem-fs-editor": "9.4.0",
+    "read-pkg-up": "7.0.1",
+    "semver": "7.7.4"
+  },
+  "devDependencies": {
+    "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
+    "@types/ejs": "3.1.5",
+    "@types/fs-extra": "11.0.4",
+    "@types/lodash": "4.17.24",
+    "@types/mem-fs-editor": "7.0.1",
+    "@types/mem-fs": "1.1.2",
+    "@types/semver": "7.7.1",
+    "fs-extra": "11.3.4"
+  },
+  "engines": {
+    "node": ">=20.x"
+  }
 }

@@ -44,7 +44,7 @@ export * from './entities/api-hub';
 // @todo: change notification needs to be more generic and not tied to filesystems
 // Support any filesystem watchers
 export { getFilesystemWatcherFor } from './data-access';
-export { ServiceOptions };
+export type { ServiceOptions };
 export { Entity };
 export { getBackendSystemType } from './utils';
 export { getFioriToolsDirectory, getSapToolsDirectory, FioriToolsSettings, SapTools } from './utils';

@@ -1,36 +1,36 @@
 {
-    "name": "@sap-ux/guided-answers-helper",
-    "description": "Guided Answers Helper",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/guided-answers-helper"
-    },
-    "version": "0.4.2",
-    "type": "module",
-    "license": "Apache-2.0",
-    "main": "dist/index.js",
-    "scripts": {
-        "build": "tsc --build",
-        "watch": "tsc --watch",
-        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
-        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint",
-        "lint:fix": "eslint --fix",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
-        "link": "pnpm link --global",
-        "unlink": "pnpm unlink --global"
-    },
-    "files": [
-        "LICENSE",
-        "dist",
-        "!dist/*.map",
-        "!dist/**/*.map"
-    ],
-    "engines": {
-        "node": ">=20.x"
-    },
-    "dependencies": {},
-    "devDependencies": {}
+  "name": "@sap-ux/guided-answers-helper",
+  "version": "0.4.2",
+  "description": "Guided Answers Helper",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP/open-ux-tools.git",
+    "directory": "packages/guided-answers-helper"
+  },
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+    "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+    "link": "pnpm link --global",
+    "unlink": "pnpm unlink --global"
+  },
+  "files": [
+    "LICENSE",
+    "dist",
+    "!dist/*.map",
+    "!dist/**/*.map"
+  ],
+  "engines": {
+    "node": ">=20.x"
+  },
+  "dependencies": {},
+  "devDependencies": {}
 }
