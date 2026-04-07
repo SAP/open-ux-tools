@@ -16,6 +16,7 @@ export interface FileChange {
 
 const ROOT = join(__dirname, '..');
 
+// XML V4
 export const V4_PROJECT_PATH = join(ROOT, 'test', 'data', 'v4-xml-start');
 export const V4_MANIFEST_PATH = join(ROOT, 'test', 'data', 'v4-xml-start', 'webapp', 'manifest.json');
 export const V4_MANIFEST = Object.freeze(JSON.parse(readFileSync(V4_MANIFEST_PATH, 'utf-8'))) as Manifest;
@@ -59,6 +60,39 @@ export const V4_FACETS_ANNOTATIONS = `
             `;
 export const V4_METADATA = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
 
+// CAP
+export const CAP_PROJECT_PATH = join(ROOT, 'test', 'data', 'cap-start');
+export const CAP_MANIFEST_PATH = join(ROOT, 'test', 'data', 'cap-start', 'app', 'incidents', 'webapp', 'manifest.json');
+export const CAP_MANIFEST = Object.freeze(JSON.parse(readFileSync(CAP_MANIFEST_PATH, 'utf-8'))) as Manifest;
+export const CAP_ANNOTATIONS_PATH = join(ROOT, 'test', 'data', 'cap-start', 'app', 'incidents', 'annotations.cds');
+export const CAP_METADATA_PATH = join(ROOT, 'test', 'data', 'cap-start', 'srv', 'incidentservice.cds');
+export const CAP_ANNOTATIONS = readFileSync(CAP_ANNOTATIONS_PATH, 'utf-8');
+export const CAP_FACETS_ANNOTATIONS = `
+annotate service.Incidents with @(
+    UI.Facets         : [{
+        $Type : 'UI.ReferenceFacet',
+        Target: 'incidentFlow/@UI.LineItem#table_section',
+        Label : 'table_section',
+        ID    : 'table_section',
+    }, ],
+);
+
+annotate service.IncidentFlow with @(UI.LineItem #table_section: [
+    {
+        $Type : 'UI.DataField',
+        Value : id,
+        Label : 'id',
+    },
+    {
+        $Type : 'UI.DataField',
+        Value : criticality,
+        Label : 'criticality',
+    }
+]);
+`;
+export const CAP_METADATA = readFileSync(CAP_ANNOTATIONS_PATH, 'utf-8');
+
+// XML V2
 export const V2_PROJECT_PATH = join(ROOT, 'test', 'data', 'v2-xml-start');
 export const V2_MANIFEST_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'manifest.json');
 export const V2_MANIFEST = Object.freeze(JSON.parse(readFileSync(V2_MANIFEST_PATH, 'utf-8'))) as Manifest;
