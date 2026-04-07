@@ -908,9 +908,7 @@ export interface Uaa {
     url: string;
 }
 
-export type CfDestinationServiceCredentials =
-    | { uri: string; uaa: Uaa }
-    | ({ uri: string } & Uaa);
+export type CfDestinationServiceCredentials = { uri: string; uaa: Uaa } | ({ uri: string } & Uaa);
 
 export interface BtpDestinationConfig {
     Name: string;

@@ -25,16 +25,34 @@ const mockMtaYaml = {
     '_schema-version': '3.3.0',
     version: '0.0.1',
     resources: [
-        { name: 'test-project-destination', type: 'org.cloudfoundry.managed-service', parameters: { service: 'destination', 'service-plan': 'lite' } },
-        { name: 'test-project-uaa', type: 'org.cloudfoundry.managed-service', parameters: { service: 'xsuaa', 'service-plan': 'application' } }
+        {
+            name: 'test-project-destination',
+            type: 'org.cloudfoundry.managed-service',
+            parameters: { service: 'destination', 'service-plan': 'lite' }
+        },
+        {
+            name: 'test-project-uaa',
+            type: 'org.cloudfoundry.managed-service',
+            parameters: { service: 'xsuaa', 'service-plan': 'application' }
+        }
     ]
 };
 
 const mockDestinations = {
-    MY_DEST: { Name: 'MY_DEST', Host: 'https://dest.example.com', Type: 'HTTP', Authentication: 'NoAuthentication', ProxyType: 'Internet', Description: 'My destination' }
+    MY_DEST: {
+        Name: 'MY_DEST',
+        Host: 'https://dest.example.com',
+        Type: 'HTTP',
+        Authentication: 'NoAuthentication',
+        ProxyType: 'Internet',
+        Description: 'My destination'
+    }
 };
 
-const mockCredentials = { uri: 'https://destination.cfapps.example.com', uaa: { clientid: 'client-id', clientsecret: 'client-secret', url: 'https://auth.example.com' } };
+const mockCredentials = {
+    uri: 'https://destination.cfapps.example.com',
+    uaa: { clientid: 'client-id', clientsecret: 'client-secret', url: 'https://auth.example.com' }
+};
 
 const mockServiceInfo = {
     serviceKeys: [{ credentials: mockCredentials }],
@@ -66,7 +84,13 @@ describe('getDestinations', () => {
     it('should throw an error when no destination service is found in mta.yaml', async () => {
         getYamlContentMock.mockReturnValue({
             ...mockMtaYaml,
-            resources: [{ name: 'test-project-uaa', type: 'org.cloudfoundry.managed-service', parameters: { service: 'xsuaa', 'service-plan': 'application' } }]
+            resources: [
+                {
+                    name: 'test-project-uaa',
+                    type: 'org.cloudfoundry.managed-service',
+                    parameters: { service: 'xsuaa', 'service-plan': 'application' }
+                }
+            ]
         });
 
         await expect(getDestinations(mockProjectPath)).rejects.toThrow(t('error.destinationServiceNotFoundInMtaYaml'));
@@ -86,7 +110,10 @@ describe('getDestinations', () => {
 
     it('should throw an error when no service keys are available', async () => {
         getYamlContentMock.mockReturnValue(mockMtaYaml);
-        getOrCreateServiceInstanceKeysMock.mockResolvedValue({ serviceKeys: [], serviceInstance: { name: 'test-project-destination', guid: 'some-guid' } });
+        getOrCreateServiceInstanceKeysMock.mockResolvedValue({
+            serviceKeys: [],
+            serviceInstance: { name: 'test-project-destination', guid: 'some-guid' }
+        });
 
         await expect(getDestinations(mockProjectPath)).rejects.toThrow(
             t('error.noServiceKeysFoundForDestination', { serviceInstanceName: 'test-project-destination' })
