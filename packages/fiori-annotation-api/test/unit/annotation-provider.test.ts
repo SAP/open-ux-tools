@@ -53,14 +53,17 @@ describe('annotation provider', () => {
             expect(annotationFiles).toMatchSnapshot();
         });
     });
+
     describe('cds', () => {
-        test('v4', async () => {
-            const project = PROJECTS.V4_CDS_START;
+        const project = PROJECTS.V4_CDS_START;
+        let fileCache: Map<string, string>;
+
+        beforeAll(async () => {
             const metadataPath = fileURLToPath(project.files.metadata);
             const metadata = await readFile(metadataPath, 'utf-8');
             const annotationFilePath = fileURLToPath(project.files.annotations);
             const annotations = await readFile(annotationFilePath, 'utf-8');
-            const fileCache = new Map([
+            fileCache = new Map([
                 [project.files.metadata, metadata],
                 [project.files.annotations, annotations]
             ]);
@@ -73,11 +76,19 @@ describe('annotation provider', () => {
             jest.spyOn(projectAccess, 'processServices').mockReturnValue([
                 { urlPath: '/here/goes/your/serviceurl/', name: 'IncidentService' }
             ]);
+        });
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('no cdsCache', async () => {
             const artifacts = CdsAnnotationProvider.getCdsServiceArtifacts(
-                '4.0',
+                project.root,
                 '/here/goes/your/serviceurl/',
                 fileCache
             );
+            expect(cdsCompilerFacade.createCdsCompilerFacadeForRootSync).toHaveBeenCalled();
             expect(artifacts).toBeDefined();
             if (!artifacts) {
                 return;
@@ -97,6 +108,22 @@ describe('annotation provider', () => {
                 normalizeAnnotationNode(file);
             }
             expect(annotationFiles).toMatchSnapshot();
+        });
+
+        test('with cdsCache', async () => {
+            const artifactsFromCdsCache = CdsAnnotationProvider.getCdsServiceArtifacts(
+                project.root,
+                '/here/goes/your/serviceurl/',
+                fileCache
+            );
+            expect(cdsCompilerFacade.createCdsCompilerFacadeForRootSync).not.toHaveBeenCalled();
+            expect(artifactsFromCdsCache).toBeDefined();
+            if (!artifactsFromCdsCache) {
+                return;
+            }
+            expect(artifactsFromCdsCache.path).toStrictEqual('here/goes/your/serviceurl/');
+            expect(normalizeUriInKey(artifactsFromCdsCache.aliasInfo, project.root)).toMatchSnapshot();
+            expect(artifactsFromCdsCache.fileSequence.map((uri) => adaptedUrl(uri, project.root))).toMatchSnapshot();
         });
     });
 });
