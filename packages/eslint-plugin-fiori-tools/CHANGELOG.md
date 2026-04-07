@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.11.4
+
+### Patch Changes
+
+- f65d718: fix: revert eslint peerDependency to ^9 instead of exact version
+
 ## 9.11.3
 
 ### Patch Changes
