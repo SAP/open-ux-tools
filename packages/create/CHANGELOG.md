@@ -1,5 +1,60 @@
 # @sap-ux/create
 
+## 0.15.68
+
+### Patch Changes
+
+- 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
+- Updated dependencies [1b10e9f]
+    - @sap-ux/adp-tooling@0.18.111
+    - @sap-ux/flp-config-inquirer@0.4.170
+    - @sap-ux/preview-middleware@0.25.18
+    - @sap-ux/app-config-writer@0.6.132
+
+## 0.15.67
+
+### Patch Changes
+
+- Updated dependencies [4237e59]
+    - @sap-ux/preview-middleware@0.25.17
+    - @sap-ux/app-config-writer@0.6.132
+
+## 0.15.66
+
+### Patch Changes
+
+- Updated dependencies [6b74074]
+    - @sap-ux/adp-tooling@0.18.110
+    - @sap-ux/flp-config-inquirer@0.4.169
+    - @sap-ux/preview-middleware@0.25.16
+    - @sap-ux/app-config-writer@0.6.132
+
+## 0.15.65
+
+### Patch Changes
+
+- Updated dependencies [0153757]
+    - @sap-ux/preview-middleware@0.25.15
+    - @sap-ux/app-config-writer@0.6.132
+
+## 0.15.64
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/abap-deploy-config-writer@0.3.7
+    - @sap-ux/adp-tooling@0.18.109
+    - @sap-ux/app-config-writer@0.6.132
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/cap-config-writer@0.12.87
+    - @sap-ux/flp-config-inquirer@0.4.168
+    - @sap-ux/mockserver-config-writer@0.9.69
+    - @sap-ux/odata-service-writer@0.31.5
+    - @sap-ux/preview-middleware@0.25.14
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/abap-deploy-config-inquirer@1.8.8
+
 ## 0.15.63
 
 ### Patch Changes

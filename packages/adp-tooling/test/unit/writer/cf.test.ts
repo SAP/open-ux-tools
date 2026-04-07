@@ -7,39 +7,35 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import { generateCf, generateCfConfig } from '../../../src/writer/cf';
-import { AppRouterType, FlexLayer, type CfAdpWriterConfig, type CfConfig } from '../../../src/types';
+import { generateCf, writeUi5AppInfo, setupCfPreview } from '../../../src/writer/cf';
+import { AppRouterType, FlexLayer, type CfAdpWriterConfig, type CfUi5AppInfo, type CfConfig } from '../../../src/types';
 import {
     getOrCreateServiceInstanceKeys,
-    addServeStaticMiddleware,
-    addBackendProxyMiddleware,
+    getCfUi5AppInfo,
     getProjectNameForXsSecurity
 } from '../../../src/cf';
 import { runBuild } from '../../../src/base/project-builder';
 import { readUi5Yaml } from '@sap-ux/project-access';
-import { downloadUi5AppInfo } from '../../../src/cf/project/ui5-app-info';
+import { getBaseAppId } from '../../../src/base/helper';
+import { getAppHostIds } from '../../../src/cf/app/discovery';
 
 jest.mock('../../../src/cf');
 jest.mock('../../../src/base/project-builder');
 jest.mock('@sap-ux/project-access');
-jest.mock('../../../src/cf/project/ui5-app-info', () => ({
-    ...jest.requireActual('../../../src/cf/project/ui5-app-info'),
-    downloadUi5AppInfo: jest.fn()
-}));
+jest.mock('../../../src/base/helper');
+jest.mock('../../../src/cf/app/discovery');
 
 const mockGetOrCreateServiceInstanceKeys = getOrCreateServiceInstanceKeys as jest.MockedFunction<
     typeof getOrCreateServiceInstanceKeys
 >;
-const mockAddServeStaticMiddleware = addServeStaticMiddleware as jest.MockedFunction<typeof addServeStaticMiddleware>;
-const mockAddBackendProxyMiddleware = addBackendProxyMiddleware as jest.MockedFunction<
-    typeof addBackendProxyMiddleware
->;
+const mockGetCfUi5AppInfo = getCfUi5AppInfo as jest.MockedFunction<typeof getCfUi5AppInfo>;
+const mockGetBaseAppId = getBaseAppId as jest.MockedFunction<typeof getBaseAppId>;
+const mockGetAppHostIds = getAppHostIds as jest.MockedFunction<typeof getAppHostIds>;
 const mockRunBuild = runBuild as jest.MockedFunction<typeof runBuild>;
 const mockReadUi5Yaml = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
 const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
     typeof getProjectNameForXsSecurity
 >;
-const mockDownloadUi5AppInfo = downloadUi5AppInfo as jest.MockedFunction<typeof downloadUi5AppInfo>;
 
 const mockServiceKeys = [
     {
@@ -198,7 +194,46 @@ describe('CF Writer', () => {
         });
     });
 
-    describe('generateCfConfig', () => {
+    describe('writeUi5AppInfo', () => {
+        const mockLogger = {
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as ToolsLogger;
+
+        const mockUi5AppInfo: CfUi5AppInfo = {
+            asyncHints: {
+                libs: [{ name: 'sap.m' }, { name: 'sap.ui.core' }]
+            }
+        };
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should write ui5AppInfo.json to project root', async () => {
+            const projectDir = join(outputDir, 'ui5-app-info');
+            mkdirSync(projectDir, { recursive: true });
+
+            await writeUi5AppInfo(projectDir, mockUi5AppInfo, mockLogger);
+
+            const filePath = join(projectDir, 'ui5AppInfo.json');
+            const { existsSync, readFileSync } = await import('node:fs');
+            expect(existsSync(filePath)).toBe(true);
+
+            const content = JSON.parse(readFileSync(filePath, 'utf-8'));
+            expect(content).toEqual(mockUi5AppInfo);
+            expect(mockLogger.info).toHaveBeenCalledWith(`Written ui5AppInfo.json to ${projectDir}`);
+        });
+
+        test('should throw error when write fails', async () => {
+            const invalidPath = '/invalid/path/that/does/not/exist';
+
+            await expect(writeUi5AppInfo(invalidPath, mockUi5AppInfo, mockLogger)).rejects.toThrow();
+            expect(mockLogger.error).toHaveBeenCalled();
+        });
+    });
+
+    describe('setupCfPreview', () => {
         const mockLogger = {
             info: jest.fn(),
             error: jest.fn()
@@ -209,6 +244,12 @@ describe('CF Writer', () => {
             org: { GUID: 'org-guid', Name: 'test-org' },
             space: { GUID: 'space-guid', Name: 'test-space' },
             token: 'test-token'
+        };
+
+        const mockUi5AppInfo: CfUi5AppInfo = {
+            asyncHints: {
+                libs: [{ name: 'sap.m' }, { name: 'sap.ui.core' }]
+            }
         };
 
         const mockUi5Config = {
@@ -222,9 +263,9 @@ describe('CF Writer', () => {
                 serviceKeys: mockServiceKeys,
                 serviceInstance: { guid: 'service-guid', name: 'service-name' }
             });
-            mockDownloadUi5AppInfo.mockResolvedValue(undefined);
-            mockAddServeStaticMiddleware.mockResolvedValue(undefined);
-            mockAddBackendProxyMiddleware.mockReturnValue(undefined);
+            mockGetAppHostIds.mockReturnValue(['host-123']);
+            mockGetBaseAppId.mockResolvedValue('test-app-id');
+            mockGetCfUi5AppInfo.mockResolvedValue(mockUi5AppInfo);
             mockRunBuild.mockResolvedValue(undefined);
         });
 
@@ -240,22 +281,16 @@ describe('CF Writer', () => {
                 configuration: { serviceInstanceName: 'test-service', space: 'space-guid' }
             });
 
-            const fs = await generateCfConfig(projectDir, 'ui5.yaml', mockCfConfig, mockLogger);
+            await setupCfPreview(projectDir, 'ui5.yaml', mockCfConfig, mockLogger);
 
             expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
                 { names: ['test-service'], spaceGuids: ['space-guid'] },
                 mockLogger
             );
-            expect(mockDownloadUi5AppInfo).toHaveBeenCalledWith(projectDir, mockCfConfig, mockLogger);
-            expect(mockAddServeStaticMiddleware).toHaveBeenCalledWith(projectDir, mockUi5Config, mockLogger);
+            expect(mockGetAppHostIds).toHaveBeenCalledWith(mockServiceKeys);
+            expect(mockGetBaseAppId).toHaveBeenCalledWith(projectDir);
+            expect(mockGetCfUi5AppInfo).toHaveBeenCalledWith('test-app-id', ['host-123'], mockCfConfig, mockLogger);
             expect(mockRunBuild).toHaveBeenCalledWith(projectDir, { ADP_BUILDER_MODE: 'preview' });
-            expect(mockAddBackendProxyMiddleware).toHaveBeenCalledWith(
-                projectDir,
-                mockUi5Config,
-                mockServiceKeys,
-                mockLogger
-            );
-            expect(fs).toBeDefined();
         });
 
         test('should throw error when serviceInstanceName not found', async () => {
@@ -264,7 +299,7 @@ describe('CF Writer', () => {
 
             mockUi5Config.findCustomTask.mockReturnValue(undefined);
 
-            await expect(generateCfConfig(projectDir, 'ui5.yaml', mockCfConfig, mockLogger)).rejects.toThrow(
+            await expect(setupCfPreview(projectDir, 'ui5.yaml', mockCfConfig, mockLogger)).rejects.toThrow(
                 'No serviceInstanceName found in app-variant-bundler-build configuration'
             );
         });
@@ -279,8 +314,23 @@ describe('CF Writer', () => {
 
             mockGetOrCreateServiceInstanceKeys.mockResolvedValue(null);
 
-            await expect(generateCfConfig(projectDir, 'ui5.yaml', mockCfConfig, mockLogger)).rejects.toThrow(
+            await expect(setupCfPreview(projectDir, 'ui5.yaml', mockCfConfig, mockLogger)).rejects.toThrow(
                 'No service keys found for service instance: test-service'
+            );
+        });
+
+        test('should throw error when no app host IDs found', async () => {
+            const projectDir = join(outputDir, 'cf-config-no-hosts');
+            mkdirSync(projectDir, { recursive: true });
+
+            mockUi5Config.findCustomTask.mockReturnValue({
+                configuration: { serviceInstanceName: 'test-service' }
+            });
+
+            mockGetAppHostIds.mockReturnValue([]);
+
+            await expect(setupCfPreview(projectDir, 'ui5.yaml', mockCfConfig, mockLogger)).rejects.toThrow(
+                'No app host IDs found in service keys.'
             );
         });
     });

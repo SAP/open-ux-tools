@@ -22,7 +22,8 @@ import type {
     ServiceInfo,
     CfUi5AppInfo,
     CfDestinationServiceCredentials,
-    BtpDestinationConfig
+    BtpDestinationConfig,
+    ServiceKeyCredentialsWithTags
 } from '../../types';
 import type { Destinations } from '@sap-ux/btp-utils';
 import { t } from '../../i18n';
@@ -474,5 +475,67 @@ export async function listBtpDestinations(credentials: CfDestinationServiceCrede
         }, {});
     } catch (e) {
         throw new Error(t('error.failedToListBtpDestinations', { error: e.message }));
+    }
+}
+
+/**
+ * Gets service tags for a given service name.
+ *
+ * @param {string} spaceGuid - The space GUID.
+ * @param {string} serviceName - The service name (e.g., 'xsuaa', 'hana').
+ * @returns {Promise<string[]>} The service tags.
+ */
+export async function getServiceTags(spaceGuid: string, serviceName: string): Promise<string[]> {
+    const json: CfAPIResponse<CfServiceOffering> = await requestCfApi<CfAPIResponse<CfServiceOffering>>(
+        `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}&names=${serviceName}`
+    );
+    const serviceOffering = json?.resources?.find((resource: CfServiceOffering) => resource.name === serviceName);
+    return serviceOffering?.tags ?? [];
+}
+
+/**
+ * Fetches service tags and credentials for a single app-router resource (xsuaa/destination).
+ *
+ * @param {string} spaceGuid - The space GUID.
+ * @param {string} serviceName - The service name (e.g. 'xsuaa', 'destination').
+ * @param {string} serviceInstanceName - The service instance name.
+ * @param {string} plan - The service plan.
+ * @param {ToolsLogger} logger - Optional logger.
+ * @returns {Promise<ServiceKeyCredentialsWithTags | null>} Service key credentials with tags returned by the CF API.
+ */
+export async function getServiceKeyCredentialsWithTags(
+    spaceGuid: string,
+    serviceName: string,
+    serviceInstanceName: string,
+    plan: string,
+    logger?: ToolsLogger
+): Promise<ServiceKeyCredentialsWithTags | null> {
+    try {
+        const tags = await getServiceTags(spaceGuid, serviceName);
+
+        const serviceInstances = await getServiceInstance({
+            names: [serviceInstanceName],
+            spaceGuids: [spaceGuid]
+        });
+
+        if (serviceInstances.length === 0) {
+            logger?.error(`Service instance '${serviceInstanceName}' not found, skipping`);
+            return null;
+        }
+
+        const credentials = await getOrCreateServiceKeys(serviceInstances[0], logger);
+
+        return {
+            label: serviceName,
+            name: serviceInstanceName,
+            tags,
+            plan,
+            credentials: credentials?.[0].credentials
+        };
+    } catch (e) {
+        logger?.error(
+            `Failed to get credentials and tags for service '${serviceName}' (instance: '${serviceInstanceName}'): ${e.message}`
+        );
+        return null;
     }
 }

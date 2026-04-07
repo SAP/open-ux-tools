@@ -1,5 +1,31 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.11.5
+
+### Patch Changes
+
+- 0f7f5f3: Fix: Check minUI5 version for the sap-width-including-column-header rule
+
+## 9.11.4
+
+### Patch Changes
+
+- f65d718: fix: revert eslint peerDependency to ^9 instead of exact version
+
+## 9.11.3
+
+### Patch Changes
+
+- 0153757: add es2020 globals
+
+## 9.11.2
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/fiori-annotation-api@0.9.40
+
 ## 9.11.1
 
 ### Patch Changes
