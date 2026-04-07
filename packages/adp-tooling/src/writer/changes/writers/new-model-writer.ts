@@ -1,9 +1,9 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 
 import type { Editor } from 'mem-fs-editor';
 import { ToolsLogger } from '@sap-ux/logger';
 
-import { ChangeType } from '../../../types';
+import { ChangeType, ServiceType } from '../../../types';
 import type { IWriter, NewModelData, DataSourceItem } from '../../../types';
 import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
 import { addConnectivityServiceToMta } from '../../../cf/project/yaml';
@@ -16,7 +16,7 @@ const CF_MODEL_SETTINGS = {
 } as const;
 
 type NewModelContent = {
-    model: {
+    model?: {
         [key: string]: {
             settings?: object;
             dataSource: string;
@@ -50,13 +50,14 @@ export class NewModelWriter implements IWriter<NewModelData> {
      * @returns {object} The constructed content object for the new model change.
      */
     private constructContent(data: NewModelData): object {
-        const { service, isCloudFoundry } = data;
+        const { service, isCloudFoundry, serviceType } = data;
+        const isHttp = serviceType === ServiceType.HTTP;
 
         const uri = isCloudFoundry ? `/${service.name.replace(/\./g, '/')}${service.uri}` : service.uri;
 
         const dataSourceEntry: DataSourceItem = {
             uri,
-            type: 'OData',
+            type: isHttp ? 'http' : 'OData',
             settings: {}
         };
 
@@ -67,12 +68,11 @@ export class NewModelWriter implements IWriter<NewModelData> {
         const content: NewModelContent = {
             dataSource: {
                 [service.name]: dataSourceEntry
-            },
-            model: {}
+            }
         };
 
-        if (service.modelName) {
-            content.model[service.modelName] = { dataSource: service.name };
+        if (!isHttp && service.modelName) {
+            content.model = { [service.modelName]: { dataSource: service.name } };
 
             if (isCloudFoundry) {
                 content.model[service.modelName].preload = true;
@@ -117,8 +117,8 @@ export class NewModelWriter implements IWriter<NewModelData> {
             this.writeXsAppRoute(data);
         }
 
-        if (data.isCloudFoundry && data.isOnPremiseDestination) {
-            await addConnectivityServiceToMta(this.projectPath, this.fs);
+        if (data.isOnPremiseDestination) {
+            await addConnectivityServiceToMta(dirname(this.projectPath), this.fs);
             await ensureTunnelAppExists(DEFAULT_TUNNEL_APP_NAME, this.logger ?? new ToolsLogger());
         }
     }

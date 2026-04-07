@@ -105,6 +105,7 @@ describe('add/model', () => {
         expect(traceSpy).not.toHaveBeenCalled();
         expect(generateChangeMock).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
             variant: descriptorVariant,
+            serviceType: 'OData v2',
             isCloudFoundry: false,
             destinationName: undefined,
             isOnPremiseDestination: undefined,
@@ -129,6 +130,7 @@ describe('add/model', () => {
         expect(traceSpy).not.toHaveBeenCalled();
         expect(generateChangeMock).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
             variant: descriptorVariant,
+            serviceType: 'OData v2',
             isCloudFoundry: false,
             destinationName: undefined,
             isOnPremiseDestination: undefined,
@@ -160,6 +162,7 @@ describe('add/model', () => {
         expect(traceSpy).not.toHaveBeenCalled();
         expect(generateChangeMock).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
             variant: descriptorVariant,
+            serviceType: 'OData v2',
             isCloudFoundry: true,
             destinationName: 'CF_DEST',
             isOnPremiseDestination: true,
@@ -182,6 +185,7 @@ describe('add/model', () => {
         expect(traceSpy).toHaveBeenCalled();
         expect(generateChangeMock).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
             variant: descriptorVariant,
+            serviceType: 'OData v2',
             isCloudFoundry: false,
             destinationName: undefined,
             isOnPremiseDestination: undefined,

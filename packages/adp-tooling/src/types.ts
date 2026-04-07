@@ -656,6 +656,8 @@ export type AddComponentUsageAnswers = AddComponentUsageAnswersBase &
 
 export interface NewModelDataBase {
     variant: DescriptorVariant;
+    /** The type of service being added. Determines dataSource type and whether a model entry is created. */
+    serviceType: ServiceType;
     /** Whether the project is deployed on Cloud Foundry. Affects URI construction and model settings. */
     isCloudFoundry?: boolean;
     /** Name of the BTP destination. Required when isCloudFoundry is true to write the xs-app.json route. */

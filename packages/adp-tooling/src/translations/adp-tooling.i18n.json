@@ -126,7 +126,8 @@
         "metadataFetchingNotSupportedForCF": "Metadata fetching is not supported for Cloud Foundry projects.",
         "failedToListBtpDestinations": "Failed to list BTP destinations. Error: {{error}}",
         "destinationServiceNotFoundInMtaYaml": "Destination service instance not found in mta.yaml. Ensure a resource with 'service: destination' is declared.",
-        "noServiceKeysFoundForDestination": "No service keys found for destination service instance '{{serviceInstanceName}}'. Ensure the service is provisioned and try again."
+        "noServiceKeysFoundForDestination": "No service keys found for destination service instance '{{serviceInstanceName}}'. Ensure the service is provisioned and try again.",
+        "errorFetchingDestinations": "Error fetching destinations. Check log for details."
     },
     "choices": {
         "true": "true",

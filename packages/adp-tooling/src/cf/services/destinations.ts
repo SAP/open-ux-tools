@@ -1,6 +1,5 @@
 import * as path from 'node:path';
 
-import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { Destinations } from '@sap-ux/btp-utils';
 
 import { getOrCreateServiceInstanceKeys, listBtpDestinations } from './api';
@@ -30,23 +29,14 @@ function getDestinationServiceName(projectPath: string): string {
 }
 
 /**
- * Returns the list of available BTP destinations for the current environment.
- *
- * - In SAP Business Application Studio: uses the BAS destination API (`listDestinations`).
- * - In VS Code: reads the destination service credentials from the CF project's service keys
- *   and calls the BTP Destination Configuration API directly.
- *
- * Returns an empty map when the destination service instance cannot be located or its
- * credentials are not yet available (e.g. the service has not been provisioned yet).
+ * Returns the list of available BTP destinations from the logged-in CF subaccount.
+ * Reads the destination service credentials from the CF project's service keys
+ * and calls the BTP Destination Configuration API directly.
  *
  * @param {string} projectPath - The root path of the CF app project.
  * @returns {Promise<Destinations>} Map of destination name to Destination object.
  */
 export async function getDestinations(projectPath: string): Promise<Destinations> {
-    if (isAppStudio()) {
-        return listDestinations();
-    }
-
     const destinationServiceName = getDestinationServiceName(projectPath);
 
     const serviceInfo = await getOrCreateServiceInstanceKeys({ names: [destinationServiceName] });

@@ -1183,6 +1183,10 @@ describe('YAML Project Functions', () => {
                 mtaYamlPath,
                 expect.stringContaining('lite')
             );
+            expect(mockMemFs.write).toHaveBeenCalledWith(
+                mtaYamlPath,
+                expect.stringContaining('service-name: myproject-connectivity')
+            );
             expect(mockCreateServiceInstance).toHaveBeenCalledWith('lite', 'myproject-connectivity', 'connectivity', expect.any(Object));
             expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith({ names: ['myproject-connectivity'] }, undefined);
         });

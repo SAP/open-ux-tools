@@ -14,6 +14,7 @@ import type {
     ComponentUsagesDataWithLibrary,
     DataSourceData,
     NewModelData,
+    NewModelDataWithAnnotations,
     InboundData,
     DescriptorVariant
 } from '../../../../../src';
@@ -24,7 +25,7 @@ import {
     InboundWriter,
     NewModelWriter
 } from '../../../../../src/writer/changes/writers';
-import { ChangeType } from '../../../../../src';
+import { ChangeType, ServiceType } from '../../../../../src';
 
 jest.mock('../../../../../src/base/change-utils', () => ({
     ...jest.requireActual('../../../../../src/base/change-utils'),
@@ -236,8 +237,9 @@ describe('NewModelWriter', () => {
     });
 
     it('should correctly construct content and write new model change', async () => {
-        const mockData: NewModelData = {
+        const mockData: NewModelDataWithAnnotations = {
             variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
             service: {
                 name: 'ODataService',
                 uri: '/sap/opu/odata/custom',
@@ -293,6 +295,7 @@ describe('NewModelWriter', () => {
     it('should omit the model block when modelName is undefined (HTTP service type)', async () => {
         const mockData: NewModelData = {
             variant: {} as DescriptorVariant,
+            serviceType: ServiceType.HTTP,
             service: {
                 name: 'HttpService',
                 uri: '/api/http/service/',
@@ -310,11 +313,10 @@ describe('NewModelWriter', () => {
                 'dataSource': {
                     'HttpService': {
                         'uri': mockData.service.uri,
-                        'type': 'OData',
+                        'type': 'http',
                         'settings': {}
                     }
-                },
-                'model': {}
+                }
             },
             ChangeType.ADD_NEW_MODEL
         );
@@ -323,6 +325,7 @@ describe('NewModelWriter', () => {
     it('should construct CF-specific content with derived URI, preload and fixed model settings', async () => {
         const mockData: NewModelData = {
             variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
             isCloudFoundry: true,
             destinationName: 'MY_CF_DEST',
             service: {
@@ -367,6 +370,7 @@ describe('NewModelWriter', () => {
     it('should create xs-app.json with a new route for a CF project when xs-app.json does not exist', async () => {
         const mockData: NewModelData = {
             variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
             isCloudFoundry: true,
             destinationName: 'MY_CF_DEST',
             service: {
@@ -404,6 +408,7 @@ describe('NewModelWriter', () => {
 
         const mockData: NewModelData = {
             variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
             isCloudFoundry: true,
             destinationName: 'MY_CF_DEST',
             service: {
@@ -434,6 +439,7 @@ describe('NewModelWriter', () => {
     it('should not write xs-app.json for a non-CF project', async () => {
         const mockData: NewModelData = {
             variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
             service: {
                 name: 'ODataService',
                 uri: '/sap/opu/odata/custom/',
@@ -451,6 +457,7 @@ describe('NewModelWriter', () => {
     it('should call addConnectivityServiceToMta when isCloudFoundry and isOnPremiseDestination', async () => {
         const mockData: NewModelData = {
             variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
             isCloudFoundry: true,
             isOnPremiseDestination: true,
             destinationName: 'MY_CF_DEST',
@@ -465,16 +472,16 @@ describe('NewModelWriter', () => {
         await writer.write(mockData);
 
         expect(addConnectivityServiceToMtaMock).toHaveBeenCalledWith(
-            mockProjectPath,
+            '/mock/project',
             expect.any(Object)
         );
     });
 
-    it('should not call addConnectivityServiceToMta when isCloudFoundry is false', async () => {
+    it('should not call addConnectivityServiceToMta when not in CF (isOnPremiseDestination absent)', async () => {
         const mockData: NewModelData = {
             variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
             isCloudFoundry: false,
-            isOnPremiseDestination: true,
             service: {
                 name: 'ODataService',
                 uri: '/sap/opu/odata/v2/',
@@ -491,6 +498,7 @@ describe('NewModelWriter', () => {
     it('should not call addConnectivityServiceToMta when isOnPremiseDestination is false', async () => {
         const mockData: NewModelData = {
             variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
             isCloudFoundry: true,
             isOnPremiseDestination: false,
             destinationName: 'MY_CF_DEST',

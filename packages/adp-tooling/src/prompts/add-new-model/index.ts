@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'path';
+import { join } from 'node:path';
 
 import type {
     ListQuestion,
@@ -12,6 +12,7 @@ import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { Destination } from '@sap-ux/btp-utils';
 import { listDestinations } from '@sap-ux/btp-utils';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n';
 import { getChangesByType } from '../../base/change-utils';
@@ -180,7 +181,10 @@ function validatePromptURI(value: string): boolean | string {
  * @param {string | undefined} serviceUri - The relative service URI from the prompt.
  * @returns {string | undefined} The concatenated URL, or undefined if it cannot be formed.
  */
-function buildResultingServiceUrl(destinationUrl: string | undefined, serviceUri: string | undefined): string | undefined {
+function buildResultingServiceUrl(
+    destinationUrl: string | undefined,
+    serviceUri: string | undefined
+): string | undefined {
     if (!destinationUrl || !serviceUri || validatePromptURI(serviceUri) !== true) {
         return undefined;
     }
@@ -233,13 +237,43 @@ async function getAbapServiceUrl(projectPath: string): Promise<string | undefine
 }
 
 /**
+ * Fetches destination choices for CF environments.
+ * Returns the choices and a generic UI error message if the fetch fails, logging the original error.
+ *
+ * @param {string} projectPath - The root path of the project.
+ * @param {ToolsLogger} [logger] - Optional logger for error details.
+ * @returns {Promise<{ choices: { name: string; value: Destination }[]; error?: string }>} The destination choices and an optional error message.
+ */
+async function getDestinationChoices(
+    projectPath: string,
+    logger?: ToolsLogger
+): Promise<{ choices: { name: string; value: Destination }[]; error?: string }> {
+    try {
+        const destinations = await getDestinations(projectPath);
+        const choices = Object.entries(destinations).map(([name, dest]) => ({
+            name,
+            value: dest as Destination
+        }));
+        return { choices };
+    } catch (e) {
+        logger?.error((e as Error).message);
+        return { choices: [], error: t('error.errorFetchingDestinations') };
+    }
+}
+
+/**
  * Gets the prompts for adding the new model.
  *
  * @param {string} projectPath - The root path of the project.
  * @param {UI5FlexLayer} layer - UI5 Flex layer.
+ * @param {ToolsLogger} [logger] - Optional logger.
  * @returns {YUIQuestion<NewModelAnswers>[]} The questions/prompts.
  */
-export async function getPrompts(projectPath: string, layer: UI5FlexLayer): Promise<YUIQuestion<NewModelAnswers>[]> {
+export async function getPrompts(
+    projectPath: string,
+    layer: UI5FlexLayer,
+    logger?: ToolsLogger
+): Promise<YUIQuestion<NewModelAnswers>[]> {
     const isCustomerBase = FlexLayer.CUSTOMER_BASE === layer;
     const defaultSeviceName = isCustomerBase ? NamespacePrefix.CUSTOMER : NamespacePrefix.EMPTY;
     const isCFEnv = await isCFEnvironment(projectPath);
@@ -247,6 +281,13 @@ export async function getPrompts(projectPath: string, layer: UI5FlexLayer): Prom
 
     const changeFiles = getChangesByType(projectPath, ChangeType.ADD_NEW_MODEL, 'manifest');
     let destinationError: string | undefined;
+    let destinationChoices: { name: string; value: Destination }[] | undefined;
+
+    if (isCFEnv) {
+        const result = await getDestinationChoices(projectPath, logger);
+        destinationChoices = result.choices;
+        destinationError = result.error;
+    }
 
     return [
         {
@@ -265,16 +306,7 @@ export async function getPrompts(projectPath: string, layer: UI5FlexLayer): Prom
             type: 'list',
             name: 'destination',
             message: t('prompts.destinationLabel'),
-            choices: async (): Promise<{ name: string; value: Destination }[]> => {
-                try {
-                    const destinations = await getDestinations(projectPath);
-                    destinationError = undefined;
-                    return Object.entries(destinations).map(([name, dest]) => ({ name, value: dest as Destination }));
-                } catch (e) {
-                    destinationError = (e as Error).message;
-                    return [];
-                }
-            },
+            choices: (): { name: string; value: Destination }[] => destinationChoices ?? [],
             when: () => isCFEnv,
             guiOptions: {
                 mandatory: true,
@@ -304,14 +336,20 @@ export async function getPrompts(projectPath: string, layer: UI5FlexLayer): Prom
                 return true;
             },
             store: false,
-            additionalMessages: (serviceUri: unknown, previousAnswers?: NewModelAnswers): IMessageSeverity | undefined => {
+            additionalMessages: (
+                serviceUri: unknown,
+                previousAnswers?: NewModelAnswers
+            ): IMessageSeverity | undefined => {
                 const destinationUrl = isCFEnv ? previousAnswers?.destination?.Host : abapServiceUrl;
                 const resultingUrl = buildResultingServiceUrl(destinationUrl, serviceUri as string | undefined);
                 if (!resultingUrl) {
                     return undefined;
                 }
                 return {
-                    message: t('prompts.resultingServiceUrl', { url: resultingUrl, interpolation: { escapeValue: false } }),
+                    message: t('prompts.resultingServiceUrl', {
+                        url: resultingUrl,
+                        interpolation: { escapeValue: false }
+                    }),
                     severity: Severity.information
                 };
             }

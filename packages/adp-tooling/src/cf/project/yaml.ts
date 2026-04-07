@@ -88,7 +88,8 @@ export async function addConnectivityServiceToMta(
         type: CF_MANAGED_SERVICE,
         parameters: {
             service: 'connectivity',
-            'service-plan': 'lite'
+            'service-plan': 'lite',
+            'service-name': connectivityResourceName
         }
     });
 

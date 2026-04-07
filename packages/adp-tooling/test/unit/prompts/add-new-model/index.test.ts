@@ -9,6 +9,7 @@ import { listDestinations } from '@sap-ux/btp-utils';
 import { getDestinations } from '../../../../src/cf/services/destinations';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { readFileSync } from 'node:fs';
+import type { ToolsLogger } from '@sap-ux/logger';
 
 const getChangesByTypeMock = getChangesByType as jest.Mock;
 const isCFEnvironmentMock = isCFEnvironment as jest.Mock;
@@ -398,5 +399,19 @@ describe('getPrompts', () => {
             expect.stringContaining('xs-app.json'),
             expect.anything()
         );
+    });
+
+    it('should log the error and set a generic UI error message when fetching destinations fails in CF', async () => {
+        isCFEnvironmentMock.mockResolvedValue(true);
+        getDestinationsMock.mockRejectedValue(new Error('Network error'));
+
+        const logger = { error: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE', logger);
+
+        const destinationPrompt = prompts.find((p) => p.name === 'destination');
+        const validate = destinationPrompt?.validate as Function;
+
+        expect(logger.error).toHaveBeenCalledWith('Network error');
+        expect(validate?.(undefined)).toBe(i18n.t('error.errorFetchingDestinations'));
     });
 });

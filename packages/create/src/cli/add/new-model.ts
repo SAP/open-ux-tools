@@ -51,7 +51,7 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
 
         const variant = await getVariant(basePath);
 
-        const answers = await promptYUIQuestions(await getPromptsForNewModel(basePath, variant.layer), false);
+        const answers = await promptYUIQuestions(await getPromptsForNewModel(basePath, variant.layer, logger), false);
 
         const fs = await generateChange<ChangeType.ADD_NEW_MODEL>(
             basePath,
@@ -90,6 +90,7 @@ async function createNewModelData(
     const isCloudFoundry = await isCFEnvironment(basePath);
     return {
         variant,
+        serviceType,
         isCloudFoundry,
         destinationName: isCloudFoundry ? answers.destination?.Name : undefined,
         isOnPremiseDestination:

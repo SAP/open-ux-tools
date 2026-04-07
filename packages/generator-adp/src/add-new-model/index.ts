@@ -14,6 +14,7 @@ import {
     downloadUi5AppInfo
 } from '@sap-ux/adp-tooling';
 import { isOnPremiseDestination } from '@sap-ux/btp-utils';
+import { setYeomanEnvConflicterForce } from '@sap-ux/fiori-generator-shared';
 
 import { GeneratorTypes } from '../types';
 import { initI18n, t } from '../utils/i18n';
@@ -57,6 +58,7 @@ class AddNewModelGenerator extends SubGeneratorBase {
 
     async initializing(): Promise<void> {
         await initI18n();
+        setYeomanEnvConflicterForce(this.env, true);
 
         try {
             if (await isCFEnvironment(this.projectPath)) {
@@ -87,7 +89,9 @@ class AddNewModelGenerator extends SubGeneratorBase {
             return;
         }
 
-        this.answers = await this.prompt(await getPromptsForNewModel(this.projectPath, this.variant.layer));
+        this.answers = await this.prompt(
+            await getPromptsForNewModel(this.projectPath, this.variant.layer, this.logger)
+        );
         this.logger.log(`Current answers\n${JSON.stringify(this.answers, null, 2)}`);
     }
 
@@ -122,12 +126,12 @@ class AddNewModelGenerator extends SubGeneratorBase {
         const isCloudFoundry = await isCFEnvironment(this.projectPath);
         return {
             variant: this.variant,
+            serviceType,
             isCloudFoundry,
             destinationName: isCloudFoundry ? this.answers.destination?.Name : undefined,
-            isOnPremiseDestination:
-                isCloudFoundry && this.answers.destination
-                    ? isOnPremiseDestination(this.answers.destination)
-                    : undefined,
+            ...(isCloudFoundry && {
+                isOnPremiseDestination: isOnPremiseDestination(this.answers.destination!)
+            }),
             service: {
                 name: modelAndDatasourceName,
                 uri,
