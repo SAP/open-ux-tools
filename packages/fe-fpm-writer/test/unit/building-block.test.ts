@@ -3131,6 +3131,107 @@ describe('Building Blocks', () => {
                 customFormFieldProcessor(wrongTypeBuildingBlock, context);
             }).toThrow('Expected CustomFormField building block data');
         });
+
+        test('CustomFormField processor throws when embededFragment is missing', () => {
+            const mockFs = create(createStorage());
+            const customFormFieldProcessor = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFormField]!.processor;
+
+            const buildingBlock = {
+                id: 'noFragment',
+                buildingBlockType: BuildingBlockType.CustomFormField,
+                generateId,
+                label: 'Missing Fragment'
+            } as unknown as CustomFormField;
+
+            expect(() => {
+                customFormFieldProcessor(buildingBlock, { fs: mockFs, viewPath: '/mock/path' });
+            }).toThrow('EmbeddedFragment is required for CustomFormField');
+        });
+
+        test('CustomFormField with eventHandler creates handler file', async () => {
+            const basePath = join(testAppPath, 'generate-custom-form-field-event-handler');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Form`;
+            const customFormFieldData: CustomFormField = {
+                id: 'testCustomFormFieldEH',
+                buildingBlockType: BuildingBlockType.CustomFormField,
+                generateId,
+                label: 'Form Field With Handler',
+                position: {
+                    anchor: 'DataField::TestProperty',
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content: '',
+                    name: 'CustomFormFieldEH',
+                    eventHandler: true
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithFormFields);
+
+            await generateBuildingBlock<CustomFormField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFormFieldData
+                },
+                fs
+            );
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('FormElement');
+            expect(viewContent).toContain('Form Field With Handler');
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('CustomFormField preserves existing fragment content', async () => {
+            const basePath = join(testAppPath, 'generate-custom-form-field-preserve-content');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Form`;
+            const existingContent =
+                '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Input value="{myProp}"/></core:FragmentDefinition>';
+            const customFormFieldData: CustomFormField = {
+                id: 'testCustomFormFieldContent',
+                buildingBlockType: BuildingBlockType.CustomFormField,
+                generateId,
+                label: 'Form Field Preserve Content',
+                position: {
+                    anchor: 'DataField::TestProperty',
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content: existingContent,
+                    name: 'CustomFormFieldContent'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithFormFields);
+
+            await generateBuildingBlock<CustomFormField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFormFieldData
+                },
+                fs
+            );
+
+            // Verify fragment file was created with original content, not overwritten with default
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/CustomFormFieldContent.fragment.xml');
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+            const fragmentContent = fs.read(expectedFragmentPath);
+            expect(fragmentContent).toContain('<Input value="{myProp}"');
+
+            await writeFilesForDebugging(fs);
+        });
     });
 
     describe('Building Block Configuration and Type Safety', () => {
