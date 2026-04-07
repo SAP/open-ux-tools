@@ -148,17 +148,6 @@ export class CdsAnnotationProvider {
     }
 
     /**
-     * Get CDS services.
-     *
-     * @param rootPath - Project root path.
-     * @param fileCache - File cache.
-     * @returns Service info array.
-     */
-    public static getServices(rootPath: string, fileCache: Map<string, string>): ServiceInfo[] {
-        this.getFacade(rootPath, fileCache, false);
-        return this.serviceInfoCache.get(rootPath) ?? [];
-    }
-    /**
      * Reset CDS cache clearing compile model and service artifacts.
      *
      * @param rootPath - Project root path.
