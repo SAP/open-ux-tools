@@ -3024,8 +3024,8 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.CustomFormField,
                 generateId,
                 label: 'Custom Form Field',
-                anchor: 'DataField::TestProperty',
                 position: {
+                    anchor: 'DataField::TestProperty',
                     placement: Placement.After
                 },
                 embededFragment: {
@@ -3058,6 +3058,8 @@ describe('Building Blocks', () => {
             expect(viewContent).toContain('FormElement');
             expect(viewContent).toContain('Custom Form Field');
             expect(viewContent).toContain('my.test.App.ext.fragment.CustomFormField1');
+            expect(viewContent).toContain('anchor="DataField::TestProperty"');
+            expect(viewContent).toContain('placement="After"');
 
             await writeFilesForDebugging(fs);
         });
@@ -3070,8 +3072,8 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.CustomFormField,
                 generateId,
                 label: 'Custom Form Field 2',
-                anchor: 'DataField::AnotherProperty',
                 position: {
+                    anchor: 'DataField::AnotherProperty',
                     placement: Placement.Before
                 },
                 embededFragment: {
@@ -3103,6 +3105,8 @@ describe('Building Blocks', () => {
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
             expect(viewContent).toContain('FormElement');
             expect(viewContent).toContain('Custom Form Field 2');
+            expect(viewContent).toContain('anchor="DataField::AnotherProperty"');
+            expect(viewContent).toContain('placement="Before"');
 
             await writeFilesForDebugging(fs);
         });

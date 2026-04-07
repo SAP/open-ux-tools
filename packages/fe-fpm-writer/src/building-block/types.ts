@@ -463,10 +463,6 @@ export interface CustomFilterField extends BuildingBlock {
  */
 export interface CustomFormField extends BuildingBlock {
     /**
-     * Reference to the key of another field already displayed in the form to properly place this one.
-     */
-    anchor: string;
-    /**
      * Optional key for the FormElement.
      */
     formElementKey?: string;
@@ -481,7 +477,7 @@ export interface CustomFormField extends BuildingBlock {
     /**
      * The fragment that contains the template for the custom form field.
      */
-    embededFragment?: EmbededFragment;
+    embededFragment: EmbededFragment;
 }
 
 export interface CustomColumn extends BuildingBlock {

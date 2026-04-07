@@ -236,8 +236,12 @@ function processCustomFormField(buildingBlockData: BuildingBlock, context: Proce
         throw new Error('Expected CustomFormField building block data');
     }
 
+    if (!buildingBlockData.embededFragment) {
+        throw new Error('EmbeddedFragment is required for CustomFormField');
+    }
+
     const config = getBuildingBlockConfig(BuildingBlockType.CustomFormField);
-    const formFieldConfig = buildingBlockData.embededFragment!;
+    const formFieldConfig = buildingBlockData.embededFragment;
     let processedEventHandler: string | undefined;
 
     // Apply event handler
@@ -249,11 +253,13 @@ function processCustomFormField(buildingBlockData: BuildingBlock, context: Proce
         formFieldConfig.eventHandler = processedEventHandler;
     }
 
-    formFieldConfig.content = getDefaultFragmentContent(
-        'Custom Form Field Content',
-        buildingBlockData.generateId,
-        processedEventHandler
-    );
+    if (!formFieldConfig.content) {
+        formFieldConfig.content = getDefaultFragmentContent(
+            'Custom Form Field Content',
+            buildingBlockData.generateId,
+            processedEventHandler
+        );
+    }
     if (viewPath && !fs.exists(viewPath)) {
         fs.copyTpl(getTemplatePath(config.templateFile), viewPath, formFieldConfig);
     }
