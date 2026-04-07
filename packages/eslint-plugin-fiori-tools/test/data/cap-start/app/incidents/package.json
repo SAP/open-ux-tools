@@ -1,0 +1,13 @@
+{
+    "name": "incidents",
+    "version": "0.0.1",
+    "description": "An SAP Fiori application.",
+    "license": "SAP SAMPLE CODE LICENSE",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "scripts": {},
+    "dependencies": { }
+}
