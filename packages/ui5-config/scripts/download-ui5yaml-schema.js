@@ -1,5 +1,5 @@
-const axios = require('axios');
-const fs = require('fs');
+import axios from 'axios';
+import fs from 'fs';
 
 const schemaURL = 'https://raw.githubusercontent.com/SAP/ui5-tooling/gh-pages/schema/ui5.yaml.json';
 
@@ -14,4 +14,4 @@ async function downloadUI5YamlSchema() {
     console.info('UI5 YAML schema downloaded successfully.');
 }
 
-module.exports = downloadUI5YamlSchema();
+await downloadUI5YamlSchema();

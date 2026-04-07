@@ -1,10 +1,5 @@
-export {
-    toAnnotationFile,
-    toTargetMap,
-    adjustCdsTermNames,
-    CdsAnnotationFile,
-    toAbsoluteUriString
-} from './transforms';
+export { toAnnotationFile, toTargetMap, adjustCdsTermNames, toAbsoluteUriString } from './transforms';
+export type { CdsAnnotationFile } from './transforms';
 export { print, PrintPattern, resolveTarget, printTarget, printPrimitiveValue, printKey } from './printer/csdl-to-cds';
 export { indent } from './printer';
 export { printEdmJson } from './printer/edm-json';

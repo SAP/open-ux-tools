@@ -31,6 +31,15 @@ export {
     MULTI_LINE_STRING_LITERAL_TYPE,
     SEPARATOR_TYPE,
     IDENTIFIER_TYPE,
+    operatorMap,
+    positionIsInExpressionWhiteSpace,
+    containsIncorrectExpressions,
+    getEdmOperatorMap,
+    nodeRange,
+    isContainer
+} from './transformer';
+
+export type {
     Record,
     Node,
     AnnotationValue,
@@ -43,10 +52,6 @@ export {
     UnsupportedOperatorExpression,
     IncorrectExpression,
     CorrectExpression,
-    operatorMap,
-    positionIsInExpressionWhiteSpace,
-    containsIncorrectExpressions,
-    getEdmOperatorMap,
     StringLiteral,
     Path,
     EmptyValue,
@@ -62,9 +67,7 @@ export {
     AnnotationNode,
     Assignment,
     Separator,
-    NarrowAnnotationNode,
-    nodeRange,
-    isContainer
+    NarrowAnnotationNode
 } from './transformer';
 
 export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './transformer';

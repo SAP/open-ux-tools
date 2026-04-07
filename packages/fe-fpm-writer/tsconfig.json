@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig-esm.json",
+  "extends": "../../tsconfig.json",
   "include": [
     "../../types/mem-fs-editor.d.ts",
     "src",
@@ -7,7 +7,9 @@
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "module": "ESNext",
+    "moduleResolution": "bundler"
   },
   "references": [
     {

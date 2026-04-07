@@ -91,4 +91,4 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
     }
 }
 
-export = AddAnnotationsToDataGenerator;
+export default AddAnnotationsToDataGenerator;

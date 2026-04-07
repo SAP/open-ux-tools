@@ -63,4 +63,4 @@ class OdataServiceGenerator extends SubGeneratorWithAuthBase {
     }
 }
 
-export = OdataServiceGenerator;
+export default OdataServiceGenerator;

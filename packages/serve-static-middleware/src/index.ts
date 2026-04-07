@@ -1,1 +1,2 @@
-export { serveStaticMiddleware, ServeStaticConfig } from './base';
+export { serveStaticMiddleware } from './base';
+export type { ServeStaticConfig } from './base';

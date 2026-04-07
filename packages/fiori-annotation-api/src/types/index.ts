@@ -1,6 +1,6 @@
-export { TextFile } from './text-file';
-export { CDSService, LocalEDMXService, Service, CompiledService } from './service';
-export { AnnotationServiceAdapter, AnnotationServiceConstructor, ServiceArtifacts } from './adapter';
+export { type TextFile } from './text-file';
+export { type CDSService, type LocalEDMXService, type Service, type CompiledService } from './service';
+export { type AnnotationServiceAdapter, type AnnotationServiceConstructor, type ServiceArtifacts } from './adapter';
 export {
     DELETE_ATTRIBUTE,
     DELETE_ELEMENT,
@@ -14,19 +14,19 @@ export {
     REPLACE_ELEMENT,
     REPLACE_ELEMENT_CONTENT,
     REPLACE_TEXT,
-    AnnotationFileChange,
-    DeleteReference,
-    DeleteElement,
-    DeleteAttribute,
-    UpdateAttributeValue,
-    ReplaceElementContent,
-    ReplaceElement,
-    InsertTarget,
-    InsertElement,
-    InsertAttribute,
-    ReplaceAttribute,
-    ReplaceText,
-    MoveElements
+    type AnnotationFileChange,
+    type DeleteReference,
+    type DeleteElement,
+    type DeleteAttribute,
+    type UpdateAttributeValue,
+    type ReplaceElementContent,
+    type ReplaceElement,
+    type InsertTarget,
+    type InsertElement,
+    type InsertAttribute,
+    type ReplaceAttribute,
+    type ReplaceText,
+    type MoveElements
 } from './internal-change';
 export * from './change';
 export * from './project-info';

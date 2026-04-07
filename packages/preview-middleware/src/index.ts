@@ -7,7 +7,7 @@ export {
     logRemoteUrl,
     isRemoteConnectionsEnabled
 } from './base';
-export {
+export type {
     FlpConfig,
     RtaConfig,
     TestConfig,

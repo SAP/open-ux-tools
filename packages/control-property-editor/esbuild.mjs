@@ -2,12 +2,13 @@ import { esbuildOptionsBrowser, build } from '../../esbuildConfig.mjs';
 import NodeModulesPolyfills from '@esbuild-plugins/node-modules-polyfill';
 import { copy } from 'esbuild-plugin-copy';
 import alias from 'esbuild-plugin-alias';
+import { fileURLToPath } from 'node:url';
 
 // Set esbuild options for this build
 esbuildOptionsBrowser.plugins = esbuildOptionsBrowser.plugins.concat(
     alias({
-        'react': import.meta.resolve('react'),
-        'react-dom': import.meta.resolve('react-dom')
+        'react': fileURLToPath(import.meta.resolve('react')),
+        'react-dom': fileURLToPath(import.meta.resolve('react-dom'))
     })
 );
 const esbuildOptions = { ...esbuildOptionsBrowser };

@@ -109,4 +109,4 @@ class AddComponentUsagesGenerator extends SubGeneratorBase {
     }
 }
 
-export = AddComponentUsagesGenerator;
+export default AddComponentUsagesGenerator;

@@ -1,7 +1,7 @@
 export * from './types/vocabulary-service';
-export { VocabularyNamespace, VocabularyAlias } from './resources/index';
+export type { VocabularyNamespace, VocabularyAlias } from './resources/index';
 export {
-    Namespace,
+    type Namespace,
     COMPLEX_TYPE_KIND,
     ENUM_TYPE_KIND,
     TERM_KIND,

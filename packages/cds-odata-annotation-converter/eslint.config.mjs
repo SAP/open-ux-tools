@@ -1,4 +1,3 @@
-const { ignores } = require('eslint-plugin-prettier/recommended');
 import base from '../../eslint.config.mjs';
 import tseslint from 'typescript-eslint';
 const tsParser = tseslint.parser;

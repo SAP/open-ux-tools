@@ -106,4 +106,4 @@ class AddNewModelGenerator extends SubGeneratorBase {
     }
 }
 
-export = AddNewModelGenerator;
+export default AddNewModelGenerator;

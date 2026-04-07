@@ -10,4 +10,5 @@ export {
     MAX_ABAP_SERVICE_NAME_LENGTH,
     MTA_FILE_OPERATION_DELAY_MS
 } from './constants';
-export { CFBaseConfig, CFAppConfig, CAPConfig, RouterModuleType, ApiHubConfig, ApiHubType } from './types';
+export type { CFBaseConfig, CFAppConfig, CAPConfig, ApiHubConfig } from './types';
+export { RouterModuleType, ApiHubType } from './types';

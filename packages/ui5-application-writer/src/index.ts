@@ -6,9 +6,8 @@ import { getMinimumUI5Version, type Manifest, type Package } from '@sap-ux/proje
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
-import { Ui5App } from './types';
+import type { Ui5App, App, AppOptions, UI5 } from './types';
 import type { Editor } from 'mem-fs-editor';
-import type { App, AppOptions, UI5 } from './types';
 import { copyTemplates } from './utils';
 
 /**
@@ -191,8 +190,9 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
     return fs;
 }
 
-export { Ui5App, generate, enableTypescript, isTypescriptEnabled };
-export { App, Package, UI5, AppOptions };
+export type { Ui5App };
+export { generate, enableTypescript, isTypescriptEnabled };
+export type { App, Package, UI5, AppOptions };
 export { addEslintFeature } from './options';
 export {
     compareUI5VersionGte,

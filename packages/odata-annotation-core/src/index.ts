@@ -1,8 +1,5 @@
+export type { ParsedName, ParsedActionFunctionSignature, ParsedCollectionIdentifier, ParsedIdentifier } from './names';
 export {
-    ParsedName,
-    ParsedActionFunctionSignature,
-    ParsedCollectionIdentifier,
-    ParsedIdentifier,
     parseIdentifier,
     toFullyQualifiedName,
     resolveName,
@@ -11,16 +8,11 @@ export {
     toAliasQualifiedName
 } from './names';
 
-export {
-    NavigationPropertyAnnotationSegment,
-    ParsedPath,
-    ParsedPathSegment,
-    TermCastSegment,
-    parsePath,
-    toFullyQualifiedPath
-} from './paths';
+export type { NavigationPropertyAnnotationSegment, ParsedPath, ParsedPathSegment, TermCastSegment } from './paths';
+export { parsePath, toFullyQualifiedPath } from './paths';
 
-export { findPathToPosition, FindPathResult, getPositionData } from './search';
+export type { FindPathResult } from './search';
+export { findPathToPosition, getPositionData } from './search';
 
 export {
     indent,

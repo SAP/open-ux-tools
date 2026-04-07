@@ -3,8 +3,7 @@
     "compilerOptions": {
         "outDir": "dist",
         "rootDir": "src",
-        "lib": ["ES2023"],
-        "preserveConstEnums": false
+        "lib": ["ES2023"]
     },
     "include": ["src"],
     "references": [

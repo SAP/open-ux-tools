@@ -38,12 +38,12 @@ import { EventName } from '../telemetryEvents';
 import { getCFQuestions, getCAPMTAQuestions } from './questions';
 import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
-import { CfDeployConfigOptions } from './types';
+import type { CfDeployConfigOptions } from './types';
 import {
     type CfAppRouterDeployConfigAnswers,
     type CfDeployConfigQuestions,
     type CfDeployConfigPromptOptions,
-    CfDeployConfigAnswers,
+    type CfDeployConfigAnswers,
     RouterModuleType
 } from '@sap-ux/cf-deploy-config-inquirer';
 import type { Answers } from 'inquirer';
@@ -407,11 +407,11 @@ export default class extends DeploymentGenerator {
 
 export { getCFQuestions, loadManifest };
 export { API_BUSINESS_HUB_ENTERPRISE_PREFIX, DESTINATION_AUTHTYPE_NOTFOUND };
-export {
+export type {
     CfDeployConfigOptions,
     CfDeployConfigAnswers,
     CfDeployConfigQuestions,
     CfDeployConfigPromptOptions,
-    ApiHubConfig,
-    ApiHubType
+    ApiHubConfig
 };
+export { ApiHubType };

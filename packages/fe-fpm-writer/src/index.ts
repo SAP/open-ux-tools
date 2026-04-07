@@ -1,31 +1,35 @@
-export { CustomPage, ObjectPage, ListReport } from './page/types';
+export type { CustomPage, ObjectPage, ListReport } from './page/types';
 export { generateCustomPage, generateObjectPage, generateListReport } from './page';
 
-export { CustomAction, TargetControl } from './action/types';
+export type { CustomAction } from './action/types';
+export { TargetControl } from './action/types';
 export { generateCustomAction } from './action';
 
-export { ActionMenu, TargetControl as ActionMenuTargetControl } from './action-menu/types';
+export type { ActionMenu } from './action-menu/types';
+export { TargetControl as ActionMenuTargetControl } from './action-menu/types';
 export { generateActionMenu } from './action-menu';
 
-export { CustomTableColumn } from './column/types';
+export type { CustomTableColumn } from './column/types';
 export { generateCustomColumn } from './column';
 
-export { CustomHeaderSection, CustomSection, CustomSubSection, RequestGroupId, DesignTime } from './section/types';
+export type { CustomHeaderSection, CustomSection, CustomSubSection } from './section/types';
+export { RequestGroupId, DesignTime } from './section/types';
 export { generateCustomSection, generateCustomSubSection, generateCustomHeaderSection } from './section';
 
-export { CustomFilter } from './filter/types';
+export type { CustomFilter } from './filter/types';
 export { generateCustomFilter } from './filter';
 
-export { CustomView } from './view/types';
+export type { CustomView } from './view/types';
 export { generateCustomView } from './view';
 
-export { enableFPM, FPMConfig } from './app';
+export { enableFPM } from './app';
+export type { FPMConfig } from './app';
 
 export { validateBasePath, validateVersion } from './common/validate';
 export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file';
 
-export {
-    BuildingBlockType,
+export { BuildingBlockType } from './building-block/types';
+export type {
     FilterBar,
     Form,
     Chart,
@@ -41,7 +45,7 @@ export {
     Action
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
-export {
+export type {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
     FormPromptsAnswer,
@@ -51,10 +55,9 @@ export {
     RichTextEditorButtonGroupsPromptsAnswer,
     BuildingBlockTypePromptsAnswer
 } from './building-block/prompts/questions';
-export {
-    PromptsType,
+export { PromptsType, PromptsAPI } from './prompts';
+export type {
     SupportedGeneratorAnswers,
-    PromptsAPI,
     PromptsGroup,
     Prompts,
     ValidationResults,
@@ -63,10 +66,11 @@ export {
     CodeSnippet
 } from './prompts';
 
-export { ControllerExtension, ControllerExtensionPageType } from './controller-extension/types';
+export type { ControllerExtension } from './controller-extension/types';
+export { ControllerExtensionPageType } from './controller-extension/types';
 export { generateControllerExtension } from './controller-extension';
 
-export { CustomField } from './field/types';
+export type { CustomField } from './field/types';
 export { generateCustomField } from './field';
 
 export { initI18n } from './i18n';

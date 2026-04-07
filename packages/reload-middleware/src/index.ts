@@ -1,9 +1,2 @@
-export {
-    getLivereloadServer,
-    getConnectLivereload,
-    watchManifestChanges,
-    ReloaderConfig,
-    LiveReloadOptions,
-    ConnectLivereloadOptions,
-    HttpsOptions
-} from './base';
+export { getLivereloadServer, getConnectLivereload, watchManifestChanges } from './base';
+export type { ReloaderConfig, LiveReloadOptions, ConnectLivereloadOptions, HttpsOptions } from './base';

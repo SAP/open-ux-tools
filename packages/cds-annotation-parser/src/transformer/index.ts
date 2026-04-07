@@ -24,6 +24,11 @@ export {
     INCORRECT_EXPRESSION_TYPE,
     CORRECT_EXPRESSION_TYPE,
     EXPRESSION_TYPES,
+    nodeRange,
+    isContainer
+} from './annotation-ast-nodes';
+
+export type {
     Expression,
     UnsupportedOperatorExpression,
     IncorrectExpression,
@@ -51,9 +56,7 @@ export {
     AnnotationNode,
     Assignment,
     Separator,
-    NarrowAnnotationNode,
-    nodeRange,
-    isContainer
+    NarrowAnnotationNode
 } from './annotation-ast-nodes';
 
 export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './range';

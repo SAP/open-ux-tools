@@ -1,5 +1,5 @@
-const { execSync } = require('node:child_process');
-const fs = require('node:fs');
+import { execSync } from 'node:child_process';
+import fs from 'node:fs';
 
 /**
  * Static basic usage section of the README.
@@ -69,15 +69,17 @@ function generateAnchor(commandPath) {
 function renderOptions(options) {
     if (!options || options.length === 0) return '';
 
-    return options.map(opt => {
-        let md = `- \`${opt.name}\``;
-        if (opt.required) md += ' _(required)_';
-        md += ` - ${opt.description}`;
-        if (opt.defaultValue !== undefined) {
-            md += ` _(default: \`${opt.defaultValue}\`)_`;
-        }
-        return md;
-    }).join('\n');
+    return options
+        .map((opt) => {
+            let md = `- \`${opt.name}\``;
+            if (opt.required) md += ' _(required)_';
+            md += ` - ${opt.description}`;
+            if (opt.defaultValue !== undefined) {
+                md += ` _(default: \`${opt.defaultValue}\`)_`;
+            }
+            return md;
+        })
+        .join('\n');
 }
 
 /**
@@ -103,10 +105,8 @@ function renderCommandAndSubcommands(cmd, parentPath) {
     let subCommandDocs = [];
     const subcommands = cmd.subcommands || [];
 
-    subcommands.forEach(sub => {
-        subCommandDocs = subCommandDocs.concat(
-            renderCommandAndSubcommands(sub, currentPath)
-        );
+    subcommands.forEach((sub) => {
+        subCommandDocs = subCommandDocs.concat(renderCommandAndSubcommands(sub, currentPath));
     });
 
     return commandDocs.concat(subCommandDocs);
@@ -136,10 +136,8 @@ function generateReadme(spec) {
     const rootPath = [spec.name];
     const topLevelCommands = spec.commands || [];
 
-    topLevelCommands.forEach(cmd => {
-        allCommandDocs = allCommandDocs.concat(
-            renderCommandAndSubcommands(cmd, rootPath)
-        );
+    topLevelCommands.forEach((cmd) => {
+        allCommandDocs = allCommandDocs.concat(renderCommandAndSubcommands(cmd, rootPath));
     });
 
     md += allCommandDocs.join('--------------------------------\n\n');

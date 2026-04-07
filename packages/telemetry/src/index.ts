@@ -5,7 +5,7 @@ export { ApplicationInsightClient } from './base/client/azure-appinsight-client'
 export { EventHeader } from './base/types/event-header';
 export { EventName } from './base/types/event-name';
 export { SampleRate } from './base/types/sample-rate';
-export { TelemetryMeasurements, TelemetryProperties } from './base/types/event';
+export type { TelemetryMeasurements, TelemetryProperties } from './base/types/event';
 
 /* API for most common use cases */
 export {
@@ -13,12 +13,10 @@ export {
     setEnableTelemetry,
     getTelemetrySetting,
     ToolsSuiteTelemetryClient,
-    ToolsSuiteTelemetryInitSettings,
-    TelemetryHelperProperties,
-    TelemetryEvent,
-    ToolsId,
     getIdeType
 } from './tooling-telemetry';
+export type { ToolsSuiteTelemetryInitSettings, TelemetryHelperProperties, TelemetryEvent } from './tooling-telemetry';
+export { ToolsId } from './tooling-telemetry';
 
 /* Decorator and measurements utils */
 export { InterceptorTypes } from './base/interceptor/config';

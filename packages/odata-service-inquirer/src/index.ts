@@ -170,7 +170,6 @@ export {
     CfAbapEnvServiceChoice,
     // @deprecated - temp export to support to support open source migration
     DatasourceType,
-    EntityRelatedAnswers,
     // @deprecated - temp export to support to support open source migration
     ERROR_TYPE,
     // @deprecated - temp export to support to support open source migration
@@ -187,6 +186,7 @@ export {
     SystemSelectionAnswerType,
     type CapRuntime,
     type CapService,
+    type EntityRelatedAnswers,
     type InquirerAdapter,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,

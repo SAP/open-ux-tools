@@ -60,4 +60,4 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
     await deploy(archive, config, logger);
 }
 
-export = task;
+export default task;
