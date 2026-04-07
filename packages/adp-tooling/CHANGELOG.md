@@ -1,5 +1,29 @@
 # @sap-ux/adp-tooling
 
+## 0.18.110
+
+### Patch Changes
+
+- 6b74074: feat: Change `backend-proxy-middleware-cf` to use `approuter` instead of token exchange
+
+## 0.18.109
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/inquirer-common@0.11.33
+    - @sap-ux/odata-service-writer@0.31.5
+    - @sap-ux/project-input-validator@0.6.74
+    - @sap-ux/system-access@0.7.4
+
+## 0.18.108
+
+### Patch Changes
+
+- 68b5523: feat: Adjust FLP configuration wizard for CF scenario
+
 ## 0.18.107
 
 ### Patch Changes

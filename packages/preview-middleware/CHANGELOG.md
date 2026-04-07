@@ -1,5 +1,40 @@
 # @sap-ux/preview-middleware
 
+## 0.25.17
+
+### Patch Changes
+
+- 4237e59: fix(preview-middleware): preserve developerMode for CPE and ADP scenarios in sanitizeConfig
+
+## 0.25.16
+
+### Patch Changes
+
+- Updated dependencies [6b74074]
+    - @sap-ux/adp-tooling@0.18.110
+
+## 0.25.15
+
+### Patch Changes
+
+- 0153757: fix: RTA editor endpoint causing duplicate ID error if started from the launchpad sandbox
+
+## 0.25.14
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/adp-tooling@0.18.109
+    - @sap-ux/system-access@0.7.4
+
+## 0.25.13
+
+### Patch Changes
+
+- Updated dependencies [68b5523]
+    - @sap-ux/adp-tooling@0.18.108
+
 ## 0.25.12
 
 ### Patch Changes

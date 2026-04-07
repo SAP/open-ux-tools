@@ -1,5 +1,19 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.17
+
+## 0.25.16
+
+## 0.25.15
+
+### Patch Changes
+
+- 0153757: fix: RTA editor endpoint causing duplicate ID error if started from the launchpad sandbox
+
+## 0.25.14
+
+## 0.25.13
+
 ## 0.25.12
 
 ## 0.25.11

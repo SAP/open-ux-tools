@@ -35,7 +35,8 @@ import {
     loadApps,
     loadCfConfig,
     storeCredentials,
-    validateUI5VersionExists
+    validateUI5VersionExists,
+    getCfBaseAppInbounds
 } from '@sap-ux/adp-tooling';
 import {
     getOrCreateServiceInstanceKeys,
@@ -156,7 +157,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     createServiceInstance: jest.fn(),
     getOrCreateServiceInstanceKeys: jest.fn(),
     storeCredentials: jest.fn(),
-    getSupportedProject: jest.fn()
+    getSupportedProject: jest.fn(),
+    getCfBaseAppInbounds: jest.fn()
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
@@ -377,6 +379,7 @@ const packageGetOrCreateServiceInstanceKeysMock = packageGetOrCreateServiceInsta
     typeof packageGetOrCreateServiceInstanceKeys
 >;
 const createServiceInstanceMock = createServiceInstance as jest.MockedFunction<typeof createServiceInstance>;
+const getCfBaseAppInboundsMock = getCfBaseAppInbounds as jest.MockedFunction<typeof getCfBaseAppInbounds>;
 const getSupportedProjectMock = getSupportedProject as jest.MockedFunction<typeof getSupportedProject>;
 
 describe('Adaptation Project Generator Integration Test', () => {
@@ -889,6 +892,58 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect(ui5Content).toMatchSnapshot();
             expect(mtaContent).toMatchSnapshot();
             expect(packageJsonContent).toMatchSnapshot();
+        });
+
+        it('should call composeWith for FLP sub-generator when CF inbounds are available', async () => {
+            getCfBaseAppInboundsMock.mockResolvedValue(inbounds);
+            jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
+            const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockResolvedValue();
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                .withOptions({
+                    shouldInstallDeps: false,
+                    vscode: vscodeMock
+                } as AdpGeneratorOptions)
+                .withPrompts({ ...answersCf, addFlpConfig: true, projectLocation: cfTestOutputDir });
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(getCfBaseAppInboundsMock).toHaveBeenCalledWith(
+                baseApp.appId,
+                baseApp.appHostId,
+                cfConfig,
+                expect.any(Object)
+            );
+            expect(addFlpGenSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    inbounds,
+                    layer: FlexLayer.CUSTOMER_BASE,
+                    isCfProject: true,
+                    projectRootPath: join(cfTestOutputDir, answersCf.projectName)
+                }),
+                expect.any(Function),
+                expect.any(Object),
+                expect.any(Object)
+            );
+        });
+
+        it('should not call FLP sub-generator when CF inbounds are empty', async () => {
+            getCfBaseAppInboundsMock.mockResolvedValue(undefined);
+            const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockResolvedValue();
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                .withOptions({
+                    shouldInstallDeps: false,
+                    vscode: vscodeMock
+                } as AdpGeneratorOptions)
+                .withPrompts({ ...answersCf, addFlpConfig: true, projectLocation: cfTestOutputDir });
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(getCfBaseAppInboundsMock).toHaveBeenCalled();
+            expect(addFlpGenSpy).not.toHaveBeenCalled();
         });
     });
 });

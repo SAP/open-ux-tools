@@ -24,7 +24,7 @@ describe('<UIActionButton />', () => {
         const buttons = container.querySelectorAll(selectors.button);
         expect(buttons.length).toEqual(1);
         let style = getStyle(buttons[0]);
-        expect(style.height).toEqual('22px');
+        expect(style.height).toEqual('26px');
 
         const icons = container.querySelectorAll(selectors.icon);
         expect(icons.length).toEqual(1);
