@@ -13,6 +13,7 @@ import * as systemAccess from '@sap-ux/system-access/dist/base/connect';
 import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotations';
 
 import * as helper from '../../../src/base/helper';
+import * as projectBuilder from '../../../src/base/project-builder';
 import * as editors from '../../../src/writer/editors';
 import { AdpPreview } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
@@ -242,6 +243,9 @@ describe('AdaptationProject', () => {
         });
 
         test('should initialize with cfBuildPath mode', async () => {
+            const mockCfManifest = { 'sap.app': { id: 'cf.test.app' } };
+            jest.spyOn(helper, 'readManifestFromBuildPath').mockReturnValue(mockCfManifest as any);
+
             const adp = new AdpPreview(
                 {
                     target: {
@@ -262,6 +266,10 @@ describe('AdaptationProject', () => {
             expect(adp['descriptorVariantId']).toBe(parsedVariant.id);
             expect(adp['routesHandler']).toBeDefined();
             expect(adp['provider']).toBeUndefined();
+            expect(adp.descriptor).toBeDefined();
+            expect(adp.descriptor.manifest).toEqual(mockCfManifest);
+            expect(adp.descriptor.url).toBe('/');
+            expect(adp.descriptor.name).toBe(parsedVariant.id);
         });
     });
 
@@ -295,8 +303,11 @@ describe('AdaptationProject', () => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
         });
 
-        test('should return early when cfBuildPath is set', async () => {
-            // Create a separate nock scope for this test to avoid interfering with other tests
+        test('should return early when cfBuildPath is set and no sync required', async () => {
+            const mockCfManifest = { 'sap.app': { id: 'cf.test.app' } };
+            jest.spyOn(helper, 'readManifestFromBuildPath').mockReturnValue(mockCfManifest as any);
+            const runBuildSpy = jest.spyOn(projectBuilder, 'runBuild').mockResolvedValue();
+
             const testBackend = 'https://test-backend.example';
             const adp = new AdpPreview(
                 {
@@ -313,9 +324,46 @@ describe('AdaptationProject', () => {
             const parsedVariant = JSON.parse(descriptorVariant);
             await adp.init(parsedVariant);
 
-            // sync should return immediately without making any backend calls
-            // Since cfBuildPath is set, sync should return early
+            // sync should return early because mergedDescriptor is already set and no sync required
             await adp.sync();
+            expect(runBuildSpy).not.toHaveBeenCalled();
+        });
+
+        test('should rebuild and re-read manifest when sync required in cfBuildPath mode', async () => {
+            const initialManifest = { 'sap.app': { id: 'cf.test.app' } };
+            const updatedManifest = { 'sap.app': { id: 'cf.test.app.updated' } };
+            const readManifestSpy = jest
+                .spyOn(helper, 'readManifestFromBuildPath')
+                .mockReturnValueOnce(initialManifest as any)
+                .mockReturnValueOnce(updatedManifest as any);
+            const runBuildSpy = jest.spyOn(projectBuilder, 'runBuild').mockResolvedValue();
+
+            const testBackend = '/test-backend';
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: testBackend
+                    },
+                    cfBuildPath: 'dist'
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            const parsedVariant = JSON.parse(descriptorVariant);
+            await adp.init(parsedVariant);
+            expect(adp.descriptor.manifest).toEqual(initialManifest);
+
+            // Trigger sync
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
+            await adp.sync();
+
+            expect(runBuildSpy).toHaveBeenCalledWith('/projects/adp.project', {
+                ADP_BUILDER_MODE: 'preview'
+            });
+            expect(readManifestSpy).toHaveBeenLastCalledWith('dist');
+            expect(adp.descriptor.manifest).toEqual(updatedManifest);
         });
 
         test('updates merged descriptor', async () => {
@@ -504,6 +552,56 @@ describe('AdaptationProject', () => {
 
         test('/original.file', async () => {
             await server.get(`${mockMergedDescriptor.url}/original.file`).expect(200);
+            expect(next).toHaveBeenCalled();
+        });
+    });
+
+    describe('proxy - cfBuildPath mode', () => {
+        let server: supertest.Agent;
+        const next = jest.fn().mockImplementation((_req, res) => res.status(200).send());
+
+        beforeAll(async () => {
+            const mockCfManifest = { 'sap.app': { id: 'cf.proxy.test' } };
+            jest.spyOn(helper, 'readManifestFromBuildPath').mockReturnValue(mockCfManifest as any);
+            jest.spyOn(projectBuilder, 'runBuild').mockResolvedValue();
+
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    },
+                    cfBuildPath: 'dist'
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            await adp.init(JSON.parse(descriptorVariant));
+
+            const app = express();
+            app.use(adp.descriptor.url, adp.proxy.bind(adp));
+            app.use(next);
+
+            server = supertest(app);
+        });
+
+        afterEach(() => {
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+        });
+
+        test('/manifest.json serves merged manifest', async () => {
+            const response = await server.get('/manifest.json').expect(200);
+            expect(JSON.parse(response.text)).toEqual({ 'sap.app': { id: 'cf.proxy.test' } });
+        });
+
+        test('/Component-preload.js returns 404', async () => {
+            await server.get('/Component-preload.js').expect(404);
+        });
+
+        test('other requests call next() instead of redirecting', async () => {
+            next.mockClear();
+            await server.get('/some-other-file.js').expect(200);
             expect(next).toHaveBeenCalled();
         });
     });
@@ -982,6 +1080,10 @@ describe('AdaptationProject', () => {
     describe('addApis - cfBuildPath mode', () => {
         let cfBuildPathServer: supertest.Agent;
         beforeAll(async () => {
+            jest.spyOn(helper, 'readManifestFromBuildPath').mockReturnValue({
+                'sap.app': { id: 'cf.api.test' }
+            } as any);
+
             const adp = new AdpPreview(
                 {
                     target: {

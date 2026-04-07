@@ -1223,7 +1223,7 @@ export class FlpSandbox {
 
         // CF ADP build path mode: serve built resources directly from build output
         if ('cfBuildPath' in config) {
-            const manifest = this.setupCfBuildMode(config.cfBuildPath);
+            const manifest = this.setupCfBuildMode(config.cfBuildPath, adp);
             configureRta(this.rta, layer, variant.id, false, true);
             await this.init(manifest, variant.reference);
             await this.setupAdpCommonHandlers(adp);
@@ -1255,10 +1255,12 @@ export class FlpSandbox {
      * Setup the CF build path mode for the ADP project.
      *
      * @param cfBuildPath path to the build output folder
+     * @param adp AdpPreview instance for proxying manifest requests
      * @returns the manifest
      */
-    private setupCfBuildMode(cfBuildPath: string): Manifest {
+    private setupCfBuildMode(cfBuildPath: string, adp: AdpPreview): Manifest {
         const manifest = readManifestFromBuildPath(cfBuildPath);
+        this.router.use(adp.descriptor.url, adp.proxy.bind(adp));
         this.router.use('/', serveStatic(cfBuildPath));
         this.logger.info(`Initialized CF ADP with cfBuildPath, serving from ${cfBuildPath}`);
         return manifest;

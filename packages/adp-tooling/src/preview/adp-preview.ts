@@ -37,7 +37,8 @@ import {
     isV4DescriptorChange
 } from './change-handler';
 import { addCustomFragment } from './descriptor-change-handler';
-import { getExistingAdpProjectType } from '../base/helper';
+import { getExistingAdpProjectType, readManifestFromBuildPath } from '../base/helper';
+import { runBuild } from '../base/project-builder';
 import path from 'node:path';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
@@ -179,6 +180,16 @@ export class AdpPreview {
         this.descriptorVariantId = descriptorVariant.id;
         this.projectTypeValue = undefined;
         this.routesHandler = new RoutesHandler(this.project, this.util, {} as AbapServiceProvider, this.logger);
+
+        const config = this.config as { cfBuildPath: string };
+        const manifest = readManifestFromBuildPath(config.cfBuildPath) as MergedAppDescriptor['manifest'];
+        this.mergedDescriptor = {
+            name: descriptorVariant.id,
+            url: '/',
+            manifest,
+            asyncHints: { libs: [], components: [] }
+        };
+
         return descriptorVariant.layer;
     }
 
@@ -187,10 +198,14 @@ export class AdpPreview {
      * The descriptor is refreshed only if the global flag is set to true.
      */
     async sync(): Promise<void> {
-        if ('cfBuildPath' in this.config) {
+        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
             return;
         }
-        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
+        if ('cfBuildPath' in this.config) {
+            await runBuild(this.util.getProject().getRootPath(), { ADP_BUILDER_MODE: 'preview' });
+            this.mergedDescriptor.manifest = readManifestFromBuildPath(
+                this.config.cfBuildPath
+            ) as MergedAppDescriptor['manifest'];
             return;
         }
         if (!this.lrep || !this.descriptorVariantId) {
@@ -221,6 +236,9 @@ export class AdpPreview {
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
+        } else if ('cfBuildPath' in this.config) {
+            // CF mode: let serveStatic handle remaining requests
+            next();
         } else {
             // check if the requested file exists in the file system (replace .js with .* for typescript)
             const files = await this.project.byGlob(req.path.replace('.js', '.*'));
