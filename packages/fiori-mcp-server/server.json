@@ -1,0 +1,53 @@
+{
+    "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+    "name": "io.github.SAP/fiori-mcp-server",
+    "description": "SAP Fiori - Model Context Protocol (MCP) server",
+    "repository": {
+        "url": "https://github.com/SAP/open-ux-tools",
+        "source": "github",
+        "subfolder": "packages/fiori-mcp-server"
+    },
+    "version": "0.6.47",
+    "packages": [
+        {
+            "registryType": "npm",
+            "registryBaseUrl": "https://registry.npmjs.org",
+            "identifier": "@sap-ux/fiori-mcp-server",
+            "version": "0.6.47",
+            "transport": {
+                "type": "stdio"
+            },
+            "environmentVariables": [
+                {
+                    "description": "Sets logger verbosity. Allowed values: 'off', 'error', 'warn', 'info', 'debug', 'verbose', 'silly'.",
+                    "isRequired": false,
+                    "format": "string",
+                    "isSecret": false,
+                    "default": "error",
+                    "name": "LOG_LEVEL"
+                },
+                {
+                    "description": "Set to 'true' to opt out of SAP Fiori tools usage analytics telemetry.",
+                    "isRequired": false,
+                    "format": "boolean",
+                    "isSecret": false,
+                    "name": "SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY"
+                },
+                {
+                    "description": "Path to a custom CA certificate file (.pem, .crt, .cer, .cert) for environments with self-signed SSL certificates.",
+                    "isRequired": false,
+                    "format": "string",
+                    "isSecret": false,
+                    "name": "NODE_EXTRA_CA_CERTS"
+                },
+                {
+                    "description": "Set to '0' to disable SSL certificate validation entirely. Not recommended for production use.",
+                    "isRequired": false,
+                    "format": "string",
+                    "isSecret": false,
+                    "name": "NODE_TLS_REJECT_UNAUTHORIZED"
+                }
+            ]
+        }
+    ]
+}
