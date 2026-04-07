@@ -62,7 +62,9 @@ sap.ui.define([
 
 <% if (bodySections?.length > 0) { -%>
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
+<% if (bodySections?.length > 1) { -%>
             Then.onThe<%- name%>.iCheckNumberOfSections(<%- bodySections.length %>);
+<% } -%>
 <% bodySections.forEach(function(section) { -%>
             When.onThe<%- name%>.iPressSectionIconTabFilterButton("<%- section.id %>");
             Then.onThe<%- name%>.iCheckSection({ section: "<%- section.id %>" });
