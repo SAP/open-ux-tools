@@ -22,13 +22,27 @@ overrides:
   undici@>=6.0.0 <6.24.0: '>=6.24.0'
   undici@>=7.0.0 <7.24.0: '>=7.24.0'
   picomatch@<2.3.2: '>=2.3.2'
-  picomatch@>=4.0.0 <4.0.4: '>=4.0.4'
+  anymatch>picomatch: '>=4.0.4'
+  jest-util>picomatch: '>=4.0.4'
+  readdirp>picomatch: '>=4.0.4'
+  '@xmldom/xmldom@<0.8.12': '>=0.8.12'
   yaml@>=1.0.0 <1.10.3: '>=1.10.3'
   yaml@>=2.0.0 <2.8.3: '>=2.8.3'
   brace-expansion@>=1.0.0 <1.1.13: ^1.1.13
   brace-expansion@>=2.0.0 <2.0.3: '>=2.0.3'
   brace-expansion@>=4.0.0 <5.0.5: '>=5.0.5'
   underscore: '>=1.13.8'
+  '@modelcontextprotocol/sdk>@hono/node-server': '>=1.19.10'
+  '@modelcontextprotocol/sdk>express-rate-limit': '>=8.2.2'
+  '@sap/ux-specification>fast-xml-parser': '>=5.5.7'
+  '@sap/ux-specification>@xmldom/xmldom': '>=0.8.12'
+  fast-xml-parser@>=5.0.0 <5.5.7: '>=5.5.7'
+  promptfoo>@anthropic-ai/sdk: '>=0.81.0'
+  jsdoc>markdown-it: '>=14.1.1'
+  '@vscode/vsce>markdown-it': '>=14.1.1'
+  '@octokit/request-error@<5.1.1': ^5.1.1
+  '@octokit/plugin-paginate-rest@>=1.0.0 <9.2.2': ^9.2.2
+  '@octokit/request@<8.4.1': ^8.4.1
   express>qs: '>=6.14.2'
   router>path-to-regexp: 0.1.13
   express>path-to-regexp: 0.1.13
@@ -237,7 +251,7 @@ importers:
         version: link:../../packages/system-access
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
     devDependencies:
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
@@ -514,7 +528,7 @@ importers:
         version: 4.6.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
+        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
 
   packages/abap-deploy-config-writer:
     dependencies:
@@ -605,7 +619,7 @@ importers:
         version: 25.10.10(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
     devDependencies:
       '@jest/types':
         specifier: 30.3.0
@@ -639,7 +653,7 @@ importers:
         version: 6.1.3
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
+        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
 
   packages/adp-tooling:
     dependencies:
@@ -1247,7 +1261,7 @@ importers:
         version: 25.10.10(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
     devDependencies:
       '@sap-ux/logger':
         specifier: workspace:*
@@ -1287,7 +1301,7 @@ importers:
         version: 4.6.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
+        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
 
   packages/cf-deploy-config-writer:
     dependencies:
@@ -1613,7 +1627,7 @@ importers:
         version: 25.10.10(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
     devDependencies:
       '@sap-ux/axios-extension':
         specifier: workspace:*
@@ -1677,7 +1691,7 @@ importers:
         version: 25.10.10(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
     devDependencies:
       '@sap-ux/abap-deploy-config-inquirer':
         specifier: workspace:*
@@ -1735,7 +1749,7 @@ importers:
         version: 4.6.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
+        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
 
   packages/deploy-tooling:
     dependencies:
@@ -2175,7 +2189,7 @@ importers:
         version: 11.1.0
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
     devDependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.23.0
@@ -2233,7 +2247,7 @@ importers:
         version: 6.1.3
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
+        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
 
   packages/fiori-docs-embeddings:
     devDependencies:
@@ -2695,7 +2709,7 @@ importers:
         version: 8.2.7(@types/node@22.19.10)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
     devDependencies:
       '@jest/types':
         specifier: 30.3.0
@@ -2744,7 +2758,7 @@ importers:
         version: 4.6.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
+        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
 
   packages/generator-adp:
     dependencies:
@@ -2801,7 +2815,7 @@ importers:
         version: 11.1.0
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
     devDependencies:
       '@jest/types':
         specifier: 30.3.0
@@ -2841,7 +2855,7 @@ importers:
         version: 6.1.3
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
+        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
 
   packages/generator-odata-downloader:
     devDependencies:
@@ -2928,7 +2942,7 @@ importers:
         version: 6.1.3
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
 
   packages/guided-answers-helper: {}
 
@@ -3803,7 +3817,7 @@ importers:
         version: 8.2.7(@types/node@22.19.10)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
     devDependencies:
       '@jest/types':
         specifier: 30.3.0
@@ -3873,7 +3887,7 @@ importers:
         version: 3.19.3(@types/node@22.19.10)
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
+        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
 
   packages/sap-systems-ext:
     devDependencies:
@@ -4441,7 +4455,7 @@ importers:
         version: 25.10.10(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
     devDependencies:
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
@@ -4481,7 +4495,7 @@ importers:
         version: 6.1.3
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
+        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
 
   packages/ui-service-sub-generator:
     dependencies:
@@ -4520,7 +4534,7 @@ importers:
         version: 25.10.10(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
     devDependencies:
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
@@ -4569,7 +4583,7 @@ importers:
         version: 3.19.3(@types/node@22.19.10)
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
+        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
 
   packages/ui5-application-inquirer:
     dependencies:
@@ -4812,7 +4826,7 @@ importers:
         version: 25.10.10(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
     devDependencies:
       '@jest/types':
         specifier: 30.3.0
@@ -4846,7 +4860,7 @@ importers:
         version: 3.1.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
+        version: 6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)))
 
   packages/ui5-library-reference-writer:
     dependencies:
@@ -4904,7 +4918,7 @@ importers:
         version: 25.10.10(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
     devDependencies:
       '@jest/types':
         specifier: 30.3.0
@@ -4938,7 +4952,7 @@ importers:
         version: 6.1.3
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
+        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
 
   packages/ui5-library-writer:
     dependencies:
@@ -5256,8 +5270,8 @@ packages:
     peerDependencies:
       zod: ^4.0.0
 
-  '@anthropic-ai/sdk@0.80.0':
-    resolution: {integrity: sha512-WeXLn7zNVk3yjeshn+xZHvld6AoFUOR3Sep6pSoHho5YbSi6HwcirqgPA5ccFuW8QTVJAAU7N8uQQC6Wa9TG+g==}
+  '@anthropic-ai/sdk@0.82.0':
+    resolution: {integrity: sha512-xdHTjL1GlUlDugHq/I47qdOKp/ROPvuHl7ROJCgUQigbvPu7asf9KcAcU1EqdrP2LuVhEKaTs7Z+ShpZDRzHdQ==}
     hasBin: true
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
@@ -6922,8 +6936,8 @@ packages:
   '@hapi/topo@6.0.2':
     resolution: {integrity: sha512-KR3rD5inZbGMrHmgPxsJ9dbi6zEK+C3ZwUwTa+eMwWLz7oijWUTWD2pMSNNYJAU6Qq+65NkxXjqHr/7LM2Xkqg==}
 
-  '@hono/node-server@1.19.9':
-    resolution: {integrity: sha512-vHL6w3ecZsky+8P5MD+eFfaGTyCeOHUIFYMGpQGbrBTSmNNoxv0if69rEZ5giu36weC5saFuznL411gRX7bJDw==}
+  '@hono/node-server@1.19.13':
+    resolution: {integrity: sha512-TsQLe4i2gvoTtrHje625ngThGBySOgSK3Xo2XRYOdqGN1teR8+I7vchQC46uLJi8OF62YTYA3AhSpumtkhsaKQ==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
@@ -7823,8 +7837,9 @@ packages:
   '@octokit/core@3.6.0':
     resolution: {integrity: sha512-7RKRKuA4xTjMhY+eG3jthb3hlZCsOwg3rztWh75Xc+ShDWOfDDATWbeZpAHBNRpm4Tv9WgBMOy1zEJYXG6NJ7Q==}
 
-  '@octokit/endpoint@6.0.12':
-    resolution: {integrity: sha512-lF3puPwkQWGfkMClXb4k/eUT/nZKQfxinRWJrdZaJO85Dqwo/G0yOC434Jr2ojwafWJMYqFGFa5ms4jJUgujdA==}
+  '@octokit/endpoint@9.0.6':
+    resolution: {integrity: sha512-H1fNTMA57HbkFESSt3Y9+FBICv+0jFceJFPWDePYlR/iMGrwM5ph+Dd4XRQs+8X+PUFURLQgX9ChPfhJ/1uNQw==}
+    engines: {node: '>= 18'}
 
   '@octokit/graphql@4.8.0':
     resolution: {integrity: sha512-0gv+qLSBLKF0z8TKaSKTsS39scVKF9dbMxJpj3U0vC7wjNWFuIpL/z76Qe2fiuCbDRcJSavkXsVtMS6/dtQQsg==}
@@ -7832,10 +7847,17 @@ packages:
   '@octokit/openapi-types@12.11.0':
     resolution: {integrity: sha512-VsXyi8peyRq9PqIz/tpqiL2w3w80OgVMwBHltTml3LmVvXiphgeqmY9mvBw9Wu7e0QWk/fqD37ux8yP5uVekyQ==}
 
-  '@octokit/plugin-paginate-rest@2.21.3':
-    resolution: {integrity: sha512-aCZTEf0y2h3OLbrgKkrfFdjRL6eSOo8komneVQJnYecAxIej7Bafor2xhuDJOIFau4pk0i/P28/XgtbyPF0ZHw==}
+  '@octokit/openapi-types@20.0.0':
+    resolution: {integrity: sha512-EtqRBEjp1dL/15V7WiX5LJMIxxkdiGJnabzYx5Apx4FkQIFgAfKumXeYAqqJCj1s+BMX4cPFIFC4OLCR6stlnA==}
+
+  '@octokit/openapi-types@24.2.0':
+    resolution: {integrity: sha512-9sIH3nSUttelJSXUrmGzl7QUBFul0/mB8HRYl3fOlgHbIWG+WnYDXU3v/2zMtAvuzZ/ed00Ei6on975FhBfzrg==}
+
+  '@octokit/plugin-paginate-rest@9.2.2':
+    resolution: {integrity: sha512-u3KYkGF7GcZnSD/3UP0S7K5XUFT2FkOQdcfXZGZQPGv3lm4F2Xbf71lvjldr8c1H3nNbF+33cLEkWYbokGWqiQ==}
+    engines: {node: '>= 18'}
     peerDependencies:
-      '@octokit/core': '>=2'
+      '@octokit/core': '5'
 
   '@octokit/plugin-request-log@1.0.4':
     resolution: {integrity: sha512-mLUsMkgP7K/cnFEw07kWqXGF5LKrOkD+lhCrKvPHXWDywAwuDUeDwWBpc69XK3pNX0uKiVt8g5z96PJ6z9xCFA==}
@@ -7847,14 +7869,22 @@ packages:
     peerDependencies:
       '@octokit/core': '>=3'
 
-  '@octokit/request-error@2.1.0':
-    resolution: {integrity: sha512-1VIvgXxs9WHSjicsRwq8PlR2LR2x6DwsJAaFgzdi0JfJoGSO8mYI/cHJQ+9FbN21aa+DrgNLnwObmyeSC8Rmpg==}
+  '@octokit/request-error@5.1.1':
+    resolution: {integrity: sha512-v9iyEQJH6ZntoENr9/yXxjuezh4My67CBSu9r6Ve/05Iu5gNgnisNWOsoJHTP6k0Rr0+HQIpnH+kyammu90q/g==}
+    engines: {node: '>= 18'}
 
-  '@octokit/request@5.6.3':
-    resolution: {integrity: sha512-bFJl0I1KVc9jYTe9tdGGpAMPy32dLBXXo1dS/YwSCTL/2nd9XeHsY616RE3HPXDVk+a+dBuzyz5YdlXwcDTr2A==}
+  '@octokit/request@8.4.1':
+    resolution: {integrity: sha512-qnB2+SY3hkCmBxZsR/MPCybNmbJe4KAlfWErXq+rBKkQJlbjdJeS85VI9r8UqeLYLvnAenU8Q1okM/0MBsAGXw==}
+    engines: {node: '>= 18'}
 
   '@octokit/rest@18.12.0':
     resolution: {integrity: sha512-gDPiOHlyGavxr72y0guQEhLsemgVjwRePayJ+FcKc2SJqKUbxbkvf5kAZEWA/MKvsfYlQAMVzNJE3ezQcxMJ2Q==}
+
+  '@octokit/types@12.6.0':
+    resolution: {integrity: sha512-1rhSOfRa6H9w4YwK0yrf5faDaDTb+yLyBUKOCV4xtCDB5VmIPqd/v9yr9o6SAzOAlRxMiRiCic6JVM1/kunVkw==}
+
+  '@octokit/types@13.10.0':
+    resolution: {integrity: sha512-ifLaO34EbbPj0Xgro4G5lP5asESjwHracYJvVaPIyXMuiuXLlhic3S47cBdTb+jfODkTE5YtGCLt3Ay3+J97sA==}
 
   '@octokit/types@6.41.0':
     resolution: {integrity: sha512-eJ2jbzjdijiL3B4PrSQaSjuF2sPEQPVCPzBvTHJD9Nz+9dw2SGH4K4xeQJ77YfTq5bRQ+bD8wT11JbeDPmxmGg==}
@@ -10102,11 +10132,6 @@ packages:
 
   '@xml-tools/parser@1.0.11':
     resolution: {integrity: sha512-aKqQ077XnR+oQtHJlrAflaZaL7qZsulWc/i/ZEooar5JiWj1eLt0+Wg28cpa+XLney107wXqneC+oG1IZvxkTA==}
-
-  '@xmldom/xmldom@0.8.10':
-    resolution: {integrity: sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==}
-    engines: {node: '>=10.0.0'}
-    deprecated: this version has critical issues, please update to the latest version
 
   '@xmldom/xmldom@0.8.12':
     resolution: {integrity: sha512-9k/gHF6n/pAi/9tqr3m3aqkuiNosYTurLLUtc7xQ9sxB/wm7WPygCv8GYa6mS0fLJEHhqMC1ATYhz++U/lRHqg==}
@@ -12430,8 +12455,8 @@ packages:
   exponential-backoff@3.1.3:
     resolution: {integrity: sha512-ZgEeZXj30q+I0EN+CbSSpIyPaJ5HVQD18Z1m+u1FXbAeT94mr1zw50q4q6jiiC447Nl/YTcIYSAftiGqetwXCA==}
 
-  express-rate-limit@8.2.1:
-    resolution: {integrity: sha512-PCZEIEIxqwhzw4KF0n7QF4QqruVTcF73O5kFKUnGOyjbCCgizBBiFaYpd/fnBLUMPw/BWw9OsiN7GgrNYr7j6g==}
+  express-rate-limit@8.3.2:
+    resolution: {integrity: sha512-77VmFeJkO0/rvimEDuUC5H30oqUC4EyOhyGccfqoLebB0oiEYfM7nwPrsDsBL1gsTpwfzX8SFy2MT3TDyRq+bg==}
     engines: {node: '>= 16'}
     peerDependencies:
       express: '>= 4.11'
@@ -12517,10 +12542,6 @@ packages:
   fast-xml-builder@1.1.4:
     resolution: {integrity: sha512-f2jhpN4Eccy0/Uz9csxh3Nu6q4ErKxf0XIsasomfOihuSUa3/xw6w8dnOtCDgEItQFJG8KyXPzQXzcODDrrbOg==}
 
-  fast-xml-parser@5.4.1:
-    resolution: {integrity: sha512-BQ30U1mKkvXQXXkAGcuyUA/GA26oEB7NzOtsxCDtyu62sjGw5QraKFhx2Em3WQNjPw9PG6MQ9yuIIgkSDfGu5A==}
-    hasBin: true
-
   fast-xml-parser@5.5.9:
     resolution: {integrity: sha512-jldvxr1MC6rtiZKgrFnDSvT8xuH+eJqxqOBThUVjYrxssYTo1avZLGql5l0a0BAERR01CadYzZ83kVEkbyDg+g==}
     hasBin: true
@@ -12542,7 +12563,7 @@ packages:
     resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
-      picomatch: '>=4.0.4'
+      picomatch: ^3 || ^4
     peerDependenciesMeta:
       picomatch:
         optional: true
@@ -13436,10 +13457,6 @@ packages:
   ioredis@5.6.1:
     resolution: {integrity: sha512-UxC0Yv1Y4WRJiGQxQkP0hfdL0/5/6YvdfOOClRgJ0qppSarkhneSa6UvkMkms0AkdGimSH3Ikqm+6mkMmX7vGA==}
     engines: {node: '>=12.22.0'}
-
-  ip-address@10.0.1:
-    resolution: {integrity: sha512-NWv9YLW4PoW2B7xtzaS3NCot75m6nK7Icdv0o3lfMceJVRfSoQwqD4wEH5rLwoKJwUiZ/rfpiVBhnaF0FK4HoA==}
-    engines: {node: '>= 12'}
 
   ip-address@10.1.0:
     resolution: {integrity: sha512-XXADHxXmvT9+CRxhXg56LJovE+bmWnEWB78LB83VZTprKTmaC5QfruXocxzTZ2Kl0DNwKuBdlIhjL8LeY8Sf8Q==}
@@ -14529,8 +14546,8 @@ packages:
       '@types/markdown-it': '*'
       markdown-it: '*'
 
-  markdown-it@14.1.0:
-    resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
+  markdown-it@14.1.1:
+    resolution: {integrity: sha512-BuU2qnTti9YKgK5N+IeMubp14ZUKUUw7yeJbkjtosvHiP0AZ5c8IAgEMk79D0eC8F23r4Ac/q8cAIFdm2FtyoA==}
     hasBin: true
 
   marked@12.0.2:
@@ -15674,10 +15691,6 @@ packages:
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
-
-  picomatch@4.0.3:
-    resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
-    engines: {node: '>=12'}
 
   picomatch@4.0.4:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
@@ -18713,7 +18726,7 @@ snapshots:
       '@img/sharp-win32-x64': 0.34.5
     optional: true
 
-  '@anthropic-ai/sdk@0.80.0(zod@4.3.6)':
+  '@anthropic-ai/sdk@0.82.0(zod@4.3.6)':
     dependencies:
       json-schema-to-ts: 3.1.1
     optionalDependencies:
@@ -21222,7 +21235,7 @@ snapshots:
     dependencies:
       '@hapi/hoek': 11.0.7
 
-  '@hono/node-server@1.19.9(hono@4.12.7)':
+  '@hono/node-server@1.19.13(hono@4.12.7)':
     dependencies:
       hono: 4.12.7
 
@@ -21938,7 +21951,7 @@ snapshots:
 
   '@modelcontextprotocol/sdk@1.28.0(@cfworker/json-schema@4.1.1)(zod@4.3.6)':
     dependencies:
-      '@hono/node-server': 1.19.9(hono@4.12.7)
+      '@hono/node-server': 1.19.13(hono@4.12.7)
       ajv: 8.18.0
       ajv-formats: 3.0.1(ajv@8.18.0)
       content-type: 1.0.5
@@ -21947,7 +21960,7 @@ snapshots:
       eventsource: 3.0.7
       eventsource-parser: 3.0.6
       express: 5.2.1
-      express-rate-limit: 8.2.1(express@5.2.1)
+      express-rate-limit: 8.3.2(express@5.2.1)
       hono: 4.12.7
       jose: 6.1.3
       json-schema-typed: 8.0.2
@@ -22321,74 +22334,75 @@ snapshots:
     dependencies:
       '@octokit/types': 6.41.0
 
-  '@octokit/core@3.6.0(encoding@0.1.13)':
+  '@octokit/core@3.6.0':
     dependencies:
       '@octokit/auth-token': 2.5.0
-      '@octokit/graphql': 4.8.0(encoding@0.1.13)
-      '@octokit/request': 5.6.3(encoding@0.1.13)
-      '@octokit/request-error': 2.1.0
+      '@octokit/graphql': 4.8.0
+      '@octokit/request': 8.4.1
+      '@octokit/request-error': 5.1.1
       '@octokit/types': 6.41.0
       before-after-hook: 2.2.3
       universal-user-agent: 6.0.1
-    transitivePeerDependencies:
-      - encoding
 
-  '@octokit/endpoint@6.0.12':
+  '@octokit/endpoint@9.0.6':
     dependencies:
-      '@octokit/types': 6.41.0
-      is-plain-object: 5.0.0
+      '@octokit/types': 13.10.0
       universal-user-agent: 6.0.1
 
-  '@octokit/graphql@4.8.0(encoding@0.1.13)':
+  '@octokit/graphql@4.8.0':
     dependencies:
-      '@octokit/request': 5.6.3(encoding@0.1.13)
+      '@octokit/request': 8.4.1
       '@octokit/types': 6.41.0
       universal-user-agent: 6.0.1
-    transitivePeerDependencies:
-      - encoding
 
   '@octokit/openapi-types@12.11.0': {}
 
-  '@octokit/plugin-paginate-rest@2.21.3(@octokit/core@3.6.0(encoding@0.1.13))':
-    dependencies:
-      '@octokit/core': 3.6.0(encoding@0.1.13)
-      '@octokit/types': 6.41.0
+  '@octokit/openapi-types@20.0.0': {}
 
-  '@octokit/plugin-request-log@1.0.4(@octokit/core@3.6.0(encoding@0.1.13))':
-    dependencies:
-      '@octokit/core': 3.6.0(encoding@0.1.13)
+  '@octokit/openapi-types@24.2.0': {}
 
-  '@octokit/plugin-rest-endpoint-methods@5.16.2(@octokit/core@3.6.0(encoding@0.1.13))':
+  '@octokit/plugin-paginate-rest@9.2.2(@octokit/core@3.6.0)':
     dependencies:
-      '@octokit/core': 3.6.0(encoding@0.1.13)
+      '@octokit/core': 3.6.0
+      '@octokit/types': 12.6.0
+
+  '@octokit/plugin-request-log@1.0.4(@octokit/core@3.6.0)':
+    dependencies:
+      '@octokit/core': 3.6.0
+
+  '@octokit/plugin-rest-endpoint-methods@5.16.2(@octokit/core@3.6.0)':
+    dependencies:
+      '@octokit/core': 3.6.0
       '@octokit/types': 6.41.0
       deprecation: 2.3.1
 
-  '@octokit/request-error@2.1.0':
+  '@octokit/request-error@5.1.1':
     dependencies:
-      '@octokit/types': 6.41.0
+      '@octokit/types': 13.10.0
       deprecation: 2.3.1
       once: 1.4.0
 
-  '@octokit/request@5.6.3(encoding@0.1.13)':
+  '@octokit/request@8.4.1':
     dependencies:
-      '@octokit/endpoint': 6.0.12
-      '@octokit/request-error': 2.1.0
-      '@octokit/types': 6.41.0
-      is-plain-object: 5.0.0
-      node-fetch: 2.7.0(encoding@0.1.13)
+      '@octokit/endpoint': 9.0.6
+      '@octokit/request-error': 5.1.1
+      '@octokit/types': 13.10.0
       universal-user-agent: 6.0.1
-    transitivePeerDependencies:
-      - encoding
 
-  '@octokit/rest@18.12.0(encoding@0.1.13)':
+  '@octokit/rest@18.12.0':
     dependencies:
-      '@octokit/core': 3.6.0(encoding@0.1.13)
-      '@octokit/plugin-paginate-rest': 2.21.3(@octokit/core@3.6.0(encoding@0.1.13))
-      '@octokit/plugin-request-log': 1.0.4(@octokit/core@3.6.0(encoding@0.1.13))
-      '@octokit/plugin-rest-endpoint-methods': 5.16.2(@octokit/core@3.6.0(encoding@0.1.13))
-    transitivePeerDependencies:
-      - encoding
+      '@octokit/core': 3.6.0
+      '@octokit/plugin-paginate-rest': 9.2.2(@octokit/core@3.6.0)
+      '@octokit/plugin-request-log': 1.0.4(@octokit/core@3.6.0)
+      '@octokit/plugin-rest-endpoint-methods': 5.16.2(@octokit/core@3.6.0)
+
+  '@octokit/types@12.6.0':
+    dependencies:
+      '@octokit/openapi-types': 20.0.0
+
+  '@octokit/types@13.10.0':
+    dependencies:
+      '@octokit/openapi-types': 24.2.0
 
   '@octokit/types@6.41.0':
     dependencies:
@@ -23087,7 +23101,7 @@ snapshots:
       '@sap-ux/logger': 0.8.2
       '@sap-ux/project-access': 1.35.13
       '@sap-ux/vocabularies-types': 0.15.0
-      '@xmldom/xmldom': 0.8.10
+      '@xmldom/xmldom': 0.8.12
       ejs: 3.1.10
       i18next: 25.8.12(typescript@5.9.3)
       mem-fs: 2.1.0
@@ -23183,7 +23197,7 @@ snapshots:
     dependencies:
       '@sap-ux/i18n': 0.3.9
       '@sap-ux/ui5-config': 0.29.21
-      fast-xml-parser: 5.4.1
+      fast-xml-parser: 5.5.9
       findit2: 2.2.3
       json-parse-even-better-errors: 4.0.0
       mem-fs: 2.1.0
@@ -25353,7 +25367,7 @@ snapshots:
       hosted-git-info: 4.1.0
       jsonc-parser: 3.3.1
       leven: 3.1.0
-      markdown-it: 14.1.0
+      markdown-it: 14.1.1
       mime: 1.6.0
       minimatch: 3.1.5
       parse-semver: 1.1.1
@@ -25472,8 +25486,6 @@ snapshots:
   '@xml-tools/parser@1.0.11':
     dependencies:
       chevrotain: 7.1.1
-
-  '@xmldom/xmldom@0.8.10': {}
 
   '@xmldom/xmldom@0.8.12': {}
 
@@ -25657,7 +25669,7 @@ snapshots:
   anymatch@3.1.3:
     dependencies:
       normalize-path: 3.0.0
-      picomatch: 4.0.3
+      picomatch: 4.0.4
 
   apache-arrow@18.1.0:
     dependencies:
@@ -28115,10 +28127,10 @@ snapshots:
 
   exponential-backoff@3.1.3: {}
 
-  express-rate-limit@8.2.1(express@5.2.1):
+  express-rate-limit@8.3.2(express@5.2.1):
     dependencies:
       express: 5.2.1
-      ip-address: 10.0.1
+      ip-address: 10.1.0
 
   express-session@1.18.2:
     dependencies:
@@ -28268,11 +28280,6 @@ snapshots:
   fast-xml-builder@1.1.4:
     dependencies:
       path-expression-matcher: 1.2.0
-
-  fast-xml-parser@5.4.1:
-    dependencies:
-      fast-xml-builder: 1.1.4
-      strnum: 2.2.2
 
   fast-xml-parser@5.5.9:
     dependencies:
@@ -28738,11 +28745,9 @@ snapshots:
 
   github-from-package@0.0.0: {}
 
-  github-username@6.0.0(encoding@0.1.13):
+  github-username@6.0.0:
     dependencies:
-      '@octokit/rest': 18.12.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
+      '@octokit/rest': 18.12.0
 
   glob-gitignore@1.0.15:
     dependencies:
@@ -29417,8 +29422,6 @@ snapshots:
       standard-as-callback: 2.1.0
     transitivePeerDependencies:
       - supports-color
-
-  ip-address@10.0.1: {}
 
   ip-address@10.1.0: {}
 
@@ -30210,7 +30213,7 @@ snapshots:
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
-      picomatch: 4.0.3
+      picomatch: 4.0.4
 
   jest-util@30.2.0:
     dependencies:
@@ -30356,8 +30359,8 @@ snapshots:
       escape-string-regexp: 2.0.0
       js2xmlparser: 4.0.2
       klaw: 3.0.0
-      markdown-it: 14.1.0
-      markdown-it-anchor: 8.6.7(@types/markdown-it@14.1.2)(markdown-it@14.1.0)
+      markdown-it: 14.1.1
+      markdown-it-anchor: 8.6.7(@types/markdown-it@14.1.2)(markdown-it@14.1.1)
       marked: 4.3.0
       mkdirp: 1.0.4
       requizzle: 0.2.4
@@ -30882,12 +30885,12 @@ snapshots:
     dependencies:
       tmpl: 1.0.5
 
-  markdown-it-anchor@8.6.7(@types/markdown-it@14.1.2)(markdown-it@14.1.0):
+  markdown-it-anchor@8.6.7(@types/markdown-it@14.1.2)(markdown-it@14.1.1):
     dependencies:
       '@types/markdown-it': 14.1.2
-      markdown-it: 14.1.0
+      markdown-it: 14.1.1
 
-  markdown-it@14.1.0:
+  markdown-it@14.1.1:
     dependencies:
       argparse: 2.0.1
       entities: 4.5.0
@@ -31337,6 +31340,7 @@ snapshots:
       whatwg-url: 5.0.0
     optionalDependencies:
       encoding: 0.1.13
+    optional: true
 
   node-fetch@3.3.2:
     dependencies:
@@ -32304,8 +32308,6 @@ snapshots:
 
   picocolors@1.1.1: {}
 
-  picomatch@4.0.3: {}
-
   picomatch@4.0.4: {}
 
   pidtree@0.6.0: {}
@@ -32543,7 +32545,7 @@ snapshots:
 
   promptfoo@0.121.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(@noble/hashes@1.8.0)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.19.10)(@types/react@16.14.69)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(pg@8.18.0)(playwright-core@1.58.2)(socks@2.8.7)(typescript@5.9.3):
     dependencies:
-      '@anthropic-ai/sdk': 0.80.0(zod@4.3.6)
+      '@anthropic-ai/sdk': 0.82.0(zod@4.3.6)
       '@apidevtools/json-schema-ref-parser': 15.3.1(@types/json-schema@7.0.15)
       '@googleapis/sheets': 13.0.1
       '@inquirer/checkbox': 5.1.0(@types/node@22.19.10)
@@ -33297,7 +33299,7 @@ snapshots:
 
   readdirp@3.6.0:
     dependencies:
-      picomatch: 4.0.3
+      picomatch: 4.0.4
 
   readdirp@4.1.2: {}
 
@@ -34849,7 +34851,8 @@ snapshots:
     dependencies:
       tldts: 7.0.23
 
-  tr46@0.0.3: {}
+  tr46@0.0.3:
+    optional: true
 
   tr46@3.0.0:
     dependencies:
@@ -35580,7 +35583,8 @@ snapshots:
 
   webdriver-bidi-protocol@0.4.1: {}
 
-  webidl-conversions@3.0.1: {}
+  webidl-conversions@3.0.1:
+    optional: true
 
   webidl-conversions@7.0.0: {}
 
@@ -35680,6 +35684,7 @@ snapshots:
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
+    optional: true
 
   when-exit@2.1.5: {}
 
@@ -36084,13 +36089,13 @@ snapshots:
       - bluebird
       - supports-color
 
-  yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)):
+  yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37)):
     dependencies:
       chalk: 4.1.2
       dargs: 7.0.0
       debug: 4.4.3
       execa: 5.1.1
-      github-username: 6.0.0(encoding@0.1.13)
+      github-username: 6.0.0
       lodash: 4.18.1
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
       minimist: 1.2.8
@@ -36105,17 +36110,16 @@ snapshots:
       yeoman-environment: 3.19.3(@types/node@20.19.37)
     transitivePeerDependencies:
       - bluebird
-      - encoding
       - mem-fs
       - supports-color
 
-  yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)):
+  yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)):
     dependencies:
       chalk: 4.1.2
       dargs: 7.0.0
       debug: 4.4.3
       execa: 5.1.1
-      github-username: 6.0.0(encoding@0.1.13)
+      github-username: 6.0.0
       lodash: 4.18.1
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
       minimist: 1.2.8
@@ -36130,11 +36134,10 @@ snapshots:
       yeoman-environment: 3.19.3(@types/node@22.19.10)
     transitivePeerDependencies:
       - bluebird
-      - encoding
       - mem-fs
       - supports-color
 
-  yeoman-test@6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))):
+  yeoman-test@6.3.0(@types/node@20.19.37)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))):
     dependencies:
       inquirer: 8.2.7(@types/node@20.19.37)
       lodash: 4.18.1
@@ -36143,11 +36146,11 @@ snapshots:
       sinon: 10.0.1
       temp-dir: 2.0.0
       yeoman-environment: 3.19.3(@types/node@20.19.37)
-      yeoman-generator: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
+      yeoman-generator: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
     transitivePeerDependencies:
       - '@types/node'
 
-  yeoman-test@6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))):
+  yeoman-test@6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))):
     dependencies:
       inquirer: 8.2.7(@types/node@22.19.10)
       lodash: 4.18.1
@@ -36156,7 +36159,7 @@ snapshots:
       sinon: 10.0.1
       temp-dir: 2.0.0
       yeoman-environment: 3.19.3(@types/node@22.19.10)
-      yeoman-generator: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
+      yeoman-generator: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
     transitivePeerDependencies:
       - '@types/node'
 
