@@ -1,5 +1,16 @@
 # @sap-ux/create
 
+## 0.15.68
+
+### Patch Changes
+
+- 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
+- Updated dependencies [1b10e9f]
+    - @sap-ux/adp-tooling@0.18.111
+    - @sap-ux/flp-config-inquirer@0.4.170
+    - @sap-ux/preview-middleware@0.25.18
+    - @sap-ux/app-config-writer@0.6.132
+
 ## 0.15.67
 
 ### Patch Changes
