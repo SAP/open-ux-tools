@@ -5,7 +5,6 @@ import { nextFreePort } from '../../src/utils';
 import { loadExtensions } from '../../src/approuter/extensions';
 import { loadAndApplyEnvOptions } from '../../src/config/env';
 import { startApprouter } from '../../src/approuter/approuter';
-import { updateXsuaaService } from '../../src/platform/xssecurity';
 import type { BackendProxyMiddlewareCfConfig } from '../../src/types';
 import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../src/proxy/routes';
 import { fetchBasUrlTemplate, resolveBasExternalUrl } from '../../src/platform/bas';

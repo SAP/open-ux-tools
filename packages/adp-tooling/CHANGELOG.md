@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.111
+
+### Patch Changes
+
+- 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
+
 ## 0.18.110
 
 ### Patch Changes
