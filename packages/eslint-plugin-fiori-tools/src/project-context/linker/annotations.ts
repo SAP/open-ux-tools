@@ -405,6 +405,7 @@ function getRecordPropertyValue(record: Element): Record<string, RecordProperty>
  * Extracts property values from a record content elements.
  *
  * @param content - The record content elements to extract properties from
+ * @returns - Object of properties
  */
 function getRecordContentPropertyValue(content: ElementChild[]): Record<string, RecordProperty> {
     const properties: Record<string, RecordProperty> = {};
@@ -412,30 +413,31 @@ function getRecordContentPropertyValue(content: ElementChild[]): Record<string, 
         if (child.type !== ELEMENT_TYPE) {
             continue;
         }
-        if (child.name === Edm.PropertyValue) {
-            const name = getElementAttributeValue(child, Edm.Property);
-            const annotationPathContent = findContentByName(child.content, 'AnnotationPath');
-            if (annotationPathContent) {
-                const annotationValue = getElementText(annotationPathContent);
-                if (annotationValue) {
-                    properties[name] = {
-                        name,
-                        value: annotationValue,
-                        kind: Edm.AnnotationPath
-                    };
-                    continue;
-                }
+        if (child.name !== Edm.PropertyValue) {
+            continue;
+        }
+        const name = getElementAttributeValue(child, Edm.Property);
+        const annotationPathContent = findContentByName(child.content, 'AnnotationPath');
+        if (annotationPathContent) {
+            const annotationValue = getElementText(annotationPathContent);
+            if (annotationValue) {
+                properties[name] = {
+                    name,
+                    value: annotationValue,
+                    kind: Edm.AnnotationPath
+                };
+                continue;
             }
-            const cdsStringAttribute = findContentByName(child.content, 'String');
-            if (cdsStringAttribute) {
-                const textValue = getElementText(cdsStringAttribute);
-                if (textValue) {
-                    properties[name] = {
-                        name,
-                        value: textValue,
-                        kind: Edm.String
-                    };
-                }
+        }
+        const cdsStringAttribute = findContentByName(child.content, 'String');
+        if (cdsStringAttribute) {
+            const textValue = getElementText(cdsStringAttribute);
+            if (textValue) {
+                properties[name] = {
+                    name,
+                    value: textValue,
+                    kind: Edm.String
+                };
             }
         }
     }
