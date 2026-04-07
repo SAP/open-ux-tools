@@ -102,16 +102,12 @@ describe('HTML5 Repository', () => {
             const result = await getToken(mockUaa);
 
             expect(result).toBe('test-access-token');
-            expect(mockAxios.post).toHaveBeenCalledWith(
-                '/test-uaa/oauth/token',
-                'grant_type=client_credentials',
-                {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Basic ' + Buffer.from('test-client-id:test-client-secret').toString('base64')
-                    }
+            expect(mockAxios.post).toHaveBeenCalledWith('/test-uaa/oauth/token', 'grant_type=client_credentials', {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': 'Basic ' + Buffer.from('test-client-id:test-client-secret').toString('base64')
                 }
-            );
+            });
         });
 
         test('should throw error when token request fails', async () => {

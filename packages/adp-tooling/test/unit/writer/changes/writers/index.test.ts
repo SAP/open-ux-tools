@@ -388,22 +388,16 @@ describe('NewModelWriter', () => {
 
         await writer.write(mockData);
 
-        expect(readJSONMock).toHaveBeenCalledWith(
-            `${mockProjectPath}/webapp/xs-app.json`,
-            { routes: [] }
-        );
-        expect(writeJSONMock).toHaveBeenCalledWith(
-            `${mockProjectPath}/webapp/xs-app.json`,
-            {
-                routes: [
-                    {
-                        source: '^/customer/MyService/sap/opu/odata/v4/(.*)',
-                        target: '/sap/opu/odata/v4/$1',
-                        destination: 'MY_CF_DEST'
-                    }
-                ]
-            }
-        );
+        expect(readJSONMock).toHaveBeenCalledWith(`${mockProjectPath}/webapp/xs-app.json`, { routes: [] });
+        expect(writeJSONMock).toHaveBeenCalledWith(`${mockProjectPath}/webapp/xs-app.json`, {
+            routes: [
+                {
+                    source: '^/customer/MyService/sap/opu/odata/v4/(.*)',
+                    target: '/sap/opu/odata/v4/$1',
+                    destination: 'MY_CF_DEST'
+                }
+            ]
+        });
     });
 
     it('should append a route to existing xs-app.json routes for a CF project', async () => {
@@ -426,19 +420,16 @@ describe('NewModelWriter', () => {
 
         await writer.write(mockData);
 
-        expect(writeJSONMock).toHaveBeenCalledWith(
-            `${mockProjectPath}/webapp/xs-app.json`,
-            {
-                routes: [
-                    { source: '^existing/route/(.*)', target: '/existing/$1', destination: 'OTHER_DEST' },
-                    {
-                        source: '^/customer/NewService/sap/opu/odata/v2/(.*)',
-                        target: '/sap/opu/odata/v2/$1',
-                        destination: 'MY_CF_DEST'
-                    }
-                ]
-            }
-        );
+        expect(writeJSONMock).toHaveBeenCalledWith(`${mockProjectPath}/webapp/xs-app.json`, {
+            routes: [
+                { source: '^existing/route/(.*)', target: '/existing/$1', destination: 'OTHER_DEST' },
+                {
+                    source: '^/customer/NewService/sap/opu/odata/v2/(.*)',
+                    target: '/sap/opu/odata/v2/$1',
+                    destination: 'MY_CF_DEST'
+                }
+            ]
+        });
     });
 
     it('should not write xs-app.json for a non-CF project', async () => {
@@ -476,10 +467,7 @@ describe('NewModelWriter', () => {
 
         await writer.write(mockData);
 
-        expect(addConnectivityServiceToMtaMock).toHaveBeenCalledWith(
-            '/mock/project',
-            expect.any(Object)
-        );
+        expect(addConnectivityServiceToMtaMock).toHaveBeenCalledWith('/mock/project', expect.any(Object));
     });
 
     it('should not call addConnectivityServiceToMta when not in CF (isOnPremiseDestination absent)', async () => {

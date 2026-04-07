@@ -36,7 +36,9 @@ jest.mock('../../../../src/cf/project/yaml-loader', () => ({
 
 const mockCreateServices = createServices as jest.MockedFunction<typeof createServices>;
 const mockCreateServiceInstance = createServiceInstance as jest.MockedFunction<typeof createServiceInstance>;
-const mockGetOrCreateServiceInstanceKeys = getOrCreateServiceInstanceKeys as jest.MockedFunction<typeof getOrCreateServiceInstanceKeys>;
+const mockGetOrCreateServiceInstanceKeys = getOrCreateServiceInstanceKeys as jest.MockedFunction<
+    typeof getOrCreateServiceInstanceKeys
+>;
 const mockGetYamlContent = getYamlContent as jest.MockedFunction<typeof getYamlContent>;
 const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
     typeof getProjectNameForXsSecurity
@@ -906,20 +908,22 @@ describe('YAML Project Functions', () => {
                 mtaYamlPath,
                 expect.stringContaining('myproject-connectivity')
             );
-            expect(mockMemFs.write).toHaveBeenCalledWith(
-                mtaYamlPath,
-                expect.stringContaining('connectivity')
-            );
-            expect(mockMemFs.write).toHaveBeenCalledWith(
-                mtaYamlPath,
-                expect.stringContaining('lite')
-            );
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.stringContaining('connectivity'));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.stringContaining('lite'));
             expect(mockMemFs.write).toHaveBeenCalledWith(
                 mtaYamlPath,
                 expect.stringContaining('service-name: myproject-connectivity')
             );
-            expect(mockCreateServiceInstance).toHaveBeenCalledWith('lite', 'myproject-connectivity', 'connectivity', expect.any(Object));
-            expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith({ names: ['myproject-connectivity'] }, undefined);
+            expect(mockCreateServiceInstance).toHaveBeenCalledWith(
+                'lite',
+                'myproject-connectivity',
+                'connectivity',
+                expect.any(Object)
+            );
+            expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
+                { names: ['myproject-connectivity'] },
+                undefined
+            );
         });
 
         test('should do nothing when project has no mta.yaml', async () => {
@@ -968,7 +972,9 @@ describe('YAML Project Functions', () => {
             mockGetYamlContent.mockReturnValue({ ...mockMtaYaml, resources: [] });
             mockCreateServiceInstance.mockRejectedValueOnce(new Error('CF error'));
 
-            await expect(addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor)).rejects.toThrow('CF error');
+            await expect(addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor)).rejects.toThrow(
+                'CF error'
+            );
 
             expect(mockMemFs.write).not.toHaveBeenCalled();
         });

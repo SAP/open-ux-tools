@@ -975,8 +975,21 @@ describe('CF Services API', () => {
         };
 
         const mockBtpConfigs = [
-            { Name: 'DEST_ONE', Type: 'HTTP', URL: 'https://one.example.com', Authentication: 'NoAuthentication', ProxyType: 'Internet', Description: 'First dest' },
-            { Name: 'DEST_TWO', Type: 'HTTP', URL: 'https://two.example.com', Authentication: 'BasicAuthentication', ProxyType: 'OnPremise' }
+            {
+                Name: 'DEST_ONE',
+                Type: 'HTTP',
+                URL: 'https://one.example.com',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'First dest'
+            },
+            {
+                Name: 'DEST_TWO',
+                Type: 'HTTP',
+                URL: 'https://two.example.com',
+                Authentication: 'BasicAuthentication',
+                ProxyType: 'OnPremise'
+            }
         ];
 
         beforeEach(() => {
@@ -989,8 +1002,22 @@ describe('CF Services API', () => {
             const result = await listBtpDestinations(mockCredentials);
 
             expect(result).toEqual({
-                DEST_ONE: { Name: 'DEST_ONE', Host: 'https://one.example.com', Type: 'HTTP', Authentication: 'NoAuthentication', ProxyType: 'Internet', Description: 'First dest' },
-                DEST_TWO: { Name: 'DEST_TWO', Host: 'https://two.example.com', Type: 'HTTP', Authentication: 'BasicAuthentication', ProxyType: 'OnPremise', Description: '' }
+                DEST_ONE: {
+                    Name: 'DEST_ONE',
+                    Host: 'https://one.example.com',
+                    Type: 'HTTP',
+                    Authentication: 'NoAuthentication',
+                    ProxyType: 'Internet',
+                    Description: 'First dest'
+                },
+                DEST_TWO: {
+                    Name: 'DEST_TWO',
+                    Host: 'https://two.example.com',
+                    Type: 'HTTP',
+                    Authentication: 'BasicAuthentication',
+                    ProxyType: 'OnPremise',
+                    Description: ''
+                }
             });
         });
 
@@ -1006,8 +1033,22 @@ describe('CF Services API', () => {
             const result = await listBtpDestinations(flatCredentials);
 
             expect(result).toEqual({
-                DEST_ONE: { Name: 'DEST_ONE', Host: 'https://one.example.com', Type: 'HTTP', Authentication: 'NoAuthentication', ProxyType: 'Internet', Description: 'First dest' },
-                DEST_TWO: { Name: 'DEST_TWO', Host: 'https://two.example.com', Type: 'HTTP', Authentication: 'BasicAuthentication', ProxyType: 'OnPremise', Description: '' }
+                DEST_ONE: {
+                    Name: 'DEST_ONE',
+                    Host: 'https://one.example.com',
+                    Type: 'HTTP',
+                    Authentication: 'NoAuthentication',
+                    ProxyType: 'Internet',
+                    Description: 'First dest'
+                },
+                DEST_TWO: {
+                    Name: 'DEST_TWO',
+                    Host: 'https://two.example.com',
+                    Type: 'HTTP',
+                    Authentication: 'BasicAuthentication',
+                    ProxyType: 'OnPremise',
+                    Description: ''
+                }
             });
         });
 

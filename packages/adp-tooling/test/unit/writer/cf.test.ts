@@ -9,11 +9,7 @@ import type { Manifest } from '@sap-ux/project-access';
 
 import { generateCf, writeUi5AppInfo, setupCfPreview } from '../../../src/writer/cf';
 import { AppRouterType, FlexLayer, type CfAdpWriterConfig, type CfUi5AppInfo, type CfConfig } from '../../../src/types';
-import {
-    getOrCreateServiceInstanceKeys,
-    getCfUi5AppInfo,
-    getProjectNameForXsSecurity
-} from '../../../src/cf';
+import { getOrCreateServiceInstanceKeys, getCfUi5AppInfo, getProjectNameForXsSecurity } from '../../../src/cf';
 import { runBuild } from '../../../src/base/project-builder';
 import { readUi5Yaml } from '@sap-ux/project-access';
 import { getBaseAppId } from '../../../src/base/helper';
