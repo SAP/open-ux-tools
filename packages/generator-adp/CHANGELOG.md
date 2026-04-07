@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.49
+
+### Patch Changes
+
+- 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
+- Updated dependencies [1b10e9f]
+    - @sap-ux/adp-tooling@0.18.111
+
 ## 0.9.48
 
 ### Patch Changes
