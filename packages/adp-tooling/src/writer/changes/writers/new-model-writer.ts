@@ -9,18 +9,11 @@ import { parseStringToObject, getChange, writeChangeToFolder } from '../../../ba
 import { addConnectivityServiceToMta } from '../../../cf/project/yaml';
 import { ensureTunnelAppExists, DEFAULT_TUNNEL_APP_NAME } from '../../../cf/services/ssh';
 
-const CF_MODEL_SETTINGS = {
-    operationMode: 'Server',
-    autoExpandSelect: true,
-    earlyRequests: true
-} as const;
-
 type NewModelContent = {
     model?: {
         [key: string]: {
             settings?: object;
             dataSource: string;
-            preload?: boolean;
         };
     };
     dataSource: {
@@ -74,10 +67,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
         if (!isHttp && service.modelName) {
             content.model = { [service.modelName]: { dataSource: service.name } };
 
-            if (isCloudFoundry) {
-                content.model[service.modelName].preload = true;
-                content.model[service.modelName].settings = { ...CF_MODEL_SETTINGS };
-            } else if (service.modelSettings && service.modelSettings.length !== 0) {
+            if (service.modelSettings && service.modelSettings.length !== 0) {
                 content.model[service.modelName].settings = parseStringToObject(service.modelSettings);
             }
         }

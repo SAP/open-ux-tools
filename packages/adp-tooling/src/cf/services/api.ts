@@ -445,9 +445,8 @@ export async function getOrCreateServiceKeys(
 
 /**
  * Lists all subaccount destinations from the BTP Destination Configuration API.
- * This works in both VS Code and BAS, as long as valid destination service credentials are provided.
  *
- * @param {CfDestinationServiceCredentials} credentials - Destination service credentials (uri + uaa).
+ * @param {CfDestinationServiceCredentials} credentials - Destination service credentials.
  * @returns {Promise<Destinations>} Map of destination name to Destination object.
  */
 export async function listBtpDestinations(credentials: CfDestinationServiceCredentials): Promise<Destinations> {

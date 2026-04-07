@@ -9,11 +9,10 @@ import type { CfDestinationServiceCredentials, MtaYaml } from '../../types';
 
 /**
  * Finds the name of the destination service instance declared in the MTA project's mta.yaml.
- * The mta.yaml lives one level above the app project directory.
  *
  * @param {string} projectPath - The root path of the app project.
  * @returns {string} The CF service instance name.
- * @throws {Error} If the destination service instance is not found or mta.yaml cannot be read.
+ * @throws {Error} When the destination service instance is not found or mta.yaml cannot be read.
  */
 function getDestinationServiceName(projectPath: string): string {
     try {

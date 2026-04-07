@@ -114,44 +114,6 @@ export async function writeUi5AppInfo(basePath: string, ui5AppInfo: CfUi5AppInfo
 }
 
 /**
- * Downloads ui5AppInfo.json from the FDC service and writes it to the project root.
- * Reads the html5-apps-repo service instance name from the app-variant-bundler-build
- * task in ui5.yaml, fetches service keys, then calls the FDC API.
- *
- * @param projectPath - path to application root
- * @param cfConfig - CF configuration (token, url, space)
- * @param logger - optional logger instance
- */
-export async function downloadUi5AppInfo(projectPath: string, cfConfig: CfConfig, logger?: ToolsLogger): Promise<void> {
-    const ui5Config = await readUi5Yaml(projectPath, 'ui5.yaml');
-    const bundlerTask = ui5Config.findCustomTask<{ serviceInstanceName?: string; space?: string }>(
-        'app-variant-bundler-build'
-    );
-    const serviceInstanceName = bundlerTask?.configuration?.serviceInstanceName;
-    if (!serviceInstanceName) {
-        throw new Error('No serviceInstanceName found in app-variant-bundler-build configuration');
-    }
-
-    const spaceGuid = bundlerTask?.configuration?.space;
-    const serviceInfo = await getOrCreateServiceInstanceKeys(
-        { names: [serviceInstanceName], ...(spaceGuid ? { spaceGuids: [spaceGuid] } : {}) },
-        logger
-    );
-    if (!serviceInfo || serviceInfo.serviceKeys.length === 0) {
-        throw new Error(`No service keys found for service instance: ${serviceInstanceName}`);
-    }
-
-    const appId = await getBaseAppId(projectPath);
-    const appHostIds = getAppHostIds(serviceInfo.serviceKeys);
-    if (appHostIds.length === 0) {
-        throw new Error('No app host IDs found in service keys.');
-    }
-
-    const ui5AppInfo = await getCfUi5AppInfo(appId, appHostIds, cfConfig, logger);
-    await writeUi5AppInfo(projectPath, ui5AppInfo, logger);
-}
-
-/**
  * Setup CF adaptation project for local preview.
  * Fetches ui5AppInfo.json and builds the project.
  *
@@ -190,12 +152,12 @@ export async function setupCfPreview(
 
     const appId = await getBaseAppId(basePath);
     const appHostIds = getAppHostIds(serviceInfo.serviceKeys);
+    const ui5AppInfo: CfUi5AppInfo = await getCfUi5AppInfo(appId, appHostIds, cfConfig, logger);
 
     if (appHostIds.length === 0) {
         throw new Error('No app host IDs found in service keys.');
     }
 
-    const ui5AppInfo: CfUi5AppInfo = await getCfUi5AppInfo(appId, appHostIds, cfConfig, logger);
     await writeUi5AppInfo(basePath, ui5AppInfo, logger);
     await runBuild(basePath, { ADP_BUILDER_MODE: 'preview' });
 }

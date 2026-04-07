@@ -669,9 +669,9 @@ export interface NewModelDataBase {
         name: string;
         /** URI of the OData service. */
         uri: string;
-        /** Name of the OData service model. Optional — absent for HTTP service type. */
+        /** Name of the OData service model. Optional for absent for HTTP service type. */
         modelName?: string;
-        /** Version of OData used. Undefined for HTTP service type. */
+        /** Version of OData used. Optional for HTTP service type. */
         version?: string;
         /** Settings for the OData service model. */
         modelSettings?: string;

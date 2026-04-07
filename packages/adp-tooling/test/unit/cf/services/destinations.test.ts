@@ -122,7 +122,7 @@ describe('getDestinations', () => {
         expect(listBtpDestinationsMock).not.toHaveBeenCalled();
     });
 
-    it('should throw an error when getOrCreateServiceInstanceKeys returns null', async () => {
+    it('should throw an error when getOrCreateServiceInstanceKeys does not return any keys', async () => {
         getYamlContentMock.mockReturnValue(mockMtaYaml);
         getOrCreateServiceInstanceKeysMock.mockResolvedValue(null);
 

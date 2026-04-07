@@ -297,7 +297,7 @@ describe('NewModelWriter', () => {
         expect(writeChangeToFolderMock).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 
-    it('should omit the model block when modelName is undefined (HTTP service type)', async () => {
+    it('should omit the model block in HTTP service type scenario', async () => {
         const mockData: NewModelData = {
             variant: {} as DescriptorVariant,
             serviceType: ServiceType.HTTP,
@@ -327,7 +327,7 @@ describe('NewModelWriter', () => {
         );
     });
 
-    it('should construct CF-specific content with derived URI, preload and fixed model settings', async () => {
+    it('should construct CF change content with derived URI', async () => {
         const mockData: NewModelData = {
             variant: {} as DescriptorVariant,
             serviceType: ServiceType.ODATA_V4,
@@ -358,16 +358,42 @@ describe('NewModelWriter', () => {
                 },
                 'model': {
                     'customer.MyService': {
-                        'dataSource': 'customer.MyService',
-                        'preload': true,
-                        'settings': {
-                            'operationMode': 'Server',
-                            'autoExpandSelect': true,
-                            'earlyRequests': true
-                        }
+                        'dataSource': 'customer.MyService'
                     }
                 }
             },
+            ChangeType.ADD_NEW_MODEL
+        );
+    });
+
+    it('should apply user modelSettings for CF project', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
+            isCloudFoundry: true,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.MyService',
+                uri: '/sap/opu/odata/v4/',
+                modelName: 'customer.MyService',
+                version: '4.0',
+                modelSettings: '"operationMode": "Server"'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(getChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.anything(),
+            expect.objectContaining({
+                'model': {
+                    'customer.MyService': {
+                        'dataSource': 'customer.MyService',
+                        'settings': { 'operationMode': 'Server' }
+                    }
+                }
+            }),
             ChangeType.ADD_NEW_MODEL
         );
     });
@@ -470,7 +496,7 @@ describe('NewModelWriter', () => {
         expect(addConnectivityServiceToMtaMock).toHaveBeenCalledWith('/mock/project', expect.any(Object));
     });
 
-    it('should not call addConnectivityServiceToMta when not in CF (isOnPremiseDestination absent)', async () => {
+    it('should not call addConnectivityServiceToMta when not in CF', async () => {
         const mockData: NewModelData = {
             variant: {} as DescriptorVariant,
             serviceType: ServiceType.ODATA_V2,

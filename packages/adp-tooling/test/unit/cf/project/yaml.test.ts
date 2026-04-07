@@ -926,7 +926,7 @@ describe('YAML Project Functions', () => {
             );
         });
 
-        test('should do nothing when project has no mta.yaml', async () => {
+        test('should not create service when project has no mta.yaml', async () => {
             mockExistsSync.mockReturnValue(false);
 
             await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
@@ -936,7 +936,7 @@ describe('YAML Project Functions', () => {
             expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
         });
 
-        test('should do nothing when yaml content cannot be read', async () => {
+        test('should not create service when yaml content cannot be read', async () => {
             mockExistsSync.mockReturnValue(true);
             mockGetYamlContent.mockReturnValue(null);
 
@@ -947,7 +947,7 @@ describe('YAML Project Functions', () => {
             expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
         });
 
-        test('should do nothing when connectivity resource already exists (idempotent)', async () => {
+        test('should not create service when connectivity resource already exists (idempotent)', async () => {
             mockExistsSync.mockReturnValue(true);
             mockGetYamlContent.mockReturnValue({
                 ...mockMtaYaml,
@@ -967,7 +967,7 @@ describe('YAML Project Functions', () => {
             expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
         });
 
-        test('should not write mta.yaml when createServiceInstance fails', async () => {
+        test('should not modify mta.yaml when createServiceInstance fails', async () => {
             mockExistsSync.mockReturnValue(true);
             mockGetYamlContent.mockReturnValue({ ...mockMtaYaml, resources: [] });
             mockCreateServiceInstance.mockRejectedValueOnce(new Error('CF error'));
