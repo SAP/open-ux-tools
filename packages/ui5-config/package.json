@@ -34,7 +34,7 @@
         "@sap-ux/yaml": "workspace:*",
         "ajv": "8.18.0",
         "js-yaml": "4.1.1",
-        "lodash": "4.17.23",
+        "lodash": "4.18.1",
         "semver": "7.7.4",
         "axios": "1.13.6"
     },

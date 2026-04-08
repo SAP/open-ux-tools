@@ -32,11 +32,11 @@
         "axios": "1.13.6",
         "detect-content-type": "1.2.0",
         "fast-xml-parser": "5.5.9",
-        "lodash": "4.17.23",
+        "lodash": "4.18.1",
         "open": "8.4.2",
         "qs": "6.15.0",
         "xpath": "0.0.34",
-        "@xmldom/xmldom": "0.8.11",
+        "@xmldom/xmldom": "0.8.12",
         "https-proxy-agent": "7.0.6",
         "http-proxy-agent": "7.0.2",
         "proxy-from-env": "1.1.0"

@@ -52,7 +52,7 @@
         "@sap/service-provider-apis": "2.8.0",
         "i18next": "25.10.10",
         "inquirer": "8.2.7",
-        "lodash": "4.17.23",
+        "lodash": "4.18.1",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "uuid": "11.1.0",

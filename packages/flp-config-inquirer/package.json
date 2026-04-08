@@ -38,7 +38,7 @@
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/adp-tooling": "workspace:*",
         "i18next": "25.10.10",
-        "lodash": "4.17.23"
+        "lodash": "4.18.1"
     },
     "devDependencies": {
         "@sap-devx/yeoman-ui-types": "1.23.0",
