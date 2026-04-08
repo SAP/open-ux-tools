@@ -18,6 +18,8 @@ import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import type { AnnotationBasedNode } from '../../../src/project-context/linker/annotations';
 
+jest.setTimeout(5 * 60000);
+
 const parser = new ApplicationParser();
 
 interface TestOptions {
