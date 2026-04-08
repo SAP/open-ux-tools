@@ -62,10 +62,11 @@ export const V4_METADATA = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
 
 // CAP
 export const CAP_PROJECT_PATH = join(ROOT, 'test', 'data', 'cap-start');
-export const CAP_MANIFEST_PATH = join(ROOT, 'test', 'data', 'cap-start', 'app', 'incidents', 'webapp', 'manifest.json');
+export const CAP_APP_PATH = join(CAP_PROJECT_PATH, 'app', 'incidents');
+export const CAP_MANIFEST_PATH = join(CAP_APP_PATH, 'webapp', 'manifest.json');
 export const CAP_MANIFEST = Object.freeze(JSON.parse(readFileSync(CAP_MANIFEST_PATH, 'utf-8'))) as Manifest;
-export const CAP_ANNOTATIONS_PATH = join(ROOT, 'test', 'data', 'cap-start', 'app', 'incidents', 'annotations.cds');
-export const CAP_METADATA_PATH = join(ROOT, 'test', 'data', 'cap-start', 'srv', 'incidentservice.cds');
+export const CAP_ANNOTATIONS_PATH = join(CAP_APP_PATH, 'annotations.cds');
+export const CAP_METADATA_PATH = join(CAP_PROJECT_PATH, 'srv', 'incidentservice.cds');
 export const CAP_ANNOTATIONS = readFileSync(CAP_ANNOTATIONS_PATH, 'utf-8');
 export const CAP_FACETS_ANNOTATIONS = `
 annotate service.Incidents with @(

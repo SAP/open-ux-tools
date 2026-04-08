@@ -3,16 +3,20 @@ import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
-import type { FeV4ListReport, FeV4ObjectPage, LinkedFeV4App } from '../../../src/project-context/linker/fe-v4';
+import type {
+    FeV4ListReport,
+    FeV4ObjectPage,
+    LinkedFeV4App,
+    TableSection
+} from '../../../src/project-context/linker/fe-v4';
 import { runFeV4Linker } from '../../../src/project-context/linker/fe-v4';
 import type { LinkerContext } from '../../../src/project-context/linker/types';
 import { ApplicationParser } from '../../../src/project-context/parser';
 import type { ManifestChange } from '../../test-helper';
-import { applyManifestChange, applyXmlAnnotationsChange, CAP_FACETS_ANNOTATIONS } from '../../test-helper';
+import { applyManifestChange, applyXmlAnnotationsChange, CAP_APP_PATH, CAP_PROJECT_PATH } from '../../test-helper';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
-
-jest.setTimeout(3 * 60000);
+import type { AnnotationBasedNode } from '../../../src/project-context/linker/annotations';
 
 const parser = new ApplicationParser();
 
@@ -598,13 +602,11 @@ describe('FE V4 Linker - XML', () => {
 describe('FE V4 Linker - CAP', () => {
     let artifacts: FoundFioriArtifacts;
     const fileCache = new Map<string, string>();
-    const root = join(__dirname, '..', '..', 'data', 'cap-start');
-    const appPath = join(__dirname, '..', '..', 'data', 'cap-start', 'app', 'incidents');
 
     beforeAll(async () => {
-        npmInstall(root);
+        npmInstall(CAP_PROJECT_PATH);
         artifacts = await findFioriArtifacts({
-            wsFolders: [root],
+            wsFolders: [CAP_PROJECT_PATH],
             artifacts: ['applications', 'adaptations']
         });
         const files = [
@@ -613,7 +615,7 @@ describe('FE V4 Linker - CAP', () => {
             join('app', 'incidents', 'webapp', 'manifest.json')
         ];
         for (const file of files) {
-            const absolutePath = normalizePath(join(root, file));
+            const absolutePath = normalizePath(join(CAP_PROJECT_PATH, file));
             const content = await readFile(absolutePath, 'utf-8');
             const uri = pathToFileURL(absolutePath).toString();
             fileCache.set(uri, content);
@@ -623,7 +625,7 @@ describe('FE V4 Linker - CAP', () => {
     async function setup(options?: TestOptions): Promise<LinkerContext> {
         const testCache = new Map<string, string>(fileCache);
         if (options?.manifestChanges) {
-            const absolutePath = normalizePath(join(appPath, 'webapp', 'manifest.json'));
+            const absolutePath = normalizePath(join(CAP_APP_PATH, 'webapp', 'manifest.json'));
             const uri = pathToFileURL(absolutePath).toString();
             const manifestText = fileCache.get(uri)!;
             const manifestObject = JSON.parse(manifestText) as Manifest;
@@ -633,16 +635,14 @@ describe('FE V4 Linker - CAP', () => {
             testCache.set(uri, JSON.stringify(manifestObject, null, 4));
         }
         if (options?.annotationsChange) {
-            const absolutePath = normalizePath(join(appPath, 'annotation.cds'));
+            const absolutePath = normalizePath(join(CAP_APP_PATH, 'annotations.cds'));
             const uri = pathToFileURL(absolutePath).toString();
             const annotations = fileCache.get(uri)!;
             const modifiedAnnotations = `${annotations}
 ${options?.annotationsChange}`;
             testCache.set(uri, modifiedAnnotations);
         }
-
         const model = parser.parse('CAPNodejs', artifacts, testCache);
-
         const app = model.index.apps[Object.keys(model.index.apps)[0]];
         return {
             app,
@@ -715,12 +715,19 @@ ${options?.annotationsChange}`;
                             ],
                             value: 'InlineCreationRows'
                         }
-                    ],
-                    annotationsChange: CAP_FACETS_ANNOTATIONS
+                    ]
                 });
                 const result = runFeV4Linker(context);
                 const page = findObjectPage(result);
                 const table = page.lookup['table'];
+                expect(page.sections).toHaveLength(1);
+                expect((page.sections[0].annotation as AnnotationBasedNode<'table-section'>).annotationPath).toBe(
+                    '@com.sap.vocabularies.UI.v1.Facets/0'
+                );
+                expect((page.sections[0] as TableSection).children).toHaveLength(1);
+                expect((page.sections[0] as TableSection).children[0].annotation?.annotationPath).toBe(
+                    'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem#table_section'
+                );
                 expect(table).toHaveLength(1);
                 expect(table![0].configuration.creationMode).toMatchSnapshot();
             });
@@ -756,8 +763,7 @@ ${options?.annotationsChange}`;
                             ],
                             value: 'InlineCreationRows'
                         }
-                    ],
-                    annotationsChange: CAP_FACETS_ANNOTATIONS
+                    ]
                 });
                 const result = runFeV4Linker(context);
                 const page = findObjectPage(result);
@@ -785,8 +791,7 @@ ${options?.annotationsChange}`;
                             ],
                             value: 'abc'
                         }
-                    ],
-                    annotationsChange: CAP_FACETS_ANNOTATIONS
+                    ]
                 });
                 const result = runFeV4Linker(context);
                 const page = findObjectPage(result);
@@ -865,8 +870,7 @@ ${options?.annotationsChange}`;
                             ],
                             value: 'ResponsiveTable'
                         }
-                    ],
-                    annotationsChange: CAP_FACETS_ANNOTATIONS
+                    ]
                 });
                 const result = runFeV4Linker(context);
                 const page = findObjectPage(result);
@@ -880,22 +884,20 @@ ${options?.annotationsChange}`;
                     manifestChanges: [
                         {
                             path: [
-                                'sap.ui.generic.app',
-                                'pages',
-                                'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
-                                'pages',
-                                'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
-                                'component',
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsObjectPage',
+                                'options',
                                 'settings',
-                                'sections',
-                                'to_Product::com.sap.vocabularies.UI.v1.LineItem',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem#test',
                                 'tableSettings',
                                 'type'
                             ],
                             value: 'wrong-value'
                         }
-                    ],
-                    annotationsChange: CAP_FACETS_ANNOTATIONS
+                    ]
                 });
                 const result = runFeV4Linker(context);
                 const page = findObjectPage(result);
