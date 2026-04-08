@@ -1,14 +1,14 @@
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { format } from 'node:util';
 import { render } from 'ejs';
 import { Mta, type mta } from '@sap/mta-lib';
 import { YamlDocument } from '@sap-ux/yaml';
-import { FileName, getMtaPath } from '@sap-ux/project-access';
+import { FileName } from '@sap-ux/project-access';
 import { t } from '../i18n';
 import type { Logger } from '@sap-ux/logger';
 import type { YAMLMap, YAMLSeq } from '@sap-ux/yaml';
-import { RouterModuleType, type MTADestinationType } from '../types';
+import { RouterModuleType } from '../types';
 import { ManagedXSUAA, HTML5RepoHost, ManagedAppFront, MAX_MTA_PREFIX_LENGTH } from '../constants';
 import type { MtaContext } from './mta-context';
 import { RouterConfigurator } from './router-configurator';
@@ -209,6 +209,8 @@ export class MtaDeployment {
     /**
      * 80% case: configure managed HTML5 app deployment in one call.
      * Ensures all required resources, router module, and app registration are done.
+     *
+     * @param options
      */
     public async deployManagedApp(options: ManagedAppOptions): Promise<void> {
         // Ensure managed router prerequisites
@@ -247,6 +249,8 @@ export class MtaDeployment {
     /**
      * Non-standard router types: standalone (Standard) or AppFront.
      * Used by base-config, cap-config, and app-config for non-managed flows.
+     *
+     * @param options
      */
     public async deployWithRouter(options: RouterDeployOptions): Promise<void> {
         if (options.routerType === RouterModuleType.Standard) {
@@ -334,6 +338,8 @@ export class MtaDeployment {
      * @param instanceDestName Instance destination name
      * @param destUrl Destination URL
      * @param headerConfig Additional header config key/value
+     * @param headerConfig.key
+     * @param headerConfig.value
      */
     public async addMtaExtensionConfig(
         instanceDestName: string | undefined,
@@ -442,6 +448,9 @@ export class MtaDeployment {
      * Add routing modules — backwards-compatible shim used by addRoutingConfig() in index.ts.
      *
      * @param options Routing options
+     * @param options.isManagedApp
+     * @param options.isAppFrontApp
+     * @param options.addMissingModules
      */
     public async addRoutingModules({
         isManagedApp = false,
@@ -452,11 +461,12 @@ export class MtaDeployment {
         isAppFrontApp?: boolean;
         addMissingModules?: boolean;
     } = {}): Promise<void> {
-        const routerType = isAppFrontApp
-            ? RouterModuleType.AppFront
-            : isManagedApp
-              ? RouterModuleType.Managed
-              : undefined;
+        let routerType: RouterModuleType | undefined;
+        if (isAppFrontApp) {
+            routerType = RouterModuleType.AppFront;
+        } else if (isManagedApp) {
+            routerType = RouterModuleType.Managed;
+        }
         await this.deployWithRouter({ routerType, addMissingModules });
     }
 
@@ -464,6 +474,8 @@ export class MtaDeployment {
      * Add a router type — backwards-compatible shim.
      *
      * @param options Router type options
+     * @param options.routerType
+     * @param options.addMissingModules
      */
     public async addRouterType({
         routerType,
