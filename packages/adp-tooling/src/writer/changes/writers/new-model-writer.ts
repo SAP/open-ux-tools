@@ -96,8 +96,14 @@ export class NewModelWriter implements IWriter<NewModelData> {
      */
     async write(data: NewModelData): Promise<void> {
         const timestamp = Date.now();
+        const isHttp = data.serviceType === ServiceType.HTTP;
         const content = this.constructContent(data);
-        const change = getChange(data.variant, timestamp, content, ChangeType.ADD_NEW_MODEL);
+        const change = getChange(
+            data.variant,
+            timestamp,
+            content,
+            isHttp ? ChangeType.ADD_NEW_DATA_SOURCE : ChangeType.ADD_NEW_MODEL
+        );
 
         await writeChangeToFolder(this.projectPath, change, this.fs);
 

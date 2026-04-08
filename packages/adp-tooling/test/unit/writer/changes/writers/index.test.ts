@@ -324,7 +324,7 @@ describe('NewModelWriter', () => {
                     }
                 }
             },
-            ChangeType.ADD_NEW_MODEL
+            ChangeType.ADD_NEW_DATA_SOURCE
         );
     });
 

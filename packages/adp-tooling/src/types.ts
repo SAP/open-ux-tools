@@ -530,6 +530,7 @@ export interface IWriter<T> {
  */
 export const enum ChangeType {
     ADD_NEW_MODEL = 'appdescr_ui5_addNewModel',
+    ADD_NEW_DATA_SOURCE = 'appdescr_app_addNewDataSource',
     ADD_ANNOTATIONS_TO_ODATA = 'appdescr_app_addAnnotationsToOData',
     CHANGE_DATA_SOURCE = 'appdescr_app_changeDataSource',
     ADD_COMPONENT_USAGES = 'appdescr_ui5_addComponentUsages',
@@ -550,6 +551,7 @@ export type ServiceType = (typeof ServiceType)[keyof typeof ServiceType];
  */
 export const ChangeTypeMap: Record<ChangeType, string> = {
     [ChangeType.ADD_NEW_MODEL]: 'addNewModel',
+    [ChangeType.ADD_NEW_DATA_SOURCE]: 'addNewDataSource',
     [ChangeType.ADD_ANNOTATIONS_TO_ODATA]: 'addAnnotationsToOData',
     [ChangeType.CHANGE_DATA_SOURCE]: 'changeDataSource',
     [ChangeType.ADD_COMPONENT_USAGES]: 'addComponentUsages',
