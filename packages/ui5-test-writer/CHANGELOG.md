@@ -1,5 +1,14 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.100
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/ui5-application-writer@1.8.4
+    - @sap-ux/project-access@1.35.19
+
 ## 0.7.99
 
 ### Patch Changes
