@@ -1,3 +1,3 @@
-export { toFullyQualifiedPath } from './normalization';
-export type { NavigationPropertyAnnotationSegment, ParsedPath, ParsedPathSegment, TermCastSegment } from './parse';
-export { parsePath } from './parse';
+export { toFullyQualifiedPath } from './normalization.js';
+export type { NavigationPropertyAnnotationSegment, ParsedPath, ParsedPathSegment, TermCastSegment } from './parse.js';
+export { parsePath } from './parse.js';

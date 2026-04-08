@@ -5,9 +5,9 @@ export {
     MinCdsPluginUi5Version,
     MinCdsVersion,
     fioriToolsDirectory
-} from './constants';
-export { getFilePaths } from './file';
-export { normalizePath } from './path';
+} from './constants.js';
+export { getFilePaths } from './file/index.js';
+export { normalizePath } from './path/index.js';
 export {
     addPackageDevDependency,
     clearCdsModuleCache,
@@ -68,9 +68,9 @@ export {
     processServices,
     getMainService,
     getGlobalCdsHomePath
-} from './project';
-export { execNpmCommand } from './command/npm-command';
-export * from './types';
-export * from './library';
-export { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from './odata';
-export { hasDependency } from './project';
+} from './project/index.js';
+export { execNpmCommand } from './command/npm-command.js';
+export * from './types/index.js';
+export * from './library/index.js';
+export { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from './odata/index.js';
+export { hasDependency } from './project/index.js';

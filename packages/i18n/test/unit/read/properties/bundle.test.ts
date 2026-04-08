@@ -1,10 +1,9 @@
 import { promises } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { getPropertiesI18nBundle } from '../../../../src';
 import { replaceBundleWithUnifiedFileUri } from '../../helper';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

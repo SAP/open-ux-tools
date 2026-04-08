@@ -1,5 +1,10 @@
-export type { ParsedName, ParsedActionFunctionSignature, ParsedCollectionIdentifier, ParsedIdentifier } from './parse';
-export { parseIdentifier, COLLECTION_PREFIX } from './parse';
-export { toFullyQualifiedName, resolveName, toAliasQualifiedName } from './normalization';
+export type {
+    ParsedName,
+    ParsedActionFunctionSignature,
+    ParsedCollectionIdentifier,
+    ParsedIdentifier
+} from './parse.js';
+export { parseIdentifier, COLLECTION_PREFIX } from './parse.js';
+export { toFullyQualifiedName, resolveName, toAliasQualifiedName } from './normalization.js';
 
-export { getAliasInformation, getAllNamespacesAndReferences } from './namespaces';
+export { getAliasInformation, getAllNamespacesAndReferences } from './namespaces.js';

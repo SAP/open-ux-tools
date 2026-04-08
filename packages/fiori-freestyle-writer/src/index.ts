@@ -3,7 +3,7 @@ import { render } from 'ejs';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import cloneDeep from 'lodash/cloneDeep';
-import { FreestyleApp, TemplateType } from './types';
+import { TemplateType } from './types';
 import { setDefaults, escapeFLPText, setVirtualEndpointDefaults } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
@@ -14,7 +14,7 @@ import { generateOPATests } from './generateOPATests';
 import type { Logger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import type { Editor } from 'mem-fs-editor';
-import type { BasicAppSettings } from './types';
+import type { BasicAppSettings, FreestyleApp } from './types';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.

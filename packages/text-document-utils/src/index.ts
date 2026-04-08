@@ -20,7 +20,7 @@ export {
     MarkedString
 } from 'vscode-languageserver-types';
 
-export { getLineOffsets } from './line-offsets';
+export { getLineOffsets } from './line-offsets.js';
 export {
     positionAt,
     getIndentLevel,
@@ -29,7 +29,7 @@ export {
     positionContainedStrict,
     rangeContained,
     positionContained
-} from './position';
+} from './position.js';
 export {
     rangeAt,
     copyRange,
@@ -38,5 +38,5 @@ export {
     arePositionsEqual,
     createRange,
     createRangeWithPosition
-} from './range';
-export { printOptions } from './text-formatting';
+} from './range.js';
+export { printOptions } from './text-formatting.js';

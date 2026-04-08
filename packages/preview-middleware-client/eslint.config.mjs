@@ -1,5 +1,5 @@
 import tseslint from 'typescript-eslint';
-const fioriTools = require('@sap-ux/eslint-plugin-fiori-tools');
+import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
 export default [
     {

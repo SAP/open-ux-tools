@@ -1,4 +1,7 @@
-import base from '../../eslint.config.mjs';.filter(
+import baseConfig from '../../eslint.config.mjs';
+import tseslint from 'typescript-eslint';
+
+const base = baseConfig.filter(
     (config) =>
         ![
             'typescript-eslint/base',
@@ -8,7 +11,6 @@ import base from '../../eslint.config.mjs';.filter(
         ].includes(config.name)
 );
 
-import tseslint from 'typescript-eslint';
 const tsParser = tseslint.parser;
 
 export default [

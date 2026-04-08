@@ -1,12 +1,11 @@
 import base from '../../eslint.config.mjs';
-const { default: eslintPlugin } = require('eslint-plugin-eslint-plugin');
-
+import eslintPluginPackage from 'eslint-plugin-eslint-plugin';
 import tseslint from 'typescript-eslint';
-const tsParser = tseslint.parser;
-
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
+const eslintPlugin = eslintPluginPackage.default || eslintPluginPackage;
+const tsParser = tseslint.parser;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

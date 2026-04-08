@@ -22,7 +22,8 @@ import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import type { TemplateType } from '@sap-ux/fiori-elements-writer';
 import { getEntitySelectionQuestions } from './prompts/edmx/questions';
 import LoggerHelper from './prompts/logger-helper';
-import {
+import type {
+    EntityRelatedAnswers,
     type EntityPromptOptions,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
@@ -30,7 +31,6 @@ import {
     type SapSystemType,
     type ConnectedSystem,
     DatasourceType,
-    EntityRelatedAnswers,
     promptNames
 } from './types';
 import { getPromptHostEnvironment, PromptState } from './utils';

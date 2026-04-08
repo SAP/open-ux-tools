@@ -1,11 +1,10 @@
 import { getCapI18nFiles, resolveCapI18nFolderForFile, getCapI18nFolder } from '../../../src/utils';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { toUnifiedUri } from '../helper';
 import fs from 'node:fs';
 import type { CdsEnvironment } from '../../../src';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

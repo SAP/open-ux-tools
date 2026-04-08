@@ -1,15 +1,11 @@
 import base from '../../eslint.config.mjs';
-const reactPlugin = require('eslint-plugin-react');
-const globals = require('globals');
-// const storybook = require('eslint-plugin-storybook');
-
-
+import reactPlugin from 'eslint-plugin-react';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
-const tsParser = tseslint.parser;
-
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
+const tsParser = tseslint.parser;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

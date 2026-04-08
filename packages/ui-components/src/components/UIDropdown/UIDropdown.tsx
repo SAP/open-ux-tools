@@ -3,9 +3,10 @@ import type {
     IDropdownProps,
     IDropdownStyles,
     ICalloutContentStyleProps,
-    ICalloutContentStyles
+    ICalloutContentStyles,
+    IDropdownOption
 } from '@fluentui/react';
-import { Dropdown, DropdownMenuItemType, IDropdownOption, ResponsiveMode } from '@fluentui/react';
+import { Dropdown, DropdownMenuItemType, ResponsiveMode } from '@fluentui/react';
 
 import { UIIcon } from '../UIIcon';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';

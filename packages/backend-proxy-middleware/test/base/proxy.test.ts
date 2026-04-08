@@ -12,8 +12,12 @@ import {
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
 import { type BackendSystem, AuthenticationType } from '@sap-ux/store';
-import { getInstance } from '@sap-ux/store/dist/services/backend-system';
+import { getInstance } from '@sap-ux/store';
 
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
+    getInstance: jest.fn()
+}));
 jest.mock('@sap-ux/store/dist/services/api-hub', () => ({
     getInstance: jest.fn().mockReturnValue({ read: () => {} })
 }));

@@ -11,10 +11,11 @@ import type {
     Options,
     OptionsOrGroups,
     GetOptionLabel,
-    GetOptionValue
+    GetOptionValue,
+    SelectInstance
 } from 'react-select';
 import type { CreatableProps } from 'react-select/creatable';
-import { components, SelectInstance } from 'react-select';
+import { components } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
 import { UIIcon } from '../UIIcon';

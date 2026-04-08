@@ -1,1 +1,1 @@
-export * from './find-by-position';
+export * from './find-by-position.js';

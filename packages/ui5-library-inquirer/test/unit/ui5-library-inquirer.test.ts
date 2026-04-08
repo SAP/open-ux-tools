@@ -6,7 +6,7 @@ import { initI18n } from '../../src/i18n';
 import * as ui5LibInqApi from '../../src/index';
 import * as ui5Info from '@sap-ux/ui5-info';
 import * as prompting from '../../src/prompts/prompts';
-import * as commands from '@sap-ux/ui5-info/dist/commands';
+import * as commands from '@sap-ux/ui5-info';
 import inquirer, { createPromptModule, type Answers, type ListQuestion } from 'inquirer';
 
 /**

@@ -1,7 +1,13 @@
-const base = require('../../../eslint.config.js');
-const { tsParser } = require('typescript-eslint');
+import base from '../../../eslint.config.mjs';
+import tseslint from 'typescript-eslint';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
-module.exports = [
+const tsParser = tseslint.parser;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default [
     {
         ignores: ['test/fixtures', 'dist', 'version.js', '**/playwright-report/**']
     },

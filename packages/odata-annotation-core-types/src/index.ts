@@ -1,11 +1,11 @@
-export * from './annotation-file';
-export * from './base';
-export * from './edm';
-export * from './edmx';
-export * from './text-formatting';
-export * from './general';
-export * from './diagnostics';
-export * from './specification';
+export * from './annotation-file.js';
+export * from './base.js';
+export * from './edm.js';
+export * from './edmx.js';
+export * from './text-formatting.js';
+export * from './general.js';
+export * from './diagnostics.js';
+export * from './specification/index.js';
 export type {
     IMetadataService,
     MetadataMap,
@@ -18,9 +18,9 @@ export type {
     MetadataElementProperties,
     ReferentialConstraint,
     Facets
-} from './types';
+} from './types/index.js';
 
-export type { Constraints } from './types/vocabularies';
+export type { Constraints } from './types/vocabularies.js';
 
 export {
     Location,
@@ -31,4 +31,4 @@ export {
     DiagnosticTag,
     TextEdit,
     WorkspaceEdit
-} from './language-server';
+} from './language-server.js';

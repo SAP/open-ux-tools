@@ -1,11 +1,15 @@
-const base = require('../../eslint.config.js');
-const reactPlugin = require('eslint-plugin-react');
-const globals = require('globals');
-// const storybookPlugin = require('eslint-plugin-storybook');
-const { tsParser } = require('typescript-eslint');
-const { parser } = require('typescript-eslint');
+import base from '../../eslint.config.mjs';
+import reactPlugin from 'eslint-plugin-react';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
-module.exports = [
+const tsParser = tseslint.parser;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default [
     {
         languageOptions: {
             'parser': tsParser
@@ -13,7 +17,6 @@ module.exports = [
     },
     ...base,
     reactPlugin.configs.flat.recommended,
-    // ...storybookPlugin.configs['flat/recommended'],
     {
         plugins: {
             reactPlugin

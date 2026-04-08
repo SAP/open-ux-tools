@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { FocusZone, IFocusZoneProps, FocusZoneDirection, IFocusZone, FocusZoneTabbableElements } from '@fluentui/react';
+import type { IFocusZoneProps, IFocusZone } from '@fluentui/react';
+import { FocusZone, FocusZoneDirection, FocusZoneTabbableElements } from '@fluentui/react';
 export {
     FocusZoneDirection as UIFocusZoneDirection,
     FocusZoneTabbableElements as UIFocusZoneTabbableElements,

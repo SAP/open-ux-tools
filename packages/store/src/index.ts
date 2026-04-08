@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import { ServiceOptions } from './types';
+import type { ServiceOptions } from './types';
 import { Entity } from './constants';
 import { initI18n, text } from './i18n';
 import type { Service } from './services';
