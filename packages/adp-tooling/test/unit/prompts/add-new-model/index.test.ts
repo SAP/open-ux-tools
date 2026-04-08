@@ -114,7 +114,7 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('testName')).toBe("Model and Datasource Name must start with 'customer.'.");
+        expect(validation?.('testName')).toBe("Model and Data Source Name must start with 'customer.'.");
     });
 
     it('should return error message when validating service name prompt and name is only "customer."', async () => {
@@ -124,7 +124,7 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.')).toBe(
-            "Model and Datasource Name must contain at least one character in addition to 'customer.'."
+            "Model and Data Source Name must contain at least one character in addition to 'customer.'."
         );
     });
 
