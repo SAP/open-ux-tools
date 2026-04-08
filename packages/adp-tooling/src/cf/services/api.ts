@@ -21,15 +21,11 @@ import type {
     MtaYaml,
     ServiceInfo,
     CfUi5AppInfo,
-    CfDestinationServiceCredentials,
-    BtpDestinationConfig,
     ServiceKeyCredentialsWithTags
 } from '../../types';
-import type { Destinations } from '@sap-ux/btp-utils';
 import { t } from '../../i18n';
 import { getProjectNameForXsSecurity } from '../project';
 import { createServiceKey, getServiceKeys, requestCfApi } from './cli';
-import { getToken } from '../../btp/api';
 
 interface FDCResponse {
     results: CFApp[];
@@ -440,40 +436,6 @@ export async function getOrCreateServiceKeys(
         }
     } catch (e) {
         throw new Error(t('error.failedToGetOrCreateServiceKeys', { serviceInstanceName, error: e.message }));
-    }
-}
-
-/**
- * Lists all subaccount destinations from the BTP Destination Configuration API.
- *
- * @param {CfDestinationServiceCredentials} credentials - Destination service credentials.
- * @returns {Promise<Destinations>} Map of destination name to Destination object.
- */
-export async function listBtpDestinations(credentials: CfDestinationServiceCredentials): Promise<Destinations> {
-    const uaa =
-        'uaa' in credentials
-            ? credentials.uaa
-            : { clientid: credentials.clientid, clientsecret: credentials.clientsecret, url: credentials.url };
-    const token = await getToken(uaa);
-    const url = `${credentials.uri}/destination-configuration/v1/subaccountDestinations`;
-    try {
-        const response = await axios.get<BtpDestinationConfig[]>(url, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        const configs = Array.isArray(response.data) ? response.data : [];
-        return configs.reduce<Destinations>((acc, config) => {
-            acc[config.Name] = {
-                Name: config.Name,
-                Host: config.URL,
-                Type: config.Type,
-                Authentication: config.Authentication,
-                ProxyType: config.ProxyType,
-                Description: config.Description ?? ''
-            };
-            return acc;
-        }, {});
-    } catch (e) {
-        throw new Error(t('error.failedToListBtpDestinations', { error: e.message }));
     }
 }
 

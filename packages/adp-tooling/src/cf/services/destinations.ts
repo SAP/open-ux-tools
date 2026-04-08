@@ -2,7 +2,8 @@ import * as path from 'node:path';
 
 import type { Destinations } from '@sap-ux/btp-utils';
 
-import { getOrCreateServiceInstanceKeys, listBtpDestinations } from './api';
+import { getOrCreateServiceInstanceKeys } from './api';
+import { listBtpDestinations } from '../../btp/api';
 import { getYamlContent } from '../project/yaml-loader';
 import { t } from '../../i18n';
 import type { CfDestinationServiceCredentials, MtaYaml } from '../../types';

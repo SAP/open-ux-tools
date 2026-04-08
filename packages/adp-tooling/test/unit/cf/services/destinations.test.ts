@@ -1,13 +1,17 @@
 import { join, dirname } from 'node:path';
 import { getDestinations } from '../../../../src/cf/services/destinations';
-import { getOrCreateServiceInstanceKeys, listBtpDestinations } from '../../../../src/cf/services/api';
+import { getOrCreateServiceInstanceKeys } from '../../../../src/cf/services/api';
+import { listBtpDestinations } from '../../../../src/btp/api';
 import { getYamlContent } from '../../../../src/cf/project/yaml-loader';
 import { initI18n, t } from '../../../../src/i18n';
 
 jest.mock('@sap-ux/btp-utils');
 
 jest.mock('../../../../src/cf/services/api', () => ({
-    getOrCreateServiceInstanceKeys: jest.fn(),
+    getOrCreateServiceInstanceKeys: jest.fn()
+}));
+
+jest.mock('../../../../src/btp/api', () => ({
     listBtpDestinations: jest.fn()
 }));
 
