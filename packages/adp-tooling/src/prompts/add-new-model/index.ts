@@ -449,7 +449,7 @@ export async function createNewModelData(
         service: {
             name: modelAndDatasourceName,
             uri,
-            modelName: serviceType !== ServiceType.HTTP ? modelAndDatasourceName : undefined,
+            modelName: serviceType === ServiceType.HTTP ? undefined : modelAndDatasourceName,
             version: getODataVersionFromServiceType(serviceType),
             modelSettings
         },
