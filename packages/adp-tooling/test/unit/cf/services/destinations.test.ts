@@ -98,7 +98,9 @@ describe('getBtpDestinations', () => {
             ]
         });
 
-        await expect(getBtpDestinations(mockProjectPath)).rejects.toThrow(t('error.destinationServiceNotFoundInMtaYaml'));
+        await expect(getBtpDestinations(mockProjectPath)).rejects.toThrow(
+            t('error.destinationServiceNotFoundInMtaYaml')
+        );
 
         expect(getOrCreateServiceInstanceKeysMock).not.toHaveBeenCalled();
     });
