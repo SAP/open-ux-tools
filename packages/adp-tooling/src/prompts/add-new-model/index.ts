@@ -23,7 +23,6 @@ import {
     ServiceType,
     type NewModelAnswers,
     type ManifestChangeProperties,
-    type AdpPreviewConfigWithTarget,
     FlexLayer,
     type XsApp,
     type XsAppRoute
@@ -221,11 +220,11 @@ async function getAbapServiceUrl(projectPath: string): Promise<string | undefine
     try {
         const adpConf = await getAdpConfig(projectPath, 'ui5.yaml');
         if ('target' in adpConf) {
-            const target = (adpConf as AdpPreviewConfigWithTarget).target as { url?: string; destination?: string };
-            if (target.url) {
+            const { target } = adpConf;
+            if ('url' in target && target.url) {
                 return target.url;
             }
-            if (target.destination) {
+            if ('destination' in target && target.destination) {
                 const destinations = await listDestinations();
                 return destinations[target.destination]?.Host;
             }

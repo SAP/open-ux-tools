@@ -46,7 +46,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
         const { service, isCloudFoundry, serviceType } = data;
         const isHttp = serviceType === ServiceType.HTTP;
 
-        const uri = isCloudFoundry ? `/${service.name.replace(/\./g, '/')}${service.uri}` : service.uri;
+        const uri = isCloudFoundry ? `/${service.name.replaceAll('.', '/')}${service.uri}` : service.uri;
 
         const dataSourceEntry: DataSourceItem = {
             uri,
@@ -121,7 +121,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
      */
     private writeXsAppRoute(data: NewModelData): void {
         const xsAppPath = join(this.projectPath, 'webapp', 'xs-app.json');
-        const source = `^/${data.service.name.replace(/\./g, '/')}${data.service.uri}(.*)`;
+        const source = `^/${data.service.name.replaceAll('.', '/')}${data.service.uri}(.*)`;
         const newRoute = {
             source,
             target: `${data.service.uri}$1`,
