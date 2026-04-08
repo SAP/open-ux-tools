@@ -1,17 +1,15 @@
 import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
-import type { NewModelAnswers, NewModelData, DescriptorVariant, CfConfig } from '@sap-ux/adp-tooling';
+import type { NewModelAnswers, DescriptorVariant, CfConfig } from '@sap-ux/adp-tooling';
 import {
     generateChange,
     ChangeType,
     getPromptsForNewModel,
     getVariant,
-    getODataVersionFromServiceType,
-    ServiceType,
+    createNewModelData,
     isCFEnvironment,
     isLoggedInCf,
     loadCfConfig
 } from '@sap-ux/adp-tooling';
-import { isOnPremiseDestination } from '@sap-ux/btp-utils';
 import { setYeomanEnvConflicterForce } from '@sap-ux/fiori-generator-shared';
 
 import { GeneratorTypes } from '../types';
@@ -96,49 +94,14 @@ class AddNewModelGenerator extends SubGeneratorBase {
         await generateChange<ChangeType.ADD_NEW_MODEL>(
             this.projectPath,
             ChangeType.ADD_NEW_MODEL,
-            await this._createNewModelData(),
-            this.fs,
-            undefined,
-            this.logger
+            await createNewModelData(this.projectPath, this.variant, this.answers, this.logger),
+            this.fs
         );
         this.logger.log('Change written to changes folder');
     }
 
-    async end(): Promise<void> {
+    end(): void {
         this.logger.log('Successfully created change!');
-    }
-
-    /**
-     * Creates the new model data.
-     *
-     * @returns {Promise<NewModelData>} The new model data.
-     */
-    private async _createNewModelData(): Promise<NewModelData> {
-        const { modelAndDatasourceName, uri, serviceType, modelSettings, addAnnotationMode } = this.answers;
-        const isCloudFoundry = await isCFEnvironment(this.projectPath);
-        return {
-            variant: this.variant,
-            serviceType,
-            isCloudFoundry,
-            destinationName: isCloudFoundry ? this.answers.destination?.Name : undefined,
-            ...(isCloudFoundry && this.answers.destination && {
-                isOnPremiseDestination: isOnPremiseDestination(this.answers.destination)
-            }),
-            service: {
-                name: modelAndDatasourceName,
-                uri,
-                modelName: serviceType === ServiceType.HTTP ? undefined : modelAndDatasourceName,
-                version: getODataVersionFromServiceType(serviceType),
-                modelSettings
-            },
-            ...(addAnnotationMode && {
-                annotation: {
-                    dataSourceName: `${modelAndDatasourceName}.annotation`,
-                    dataSourceURI: this.answers.dataSourceURI,
-                    settings: this.answers.annotationSettings
-                }
-            })
-        };
     }
 }
 

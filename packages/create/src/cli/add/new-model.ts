@@ -1,16 +1,12 @@
 import type { Command } from 'commander';
 
-import type { DescriptorVariant, NewModelAnswers, NewModelData } from '@sap-ux/adp-tooling';
 import {
     generateChange,
     ChangeType,
     getPromptsForNewModel,
     getVariant,
-    isCFEnvironment,
-    getODataVersionFromServiceType,
-    ServiceType
+    createNewModelData
 } from '@sap-ux/adp-tooling';
-import { isOnPremiseDestination } from '@sap-ux/btp-utils';
 
 import { promptYUIQuestions } from '../../common';
 import { getLogger, traceChanges } from '../../tracing';
@@ -56,10 +52,7 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
         const fs = await generateChange<ChangeType.ADD_NEW_MODEL>(
             basePath,
             ChangeType.ADD_NEW_MODEL,
-            await createNewModelData(basePath, variant, answers),
-            null,
-            undefined,
-            logger
+            await createNewModelData(basePath, variant, answers, logger)
         );
 
         if (!simulate) {
@@ -71,43 +64,4 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
         logger.error(error.message);
         logger.debug(error);
     }
-}
-
-/**
- * Returns the writer data for the new model change.
- *
- * @param {string} basePath - The path to the adaptation project.
- * @param {DescriptorVariant} variant - The variant of the adaptation project.
- * @param {NewModelAnswers} answers - The answers to the prompts.
- * @returns {Promise<NewModelData>} The writer data for the new model change.
- */
-async function createNewModelData(
-    basePath: string,
-    variant: DescriptorVariant,
-    answers: NewModelAnswers
-): Promise<NewModelData> {
-    const { modelAndDatasourceName, uri, serviceType, modelSettings, addAnnotationMode } = answers;
-    const isCloudFoundry = await isCFEnvironment(basePath);
-    return {
-        variant,
-        serviceType,
-        isCloudFoundry,
-        destinationName: isCloudFoundry ? answers.destination?.Name : undefined,
-        isOnPremiseDestination:
-            isCloudFoundry && answers.destination ? isOnPremiseDestination(answers.destination) : undefined,
-        service: {
-            name: modelAndDatasourceName,
-            uri,
-            modelName: serviceType !== ServiceType.HTTP ? modelAndDatasourceName : undefined,
-            version: getODataVersionFromServiceType(serviceType),
-            modelSettings
-        },
-        ...(addAnnotationMode && {
-            annotation: {
-                dataSourceName: `${modelAndDatasourceName}.annotation`,
-                dataSourceURI: answers.dataSourceURI,
-                settings: answers.annotationSettings
-            }
-        })
-    };
 }

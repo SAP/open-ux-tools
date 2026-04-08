@@ -1,6 +1,5 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { GeneratorData, ChangeType } from '../types';
 import { WriterFactory } from './changes/writer-factory';
@@ -17,7 +16,6 @@ import { WriterFactory } from './changes/writer-factory';
  * @param {GeneratorData<T>} data - The data specific to the type of generator, containing information necessary for making changes.
  * @param {Editor | null} [fs] - The `mem-fs-editor` instance used for file operations.
  * @param {string} templatesPath - The path to the templates used for generating changes.
- * @param {ToolsLogger} [logger] - Optional logger instance passed to the writer.
  * @returns {Promise<Editor>} A promise that resolves to the mem-fs editor instance used for making changes, allowing for further operations or committing changes to disk.
  * @template T - A type parameter extending `ChangeType`, ensuring the function handles a defined set of generator types.
  */
@@ -26,14 +24,13 @@ export async function generateChange<T extends ChangeType>(
     type: T,
     data: GeneratorData<T>,
     fs: Editor | null = null,
-    templatesPath?: string,
-    logger?: ToolsLogger
+    templatesPath?: string
 ): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
 
-    const writer = WriterFactory.createWriter<T>(type, fs, projectPath, templatesPath, logger);
+    const writer = WriterFactory.createWriter<T>(type, fs, projectPath, templatesPath);
 
     await writer.write(data);
 

@@ -5,9 +5,7 @@ import { readFileSync } from 'node:fs';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as projectAccess from '@sap-ux/project-access';
-import { generateChange, getPromptsForNewModel } from '@sap-ux/adp-tooling';
-import * as adpTooling from '@sap-ux/adp-tooling';
-import * as btpUtils from '@sap-ux/btp-utils';
+import { generateChange, getPromptsForNewModel, createNewModelData } from '@sap-ux/adp-tooling';
 
 import * as common from '../../../../src/common';
 import * as tracer from '../../../../src/tracing/trace';
@@ -23,6 +21,7 @@ const descriptorVariant = JSON.parse(
 const readFileSyncMock = readFileSync as jest.Mock;
 const generateChangeMock = generateChange as jest.Mock;
 const getPromptsForNewModelMock = getPromptsForNewModel as jest.Mock;
+const createNewModelDataMock = createNewModelData as jest.Mock;
 
 const mockAnswers = {
     modelAndDatasourceName: 'customer.OData_ServiceName',
@@ -49,6 +48,8 @@ const mockCFAnswers = {
     modelSettings: '"key": "value"'
 };
 
+const mockNewModelData = { variant: descriptorVariant, serviceType: 'OData v2', isCloudFoundry: false };
+
 jest.mock('node:fs', () => ({
     ...jest.requireActual('node:fs'),
     readFileSync: jest.fn()
@@ -62,12 +63,7 @@ jest.mock('@sap-ux/adp-tooling', () => ({
         commit: jest.fn().mockImplementation((cb) => cb())
     } as Partial<Editor> as Editor),
     getPromptsForNewModel: jest.fn(),
-    isCFEnvironment: jest.fn()
-}));
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isOnPremiseDestination: jest.fn()
+    createNewModelData: jest.fn()
 }));
 
 const getArgv = (...arg: string[]) => ['', '', 'model', ...arg];
@@ -86,9 +82,8 @@ describe('add/model', () => {
         jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
         jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
         jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
-        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValue(false);
-        jest.spyOn(btpUtils, 'isOnPremiseDestination').mockReturnValue(false);
         readFileSyncMock.mockReturnValue(JSON.stringify(descriptorVariant));
+        createNewModelDataMock.mockResolvedValue(mockNewModelData);
         traceSpy = jest.spyOn(tracer, 'traceChanges').mockResolvedValue();
     });
 
@@ -96,37 +91,18 @@ describe('add/model', () => {
         jest.clearAllMocks();
     });
 
-    test('should generate change with correct data', async () => {
+    test('should build model data and generate change', async () => {
         const command = new Command('model');
         addNewModelCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
         expect(traceSpy).not.toHaveBeenCalled();
-        expect(generateChangeMock).toHaveBeenCalledWith(
-            expect.anything(),
-            'appdescr_ui5_addNewModel',
-            {
-                variant: descriptorVariant,
-                serviceType: 'OData v2',
-                isCloudFoundry: false,
-                destinationName: undefined,
-                isOnPremiseDestination: undefined,
-                service: {
-                    name: 'customer.OData_ServiceName',
-                    uri: '/sap/opu/odata/some-name',
-                    modelName: 'customer.OData_ServiceName',
-                    version: '2.0',
-                    modelSettings: '"key": "value"'
-                }
-            },
-            null,
-            undefined,
-            expect.anything()
-        );
+        expect(createNewModelDataMock).toHaveBeenCalledWith(appRoot, descriptorVariant, mockAnswers, loggerMock);
+        expect(generateChangeMock).toHaveBeenCalledWith(appRoot, 'appdescr_ui5_addNewModel', mockNewModelData);
     });
 
-    test('should generate change with correct data and annotation', async () => {
+    test('should pass annotation answers to createNewModelData', async () => {
         jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswersWithAnnotation);
 
         const command = new Command('model');
@@ -134,38 +110,11 @@ describe('add/model', () => {
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
-        expect(traceSpy).not.toHaveBeenCalled();
-        expect(generateChangeMock).toHaveBeenCalledWith(
-            expect.anything(),
-            'appdescr_ui5_addNewModel',
-            {
-                variant: descriptorVariant,
-                serviceType: 'OData v2',
-                isCloudFoundry: false,
-                destinationName: undefined,
-                isOnPremiseDestination: undefined,
-                service: {
-                    name: 'customer.OData_ServiceName',
-                    uri: '/sap/opu/odata/some-name',
-                    modelName: 'customer.OData_ServiceName',
-                    version: '2.0',
-                    modelSettings: '"key": "value"'
-                },
-                annotation: {
-                    dataSourceName: 'customer.OData_ServiceName.annotation',
-                    dataSourceURI: '/sap/opu/odata/annotation/',
-                    settings: '"key2":"value2"'
-                }
-            },
-            null,
-            undefined,
-            expect.anything()
-        );
+        expect(createNewModelDataMock).toHaveBeenCalledWith(appRoot, descriptorVariant, mockAnswersWithAnnotation, loggerMock);
+        expect(generateChangeMock).toHaveBeenCalledWith(appRoot, 'appdescr_ui5_addNewModel', mockNewModelData);
     });
 
-    test('should generate change with correct data for CF project', async () => {
-        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValue(true);
-        jest.spyOn(btpUtils, 'isOnPremiseDestination').mockReturnValue(true);
+    test('should pass CF answers to createNewModelData', async () => {
         jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockCFAnswers);
 
         const command = new Command('model');
@@ -173,58 +122,19 @@ describe('add/model', () => {
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
-        expect(traceSpy).not.toHaveBeenCalled();
-        expect(generateChangeMock).toHaveBeenCalledWith(
-            expect.anything(),
-            'appdescr_ui5_addNewModel',
-            {
-                variant: descriptorVariant,
-                serviceType: 'OData v2',
-                isCloudFoundry: true,
-                destinationName: 'CF_DEST',
-                isOnPremiseDestination: true,
-                service: {
-                    name: 'customer.OData_ServiceName',
-                    uri: '/sap/opu/odata/some-name',
-                    modelName: 'customer.OData_ServiceName',
-                    version: '2.0',
-                    modelSettings: '"key": "value"'
-                }
-            },
-            null,
-            undefined,
-            expect.anything()
-        );
+        expect(createNewModelDataMock).toHaveBeenCalledWith(appRoot, descriptorVariant, mockCFAnswers, loggerMock);
+        expect(generateChangeMock).toHaveBeenCalledWith(appRoot, 'appdescr_ui5_addNewModel', mockNewModelData);
     });
 
-    test('should generate change with no base path and simulate true', async () => {
+    test('should use cwd as base path and run in simulate mode', async () => {
         const command = new Command('model');
         addNewModelCommand(command);
         await command.parseAsync(getArgv('', '-s'));
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
         expect(traceSpy).toHaveBeenCalled();
-        expect(generateChangeMock).toHaveBeenCalledWith(
-            expect.anything(),
-            'appdescr_ui5_addNewModel',
-            {
-                variant: descriptorVariant,
-                serviceType: 'OData v2',
-                isCloudFoundry: false,
-                destinationName: undefined,
-                isOnPremiseDestination: undefined,
-                service: {
-                    name: 'customer.OData_ServiceName',
-                    uri: '/sap/opu/odata/some-name',
-                    modelName: 'customer.OData_ServiceName',
-                    version: '2.0',
-                    modelSettings: '"key": "value"'
-                }
-            },
-            null,
-            undefined,
-            expect.anything()
-        );
+        expect(createNewModelDataMock).toHaveBeenCalledWith(process.cwd(), descriptorVariant, mockAnswers, loggerMock);
+        expect(generateChangeMock).toHaveBeenCalledWith(process.cwd(), 'appdescr_ui5_addNewModel', mockNewModelData);
     });
 
     test('should throw error and log it', async () => {

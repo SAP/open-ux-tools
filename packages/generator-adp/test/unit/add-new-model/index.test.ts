@@ -8,10 +8,10 @@ import {
     getVariant,
     isCFEnvironment,
     isLoggedInCf,
-    loadCfConfig
+    loadCfConfig,
+    createNewModelData
 } from '@sap-ux/adp-tooling';
-import type { NewModelAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
-import { isOnPremiseDestination } from '@sap-ux/btp-utils';
+import type { NewModelAnswers, NewModelData, DescriptorVariant } from '@sap-ux/adp-tooling';
 
 import newModelGen from '../../../src/add-new-model';
 
@@ -21,12 +21,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getVariant: jest.fn(),
     isCFEnvironment: jest.fn(),
     isLoggedInCf: jest.fn(),
-    loadCfConfig: jest.fn()
-}));
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isOnPremiseDestination: jest.fn()
+    loadCfConfig: jest.fn(),
+    createNewModelData: jest.fn()
 }));
 
 const generateChangeMock = generateChange as jest.MockedFunction<typeof generateChange>;
@@ -34,7 +30,7 @@ const getVariantMock = getVariant as jest.MockedFunction<typeof getVariant>;
 const isCFEnvironmentMock = isCFEnvironment as jest.MockedFunction<typeof isCFEnvironment>;
 const isLoggedInCfMock = isLoggedInCf as jest.MockedFunction<typeof isLoggedInCf>;
 const loadCfConfigMock = loadCfConfig as jest.MockedFunction<typeof loadCfConfig>;
-const isOnPremiseDestinationMock = isOnPremiseDestination as jest.MockedFunction<typeof isOnPremiseDestination>;
+const createNewModelDataMock = createNewModelData as jest.MockedFunction<typeof createNewModelData>;
 
 const variant = {
     reference: 'customer.adp.variant',
@@ -52,6 +48,8 @@ const answers: NewModelAnswers & { errorMessagePrompt: string } = {
     errorMessagePrompt: 'failed'
 };
 
+const mockNewModelData = { variant, isCloudFoundry: false } as unknown as NewModelData;
+
 const generatorPath = join(__dirname, '../../src/add-new-model/index.ts');
 const tmpDir = resolve(__dirname, 'test-output');
 const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
@@ -63,7 +61,7 @@ describe('AddNewModelGenerator', () => {
         isCFEnvironmentMock.mockResolvedValue(false);
         isLoggedInCfMock.mockResolvedValue(true);
         loadCfConfigMock.mockReturnValue(mockCfConfig as any);
-        isOnPremiseDestinationMock.mockReturnValue(false);
+        createNewModelDataMock.mockResolvedValue(mockNewModelData);
     });
 
     afterEach(() => {
@@ -85,23 +83,14 @@ describe('AddNewModelGenerator', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(generateChangeMock).toHaveBeenCalledWith(
-            tmpDir,
-            ChangeType.ADD_NEW_MODEL,
-            expect.objectContaining({
-                isCloudFoundry: false,
-                service: {
-                    name: answers.modelAndDatasourceName,
-                    uri: answers.uri,
-                    modelName: answers.modelAndDatasourceName,
-                    version: '2.0',
-                    modelSettings: answers.modelSettings
-                }
-            }),
-            expect.anything(),
-            undefined,
-            expect.anything()
-        );
+        expect(createNewModelDataMock).toHaveBeenCalledWith(tmpDir, variant, expect.objectContaining({
+            modelAndDatasourceName: answers.modelAndDatasourceName,
+            uri: answers.uri,
+            serviceType: answers.serviceType,
+            modelSettings: answers.modelSettings,
+            addAnnotationMode: answers.addAnnotationMode
+        }), expect.anything());
+        expect(generateChangeMock).toHaveBeenCalledWith(tmpDir, ChangeType.ADD_NEW_MODEL, mockNewModelData, expect.anything());
     });
 
     it('passes isCloudFoundry: true and destinationName for CF projects', async () => {
@@ -115,14 +104,8 @@ describe('AddNewModelGenerator', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(generateChangeMock).toHaveBeenCalledWith(
-            tmpDir,
-            ChangeType.ADD_NEW_MODEL,
-            expect.objectContaining({ isCloudFoundry: true }),
-            expect.anything(),
-            undefined,
-            expect.anything()
-        );
+        expect(createNewModelDataMock).toHaveBeenCalledWith(tmpDir, variant, expect.anything(), expect.anything());
+        expect(generateChangeMock).toHaveBeenCalledWith(tmpDir, ChangeType.ADD_NEW_MODEL, mockNewModelData, expect.anything());
     });
 
     it('invokes handleRuntimeCrash when getVariant fails during initializing', async () => {

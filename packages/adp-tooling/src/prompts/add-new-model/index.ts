@@ -10,18 +10,20 @@ import type {
 } from '@sap-ux/inquirer-common';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { Destination } from '@sap-ux/btp-utils';
-import { listDestinations } from '@sap-ux/btp-utils';
+import { listDestinations, isOnPremiseDestination } from '@sap-ux/btp-utils';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n';
 import { getChangesByType } from '../../base/change-utils';
-import { getDestinations } from '../../cf/services/destinations';
+import { getBtpDestinations } from '../../cf/services/destinations';
 import {
     ChangeType,
     NamespacePrefix,
     ServiceType,
+    type DescriptorVariant,
     type NewModelAnswers,
+    type NewModelData,
     type ManifestChangeProperties,
     FlexLayer,
     type XsApp,
@@ -248,7 +250,7 @@ async function getDestinationChoices(
     logger?: ToolsLogger
 ): Promise<{ choices: { name: string; value: Destination }[]; error?: string }> {
     try {
-        const destinations = await getDestinations(projectPath);
+        const destinations = await getBtpDestinations(projectPath);
         const choices = Object.entries(destinations).map(([name, dest]) => ({
             name,
             value: dest as Destination
@@ -415,4 +417,48 @@ export async function getPrompts(
             when: (answers: NewModelAnswers) => answers.addAnnotationMode
         } as EditorQuestion<NewModelAnswers>
     ];
+}
+
+/**
+ * Builds the NewModelData object from the prompts answers.
+ *
+ * @param {string} projectPath - The root path of the project.
+ * @param {DescriptorVariant} variant - The descriptor variant of the adaptation project.
+ * @param {NewModelAnswers} answers - The answers to the prompts.
+ * @param {ToolsLogger} [logger] - Optional logger instance.
+ * @returns {Promise<NewModelData>} The data required by NewModelWriter.
+ */
+export async function createNewModelData(
+    projectPath: string,
+    variant: DescriptorVariant,
+    answers: NewModelAnswers,
+    logger?: ToolsLogger
+): Promise<NewModelData> {
+    const { modelAndDatasourceName, uri, serviceType, modelSettings, addAnnotationMode } = answers;
+    const isCloudFoundry = await isCFEnvironment(projectPath);
+    return {
+        variant,
+        serviceType,
+        isCloudFoundry,
+        destinationName: isCloudFoundry ? answers.destination?.Name : undefined,
+        ...(isCloudFoundry &&
+            answers.destination && {
+                isOnPremiseDestination: isOnPremiseDestination(answers.destination)
+            }),
+        logger,
+        service: {
+            name: modelAndDatasourceName,
+            uri,
+            modelName: serviceType !== ServiceType.HTTP ? modelAndDatasourceName : undefined,
+            version: getODataVersionFromServiceType(serviceType),
+            modelSettings
+        },
+        ...(addAnnotationMode && {
+            annotation: {
+                dataSourceName: `${modelAndDatasourceName}.annotation`,
+                dataSourceURI: answers.dataSourceURI,
+                settings: answers.annotationSettings
+            }
+        })
+    };
 }

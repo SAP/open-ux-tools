@@ -1,5 +1,5 @@
 import { join, dirname } from 'node:path';
-import { getDestinations } from '../../../../src/cf/services/destinations';
+import { getBtpDestinations } from '../../../../src/cf/services/destinations';
 import { getOrCreateServiceInstanceKeys } from '../../../../src/cf/services/api';
 import { listBtpDestinations } from '../../../../src/btp/api';
 import { getYamlContent } from '../../../../src/cf/project/yaml-loader';
@@ -64,7 +64,7 @@ const mockServiceInfo = {
     serviceInstance: { name: 'test-project-destination', guid: 'some-guid' }
 };
 
-describe('getDestinations', () => {
+describe('getBtpDestinations', () => {
     beforeAll(async () => {
         await initI18n();
     });
@@ -78,7 +78,7 @@ describe('getDestinations', () => {
         getOrCreateServiceInstanceKeysMock.mockResolvedValue(mockServiceInfo);
         listBtpDestinationsMock.mockResolvedValue(mockDestinations);
 
-        const result = await getDestinations(mockProjectPath);
+        const result = await getBtpDestinations(mockProjectPath);
 
         expect(getYamlContentMock).toHaveBeenCalledWith(join(dirname(mockProjectPath), 'mta.yaml'));
         expect(getOrCreateServiceInstanceKeysMock).toHaveBeenCalledWith({ names: ['test-project-destination'] });
@@ -98,7 +98,7 @@ describe('getDestinations', () => {
             ]
         });
 
-        await expect(getDestinations(mockProjectPath)).rejects.toThrow(t('error.destinationServiceNotFoundInMtaYaml'));
+        await expect(getBtpDestinations(mockProjectPath)).rejects.toThrow(t('error.destinationServiceNotFoundInMtaYaml'));
 
         expect(getOrCreateServiceInstanceKeysMock).not.toHaveBeenCalled();
     });
@@ -108,7 +108,7 @@ describe('getDestinations', () => {
             throw new Error('File not found');
         });
 
-        await expect(getDestinations(mockProjectPath)).rejects.toThrow('File not found');
+        await expect(getBtpDestinations(mockProjectPath)).rejects.toThrow('File not found');
 
         expect(getOrCreateServiceInstanceKeysMock).not.toHaveBeenCalled();
     });
@@ -120,7 +120,7 @@ describe('getDestinations', () => {
             serviceInstance: { name: 'test-project-destination', guid: 'some-guid' }
         });
 
-        await expect(getDestinations(mockProjectPath)).rejects.toThrow(
+        await expect(getBtpDestinations(mockProjectPath)).rejects.toThrow(
             t('error.noServiceKeysFoundForDestination', { serviceInstanceName: 'test-project-destination' })
         );
 
@@ -131,7 +131,7 @@ describe('getDestinations', () => {
         getYamlContentMock.mockReturnValue(mockMtaYaml);
         getOrCreateServiceInstanceKeysMock.mockResolvedValue(null);
 
-        await expect(getDestinations(mockProjectPath)).rejects.toThrow(
+        await expect(getBtpDestinations(mockProjectPath)).rejects.toThrow(
             t('error.noServiceKeysFoundForDestination', { serviceInstanceName: 'test-project-destination' })
         );
 

@@ -28,12 +28,10 @@ export class NewModelWriter implements IWriter<NewModelData> {
     /**
      * @param {Editor} fs - The filesystem editor instance.
      * @param {string} projectPath - The root path of the project.
-     * @param {ToolsLogger} [logger] - Optional logger instance.
      */
     constructor(
         private readonly fs: Editor,
-        private readonly projectPath: string,
-        private readonly logger?: ToolsLogger
+        private readonly projectPath: string
     ) {}
 
     /**
@@ -109,7 +107,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
 
         if (data.isOnPremiseDestination) {
             await addConnectivityServiceToMta(dirname(this.projectPath), this.fs);
-            await ensureTunnelAppExists(DEFAULT_TUNNEL_APP_NAME, this.logger ?? new ToolsLogger());
+            await ensureTunnelAppExists(DEFAULT_TUNNEL_APP_NAME, data.logger ?? new ToolsLogger());
         }
     }
 

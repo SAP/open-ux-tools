@@ -1,12 +1,13 @@
 import * as i18n from '../../../../src/i18n';
-import type { NewModelAnswers } from '../../../../src';
+import type { NewModelAnswers, DescriptorVariant } from '../../../../src';
+import type { NewModelDataWithAnnotations } from '../../../../src/types';
 import { isCFEnvironment } from '../../../../src/base/cf';
 import { getAdpConfig } from '../../../../src/base/helper';
-import { getPrompts } from '../../../../src/prompts/add-new-model';
+import { getPrompts, createNewModelData } from '../../../../src/prompts/add-new-model';
 import * as validators from '@sap-ux/project-input-validator';
 import { getChangesByType } from '../../../../src/base/change-utils';
-import { listDestinations } from '@sap-ux/btp-utils';
-import { getDestinations } from '../../../../src/cf/services/destinations';
+import { listDestinations, isOnPremiseDestination } from '@sap-ux/btp-utils';
+import { getBtpDestinations } from '../../../../src/cf/services/destinations';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { readFileSync } from 'node:fs';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -15,7 +16,8 @@ const getChangesByTypeMock = getChangesByType as jest.Mock;
 const isCFEnvironmentMock = isCFEnvironment as jest.Mock;
 const getAdpConfigMock = getAdpConfig as jest.Mock;
 const listDestinationsMock = listDestinations as jest.Mock;
-const getDestinationsMock = getDestinations as jest.Mock;
+const getDestinationsMock = getBtpDestinations as jest.Mock;
+const isOnPremiseDestinationMock = isOnPremiseDestination as jest.Mock;
 
 const readFileSyncMock = readFileSync as jest.Mock;
 
@@ -35,11 +37,12 @@ jest.mock('../../../../src/base/helper.ts', () => ({
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
-    listDestinations: jest.fn()
+    listDestinations: jest.fn(),
+    isOnPremiseDestination: jest.fn()
 }));
 
 jest.mock('../../../../src/cf/services/destinations', () => ({
-    getDestinations: jest.fn()
+    getBtpDestinations: jest.fn()
 }));
 
 jest.mock('node:fs', () => ({
@@ -497,5 +500,105 @@ describe('getPrompts', () => {
 
         expect(logger.error).toHaveBeenCalledWith('Network error');
         expect(validate?.(undefined)).toBe(i18n.t('error.errorFetchingDestinations'));
+    });
+});
+
+describe('createNewModelData', () => {
+    const mockPath = '/path/to/project';
+    const variant = { id: 'my.variant', layer: 'CUSTOMER_BASE' } as unknown as DescriptorVariant;
+
+    beforeAll(async () => {
+        await i18n.initI18n();
+    });
+
+    beforeEach(() => {
+        isCFEnvironmentMock.mockResolvedValue(false);
+        isOnPremiseDestinationMock.mockReturnValue(false);
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should build data for a non-CF OData v2 project', async () => {
+        const logger = { error: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
+        const answers = {
+            modelAndDatasourceName: 'customer.MyService',
+            uri: '/sap/opu/odata/svc/',
+            serviceType: 'OData v2' as NewModelAnswers['serviceType'],
+            modelSettings: '{}',
+            addAnnotationMode: false
+        } as NewModelAnswers;
+
+        const result = await createNewModelData(mockPath, variant, answers, logger);
+
+        expect(result.variant).toBe(variant);
+        expect(result.isCloudFoundry).toBe(false);
+        expect(result.destinationName).toBeUndefined();
+        expect(result.logger).toBe(logger);
+        expect(result.service).toEqual({
+            name: 'customer.MyService',
+            uri: '/sap/opu/odata/svc/',
+            modelName: 'customer.MyService',
+            version: '2.0',
+            modelSettings: '{}'
+        });
+    });
+
+    it('should set modelName to undefined for HTTP service type', async () => {
+        const answers = {
+            modelAndDatasourceName: 'customer.MyDatasource',
+            uri: '/sap/opu/odata/svc/',
+            serviceType: 'HTTP' as NewModelAnswers['serviceType'],
+            modelSettings: '{}',
+            addAnnotationMode: false
+        } as NewModelAnswers;
+
+        const result = await createNewModelData(mockPath, variant, answers);
+
+        expect(result.service.modelName).toBeUndefined();
+        expect(result.service.version).toBeUndefined();
+    });
+
+    it('should include annotation when addAnnotationMode is true', async () => {
+        const answers = {
+            modelAndDatasourceName: 'customer.MyService',
+            uri: '/sap/opu/odata/svc/',
+            serviceType: 'OData v2' as NewModelAnswers['serviceType'],
+            modelSettings: '{}',
+            addAnnotationMode: true,
+            dataSourceURI: '/sap/opu/odata/ann/',
+            annotationSettings: '"key": "value"'
+        } as NewModelAnswers;
+
+        const result = (await createNewModelData(mockPath, variant, answers)) as NewModelDataWithAnnotations;
+
+        expect(result.annotation).toEqual({
+            dataSourceName: 'customer.MyService.annotation',
+            dataSourceURI: '/sap/opu/odata/ann/',
+            settings: '"key": "value"'
+        });
+    });
+
+    it('should set CF fields and isOnPremiseDestination for CF on-premise projects', async () => {
+        isCFEnvironmentMock.mockResolvedValue(true);
+        isOnPremiseDestinationMock.mockReturnValue(true);
+
+        const destination = { Host: 'https://cf.dest.example.com', Name: 'CF_DEST' };
+        const answers = {
+            modelAndDatasourceName: 'customer.MyService',
+            uri: '/sap/opu/odata/svc/',
+            serviceType: 'OData v2' as NewModelAnswers['serviceType'],
+            modelSettings: '{}',
+            addAnnotationMode: false,
+            destination
+        } as unknown as NewModelAnswers;
+
+        const result = await createNewModelData(mockPath, variant, answers);
+
+        expect(result.isCloudFoundry).toBe(true);
+        expect(result.destinationName).toBe('CF_DEST');
+        expect(result.isOnPremiseDestination).toBe(true);
+        expect(isOnPremiseDestinationMock).toHaveBeenCalledWith(destination);
     });
 });

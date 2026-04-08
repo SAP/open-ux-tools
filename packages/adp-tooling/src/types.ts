@@ -11,6 +11,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { SupportedProject } from './source';
 
 export type DataSources = Record<string, ManifestNamespace.DataSource>;
@@ -664,6 +665,8 @@ export interface NewModelDataBase {
     destinationName?: string;
     /** True when the selected CF destination is OnPremise (ProxyType: 'OnPremise'). Triggers connectivity service in mta.yaml. */
     isOnPremiseDestination?: boolean;
+    /** Optional logger passed to the writer for use during the write operation. */
+    logger?: ToolsLogger;
     service: {
         /** Name of the OData service. */
         name: string;

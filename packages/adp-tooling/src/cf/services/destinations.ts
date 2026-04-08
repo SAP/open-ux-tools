@@ -36,7 +36,7 @@ function getDestinationServiceName(projectPath: string): string {
  * @param {string} projectPath - The root path of the CF app project.
  * @returns {Promise<Destinations>} Map of destination name to Destination object.
  */
-export async function getDestinations(projectPath: string): Promise<Destinations> {
+export async function getBtpDestinations(projectPath: string): Promise<Destinations> {
     const destinationServiceName = getDestinationServiceName(projectPath);
 
     const serviceInfo = await getOrCreateServiceInstanceKeys({ names: [destinationServiceName] });
