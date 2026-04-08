@@ -83,14 +83,24 @@ describe('AddNewModelGenerator', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(createNewModelDataMock).toHaveBeenCalledWith(tmpDir, variant, expect.objectContaining({
-            modelAndDatasourceName: answers.modelAndDatasourceName,
-            uri: answers.uri,
-            serviceType: answers.serviceType,
-            modelSettings: answers.modelSettings,
-            addAnnotationMode: answers.addAnnotationMode
-        }), expect.anything());
-        expect(generateChangeMock).toHaveBeenCalledWith(tmpDir, ChangeType.ADD_NEW_MODEL, mockNewModelData, expect.anything());
+        expect(createNewModelDataMock).toHaveBeenCalledWith(
+            tmpDir,
+            variant,
+            expect.objectContaining({
+                modelAndDatasourceName: answers.modelAndDatasourceName,
+                uri: answers.uri,
+                serviceType: answers.serviceType,
+                modelSettings: answers.modelSettings,
+                addAnnotationMode: answers.addAnnotationMode
+            }),
+            expect.anything()
+        );
+        expect(generateChangeMock).toHaveBeenCalledWith(
+            tmpDir,
+            ChangeType.ADD_NEW_MODEL,
+            mockNewModelData,
+            expect.anything()
+        );
     });
 
     it('passes isCloudFoundry: true and destinationName for CF projects', async () => {
@@ -105,7 +115,12 @@ describe('AddNewModelGenerator', () => {
         await expect(runContext.run()).resolves.not.toThrow();
 
         expect(createNewModelDataMock).toHaveBeenCalledWith(tmpDir, variant, expect.anything(), expect.anything());
-        expect(generateChangeMock).toHaveBeenCalledWith(tmpDir, ChangeType.ADD_NEW_MODEL, mockNewModelData, expect.anything());
+        expect(generateChangeMock).toHaveBeenCalledWith(
+            tmpDir,
+            ChangeType.ADD_NEW_MODEL,
+            mockNewModelData,
+            expect.anything()
+        );
     });
 
     it('invokes handleRuntimeCrash when getVariant fails during initializing', async () => {

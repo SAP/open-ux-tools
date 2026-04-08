@@ -110,7 +110,12 @@ describe('add/model', () => {
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
-        expect(createNewModelDataMock).toHaveBeenCalledWith(appRoot, descriptorVariant, mockAnswersWithAnnotation, loggerMock);
+        expect(createNewModelDataMock).toHaveBeenCalledWith(
+            appRoot,
+            descriptorVariant,
+            mockAnswersWithAnnotation,
+            loggerMock
+        );
         expect(generateChangeMock).toHaveBeenCalledWith(appRoot, 'appdescr_ui5_addNewModel', mockNewModelData);
     });
 
