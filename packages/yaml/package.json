@@ -1,50 +1,50 @@
 {
-  "name": "@sap-ux/yaml",
-  "version": "0.17.6",
-  "description": "Library to manipulate YAML file contents",
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SAP/open-ux-tools.git",
-    "directory": "packages/yaml"
-  },
-  "bugs": {
-    "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Ayaml"
-  },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+    "name": "@sap-ux/yaml",
+    "description": "Library to manipulate YAML file contents",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/yaml"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Ayaml"
+    },
+    "version": "0.17.7",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "license": "Apache-2.0",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "lodash": "4.18.1",
+        "yaml": "2.8.3"
+    },
+    "devDependencies": {
+        "@types/lodash": "4.17.24"
+    },
+    "engines": {
+        "node": ">=20.x"
     }
-  },
-  "license": "Apache-2.0",
-  "scripts": {
-    "build": "tsc --build",
-    "watch": "tsc --watch",
-    "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
-    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-    "link": "pnpm link --global",
-    "unlink": "pnpm unlink --global"
-  },
-  "files": [
-    "LICENSE",
-    "dist",
-    "!dist/*.map",
-    "!dist/**/*.map"
-  ],
-  "dependencies": {
-    "lodash": "4.17.23",
-    "yaml": "2.8.3"
-  },
-  "devDependencies": {
-    "@types/lodash": "4.17.24"
-  },
-  "engines": {
-    "node": ">=20.x"
-  }
 }

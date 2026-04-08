@@ -1,59 +1,59 @@
 {
-  "name": "@sap-ux/environment-check",
-  "version": "0.18.116",
-  "description": "SAP Fiori environment check",
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SAP/open-ux-tools.git",
-    "directory": "packages/environment-check"
-  },
-  "license": "Apache-2.0",
-  "bin": {
-    "envcheck": "bin/envcheck"
-  },
-  "main": "dist/index.js",
-  "private": false,
-  "scripts": {
-    "test:bin": "./bin/envcheck",
-    "build": "tsc --build",
-    "watch": "tsc --watch",
-    "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-    "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
-    "link": "pnpm link --global",
-    "unlink": "pnpm unlink --global"
-  },
-  "dependencies": {
-    "@sap-ux/axios-extension": "workspace:*",
-    "@sap-ux/btp-utils": "workspace:*",
-    "@sap-ux/logger": "workspace:*",
-    "@sap-ux/project-access": "workspace:*",
-    "@sap-ux/store": "workspace:*",
-    "@sap-ux/ui5-config": "workspace:*",
-    "@sap/bas-sdk": "3.13.3",
-    "archiver": "7.0.1",
-    "axios": "1.13.6",
-    "glob-gitignore": "1.0.15",
-    "i18next": "25.10.10",
-    "ignore": "5.2.4",
-    "minimist": "1.2.8",
-    "prompts": "2.4.2",
-    "yamljs": "0.3.0"
-  },
-  "devDependencies": {
-    "@types/archiver": "7.0.0",
-    "@types/minimist": "1.2.5",
-    "@types/prompts": "2.4.9",
-    "@types/vscode": "1.110.0"
-  },
-  "files": [
-    "dist",
-    "package.json"
-  ],
-  "engines": {
-    "node": ">=20.x"
-  }
+    "name": "@sap-ux/environment-check",
+    "version": "0.18.117",
+    "description": "SAP Fiori environment check",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/environment-check"
+    },
+    "license": "Apache-2.0",
+    "bin": {
+        "envcheck": "bin/envcheck"
+    },
+    "main": "dist/index.js",
+    "private": false,
+    "scripts": {
+        "test:bin": "./bin/envcheck",
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "dependencies": {
+        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/store": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
+        "@sap/bas-sdk": "3.13.3",
+        "archiver": "7.0.1",
+        "axios": "1.13.6",
+        "glob-gitignore": "1.0.15",
+        "i18next": "25.10.10",
+        "ignore": "5.2.4",
+        "minimist": "1.2.8",
+        "prompts": "2.4.2",
+        "yamljs": "0.3.0"
+    },
+    "devDependencies": {
+        "@types/archiver": "7.0.0",
+        "@types/minimist": "1.2.5",
+        "@types/prompts": "2.4.9",
+        "@types/vscode": "1.110.0"
+    },
+    "files": [
+        "dist",
+        "package.json"
+    ],
+    "engines": {
+        "node": ">=20.x"
+    }
 }

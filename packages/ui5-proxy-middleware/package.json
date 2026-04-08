@@ -1,61 +1,61 @@
 {
-  "name": "@sap-ux/ui5-proxy-middleware",
-  "version": "1.6.30",
-  "description": "UI5 proxy middleware",
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SAP/open-ux-tools.git",
-    "directory": "packages/ui5-proxy-middleware"
-  },
-  "bugs": {
-    "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-proxy-middleware"
-  },
-  "license": "Apache-2.0",
-  "author": "@SAP/ux-tools-team",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc --build",
-    "watch": "tsc --watch",
-    "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
-    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-    "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
-    "link": "pnpm link --global",
-    "unlink": "pnpm unlink --global"
-  },
-  "files": [
-    "LICENSE",
-    "dist",
-    "ui5.yaml",
-    "!dist/*.map",
-    "!dist/**/*.map"
-  ],
-  "peerDependencies": {
-    "express": "4"
-  },
-  "dependencies": {
-    "@sap-ux/logger": "workspace:*",
-    "@sap-ux/ui5-config": "workspace:*",
-    "dotenv": "17.3.1",
-    "http-proxy-middleware": "3.0.5",
-    "https-proxy-agent": "7.0.6",
-    "i18next": "25.10.10",
-    "proxy-from-env": "1.1.0"
-  },
-  "devDependencies": {
-    "@sap-ux/project-access": "workspace:*",
-    "@types/express": "4.17.21",
-    "@types/supertest": "7.2.0",
-    "@types/proxy-from-env": "1.0.4",
-    "express": "4.22.1",
-    "nock": "14.0.11",
-    "supertest": "7.2.2",
-    "yaml": "2.8.3"
-  },
-  "engines": {
-    "node": ">=20.x"
-  }
+    "name": "@sap-ux/ui5-proxy-middleware",
+    "description": "UI5 proxy middleware",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/ui5-proxy-middleware"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-proxy-middleware"
+    },
+    "version": "1.6.31",
+    "license": "Apache-2.0",
+    "author": "@SAP/ux-tools-team",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "ui5.yaml",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "peerDependencies": {
+        "express": "4"
+    },
+    "dependencies": {
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
+        "dotenv": "17.3.1",
+        "http-proxy-middleware": "3.0.5",
+        "https-proxy-agent": "7.0.6",
+        "i18next": "25.10.10",
+        "proxy-from-env": "1.1.0"
+    },
+    "devDependencies": {
+        "@sap-ux/project-access": "workspace:*",
+        "@types/express": "4.17.21",
+        "@types/supertest": "7.2.0",
+        "@types/proxy-from-env": "1.0.4",
+        "express": "4.22.1",
+        "nock": "14.0.11",
+        "supertest": "7.2.2",
+        "yaml": "2.8.3"
+    },
+    "engines": {
+        "node": ">=20.x"
+    }
 }

@@ -1,46 +1,46 @@
 {
-  "name": "@sap-ux/ui5-library-reference-inquirer",
-  "version": "0.4.142",
-  "description": "Prompts module that can provide prompts for UI5 library writer",
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SAP/open-ux-tools.git",
-    "directory": "packages/ui5-library-reference-inquirer"
-  },
-  "bugs": {
-    "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-library-reference-inquirer"
-  },
-  "license": "Apache-2.0",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc --build",
-    "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
-    "watch": "tsc --watch",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-    "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
-    "link": "pnpm link --global",
-    "unlink": "pnpm unlink --global"
-  },
-  "files": [
-    "LICENSE",
-    "dist",
-    "!dist/*.map",
-    "!dist/**/*.map"
-  ],
-  "dependencies": {
-    "@sap-ux/inquirer-common": "workspace:*",
-    "@sap-ux/project-access": "workspace:*",
-    "i18next": "25.10.10"
-  },
-  "devDependencies": {
-    "inquirer": "8.2.7",
-    "@sap-devx/yeoman-ui-types": "1.23.0",
-    "@types/inquirer": "8.2.6"
-  },
-  "engines": {
-    "node": ">=20.x"
-  }
+    "name": "@sap-ux/ui5-library-reference-inquirer",
+    "description": "Prompts module that can provide prompts for UI5 library writer",
+    "version": "0.4.143",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/ui5-library-reference-inquirer"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-library-reference-inquirer"
+    },
+    "type": "module",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "watch": "tsc --watch",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "i18next": "25.10.10"
+    },
+    "devDependencies": {
+        "inquirer": "8.2.7",
+        "@sap-devx/yeoman-ui-types": "1.23.0",
+        "@types/inquirer": "8.2.6"
+    },
+    "engines": {
+        "node": ">=20.x"
+    }
 }

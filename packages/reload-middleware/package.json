@@ -1,59 +1,59 @@
 {
-  "name": "@sap-ux/reload-middleware",
-  "version": "0.3.22",
-  "description": "Reload middleware",
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SAP/open-ux-tools.git",
-    "directory": "packages/reload-middleware"
-  },
-  "bugs": {
-    "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Areload-middleware"
-  },
-  "author": "@SAP/ux-tools-team",
-  "license": "Apache-2.0",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc --build",
-    "watch": "tsc --watch",
-    "clean": "rimraf --glob dist coverage *.tsbuildinfo",
-    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-    "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
-    "link": "pnpm link --global",
-    "unlink": "pnpm unlink --global"
-  },
-  "files": [
-    "LICENSE",
-    "dist",
-    "ui5.yaml",
-    "!dist/*.map",
-    "!dist/**/*.map"
-  ],
-  "peerDependencies": {
-    "express": "4"
-  },
-  "dependencies": {
-    "@sap-ux/btp-utils": "workspace:*",
-    "@sap-ux/logger": "workspace:*",
-    "connect-livereload": "0.6.1",
-    "livereload": "0.10.3",
-    "portfinder": "1.0.38"
-  },
-  "devDependencies": {
-    "@types/connect-livereload": "0.6.3",
-    "@types/express": "4.17.21",
-    "@types/livereload": "0.9.5",
-    "@types/supertest": "7.2.0",
-    "axios": "1.13.6",
-    "express": "4.22.1",
-    "supertest": "7.2.2"
-  },
-  "engines": {
-    "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-    "node": ">=20.x"
-  }
+    "name": "@sap-ux/reload-middleware",
+    "description": "Reload middleware",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/reload-middleware"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Areload-middleware"
+    },
+    "version": "0.3.23",
+    "author": "@SAP/ux-tools-team",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "ui5.yaml",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "peerDependencies": {
+        "express": "4"
+    },
+    "dependencies": {
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "connect-livereload": "0.6.1",
+        "livereload": "0.10.3",
+        "portfinder": "1.0.38"
+    },
+    "devDependencies": {
+        "@types/connect-livereload": "0.6.3",
+        "@types/express": "4.17.21",
+        "@types/livereload": "0.9.5",
+        "@types/supertest": "7.2.0",
+        "axios": "1.13.6",
+        "express": "4.22.1",
+        "supertest": "7.2.2"
+    },
+    "engines": {
+        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
+        "node": ">=20.x"
+    }
 }

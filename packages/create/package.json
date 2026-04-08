@@ -1,69 +1,69 @@
 {
-  "name": "@sap-ux/create",
-  "version": "0.15.68",
-  "description": "SAP Fiori tools module to add or remove features",
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SAP/open-ux-tools.git",
-    "directory": "packages/create"
-  },
-  "bugs": {
-    "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Acreate"
-  },
-  "license": "Apache-2.0",
-  "bin": {
-    "sap-ux": "./dist/index.js"
-  },
-  "engines": {
-    "node": ">=20.x"
-  },
-  "scripts": {
-    "build": "tsc --build && node ./scripts/generate-readme.js",
-    "clean": "rimraf --glob dist coverage *.tsbuildinfo",
-    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-    "watch": "tsc --watch"
-  },
-  "files": [
-    "LICENSE",
-    "dist",
-    "!dist/*.map",
-    "!dist/**/*.map"
-  ],
-  "dependencies": {
-    "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
-    "@sap-ux/abap-deploy-config-writer": "workspace:*",
-    "@sap-ux/adp-tooling": "workspace:*",
-    "@sap-ux/app-config-writer": "workspace:*",
-    "@sap-ux/cap-config-writer": "workspace:*",
-    "@sap-ux/logger": "workspace:*",
-    "@sap-ux/mockserver-config-writer": "workspace:*",
-    "@sap-ux/odata-service-writer": "workspace:*",
-    "@sap-ux/preview-middleware": "workspace:*",
-    "@sap-ux/project-access": "workspace:*",
-    "@sap-ux/system-access": "workspace:*",
-    "@sap-ux/ui5-config": "workspace:*",
-    "@sap-ux/flp-config-inquirer": "workspace:*",
-    "@sap-ux/nodejs-utils": "workspace:*",
-    "@sap/cf-tools": "3.3.0",
-    "@sap-ux/axios-extension": "workspace:*",
-    "chalk": "4.1.2",
-    "commander": "14.0.3",
-    "diff": "8.0.4",
-    "mem-fs": "2.1.0",
-    "mem-fs-editor": "9.4.0",
-    "prompts": "2.4.2"
-  },
-  "devDependencies": {
-    "@sap-ux/inquirer-common": "workspace:*",
-    "@sap-ux/store": "workspace:*",
-    "@types/diff": "8.0.0",
-    "@types/inquirer": "8.2.6",
-    "@types/mem-fs": "1.1.2",
-    "@types/mem-fs-editor": "7.0.1",
-    "@types/prompts": "2.4.9"
-  }
+    "name": "@sap-ux/create",
+    "description": "SAP Fiori tools module to add or remove features",
+    "version": "0.15.69",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/create"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Acreate"
+    },
+    "type": "module",
+    "license": "Apache-2.0",
+    "bin": {
+        "sap-ux": "./dist/index.js"
+    },
+    "engines": {
+        "node": ">=20.x"
+    },
+    "scripts": {
+        "build": "tsc --build && node ./scripts/generate-readme.js",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "watch": "tsc --watch"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
+        "@sap-ux/abap-deploy-config-writer": "workspace:*",
+        "@sap-ux/adp-tooling": "workspace:*",
+        "@sap-ux/app-config-writer": "workspace:*",
+        "@sap-ux/cap-config-writer": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/mockserver-config-writer": "workspace:*",
+        "@sap-ux/odata-service-writer": "workspace:*",
+        "@sap-ux/preview-middleware": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/system-access": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/flp-config-inquirer": "workspace:*",
+        "@sap-ux/nodejs-utils": "workspace:*",
+        "@sap/cf-tools": "3.3.0",
+        "@sap-ux/axios-extension": "workspace:*",
+        "chalk": "4.1.2",
+        "commander": "14.0.3",
+        "diff": "8.0.4",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0",
+        "prompts": "2.4.2"
+    },
+    "devDependencies": {
+        "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/store": "workspace:*",
+        "@types/diff": "8.0.0",
+        "@types/inquirer": "8.2.6",
+        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/prompts": "2.4.9"
+    }
 }
