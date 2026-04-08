@@ -15,4 +15,4 @@
 "@sap-ux/yaml": patch
 ---
 
-chore: upgrade lodash 4.17.23 → 4.18.0 (CVE security fix, vulnerable range <=4.17.23)
+chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
