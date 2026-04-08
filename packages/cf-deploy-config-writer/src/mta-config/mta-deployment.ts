@@ -89,7 +89,7 @@ export class MtaDeployment {
 
     private async loadMTAResources(): Promise<void> {
         const resourceList = (await this.ctx.mta.getResources()) || [];
-        resourceList.forEach((resource) => {
+        resourceList.forEach((resource: mta.Resource) => {
             if (resource.parameters?.service) {
                 if (resource.parameters.service === 'html5-apps-repo') {
                     this.ctx.resources.set(

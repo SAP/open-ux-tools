@@ -229,10 +229,10 @@ export class RouterConfigurator {
             const serverModule = this.ctx.modules.get(moduleType as string);
             if (serverModule) {
                 const mtaResource = this.ctx.resources.get(ManagedXSUAA);
-                if (appendSrvApi && !serverModule.provides?.some((ele) => ele.name === SRV_API)) {
+                if (appendSrvApi && !serverModule.provides?.some((ele: mta.Provides) => ele.name === SRV_API)) {
                     serverModule.provides = [...(serverModule.provides ?? [])];
                 }
-                if (mtaResource && !serverModule.requires?.some((ele) => ele.name === mtaResource.name)) {
+                if (mtaResource && !serverModule.requires?.some((ele: mta.Requires) => ele.name === mtaResource.name)) {
                     serverModule.requires = [...(serverModule.requires ?? []), { name: mtaResource.name }];
                 }
                 await this.ctx.mta.updateModule(serverModule);
@@ -255,7 +255,7 @@ export class RouterConfigurator {
     /** Returns the cloud service name from the content module destinations. */
     get cloudServiceName(): string | undefined {
         let cloudServiceName: string | undefined;
-        this.ctx.modules.forEach((contentModule) => {
+        this.ctx.modules.forEach((contentModule: mta.Module) => {
             const moduleDestinations: MTADestinationType[] =
                 contentModule.parameters?.content?.instance?.destinations ?? [];
             if (contentModule.type === 'com.sap.application.content' && moduleDestinations.length) {

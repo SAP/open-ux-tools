@@ -24,7 +24,13 @@ import {
     enableParallelDeployments
 } from '../constants';
 import { t } from '../i18n';
-import { CloudFoundryServiceType, type ModuleType, type MTADestinationType, type SupportedResources, type HTML5App } from '../types';
+import {
+    CloudFoundryServiceType,
+    type ModuleType,
+    type MTADestinationType,
+    type SupportedResources,
+    type HTML5App
+} from '../types';
 import type { MtaContext } from './mta-context';
 
 /**
@@ -124,7 +130,11 @@ export class ResourceManager {
         this.ctx.dirty = true;
     }
 
-    /** Add a destination service resource. */
+    /**
+     * Add a destination service resource.
+     *
+     * @param isManagedApp
+     */
     async addDestinationResource(isManagedApp = false): Promise<void> {
         const destinationName = `${this.ctx.mtaId?.slice(0, MAX_MTA_PREFIX_LENGTH)}-destination-service`;
         const resource: mta.Resource = {
@@ -145,7 +155,11 @@ export class ResourceManager {
         this.ctx.dirty = true;
     }
 
-    /** Update an existing destination resource with HTML5Runtime_enabled flag and ensure UI5 destination exists. */
+    /**
+     * Update an existing destination resource with HTML5Runtime_enabled flag and ensure UI5 destination exists.
+     *
+     * @param isManagedApp
+     */
     async updateDestinationResource(isManagedApp = false): Promise<void> {
         const resource = this.ctx.resources.get('destination');
         if (resource) {
@@ -194,6 +208,8 @@ export class ResourceManager {
     /**
      * Gets the effective service instance name for a resource.
      * Prefers explicit 'service-name' parameter; falls back to resource name.
+     *
+     * @param resourceName
      */
     getServiceInstanceName(resourceName: string): string | undefined {
         const resource = this.ctx.resources.get(resourceName);
@@ -207,7 +223,7 @@ export class ResourceManager {
         const resourceName = `${this.ctx.mtaId?.slice(0, MAX_MTA_PREFIX_LENGTH)}-connectivity`;
         const router = this.ctx.modules.get('approuter.nodejs');
         if (router) {
-            if (router.requires?.findIndex((resource) => resource.name === resourceName) === -1) {
+            if (router.requires?.findIndex((resource: mta.Requires) => resource.name === resourceName) === -1) {
                 router.requires.push({ name: resourceName });
                 await this.ctx.mta.updateModule(router);
             }
@@ -234,7 +250,7 @@ export class ResourceManager {
         const newResourceName = `${this.ctx.mtaId?.slice(0, MAX_ABAP_SERVICE_PREFIX_LENGTH)}-abap-${serviceName.slice(0, MAX_ABAP_SERVICE_NAME_LENGTH)}`;
         const router = this.ctx.modules.get('approuter.nodejs');
         if (router) {
-            if (router.requires?.findIndex((resource) => resource.name === newResourceName) === -1) {
+            if (router.requires?.findIndex((resource: mta.Requires) => resource.name === newResourceName) === -1) {
                 router.requires.push({ name: newResourceName });
                 await this.ctx.mta.updateModule(router);
             }
@@ -271,10 +287,10 @@ export class ResourceManager {
         const mtaResource = this.ctx.resources.get(supportedResource);
         const serverModule = this.ctx.modules.get(moduleType);
         if (serverModule) {
-            if (appendSrvApi && !serverModule.provides?.some((ele) => ele.name === SRV_API)) {
+            if (appendSrvApi && !serverModule.provides?.some((ele: mta.Provides) => ele.name === SRV_API)) {
                 serverModule.provides = [...(serverModule.provides ?? []), ...[ServiceAPIRequires]];
             }
-            if (mtaResource && !serverModule.requires?.some((ele) => ele.name === mtaResource.name)) {
+            if (mtaResource && !serverModule.requires?.some((ele: mta.Requires) => ele.name === mtaResource.name)) {
                 serverModule.requires = [...(serverModule.requires ?? []), ...[{ name: mtaResource.name }]];
             }
             await this.ctx.mta.updateModule(serverModule);

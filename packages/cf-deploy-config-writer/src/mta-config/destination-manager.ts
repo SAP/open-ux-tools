@@ -1,5 +1,6 @@
 import type { Destination } from '@sap-ux/btp-utils';
 import { isGenericODataDestination, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
+import type { mta } from '@sap/mta-lib';
 import { DefaultMTADestination, SRV_API, MTAAPIDestination } from '../constants';
 import { type MTADestinationType, type ModuleType } from '../types';
 import type { MtaContext } from './mta-context';
@@ -72,7 +73,7 @@ export class DestinationManager {
         const destinationResource = this.ctx.resources.get('destination');
         const capDestName = cfDestination === DefaultMTADestination ? SRV_API : cfDestination;
         if (destinationResource) {
-            if (!destinationResource.requires?.some((ele) => ele.name === SRV_API)) {
+            if (!destinationResource.requires?.some((ele: mta.Requires) => ele.name === SRV_API)) {
                 destinationResource.requires = [...(destinationResource.requires ?? []), { name: SRV_API }];
             }
             const isSrvApiExisting =
@@ -104,11 +105,11 @@ export class DestinationManager {
         const serverModule = this.ctx.modules.get(moduleType);
         if (serverModule) {
             const { ServiceAPIRequires } = await import('../constants');
-            if (!serverModule.provides?.some((ele) => ele.name === SRV_API)) {
+            if (!serverModule.provides?.some((ele: mta.Provides) => ele.name === SRV_API)) {
                 serverModule.provides = [...(serverModule.provides ?? []), ...[ServiceAPIRequires]];
             }
             const mtaResource = this.ctx.resources.get('managed:xsuaa');
-            if (mtaResource && !serverModule.requires?.some((ele) => ele.name === mtaResource.name)) {
+            if (mtaResource && !serverModule.requires?.some((ele: mta.Requires) => ele.name === mtaResource.name)) {
                 serverModule.requires = [...(serverModule.requires ?? []), { name: mtaResource.name }];
             }
             await this.ctx.mta.updateModule(serverModule);
