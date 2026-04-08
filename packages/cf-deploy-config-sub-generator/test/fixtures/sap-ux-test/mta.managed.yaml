@@ -58,6 +58,9 @@ resources:
     - name: sap-ux-test-uaa
       type: org.cloudfoundry.managed-service
       parameters:
+          config:
+              tenant-mode: dedicated
+              xsappname: 'sap-ux-test-${org}-${space}'
           path: ./xs-security.json
           service: xsuaa
           service-name: sap-ux-test-xsuaa-service

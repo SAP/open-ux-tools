@@ -298,6 +298,10 @@ exports[`Cloud foundry generator tests Validate new managed approuter is added w
   {
     "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-uaa",
     "parameters": {
+      "config": {
+        "tenant-mode": "dedicated",
+        "xsappname": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-\${org}-\${space}",
+      },
       "path": "./xs-security.json",
       "service": "xsuaa",
       "service-name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-xsuaa-service",

@@ -144,6 +144,9 @@ resources:
       service: xsuaa
       service-name: managedAppCAPProjectJava-xsuaa-service
       service-plan: application
+      config:
+        xsappname: managedAppCAPProjectJava-\${org}-\${space}
+        tenant-mode: dedicated
   - name: managedAppCAPProjectJava-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -399,6 +402,9 @@ resources:
       service: xsuaa
       service-name: cappapp-xsuaa-service
       service-plan: application
+      config:
+        xsappname: cappapp-\${org}-\${space}
+        tenant-mode: dedicated
   - name: cappapp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -653,6 +659,9 @@ resources:
       service: xsuaa
       service-name: existing-id-deploy-xsuaa-service
       service-plan: application
+      config:
+        xsappname: existing-id-deploy-\${org}-\${space}
+        tenant-mode: dedicated
   - name: existing-id-deploy-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -889,6 +898,9 @@ resources:
       service: xsuaa
       service-name: cappapp-xsuaa-service
       service-plan: application
+      config:
+        xsappname: cappapp-\${org}-\${space}
+        tenant-mode: dedicated
   - name: cappapp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -1191,6 +1203,9 @@ resources:
       service: xsuaa
       service-name: existing-id-deploy-xsuaa-service
       service-plan: application
+      config:
+        xsappname: existing-id-deploy-\${org}-\${space}
+        tenant-mode: dedicated
   - name: existing-id-deploy-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
