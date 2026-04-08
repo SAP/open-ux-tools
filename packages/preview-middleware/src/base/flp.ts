@@ -1260,7 +1260,7 @@ export class FlpSandbox {
      */
     private setupCfBuildMode(cfBuildPath: string, adp: AdpPreview): Manifest {
         const manifest = readManifestFromBuildPath(cfBuildPath);
-        this.router.use(adp.descriptor.url, adp.proxy.bind(adp));
+        this.router.use(adp.descriptor.url, adp.cfProxy.bind(adp));
         this.router.use('/', serveStatic(cfBuildPath));
         this.logger.info(`Initialized CF ADP with cfBuildPath, serving from ${cfBuildPath}`);
         return manifest;

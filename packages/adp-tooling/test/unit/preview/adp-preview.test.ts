@@ -556,7 +556,7 @@ describe('AdaptationProject', () => {
         });
     });
 
-    describe('proxy - cfBuildPath mode', () => {
+    describe('cfProxy', () => {
         let server: supertest.Agent;
         const next = jest.fn().mockImplementation((_req, res) => res.status(200).send());
 
@@ -580,7 +580,7 @@ describe('AdaptationProject', () => {
             await adp.init(JSON.parse(descriptorVariant));
 
             const app = express();
-            app.use(adp.descriptor.url, adp.proxy.bind(adp));
+            app.use(adp.descriptor.url, adp.cfProxy.bind(adp));
             app.use(next);
 
             server = supertest(app);
@@ -595,11 +595,7 @@ describe('AdaptationProject', () => {
             expect(JSON.parse(response.text)).toEqual({ 'sap.app': { id: 'cf.proxy.test' } });
         });
 
-        test('/Component-preload.js returns 404', async () => {
-            await server.get('/Component-preload.js').expect(404);
-        });
-
-        test('other requests call next() instead of redirecting', async () => {
+        test('other requests call next()', async () => {
             next.mockClear();
             await server.get('/some-other-file.js').expect(200);
             expect(next).toHaveBeenCalled();

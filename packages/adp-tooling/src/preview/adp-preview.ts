@@ -244,9 +244,6 @@ export class AdpPreview {
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
-        } else if (this.isCfBuildMode) {
-            // CF mode: let serveStatic handle remaining requests
-            next();
         } else {
             // check if the requested file exists in the file system (replace .js with .* for typescript)
             const files = await this.project.byGlob(req.path.replace('.js', '.*'));
@@ -256,6 +253,23 @@ export class AdpPreview {
             } else {
                 next();
             }
+        }
+    }
+
+    /**
+     * CF build mode proxy that intercepts manifest.json requests and delegates everything else to the next middleware.
+     *
+     * @param req incoming request
+     * @param res outgoing response object
+     * @param next next middleware that is to be called if the request cannot be handled
+     */
+    async cfProxy(req: Request, res: Response, next: NextFunction): Promise<void> {
+        if (req.path === '/manifest.json') {
+            await this.sync();
+            res.status(200);
+            res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
+        } else {
+            next();
         }
     }
 
