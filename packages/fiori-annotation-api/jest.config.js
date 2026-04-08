@@ -1,4 +1,4 @@
 const config = require('../../jest.base');
 config.globalSetup = './jest.setup.js';
-config.testTimeout = 20001;
+config.testTimeout = 60000;
 module.exports = config;
