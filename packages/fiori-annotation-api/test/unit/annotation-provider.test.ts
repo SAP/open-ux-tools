@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { CdsAnnotationProvider, getXmlServiceArtifacts } from '../../src';
 import { fileURLToPath } from 'node:url';
 import { adaptedUrl, normalizeAnnotationNode, normalizeUriInKey } from './raw-metadata-serializer';
-import { PROJECTS } from './projects';
+import { npmInstall, PROJECTS, V4_CDS_LATEST } from './projects';
 
 describe('annotation provider', () => {
     describe('xml', () => {
@@ -50,17 +50,17 @@ describe('annotation provider', () => {
     });
 
     describe('cds', () => {
-        const project = PROJECTS.V4_CDS_START;
         let fileCache: Map<string, string>;
 
         beforeAll(async () => {
-            const metadataPath = fileURLToPath(project.files.metadata);
+            npmInstall(V4_CDS_LATEST.root);
+            const metadataPath = fileURLToPath(V4_CDS_LATEST.files.metadata);
             const metadata = await readFile(metadataPath, 'utf-8');
-            const annotationFilePath = fileURLToPath(project.files.annotations);
+            const annotationFilePath = fileURLToPath(V4_CDS_LATEST.files.annotations);
             const annotations = await readFile(annotationFilePath, 'utf-8');
             fileCache = new Map([
-                [project.files.metadata, metadata],
-                [project.files.annotations, annotations]
+                [V4_CDS_LATEST.files.metadata, metadata],
+                [V4_CDS_LATEST.files.annotations, annotations]
             ]);
         });
 
@@ -70,7 +70,7 @@ describe('annotation provider', () => {
 
         test('no cdsCache', async () => {
             const artifacts = CdsAnnotationProvider.getCdsServiceArtifacts(
-                project.root,
+                V4_CDS_LATEST.root,
                 'odata/v4/incident/',
                 fileCache
             );
@@ -79,13 +79,13 @@ describe('annotation provider', () => {
                 return;
             }
             expect(artifacts?.path).toStrictEqual('odata/v4/incident/');
-            expect(normalizeUriInKey(artifacts.aliasInfo, project.root)).toMatchSnapshot();
-            expect(artifacts.fileSequence.map((uri) => adaptedUrl(uri, project.root))).toMatchSnapshot();
+            expect(normalizeUriInKey(artifacts.aliasInfo, V4_CDS_LATEST.root)).toMatchSnapshot();
+            expect(artifacts.fileSequence.map((uri) => adaptedUrl(uri, V4_CDS_LATEST.root))).toMatchSnapshot();
         });
 
         test('with cdsCache', async () => {
             const artifactsFromCdsCache = CdsAnnotationProvider.getCdsServiceArtifacts(
-                project.root,
+                V4_CDS_LATEST.root,
                 'odata/v4/incident/',
                 fileCache
             );
@@ -94,8 +94,10 @@ describe('annotation provider', () => {
                 return;
             }
             expect(artifactsFromCdsCache.path).toStrictEqual('odata/v4/incident/');
-            expect(normalizeUriInKey(artifactsFromCdsCache.aliasInfo, project.root)).toMatchSnapshot();
-            expect(artifactsFromCdsCache.fileSequence.map((uri) => adaptedUrl(uri, project.root))).toMatchSnapshot();
+            expect(normalizeUriInKey(artifactsFromCdsCache.aliasInfo, V4_CDS_LATEST.root)).toMatchSnapshot();
+            expect(
+                artifactsFromCdsCache.fileSequence.map((uri) => adaptedUrl(uri, V4_CDS_LATEST.root))
+            ).toMatchSnapshot();
         });
     });
 });
