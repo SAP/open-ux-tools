@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
 import {
@@ -52,7 +53,7 @@ const findChangeWithInboundIdMock = findChangeWithInboundId as jest.Mock;
 const writeChangeToFileMock = writeChangeToFile as jest.Mock;
 const addConnectivityServiceToMtaMock = addConnectivityServiceToMta as jest.Mock;
 
-const mockProjectPath = '/mock/project/path';
+const mockProjectPath = join('mock', 'project', 'path');
 const mockTemplatePath = '/mock/template/path';
 
 describe('AnnotationsWriter', () => {
@@ -414,8 +415,8 @@ describe('NewModelWriter', () => {
 
         await writer.write(mockData);
 
-        expect(readJSONMock).toHaveBeenCalledWith(`${mockProjectPath}/webapp/xs-app.json`, { routes: [] });
-        expect(writeJSONMock).toHaveBeenCalledWith(`${mockProjectPath}/webapp/xs-app.json`, {
+        expect(readJSONMock).toHaveBeenCalledWith(join(mockProjectPath, 'webapp', 'xs-app.json'), { routes: [] });
+        expect(writeJSONMock).toHaveBeenCalledWith(join(mockProjectPath, 'webapp', 'xs-app.json'), {
             routes: [
                 {
                     source: '^/customer/MyService/sap/opu/odata/v4/(.*)',
@@ -446,7 +447,7 @@ describe('NewModelWriter', () => {
 
         await writer.write(mockData);
 
-        expect(writeJSONMock).toHaveBeenCalledWith(`${mockProjectPath}/webapp/xs-app.json`, {
+        expect(writeJSONMock).toHaveBeenCalledWith(join(mockProjectPath, 'webapp', 'xs-app.json'), {
             routes: [
                 { source: '^existing/route/(.*)', target: '/existing/$1', destination: 'OTHER_DEST' },
                 {
@@ -493,7 +494,7 @@ describe('NewModelWriter', () => {
 
         await writer.write(mockData);
 
-        expect(addConnectivityServiceToMtaMock).toHaveBeenCalledWith('/mock/project', expect.any(Object));
+        expect(addConnectivityServiceToMtaMock).toHaveBeenCalledWith(join('mock', 'project'), expect.any(Object));
     });
 
     it('should not call addConnectivityServiceToMta when not in CF', async () => {
@@ -607,7 +608,7 @@ describe('DataSourceWriter', () => {
 });
 
 describe('InboundWriter', () => {
-    const mockProjectPath = '/mock/project/path';
+    const mockProjectPath = join('mock', 'project', 'path');
     let writer: InboundWriter;
 
     beforeEach(() => {
@@ -654,7 +655,7 @@ describe('InboundWriter', () => {
         await writer.write(mockData as InboundData);
 
         expect(writeChangeToFileMock).toHaveBeenCalledWith(
-            '/mock/project/path/webapp/changes/manifest/inboundChange.change',
+            join(mockProjectPath, 'webapp', 'changes', 'manifest', 'inboundChange.change'),
             expect.objectContaining({ content: expect.objectContaining({ inboundId: 'testInboundId' }) }),
             {}
         );

@@ -1,3 +1,4 @@
+import { join, dirname } from 'node:path';
 import { getDestinations } from '../../../../src/cf/services/destinations';
 import { getOrCreateServiceInstanceKeys, listBtpDestinations } from '../../../../src/cf/services/api';
 import { getYamlContent } from '../../../../src/cf/project/yaml-loader';
@@ -18,7 +19,7 @@ const getOrCreateServiceInstanceKeysMock = getOrCreateServiceInstanceKeys as jes
 const listBtpDestinationsMock = listBtpDestinations as jest.Mock;
 const getYamlContentMock = getYamlContent as jest.Mock;
 
-const mockProjectPath = '/path/to/project';
+const mockProjectPath = join('path', 'to', 'project');
 
 const mockMtaYaml = {
     ID: 'test-project',
@@ -75,7 +76,7 @@ describe('getDestinations', () => {
 
         const result = await getDestinations(mockProjectPath);
 
-        expect(getYamlContentMock).toHaveBeenCalledWith('/path/to/mta.yaml');
+        expect(getYamlContentMock).toHaveBeenCalledWith(join(dirname(mockProjectPath), 'mta.yaml'));
         expect(getOrCreateServiceInstanceKeysMock).toHaveBeenCalledWith({ names: ['test-project-destination'] });
         expect(listBtpDestinationsMock).toHaveBeenCalledWith(mockCredentials);
         expect(result).toBe(mockDestinations);
