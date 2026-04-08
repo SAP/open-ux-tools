@@ -171,7 +171,7 @@ async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<v
     // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
     writeFileSync(join(config.mtaPath, FileName.MtaYaml), mtaContents);
     // Add missing configurations
-    addXSSecurityConfig(config, fs, false);
+    addXSSecurityConfig(config, fs);
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
 }
 
