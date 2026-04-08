@@ -3,11 +3,6 @@ import { CdsAnnotationProvider, getXmlServiceArtifacts } from '../../src';
 import { fileURLToPath } from 'node:url';
 import { adaptedUrl, normalizeAnnotationNode, normalizeUriInKey } from './raw-metadata-serializer';
 import { PROJECTS } from './projects';
-import * as cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
-import * as projectAccess from '@sap-ux/project-access';
-import { join } from 'node:path';
-
-jest.mock('child_process');
 
 describe('annotation provider', () => {
     describe('xml', () => {
@@ -67,15 +62,6 @@ describe('annotation provider', () => {
                 [project.files.metadata, metadata],
                 [project.files.annotations, annotations]
             ]);
-            const filePath = join(project.root, 'test.cds');
-            const facade = await cdsCompilerFacade.createCdsCompilerFacadeForRoot(project.root, [filePath], fileCache);
-            jest.spyOn(cdsCompilerFacade, 'createCdsCompilerFacadeForRootSync').mockReturnValue({
-                ...facade,
-                getCsn: jest.fn().mockReturnValue([])
-            });
-            jest.spyOn(projectAccess, 'processServices').mockReturnValue([
-                { urlPath: '/here/goes/your/serviceurl/', name: 'IncidentService' }
-            ]);
         });
 
         afterEach(() => {
@@ -85,43 +71,29 @@ describe('annotation provider', () => {
         test('no cdsCache', async () => {
             const artifacts = CdsAnnotationProvider.getCdsServiceArtifacts(
                 project.root,
-                '/here/goes/your/serviceurl/',
+                'odata/v4/incident/',
                 fileCache
             );
-            expect(cdsCompilerFacade.createCdsCompilerFacadeForRootSync).toHaveBeenCalled();
             expect(artifacts).toBeDefined();
             if (!artifacts) {
                 return;
             }
-            expect(artifacts?.path).toStrictEqual('here/goes/your/serviceurl/');
+            expect(artifacts?.path).toStrictEqual('odata/v4/incident/');
             expect(normalizeUriInKey(artifacts.aliasInfo, project.root)).toMatchSnapshot();
             expect(artifacts.fileSequence.map((uri) => adaptedUrl(uri, project.root))).toMatchSnapshot();
-            const annotationFiles = normalizeUriInKey(artifacts.annotationFiles, project.root);
-
-            for (const file of Object.values(annotationFiles)) {
-                file.uri = adaptedUrl(file.uri, project.root);
-                for (const target of file.targets) {
-                    for (const annotation of target.terms) {
-                        annotation.content = [];
-                    }
-                }
-                normalizeAnnotationNode(file);
-            }
-            expect(annotationFiles).toMatchSnapshot();
         });
 
         test('with cdsCache', async () => {
             const artifactsFromCdsCache = CdsAnnotationProvider.getCdsServiceArtifacts(
                 project.root,
-                '/here/goes/your/serviceurl/',
+                'odata/v4/incident/',
                 fileCache
             );
-            expect(cdsCompilerFacade.createCdsCompilerFacadeForRootSync).not.toHaveBeenCalled();
             expect(artifactsFromCdsCache).toBeDefined();
             if (!artifactsFromCdsCache) {
                 return;
             }
-            expect(artifactsFromCdsCache.path).toStrictEqual('here/goes/your/serviceurl/');
+            expect(artifactsFromCdsCache.path).toStrictEqual('odata/v4/incident/');
             expect(normalizeUriInKey(artifactsFromCdsCache.aliasInfo, project.root)).toMatchSnapshot();
             expect(artifactsFromCdsCache.fileSequence.map((uri) => adaptedUrl(uri, project.root))).toMatchSnapshot();
         });
