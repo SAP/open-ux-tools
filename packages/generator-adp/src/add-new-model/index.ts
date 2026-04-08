@@ -121,9 +121,10 @@ class AddNewModelGenerator extends SubGeneratorBase {
             serviceType,
             isCloudFoundry,
             destinationName: isCloudFoundry ? this.answers.destination?.Name : undefined,
-            ...(isCloudFoundry && this.answers.destination && {
-                isOnPremiseDestination: isOnPremiseDestination(this.answers.destination)
-            }),
+            ...(isCloudFoundry &&
+                this.answers.destination && {
+                    isOnPremiseDestination: isOnPremiseDestination(this.answers.destination)
+                }),
             service: {
                 name: modelAndDatasourceName,
                 uri,
