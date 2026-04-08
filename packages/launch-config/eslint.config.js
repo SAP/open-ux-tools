@@ -4,6 +4,9 @@ const { tsParser } = require('typescript-eslint');
 module.exports = [
     ...base,
     {
+        ignores: ['preview-middleware-client/**']
+    },
+    {
         languageOptions: {
             parserOptions: {
                 parser: tsParser,
