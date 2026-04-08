@@ -115,9 +115,9 @@
         "noServiceKeysFoundForInstance": "No service keys found for service instance: {{serviceInstanceName}}",
         "couldNotFetchServiceKeys": "Cannot fetch the service keys. Error: {{error}}",
         "metadataFetchingNotSupportedForCF": "Metadata fetching is not supported for Cloud Foundry projects.",
-        "cfPushFailed": "cf push failed for app '{{appName}}': {{error}}",
-        "cfEnableSshFailed": "cf enable-ssh failed for app '{{appName}}': {{error}}",
-        "cfRestartFailed": "cf restart failed for app '{{appName}}': {{error}}"
+        "cfPushFailed": "cf push failed for the '{{appName}}' app: {{error}}",
+        "cfEnableSshFailed": "cf enable-ssh failed for the '{{appName}}' app: {{error}}",
+        "cfRestartFailed": "cf restart failed for the '{{appName}}' app: {{error}}"
     },
     "choices": {
         "true": "true",
