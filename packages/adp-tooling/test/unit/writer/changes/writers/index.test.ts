@@ -649,7 +649,7 @@ describe('InboundWriter', () => {
         const existingChangeContent = { inboundId: 'testInboundId', entityPropertyChange: [] };
         findChangeWithInboundIdMock.mockResolvedValue({
             changeWithInboundId: { content: existingChangeContent },
-            filePath: `${mockProjectPath}/webapp/changes/manifest/inboundChange.change`
+            filePath: join(mockProjectPath, 'webapp', 'changes', 'manifest', 'inboundChange.change')
         });
 
         await writer.write(mockData as InboundData);
