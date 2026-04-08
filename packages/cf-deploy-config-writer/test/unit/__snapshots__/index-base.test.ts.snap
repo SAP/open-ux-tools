@@ -77,6 +77,9 @@ resources:
       service: xsuaa
       service-name: appfrontend-xsuaa-service
       service-plan: application
+      config:
+        xsappname: 'appfrontend-\${org}-\${space}'
+        tenant-mode: dedicated
   - name: appfrontend-app-front
     type: org.cloudfoundry.managed-service
     parameters:
@@ -198,6 +201,9 @@ resources:
       service: xsuaa
       service-name: managed-xsuaa-service
       service-plan: application
+      config:
+        xsappname: 'managed-\${org}-\${space}'
+        tenant-mode: dedicated
   - name: managed-repo-host
     type: org.cloudfoundry.managed-service
     parameters:

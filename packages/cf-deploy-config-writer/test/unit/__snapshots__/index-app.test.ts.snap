@@ -330,6 +330,9 @@ resources:
       service: xsuaa
       service-name: basicapp-xsuaa-service
       service-plan: application
+      config:
+        xsappname: 'basicapp-\${org}-\${space}'
+        tenant-mode: dedicated
   - name: basicapp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -718,6 +721,9 @@ resources:
       service: xsuaa
       service-name: multiproject-xsuaa-service
       service-plan: application
+      config:
+        xsappname: 'multiproject-\${org}-\${space}'
+        tenant-mode: dedicated
   - name: multiproject-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -1112,6 +1118,9 @@ resources:
       service: xsuaa
       service-name: comfioritoolslrop-xsuaa-service
       service-plan: application
+      config:
+        xsappname: 'comfioritoolslrop-\${org}-\${space}'
+        tenant-mode: dedicated
   - name: comfioritoolslrop-repo-host
     type: org.cloudfoundry.managed-service
     parameters:

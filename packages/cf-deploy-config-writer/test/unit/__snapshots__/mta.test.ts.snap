@@ -88,6 +88,9 @@ resources:
       service: xsuaa
       service-name: basicApp-xsuaa-service
       service-plan: application
+      config:
+        xsappname: 'basicApp-\${org}-\${space}'
+        tenant-mode: dedicated
   - name: basicApp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -234,6 +237,9 @@ resources:
       service: xsuaa
       service-name: managedAppCAPProject-xsuaa-service
       service-plan: application
+      config:
+        xsappname: 'managedAppCAPProject-\${org}-\${space}'
+        tenant-mode: dedicated
   - name: managedAppCAPProject-repo-host
     type: org.cloudfoundry.managed-service
     parameters:

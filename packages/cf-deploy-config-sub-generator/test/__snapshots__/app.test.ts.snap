@@ -319,11 +319,10 @@ exports[`Cloud foundry generator tests Validate new managed approuter is added w
 
 exports[`Cloud foundry generator tests Validate new managed approuter is added when there is no existing mta.yaml 6`] = `
 {
+  "attributes": [],
   "description": "Security profile of called application",
   "role-templates": [],
   "scopes": [],
-  "tenant-mode": "dedicated",
-  "xsappname": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 }
 `;
 

@@ -155,10 +155,9 @@ resources:
 
 exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 2`] = `
 "{
-  "xsappname": "managedAppCAPProjectJava",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -411,10 +410,9 @@ resources:
 
 exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap project 2`] = `
 "{
-  "xsappname": "cappapp",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -761,10 +759,9 @@ archive.zip
 
 exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter  6`] = `
 "{
-  "xsappname": "existing-id-deploy",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -937,10 +934,9 @@ mta_archives/
 
 exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter inside a cap project 3`] = `
 "{
-  "xsappname": "cappapp",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -1455,10 +1451,9 @@ exports[`Test headless generator Test: Headless deploy-config - localAppChanges 
 
 exports[`Test headless generator Test: Headless deploy-config 1`] = `
 "{
-  "xsappname": "existing-id-deploy",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -1803,10 +1798,9 @@ exports[`Test headless generator Test: Headless deploy-config 7`] = `
 
 exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 1`] = `
 "{
-  "xsappname": "existing-id-deploy_ts",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "

@@ -1,5 +1,7 @@
 ---
 "@sap-ux/cf-deploy-config-writer": patch
+"@sap-ux/cf-deploy-config-sub-generator": patch
+"@sap-ux/deploy-config-sub-generator": patch
 ---
 
 fix(cf-deploy-config-writer): align xs-security.json and XSUAA mta.yaml config with CDS convention

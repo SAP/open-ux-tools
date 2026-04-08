@@ -328,6 +328,9 @@ resources:
       service: xsuaa
       service-name: comfioritoolslrop-xsuaa-service
       service-plan: application
+      config:
+        xsappname: 'comfioritoolslrop-\${org}-\${space}'
+        tenant-mode: dedicated
   - name: comfioritoolslrop-app-front
     type: org.cloudfoundry.managed-service
     parameters:
