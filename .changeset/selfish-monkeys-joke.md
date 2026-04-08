@@ -1,6 +1,6 @@
 ---
 "@sap-ux/adp-tooling": patch
-"sap-ux/generator-adp": patch
+"@sap-ux/generator-adp": patch
 "@sap-ux/create": patch
 ---
 
