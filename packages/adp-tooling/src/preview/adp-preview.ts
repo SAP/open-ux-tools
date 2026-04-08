@@ -19,10 +19,12 @@ import RoutesHandler from './routes-handler';
 import OvpRoutesHandler from './ovp-routes-handler';
 import type {
     AdpPreviewConfig,
+    AdpPreviewConfigWithTarget,
     CommonChangeProperties,
     DescriptorVariant,
     OperationType,
-    CommonAdditionalChangeInfoProperties
+    CommonAdditionalChangeInfoProperties,
+    AdpPreviewConfigWithBuildPath
 } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import {
@@ -80,6 +82,10 @@ export class AdpPreview {
     private lrep: LayeredRepositoryService | undefined;
     private descriptorVariantId: string | undefined;
     private projectTypeValue?: AdaptationProjectType;
+    /**
+     * Flag to indicate if the preview is running in CF ADP build mode, where the manifest is read from the build output instead of being fetched from the backend.
+     */
+    private readonly isCfBuildMode: boolean;
 
     /**
      * @returns merged manifest.
@@ -138,7 +144,9 @@ export class AdpPreview {
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
-    ) {}
+    ) {
+        this.isCfBuildMode = 'cfBuildPath' in config;
+    }
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
@@ -147,14 +155,15 @@ export class AdpPreview {
      * @returns {Promise<UI5FlexLayer>} The UI5 flex layer for which editing is enabled.
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
-        if ('cfBuildPath' in this.config) {
+        if (this.isCfBuildMode) {
             return this.initCfBuildMode(descriptorVariant);
         }
 
+        const config = this.config as AdpPreviewConfigWithTarget;
         this.descriptorVariantId = descriptorVariant.id;
         this.provider = await createAbapServiceProvider(
-            this.config.target,
-            { ignoreCertErrors: this.config.ignoreCertErrors },
+            config.target,
+            { ignoreCertErrors: config.ignoreCertErrors },
             true,
             this.logger
         );
@@ -181,7 +190,7 @@ export class AdpPreview {
         this.projectTypeValue = undefined;
         this.routesHandler = new RoutesHandler(this.project, this.util, {} as AbapServiceProvider, this.logger);
 
-        const config = this.config as { cfBuildPath: string };
+        const config = this.config as AdpPreviewConfigWithBuildPath;
         const manifest = readManifestFromBuildPath(config.cfBuildPath) as MergedAppDescriptor['manifest'];
         this.mergedDescriptor = {
             name: descriptorVariant.id,
@@ -201,11 +210,10 @@ export class AdpPreview {
         if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
             return;
         }
-        if ('cfBuildPath' in this.config) {
+        if (this.isCfBuildMode) {
             await runBuild(this.util.getProject().getRootPath(), { ADP_BUILDER_MODE: 'preview' });
-            this.mergedDescriptor.manifest = readManifestFromBuildPath(
-                this.config.cfBuildPath
-            ) as MergedAppDescriptor['manifest'];
+            const buildPath = (this.config as AdpPreviewConfigWithBuildPath).cfBuildPath;
+            this.mergedDescriptor.manifest = readManifestFromBuildPath(buildPath) as MergedAppDescriptor['manifest'];
             return;
         }
         if (!this.lrep || !this.descriptorVariantId) {
@@ -236,7 +244,7 @@ export class AdpPreview {
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
-        } else if ('cfBuildPath' in this.config) {
+        } else if (this.isCfBuildMode) {
             // CF mode: let serveStatic handle remaining requests
             next();
         } else {
