@@ -220,19 +220,15 @@ export function getODataVersionFromServiceType(serviceType: ServiceType): string
  */
 async function getAbapServiceUrl(projectPath: string): Promise<string | undefined> {
     try {
-        const adpConf = await getAdpConfig(projectPath, 'ui5.yaml');
-        if ('target' in adpConf) {
-            const { target } = adpConf;
-            if ('url' in target && target.url) {
-                return target.url;
-            }
-            if ('destination' in target && target.destination) {
-                const destinations = await listDestinations();
-                return destinations[target.destination]?.Host;
-            }
+        const { target } = (await getAdpConfig(projectPath, 'ui5.yaml')) as any;
+
+        if (!target) {
+            return undefined;
         }
+
+        return target.url ?? (target.destination ? (await listDestinations())[target.destination]?.Host : undefined);
     } catch {
-        // unavailable — caller will simply not show the message
+        // Message will not be shown
     }
     return undefined;
 }
@@ -344,11 +340,8 @@ export async function getPrompts(
                 if (typeof uriResult === 'string') {
                     return uriResult;
                 }
-                if (isCFEnv) {
-                    const routes = readXsAppRoutes(projectPath);
-                    if (routes.some((r) => r.target === `${value}$1`)) {
-                        return t('validators.errorRouteAlreadyExists');
-                    }
+                if (isCFEnv && readXsAppRoutes(projectPath).some((r) => r.target === `${value}$1`)) {
+                    return t('validators.errorRouteAlreadyExists');
                 }
                 return true;
             },

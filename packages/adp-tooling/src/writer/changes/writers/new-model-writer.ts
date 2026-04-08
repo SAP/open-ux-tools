@@ -63,11 +63,12 @@ export class NewModelWriter implements IWriter<NewModelData> {
         };
 
         if (!isHttp && service.modelName) {
-            content.model = { [service.modelName]: { dataSource: service.name } };
-
-            if (service.modelSettings && service.modelSettings.length !== 0) {
-                content.model[service.modelName].settings = parseStringToObject(service.modelSettings);
-            }
+            content.model = {
+                [service.modelName]: {
+                    dataSource: service.name,
+                    ...(service.modelSettings?.length ? { settings: parseStringToObject(service.modelSettings) } : {})
+                }
+            };
         }
 
         if ('annotation' in data) {
