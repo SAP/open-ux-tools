@@ -2,10 +2,35 @@ import type { FeatureToggle } from './types';
 import { extensionConfigKeys, tokenToggleGuid, FeatureToggleKey, ExperimentalFeatures } from './constants';
 
 /**
+ * Returns an instance of vscode if available.
+ *
+ * @returns instance of vscode
+ */
+async function getVSCodeInstance(): Promise<any> {
+    let vscode;
+    try {
+        vscode = await import('vscode');
+    } catch {
+        // Vscode not available. Normally in CLI
+    }
+    return vscode;
+}
+
+// Module-level vscode instance, initialized via top-level await
+const _vscodeInstance: any = await getVSCodeInstance();
+
+/**
  * Utility class for accessing and managing feature toggles.
  */
 export class FeatureToggleAccess {
-    public static readonly vscode = getVSCodeInstance();
+    /**
+     * Returns the vscode instance if available.
+     *
+     * @returns instance of vscode or undefined
+     */
+    public static get vscode(): any {
+        return _vscodeInstance;
+    }
 
     /**
      * Retrieves the toggle state of the specified feature.
@@ -93,22 +118,6 @@ export class FeatureToggleAccess {
         }
         return definedToggles;
     }
-}
-
-/**
- * Returns an instance of vscode vscode if available.
- *
- * @returns instance of vscode
- */
-function getVSCodeInstance(): any {
-    let vscode;
-    try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        vscode = require('vscode');
-    } catch {
-        // Vscode not available. Normally in CLI
-    }
-    return vscode;
 }
 
 /**
