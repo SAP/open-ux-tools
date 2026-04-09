@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
     removeNodeModules,
     removeProjectContent,
@@ -6,11 +7,12 @@ import {
     nodeModulesUpToDate,
     storePackageJsonHash
 } from '../../../src/project/project';
-import { copyProject } from '../../../src';
-import type { CopyOptions } from '../../../src';
+import { copyProject } from '../../../src/project/copy';
+import type { CopyOptions } from '../../../src/types';
 import { pathExists, ensureDir } from 'fs-extra';
 
-const projectRoot = join(__dirname, '..', '..', 'fixtures', 'simple-app');
+const testDirname = dirname(fileURLToPath(import.meta.url));
+const projectRoot = join(testDirname, '..', '..', 'fixtures', 'simple-app');
 const des = getDestinationProjectRoot(projectRoot);
 
 beforeEach(async () => {

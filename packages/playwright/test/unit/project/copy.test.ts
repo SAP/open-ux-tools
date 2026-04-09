@@ -1,15 +1,40 @@
-import { join } from 'node:path';
-import { getDestinationProjectRoot } from '../../../src';
-import type { CopyOptions } from '../../../src';
-import { copyProject } from '../../../src/project/copy';
+import { join, dirname, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { pathExists, remove } from 'fs-extra';
-import * as project from '../../../src/project/project';
-import * as npm from '../../../src/project/npm';
+import { jest } from '@jest/globals';
 
-const projectRoot = join(__dirname, '..', '..', 'fixtures', 'simple-app');
+const testDirname = dirname(fileURLToPath(import.meta.url));
+
+const mockRemoveProjectContent = jest.fn<() => Promise<void>>();
+const mockRemoveNodeModules = jest.fn<() => Promise<void>>();
+const mockInstall = jest.fn<() => Promise<void>>();
+
+// Inline getDestinationProjectRoot to avoid importing the real module inside the mock factory
+const getDestinationProjectRoot = (sourceProjectRoot: string): string => {
+    const projectName = sourceProjectRoot.split(sep).pop() ?? 'unknown';
+    return join(process.cwd(), 'test', 'fixtures-copy', projectName);
+};
+
+jest.unstable_mockModule('../../../src/project/project.js', () => ({
+    removeProjectContent: mockRemoveProjectContent,
+    removeNodeModules: mockRemoveNodeModules,
+    getDestinationProjectRoot
+}));
+
+jest.unstable_mockModule('../../../src/project/npm.js', () => ({
+    install: mockInstall
+}));
+
+const { copyProject } = await import('../../../src/project/copy.js');
+type CopyOptions = import('../../../src/types.js').CopyOptions;
+
+const projectRoot = join(testDirname, '..', '..', 'fixtures', 'simple-app');
 const des = getDestinationProjectRoot(projectRoot);
 
 describe('copyProject', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
     test('createCopy', async () => {
         // remove to ensure consistency
         await remove(des);
@@ -26,7 +51,7 @@ describe('copyProject', () => {
         await expect(pathExists(des)).resolves.toBe(true);
     });
     test('removeProjectContent', async () => {
-        const removeProjectContentMocked = jest.spyOn(project, 'removeProjectContent').mockResolvedValue();
+        mockRemoveProjectContent.mockResolvedValue();
         const options: CopyOptions = {
             projectRoot,
             remove: {
@@ -35,10 +60,10 @@ describe('copyProject', () => {
             npmI: false
         };
         await copyProject(options);
-        expect(removeProjectContentMocked.mock.calls).toHaveLength(1);
+        expect(mockRemoveProjectContent.mock.calls).toHaveLength(1);
     });
     test('removeNodeModules', async () => {
-        const removeNodeModulesMocked = jest.spyOn(project, 'removeNodeModules').mockResolvedValue();
+        mockRemoveNodeModules.mockResolvedValue();
         const options: CopyOptions = {
             projectRoot,
             remove: {
@@ -48,7 +73,7 @@ describe('copyProject', () => {
             npmI: false
         };
         await copyProject(options);
-        expect(removeNodeModulesMocked.mock.calls).toHaveLength(1);
+        expect(mockRemoveNodeModules.mock.calls).toHaveLength(1);
     });
     test('cb', async () => {
         const cbFn = jest.fn().mockResolvedValue(undefined);
@@ -65,7 +90,7 @@ describe('copyProject', () => {
         expect(cbFn.mock.calls).toHaveLength(1);
     });
     test('npmI', async () => {
-        const installMocked = jest.spyOn(npm, 'install').mockResolvedValue();
+        mockInstall.mockResolvedValue();
         const options: CopyOptions = {
             projectRoot,
             remove: {
@@ -75,6 +100,6 @@ describe('copyProject', () => {
             npmI: true
         };
         await copyProject(options);
-        expect(installMocked.mock.calls).toHaveLength(1);
+        expect(mockInstall.mock.calls).toHaveLength(1);
     });
 });

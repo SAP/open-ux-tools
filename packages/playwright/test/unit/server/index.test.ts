@@ -1,16 +1,23 @@
-import * as devServer from 'jest-dev-server';
-import { startServer, teardownServer } from '../../../src';
+import { jest } from '@jest/globals';
 
-jest.mock('jest-dev-server');
-const devServerMock = jest.mocked(devServer, { shallow: true });
+const mockSetup = jest.fn();
+const mockTeardown = jest.fn();
+
+jest.unstable_mockModule('jest-dev-server', () => ({
+    setup: mockSetup,
+    teardown: mockTeardown
+}));
+
+const { startServer, teardownServer } = await import('../../../src/server/index.js');
+
 test('startServer', async () => {
-    const setupMocked = jest.spyOn(devServerMock, 'setup').mockReturnValue('setup-called');
+    mockSetup.mockReturnValue('setup-called');
     const result = await startServer({ command: 'npm i' });
     expect(result).toStrictEqual('setup-called');
-    expect(setupMocked.mock.calls).toHaveLength(1);
+    expect(mockSetup.mock.calls).toHaveLength(1);
 });
 test('teardownServer', async () => {
-    const teardownMocked = jest.spyOn(devServerMock, 'teardown').mockReturnValue(null);
+    mockTeardown.mockReturnValue(null);
     await teardownServer();
-    expect(teardownMocked.mock.calls).toHaveLength(1);
+    expect(mockTeardown.mock.calls).toHaveLength(1);
 });
