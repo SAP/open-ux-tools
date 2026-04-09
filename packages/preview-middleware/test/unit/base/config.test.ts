@@ -11,8 +11,11 @@ import {
 } from '../../../src/base/config';
 import { mergeTestConfigDefaults } from '../../../src/base/test';
 import type { MiddlewareConfig } from '../../../src';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ToolsLogger } from '@sap-ux/logger';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('config', () => {
     const manifest = {

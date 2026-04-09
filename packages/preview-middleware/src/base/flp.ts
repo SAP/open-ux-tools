@@ -9,7 +9,13 @@ import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
 import { dirname, join, posix } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
+
+import { createRequire } from 'node:module';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import {

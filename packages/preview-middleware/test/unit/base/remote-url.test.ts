@@ -1,42 +1,39 @@
-import {
-    getRemoteUrl,
-    isRemoteConnectionsEnabled,
-    getPortFromArgs,
-    getOpenPathFromArgs,
-    logRemoteUrl
-} from '../../../src/base/remote-url';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { devspace } from '@sap/bas-sdk';
-import { networkInterfaces } from 'node:os';
-import QRCode from 'qrcode';
 
-// Mock dependencies
-jest.mock('@sap-ux/btp-utils');
-jest.mock('os', () => {
-    const actualOs = jest.requireActual('os');
-    return {
-        ...actualOs,
-        networkInterfaces: jest.fn()
-    };
-});
-jest.mock('qrcode', () => {
-    const actualQRCode = jest.requireActual('qrcode');
-    return {
-        ...actualQRCode,
-        toString: jest.fn()
-    };
-});
-jest.mock('@sap/bas-sdk', () => ({
+// Mock functions
+const mockIsAppStudio = jest.fn<() => boolean>();
+const mockNetworkInterfaces = jest.fn<() => NodeJS.Dict<import('node:os').NetworkInterfaceInfo[]>>();
+const mockQRCodeToString = jest.fn<(...args: unknown[]) => Promise<string>>();
+const mockGetDevspaceInfo = jest.fn<() => Promise<{ url: string }>>();
+const mockGetAppExternalUri = jest.fn<() => string>();
+
+// Mock modules
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio
+}));
+
+jest.unstable_mockModule('node:os', () => ({
+    networkInterfaces: mockNetworkInterfaces
+}));
+
+jest.unstable_mockModule('qrcode', () => ({
+    default: {
+        toString: mockQRCodeToString
+    },
+    toString: mockQRCodeToString
+}));
+
+jest.unstable_mockModule('@sap/bas-sdk', () => ({
     devspace: {
-        getDevspaceInfo: jest.fn(),
-        getAppExternalUri: jest.fn()
+        getDevspaceInfo: mockGetDevspaceInfo,
+        getAppExternalUri: mockGetAppExternalUri
     }
 }));
 
-const mockIsAppStudio = isAppStudio as jest.MockedFunction<typeof isAppStudio>;
-const mockNetworkInterfaces = networkInterfaces as jest.MockedFunction<typeof networkInterfaces>;
-const mockQRCode = QRCode as any;
+// Import after mocking
+const { getRemoteUrl, isRemoteConnectionsEnabled, getPortFromArgs, getOpenPathFromArgs, logRemoteUrl } =
+    await import('../../../src/base/remote-url');
 
 // Centralized network interface configurations
 const MOCK_EXTERNAL_NETWORK_INTERFACES = {
@@ -155,7 +152,7 @@ describe('remote-url', () => {
     });
 
     describe('getRemoteUrl', () => {
-        (devspace.getAppExternalUri as jest.Mock).mockReturnValue('https://bas-workspace.example.com:8080');
+        mockGetAppExternalUri.mockReturnValue('https://bas-workspace.example.com:8080');
 
         it('should generate IDE remote URL when network interface is available', async () => {
             mockIsAppStudio.mockReturnValue(false);
@@ -185,7 +182,7 @@ describe('remote-url', () => {
             mockIsAppStudio.mockReturnValue(true);
 
             // Mock BAS SDK
-            (devspace.getDevspaceInfo as jest.Mock).mockResolvedValue({
+            mockGetDevspaceInfo.mockResolvedValue({
                 url: 'https://bas-workspace.example.com/'
             });
 
@@ -197,7 +194,7 @@ describe('remote-url', () => {
         it('should append open path to BAS remote URL', async () => {
             mockIsAppStudio.mockReturnValue(true);
 
-            (devspace.getDevspaceInfo as jest.Mock).mockResolvedValue({
+            mockGetDevspaceInfo.mockResolvedValue({
                 url: 'https://bas-workspace.example.com'
             });
 
@@ -230,7 +227,7 @@ describe('remote-url', () => {
         it('should log remote URL and generate QR code when remote URL is available', async () => {
             const mockQRString =
                 '██ ▄▄▄▄▄ █▀█ █▄▄▄▄▄ ██\n██ █   █ █▀▀ █   █ ██\n██ █▄▄▄█ ▄▀█ █▄▄▄█ ██\n██▄▄▄▄▄▄▄█▄█▄█▄▄▄▄▄▄▄██';
-            mockQRCode.toString.mockResolvedValue(mockQRString);
+            mockQRCodeToString.mockResolvedValue(mockQRString);
 
             await logRemoteUrl(mockToolsLogger);
 
@@ -239,7 +236,7 @@ describe('remote-url', () => {
                 'Scan the QR code below with your mobile device to access the preview:'
             );
             expect(mockToolsLogger.info).toHaveBeenCalledWith(mockQRString);
-            expect(mockQRCode.toString).toHaveBeenCalledWith('http://192.168.1.100:8080', {
+            expect(mockQRCodeToString).toHaveBeenCalledWith('http://192.168.1.100:8080', {
                 type: 'terminal',
                 small: true
             });
@@ -248,7 +245,7 @@ describe('remote-url', () => {
         it('should log remote URL with open path and generate QR code', async () => {
             const mockQRString =
                 '██ ▄▄▄▄▄ █▀█ █▄▄▄▄▄ ██\n██ █   █ █▀▀ █   █ ██\n██ █▄▄▄█ ▄▀█ █▄▄▄█ ██\n██▄▄▄▄▄▄▄█▄█▄█▄▄▄▄▄▄▄██';
-            mockQRCode.toString.mockResolvedValue(mockQRString);
+            mockQRCodeToString.mockResolvedValue(mockQRString);
             process.argv = ['node', 'script.js', '--open=index.html'];
 
             await logRemoteUrl(mockToolsLogger);
@@ -259,7 +256,7 @@ describe('remote-url', () => {
                 'Scan the QR code below with your mobile device to access the preview:'
             );
             expect(mockToolsLogger.info).toHaveBeenCalledWith(mockQRString);
-            expect(mockQRCode.toString).toHaveBeenCalledWith(expectedUrl, { type: 'terminal', small: true });
+            expect(mockQRCodeToString).toHaveBeenCalledWith(expectedUrl, { type: 'terminal', small: true });
         });
 
         it('should not log anything when remote URL is not available', async () => {
@@ -268,12 +265,12 @@ describe('remote-url', () => {
             await logRemoteUrl(mockToolsLogger);
 
             expect(mockToolsLogger.info).not.toHaveBeenCalled();
-            expect(mockQRCode.toString).not.toHaveBeenCalled();
+            expect(mockQRCodeToString).not.toHaveBeenCalled();
         });
 
         it('should handle QR code generation errors gracefully', async () => {
             const qrError = new Error('QR code generation failed');
-            mockQRCode.toString.mockRejectedValue(qrError);
+            mockQRCodeToString.mockRejectedValue(qrError);
 
             await logRemoteUrl(mockToolsLogger);
 
@@ -282,7 +279,7 @@ describe('remote-url', () => {
                 'Scan the QR code below with your mobile device to access the preview:'
             );
             expect(mockToolsLogger.error).toHaveBeenCalledWith(qrError);
-            expect(mockQRCode.toString).toHaveBeenCalledWith('http://192.168.1.100:8080', {
+            expect(mockQRCodeToString).toHaveBeenCalledWith('http://192.168.1.100:8080', {
                 type: 'terminal',
                 small: true
             });
@@ -298,18 +295,18 @@ describe('remote-url', () => {
             // The error is handled in getRemoteUrl and logged there, then undefined is returned
             // So logRemoteUrl doesn't log anything since remoteUrl is undefined
             expect(mockToolsLogger.info).not.toHaveBeenCalled();
-            expect(mockQRCode.toString).not.toHaveBeenCalled();
+            expect(mockQRCodeToString).not.toHaveBeenCalled();
         });
 
         it('should work with BAS environment', async () => {
             mockIsAppStudio.mockReturnValue(true);
-            (devspace.getDevspaceInfo as jest.Mock).mockResolvedValue({
+            mockGetDevspaceInfo.mockResolvedValue({
                 url: 'https://bas-workspace.example.com'
             });
 
             const mockQRString =
                 '██ ▄▄▄▄▄ █▀█ █▄▄▄▄▄ ██\n██ █   █ █▀▀ █   █ ██\n██ █▄▄▄█ ▄▀█ █▄▄▄█ ██\n██▄▄▄▄▄▄▄█▄█▄█▄▄▄▄▄▄▄██';
-            mockQRCode.toString.mockResolvedValue(mockQRString);
+            mockQRCodeToString.mockResolvedValue(mockQRString);
 
             await logRemoteUrl(mockToolsLogger);
 
@@ -319,19 +316,19 @@ describe('remote-url', () => {
                 'Scan the QR code below with your mobile device to access the preview:'
             );
             expect(mockToolsLogger.info).toHaveBeenCalledWith(mockQRString);
-            expect(mockQRCode.toString).toHaveBeenCalledWith(expectedUrl, { type: 'terminal', small: true });
+            expect(mockQRCodeToString).toHaveBeenCalledWith(expectedUrl, { type: 'terminal', small: true });
         });
 
         it('should handle BAS environment with open path', async () => {
             mockIsAppStudio.mockReturnValue(true);
-            (devspace.getDevspaceInfo as jest.Mock).mockResolvedValue({
+            mockGetDevspaceInfo.mockResolvedValue({
                 url: 'https://bas-workspace.example.com'
             });
             process.argv = ['node', 'script.js', '--open', 'test/page.html'];
 
             const mockQRString =
                 '██ ▄▄▄▄▄ █▀█ █▄▄▄▄▄ ██\n██ █   █ █▀▀ █   █ ██\n██ █▄▄▄█ ▄▀█ █▄▄▄█ ██\n██▄▄▄▄▄▄▄█▄█▄█▄▄▄▄▄▄▄██';
-            mockQRCode.toString.mockResolvedValue(mockQRString);
+            mockQRCodeToString.mockResolvedValue(mockQRString);
 
             await logRemoteUrl(mockToolsLogger);
 
@@ -341,7 +338,7 @@ describe('remote-url', () => {
                 'Scan the QR code below with your mobile device to access the preview:'
             );
             expect(mockToolsLogger.info).toHaveBeenCalledWith(mockQRString);
-            expect(mockQRCode.toString).toHaveBeenCalledWith(expectedUrl, { type: 'terminal', small: true });
+            expect(mockQRCodeToString).toHaveBeenCalledWith(expectedUrl, { type: 'terminal', small: true });
         });
     });
 });

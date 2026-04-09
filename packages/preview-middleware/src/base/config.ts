@@ -11,8 +11,11 @@ import type {
     TestConfig
 } from '../types';
 import { render } from 'ejs';
-import { resolve, join, posix } from 'node:path';
+import { resolve, dirname, join, posix } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test';
