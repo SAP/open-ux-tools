@@ -1,44 +1,33 @@
+import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
 
-import {
-    writeAnnotationChange,
-    writeChangeToFolder,
-    findChangeWithInboundId,
-    writeChangeToFile,
-    getChange
-} from '../../../../../src/base/change-utils';
-import type {
-    AnnotationsData,
-    ComponentUsagesDataBase,
-    ComponentUsagesDataWithLibrary,
-    DataSourceData,
-    NewModelData,
-    InboundData,
-    DescriptorVariant
-} from '../../../../../src';
-import {
-    AnnotationsWriter,
-    ComponentUsagesWriter,
-    DataSourceWriter,
-    InboundWriter,
-    NewModelWriter
-} from '../../../../../src/writer/changes/writers';
-import { ChangeType } from '../../../../../src';
+const mockWriteAnnotationChange = jest.fn();
+const mockWriteChangeToFolder = jest.fn();
+const mockFindChangeWithInboundId = jest.fn();
+const mockWriteChangeToFile = jest.fn();
+const mockGetChange = jest.fn().mockReturnValue({});
 
-jest.mock('../../../../../src/base/change-utils', () => ({
-    ...jest.requireActual('../../../../../src/base/change-utils'),
-    writeAnnotationChange: jest.fn(),
-    writeChangeToFolder: jest.fn(),
-    getChange: jest.fn().mockReturnValue({}),
-    findChangeWithInboundId: jest.fn(),
-    writeChangeToFile: jest.fn()
+const realChangeUtils = await import('../../../../../src/base/change-utils');
+
+jest.unstable_mockModule('../../../../../src/base/change-utils', () => ({
+    ...realChangeUtils,
+    writeAnnotationChange: mockWriteAnnotationChange,
+    writeChangeToFolder: mockWriteChangeToFolder,
+    getChange: mockGetChange,
+    findChangeWithInboundId: mockFindChangeWithInboundId,
+    writeChangeToFile: mockWriteChangeToFile
 }));
 
-const writeAnnotationChangeMock = writeAnnotationChange as jest.Mock;
-const getChangeMock = getChange as jest.Mock;
-const writeChangeToFolderMock = writeChangeToFolder as jest.Mock;
-const findChangeWithInboundIdMock = findChangeWithInboundId as jest.Mock;
-const writeChangeToFileMock = writeChangeToFile as jest.Mock;
+const { AnnotationsWriter, ComponentUsagesWriter, DataSourceWriter, InboundWriter, NewModelWriter } =
+    await import('../../../../../src/writer/changes/writers');
+const { ChangeType } = await import('../../../../../src');
+type AnnotationsData = import('../../../../../src').AnnotationsData;
+type ComponentUsagesDataBase = import('../../../../../src').ComponentUsagesDataBase;
+type ComponentUsagesDataWithLibrary = import('../../../../../src').ComponentUsagesDataWithLibrary;
+type DataSourceData = import('../../../../../src').DataSourceData;
+type NewModelData = import('../../../../../src').NewModelData;
+type InboundData = import('../../../../../src').InboundData;
+type DescriptorVariant = import('../../../../../src').DescriptorVariant;
 
 const mockProjectPath = '/mock/project/path';
 const mockTemplatePath = '/mock/template/path';
@@ -68,7 +57,7 @@ describe('AnnotationsWriter', () => {
 
         await writer.write(mockData);
 
-        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+        expect(mockWriteAnnotationChange).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Number),
             mockData.annotation,
@@ -98,7 +87,7 @@ describe('AnnotationsWriter', () => {
 
         await writer.write(mockData);
 
-        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+        expect(mockWriteAnnotationChange).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Number),
             mockData.annotation,
@@ -128,7 +117,7 @@ describe('AnnotationsWriter', () => {
 
         await writer.write(mockData);
 
-        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+        expect(mockWriteAnnotationChange).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Number),
             mockData.annotation,
@@ -170,7 +159,7 @@ describe('ComponentUsagesWriter', () => {
     it('should write component usages and library reference changes when required', async () => {
         await writer.write(mockData);
 
-        expect(getChangeMock).toHaveBeenCalledWith(
+        expect(mockGetChange).toHaveBeenCalledWith(
             expect.anything(),
             expect.anything(),
             expect.objectContaining({
@@ -186,14 +175,14 @@ describe('ComponentUsagesWriter', () => {
             ChangeType.ADD_COMPONENT_USAGES
         );
 
-        expect(getChangeMock).toHaveBeenCalledWith(
+        expect(mockGetChange).toHaveBeenCalledWith(
             expect.anything(),
             expect.anything(),
             expect.objectContaining({ libraries: { mockLibrary: { lazy: false } } }),
             ChangeType.ADD_LIBRARY_REFERENCE
         );
 
-        expect(writeChangeToFolderMock).toHaveBeenCalledTimes(2);
+        expect(mockWriteChangeToFolder).toHaveBeenCalledTimes(2);
     });
 
     it('should only write component usages changes when library reference is not required', async () => {
@@ -209,8 +198,8 @@ describe('ComponentUsagesWriter', () => {
 
         jest.useRealTimers();
 
-        expect(writeChangeToFolderMock).toHaveBeenCalledTimes(1);
-        expect(writeChangeToFolderMock).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
+        expect(mockWriteChangeToFolder).toHaveBeenCalledTimes(1);
+        expect(mockWriteChangeToFolder).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 });
 
@@ -241,7 +230,7 @@ describe('NewModelWriter', () => {
 
         await writer.write(mockData);
 
-        expect(getChangeMock).toHaveBeenCalledWith(
+        expect(mockGetChange).toHaveBeenCalledWith(
             expect.anything(),
             expect.anything(),
             {
@@ -274,7 +263,7 @@ describe('NewModelWriter', () => {
             ChangeType.ADD_NEW_MODEL
         );
 
-        expect(writeChangeToFolderMock).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
+        expect(mockWriteChangeToFolder).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 });
 
@@ -315,7 +304,7 @@ describe('DataSourceWriter', () => {
         jest.useFakeTimers().setSystemTime(systemTime);
         await writer.write(mockData);
         jest.useRealTimers();
-        expect(getChangeMock).toHaveBeenCalledWith(
+        expect(mockGetChange).toHaveBeenCalledWith(
             expect.anything(),
             expect.anything(),
             expect.objectContaining({
@@ -336,7 +325,7 @@ describe('DataSourceWriter', () => {
             expect.anything()
         );
 
-        expect(writeChangeToFolder).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
+        expect(mockWriteChangeToFolder).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 
     it('should add annotation change if annotationUri is provided', async () => {
@@ -344,8 +333,8 @@ describe('DataSourceWriter', () => {
 
         await writer.write(mockData);
 
-        expect(getChange).toHaveBeenCalledTimes(2);
-        expect(writeChangeToFolder).toHaveBeenCalledTimes(2);
+        expect(mockGetChange).toHaveBeenCalledTimes(2);
+        expect(mockWriteChangeToFolder).toHaveBeenCalledTimes(2);
     });
 });
 
@@ -369,12 +358,12 @@ describe('InboundWriter', () => {
             variant: {} as DescriptorVariant
         };
 
-        findChangeWithInboundIdMock.mockResolvedValue({ changeWithInboundId: null, filePath: '' });
+        mockFindChangeWithInboundId.mockResolvedValue({ changeWithInboundId: null, filePath: '' });
 
         await writer.write(mockData);
 
-        expect(getChangeMock).toHaveBeenCalled();
-        expect(writeChangeToFolderMock).toHaveBeenCalled();
+        expect(mockGetChange).toHaveBeenCalled();
+        expect(mockWriteChangeToFolder).toHaveBeenCalled();
     });
 
     it('should enhance existing inbound change content when found', async () => {
@@ -389,14 +378,14 @@ describe('InboundWriter', () => {
         };
 
         const existingChangeContent = { inboundId: 'testInboundId', entityPropertyChange: [] };
-        findChangeWithInboundIdMock.mockResolvedValue({
+        mockFindChangeWithInboundId.mockResolvedValue({
             changeWithInboundId: { content: existingChangeContent },
             filePath: `${mockProjectPath}/webapp/changes/manifest/inboundChange.change`
         });
 
         await writer.write(mockData as InboundData);
 
-        expect(writeChangeToFileMock).toHaveBeenCalledWith(
+        expect(mockWriteChangeToFile).toHaveBeenCalledWith(
             '/mock/project/path/webapp/changes/manifest/inboundChange.change',
             expect.objectContaining({ content: expect.objectContaining({ inboundId: 'testInboundId' }) }),
             {}

@@ -1,23 +1,40 @@
-import ZipFile from 'adm-zip';
-
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
-import * as axiosExtension from '@sap-ux/axios-extension';
+import type * as axiosExtensionTypes from '@sap-ux/axios-extension';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
-import {
-    ManifestService,
-    getInboundsFromManifest,
-    getRegistrationIdFromManifest
-} from '../../../../src/base/abap/manifest-service';
-import { getWebappFiles } from '../../../../src/base/helper';
-import type { DescriptorVariant } from '../../../../src/types';
+const mockGetWebappFiles = jest.fn();
+const mockAdmZipConstructor = jest.fn();
+const mockIsAxiosError = jest.fn();
 
-jest.mock('@sap-ux/axios-extension');
-jest.mock('adm-zip');
-jest.mock('../../../../src/base/helper');
+const realAxiosExtension = await import('@sap-ux/axios-extension');
+
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    ...realAxiosExtension,
+    isAxiosError: mockIsAxiosError
+}));
+
+jest.unstable_mockModule('adm-zip', () => ({
+    default: mockAdmZipConstructor.mockImplementation(() => ({
+        getEntries: jest.fn().mockReturnValue([]),
+        readAsText: jest.fn(),
+        extractAllTo: jest.fn(),
+        addFile: jest.fn(),
+        toBuffer: jest.fn().mockReturnValue(Buffer.from('zip content'))
+    })),
+    __esModule: true
+}));
+
+jest.unstable_mockModule('../../../../src/base/helper', () => ({
+    getWebappFiles: mockGetWebappFiles
+}));
+
+const { ManifestService, getInboundsFromManifest, getRegistrationIdFromManifest } =
+    await import('../../../../src/base/abap/manifest-service');
+type DescriptorVariant = import('../../../../src/types').DescriptorVariant;
 
 describe('ManifestService', () => {
-    let provider: jest.Mocked<axiosExtension.AbapServiceProvider>;
+    let provider: jest.Mocked<axiosExtensionTypes.AbapServiceProvider>;
     let logger: jest.Mocked<ToolsLogger>;
     let manifestService: ManifestService;
 
@@ -54,7 +71,7 @@ describe('ManifestService', () => {
                     .mockResolvedValue({ 'descriptorVariantId': { manifest: mockManifest } })
             }),
             defaults: { baseURL: 'https://example.com' }
-        } as unknown as jest.Mocked<axiosExtension.AbapServiceProvider>;
+        } as unknown as jest.Mocked<axiosExtensionTypes.AbapServiceProvider>;
 
         logger = {
             error: jest.fn(),
@@ -62,12 +79,12 @@ describe('ManifestService', () => {
             debug: jest.fn()
         } as unknown as jest.Mocked<ToolsLogger>;
 
-        (ZipFile as jest.MockedClass<typeof ZipFile>).mockImplementation(
+        mockAdmZipConstructor.mockImplementation(
             () =>
                 ({
                     addFile: jest.fn(),
                     toBuffer: jest.fn().mockReturnValue(Buffer.from('zip content'))
-                }) as unknown as ZipFile
+                }) as any
         );
     });
 
@@ -92,7 +109,7 @@ describe('ManifestService', () => {
         });
 
         it('should log errors on fetching or parsing failure', async () => {
-            jest.spyOn(axiosExtension, 'isAxiosError').mockReturnValue(true);
+            mockIsAxiosError.mockReturnValue(true);
             const error = new Error('fetching failed');
 
             provider.get.mockRejectedValue(error);
@@ -112,9 +129,7 @@ describe('ManifestService', () => {
     describe('initMergedManifest', () => {
         it('should initialize and fetch the merged manifest', async () => {
             const variant = { id: 'descriptorVariantId', reference: 'referenceAppId' };
-            (getWebappFiles as jest.MockedFunction<typeof getWebappFiles>).mockReturnValue(
-                Promise.resolve([{ relativePath: 'path', content: 'content' }])
-            );
+            mockGetWebappFiles.mockReturnValue(Promise.resolve([{ relativePath: 'path', content: 'content' }]));
             manifestService = await ManifestService.initMergedManifest(
                 provider,
                 'basePath',

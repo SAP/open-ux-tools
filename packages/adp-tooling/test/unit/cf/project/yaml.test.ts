@@ -1,41 +1,56 @@
-import { existsSync } from 'node:fs';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import {
-    isMtaProject,
-    getSAPCloudService,
-    getRouterType,
-    getAppParamsFromUI5Yaml,
-    adjustMtaYaml
-} from '../../../../src/cf/project/yaml';
-import { AppRouterType } from '../../../../src/types';
-import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types';
-import { createServices } from '../../../../src/cf/services/api';
-import { getProjectNameForXsSecurity, getYamlContent } from '../../../../src/cf/project/yaml-loader';
+// Create mocks before any source modules are loaded
+const mockExistsSync = jest.fn();
+const mockCreateServices = jest.fn();
+const mockGetYamlContent = jest.fn();
+const mockGetProjectNameForXsSecurity = jest.fn();
+const mockGetServiceKeyDestinations = jest.fn().mockImplementation((serviceKeys: any[]) => {
+    const results: Array<{ name: string; url: string }> = [];
+    for (const key of serviceKeys) {
+        const endpoints = key.credentials?.endpoints;
+        if (endpoints && typeof endpoints === 'object') {
+            for (const endpointKey in endpoints) {
+                const endpoint = endpoints[endpointKey];
+                if (endpoint?.url && endpoint.destination) {
+                    results.push({ name: endpoint.destination, url: endpoint.url });
+                }
+            }
+        }
+    }
+    return results;
+});
 
-jest.mock('fs', () => ({
-    existsSync: jest.fn()
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    existsSync: mockExistsSync,
+    default: { ...realFs.default, existsSync: mockExistsSync }
 }));
 
-const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
-
-jest.mock('../../../../src/cf/services/api', () => ({
-    createServices: jest.fn()
+jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
+    createServices: mockCreateServices
 }));
 
-jest.mock('../../../../src/cf/project/yaml-loader', () => ({
-    getProjectNameForXsSecurity: jest.fn(),
-    getYamlContent: jest.fn()
+jest.unstable_mockModule('../../../../src/cf/app/discovery', () => ({
+    getServiceKeyDestinations: mockGetServiceKeyDestinations
 }));
 
-const mockCreateServices = createServices as jest.MockedFunction<typeof createServices>;
-const mockGetYamlContent = getYamlContent as jest.MockedFunction<typeof getYamlContent>;
-const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
-    typeof getProjectNameForXsSecurity
->;
+jest.unstable_mockModule('../../../../src/cf/project/yaml-loader', () => ({
+    getProjectNameForXsSecurity: mockGetProjectNameForXsSecurity,
+    getYamlContent: mockGetYamlContent
+}));
+
+const { isMtaProject, getSAPCloudService, getRouterType, getAppParamsFromUI5Yaml, adjustMtaYaml } =
+    await import('../../../../src/cf/project/yaml');
+const { AppRouterType } = await import('../../../../src/types');
+type MtaYaml = import('../../../../src/types').MtaYaml;
+type CfUI5Yaml = import('../../../../src/types').CfUI5Yaml;
+type ServiceKeys = import('../../../../src/types').ServiceKeys;
 
 describe('YAML Project Functions', () => {
     const mockLogger = {

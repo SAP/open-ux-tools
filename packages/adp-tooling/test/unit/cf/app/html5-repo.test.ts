@@ -1,34 +1,50 @@
-import axios from 'axios';
-import AdmZip from 'adm-zip';
+import { jest } from '@jest/globals';
 
+import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import { initI18n, t } from '../../../../src/i18n';
-import type { CfAppParams, ServiceInfo, Uaa } from '../../../../src/types';
-import {
-    getServiceNameByTags,
-    createServiceInstance,
-    getOrCreateServiceInstanceKeys
-} from '../../../../src/cf/services/api';
-import { downloadAppContent, downloadZip, getHtml5RepoCredentials, getToken } from '../../../../src/cf/app/html5-repo';
+const mockAxiosGet = jest.fn();
+const mockAxiosPost = jest.fn();
+const mockGetServiceNameByTags = jest.fn();
+const mockCreateServiceInstance = jest.fn();
+const mockGetOrCreateServiceInstanceKeys = jest.fn();
 
-jest.mock('axios');
-jest.mock('adm-zip');
-jest.mock('../../../../src/cf/services/api', () => ({
-    ...jest.requireActual('../../../../src/cf/services/api'),
-    getServiceNameByTags: jest.fn(),
-    createServiceInstance: jest.fn(),
-    getOrCreateServiceInstanceKeys: jest.fn()
+jest.unstable_mockModule('axios', () => ({
+    default: {
+        get: mockAxiosGet,
+        post: mockAxiosPost,
+        create: jest.fn().mockReturnThis(),
+        interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } }
+    },
+    __esModule: true
 }));
 
-const mockAxios = axios as jest.Mocked<typeof axios>;
-const mockAdmZip = AdmZip as jest.MockedClass<typeof AdmZip>;
-const mockGetServiceNameByTags = getServiceNameByTags as jest.MockedFunction<typeof getServiceNameByTags>;
-const mockCreateServiceInstance = createServiceInstance as jest.MockedFunction<typeof createServiceInstance>;
-const mockGetOrCreateServiceInstanceKeys = getOrCreateServiceInstanceKeys as jest.MockedFunction<
-    typeof getOrCreateServiceInstanceKeys
->;
+const mockAdmZip = jest.fn().mockImplementation(() => ({
+    getEntries: jest.fn().mockReturnValue([]),
+    readAsText: jest.fn(),
+    extractAllTo: jest.fn()
+}));
+
+jest.unstable_mockModule('adm-zip', () => ({
+    default: mockAdmZip,
+    __esModule: true
+}));
+
+jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
+    getServiceNameByTags: mockGetServiceNameByTags,
+    createServiceInstance: mockCreateServiceInstance,
+    getOrCreateServiceInstanceKeys: mockGetOrCreateServiceInstanceKeys
+}));
+
+const { downloadAppContent, downloadZip, getHtml5RepoCredentials, getToken } =
+    await import('../../../../src/cf/app/html5-repo');
+const { initI18n, t } = await import('../../../../src/i18n');
+type CfAppParams = import('../../../../src/types').CfAppParams;
+type ServiceInfo = import('../../../../src/types').ServiceInfo;
+type Uaa = import('../../../../src/types').Uaa;
+
+const mockAxios = { get: mockAxiosGet, post: mockAxiosPost } as any;
 
 describe('HTML5 Repository', () => {
     const mockLogger = {

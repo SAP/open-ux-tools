@@ -1,22 +1,22 @@
+import { jest } from '@jest/globals';
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import {
-    validateSmartTemplateApplication,
-    extractXSApp,
-    validateODataEndpoints
-} from '../../../../src/cf/utils/validation';
-import { initI18n, t } from '../../../../src/i18n';
-import { ApplicationType, type ServiceKeys, type XsApp } from '../../../../src/types';
-import { getApplicationType } from '../../../../src/source/manifest';
+const mockGetApplicationType = jest.fn();
+const mockIsSupportedAppTypeForAdp = jest.fn().mockReturnValue(true);
 
-jest.mock('../../../../src/source/manifest', () => ({
-    ...jest.requireActual('../../../../src/source/manifest'),
-    getApplicationType: jest.fn()
+jest.unstable_mockModule('../../../../src/source/manifest', () => ({
+    getApplicationType: mockGetApplicationType,
+    isSupportedAppTypeForAdp: mockIsSupportedAppTypeForAdp
 }));
 
-const mockGetApplicationType = getApplicationType as jest.MockedFunction<typeof getApplicationType>;
+const { validateSmartTemplateApplication, extractXSApp, validateODataEndpoints } =
+    await import('../../../../src/cf/utils/validation');
+const { initI18n, t } = await import('../../../../src/i18n');
+const { ApplicationType } = await import('../../../../src/types');
+type ServiceKeys = import('../../../../src/types').ServiceKeys;
+type XsApp = import('../../../../src/types').XsApp;
 
 describe('CF Utils Validation', () => {
     beforeAll(async () => {
@@ -64,6 +64,7 @@ describe('CF Utils Validation', () => {
             } as unknown as Manifest;
 
             mockGetApplicationType.mockReturnValue(ApplicationType.NONE);
+            mockIsSupportedAppTypeForAdp.mockReturnValueOnce(false);
 
             await expect(validateSmartTemplateApplication(manifest)).rejects.toThrow(
                 t('error.adpDoesNotSupportSelectedApplication')

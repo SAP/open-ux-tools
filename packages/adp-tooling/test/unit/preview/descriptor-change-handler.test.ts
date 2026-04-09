@@ -1,13 +1,61 @@
-jest.mock('crypto', () => ({
-    randomBytes: jest.fn()
+import { jest } from '@jest/globals';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockRandomBytes = jest.fn();
+const realCrypto = await import('node:crypto');
+jest.unstable_mockModule('node:crypto', () => ({
+    ...realCrypto,
+    randomBytes: mockRandomBytes,
+    default: { ...realCrypto.default, randomBytes: mockRandomBytes }
+}));
+
+const mockIsTypescriptSupported = jest.fn();
+const mockGetVariant = jest.fn();
+const mockGetAdpConfig = jest.fn();
+
+jest.unstable_mockModule('../../../src/base/helper', () => ({
+    isTypescriptSupported: mockIsTypescriptSupported,
+    getVariant: mockGetVariant,
+    getAdpConfig: mockGetAdpConfig
+}));
+
+const mockGetAnnotationNamespaces = jest.fn();
+
+const realOdataServiceWriter = await import('@sap-ux/odata-service-writer');
+
+jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({
+    ...realOdataServiceWriter,
+    getAnnotationNamespaces: mockGetAnnotationNamespaces
+}));
+
+jest.unstable_mockModule('@sap-ux/odata-service-writer/dist/data/annotations', () => ({
+    ...realOdataServiceWriter,
+    getAnnotationNamespaces: mockGetAnnotationNamespaces
+}));
+
+const mockInitMergedManifest = jest.fn();
+
+jest.unstable_mockModule('../../../src/base/abap/manifest-service', () => ({
+    ManifestService: {
+        initMergedManifest: mockInitMergedManifest
+    }
+}));
+
+const mockGenerateChange = jest.fn();
+
+jest.unstable_mockModule('../../../src/writer/editors', () => ({
+    generateChange: mockGenerateChange
 }));
 
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
-import * as crypto from 'node:crypto';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
-import {
+
+const {
     addAnnotationFile,
     addXmlFragment,
     addControllerExtension,
@@ -15,13 +63,12 @@ import {
     isAddXMLChange,
     moduleNameContentMap,
     tryFixChange
-} from '../../../src/preview/change-handler';
-import type { AddXMLChange, CommonChangeProperties, AnnotationFileChange, DescriptorVariant } from '../../../src';
-import * as manifestService from '../../../src/base/abap/manifest-service';
-import * as helper from '../../../src/base/helper';
-import * as editors from '../../../src/writer/editors';
-import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotations';
-import { addCustomFragment } from '../../../src/preview/descriptor-change-handler';
+} = await import('../../../src/preview/change-handler');
+type AddXMLChange = import('../../../src').AddXMLChange;
+type CommonChangeProperties = import('../../../src').CommonChangeProperties;
+type AnnotationFileChange = import('../../../src').AnnotationFileChange;
+type DescriptorVariant = import('../../../src').DescriptorVariant;
+const { addCustomFragment } = await import('../../../src/preview/descriptor-change-handler');
 
 describe('change-handler', () => {
     describe('moduleNameContentMap', () => {
@@ -213,7 +260,7 @@ describe('change-handler', () => {
                 mockFs.write.mockReset();
             });
             beforeEach(() => {
-                jest.spyOn(crypto, 'randomBytes').mockImplementation((size: number) => Buffer.from('0'.repeat(size)));
+                mockRandomBytes.mockImplementation((size: number) => Buffer.from('0'.repeat(size)));
             });
             it('should create Object Page custom section fragment', () => {
                 mockFs.exists.mockReturnValue(false);
@@ -563,8 +610,8 @@ id="<%- ids.customActionButton %>"`);
         });
 
         it('should create a controller extension file for JavaScript', async () => {
-            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(false);
-            jest.spyOn(helper, 'getVariant').mockResolvedValue({ id: 'my.namespace' } as unknown as DescriptorVariant);
+            mockIsTypescriptSupported.mockReturnValue(false);
+            mockGetVariant.mockResolvedValue({ id: 'my.namespace' } as unknown as DescriptorVariant);
             mockFs.read.mockReturnValue('<template content>');
 
             await addControllerExtension(
@@ -575,8 +622,8 @@ id="<%- ids.customActionButton %>"`);
                 mockLogger as unknown as Logger
             );
 
-            expect(helper.isTypescriptSupported).toHaveBeenCalledWith(rootPath, mockFs);
-            expect(helper.getVariant).toHaveBeenCalledWith(rootPath);
+            expect(mockIsTypescriptSupported).toHaveBeenCalledWith(rootPath, mockFs);
+            expect(mockGetVariant).toHaveBeenCalledWith(rootPath);
             expect(mockFs.read).toHaveBeenCalledWith(path.join(__dirname, '../../../templates/rta/controller.ejs'));
             expect(mockFs.write).toHaveBeenCalledWith(
                 path.join(basePath, 'changes/coding/MyController.js'),
@@ -585,8 +632,8 @@ id="<%- ids.customActionButton %>"`);
         });
 
         it('should create a controller extension file for TypeScript', async () => {
-            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(true);
-            jest.spyOn(helper, 'getVariant').mockResolvedValue({ id: 'my.namespace' } as unknown as DescriptorVariant);
+            mockIsTypescriptSupported.mockReturnValue(true);
+            mockGetVariant.mockResolvedValue({ id: 'my.namespace' } as unknown as DescriptorVariant);
             mockFs.read.mockReturnValue('<template content>');
 
             await addControllerExtension(
@@ -597,8 +644,8 @@ id="<%- ids.customActionButton %>"`);
                 mockLogger as unknown as Logger
             );
 
-            expect(helper.isTypescriptSupported).toHaveBeenCalledWith(rootPath, mockFs);
-            expect(helper.getVariant).toHaveBeenCalledWith(rootPath);
+            expect(mockIsTypescriptSupported).toHaveBeenCalledWith(rootPath, mockFs);
+            expect(mockGetVariant).toHaveBeenCalledWith(rootPath);
             expect(mockFs.read).toHaveBeenCalledWith(path.join(__dirname, '../../../templates/rta/ts-controller.ejs'));
             expect(mockFs.write).toHaveBeenCalledWith(
                 path.join(basePath, 'changes/coding/MyController.ts'),
@@ -607,7 +654,7 @@ id="<%- ids.customActionButton %>"`);
         });
 
         it('should log an error if the controller extension creation fails', async () => {
-            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(false);
+            mockIsTypescriptSupported.mockReturnValue(false);
             mockFs.read.mockImplementation(() => {
                 throw new Error('Read failed');
             });
@@ -668,13 +715,13 @@ id="<%- ids.customActionButton %>"`);
             namespace: 'test',
             reference: 'adp/project'
         } as unknown as DescriptorVariant;
-        jest.spyOn(serviceWriter, 'getAnnotationNamespaces').mockReturnValue([
+        mockGetAnnotationNamespaces.mockReturnValue([
             {
                 namespace: 'com.sap.test.serviceorder.v0001',
                 alias: 'test'
             }
         ]);
-        jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
+        mockInitMergedManifest.mockResolvedValue({
             getDataSourceMetadata: jest.fn().mockResolvedValue(`
                     <?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
@@ -704,13 +751,13 @@ id="<%- ids.customActionButton %>"`);
                 }
             })
         } as any);
-        jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
+        mockGetAdpConfig.mockResolvedValue({
             target: {
                 destination: 'testDestination'
             },
             ignoreCertErrors: false
         });
-        const generateChangeSpy = jest.spyOn(editors, 'generateChange').mockResolvedValue({
+        mockGenerateChange.mockResolvedValue({
             commit: jest.fn().mockResolvedValue('commited')
         } as any);
         const mockFs = {
@@ -748,7 +795,7 @@ id="<%- ids.customActionButton %>"`);
             mockLogger.info.mockClear();
             mockLogger.error.mockClear();
             jest.clearAllMocks();
-            jest.spyOn(helper, 'getVariant').mockResolvedValue(variantResult);
+            mockGetVariant.mockResolvedValue(variantResult);
         });
 
         it('should call the geneate change', async () => {
@@ -763,14 +810,14 @@ id="<%- ids.customActionButton %>"`);
             );
 
             // Assert
-            expect(manifestService.ManifestService.initMergedManifest).toHaveBeenCalledWith(
+            expect(mockInitMergedManifest).toHaveBeenCalledWith(
                 {} as any,
                 'projectRoot',
                 variantResult,
                 mockLogger
             );
-            expect(helper.getVariant).toHaveBeenCalledWith('projectRoot');
-            expect(generateChangeSpy).toHaveBeenCalled();
+            expect(mockGetVariant).toHaveBeenCalledWith('projectRoot');
+            expect(mockGenerateChange).toHaveBeenCalled();
         });
     });
 

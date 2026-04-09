@@ -1,11 +1,7 @@
+import { jest } from '@jest/globals';
 import prompts from 'prompts';
-import { promptGeneratorInput, promptTarget } from '../../../src/base/prompt';
-import * as utils from '../../../src/writer/project-utils';
-
-import { ToolsLogger } from '@sap-ux/logger';
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapTarget } from '@sap-ux/system-access';
-
-const logger = new ToolsLogger();
 
 const toolsId = '1234-5678-9abc-def0';
 const url = 'https://customer.example';
@@ -24,29 +20,40 @@ const testApps = [
     }
 ];
 
-jest.mock('@sap-ux/system-access', () => {
-    return {
-        ...jest.requireActual('@sap-ux/system-access'),
-        createAbapServiceProvider: (target: AbapTarget, options: { ignoreCertErrors?: boolean }) => {
-            if (target.url === certErrorUrl && !options?.ignoreCertErrors) {
-                throw { code: 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' };
-            } else if (target.url === invalidUrl) {
-                throw new Error('Invalid URL');
-            } else {
-                return {
-                    getAtoInfo: jest.fn().mockResolvedValue(target.url === sapUrl ? { tenantType: 'SAP' } : {}),
-                    getAppIndex: jest.fn().mockReturnValue({
-                        search: jest.fn().mockResolvedValue(testApps)
-                    })
-                };
-            }
-        }
-    };
-});
+const name = '@sap-ux/adp-tooling';
+const version = '0.0.1';
 
-jest.mock('uuid', () => ({
+const mockGetPackageJSONInfo = jest.fn().mockReturnValue({ name, version });
+
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    createAbapServiceProvider: (target: AbapTarget, options: { ignoreCertErrors?: boolean }) => {
+        if (target.url === certErrorUrl && !options?.ignoreCertErrors) {
+            throw { code: 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' };
+        } else if (target.url === invalidUrl) {
+            throw new Error('Invalid URL');
+        } else {
+            return {
+                getAtoInfo: jest.fn().mockResolvedValue(target.url === sapUrl ? { tenantType: 'SAP' } : {}),
+                getAppIndex: jest.fn().mockReturnValue({
+                    search: jest.fn().mockResolvedValue(testApps)
+                })
+            };
+        }
+    }
+}));
+
+jest.unstable_mockModule('uuid', () => ({
     v4: jest.fn(() => toolsId)
 }));
+
+jest.unstable_mockModule('../../../src/writer/project-utils', () => ({
+    getPackageJSONInfo: mockGetPackageJSONInfo
+}));
+
+const { promptGeneratorInput, promptTarget } = await import('../../../src/base/prompt');
+
+const { ToolsLogger: TL } = await import('@sap-ux/logger');
+const logger = new TL();
 
 describe('base/prompts', () => {
     describe('promptTarget', () => {
@@ -78,11 +85,6 @@ describe('base/prompts', () => {
             package: 'TESTPACKAGE',
             transport: 'TESTTRANSPORT'
         };
-
-        const name = '@sap-ux/adp-tooling';
-        const version = '0.0.1';
-
-        jest.spyOn(utils, 'getPackageJSONInfo').mockReturnValue({ name, version });
 
         test('defaults provided', async () => {
             prompts.inject([undefined]);

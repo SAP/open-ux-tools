@@ -8,10 +8,14 @@ import type {
     AppDescriptorV4Change
 } from '../types';
 import { ChangeType, TemplateFileName } from '../types';
-import { basename, join } from 'node:path';
+import { basename, join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { render } from 'ejs';
 import { randomBytes } from 'node:crypto';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 import { ManifestService } from '../base/abap/manifest-service';
 import { getVariant, isTypescriptSupported } from '../base/helper';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';

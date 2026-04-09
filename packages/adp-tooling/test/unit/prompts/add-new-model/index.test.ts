@@ -1,32 +1,36 @@
-import * as i18n from '../../../../src/i18n';
-import type { NewModelAnswers } from '../../../../src';
-import { isCFEnvironment } from '../../../../src/base/cf';
-import { getPrompts } from '../../../../src/prompts/add-new-model';
-import * as validators from '@sap-ux/project-input-validator';
-import { getChangesByType } from '../../../../src/base/change-utils';
+import { jest } from '@jest/globals';
 
-const getChangesByTypeMock = getChangesByType as jest.Mock;
+const mockGetChangesByType = jest.fn();
+const mockIsCFEnvironment = jest.fn();
+const mockHasContentDuplication = jest.fn().mockReturnValue(false);
+const mockHasCustomerPrefix = jest.fn().mockReturnValue(true);
+const mockValidateJSON = jest.fn().mockReturnValue(true);
+const mockValidateSpecialChars = jest.fn().mockReturnValue(true);
+const mockValidateEmptyString = jest.fn().mockReturnValue(true);
+const mockValidateEmptySpaces = jest.fn().mockReturnValue(true);
+const mockIsDataSourceURI = jest.fn().mockReturnValue(true);
 
-const isCFEnvironmentMock = isCFEnvironment as jest.Mock;
-
-jest.mock('../../../../src/base/change-utils.ts', () => ({
-    ...jest.requireActual('../../../../src/base/change-utils.ts'),
-    getChangesByType: jest.fn()
+jest.unstable_mockModule('../../../../src/base/change-utils', () => ({
+    getChangesByType: mockGetChangesByType
 }));
 
-jest.mock('../../../../src/base/cf.ts', () => ({
-    isCFEnvironment: jest.fn()
+jest.unstable_mockModule('../../../../src/base/cf', () => ({
+    isCFEnvironment: mockIsCFEnvironment
 }));
 
-jest.mock('@sap-ux/project-input-validator', () => ({
-    ...jest.requireActual('@sap-ux/project-input-validator'),
-    hasContentDuplication: jest.fn().mockReturnValue(false),
-    hasCustomerPrefix: jest.fn().mockReturnValue(true),
-    validateJSON: jest.fn().mockReturnValue(true),
-    validateSpecialChars: jest.fn().mockReturnValue(true),
-    validateEmptyString: jest.fn().mockReturnValue(true),
-    isDataSourceURI: jest.fn().mockReturnValue(true)
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    hasContentDuplication: mockHasContentDuplication,
+    hasCustomerPrefix: mockHasCustomerPrefix,
+    validateJSON: mockValidateJSON,
+    validateSpecialChars: mockValidateSpecialChars,
+    validateEmptyString: mockValidateEmptyString,
+    validateEmptySpaces: mockValidateEmptySpaces,
+    isDataSourceURI: mockIsDataSourceURI
 }));
+
+const { getPrompts } = await import('../../../../src/prompts/add-new-model');
+const i18n = await import('../../../../src/i18n');
+type NewModelAnswers = import('../../../../src').NewModelAnswers;
 
 describe('getPrompts', () => {
     const mockPath = '/path/to/project';
@@ -36,11 +40,17 @@ describe('getPrompts', () => {
     });
 
     beforeEach(() => {
-        getChangesByTypeMock.mockReturnValue([]);
+        mockGetChangesByType.mockReturnValue([]);
+        mockHasContentDuplication.mockReturnValue(false);
+        mockHasCustomerPrefix.mockReturnValue(true);
+        mockValidateJSON.mockReturnValue(true);
+        mockValidateSpecialChars.mockReturnValue(true);
+        mockValidateEmptyString.mockReturnValue(true);
+        mockIsDataSourceURI.mockReturnValue(true);
     });
 
     it('should generate prompts with default settings for non-customer layers', async () => {
-        isCFEnvironmentMock.mockReturnValue(false);
+        mockIsCFEnvironment.mockReturnValue(false);
 
         const vendorPrompts = await getPrompts(mockPath, 'VENDOR');
 
@@ -56,19 +66,17 @@ describe('getPrompts', () => {
     });
 
     it('should return true when validating service name prompt', async () => {
-        const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
-
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
         const validation = prompts.find((p) => p.name === 'name')?.validate;
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers)).toBe(true);
-        expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
+        expect(mockHasContentDuplication).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
     });
 
     it('should return error message when validating service name prompt and name does not include "customer."', async () => {
-        jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
+        mockHasCustomerPrefix.mockReturnValueOnce(false);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -92,7 +100,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating service name prompt and has special characters', async () => {
-        jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('general.invalidValueForSpecialChars');
+        mockValidateSpecialChars.mockReturnValueOnce('general.invalidValueForSpecialChars');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const validation = prompts.find((p) => p.name === 'name')?.validate;
@@ -104,7 +112,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating service name prompt has content duplication', async () => {
-        jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
+        mockHasContentDuplication.mockReturnValueOnce(true);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -146,7 +154,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating empty service uri prompt', async () => {
-        jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce('general.inputCannotBeEmpty');
+        mockValidateEmptyString.mockReturnValueOnce('general.inputCannotBeEmpty');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -157,7 +165,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when service uri is not valid uri', async () => {
-        jest.spyOn(validators, 'isDataSourceURI').mockReturnValueOnce(false);
+        mockIsDataSourceURI.mockReturnValueOnce(false);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -168,7 +176,7 @@ describe('getPrompts', () => {
     });
 
     it('should return default value for odata version when uri answer is present', async () => {
-        isCFEnvironmentMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
+        mockIsCFEnvironment.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
         const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -179,7 +187,7 @@ describe('getPrompts', () => {
     });
 
     it('should return default value for odata version when uri answer is not present', async () => {
-        isCFEnvironmentMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
+        mockIsCFEnvironment.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
         const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -190,7 +198,7 @@ describe('getPrompts', () => {
     });
 
     it('should return default value for odata version based on uri answer in CF environment', async () => {
-        isCFEnvironmentMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
+        mockIsCFEnvironment.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
         const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -201,7 +209,7 @@ describe('getPrompts', () => {
     });
 
     it('should return default value for odata version based on uri answer not in CF environment', async () => {
-        isCFEnvironmentMock.mockReturnValueOnce(false).mockReturnValueOnce(false);
+        mockIsCFEnvironment.mockReturnValueOnce(false).mockReturnValueOnce(false);
 
         const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -212,19 +220,17 @@ describe('getPrompts', () => {
     });
 
     it('should return true when validating model name prompt', async () => {
-        const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
-
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
         const validation = prompts.find((p) => p.name === 'modelName')?.validate;
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.testName')).toBe(true);
-        expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.testName', 'model', []);
+        expect(mockHasContentDuplication).toHaveBeenCalledWith('customer.testName', 'model', []);
     });
 
     it('should return error message when validating model name prompt without "customer." prefix', async () => {
-        jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
+        mockHasCustomerPrefix.mockReturnValueOnce(false);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -246,7 +252,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating model name prompt and has special characters', async () => {
-        jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('general.invalidValueForSpecialChars');
+        mockValidateSpecialChars.mockReturnValueOnce('general.invalidValueForSpecialChars');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -257,7 +263,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating model name prompt has content duplication', async () => {
-        jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
+        mockHasContentDuplication.mockReturnValueOnce(true);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -279,7 +285,7 @@ describe('getPrompts', () => {
     });
 
     it('should return true when validating model settings prompt with empty value', async () => {
-        jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce('general.inputCannotBeEmpty');
+        mockValidateEmptyString.mockReturnValueOnce('general.inputCannotBeEmpty');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -290,7 +296,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating model settings prompt with incorrect input', async () => {
-        jest.spyOn(validators, 'validateJSON').mockReturnValueOnce('general.invalidJSON');
+        mockValidateJSON.mockReturnValueOnce('general.invalidJSON');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -301,7 +307,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating data source name prompt without "customer." prefix', async () => {
-        jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
+        mockHasCustomerPrefix.mockReturnValueOnce(false);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
@@ -324,18 +330,16 @@ describe('getPrompts', () => {
     });
 
     it('should return true when validating data source name prompt', async () => {
-        const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
-
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
+        expect(mockHasContentDuplication).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
         expect(validation?.('customer.testName', { name: 'otherName' } as NewModelAnswers)).toBe(true);
     });
 
     it('should return error message when validating data source name prompt and has special characters', async () => {
-        jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('general.invalidValueForSpecialChars');
+        mockValidateSpecialChars.mockReturnValueOnce('general.invalidValueForSpecialChars');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -348,7 +352,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating data source name prompt has content duplication', async () => {
-        jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
+        mockHasContentDuplication.mockReturnValueOnce(true);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -381,7 +385,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when data source uri is not valid uri', async () => {
-        jest.spyOn(validators, 'isDataSourceURI').mockReturnValueOnce(false);
+        mockIsDataSourceURI.mockReturnValueOnce(false);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const validation = prompts.find((p) => p.name === 'dataSourceURI')?.validate;

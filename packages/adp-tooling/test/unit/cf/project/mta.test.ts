@@ -1,6 +1,28 @@
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import {
+const mockGetRouterType = jest.fn();
+const mockGetYamlContent = jest.fn();
+const mockRequestCfApi = jest.fn();
+const mockGetServiceKeyCredentialsWithTags = jest.fn();
+
+jest.unstable_mockModule('../../../../src/cf/project/yaml', () => ({
+    getRouterType: mockGetRouterType
+}));
+
+jest.unstable_mockModule('../../../../src/cf/project/yaml-loader', () => ({
+    getYamlContent: mockGetYamlContent
+}));
+
+jest.unstable_mockModule('../../../../src/cf/services/cli', () => ({
+    requestCfApi: mockRequestCfApi
+}));
+
+jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
+    getServiceKeyCredentialsWithTags: mockGetServiceKeyCredentialsWithTags
+}));
+
+const {
     getApprouterType,
     getModuleNames,
     getServicesForFile,
@@ -9,36 +31,9 @@ import {
     getResources,
     readMta,
     buildVcapServicesFromResources
-} from '../../../../src/cf/project/mta';
-import type { MtaYaml } from '../../../../src';
-import { initI18n, t } from '../../../../src/i18n';
-import { requestCfApi } from '../../../../src/cf/services/cli';
-import { getRouterType } from '../../../../src/cf/project/yaml';
-import { getYamlContent } from '../../../../src/cf/project/yaml-loader';
-import { getServiceKeyCredentialsWithTags } from '../../../../src/cf/services/api';
-
-jest.mock('../../../../src/cf/project/yaml', () => ({
-    getRouterType: jest.fn()
-}));
-
-jest.mock('../../../../src/cf/project/yaml-loader', () => ({
-    getYamlContent: jest.fn()
-}));
-
-jest.mock('../../../../src/cf/services/cli', () => ({
-    requestCfApi: jest.fn()
-}));
-
-jest.mock('../../../../src/cf/services/api', () => ({
-    getServiceKeyCredentialsWithTags: jest.fn()
-}));
-
-const mockRequestCfApi = requestCfApi as jest.MockedFunction<typeof requestCfApi>;
-const mockGetRouterType = getRouterType as jest.MockedFunction<typeof getRouterType>;
-const mockGetYamlContent = getYamlContent as jest.MockedFunction<typeof getYamlContent>;
-const mockGetServiceKeyCredentialsWithTags = getServiceKeyCredentialsWithTags as jest.MockedFunction<
-    typeof getServiceKeyCredentialsWithTags
->;
+} = await import('../../../../src/cf/project/mta');
+type MtaYaml = import('../../../../src').MtaYaml;
+const { initI18n, t } = await import('../../../../src/i18n');
 
 const mtaProjectPath = '/test/project';
 const mtaFilePath = '/test/mta.yaml';

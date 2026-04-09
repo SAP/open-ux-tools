@@ -1,35 +1,47 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import type {
-    AttributesAnswers,
-    ConfigAnswers,
-    ConfigOptions,
-    Language,
-    SourceApplication,
-    VersionDetail
-} from '../../../src';
-import { t } from '../../../src/i18n';
-import { AppRouterType } from '../../../src/types';
-import { getCfConfig } from '../../../src/writer/writer-config';
-import { FlexLayer, getProviderConfig, getConfig, getSupportedProject, SupportedProject } from '../../../src';
-import type { CfConfig, CfServicesAnswers, CreateCfConfigParams } from '../../../src/types';
+const mockGetProviderConfig = jest.fn();
+const mockGetSupportedProject = jest.fn();
+
+const realSystems = await import('../../../src/source/systems');
+
+jest.unstable_mockModule('../../../src/abap/config', () => ({
+    getProviderConfig: mockGetProviderConfig
+}));
+
+jest.unstable_mockModule('../../../src/source/systems', () => ({
+    getSupportedProject: mockGetSupportedProject,
+    SystemLookup: realSystems.SystemLookup,
+    getEndpointNames: realSystems.getEndpointNames,
+    transformBackendSystem: realSystems.transformBackendSystem,
+    SupportedProject: realSystems.SupportedProject
+}));
+
+const { FlexLayer, getConfig, SupportedProject } = await import('../../../src');
+const { getCfConfig } = await import('../../../src/writer/writer-config');
+const { t } = await import('../../../src/i18n');
+const { AppRouterType } = await import('../../../src/types');
+type AttributesAnswers = import('../../../src').AttributesAnswers;
+type ConfigAnswers = import('../../../src').ConfigAnswers;
+type ConfigOptions = import('../../../src').ConfigOptions;
+type Language = import('../../../src').Language;
+type SourceApplication = import('../../../src').SourceApplication;
+type VersionDetail = import('../../../src').VersionDetail;
+type CfConfig = import('../../../src/types').CfConfig;
+type CfServicesAnswers = import('../../../src/types').CfServicesAnswers;
+type CreateCfConfigParams = import('../../../src/types').CreateCfConfigParams;
 
 const basePath = join(__dirname, '../../fixtures/base-app/manifest.json');
 const manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
-
-jest.mock('../../../src/abap/config.ts', () => ({
-    getProviderConfig: jest.fn()
-}));
-
-jest.mock('../../../src/source/systems.ts', () => ({
-    ...jest.requireActual('../../../src/source/systems.ts'),
-    getSupportedProject: jest.fn()
-}));
 
 const systemDetails = {
     client: '010',
@@ -49,8 +61,6 @@ const mockAbapProvider = {
         getSystemInfo: getSystemInfoMock
     })
 } as unknown as AbapServiceProvider;
-const getSupportedProjectMock = getSupportedProject as jest.MockedFunction<typeof getSupportedProject>;
-const getProviderConfigMock = getProviderConfig as jest.Mock;
 
 const configAnswers: ConfigAnswers = {
     application: { id: '1', bspName: 'bsp.name' } as SourceApplication,
@@ -85,8 +95,8 @@ const baseConfig: ConfigOptions = {
 
 describe('getConfig', () => {
     beforeEach(() => {
-        getProviderConfigMock.mockResolvedValue(systemDetails);
-        getSupportedProjectMock.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+        mockGetProviderConfig.mockResolvedValue(systemDetails);
+        mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
     });
 
     it('returns the correct config with provided parameters when system and the project type are cloud ready', async () => {

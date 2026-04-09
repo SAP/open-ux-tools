@@ -1,42 +1,40 @@
-import { getService } from '@sap-ux/store';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { BackendSystem } from '@sap-ux/store';
-import { getCredentialsFromStore } from '@sap-ux/system-access';
-import { type Destination, isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import type { Destination } from '@sap-ux/btp-utils';
 import type { AbapServiceProvider, LayeredRepositoryService } from '@sap-ux/axios-extension';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import {
-    type Endpoint,
-    getEndpointNames,
-    getSupportedProject,
-    SupportedProject,
-    SystemLookup,
-    transformBackendSystem
-} from '../../../src';
+const mockGetService = jest.fn();
+const mockIsAppStudio = jest.fn();
+const mockListDestinations = jest.fn();
+const mockGetCredentialsFromStore = jest.fn();
+
+const realSystemAccess = await import('@sap-ux/system-access');
+const realStore = await import('@sap-ux/store');
+const realBtpUtils = await import('@sap-ux/btp-utils');
+
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    ...realSystemAccess,
+    getCredentialsFromStore: mockGetCredentialsFromStore
+}));
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio,
+    listDestinations: mockListDestinations
+}));
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
+    getService: mockGetService
+}));
+
+const { getEndpointNames, getSupportedProject, SupportedProject, SystemLookup, transformBackendSystem } =
+    await import('../../../src');
+type Endpoint = import('../../../src').Endpoint;
 import { type AxiosResponseHeaders, AxiosError } from 'axios';
-import { t } from '../../../src/i18n';
-
-jest.mock('@sap-ux/system-access', () => ({
-    ...jest.requireActual('@sap-ux/system-access'),
-    getCredentialsFromStore: jest.fn()
-}));
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn(),
-    listDestinations: jest.fn()
-}));
-
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
-    getService: jest.fn()
-}));
-
-const getServiceMock = getService as jest.Mock;
-const mockIsAppStudio = isAppStudio as jest.Mock;
-const listDestinationsMock = listDestinations as jest.Mock;
-const getCredentialsFromStoreMock = getCredentialsFromStore as jest.Mock;
+const { t } = await import('../../../src/i18n');
 
 const logger: ToolsLogger = {
     error: jest.fn(),
@@ -219,19 +217,19 @@ describe('SystemLookup', () => {
     describe('getSystems', () => {
         test('should fetch systems via loadSystems and cache the result in BAS', async () => {
             mockIsAppStudio.mockReturnValue(true);
-            listDestinationsMock.mockResolvedValue(destinations);
+            mockListDestinations.mockResolvedValue(destinations);
             const systemsFirstCall = await sourceSystems.getSystems();
             expect(systemsFirstCall).toEqual(endpoints);
 
             // A second call should return the cached endpoints (checkEndpoints called only once)
             const systemsSecondCall = await sourceSystems.getSystems();
-            expect(listDestinationsMock).toHaveBeenCalledTimes(1);
+            expect(mockListDestinations).toHaveBeenCalledTimes(1);
             expect(systemsSecondCall).toEqual(endpoints);
         });
 
         test('should fetch systems via loadSystems and cache the result in VS Code', async () => {
             mockIsAppStudio.mockReturnValue(false);
-            getServiceMock.mockResolvedValue({
+            mockGetService.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue(backendSystems)
             });
             const systemsFirstCall = await sourceSystems.getSystems();
@@ -240,7 +238,7 @@ describe('SystemLookup', () => {
 
         test('should filter out systems with undefined names in VS Code', async () => {
             mockIsAppStudio.mockReturnValue(false);
-            getServiceMock.mockResolvedValue({
+            mockGetService.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue(backendSystems)
             });
 
@@ -254,7 +252,7 @@ describe('SystemLookup', () => {
         test('should throw an error if loadSystems fails', async () => {
             const error = new Error('Fetch failed');
             mockIsAppStudio.mockReturnValue(true);
-            listDestinationsMock.mockRejectedValue(error);
+            mockListDestinations.mockRejectedValue(error);
 
             await expect(sourceSystems.getSystems()).rejects.toThrow('Fetch failed');
 
@@ -265,7 +263,7 @@ describe('SystemLookup', () => {
     describe('getSystemByName', () => {
         beforeEach(() => {
             mockIsAppStudio.mockReturnValue(true);
-            listDestinationsMock.mockResolvedValue(destinations);
+            mockListDestinations.mockResolvedValue(destinations);
         });
 
         test('should return undefined and warn if no matching system is found', async () => {
@@ -278,7 +276,7 @@ describe('SystemLookup', () => {
         });
 
         test('should return system details', async () => {
-            getCredentialsFromStoreMock.mockResolvedValue(null);
+            mockGetCredentialsFromStore.mockResolvedValue(null);
 
             const system = await sourceSystems.getSystemByName('SystemA');
 
@@ -295,7 +293,7 @@ describe('SystemLookup', () => {
     describe('getSystemRequiresAuth', () => {
         test('should return true if found endpoint has Authentication "NoAuthentication" in BAS', async () => {
             mockIsAppStudio.mockReturnValue(true);
-            listDestinationsMock.mockResolvedValue(destinations);
+            mockListDestinations.mockResolvedValue(destinations);
 
             const result = await sourceSystems.getSystemRequiresAuth('SystemB');
 
@@ -304,7 +302,7 @@ describe('SystemLookup', () => {
 
         test('should return false if found endpoint has different Authentication in BAS', async () => {
             mockIsAppStudio.mockReturnValue(true);
-            listDestinationsMock.mockResolvedValue(destinations);
+            mockListDestinations.mockResolvedValue(destinations);
 
             const result = await sourceSystems.getSystemRequiresAuth('SystemA');
 
@@ -313,7 +311,7 @@ describe('SystemLookup', () => {
 
         test('should return false if system is found with credentials in VS Code', async () => {
             mockIsAppStudio.mockReturnValue(false);
-            getServiceMock.mockResolvedValue({
+            mockGetService.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue(backendSystems)
             });
 
@@ -324,7 +322,7 @@ describe('SystemLookup', () => {
 
         test('should return true if system is not found in VS Code', async () => {
             mockIsAppStudio.mockReturnValue(false);
-            getServiceMock.mockResolvedValue({
+            mockGetService.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue(backendSystems)
             });
 
@@ -345,7 +343,7 @@ describe('SystemLookup', () => {
                 connectionType: 'abap_catalog',
                 systemType: 'OnPrem'
             };
-            getServiceMock.mockResolvedValue({
+            mockGetService.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue([...backendSystems, systemWithoutCredentials])
             });
 
@@ -366,7 +364,7 @@ describe('SystemLookup', () => {
                 connectionType: 'abap_catalog',
                 systemType: 'AbapCloud'
             };
-            getServiceMock.mockResolvedValue({
+            mockGetService.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue([cloudSystem])
             });
 
@@ -387,7 +385,7 @@ describe('SystemLookup', () => {
                 connectionType: 'abap_catalog',
                 systemType: 'OnPrem'
             };
-            getServiceMock.mockResolvedValue({
+            mockGetService.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue([systemWithCreds])
             });
 
@@ -408,7 +406,7 @@ describe('SystemLookup', () => {
                 connectionType: 'abap_catalog',
                 systemType: undefined as any
             };
-            getServiceMock.mockResolvedValue({
+            mockGetService.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue([systemUndefinedType])
             });
 
@@ -429,7 +427,7 @@ describe('SystemLookup', () => {
                 connectionType: 'abap_catalog',
                 systemType: 'SomeOtherType' as any
             };
-            getServiceMock.mockResolvedValue({
+            mockGetService.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue([nonOnPremSystem])
             });
 

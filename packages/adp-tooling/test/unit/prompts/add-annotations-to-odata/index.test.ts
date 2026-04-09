@@ -169,6 +169,10 @@ describe('getPrompts', () => {
     });
 
     describe('file path validations', () => {
+        beforeEach(() => {
+            mockFilterDataSourcesByType.mockReturnValue({ 'mainService': dataSources['mainService'] });
+        });
+
         test('should fail with input cannot be empty message', async () => {
             mockValidateEmptyString.mockReturnValueOnce('Input cannot be empty');
 

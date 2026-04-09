@@ -1,5 +1,25 @@
-import { formatUi5Version, addSnapshot, buildSystemVersionLabel } from '../../../src/ui5/format';
-import {
+import { jest } from '@jest/globals';
+
+const mockFetchInternalVersions = jest.fn();
+const mockFormatUi5Version = jest.fn();
+const mockAddSnapshot = jest.fn();
+const mockBuildSystemVersionLabel = jest.fn();
+const mockRemoveTimestampFromVersion = jest.fn();
+
+const realFormat = await import('../../../src/ui5/format');
+jest.unstable_mockModule('../../../src/ui5/fetch', () => ({
+    fetchInternalVersions: mockFetchInternalVersions
+}));
+
+jest.unstable_mockModule('../../../src/ui5/format', () => ({
+    ...realFormat,
+    formatUi5Version: mockFormatUi5Version,
+    removeTimestampFromVersion: mockRemoveTimestampFromVersion,
+    addSnapshot: mockAddSnapshot,
+    buildSystemVersionLabel: mockBuildSystemVersionLabel
+}));
+
+const {
     getLatestVersion,
     getVersionToBeUsed,
     getVersionLabels,
@@ -9,27 +29,15 @@ import {
     getRelevantVersions,
     shouldSetMinUI5Version,
     getMinUI5VersionForManifest
-} from '../../../src/ui5/version-info';
-import type { UI5Version } from '../../../src';
-import { fetchInternalVersions } from '../../../src/ui5/fetch';
-import {
-    CURRENT_SYSTEM_VERSION,
-    LATEST_VERSION,
-    SNAPSHOT_UNTESTED_VERSION,
-    SNAPSHOT_VERSION
-} from '../../../src/base/constants';
+} = await import('../../../src/ui5/version-info');
+type UI5Version = import('../../../src').UI5Version;
+const { CURRENT_SYSTEM_VERSION, LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } =
+    await import('../../../src/base/constants');
 
-jest.mock('../../../src/ui5/fetch', () => ({
-    fetchInternalVersions: jest.fn()
-}));
-
-jest.mock('../../../src/ui5/format', () => ({
-    ...jest.requireActual('../../../src/ui5/format'),
-    formatUi5Version: jest.fn(),
-    removeTimestampFromVersion: jest.fn(),
-    addSnapshot: jest.fn(),
-    buildSystemVersionLabel: jest.fn()
-}));
+const fetchInternalVersionsMock = mockFetchInternalVersions;
+const addSnapshotMock = mockAddSnapshot;
+const buildSystemVersionLabelMock = mockBuildSystemVersionLabel;
+const formatUi5VersionMock = mockFormatUi5Version;
 
 const mockPublicVersions = {
     latest: { version: '1.120.0' },
@@ -39,11 +47,6 @@ const mockPublicVersions = {
 } as unknown as UI5Version;
 
 const mockInternalVersions = ['1.120.0', '1.119.1', '1.119.0', '1.64.0'];
-
-const fetchInternalVersionsMock = fetchInternalVersions as jest.Mock;
-const addSnapshotMock = addSnapshot as jest.Mock;
-const buildSystemVersionLabelMock = buildSystemVersionLabel as jest.Mock;
-const formatUi5VersionMock = formatUi5Version as jest.Mock;
 
 describe('Version Info', () => {
     beforeEach(() => {

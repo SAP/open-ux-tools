@@ -1,37 +1,40 @@
+import { jest } from '@jest/globals';
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { initI18n, t } from '../../../../src/i18n';
-import { getFDCApps } from '../../../../src/cf/services/api';
-import { extractXSApp } from '../../../../src/cf/utils/validation';
-import {
-    getAppHostIds,
-    getCfApps,
-    getOAuthPathsFromXsApp,
-    getBackendUrlsFromServiceKeys,
-    getServiceKeyDestinations
-} from '../../../../src/cf/app/discovery';
-import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa, XsApp } from '../../../../src/types';
+const mockGetFDCApps = jest.fn();
+const mockExtractXSApp = jest.fn();
+const mockIsAppStudio = jest.fn();
+const mockCreate = jest.fn();
 
-jest.mock('mem-fs-editor', () => ({
-    create: jest.fn()
+jest.unstable_mockModule('mem-fs-editor', () => ({
+    create: mockCreate
 }));
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio
 }));
 
-jest.mock('../../../../src/cf/services/api', () => ({
-    getFDCApps: jest.fn()
+jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
+    getFDCApps: mockGetFDCApps
 }));
 
-jest.mock('../../../../src/cf/utils/validation', () => ({
-    ...jest.requireActual('../../../../src/cf/utils/validation'),
-    extractXSApp: jest.fn()
+jest.unstable_mockModule('../../../../src/cf/utils/validation', () => ({
+    extractXSApp: mockExtractXSApp,
+    validateSmartTemplateApplication: jest.fn(),
+    validateODataEndpoints: jest.fn()
 }));
 
-const mockGetFDCApps = getFDCApps as jest.MockedFunction<typeof getFDCApps>;
-const mockExtractXSApp = extractXSApp as jest.MockedFunction<typeof extractXSApp>;
+const { getAppHostIds, getCfApps, getOAuthPathsFromXsApp, getBackendUrlsFromServiceKeys, getServiceKeyDestinations } =
+    await import('../../../../src/cf/app/discovery');
+const { initI18n, t } = await import('../../../../src/i18n');
+type CFApp = import('../../../../src/types').CFApp;
+type CfConfig = import('../../../../src/types').CfConfig;
+type ServiceKeys = import('../../../../src/types').ServiceKeys;
+type Organization = import('../../../../src/types').Organization;
+type Space = import('../../../../src/types').Space;
+type Uaa = import('../../../../src/types').Uaa;
+type XsApp = import('../../../../src/types').XsApp;
 
 const mockApps: CFApp[] = [
     {

@@ -1,21 +1,28 @@
-import fs from 'node:fs';
-import yaml from 'js-yaml';
+import { jest } from '@jest/globals';
 
-import type { MtaYaml } from '../../../../src/types';
-import { getYamlContent, getProjectName, getProjectNameForXsSecurity } from '../../../../src/cf/project/yaml-loader';
+const realFs = await import('node:fs');
+const realYaml = await import('js-yaml');
 
-jest.mock('fs', () => ({
-    existsSync: jest.fn(),
-    readFileSync: jest.fn()
+const mockExistsSync = jest.fn<typeof realFs.existsSync>();
+const mockReadFileSync = jest.fn<typeof realFs.readFileSync>();
+const mockYamlLoad = jest.fn<typeof realYaml.default.load>();
+
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    existsSync: mockExistsSync,
+    readFileSync: mockReadFileSync,
+    default: { ...realFs.default, existsSync: mockExistsSync, readFileSync: mockReadFileSync }
 }));
 
-jest.mock('js-yaml', () => ({
-    load: jest.fn()
+jest.unstable_mockModule('js-yaml', () => ({
+    ...realYaml,
+    load: mockYamlLoad,
+    default: { ...realYaml.default, load: mockYamlLoad }
 }));
 
-const mockYamlLoad = yaml.load as jest.MockedFunction<typeof yaml.load>;
-const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
-const mockReadFileSync = fs.readFileSync as jest.MockedFunction<typeof fs.readFileSync>;
+const { getYamlContent, getProjectName, getProjectNameForXsSecurity } =
+    await import('../../../../src/cf/project/yaml-loader');
+type MtaYaml = import('../../../../src/types').MtaYaml;
 
 describe('YAML Loader Functions', () => {
     beforeEach(() => {
@@ -29,7 +36,7 @@ describe('YAML Loader Functions', () => {
             const expectedParsed = { ID: 'test-project', modules: [] };
 
             mockExistsSync.mockReturnValue(true);
-            mockReadFileSync.mockReturnValue(fileContent);
+            mockReadFileSync.mockReturnValue(fileContent as any);
             mockYamlLoad.mockReturnValue(expectedParsed);
 
             const result = getYamlContent(filePath);
@@ -56,7 +63,7 @@ describe('YAML Loader Functions', () => {
             const fileContent = 'invalid: yaml: content: [';
 
             mockExistsSync.mockReturnValue(true);
-            mockReadFileSync.mockReturnValue(fileContent);
+            mockReadFileSync.mockReturnValue(fileContent as any);
             mockYamlLoad.mockImplementation(() => {
                 throw new Error('YAML parsing error');
             });

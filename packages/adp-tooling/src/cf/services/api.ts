@@ -1,8 +1,12 @@
 import * as fs from 'node:fs';
 import axios from 'axios';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { AxiosRequestConfig } from 'axios';
 import { Cli } from '@sap/cf-tools';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';

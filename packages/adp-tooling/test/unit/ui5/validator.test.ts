@@ -1,22 +1,25 @@
-import { validateEmptyString } from '@sap-ux/project-input-validator';
+import { jest } from '@jest/globals';
 import axios from 'axios';
 
-import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from '../../../src/ui5/format';
-import { validateUI5VersionExists } from '../../../src';
-import { t, initI18n } from '../../../src/i18n';
+const mockValidateEmptyString = jest.fn();
+const mockGetOfficialBaseUI5VersionUrl = jest.fn();
+const mockGetFormattedVersion = jest.fn();
 
-jest.mock('@sap-ux/project-input-validator', () => ({
-    validateEmptyString: jest.fn()
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    validateEmptyString: mockValidateEmptyString
 }));
 
-jest.mock('../../../src/ui5/format', () => ({
-    getOfficialBaseUI5VersionUrl: jest.fn(),
-    getFormattedVersion: jest.fn()
+jest.unstable_mockModule('../../../src/ui5/format', () => ({
+    getOfficialBaseUI5VersionUrl: mockGetOfficialBaseUI5VersionUrl,
+    getFormattedVersion: mockGetFormattedVersion
 }));
 
-const validateEmptyStringMock = validateEmptyString as jest.Mock;
-const getOfficialBaseUI5VersionUrlMock = getOfficialBaseUI5VersionUrl as jest.Mock;
-const getFormattedVersionMock = getFormattedVersion as jest.Mock;
+const { validateUI5VersionExists } = await import('../../../src/ui5/validator');
+const { t, initI18n } = await import('../../../src/i18n');
+
+const validateEmptyStringMock = mockValidateEmptyString;
+const getOfficialBaseUI5VersionUrlMock = mockGetOfficialBaseUI5VersionUrl;
+const getFormattedVersionMock = mockGetFormattedVersion;
 
 beforeAll(async () => {
     await initI18n();

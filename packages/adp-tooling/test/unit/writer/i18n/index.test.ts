@@ -1,25 +1,16 @@
-import { v4 as uuidv4 } from 'uuid';
+import { jest } from '@jest/globals';
 
-import {
-    FlexLayer,
-    MAIN_I18N_PATH,
-    type ResourceModel,
-    RESOURCE_BUNDLE_TEXT,
-    BASE_I18N_DESCRIPTION,
-    TRANSLATION_UUID_TEXT
-} from '../../../../src';
-import {
-    getI18nDescription,
-    writeI18nModels,
-    extractResourceModelPath,
-    getI18nModels
-} from '../../../../src/writer/i18n';
+const mockUuidV4 = jest.fn();
 
-jest.mock('uuid', () => ({
-    v4: jest.fn()
+jest.unstable_mockModule('uuid', () => ({
+    v4: mockUuidV4
 }));
 
-const uuidMock = uuidv4 as jest.Mock;
+const { FlexLayer, MAIN_I18N_PATH, RESOURCE_BUNDLE_TEXT, BASE_I18N_DESCRIPTION, TRANSLATION_UUID_TEXT } =
+    await import('../../../../src');
+const { getI18nDescription, writeI18nModels, extractResourceModelPath, getI18nModels } =
+    await import('../../../../src/writer/i18n');
+type ResourceModel = import('../../../../src').ResourceModel;
 
 describe('writeI18nModels', () => {
     const mockFs = { write: jest.fn() };
@@ -130,23 +121,23 @@ describe('getI18nModels', () => {
 
 describe('getI18nDescription', () => {
     beforeEach(() => {
-        uuidMock.mockClear();
+        mockUuidV4.mockClear();
     });
 
     it('should return only base description for CUSTOMER_BASE layer', () => {
         const result = getI18nDescription(FlexLayer.CUSTOMER_BASE, 'My App');
         expect(result).toBe(BASE_I18N_DESCRIPTION);
-        expect(uuidMock).not.toHaveBeenCalled();
+        expect(mockUuidV4).not.toHaveBeenCalled();
     });
 
     it('should return full description with fixed UUID for non-customer layer', () => {
         const mockUUID = '123e4567-e89b-12d3-a456-42661';
-        uuidMock.mockReturnValue(mockUUID);
+        mockUuidV4.mockReturnValue(mockUUID);
 
         const appTitle = 'Demo App';
         const result = getI18nDescription(FlexLayer.VENDOR, appTitle);
 
-        expect(uuidMock).toHaveBeenCalled();
+        expect(mockUuidV4).toHaveBeenCalled();
         expect(result).toBe(BASE_I18N_DESCRIPTION + RESOURCE_BUNDLE_TEXT + appTitle + TRANSLATION_UUID_TEXT + mockUUID);
     });
 });

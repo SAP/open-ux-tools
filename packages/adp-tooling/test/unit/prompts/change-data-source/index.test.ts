@@ -1,7 +1,16 @@
 import { jest } from '@jest/globals';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
-const mockFilterDataSourcesByType = jest.fn();
+const mockFilterDataSourcesByType = jest.fn().mockImplementation(
+    (dataSources: Record<string, any>, type: string) => {
+        if (!dataSources) {
+            return {};
+        }
+        return Object.fromEntries(
+            Object.entries(dataSources).filter(([, ds]) => ds.type === type)
+        );
+    }
+);
 const actualProjectAccess = await import('@sap-ux/project-access');
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,
@@ -36,6 +45,16 @@ describe('getPrompts', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockFilterDataSourcesByType.mockImplementation(
+            (ds: Record<string, any>, type: string) => {
+                if (!ds) {
+                    return {};
+                }
+                return Object.fromEntries(
+                    Object.entries(ds).filter(([, v]) => (v as any).type === type)
+                );
+            }
+        );
     });
 
     test('return prompts', () => {

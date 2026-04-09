@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { generate } from '../../../src';
@@ -6,6 +7,8 @@ import type { AdpWriterConfig } from '../../../src/types';
 import { rimraf } from 'rimraf';
 import { migrate } from '../../../src/writer';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('ADP writer', () => {
     const fs = create(createStorage());
