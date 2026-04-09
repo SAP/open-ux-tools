@@ -21,7 +21,7 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build-esbuild-base": "esbuild --bundle --platform=node --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings  --external:@sap-ux/store --main-fields=module,main src/index.ts",
+        "build-esbuild-base": "esbuild --bundle --platform=node --format=esm --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings  --external:@sap-ux/store --main-fields=module,main src/index.ts",
         "build-dev": "pnpm run build-esbuild-base --sourcemap=inline",
         "build-compile": "tsc --noEmit",
         "build-bundle": "pnpm run build-esbuild-base --minify && pnpm run copy-icons",
