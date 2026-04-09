@@ -1,5 +1,19 @@
 # @sap-ux/inquirer-common
 
+## 0.11.34
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/fiori-generator-shared@0.13.96
+    - @sap-ux/odata-service-writer@0.31.6
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/telemetry@0.6.96
+    - @sap-ux/ui5-info@0.13.18
+
 ## 0.11.33
 
 ### Patch Changes
