@@ -6,6 +6,7 @@
 
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
+import { readHashFromFlpSandbox } from './flpSandboxUtils';
 
 /** Relative path from the test output directory to opaTests.qunit.js */
 const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
@@ -90,10 +91,28 @@ const LAUNCH_URL_REGEX = /\.toUrl\s*\([^)]+\)\s*\+\s*'([^']+)'/;
  */
 export function readHtmlTargetFromQUnitJs(basePath: string, fs: Editor): string | undefined {
     try {
-        const filePath = join(basePath, 'webapp', 'test', 'integration_old', 'opaTests.qunit.js');
+        const integrationOldDir = join(basePath, 'webapp', 'test', 'integration_old');
+        let filePath = join(integrationOldDir, 'opaTests.qunit.js');
+        if (!fs.exists(filePath)) {
+            filePath = join(integrationOldDir, 'Opa.qunit.js');
+        }
         const content = fs.read(filePath);
         const match = LAUNCH_URL_REGEX.exec(content);
-        return match?.[1].replace(/^\//, '');
+        const launchUrl = match?.[1].replace(/^\//, '');
+        if (!launchUrl) {
+            return undefined;
+        }
+
+        // If the launch URL already contains a hash fragment, use it as-is
+        if (launchUrl.includes('#')) {
+            return launchUrl;
+        }
+
+        // No hash fragment — read the referenced HTML file to extract the
+        // application key from the sap-ushell-config applications object
+        const htmlPath = launchUrl.split('?')[0];
+        const hash = readHashFromFlpSandbox(htmlPath, basePath, fs);
+        return hash ? `${launchUrl}#${hash}` : launchUrl;
     } catch (error) {
         return undefined;
     }

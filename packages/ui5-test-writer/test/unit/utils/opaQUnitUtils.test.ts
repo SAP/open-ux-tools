@@ -1,4 +1,9 @@
-import { addPathsToQUnitJs, spliceModulesIntoQUnitContent, readHtmlTargetFromQUnitJs, addIntegrationOldToGitignore } from '../../../src/utils/opaQUnitUtils';
+import {
+    addPathsToQUnitJs,
+    spliceModulesIntoQUnitContent,
+    readHtmlTargetFromQUnitJs,
+    addIntegrationOldToGitignore
+} from '../../../src/utils/opaQUnitUtils';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
@@ -177,8 +182,11 @@ describe('readHtmlTargetFromQUnitJs()', () => {
     const basePath = join('/', 'project');
     const expectedFilePath = join(basePath, 'webapp', 'test', 'integration_old', 'opaTests.qunit.js');
 
-    function makeFsMock(content: string): jest.Mocked<Pick<Editor, 'read'>> {
-        return { read: jest.fn().mockReturnValue(content) };
+    function makeFsMock(content: string): jest.Mocked<Pick<Editor, 'read' | 'exists'>> {
+        return {
+            read: jest.fn().mockReturnValue(content),
+            exists: jest.fn().mockReturnValue(true)
+        };
     }
 
     test('extracts a simple html filename', () => {
@@ -209,6 +217,46 @@ describe('readHtmlTargetFromQUnitJs()', () => {
         const fs = makeFsMock(BASE_FILE) as unknown as Editor;
 
         expect(readHtmlTargetFromQUnitJs(basePath, fs)).toBeUndefined();
+    });
+
+    test('reads hash from HTML file when launch URL has no hash fragment', () => {
+        const qunitContent = `sap.ui.require.toUrl('my/app') + '/test/flpSandbox.html'`;
+        const htmlContent = `applications: { "myapp-tile": { title: "My App" } }`;
+        const fs = {
+            exists: jest.fn().mockReturnValue(true),
+            read: jest
+                .fn()
+                .mockReturnValueOnce(qunitContent) // qunit file
+                .mockReturnValueOnce(htmlContent) // flpSandbox.html
+        } as unknown as Editor;
+
+        expect(readHtmlTargetFromQUnitJs(basePath, fs)).toBe('test/flpSandbox.html#myapp-tile');
+    });
+
+    test('reads hash from HTML file when launch URL has query params but no hash', () => {
+        const qunitContent = `sap.ui.require.toUrl('my/app') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false'`;
+        const htmlContent = `applications: { "myapp-tile": { title: "My App" } }`;
+        const fs = {
+            exists: jest.fn().mockReturnValue(true),
+            read: jest.fn().mockReturnValueOnce(qunitContent).mockReturnValueOnce(htmlContent)
+        } as unknown as Editor;
+
+        expect(readHtmlTargetFromQUnitJs(basePath, fs)).toBe(
+            'test/flpSandbox.html?sap-ui-xx-viewCache=false#myapp-tile'
+        );
+    });
+
+    test('falls back to Opa.qunit.js when opaTests.qunit.js does not exist', () => {
+        const content = `sap.ui.require.toUrl('my/app') + '/test/sandbox.html#app-tile'`;
+        const opaTestsPath = join(basePath, 'webapp', 'test', 'integration_old', 'opaTests.qunit.js');
+        const opaPath = join(basePath, 'webapp', 'test', 'integration_old', 'Opa.qunit.js');
+        const fs = {
+            exists: jest.fn().mockImplementation((path: string) => path !== opaTestsPath),
+            read: jest.fn().mockReturnValue(content)
+        } as unknown as Editor;
+
+        expect(readHtmlTargetFromQUnitJs(basePath, fs)).toBe('test/sandbox.html#app-tile');
+        expect(fs.read).toHaveBeenCalledWith(opaPath);
     });
 });
 
