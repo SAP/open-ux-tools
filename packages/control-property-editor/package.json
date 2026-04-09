@@ -52,7 +52,7 @@
         "source-map-support": "0.5.21",
         "stream-browserify": "3.0.0",
         "ts-import-plugin": "3.0.0",
-        "ts-jest": "29.4.6",
+        "ts-jest": "29.4.9",
         "postcss-modules": "6.0.1",
         "ejs": "3.1.10",
         "@ui5/fs": "4.0.5",

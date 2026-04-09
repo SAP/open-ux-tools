@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.4.4
+
+### Patch Changes
+
+- 6379785: fix name validation
+
 ## 0.4.3
 
 ### Patch Changes

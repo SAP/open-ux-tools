@@ -932,6 +932,39 @@ export interface ServiceInstance {
     guid: string;
 }
 
+/**
+ * Service key credentials with tags returned by the CF API.
+ */
+export interface ServiceKeyCredentialsWithTags {
+    label: string;
+    name: string;
+    tags: string[];
+    plan: string;
+    credentials: ServiceKeys['credentials'] | undefined;
+}
+
+/**
+ * Destination configuration returned by the BTP Destination Configuration API.
+ * Contains the known properties; additional custom properties may also be present.
+ */
+export interface BtpDestinationConfig {
+    Name: string;
+    Type: string;
+    URL: string;
+    Authentication: string;
+    ProxyType: string;
+    Description?: string;
+    User?: string;
+    Password?: string;
+    'sap-client'?: string;
+    [key: string]: string | undefined;
+}
+
+export interface AppRouterEnvOptions {
+    'VCAP_SERVICES'?: Record<string, unknown>;
+    destinations?: { name: string; url: string }[];
+}
+
 export interface GetServiceInstanceParams {
     spaceGuids?: string[];
     planNames?: string[];

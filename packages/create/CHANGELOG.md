@@ -1,5 +1,111 @@
 # @sap-ux/create
 
+## 0.15.70
+
+### Patch Changes
+
+- Updated dependencies [7a8613b]
+    - @sap-ux/adp-tooling@0.18.113
+    - @sap-ux/flp-config-inquirer@0.4.172
+    - @sap-ux/preview-middleware@0.25.20
+    - @sap-ux/app-config-writer@0.6.133
+
+## 0.15.69
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+- Updated dependencies [f1e4481]
+    - @sap-ux/abap-deploy-config-writer@0.3.8
+    - @sap-ux/axios-extension@1.25.29
+    - @sap-ux/flp-config-inquirer@0.4.171
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/ui5-config@0.30.2
+    - @sap-ux/abap-deploy-config-inquirer@1.8.9
+    - @sap-ux/adp-tooling@0.18.112
+    - @sap-ux/app-config-writer@0.6.133
+    - @sap-ux/odata-service-writer@0.31.6
+    - @sap-ux/preview-middleware@0.25.19
+    - @sap-ux/system-access@0.7.5
+    - @sap-ux/cap-config-writer@0.12.88
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/mockserver-config-writer@0.9.70
+
+## 0.15.68
+
+### Patch Changes
+
+- 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
+- Updated dependencies [1b10e9f]
+    - @sap-ux/adp-tooling@0.18.111
+    - @sap-ux/flp-config-inquirer@0.4.170
+    - @sap-ux/preview-middleware@0.25.18
+    - @sap-ux/app-config-writer@0.6.132
+
+## 0.15.67
+
+### Patch Changes
+
+- Updated dependencies [4237e59]
+    - @sap-ux/preview-middleware@0.25.17
+    - @sap-ux/app-config-writer@0.6.132
+
+## 0.15.66
+
+### Patch Changes
+
+- Updated dependencies [6b74074]
+    - @sap-ux/adp-tooling@0.18.110
+    - @sap-ux/flp-config-inquirer@0.4.169
+    - @sap-ux/preview-middleware@0.25.16
+    - @sap-ux/app-config-writer@0.6.132
+
+## 0.15.65
+
+### Patch Changes
+
+- Updated dependencies [0153757]
+    - @sap-ux/preview-middleware@0.25.15
+    - @sap-ux/app-config-writer@0.6.132
+
+## 0.15.64
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/abap-deploy-config-writer@0.3.7
+    - @sap-ux/adp-tooling@0.18.109
+    - @sap-ux/app-config-writer@0.6.132
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/cap-config-writer@0.12.87
+    - @sap-ux/flp-config-inquirer@0.4.168
+    - @sap-ux/mockserver-config-writer@0.9.69
+    - @sap-ux/odata-service-writer@0.31.5
+    - @sap-ux/preview-middleware@0.25.14
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/abap-deploy-config-inquirer@1.8.8
+
+## 0.15.63
+
+### Patch Changes
+
+- 68b5523: feat: Adjust FLP configuration wizard for CF scenario
+- Updated dependencies [68b5523]
+    - @sap-ux/adp-tooling@0.18.108
+    - @sap-ux/flp-config-inquirer@0.4.167
+    - @sap-ux/preview-middleware@0.25.13
+    - @sap-ux/app-config-writer@0.6.131
+
+## 0.15.62
+
+### Patch Changes
+
+- Updated dependencies [f305285]
+    - @sap-ux/preview-middleware@0.25.12
+    - @sap-ux/app-config-writer@0.6.131
+
 ## 0.15.61
 
 ### Patch Changes
