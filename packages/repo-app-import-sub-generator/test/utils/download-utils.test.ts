@@ -1,20 +1,31 @@
-import { downloadApp, extractZip, hasQfaJson } from '../../src/utils/download-utils';
-import AdmZip from 'adm-zip';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import RepoAppDownloadLogger from '../../src/utils/logger';
-import { PromptState } from '../../src/prompts/prompt-state';
 import { qfaJsonFileName } from '../../src/utils/constants';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-jest.mock('adm-zip');
-jest.mock('../../src/utils/logger', () => ({
-    logger: {
-        error: jest.fn(),
-        warn: jest.fn(),
-        info: jest.fn(),
-        debug: jest.fn()
+jest.unstable_mockModule('adm-zip', () => {
+    class MockAdmZip {
+        buffer: Buffer;
+        constructor(buf: Buffer) {
+            this.buffer = buf;
+        }
     }
-}));
+    return { default: MockAdmZip, __esModule: true };
+});
+
+jest.unstable_mockModule('../../src/utils/logger', () => {
+    const mock = {
+        logger: { error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+        configureLogging: jest.fn()
+    };
+    return { default: mock, ...mock };
+});
+
+const { downloadApp, extractZip, hasQfaJson } = await import('../../src/utils/download-utils');
+const { PromptState } = await import('../../src/prompts/prompt-state');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
+const AdmZipModule = await import('adm-zip');
+const AdmZip = AdmZipModule.default;
 
 describe('App Download Utils', () => {
     beforeEach(() => {

@@ -1,13 +1,22 @@
-import { runPostAppGenHook, type RepoAppGenContext } from '../../src/utils/event-hook';
+import { jest } from '@jest/globals';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import { t } from '../../src/utils/i18n';
-import RepoAppDownloadLogger from '../../src/utils/logger';
 
-jest.mock('../../src/utils/logger', () => ({
-    logger: {
-        error: jest.fn()
-    }
-}));
+const mockLogger = {
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn()
+};
+
+jest.unstable_mockModule('../../src/utils/logger', () => {
+    const mock = { logger: mockLogger, configureLogging: jest.fn() };
+    return { default: mock, ...mock };
+});
+
+const { runPostAppGenHook } = await import('../../src/utils/event-hook');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
+type RepoAppGenContext = import('../../src/utils/event-hook').RepoAppGenContext;
 
 describe('runPostAppGenHook', () => {
     let mockContext: RepoAppGenContext;
@@ -54,7 +63,7 @@ describe('runPostAppGenHook', () => {
     it('should log an error if executeCommand throws an error', async () => {
         const mockError = new Error('Command execution failed');
         if (mockContext.vscodeInstance) {
-            mockContext.vscodeInstance.commands.executeCommand = jest.fn().mockRejectedValue(mockError);
+            mockContext.vscodeInstance.commands.executeCommand = jest.fn().mockRejectedValue(mockError) as any;
         }
         await runPostAppGenHook(mockContext);
         expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(

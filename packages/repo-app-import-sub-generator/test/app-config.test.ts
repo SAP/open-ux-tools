@@ -1,45 +1,53 @@
-import { getAppConfig, getAbapDeployConfig } from '../src/app/app-config';
+import { jest } from '@jest/globals';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
-import { getUI5Versions } from '@sap-ux/ui5-info';
-import { getMinimumUI5Version } from '@sap-ux/project-access';
-import { PromptState } from '../src/prompts/prompt-state';
 import type { AppInfo, QfaJsonConfig } from '../src/app/types';
-import { readManifest } from '../src/utils/file-helpers';
 import { t } from '../src/utils/i18n';
 import { fioriAppSourcetemplateId, qfaJsonFileName } from '../src/utils/constants';
-import RepoAppDownloadLogger from '../src/utils/logger';
-import { TestFixture } from './fixtures';
 import { join } from 'node:path';
 import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 
-jest.mock('../src/utils/logger', () => ({
-    logger: {
-        error: jest.fn(),
-        info: jest.fn(),
-        warn: jest.fn(),
-        debug: jest.fn()
-    }
+// Pre-import actual modules before mocking - avoid importing @sap-ux/project-access
+// directly as it triggers problematic ESM dependency chain
+const actualFileHelpers = await import('../src/utils/file-helpers');
+const actualUi5Info = await import('@sap-ux/ui5-info');
+const actualProjectAccess = await import('@sap-ux/project-access');
+
+const mockReadManifest = jest.fn();
+const mockGetUI5Versions = jest.fn();
+const mockGetMinimumUI5Version = jest.fn();
+
+jest.unstable_mockModule('../src/utils/logger', () => {
+    const mock = {
+        logger: { error: jest.fn(), info: jest.fn(), warn: jest.fn(), debug: jest.fn() },
+        configureLogging: jest.fn()
+    };
+    return { default: mock, ...mock };
+});
+
+jest.unstable_mockModule('../src/utils/file-helpers', () => ({
+    ...actualFileHelpers,
+    readManifest: mockReadManifest
 }));
 
-jest.mock('../src/utils/file-helpers', () => ({
-    ...jest.requireActual('../src/utils/file-helpers'),
-    readManifest: jest.fn()
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    ...actualUi5Info,
+    getUI5Versions: mockGetUI5Versions
 }));
 
-jest.mock('@sap-ux/ui5-info', () => ({
-    ...jest.requireActual('@sap-ux/ui5-info'),
-    getUI5Versions: jest.fn()
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getMinimumUI5Version: mockGetMinimumUI5Version
 }));
 
-jest.mock('@sap-ux/project-access', () => ({
-    ...jest.requireActual('@sap-ux/project-access'),
-    getMinimumUI5Version: jest.fn()
-}));
-
-jest.mock('@sap-ux/feature-toggle', () => ({
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
     isInternalFeaturesSettingEnabled: jest.fn()
 }));
+
+const { getAppConfig, getAbapDeployConfig } = await import('../src/app/app-config');
+const { PromptState } = await import('../src/prompts/prompt-state');
+const RepoAppDownloadLogger = (await import('../src/utils/logger')).default;
+const { TestFixture } = await import('./fixtures');
 
 const testFixture = new TestFixture();
 const mockQfaJson: QfaJsonConfig = JSON.parse(testFixture.getContents(join('downloaded-app', qfaJsonFileName)));
@@ -148,7 +156,7 @@ describe('getAppConfig', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.resetAllMocks();
-        (getUI5Versions as jest.Mock).mockResolvedValue(availableUI5Versions);
+        mockGetUI5Versions.mockResolvedValue(availableUI5Versions);
     });
 
     it('should generate app configuration successfully', async () => {
@@ -163,8 +171,8 @@ describe('getAppConfig', () => {
             connectedSystem: mockSystem.connectedSystem
         };
 
-        (readManifest as jest.Mock).mockReturnValue(mockManifest);
-        (getMinimumUI5Version as jest.Mock).mockReturnValue('1.90.0');
+        mockReadManifest.mockReturnValue(mockManifest);
+        mockGetMinimumUI5Version.mockReturnValue('1.90.0');
         const mockQfaJsonWithoutNavEntity = {
             ...mockQfaJson,
             serviceBindingDetails: {
@@ -199,8 +207,8 @@ describe('getAppConfig', () => {
             connectedSystem: mockSystem.connectedSystem
         };
 
-        (readManifest as jest.Mock).mockReturnValue(mockManifest);
-        (getMinimumUI5Version as jest.Mock).mockReturnValue('1.90.0');
+        mockReadManifest.mockReturnValue(mockManifest);
+        mockGetMinimumUI5Version.mockReturnValue('1.90.0');
 
         const mockQfaJsonJsonWithNavEntity = {
             ...mockQfaJson,
@@ -235,8 +243,8 @@ describe('getAppConfig', () => {
             connectedSystem: mockSystem.connectedSystem
         };
 
-        (readManifest as jest.Mock).mockReturnValue(mockManifest);
-        (getUI5Versions as jest.Mock).mockResolvedValue([
+        mockReadManifest.mockReturnValue(mockManifest);
+        mockGetUI5Versions.mockResolvedValue([
             { version: '1.134.0' },
             { version: '1.132.0' },
             { version: '1.124.0' }
@@ -268,7 +276,7 @@ describe('getAppConfig', () => {
             'sap.app': {}
         };
 
-        (readManifest as jest.Mock).mockReturnValue(mockManifest);
+        mockReadManifest.mockReturnValue(mockManifest);
         const context = {
             qfaJson: mockQfaJson,
             serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
@@ -295,7 +303,7 @@ describe('getAppConfig', () => {
             connectedSystem: mockSystem.connectedSystem
         };
 
-        (readManifest as jest.Mock).mockReturnValue(mockManifest);
+        mockReadManifest.mockReturnValue(mockManifest);
         const context = {
             qfaJson: mockQfaJson,
             serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
@@ -339,8 +347,8 @@ describe('getAppConfig', () => {
         PromptState.systemSelection = {
             connectedSystem: mockSystem.connectedSystem
         };
-        (readManifest as jest.Mock).mockReturnValue(mockManifest);
-        (getMinimumUI5Version as jest.Mock).mockReturnValue('1.90.0');
+        mockReadManifest.mockReturnValue(mockManifest);
+        mockGetMinimumUI5Version.mockReturnValue('1.90.0');
 
         const mockQfaJsonJsonWithoutUi5Version = {
             ...mockQfaJson,
