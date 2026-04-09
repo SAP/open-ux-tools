@@ -1,35 +1,53 @@
-import * as appStudio from '@sap-ux/btp-utils';
-import { getLivereloadServer, getConnectLivereload } from '../../../src';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import livereload from 'livereload';
-import * as connectLivereload from 'connect-livereload';
-import portfinder from 'portfinder';
-import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from '../../../src/base/constants';
-import { join } from 'node:path';
-import { watchManifestChanges } from '../../../src/base/livereload';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('connect-livereload', () => ({
-    __esModule: true,
-    default: jest.fn()
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Mock functions
+const mockConnectLivereload = jest.fn();
+const mockIsAppStudio = jest.fn();
+const mockExposePort = jest.fn();
+const mockCreateServer = jest.fn();
+const mockGetPort = jest.fn();
+
+jest.unstable_mockModule('connect-livereload', () => ({
+    default: mockConnectLivereload
 }));
 
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        __esModule: true,
-        ...jest.requireActual('@sap-ux/btp-utils')
-    };
-});
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio,
+    exposePort: mockExposePort
+}));
+
+jest.unstable_mockModule('livereload', () => ({
+    default: { createServer: mockCreateServer },
+    createServer: mockCreateServer
+}));
+
+jest.unstable_mockModule('portfinder', () => ({
+    default: { getPort: mockGetPort },
+    getPort: mockGetPort
+}));
+
+const { getLivereloadServer, getConnectLivereload } = await import('../../../src/index.js');
+const { defaultLiveReloadOpts, defaultConnectLivereloadOpts } = await import('../../../src/base/constants.js');
+const { watchManifestChanges } = await import('../../../src/base/livereload.js');
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('Livereload', () => {
-    const livereloadSpy = jest.spyOn(livereload, 'createServer').mockImplementation((): any => {
-        return {
-            watch: jest.fn(),
-            config: { port: 35729 }
-        };
-    });
-    jest.spyOn(portfinder, 'getPort').mockImplementation((options, callback) => {
-        //@ts-expect-error - ignore for testing purposes
-        callback(null, options.port);
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockCreateServer.mockImplementation((): any => {
+            return {
+                watch: jest.fn(),
+                config: { port: 35729 }
+            };
+        });
+        mockGetPort.mockImplementation((options: any, callback: any) => {
+            callback(null, options.port);
+        });
     });
 
     const logger = new ToolsLogger({
@@ -41,84 +59,79 @@ describe('Livereload', () => {
         cert: join(__dirname, '../', '../', 'fixtures', 'cert.txt')
     };
 
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
     test('livereload server with default configuration', async () => {
         await getLivereloadServer(options);
-        expect(livereloadSpy).toHaveBeenCalledTimes(1);
-        expect(livereloadSpy).toHaveBeenCalledWith({ port: 35729, ...defaultLiveReloadOpts });
+        expect(mockCreateServer).toHaveBeenCalledTimes(1);
+        expect(mockCreateServer).toHaveBeenCalledWith({ port: 35729, ...defaultLiveReloadOpts });
         expect(process.env.FIORI_TOOLS_LIVERELOAD_PORT).toBeDefined();
         expect(process.env.FIORI_TOOLS_LIVERELOAD_PORT).toBe('35729');
     });
 
     test('livereload server with custom port', async () => {
         await getLivereloadServer({ port: 12345 }, undefined, logger);
-        expect(livereloadSpy).toHaveBeenCalledTimes(1);
-        expect(livereloadSpy).toHaveBeenCalledWith(expect.objectContaining({ port: 12345 }));
+        expect(mockCreateServer).toHaveBeenCalledTimes(1);
+        expect(mockCreateServer).toHaveBeenCalledWith(expect.objectContaining({ port: 12345 }));
     });
 
     test('livereload server with wrong https', async () => {
         await getLivereloadServer(options, { key: 'key' });
-        expect(livereloadSpy).toHaveBeenCalledTimes(1);
-        expect(livereloadSpy).not.toHaveBeenCalledWith(expect.objectContaining({ https: expect.any(Object) }));
+        expect(mockCreateServer).toHaveBeenCalledTimes(1);
+        expect(mockCreateServer).not.toHaveBeenCalledWith(expect.objectContaining({ https: expect.any(Object) }));
     });
 
     test('livereload server with wrong https', async () => {
         await getLivereloadServer(options, {});
-        expect(livereloadSpy).toHaveBeenCalledTimes(1);
-        expect(livereloadSpy).not.toHaveBeenCalledWith(expect.objectContaining({ https: expect.any(Object) }));
+        expect(mockCreateServer).toHaveBeenCalledTimes(1);
+        expect(mockCreateServer).not.toHaveBeenCalledWith(expect.objectContaining({ https: expect.any(Object) }));
     });
 
     test('livereload server with https', async () => {
         await getLivereloadServer(options, https);
-        expect(livereloadSpy).toHaveBeenCalledTimes(1);
-        expect(livereloadSpy).toHaveBeenCalledWith(
+        expect(mockCreateServer).toHaveBeenCalledTimes(1);
+        expect(mockCreateServer).toHaveBeenCalledWith(
             expect.objectContaining({ https: { key: 'secret key', cert: 'secret cert' } })
         );
     });
 });
 
 describe('Connect Livereload', () => {
-    const connectLivereloadSpy = jest.spyOn(connectLivereload, 'default').mockImplementation(jest.fn());
-
     beforeEach(() => {
         jest.clearAllMocks();
-        jest.restoreAllMocks();
+        mockIsAppStudio.mockReturnValue(false);
     });
 
     test('connect-livereload on app studio', async () => {
-        jest.spyOn(appStudio, 'isAppStudio').mockReturnValue(true);
-        const exposeSpy = jest.spyOn(appStudio, 'exposePort').mockResolvedValue('http://example.com/');
+        mockIsAppStudio.mockReturnValue(true);
+        mockExposePort.mockResolvedValue('http://example.com/');
 
         await getConnectLivereload({ port: 12345 });
 
-        expect(connectLivereloadSpy).toHaveBeenCalledTimes(1);
-        expect(exposeSpy).toHaveBeenCalledWith(12345);
-        expect(connectLivereloadSpy).toHaveBeenCalledWith(
+        expect(mockConnectLivereload).toHaveBeenCalledTimes(1);
+        expect(mockExposePort).toHaveBeenCalledWith(12345);
+        expect(mockConnectLivereload).toHaveBeenCalledWith(
             expect.objectContaining({ port: 12345, src: 'http://example.com/livereload.js?snipver=1&port=443' })
         );
     });
 
-    test('connect-livereload with default configuration', () => {
-        getConnectLivereload({});
-        expect(connectLivereloadSpy).toHaveBeenCalledTimes(1);
-        expect(connectLivereloadSpy).toHaveBeenCalledWith(defaultConnectLivereloadOpts);
+    test('connect-livereload with default configuration', async () => {
+        await getConnectLivereload({});
+        expect(mockConnectLivereload).toHaveBeenCalledTimes(1);
+        expect(mockConnectLivereload).toHaveBeenCalledWith(defaultConnectLivereloadOpts);
     });
 
-    test('connect-livereload with custom configuration', () => {
-        getConnectLivereload({ port: 12345 });
-        expect(connectLivereloadSpy).toHaveBeenCalledTimes(1);
-        expect(connectLivereloadSpy).toHaveBeenCalledWith(expect.objectContaining({ port: 12345 }));
+    test('connect-livereload with custom configuration', async () => {
+        await getConnectLivereload({ port: 12345 });
+        expect(mockConnectLivereload).toHaveBeenCalledTimes(1);
+        expect(mockConnectLivereload).toHaveBeenCalledWith(expect.objectContaining({ port: 12345 }));
     });
 });
 
 describe('adp backend sync', () => {
-    const onSpy = jest.fn<void, [string, (event: string, path: string) => void]>();
+    const onSpy = jest.fn<(event: string, callback: (event: string, path: string) => void) => void>();
 
     beforeEach(() => {
-        jest.spyOn(livereload, 'createServer').mockImplementation((): any => {
+        jest.clearAllMocks();
+        mockCreateServer.mockImplementation((): any => {
             return {
                 watcher: {
                     on: onSpy
@@ -126,10 +139,12 @@ describe('adp backend sync', () => {
                 config: { port: 35729 }
             };
         });
+        mockGetPort.mockImplementation((options: any, callback: any) => {
+            callback(null, options.port);
+        });
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
         global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
     });
 
