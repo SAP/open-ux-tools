@@ -10,8 +10,11 @@ import {
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { randomUUID } from 'node:crypto';
+import { createRequire } from 'node:module';
 import osName from 'os-name';
-import { version } from '../../package.json';
+
+const require = createRequire(import.meta.url);
+const { version } = require('../../package.json');
 import { logger } from '../utils/logger';
 import { t } from '../i18n';
 

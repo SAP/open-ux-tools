@@ -1,6 +1,8 @@
 import { promises } from 'node:fs';
-import { pathToFileURL } from 'node:url';
-import { join } from 'node:path';
+import { pathToFileURL, fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { Editor } from 'mem-fs-editor';
 import { getProject } from '@sap-ux/project-access';

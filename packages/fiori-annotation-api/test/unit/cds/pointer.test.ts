@@ -1,5 +1,8 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { promises } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 

@@ -1,8 +1,10 @@
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { propertiesToI18nEntry } from '@sap-ux/i18n';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 export const mockBundle = {
     getText: jest.fn(),
     hasText: jest.fn()

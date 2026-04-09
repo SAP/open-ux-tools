@@ -4,26 +4,33 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import type { ControlTreeIndex } from 'open/ux/preview/client/cpe/types';
-import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
 
 import { sapCoreMock } from 'mock/window';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
-import * as v4Utils from '../../../../src/utils/fe-v4';
 
-jest.mock('../../../../src/cpe/outline/editable', () => {
-    return {
-        ...jest.requireActual('../../../../src/cpe/outline/editable'),
-        isEditable: () => false
-    };
-});
+// Pre-import for spread
+const _editable = await import('open/ux/preview/client/cpe/outline/editable');
+const _cpeUtils = await import('open/ux/preview/client/cpe/utils');
+const _v4Utils = await import('open/ux/preview/client/utils/fe-v4');
 
-jest.mock('../../../../src/cpe/utils', () => {
-    return {
-        ...jest.requireActual('../../../../src/cpe/utils'),
-        isReuseComponent: () => true
-    };
-});
+jest.unstable_mockModule('open/ux/preview/client/cpe/outline/editable', () => ({
+    ..._editable,
+    isEditable: () => false
+}));
+
+jest.unstable_mockModule('open/ux/preview/client/cpe/utils', () => ({
+    ..._cpeUtils,
+    isReuseComponent: () => true
+}));
+
+const getPageNameMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/fe-v4', () => ({
+    ..._v4Utils,
+    getPageName: getPageNameMock
+}));
+
+const { transformNodes: tn } = await import('open/ux/preview/client/cpe/outline/nodes');
 
 describe('outline nodes', () => {
     const transformNodes = (
@@ -53,7 +60,7 @@ describe('outline nodes', () => {
             })
             .mockReturnValue(undefined)
     });
-    jest.spyOn(v4Utils, 'getPageName').mockReturnValue('TestListReport');
+    getPageNameMock.mockReturnValue('TestListReport');
     beforeAll(() => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
     });

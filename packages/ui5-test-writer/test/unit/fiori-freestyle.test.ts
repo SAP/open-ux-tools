@@ -8,6 +8,8 @@ import { toMatchFolder } from '@sap-ux/jest-file-matchers';
 import * as fileSystem from 'node:fs';
 import { rimraf } from 'rimraf';
 import { promisify } from 'node:util';
+import { fileURLToPath } from 'node:url';
+const __dirname = join(fileURLToPath(import.meta.url), '..');
 
 expect.extend({ toMatchFolder });
 

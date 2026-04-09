@@ -1,6 +1,8 @@
 import { readFile } from 'node:fs/promises';
-import { join, normalize } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join, normalize } from 'node:path';
+import { pathToFileURL, fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { Range, AnnotationFile } from '@sap-ux/odata-annotation-core';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';

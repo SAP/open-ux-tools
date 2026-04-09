@@ -1,26 +1,32 @@
-import * as projectAccess from '@sap-ux/project-access';
-import { listFioriApps } from '../../../src/tools';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
-jest.mock('@sap-ux/project-access', () => ({
-    __esModule: true,
+const mockFindFioriArtifacts = jest.fn();
+const mockGetProjectType = jest.fn().mockResolvedValue('EDMXBackend');
 
-    ...(jest.requireActual('@sap-ux/project-access') as object)
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    findFioriArtifacts: mockFindFioriArtifacts,
+    getProjectType: mockGetProjectType,
+    fioriToolsDirectory: '.fioritools',
+    DirName: { Webapp: 'webapp', Src: 'src' },
+    findProjectRoot: jest.fn(),
+    createApplicationAccess: jest.fn(),
+    getProject: jest.fn()
 }));
+
+const { listFioriApps } = await import('../../../src/tools');
 
 describe('listFioriApps', () => {
     const searchPath = ['testApplicationPath'];
-    let findFioriArtifactsSpy: jest.SpyInstance;
-    let getProjectTypeSpy: jest.SpyInstance;
 
     beforeEach(async () => {
-        findFioriArtifactsSpy = jest.spyOn(projectAccess, 'findFioriArtifacts');
-        getProjectTypeSpy = jest.spyOn(projectAccess, 'getProjectType').mockResolvedValue('EDMXBackend');
+        mockFindFioriArtifacts.mockReset();
+        mockGetProjectType.mockReset().mockResolvedValue('EDMXBackend');
     });
 
     test('call with valid app and empty manifest', async () => {
         const appRoot = join('root', 'dummyAppRoot');
-        findFioriArtifactsSpy.mockReturnValueOnce(
+        mockFindFioriArtifacts.mockReturnValueOnce(
             Promise.resolve({
                 applications: [
                     {
@@ -28,7 +34,7 @@ describe('listFioriApps', () => {
                         projectRoot: appRoot,
                         manifest: {}
                     }
-                ] as unknown as projectAccess.AllAppResults[]
+                ]
             })
         );
         const apps = await listFioriApps({
@@ -50,7 +56,7 @@ describe('listFioriApps', () => {
     test('call with multiple apps', async () => {
         const appRoot = 'dummyAppRoot';
         const appRoot2 = 'dummyAppRoot2';
-        findFioriArtifactsSpy.mockReturnValueOnce(
+        mockFindFioriArtifacts.mockReturnValueOnce(
             Promise.resolve({
                 applications: [
                     {
@@ -71,7 +77,7 @@ describe('listFioriApps', () => {
                             }
                         }
                     }
-                ] as unknown as projectAccess.AllAppResults[]
+                ]
             })
         );
         const apps = await listFioriApps({
@@ -99,7 +105,7 @@ describe('listFioriApps', () => {
 
     test('call with valid app and manifest', async () => {
         const appRoot = 'dummyAppRoot';
-        findFioriArtifactsSpy.mockReturnValueOnce(
+        mockFindFioriArtifacts.mockReturnValueOnce(
             Promise.resolve({
                 applications: [
                     {
@@ -118,7 +124,7 @@ describe('listFioriApps', () => {
                             }
                         }
                     }
-                ] as unknown as projectAccess.AllAppResults[]
+                ]
             })
         );
         const apps = await listFioriApps({
@@ -141,8 +147,8 @@ describe('listFioriApps', () => {
         const projectRoot = 'dummyRoot';
         const appRoot = 'dummyAppRoot';
         const appRoot2 = 'dummyAppRoot2';
-        getProjectTypeSpy.mockResolvedValue('CAPJava');
-        findFioriArtifactsSpy.mockReturnValueOnce(
+        mockGetProjectType.mockResolvedValue('CAPJava');
+        mockFindFioriArtifacts.mockReturnValueOnce(
             Promise.resolve({
                 applications: [
                     {
@@ -163,7 +169,7 @@ describe('listFioriApps', () => {
                             }
                         }
                     }
-                ] as unknown as projectAccess.AllAppResults[]
+                ]
             })
         );
         const apps = await listFioriApps({

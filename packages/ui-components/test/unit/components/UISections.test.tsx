@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import { UISections } from '../../../src/components/UISection/UISections';
 import { UISectionLayout } from '../../../src/components/UISection/UISection';
 import { UISplitterType } from '../../../src/components/UISection/UISplitter';

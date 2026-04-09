@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { IIconProps } from '@fluentui/react';
 import { Icon } from '@fluentui/react';
 import { UIIcon } from '../../../src/components/UIIcon';

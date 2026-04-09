@@ -23,9 +23,10 @@ describe('ui5Utils', () => {
         });
 
         test('sap.ui.getCore().getComponent (deprecated)', async () => {
-            jest.mock('sap/ui/core/Component', () => {
-                return {};
-            });
+            jest.unstable_mockModule('sap/ui/core/Component', () => ({
+                default: {},
+                __esModule: true
+            }));
 
             const { getComponent } = await import('../../../src/utils/core');
             const component = getComponent(testComponent.id);
@@ -38,9 +39,10 @@ describe('ui5Utils', () => {
             const Component = {
                 get: jest.fn().mockReturnValue(testComponent)
             };
-            jest.mock('sap/ui/core/Component', () => {
-                return Component;
-            });
+            jest.unstable_mockModule('sap/ui/core/Component', () => ({
+                default: Component,
+                __esModule: true
+            }));
             const { getComponent } = await import('../../../src/utils/core');
             const component = getComponent(testComponent.id);
 
@@ -54,9 +56,10 @@ describe('ui5Utils', () => {
                 get: jest.fn().mockReturnValue(testComponent),
                 getComponentById: jest.fn().mockReturnValue(testComponent)
             };
-            jest.mock('sap/ui/core/Component', () => {
-                return Component;
-            });
+            jest.unstable_mockModule('sap/ui/core/Component', () => ({
+                default: Component,
+                __esModule: true
+            }));
 
             const { getComponent } = await import('../../../src/utils/core');
             const component = getComponent(testComponent.id);

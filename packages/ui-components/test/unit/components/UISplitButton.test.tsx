@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzym from 'enzyme';
+import Enzym from 'enzyme';
 
 import { UISplitButton } from '../../../src/components/UIButton/index';
 import type { UISplitButtonProps } from '../../../src/components/UIButton/index';

@@ -1,5 +1,8 @@
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { AnnotationFile, Target } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, createTarget, Edm, Location, Range } from '@sap-ux/odata-annotation-core-types';

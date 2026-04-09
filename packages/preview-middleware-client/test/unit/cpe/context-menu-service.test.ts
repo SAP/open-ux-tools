@@ -1,59 +1,79 @@
-import { ContextMenuService } from '../../../src/cpe/context-menu-service';
-import { ActionHandler } from '../../../src/cpe/types';
-import * as cpeCpmmon from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
-import * as coreUtils from '../../../src/utils/core';
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import * as cpeUtils from '../../../src/cpe/utils';
-import * as versionUtils from '../../../src/utils/version';
-import * as applicationUtils from '../../../src/utils/application';
+import { ActionHandler } from '../../../src/cpe/types';
 
-jest.mock('../../../src/i18n', () => {
-    return {
-        ...jest.requireActual('../../../src/i18n'),
-        getTextBundle: async () => {
-            return {
-                hasText: jest.fn().mockReturnValueOnce(true),
-                getText: jest.fn().mockReturnValueOnce('This action is disabled because a dialog is already open')
-            };
-        }
-    };
-});
+// Pre-import modules so we can spread their real exports into mocks
+const _core = await import('open/ux/preview/client/utils/core');
+const _version = await import('open/ux/preview/client/utils/version');
+const _i18n = await import('open/ux/preview/client/i18n');
+const _common = await import('@sap-ux-private/control-property-editor-common');
+const { executeContextMenuAction, requestControlContextMenu } = _common;
+
+const getControlByIdMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/core', () => ({
+    ..._core,
+    getControlById: getControlByIdMock
+}));
+
+const getOverlayMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/utils', () => ({
+    getOverlay: getOverlayMock,
+    getRuntimeControl: jest.fn(),
+    isReuseComponent: jest.fn()
+}));
+
+const getUi5VersionMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/version', () => ({
+    ..._version,
+    getUi5Version: getUi5VersionMock
+}));
+
+const getApplicationTypeMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/application', () => ({
+    getApplicationType: getApplicationTypeMock
+}));
+
+jest.unstable_mockModule('open/ux/preview/client/i18n', () => ({
+    ..._i18n,
+    getTextBundle: jest.fn().mockResolvedValue({
+        hasText: jest.fn().mockReturnValueOnce(true),
+        getText: jest.fn().mockReturnValueOnce('This action is disabled because a dialog is already open')
+    })
+}));
+
+const reportTelemetryMock = jest.fn();
+jest.unstable_mockModule('@sap-ux-private/control-property-editor-common', () => ({
+    ..._common,
+    reportTelemetry: reportTelemetryMock
+}));
+
+const { ContextMenuService } = await import('open/ux/preview/client/cpe/context-menu-service');
+
 describe('context-menu-service', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock<void, [ActionHandler]>;
-    let getControlByIdSpy: jest.SpyInstance;
-    let getOverlaySpy: jest.SpyInstance;
-    let reportTelemetrySpy: jest.SpyInstance;
-    let getUi5VersionSpy: jest.SpyInstance;
-    let getApplicationTypeSpy: jest.SpyInstance;
 
     beforeEach(() => {
         sendActionMock = jest.fn();
         subscribeMock = jest.fn<void, [ActionHandler]>();
         fetchMock.mockRestore();
-        getControlByIdSpy = jest.spyOn(coreUtils, 'getControlById');
-        getOverlaySpy = jest.spyOn(cpeUtils, 'getOverlay');
-        reportTelemetrySpy = jest.spyOn(cpeCpmmon, 'reportTelemetry');
-        getUi5VersionSpy = jest.spyOn(versionUtils,'getUi5Version');
-        getApplicationTypeSpy = jest.spyOn(applicationUtils,'getApplicationType')
     });
     test('executeContextMenuAction - default plugin', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
-        getControlByIdSpy.mockReturnValue({ getMetadata: jest.fn().mockReturnValue({getName: jest.fn().mockReturnValue('sap.m.Button')})});
-        getUi5VersionSpy.mockReturnValue({major: 1, minor:127, patch:0})
-        getApplicationTypeSpy.mockReturnValue('fe-v4')
+        getControlByIdMock.mockReturnValue({ getMetadata: jest.fn().mockReturnValue({getName: jest.fn().mockReturnValue('sap.m.Button')})});
+        getUi5VersionMock.mockReturnValue({major: 1, minor:127, patch:0});
+        getApplicationTypeMock.mockReturnValue('fe-v4');
         const actionServiceExecuteSpy = jest.fn();
         rtaMock.getService.mockResolvedValue({ execute: actionServiceExecuteSpy });
         const contextMenuService = new ContextMenuService(rtaMock as unknown as RuntimeAuthoring);
         await contextMenuService.init(sendActionMock, subscribeMock);
 
         await subscribeMock.mock.calls[0][0](
-            cpeCpmmon.executeContextMenuAction({ actionName: 'TESTACTION01', controlId: 'test-control' })
+            executeContextMenuAction({ actionName: 'TESTACTION01', controlId: 'test-control' })
         );
-        expect(reportTelemetrySpy).toHaveBeenCalledWith({
+        expect(reportTelemetryMock).toHaveBeenCalledWith({
                                 category: 'OutlineContextMenu',
                                 actionName: 'TESTACTION01',
                                 controlName: 'sap.m.Button',
@@ -74,11 +94,11 @@ describe('context-menu-service', () => {
         ]);
 
         const contextMenuService = new ContextMenuService(rtaMock as unknown as RuntimeAuthoring);
-        getControlByIdSpy.mockReturnValue({ id: 'test-control-01' });
-        getOverlaySpy.mockReturnValue({ id: 'test-control-01' });
+        getControlByIdMock.mockReturnValue({ id: 'test-control-01' });
+        getOverlayMock.mockReturnValue({ id: 'test-control-01' });
         await contextMenuService.init(sendActionMock, subscribeMock);
 
-        await subscribeMock.mock.calls[0][0](cpeCpmmon.requestControlContextMenu.pending('test-control-01'));
+        await subscribeMock.mock.calls[0][0](requestControlContextMenu.pending('test-control-01'));
 
         expect(sendActionMock).toHaveBeenCalledWith({
             payload: {

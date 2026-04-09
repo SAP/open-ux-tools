@@ -1,37 +1,56 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import { readFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 
-import { removeAndCreateI18nEntries, SapShortTextType } from '@sap-ux/i18n';
-
-import { getVariant } from '../../../src/base/helper';
-import { getFlpI18nKeys, updateI18n } from '../../../src/writer/inbound-navigation';
-import {
-    type InternalInboundNavigation,
-    generateInboundConfig,
-    type DescriptorVariant,
-    type DescriptorVariantContent
-} from '../../../src';
-
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    writeJSON: jest.fn()
+// MOCKS - use jest.unstable_mockModule for ESM compatibility
+const mockGetVariant = jest.fn();
+const mockUpdateVariant = jest
+    .fn<(basePath: string, variant: unknown, fs: Editor) => Promise<void>>()
+    .mockImplementation(async (basePath: string, variant: unknown, fs: Editor) => {
+        fs.writeJSON(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant as object);
+    });
+jest.unstable_mockModule('../../../src/base/helper', () => ({
+    getVariant: mockGetVariant,
+    updateVariant: mockUpdateVariant,
+    flpConfigurationExists: jest.fn(),
+    isTypescriptSupported: jest.fn(),
+    readUi5Config: jest.fn(),
+    extractAdpConfig: jest.fn(),
+    extractCfBuildTask: jest.fn(),
+    getSpaceGuidFromUi5Yaml: jest.fn(),
+    readManifestFromBuildPath: jest.fn(),
+    loadAppVariant: jest.fn(),
+    getAdpConfig: jest.fn(),
+    getExistingAdpProjectType: jest.fn(),
+    getWebappFiles: jest.fn(),
+    filterAndMapInboundsToManifest: jest.fn(),
+    getBaseAppId: jest.fn()
 }));
 
-jest.mock('../../../src/base/helper', () => ({
-    ...jest.requireActual('../../../src/base/helper'),
-    getVariant: jest.fn()
+const mockRemoveAndCreateI18nEntries = jest.fn();
+const SapShortTextType = { TableTitle: 'XTIT' };
+jest.unstable_mockModule('@sap-ux/i18n', () => ({
+    removeAndCreateI18nEntries: mockRemoveAndCreateI18nEntries,
+    SapShortTextType,
+    createPropertiesI18nEntries: jest.fn(),
+    createCapI18nEntries: jest.fn(),
+    getCapI18nBundle: jest.fn(),
+    getI18nFolderNames: jest.fn(),
+    getPropertiesI18nBundle: jest.fn()
 }));
 
-jest.mock('@sap-ux/i18n', () => ({
-    removeAndCreateI18nEntries: jest.fn(),
-    SapShortTextType: {
-        TableTitle: 'XTIT'
-    }
-}));
-
-const getVariantMock = getVariant as jest.Mock;
-const removeAndCreateI18nEntriesMock = removeAndCreateI18nEntries as jest.Mock;
+const { getFlpI18nKeys, updateI18n, generateInboundConfig } = await import(
+    '../../../src/writer/inbound-navigation'
+);
+import type {
+    InternalInboundNavigation,
+    DescriptorVariant,
+    DescriptorVariantContent
+} from '../../../src/types';
 
 describe('FLP Configuration Functions', () => {
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');
@@ -55,16 +74,20 @@ describe('FLP Configuration Functions', () => {
     describe('generateInboundConfig', () => {
         beforeEach(() => {
             jest.resetAllMocks();
+            // Restore updateVariant implementation after resetAllMocks clears it
+            mockUpdateVariant.mockImplementation(async (basePath: string, variant: unknown, fs: Editor) => {
+                fs.writeJSON(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant as object);
+            });
         });
 
         it('should generate and write inbound configuration to the manifest', async () => {
             // Create a deep copy to avoid mutation affecting the test
             const originalVariant = JSON.parse(JSON.stringify(variant)) as DescriptorVariant;
-            getVariantMock.mockReturnValue(variant);
+            mockGetVariant.mockReturnValue(variant);
 
             await generateInboundConfig(basePath, config, mockFs as unknown as Editor);
 
-            expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
+            expect(mockGetVariant).toHaveBeenCalledWith(basePath, expect.any(Object));
 
             // Check that writeJsonSpy was called
             expect(writeJsonSpy).toHaveBeenCalledTimes(1);
@@ -109,7 +132,7 @@ describe('FLP Configuration Functions', () => {
                 ])
             );
 
-            expect(removeAndCreateI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockRemoveAndCreateI18nEntries).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'i18n', 'i18n.properties'),
                 expect.any(Array),
                 expect.any(Array),
@@ -119,7 +142,7 @@ describe('FLP Configuration Functions', () => {
         });
         it('should generate and write inbound configuration to the manifest - multiple inbounds', async () => {
             const originalVariant = JSON.parse(JSON.stringify(variant));
-            getVariantMock.mockReturnValue(variant);
+            mockGetVariant.mockReturnValue(variant);
             const configs = [
                 ...config,
                 {
@@ -133,7 +156,7 @@ describe('FLP Configuration Functions', () => {
             ] as InternalInboundNavigation[];
             await generateInboundConfig(basePath, configs, mockFs as unknown as Editor);
 
-            expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
+            expect(mockGetVariant).toHaveBeenCalledWith(basePath, expect.any(Object));
             expect(writeJsonSpy).toHaveBeenCalledTimes(1);
 
             const [writtenPath, writtenData] = writeJsonSpy.mock.calls[0];
@@ -178,7 +201,7 @@ describe('FLP Configuration Functions', () => {
                 ])
             );
 
-            expect(removeAndCreateI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockRemoveAndCreateI18nEntries).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'i18n', 'i18n.properties'),
                 expect.any(Array),
                 expect.any(Array),
@@ -189,11 +212,11 @@ describe('FLP Configuration Functions', () => {
 
         it('should generate and write inbound configuration to the manifest - without inbounds', async () => {
             const originalVariant = JSON.parse(JSON.stringify(variant));
-            getVariantMock.mockReturnValue(variant);
+            mockGetVariant.mockReturnValue(variant);
             const configs = [] as InternalInboundNavigation[];
             await generateInboundConfig(basePath, configs, mockFs as unknown as Editor);
 
-            expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
+            expect(mockGetVariant).toHaveBeenCalledWith(basePath, expect.any(Object));
             expect(writeJsonSpy).toHaveBeenCalledTimes(1);
             const [writtenPath, writtenData] = writeJsonSpy.mock.calls[0];
             expect(writtenPath).toBe(join(basePath, 'webapp', 'manifest.appdescr_variant'));
@@ -211,7 +234,7 @@ describe('FLP Configuration Functions', () => {
             );
             expect(hasInboundChanges).toBe(false);
 
-            expect(removeAndCreateI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockRemoveAndCreateI18nEntries).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'i18n', 'i18n.properties'),
                 expect.any(Array),
                 expect.any(Array),
@@ -221,13 +244,13 @@ describe('FLP Configuration Functions', () => {
         });
 
         it('should generate and write inbound configuration to the manifest without a mem-fs instance', async () => {
-            getVariantMock.mockReturnValue(variant);
+            mockGetVariant.mockReturnValue(variant);
 
             const fs = await generateInboundConfig(basePath, config);
 
             expect(fs).toBeDefined();
-            expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
-            expect(removeAndCreateI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockGetVariant).toHaveBeenCalledWith(basePath, expect.any(Object));
+            expect(mockRemoveAndCreateI18nEntries).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'i18n', 'i18n.properties'),
                 expect.any(Array),
                 expect.any(Array),
@@ -239,7 +262,7 @@ describe('FLP Configuration Functions', () => {
         it('should generate a new inbound ID if not provided', async () => {
             const newConfig = [{ ...config, inboundId: undefined }] as unknown as InternalInboundNavigation[];
 
-            getVariantMock.mockReturnValue(variant);
+            mockGetVariant.mockReturnValue(variant);
 
             await generateInboundConfig(basePath, newConfig, mockFs as unknown as Editor);
 
@@ -298,7 +321,7 @@ describe('FLP Configuration Functions', () => {
 
             await updateI18n(basePath, appId, config, mockFs as unknown as Editor);
 
-            expect(removeAndCreateI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockRemoveAndCreateI18nEntries).toHaveBeenCalledWith(
                 i18nPath,
                 expectedEntries,
                 keysToRemove,

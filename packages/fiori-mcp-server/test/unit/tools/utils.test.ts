@@ -1,35 +1,36 @@
-import * as openUxProjectAccessDependency from '@sap-ux/project-access';
-import {
-    convertToSchema,
-    prepatePropertySchema,
-    resolveApplication,
-    resolveRefs,
-    validateWithSchema
-} from '../../../src/utils';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import listReportSchema from '../page-editor-api/test-data/schema/ListReport.json';
 import * as zod from 'zod';
 import type { JSONSchema4 } from 'json-schema';
 
-jest.mock('@sap-ux/project-access', () => ({
-    __esModule: true,
+const mockFindProjectRoot = jest.fn();
+const mockCreateApplicationAccess = jest.fn();
+const mockGetProject = jest.fn();
 
-    ...(jest.requireActual('@sap-ux/project-access') as object)
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    findProjectRoot: mockFindProjectRoot,
+    createApplicationAccess: mockCreateApplicationAccess,
+    getProject: mockGetProject,
+    fioriToolsDirectory: '.fioritools',
+    DirName: { Webapp: 'webapp', Src: 'src' }
 }));
+
+const {
+    convertToSchema,
+    prepatePropertySchema,
+    resolveApplication,
+    resolveRefs,
+    validateWithSchema
+} = await import('../../../src/utils');
 
 describe('resolveApplication', () => {
     const appPath = join('folder', 'dummy', 'app');
-    const findProjectRootSpy: jest.SpyInstance = jest.spyOn(openUxProjectAccessDependency, 'findProjectRoot');
-    const createApplicationAccessSpy: jest.SpyInstance = jest.spyOn(
-        openUxProjectAccessDependency,
-        'createApplicationAccess'
-    );
-    const getProjectSpy: jest.SpyInstance = jest.spyOn(openUxProjectAccessDependency, 'getProject');
-    const mockCreateApplicationAccess = (appIds: string[] = [''], appId = '') => {
-        createApplicationAccessSpy.mockImplementation((root: string) => {
+    const mockCreateApplicationAccessImpl = (appIds: string[] = [''], appId = '') => {
+        mockCreateApplicationAccess.mockImplementation((root: string) => {
             const apps: { [key: string]: {} } = {};
-            for (const appId of appIds) {
-                apps[appId] = {};
+            for (const id of appIds) {
+                apps[id] = {};
             }
             if (appId) {
                 root = root.slice(0, root.length - appId.length - 1);
@@ -42,15 +43,15 @@ describe('resolveApplication', () => {
                 }
             };
         });
-        getProjectSpy.mockResolvedValue({
+        mockGetProject.mockResolvedValue({
             root: appPath,
             apps: {},
             projectType: 'CAPNodejs'
         });
     };
     beforeEach(async () => {
-        findProjectRootSpy.mockImplementation(async (path: string): Promise<string> => path);
-        mockCreateApplicationAccess([''], '');
+        mockFindProjectRoot.mockImplementation(async (path: string): Promise<string> => path);
+        mockCreateApplicationAccessImpl([''], '');
     });
 
     test('Root and app paths are matching', async () => {
@@ -60,25 +61,25 @@ describe('resolveApplication', () => {
     });
 
     test('Root and app paths are different', async () => {
-        mockCreateApplicationAccess([join('dummy', 'app'), join('dummy', 'app2')], join('dummy', 'app'));
-        findProjectRootSpy.mockResolvedValue('folder');
+        mockCreateApplicationAccessImpl([join('dummy', 'app'), join('dummy', 'app2')], join('dummy', 'app'));
+        mockFindProjectRoot.mockResolvedValue('folder');
         const application = await resolveApplication(appPath);
         expect(application?.appId).toEqual(join('dummy', 'app'));
         expect(application?.root).toEqual('folder');
     });
 
     test('No any app', async () => {
-        mockCreateApplicationAccess([]);
+        mockCreateApplicationAccessImpl([]);
         const application = await resolveApplication(appPath);
         expect(application?.appId).toEqual('');
         expect(application?.root).toEqual(appPath);
     });
 
     test('No app found, but root exists', async () => {
-        createApplicationAccessSpy.mockImplementation(() => {
+        mockCreateApplicationAccess.mockImplementation(() => {
             throw new Error('Dummy');
         });
-        findProjectRootSpy.mockResolvedValue(appPath);
+        mockFindProjectRoot.mockResolvedValue(appPath);
 
         const application = await resolveApplication(appPath);
         expect(application?.root).toEqual(appPath);
@@ -86,7 +87,7 @@ describe('resolveApplication', () => {
     });
 
     test('Error thrown while searching application', async () => {
-        createApplicationAccessSpy.mockImplementation(() => {
+        mockCreateApplicationAccess.mockImplementation(() => {
             throw new Error('Dummy');
         });
         const application = await resolveApplication(appPath);
@@ -95,10 +96,10 @@ describe('resolveApplication', () => {
     });
 
     test('Error thrown while getting app and project', async () => {
-        getProjectSpy.mockImplementation(() => {
+        mockGetProject.mockImplementation(() => {
             throw new Error('Dummy');
         });
-        createApplicationAccessSpy.mockImplementation(() => {
+        mockCreateApplicationAccess.mockImplementation(() => {
             throw new Error('Dummy');
         });
         const application = await resolveApplication(appPath);

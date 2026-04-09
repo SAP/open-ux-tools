@@ -1,4 +1,5 @@
-import { join, sep } from 'node:path';
+import { join, sep, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -7,6 +8,8 @@ import type { Logger } from '@sap-ux/logger';
 import { getFilePaths, FileName } from '@sap-ux/project-access';
 import { t } from './i18n';
 import { compareUI5VersionGte, ui5LtsVersion_1_71, ui5LtsVersion_1_120 } from '@sap-ux/ui5-application-writer';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Updates tsconfig.json to include paths for unit and integration tests.

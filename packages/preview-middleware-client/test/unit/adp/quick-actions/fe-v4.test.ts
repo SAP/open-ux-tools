@@ -4,20 +4,10 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
 import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
 import type AppComponentV4 from 'sap/fe/core/AppComponent';
-import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
-import type { ChangeService } from '../../../../src/cpe/changes/service';
-const mockChangeService = {
-    syncOutlineChanges: jest.fn()
-} as unknown as ChangeService;
 
 import type { QuickAction } from '@sap-ux-private/control-property-editor-common';
 import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 
-import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
-import { OutlineService } from '../../../../src/cpe/outline/service';
-import { FeatureService } from '../../../../src/cpe/feature-service';
-
-import FEV4QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe-v4/registry';
 import { sapCoreMock, fetchMock, sapMock } from 'mock/window';
 import NavContainer from 'mock/sap/m/NavContainer';
 import XMLView from 'mock/sap/ui/core/mvc/XMLView';
@@ -33,7 +23,6 @@ import ComponentMock from 'mock/sap/ui/core/Component';
 import type UIComponent from 'sap/ui/core/UIComponent';
 import AppComponentMock from 'mock/sap/fe/core/AppComponent';
 import FlexRuntimeInfoAPI from 'mock/sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
-import { DialogFactory, DialogNames } from '../../../../src/adp/dialog-factory';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
@@ -41,17 +30,79 @@ import {
     MDC_TABLE_TYPE,
     TREE_TABLE_TYPE,
     M_TABLE_TYPE
-} from '../../../../src/adp/quick-actions/control-types';
-import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
+} from 'open/ux/preview/client/adp/quick-actions/control-types';
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import * as versionUtils from '../../../../src/utils/version';
-import * as utils from '../../../../src/utils/fe-v4';
-import * as adpUtils from '../../../../src/adp/utils';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
-import * as appUtils from '../../../../src/utils/application';
-import * as apiHandler from '../../../../src/adp/api-handler';
-import * as fev4QAUtils from '../../../../src/adp/quick-actions/fe-v4/utils';
 import * as MacroTableHelper from 'mock/sap/fe/macros/table/designtime/Table.designtime.helper';
+
+// Pre-import for spread
+const _cpeCommon = await import('@sap-ux-private/control-property-editor-common');
+const _QCUtils = await import('open/ux/preview/client/cpe/quick-actions/utils');
+const _versionUtils = await import('open/ux/preview/client/utils/version');
+const _utils = await import('open/ux/preview/client/utils/fe-v4');
+const _adpUtils = await import('open/ux/preview/client/adp/utils');
+const _appUtils = await import('open/ux/preview/client/utils/application');
+const _apiHandler = await import('open/ux/preview/client/adp/api-handler');
+const _fev4QAUtils = await import('open/ux/preview/client/adp/quick-actions/fe-v4/utils');
+
+const reportTelemetryMock = jest.fn();
+jest.unstable_mockModule('@sap-ux-private/control-property-editor-common', () => ({
+    ..._cpeCommon,
+    reportTelemetry: reportTelemetryMock
+}));
+
+const getParentContainerMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/quick-actions/utils', () => ({
+    ..._QCUtils,
+    getParentContainer: getParentContainerMock
+}));
+
+const getUi5VersionMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/version', () => ({
+    ..._versionUtils,
+    getUi5Version: getUi5VersionMock
+}));
+
+const getV4AppComponentMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/fe-v4', () => ({
+    ..._utils,
+    getV4AppComponent: getV4AppComponentMock
+}));
+
+const checkForExistingChangeMock = jest.fn().mockReturnValue(false);
+jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
+    ..._adpUtils,
+    checkForExistingChange: checkForExistingChangeMock
+}));
+
+const getApplicationTypeMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/application', () => ({
+    ..._appUtils,
+    getApplicationType: getApplicationTypeMock
+}));
+
+const getExistingControllerMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/api-handler', () => ({
+    ..._apiHandler,
+    getExistingController: getExistingControllerMock
+}));
+
+const getPropertyPathMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/quick-actions/fe-v4/utils', () => ({
+    ..._fev4QAUtils,
+    getPropertyPath: getPropertyPathMock
+}));
+
+const { QuickActionService } = await import('open/ux/preview/client/cpe/quick-actions/quick-action-service');
+const { OutlineService } = await import('open/ux/preview/client/cpe/outline/service');
+const { FeatureService } = await import('open/ux/preview/client/cpe/feature-service');
+const { default: FEV4QuickActionRegistry } = await import('open/ux/preview/client/adp/quick-actions/fe-v4/registry');
+const { DialogFactory, DialogNames } = await import('open/ux/preview/client/adp/dialog-factory');
+
+type ChangeService = import('open/ux/preview/client/cpe/changes/service').ChangeService;
+const mockChangeService = {
+    syncOutlineChanges: jest.fn()
+} as unknown as ChangeService;
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -234,7 +285,7 @@ describe('FE V4 quick actions', () => {
                         } as any
                     ]
                 });
-                jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                getExistingControllerMock.mockResolvedValue({
                     controllerPathFromRoot: 'adp.v4/test.js',
                     controllerExists: true,
                     isRunningInBAS: false,
@@ -482,14 +533,14 @@ describe('FE V4 quick actions', () => {
                         } as any
                     ]
                 });
-                jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                getExistingControllerMock.mockResolvedValue({
                     controllerPathFromRoot: 'adp/v4/test.js',
                     controllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
                 });
-                jest.spyOn(fev4QAUtils, 'getPropertyPath').mockReturnValue(
+                getPropertyPathMock.mockReturnValue(
                     '@com.sap.vocabularies.UI.v1.LineItem/actions/'
                 );
             }
@@ -927,7 +978,7 @@ describe('FE V4 quick actions', () => {
             beforeEach(() => {
                 jest.clearAllMocks();
 
-                reportTelemetrySpy = jest.spyOn(cpeCommon, 'reportTelemetry');
+                reportTelemetrySpy = reportTelemetryMock;
                 jest.spyOn(appUtils, 'getApplicationType').mockReturnValue('fe-v4');
                 jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue({
                     major: 1,
@@ -1499,14 +1550,14 @@ describe('FE V4 quick actions', () => {
                         } as any
                     ]
                 });
-                jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                getExistingControllerMock.mockResolvedValue({
                     controllerPathFromRoot: 'adp/v4/test.js',
                     controllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
                 });
-                jest.spyOn(fev4QAUtils, 'getPropertyPath').mockReturnValue(
+                getPropertyPathMock.mockReturnValue(
                     '@com.sap.vocabularies.UI.v1.LineItem/columns/'
                 );
             }
@@ -2211,14 +2262,14 @@ describe('FE V4 quick actions', () => {
                         } as any
                     ]
                 });
-                jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                getExistingControllerMock.mockResolvedValue({
                     controllerPathFromRoot: 'adp/v4/test.js',
                     controllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
                 });
-                jest.spyOn(fev4QAUtils, 'getPropertyPath').mockReturnValue(
+                getPropertyPathMock.mockReturnValue(
                     '@com.sap.vocabularies.UI.v1.LineItem/columns/'
                 );
             }
@@ -3988,7 +4039,7 @@ describe('FE V4 quick actions', () => {
                             } as any
                         ]
                     });
-                    jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                    getExistingControllerMock.mockResolvedValue({
                         controllerPathFromRoot: 'adp.v4/test.js',
                         controllerExists: true,
                         isRunningInBAS: false,

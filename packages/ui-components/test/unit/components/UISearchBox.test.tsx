@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import { UISearchBox } from '../../../src/components/UISearchBox/UISearchBox';
 import type { ISearchBoxProps } from '@fluentui/react';
 

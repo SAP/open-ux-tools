@@ -1,26 +1,23 @@
 export default {
-    preset: 'ts-jest/presets/default-esm',
     extensionsToTreatAsEsm: ['.ts'],
     testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
     testEnvironment: 'node',
-    globals: {
-        'ts-jest': {
-            useESM: true
-        }
-    },
     setupFiles: ['<rootDir>/../../jest.setup.mjs'],
     moduleNameMapper: {
-        '^(\\.{1,2}/.*)\\.js$': '$1'
+        '^(\\.{1,2}/.*)\\.js$': '$1',
+        '^@sap-devx/yeoman-ui-types$': '<rootDir>/node_modules/@sap-devx/yeoman-ui-types/dist/cjs/src/index.js'
     },
+    moduleDirectories: ['node_modules', '<rootDir>/node_modules'],
     transform: {
-        '^.+\\.ts$': [
+        '^.+\\.[jt]s$': [
             'ts-jest',
             {
                 useESM: true,
                 tsconfig: {
                     module: 'NodeNext',
                     moduleResolution: 'NodeNext',
-                    isolatedModules: true
+                    isolatedModules: true,
+                    allowJs: true
                 },
                 diagnostics: {
                     ignoreCodes: [151001]
@@ -28,6 +25,11 @@ export default {
             }
         ]
     },
+    // Allow jest.mock() to work with workspace packages in ESM mode
+    // Also transform @sap/ux-cds-compiler-facade since it imports ESM workspace packages
+    transformIgnorePatterns: [
+        'node_modules/(?!(@sap-ux|@sap-ux-private|@sap/ux-cds-compiler-facade)/)'
+    ],
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
     coverageReporters: ['text', ['lcov', { projectRoot: '../../' }]],

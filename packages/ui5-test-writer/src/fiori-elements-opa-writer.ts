@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -9,6 +10,8 @@ import { t } from './i18n';
 import { FileName, DirName } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { getAppFeatures } from './utils/modelUtils';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Reads the manifest for an app.

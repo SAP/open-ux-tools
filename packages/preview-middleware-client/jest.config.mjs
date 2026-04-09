@@ -1,7 +1,15 @@
 import path from 'path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import baseConfig from '../../jest.base.mjs';
+
+const require = createRequire(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const config = { ...baseConfig };
 config.testEnvironment = '<rootDir>/test/jest-environment-jsdom-writablelocation.js';
+// Allow transforming workspace ESM packages in node_modules
+config.transformIgnorePatterns = ['node_modules/(?!(@sap-ux-private|@sap-ux)/)'];
 // Resolve vscode-languageserver-types CJS/UMD from its sibling package (avoids ESM exports condition in jsdom)
 const vscodeTextdocDir = path.dirname(path.dirname(require.resolve('vscode-languageserver-textdocument')));
 config.moduleNameMapper = {
@@ -17,10 +25,11 @@ config.moduleNameMapper = {
     '^open/ux/preview/client/(.+)$': '<rootDir>/src/$1.ts'
 };
 config.transform = {
-    '^.+\\.ts$': [
+    '^.+\\.[jt]s$': [
         'ts-jest',
         {
-            tsconfig: 'tsconfig.eslint.json'
+            useESM: true,
+            tsconfig: path.join(__dirname, 'tsconfig.eslint.json')
         }
     ]
 };

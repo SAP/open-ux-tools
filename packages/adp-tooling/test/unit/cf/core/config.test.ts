@@ -1,21 +1,33 @@
-import { homedir } from 'node:os';
-import { readFileSync } from 'node:fs';
-
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
-
 import type { CfConfig, Config } from '../../../../src/types';
-import { loadCfConfig } from '../../../../src/cf/core/config';
 
-jest.mock('os', () => ({
-    homedir: jest.fn()
+// MOCKS - use jest.unstable_mockModule for ESM compatibility
+const mockHomedir = jest.fn();
+jest.unstable_mockModule('node:os', () => ({
+    homedir: mockHomedir,
+    default: { homedir: mockHomedir }
 }));
 
-jest.mock('fs', () => ({
-    readFileSync: jest.fn()
+const mockReadFileSync = jest.fn();
+jest.unstable_mockModule('node:fs', () => ({
+    readFileSync: mockReadFileSync,
+    existsSync: jest.fn(),
+    writeFileSync: jest.fn(),
+    mkdirSync: jest.fn(),
+    readdirSync: jest.fn(),
+    statSync: jest.fn(),
+    default: {
+        readFileSync: mockReadFileSync,
+        existsSync: jest.fn(),
+        writeFileSync: jest.fn(),
+        mkdirSync: jest.fn(),
+        readdirSync: jest.fn(),
+        statSync: jest.fn()
+    }
 }));
 
-const homedirMock = homedir as jest.Mock;
-const readFileSyncMock = readFileSync as jest.Mock;
+const { loadCfConfig } = await import('../../../../src/cf/core/config');
 
 const defaultHome = '/home/user';
 
@@ -68,7 +80,7 @@ describe('CF Core Config', () => {
             const cfHome = '/custom/cf/home';
             process.env.CF_HOME = cfHome;
 
-            readFileSyncMock.mockReturnValue(JSON.stringify(mockConfig));
+            mockReadFileSync.mockReturnValue(JSON.stringify(mockConfig));
 
             const result = loadCfConfig(mockLogger);
 
@@ -76,12 +88,12 @@ describe('CF Core Config', () => {
         });
 
         test('should load CF config from default home directory when CF_HOME is not set', () => {
-            homedirMock.mockReturnValue(defaultHome);
-            readFileSyncMock.mockReturnValue(JSON.stringify(mockConfig));
+            mockHomedir.mockReturnValue(defaultHome);
+            mockReadFileSync.mockReturnValue(JSON.stringify(mockConfig));
 
             const result = loadCfConfig(mockLogger);
 
-            expect(homedirMock).toHaveBeenCalled();
+            expect(mockHomedir).toHaveBeenCalled();
             expect(result).toEqual(expectedCfConfig);
         });
 
@@ -93,7 +105,7 @@ describe('CF Core Config', () => {
             process.env.HOMEPATH = homePath;
             Object.defineProperty(process, 'platform', { value: 'win32' });
 
-            homedirMock.mockReturnValue('/default/home');
+            mockHomedir.mockReturnValue('/default/home');
 
             const result = loadCfConfig(mockLogger);
 
@@ -105,20 +117,20 @@ describe('CF Core Config', () => {
             process.env.HOMEPATH = '\\Users\\TestUser';
             Object.defineProperty(process, 'platform', { value: 'linux' });
 
-            homedirMock.mockReturnValue(defaultHome);
-            readFileSyncMock.mockReturnValue(JSON.stringify(mockConfig));
+            mockHomedir.mockReturnValue(defaultHome);
+            mockReadFileSync.mockReturnValue(JSON.stringify(mockConfig));
 
             const result = loadCfConfig(mockLogger);
 
-            expect(homedirMock).toHaveBeenCalled();
+            expect(mockHomedir).toHaveBeenCalled();
             expect(result).toEqual(expectedCfConfig);
         });
 
         test('should handle JSON parse errors gracefully', () => {
             const invalidJson = 'invalid json';
 
-            homedirMock.mockReturnValue('/home/user');
-            readFileSyncMock.mockReturnValue(invalidJson);
+            mockHomedir.mockReturnValue('/home/user');
+            mockReadFileSync.mockReturnValue(invalidJson);
 
             const result = loadCfConfig(mockLogger);
 
@@ -127,8 +139,8 @@ describe('CF Core Config', () => {
         });
 
         test('should handle empty config file', () => {
-            homedirMock.mockReturnValue('/home/user');
-            readFileSyncMock.mockReturnValue('{}');
+            mockHomedir.mockReturnValue('/home/user');
+            mockReadFileSync.mockReturnValue('{}');
 
             const result = loadCfConfig(mockLogger);
 
@@ -141,8 +153,8 @@ describe('CF Core Config', () => {
                 Target: 'api.cf.example.com'
             };
 
-            homedirMock.mockReturnValue('/home/user');
-            readFileSyncMock.mockReturnValue(JSON.stringify(configWithTarget));
+            mockHomedir.mockReturnValue('/home/user');
+            mockReadFileSync.mockReturnValue(JSON.stringify(configWithTarget));
 
             const result = loadCfConfig(mockLogger);
 
@@ -155,8 +167,8 @@ describe('CF Core Config', () => {
                 AccessToken: 'bearer my-secret-token'
             };
 
-            homedirMock.mockReturnValue('/home/user');
-            readFileSyncMock.mockReturnValue(JSON.stringify(configWithToken));
+            mockHomedir.mockReturnValue('/home/user');
+            mockReadFileSync.mockReturnValue(JSON.stringify(configWithToken));
 
             const result = loadCfConfig(mockLogger);
 

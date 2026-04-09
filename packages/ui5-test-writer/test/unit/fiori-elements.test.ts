@@ -1,21 +1,26 @@
-import { generateOPAFiles, generatePageObjectFile } from '../../src/fiori-elements-opa-writer';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import fileSystem, { read } from 'node:fs';
+import fileSystem from 'node:fs';
 import type { Logger } from '@sap-ux/logger/src/types';
 import * as appModels from '../test-input/constants';
+import { fileURLToPath } from 'node:url';
+const __dirname = join(fileURLToPath(import.meta.url), '..');
 
 const readAppMock = jest.fn();
-jest.mock('@sap-ux/project-access', () => ({
-    ...(jest.requireActual('@sap-ux/project-access') as any),
+const realProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
     createApplicationAccess: jest.fn().mockResolvedValue({
         getSpecification: jest.fn().mockResolvedValue({
             readApp: () => readAppMock()
         })
     })
 }));
+
+const { generateOPAFiles, generatePageObjectFile } = await import('../../src/fiori-elements-opa-writer.js');
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;

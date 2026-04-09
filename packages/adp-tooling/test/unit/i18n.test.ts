@@ -1,15 +1,19 @@
-import { initI18n, t, i18n } from '../../src/i18n';
+import { jest } from '@jest/globals';
 
-jest.mock('i18next', () => {
-    const instance = {
-        init: jest.fn(),
-        t: jest.fn(),
-        addResourceBundle: jest.fn()
-    };
-    return {
-        createInstance: () => instance
-    };
-});
+// MOCKS - use jest.unstable_mockModule for ESM compatibility
+const mockInstance = {
+    init: jest.fn(),
+    t: jest.fn(),
+    addResourceBundle: jest.fn()
+};
+jest.unstable_mockModule('i18next', () => ({
+    default: {
+        createInstance: () => mockInstance
+    },
+    createInstance: () => mockInstance
+}));
+
+const { initI18n, t, i18n } = await import('../../src/i18n');
 
 describe('i18n', () => {
     test('initI18n', async () => {

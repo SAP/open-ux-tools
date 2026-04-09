@@ -1,9 +1,4 @@
-import * as common from '@sap-ux-private/control-property-editor-common';
-import init from '../../../src/adp/init';
 import { fetchMock } from 'mock/window';
-import * as ui5Utils from '../../../src/cpe/ui5-utils';
-import { OutlineService } from '../../../src/cpe/outline/service';
-import { CommunicationService } from '../../../src/cpe/communication-service';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
@@ -11,17 +6,38 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import Element from 'mock/sap/ui/core/Element';
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
-import { resetSyncViews } from '../../../src/adp/sync-views-utils';
+
+// Pre-import for spread
+const _common = await import('@sap-ux-private/control-property-editor-common');
+const _ui5Utils = await import('open/ux/preview/client/cpe/ui5-utils');
+
+const enableTelemetryMock = jest.fn();
+jest.unstable_mockModule('@sap-ux-private/control-property-editor-common', () => ({
+    ..._common,
+    enableTelemetry: enableTelemetryMock
+}));
+
+const getIconsMock = jest.fn().mockReturnValue([]);
+jest.unstable_mockModule('open/ux/preview/client/cpe/ui5-utils', () => ({
+    ..._ui5Utils,
+    getIcons: getIconsMock
+}));
 
 const addFragmentServiceMock = jest.fn();
-jest.mock('open/ux/preview/client/adp/add-fragment', () => ({
+jest.unstable_mockModule('open/ux/preview/client/adp/add-fragment', () => ({
     initAddXMLPlugin: addFragmentServiceMock
 }));
 
 const extendControllerServiceMock = jest.fn();
-jest.mock('open/ux/preview/client/adp/extend-controller', () => ({
+jest.unstable_mockModule('open/ux/preview/client/adp/extend-controller', () => ({
     initExtendControllerPlugin: extendControllerServiceMock
 }));
+
+const common = await import('@sap-ux-private/control-property-editor-common');
+const { default: init } = await import('open/ux/preview/client/adp/init');
+const { OutlineService } = await import('open/ux/preview/client/cpe/outline/service');
+const { CommunicationService } = await import('open/ux/preview/client/cpe/communication-service');
+const { resetSyncViews } = await import('open/ux/preview/client/adp/sync-views-utils');
 
 describe('adp', () => {
     const addMenuItemSpy = jest.fn();
@@ -56,10 +72,6 @@ describe('adp', () => {
         initOutlineSpy = jest.spyOn(OutlineService.prototype, 'init').mockImplementation(() => {
             return Promise.resolve();
         });
-
-        jest.spyOn(ui5Utils, 'getIcons').mockImplementation(() => {
-            return [];
-        });
     });
 
     beforeEach(() => {
@@ -78,7 +90,6 @@ describe('adp', () => {
 
     test('init', async () => {
         const spyPostMessage = jest.spyOn(CommunicationService, 'subscribe');
-        const enableTelemetry = jest.spyOn(common, 'enableTelemetry');
         VersionInfo.load.mockResolvedValue({
             name: 'SAPUI5 Distribution',
             libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
@@ -89,7 +100,7 @@ describe('adp', () => {
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
         expect(addMenuItemSpy).toHaveBeenCalledTimes(2);
         expect(setPluginsSpy).toHaveBeenCalledTimes(2);
-        expect(enableTelemetry).toHaveBeenCalledTimes(2);
+        expect(enableTelemetryMock).toHaveBeenCalledTimes(2);
 
         const callBackFn = spyPostMessage.mock.calls[0][0];
 

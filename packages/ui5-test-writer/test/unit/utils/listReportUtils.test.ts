@@ -14,8 +14,11 @@ import {
 } from '../../../src/utils/listReportUtils';
 import type { ButtonState } from '../../../src/types';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test buildButtonState()', () => {
     test('should return visible false when buttonState is undefined', () => {

@@ -1,6 +1,8 @@
-import { pathToFileURL } from 'node:url';
-import { join } from 'node:path';
+import { pathToFileURL, fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { promises } from 'node:fs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { getProject } from '@sap-ux/project-access';
 

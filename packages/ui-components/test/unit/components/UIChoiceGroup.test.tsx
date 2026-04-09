@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { IStyleFunction, IChoiceGroupStyleProps, IChoiceGroupStyles } from '@fluentui/react';
 import { ChoiceGroup } from '@fluentui/react';
 import type { ChoiceGroupProps } from '../../../src/components/UIChoiceGroup/UIChoiceGroup';

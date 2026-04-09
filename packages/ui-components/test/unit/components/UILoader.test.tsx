@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { UILoaderProps } from '../../../src/components/UILoader/UILoader';
 import { UILoader } from '../../../src/components/UILoader/UILoader';
 import { Overlay } from '@fluentui/react';

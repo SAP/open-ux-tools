@@ -1,22 +1,39 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { existsSync, readFileSync } from 'node:fs';
-import { readUi5Yaml } from '@sap-ux/project-access';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-import { isCFEnvironment } from '../../../src/base/cf';
+// MOCKS - use jest.unstable_mockModule for ESM compatibility
+const mockExistsSync = jest.fn();
+const mockReadFileSync = jest.fn();
+jest.unstable_mockModule('node:fs', () => ({
+    existsSync: mockExistsSync,
+    readFileSync: mockReadFileSync,
+    writeFileSync: jest.fn(),
+    mkdirSync: jest.fn(),
+    readdirSync: jest.fn(),
+    statSync: jest.fn(),
+    default: {
+        existsSync: mockExistsSync,
+        readFileSync: mockReadFileSync,
+        writeFileSync: jest.fn(),
+        mkdirSync: jest.fn(),
+        readdirSync: jest.fn(),
+        statSync: jest.fn()
+    }
+}));
 
-jest.mock('fs', () => {
-    return {
-        ...jest.requireActual('fs'),
-        existsSync: jest.fn(),
-        readFileSync: jest.fn()
-    };
-});
+const mockReadUi5Yaml = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    readUi5Yaml: mockReadUi5Yaml,
+    DirName: { Changes: 'changes', Webapp: 'webapp' },
+    getWebappPath: jest.fn(),
+    FileName: { ManifestAppDescrVar: 'manifest.appdescr_variant', Ui5Yaml: 'ui5.yaml' },
+    filterDataSourcesByType: jest.fn()
+}));
 
-jest.mock('@sap-ux/project-access');
-
-const existsSyncMock = existsSync as jest.Mock;
-const readFileSyncMock = readFileSync as jest.Mock;
-const readUi5YamlMock = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
+const { isCFEnvironment } = await import('../../../src/base/cf');
 
 describe('isCFEnvironment', () => {
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');
@@ -26,19 +43,19 @@ describe('isCFEnvironment', () => {
     });
 
     test('should return true when config.json exists and environment is CF', async () => {
-        existsSyncMock.mockReturnValue(true);
-        readFileSyncMock.mockReturnValue('{ "environment": "CF" }');
+        mockExistsSync.mockReturnValue(true);
+        mockReadFileSync.mockReturnValue('{ "environment": "CF" }');
 
         const result = await isCFEnvironment(basePath);
 
         expect(result).toBe(true);
-        expect(existsSyncMock).toHaveBeenCalledWith(join(basePath, '.adp', 'config.json'));
-        expect(readFileSyncMock).toHaveBeenCalledWith(join(basePath, '.adp', 'config.json'), 'utf-8');
+        expect(mockExistsSync).toHaveBeenCalledWith(join(basePath, '.adp', 'config.json'));
+        expect(mockReadFileSync).toHaveBeenCalledWith(join(basePath, '.adp', 'config.json'), 'utf-8');
     });
 
     test('should return false when config.json exists but environment is not CF', async () => {
-        existsSyncMock.mockReturnValue(true);
-        readFileSyncMock.mockReturnValue('{ "environment": "TST" }');
+        mockExistsSync.mockReturnValue(true);
+        mockReadFileSync.mockReturnValue('{ "environment": "TST" }');
 
         const result = await isCFEnvironment(basePath);
 
@@ -46,8 +63,8 @@ describe('isCFEnvironment', () => {
     });
 
     test('should return true when config.json does not exist but ui5.yaml has fiori-tools-preview with cfBuildPath dist', async () => {
-        existsSyncMock.mockReturnValue(false);
-        readUi5YamlMock.mockResolvedValue({
+        mockExistsSync.mockReturnValue(false);
+        mockReadUi5Yaml.mockResolvedValue({
             findCustomMiddleware: jest.fn().mockReturnValueOnce({
                 configuration: {
                     adp: {
@@ -60,12 +77,12 @@ describe('isCFEnvironment', () => {
         const result = await isCFEnvironment(basePath);
 
         expect(result).toBe(true);
-        expect(readUi5YamlMock).toHaveBeenCalledWith(basePath, 'ui5.yaml');
+        expect(mockReadUi5Yaml).toHaveBeenCalledWith(basePath, 'ui5.yaml');
     });
 
     test('should return true when config.json does not exist but ui5.yaml has preview-middleware with cfBuildPath dist', async () => {
-        existsSyncMock.mockReturnValue(false);
-        readUi5YamlMock.mockResolvedValue({
+        mockExistsSync.mockReturnValue(false);
+        mockReadUi5Yaml.mockResolvedValue({
             findCustomMiddleware: jest
                 .fn()
                 .mockReturnValueOnce(undefined)
@@ -84,8 +101,8 @@ describe('isCFEnvironment', () => {
     });
 
     test('should return false when config.json does not exist and ui5.yaml has cfBuildPath but not dist', async () => {
-        existsSyncMock.mockReturnValue(false);
-        readUi5YamlMock.mockResolvedValue({
+        mockExistsSync.mockReturnValue(false);
+        mockReadUi5Yaml.mockResolvedValue({
             findCustomMiddleware: jest.fn().mockReturnValueOnce({
                 configuration: {
                     adp: {
@@ -101,8 +118,8 @@ describe('isCFEnvironment', () => {
     });
 
     test('should return false when config.json does not exist and ui5.yaml has no adp configuration', async () => {
-        existsSyncMock.mockReturnValue(false);
-        readUi5YamlMock.mockResolvedValue({
+        mockExistsSync.mockReturnValue(false);
+        mockReadUi5Yaml.mockResolvedValue({
             findCustomMiddleware: jest.fn().mockReturnValue({
                 configuration: {}
             })
@@ -114,8 +131,8 @@ describe('isCFEnvironment', () => {
     });
 
     test('should return false when config.json does not exist and ui5.yaml has no custom middleware', async () => {
-        existsSyncMock.mockReturnValue(false);
-        readUi5YamlMock.mockResolvedValue({
+        mockExistsSync.mockReturnValue(false);
+        mockReadUi5Yaml.mockResolvedValue({
             findCustomMiddleware: jest.fn().mockReturnValue(undefined)
         } as any);
 
@@ -125,8 +142,8 @@ describe('isCFEnvironment', () => {
     });
 
     test('should return false when config.json does not exist and readUi5Yaml throws error', async () => {
-        existsSyncMock.mockReturnValue(false);
-        readUi5YamlMock.mockRejectedValue(new Error('Failed to read ui5.yaml'));
+        mockExistsSync.mockReturnValue(false);
+        mockReadUi5Yaml.mockRejectedValue(new Error('Failed to read ui5.yaml'));
 
         const result = await isCFEnvironment(basePath);
 

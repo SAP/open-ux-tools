@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { UIDropdownProps } from '../../../src/components/UIDropdown';
 import { UIDropdown, getCalloutCollisionTransformationProps } from '../../../src/components/UIDropdown';
 import type { IStyleFunction, ICalloutContentStyles, IDropdownStyleProps } from '@fluentui/react';

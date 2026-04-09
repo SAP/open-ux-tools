@@ -1,6 +1,9 @@
 import * as z from 'zod';
+import { createRequire } from 'node:module';
 import { LATEST_UI5_VERSION } from '../../constant';
-import packageJson from '../../../package.json';
+
+const require = createRequire(import.meta.url);
+const packageJson = require('../../../package.json');
 
 // Extended type generators API use
 export const PREDEFINED_GENERATOR_VALUES = {

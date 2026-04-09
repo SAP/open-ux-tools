@@ -1,6 +1,4 @@
-import * as flexChange from '../../../../src/cpe/changes/flex-change';
-import { ChangeService } from '../../../../src/cpe/changes/service';
-import type { ActionHandler } from '../../../../src/cpe/types';
+import type { ActionHandler } from 'open/ux/preview/client/cpe/types';
 import {
     changeProperty,
     deletePropertyChanges,
@@ -15,14 +13,30 @@ import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
 import JsControlTreeModifierMock from 'mock/sap/ui/core/util/reflection/JsControlTreeModifier';
 import type Control from 'sap/ui/core/Control';
-import * as Utils from '../../../../src/utils/version';
 import ChangesWriteAPIMock from 'mock/sap/ui/fl/write/api/ChangesWriteAPI';
-import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
+
+// Pre-import for spread
+const _flexChange = await import('open/ux/preview/client/cpe/changes/flex-change');
+const _Utils = await import('open/ux/preview/client/utils/version');
+
+const applyChangeMock = jest.fn().mockImplementation(() => Promise.resolve());
+jest.unstable_mockModule('open/ux/preview/client/cpe/changes/flex-change', () => ({
+    ..._flexChange,
+    applyChange: applyChangeMock
+}));
+
+const isLowerThanMinimalUi5VersionMock = jest.fn();
+const getUi5VersionMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/version', () => ({
+    ..._Utils,
+    isLowerThanMinimalUi5Version: isLowerThanMinimalUi5VersionMock,
+    getUi5Version: getUi5VersionMock
+}));
+
+const { ChangeService } = await import('open/ux/preview/client/cpe/changes/service');
+const { CommunicationService } = await import('open/ux/preview/client/cpe/communication-service');
 
 describe('ChangeService', () => {
-    const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
-        return Promise.resolve();
-    });
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock<void, [ActionHandler]>;
     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
@@ -47,7 +61,7 @@ describe('ChangeService', () => {
         sendActionMock = jest.fn();
         subscribeMock = jest.fn<void, [ActionHandler]>();
         fetchMock.mockClear();
-        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(false);
+        isLowerThanMinimalUi5VersionMock.mockReturnValueOnce(false);
     });
 
     afterEach(() => {
@@ -832,8 +846,8 @@ describe('ChangeService', () => {
             return selector;
         });
         JsControlTreeModifierMock.bySelector.mockReturnValue(mockControl);
-        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 120 });
-        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(false);
+        getUi5VersionMock.mockResolvedValueOnce({ major: 1, minor: 120 });
+        isLowerThanMinimalUi5VersionMock.mockReturnValueOnce(false);
 
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(): {
@@ -906,8 +920,8 @@ describe('ChangeService', () => {
         });
 
         JsControlTreeModifierMock.bySelector.mockReturnValueOnce(mockControl);
-        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
-        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(true);
+        getUi5VersionMock.mockResolvedValueOnce({ major: 1, minor: 108 });
+        isLowerThanMinimalUi5VersionMock.mockReturnValueOnce(true);
 
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(): {
@@ -982,8 +996,8 @@ describe('ChangeService', () => {
             value: null,
             configurable: true
         });
-        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
-        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(true);
+        getUi5VersionMock.mockResolvedValueOnce({ major: 1, minor: 108 });
+        isLowerThanMinimalUi5VersionMock.mockReturnValueOnce(true);
 
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(): {
@@ -1058,8 +1072,8 @@ describe('ChangeService', () => {
     test('throws error when there was a problem with the ChangesWriteAPI api', async () => {
         JsControlTreeModifierMock.bySelector.mockReturnValueOnce(mockControl);
         ChangesWriteAPIMock.getChangeHandler.mockRejectedValue(new Error('Failed'));
-        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
-        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(true);
+        getUi5VersionMock.mockResolvedValueOnce({ major: 1, minor: 108 });
+        isLowerThanMinimalUi5VersionMock.mockReturnValueOnce(true);
 
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(): {
@@ -1126,8 +1140,8 @@ describe('ChangeService', () => {
             value: null,
             configurable: true
         });
-        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
-        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(true);
+        getUi5VersionMock.mockResolvedValueOnce({ major: 1, minor: 108 });
+        isLowerThanMinimalUi5VersionMock.mockReturnValueOnce(true);
 
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(): {
@@ -1202,8 +1216,8 @@ describe('ChangeService', () => {
     test('throws error when there was a problem with the ChangesWriteAPI api', async () => {
         JsControlTreeModifierMock.bySelector.mockReturnValueOnce(mockControl);
         ChangesWriteAPIMock.getChangeHandler.mockRejectedValue(new Error('Failed'));
-        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
-        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(true);
+        getUi5VersionMock.mockResolvedValueOnce({ major: 1, minor: 108 });
+        isLowerThanMinimalUi5VersionMock.mockReturnValueOnce(true);
 
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(): {
@@ -1270,8 +1284,8 @@ describe('ChangeService', () => {
         });
         JsControlTreeModifierMock.bySelector.mockReturnValue(mockControl);
         ChangesWriteAPIMock.getChangeHandler = jest.fn().mockReturnValue({});
-        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 120 });
-        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(false);
+        getUi5VersionMock.mockResolvedValueOnce({ major: 1, minor: 120 });
+        isLowerThanMinimalUi5VersionMock.mockReturnValueOnce(false);
 
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(): {
@@ -1492,7 +1506,7 @@ describe('ChangeService', () => {
             })
         );
 
-        expect(applyChangeSpy.mock.calls[0][1]).toStrictEqual({
+        expect(applyChangeMock.mock.calls[0][1]).toStrictEqual({
             changeType: 'propertyChange',
             controlId: 'control1',
             controlName: 'button',
@@ -1776,7 +1790,7 @@ describe('ChangeService', () => {
         });
 
         const errorMessage = 'RTA Error: Not acceptable value';
-        const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
+        applyChangeMock.mockImplementation(() => {
             throw errorMessage;
         });
         jest.spyOn(CommunicationService, 'sendAction');
@@ -1796,7 +1810,7 @@ describe('ChangeService', () => {
             })
         );
 
-        expect(applyChangeSpy.mock.calls[0][1]).toStrictEqual({
+        expect(applyChangeMock.mock.calls[0][1]).toStrictEqual({
             changeType: 'propertyChange',
             controlId: 'control1',
             controlName: 'button',

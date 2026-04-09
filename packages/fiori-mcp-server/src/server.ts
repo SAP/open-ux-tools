@@ -8,7 +8,10 @@ import {
     ListToolsRequestSchema,
     type CallToolResult
 } from '@modelcontextprotocol/sdk/types.js';
-import packageJson from '../package.json';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const packageJson = require('../package.json');
 import {
     docSearch,
     listFioriApps,

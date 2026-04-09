@@ -1,5 +1,8 @@
-import { join, relative } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { promises } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { createElementNode, Range, Edm, Location } from '@sap-ux/odata-annotation-core-types';
 
@@ -10,7 +13,6 @@ import { pathFromUri } from '../../src/utils/path';
 import { PROJECTS } from './projects';
 import { testRead } from './fiori-service.test';
 import type { ValueListReference } from '../../src/types/adapter';
-import { fileURLToPath } from 'node:url';
 import { XMLAnnotationServiceAdapter } from '../../src/xml/adapter';
 import * as avtDependency from '../../src/avt';
 import type { FioriAnnotationService } from '../../src';

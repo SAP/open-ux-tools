@@ -1,17 +1,23 @@
-import {
+import FlexChange from 'mock/sap/ui/fl/Change';
+import type { FlexChange as Change } from '../../../src/flp/common';
+import type { AddXMLAdditionalInfo } from '../../../src/cpe/additional-change-info/add-xml-additional-info';
+
+const getAddXMLAdditionalInfoMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/additional-change-info/add-xml-additional-info', () => ({
+    getAddXMLAdditionalInfo: getAddXMLAdditionalInfoMock
+}));
+
+const {
     setAdditionalChangeInfo,
     getAdditionalChangeInfo,
     clearAdditionalChangeInfo,
     setAdditionalChangeInfoForChangeFile
-} from '../../../src/utils/additional-change-info';
-import FlexChange from 'mock/sap/ui/fl/Change';
-import * as xmlAdditionalInfo from '../../../src/cpe/additional-change-info/add-xml-additional-info';
-import type { FlexChange as Change } from '../../../src/flp/common';
+} = await import('open/ux/preview/client/utils/additional-change-info');
 
 describe('additional-change-info.ts', () => {
     const mockAdditionalInfo = {
         someKey: 'someValue'
-    } as unknown as xmlAdditionalInfo.AddXMLAdditionalInfo;
+    } as unknown as AddXMLAdditionalInfo;
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -19,9 +25,6 @@ describe('additional-change-info.ts', () => {
     });
 
     describe('setAdditionalChangeInfo', () => {
-        const getAddXMLAdditionalInfoSpy = jest
-            .spyOn(xmlAdditionalInfo, 'getAddXMLAdditionalInfo')
-            .mockReturnValue(undefined);
         it('should set additional change info for addXML change type', () => {
             const mockChange = new FlexChange({
                 selector: { id: 'mockSelectorId', idIsLocal: false },
@@ -29,13 +32,11 @@ describe('additional-change-info.ts', () => {
                 layer: 'CUSTOMER_BASE',
                 fileName: 'mockFileName'
             });
-            const getAddXMLAdditionalInfoSpy = jest
-                .spyOn(xmlAdditionalInfo, 'getAddXMLAdditionalInfo')
-                .mockReturnValueOnce(mockAdditionalInfo);
+            getAddXMLAdditionalInfoMock.mockReturnValueOnce(mockAdditionalInfo);
 
             setAdditionalChangeInfo(mockChange);
 
-            expect(getAddXMLAdditionalInfoSpy).toHaveBeenCalledWith(mockChange, undefined);
+            expect(getAddXMLAdditionalInfoMock).toHaveBeenCalledWith(mockChange, undefined);
             const result = getAdditionalChangeInfo(mockChange as unknown as Change);
             expect(result).toEqual(mockAdditionalInfo);
         });
@@ -50,7 +51,7 @@ describe('additional-change-info.ts', () => {
 
             setAdditionalChangeInfo(mockChange);
 
-            expect(getAddXMLAdditionalInfoSpy).not.toHaveBeenCalled();
+            expect(getAddXMLAdditionalInfoMock).not.toHaveBeenCalled();
             const result = getAdditionalChangeInfo(mockChange as unknown as Change);
             expect(result).toBeUndefined();
         });
@@ -58,7 +59,7 @@ describe('additional-change-info.ts', () => {
         it('should not set additional change info if change is undefined', () => {
             setAdditionalChangeInfo(undefined);
 
-            expect(getAddXMLAdditionalInfoSpy).not.toHaveBeenCalled();
+            expect(getAddXMLAdditionalInfoMock).not.toHaveBeenCalled();
         });
 
         it('should not set additional change info if a value is already set', () => {
@@ -68,15 +69,14 @@ describe('additional-change-info.ts', () => {
                 layer: 'CUSTOMER_BASE',
                 fileName: 'mockFileName'
             });
-            const getAddXMLAdditionalInfoSpy = jest
-                .spyOn(xmlAdditionalInfo, 'getAddXMLAdditionalInfo')
+            getAddXMLAdditionalInfoMock
                 .mockReturnValueOnce({ templateName: 'template' })
                 .mockReturnValueOnce({ controlType: 'test' });
 
             setAdditionalChangeInfo(mockChange);
             setAdditionalChangeInfo(mockChange);
 
-            expect(getAddXMLAdditionalInfoSpy).toHaveBeenCalledTimes(2);
+            expect(getAddXMLAdditionalInfoMock).toHaveBeenCalledTimes(2);
 
             const result = getAdditionalChangeInfo(mockChange as unknown as Change);
             expect(result).toEqual({ controlType: 'test', templateName: 'template' });
@@ -107,7 +107,7 @@ describe('additional-change-info.ts', () => {
                 layer: 'CUSTOMER_BASE',
                 fileName: 'mockFileName'
             });
-            jest.spyOn(xmlAdditionalInfo, 'getAddXMLAdditionalInfo').mockReturnValueOnce(mockAdditionalInfo);
+            getAddXMLAdditionalInfoMock.mockReturnValueOnce(mockAdditionalInfo);
 
             setAdditionalChangeInfo(mockChange);
 

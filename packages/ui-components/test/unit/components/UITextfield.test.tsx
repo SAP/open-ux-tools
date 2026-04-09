@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { IStyleFunction, ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
 import { TextField } from '@fluentui/react';
 import type { InputRenderProps, UITextInputProps } from '../../../src/components/UIInput';

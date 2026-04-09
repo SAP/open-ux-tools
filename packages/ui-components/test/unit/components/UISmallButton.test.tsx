@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { IButtonProps } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
 import { UISmallButton } from '../../../src/components/UIButton/UISmallButton';
