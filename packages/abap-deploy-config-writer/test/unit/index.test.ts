@@ -1,12 +1,15 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generate } from '../../src';
 import fsExtra from 'fs-extra';
 import type { AbapDeployConfig, BspApp } from '@sap-ux/ui5-config';
 
 import type { DeployConfigOptions } from '../../src/types';
 
+const __testDirname = dirname(fileURLToPath(import.meta.url));
+
 describe('generate', () => {
-    const outputDir = join(__dirname, '../test-output');
+    const outputDir = join(__testDirname, '../test-output');
     const debug = !!process.env['UX_DEBUG'];
 
     beforeAll(async () => {
@@ -98,7 +101,7 @@ describe('generate', () => {
         const testPath = join(outputDir, name);
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(testPath);
-        fsExtra.copySync(join(__dirname, `../sample/${name}`), testPath);
+        fsExtra.copySync(join(__testDirname, `../sample/${name}`), testPath);
 
         const fs = await generate(testPath, config, options);
         expect(fs.dump(testPath)).toMatchSnapshot();
