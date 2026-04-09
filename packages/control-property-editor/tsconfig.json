@@ -9,7 +9,7 @@
     ],
     "strictNullChecks": true,
     "outDir": "dist",
-    "module": "ES6",
+    "module": "ES2022",
     "rootDir": ".",
     "baseUrl": ".",
     "types": [
@@ -20,14 +20,13 @@
   "include": [
     "src/**/*.json",
     "src/**/*.ts",
-    "src/**/*.tsx",
-    "test/**/*.ts",
-    "test/**/*.tsx"
+    "src/**/*.tsx"
   ],
   "exclude": [
     "dist",
     "node_modules",
-    "coverage"
+    "coverage",
+    "test"
   ],
   "references": [
     {
