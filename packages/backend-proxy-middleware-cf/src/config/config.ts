@@ -1,3 +1,4 @@
+import { DEFAULT_TUNNEL_APP_NAME } from '@sap-ux/adp-tooling';
 import type { BackendProxyMiddlewareCfConfig, EffectiveOptions } from '../types';
 
 export const DEFAULT_REWRITE_CONTENT_TYPES = [
@@ -27,6 +28,9 @@ export function mergeEffectiveOptions(configuration: BackendProxyMiddlewareCfCon
         appendAuthRoute: false,
         disableWelcomeFile: false,
         disableUi5ServerRoutes: false,
+        disableSshTunnel: false,
+        tunnelAppName: DEFAULT_TUNNEL_APP_NAME,
+        skipSshEnable: false,
         extensions: [],
         ...configuration
     } as EffectiveOptions;
