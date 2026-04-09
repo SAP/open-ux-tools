@@ -1,5 +1,6 @@
 import 'jest-extended';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { t } from '../src/i18n';
 import {
     validateModuleName,
@@ -9,6 +10,9 @@ import {
 } from '../src/ui5/validators';
 import fs from 'node:fs/promises';
 import os from 'node:os';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const itSkipIfWin = os.platform() === 'win32' ? it.skip : it;
 

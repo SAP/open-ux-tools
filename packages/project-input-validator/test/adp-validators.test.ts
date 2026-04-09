@@ -1,6 +1,12 @@
-import { existsSync } from 'node:fs';
+import { jest } from '@jest/globals';
 
-import {
+const mockExistsSync = jest.fn();
+
+jest.unstable_mockModule('node:fs', () => ({
+    existsSync: mockExistsSync
+}));
+
+const {
     hasContentDuplication,
     hasCustomerPrefix,
     isDataSourceURI,
@@ -10,16 +16,14 @@ import {
     validateProjectName,
     validateProjectNameExternal,
     validateProjectNameInternal
-} from '../src/adp/validators';
-import { t } from '../src/i18n';
-
-jest.mock('fs', () => ({
-    existsSync: jest.fn()
-}));
-
-const existsSyncMock = existsSync as jest.Mock;
+} = await import('../src/adp/validators');
+const { t } = await import('../src/i18n');
 
 describe('project input validators', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     describe('hasContentDuplication', () => {
         test('should return true if there is content duplication', () => {
             const output = hasContentDuplication('ZTEST', 'testProperty', [
@@ -86,8 +90,7 @@ describe('project input validators', () => {
         const path = '/mock/path';
 
         beforeEach(() => {
-            jest.clearAllMocks();
-            existsSyncMock.mockReturnValue(false); // Assume project does not exist
+            mockExistsSync.mockReturnValue(false); // Assume project does not exist
         });
 
         it('returns error if value is empty', () => {
@@ -104,7 +107,7 @@ describe('project input validators', () => {
         });
 
         it('returns error if project name is duplicated and CF environment', () => {
-            existsSyncMock.mockReturnValue(true);
+            mockExistsSync.mockReturnValue(true);
             const result = validateProjectName('validname', path, false, true);
             expect(result).toBe(t(t('adp.duplicatedProjectName')));
         });
@@ -115,7 +118,7 @@ describe('project input validators', () => {
         });
 
         it('returns true if project name is not duplicated and CF environment', () => {
-            existsSyncMock.mockReturnValue(false);
+            mockExistsSync.mockReturnValue(false);
             const result = validateProjectName('validname', path, true, true);
             expect(result).toBe(true);
         });
@@ -123,7 +126,7 @@ describe('project input validators', () => {
 
     describe('validateProjectNameExternal', () => {
         beforeEach(() => {
-            existsSyncMock.mockReturnValue(false);
+            mockExistsSync.mockReturnValue(false);
         });
 
         it('returns length error if name > 61 chars or ends with component', () => {
@@ -154,7 +157,7 @@ describe('project input validators', () => {
         });
 
         it('returns true for valid internal project name', () => {
-            existsSyncMock.mockReturnValue(false);
+            mockExistsSync.mockReturnValue(false);
             expect(validateProjectNameInternal('vendorapp')).toBe(t('adp.projectNameValidationErrorInt'));
         });
     });
@@ -163,12 +166,12 @@ describe('project input validators', () => {
         const path = '/mock/path';
 
         it('returns duplication error if name exists', () => {
-            existsSyncMock.mockReturnValue(true);
+            mockExistsSync.mockReturnValue(true);
             expect(validateDuplicateProjectName('duplicate', path)).toBe(t('adp.duplicatedProjectName'));
         });
 
         it('returns true if name does not exist', () => {
-            existsSyncMock.mockReturnValue(false);
+            mockExistsSync.mockReturnValue(false);
             expect(validateDuplicateProjectName('unique', path)).toBe(true);
         });
     });
