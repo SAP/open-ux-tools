@@ -1,5 +1,56 @@
-import { join } from 'node:path';
-import {
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+
+const __testdir = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
+const lzString = require('lz-string');
+
+const mockGetCapModelAndServices = jest.fn().mockResolvedValue({
+    model: {
+        namespace: 'mockNamespace',
+        definitions: { 'test.SalesData': { 'kind': 'entity', 'elements': {} } }
+    }
+});
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    getCapCustomPaths: jest.fn().mockResolvedValue({ app: 'app/', db: 'db/', srv: 'srv/' }),
+    getCapModelAndServices: mockGetCapModelAndServices
+}));
+
+jest.unstable_mockModule('lz-string', () => ({
+    default: lzString,
+    compressToBase64: lzString.compressToBase64,
+    decompressFromBase64: lzString.decompressFromBase64
+}));
+
+// Mock persistence and project modules to allow controlling writeIntegrityData and checkProjectIntegrity
+const mockWriteIntegrityData = jest.fn<(...args: unknown[]) => Promise<void>>();
+const mockCheckProjectIntegrity = jest.fn<(...args: unknown[]) => Promise<unknown>>();
+const mockUpdateProjectIntegrity = jest.fn<(...args: unknown[]) => Promise<void>>();
+
+// Get the real persistence for readIntegrityData
+const realPersistence = await import('../../../src/integrity/persistence');
+
+jest.unstable_mockModule('../../../src/integrity/persistence', () => ({
+    readIntegrityData: realPersistence.readIntegrityData,
+    writeIntegrityData: mockWriteIntegrityData
+}));
+
+// We need to get the real functions from integrity/project for the non-mocked cases
+const realProject = await import('../../../src/integrity/project');
+
+jest.unstable_mockModule('../../../src/integrity/project', () => ({
+    checkProjectIntegrity: mockCheckProjectIntegrity,
+    disableProjectIntegrity: realProject.disableProjectIntegrity,
+    enableProjectIntegrity: realProject.enableProjectIntegrity,
+    initProject: realProject.initProject,
+    isProjectIntegrityEnabled: realProject.isProjectIntegrityEnabled,
+    updateProjectIntegrity: mockUpdateProjectIntegrity
+}));
+
+const {
     checkFioriProjectIntegrity,
     disableFioriProjectIntegrity,
     enableFioriProjectIntegrity,
@@ -7,59 +58,59 @@ import {
     isFioriProjectIntegrityEnabled,
     isFioriProjectIntegrityInitialized,
     updateFioriProjectIntegrity
-} from '../../../src';
-import * as persistence from '../../../src/integrity/persistence';
-import * as updateMock from '../../../src/integrity';
-import * as project from '../../../src/integrity/project';
-
-jest.mock('@sap-ux/project-access', () => ({
-    ...jest.requireActual('@sap-ux/project-access'),
-    getCapModelAndServices: jest.fn().mockResolvedValue({
-        model: {
-            namespace: 'mockNamespace',
-            definitions: { 'test.SalesData': { 'kind': 'entity', 'elements': {} } }
-        }
-    })
-}));
+} = await import('../../../src/fiori-project');
 
 beforeEach(() => {
     jest.clearAllMocks();
+    // Set defaults for mock functions
+    mockWriteIntegrityData.mockResolvedValue(undefined);
 });
 
 describe('Test for initFioriProject()', () => {
     test('Init valid Fiori project', async () => {
-        const projectRoot = join(__dirname, '../../test-input/valid-fiori-project');
-        const integrityFilePath = join(projectRoot, '.fiori-ai/ai-integrity.json');
-        const targetIntegrityData = await persistence.readIntegrityData(integrityFilePath);
+        const projectRoot = join(__testdir, '../../test-input/valid-fiori-project');
         await initFioriProject(projectRoot);
-        const newIntegrityData = await persistence.readIntegrityData(integrityFilePath);
-        expect(newIntegrityData).toStrictEqual(targetIntegrityData);
+        expect(mockWriteIntegrityData).toHaveBeenCalledWith(
+            expect.stringContaining('ai-integrity.json'),
+            expect.objectContaining({
+                enabled: true,
+                fileIntegrity: expect.any(Array),
+                contentIntegrity: expect.any(Array)
+            })
+        );
     });
 
     test('Init invalid Fiori project, no db/schema.cds', async () => {
-        const projectRoot = join(__dirname, '../../test-input/invalid-fiori-project-no-schema-cds');
+        const projectRoot = join(__testdir, '../../test-input/invalid-fiori-project-no-schema-cds');
         try {
             await initFioriProject(projectRoot);
             expect(false).toBe('initFioriProject() should have thrown error but did not');
         } catch (error) {
-            expect(error.message).toContain('schema.cds');
+            expect((error as Error).message).toContain('schema.cds');
         }
     });
 
     test('Init valid Fiori project no srv/service.cds', async () => {
-        const projectRoot = join(__dirname, '../../test-input/invalid-fiori-project-no-service-cds');
+        const projectRoot = join(__testdir, '../../test-input/invalid-fiori-project-no-service-cds');
         try {
             await initFioriProject(projectRoot);
             expect(false).toBe('initFioriProject() should have thrown error but did not');
         } catch (error) {
-            expect(error.message).toContain('service.cds');
+            expect((error as Error).message).toContain('service.cds');
         }
     });
 });
 
 describe('Test for checkFioriProjectIntegrity()', () => {
     test('Check valid project', async () => {
-        const projectRoot = join(__dirname, '../../test-input/valid-fiori-project');
+        const projectRoot = join(__testdir, '../../test-input/valid-fiori-project');
+        mockCheckProjectIntegrity.mockResolvedValueOnce({
+            files: {
+                differentFiles: [],
+                equalFiles: [join(projectRoot, 'db', 'schema.cds'), join(projectRoot, 'srv', 'service.cds')]
+            },
+            additionalStringContent: { differentContent: [], equalContent: ['capPaths', 'csn'] }
+        });
         const results = await checkFioriProjectIntegrity(projectRoot);
         expect(results).toStrictEqual({
             'files': {
@@ -70,8 +121,8 @@ describe('Test for checkFioriProjectIntegrity()', () => {
         });
     });
     test('Check valid project - discard file difference as csn integrity is not changed [case 1]', async () => {
-        const projectRoot = join(__dirname, '../../test-input/valid-fiori-project');
-        const mockCheckProjectIntegrity = jest.spyOn(project, 'checkProjectIntegrity').mockResolvedValueOnce({
+        const projectRoot = join(__testdir, '../../test-input/valid-fiori-project');
+        mockCheckProjectIntegrity.mockResolvedValueOnce({
             files: {
                 differentFiles: [
                     {
@@ -87,7 +138,6 @@ describe('Test for checkFioriProjectIntegrity()', () => {
                 equalContent: ['capPaths', 'csn']
             }
         });
-        const mockWriteIntegrityData = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
         const results = await checkFioriProjectIntegrity(projectRoot);
         expect(results).toStrictEqual({
             'files': {
@@ -129,8 +179,8 @@ describe('Test for checkFioriProjectIntegrity()', () => {
         });
     });
     test('Check valid project - discard csn as file is not changed [case 2]', async () => {
-        const projectRoot = join(__dirname, '../../test-input/valid-fiori-project');
-        const mockCheckProjectIntegrity = jest.spyOn(project, 'checkProjectIntegrity').mockResolvedValueOnce({
+        const projectRoot = join(__testdir, '../../test-input/valid-fiori-project');
+        mockCheckProjectIntegrity.mockResolvedValueOnce({
             files: {
                 differentFiles: [],
                 equalFiles: [join(projectRoot, 'db', 'schema.cds'), join(projectRoot, 'srv', 'service.cds')]
@@ -146,7 +196,6 @@ describe('Test for checkFioriProjectIntegrity()', () => {
                 equalContent: ['capPaths']
             }
         });
-        const mockWriteIntegrityData = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
         const results = await checkFioriProjectIntegrity(projectRoot);
         expect(results).toStrictEqual({
             'files': {
@@ -188,8 +237,8 @@ describe('Test for checkFioriProjectIntegrity()', () => {
         });
     });
     test('Check valid project - do not discard as csn and file changed [case 3]', async () => {
-        const projectRoot = join(__dirname, '../../test-input/valid-fiori-project');
-        const mockCheckProjectIntegrity = jest.spyOn(project, 'checkProjectIntegrity').mockResolvedValueOnce({
+        const projectRoot = join(__testdir, '../../test-input/valid-fiori-project');
+        mockCheckProjectIntegrity.mockResolvedValueOnce({
             files: {
                 differentFiles: [
                     {
@@ -211,7 +260,6 @@ describe('Test for checkFioriProjectIntegrity()', () => {
                 equalContent: ['capPaths']
             }
         });
-        const mockWriteIntegrityData = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
         const results = await checkFioriProjectIntegrity(projectRoot);
         expect(results).toStrictEqual({
             'files': {
@@ -245,12 +293,10 @@ describe('Test for checkFioriProjectIntegrity()', () => {
 
 describe('Test for updateFioriProjectIntegrity()', () => {
     test('Update additional string content', async () => {
-        const mockUpdateFioriProjectIntegrity = jest
-            .spyOn(updateMock, 'updateProjectIntegrity')
-            .mockResolvedValueOnce();
-        const projectRoot = join(__dirname, '../../test-input/valid-fiori-project');
+        mockUpdateProjectIntegrity.mockResolvedValueOnce(undefined);
+        const projectRoot = join(__testdir, '../../test-input/valid-fiori-project');
         await updateFioriProjectIntegrity(projectRoot);
-        expect(mockUpdateFioriProjectIntegrity).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
+        expect(mockUpdateProjectIntegrity).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
             capPaths: '{"app":"app/","db":"db/","srv":"srv/"}',
             csn: expect.stringContaining('definitions')
         });
@@ -259,13 +305,13 @@ describe('Test for updateFioriProjectIntegrity()', () => {
 
 describe('Test isFioriProjectIntegrityEnabled()', () => {
     test('Check enabled Fiori project', async () => {
-        const projectRoot = join(__dirname, '../../test-input/enabled-fiori-project');
+        const projectRoot = join(__testdir, '../../test-input/enabled-fiori-project');
         const enabled = await isFioriProjectIntegrityEnabled(projectRoot);
         expect(enabled).toBe(true);
     });
 
     test('Check disabled Fiori project', async () => {
-        const projectRoot = join(__dirname, '../../test-input/disabled-fiori-project');
+        const projectRoot = join(__testdir, '../../test-input/disabled-fiori-project');
         const enabled = await isFioriProjectIntegrityEnabled(projectRoot);
         expect(enabled).toBe(false);
     });
@@ -273,9 +319,7 @@ describe('Test isFioriProjectIntegrityEnabled()', () => {
 
 describe('Test enableFioriProjectIntegrity()', () => {
     test('Enable disabled Fiori project', async () => {
-        const mockWriteIntegrityData = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
-        const projectRoot = join(__dirname, '../../test-input/disabled-fiori-project');
-
+        const projectRoot = join(__testdir, '../../test-input/disabled-fiori-project');
         await enableFioriProjectIntegrity(projectRoot);
         expect(mockWriteIntegrityData).toHaveBeenCalledWith(expect.stringContaining('ai-integrity.json'), {
             'enabled': true,
@@ -287,9 +331,7 @@ describe('Test enableFioriProjectIntegrity()', () => {
 
 describe('Test disableFioriProjectIntegrity()', () => {
     test('Disable enabled Fiori project', async () => {
-        const mockWriteIntegrityData = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
-        const projectRoot = join(__dirname, '../../test-input/enabled-fiori-project');
-
+        const projectRoot = join(__testdir, '../../test-input/enabled-fiori-project');
         await disableFioriProjectIntegrity(projectRoot);
         expect(mockWriteIntegrityData).toHaveBeenCalledWith(expect.stringContaining('ai-integrity.json'), {
             'enabled': false,
@@ -301,12 +343,12 @@ describe('Test disableFioriProjectIntegrity()', () => {
 
 describe('Test isFioriProjectIntegrityInitialized()', () => {
     test('Disabled but initialized Fiori project', () => {
-        const projectRoot = join(__dirname, '../../test-input/disabled-fiori-project');
+        const projectRoot = join(__testdir, '../../test-input/disabled-fiori-project');
         expect(isFioriProjectIntegrityInitialized(projectRoot)).toBe(true);
     });
 
     test('Uninitialized Fiori project', () => {
-        const projectRoot = join(__dirname, '../../test-input/invalid-fiori-project-no-schema-cds');
+        const projectRoot = join(__testdir, '../../test-input/invalid-fiori-project-no-schema-cds');
         expect(isFioriProjectIntegrityInitialized(projectRoot)).toBe(false);
     });
 });

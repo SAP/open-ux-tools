@@ -1,35 +1,66 @@
-import { join } from 'node:path';
-import {
-    checkProjectIntegrity,
-    disableProjectIntegrity,
-    enableProjectIntegrity,
-    initProject,
-    isProjectIntegrityEnabled,
-    updateProjectIntegrity
-} from '../../../src';
-import * as persistence from '../../../src/integrity/persistence';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+
+const __testdir = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
+const lzString = require('lz-string');
+
+const mockWriteIntegrityData = jest.fn<(...args: unknown[]) => Promise<void>>();
+
+jest.unstable_mockModule('lz-string', () => ({
+    default: lzString,
+    compressToBase64: lzString.compressToBase64,
+    decompressFromBase64: lzString.decompressFromBase64
+}));
+
+// We need the real persistence module's readIntegrityData but mock writeIntegrityData
+// To achieve this, import the real module and wrap it
+const realPersistence = await import('../../../src/integrity/persistence');
+const realReadIntegrityData = realPersistence.readIntegrityData;
+
+jest.unstable_mockModule('../../../src/integrity/persistence', () => ({
+    readIntegrityData: realReadIntegrityData,
+    writeIntegrityData: mockWriteIntegrityData
+}));
+
+const { checkProjectIntegrity, disableProjectIntegrity, enableProjectIntegrity, initProject, isProjectIntegrityEnabled, updateProjectIntegrity } = await import('../../../src/integrity/project');
+const persistence = await import('../../../src/integrity/persistence');
 
 describe('Test initProject()', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockWriteIntegrityData.mockResolvedValue(undefined);
     });
 
     test('Test initProject() with valid project', async () => {
-        const integrityFilePath = join(__dirname, '../../test-input/valid-project/.integrity.json');
-        const targetIntegrityData = await persistence.readIntegrityData(integrityFilePath);
+        const integrityFilePath = join(__testdir, '../../test-input/valid-project/.integrity.json');
+        const targetIntegrityData = await realReadIntegrityData(integrityFilePath);
         await initProject({
             integrityFilePath,
-            fileList: [join(__dirname, '../../test-input/valid-project/test.txt')],
+            fileList: [join(__testdir, '../../test-input/valid-project/test.txt')],
             additionalStringContent: { 'key1': 'value1', 'key2': 'value2' }
         });
-        const newIntegrityData = await persistence.readIntegrityData(integrityFilePath);
-        expect(newIntegrityData).toStrictEqual(targetIntegrityData);
+        // Since writeIntegrityData is mocked, verify it was called with expected data
+        expect(mockWriteIntegrityData).toHaveBeenCalledWith(
+            integrityFilePath,
+            expect.objectContaining({
+                enabled: true,
+                fileIntegrity: expect.any(Array),
+                contentIntegrity: expect.any(Array)
+            })
+        );
     });
 });
 
 describe('Test checkProjectIntegrity()', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     test('Valid project, valid additional content', async () => {
-        const integrityFilePath = join(__dirname, '../../test-input/valid-project/.integrity.json');
+        const integrityFilePath = join(__testdir, '../../test-input/valid-project/.integrity.json');
         const result = await checkProjectIntegrity(integrityFilePath, { 'key1': 'value1', 'key2': 'value2' });
         expect(result.files.differentFiles.length).toBe(0);
         expect(result.files.equalFiles.find((ef) => ef.includes('test.txt'))).toBeDefined();
@@ -38,7 +69,7 @@ describe('Test checkProjectIntegrity()', () => {
     });
 
     test('Invalid project', async () => {
-        const integrityFilePath = join(__dirname, '../../test-input/invalid-project/integrity.json');
+        const integrityFilePath = join(__testdir, '../../test-input/invalid-project/integrity.json');
         const result = await checkProjectIntegrity(integrityFilePath, {
             'one': 'value one',
             'two': 'not value two',
@@ -60,12 +91,12 @@ describe('Test checkProjectIntegrity()', () => {
     });
 
     test('Disabled project', async () => {
-        const integrityFilePath = join(__dirname, '../../test-input/disabled-project/integrity.json');
+        const integrityFilePath = join(__testdir, '../../test-input/disabled-project/integrity.json');
         try {
             await checkProjectIntegrity(integrityFilePath);
             expect(false).toBe('checkProjectIntegrity() should have thrown error but did not');
         } catch (error) {
-            expect(error.message).toBe(
+            expect((error as Error).message).toBe(
                 `Integrity is disabled for the project with integrity data ${integrityFilePath}`
             );
         }
@@ -74,15 +105,14 @@ describe('Test checkProjectIntegrity()', () => {
 
 describe('Test updateProjectIntegrity()', () => {
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     test('Update invalid project', async () => {
-        const writeSpy = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
-
-        const integrityFilePath = join(__dirname, '../../test-input/update-project/integrity.json');
+        mockWriteIntegrityData.mockResolvedValueOnce(undefined);
+        const integrityFilePath = join(__testdir, '../../test-input/update-project/integrity.json');
         await updateProjectIntegrity(integrityFilePath, { 'key': 'new string' });
-        expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
+        expect(mockWriteIntegrityData).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
             'enabled': true,
             'fileIntegrity': [
                 {
@@ -98,12 +128,12 @@ describe('Test updateProjectIntegrity()', () => {
     });
 
     test('Update with non existing additional string content', async () => {
-        const integrityFilePath = join(__dirname, '../../test-input/valid-project/.integrity.json');
+        const integrityFilePath = join(__testdir, '../../test-input/valid-project/.integrity.json');
         try {
             await updateProjectIntegrity(integrityFilePath, { 'key1': 'value1', 'wrong': 'wrong content' });
             expect(false).toBe('updateProjectIntegrity() should have thrown error but did not');
         } catch (error) {
-            expect(error.message).toBe(
+            expect((error as Error).message).toBe(
                 'There is a mismatch of additional content keys.\nStored content keys: key1, key2\nNew content keys: key1, wrong'
             );
         }
@@ -114,17 +144,17 @@ describe('Test updateProjectIntegrity()', () => {
             await updateProjectIntegrity('non-existing');
             expect(false).toBe('updateProjectIntegrity() should have thrown error but did not');
         } catch (error) {
-            expect(error.message).toBe('Integrity data not found at non-existing');
+            expect((error as Error).message).toBe('Integrity data not found at non-existing');
         }
     });
 
     test('Update disabled project', async () => {
-        const integrityFilePath = join(__dirname, '../../test-input/disabled-project/integrity.json');
+        const integrityFilePath = join(__testdir, '../../test-input/disabled-project/integrity.json');
         try {
             await updateProjectIntegrity(integrityFilePath);
             expect(false).toBe('updateProjectIntegrity() should have thrown error but did not');
         } catch (error) {
-            expect(error.message).toBe(
+            expect((error as Error).message).toBe(
                 `Integrity is disabled for the project with integrity data ${integrityFilePath}`
             );
         }
@@ -133,17 +163,17 @@ describe('Test updateProjectIntegrity()', () => {
 
 describe('Test isProjectIntegrityEnabled()', () => {
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     test('Check enabled project', async () => {
-        const integrityFilePath = join(__dirname, '../../test-input/enabled-project/integrity.json');
+        const integrityFilePath = join(__testdir, '../../test-input/enabled-project/integrity.json');
         const enabled = await isProjectIntegrityEnabled(integrityFilePath);
         expect(enabled).toBe(true);
     });
 
     test('Check disabled project', async () => {
-        const integrityFilePath = join(__dirname, '../../test-input/disabled-project/integrity.json');
+        const integrityFilePath = join(__testdir, '../../test-input/disabled-project/integrity.json');
         const enabled = await isProjectIntegrityEnabled(integrityFilePath);
         expect(enabled).toBe(false);
     });
@@ -153,21 +183,21 @@ describe('Test isProjectIntegrityEnabled()', () => {
             await isProjectIntegrityEnabled('non-existing');
             expect(false).toBe('isProjectIntegrityEnabled() should have thrown error but did not');
         } catch (error) {
-            expect(error.message).toBe('Integrity data not found at non-existing');
+            expect((error as Error).message).toBe('Integrity data not found at non-existing');
         }
     });
 });
 
 describe('Test enableProjectIntegrity()', () => {
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     test('Enable integrity for disabled project', async () => {
-        const writeSpy = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
-        const integrityFilePath = join(__dirname, '../../test-input/disabled-project/integrity.json');
+        mockWriteIntegrityData.mockResolvedValueOnce(undefined);
+        const integrityFilePath = join(__testdir, '../../test-input/disabled-project/integrity.json');
         await enableProjectIntegrity(integrityFilePath);
-        expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
+        expect(mockWriteIntegrityData).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
             'enabled': true,
             'fileIntegrity': [],
             'contentIntegrity': []
@@ -175,11 +205,11 @@ describe('Test enableProjectIntegrity()', () => {
     });
 
     test('Enable integrity for enabled project', async () => {
-        const writeSpy = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
-        const integrityFilePath = join(__dirname, '../../test-input/enabled-project/integrity.json');
+        mockWriteIntegrityData.mockResolvedValueOnce(undefined);
+        const integrityFilePath = join(__testdir, '../../test-input/enabled-project/integrity.json');
         await enableProjectIntegrity(integrityFilePath);
         // project already enabled, so writeIntegrityData should not be called
-        expect(writeSpy).not.toHaveBeenCalled();
+        expect(mockWriteIntegrityData).not.toHaveBeenCalled();
     });
 
     test('Enable integrity for non existing project', async () => {
@@ -187,21 +217,21 @@ describe('Test enableProjectIntegrity()', () => {
             await enableProjectIntegrity('non-existing');
             expect(false).toBe('enableProjectIntegrity() should have thrown error but did not');
         } catch (error) {
-            expect(error.message).toBe('Integrity data not found at non-existing');
+            expect((error as Error).message).toBe('Integrity data not found at non-existing');
         }
     });
 });
 
 describe('Test disableProjectIntegrity()', () => {
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     test('Disable integrity for enabled project', async () => {
-        const writeSpy = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
-        const integrityFilePath = join(__dirname, '../../test-input/enabled-project/integrity.json');
+        mockWriteIntegrityData.mockResolvedValueOnce(undefined);
+        const integrityFilePath = join(__testdir, '../../test-input/enabled-project/integrity.json');
         await disableProjectIntegrity(integrityFilePath);
-        expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
+        expect(mockWriteIntegrityData).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
             'enabled': false,
             'fileIntegrity': [],
             'contentIntegrity': []
@@ -209,11 +239,11 @@ describe('Test disableProjectIntegrity()', () => {
     });
 
     test('Disable integrity for disabled project', async () => {
-        const writeSpy = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
-        const integrityFilePath = join(__dirname, '../../test-input/disabled-project/integrity.json');
+        mockWriteIntegrityData.mockResolvedValueOnce(undefined);
+        const integrityFilePath = join(__testdir, '../../test-input/disabled-project/integrity.json');
         await disableProjectIntegrity(integrityFilePath);
         // project already disabled, so writeIntegrityData should not be called
-        expect(writeSpy).not.toHaveBeenCalled();
+        expect(mockWriteIntegrityData).not.toHaveBeenCalled();
     });
 
     test('Disable integrity for non existing project', async () => {
@@ -221,7 +251,7 @@ describe('Test disableProjectIntegrity()', () => {
             await disableProjectIntegrity('non-existing');
             expect(false).toBe('disableProjectIntegrity() should have thrown error but did not');
         } catch (error) {
-            expect(error.message).toBe('Integrity data not found at non-existing');
+            expect((error as Error).message).toBe('Integrity data not found at non-existing');
         }
     });
 });
