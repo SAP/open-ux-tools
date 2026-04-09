@@ -1,30 +1,47 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { CatalogServiceResult, Endpoint } from '../../src/types';
 import { Severity, UrlServiceType } from '../../src/types';
-import { checkEndpoints, checkEndpoint } from '../../src/checks/endpoint';
-import * as basDestination from '../../src/checks/destination';
-import * as storedSystem from '../../src/checks/stored-system';
-import { createForDestination, createForAbap, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
+const mockIsAppStudio = jest.fn();
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio,
+    getAppStudioProxyURL: jest.fn(),
+    listDestinations: jest.fn()
 }));
-const mockIsAppStudio = isAppStudio as jest.Mock;
 
-jest.mock('@sap-ux/axios-extension', () => ({
-    createForDestination: jest.fn(),
-    createForAbap: jest.fn(),
-    createForAbapOnCloud: jest.fn(),
+const mockCreateForDestination = jest.fn();
+const mockCreateForAbap = jest.fn();
+const mockCreateForAbapOnCloud = jest.fn();
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    createForDestination: mockCreateForDestination,
+    createForAbap: mockCreateForAbap,
+    createForAbapOnCloud: mockCreateForAbapOnCloud,
+    AtoService: {},
+    TransportChecksService: {},
+    ODataVersion: { v2: 'v2', v4: 'v4' },
     AbapCloudEnvironment: {
         Standalone: 'Standalone',
         EmbeddedSteampunk: 'EmbeddedSteampunk'
     }
 }));
 
-const mockCreateForDestination = createForDestination as jest.Mock;
-const mockCreateForAbap = createForAbap as jest.Mock;
-const mockCreateForAbapOnCloud = createForAbapOnCloud as jest.Mock;
+const mockCheckBASDestinations = jest.fn();
+const mockCheckBASDestination = jest.fn();
+jest.unstable_mockModule('../../src/checks/destination', () => ({
+    checkBASDestinations: mockCheckBASDestinations,
+    checkBASDestination: mockCheckBASDestination,
+    needsUsernamePassword: jest.fn()
+}));
+
+const mockCheckStoredSystems = jest.fn();
+const mockCheckStoredSystem = jest.fn();
+jest.unstable_mockModule('../../src/checks/stored-system', () => ({
+    checkStoredSystems: mockCheckStoredSystems,
+    checkStoredSystem: mockCheckStoredSystem
+}));
+
+const { checkEndpoints, checkEndpoint } = await import('../../src/checks/endpoint');
 
 const mockServiceProvider = {
     log: jest.fn(),
@@ -117,7 +134,7 @@ describe('Endpoint tests', () => {
                 }
             ]
         };
-        jest.spyOn(basDestination, 'checkBASDestinations').mockResolvedValueOnce(basDestinationResult);
+        mockCheckBASDestinations.mockResolvedValueOnce(basDestinationResult);
 
         const checkEndpointResult = await checkEndpoints();
 
@@ -138,7 +155,7 @@ describe('Endpoint tests', () => {
             storedSystems: [sapSystemOnPrem, sapSystemScp] as any
         };
 
-        jest.spyOn(storedSystem, 'checkStoredSystems').mockResolvedValueOnce(storedSystemResult);
+        mockCheckStoredSystems.mockResolvedValueOnce(storedSystemResult);
 
         const checkEndpointResult = await checkEndpoints();
 
@@ -158,7 +175,7 @@ describe('Endpoint tests', () => {
         } as any;
 
         mockCreateForDestination.mockReturnValueOnce(mockServiceProvider);
-        jest.spyOn(basDestination, 'checkBASDestination').mockResolvedValueOnce(checkBASDestinationResult);
+        mockCheckBASDestination.mockResolvedValueOnce(checkBASDestinationResult);
 
         const checkEndpointResult = await checkEndpoint(sapSystemOnPrem);
 
@@ -182,7 +199,7 @@ describe('Endpoint tests', () => {
         } as any;
 
         mockCreateForAbap.mockReturnValueOnce(mockServiceProvider);
-        jest.spyOn(storedSystem, 'checkStoredSystem').mockResolvedValueOnce(checkStoredSystemResult);
+        mockCheckStoredSystem.mockResolvedValueOnce(checkStoredSystemResult);
 
         const checkEndpointResult = await checkEndpoint(sapSystemOnPrem);
 
@@ -208,7 +225,7 @@ describe('Endpoint tests', () => {
         } as any;
 
         mockCreateForAbapOnCloud.mockReturnValueOnce(mockServiceProvider);
-        jest.spyOn(storedSystem, 'checkStoredSystem').mockResolvedValueOnce(checkStoredSystemResult);
+        mockCheckStoredSystem.mockResolvedValueOnce(checkStoredSystemResult);
 
         const checkEndpointResult = await checkEndpoint(sapSystemScp);
 
