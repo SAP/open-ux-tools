@@ -1,15 +1,36 @@
-import { latestVersionString } from '@sap-ux/ui5-info';
+import { jest } from '@jest/globals';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { initI18nUi5AppInquirer } from '../../../src/i18n';
-import * as promptHelpers from '../../../src/prompts/prompt-helpers';
-import { appPathExists, defaultAppName, hidePrompts, isVersionIncluded } from '../../../src/prompts/prompt-helpers';
-import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../../../src/types';
-import { promptNames } from '../../../src/types';
+import * as actualFs from 'node:fs';
 
-jest.mock('@sap-ux/project-input-validator', () => ({
-    ...jest.requireActual('@sap-ux/project-input-validator'),
-    validateProjectFolder: jest.fn()
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const mockExistsSync = jest.fn();
+
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    existsSync: mockExistsSync
 }));
+
+// eslint-disable-next-line @typescript-eslint/require-await
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    validateProjectFolder: jest.fn(),
+    validateModuleName: jest.fn(),
+    validateNamespace: jest.fn(),
+    validateFioriAppTargetFolder: jest.fn(),
+    validateFioriAppProjectFolder: jest.fn(),
+    addi18nResourceBundle: jest.fn()
+}));
+
+const { initI18nUi5AppInquirer } = await import('../../../src/i18n');
+const { appPathExists, defaultAppName, hidePrompts, isVersionIncluded } = await import(
+    '../../../src/prompts/prompt-helpers'
+);
+const { latestVersionString } = await import('@sap-ux/ui5-info');
+
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../../../src/types';
+const { promptNames } = await import('../../../src/types');
 
 describe('prompt-helpers', () => {
     const testTempDir = join(__dirname, './test-tmp');
@@ -20,35 +41,39 @@ describe('prompt-helpers', () => {
     });
 
     afterEach(() => {
-        // Reset all spys (not mocks)
-        // jest.restoreAllMocks() only works when the mock was created with jest.spyOn().
         jest.restoreAllMocks();
+        mockExistsSync.mockReset();
     });
 
     test('appPathExists', () => {
+        // appPathExists calls existsSync under the hood
         const mockCwd = '/any/current/working/directory';
         let cwdSpy = jest.spyOn(process, 'cwd').mockReturnValueOnce(mockCwd);
+        mockExistsSync.mockReturnValueOnce(false);
         expect(appPathExists('prompts')).toEqual(false);
         expect(cwdSpy).toHaveBeenCalled();
         cwdSpy.mockClear();
 
         const parentPath = join(__dirname, '../');
+        mockExistsSync.mockReturnValueOnce(true);
         expect(appPathExists('prompts', parentPath)).toEqual(true);
         expect(cwdSpy).not.toHaveBeenCalled();
         cwdSpy.mockClear();
 
         cwdSpy = jest.spyOn(process, 'cwd').mockReturnValueOnce(parentPath);
+        mockExistsSync.mockReturnValueOnce(true);
         expect(appPathExists('prompts')).toEqual(true);
         expect(cwdSpy).toHaveBeenCalled();
     });
 
     test('defaultAppName', () => {
-        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(false);
+        // defaultAppName calls exports.appPathExists -> existsSync internally
+        mockExistsSync.mockReturnValue(false);
         expect(defaultAppName(testTempDir)).toEqual('project1');
-        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValueOnce(true);
+        mockExistsSync.mockReturnValueOnce(true).mockReturnValue(false);
         expect(defaultAppName(testTempDir)).toEqual('project2');
         // Test maximal suggested app name
-        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(true);
+        mockExistsSync.mockReturnValue(true);
         expect(defaultAppName(testTempDir)).toEqual('project1000');
     });
 

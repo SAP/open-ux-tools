@@ -31,7 +31,7 @@ export function appPathExists(appName: string, targetPath?: string): boolean | s
 export function defaultAppName(targetPath: string): string {
     let defProjNum = defaultProjectNumber;
     let defaultName = t('prompts.name.default');
-    while (exports.appPathExists(`${defaultName}`, targetPath)) {
+    while (appPathExists(`${defaultName}`, targetPath)) {
         defaultName = t('prompts.name.default', { defaultProjectNumber: ++defProjNum });
         // Dont loop forever, user will need to provide input otherwise
         if (defProjNum > 999) {

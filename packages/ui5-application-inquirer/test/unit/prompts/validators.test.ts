@@ -1,24 +1,28 @@
-import * as projectValidators from '@sap-ux/project-input-validator';
-import * as promptHelpers from '../../../src/prompts/prompt-helpers';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { initI18nUi5AppInquirer, t } from '../../../src/i18n';
-import { validateAppName } from '../../../src/prompts/validators';
 
-/**
- * Workaround to allow spyOn
- */
-jest.mock('@sap-ux/project-input-validator', () => {
-    return {
-        __esModule: true,
-        ...jest.requireActual('@sap-ux/project-input-validator')
-    };
-});
-
-jest.mock('@sap-ux/project-access', () => ({
-    findRootsForPath: jest.fn(),
-    findCapProjectRoot: jest.fn(),
-    getCapProjectType: jest.fn()
+const mockValidateModuleName = jest.fn();
+// eslint-disable-next-line @typescript-eslint/require-await
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    validateModuleName: mockValidateModuleName,
+    addi18nResourceBundle: jest.fn(),
+    validateNamespace: jest.fn(),
+    validateProjectFolder: jest.fn(),
+    validateFioriAppTargetFolder: jest.fn(),
+    validateFioriAppProjectFolder: jest.fn()
 }));
+
+const mockAppPathExists = jest.fn();
+// eslint-disable-next-line @typescript-eslint/require-await
+jest.unstable_mockModule('../../../src/prompts/prompt-helpers', () => ({
+    appPathExists: mockAppPathExists,
+    defaultAppName: jest.fn(),
+    hidePrompts: jest.fn(),
+    isVersionIncluded: jest.fn()
+}));
+
+const { initI18nUi5AppInquirer } = await import('../../../src/i18n');
+const { validateAppName } = await import('../../../src/prompts/validators');
 
 describe('validators', () => {
     beforeAll(async () => {
@@ -26,24 +30,22 @@ describe('validators', () => {
     });
 
     test('validateAppName', () => {
-        let validateModuleNameSpy = jest.spyOn(projectValidators, 'validateModuleName').mockReturnValue(true);
-        let appPathExistsSpy = jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(false);
+        mockValidateModuleName.mockReturnValue(true);
+        mockAppPathExists.mockReturnValue(false);
         const appName = 'abcd1234';
         const targetPath = join('/some/path');
         // Test that correct calls are made
         expect(validateAppName(appName, targetPath)).toEqual(true);
-        expect(validateModuleNameSpy).toHaveBeenCalledWith(appName);
-        expect(appPathExistsSpy).toHaveBeenCalledWith(appName, targetPath);
+        expect(mockValidateModuleName).toHaveBeenCalledWith(appName);
+        expect(mockAppPathExists).toHaveBeenCalledWith(appName, targetPath);
 
         // Test that nested validator values are returned
-        validateModuleNameSpy = jest
-            .spyOn(projectValidators, 'validateModuleName')
-            .mockReturnValue('Not a valid module');
+        mockValidateModuleName.mockReturnValue('Not a valid module');
         expect(validateAppName(appName, targetPath)).toEqual('Not a valid module');
 
         // Test that correct message is returned for existing path
-        validateModuleNameSpy = jest.spyOn(projectValidators, 'validateModuleName').mockReturnValue(true);
-        appPathExistsSpy = jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(true);
+        mockValidateModuleName.mockReturnValue(true);
+        mockAppPathExists.mockReturnValue(true);
         expect(validateAppName(appName, targetPath)).toBe(
             `A module with this name already exists in the folder: ${targetPath}. Choose a different module name.`
         );
