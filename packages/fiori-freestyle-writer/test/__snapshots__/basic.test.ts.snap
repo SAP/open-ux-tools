@@ -8522,8 +8522,8 @@ title=App Title",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
     \\"sourceTemplate\\": {
-      \\"id\\": \\"mocked-package-name:basic\\",
-      \\"version\\": \\"9.9.9-mocked\\",
+      \\"id\\": \\"@sap-ux/fiori-freestyle-writer:basic\\",
+      \\"version\\": \\"2.5.89\\",
       \\"toolsId\\": \\"testToolsId:abcd1234\\"
     },
     \\"dataSources\\": {

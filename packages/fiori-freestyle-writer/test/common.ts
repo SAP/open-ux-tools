@@ -1,7 +1,9 @@
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { sample } from './sample/metadata';
 import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
@@ -12,7 +14,9 @@ import { exec as execCP } from 'node:child_process';
 const exec = promisify(execCP);
 import { compareUI5VersionGte, ui5LtsVersion_1_120 } from '../src/utils';
 
-export const testOutputDir = join(__dirname, '/test-output');
+const testDirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
+export const testOutputDir = join(testDirname, '/test-output');
 
 export const debug = prepareDebug();
 
@@ -62,7 +66,7 @@ export const northwind: OdataService = {
 
 const sampleTestStore = create(createStore());
 export const getMetadata = (serviceName: string) => {
-    const metadataPath = join(__dirname, 'sample', serviceName, 'metadata.xml');
+    const metadataPath = join(testDirname, 'sample', serviceName, 'metadata.xml');
     if (sampleTestStore.exists(metadataPath)) {
         return sampleTestStore.read(metadataPath);
     }

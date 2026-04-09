@@ -1,30 +1,24 @@
+import { jest } from '@jest/globals';
 import type { FreestyleApp } from '../src';
-import { generate, TemplateType } from '../src';
-import { join } from 'node:path';
-import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath, projectChecks } from './common';
-import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { BasicAppSettings } from '../src/types';
-import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
+import { join } from 'node:path';
+import fsExtra from 'fs-extra';
+const { removeSync } = fsExtra;
+import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
+const mockApplyCAPUpdates = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
+
+jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
+    applyCAPUpdates: mockApplyCAPUpdates
+}));
+
+const { generate, TemplateType } = await import('../src');
+const { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath, projectChecks } = await import('./common');
+
 const TEST_NAME = 'basicTemplate';
 jest.setTimeout(240000); // Needed when debug.enabled
-
-jest.mock('read-pkg-up', () => ({
-    sync: jest.fn().mockReturnValue({
-        packageJson: {
-            name: 'mocked-package-name',
-            version: '9.9.9-mocked'
-        }
-    })
-}));
-
-jest.mock('@sap-ux/cap-config-writer', () => ({
-    ...jest.requireActual('@sap-ux/cap-config-writer'),
-    applyCAPUpdates: jest.fn()
-}));
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -375,7 +369,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     });
 
     describe('CAP updates', () => {
-        const capService: CapServiceCdsInfo = {
+        const capService: import('@sap-ux/cap-config-writer').CapServiceCdsInfo = {
             cdsUi5PluginInfo: {
                 isCdsUi5PluginEnabled: true,
                 hasMinCdsVersion: true,
@@ -387,7 +381,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             capType: 'Node.js'
         };
 
-        const getFreestyleApp = (options: { typescript: boolean; sapux: boolean; capService?: CapServiceCdsInfo }) => {
+        const getFreestyleApp = (options: { typescript: boolean; sapux: boolean; capService?: import('@sap-ux/cap-config-writer').CapServiceCdsInfo }) => {
             const { typescript, sapux, capService } = options;
             return {
                 app: {
@@ -419,9 +413,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             enableTypescript: false
         };
 
-        afterEach(() => {
-            jest.clearAllMocks();
-            jest.resetAllMocks();
+        beforeEach(() => {
+            mockApplyCAPUpdates.mockClear();
         });
 
         test('should perform CAP updates when CAP service is available', async () => {
@@ -433,8 +426,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 capService
             });
             await generate(curTestOutPath, freestyleApp, fs);
-            expect(applyCAPUpdates).toHaveBeenCalledTimes(1);
-            expect(applyCAPUpdates).toHaveBeenCalledWith(fs, capService, {
+            expect(mockApplyCAPUpdates).toHaveBeenCalledTimes(1);
+            expect(mockApplyCAPUpdates).toHaveBeenCalledWith(fs, capService, {
                 ...capProjectSettings,
                 sapux: false
             });
@@ -447,7 +440,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 typescript: false
             });
             await generate(curTestOutPath, freestyleApp, fs);
-            expect(applyCAPUpdates).toHaveBeenCalledTimes(0);
+            expect(mockApplyCAPUpdates).toHaveBeenCalledTimes(0);
         });
     });
 });

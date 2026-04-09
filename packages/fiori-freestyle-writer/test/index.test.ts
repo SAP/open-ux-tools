@@ -3,7 +3,8 @@ import { generate } from '../src';
 import { join } from 'node:path';
 import { TemplateType } from '../src/types';
 import type { OdataService } from '@sap-ux/odata-service-writer';
-import { removeSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { removeSync } = fsExtra;
 import { sample } from './sample/metadata';
 import { testOutputDir, debug, northwind } from './common';
 

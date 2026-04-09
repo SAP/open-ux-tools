@@ -1,14 +1,17 @@
-import { generateOPATests } from '../src/generateOPATests';
-import { generateFreestyleOPAFiles } from '@sap-ux/ui5-test-writer';
+import { jest } from '@jest/globals';
 import type { FreestyleApp, BasicAppSettings } from '../src/types';
 import { TemplateType } from '../src/types';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import type { Logger } from '@sap-ux/logger';
-import { t } from '../src/i18n';
 
-jest.mock('@sap-ux/ui5-test-writer', () => ({
-    generateFreestyleOPAFiles: jest.fn()
+const mockGenerateFreestyleOPAFiles = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/ui5-test-writer', () => ({
+    generateFreestyleOPAFiles: mockGenerateFreestyleOPAFiles
 }));
+
+const { generateOPATests } = await import('../src/generateOPATests');
+const { t } = await import('../src/i18n');
 
 describe('generateOPATests', () => {
     const basePath = '/path/to/base';
@@ -46,7 +49,7 @@ describe('generateOPATests', () => {
     it('should add test scripts to package.json when addMock is true', async () => {
         const addMock = true;
         await generateOPATests(basePath, ffApp, addMock, packageJson);
-        expect(generateFreestyleOPAFiles).toHaveBeenCalledWith(
+        expect(mockGenerateFreestyleOPAFiles).toHaveBeenCalledWith(
             basePath,
             {
                 appId: 'appId',
@@ -71,7 +74,7 @@ describe('generateOPATests', () => {
     it('should add test scripts to package.json when addMock is false', async () => {
         const addMock = false;
         await generateOPATests(basePath, ffApp, addMock, packageJson);
-        expect(generateFreestyleOPAFiles).toHaveBeenCalledWith(
+        expect(mockGenerateFreestyleOPAFiles).toHaveBeenCalledWith(
             basePath,
             {
                 appId: 'appId',
@@ -102,7 +105,7 @@ describe('generateOPATests', () => {
             info: jest.fn()
         } as unknown as Logger;
         await generateOPATests(basePath, workListApp, addMock, packageJson, undefined, mockLog);
-        expect(generateFreestyleOPAFiles).not.toHaveBeenCalled();
+        expect(mockGenerateFreestyleOPAFiles).not.toHaveBeenCalled();
         expect(mockLog.info).toHaveBeenCalledWith(
             t('info.unsupportedTestTemplateMessage', { templateType: 'worklist' })
         );

@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { render } from 'ejs';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
@@ -15,6 +16,8 @@ import type { Logger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import type { Editor } from 'mem-fs-editor';
 import type { BasicAppSettings, FreestyleApp } from './types';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.

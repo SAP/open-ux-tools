@@ -1,9 +1,11 @@
+import { jest } from '@jest/globals';
 import type { FreestyleApp } from '../src';
 import { generate } from '../src';
 import { join } from 'node:path';
 import type { ListDetailSettings } from '../src/types';
 import { TemplateType } from '../src/types';
-import { removeSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { removeSync } = fsExtra;
 import {
     commonConfig,
     northwind,
@@ -13,7 +15,6 @@ import {
     updatePackageJSONDependencyToUseLocalPath
 } from './common';
 import { initI18n } from '../src/i18n';
-import { before } from 'lodash';
 
 const TEST_NAME = 'listDetailTemplate';
 
