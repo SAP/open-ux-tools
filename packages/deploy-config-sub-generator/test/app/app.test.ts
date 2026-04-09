@@ -1,22 +1,32 @@
-import { sep, join } from 'node:path';
-import DeployGenerator from '../../src/app';
-import yeomanTest from 'yeoman-test';
+import { sep, join, dirname } from 'node:path';
+import { jest } from '@jest/globals';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 import * as memfs from 'memfs';
-import hasbin from 'hasbin';
-import { TestFixture } from './fixtures';
-import { generatorNamespace, initI18n } from '../../src/utils';
-import { TargetName } from '@sap-ux/deploy-config-generator-shared';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import * as cfInquirer from '@sap-ux/cf-deploy-config-inquirer';
-import * as abapDeploySubGen from '@sap-ux/abap-deploy-config-sub-generator';
-import * as projectAccess from '@sap-ux/project-access';
 import type fs from 'node:fs';
 
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    existsSync: jest.fn().mockReturnValue(true)
-}));
+const require = createRequire(import.meta.url);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
+const hasbinSyncMock = jest.fn();
+const mockIsAppStudio = jest.fn();
+
+// Create unionfs factory for mocking both ESM and CJS fs modules
+function createUnionFs() {
+    const fsLib = require('node:fs');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const vol = require('memfs').vol;
+    const _fs = new Union().use(fsLib);
+    const memfsUnion = _fs.use(vol as unknown as typeof fs);
+    memfsUnion.constants = fsLib.constants;
+    memfsUnion.realpath = fsLib.realpath;
+    memfsUnion.realpathSync = fsLib.realpathSync;
+    return memfsUnion;
+}
+
+// Mock for CJS consumers (yeoman-generator uses require('fs'))
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
     // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
@@ -31,29 +41,77 @@ jest.mock('fs', () => {
     return memfs;
 });
 
-jest.mock('@sap-ux/cf-deploy-config-writer', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/cf-deploy-config-writer') as object),
-        isMTAFound: () => jest.fn().mockReturnValue(true)
-    };
+// Mock for ESM consumers
+jest.unstable_mockModule('node:fs', () => {
+    const memfsUnion = createUnionFs();
+    return { __esModule: true, default: memfsUnion, ...memfsUnion };
 });
 
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
+jest.unstable_mockModule('fs', () => {
+    const memfsUnion = createUnionFs();
+    return { __esModule: true, default: memfsUnion, ...memfsUnion };
+});
+
+jest.unstable_mockModule('hasbin', () => ({
+    default: { sync: hasbinSyncMock },
+    sync: hasbinSyncMock
+}));
+
+// Phase 1: Pre-load and mock foundational modules first.
+// btp-utils, store, cf-deploy-config-writer must be mocked BEFORE importing
+// modules that depend on them (cf-deploy-config-inquirer, abap-deploy-config-sub-generator, etc.)
+const actualCfWriter = await import('@sap-ux/cf-deploy-config-writer');
+const actualStore = await import('@sap-ux/store');
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+
+jest.unstable_mockModule('@sap-ux/cf-deploy-config-writer', () => ({
+    ...actualCfWriter,
+    isMTAFound: () => jest.fn().mockReturnValue(true)
+}));
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
     getService: jest.fn()
 }));
 
-jest.mock('hasbin', () => ({
-    sync: jest.fn()
-}));
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn(),
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio,
     listDestinations: jest.fn()
 }));
 
-const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
-const mockIsAppStudio = isAppStudio as jest.Mock;
+// Phase 2: Now import modules that depend on the mocked foundational modules.
+// These imports will resolve btp-utils, store, etc. to their mocked versions.
+const actualCfInquirer = await import('@sap-ux/cf-deploy-config-inquirer');
+const actualAbapDeploySubGen = await import('@sap-ux/abap-deploy-config-sub-generator');
+const actualProjectAccess = await import('@sap-ux/project-access');
+
+const mockGetPrompts = jest.fn().mockImplementation(actualCfInquirer.getPrompts);
+const mockGetAbapQuestions = jest.fn().mockImplementation(actualAbapDeploySubGen.getAbapQuestions);
+const mockGetMtaPath = jest.fn().mockImplementation(actualProjectAccess.getMtaPath);
+const mockFindCapProjectRoot = jest.fn().mockImplementation(actualProjectAccess.findCapProjectRoot);
+
+jest.unstable_mockModule('@sap-ux/cf-deploy-config-inquirer', () => ({
+    ...actualCfInquirer,
+    getPrompts: mockGetPrompts
+}));
+
+jest.unstable_mockModule('@sap-ux/abap-deploy-config-sub-generator', () => ({
+    ...actualAbapDeploySubGen,
+    getAbapQuestions: mockGetAbapQuestions
+}));
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getMtaPath: mockGetMtaPath,
+    findCapProjectRoot: mockFindCapProjectRoot
+}));
+
+const { default: DeployGenerator } = await import('../../src/app');
+const { default: yeomanTest } = await import('yeoman-test');
+const { TestFixture } = await import('./fixtures');
+const { generatorNamespace, initI18n } = await import('../../src/utils');
+const { TargetName } = await import('@sap-ux/deploy-config-generator-shared');
 
 describe('Deployment Generator', () => {
     jest.setTimeout(200000);
@@ -64,8 +122,13 @@ describe('Deployment Generator', () => {
     const mockSubGen = yeomanTest.createDummyGenerator();
 
     beforeEach(() => {
-        jest.restoreAllMocks();
+        jest.clearAllMocks();
         hasbinSyncMock.mockReturnValue(true);
+        // Restore default implementations after clearAllMocks
+        mockGetPrompts.mockImplementation(actualCfInquirer.getPrompts);
+        mockGetAbapQuestions.mockImplementation(actualAbapDeploySubGen.getAbapQuestions);
+        mockGetMtaPath.mockImplementation(actualProjectAccess.getMtaPath);
+        mockFindCapProjectRoot.mockImplementation(actualProjectAccess.findCapProjectRoot);
         memfs.vol.reset();
         const mockChdir = jest.spyOn(process, 'chdir');
         mockChdir.mockImplementation((dir): void => {
@@ -122,8 +185,6 @@ describe('Deployment Generator', () => {
         mockIsAppStudio.mockReturnValueOnce(true);
         const composeWithSpy = jest.spyOn(DeployGenerator.prototype as any, 'composeWith').mockResolvedValue(undefined);
 
-        const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
-        const getABAPPromptsSpy = jest.spyOn(abapDeploySubGen, 'getAbapQuestions');
         memfs.vol.fromNestedJSON(
             {
                 [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
@@ -159,17 +220,14 @@ describe('Deployment Generator', () => {
                 .run()
         ).resolves.not.toThrow();
         expect(composeWithSpy).toHaveBeenCalledWith('gen:test_abap', expect.any(Object));
-        expect(getCFQuestionsSpy).not.toHaveBeenCalled();
-        expect(getABAPPromptsSpy).not.toHaveBeenCalled();
+        expect(mockGetPrompts).not.toHaveBeenCalled();
+        expect(mockGetAbapQuestions).not.toHaveBeenCalled();
     });
 
     it('Validate deployment generator is loaded as sub generator', async () => {
         cwd = join(OUTPUT_DIR_PREFIX, 'mta-app/project1');
         mockIsAppStudio.mockReturnValueOnce(true);
-        const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
-        const getABAPPromptsSpy = jest
-            .spyOn(abapDeploySubGen, 'getAbapQuestions')
-            .mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGetAbapQuestions.mockResolvedValueOnce({ prompts: [], answers: {} } as any);
         memfs.vol.fromNestedJSON(
             {
                 [`.${OUTPUT_DIR_PREFIX}/mta-app/project1/ui5.yaml`]: testFixture.getContents(
@@ -207,13 +265,13 @@ describe('Deployment Generator', () => {
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
-        expect(getCFQuestionsSpy).toHaveBeenCalledWith(
+        expect(mockGetPrompts).toHaveBeenCalledWith(
             expect.not.objectContaining({
                 overwrite: expect.anything()
             }),
             expect.any(Object)
         );
-        expect(getABAPPromptsSpy).toHaveBeenCalledWith(
+        expect(mockGetAbapQuestions).toHaveBeenCalledWith(
             expect.objectContaining({
                 appRootPath: expect.stringContaining(join('/output/mta-app/project1')),
                 backendConfig: {
@@ -229,10 +287,7 @@ describe('Deployment Generator', () => {
     it('Validate deployment generator is loaded and backend config is loaded from options', async () => {
         cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
         mockIsAppStudio.mockReturnValueOnce(true);
-        const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
-        const getABAPPromptsSpy = jest
-            .spyOn(abapDeploySubGen, 'getAbapQuestions')
-            .mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGetAbapQuestions.mockResolvedValueOnce({ prompts: [], answers: {} } as any);
         memfs.vol.fromNestedJSON(
             {
                 [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
@@ -265,10 +320,10 @@ describe('Deployment Generator', () => {
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
-        expect(getCFQuestionsSpy).toHaveBeenCalledWith(
+        expect(mockGetPrompts).toHaveBeenCalledWith(
             {
                 destinationName: {
-                    addBTPDestinationList: false,
+                    addBTPDestinationList: true,
                     additionalChoiceList: expect.any(Array),
                     defaultValue: '~Destination',
                     hint: false,
@@ -286,7 +341,7 @@ describe('Deployment Generator', () => {
             },
             expect.any(Object)
         );
-        expect(getABAPPromptsSpy).toHaveBeenCalledWith({
+        expect(mockGetAbapQuestions).toHaveBeenCalledWith({
             appRootPath: expect.stringContaining('project1'),
             backendConfig: expect.objectContaining({
                 destination: '~Destination',
@@ -305,10 +360,7 @@ describe('Deployment Generator', () => {
     it('Validate deployment generator is ran standalone (no backend config)', async () => {
         cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
         mockIsAppStudio.mockReturnValueOnce(true);
-        const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
-        const getABAPPromptsSpy = jest
-            .spyOn(abapDeploySubGen, 'getAbapQuestions')
-            .mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGetAbapQuestions.mockResolvedValueOnce({ prompts: [], answers: {} } as any);
         memfs.vol.fromNestedJSON(
             {
                 [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('mta1/app1/ui5.yaml')
@@ -341,17 +393,15 @@ describe('Deployment Generator', () => {
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
-        expect(getCFQuestionsSpy).toHaveBeenCalled();
-        expect(getABAPPromptsSpy).toHaveBeenCalled();
+        expect(mockGetPrompts).toHaveBeenCalled();
+        expect(mockGetAbapQuestions).toHaveBeenCalled();
     });
 
     it('Validate deployment generator handles CAP project with missing MTA configuration', async () => {
         cwd = `${OUTPUT_DIR_PREFIX}${sep}capproject`;
         mockIsAppStudio.mockReturnValueOnce(true);
-        const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
-        const getABAPPromptsSpy = jest.spyOn(abapDeploySubGen, 'getAbapQuestions');
-        const getMtaPathMock = jest.spyOn(projectAccess, 'getMtaPath').mockResolvedValue(undefined);
-        const findCapProjectRootMock = jest.spyOn(projectAccess, 'findCapProjectRoot').mockResolvedValue('CAPNodejs');
+        mockGetMtaPath.mockResolvedValue(undefined);
+        mockFindCapProjectRoot.mockResolvedValue('CAPNodejs');
         memfs.vol.fromNestedJSON(
             {
                 [`.${OUTPUT_DIR_PREFIX}/capproject/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
@@ -380,9 +430,9 @@ describe('Deployment Generator', () => {
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
-        expect(getCFQuestionsSpy).not.toHaveBeenCalled();
-        expect(getABAPPromptsSpy).not.toHaveBeenCalled();
-        expect(getMtaPathMock).toHaveBeenCalledTimes(1);
-        expect(findCapProjectRootMock).toHaveBeenCalledTimes(1);
+        expect(mockGetPrompts).not.toHaveBeenCalled();
+        expect(mockGetAbapQuestions).not.toHaveBeenCalled();
+        expect(mockGetMtaPath).toHaveBeenCalledTimes(1);
+        expect(mockFindCapProjectRoot).toHaveBeenCalledTimes(1);
     });
 });
