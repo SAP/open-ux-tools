@@ -54,9 +54,9 @@ function validateTarget(target: AbapTarget): AbapTarget {
  *
  * @param credentials - credentials to validate
  */
-function validateCredentials(credentials: AbapDeployConfig['credentials']): void {
+function validateCredentials(credentials: NonNullable<AbapDeployConfig['credentials']>): void {
     const isEnvRef = (value: string | undefined): boolean => !value || value.startsWith('env:');
-    if (credentials && (!isEnvRef(credentials.username) || !isEnvRef(credentials.password))) {
+    if (!isEnvRef(credentials.username) || !isEnvRef(credentials.password)) {
         throw new Error(
             'Credentials must be provided as environment variable references (e.g. env:MY_VAR), not as plain text.'
         );
