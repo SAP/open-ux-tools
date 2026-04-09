@@ -1036,7 +1036,7 @@ class FpmDocumentationBuilder {
 }
 
 // Run the builder
-if (require.main === module) {
+if (process.argv[1] && import.meta.url === `file://${process.argv[1]}`) {
     const logger = new ToolsLogger();
     const builder = new FpmDocumentationBuilder();
     builder.build().catch((error) => {

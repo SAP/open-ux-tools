@@ -1,4 +1,4 @@
-import * as fs from 'node:fs/promises';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
 const mockPipeline = jest.fn();
@@ -11,25 +11,26 @@ const mockLogger = {
     debug: jest.fn()
 };
 
-jest.mock('@sap-ux/logger', () => ({
+jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-jest.mock('@xenova/transformers', () => ({
+jest.unstable_mockModule('@xenova/transformers', () => ({
     pipeline: mockPipeline
 }));
 
-jest.mock('@lancedb/lancedb', () => ({
+jest.unstable_mockModule('@lancedb/lancedb', () => ({
     connect: mockConnect
 }));
 
-jest.mock('fs/promises', () => ({
+const mockFs = {
     readFile: jest.fn(),
     mkdir: jest.fn(),
     writeFile: jest.fn(),
     readdir: jest.fn(),
     stat: jest.fn()
-}));
+};
+jest.unstable_mockModule('node:fs/promises', () => mockFs);
 
 interface EmbeddingBuilderType {
     config: {
@@ -55,7 +56,6 @@ interface EmbeddingBuilderType {
 
 describe('EmbeddingBuilder', () => {
     let EmbeddingBuilder: new () => EmbeddingBuilderType;
-    const mockFs = fs as jest.Mocked<typeof fs>;
 
     beforeEach(async () => {
         jest.clearAllMocks();
