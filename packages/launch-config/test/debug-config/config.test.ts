@@ -1,28 +1,28 @@
-import { configureLaunchJsonFile } from '../../src/debug-config/config';
+import { jest } from '@jest/globals';
 import type { DebugOptions, LaunchConfig, LaunchJSON, FioriOptions } from '../../src/types';
 import path, { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
 import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../../src/types';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { FileName } from '@sap-ux/project-access';
 import { TestPaths } from '../test-data/utils';
-import { handleWorkspaceConfig } from '../../src/debug-config/workspaceManager';
-import * as launchConfig from '../../src/launch-config-crud/create';
 
+const mockHandleWorkspaceConfig = jest.fn<any>();
 // Mock workspaceManager
-jest.mock('../../src/debug-config/workspaceManager', () => ({
-    ...jest.requireActual('../../src/debug-config/workspaceManager'),
-    handleWorkspaceConfig: jest.fn()
+jest.unstable_mockModule('../../src/debug-config/workspaceManager', () => ({
+    handleWorkspaceConfig: mockHandleWorkspaceConfig
 }));
 
-jest.mock('../../src/launch-config-crud/create', () => ({
-    ...jest.requireActual('../../src/launch-config-crud/create'),
-    updateWorkspaceFoldersIfNeeded: jest.fn()
-}));
+const { configureLaunchJsonFile } = await import('../../src/debug-config/config');
+const launchConfig = await import('../../src/launch-config-crud/create');
+
+const configTestDir = dirname(fileURLToPath(import.meta.url));
 
 const projectName = 'project1';
 const cwd = `\${workspaceFolder}`;
-const projectPath = path.join(__dirname, projectName);
+const projectPath = path.join(configTestDir, projectName);
 
 // Base configuration template
 const baseConfigurationObj: Partial<LaunchConfig> = {
@@ -205,10 +205,10 @@ describe('debug config tests', () => {
         configOptions.sapClientParam = 'sapClientParam';
         configOptions.isAppStudio = true;
 
-        const launchFile = configureLaunchJsonFile(path.join(__dirname, projectName), cwd, configOptions);
+        const launchFile = configureLaunchJsonFile(path.join(configTestDir, projectName), cwd, configOptions);
         expect(launchFile.configurations.length).toBe(3);
 
-        const projectPath = path.join(__dirname, 'project1');
+        const projectPath = path.join(configTestDir, 'project1');
         const expectedRunConfig = JSON.stringify({
             handlerId: FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID,
             runnableId: projectPath
@@ -253,7 +253,7 @@ describe('create', () => {
             }
         };
         launchJSONPath = join(TestPaths.tmpDir, '.vscode', 'launch.json');
-        (handleWorkspaceConfig as jest.Mock).mockReturnValue({
+        (mockHandleWorkspaceConfig as jest.Mock).mockReturnValue({
             launchJsonPath: launchJSONPath,
             workspaceFolderUri: launchJSONPath,
             cwd: TestPaths.tmpDir,

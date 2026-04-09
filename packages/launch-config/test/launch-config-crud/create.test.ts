@@ -1,20 +1,43 @@
+import { jest } from '@jest/globals';
 import { basename, join } from 'node:path';
+import { posix, dirname } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { createLaunchConfig } from '../../src/launch-config-crud/create';
 import { DirName, FileName } from '@sap-ux/project-access';
 import { TestPaths } from '../test-data/utils';
 import type { DebugOptions } from '../../src/types';
 import { LAUNCH_JSON_FILE } from '../../src/types';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../../src/i18n';
-import { isFolderInWorkspace } from '../../src/debug-config/helpers';
 
-// Mock the helpers
-jest.mock('../../src/debug-config/helpers', () => ({
-    ...jest.requireActual('../../src/debug-config/helpers'),
-    isFolderInWorkspace: jest.fn()
+const mockIsFolderInWorkspace = jest.fn<any>();
+
+// Mock the helpers - provide all exports without importing the actual module
+jest.unstable_mockModule('../../src/debug-config/helpers', () => ({
+    isFolderInWorkspace: mockIsFolderInWorkspace,
+    getLaunchJsonPath: (workspaceFolders: any) => {
+        if (workspaceFolders && workspaceFolders.length > 0) {
+            return workspaceFolders[0].uri.fsPath;
+        }
+        return undefined;
+    },
+    formatCwd: (path?: string) => {
+        const formattedPath = path ? posix.sep + path : '';
+        return `\${workspaceFolder}${formattedPath}`;
+    },
+    handleAppsNotInWorkspace: (projectPath: string, isAppStudio: boolean, vscode: any) => {
+        const projectName = basename(projectPath);
+        const launchJsonPath = join(dirname(projectPath), projectName);
+        return {
+            cwd: `\${workspaceFolder}`,
+            launchJsonPath,
+            workspaceFolderUri: !isAppStudio ? vscode?.Uri?.file(launchJsonPath) : undefined,
+            appNotInWorkspace: true
+        };
+    }
 }));
+
+const { createLaunchConfig } = await import('../../src/launch-config-crud/create');
 
 describe('create', () => {
     const memFs = create(createStorage());
@@ -276,7 +299,7 @@ describe('create', () => {
                 }
             ]
         });
-        (isFolderInWorkspace as jest.Mock).mockReturnValue(true);
+        (mockIsFolderInWorkspace as jest.Mock).mockReturnValue(true);
         const result: any = await createLaunchConfig(
             projectPath,
             {
@@ -355,7 +378,7 @@ describe('create', () => {
                 }
             ]
         });
-        (isFolderInWorkspace as jest.Mock).mockReturnValue(true);
+        (mockIsFolderInWorkspace as jest.Mock).mockReturnValue(true);
         const result: any = await createLaunchConfig(
             projectPath,
             {
