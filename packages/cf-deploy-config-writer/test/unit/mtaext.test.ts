@@ -1,32 +1,42 @@
-import { join } from 'node:path';
-import fs from 'node:fs';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import * as realFs from 'node:fs';
 import * as memfs from 'memfs';
-import { MtaConfig } from '../../src/';
-import { FileName } from '@sap-ux/project-access';
+import { Union } from 'unionfs';
 
-jest.mock('fs', () => {
-    const fs1 = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const vol = require('memfs').vol;
-    const memfs = new Union().use(fs1).use(vol as unknown as typeof fs);
-    memfs.realpath = fs1.realpath;
-    memfs.realpathSync = fs1.realpathSync;
-    return memfs;
-});
+const __dirname = join(fileURLToPath(import.meta.url), '..');
+const pkgRoot = join(dirname(fileURLToPath(import.meta.url)), '../..');
 
-jest.mock('@sap/mta-lib', () => {
-    return {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        Mta: require('./mockMta').MockMta
-    };
-});
+// Create the union filesystem
+const ufs = new Union();
+ufs.use(realFs as any).use(memfs.vol as any);
+(ufs as any).realpath = realFs.realpath;
+(ufs as any).realpathSync = realFs.realpathSync;
+
+jest.unstable_mockModule('fs', () => ufs);
+
+const { MockMta } = await import('./mockMta');
+jest.unstable_mockModule('@sap/mta-lib', () => ({
+    Mta: MockMta
+}));
+
+const fs = await import('fs');
+const { MtaConfig } = await import('../../src/');
+const { FileName } = await import('@sap-ux/project-access');
 
 describe('Adding and Updating mta extension configuration', () => {
     beforeEach(() => {
-        jest.resetModules();
         memfs.vol.reset();
+        // Source code at mta.ts:909 reads join(__dirname, '../../templates/app/mta-ext.mtaext')
+        // where __dirname = <pkgRoot>/src (set by jest.setup.mjs). This resolves to
+        // <pkgRoot>/../templates/app/mta-ext.mtaext (wrong path). Seed memfs with the
+        // template at that wrong path so the unionfs overlay finds it.
+        const wrongTemplatePath = join(pkgRoot, 'src', '..', '..', 'templates', 'app', 'mta-ext.mtaext');
+        const realTemplatePath = join(pkgRoot, 'templates', 'app', 'mta-ext.mtaext');
+        const templateContent = realFs.readFileSync(realTemplatePath, 'utf-8');
+        memfs.vol.mkdirSync(dirname(wrongTemplatePath), { recursive: true });
+        memfs.vol.writeFileSync(wrongTemplatePath, templateContent);
     });
 
     beforeAll(() => {

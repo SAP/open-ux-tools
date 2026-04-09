@@ -1,56 +1,52 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fsExtra from 'fs-extra';
-import hasbin from 'hasbin';
-import { generateAppConfig } from '../../src';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import fs from 'node:fs';
-import { CommandRunner } from '@sap-ux/nodejs-utils';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
+const __dirname = join(fileURLToPath(import.meta.url), '..');
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: jest.fn().mockReturnValue(false)
 }));
 
-jest.mock('hasbin', () => ({
-    ...(jest.requireActual('hasbin') as {}),
+const realHasbin = await import('hasbin');
+jest.unstable_mockModule('hasbin', () => ({
+    ...realHasbin,
     sync: jest.fn()
 }));
 
-jest.mock('@sap/mta-lib', () => {
-    return {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        Mta: require('./mockMta').MockMta
-    };
-});
+const { MockMta } = await import('./mockMta');
+jest.unstable_mockModule('@sap/mta-lib', () => ({
+    Mta: MockMta
+}));
 
-let hasSyncMock: jest.SpyInstance;
+const hasbin = await import('hasbin');
+const { generateAppConfig } = await import('../../src');
+const { CommandRunner } = await import('@sap-ux/nodejs-utils');
+
+let hasSyncMock: jest.Mock;
 let unitTestFs: Editor;
-let commandRunnerMock: jest.SpyInstance;
+let commandRunnerMock: ReturnType<typeof jest.spyOn>;
 
 describe('CF Writer App - Application Frontend', () => {
-    jest.setTimeout(10000);
-
     const outputDir = join(__dirname, '../test-output', 'appfrontend');
 
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
+        hasSyncMock = (hasbin.sync as jest.Mock).mockImplementation(() => true);
         commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 }) as any);
         unitTestFs = create(createStorage());
     });
 
     beforeAll(() => {
         jest.clearAllMocks();
-        jest.spyOn(hasbin, 'sync').mockReturnValue(true);
         fsExtra.removeSync(outputDir);
-        jest.mock('hasbin', () => {
-            return {
-                ...(jest.requireActual('hasbin') as {}),
-                sync: hasSyncMock
-            };
-        });
     });
 
     afterAll(() => {

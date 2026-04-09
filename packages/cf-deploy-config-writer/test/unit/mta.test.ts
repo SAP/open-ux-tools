@@ -1,30 +1,37 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import * as realFs from 'node:fs';
 import * as memfs from 'memfs';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } from '../../src/';
-import { deployMode, SRV_API } from '../../src/constants';
+import { Union } from 'unionfs';
 import type { mta } from '@sap/mta-lib';
-import * as waitForMtaModule from '../../src/mta-config/wait-for-mta';
 
-jest.mock('fs', () => {
-    const fs1 = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const vol = require('memfs').vol;
-    const memfs = new Union().use(fs1).use(vol as unknown as typeof fs);
-    memfs.realpath = fs1.realpath;
-    memfs.realpathSync = fs1.realpathSync;
-    return memfs;
-});
+const __dirname = join(fileURLToPath(import.meta.url), '..');
 
-jest.mock('@sap/mta-lib', () => {
-    return {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        Mta: require('./mockMta').MockMta
-    };
-});
+// Create the union filesystem
+const ufs = new Union();
+ufs.use(realFs as any).use(memfs.vol as any);
+(ufs as any).realpath = realFs.realpath;
+(ufs as any).realpathSync = realFs.realpathSync;
+
+jest.unstable_mockModule('fs', () => ufs);
+
+const { MockMta } = await import('./mockMta');
+jest.unstable_mockModule('@sap/mta-lib', () => ({
+    Mta: MockMta
+}));
+
+const realWaitForMta = await import('../../src/mta-config/wait-for-mta');
+const mockWaitForMtaFile = jest.fn().mockImplementation(realWaitForMta.waitForMtaFile);
+jest.unstable_mockModule('../../src/mta-config/wait-for-mta', () => ({
+    ...realWaitForMta,
+    waitForMtaFile: mockWaitForMtaFile
+}));
+
+const fs = await import('fs');
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
+const { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } = await import('../../src/');
+const { deployMode, SRV_API } = await import('../../src/constants');
 
 describe('Validate common functionality', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -32,7 +39,6 @@ describe('Validate common functionality', () => {
     const abapServiceMta = fs.readFileSync(join(__dirname, 'fixtures/mta-types/abap-service/mta.yaml'), 'utf-8');
 
     beforeEach(() => {
-        jest.resetModules();
         memfs.vol.reset();
     });
 
@@ -188,7 +194,7 @@ describe('Validate MtaConfig Instance', () => {
 
     it('Validate mta config returns undefined when file is not ready', async () => {
         // Given: waitForMtaFile times out (file not present)
-        jest.spyOn(waitForMtaModule, 'waitForMtaFile').mockRejectedValueOnce(new Error('not ready'));
+        mockWaitForMtaFile.mockRejectedValueOnce(new Error('not ready'));
         // When
         const mtaConfig = await getMtaConfig(appDir);
         // Then: returns undefined

@@ -1,30 +1,39 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fsExtra from 'fs-extra';
-import hasbin from 'hasbin';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { generateCAPConfig, RouterModuleType } from '../../src';
-import * as projectAccess from '@sap-ux/project-access';
-import fs from 'node:fs';
-import { CommandRunner } from '@sap-ux/nodejs-utils';
 
-let hasSyncMock: jest.SpyInstance;
-let commandRunnerMock: jest.SpyInstance;
-const originalPlatform = process.platform;
+const __dirname = join(fileURLToPath(import.meta.url), '..');
 
-jest.mock('hasbin', () => ({
-    ...(jest.requireActual('hasbin') as {}),
+const realHasbin = await import('hasbin');
+jest.unstable_mockModule('hasbin', () => ({
+    ...realHasbin,
     sync: jest.fn()
 }));
 
-jest.mock('@sap/mta-lib', () => {
-    return {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        Mta: require('./mockMta').MockMta
-    };
-});
+const { MockMta } = await import('./mockMta');
+jest.unstable_mockModule('@sap/mta-lib', () => ({
+    Mta: MockMta
+}));
+
+const realProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
+    getCapProjectType: jest.fn()
+}));
+
+const hasbin = await import('hasbin');
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
+const { generateCAPConfig } = await import('../../src');
+const { RouterModuleType } = await import('../../src');
+const projectAccess = await import('@sap-ux/project-access');
+const { CommandRunner } = await import('@sap-ux/nodejs-utils');
+
+let hasSyncMock: jest.Mock;
+let commandRunnerMock: ReturnType<typeof jest.spyOn>;
+const originalPlatform = process.platform;
 
 describe('CF Writer CAP', () => {
-    jest.setTimeout(10000);
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
     });
@@ -33,19 +42,12 @@ describe('CF Writer CAP', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
+        hasSyncMock = (hasbin.sync as jest.Mock).mockImplementation(() => true);
     });
 
     beforeAll(() => {
         fsExtra.removeSync(outputDir);
         jest.clearAllMocks();
-        jest.spyOn(hasbin, 'sync').mockReturnValue(true);
-        jest.mock('hasbin', () => {
-            return {
-                ...(jest.requireActual('hasbin') as {}),
-                sync: hasSyncMock
-            };
-        });
         Object.defineProperty(process, 'platform', { value: 'win32' });
     });
 
@@ -118,7 +120,9 @@ describe('CF Writer CAP', () => {
         const mtaId = 'captestproject';
         const mtaPath = join(outputDir, mtaId);
         jest.spyOn(projectAccess, 'getCapProjectType').mockResolvedValue('CAPNodejs');
-        jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+        // Ensure mta.yaml actually exists on disk so isMTAFound returns true
+        fsExtra.mkdirSync(mtaPath, { recursive: true });
+        fsExtra.writeFileSync(join(mtaPath, 'mta.yaml'), '_schema-version: 3.3.0\nID: test\n');
         await expect(
             generateCAPConfig(
                 {

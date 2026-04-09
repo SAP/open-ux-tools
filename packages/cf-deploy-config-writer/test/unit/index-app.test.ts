@@ -1,42 +1,54 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fsExtra from 'fs-extra';
-import hasbin from 'hasbin';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import * as btp from '@sap-ux/btp-utils';
-import { generateAppConfig, DefaultMTADestination } from '../../src';
-import { generateSupportingConfig } from '../../src/utils';
-import type { CFConfig } from '../../src/types';
-import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { Mta } from '@sap/mta-lib';
-import { CommandRunner } from '@sap-ux/nodejs-utils';
+import { create } from 'mem-fs-editor';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
+const __dirname = join(fileURLToPath(import.meta.url), '..');
+import type { Editor } from 'mem-fs-editor';
+import fs from 'node:fs';
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: jest.fn(),
     listDestinations: jest.fn()
 }));
 
-jest.mock('hasbin', () => ({
-    ...(jest.requireActual('hasbin') as {}),
+const realHasbin = await import('hasbin');
+jest.unstable_mockModule('hasbin', () => ({
+    ...realHasbin,
     sync: jest.fn()
 }));
 
-jest.mock('@sap/mta-lib', () => {
-    return {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        Mta: require('./mockMta').MockMta
-    };
-});
+const realCfTools = await import('@sap/cf-tools');
+jest.unstable_mockModule('@sap/cf-tools', () => ({
+    ...realCfTools,
+    apiGetInstanceCredentials: jest.fn()
+}));
 
-let hasSyncMock: jest.SpyInstance;
-let isAppStudioMock: jest.SpyInstance;
-let listDestinationsMock: jest.SpyInstance;
-let commandRunnerMock: jest.SpyInstance;
+const { MockMta } = await import('./mockMta');
+jest.unstable_mockModule('@sap/mta-lib', () => ({
+    Mta: MockMta
+}));
+
+const btp = await import('@sap-ux/btp-utils');
+const hasbin = await import('hasbin');
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
+const { generateAppConfig, DefaultMTADestination } = await import('../../src');
+const { generateSupportingConfig } = await import('../../src/utils');
+const { Mta } = await import('@sap/mta-lib');
+const { CommandRunner } = await import('@sap-ux/nodejs-utils');
+
+type CFConfig = import('../../src/types').CFConfig;
+
+let hasSyncMock: jest.Mock;
+let isAppStudioMock: jest.Mock;
+let listDestinationsMock: jest.Mock;
+let commandRunnerMock: ReturnType<typeof jest.spyOn>;
 
 describe('CF Writer App', () => {
-    jest.setTimeout(10000);
-
     const destinationsMock = {
         'TestDestination': {
             Name: 'TestDestination',
@@ -57,22 +69,15 @@ describe('CF Writer App', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
-        listDestinationsMock = jest.spyOn(btp, 'listDestinations');
-        hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
+        isAppStudioMock = (btp.isAppStudio as jest.Mock);
+        listDestinationsMock = (btp.listDestinations as jest.Mock);
+        hasSyncMock = (hasbin.sync as jest.Mock).mockImplementation(() => true);
         commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 }) as any);
     });
 
     beforeAll(() => {
         jest.clearAllMocks();
-        jest.spyOn(hasbin, 'sync').mockReturnValue(true);
         fsExtra.removeSync(outputDir);
-        jest.mock('hasbin', () => {
-            return {
-                ...(jest.requireActual('hasbin') as {}),
-                sync: hasSyncMock
-            };
-        });
     });
 
     afterAll(() => {
@@ -174,28 +179,28 @@ describe('CF Writer App', () => {
     });
 
     test('Generate deployment configs - generateSupportingConfig with mtaId passed in', async () => {
-        const fs = create(createStorage());
+        const memFs = create(createStorage());
         const appPath = join(outputDir, 'supportingconfig');
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(appPath);
-        await generateSupportingConfig({ appPath, mtaId: 'testMtaId', mtaPath: appPath } as unknown as CFConfig, fs);
-        expect(fs.read(join(appPath, 'package.json'))).toMatchSnapshot();
-        expect(fs.read(join(appPath, '.gitignore'))).toMatchSnapshot();
+        await generateSupportingConfig({ appPath, mtaId: 'testMtaId', mtaPath: appPath } as unknown as CFConfig, memFs);
+        expect(memFs.read(join(appPath, 'package.json'))).toMatchSnapshot();
+        expect(memFs.read(join(appPath, '.gitignore'))).toMatchSnapshot();
     });
 
     test('Generate deployment configs - generateSupportingConfig read mtaId read from file', async () => {
-        const fs = create(createStorage());
+        const memFs = create(createStorage());
         const appPath = join(outputDir, 'supportingconfigreadmta');
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, 'fixtures/mta-types/cdsmta'), appPath);
         await generateSupportingConfig(
             { appPath, mtaPath: appPath, addManagedAppRouter: true, mtaId: 'captestproject' } as unknown as CFConfig,
-            fs
+            memFs
         );
-        expect(fs.read(join(appPath, 'package.json'))).toMatchSnapshot();
-        expect(fs.read(join(appPath, '.gitignore'))).toMatchSnapshot();
-        expect(fs.read(join(appPath, 'xs-security.json'))).toMatchSnapshot();
+        expect(memFs.read(join(appPath, 'package.json'))).toMatchSnapshot();
+        expect(memFs.read(join(appPath, '.gitignore'))).toMatchSnapshot();
+        expect(memFs.read(join(appPath, 'xs-security.json'))).toMatchSnapshot();
     });
 
     test('Generate deployment configs - HTML5 app with no datasource configured', async () => {
