@@ -5,9 +5,9 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
+import type { HTML5Content, ServiceInfo, CfAppParams } from '../../types';
 import { getToken } from '../../btp/api';
 import { getServiceNameByTags, getOrCreateServiceInstanceKeys, createServiceInstance } from '../services/api';
-import type { HTML5Content, ServiceInfo, CfAppParams } from '../../types';
 
 const HTML5_APPS_REPO_RUNTIME = 'html5-apps-repo-runtime';
 
@@ -87,7 +87,7 @@ export async function downloadAppContent(
     try {
         const { serviceKeys, serviceInstance } = await getHtml5RepoCredentials(spaceGuid, logger);
 
-        const token = await getToken(serviceKeys[0]?.credentials.uaa);
+        const token = await getToken(serviceKeys[0]?.credentials.uaa, logger);
         const uri = `${serviceKeys[0]?.credentials.uri}/applications/content/${appNameVersion}?pathSuffixFilter=manifest.json,xs-app.json`;
         const zip = await downloadZip(token, appHostId, uri);
 

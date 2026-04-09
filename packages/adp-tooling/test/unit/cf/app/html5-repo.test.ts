@@ -12,7 +12,6 @@ import {
     getOrCreateServiceInstanceKeys
 } from '../../../../src/cf/services/api';
 import { downloadAppContent, downloadZip, getHtml5RepoCredentials } from '../../../../src/cf/app/html5-repo';
-import { getToken } from '../../../../src/btp/api';
 
 jest.mock('axios');
 jest.mock('adm-zip');
@@ -88,45 +87,6 @@ describe('HTML5 Repository', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-    });
-
-    describe('getToken', () => {
-        test('should successfully get OAuth token', async () => {
-            const mockResponse = {
-                data: {
-                    access_token: 'test-access-token'
-                }
-            };
-            mockAxios.post.mockResolvedValue(mockResponse);
-
-            const result = await getToken(mockUaa);
-
-            expect(result).toBe('test-access-token');
-            expect(mockAxios.post).toHaveBeenCalledWith('/test-uaa/oauth/token', 'grant_type=client_credentials', {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': 'Basic ' + Buffer.from('test-client-id:test-client-secret').toString('base64')
-                }
-            });
-        });
-
-        test('should throw error when token request fails', async () => {
-            const error = new Error('Network error');
-            mockAxios.post.mockRejectedValue(error);
-
-            await expect(getToken(mockUaa)).rejects.toThrow(t('error.failedToGetAuthKey', { error: 'Network error' }));
-        });
-
-        test('should handle missing access_token in response', async () => {
-            const mockResponse = {
-                data: {}
-            };
-            mockAxios.post.mockResolvedValue(mockResponse);
-
-            const result = await getToken(mockUaa);
-
-            expect(result).toBeUndefined();
-        });
     });
 
     describe('downloadZip', () => {

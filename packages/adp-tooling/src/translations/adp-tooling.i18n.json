@@ -130,6 +130,9 @@
         "destinationServiceNotFoundInMtaYaml": "Destination service instance not found in mta.yaml. Ensure a resource with 'service: destination' is declared.",
         "noServiceKeysFoundForDestination": "No service keys found for destination service instance '{{serviceInstanceName}}'. Ensure the service is provisioned and try again.",
         "errorFetchingDestinations": "Error fetching destinations. Check log for details."
+        "cfPushFailed": "cf push failed for the '{{appName}}' app: {{error}}",
+        "cfEnableSshFailed": "cf enable-ssh failed for the '{{appName}}' app: {{error}}",
+        "cfRestartFailed": "cf restart failed for the '{{appName}}' app: {{error}}"
     },
     "choices": {
         "true": "true",
