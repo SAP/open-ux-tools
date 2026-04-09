@@ -1,21 +1,23 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { writeAnnotations } from '../../src/writeAnnotations';
-import { TemplateType } from '../../src/types';
-import { generateAnnotations } from '@sap-ux/annotation-generator';
 import type { Editor } from 'mem-fs-editor';
-import { applyBaseConfigToFEApp } from '../common';
 import type { Logger } from '@sap-ux/logger';
-import { t } from '../../src/i18n';
+import { TemplateType } from '../../src/types';
 
-jest.mock('@sap-ux/annotation-generator', () => ({
-    ...jest.requireActual('@sap-ux/annotation-generator'),
-    generateAnnotations: jest.fn()
+const mockGenerateAnnotations = jest.fn();
+const mockGetCapFolderPathsSync = jest.fn().mockReturnValue({ app: '/mock/app/path' });
+
+jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
+    generateAnnotations: mockGenerateAnnotations
 }));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getCapFolderPathsSync: jest.fn().mockReturnValue({ app: '/mock/app/path' })
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    getCapFolderPathsSync: mockGetCapFolderPathsSync
 }));
+
+const { writeAnnotations } = await import('../../src/writeAnnotations');
+const { t } = await import('../../src/i18n');
+const { applyBaseConfigToFEApp } = await import('../common');
 
 describe('writeAnnotations', () => {
     let fs: Editor;
@@ -36,7 +38,7 @@ describe('writeAnnotations', () => {
         appInfo.appOptions.addAnnotations = true;
         await writeAnnotations('base', appInfo, fs);
 
-        expect(generateAnnotations).toHaveBeenCalledWith(
+        expect(mockGenerateAnnotations).toHaveBeenCalledWith(
             fs,
             {
                 serviceName: 'mainService',
@@ -60,7 +62,7 @@ describe('writeAnnotations', () => {
 
         await writeAnnotations('test', appInfo, fs);
 
-        expect(generateAnnotations).toHaveBeenCalledWith(
+        expect(mockGenerateAnnotations).toHaveBeenCalledWith(
             fs,
             {
                 serviceName: 'mainService',
@@ -84,7 +86,7 @@ describe('writeAnnotations', () => {
         const appInfo = applyBaseConfigToFEApp('test', TemplateType.ListReportObjectPage);
         appInfo.appOptions.addAnnotations = true;
         delete appInfo.service.capService;
-        (generateAnnotations as jest.Mock).mockRejectedValue(new Error('test error'));
+        mockGenerateAnnotations.mockRejectedValue(new Error('test error'));
         await writeAnnotations('test', appInfo, fs, log as unknown as Logger);
         expect(log.error).toHaveBeenCalledWith(`${t('error.errorGeneratingDefaultAnnotations')} Error: test error`);
     });

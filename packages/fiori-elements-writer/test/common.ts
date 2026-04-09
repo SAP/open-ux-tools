@@ -5,6 +5,8 @@ import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import {
     TableType,
     type FEOPSettings,
@@ -18,7 +20,9 @@ import { exec as execCP } from 'node:child_process';
 const exec = promisify(execCP);
 import { type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 
-export const testOutputDir = join(__dirname, 'test-output');
+const testDirname = dirname(fileURLToPath(import.meta.url));
+const esmRequire = createRequire(import.meta.url);
+export const testOutputDir = join(testDirname, 'test-output');
 
 export const debug = prepareDebug();
 
@@ -46,7 +50,7 @@ const sampleTestStore = create(createStore());
  * @returns
  */
 export const getTestData = (serviceName: string, serviceType: 'metadata' | 'annotations') => {
-    const sampleDataPath = join(__dirname, 'sample', serviceName, `${serviceType}.xml`);
+    const sampleDataPath = join(testDirname, 'sample', serviceName, `${serviceType}.xml`);
     if (sampleTestStore.exists(sampleDataPath)) {
         return sampleTestStore.read(sampleDataPath);
     }
@@ -155,7 +159,7 @@ export const updatePackageJSONDependencyToUseLocalPath = async (rootPath: string
     const packageJson = fs.readJSON(packagePath) as any;
     if (packageJson?.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']) {
         packageJson.devDependencies['@sap-ux/eslint-plugin-fiori-tools'] = dirname(
-            require.resolve('@sap-ux/eslint-plugin-fiori-tools/package.json')
+            esmRequire.resolve('@sap-ux/eslint-plugin-fiori-tools/package.json')
         );
     }
     fs.writeJSON(packagePath, packageJson);

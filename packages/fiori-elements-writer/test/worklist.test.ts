@@ -1,10 +1,21 @@
-jest.mock('@sap-ux/project-access');
-
+import { jest } from '@jest/globals';
 import type { FioriElementsApp } from '../src';
-import { generate, TableType, TemplateType } from '../src';
 import { join } from 'node:path';
-import { removeSync } from 'fs-extra';
-import {
+import fsExtra from 'fs-extra';
+const { removeSync } = fsExtra;
+import type { WorklistSettings } from '../src/types';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+
+const mockGenerateAnnotations = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
+    generateAnnotations: mockGenerateAnnotations
+}));
+
+const { generate, TemplateType, TableType } = await import('../src');
+const {
     testOutputDir,
     debug,
     v2Service,
@@ -16,22 +27,12 @@ import {
     updatePackageJSONDependencyToUseLocalPath,
     applyBaseConfigToFEApp,
     sampleCapService
-} from './common';
-import type { WorklistSettings } from '../src/types';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
-import { generateAnnotations } from '@sap-ux/annotation-generator';
+} = await import('./common');
 
 const TEST_NAME = 'worklistTemplate';
 if (debug?.enabled) {
     jest.setTimeout(360000);
 }
-
-jest.mock('@sap-ux/annotation-generator', () => ({
-    ...jest.requireActual('@sap-ux/annotation-generator'),
-    generateAnnotations: jest.fn()
-}));
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -139,9 +140,9 @@ describe('Should generate annotations correctly for Worklist projects', () => {
             }
         };
         await generate(curTestOutPath, fioriElementsApp, fs);
-        expect(generateAnnotations).toHaveBeenCalledTimes(1);
+        expect(mockGenerateAnnotations).toHaveBeenCalledTimes(1);
 
-        expect(generateAnnotations).toHaveBeenCalledWith(
+        expect(mockGenerateAnnotations).toHaveBeenCalledWith(
             fs,
             {
                 serviceName: sampleCapService.serviceName,
@@ -166,7 +167,7 @@ describe('Should generate annotations correctly for Worklist projects', () => {
             }
         };
         await generate(curTestOutPath, fioriElementsApp, fs);
-        expect(generateAnnotations).not.toHaveBeenCalled();
+        expect(mockGenerateAnnotations).not.toHaveBeenCalled();
     });
 
     test('Should not generate annotations for Worklist projects when service is OData V2 and addAnnotations is enabled', async () => {
@@ -183,6 +184,6 @@ describe('Should generate annotations correctly for Worklist projects', () => {
         };
         fioriElementsApp.service.version = OdataVersion.v2;
         await generate(curTestOutPath, fioriElementsApp, fs);
-        expect(generateAnnotations).not.toHaveBeenCalled();
+        expect(mockGenerateAnnotations).not.toHaveBeenCalled();
     });
 });

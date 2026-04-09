@@ -1,10 +1,17 @@
+import { jest } from '@jest/globals';
 import type { FioriElementsApp, LROPSettings } from '../../src';
-import { OdataVersion, TemplateType } from '../../src';
-import { TemplateTypeAttributes } from '../../src/data/templateAttributes';
-import { t } from '../../src/i18n';
 import type { ALPSettings } from '../../src/types';
-import { validateApp, validateRequiredProperties } from '../../src/validate';
-import { feBaseConfig } from '../common';
+
+// Mock annotation-generator to prevent ESM transitive import chain
+jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
+    generateAnnotations: jest.fn()
+}));
+
+const { OdataVersion, TemplateType } = await import('../../src');
+const { TemplateTypeAttributes } = await import('../../src/data/templateAttributes');
+const { t } = await import('../../src/i18n');
+const { validateApp, validateRequiredProperties } = await import('../../src/validate');
+const { feBaseConfig } = await import('../common');
 
 describe('Validate', () => {
     test('Valid app config', () => {

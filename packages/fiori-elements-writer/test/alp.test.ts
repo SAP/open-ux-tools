@@ -1,19 +1,26 @@
-import type { FioriElementsApp } from '../src';
-import { generate, TemplateType } from '../src';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { removeSync } from 'fs-extra';
-import {
+import fsExtra from 'fs-extra';
+const { removeSync } = fsExtra;
+import type { OdataService } from '@sap-ux/odata-service-writer';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+
+type ALPSettings = import('../src/types').ALPSettings;
+type ALPSettingsV2 = import('../src/types').ALPSettingsV2;
+type ALPSettingsV4 = import('../src/types').ALPSettingsV4;
+type FioriElementsApp<T> = import('../src').FioriElementsApp<T>;
+
+const { generate, TemplateType } = await import('../src');
+const srcTypes = await import('../src/types');
+const TableType = srcTypes.TableType;
+const {
     testOutputDir,
     debug,
     getTestData,
     feBaseConfig,
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath
-} from './common';
-import type { OdataService } from '@sap-ux/odata-service-writer';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { ALPSettings, ALPSettingsV2, ALPSettingsV4 } from '../src/types';
-import { TableType } from '../src/types';
+} = await import('./common');
 
 const TEST_NAME = 'alpTemplates';
 if (debug?.enabled) {

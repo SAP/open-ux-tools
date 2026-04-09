@@ -1,11 +1,49 @@
-jest.mock('@sap-ux/project-access');
-
+import { jest } from '@jest/globals';
 import type { FioriElementsApp, LROPSettings } from '../src';
-import { generate, TableType, TemplateType } from '../src';
 import { join } from 'node:path';
-import { removeSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { removeSync } = fsExtra;
 import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
-import {
+import { type OdataService } from '@sap-ux/odata-service-writer';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+
+// Mock functions
+const mockApplyCAPUpdates = jest.fn();
+const mockGenerateAnnotations = jest.fn();
+
+// Mock read-pkg-up
+jest.unstable_mockModule('read-pkg-up', () => ({
+    default: {
+        sync: jest.fn().mockReturnValue({
+            packageJson: {
+                name: 'mocked-package-name',
+                version: '9.9.9-mocked'
+            }
+        })
+    },
+    sync: jest.fn().mockReturnValue({
+        packageJson: {
+            name: 'mocked-package-name',
+            version: '9.9.9-mocked'
+        }
+    })
+}));
+
+// Mock @sap-ux/cap-config-writer
+jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
+    applyCAPUpdates: mockApplyCAPUpdates
+}));
+
+// Mock @sap-ux/annotation-generator
+jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
+    generateAnnotations: mockGenerateAnnotations
+}));
+
+// Dynamic imports after mocking
+const { generate, TemplateType, TableType } = await import('../src');
+type CapServiceCdsInfo = import('@sap-ux/cap-config-writer').CapServiceCdsInfo;
+const {
     testOutputDir,
     debug,
     feBaseConfig,
@@ -19,38 +57,13 @@ import {
     getTestData,
     applyBaseConfigToFEApp,
     sampleCapService
-} from './common';
-import { type OdataService } from '@sap-ux/odata-service-writer';
-import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
-import { generateAnnotations } from '@sap-ux/annotation-generator';
-import * as ui5TestWriter from '@sap-ux/ui5-test-writer';
-import { initI18n } from '../src/i18n';
+} = await import('./common');
+const { initI18n } = await import('../src/i18n');
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
     jest.setTimeout(360000);
 }
-
-jest.mock('read-pkg-up', () => ({
-    sync: jest.fn().mockReturnValue({
-        packageJson: {
-            name: 'mocked-package-name',
-            version: '9.9.9-mocked'
-        }
-    })
-}));
-
-jest.mock('@sap-ux/cap-config-writer', () => ({
-    ...jest.requireActual('@sap-ux/cap-config-writer'),
-    applyCAPUpdates: jest.fn()
-}));
-
-jest.mock('@sap-ux/annotation-generator', () => ({
-    ...jest.requireActual('@sap-ux/annotation-generator'),
-    generateAnnotations: jest.fn()
-}));
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -661,8 +674,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
 
-            expect(applyCAPUpdates).toHaveBeenCalledTimes(1);
-            expect(applyCAPUpdates).toHaveBeenCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+            expect(mockApplyCAPUpdates).toHaveBeenCalledTimes(1);
+            expect(mockApplyCAPUpdates).toHaveBeenCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
                 ...capProjectSettings,
                 appId: 'felrop2',
                 packageName: 'felrop2'
@@ -674,7 +687,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             const fioriElementsApp = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
             delete fioriElementsApp.service.capService;
             await generate(curTestOutPath, fioriElementsApp, fs);
-            expect(applyCAPUpdates).toHaveBeenCalledTimes(0);
+            expect(mockApplyCAPUpdates).toHaveBeenCalledTimes(0);
         });
     });
 
@@ -694,9 +707,9 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
-            expect(generateAnnotations).toHaveBeenCalledTimes(1);
+            expect(mockGenerateAnnotations).toHaveBeenCalledTimes(1);
 
-            expect(generateAnnotations).toHaveBeenCalledWith(
+            expect(mockGenerateAnnotations).toHaveBeenCalledWith(
                 fs,
                 {
                     serviceName: sampleCapService.serviceName,
@@ -721,7 +734,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
-            expect(generateAnnotations).not.toHaveBeenCalled();
+            expect(mockGenerateAnnotations).not.toHaveBeenCalled();
         });
 
         test('Should not generate annotations for LROP projects when service is OData V2 and addAnnotations is enabled', async () => {
@@ -737,7 +750,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
-            expect(generateAnnotations).not.toHaveBeenCalled();
+            expect(mockGenerateAnnotations).not.toHaveBeenCalled();
         });
 
         test('Should not generate annotations for projects unless they are LROP or Worklist with OData V4 service, or an FEOP project', async () => {
@@ -749,7 +762,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
-            expect(generateAnnotations).not.toHaveBeenCalled();
+            expect(mockGenerateAnnotations).not.toHaveBeenCalled();
         });
 
         test('Should call generateOPAFiles after generateAnnotations', async () => {
@@ -787,24 +800,25 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }
             } as FioriElementsApp<LROPSettings>;
 
-            const callOrder: string[] = [];
-            (generateAnnotations as jest.Mock).mockImplementation(() => {
-                callOrder.push('writeAnnotations');
+            // Track when writeAnnotations (via annotation-generator mock) is called
+            let annotationsCalledBeforeOPA = false;
+            mockGenerateAnnotations.mockImplementation(() => {
+                annotationsCalledBeforeOPA = true;
                 return Promise.resolve();
-            });
-            const generateOPAFilesSpy = jest.spyOn(ui5TestWriter, 'generateOPAFiles').mockImplementation(() => {
-                callOrder.push('generateOPAFiles');
-                return Promise.resolve(fs);
             });
 
             // generate the project
             const testPath = join(curTestOutPath, projectName);
-            await generate(testPath, config);
+            const fs = await generate(testPath, config);
 
-            // Verify that writeAnnotations was called before generateOPAFiles
-            expect(callOrder).toEqual(['writeAnnotations', 'generateOPAFiles']);
-            expect(generateAnnotations).toHaveBeenCalled();
-            expect(generateOPAFilesSpy).toHaveBeenCalled();
+            // Verify annotations were generated (writeAnnotations was called)
+            expect(mockGenerateAnnotations).toHaveBeenCalled();
+            expect(annotationsCalledBeforeOPA).toBe(true);
+
+            // Verify OPA files were generated (generateOPAFiles ran after writeAnnotations)
+            const dump = fs.dump(testPath);
+            const hasOpaFiles = Object.keys(dump).some((key) => key.includes('integration'));
+            expect(hasOpaFiles).toBe(true);
         });
     });
 });

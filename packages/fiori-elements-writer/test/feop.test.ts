@@ -1,8 +1,22 @@
+import { jest } from '@jest/globals';
 import type { FioriElementsApp } from '../src';
-import { generate, TemplateType } from '../src';
 import { join } from 'node:path';
-import { removeSync } from 'fs-extra';
-import {
+import fsExtra from 'fs-extra';
+const { removeSync } = fsExtra;
+import type { FEOPSettings } from '../src/types';
+import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+
+const mockGenerateAnnotations = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
+    generateAnnotations: mockGenerateAnnotations
+}));
+
+const { generate, TemplateType } = await import('../src');
+const {
     testOutputDir,
     debug,
     feBaseConfig,
@@ -12,23 +26,12 @@ import {
     updatePackageJSONDependencyToUseLocalPath,
     applyBaseConfigToFEApp,
     sampleCapService
-} from './common';
-import type { FEOPSettings } from '../src/types';
-import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
-import { generateAnnotations } from '@sap-ux/annotation-generator';
+} = await import('./common');
 
 const TEST_NAME = 'feopTemplate';
 if (debug?.enabled) {
     jest.setTimeout(360000);
 }
-
-jest.mock('@sap-ux/annotation-generator', () => ({
-    ...jest.requireActual('@sap-ux/annotation-generator'),
-    generateAnnotations: jest.fn()
-}));
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -103,10 +106,10 @@ describe('Should generate annotations correctly for FEOP projects', () => {
             }
         };
         await generate(curTestOutPath, fioriElementsApp, fs);
-        expect(generateAnnotations).toHaveBeenCalledTimes(1);
+        expect(mockGenerateAnnotations).toHaveBeenCalledTimes(1);
 
         // ensure addLineItems is false for feop project
-        expect(generateAnnotations).toHaveBeenCalledWith(
+        expect(mockGenerateAnnotations).toHaveBeenCalledWith(
             fs,
             {
                 serviceName: sampleCapService.serviceName,
@@ -131,6 +134,6 @@ describe('Should generate annotations correctly for FEOP projects', () => {
             }
         };
         await generate(curTestOutPath, fioriElementsApp, fs);
-        expect(generateAnnotations).not.toHaveBeenCalled();
+        expect(mockGenerateAnnotations).not.toHaveBeenCalled();
     });
 });

@@ -1,6 +1,10 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import readPkgUp from 'read-pkg-up';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import type {
     ALPSettings,
     ALPSettingsV2,
