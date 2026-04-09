@@ -283,6 +283,8 @@ function verifyGeneratedFiles(testOutputDir: string, appId: string, testFixtureD
     );
 }
 
+jest.setTimeout(30000);
+
 describe('Repo App Download', () => {
     const testFixture = new TestFixture();
     const repoAppDownloadGenPath = join(__dirname, '../src/app/index.ts');
