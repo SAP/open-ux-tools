@@ -1,13 +1,31 @@
-import { DeploymentGenerator, bail, handleErrorMessage, ErrorHandler, ERROR_TYPE } from '../src';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
-import { t } from '../src/utils/i18n';
-import { cdsExecutable, cdsPkg, mtaExecutable, mtaPkg } from '../src/utils/constants';
+import { jest } from '@jest/globals';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
+const mockGetHostEnvironment = jest.fn();
+const mockDefaultLogger = {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn()
+};
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    getHostEnvironment: mockGetHostEnvironment,
+    hostEnvironment: {
+        vscode: { name: 'Visual Studio Code', technical: 'VSCode' },
+        bas: { name: 'SAP Business Application Studio', technical: 'SBAS' },
+        cli: { name: 'CLI', technical: 'CLI' }
+    },
+    DefaultLogger: mockDefaultLogger,
+    LogWrapper: class {}
 }));
+
+const { ErrorHandler, ERROR_TYPE, bail, handleErrorMessage } = await import('../src/utils/error-handler');
+const { DeploymentGenerator } = await import('../src/base/generator');
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
+const { MessageType } = await import('@sap-devx/yeoman-ui-types');
+const { t } = await import('../src/utils/i18n');
+const { cdsExecutable, cdsPkg, mtaExecutable, mtaPkg } = await import('../src/utils/constants');
 
 describe('bail', () => {
     it('should throw an error with the provided message', () => {
@@ -69,7 +87,7 @@ describe('handleErrorMessage', () => {
 
     it('should call bail with error message if environment is CLI', () => {
         const expectedErrMsg = ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ABORT_SIGNAL);
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
 
         expect(() => handleErrorMessage(appWizardMock, { errorType: ERROR_TYPE.ABORT_SIGNAL })).toThrow(expectedErrMsg);
     });
@@ -77,7 +95,7 @@ describe('handleErrorMessage', () => {
     it('should log error and call appWizard.showError if environment is not CLI', () => {
         const debugSpy = jest.spyOn(DeploymentGenerator.logger, 'debug');
         const expectedErrMsg = ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MANIFEST);
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
 
         handleErrorMessage(appWizardMock, { errorType: ERROR_TYPE.NO_MANIFEST });
 

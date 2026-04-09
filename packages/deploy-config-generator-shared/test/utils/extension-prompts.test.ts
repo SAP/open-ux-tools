@@ -1,4 +1,4 @@
-import { getExtensionGenPromptOpts } from '../../src';
+import { jest } from '@jest/globals';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 
 const foundGenExts = [
@@ -12,10 +12,12 @@ const foundGenExts = [
     }
 ];
 
-jest.mock('@sap-ux/nodejs-utils', () => ({
-    ...(jest.requireActual('@sap-ux/nodejs-utils') as object),
-    findInstalledPackages: jest.fn(async () => foundGenExts) // Prevents searching for extensions
+jest.unstable_mockModule('@sap-ux/nodejs-utils', () => ({
+    findInstalledPackages: jest.fn(async () => foundGenExts),
+    CommandRunner: class {}
 }));
+
+const { getExtensionGenPromptOpts } = await import('../../src/utils/extension-prompts');
 
 describe('Test extension prompts', () => {
     it('should return the extension prompt options', async () => {
