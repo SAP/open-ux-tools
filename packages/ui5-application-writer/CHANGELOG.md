@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 1.8.4
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- Updated dependencies [f1e4481]
+    - @sap-ux/ui5-config@0.30.2
+
 ## 1.8.3
 
 ### Patch Changes
