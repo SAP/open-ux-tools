@@ -47,7 +47,7 @@ async function prompt(
     adapter?: InquirerAdapter,
     promptOptions?: UI5LibraryReferencePromptOptions
 ): Promise<UI5LibraryReferenceAnswers> {
-    const ui5LibPrompts = await exports.getPrompts(wsFolders, promptOptions);
+    const ui5LibPrompts = await getPrompts(wsFolders ?? [], promptOptions);
 
     return adapter ? adapter.prompt(ui5LibPrompts) : inquirer.prompt(ui5LibPrompts);
 }
