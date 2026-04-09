@@ -1,7 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { CustomFilter } from '../../src/filter/types';
 import { generateCustomFilter } from '../../src/filter';
 import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';
@@ -9,6 +10,9 @@ import { Placement } from '../../src/common/types';
 import { getEndOfLinesLength } from '../common';
 import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import * as fileAccess from '@sap-ux/project-access/dist/file';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('CustomFilter', () => {
     describe('generateCustomFilter', () => {

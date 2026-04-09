@@ -1,12 +1,44 @@
+import { jest } from '@jest/globals';
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers, DistinctChoice, ListChoiceMap } from 'inquirer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'node:path';
-import { getProject } from '@sap-ux/project-access';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Project } from '@sap-ux/project-access';
-import {
+import { bindingContextAbsolute, bindingContextRelative } from '../../../../../src/building-block/types';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const mockGetCapModelAndServices = jest.fn().mockResolvedValue({
+    model: {},
+    services: [],
+    cdsVersionInfo: { home: '', version: '', root: '' }
+});
+const mockGetCapServiceName = jest.fn().mockResolvedValue('mappedMainServiceName');
+
+jest.unstable_mockModule('@sap-ux/project-access', () => {
+    const actual = jest.requireActual<typeof import('@sap-ux/project-access')>('@sap-ux/project-access');
+    return {
+        ...actual,
+        getCapModelAndServices: mockGetCapModelAndServices,
+        getCapServiceName: mockGetCapServiceName
+    };
+});
+
+const mockGetEntitySetOptions = jest.fn();
+jest.unstable_mockModule('../../../../../src/building-block/prompts/utils/prompt-helpers', () => {
+    const actual = jest.requireActual<typeof import('../../../../../src/building-block/prompts/utils/prompt-helpers')>('../../../../../src/building-block/prompts/utils/prompt-helpers');
+    return {
+        ...actual,
+        getEntitySetOptions: mockGetEntitySetOptions
+    };
+});
+
+const { getProject } = await import('@sap-ux/project-access');
+const {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
     getBindingContextTypePrompt,
@@ -19,10 +51,9 @@ import {
     getTargetPropertiesPrompt,
     getFilterBarIdPrompt,
     getViewOrFragmentPathPrompt
-} from '../../../../../src/building-block/prompts/utils/questions';
+} = await import('../../../../../src/building-block/prompts/utils/questions');
+const actualPromptHelpers = await import('../../../../../src/building-block/prompts/utils/prompt-helpers');
 import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types';
-import { bindingContextAbsolute, bindingContextRelative } from '../../../../../src/building-block/types';
-import * as promptHelpers from '../../../../../src/building-block/prompts/utils/prompt-helpers';
 
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
@@ -30,23 +61,6 @@ const capAppFolder = join('app/incidents');
 
 const ENTITY_SET = 'C_CustomerOP';
 type Choices = (answers?: Answers) => Promise<readonly DistinctChoice<Answers, ListChoiceMap<Answers>>[]>;
-
-jest.mock('@sap-ux/project-access', () => ({
-    __esModule: true,
-
-    ...(jest.requireActual('@sap-ux/project-access') as object),
-    getCapModelAndServices: jest.fn().mockResolvedValue({
-        model: {},
-        services: [],
-        cdsVersionInfo: { home: '', version: '', root: '' }
-    }),
-    getCapServiceName: jest.fn().mockResolvedValue('mappedMainServiceName')
-}));
-
-jest.mock('../../../../../src/building-block/prompts/utils/prompt-helpers', () => ({
-    ...jest.requireActual('../../../../../src/building-block/prompts/utils/prompt-helpers'),
-    getEntitySetOptions: jest.fn()
-}));
 
 describe('utils - questions', () => {
     let project: Project;
@@ -67,9 +81,7 @@ describe('utils - questions', () => {
     });
 
     beforeEach(() => {
-        (promptHelpers.getEntitySetOptions as jest.Mock).mockImplementation(
-            jest.requireActual('../../../../../src/building-block/prompts/utils/prompt-helpers').getEntitySetOptions
-        );
+        mockGetEntitySetOptions.mockImplementation(actualPromptHelpers.getEntitySetOptions);
     });
 
     test('entityPrompt', async () => {
@@ -131,7 +143,7 @@ describe('utils - questions', () => {
     });
 
     test('getBindingContextTypePrompt uses choices passed in properties and overwrites default choices', async () => {
-        (promptHelpers.getEntitySetOptions as jest.Mock).mockReturnValueOnce([]);
+        mockGetEntitySetOptions.mockReturnValueOnce([]);
 
         const bindingContextPrompt = getBindingContextTypePrompt({
             message: 'bindingContext',
@@ -162,7 +174,7 @@ describe('utils - questions', () => {
         };
 
         // return empty array
-        (promptHelpers.getEntitySetOptions as jest.Mock).mockReturnValueOnce([]);
+        mockGetEntitySetOptions.mockReturnValueOnce([]);
         const entityPrompt = getEntityPrompt(contextWithPageContextEntitySet, { message: 'entity' });
         const answers = {
             buildingBlockData: {

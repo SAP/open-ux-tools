@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -7,6 +8,9 @@ import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePr
 import type { ChoiceOptions } from 'inquirer';
 import * as projectAccess from '@sap-ux/project-access';
 import { createIdGenerator } from '../../../src/common/file';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('Prompts', () => {
     let fs: Editor;

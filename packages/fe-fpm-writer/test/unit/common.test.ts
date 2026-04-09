@@ -1,9 +1,13 @@
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { addExtensionTypes } from '../../src/common/utils';
 import { detectTabSpacing, getJsonSpace } from '../../src/common/file';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('Common', () => {
     describe('utils.addExtensionTypes', () => {

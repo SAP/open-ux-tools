@@ -1,21 +1,25 @@
+import { jest } from '@jest/globals';
 import type { EntitySet } from '@sap-ux/vocabularies-types';
-import { getEntitySetOptions, resolveEntitySetTargets } from '../../../src/building-block/prompts/utils/prompt-helpers';
 import { bindingContextAbsolute, bindingContextRelative } from '../../../src/building-block/types';
 import type { PromptContext } from '../../../src/prompts/types';
-import * as promptHelpers from '../../../src/building-block/prompts/utils/prompt-helpers';
 import { i18nNamespaces, translate } from '../../../src/i18n';
-const t = translate(i18nNamespaces.buildingBlock, 'prompts.');
-import { getExistingButtonGroups } from '../../../src/building-block/prompts/utils/xml';
 import { BUTTON_GROUP_CONFIGS } from '../../../src/building-block/processor';
 
-jest.mock('../../../src/building-block/prompts/utils/xml', () => ({
-    getExistingButtonGroups: jest.fn()
+const mockGetExistingButtonGroups = jest.fn();
+jest.unstable_mockModule('../../../src/building-block/prompts/utils/xml', () => ({
+    getExistingButtonGroups: mockGetExistingButtonGroups
 }));
 
-import { getEntitySets } from '../../../src/building-block/prompts/utils/service';
-jest.mock('../../../src/building-block/prompts/utils/service', () => ({
-    getEntitySets: jest.fn()
+const mockGetEntitySets = jest.fn();
+jest.unstable_mockModule('../../../src/building-block/prompts/utils/service', () => ({
+    getEntitySets: mockGetEntitySets
 }));
+
+const { getEntitySetOptions, resolveEntitySetTargets, resolveBindingContextTypeChoices, entitySetCache, getButtonGroupsChoices } = await import(
+    '../../../src/building-block/prompts/utils/prompt-helpers'
+);
+
+const t = translate(i18nNamespaces.buildingBlock, 'prompts.');
 
 describe('getEntitySetOptions', () => {
     const entitySets = [
@@ -157,16 +161,15 @@ describe('resolveEntitySetTargets', () => {
 });
 
 describe('resolveBindingContextTypeChoices', () => {
-    const { entitySetCache } = promptHelpers;
     beforeEach(() => {
-        (getEntitySets as jest.Mock).mockClear();
+        mockGetEntitySets.mockClear();
         for (const key of Object.keys(entitySetCache)) {
             delete entitySetCache[key];
         }
     });
 
     it('returns choices with relative disabled when no entity sets available for relative', async () => {
-        (getEntitySets as jest.Mock).mockResolvedValue([
+        mockGetEntitySets.mockResolvedValue([
             {
                 name: 'MainSet',
                 entityType: {
@@ -183,7 +186,7 @@ describe('resolveBindingContextTypeChoices', () => {
             options: { pageContextEntitySet: 'MainSet' }
         } as unknown as PromptContext;
 
-        const getChoicesFn = promptHelpers.resolveBindingContextTypeChoices(context);
+        const getChoicesFn = resolveBindingContextTypeChoices(context);
         const choices = typeof getChoicesFn === 'function' ? await getChoicesFn() : getChoicesFn;
 
         expect(choices).toEqual([
@@ -198,7 +201,7 @@ describe('resolveBindingContextTypeChoices', () => {
     });
 
     it('returns both options enabled when entity sets for relative are available', async () => {
-        (getEntitySets as jest.Mock).mockResolvedValue([
+        mockGetEntitySets.mockResolvedValue([
             {
                 name: 'MainSet',
                 entityType: {
@@ -215,7 +218,7 @@ describe('resolveBindingContextTypeChoices', () => {
             options: { pageContextEntitySet: 'MainSet' }
         } as unknown as PromptContext;
 
-        const getChoicesFn = promptHelpers.resolveBindingContextTypeChoices(context);
+        const getChoicesFn = resolveBindingContextTypeChoices(context);
         const choices = typeof getChoicesFn === 'function' ? await getChoicesFn() : getChoicesFn;
 
         expect(choices).toEqual([
@@ -225,7 +228,7 @@ describe('resolveBindingContextTypeChoices', () => {
     });
 
     it('returns default choices when project is not present', () => {
-        const choices = promptHelpers.resolveBindingContextTypeChoices({ project: undefined } as any);
+        const choices = resolveBindingContextTypeChoices({ project: undefined } as any);
         expect(choices).toEqual([
             { name: t('common.bindingContextType.option.absolute'), value: bindingContextAbsolute },
             { name: t('common.bindingContextType.option.relative'), value: bindingContextRelative }
@@ -233,7 +236,7 @@ describe('resolveBindingContextTypeChoices', () => {
     });
 
     it('returns both binding context options enabled when pageContextEntitySet is not provided', async () => {
-        (getEntitySets as jest.Mock).mockResolvedValue([
+        mockGetEntitySets.mockResolvedValue([
             {
                 name: 'MainSet',
                 entityType: {
@@ -249,7 +252,7 @@ describe('resolveBindingContextTypeChoices', () => {
             appId: 'app1'
         } as unknown as PromptContext;
 
-        const getChoicesFn = promptHelpers.resolveBindingContextTypeChoices(context);
+        const getChoicesFn = resolveBindingContextTypeChoices(context);
         const choices = typeof getChoicesFn === 'function' ? await getChoicesFn() : getChoicesFn;
 
         expect(choices).toEqual([
@@ -271,11 +274,11 @@ describe('resolveBindingContextTypeChoices', () => {
         };
 
         beforeEach(() => {
-            (getExistingButtonGroups as jest.Mock).mockClear();
+            mockGetExistingButtonGroups.mockClear();
         });
 
         it('returns empty array when project is not present', async () => {
-            const result = await promptHelpers.getButtonGroupsChoices(
+            const result = await getButtonGroupsChoices(
                 { ...mockContext, project: undefined } as any,
                 mockAnswers
             );
@@ -283,9 +286,9 @@ describe('resolveBindingContextTypeChoices', () => {
         });
 
         it('returns all button groups with checked=false when no existing button groups found', async () => {
-            (getExistingButtonGroups as jest.Mock).mockResolvedValue(new Set<string>());
+            mockGetExistingButtonGroups.mockResolvedValue(new Set<string>());
 
-            const result = await promptHelpers.getButtonGroupsChoices(mockContext, mockAnswers);
+            const result = await getButtonGroupsChoices(mockContext, mockAnswers);
 
             expect(result).toHaveLength(BUTTON_GROUP_CONFIGS.length);
             result.forEach((choice) => {
@@ -296,9 +299,9 @@ describe('resolveBindingContextTypeChoices', () => {
 
         it('returns button groups with checked=true and hidden=true for existing groups', async () => {
             const existingGroups = new Set(['textStyle', 'textAlign']);
-            (getExistingButtonGroups as jest.Mock).mockResolvedValue(existingGroups);
+            mockGetExistingButtonGroups.mockResolvedValue(existingGroups);
 
-            const result = await promptHelpers.getButtonGroupsChoices(mockContext, mockAnswers);
+            const result = await getButtonGroupsChoices(mockContext, mockAnswers);
 
             expect(result).toHaveLength(BUTTON_GROUP_CONFIGS.length);
 
@@ -314,18 +317,18 @@ describe('resolveBindingContextTypeChoices', () => {
         });
 
         it('handles empty existingButtonGroups set correctly', async () => {
-            (getExistingButtonGroups as jest.Mock).mockResolvedValue(new Set());
+            mockGetExistingButtonGroups.mockResolvedValue(new Set());
 
-            const result = await promptHelpers.getButtonGroupsChoices(mockContext, mockAnswers);
+            const result = await getButtonGroupsChoices(mockContext, mockAnswers);
 
             expect(result.every((choice) => !choice.checked && !choice.hidden)).toBe(true);
         });
 
         it('handles all button groups being existing', async () => {
             const allGroups = new Set(BUTTON_GROUP_CONFIGS.map((config) => config.name));
-            (getExistingButtonGroups as jest.Mock).mockResolvedValue(allGroups);
+            mockGetExistingButtonGroups.mockResolvedValue(allGroups);
 
-            const result = await promptHelpers.getButtonGroupsChoices(mockContext, mockAnswers);
+            const result = await getButtonGroupsChoices(mockContext, mockAnswers);
 
             expect(result.every((choice) => choice.checked && choice.hidden)).toBe(true);
         });

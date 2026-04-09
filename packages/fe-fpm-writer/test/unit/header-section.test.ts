@@ -1,7 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generateCustomHeaderSection } from '../../src/section';
 import {
     RequestGroupId,
@@ -14,6 +15,9 @@ import { Placement } from '../../src/common/types';
 import * as manifestSections from './sample/section/webapp/manifest.json';
 import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import * as fileAccess from '@sap-ux/project-access/dist/file';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const testDir = join(__dirname, 'sample/headers-ection');
 

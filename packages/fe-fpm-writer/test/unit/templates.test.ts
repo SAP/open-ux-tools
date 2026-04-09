@@ -1,5 +1,9 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { getTemplatePath } from '../../src/templates';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('getTemplatePath', () => {
     const localTemplatesPath = join(__dirname, '../../templates');

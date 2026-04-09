@@ -1,7 +1,8 @@
 import { create as createStorage } from 'mem-fs';
 import { promises as fsPromises } from 'node:fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import type {
     BuildingBlockConfig,
@@ -24,6 +25,9 @@ import { i18nNamespaces, translate } from '../../src/i18n';
 import { Placement } from '../../src/common/types';
 import type { IdGeneratorFunction } from '../../src/common/file';
 import * as fileAccess from '@sap-ux/project-access/dist/file';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('Building Blocks', () => {
     let fs: Editor;

@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import {
@@ -20,6 +21,9 @@ import {
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('use FPM with existing apps', () => {
     const testInput = join(__dirname, '../test-input/integration/basic-lrop-app');
