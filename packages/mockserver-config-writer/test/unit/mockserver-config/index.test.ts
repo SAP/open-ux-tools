@@ -1,6 +1,10 @@
 import { promises } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generateMockserverConfig, removeMockserverConfig } from '../../../src';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('Test generateMockserverConfig()', () => {
     test('Add config without any services to bare minimum project', async () => {
