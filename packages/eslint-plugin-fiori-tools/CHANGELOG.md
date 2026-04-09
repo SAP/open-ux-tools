@@ -1,5 +1,13 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.11.6
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+    - @sap-ux/fiori-annotation-api@0.9.41
+    - @sap-ux/project-access@1.35.19
+
 ## 9.11.5
 
 ### Patch Changes
