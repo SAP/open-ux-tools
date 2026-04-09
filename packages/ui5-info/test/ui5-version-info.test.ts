@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import axios from 'axios';
 import nock from 'nock';
 import officialBlockOutOfMaintenanceResponse from './testdata/official-latest-block-out-of-maintenance.json';
@@ -6,21 +7,24 @@ import officialResponse from './testdata/official-response.json';
 import snapshotResponse from './testdata/snapshot-response.json';
 
 import { ToolsLogger } from '@sap-ux/logger';
-import * as commands from '../src/commands';
-import * as ui5VersionConstants from '../src/constants';
-import { ui5VersionRequestInfo, ui5VersionsCache } from '../src/constants';
-import { getLatestUI5Version, getUI5Versions } from '../src/ui5-version-info';
-import { defaultUi5Versions } from '../src/ui5-version-fallback';
+
+// Mock executeNpmUI5VersionsCmd so it can be controlled in tests
+const mockExecuteNpmUI5VersionsCmd = jest.fn<() => Promise<string[]>>();
+jest.unstable_mockModule('../src/commands', () => ({
+    executeNpmUI5VersionsCmd: mockExecuteNpmUI5VersionsCmd
+}));
+
+const { ui5VersionRequestInfo, ui5VersionsCache } = await import('../src/constants');
+const { getLatestUI5Version, getUI5Versions } = await import('../src/ui5-version-info');
+const { defaultUi5Versions } = await import('../src/ui5-version-fallback');
 
 const snapshotVersionsHost = 'http://ui5.versions.snapshots';
 
 const resetUI5VersionsCache = () => {
     // reset the UI5 versions cache so each test is isolated
-    (ui5VersionConstants as any).ui5VersionsCache = {
-        officialVersions: [],
-        snapshotsVersions: [],
-        support: []
-    };
+    ui5VersionsCache.officialVersions = [];
+    ui5VersionsCache.snapshotsVersions = [];
+    ui5VersionsCache.support = [];
 };
 
 describe('getUI5Versions', () => {
@@ -278,32 +282,32 @@ describe('getUI5Versions: npm listed versions', () => {
     });
 
     it('Validate UI5 version lists is sorted', async () => {
-        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5VersionsStr176);
+        mockExecuteNpmUI5VersionsCmd.mockResolvedValue(ui5VersionsStr176);
 
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true });
-        expect(commandRunSpy).toHaveBeenCalledTimes(1);
+        expect(mockExecuteNpmUI5VersionsCmd).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.79.1' }); // Sorted
         expect(retrievedUI5Versions.length).toEqual(4);
     });
 
     it('Validate UI5 version lists is sorted with snapshot versions', async () => {
-        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5VersionsStr176);
+        mockExecuteNpmUI5VersionsCmd.mockResolvedValue(ui5VersionsStr176);
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true });
-        expect(commandRunSpy).toHaveBeenCalledTimes(1);
+        expect(mockExecuteNpmUI5VersionsCmd).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.79.1' }); // Sorted
         expect(retrievedUI5Versions.length).toEqual(4);
     });
 
     it('Return a UI5 version if a non supported version is selected', async () => {
-        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5VersionsStr176);
+        mockExecuteNpmUI5VersionsCmd.mockResolvedValue(ui5VersionsStr176);
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true, ui5SelectedVersion: '1.80.0' }); // Not supported
-        expect(commandRunSpy).toHaveBeenCalledTimes(1);
+        expect(mockExecuteNpmUI5VersionsCmd).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.79.1' }); // Only return supported version from NPM
         expect(retrievedUI5Versions.length).toEqual(4); // Will remove one since its not part of the min supported versions
     });
 
     it('Validate UI5 NPM versions are returned when a min UI5 version is specified', async () => {
-        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5VersionsStr179);
+        mockExecuteNpmUI5VersionsCmd.mockResolvedValue(ui5VersionsStr179);
 
         let retrievedUI5Versions = await getUI5Versions({
             onlyNpmVersion: true,
@@ -320,11 +324,11 @@ describe('getUI5Versions: npm listed versions', () => {
         });
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.84.1' });
         expect(retrievedUI5Versions.length).toEqual(1);
-        expect(commandRunSpy).toHaveBeenCalledTimes(2);
+        expect(mockExecuteNpmUI5VersionsCmd).toHaveBeenCalledTimes(2);
     });
 
     it('Validate UI5 version returns a supported version for a non supported selected version', async () => {
-        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5VersionsStr176);
+        mockExecuteNpmUI5VersionsCmd.mockResolvedValue(ui5VersionsStr176);
         let versions = await getUI5Versions({ onlyNpmVersion: true, ui5SelectedVersion: '1.74.0' }); // Not supported
         expect(versions[0]).toEqual({ version: '1.76.0' });
         versions = await getUI5Versions({ onlyNpmVersion: true, ui5SelectedVersion: '1.74-supported' }); // Not supported
@@ -339,30 +343,30 @@ describe('getUI5Versions: npm listed versions', () => {
         versions = await getUI5Versions({ onlyNpmVersion: true, ui5SelectedVersion: '' });
         expect(versions[0]).toEqual({ version: '1.79.1' });
         expect(versions.length).toEqual(4);
-        expect(commandRunSpy).toHaveBeenCalledTimes(5);
+        expect(mockExecuteNpmUI5VersionsCmd).toHaveBeenCalledTimes(5);
     });
 
     it('Return a UI5 version if no npm versions are found - part 1', async () => {
-        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue([]);
+        mockExecuteNpmUI5VersionsCmd.mockResolvedValue([]);
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true });
-        expect(commandRunSpy).toHaveBeenCalledTimes(1);
+        expect(mockExecuteNpmUI5VersionsCmd).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.65.0' }); // Return min version since NPM returns an empty string
         expect(retrievedUI5Versions.length).toEqual(1); // Will remove one since its not part of the min supported versions
     });
 
     it('Return a UI5 version if no npm versions are found - part 2', async () => {
-        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue([]);
+        mockExecuteNpmUI5VersionsCmd.mockResolvedValue([]);
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true, minSupportedUI5Version: '1.76.0' });
-        expect(commandRunSpy).toHaveBeenCalledTimes(1);
+        expect(mockExecuteNpmUI5VersionsCmd).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.76.0' }); // Return min version since NPM returns an empty string
         expect(retrievedUI5Versions.length).toEqual(1); // Will remove one since its not part of the min supported versions
     });
 
     it('Never return duplicate versions', async () => {
         const ui5DuplicateVer = ['1.90.1', '1.90.1'];
-        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5DuplicateVer);
+        mockExecuteNpmUI5VersionsCmd.mockResolvedValue(ui5DuplicateVer);
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true });
-        expect(commandRunSpy).toHaveBeenCalledTimes(1);
+        expect(mockExecuteNpmUI5VersionsCmd).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.90.1' });
         expect(retrievedUI5Versions.length).toEqual(1);
     });
@@ -379,16 +383,8 @@ describe('getLatestUI5Version', () => {
     };
 
     beforeAll(() => {
-        // Mock the ui5VersionsCache
-        const originalConstants = jest.requireActual('../src/constants');
-        return {
-            ...originalConstants,
-            ui5VersionsCache: {
-                officialVersions: [],
-                snapshotsVersions: [],
-                support: []
-            }
-        };
+        // Reset the ui5VersionsCache for this describe block
+        resetUI5VersionsCache();
     });
 
     beforeEach(() => {
