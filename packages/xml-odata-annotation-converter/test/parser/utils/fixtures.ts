@@ -1,8 +1,10 @@
 import { readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { Range, Position } from '@sap-ux/odata-annotation-core-types';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 export const FIXTURE_ROOT = join(__dirname, '..', 'fixtures');
 
 export function getAllFixtures(root: string): string[] {
