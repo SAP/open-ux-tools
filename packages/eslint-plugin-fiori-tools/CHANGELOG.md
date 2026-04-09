@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.11.7
+
+### Patch Changes
+
+- 9696e29: Add legacy fiori_tools_configure.eslintrc for `recommended` and `recommended-for-s4hana`
+
 ## 9.11.6
 
 ### Patch Changes
