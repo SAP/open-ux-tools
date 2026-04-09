@@ -1,21 +1,24 @@
+import { jest } from '@jest/globals';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AppWizardCache } from '../../src/utils/appWizardCache';
 
-import {
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    getHostEnvironment: jest.fn(),
+    hostEnvironment: {
+        vscode: { name: 'Visual Studio Code', technical: 'VSCode' },
+        bas: { name: 'SAP Business Application Studio', technical: 'SBAS' },
+        cli: { name: 'CLI', technical: 'CLI' }
+    }
+}));
+
+const {
     initAppWizardCache,
     addToCache,
     getFromCache,
-    deleteCache,
-    type AppWizardCache
-} from '../../src/utils/appWizardCache';
+    deleteCache
+} = await import('../../src/utils/appWizardCache');
 
 const ADP_FLP_CONFIG_CACHE = '$adp-flp-config-cache';
-
-// Removes the jest warning about an open handle (PIPEWRAP), which happens because
-// stdin keeps the stream open during tests.
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
-}));
 
 describe('appWizardCache', () => {
     let logger: any;

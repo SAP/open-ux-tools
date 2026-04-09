@@ -26,10 +26,12 @@ jest.unstable_mockModule('../src/utils/appWizardCache', () => ({
     deleteCache: jest.fn()
 }));
 
-jest.unstable_mockModule('@sap-ux/btp-utils', async () => {
-    const real = await import('@sap-ux/btp-utils');
-    return { ...real, isAppStudio: jest.fn(), listDestinations: jest.fn() };
-});
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: jest.fn(),
+    listDestinations: jest.fn()
+}));
 
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
@@ -77,11 +79,22 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     isCli: jest.fn().mockReturnValue(false)
 }));
 
+const mockToolsLogger = jest.fn();
+jest.unstable_mockModule('@sap-ux/logger', () => ({
+    ToolsLogger: mockToolsLogger
+}));
+
+const mockGetAppType = jest.fn();
+const realProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
+    getAppType: mockGetAppType
+}));
+
 // Dynamic imports after mock registration
 const yeomanTest = (await import('yeoman-test')).default;
 const adpTooling = await import('@sap-ux/adp-tooling');
 const btpUtils = await import('@sap-ux/btp-utils');
-const Logger = await import('@sap-ux/logger');
 const fioriGenShared = await import('@sap-ux/fiori-generator-shared');
 const inquirerCommon = await import('@sap-ux/inquirer-common');
 const projectAccess = await import('@sap-ux/project-access');
@@ -103,7 +116,7 @@ const loggerMock: ToolsLogger = {
     warn: jest.fn(),
     error: toolsLoggerErrorSpy
 } as Partial<ToolsLogger> as ToolsLogger;
-jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
+mockToolsLogger.mockImplementation(() => loggerMock);
 
 describe('FLPConfigGenerator Integration Tests', () => {
     jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValue(false);
@@ -167,7 +180,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             showErrorMessage: vsCodeMessageSpy
         }
     };
-    jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
+    mockGetAppType.mockResolvedValue('Fiori Adaptation');
     jest.spyOn(adpTooling, 'getBaseAppInbounds').mockResolvedValue(inbounds);
     const generateInboundConfigSpy = jest.spyOn(adpTooling, 'generateInboundConfig');
     const getExistingAdpProjectTypeMock = adpTooling.getExistingAdpProjectType as jest.Mock;
