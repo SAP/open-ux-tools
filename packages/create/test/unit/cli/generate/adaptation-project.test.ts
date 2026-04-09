@@ -1,25 +1,68 @@
+import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
-import type { Editor, create } from 'mem-fs-editor';
-import { addGenerateAdaptationProjectCommand } from '../../../../src/cli/generate/adaptation-project';
-import * as tracer from '../../../../src/tracing/trace';
-import * as common from '../../../../src/common';
-import * as adp from '@sap-ux/adp-tooling';
-import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('prompts');
-// mock mem-fs commit so that nothing is written to the file system
-jest.mock('mem-fs-editor', () => {
-    const editor = jest.requireActual<{ create: typeof create }>('mem-fs-editor');
-    return {
-        ...editor,
-        create(store: Store) {
-            const memFs: Editor = editor.create(store);
-            memFs.commit = jest.fn().mockImplementation((cb) => cb());
-            return memFs;
-        }
-    };
-});
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockTraceChanges = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
+    traceChanges: mockTraceChanges
+}));
+
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: jest.fn().mockReturnValue({
+        debug: jest.fn(),
+        info: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn()
+    }),
+    setLogLevelVerbose: jest.fn()
+}));
+
+const mockRunNpmInstallCommand = jest.fn();
+jest.unstable_mockModule('../../../../src/common', () => ({
+    promptYUIQuestions: jest.fn(),
+    runNpmInstallCommand: mockRunNpmInstallCommand
+}));
+
+jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
+jest.unstable_mockModule('mem-fs-editor', () => ({
+    create(_store: Store) {
+        return {
+            commit: jest.fn().mockImplementation((cb) => cb()),
+            dump: jest.fn(),
+            read: jest.fn(),
+            readJSON: jest.fn(),
+            write: jest.fn(),
+            writeJSON: jest.fn(),
+            copy: jest.fn(),
+            copyTpl: jest.fn(),
+            delete: jest.fn(),
+            exists: jest.fn(),
+            extendJSON: jest.fn(),
+            move: jest.fn(),
+            append: jest.fn()
+        } as Partial<Editor> as Editor;
+    }
+}));
+
+const mockGenerate = jest.fn().mockResolvedValue({
+    commit: jest.fn().mockImplementation((cb) => cb()),
+    dump: jest.fn()
+} as Partial<Editor> as Editor);
+const mockPromptGeneratorInput = jest.fn();
+const FlexLayer = { CUSTOMER_BASE: 'CUSTOMER_BASE', VENDOR: 'VENDOR' };
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    generate: mockGenerate,
+    promptGeneratorInput: mockPromptGeneratorInput,
+    FlexLayer
+}));
+
+const adp = await import('@sap-ux/adp-tooling');
+const { addGenerateAdaptationProjectCommand } = await import('../../../../src/cli/generate/adaptation-project');
 
 describe('generate/adaptation-project', () => {
     // test data
@@ -40,15 +83,11 @@ describe('generate/adaptation-project', () => {
         }
     ];
 
-    // mocks
-    const traceSpy = jest.spyOn(tracer, 'traceChanges');
-    const npmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => Promise.resolve());
-    const generateSpy = jest.spyOn(adp, 'generate');
-    const promptSpy = jest.spyOn(adp, 'promptGeneratorInput');
     const getArgv = (...arg: string[]) => ['', '', 'adaptation-project', ...arg];
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockRunNpmInstallCommand.mockImplementation(() => Promise.resolve());
     });
 
     test('--id --reference --url', async () => {
@@ -59,11 +98,11 @@ describe('generate/adaptation-project', () => {
 
         const expectedAppRoot = join(process.cwd(), id);
         // Flow check
-        expect(promptSpy).not.toHaveBeenCalled();
-        expect(traceSpy).not.toHaveBeenCalled();
-        expect(npmInstallSpy).toHaveBeenCalledWith(expectedAppRoot);
+        expect(mockPromptGeneratorInput).not.toHaveBeenCalled();
+        expect(mockTraceChanges).not.toHaveBeenCalled();
+        expect(mockRunNpmInstallCommand).toHaveBeenCalledWith(expectedAppRoot);
         // Generate call check
-        expect(generateSpy).toHaveBeenCalledWith(
+        expect(mockGenerate).toHaveBeenCalledWith(
             expectedAppRoot,
             expect.objectContaining({
                 app: { id, reference, layer, content },
@@ -79,10 +118,10 @@ describe('generate/adaptation-project', () => {
         await command.parseAsync(getArgv(appRoot, '--id', id, '--reference', reference, '--url', url, '-y'));
 
         // Flow check
-        expect(promptSpy).not.toHaveBeenCalled();
-        expect(traceSpy).not.toHaveBeenCalled();
-        expect(npmInstallSpy).toHaveBeenCalledWith(appRoot);
-        expect(generateSpy).toHaveBeenCalled();
+        expect(mockPromptGeneratorInput).not.toHaveBeenCalled();
+        expect(mockTraceChanges).not.toHaveBeenCalled();
+        expect(mockRunNpmInstallCommand).toHaveBeenCalledWith(appRoot);
+        expect(mockGenerate).toHaveBeenCalled();
     });
 
     test('<appRoot> --skip-install --id --reference --url --package', async () => {
@@ -106,10 +145,10 @@ describe('generate/adaptation-project', () => {
         );
 
         // Flow check
-        expect(promptSpy).not.toHaveBeenCalled();
-        expect(traceSpy).not.toHaveBeenCalled();
-        expect(npmInstallSpy).not.toHaveBeenCalled();
-        expect(generateSpy).toHaveBeenCalled();
+        expect(mockPromptGeneratorInput).not.toHaveBeenCalled();
+        expect(mockTraceChanges).not.toHaveBeenCalled();
+        expect(mockRunNpmInstallCommand).not.toHaveBeenCalled();
+        expect(mockGenerate).toHaveBeenCalled();
     });
 
     test('<appRoot> --simulate --id --reference --url', async () => {
@@ -121,15 +160,15 @@ describe('generate/adaptation-project', () => {
         );
 
         // Flow check
-        expect(promptSpy).not.toHaveBeenCalled();
-        expect(traceSpy).toHaveBeenCalled();
-        expect(npmInstallSpy).not.toHaveBeenCalled();
-        expect(generateSpy).toHaveBeenCalled();
+        expect(mockPromptGeneratorInput).not.toHaveBeenCalled();
+        expect(mockTraceChanges).toHaveBeenCalled();
+        expect(mockRunNpmInstallCommand).not.toHaveBeenCalled();
+        expect(mockGenerate).toHaveBeenCalled();
     });
 
     test('<appRoot> --url', async () => {
         // mock prompting
-        promptSpy.mockResolvedValue({
+        mockPromptGeneratorInput.mockResolvedValue({
             app: { id, reference, layer },
             target: { url }
         });
@@ -140,12 +179,12 @@ describe('generate/adaptation-project', () => {
         await command.parseAsync(getArgv(appRoot, '--url', url));
 
         // Flow check
-        expect(promptSpy).toHaveBeenCalled();
-        expect(traceSpy).not.toHaveBeenCalled();
-        expect(npmInstallSpy).toHaveBeenCalled();
+        expect(mockPromptGeneratorInput).toHaveBeenCalled();
+        expect(mockTraceChanges).not.toHaveBeenCalled();
+        expect(mockRunNpmInstallCommand).toHaveBeenCalled();
 
         // Generate call check
-        expect(generateSpy).toHaveBeenCalledWith(
+        expect(mockGenerate).toHaveBeenCalledWith(
             appRoot,
             expect.objectContaining({
                 app: { id, reference, layer, content },
@@ -156,7 +195,7 @@ describe('generate/adaptation-project', () => {
 
     test('error during generation', async () => {
         // mock error
-        generateSpy.mockRejectedValueOnce('test');
+        mockGenerate.mockRejectedValueOnce('test');
 
         // Test execution
         try {

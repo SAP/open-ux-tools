@@ -1,20 +1,55 @@
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
-import * as adp from '@sap-ux/adp-tooling';
-import * as tracer from '../../../../src/tracing/trace';
-import * as common from '../../../../src/common';
-import * as validations from '../../../../src/validation/validation';
-import * as logger from '../../../../src/tracing/logger';
-import { addComponentUsagesCommand } from '../../../../src/cli/add/component-usages';
 import { Command } from 'commander';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 
-jest.mock('@sap-ux/adp-tooling');
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const descriptorVariant = JSON.parse(
-    readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
-);
+const mockGetLogger = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: jest.fn()
+}));
+
+const mockTraceChanges = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
+    traceChanges: mockTraceChanges
+}));
+
+const mockPromptYUIQuestions = jest.fn();
+jest.unstable_mockModule('../../../../src/common', () => ({
+    promptYUIQuestions: mockPromptYUIQuestions,
+    runNpmInstallCommand: jest.fn()
+}));
+
+const mockValidateAdpAppType = jest.fn();
+const validationMock = {
+    validateBasePath: jest.fn(),
+    validateAdpAppType: mockValidateAdpAppType,
+    validateCloudAdpProject: jest.fn(),
+    hasFileDeletes: jest.fn()
+};
+jest.unstable_mockModule('../../../../src/validation', () => validationMock);
+jest.unstable_mockModule('../../../../src/validation/validation', () => validationMock);
+
+jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
+
+const mockIsCFEnvironment = jest.fn();
+const mockGetVariant = jest.fn();
+const mockGenerateChange = jest.fn();
+const mockGetPromptsForAddComponentUsages = jest.fn();
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    isCFEnvironment: mockIsCFEnvironment,
+    getVariant: mockGetVariant,
+    generateChange: mockGenerateChange,
+    ChangeType: { ADD_COMPONENT_USAGES: 'appdescr_ui5_addComponentUsages' },
+    getPromptsForAddComponentUsages: mockGetPromptsForAddComponentUsages
+}));
+
+const { addComponentUsagesCommand } = await import('../../../../src/cli/add/component-usages');
 
 describe('add/component-usages', () => {
     let loggerMock: ToolsLogger;
@@ -23,10 +58,6 @@ describe('add/component-usages', () => {
             commit: jest.fn().mockImplementation((cb) => cb())
         })
     };
-    const traceSpy = jest.spyOn(tracer, 'traceChanges');
-    const generateChangeSpy = jest
-        .spyOn(adp, 'generateChange')
-        .mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
     const getArgv = (...arg: string[]) => ['', '', 'component-usages', ...arg];
     const mockAnswers = {
         id: 'customer.test',
@@ -38,8 +69,6 @@ describe('add/component-usages', () => {
         library: 'customer.library',
         libraryIsLazy: 'true'
     };
-    const promptYUIQuestionsSpy = jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
-    jest.spyOn(adp, 'getPromptsForAddComponentUsages').mockImplementation(() => []);
 
     const appRoot = join(__dirname, '../../../fixtures');
 
@@ -49,14 +78,21 @@ describe('add/component-usages', () => {
             debug: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        jest.spyOn(adp, 'getVariant').mockReturnValue(descriptorVariant);
-        jest.spyOn(validations, 'validateAdpAppType').mockResolvedValue(undefined);
-        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValue(false);
+        mockGetLogger.mockReturnValue(loggerMock);
+
+        const descriptorVariant = JSON.parse(
+            readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
+        );
+        mockGetVariant.mockReturnValue(descriptorVariant);
+        mockValidateAdpAppType.mockResolvedValue(undefined);
+        mockIsCFEnvironment.mockResolvedValue(false);
+        mockGenerateChange.mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
+        mockPromptYUIQuestions.mockResolvedValue(mockAnswers);
+        mockGetPromptsForAddComponentUsages.mockImplementation(() => []);
     });
 
     test('should result in error when executed for CF projects', async () => {
-        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValueOnce(true);
+        mockIsCFEnvironment.mockResolvedValueOnce(true);
 
         const command = new Command('component-usages');
         addComponentUsagesCommand(command);
@@ -64,11 +100,11 @@ describe('add/component-usages', () => {
 
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for CF projects.');
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('should result in error when the project is not adaptation project', async () => {
-        jest.spyOn(validations, 'validateAdpAppType').mockRejectedValueOnce(
+        mockValidateAdpAppType.mockRejectedValueOnce(
             new Error('This command can only be used for an adaptation project')
         );
 
@@ -78,7 +114,7 @@ describe('add/component-usages', () => {
 
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalledWith('This command can only be used for an adaptation project');
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('should pass succesfully and commit changes', async () => {
@@ -86,9 +122,9 @@ describe('add/component-usages', () => {
         addComponentUsagesCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
-        expect(generateChangeSpy).toHaveBeenCalled();
-        expect(traceSpy).not.toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalled();
+        expect(mockTraceChanges).not.toHaveBeenCalled();
     });
 
     test('should not commit changes when called with simulate', async () => {
@@ -96,8 +132,8 @@ describe('add/component-usages', () => {
         addComponentUsagesCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
 
-        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
-        expect(generateChangeSpy).toHaveBeenCalled();
-        expect(traceSpy).toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalled();
+        expect(mockTraceChanges).toHaveBeenCalled();
     });
 });

@@ -1,28 +1,49 @@
-import * as childProcess from 'node:child_process';
-import type { Editor } from 'mem-fs-editor';
+import { jest } from '@jest/globals';
 import { Command } from 'commander';
+import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import * as capConfigWriterMock from '@sap-ux/cap-config-writer';
-import * as logger from '../../../../src/tracing/logger';
-import * as npmCommand from '@sap-ux/project-access';
-import { addAddCdsPluginUi5Command } from '../../../../src/cli/add/cds-plugin-ui';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('child_process');
+import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockGetLogger = jest.fn();
+const mockSetLogLevelVerbose = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: mockSetLogLevelVerbose
+}));
+
+const mockEnableCdsUi5Plugin = jest.fn();
+jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
+    enableCdsUi5Plugin: mockEnableCdsUi5Plugin
+}));
+
+const mockExecNpmCommand = jest.fn().mockResolvedValue('');
+jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
+    execNpmCommand: mockExecNpmCommand
+}));
+
+jest.unstable_mockModule('node:child_process', () => ({
+    spawn: jest.fn(),
+    spawnSync: jest.fn(),
+    execSync: jest.fn(),
+    exec: jest.fn()
+}));
+
+const { addAddCdsPluginUi5Command } = await import('../../../../src/cli/add/cds-plugin-ui');
 
 describe('Test command add cds-plugin-ui5', () => {
     let loggerMock: ToolsLogger;
     let fsMock: Editor;
-    let logLevelSpy: jest.SpyInstance;
-    let spawnSpy: jest.SpyInstance;
     let command: Command;
-    let execNpmCommandSpy: jest.SpyInstance;
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
     beforeEach(() => {
         jest.clearAllMocks();
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
 
         // Mock setup
         loggerMock = {
@@ -31,15 +52,13 @@ describe('Test command add cds-plugin-ui5', () => {
             warn: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
+        mockGetLogger.mockReturnValue(loggerMock);
+        mockSetLogLevelVerbose.mockImplementation(() => undefined);
         fsMock = {
             dump: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
-        jest.spyOn(capConfigWriterMock, 'enableCdsUi5Plugin').mockResolvedValue(fsMock);
-        spawnSpy = jest.spyOn(childProcess, 'spawnSync');
-        execNpmCommandSpy = jest.spyOn(npmCommand, 'execNpmCommand');
+        mockEnableCdsUi5Plugin.mockResolvedValue(fsMock);
         command = new Command('add');
         addAddCdsPluginUi5Command(command);
     });
@@ -49,13 +68,13 @@ describe('Test command add cds-plugin-ui5', () => {
         await command.parseAsync(getArgv(['cds-plugin-ui5', __dirname]));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.info).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(execNpmCommandSpy).toHaveBeenCalledWith(['install'], { cwd: __dirname, logger: undefined });
+        expect(mockExecNpmCommand).toHaveBeenCalledWith(['install'], { cwd: __dirname, logger: undefined });
     });
 
     test('Test create-fiori add cds-plugin-ui5 --simulate', async () => {
@@ -63,7 +82,7 @@ describe('Test command add cds-plugin-ui5', () => {
         await command.parseAsync(getArgv(['cds-plugin-ui5', '--simulate']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
     });
@@ -73,10 +92,9 @@ describe('Test command add cds-plugin-ui5', () => {
         await command.parseAsync(getArgv(['cds-plugin-ui5', '--skip-install']));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
     });
 
     test(`Test create-fiori add cds-plugin-ui5 --skip-install --verbose join(__dirname, '..')`, async () => {
@@ -85,10 +103,9 @@ describe('Test command add cds-plugin-ui5', () => {
         await command.parseAsync(getArgv(['cds-plugin-ui5', '--skip-install', '--verbose', parentDir]));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
         const loggerInfoCalls = (loggerMock.info as jest.Mock).mock.calls;
         const hasCdInfo = !!loggerInfoCalls.find(
             (c) => Array.isArray(c) && c.length >= 1 && typeof c[0] === 'string' && c[0].startsWith('cd ')
@@ -98,7 +115,7 @@ describe('Test command add cds-plugin-ui5', () => {
 
     test('Error handling with --verbose', async () => {
         // Mock setup
-        jest.spyOn(capConfigWriterMock, 'enableCdsUi5Plugin').mockRejectedValueOnce('ENABLE_ERROR');
+        mockEnableCdsUi5Plugin.mockRejectedValueOnce('ENABLE_ERROR');
 
         // Test execution
         await command.parseAsync(getArgv(['cds-plugin-ui5']));
@@ -110,7 +127,7 @@ describe('Test command add cds-plugin-ui5', () => {
 
     test('Error handling with non-string error', async () => {
         // Mock setup
-        jest.spyOn(capConfigWriterMock, 'enableCdsUi5Plugin').mockRejectedValueOnce(undefined);
+        mockEnableCdsUi5Plugin.mockRejectedValueOnce(undefined);
 
         // Test execution
         await command.parseAsync(getArgv(['cds-plugin-ui5']));

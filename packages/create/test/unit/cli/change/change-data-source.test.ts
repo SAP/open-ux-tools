@@ -1,31 +1,51 @@
+import { jest } from '@jest/globals';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { Command } from 'commander';
-import { addChangeDataSourceCommand } from '../../../../src/cli/change/change-data-source';
-import * as tracer from '../../../../src/tracing/trace';
-import * as common from '../../../../src/common';
-import * as logger from '../../../../src/tracing/logger';
-import * as validations from '../../../../src/validation/validation';
-import * as adp from '@sap-ux/adp-tooling';
-import * as projectAccess from '@sap-ux/project-access';
-import { UI5Config } from '@sap-ux/ui5-config';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { UI5Config } from '@sap-ux/ui5-config';
+
+import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const appManifest = readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.json'), 'utf-8');
 const descriptorVariant = JSON.parse(
     readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
 );
 
-jest.mock('prompts');
-jest.mock('@sap-ux/adp-tooling');
+const mockGetLogger = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: jest.fn()
+}));
 
-const mockAppInfo = { ExampleApp: { manifestUrl: 'https://sap.example' } };
-const abapServicesMock = {
-    getAppInfo: jest.fn().mockResolvedValue(mockAppInfo),
-    getManifest: jest.fn().mockResolvedValue(JSON.parse(appManifest))
-};
+const mockTraceChanges = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
+    traceChanges: mockTraceChanges
+}));
+
+const mockPromptYUIQuestions = jest.fn();
+jest.unstable_mockModule('../../../../src/common', () => ({
+    promptYUIQuestions: mockPromptYUIQuestions,
+    runNpmInstallCommand: jest.fn()
+}));
+
+const mockValidateAdpAppType = jest.fn();
+jest.unstable_mockModule('../../../../src/validation', () => ({
+    validateBasePath: jest.fn(),
+    validateAdpAppType: mockValidateAdpAppType,
+    validateCloudAdpProject: jest.fn(),
+    hasFileDeletes: jest.fn()
+}));
+
+const mockGetAppType = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
+    getAppType: mockGetAppType
+}));
 
 const mockDataSources = {
     'annotation': {
@@ -43,31 +63,50 @@ const mockDataSources = {
     }
 } as unknown as Record<string, ManifestNamespace.DataSource>;
 
-jest.mock('@sap-ux/system-access', () => {
-    return {
-        ...jest.requireActual('@sap-ux/system-access'),
-        createAbapServiceProvider: () => {
-            return {
-                getAppIndex: jest.fn().mockReturnValue({
-                    getAppInfo: abapServicesMock.getAppInfo
-                }),
-                getLayeredRepository: jest.fn().mockReturnValue({
-                    getManifest: abapServicesMock.getManifest
-                })
-            };
-        }
-    };
-});
+const mockAppInfo = { ExampleApp: { manifestUrl: 'https://sap.example' } };
+const abapServicesMock = {
+    getAppInfo: jest.fn().mockResolvedValue(mockAppInfo),
+    getManifest: jest.fn().mockResolvedValue(JSON.parse(appManifest))
+};
+
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    createAbapServiceProvider: () => ({
+        getAppIndex: jest.fn().mockReturnValue({
+            getAppInfo: abapServicesMock.getAppInfo
+        }),
+        getLayeredRepository: jest.fn().mockReturnValue({
+            getManifest: abapServicesMock.getManifest
+        })
+    })
+}));
+
+const mockIsCFEnvironment = jest.fn();
+const mockGetAdpConfig = jest.fn();
+const mockGetVariant = jest.fn();
+const mockGenerateChange = jest.fn();
+const mockGetPromptsForChangeDataSource = jest.fn();
+const mockInitBaseManifest = jest.fn();
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    isCFEnvironment: mockIsCFEnvironment,
+    getAdpConfig: mockGetAdpConfig,
+    getVariant: mockGetVariant,
+    generateChange: mockGenerateChange,
+    ChangeType: { CHANGE_DATA_SOURCE: 'appdescr_app_changeDataSource' },
+    getPromptsForChangeDataSource: mockGetPromptsForChangeDataSource,
+    ManifestService: {
+        initBaseManifest: mockInitBaseManifest
+    }
+}));
+
+jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
+
+const { addChangeDataSourceCommand } = await import('../../../../src/cli/change/change-data-source');
 
 describe('change/data-source', () => {
     let loggerMock: ToolsLogger;
     const memFsEditorMock = {
         commit: jest.fn().mockImplementation((cb) => cb())
     };
-    const traceSpy = jest.spyOn(tracer, 'traceChanges');
-    const generateChangeSpy = jest
-        .spyOn(adp, 'generateChange')
-        .mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
     const getArgv = (...arg: string[]) => ['', '', 'data-source', ...arg];
     const mockAnswers = {
         targetODataSource: 'mainService',
@@ -75,38 +114,40 @@ describe('change/data-source', () => {
         annotationUri: '/sap/opu/odata/test/annotation',
         maxAge: 60
     };
-    const promptYUIQuestionsSpy = jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
-    jest.spyOn(adp, 'getAdpConfig').mockResolvedValue({
-        target: {
-            url: 'https://sap.example',
-            client: '100'
-        }
-    });
-    jest.spyOn(adp.ManifestService, 'initBaseManifest').mockResolvedValue({
-        fetchBaseManifest: jest.fn(),
-        fetchMergedManifest: jest.fn(),
-        getManifest: jest.fn(),
-        fetchAppInfo: jest.fn(),
-        getManifestDataSources: jest.fn().mockReturnValue(mockDataSources),
-        getDataSourceMetadata: jest.fn().mockResolvedValue('<>metadata</>')
-    } as unknown as adp.ManifestService);
-    jest.spyOn(adp, 'getPromptsForChangeDataSource').mockImplementation(() => []);
     const appRoot = join(__dirname, '../../../fixtures');
+
     beforeEach(() => {
         jest.clearAllMocks();
         loggerMock = {
             debug: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        jest.spyOn(adp, 'getVariant').mockReturnValue(descriptorVariant);
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
-        jest.spyOn(validations, 'validateAdpAppType').mockResolvedValue(undefined);
-        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValue(false);
+        mockGetLogger.mockReturnValue(loggerMock);
+        mockGetVariant.mockReturnValue(descriptorVariant);
+        mockGetAppType.mockResolvedValue('Fiori Adaptation');
+        mockValidateAdpAppType.mockResolvedValue(undefined);
+        mockIsCFEnvironment.mockResolvedValue(false);
+        mockGenerateChange.mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
+        mockPromptYUIQuestions.mockResolvedValue(mockAnswers);
+        mockGetAdpConfig.mockResolvedValue({
+            target: {
+                url: 'https://sap.example',
+                client: '100'
+            }
+        });
+        mockGetPromptsForChangeDataSource.mockImplementation(() => []);
+        mockInitBaseManifest.mockResolvedValue({
+            fetchBaseManifest: jest.fn(),
+            fetchMergedManifest: jest.fn(),
+            getManifest: jest.fn(),
+            fetchAppInfo: jest.fn(),
+            getManifestDataSources: jest.fn().mockReturnValue(mockDataSources),
+            getDataSourceMetadata: jest.fn().mockResolvedValue('<>metadata</>')
+        });
     });
 
     test('change-data-source - CF environment', async () => {
-        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValueOnce(true);
+        mockIsCFEnvironment.mockResolvedValueOnce(true);
 
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
@@ -114,11 +155,11 @@ describe('change/data-source', () => {
 
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for Cloud Foundry projects.');
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('change-data-source - not an adaptation project', async () => {
-        jest.spyOn(validations, 'validateAdpAppType').mockRejectedValueOnce(
+        mockValidateAdpAppType.mockRejectedValueOnce(
             new Error('This command can only be used for an adaptation project')
         );
 
@@ -128,7 +169,7 @@ describe('change/data-source', () => {
 
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalledWith('This command can only be used for an adaptation project');
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('change data-source - preview-middleware custom configuration', async () => {
@@ -154,8 +195,8 @@ describe('change/data-source', () => {
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
-        expect(generateChangeSpy).toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalled();
     });
 
     test('change data-source - --simulate', async () => {
@@ -163,29 +204,17 @@ describe('change/data-source', () => {
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
 
-        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
-        expect(generateChangeSpy).toHaveBeenCalled();
-        expect(traceSpy).toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalled();
+        expect(mockTraceChanges).toHaveBeenCalled();
     });
 
     test('change data-source - authentication error', async () => {
-        jest.spyOn(adp.ManifestService, 'initBaseManifest')
-            .mockRejectedValueOnce({
-                message: '401:Unauthorized',
-                response: { status: 401 }
-            } as unknown as adp.ManifestService)
-            .mockRejectedValueOnce({
-                message: '401:Unauthorized',
-                response: { status: 401 }
-            } as unknown as adp.ManifestService)
-            .mockRejectedValueOnce({
-                message: '401:Unauthorized',
-                response: { status: 401 }
-            } as unknown as adp.ManifestService)
-            .mockRejectedValueOnce({
-                message: '401:Unauthorized',
-                response: { status: 401 }
-            } as unknown as adp.ManifestService);
+        mockInitBaseManifest
+            .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } })
+            .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } })
+            .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } })
+            .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } });
 
         const command = new Command('data-source');
         addChangeDataSourceCommand(command);
@@ -196,22 +225,22 @@ describe('change/data-source', () => {
             'Authentication failed. Please check your credentials. Login attempts left: 2'
         );
         expect(loggerMock.debug).not.toHaveBeenCalledWith();
-        expect(promptYUIQuestionsSpy).not.toHaveBeenCalled();
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('change data-source - no data sources in manifest', async () => {
-        jest.spyOn(adp.ManifestService, 'initBaseManifest').mockResolvedValueOnce({
+        mockInitBaseManifest.mockResolvedValueOnce({
             getManifestDataSources: jest.fn().mockImplementation(() => {
                 throw new Error('No data sources found in the manifest');
             })
-        } as unknown as adp.ManifestService);
+        });
         const command = new Command('data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.error).toHaveBeenCalledWith('No data sources found in the manifest');
-        expect(promptYUIQuestionsSpy).not.toHaveBeenCalled();
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 });

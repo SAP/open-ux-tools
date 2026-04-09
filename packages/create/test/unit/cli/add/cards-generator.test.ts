@@ -1,41 +1,72 @@
-import * as tracer from '../../../../src/tracing/trace';
-import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
-import { addCardsEditorConfigCommand } from '../../../../src/cli/add/cards-generator';
+import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
-import type { Editor, create } from 'mem-fs-editor';
-import { join } from 'node:path';
-import * as projectAccess from '@sap-ux/project-access';
+import type { Editor } from 'mem-fs-editor';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('mem-fs-editor', () => {
-    const editor = jest.requireActual<{ create: typeof create }>('mem-fs-editor');
-    return {
-        ...editor,
-        create(store: Store) {
-            const memFs: Editor = editor.create(store);
-            memFs.commit = jest.fn().mockImplementation((cb) => cb());
-            return memFs;
-        }
-    };
-});
+import { createProjectAccessMock } from '../__mocks__/project-access-mock';
 
-jest.mock('@sap-ux/app-config-writer', () => {
-    return {
-        ...jest.requireActual('@sap-ux/app-config-writer'),
-        enableCardGeneratorConfig: jest.fn()
-    };
-});
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const enableCardGeneratorConfigMock = enableCardGeneratorConfig as jest.Mock;
+const mockTraceChanges = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
+    traceChanges: mockTraceChanges
+}));
+
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: jest.fn().mockReturnValue({
+        debug: jest.fn(),
+        info: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn()
+    }),
+    setLogLevelVerbose: jest.fn()
+}));
+
+const mockFindProjectRoot = jest.fn();
+const mockGetProjectType = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
+    findProjectRoot: mockFindProjectRoot,
+    getProjectType: mockGetProjectType
+}));
+
+jest.unstable_mockModule('mem-fs-editor', () => ({
+    create(_store: Store) {
+        return {
+            commit: jest.fn().mockImplementation((cb) => cb()),
+            dump: jest.fn(),
+            read: jest.fn(),
+            readJSON: jest.fn(),
+            write: jest.fn(),
+            writeJSON: jest.fn(),
+            copy: jest.fn(),
+            copyTpl: jest.fn(),
+            delete: jest.fn(),
+            exists: jest.fn(),
+            extendJSON: jest.fn(),
+            move: jest.fn(),
+            append: jest.fn()
+        } as Partial<Editor> as Editor;
+    }
+}));
+
+const mockEnableCardGeneratorConfig = jest.fn();
+jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
+    enableCardGeneratorConfig: mockEnableCardGeneratorConfig
+}));
+
+jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
+
+const { addCardsEditorConfigCommand } = await import('../../../../src/cli/add/cards-generator');
+
 const appRoot = join(__dirname, '../../../fixtures/ui5-deploy-config');
 const testArgv = (args: string[]) => ['', '', 'cards-editor', appRoot, ...args];
 
 describe('add/cards-generator', () => {
-    const traceSpy = jest.spyOn(tracer, 'traceChanges');
-
     beforeEach(() => {
-        jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
-        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+        mockFindProjectRoot.mockResolvedValue('');
+        mockGetProjectType.mockResolvedValue('EDMXBackend');
     });
 
     afterEach(() => {
@@ -49,12 +80,12 @@ describe('add/cards-generator', () => {
         await command.parseAsync(testArgv([]));
 
         // Flow check
-        expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
-        expect(traceSpy).not.toHaveBeenCalled();
+        expect(mockEnableCardGeneratorConfig).toHaveBeenCalled();
+        expect(mockTraceChanges).not.toHaveBeenCalled();
     });
 
     test('add cards-generator CAP', async () => {
-        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+        mockGetProjectType.mockResolvedValue('CAPNodejs');
         // Test execution
         const command = new Command('add');
         addCardsEditorConfigCommand(command);
@@ -62,8 +93,8 @@ describe('add/cards-generator', () => {
 
         // Flow check - CAP projects are now supported
 
-        expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
-        expect(traceSpy).not.toHaveBeenCalled();
+        expect(mockEnableCardGeneratorConfig).toHaveBeenCalled();
+        expect(mockTraceChanges).not.toHaveBeenCalled();
     });
 
     test('add cards-generator --simulate', async () => {
@@ -73,7 +104,7 @@ describe('add/cards-generator', () => {
         await command.parseAsync(testArgv(['--simulate']));
 
         // Flow check
-        expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
-        expect(traceSpy).toHaveBeenCalled();
+        expect(mockEnableCardGeneratorConfig).toHaveBeenCalled();
+        expect(mockTraceChanges).toHaveBeenCalled();
     });
 });

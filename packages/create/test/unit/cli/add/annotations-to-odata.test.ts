@@ -1,25 +1,77 @@
+import { jest } from '@jest/globals';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import { Command } from 'commander';
-import { addAnnotationsToOdataCommand } from '../../../../src/cli/add/annotations-to-odata';
-import * as tracer from '../../../../src/tracing/trace';
-import * as common from '../../../../src/common';
-import * as logger from '../../../../src/tracing/logger';
-import * as validations from '../../../../src/validation/validation';
-import * as adp from '@sap-ux/adp-tooling';
-import * as projectAccess from '@sap-ux/project-access';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import * as oDataWriter from '@sap-ux/odata-service-writer';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const descriptorVariant = JSON.parse(
-    readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
-);
+import { createProjectAccessMock } from '../__mocks__/project-access-mock';
 
-jest.mock('prompts');
-jest.mock('@sap-ux/adp-tooling');
-jest.mock('@sap-ux/system-access');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockGetLogger = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: jest.fn()
+}));
+
+const mockTraceChanges = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
+    traceChanges: mockTraceChanges
+}));
+
+const mockPromptYUIQuestions = jest.fn();
+jest.unstable_mockModule('../../../../src/common', () => ({
+    promptYUIQuestions: mockPromptYUIQuestions,
+    runNpmInstallCommand: jest.fn()
+}));
+
+const mockValidateAdpAppType = jest.fn();
+const validationMock = {
+    validateBasePath: jest.fn(),
+    validateAdpAppType: mockValidateAdpAppType,
+    validateCloudAdpProject: jest.fn(),
+    hasFileDeletes: jest.fn()
+};
+jest.unstable_mockModule('../../../../src/validation', () => validationMock);
+jest.unstable_mockModule('../../../../src/validation/validation', () => validationMock);
+
+const mockGetAppType = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
+    getAppType: mockGetAppType
+}));
+
+const mockGetAnnotationNamespaces = jest.fn();
+jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({
+    getAnnotationNamespaces: mockGetAnnotationNamespaces
+}));
+
+const mockIsCFEnvironment = jest.fn();
+const mockGetAdpConfig = jest.fn();
+const mockGetVariant = jest.fn();
+const mockGenerateChange = jest.fn();
+const mockGetPromptsForAddAnnotationsToOData = jest.fn();
+const mockInitMergedManifest = jest.fn();
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    isCFEnvironment: mockIsCFEnvironment,
+    getAdpConfig: mockGetAdpConfig,
+    getVariant: mockGetVariant,
+    generateChange: mockGenerateChange,
+    ChangeType: { ADD_ANNOTATIONS_TO_ODATA: 'appdescr_app_addAnnotationsToOData' },
+    getPromptsForAddAnnotationsToOData: mockGetPromptsForAddAnnotationsToOData,
+    ManifestService: {
+        initMergedManifest: mockInitMergedManifest
+    }
+}));
+
+jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    createAbapServiceProvider: jest.fn()
+}));
+
+const { addAnnotationsToOdataCommand } = await import('../../../../src/cli/add/annotations-to-odata');
 
 const mockDataSources = {
     'annotation': {
@@ -42,37 +94,11 @@ describe('add/annotations', () => {
     const memFsEditorMock = {
         commit: jest.fn().mockImplementation((cb) => cb())
     };
-    const traceSpy = jest.spyOn(tracer, 'traceChanges');
-    const generateChangeSpy = jest
-        .spyOn(adp, 'generateChange')
-        .mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
     const getArgv = (...arg: string[]) => ['', '', 'annotations', ...arg];
-    const mockAnswers: adp.AddAnnotationsAnswers = {
+    const mockAnswers: { id: string; fileSelectOption: number; filePath?: string } = {
         id: 'mainService',
         fileSelectOption: 2
     };
-    const promptYUIQuestionsSpy = jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
-    jest.spyOn(adp, 'getAdpConfig').mockResolvedValue({
-        target: {
-            url: 'https://sap.example',
-            client: '100'
-        }
-    });
-    jest.spyOn(adp, 'getPromptsForAddAnnotationsToOData').mockImplementation(() => []);
-    jest.spyOn(adp.ManifestService, 'initMergedManifest').mockResolvedValue({
-        fetchBaseManifest: jest.fn(),
-        fetchMergedManifest: jest.fn(),
-        getManifest: jest.fn(),
-        fetchAppInfo: jest.fn(),
-        getManifestDataSources: jest.fn().mockReturnValue(mockDataSources),
-        getDataSourceMetadata: jest.fn().mockResolvedValue('<>metadata</>')
-    } as unknown as adp.ManifestService);
-    jest.spyOn(oDataWriter, 'getAnnotationNamespaces').mockReturnValue([
-        {
-            alias: 'alias',
-            namespace: 'namespace'
-        }
-    ]);
 
     const appRoot = join(__dirname, '../../../fixtures');
 
@@ -82,15 +108,37 @@ describe('add/annotations', () => {
             debug: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        jest.spyOn(adp, 'getVariant').mockReturnValue(descriptorVariant);
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
-        jest.spyOn(validations, 'validateAdpAppType').mockResolvedValue(undefined);
-        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValue(false);
+        mockGetLogger.mockReturnValue(loggerMock);
+
+        const descriptorVariant = JSON.parse(
+            readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
+        );
+        mockGetVariant.mockReturnValue(descriptorVariant);
+        mockGetAppType.mockResolvedValue('Fiori Adaptation');
+        mockValidateAdpAppType.mockResolvedValue(undefined);
+        mockIsCFEnvironment.mockResolvedValue(false);
+        mockGenerateChange.mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
+        mockPromptYUIQuestions.mockResolvedValue(mockAnswers);
+        mockGetAdpConfig.mockResolvedValue({
+            target: {
+                url: 'https://sap.example',
+                client: '100'
+            }
+        });
+        mockGetPromptsForAddAnnotationsToOData.mockImplementation(() => []);
+        mockInitMergedManifest.mockResolvedValue({
+            fetchBaseManifest: jest.fn(),
+            fetchMergedManifest: jest.fn(),
+            getManifest: jest.fn(),
+            fetchAppInfo: jest.fn(),
+            getManifestDataSources: jest.fn().mockReturnValue(mockDataSources),
+            getDataSourceMetadata: jest.fn().mockResolvedValue('<>metadata</>')
+        });
+        mockGetAnnotationNamespaces.mockReturnValue([{ alias: 'alias', namespace: 'namespace' }]);
     });
 
     test('should result in error when executed for CF projects', async () => {
-        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValueOnce(true);
+        mockIsCFEnvironment.mockResolvedValueOnce(true);
 
         const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
@@ -98,11 +146,11 @@ describe('add/annotations', () => {
 
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for Cloud Foundry projects.');
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('should result in error when system configuration is missing', async () => {
-        jest.spyOn(adp, 'getAdpConfig').mockRejectedValueOnce(new Error('No system configuration found in ui5.yaml'));
+        mockGetAdpConfig.mockRejectedValueOnce(new Error('No system configuration found in ui5.yaml'));
 
         const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
@@ -110,11 +158,11 @@ describe('add/annotations', () => {
 
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalledWith('No system configuration found in ui5.yaml');
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('should result in error when the project is not adaptation project', async () => {
-        jest.spyOn(validations, 'validateAdpAppType').mockRejectedValueOnce(
+        mockValidateAdpAppType.mockRejectedValueOnce(
             new Error('This command can only be used for an adaptation project')
         );
 
@@ -124,7 +172,7 @@ describe('add/annotations', () => {
 
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalledWith('This command can only be used for an adaptation project');
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('should pass succesfully when missing fiori-tools-preview configuration but has preview-middleware configuration', async () => {
@@ -132,8 +180,8 @@ describe('add/annotations', () => {
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
-        expect(generateChangeSpy).toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalled();
     });
 
     test('should not commit changes when called with simulate', async () => {
@@ -141,13 +189,12 @@ describe('add/annotations', () => {
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
 
-        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
-        expect(generateChangeSpy).toHaveBeenCalled();
-        expect(traceSpy).toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalled();
+        expect(mockTraceChanges).toHaveBeenCalled();
     });
 
     test('should not fetch metadata when file path is provided', async () => {
-        jest.spyOn(oDataWriter, 'getAnnotationNamespaces');
         mockAnswers.fileSelectOption = 1;
         mockAnswers.filePath = 'path/to/file.xml';
         const command = new Command('annotations');
@@ -156,30 +203,18 @@ describe('add/annotations', () => {
         mockAnswers.fileSelectOption = 2;
         mockAnswers.filePath = undefined;
 
-        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
-        expect(generateChangeSpy).toHaveBeenCalled();
-        expect(traceSpy).toHaveBeenCalled();
-        expect(oDataWriter.getAnnotationNamespaces).not.toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalled();
+        expect(mockTraceChanges).toHaveBeenCalled();
+        expect(mockGetAnnotationNamespaces).not.toHaveBeenCalled();
     });
 
     test('should fail with authentication error after 3 attempts', async () => {
-        jest.spyOn(adp.ManifestService, 'initMergedManifest')
-            .mockRejectedValueOnce({
-                message: '401:Unauthorized',
-                response: { status: 401 }
-            } as unknown as adp.ManifestService)
-            .mockRejectedValueOnce({
-                message: '401:Unauthorized',
-                response: { status: 401 }
-            } as unknown as adp.ManifestService)
-            .mockRejectedValueOnce({
-                message: '401:Unauthorized',
-                response: { status: 401 }
-            } as unknown as adp.ManifestService)
-            .mockRejectedValueOnce({
-                message: '401:Unauthorized',
-                response: { status: 401 }
-            } as unknown as adp.ManifestService);
+        mockInitMergedManifest
+            .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } })
+            .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } })
+            .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } })
+            .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } });
 
         const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
@@ -190,23 +225,23 @@ describe('add/annotations', () => {
             'Authentication failed. Please check your credentials. Login attempts left: 2'
         );
         expect(loggerMock.debug).not.toHaveBeenCalledWith();
-        expect(promptYUIQuestionsSpy).not.toHaveBeenCalled();
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('should fail when no data sources found in base application manifest', async () => {
-        jest.spyOn(adp.ManifestService, 'initMergedManifest').mockResolvedValueOnce({
+        mockInitMergedManifest.mockResolvedValueOnce({
             getManifestDataSources: jest.fn().mockImplementation(() => {
                 throw new Error('No data sources found in the manifest');
             })
-        } as unknown as adp.ManifestService);
+        });
 
         const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.error).toHaveBeenCalledWith('No data sources found in the manifest');
-        expect(promptYUIQuestionsSpy).not.toHaveBeenCalled();
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 });

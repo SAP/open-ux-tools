@@ -1,34 +1,66 @@
+import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
-import { addDeployConfigCommand } from '../../../../src/cli/add/deploy-config';
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { join } from 'node:path';
-import * as logger from '../../../../src/tracing/logger';
-import * as deployConfigInquirer from '@sap-ux/abap-deploy-config-inquirer';
-import * as deployConfigWriter from '@sap-ux/abap-deploy-config-writer';
-import * as projectAccess from '@sap-ux/project-access';
-import { prompt } from 'prompts';
-import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-jest.mock('prompts', () => ({
-    ...jest.requireActual('prompts'),
-    prompt: jest.fn()
+import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockGetLogger = jest.fn();
+const mockSetLogLevelVerbose = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    getExistingAdpProjectType: jest.fn()
+jest.unstable_mockModule('../../../../src/validation', () => ({
+    validateBasePath: jest.fn(),
+    validateAdpAppType: jest.fn(),
+    validateCloudAdpProject: jest.fn(),
+    hasFileDeletes: jest.fn()
 }));
 
-const mockPrompt = prompt as jest.Mock;
-const getExistingAdpProjectTypeMock = getExistingAdpProjectType as jest.Mock;
+const mockGetPrompts = jest.fn();
+const mockReconcileAnswers = jest.fn();
+jest.unstable_mockModule('@sap-ux/abap-deploy-config-inquirer', () => ({
+    getPrompts: mockGetPrompts,
+    reconcileAnswers: mockReconcileAnswers
+}));
+
+const mockGenerate = jest.fn();
+jest.unstable_mockModule('@sap-ux/abap-deploy-config-writer', () => ({
+    generate: mockGenerate
+}));
+
+const mockGetAppType = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
+    getAppType: mockGetAppType
+}));
+
+const mockPrompt = jest.fn();
+jest.unstable_mockModule('prompts', () => ({
+    default: mockPrompt,
+    prompt: mockPrompt
+}));
+
+const mockGetExistingAdpProjectType = jest.fn();
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    getExistingAdpProjectType: mockGetExistingAdpProjectType,
+    getVariant: jest.fn(),
+    isCFEnvironment: jest.fn().mockResolvedValue(false)
+}));
+
+const { addDeployConfigCommand } = await import('../../../../src/cli/add/deploy-config');
 
 describe('add/deploy-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');
 
     let loggerMock: ToolsLogger;
     let fsMock: Editor;
-    let logLevelSpy: jest.SpyInstance;
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -42,20 +74,19 @@ describe('add/deploy-config', () => {
             warn: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
+        mockGetLogger.mockReturnValue(loggerMock);
+        mockSetLogLevelVerbose.mockImplementation(() => undefined);
         fsMock = {
             dump: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
-        getExistingAdpProjectTypeMock.mockResolvedValue(undefined);
+        mockGetExistingAdpProjectType.mockResolvedValue(undefined);
+        mockReconcileAnswers.mockReturnValue({});
     });
 
     test('should prompt for target when not provided', async () => {
-        const getPromptsSpy = jest.spyOn(deployConfigInquirer, 'getPrompts');
-        getPromptsSpy.mockResolvedValueOnce({ prompts: [], answers: {} });
-        const deployConfigWriterSpy = jest.spyOn(deployConfigWriter, 'generate');
-        deployConfigWriterSpy.mockResolvedValueOnce(fsMock);
+        mockGetPrompts.mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGenerate.mockResolvedValueOnce(fsMock);
         mockPrompt.mockResolvedValueOnce({ target: 'abap' });
 
         // Test execution
@@ -65,8 +96,8 @@ describe('add/deploy-config', () => {
 
         // Result check
         expect(mockPrompt).toHaveBeenCalledTimes(1);
-        expect(getPromptsSpy).toHaveBeenCalledTimes(1);
-        expect(deployConfigWriterSpy).toHaveBeenCalledTimes(1);
+        expect(mockGetPrompts).toHaveBeenCalledTimes(1);
+        expect(mockGenerate).toHaveBeenCalledTimes(1);
     });
 
     test('should log when cf deploy config is requested', async () => {
@@ -80,8 +111,8 @@ describe('add/deploy-config', () => {
     });
 
     test('should add deploy config', async () => {
-        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
-        jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
+        mockGetPrompts.mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGenerate.mockResolvedValueOnce(fsMock);
 
         // Test execution
         const command = new Command('add');
@@ -89,7 +120,7 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap']));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.info).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
@@ -98,9 +129,9 @@ describe('add/deploy-config', () => {
     });
 
     test('should add deploy config for Fiori elements project', async () => {
-        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
-        jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('SAP Fiori elements');
+        mockGetPrompts.mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGenerate.mockResolvedValueOnce(fsMock);
+        mockGetAppType.mockResolvedValue('SAP Fiori elements');
 
         // Test execution
         const command = new Command('add');
@@ -108,7 +139,7 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap']));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.info).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
@@ -117,10 +148,10 @@ describe('add/deploy-config', () => {
     });
 
     test('should add deploy config for Adp project', async () => {
-        getExistingAdpProjectTypeMock.mockResolvedValue(AdaptationProjectType.ON_PREMISE);
-        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
-        jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
+        mockGetExistingAdpProjectType.mockResolvedValue(AdaptationProjectType.ON_PREMISE);
+        mockGetPrompts.mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGenerate.mockResolvedValueOnce(fsMock);
+        mockGetAppType.mockResolvedValue('Fiori Adaptation');
 
         // Test execution
         const command = new Command('add');
@@ -128,13 +159,13 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot]));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.info).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(deployConfigInquirer.getPrompts).toHaveBeenCalledWith(
+        expect(mockGetPrompts).toHaveBeenCalledWith(
             {
                 ui5AbapRepo: { hideIfOnPremise: true },
                 packageAutocomplete: {
@@ -159,8 +190,8 @@ describe('add/deploy-config', () => {
     });
 
     test('should add deploy config --simulate', async () => {
-        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
-        jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
+        mockGetPrompts.mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGenerate.mockResolvedValueOnce(fsMock);
 
         // Test execution
         const command = new Command('add');
@@ -168,7 +199,7 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap', '--simulate']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.info).not.toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
@@ -177,8 +208,8 @@ describe('add/deploy-config', () => {
     });
 
     test('should add deploy config --verbose', async () => {
-        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
-        jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
+        mockGetPrompts.mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGenerate.mockResolvedValueOnce(fsMock);
 
         // Test execution
         const command = new Command('add');
@@ -186,7 +217,7 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap', '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.info).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
@@ -197,8 +228,8 @@ describe('add/deploy-config', () => {
     test('should report error', async () => {
         const errorObj = new Error('Error generating deployment configuration');
 
-        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
-        jest.spyOn(deployConfigWriter, 'generate').mockImplementationOnce(() => {
+        mockGetPrompts.mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGenerate.mockImplementationOnce(() => {
             throw errorObj;
         });
 
@@ -208,7 +239,7 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap', '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.info).not.toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
@@ -227,10 +258,10 @@ describe('add/deploy-config', () => {
             transport: 'TRDUMMY'
         };
 
-        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
-        jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
+        mockGetPrompts.mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGenerate.mockResolvedValueOnce(fsMock);
         mockPrompt.mockResolvedValueOnce({ target: 'abap' });
-        jest.spyOn(deployConfigInquirer, 'reconcileAnswers').mockReturnValueOnce(promptAnswers);
+        mockReconcileAnswers.mockReturnValueOnce(promptAnswers);
 
         // Test execution
         const command = new Command('add');
@@ -269,11 +300,11 @@ describe('add/deploy-config', () => {
             transport: 'TRDUMMY'
         };
 
-        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
-        jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
+        mockGetPrompts.mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGetAppType.mockResolvedValue('Fiori Adaptation');
+        mockGenerate.mockResolvedValueOnce(fsMock);
         mockPrompt.mockResolvedValueOnce({ target: 'abap' });
-        jest.spyOn(deployConfigInquirer, 'reconcileAnswers').mockReturnValueOnce(promptAnswers);
+        mockReconcileAnswers.mockReturnValueOnce(promptAnswers);
 
         // Test execution
         const command = new Command('add');
@@ -311,11 +342,11 @@ describe('add/deploy-config', () => {
             transport: 'TRDUMMY'
         };
 
-        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
-        jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
+        mockGetPrompts.mockResolvedValueOnce({ prompts: [], answers: {} });
+        mockGetAppType.mockResolvedValue('Fiori Adaptation');
+        mockGenerate.mockResolvedValueOnce(fsMock);
         mockPrompt.mockResolvedValueOnce({ target: 'abap' });
-        jest.spyOn(deployConfigInquirer, 'reconcileAnswers').mockReturnValueOnce(promptAnswers);
+        mockReconcileAnswers.mockReturnValueOnce(promptAnswers);
 
         // Test execution
         const command = new Command('add');

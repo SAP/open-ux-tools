@@ -1,9 +1,20 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { promises } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { traceChanges } from '../../../src/tracing';
-import * as logger from '../../../src/tracing/logger';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockGetLogger = jest.fn();
+
+jest.unstable_mockModule('../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: jest.fn()
+}));
+
+const { traceChanges } = await import('../../../src/tracing');
 
 describe('Test traceChanges()', () => {
     let loggerMock: ToolsLogger;
@@ -19,7 +30,7 @@ describe('Test traceChanges()', () => {
             warn: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
+        mockGetLogger.mockImplementation(() => loggerMock);
     });
 
     test('New file', async () => {
@@ -109,14 +120,7 @@ nested:
         // Result check
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining(`'${modifiedFile}' modified`));
         expect(loggerMock.debug).toHaveBeenCalledWith(
-            `File changes:
-[31mrootProperty: 'prop on root'[39m
-[31m[39m[32mrootProperty: 'changed prop on root'[39m
-[32m[39m[90mnested:[39m
-[90m    - item: one[39m
-[90m[39m[31m    - item: two[39m
-[31m[39m[32m    - item: three[39m
-[32m[39m`
+            `File changes:\n\x1B[31mrootProperty: 'prop on root'\x1B[39m\n\x1B[31m\x1B[39m\x1B[32mrootProperty: 'changed prop on root'\x1B[39m\n\x1B[32m\x1B[39m\x1B[90mnested:\x1B[39m\n\x1B[90m    - item: one\x1B[39m\n\x1B[90m\x1B[39m\x1B[31m    - item: two\x1B[39m\n\x1B[31m\x1B[39m\x1B[32m    - item: three\x1B[39m\n\x1B[32m\x1B[39m`
         );
     });
 

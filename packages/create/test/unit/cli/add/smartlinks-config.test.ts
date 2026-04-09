@@ -1,19 +1,37 @@
+import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'node:path';
-import * as prompts from 'prompts';
-import * as appConfigWriter from '@sap-ux/app-config-writer';
 import type { ToolsLogger } from '@sap-ux/logger';
-import * as logger from '../../../../src/tracing/logger';
-import { addAddSmartLinksConfigCommand } from '../../../../src/cli/add/smartlinks-config';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('prompts');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockGetLogger = jest.fn();
+const mockSetLogLevelVerbose = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: mockSetLogLevelVerbose
+}));
+
+const mockGenerateSmartLinksConfig = jest.fn();
+jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
+    generateSmartLinksConfig: mockGenerateSmartLinksConfig,
+    getSmartLinksTargetFromPrompt: jest.fn()
+}));
+
+const mockPrompt = jest.fn();
+jest.unstable_mockModule('prompts', () => ({
+    default: mockPrompt,
+    prompt: mockPrompt
+}));
+
+const { addAddSmartLinksConfigCommand } = await import('../../../../src/cli/add/smartlinks-config');
 
 describe('Test command add smartlinks-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/ui5-deploy-config');
     let loggerMock: ToolsLogger;
     let fsMock: Editor;
-    let logLevelSpy: jest.SpyInstance;
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -27,16 +45,16 @@ describe('Test command add smartlinks-config', () => {
             warn: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
+        mockGetLogger.mockReturnValue(loggerMock);
+        mockSetLogLevelVerbose.mockImplementation(() => undefined);
         fsMock = {
             dump: jest.fn(),
             exists: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
-        jest.spyOn(appConfigWriter, 'generateSmartLinksConfig').mockResolvedValue(fsMock);
+        mockGenerateSmartLinksConfig.mockResolvedValue(fsMock);
         // 1. prompt: target, 2. prompt: user
-        jest.spyOn(prompts, 'prompt')
+        mockPrompt
             .mockResolvedValueOnce({ url: 'url', client: '100' })
             .mockResolvedValueOnce({ username: 'user', password: 'password' });
     });
@@ -48,7 +66,7 @@ describe('Test command add smartlinks-config', () => {
         await command.parseAsync(getArgv(['smartlinks-config', appRoot]));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.info).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
@@ -63,7 +81,7 @@ describe('Test command add smartlinks-config', () => {
         await command.parseAsync(getArgv(['smartlinks-config', appRoot, '-s']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
@@ -76,7 +94,7 @@ describe('Test command add smartlinks-config', () => {
         await command.parseAsync(getArgv(['smartlinks-config', '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();

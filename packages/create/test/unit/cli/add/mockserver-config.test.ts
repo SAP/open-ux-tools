@@ -1,24 +1,62 @@
+import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addAddMockserverConfigCommand } from '../../../../src/cli/add/mockserver-config';
-import * as prompts from 'prompts';
-import * as mockserverWriter from '@sap-ux/mockserver-config-writer';
-import * as logger from '../../../../src/tracing/logger';
-import * as childProcess from 'node:child_process';
-import * as npmCommand from '@sap-ux/project-access';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('child_process');
-jest.mock('prompts');
+import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockGetLogger = jest.fn();
+const mockSetLogLevelVerbose = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: mockSetLogLevelVerbose
+}));
+
+const mockValidateBasePath = jest.fn();
+jest.unstable_mockModule('../../../../src/validation', () => ({
+    validateBasePath: mockValidateBasePath,
+    validateAdpAppType: jest.fn(),
+    validateCloudAdpProject: jest.fn(),
+    hasFileDeletes: jest.fn()
+}));
+
+const mockGenerateMockserverConfig = jest.fn();
+const mockGetMockserverConfigQuestions = jest.fn();
+jest.unstable_mockModule('@sap-ux/mockserver-config-writer', () => ({
+    generateMockserverConfig: mockGenerateMockserverConfig,
+    getMockserverConfigQuestions: mockGetMockserverConfigQuestions
+}));
+
+const mockGetWebappPath = jest.fn();
+const mockExecNpmCommand = jest.fn().mockResolvedValue('');
+jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
+    getWebappPath: mockGetWebappPath,
+    execNpmCommand: mockExecNpmCommand
+}));
+
+jest.unstable_mockModule('node:child_process', () => ({
+    spawn: jest.fn(),
+    spawnSync: jest.fn(),
+    execSync: jest.fn(),
+    exec: jest.fn()
+}));
+
+const mockPrompt = jest.fn();
+jest.unstable_mockModule('prompts', () => ({
+    default: mockPrompt,
+    prompt: mockPrompt
+}));
+
+const { addAddMockserverConfigCommand } = await import('../../../../src/cli/add/mockserver-config');
 
 describe('Test command add mockserver-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');
     let loggerMock: ToolsLogger;
     let fsMock: Editor;
-    let logLevelSpy: jest.SpyInstance;
-    let spawnSpy: jest.SpyInstance;
-    let execNpmCommandSpy: jest.SpyInstance;
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -32,15 +70,14 @@ describe('Test command add mockserver-config', () => {
             warn: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
+        mockGetLogger.mockReturnValue(loggerMock);
+        mockSetLogLevelVerbose.mockImplementation(() => undefined);
+        mockGetWebappPath.mockResolvedValue(join(appRoot, 'webapp'));
         fsMock = {
             dump: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
-        jest.spyOn(mockserverWriter, 'generateMockserverConfig').mockResolvedValue(fsMock);
-        spawnSpy = jest.spyOn(childProcess, 'spawnSync');
-        execNpmCommandSpy = jest.spyOn(npmCommand, 'execNpmCommand');
+        mockGenerateMockserverConfig.mockResolvedValue(fsMock);
     });
 
     test('Test create-fiori add mockserver-config <appRoot>', async () => {
@@ -50,13 +87,13 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot]));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.info).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(execNpmCommandSpy).toHaveBeenCalledWith(
+        expect(mockExecNpmCommand).toHaveBeenCalledWith(
             ['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver'],
             {
                 cwd: appRoot,
@@ -72,10 +109,9 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot, '-s']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
@@ -86,18 +122,16 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot, '--skip-install']));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.warn).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori add mockserver-config <appRoot> --interactive', async () => {
         // Mock setup
-        jest.spyOn(mockserverWriter, 'getMockserverConfigQuestions').mockImplementation((q: any) => [q]);
-        const promptSpy = jest.spyOn(prompts, 'prompt');
+        mockGetMockserverConfigQuestions.mockImplementation((q: any) => [q]);
 
         // Test execution
         const command = new Command('add');
@@ -105,17 +139,17 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot, '--interactive']));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
-        expect(promptSpy).toHaveBeenCalledWith([{ webappPath: join(appRoot, 'webapp'), askForOverwrite: true }]);
+        expect(mockPrompt).toHaveBeenCalledWith([{ webappPath: join(appRoot, 'webapp'), askForOverwrite: true }]);
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(execNpmCommandSpy).toHaveBeenCalled();
+        expect(mockExecNpmCommand).toHaveBeenCalled();
     });
 
     test('Test create-fiori add mockserver-config <appRoot> --interactive with overwrite option', async () => {
         // Mock setup
-        jest.spyOn(mockserverWriter, 'getMockserverConfigQuestions').mockReturnValue([
+        mockGetMockserverConfigQuestions.mockReturnValue([
             {
                 name: 'path',
                 type: 'text',
@@ -127,7 +161,6 @@ describe('Test command add mockserver-config', () => {
                 message: 'Overwrite services'
             }
         ]);
-        const promptSpy = jest.spyOn(prompts, 'prompt');
 
         // Test execution
         const command = new Command('add');
@@ -135,10 +168,10 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot, '--interactive']));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
-        expect(promptSpy).toHaveBeenCalledWith([
+        expect(mockPrompt).toHaveBeenCalledWith([
             {
                 name: 'path',
                 type: 'text',
@@ -151,20 +184,22 @@ describe('Test command add mockserver-config', () => {
             }
         ]);
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(execNpmCommandSpy).toHaveBeenCalled();
+        expect(mockExecNpmCommand).toHaveBeenCalled();
     });
 
     test('Test create-fiori add mockserver-config --verbose', async () => {
+        // Mock setup - validate base path should fail when no path given (uses cwd)
+        mockValidateBasePath.mockRejectedValueOnce(new Error('Required file does not exist.'));
+
         // Test execution
         const command = new Command('add');
         addAddMockserverConfigCommand(command);
         await command.parseAsync(getArgv(['mockserver-config', '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
     });
 });

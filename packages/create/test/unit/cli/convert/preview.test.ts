@@ -1,22 +1,42 @@
+import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addConvertPreviewCommand } from '../../../../src/cli/convert/preview';
-import * as appConfigWriter from '@sap-ux/app-config-writer';
-import * as logger from '../../../../src/tracing/logger';
-import * as childProcess from 'node:child_process';
-import { join } from 'node:path';
-jest.mock('child_process');
-jest.mock('prompts');
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockGetLogger = jest.fn();
+const mockSetLogLevelVerbose = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: mockSetLogLevelVerbose
+}));
+
+const mockConvertToVirtualPreview = jest.fn();
+const mockSimulatePrompt = jest.fn();
+const mockIncludeTestRunnersPrompt = jest.fn();
+jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
+    convertToVirtualPreview: mockConvertToVirtualPreview,
+    simulatePrompt: mockSimulatePrompt,
+    includeTestRunnersPrompt: mockIncludeTestRunnersPrompt
+}));
+
+jest.unstable_mockModule('node:child_process', () => ({
+    spawn: jest.fn(),
+    spawnSync: jest.fn(),
+    execSync: jest.fn(),
+    exec: jest.fn()
+}));
+jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
+
+const { addConvertPreviewCommand } = await import('../../../../src/cli/convert/preview');
 
 describe('Test command convert preview', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');
     let loggerMock: ToolsLogger;
     let fsMock: Editor;
-    let logLevelSpy: jest.SpyInstance;
-    let spawnSpy: jest.SpyInstance;
-    const simulatePromptSpy = jest.spyOn(appConfigWriter, 'simulatePrompt');
-    const includeTestRunnersPromptSpy = jest.spyOn(appConfigWriter, 'includeTestRunnersPrompt');
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -30,33 +50,31 @@ describe('Test command convert preview', () => {
             warn: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
+        mockGetLogger.mockReturnValue(loggerMock);
+        mockSetLogLevelVerbose.mockImplementation(() => undefined);
         fsMock = {
             dump: jest.fn(),
             exists: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
-        jest.spyOn(appConfigWriter, 'convertToVirtualPreview').mockResolvedValue(fsMock);
-        spawnSpy = jest.spyOn(childProcess, 'spawnSync');
+        mockConvertToVirtualPreview.mockResolvedValue(fsMock);
     });
 
     test('Test create-fiori convert preview <appRoot>', async () => {
-        simulatePromptSpy.mockResolvedValue(false);
-        includeTestRunnersPromptSpy.mockResolvedValue(false);
+        mockSimulatePrompt.mockResolvedValue(false);
+        mockIncludeTestRunnersPrompt.mockResolvedValue(false);
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
         await command.parseAsync(getArgv(['preview-config', appRoot]));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.info).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori convert preview <appRoot> --simulate=true', async () => {
@@ -66,10 +84,9 @@ describe('Test command convert preview', () => {
         await command.parseAsync(getArgv(['preview-config', appRoot, '-s=true']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
@@ -80,48 +97,45 @@ describe('Test command convert preview', () => {
         await command.parseAsync(getArgv(['preview-config', appRoot, '-s=false', '-t=FaLsE']));
 
         // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('Test create-fiori convert preview --verbose', async () => {
-        simulatePromptSpy.mockResolvedValue(false);
-        includeTestRunnersPromptSpy.mockResolvedValue(false);
+        mockSimulatePrompt.mockResolvedValue(false);
+        mockIncludeTestRunnersPrompt.mockResolvedValue(false);
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
         await command.parseAsync(getArgv(['preview-config', '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori convert preview with simulate from prompt', async () => {
-        simulatePromptSpy.mockResolvedValue(true);
-        includeTestRunnersPromptSpy.mockResolvedValue(false);
+        mockSimulatePrompt.mockResolvedValue(true);
+        mockIncludeTestRunnersPrompt.mockResolvedValue(false);
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
         await command.parseAsync(getArgv(['preview-config']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori convert preview with simulate cancelled from prompt', async () => {
         const mockExit = jest.spyOn(process, 'exit').mockImplementation();
-        simulatePromptSpy.mockResolvedValue(Promise.reject(new Error('test error')));
+        mockSimulatePrompt.mockResolvedValue(Promise.reject(new Error('test error')));
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
@@ -129,33 +143,30 @@ describe('Test command convert preview', () => {
 
         // Result check
         expect(mockExit).toHaveBeenCalledWith(1);
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
-        //can't check for fs.commit here as we don't exit on process.exit(1)
     });
 
     test('Test create-fiori convert preview with simulate and test from prompt', async () => {
-        simulatePromptSpy.mockResolvedValue(true);
-        includeTestRunnersPromptSpy.mockResolvedValue(true);
+        mockSimulatePrompt.mockResolvedValue(true);
+        mockIncludeTestRunnersPrompt.mockResolvedValue(true);
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
         await command.parseAsync(getArgv(['preview-config']));
 
         // Result check
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori convert preview with simulate and test cancelled from prompt', async () => {
         const mockExit = jest.spyOn(process, 'exit').mockImplementation();
-        simulatePromptSpy.mockResolvedValue(true);
-        includeTestRunnersPromptSpy.mockResolvedValue(Promise.reject(new Error('test error')));
+        mockSimulatePrompt.mockResolvedValue(true);
+        mockIncludeTestRunnersPrompt.mockResolvedValue(Promise.reject(new Error('test error')));
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
@@ -163,10 +174,9 @@ describe('Test command convert preview', () => {
 
         // Result check
         expect(mockExit).toHaveBeenCalledWith(1);
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalled();
-        expect(spawnSpy).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
     });
 });

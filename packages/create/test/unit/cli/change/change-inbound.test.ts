@@ -1,25 +1,66 @@
+import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { Command } from 'commander';
-import * as tracer from '../../../../src/tracing/trace';
-import * as common from '../../../../src/common';
-import * as logger from '../../../../src/tracing/logger';
-import * as projectAccess from '@sap-ux/project-access';
-import { join } from 'node:path';
-import * as validations from '../../../../src/validation/validation';
-import { addChangeInboundCommand } from '../../../../src/cli/change/change-inbound';
-import * as adp from '@sap-ux/adp-tooling';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 
-jest.mock('prompts');
-jest.mock('@sap-ux/adp-tooling');
+import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockGetLogger = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: jest.fn()
+}));
+
+const mockTraceChanges = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
+    traceChanges: mockTraceChanges
+}));
+
+const mockPromptYUIQuestions = jest.fn();
+jest.unstable_mockModule('../../../../src/common', () => ({
+    promptYUIQuestions: mockPromptYUIQuestions,
+    runNpmInstallCommand: jest.fn()
+}));
+
+const mockValidateAdpAppType = jest.fn();
+const mockValidateCloudAdpProject = jest.fn();
+jest.unstable_mockModule('../../../../src/validation', () => ({
+    validateBasePath: jest.fn(),
+    validateAdpAppType: mockValidateAdpAppType,
+    validateCloudAdpProject: mockValidateCloudAdpProject,
+    hasFileDeletes: jest.fn()
+}));
+
+const mockGetAppType = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
+    getAppType: mockGetAppType
+}));
+
+const mockIsCFEnvironment = jest.fn();
+const mockGetVariant = jest.fn();
+const mockGenerateChange = jest.fn();
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    isCFEnvironment: mockIsCFEnvironment,
+    getVariant: mockGetVariant,
+    generateChange: mockGenerateChange,
+    ChangeType: { CHANGE_INBOUND: 'appdescr_app_changeInbound' },
+    getPromptsForChangeInbound: jest.fn().mockReturnValue([])
+}));
+
+jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
+
+const { addChangeInboundCommand } = await import('../../../../src/cli/change/change-inbound');
 
 const cloudDescriptorVariant = JSON.parse(
-    jest
-        .requireActual('fs')
-        .readFileSync(
-            join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant.cloud'),
-            'utf-8'
-        )
+    readFileSync(
+        join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant.cloud'),
+        'utf-8'
+    )
 );
 
 describe('change/inbound', () => {
@@ -36,11 +77,6 @@ describe('change/inbound', () => {
         icon: 'Some Icon'
     };
 
-    const traceSpy = jest.spyOn(tracer, 'traceChanges');
-    const generateChangeSpy = jest
-        .spyOn(adp, 'generateChange')
-        .mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
-    const promptYUIQuestionsSpy = jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
     const getArgv = (...arg: string[]) => ['', '', 'inbound', ...arg];
     const appRoot = join(__dirname, '../../../fixtures');
 
@@ -50,16 +86,18 @@ describe('change/inbound', () => {
             debug: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        jest.spyOn(adp, 'getVariant').mockReturnValue(cloudDescriptorVariant);
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
-        jest.spyOn(validations, 'validateAdpAppType').mockResolvedValue(undefined);
-        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValue(false);
-        jest.spyOn(validations, 'validateCloudAdpProject').mockResolvedValue(undefined);
+        mockGetLogger.mockReturnValue(loggerMock);
+        mockGetVariant.mockReturnValue(cloudDescriptorVariant);
+        mockGetAppType.mockResolvedValue('Fiori Adaptation');
+        mockValidateAdpAppType.mockResolvedValue(undefined);
+        mockIsCFEnvironment.mockResolvedValue(false);
+        mockValidateCloudAdpProject.mockResolvedValue(undefined);
+        mockGenerateChange.mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
+        mockPromptYUIQuestions.mockResolvedValue(mockAnswers);
     });
 
     test('change-inbound - not an Adaptation Project', async () => {
-        jest.spyOn(validations, 'validateAdpAppType').mockRejectedValueOnce(
+        mockValidateAdpAppType.mockRejectedValueOnce(
             new Error('This command can only be used for an adaptation project')
         );
 
@@ -69,11 +107,11 @@ describe('change/inbound', () => {
 
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalledWith('This command can only be used for an adaptation project');
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('change-inbound - CF environment', async () => {
-        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValueOnce(true);
+        mockIsCFEnvironment.mockResolvedValueOnce(true);
 
         const command = new Command('inbound');
         addChangeInboundCommand(command);
@@ -81,11 +119,11 @@ describe('change/inbound', () => {
 
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for Cloud Foundry projects.');
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('change-inbound - onPremise project', async () => {
-        jest.spyOn(validations, 'validateCloudAdpProject').mockRejectedValueOnce(
+        mockValidateCloudAdpProject.mockRejectedValueOnce(
             new Error('This command can only be used for Cloud Adaptation Project.')
         );
 
@@ -94,30 +132,30 @@ describe('change/inbound', () => {
         await command.parseAsync(getArgv(appRoot));
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalledWith('This command can only be used for Cloud Adaptation Project.');
-        expect(generateChangeSpy).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 
     test('change-inbound - --simulate', async () => {
         const command = new Command('inbound');
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
-        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
-        expect(generateChangeSpy).toHaveBeenCalled();
-        expect(traceSpy).toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalled();
+        expect(mockTraceChanges).toHaveBeenCalled();
     });
 
     test('change-inbound - cloudProject', async () => {
         const command = new Command('inbound');
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(appRoot));
-        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
-        expect(generateChangeSpy).toHaveBeenCalled();
+        expect(mockPromptYUIQuestions).toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalled();
     });
 
     test('change-inbound - no basePath', async () => {
         const command = new Command('inbound');
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(''));
-        expect(generateChangeSpy).toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalled();
     });
 });

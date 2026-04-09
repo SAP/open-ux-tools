@@ -1,25 +1,52 @@
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { Command } from 'commander';
-import { join } from 'node:path';
-import * as adpTooling from '@sap-ux/adp-tooling';
-import * as logger from '../../../../src/tracing/logger';
-import * as validations from '../../../../src/validation/validation';
-import { addAdaptationProjectCFConfigCommand } from '../../../../src/cli/add/adp-cf-config';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('@sap-ux/adp-tooling');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockGetLogger = jest.fn();
+const mockSetLogLevelVerbose = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: mockSetLogLevelVerbose
+}));
+
+const mockValidateBasePath = jest.fn();
+const mockValidateAdpAppType = jest.fn();
+jest.unstable_mockModule('../../../../src/validation', () => ({
+    validateBasePath: mockValidateBasePath,
+    validateAdpAppType: mockValidateAdpAppType,
+    validateCloudAdpProject: jest.fn(),
+    hasFileDeletes: jest.fn()
+}));
+
+const mockIsCFEnvironment = jest.fn();
+const mockLoadCfConfig = jest.fn();
+const mockIsLoggedInCf = jest.fn();
+const mockSetupCfPreview = jest.fn();
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    isCFEnvironment: mockIsCFEnvironment,
+    loadCfConfig: mockLoadCfConfig,
+    isLoggedInCf: mockIsLoggedInCf,
+    setupCfPreview: mockSetupCfPreview
+}));
+
+jest.unstable_mockModule('node:child_process', () => ({
+    spawn: jest.fn(),
+    spawnSync: jest.fn(),
+    execSync: jest.fn(),
+    exec: jest.fn()
+}));
+
+const { addAdaptationProjectCFConfigCommand } = await import('../../../../src/cli/add/adp-cf-config');
 
 describe('add/adp-cf-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/adaptation-project');
     const getArgv = (...arg: string[]) => ['', '', 'adp-cf-config', ...arg];
 
     let loggerMock: ToolsLogger;
-    let logLevelSpy: jest.SpyInstance;
-    let validateBasePathSpy: jest.SpyInstance;
-    let validateAdpAppTypeSpy: jest.SpyInstance;
-    let isCFEnvironmentSpy: jest.SpyInstance;
-    let loadCfConfigMock: jest.SpyInstance;
-    let isLoggedInCfMock: jest.SpyInstance;
-    let setupCfPreviewMock: jest.SpyInstance;
 
     const mockCfConfig = {
         org: { Name: 'test-org', GUID: 'org-guid' },
@@ -38,15 +65,14 @@ describe('add/adp-cf-config', () => {
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
 
-        jest.spyOn(logger, 'getLogger').mockReturnValue(loggerMock);
-        logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
-        validateBasePathSpy = jest.spyOn(validations, 'validateBasePath').mockResolvedValue(undefined);
-        validateAdpAppTypeSpy = jest.spyOn(validations, 'validateAdpAppType').mockResolvedValue(undefined);
-        isCFEnvironmentSpy = jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValue(true);
-
-        loadCfConfigMock = jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValue(mockCfConfig);
-        isLoggedInCfMock = jest.spyOn(adpTooling, 'isLoggedInCf').mockResolvedValue(true);
-        setupCfPreviewMock = jest.spyOn(adpTooling, 'setupCfPreview').mockResolvedValue(undefined);
+        mockGetLogger.mockReturnValue(loggerMock);
+        mockSetLogLevelVerbose.mockImplementation(() => undefined);
+        mockValidateBasePath.mockResolvedValue(undefined);
+        mockValidateAdpAppType.mockResolvedValue(undefined);
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockLoadCfConfig.mockReturnValue(mockCfConfig);
+        mockIsLoggedInCf.mockResolvedValue(true);
+        mockSetupCfPreview.mockResolvedValue(undefined);
     });
 
     test('should add command with correct options', () => {
@@ -63,7 +89,7 @@ describe('add/adp-cf-config', () => {
 
         await command.parseAsync(getArgv(appRoot, '--verbose'));
 
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
     });
 
     test('should complete setup successfully', async () => {
@@ -72,11 +98,11 @@ describe('add/adp-cf-config', () => {
 
         await command.parseAsync(getArgv(appRoot));
 
-        expect(validateBasePathSpy).toHaveBeenCalledWith(appRoot);
-        expect(validateAdpAppTypeSpy).toHaveBeenCalledWith(appRoot);
-        expect(loadCfConfigMock).toHaveBeenCalledWith(loggerMock);
-        expect(isLoggedInCfMock).toHaveBeenCalledWith(mockCfConfig, loggerMock);
-        expect(setupCfPreviewMock).toHaveBeenCalledWith(appRoot, 'ui5.yaml', mockCfConfig, loggerMock);
+        expect(mockValidateBasePath).toHaveBeenCalledWith(appRoot);
+        expect(mockValidateAdpAppType).toHaveBeenCalledWith(appRoot);
+        expect(mockLoadCfConfig).toHaveBeenCalledWith(loggerMock);
+        expect(mockIsLoggedInCf).toHaveBeenCalledWith(mockCfConfig, loggerMock);
+        expect(mockSetupCfPreview).toHaveBeenCalledWith(appRoot, 'ui5.yaml', mockCfConfig, loggerMock);
     });
 
     test('should use current directory when path not provided', async () => {
@@ -88,8 +114,8 @@ describe('add/adp-cf-config', () => {
 
         await command.parseAsync(getArgv());
 
-        expect(validateBasePathSpy).toHaveBeenCalledWith(appRoot);
-        expect(setupCfPreviewMock).toHaveBeenCalledWith(appRoot, 'ui5.yaml', mockCfConfig, loggerMock);
+        expect(mockValidateBasePath).toHaveBeenCalledWith(appRoot);
+        expect(mockSetupCfPreview).toHaveBeenCalledWith(appRoot, 'ui5.yaml', mockCfConfig, loggerMock);
 
         jest.spyOn(process, 'cwd').mockReturnValue(originalCwd);
     });
@@ -101,11 +127,11 @@ describe('add/adp-cf-config', () => {
 
         await command.parseAsync(getArgv(appRoot, '--config', customConfig));
 
-        expect(setupCfPreviewMock).toHaveBeenCalledWith(appRoot, customConfig, mockCfConfig, loggerMock);
+        expect(mockSetupCfPreview).toHaveBeenCalledWith(appRoot, customConfig, mockCfConfig, loggerMock);
     });
 
     test('should throw error when not logged in to CF', async () => {
-        isLoggedInCfMock.mockResolvedValue(false);
+        mockIsLoggedInCf.mockResolvedValue(false);
 
         const command = new Command('add');
         addAdaptationProjectCFConfigCommand(command);
@@ -116,7 +142,7 @@ describe('add/adp-cf-config', () => {
     });
 
     test('should throw error when base path validation fails', async () => {
-        validateBasePathSpy.mockRejectedValue(new Error('Invalid base path'));
+        mockValidateBasePath.mockRejectedValue(new Error('Invalid base path'));
 
         const command = new Command('add');
         addAdaptationProjectCFConfigCommand(command);
@@ -125,7 +151,7 @@ describe('add/adp-cf-config', () => {
     });
 
     test('should throw error when adp app type validation fails', async () => {
-        validateAdpAppTypeSpy.mockRejectedValue(new Error('Not an adaptation project'));
+        mockValidateAdpAppType.mockRejectedValue(new Error('Not an adaptation project'));
 
         const command = new Command('add');
         addAdaptationProjectCFConfigCommand(command);
@@ -134,7 +160,7 @@ describe('add/adp-cf-config', () => {
     });
 
     test('should throw error when not a CF environment', async () => {
-        isCFEnvironmentSpy.mockResolvedValue(false);
+        mockIsCFEnvironment.mockResolvedValue(false);
 
         const command = new Command('add');
         addAdaptationProjectCFConfigCommand(command);
@@ -145,7 +171,7 @@ describe('add/adp-cf-config', () => {
     });
 
     test('should throw error when setupCfPreview fails', async () => {
-        setupCfPreviewMock.mockRejectedValue(new Error('Generation failed'));
+        mockSetupCfPreview.mockRejectedValue(new Error('Generation failed'));
 
         const command = new Command('add');
         addAdaptationProjectCFConfigCommand(command);
