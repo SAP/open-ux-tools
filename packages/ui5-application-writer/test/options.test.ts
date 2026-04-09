@@ -1,14 +1,15 @@
 import { generate, addEslintFeature } from '../src';
 import type { Package } from '@sap-ux/project-access';
-import { join } from 'node:path';
-import { removeSync } from 'fs-extra';
+import { join, dirname } from 'node:path';
+import { rmSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import type { Ui5App } from '../src';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(__dirname, '/test-output');
+    const outputDir = join(dirname(fileURLToPath(import.meta.url)), '/test-output');
 
     const baseAppConfig: Ui5App = {
         app: {
@@ -23,7 +24,7 @@ describe('UI5 templates', () => {
     };
 
     beforeAll(() => {
-        removeSync(outputDir); // even for in memory
+        rmSync(outputDir, { recursive: true, force: true }); // even for in memory
     });
 
     it('generates options: `sapux` shouldnt be included for CAP project', async () => {
