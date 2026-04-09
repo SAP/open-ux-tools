@@ -1,27 +1,50 @@
-import { getAppStudioProxyURL, listDestinations } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { Destinations } from '@sap-ux/btp-utils';
 import type { Endpoint, CatalogServiceResult } from '../../src/types';
 import { Severity, UrlServiceType } from '../../src/types';
-import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from '../../src/checks/destination';
-import * as serviceChecks from '../../src/checks/service-checks';
-import axios from 'axios';
 import { t } from '../../src/i18n';
 
-jest.mock('@sap-ux/axios-extension', () => ({
-    ...(jest.requireActual('@sap-ux/axios-extension') as object),
-    createForDestination: jest.fn()
+const mockCreateForDestination = jest.fn();
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    createForDestination: mockCreateForDestination,
+    createForAbap: jest.fn(),
+    createForAbapOnCloud: jest.fn(),
+    AtoService: {},
+    TransportChecksService: {},
+    ODataVersion: { v2: 'v2', v4: 'v4' },
+    AbapCloudEnvironment: { Standalone: 'Standalone', EmbeddedSteampunk: 'EmbeddedSteampunk' }
 }));
 
-jest.mock('@sap/bas-sdk');
+jest.unstable_mockModule('@sap/bas-sdk', () => ({}));
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn(),
-    getAppStudioProxyURL: jest.fn(),
-    listDestinations: jest.fn()
+const mockIsAppStudio = jest.fn();
+const mockGetAppStudioProxyURL = jest.fn();
+const mockListDestinations = jest.fn();
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio,
+    getAppStudioProxyURL: mockGetAppStudioProxyURL,
+    listDestinations: mockListDestinations
 }));
 
-const mockGetAppStudioProxyURL = getAppStudioProxyURL as jest.Mock;
-const mockListDestinations = listDestinations as jest.Mock;
+const mockAxiosGet = jest.fn();
+jest.unstable_mockModule('axios', () => ({
+    __esModule: true,
+    default: { get: mockAxiosGet }
+}));
+
+const mockCheckCatalogServices = jest.fn();
+const mockGetServiceProvider = jest.fn();
+jest.unstable_mockModule('../../src/checks/service-checks', () => ({
+    checkCatalogServices: mockCheckCatalogServices,
+    checkAtoCatalog: jest.fn(),
+    checkUi5AbapRepository: jest.fn(),
+    checkTransportRequests: jest.fn(),
+    getServiceProvider: mockGetServiceProvider
+}));
+
+const { checkBASDestination, checkBASDestinations, needsUsernamePassword } = await import(
+    '../../src/checks/destination'
+);
 
 describe('Destination tests, function checkBASDestination()', () => {
     const checkCatalogServicesResult = {
@@ -37,7 +60,7 @@ describe('Destination tests, function checkBASDestination()', () => {
             Host: 'https://one.dest:123'
         };
 
-        jest.spyOn(serviceChecks, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
+        mockCheckCatalogServices.mockResolvedValueOnce(checkCatalogServicesResult);
 
         // Test execution
         const result = await checkBASDestination(destination as Endpoint);
@@ -53,7 +76,7 @@ describe('Destination tests, function checkBASDestination()', () => {
             Host: 'https://one.dest:123',
             'HTML5.DynamicDestination': 'true'
         };
-        jest.spyOn(serviceChecks, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
+        mockCheckCatalogServices.mockResolvedValueOnce(checkCatalogServicesResult);
 
         // Test execution
         const result = await checkBASDestination(destination as Endpoint);
@@ -73,7 +96,7 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
 
     test('Valid call should return destinations', async () => {
         // Mock setup
-        jest.spyOn(axios, 'get').mockResolvedValueOnce('');
+        mockAxiosGet.mockResolvedValueOnce('');
         const data = {
             'ONE': {
                 Name: 'ONE',
@@ -140,7 +163,7 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
 
     test('No destinations and calling checkBASDestinations', async () => {
         // Mock setup
-        jest.spyOn(axios, 'get').mockResolvedValueOnce('');
+        mockAxiosGet.mockResolvedValueOnce('');
         const data = [];
         mockListDestinations.mockResolvedValueOnce(data);
 
@@ -168,7 +191,7 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
 
     test('HTTP call returns error for all requests, should be in result messages', async () => {
         // Mock setup
-        jest.spyOn(axios, 'get').mockResolvedValueOnce('');
+        mockAxiosGet.mockResolvedValueOnce('');
         mockListDestinations.mockImplementationOnce(() => Promise.reject(new Error('HTTP ERROR')));
 
         // Test execution
@@ -196,7 +219,7 @@ describe('Destinaton tests, needsUsernamePassword()', () => {
 describe('Destination test for classification', () => {
     beforeEach(() => {
         // Mock setup
-        jest.spyOn(axios, 'get').mockResolvedValueOnce('');
+        mockAxiosGet.mockResolvedValueOnce('');
     });
 
     test('FullServiceUrl', async () => {

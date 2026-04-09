@@ -1,15 +1,19 @@
-import * as mockFs from 'node:fs';
+import { jest } from '@jest/globals';
 import type * as archiver from 'archiver';
-import { storeResultsZip } from '../../src/output';
-import { Check } from '../../src';
 
-// Need to mock fs and archiver on top level before any test is run
-jest.mock('fs');
-let zipMock;
-jest.mock('archiver', () => ({
-    __esModule: true,
-    'default': (): typeof zipMock => zipMock
+const mockCreateWriteStream = jest.fn();
+jest.unstable_mockModule('node:fs', () => ({
+    createWriteStream: mockCreateWriteStream
 }));
+
+let zipMock: any;
+jest.unstable_mockModule('archiver', () => ({
+    __esModule: true,
+    default: (): typeof zipMock => zipMock
+}));
+
+const { storeResultsZip } = await import('../../src/output');
+const { Check } = await import('../../src/types');
 
 describe('Test to check zip save, storeResultsZip()', () => {
     beforeEach(() => {
@@ -25,15 +29,15 @@ describe('Test to check zip save, storeResultsZip()', () => {
             finalize: jest.fn(),
             pointer: () => 123456789
         } as unknown as archiver.Archiver;
-        let writeStreamCloseCallback;
+        let writeStreamCloseCallback: any;
         const writeStreamMock = {
-            on: (name, callback) => {
+            on: (name: string, callback: any) => {
                 if (name === 'close') {
                     writeStreamCloseCallback = callback;
                 }
             }
-        } as unknown as mockFs.WriteStream & { on: jest.Mock };
-        jest.spyOn(mockFs, 'createWriteStream').mockImplementation((filename) => {
+        };
+        mockCreateWriteStream.mockImplementation((filename: string) => {
             return filename === 'envcheck-results.zip' ? writeStreamMock : undefined;
         });
         console.log = jest.fn();
@@ -58,16 +62,16 @@ describe('Test to check zip save, storeResultsZip()', () => {
             append: jest.fn(),
             finalize: jest.fn(),
             pointer: () => 0
-        } as unknown as archiver.Archiver & { on: jest.Mock };
-        let writeStreamCloseCallback;
+        } as unknown as archiver.Archiver & { on: ReturnType<typeof jest.fn> };
+        let writeStreamCloseCallback: any;
         const writeStreamMock = {
-            on: (name, callback) => {
+            on: (name: string, callback: any) => {
                 if (name === 'close') {
                     writeStreamCloseCallback = callback;
                 }
             }
-        } as unknown as mockFs.WriteStream & { on: jest.Mock };
-        jest.spyOn(mockFs, 'createWriteStream').mockImplementation((filename) => {
+        };
+        mockCreateWriteStream.mockImplementation((filename: string) => {
             return filename === 'ANY_NAME' ? writeStreamMock : undefined;
         });
         console.log = jest.fn();
@@ -76,7 +80,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
         // Test execution
         storeResultsZip({}, 'ANY_NAME');
         writeStreamCloseCallback();
-        zipMock.on.mock.calls.find((c) => c[0] === 'warning')[1]({ code: 'ENOENT' });
+        zipMock.on.mock.calls.find((c: any) => c[0] === 'warning')[1]({ code: 'ENOENT' });
 
         // Result check
         expect(zipMock.pipe).toHaveBeenCalledWith(writeStreamMock);
@@ -94,20 +98,17 @@ describe('Test to check zip save, storeResultsZip()', () => {
             append: jest.fn(),
             finalize: jest.fn(),
             pointer: () => 0
-        } as unknown as archiver.Archiver & { on: jest.Mock };
-        jest.spyOn(mockFs, 'createWriteStream').mockImplementation(
-            () =>
-                ({
-                    on: jest.fn()
-                }) as unknown as mockFs.WriteStream & { on: jest.Mock }
-        );
+        } as unknown as archiver.Archiver & { on: ReturnType<typeof jest.fn> };
+        mockCreateWriteStream.mockImplementation(() => ({
+            on: jest.fn()
+        }));
 
         // Test execution
         storeResultsZip({});
 
         // Result check
         try {
-            const warnHandler = zipMock.on.mock.calls.find((c) => c[0] === 'warning');
+            const warnHandler = zipMock.on.mock.calls.find((c: any) => c[0] === 'warning');
             if (warnHandler) {
                 warnHandler[1]({});
             }
@@ -125,20 +126,17 @@ describe('Test to check zip save, storeResultsZip()', () => {
             append: jest.fn(),
             finalize: jest.fn(),
             pointer: () => 0
-        } as unknown as archiver.Archiver & { on: jest.Mock };
-        jest.spyOn(mockFs, 'createWriteStream').mockImplementation(
-            () =>
-                ({
-                    on: jest.fn()
-                }) as unknown as mockFs.WriteStream & { on: jest.Mock }
-        );
+        } as unknown as archiver.Archiver & { on: ReturnType<typeof jest.fn> };
+        mockCreateWriteStream.mockImplementation(() => ({
+            on: jest.fn()
+        }));
 
         // Test execution
         storeResultsZip({});
 
         // Result check
         try {
-            const warnHandler = zipMock.on.mock.calls.find((c) => c[0] === 'error');
+            const warnHandler = zipMock.on.mock.calls.find((c: any) => c[0] === 'error');
             if (warnHandler) {
                 warnHandler[1]({});
             }

@@ -1,14 +1,17 @@
-import { spawnCommand } from '../src/command';
-import * as cp from 'node:child_process';
+import { jest } from '@jest/globals';
 
-jest.mock('child_process');
-const mockedCp = jest.mocked(cp, { shallow: true });
+const mockSpawn = jest.fn();
+jest.unstable_mockModule('node:child_process', () => ({
+    spawn: mockSpawn
+}));
+
+const { spawnCommand } = await import('../src/command');
 
 describe('Test commandRunner functions', () => {
     jest.setTimeout(10000);
 
     it('Fails to spawn with error', async () => {
-        mockedCp.spawn.mockImplementation((): any => {
+        mockSpawn.mockImplementation((): any => {
             return {
                 stdout: {
                     on: jest.fn(),

@@ -1,8 +1,33 @@
+import { jest } from '@jest/globals';
 import type { CatalogServiceResult } from '../../src/types';
 import { Severity } from '../../src/types';
-import * as serviceChecks from '../../src/checks/service-checks';
-import * as storeUtils from '@sap-ux/store';
-import { checkStoredSystem, checkStoredSystems } from '../../src/checks/stored-system';
+
+const mockGetService = jest.fn();
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    getService: mockGetService,
+    BackendSystemKey: class BackendSystemKey {
+        url: string;
+        client: string;
+        constructor(opts: any) {
+            this.url = opts.url;
+            this.client = opts.client;
+        }
+    }
+}));
+
+const mockCheckCatalogServices = jest.fn();
+const mockCheckAtoCatalog = jest.fn();
+const mockCheckUi5AbapRepository = jest.fn();
+const mockCheckTransportRequests = jest.fn();
+jest.unstable_mockModule('../../src/checks/service-checks', () => ({
+    checkCatalogServices: mockCheckCatalogServices,
+    checkAtoCatalog: mockCheckAtoCatalog,
+    checkUi5AbapRepository: mockCheckUi5AbapRepository,
+    checkTransportRequests: mockCheckTransportRequests,
+    getServiceProvider: jest.fn()
+}));
+
+const { checkStoredSystem, checkStoredSystems } = await import('../../src/checks/stored-system');
 
 describe('Stored system tests ', () => {
     const checkCatalogServicesResult = {
@@ -26,7 +51,7 @@ describe('Stored system tests ', () => {
             };
         });
 
-        jest.spyOn(storeUtils, 'getService').mockImplementationOnce(() => {
+        mockGetService.mockImplementationOnce(() => {
             return {
                 logger: jest.fn(),
                 dataProvider: {},
@@ -63,10 +88,10 @@ describe('Stored system tests ', () => {
             ],
             isTransportRequests: true
         };
-        jest.spyOn(serviceChecks, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
-        jest.spyOn(serviceChecks, 'checkAtoCatalog').mockResolvedValueOnce(atoResult);
-        jest.spyOn(serviceChecks, 'checkUi5AbapRepository').mockResolvedValueOnce(ui5AbapRepoResult);
-        jest.spyOn(serviceChecks, 'checkTransportRequests').mockResolvedValueOnce(transportRequestResult);
+        mockCheckCatalogServices.mockResolvedValueOnce(checkCatalogServicesResult);
+        mockCheckAtoCatalog.mockResolvedValueOnce(atoResult);
+        mockCheckUi5AbapRepository.mockResolvedValueOnce(ui5AbapRepoResult);
+        mockCheckTransportRequests.mockResolvedValueOnce(transportRequestResult);
 
         const storeSystemResult = await checkStoredSystem({
             Name: 'sys1',
@@ -104,7 +129,7 @@ describe('Stored system tests ', () => {
             };
         });
 
-        jest.spyOn(storeUtils, 'getService').mockImplementationOnce(() => {
+        mockGetService.mockImplementationOnce(() => {
             return {
                 logger: jest.fn(),
                 dataProvider: {},
@@ -141,10 +166,10 @@ describe('Stored system tests ', () => {
             ],
             isTransportRequests: true
         };
-        jest.spyOn(serviceChecks, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
-        jest.spyOn(serviceChecks, 'checkAtoCatalog').mockResolvedValueOnce(atoResult);
-        jest.spyOn(serviceChecks, 'checkUi5AbapRepository').mockResolvedValueOnce(ui5AbapRepoResult);
-        jest.spyOn(serviceChecks, 'checkTransportRequests').mockResolvedValueOnce(transportRequestResult);
+        mockCheckCatalogServices.mockResolvedValueOnce(checkCatalogServicesResult);
+        mockCheckAtoCatalog.mockResolvedValueOnce(atoResult);
+        mockCheckUi5AbapRepository.mockResolvedValueOnce(ui5AbapRepoResult);
+        mockCheckTransportRequests.mockResolvedValueOnce(transportRequestResult);
 
         const storeSystemResult = await checkStoredSystem({
             Name: 'sys1',
@@ -206,7 +231,7 @@ describe('Stored system tests ', () => {
             ];
         });
 
-        jest.spyOn(storeUtils, 'getService').mockImplementationOnce(() => {
+        mockGetService.mockImplementationOnce(() => {
             return {
                 logger: jest.fn(),
                 dataProvider: {},
@@ -258,7 +283,7 @@ describe('Stored system tests ', () => {
             return [];
         });
 
-        jest.spyOn(storeUtils, 'getService').mockImplementationOnce(() => {
+        mockGetService.mockImplementationOnce(() => {
             return {
                 logger: jest.fn(),
                 dataProvider: {},
@@ -279,7 +304,7 @@ describe('Stored system tests ', () => {
             throw new Error();
         });
 
-        jest.spyOn(storeUtils, 'getService').mockImplementationOnce(() => {
+        mockGetService.mockImplementationOnce(() => {
             return {
                 logger: jest.fn(),
                 dataProvider: {},

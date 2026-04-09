@@ -1,20 +1,44 @@
-import * as command from '../../src/command';
-import {
+import { jest } from '@jest/globals';
+import type { Extension } from 'vscode';
+
+const mockIsAppStudio = jest.fn();
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio
+}));
+
+const mockReaddirSync = jest.fn();
+const mockExistsSync = jest.fn();
+const mockReadFile = jest.fn();
+jest.unstable_mockModule('node:fs', () => ({
+    __esModule: true,
+    default: {
+        readdirSync: (...args: any[]) => mockReaddirSync(...args),
+        existsSync: (...args: any[]) => mockExistsSync(...args),
+        promises: {
+            readFile: (...args: any[]) => mockReadFile(...args)
+        }
+    },
+    readdirSync: (...args: any[]) => mockReaddirSync(...args),
+    existsSync: (...args: any[]) => mockExistsSync(...args),
+    promises: {
+        readFile: (...args: any[]) => mockReadFile(...args)
+    }
+}));
+
+const mockSpawnCommand = jest.fn<(...args: any[]) => any>();
+jest.unstable_mockModule('../../src/command', () => ({
+    spawnCommand: mockSpawnCommand,
+    npmCommand: 'npm'
+}));
+
+const {
     getCFCliToolVersion,
     getFioriGenVersion,
     getInstalledExtensions,
     getProcessVersions
-} from '../../src/checks/get-installed';
-import fs from 'node:fs';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { getLogger } from '../../src/logger';
-import type { Extension } from 'vscode';
-import { t } from '../../src/i18n';
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
-}));
-const mockIsAppStudio = isAppStudio as jest.Mock;
+} = await import('../../src/checks/get-installed');
+const { getLogger } = await import('../../src/logger');
+const { t } = await import('../../src/i18n');
 
 describe('Test install functions', () => {
     const mockPackageJson =
@@ -32,7 +56,7 @@ describe('Test install functions', () => {
             'yeoman-ui': { version: '1.7.11' },
             'xml-toolkit': { version: '1.1.0' }
         };
-        jest.spyOn(fs, 'readdirSync').mockImplementationOnce(() => {
+        mockReaddirSync.mockImplementationOnce(() => {
             return [
                 `sap-ux-application-modeler-extension-1.7.4.vsix`,
                 `yeoman-ui-1.7.11.vsix`,
@@ -55,14 +79,14 @@ describe('Test install functions', () => {
         };
 
         const output = `SAPOS.yeoman-ui@2\nSAPOSS.vscode-ui5-language-assistant@2\nSAPOSS.xml-toolkit@2`;
-        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
+        mockSpawnCommand.mockResolvedValueOnce(output);
         const result = await getInstalledExtensions();
         expect(result).toStrictEqual(expectedResult);
     });
 
     test('getInstalledExtensions() (throw error)', async () => {
         mockIsAppStudio.mockReturnValue(true);
-        jest.spyOn(fs, 'readdirSync').mockImplementation(() => {
+        mockReaddirSync.mockImplementation(() => {
             throw new Error('Could not read directory');
         });
         const result = await getInstalledExtensions();
@@ -72,7 +96,7 @@ describe('Test install functions', () => {
     test('getInstalledExtensions() (throw error with logger)', async () => {
         mockIsAppStudio.mockReturnValue(true);
         const logger = getLogger();
-        jest.spyOn(fs, 'readdirSync').mockImplementation(() => {
+        mockReaddirSync.mockImplementation(() => {
             throw new Error('Could not read directory');
         });
         const result = await getInstalledExtensions(undefined, logger);
@@ -126,13 +150,13 @@ describe('Test install functions', () => {
         const expectedResult = '7.2.0';
 
         const output = `cf version 7.2.0+be4a5ce2b.2020-12-10`;
-        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
+        mockSpawnCommand.mockResolvedValueOnce(output);
         const result = await getCFCliToolVersion();
         expect(result).toStrictEqual(expectedResult);
     });
 
     test('getCFCliToolVersion() (throw error)', async () => {
-        jest.spyOn(command, 'spawnCommand').mockImplementation(async () => {
+        mockSpawnCommand.mockImplementation(async () => {
             throw new Error('Command not found');
         });
         const result = await getCFCliToolVersion();
@@ -144,9 +168,9 @@ describe('Test install functions', () => {
         const expectedResult = '1.7.5';
 
         const output = `some/path/to/lib/node_modules`;
-        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
-        jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
+        mockSpawnCommand.mockResolvedValueOnce(output);
+        mockExistsSync.mockReturnValue(true);
+        mockReadFile.mockResolvedValueOnce(mockPackageJson);
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
     });
@@ -154,8 +178,8 @@ describe('Test install functions', () => {
     test('getFioriGenVersion() (not installed) (VSCODE)', async () => {
         mockIsAppStudio.mockReturnValue(false);
         const output = `some/path/to/lib/node_modules`;
-        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
-        jest.spyOn(fs, 'existsSync').mockReturnValue(false);
+        mockSpawnCommand.mockResolvedValueOnce(output);
+        mockExistsSync.mockReturnValue(false);
 
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual('Not installed or found.');
@@ -163,7 +187,7 @@ describe('Test install functions', () => {
 
     test('getFioriGenVersion() (throw error) (VSCODE)', async () => {
         mockIsAppStudio.mockReturnValue(false);
-        jest.spyOn(command, 'spawnCommand').mockImplementation(async () => {
+        mockSpawnCommand.mockImplementation(async () => {
             throw new Error('Command not found');
         });
         const result = await getFioriGenVersion();
@@ -174,9 +198,9 @@ describe('Test install functions', () => {
         mockIsAppStudio.mockReturnValue(true);
         const expectedResult = '1.7.5';
         const output = `some/path/to/lib/node_modules`;
-        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
-        jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
+        mockSpawnCommand.mockResolvedValueOnce(output);
+        mockExistsSync.mockReturnValue(true);
+        mockReadFile.mockResolvedValueOnce(mockPackageJson);
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
     });
@@ -187,19 +211,19 @@ describe('Test install functions', () => {
         const outputWarning = `npm WARN config global --global, --local are deprecated. Use --location=global instead --some/path/to/lib/node_modules`;
         const output = `some/path/to/lib/node_modules`;
 
-        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(outputWarning);
-        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
+        mockSpawnCommand.mockResolvedValueOnce(outputWarning);
+        mockSpawnCommand.mockResolvedValueOnce(output);
 
-        jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
+        mockExistsSync.mockReturnValue(true);
+        mockReadFile.mockResolvedValueOnce(mockPackageJson);
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
     });
 
     test('getFioriGenVersion() (not installed) (BAS)', async () => {
         mockIsAppStudio.mockReturnValue(true);
-        jest.spyOn(fs, 'existsSync').mockReturnValue(false);
-        jest.spyOn(command, 'spawnCommand').mockResolvedValue('MOCK_NPM_ROOT');
+        mockExistsSync.mockReturnValue(false);
+        mockSpawnCommand.mockResolvedValue('MOCK_NPM_ROOT');
 
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(t('info.notInstalledOrNotFound'));
@@ -215,15 +239,15 @@ describe('Test install functions', () => {
             const nodePathSaved = process.env.NODE_PATH;
             process.env.NODE_PATH = `/some/global/node_modules:/another/global/node_modules:/yet/another/global/node_modules:${installedPath}`;
 
-            jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce('/not/installed/path');
-            jest.spyOn(fs, 'existsSync').mockImplementation((filePath) => {
+            mockSpawnCommand.mockResolvedValueOnce('/not/installed/path');
+            mockExistsSync.mockImplementation((filePath: any) => {
                 // Mocks finding the package at `installedPath`
                 if ((filePath as string).startsWith(installedPath)) {
                     return true;
                 }
                 return false;
             });
-            jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
+            mockReadFile.mockResolvedValueOnce(mockPackageJson);
 
             let result = await getFioriGenVersion();
             expect(result).toStrictEqual(expectedResult);
@@ -246,7 +270,7 @@ describe('Test install functions', () => {
     });
 
     test('getProcessVersions() (VSCODE)', async () => {
-        jest.spyOn(command, 'spawnCommand').mockImplementationOnce(async () => {
+        mockSpawnCommand.mockImplementationOnce(async () => {
             return `{"node":"16.17.0","v8":"9.4.146.26-node.22","uv":"1.43.0","zlib":"1.2.11","brotli":"1.0.9"}`;
         });
         const result = await getProcessVersions();
@@ -260,7 +284,7 @@ describe('Test install functions', () => {
     });
 
     test('getProcessVersions() errror', async () => {
-        jest.spyOn(command, 'spawnCommand').mockImplementation(() => {
+        mockSpawnCommand.mockImplementation(() => {
             throw new Error('spawn error');
         });
         const result = await getProcessVersions();
@@ -268,7 +292,7 @@ describe('Test install functions', () => {
     });
 
     test('getProcessVersions() (error with logger)', async () => {
-        jest.spyOn(command, 'spawnCommand').mockImplementation(() => {
+        mockSpawnCommand.mockImplementation(() => {
             throw new Error('spawn error');
         });
         const logger = getLogger();
@@ -290,7 +314,7 @@ describe('Test install functions', () => {
         };
 
         const output = `SAPOS.yeoman-ui@2\nSAPOSS.vscode-ui5-language-assistant@2\nSAPOSS.xml-toolkit@2`;
-        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
+        mockSpawnCommand.mockResolvedValueOnce(output);
         const result = await getInstalledExtensions();
         expect(result).toStrictEqual(expectedResult);
     });
@@ -305,7 +329,7 @@ describe('Test install functions', () => {
         };
 
         const output = `SAPOS.yeoman-ui@2\nSAPOSS.vscode-ui5-language-assistant@2\nSAPOSS.xml-toolkit@2`;
-        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
+        mockSpawnCommand.mockResolvedValueOnce(output);
         const result = await getInstalledExtensions();
         expect(result).toStrictEqual(expectedResult);
     });

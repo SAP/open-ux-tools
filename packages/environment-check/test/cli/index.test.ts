@@ -1,27 +1,34 @@
-import * as mockFs from 'node:fs';
+import { jest } from '@jest/globals';
 import type { Endpoint } from '../../src';
-import { cli } from '../../src/cli/index';
-import { checkEnvironment } from '../../src/checks/environment';
 import { Severity } from '../../src/types';
-import { storeResultsZip } from '../../src/output';
-import { isAppStudio } from '@sap-ux/btp-utils';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...(jest.requireActual('@sap-ux/btp-utils') as object),
-    isAppStudio: jest.fn()
-}));
-jest.mock('fs');
-jest.mock('../../src/checks/environment', () => ({
-    checkEnvironment: jest.fn()
+const mockIsAppStudio = jest.fn();
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
-const mockIsAppStudio = isAppStudio as jest.Mock;
-const mockCheckEnvironment = checkEnvironment as jest.Mock;
-
-jest.mock('../../src/output', () => ({
-    storeResultsZip: jest.fn()
+const mockWriteFile = jest.fn();
+jest.unstable_mockModule('node:fs', () => ({
+    __esModule: true,
+    default: {
+        writeFile: (...args: any[]) => mockWriteFile(...args)
+    },
+    writeFile: (...args: any[]) => mockWriteFile(...args)
 }));
-const mockStoreResultsZip = storeResultsZip as jest.Mock;
+
+const mockCheckEnvironment = jest.fn();
+jest.unstable_mockModule('../../src/checks/environment', () => ({
+    checkEnvironment: mockCheckEnvironment
+}));
+
+const mockStoreResultsZip = jest.fn();
+jest.unstable_mockModule('../../src/output', () => ({
+    storeResultsZip: mockStoreResultsZip
+}));
+
+const { cli } = await import('../../src/cli/index');
 
 describe('Test for cli()', () => {
     beforeEach(() => {
@@ -155,7 +162,7 @@ describe('Test for cli()', () => {
         };
         mockCheckEnvironment.mockImplementation(() => Promise.resolve(result));
 
-        jest.spyOn(mockFs, 'writeFile').mockImplementation((options, content, callback) => {
+        mockWriteFile.mockImplementation((options: any, content: any, callback: any) => {
             checkWriteOtions = options;
             checkContent = content;
             callback('' as unknown as NodeJS.ErrnoException);
@@ -181,7 +188,7 @@ describe('Test for cli()', () => {
         };
         mockCheckEnvironment.mockImplementation(() => Promise.resolve(result));
 
-        jest.spyOn(mockFs, 'writeFile').mockImplementation((options, content, callback) => {
+        mockWriteFile.mockImplementation((options: any, content: any, callback: any) => {
             checkWriteOtions = options;
             checkContent = content;
             callback('' as unknown as NodeJS.ErrnoException);

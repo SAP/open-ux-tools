@@ -1,37 +1,54 @@
-import type { CheckEnvironmentOptions } from '../../src';
-import { checkEnvironment, getEnvironment } from '../../src/checks/environment';
-import { checkBASDestinations } from '../../src/checks/destination';
-import { checkEndpoint } from '../../src/checks/endpoint';
-import { checkStoredSystems } from '../../src/checks/stored-system';
-import { DevelopmentEnvironment, Severity } from '../../src/types';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import * as install from '../../src/checks/get-installed';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('axios');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn(),
+import type { CheckEnvironmentOptions } from '../../src';
+import { DevelopmentEnvironment, Severity } from '../../src/types';
+
+jest.unstable_mockModule('axios', () => ({
+    __esModule: true,
+    default: { get: jest.fn() }
+}));
+
+const mockIsAppStudio = jest.fn();
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio,
     getAppStudioProxyURL: jest.fn()
 }));
-const mockIsAppStudio = isAppStudio as jest.Mock;
 
-jest.mock('../../src/checks/destination', () => ({
-    checkBASDestinations: jest.fn(),
+const mockCheckBASDestinations = jest.fn();
+jest.unstable_mockModule('../../src/checks/destination', () => ({
+    checkBASDestinations: mockCheckBASDestinations,
     needsUsernamePassword: jest.fn(),
     checkBASDestination: jest.fn()
 }));
-const mockCheckBASDestinations = checkBASDestinations as jest.Mock;
 
-jest.mock('../../src/checks/endpoint', () => ({
-    checkEndpoint: jest.fn()
+const mockCheckSapSystem = jest.fn();
+jest.unstable_mockModule('../../src/checks/endpoint', () => ({
+    checkEndpoint: mockCheckSapSystem
 }));
-const mockCheckSapSystem = checkEndpoint as jest.Mock;
 
-jest.mock('../../src/checks/stored-system', () => ({
-    checkStoredSystems: jest.fn()
+const mockCheckStoredSystems = jest.fn();
+jest.unstable_mockModule('../../src/checks/stored-system', () => ({
+    checkStoredSystems: mockCheckStoredSystems
 }));
-const mockCheckStoredSystems = checkStoredSystems as jest.Mock;
+
+const mockGetFioriGenVersion = jest.fn();
+const mockGetCFCliToolVersion = jest.fn();
+const mockGetInstalledExtensions = jest.fn();
+const mockGetProcessVersions = jest.fn();
+jest.unstable_mockModule('../../src/checks/get-installed', () => ({
+    getFioriGenVersion: mockGetFioriGenVersion,
+    getCFCliToolVersion: mockGetCFCliToolVersion,
+    getInstalledExtensions: mockGetInstalledExtensions,
+    getProcessVersions: mockGetProcessVersions
+}));
+
+const { checkEnvironment, getEnvironment } = await import('../../src/checks/environment');
 
 const nodeJSProcessVersions = {
     'node': '16.17.0',
@@ -46,10 +63,10 @@ const nodeJSProcessVersions = {
 describe('Test for getEnvironmentCheck()', () => {
     test('Ensure correct dev environment (VSCode)', async () => {
         mockIsAppStudio.mockReturnValue(false);
-        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
-        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
-        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
-        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
+        mockGetFioriGenVersion.mockResolvedValueOnce('1');
+        mockGetCFCliToolVersion.mockResolvedValueOnce('2');
+        mockGetInstalledExtensions.mockResolvedValueOnce({});
+        mockGetProcessVersions.mockResolvedValueOnce(nodeJSProcessVersions);
         const { environment, messages } = await getEnvironment();
         expect(environment.developmentEnvironment === DevelopmentEnvironment.VSCode).toBeTruthy();
         expect(messages.length).toBeGreaterThan(0);
@@ -57,10 +74,10 @@ describe('Test for getEnvironmentCheck()', () => {
 
     test('Ensure correct dev environment (BAS)', async () => {
         mockIsAppStudio.mockReturnValue(true);
-        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
-        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
-        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
-        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
+        mockGetFioriGenVersion.mockResolvedValueOnce('1');
+        mockGetCFCliToolVersion.mockResolvedValueOnce('2');
+        mockGetInstalledExtensions.mockResolvedValueOnce({});
+        mockGetProcessVersions.mockResolvedValueOnce(nodeJSProcessVersions);
         const { environment, messages } = await getEnvironment();
         expect(environment.developmentEnvironment === DevelopmentEnvironment.BAS).toBeTruthy();
         expect(messages.length).toBeGreaterThan(0);
@@ -71,10 +88,10 @@ describe('Test for checkEnvironment() (BAS)', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         mockIsAppStudio.mockReturnValue(true);
-        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
-        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
-        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
-        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
+        mockGetProcessVersions.mockResolvedValueOnce(nodeJSProcessVersions);
+        mockGetFioriGenVersion.mockResolvedValueOnce('1');
+        mockGetCFCliToolVersion.mockResolvedValueOnce('2');
+        mockGetInstalledExtensions.mockResolvedValueOnce({});
     });
 
     test('Test destinations', async () => {
@@ -212,10 +229,10 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
             cds: '2'
         };
 
-        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
-        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
-        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce(extensionVersions);
-        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
+        mockGetFioriGenVersion.mockResolvedValueOnce('1');
+        mockGetCFCliToolVersion.mockResolvedValueOnce('2');
+        mockGetInstalledExtensions.mockResolvedValueOnce(extensionVersions);
+        mockGetProcessVersions.mockResolvedValueOnce(nodeJSProcessVersions);
 
         mockCheckStoredSystems.mockImplementationOnce(() => Promise.resolve({ messages: [], storedSystems: [] }));
         mockCheckSapSystem.mockImplementationOnce(() => Promise.resolve({ messages: [], sapSystemResults: {} }));
@@ -239,10 +256,10 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
             xmlToolkit: 'Not installed.'
         };
 
-        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
-        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
-        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
-        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
+        mockGetFioriGenVersion.mockResolvedValueOnce('1');
+        mockGetCFCliToolVersion.mockResolvedValueOnce('2');
+        mockGetInstalledExtensions.mockResolvedValueOnce({});
+        mockGetProcessVersions.mockResolvedValueOnce(nodeJSProcessVersions);
         mockCheckStoredSystems.mockImplementationOnce(() => Promise.resolve({ messages: [], storedSystems: [] }));
         mockCheckSapSystem.mockImplementationOnce(() => Promise.resolve({ messages: [], sapSystemResults: {} }));
 
