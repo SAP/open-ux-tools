@@ -1,28 +1,39 @@
-import childProcess, { type SpawnOptionsWithoutStdio } from 'node:child_process';
-import { CommandRunner } from '../../src/commandRunner';
-import { type Logger } from '@sap-ux/logger';
+import { jest } from '@jest/globals';
+import { createRequire } from 'node:module';
+import type { SpawnOptionsWithoutStdio } from 'node:child_process';
+import type { Logger } from '@sap-ux/logger';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const mockSpawn = require('mock-spawn');
+const require = createRequire(import.meta.url);
+const mockSpawnFactory = require('mock-spawn');
+
+// Create the mock spawn function that we'll control
+const mockSpawnFn = jest.fn();
+
+// Mock node:child_process before importing CommandRunner
+jest.unstable_mockModule('node:child_process', () => ({
+    spawn: mockSpawnFn
+}));
+
+// Import after mocking
+const { CommandRunner } = await import('../../src/commandRunner');
 
 // write test cases for the CommandRunner class
 describe('CommandRunner', () => {
     let commandRunner: CommandRunner;
-    let spawnMock: typeof mockSpawn;
-    let spawnSpy: jest.SpyInstance;
+    let spawnMock: ReturnType<typeof mockSpawnFactory>;
     const expectedSpawnOpts: SpawnOptionsWithoutStdio = {};
 
     beforeEach(() => {
         commandRunner = new CommandRunner();
-        spawnMock = mockSpawn();
-        spawnSpy = jest.spyOn(childProcess, 'spawn').mockImplementation(spawnMock);
+        spawnMock = mockSpawnFactory();
+        mockSpawnFn.mockImplementation(spawnMock);
         if (process.platform === 'win32') {
             expectedSpawnOpts.shell = true;
         }
     });
 
     afterEach(() => {
-        spawnSpy.mockRestore();
+        mockSpawnFn.mockReset();
     });
 
     it('should run a command with arguments', async () => {
@@ -34,7 +45,7 @@ describe('CommandRunner', () => {
         const response = await commandRunner.run(cmd, args);
 
         expect(response).toBe(expectedResponse);
-        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, expectedSpawnOpts);
+        expect(mockSpawnFn).toHaveBeenCalledWith(cmd, args, expectedSpawnOpts);
     });
 
     it('should run a command with arguments and options', async () => {
@@ -47,7 +58,7 @@ describe('CommandRunner', () => {
         const response = await commandRunner.run(cmd, args, opts);
 
         expect(response).toBe(expectedResponse);
-        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, { ...expectedSpawnOpts, ...opts });
+        expect(mockSpawnFn).toHaveBeenCalledWith(cmd, args, { ...expectedSpawnOpts, ...opts });
     });
 
     it('should handle command errors', async () => {
@@ -57,7 +68,7 @@ describe('CommandRunner', () => {
         spawnMock.setDefault(spawnMock.simple(1, 'npm install'));
 
         await expect(commandRunner.run(cmd, args)).rejects.toContain(expectedError);
-        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, expectedSpawnOpts);
+        expect(mockSpawnFn).toHaveBeenCalledWith(cmd, args, expectedSpawnOpts);
     });
 
     it('should handle command failures', async () => {
@@ -67,7 +78,7 @@ describe('CommandRunner', () => {
         spawnMock.setDefault(spawnMock.simple(1, 'npm install', 'npm ERR! missing script: install'));
 
         await expect(commandRunner.run(cmd, args)).rejects.toContain(expectedError);
-        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, expectedSpawnOpts);
+        expect(mockSpawnFn).toHaveBeenCalledWith(cmd, args, expectedSpawnOpts);
     });
 
     it('should log with provided logger, removing trailing newline or carriage returns', async () => {

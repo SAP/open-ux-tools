@@ -1,36 +1,17 @@
+import { jest } from '@jest/globals';
 import { join, normalize } from 'node:path';
-import { findInstalledPackages } from '../../src/installedCheck';
-import readPkgUp from 'read-pkg-up';
-import fastGlob from 'fast-glob';
-import { CommandRunner } from '../../src/commandRunner';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
-}));
-const mockIsAppStudio = isAppStudio as jest.Mock;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const TEST_PACKAGE2_NAME_SUBSTRING = 'abcd-1234';
 const TEST_PACKAGE2_NAME = `@fake-scope/fake-package-${TEST_PACKAGE2_NAME_SUBSTRING}`;
 const TEST_PACKAGE2_KEYWORD = 'test_keyword_1234';
-const mockTestPackageInfoWithKeywords: readPkgUp.ReadResult = {
-    packageJson: {
-        name: TEST_PACKAGE2_NAME,
-        version: '1.2.3',
-        keywords: ['some', 'keywords', TEST_PACKAGE2_KEYWORD]
-    },
-    path: 'found/package2/path'
-};
 
 const TEST_PACKAGE1_NAME_SUBSTRING = '1234-abcd';
 const TEST_PACKAGE1_NAME = `@sap/${TEST_PACKAGE1_NAME_SUBSTRING}test-package-name`;
-let mockTestPackage1: readPkgUp.ReadResult = {
-    packageJson: {
-        name: TEST_PACKAGE1_NAME,
-        version: '0.1.0'
-    },
-    path: 'found/package1/path'
-};
 
 const customInstallLoc = join(__dirname, '../mocks/');
 const mockNMPath = join(customInstallLoc, 'node_modules');
@@ -42,64 +23,87 @@ enum MOCK_READ_PKG_UP {
     TEST_PACKAGE2
 }
 
-let readPkgUpMockCondition = MOCK_READ_PKG_UP.TEST_PACKAGE2;
-
-jest.mock('read-pkg-up', () => {
-    return jest.fn(async ({ cwd }) => {
-        if (cwd.indexOf('node_modules') > -1) {
-            if (readPkgUpMockCondition === MOCK_READ_PKG_UP.TEST_PACKAGE2) {
-                return mockTestPackageInfoWithKeywords;
-            }
-            if (readPkgUpMockCondition === MOCK_READ_PKG_UP.TEST_PACKAGE1) {
-                return mockTestPackage1;
-            }
-        }
-    });
-});
-
 enum MOCK_FAST_GLOB_PATH {
     LOCAL_NM_PATH,
     APP_STUDIO_PATH,
     GLOBAL_NM_PATH
 }
-// Condition to change the mock return value
+
+let readPkgUpMockCondition = MOCK_READ_PKG_UP.TEST_PACKAGE2;
 let fastGlobMockCondition = MOCK_FAST_GLOB_PATH.LOCAL_NM_PATH;
 
-jest.mock('fast-glob', () => ({
-    __esModule: true,
-    default: jest.fn(async (globPat, { cwd }) => {
-        if (globPat === `**/*${TEST_PACKAGE2_NAME_SUBSTRING}*`) {
-            if (fastGlobMockCondition === MOCK_FAST_GLOB_PATH.LOCAL_NM_PATH && cwd.indexOf(mockNMPath) > -1) {
-                return [join(mockNMPath, TEST_PACKAGE2_NAME)];
-            }
-            if (
-                fastGlobMockCondition === MOCK_FAST_GLOB_PATH.APP_STUDIO_PATH &&
-                cwd.indexOf(appStudioInstallLoc) > -1
-            ) {
-                return [join(appStudioInstallLoc, TEST_PACKAGE2_NAME)];
-            }
-            if (
-                fastGlobMockCondition === MOCK_FAST_GLOB_PATH.GLOBAL_NM_PATH &&
-                cwd.indexOf(npmGlobalNodeModules) > -1
-            ) {
-                return [join(npmGlobalNodeModules, TEST_PACKAGE2_NAME)];
-            }
+const mockTestPackageInfoWithKeywords = {
+    packageJson: {
+        name: TEST_PACKAGE2_NAME,
+        version: '1.2.3',
+        keywords: ['some', 'keywords', TEST_PACKAGE2_KEYWORD]
+    } as Record<string, any>,
+    path: 'found/package2/path'
+};
+
+let mockTestPackage1: { packageJson: Record<string, any>; path: string } = {
+    packageJson: {
+        name: TEST_PACKAGE1_NAME,
+        version: '0.1.0'
+    },
+    path: 'found/package1/path'
+};
+
+// Mock functions
+const mockIsAppStudio = jest.fn();
+const mockFastGlob = jest.fn(async (globPat: string, { cwd }: { cwd: string }) => {
+    if (globPat === `**/*${TEST_PACKAGE2_NAME_SUBSTRING}*`) {
+        if (fastGlobMockCondition === MOCK_FAST_GLOB_PATH.LOCAL_NM_PATH && cwd.indexOf(mockNMPath) > -1) {
+            return [join(mockNMPath, TEST_PACKAGE2_NAME)];
         }
-        if (globPat === `**/*${TEST_PACKAGE1_NAME_SUBSTRING}*`) {
-            if (
-                fastGlobMockCondition === MOCK_FAST_GLOB_PATH.GLOBAL_NM_PATH &&
-                cwd.indexOf(npmGlobalNodeModules) > -1
-            ) {
-                return [join(npmGlobalNodeModules, TEST_PACKAGE1_NAME)];
-            }
+        if (fastGlobMockCondition === MOCK_FAST_GLOB_PATH.APP_STUDIO_PATH && cwd.indexOf(appStudioInstallLoc) > -1) {
+            return [join(appStudioInstallLoc, TEST_PACKAGE2_NAME)];
         }
-        return [];
-    })
+        if (fastGlobMockCondition === MOCK_FAST_GLOB_PATH.GLOBAL_NM_PATH && cwd.indexOf(npmGlobalNodeModules) > -1) {
+            return [join(npmGlobalNodeModules, TEST_PACKAGE2_NAME)];
+        }
+    }
+    if (globPat === `**/*${TEST_PACKAGE1_NAME_SUBSTRING}*`) {
+        if (fastGlobMockCondition === MOCK_FAST_GLOB_PATH.GLOBAL_NM_PATH && cwd.indexOf(npmGlobalNodeModules) > -1) {
+            return [join(npmGlobalNodeModules, TEST_PACKAGE1_NAME)];
+        }
+    }
+    return [];
+});
+
+const mockReadPkgUp = jest.fn(async ({ cwd }: { cwd: string }) => {
+    if (cwd.indexOf('node_modules') > -1) {
+        if (readPkgUpMockCondition === MOCK_READ_PKG_UP.TEST_PACKAGE2) {
+            return mockTestPackageInfoWithKeywords;
+        }
+        if (readPkgUpMockCondition === MOCK_READ_PKG_UP.TEST_PACKAGE1) {
+            return mockTestPackage1;
+        }
+    }
+});
+
+// Mock modules before importing
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio
 }));
+
+jest.unstable_mockModule('fast-glob', () => ({
+    __esModule: true,
+    default: mockFastGlob
+}));
+
+jest.unstable_mockModule('read-pkg-up', () => ({
+    __esModule: true,
+    default: mockReadPkgUp
+}));
+
+// Import after mocking
+const { findInstalledPackages } = await import('../../src/installedCheck');
+const { CommandRunner } = await import('../../src/commandRunner');
 
 describe('Installed module checker', () => {
     // CommandRunner mock npm 'npm -g root'
-    CommandRunner.prototype.run = jest.fn().mockResolvedValue(Promise.resolve('/npm_global_path'));
+    CommandRunner.prototype.run = jest.fn().mockResolvedValue(Promise.resolve('/npm_global_path')) as any;
     const vscWrkspcConfigMock = {
         has: jest.fn(),
         inspect: jest.fn(),
@@ -116,7 +120,7 @@ describe('Installed module checker', () => {
     beforeEach(() => {
         fastGlobMockCondition = MOCK_FAST_GLOB_PATH.LOCAL_NM_PATH;
         readPkgUpMockCondition = MOCK_READ_PKG_UP.TEST_PACKAGE2;
-        (fastGlob as unknown as jest.Mock).mockClear();
+        mockFastGlob.mockClear();
     });
 
     beforeAll(() => {
@@ -135,7 +139,7 @@ describe('Installed module checker', () => {
             keyword: TEST_PACKAGE2_KEYWORD
         });
         let searchPath = join(customInstallLoc, 'node_modules', TEST_PACKAGE2_NAME);
-        expect(readPkgUp).toHaveBeenLastCalledWith({ cwd: searchPath });
+        expect(mockReadPkgUp).toHaveBeenLastCalledWith({ cwd: searchPath });
         expect(foundGenPackageInfo[0]).toEqual({
             packageJsonPath: mockTestPackageInfoWithKeywords.path,
             packageInfo: mockTestPackageInfoWithKeywords.packageJson,
@@ -149,7 +153,7 @@ describe('Installed module checker', () => {
         };
         foundGenPackageInfo = await findInstalledPackages(TEST_PACKAGE2_NAME_SUBSTRING, options);
         searchPath = join(customInstallLoc, 'node_modules', TEST_PACKAGE2_NAME);
-        expect(readPkgUp).toHaveBeenLastCalledWith({ cwd: searchPath });
+        expect(mockReadPkgUp).toHaveBeenLastCalledWith({ cwd: searchPath });
         expect(foundGenPackageInfo.length).toBe(0);
 
         // Min version satisfied.
@@ -159,7 +163,7 @@ describe('Installed module checker', () => {
         };
         foundGenPackageInfo = await findInstalledPackages(TEST_PACKAGE2_NAME_SUBSTRING, options);
         searchPath = join(customInstallLoc, 'node_modules', TEST_PACKAGE2_NAME);
-        expect(readPkgUp).toHaveBeenLastCalledWith({ cwd: searchPath });
+        expect(mockReadPkgUp).toHaveBeenLastCalledWith({ cwd: searchPath });
         expect(foundGenPackageInfo[0]).toEqual({
             packageJsonPath: mockTestPackageInfoWithKeywords.path,
             packageInfo: mockTestPackageInfoWithKeywords.packageJson,
@@ -174,7 +178,7 @@ describe('Installed module checker', () => {
             vscWorkspaceConfig: vscWrkspcConfigMock
         });
         searchPath = join(customInstallLoc, 'node_modules', TEST_PACKAGE2_NAME);
-        expect(readPkgUp).toHaveBeenLastCalledWith({ cwd: searchPath });
+        expect(mockReadPkgUp).toHaveBeenLastCalledWith({ cwd: searchPath });
         expect(foundGenPackageInfo[0]).toEqual({
             packageJsonPath: mockTestPackageInfoCopy.path,
             packageInfo: mockTestPackageInfoCopy.packageJson,
@@ -202,21 +206,21 @@ describe('Installed module checker', () => {
 
             const foundGenPackageInfo = await findInstalledPackages(TEST_PACKAGE2_NAME_SUBSTRING);
             // On BAS expect to look in npm global first
-            expect(fastGlob).toHaveBeenNthCalledWith(1, `**/*${TEST_PACKAGE2_NAME_SUBSTRING}*`, {
+            expect(mockFastGlob).toHaveBeenNthCalledWith(1, `**/*${TEST_PACKAGE2_NAME_SUBSTRING}*`, {
                 cwd: npmGlobalNodeModules,
                 absolute: true,
                 deep: 2,
                 onlyDirectories: true
             });
             // There are 5 paths to check, the last one is the one we return as found hence '5'
-            expect(fastGlob).toHaveBeenNthCalledWith(5, `**/*${TEST_PACKAGE2_NAME_SUBSTRING}*`, {
+            expect(mockFastGlob).toHaveBeenNthCalledWith(5, `**/*${TEST_PACKAGE2_NAME_SUBSTRING}*`, {
                 cwd: appStudioInstallLoc,
                 absolute: true,
                 deep: 2,
                 onlyDirectories: true
             });
             const extBinSearchPath = join(appStudioInstallLoc, TEST_PACKAGE2_NAME);
-            expect(readPkgUp).toHaveBeenLastCalledWith({ cwd: extBinSearchPath });
+            expect(mockReadPkgUp).toHaveBeenLastCalledWith({ cwd: extBinSearchPath });
             expect(foundGenPackageInfo[0]).toEqual({
                 packageJsonPath: mockTestPackageInfoWithKeywords.path,
                 packageInfo: mockTestPackageInfoWithKeywords.packageJson,
@@ -243,13 +247,13 @@ describe('Installed module checker', () => {
         const foundGenPackageInfo = await findInstalledPackages(TEST_PACKAGE2_NAME_SUBSTRING);
 
         const searchPath = join(npmGlobalNodeModules, TEST_PACKAGE2_NAME);
-        expect(fastGlob).toHaveBeenNthCalledWith(1, `**/*${TEST_PACKAGE2_NAME_SUBSTRING}*`, {
+        expect(mockFastGlob).toHaveBeenNthCalledWith(1, `**/*${TEST_PACKAGE2_NAME_SUBSTRING}*`, {
             cwd: npmGlobalNodeModules,
             absolute: true,
             deep: 2,
             onlyDirectories: true
         });
-        expect(readPkgUp).toHaveBeenLastCalledWith({ cwd: searchPath });
+        expect(mockReadPkgUp).toHaveBeenLastCalledWith({ cwd: searchPath });
         expect(foundGenPackageInfo[0]).toEqual({
             packageJsonPath: mockTestPackageInfoWithKeywords.path,
             packageInfo: mockTestPackageInfoWithKeywords.packageJson,
