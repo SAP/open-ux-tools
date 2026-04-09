@@ -1,22 +1,15 @@
+import { jest } from '@jest/globals';
 import nock from 'nock';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Destination, ServiceInfo } from '../src';
-import {
-    getAppStudioProxyURL,
-    getAppStudioBaseURL,
-    isAppStudio,
-    getDestinationUrlForAppStudio,
-    listDestinations,
-    getCredentialsForDestinationService,
-    exposePort,
-    createOAuth2UserTokenExchangeDest
-} from '../src';
 import { ENV } from '../src/app-studio.env';
 import destinationList from './mockResponses/destinations.json';
-import { type ServiceInstanceInfo } from '@sap/cf-tools';
+import type { ServiceInstanceInfo } from '@sap/cf-tools';
 import { ToolsLogger } from '@sap-ux/logger';
-import * as cfTools from '@sap/cf-tools';
-import * as basSdk from '@sap/bas-sdk';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const destinations: { [key: string]: Destination } = {};
 destinationList.forEach((dest) => {
@@ -48,11 +41,58 @@ let uaaCredentialsMock = {
 const cfTarget = { org: 'testOrg', space: 'testSpace' };
 let cfTargetMock = cfTarget;
 
-jest.mock('@sap/cf-tools', () => {
-    const original = jest.requireActual('@sap/cf-tools');
-    return {
-        ...original,
-        cfGetInstanceKeyParameters: jest.fn((name?) => {
+// Mock functions for @sap/cf-tools
+const mockCfGetInstanceKeyParameters = jest.fn((name?: string) => {
+    if (name === 'invalid') {
+        throw new Error();
+    } else if (name === 'noinstance') {
+        return undefined;
+    } else if (name === 'nocredentials') {
+        return {};
+    } else {
+        return name!.includes('uaa')
+            ? { credentials: { uaa: mockInstanceSettings } }
+            : { credentials: mockInstanceSettings };
+    }
+});
+const mockCfGetTarget = jest.fn(() => Promise.resolve(cfTargetMock));
+const mockApiGetServicesInstancesFilteredByType = jest.fn().mockImplementation(() => cfDiscoveredAbapEnvsMock);
+const mockApiCreateServiceInstance = jest.fn().mockImplementation(() => {});
+const mockApiGetInstanceCredentials = jest.fn(() => Promise.resolve(uaaCredentialsMock));
+
+// Mock function for @sap/bas-sdk destinations.createDestination
+const mockCreateDestination = jest.fn();
+
+jest.unstable_mockModule('@sap/cf-tools', () => ({
+    cfGetInstanceKeyParameters: mockCfGetInstanceKeyParameters,
+    cfGetTarget: mockCfGetTarget,
+    apiGetServicesInstancesFilteredByType: mockApiGetServicesInstancesFilteredByType,
+    apiCreateServiceInstance: mockApiCreateServiceInstance,
+    apiGetInstanceCredentials: mockApiGetInstanceCredentials
+}));
+
+jest.unstable_mockModule('@sap/bas-sdk', () => ({
+    destinations: {
+        createDestination: mockCreateDestination
+    }
+}));
+
+const {
+    getAppStudioProxyURL,
+    getAppStudioBaseURL,
+    isAppStudio,
+    getDestinationUrlForAppStudio,
+    listDestinations,
+    getCredentialsForDestinationService,
+    exposePort,
+    createOAuth2UserTokenExchangeDest
+} = await import('../src');
+
+describe('App Studio', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        // Re-assign default mock implementations that may get cleared
+        mockCfGetInstanceKeyParameters.mockImplementation((name?: string) => {
             if (name === 'invalid') {
                 throw new Error();
             } else if (name === 'noinstance') {
@@ -60,19 +100,17 @@ jest.mock('@sap/cf-tools', () => {
             } else if (name === 'nocredentials') {
                 return {};
             } else {
-                return name.includes('uaa')
+                return name!.includes('uaa')
                     ? { credentials: { uaa: mockInstanceSettings } }
                     : { credentials: mockInstanceSettings };
             }
-        }),
-        cfGetTarget: jest.fn(() => Promise.resolve(cfTargetMock)),
-        apiGetServicesInstancesFilteredByType: jest.fn().mockImplementation(() => cfDiscoveredAbapEnvsMock),
-        apiCreateServiceInstance: jest.fn().mockImplementation(() => {}),
-        apiGetInstanceCredentials: jest.fn(() => Promise.resolve(uaaCredentialsMock))
-    };
-});
+        });
+        mockCfGetTarget.mockImplementation(() => Promise.resolve(cfTargetMock));
+        mockApiGetServicesInstancesFilteredByType.mockImplementation(() => cfDiscoveredAbapEnvsMock);
+        mockApiCreateServiceInstance.mockImplementation(() => {});
+        mockApiGetInstanceCredentials.mockImplementation(() => Promise.resolve(uaaCredentialsMock));
+    });
 
-describe('App Studio', () => {
     describe('isAppStudio', () => {
         it('returns true when env variable is truthy', () => {
             process.env[ENV.H2O_URL] = '1';
@@ -262,31 +300,6 @@ describe('App Studio', () => {
 
         test('generate new OAuth2UserTokenExchange SAP BTP destination', async () => {
             process.env['WS_BASE_URL'] = server; // Required for bas-sdk to ensure isAppStudio is true
-            const result = `
-                Object {
-                  "Authentication": "OAuth2UserTokenExchange",
-                  "Description": "Destination generated by App Studio for 'my-abap-env', Do not remove.",
-                  "HTML5.DynamicDestination": "true",
-                  "HTML5.Timeout": "60000",
-                  "Name": "abap-cloud-my-abap-env-testorg-testspace",
-                  "ProxyType": "Internet",
-                  "Type": "HTTP",
-                  "URL": "http://my-server/",
-                  "WebIDEEnabled": "true",
-                  "WebIDEUsage": "odata_abap,dev_abap,abap_cloud",
-                  "clientId": "CLIENT_ID/WITH/STH/TO/ENCODE",
-                  "clientSecret": "CLIENT_SECRET",
-                  "tokenServiceURL": "http://my-server/oauth/token",
-                  "tokenServiceURLType": "Dedicated",
-                }
-            `;
-            let bodyParam;
-            nock(server)
-                .post('/api/createDestination', (body) => {
-                    bodyParam = body;
-                    return true;
-                })
-                .reply(200);
             nock(server)
                 .get('/api/listDestinations')
                 .replyWithFile(200, join(__dirname, 'mockResponses/destinations.json'));
@@ -300,24 +313,28 @@ describe('App Studio', () => {
                     logger
                 )
             ).resolves.toMatchObject(destinations['abap-cloud-my-abap-env-testorg-testspace']);
-            expect(bodyParam).toMatchInlineSnapshot(`
-                Object {
-                  "Authentication": "OAuth2UserTokenExchange",
-                  "Description": "Destination generated by App Studio for Cloud Foundry Abap service instance: 'my-abap-env', Do not remove.",
-                  "HTML5.DynamicDestination": "true",
-                  "HTML5.Timeout": "60000",
-                  "Name": "abap-cloud-my-abap-env-testorg-testspace",
-                  "ProxyType": "Internet",
-                  "Type": "HTTP",
-                  "URL": "http://123abcd-fully-resolved-host-url.abap.somewhereaws.hanavlab.ondemand.com/",
-                  "WebIDEEnabled": "true",
-                  "WebIDEUsage": "odata_abap,dev_abap,abap_cloud",
-                  "clientId": "CLIENT_ID/WITH/STH/TO/ENCODE",
-                  "clientSecret": "CLIENT_SECRET",
-                  "tokenServiceURL": "http://my-server/oauth/token",
-                  "tokenServiceURLType": "Dedicated",
+            expect(mockCreateDestination).toHaveBeenCalledTimes(1);
+            expect(mockCreateDestination.mock.calls[0][0]).toMatchObject({
+                name: 'abap-cloud-my-abap-env-testorg-testspace',
+                description:
+                    "Destination generated by App Studio for Cloud Foundry Abap service instance: 'my-abap-env', Do not remove.",
+                type: 'HTTP',
+                proxyType: 'Internet',
+                basProperties: {
+                    html5DynamicDestination: 'true',
+                    html5Timeout: '60000',
+                    usage: 'odata_abap,dev_abap,abap_cloud'
+                },
+                credentials: {
+                    authentication: 'OAuth2UserTokenExchange',
+                    oauth2UserTokenExchange: {
+                        clientId: 'CLIENT_ID/WITH/STH/TO/ENCODE',
+                        clientSecret: 'CLIENT_SECRET',
+                        tokenServiceURL: 'http://my-server/oauth/token',
+                        tokenServiceURLType: 'Dedicated'
+                    }
                 }
-            `);
+            });
             expect(infoMock).toHaveBeenCalledTimes(1);
             expect(debugMock).toHaveBeenCalledTimes(1);
         });
@@ -342,16 +359,14 @@ describe('App Studio', () => {
         });
 
         test('retrieve credentials if optionally not provided', async () => {
-            const createDestSpy = jest.spyOn(basSdk.destinations, 'createDestination');
             nock(server).post('/api/createDestination').reply(200);
             nock(server)
                 .get('/api/listDestinations')
                 .replyWithFile(200, join(__dirname, 'mockResponses/destinations.json'));
-            const getCredsSpy = jest.spyOn(cfTools, 'apiGetInstanceCredentials');
             const dest = await createOAuth2UserTokenExchangeDest(serviceInstanceName);
             expect(dest.Name).toBe('abap-cloud-my-abap-env-testorg-testspace');
-            expect(getCredsSpy).toHaveBeenCalledWith(serviceInstanceName);
-            expect(createDestSpy).toHaveBeenCalledWith({
+            expect(mockApiGetInstanceCredentials).toHaveBeenCalledWith(serviceInstanceName);
+            expect(mockCreateDestination).toHaveBeenCalledWith({
                 basProperties: {
                     html5DynamicDestination: 'true',
                     html5Timeout: '60000',
