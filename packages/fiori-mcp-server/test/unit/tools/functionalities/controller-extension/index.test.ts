@@ -1,57 +1,62 @@
-import * as openUxProjectAccessDependency from '@sap-ux/project-access';
-import {
-    CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY,
-    createControllerExtensionHandlers
-} from '../../../../../src/tools/functionalities/controller-extension';
-import { mockSpecificationReadApp } from '../../../utils';
-import * as projectUtils from '../../../../../src/page-editor-api/project';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { getDefaultExtensionFolder } from '../../../../../src/utils';
+import { mockSpecificationReadApp } from '../../../utils';
 
-jest.mock('@sap-ux/project-access', () => ({
-    __esModule: true,
-
-    ...(jest.requireActual('@sap-ux/project-access') as object)
+// Mock @sap-ux/project-access with controllable functions
+const actualProjectAccess = await import('@sap-ux/project-access');
+const mockFindProjectRoot = jest.fn<any>();
+const mockCreateApplicationAccess = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    findProjectRoot: mockFindProjectRoot,
+    createApplicationAccess: mockCreateApplicationAccess
 }));
 
-// Mock the utils module to avoid property redefinition errors
-jest.mock('../../../../../src/utils', () => ({
-    ...jest.requireActual('../../../../../src/utils'),
-    getDefaultExtensionFolder: jest.fn()
+// Mock project utils
+const actualProjectUtils = await import('../../../../../src/page-editor-api/project');
+const mockGetUI5Version = jest.fn<any>();
+const mockGetManifest = jest.fn<any>();
+jest.unstable_mockModule('../../../../../src/page-editor-api/project', () => ({
+    ...actualProjectUtils,
+    getUI5Version: mockGetUI5Version,
+    getManifest: mockGetManifest
 }));
+
+// Mock utils
+const actualUtils = await import('../../../../../src/utils');
+const mockGetDefaultExtensionFolder = jest.fn<any>();
+jest.unstable_mockModule('../../../../../src/utils', () => ({
+    ...actualUtils,
+    getDefaultExtensionFolder: mockGetDefaultExtensionFolder
+}));
+
+// Dynamic imports after mocks
+const { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY, createControllerExtensionHandlers } = await import(
+    '../../../../../src/tools/functionalities/controller-extension'
+);
 
 describe('create-controller-extension', () => {
     const appPath = join('root', 'app1');
     let readAppMock: jest.Mock;
     let generateCustomExtensionMock: jest.Mock;
-    let findProjectRootSpy: jest.SpyInstance;
-    let getUI5VersionSpy: jest.SpyInstance;
-    let getManifestSpy: jest.SpyInstance;
-    let createApplicationAccessSpy: jest.SpyInstance;
-    const memFsdumpMock = jest.fn();
+    const memFsdumpMock = jest.fn<any>();
 
     beforeEach(async () => {
-        // Create spies in beforeEach to avoid redefinition errors
-        findProjectRootSpy = jest.spyOn(openUxProjectAccessDependency, 'findProjectRoot');
-        getUI5VersionSpy = jest.spyOn(projectUtils, 'getUI5Version');
-        getManifestSpy = jest.spyOn(projectUtils, 'getManifest');
-        createApplicationAccessSpy = jest.spyOn(openUxProjectAccessDependency, 'createApplicationAccess');
-
-        readAppMock = jest.fn().mockResolvedValue({
+        readAppMock = jest.fn<any>().mockResolvedValue({
             files: []
         });
         memFsdumpMock.mockReturnValue({
             'manifest.json': {}
         });
-        generateCustomExtensionMock = jest.fn().mockResolvedValue({
+        generateCustomExtensionMock = jest.fn<any>().mockResolvedValue({
             commit: jest.fn(),
             dump: memFsdumpMock
         });
-        (getDefaultExtensionFolder as jest.Mock).mockReturnValue('controllerFolder');
-        findProjectRootSpy.mockImplementation(async (path: string): Promise<string> => path);
-        getUI5VersionSpy.mockResolvedValue('1.108.1');
-        getManifestSpy.mockResolvedValue({});
-        createApplicationAccessSpy.mockImplementation((rootPath: string) => {
+        mockGetDefaultExtensionFolder.mockReturnValue('controllerFolder');
+        mockFindProjectRoot.mockImplementation(async (path: string): Promise<string> => path);
+        mockGetUI5Version.mockResolvedValue('1.108.1');
+        mockGetManifest.mockResolvedValue({});
+        mockCreateApplicationAccess.mockImplementation((rootPath: string) => {
             return {
                 getAppId: () => 'app1',
                 app: {
@@ -87,7 +92,7 @@ describe('create-controller-extension', () => {
         });
 
         test('getFunctionalityDetails - unresolvable project', async () => {
-            createApplicationAccessSpy.mockImplementation(() => {
+            mockCreateApplicationAccess.mockImplementation(() => {
                 throw new Error('Test error');
             });
             mockSpecificationReadApp(readAppMock);
@@ -289,7 +294,7 @@ describe('create-controller-extension', () => {
         });
 
         test('create controller extension - unresolvable project', async () => {
-            createApplicationAccessSpy.mockImplementation(() => {
+            mockCreateApplicationAccess.mockImplementation(() => {
                 throw new Error('Test error');
             });
             mockSpecificationReadApp(readAppMock);

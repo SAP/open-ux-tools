@@ -1,15 +1,34 @@
-import * as openUxProjectAccessDependency from '@sap-ux/project-access';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ListFunctionalitiesOutput } from '../../../src/types';
-import { listFunctionalities } from '../../../src/tools';
 import { ensureSpecificationLoaded, mockSpecificationReadAppWithModel } from '../utils';
-import * as projectUtils from '../../../src/page-editor-api/project';
-import { join } from 'node:path';
+import type { ApplicationAccess } from '@sap-ux/project-access';
 
-jest.mock('@sap-ux/project-access', () => ({
-    __esModule: true,
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-    ...(jest.requireActual('@sap-ux/project-access') as object)
+// Mock @sap-ux/project-access with controllable functions
+const actualProjectAccess = await import('@sap-ux/project-access');
+const mockFindProjectRoot = jest.fn<any>();
+const mockCreateApplicationAccess = jest.fn<any>();
+const mockGetSpecificationModuleFromCache = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    findProjectRoot: mockFindProjectRoot,
+    createApplicationAccess: mockCreateApplicationAccess,
+    getSpecificationModuleFromCache: mockGetSpecificationModuleFromCache
 }));
+
+// Mock getManifest from project utils
+const actualProjectUtils = await import('../../../src/page-editor-api/project');
+const mockGetManifest = jest.fn<any>();
+jest.unstable_mockModule('../../../src/page-editor-api/project', () => ({
+    ...actualProjectUtils,
+    getManifest: mockGetManifest
+}));
+
+// Dynamic imports after mocks
+const { listFunctionalities } = await import('../../../src/tools');
 
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
 
@@ -17,32 +36,22 @@ describe('listFunctionalities', () => {
     const appPath = 'testApplicationPath';
     let readAppMock = jest.fn();
     let getSpecificationMock = jest.fn();
-    const findProjectRootSpy: jest.SpyInstance = jest.spyOn(openUxProjectAccessDependency, 'findProjectRoot');
-    const getManifestSpy: jest.SpyInstance = jest.spyOn(projectUtils, 'getManifest');
-    const createApplicationAccessSpy: jest.SpyInstance = jest.spyOn(
-        openUxProjectAccessDependency,
-        'createApplicationAccess'
-    );
-    const getSpecificationModuleFromCacheSpy: jest.SpyInstance = jest.spyOn(
-        openUxProjectAccessDependency,
-        'getSpecificationModuleFromCache'
-    );
-    const applications: { [key: string]: openUxProjectAccessDependency.ApplicationAccess } = {};
+    const applications: { [key: string]: ApplicationAccess } = {};
     beforeAll(async () => {
         // Create application access can take more time on slower machines
-        applications[appPathLropV4] = await openUxProjectAccessDependency.createApplicationAccess(appPathLropV4);
+        applications[appPathLropV4] = await actualProjectAccess.createApplicationAccess(appPathLropV4);
         // Ensure spec is loaded - first import is most costly
         await ensureSpecificationLoaded();
     }, 10000);
     beforeEach(async () => {
         readAppMock = jest.fn().mockResolvedValue({ files: [] });
-        getManifestSpy.mockResolvedValue({ manifest: true });
-        findProjectRootSpy.mockImplementation(async (path: string): Promise<string> => path);
+        mockGetManifest.mockResolvedValue({ manifest: true });
+        mockFindProjectRoot.mockImplementation(async (path: string): Promise<string> => path);
         getSpecificationMock = jest.fn().mockResolvedValue({
             readApp: readAppMock,
             getApiVersion: () => ({ version: '99' })
         });
-        createApplicationAccessSpy.mockImplementation((rootPath: string) => {
+        mockCreateApplicationAccess.mockImplementation((rootPath: string) => {
             return {
                 getAppId: () => 'dummy-id',
                 app: {
@@ -75,7 +84,7 @@ describe('listFunctionalities', () => {
     });
 
     test('call with project without apps', async () => {
-        createApplicationAccessSpy.mockImplementation((rootPath: string) => {
+        mockCreateApplicationAccess.mockImplementation((rootPath: string) => {
             return {
                 getAppId: () => '',
                 project: {
@@ -110,7 +119,7 @@ describe('listFunctionalities', () => {
         expect(result.functionalities).toMatchSnapshot();
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
-        expect(getSpecificationModuleFromCacheSpy).toHaveBeenCalledTimes(0);
+        expect(mockGetSpecificationModuleFromCache).toHaveBeenCalledTimes(0);
     });
 
     test('Fallback if older specification loaded - load from global cache', async () => {
@@ -121,7 +130,7 @@ describe('listFunctionalities', () => {
             getApiVersion: () => ({ version: '1' })
         });
         // mock spec from global cache
-        getSpecificationModuleFromCacheSpy.mockResolvedValue({
+        mockGetSpecificationModuleFromCache.mockResolvedValue({
             readApp: readAppMock,
             getApiVersion: () => ({ version: '99' })
         });
@@ -133,7 +142,7 @@ describe('listFunctionalities', () => {
         expect(result.functionalities.length).toEqual(104);
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
-        expect(getSpecificationModuleFromCacheSpy).toHaveBeenCalledTimes(1);
+        expect(mockGetSpecificationModuleFromCache).toHaveBeenCalledTimes(1);
     });
 
     test('Error during reading functionalities', async () => {

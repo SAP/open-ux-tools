@@ -4,14 +4,11 @@ import { join } from 'node:path';
 const mockFindFioriArtifacts = jest.fn();
 const mockGetProjectType = jest.fn().mockResolvedValue('EDMXBackend');
 
+const actualProjectAccess = await import('@sap-ux/project-access');
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
     findFioriArtifacts: mockFindFioriArtifacts,
-    getProjectType: mockGetProjectType,
-    fioriToolsDirectory: '.fioritools',
-    DirName: { Webapp: 'webapp', Src: 'src' },
-    findProjectRoot: jest.fn(),
-    createApplicationAccess: jest.fn(),
-    getProject: jest.fn()
+    getProjectType: mockGetProjectType
 }));
 
 const { listFioriApps } = await import('../../../src/tools');

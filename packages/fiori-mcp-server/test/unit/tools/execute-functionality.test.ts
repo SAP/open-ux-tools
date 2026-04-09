@@ -1,34 +1,56 @@
-import * as openUxProjectAccessDependency from '@sap-ux/project-access';
+import { jest } from '@jest/globals';
 import { readFile } from 'node:fs/promises';
-import { executeFunctionality } from '../../../src/tools';
-import {
-    ensureSpecificationLoaded,
-    mockSpecificationReadApp,
-    mockSpecificationReadAppWithModel,
-    readAppWithModel
-} from '../utils';
-import * as addPageDependency from '../../../src/tools/functionalities/page';
-import * as projectUtils from '../../../src/page-editor-api/project';
-import * as flexUtils from '../../../src/page-editor-api/flex';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
+import { ensureSpecificationLoaded, mockSpecificationReadApp, mockSpecificationReadAppWithModel, readAppWithModel } from '../utils';
 
-jest.mock('@sap-ux/project-access', () => ({
-    __esModule: true,
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-    ...(jest.requireActual('@sap-ux/project-access') as object)
+// Mock @sap-ux/project-access with controllable functions
+const actualProjectAccess = await import('@sap-ux/project-access');
+const mockFindProjectRoot = jest.fn<any>();
+const mockCreateApplicationAccess = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    findProjectRoot: mockFindProjectRoot,
+    createApplicationAccess: mockCreateApplicationAccess
 }));
 
+// Mock project utils
+const actualProjectUtils = await import('../../../src/page-editor-api/project');
+const mockGetManifest = jest.fn<any>();
+const mockGetFlexChangeLayer = jest.fn<any>();
+const mockGetUI5Version = jest.fn<any>();
+jest.unstable_mockModule('../../../src/page-editor-api/project', () => ({
+    ...actualProjectUtils,
+    getManifest: mockGetManifest,
+    getFlexChangeLayer: mockGetFlexChangeLayer,
+    getUI5Version: mockGetUI5Version
+}));
+
+// Mock flex utils
+const actualFlexUtils = await import('../../../src/page-editor-api/flex');
+const mockWriteFlexChanges = jest.fn<any>();
+jest.unstable_mockModule('../../../src/page-editor-api/flex', () => ({
+    ...actualFlexUtils,
+    writeFlexChanges: mockWriteFlexChanges
+}));
+
+// Dynamic imports after mocks
+const { executeFunctionality } = await import('../../../src/tools');
+const addPageDependency = await import('../../../src/tools/functionalities/page');
+
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
+const fsEditor = create(createStorage());
 
 describe('executeFunctionality', () => {
     const appPath = 'testApplicationPath';
-    let readAppMock = jest.fn();
-    let exportProjectMock = jest.fn();
-    let updateManifestJSONMock = jest.fn();
-    let findProjectRootSpy: jest.SpyInstance;
+    let readAppMock = jest.fn<any>();
+    let exportProjectMock = jest.fn<any>();
+    let updateManifestJSONMock = jest.fn<any>();
     const mockSpecificationExport = (
         manifest = {},
         manifestChangeIndicator = 'Updated',
@@ -40,40 +62,27 @@ describe('executeFunctionality', () => {
             flexChanges
         });
     };
-    const fsEditor = create(createStorage());
-    let getManifestSpy: jest.SpyInstance;
-    let getFlexChangeLayerSpy: jest.SpyInstance;
-    let createApplicationAccessSpy: jest.SpyInstance;
-    let writeFlexChangesSpy: jest.SpyInstance;
-    let getUI5VersionSpy: jest.SpyInstance;
-    const applications: { [key: string]: openUxProjectAccessDependency.ApplicationAccess } = {};
+    const applications: { [key: string]: actualProjectAccess.ApplicationAccess } = {};
     beforeAll(async () => {
         // Create application access can take more time on slower machines
-        applications[appPathLropV4] = await openUxProjectAccessDependency.createApplicationAccess(appPathLropV4);
+        applications[appPathLropV4] = await actualProjectAccess.createApplicationAccess(appPathLropV4);
         // Ensure spec is loaded - first import is most costly
         await ensureSpecificationLoaded();
     }, 10000);
     beforeEach(async () => {
-        getManifestSpy = jest
-            .spyOn(projectUtils, 'getManifest')
-            .mockResolvedValue({} as openUxProjectAccessDependency.Manifest);
-        getFlexChangeLayerSpy = jest
-            .spyOn(projectUtils, 'getFlexChangeLayer')
-            .mockResolvedValue(FlexChangeLayer.Customer);
-        getUI5VersionSpy = jest.spyOn(projectUtils, 'getUI5Version').mockResolvedValue('1.141.3');
-        findProjectRootSpy = jest
-            .spyOn(openUxProjectAccessDependency, 'findProjectRoot')
-            .mockImplementation(async (path: string): Promise<string> => path);
-        writeFlexChangesSpy = jest.spyOn(flexUtils, 'writeFlexChanges').mockResolvedValue(fsEditor);
-        readAppMock = jest.fn().mockResolvedValue({
+        mockGetManifest.mockResolvedValue({} as actualProjectAccess.Manifest);
+        mockGetFlexChangeLayer.mockResolvedValue(FlexChangeLayer.Customer);
+        mockGetUI5Version.mockResolvedValue('1.141.3');
+        mockFindProjectRoot.mockImplementation(async (path: string): Promise<string> => path);
+        mockWriteFlexChanges.mockResolvedValue(fsEditor);
+        readAppMock = jest.fn<any>().mockResolvedValue({
             files: []
         });
-        exportProjectMock = jest.fn();
-        updateManifestJSONMock = jest.fn();
+        exportProjectMock = jest.fn<any>();
+        updateManifestJSONMock = jest.fn<any>();
         mockSpecificationExport();
-        createApplicationAccessSpy = jest
-            .spyOn(openUxProjectAccessDependency, 'createApplicationAccess')
-            .mockImplementation(async (rootPath: string): Promise<openUxProjectAccessDependency.ApplicationAccess> => {
+        mockCreateApplicationAccess.mockImplementation(
+            async (rootPath: string): Promise<actualProjectAccess.ApplicationAccess> => {
                 return {
                     getAppId: () => 'dummy-id',
                     app: {
@@ -91,12 +100,14 @@ describe('executeFunctionality', () => {
                         exportConfig: exportProjectMock,
                         getApiVersion: () => ({ version: '99' })
                     })
-                } as unknown as openUxProjectAccessDependency.ApplicationAccess;
-            });
+                } as unknown as actualProjectAccess.ApplicationAccess;
+            }
+        );
     });
 
     afterEach(() => {
         jest.restoreAllMocks();
+        jest.clearAllMocks();
     });
 
     test('call static functionality', async () => {
@@ -109,8 +120,8 @@ describe('executeFunctionality', () => {
             status: 'success',
             timestamp: '000'
         };
-        const getFunctionalityDetailsSpy = jest.spyOn(addPageDependency.addPageHandlers, 'executeFunctionality');
-        getFunctionalityDetailsSpy.mockResolvedValue(result);
+        const executeFunctionalitySpy = jest.spyOn(addPageDependency.addPageHandlers, 'executeFunctionality');
+        executeFunctionalitySpy.mockResolvedValue(result);
         const details = await executeFunctionality({
             appPath,
             functionalityId: 'add-page',
@@ -303,7 +314,7 @@ describe('executeFunctionality', () => {
         );
         mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         mockSpecificationExport(undefined, 'NoChange', [file]);
-        getFlexChangeLayerSpy.mockResolvedValue(FlexChangeLayer.Vendor);
+        mockGetFlexChangeLayer.mockResolvedValue(FlexChangeLayer.Vendor);
         const details = await executeFunctionality({
             appPath,
             functionalityId: ['TravelObjectPage', 'header', 'actions', 'RelatedApps', 'showRelatedApps'],
@@ -315,8 +326,8 @@ describe('executeFunctionality', () => {
         expect(exportProjectMock).toHaveBeenCalledTimes(1);
         expect(exportProjectMock).toHaveBeenCalledTimes(1);
         expect(exportProjectMock.mock.calls[0][0].layer).toEqual(FlexChangeLayer.Vendor);
-        expect(writeFlexChangesSpy).toHaveBeenCalledTimes(1);
-        expect(writeFlexChangesSpy).toHaveBeenCalledWith('changes', {
+        expect(mockWriteFlexChanges).toHaveBeenCalledTimes(1);
+        expect(mockWriteFlexChanges).toHaveBeenCalledWith('changes', {
             [join('changes', 'id_1761320220775_34_propertyChange.change')]: JSON.parse(file)
         });
         expect(commitSpy).toHaveBeenCalledTimes(1);

@@ -1,11 +1,31 @@
-import { join } from 'node:path';
-import { getFlexChangeLayer } from '../../../src/page-editor-api/project';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
-import fs from 'node:fs/promises';
 
-jest.mock('fs/promises');
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockFs = fs as jest.Mocked<typeof fs>;
+// Mock fs/promises
+const mockReadFile = jest.fn<any>();
+const actualFsPromises = await import('node:fs/promises');
+jest.unstable_mockModule('fs/promises', () => ({
+    ...actualFsPromises,
+    default: {
+        ...actualFsPromises,
+        readFile: mockReadFile
+    },
+    readFile: mockReadFile
+}));
+jest.unstable_mockModule('node:fs/promises', () => ({
+    ...actualFsPromises,
+    default: {
+        ...actualFsPromises,
+        readFile: mockReadFile
+    },
+    readFile: mockReadFile
+}));
+
+const { getFlexChangeLayer } = await import('../../../src/page-editor-api/project');
 
 describe('project', () => {
     describe('Test getFlexChangeLayer()', () => {
@@ -22,13 +42,13 @@ describe('project', () => {
         });
 
         test('package.json with sapuxLayer', async () => {
-            mockFs.readFile.mockResolvedValueOnce(JSON.stringify({ sapuxLayer: 'VENDOR' }));
+            mockReadFile.mockResolvedValueOnce(JSON.stringify({ sapuxLayer: 'VENDOR' }));
             const layer = await getFlexChangeLayer(commonPath);
             expect(layer).toEqual(FlexChangeLayer.Vendor);
         });
 
         test('Unparsible package.json', async () => {
-            mockFs.readFile.mockResolvedValueOnce('unparseable json');
+            mockReadFile.mockResolvedValueOnce('unparseable json');
             const layer = await getFlexChangeLayer(commonPath);
             expect(layer).toEqual(FlexChangeLayer.Customer);
         });

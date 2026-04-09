@@ -1,37 +1,39 @@
-import { join } from 'node:path';
-import {
-    ADD_PAGE_FUNCTIONALITY,
-    addPageHandlers,
-    DELETE_PAGE_FUNCTIONALITY,
-    deletePageHandlers
-} from '../../../../../src/tools/functionalities/page';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { writeFileSync, readFileSync } from 'node:fs';
 import { copyDirectory } from '../../../utils';
 import { npmInstall, removeDirectory } from '../../../../utils';
-import { writeFileSync, readFileSync } from 'node:fs';
-import { createApplicationAccess } from '@sap-ux/project-access';
-import { getManifest } from '../../../../../src/page-editor-api/project';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const TIME_OUT = 5 * 60 * 1000; // 5 min due to npm install.
 
 jest.setTimeout(TIME_OUT);
 
-jest.mock('@sap-ux/project-access', () => {
-    const actual = jest.requireActual('@sap-ux/project-access');
-    return {
-        ...actual,
-        createApplicationAccess: jest.fn()
-    };
-});
+// Mock @sap-ux/project-access with controllable functions
+const actualProjectAccess = await import('@sap-ux/project-access');
+const mockCreateApplicationAccess = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    createApplicationAccess: mockCreateApplicationAccess
+}));
+
+// Dynamic imports after mocks
+const { ADD_PAGE_FUNCTIONALITY, addPageHandlers, DELETE_PAGE_FUNCTIONALITY, deletePageHandlers } = await import(
+    '../../../../../src/tools/functionalities/page'
+);
+const { getManifest } = await import('../../../../../src/page-editor-api/project');
 
 const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', 'original', 'node-ai-created');
 const copyProjectRoot = join(originProjectRoot, '..', '..', 'copy', `node-ai-created-add-page`);
 const appPath = join(copyProjectRoot, 'app', 'managetravels');
 
-let readAppMock = jest.fn();
-const memFsDumpMock = jest.fn();
-const commitMock = jest.fn();
-const exportConfigMock = jest.fn();
-const generateCustomExtensionMock = jest.fn().mockResolvedValue({
+let readAppMock = jest.fn<any>();
+const memFsDumpMock = jest.fn<any>();
+const commitMock = jest.fn<any>();
+const exportConfigMock = jest.fn<any>();
+const generateCustomExtensionMock = jest.fn<any>().mockResolvedValue({
     commit: commitMock,
     dump: memFsDumpMock
 });
@@ -39,16 +41,14 @@ beforeEach(() => {
     memFsDumpMock.mockReturnValue({
         'manifest.json': {}
     });
-    readAppMock = jest.fn().mockResolvedValue({
+    readAppMock = jest.fn<any>().mockResolvedValue({
         files: []
     });
-    // get actual createProjectProvider from the module
-    const actualCreateApplicationAccess = jest.requireActual('@sap-ux/project-access').createApplicationAccess;
 
-    // Setup the mock implementation
-    (createApplicationAccess as jest.Mock).mockImplementation(async (...args: any[]) => {
+    // Setup the mock implementation using actual createApplicationAccess
+    mockCreateApplicationAccess.mockImplementation(async (...args: any[]) => {
         // Create the real project provider
-        const realApplicationAccess = await actualCreateApplicationAccess(...args);
+        const realApplicationAccess = await actualProjectAccess.createApplicationAccess(...(args as [string]));
         const manifest = await getManifest(realApplicationAccess);
         // Mock only the getSpecification method
         const mockSpecification = {

@@ -1,10 +1,12 @@
-import { TextEmbeddingService } from '../../../../src/tools/services/text-embedding';
+import { jest } from '@jest/globals';
 
 // Mock the transformers module
-jest.mock('@xenova/transformers');
+const mockPipeline = jest.fn<any>();
+jest.unstable_mockModule('@xenova/transformers', () => ({
+    pipeline: mockPipeline
+}));
 
-import * as transformersModule from '@xenova/transformers';
-const mockTransformers = transformersModule as jest.Mocked<typeof transformersModule>;
+const { TextEmbeddingService } = await import('../../../../src/tools/services/text-embedding');
 
 describe('TextEmbeddingService', () => {
     let service: TextEmbeddingService;
@@ -15,10 +17,10 @@ describe('TextEmbeddingService', () => {
 
         // Reset the mock to its default working state
         const createMockPipelineInstance = () =>
-            jest.fn().mockResolvedValue({
+            jest.fn<any>().mockResolvedValue({
                 data: new Float32Array(384).fill(0).map(() => Math.random() - 0.5)
-            }) as unknown as ReturnType<typeof transformersModule.pipeline>;
-        mockTransformers.pipeline.mockImplementation(createMockPipelineInstance);
+            });
+        mockPipeline.mockImplementation(createMockPipelineInstance);
     });
 
     describe('initialize', () => {
@@ -37,7 +39,7 @@ describe('TextEmbeddingService', () => {
 
         it('should handle pipeline creation errors gracefully', async () => {
             // Mock pipeline creation to fail
-            mockTransformers.pipeline.mockRejectedValue(new Error('Pipeline creation failed'));
+            mockPipeline.mockRejectedValue(new Error('Pipeline creation failed'));
 
             const newService = new TextEmbeddingService();
             await expect(newService.initialize()).rejects.toThrow('Failed to initialize text embedding service');
@@ -90,7 +92,7 @@ describe('TextEmbeddingService', () => {
             await service.initialize();
 
             // Replace the resolved pipeline with one that throws
-            service['pipeline'] = jest.fn().mockRejectedValue(new Error('Embedding generation failed'));
+            service['pipeline'] = jest.fn<any>().mockRejectedValue(new Error('Embedding generation failed'));
 
             await expect(service.generateEmbedding('test')).rejects.toThrow('Failed to generate embedding');
         });
@@ -98,7 +100,7 @@ describe('TextEmbeddingService', () => {
         it('should handle pipeline result processing', async () => {
             await service.initialize();
 
-            service['pipeline'] = jest.fn().mockResolvedValue({
+            service['pipeline'] = jest.fn<any>().mockResolvedValue({
                 data: new Float32Array([0.1, 0.2, 0.3])
             });
 

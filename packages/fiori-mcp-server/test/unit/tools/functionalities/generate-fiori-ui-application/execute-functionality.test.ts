@@ -1,24 +1,70 @@
+import { jest } from '@jest/globals';
 import type { ExecuteFunctionalityInput } from '../../../../../src/types';
 
 // Mock dependencies BEFORE importing the module under test
-jest.mock('node:fs', () => {
-    const actual = jest.requireActual('node:fs');
-    return {
-        ...actual,
+const mockReadFile = jest.fn<any>();
+const mockMkdir = jest.fn<any>();
+const mockWriteFile = jest.fn<any>();
+const mockUnlink = jest.fn<any>();
+const mockExistsSync = jest.fn<any>();
+const actualFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    default: {
+        ...actualFs,
+        existsSync: mockExistsSync,
         promises: {
-            readFile: jest.fn(),
-            mkdir: jest.fn(),
-            writeFile: jest.fn(),
-            unlink: jest.fn()
-        },
-        existsSync: jest.fn()
-    };
-});
-jest.mock('../../../../../src/utils');
+            readFile: mockReadFile,
+            mkdir: mockMkdir,
+            writeFile: mockWriteFile,
+            unlink: mockUnlink
+        }
+    },
+    existsSync: mockExistsSync,
+    promises: {
+        readFile: mockReadFile,
+        mkdir: mockMkdir,
+        writeFile: mockWriteFile,
+        unlink: mockUnlink
+    }
+}));
+jest.unstable_mockModule('fs', () => ({
+    ...actualFs,
+    default: {
+        ...actualFs,
+        existsSync: mockExistsSync,
+        promises: {
+            readFile: mockReadFile,
+            mkdir: mockMkdir,
+            writeFile: mockWriteFile,
+            unlink: mockUnlink
+        }
+    },
+    existsSync: mockExistsSync,
+    promises: {
+        readFile: mockReadFile,
+        mkdir: mockMkdir,
+        writeFile: mockWriteFile,
+        unlink: mockUnlink
+    }
+}));
 
-import executeFunctionality from '../../../../../src/tools/functionalities/generate-fiori-ui-application/execute-functionality';
-import * as utils from '../../../../../src/utils';
-import { promises as fsPromises, existsSync } from 'node:fs';
+// Mock utils
+const mockCheckIfGeneratorInstalled = jest.fn<any>();
+const mockRunCmd = jest.fn<any>();
+const mockValidateWithSchema = jest.fn<any>();
+const actualUtils = await import('../../../../../src/utils');
+jest.unstable_mockModule('../../../../../src/utils', () => ({
+    ...actualUtils,
+    checkIfGeneratorInstalled: mockCheckIfGeneratorInstalled,
+    runCmd: mockRunCmd,
+    validateWithSchema: mockValidateWithSchema,
+    getDefaultExtensionFolder: jest.fn()
+}));
+
+const { default: executeFunctionality } = await import(
+    '../../../../../src/tools/functionalities/generate-fiori-ui-application/execute-functionality'
+);
 
 describe('generate-fiori-ui-application execute-functionality', () => {
     const mockAppPath = '/test/project';
@@ -26,14 +72,14 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        (utils.checkIfGeneratorInstalled as jest.Mock).mockResolvedValue(undefined);
-        (utils.runCmd as jest.Mock).mockResolvedValue({ stdout: 'Success', stderr: '' });
-        (utils.validateWithSchema as jest.Mock).mockImplementation((schema, data) => data.appGenConfig || data);
-        (fsPromises.readFile as jest.Mock).mockResolvedValue(mockMetadata);
-        (fsPromises.mkdir as jest.Mock).mockResolvedValue(undefined);
-        (fsPromises.writeFile as jest.Mock).mockResolvedValue(undefined);
-        (fsPromises.unlink as jest.Mock).mockResolvedValue(undefined);
-        (existsSync as jest.Mock).mockReturnValue(true);
+        mockCheckIfGeneratorInstalled.mockResolvedValue(undefined);
+        mockRunCmd.mockResolvedValue({ stdout: 'Success', stderr: '' });
+        mockValidateWithSchema.mockImplementation((schema: any, data: any) => data.appGenConfig || data);
+        mockReadFile.mockResolvedValue(mockMetadata);
+        mockMkdir.mockResolvedValue(undefined);
+        mockWriteFile.mockResolvedValue(undefined);
+        mockUnlink.mockResolvedValue(undefined);
+        mockExistsSync.mockReturnValue(true);
     });
 
     test('should successfully generate application with valid parameters', async () => {
@@ -61,8 +107,8 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         expect(result.functionalityId).toBe('generate-fiori-ui-application');
         expect(result.message).toContain('Generation completed successfully');
         expect(result.appPath).toContain('testapp');
-        expect(utils.checkIfGeneratorInstalled).toHaveBeenCalled();
-        expect(utils.runCmd).toHaveBeenCalled();
+        expect(mockCheckIfGeneratorInstalled).toHaveBeenCalled();
+        expect(mockRunCmd).toHaveBeenCalled();
     });
 
     test('should read metadata from file', async () => {
@@ -86,7 +132,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(fsPromises.readFile as jest.Mock).toHaveBeenCalledWith(expect.stringContaining('metadata.xml'), {
+        expect(mockReadFile).toHaveBeenCalledWith(expect.stringContaining('metadata.xml'), {
             encoding: 'utf8'
         });
     });
@@ -114,7 +160,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(fsPromises.readFile as jest.Mock).toHaveBeenCalledWith(customMetadataPath, { encoding: 'utf8' });
+        expect(mockReadFile).toHaveBeenCalledWith(customMetadataPath, { encoding: 'utf8' });
     });
 
     test('should write generator config file', async () => {
@@ -138,7 +184,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(fsPromises.writeFile as jest.Mock).toHaveBeenCalledWith(
+        expect(mockWriteFile).toHaveBeenCalledWith(
             expect.stringContaining('-generator-config.json'),
             expect.any(String),
             { encoding: 'utf8' }
@@ -166,7 +212,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(utils.runCmd).toHaveBeenCalledWith(
+        expect(mockRunCmd).toHaveBeenCalledWith(
             expect.stringContaining('npx -y yo@4 @sap/fiori:headless'),
             expect.objectContaining({ cwd: mockAppPath })
         );
@@ -193,9 +239,9 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(fsPromises.unlink as jest.Mock).toHaveBeenCalledTimes(2);
-        expect(fsPromises.unlink as jest.Mock).toHaveBeenCalledWith(expect.stringContaining('-generator-config.json'));
-        expect(fsPromises.unlink as jest.Mock).toHaveBeenCalledWith(expect.stringContaining('metadata.xml'));
+        expect(mockUnlink).toHaveBeenCalledTimes(2);
+        expect(mockUnlink).toHaveBeenCalledWith(expect.stringContaining('-generator-config.json'));
+        expect(mockUnlink).toHaveBeenCalledWith(expect.stringContaining('metadata.xml'));
     });
 
     test('should throw error when projectPath is invalid', async () => {
@@ -222,7 +268,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     });
 
     test('should return error status when generation fails', async () => {
-        (fsPromises.readFile as jest.Mock).mockRejectedValue(new Error('File not found'));
+        mockReadFile.mockRejectedValue(new Error('File not found'));
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
@@ -269,7 +315,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        const writeCallArgs = (fsPromises.writeFile as jest.Mock).mock.calls[0] as string[];
+        const writeCallArgs = mockWriteFile.mock.calls[0] as string[];
         const configContent = JSON.parse(writeCallArgs[1] as string);
         expect(configContent.project.sapux).toBe(false);
     });
@@ -295,13 +341,13 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        const writeCallArgs = (fsPromises.writeFile as jest.Mock).mock.calls[0] as string[];
+        const writeCallArgs = mockWriteFile.mock.calls[0] as string[];
         const configContent = JSON.parse(writeCallArgs[1] as string);
         expect(configContent.project.sapux).toBe(true);
     });
 
     test('should clean up files even when generation fails', async () => {
-        (utils.runCmd as jest.Mock).mockRejectedValue(new Error('Command failed'));
+        mockRunCmd.mockRejectedValue(new Error('Command failed'));
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
@@ -323,11 +369,11 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(fsPromises.unlink as jest.Mock).toHaveBeenCalledTimes(2);
+        expect(mockUnlink).toHaveBeenCalledTimes(2);
     });
 
     test('should only clean up files that exist', async () => {
-        (existsSync as jest.Mock).mockReturnValueOnce(false).mockReturnValueOnce(true);
+        mockExistsSync.mockReturnValueOnce(false).mockReturnValueOnce(true);
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
@@ -349,7 +395,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(fsPromises.unlink as jest.Mock).toHaveBeenCalledTimes(1);
+        expect(mockUnlink).toHaveBeenCalledTimes(1);
     });
 
     test('should return timestamp in ISO format', async () => {

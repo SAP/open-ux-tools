@@ -1,21 +1,58 @@
-import fs from 'node:fs/promises';
+import { jest } from '@jest/globals';
 import path from 'node:path';
-import { connect } from '@lancedb/lancedb';
 import type { EmbeddingMetadata } from '../../../../src/tools/services/vector-simple';
-import { SimpleVectorService } from '../../../../src/tools/services/vector-simple';
-import { logger } from '../../../../src/utils/logger';
-import { resolveEmbeddingsPath } from '../../../../src/utils/embeddings-path';
 
-// Mock dependencies
-jest.mock('fs/promises');
-jest.mock('@lancedb/lancedb');
-jest.mock('../../../../src/utils/logger');
-jest.mock('../../../../src/utils/embeddings-path');
+// Mock logger
+const mockLog = jest.fn();
+const mockWarn = jest.fn();
+const mockError = jest.fn();
+const mockInfo = jest.fn();
+const mockDebug = jest.fn();
+const mockLogger = {
+    log: mockLog,
+    warn: mockWarn,
+    error: mockError,
+    info: mockInfo,
+    debug: mockDebug
+};
+jest.unstable_mockModule('../../../../src/utils/logger', () => ({
+    logger: mockLogger
+}));
 
-const mockFs = fs as jest.Mocked<typeof fs>;
-const mockConnect = connect as jest.MockedFunction<typeof connect>;
-const mockLogger = logger as jest.Mocked<typeof logger>;
-const mockResolveEmbeddingsPath = resolveEmbeddingsPath as jest.MockedFunction<typeof resolveEmbeddingsPath>;
+// Mock fs/promises
+const mockReadFile = jest.fn<any>();
+const actualFsPromises = await import('node:fs/promises');
+jest.unstable_mockModule('fs/promises', () => ({
+    ...actualFsPromises,
+    default: {
+        ...actualFsPromises,
+        readFile: mockReadFile
+    },
+    readFile: mockReadFile
+}));
+jest.unstable_mockModule('node:fs/promises', () => ({
+    ...actualFsPromises,
+    default: {
+        ...actualFsPromises,
+        readFile: mockReadFile
+    },
+    readFile: mockReadFile
+}));
+
+// Mock embeddings-path
+const mockResolveEmbeddingsPath = jest.fn<any>();
+jest.unstable_mockModule('../../../../src/utils/embeddings-path', () => ({
+    resolveEmbeddingsPath: mockResolveEmbeddingsPath,
+    hasEmbeddingsData: jest.fn<any>()
+}));
+
+// Mock @lancedb/lancedb
+const mockConnect = jest.fn<any>();
+jest.unstable_mockModule('@lancedb/lancedb', () => ({
+    connect: mockConnect
+}));
+
+const { SimpleVectorService } = await import('../../../../src/tools/services/vector-simple');
 
 describe('SimpleVectorService', () => {
     let vectorService: SimpleVectorService;
@@ -54,16 +91,16 @@ describe('SimpleVectorService', () => {
 
         // Setup mock table with chainable methods
         mockTable = {
-            vectorSearch: jest.fn().mockReturnThis(),
-            search: jest.fn().mockReturnThis(),
-            where: jest.fn().mockReturnThis(),
-            limit: jest.fn().mockReturnThis(),
-            toArray: jest.fn()
+            vectorSearch: jest.fn<any>().mockReturnThis(),
+            search: jest.fn<any>().mockReturnThis(),
+            where: jest.fn<any>().mockReturnThis(),
+            limit: jest.fn<any>().mockReturnThis(),
+            toArray: jest.fn<any>()
         };
 
         // Setup mock connection
         mockConnection = {
-            openTable: jest.fn().mockResolvedValue(mockTable)
+            openTable: jest.fn<any>().mockResolvedValue(mockTable)
         };
 
         mockConnect.mockResolvedValue(mockConnection);
@@ -90,7 +127,7 @@ describe('SimpleVectorService', () => {
             totalVectors: 5000
         };
 
-        mockFs.readFile
+        mockReadFile
             .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json
             .mockResolvedValueOnce(JSON.stringify(mockTableIndex)); // table_index.json
     };
@@ -137,21 +174,21 @@ describe('SimpleVectorService', () => {
                 totalVectors: 10000
             };
 
-            mockFs.readFile
+            mockReadFile
                 .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json
                 .mockResolvedValueOnce(JSON.stringify(mockTableIndex)); // table_index.json
 
             await vectorService.initialize();
 
             expect(mockResolveEmbeddingsPath).toHaveBeenCalled();
-            expect(mockFs.readFile).toHaveBeenCalledWith(path.join(embeddingsPath, 'metadata.json'), 'utf-8');
-            expect(mockFs.readFile).toHaveBeenCalledWith(path.join(embeddingsPath, 'table_index.json'), 'utf-8');
+            expect(mockReadFile).toHaveBeenCalledWith(path.join(embeddingsPath, 'metadata.json'), 'utf-8');
+            expect(mockReadFile).toHaveBeenCalledWith(path.join(embeddingsPath, 'table_index.json'), 'utf-8');
             expect(mockConnect).toHaveBeenCalledWith(embeddingsPath);
             expect(mockConnection.openTable).toHaveBeenCalledWith('documents_000');
             expect(mockConnection.openTable).toHaveBeenCalledWith('documents_001');
-            expect(mockLogger.log).toHaveBeenCalledWith('Loading vector database from pre-built embeddings...');
-            expect(mockLogger.log).toHaveBeenCalledWith(`Using embeddings path: ${embeddingsPath} (external: true)`);
-            expect(mockLogger.log).toHaveBeenCalledWith('✓ Vector database loaded and ready');
+            expect(mockLog).toHaveBeenCalledWith('Loading vector database from pre-built embeddings...');
+            expect(mockLog).toHaveBeenCalledWith(`Using embeddings path: ${embeddingsPath} (external: true)`);
+            expect(mockLog).toHaveBeenCalledWith('✓ Vector database loaded and ready');
             expect(vectorService.isInitialized()).toBe(true);
         });
 
@@ -182,7 +219,7 @@ describe('SimpleVectorService', () => {
             });
 
             const readError = new Error('Metadata file not found');
-            mockFs.readFile.mockRejectedValue(readError);
+            mockReadFile.mockRejectedValue(readError);
 
             await expect(vectorService.initialize()).rejects.toThrow(
                 'Failed to load vector database: Error: Metadata file not found'
@@ -200,7 +237,7 @@ describe('SimpleVectorService', () => {
                 isAvailable: true
             });
 
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            mockReadFile.mockResolvedValue(JSON.stringify(mockMetadata));
             mockConnect.mockRejectedValue(new Error('Connection failed'));
 
             await expect(vectorService.initialize()).rejects.toThrow(
@@ -219,7 +256,7 @@ describe('SimpleVectorService', () => {
                 isAvailable: true
             });
 
-            mockFs.readFile
+            mockReadFile
                 .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json succeeds
                 .mockRejectedValueOnce(new Error('Table index not found')); // table_index.json fails
 
@@ -241,7 +278,7 @@ describe('SimpleVectorService', () => {
                 isAvailable: true
             });
 
-            mockFs.readFile
+            mockReadFile
                 .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json succeeds
                 .mockRejectedValueOnce(new Error('Table index not found')); // table_index.json fails
 
@@ -250,7 +287,7 @@ describe('SimpleVectorService', () => {
 
             await vectorService.initialize();
 
-            expect(mockFs.readFile).toHaveBeenCalledTimes(2);
+            expect(mockReadFile).toHaveBeenCalledTimes(2);
             expect(mockConnection.openTable).toHaveBeenCalledWith('documents');
             expect(vectorService.isInitialized()).toBe(true);
         });
@@ -329,7 +366,7 @@ describe('SimpleVectorService', () => {
             await expect(vectorService.semanticSearch(queryVector)).rejects.toThrow(
                 'Semantic search failed: Error: Search failed'
             );
-            expect(mockLogger.error).toHaveBeenCalledWith(`Semantic search failed: ${searchError}`);
+            expect(mockError).toHaveBeenCalledWith(`Semantic search failed: ${searchError}`);
         });
 
         it('should handle results without distance property', async () => {
@@ -356,7 +393,7 @@ describe('SimpleVectorService', () => {
             const results = await vectorService.findSimilarToText('test text');
 
             expect(results).toEqual([]);
-            expect(mockLogger.warn).toHaveBeenCalledWith(
+            expect(mockWarn).toHaveBeenCalledWith(
                 'findSimilarToText requires embedding generation - not available in simplified mode'
             );
         });
@@ -429,7 +466,7 @@ describe('SimpleVectorService', () => {
             const results = await vectorService.findSimilarToDocument('doc1');
 
             expect(results).toEqual([]);
-            expect(mockLogger.error).toHaveBeenCalledWith(`Find similar documents failed: ${searchError}`);
+            expect(mockError).toHaveBeenCalledWith(`Find similar documents failed: ${searchError}`);
         });
 
         it('should use default limit when not specified', async () => {
@@ -493,7 +530,7 @@ describe('SimpleVectorService', () => {
             const results = await vectorService.getDocumentsByCategory('guides');
 
             expect(results).toEqual([]);
-            expect(mockLogger.error).toHaveBeenCalledWith(`Get documents by category failed: ${searchError}`);
+            expect(mockError).toHaveBeenCalledWith(`Get documents by category failed: ${searchError}`);
         });
     });
 
@@ -683,7 +720,6 @@ describe('SimpleVectorService', () => {
         });
 
         it('should handle metadata with missing totalVectors in fallback mode', async () => {
-            // This test covers the fallback logic where totalVectors might be undefined
             const metadataWithoutTotal = {
                 version: '1.0.0',
                 createdAt: '2023-01-01T00:00:00.000Z',
@@ -704,7 +740,7 @@ describe('SimpleVectorService', () => {
                 isAvailable: true
             });
 
-            mockFs.readFile
+            mockReadFile
                 .mockResolvedValueOnce(JSON.stringify(metadataWithoutTotal)) // metadata.json without totalVectors
                 .mockRejectedValueOnce(new Error('Table index not found')); // table_index.json fails
 
@@ -714,16 +750,15 @@ describe('SimpleVectorService', () => {
             await vectorService.initialize();
 
             expect(vectorService.isInitialized()).toBe(true);
-            // Should handle missing totalVectors gracefully with || 0
         });
 
         it('should handle no limit provided with multiple tables', async () => {
             // Setup multiple tables for this test
             const additionalTable = {
-                search: jest.fn().mockReturnThis(),
-                where: jest.fn().mockReturnThis(),
-                limit: jest.fn(),
-                toArray: jest.fn().mockResolvedValue([])
+                search: jest.fn<any>().mockReturnThis(),
+                where: jest.fn<any>().mockReturnThis(),
+                limit: jest.fn<any>(),
+                toArray: jest.fn<any>().mockResolvedValue([])
             } as any;
 
             // Mock having multiple tables
@@ -746,10 +781,10 @@ describe('SimpleVectorService', () => {
         it('should handle category filter in multiple table scenario', async () => {
             // Setup multiple tables for this test
             const additionalTable = {
-                vectorSearch: jest.fn().mockReturnThis(),
-                limit: jest.fn().mockReturnThis(),
-                where: jest.fn().mockReturnThis(),
-                toArray: jest.fn().mockResolvedValue([])
+                vectorSearch: jest.fn<any>().mockReturnThis(),
+                limit: jest.fn<any>().mockReturnThis(),
+                where: jest.fn<any>().mockReturnThis(),
+                toArray: jest.fn<any>().mockResolvedValue([])
             } as any;
 
             // Make sure both tables return the chain correctly
@@ -787,21 +822,20 @@ describe('SimpleVectorService', () => {
         it('should search across multiple tables for reference document', async () => {
             // Setup multiple tables
             const table1 = {
-                search: jest.fn().mockReturnThis(),
-                where: jest.fn().mockReturnThis(),
-                limit: jest.fn().mockReturnThis(),
-                toArray: jest.fn().mockResolvedValue([]), // No reference doc in table1
-                vectorSearch: jest.fn().mockReturnThis()
+                search: jest.fn<any>().mockReturnThis(),
+                where: jest.fn<any>().mockReturnThis(),
+                limit: jest.fn<any>().mockReturnThis(),
+                toArray: jest.fn<any>().mockResolvedValue([]), // No reference doc in table1
+                vectorSearch: jest.fn<any>().mockReturnThis()
             } as any;
 
             const table2 = {
-                search: jest.fn().mockReturnThis(),
-                where: jest.fn().mockReturnThis(),
-                limit: jest.fn().mockReturnThis(),
-                toArray: jest
-                    .fn()
-                    .mockResolvedValue([{ ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] }]), // Reference doc found in table2
-                vectorSearch: jest.fn().mockReturnThis()
+                search: jest.fn<any>().mockReturnThis(),
+                where: jest.fn<any>().mockReturnThis(),
+                limit: jest.fn<any>().mockReturnThis(),
+                toArray: jest.fn<any>()
+                    .mockResolvedValue([{ ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] }]),
+                vectorSearch: jest.fn<any>().mockReturnThis()
             } as any;
 
             // Mock having multiple tables
@@ -811,7 +845,7 @@ describe('SimpleVectorService', () => {
             table1.toArray.mockResolvedValueOnce([]).mockResolvedValueOnce([]); // No ref doc, no similar docs
             table2.toArray
                 .mockResolvedValueOnce([{ ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] }])
-                .mockResolvedValueOnce([{ ...mockVectorDocument, document_id: 'similar-doc', _distance: 0.2 }]); // Ref doc found, similar docs found
+                .mockResolvedValueOnce([{ ...mockVectorDocument, document_id: 'similar-doc', _distance: 0.2 }]);
 
             const results = await vectorService.findSimilarToDocument('ref-doc', 5);
 
@@ -948,7 +982,7 @@ describe('SimpleVectorService', () => {
         it('should close connection and clear references', async () => {
             await vectorService.close();
 
-            expect(mockLogger.log).toHaveBeenCalledWith('Vector database connection closed');
+            expect(mockLog).toHaveBeenCalledWith('Vector database connection closed');
             expect(vectorService.isInitialized()).toBe(false);
         });
 
@@ -978,7 +1012,7 @@ describe('SimpleVectorService', () => {
                 totalVectors: 5000
             };
 
-            mockFs.readFile
+            mockReadFile
                 .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json
                 .mockResolvedValueOnce(JSON.stringify(mockTableIndex)); // table_index.json
 

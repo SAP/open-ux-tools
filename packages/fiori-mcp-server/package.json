@@ -35,7 +35,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "inspector": "npx @modelcontextprotocol/inspector node dist/index.js",
         "inspector-ts": "npx @modelcontextprotocol/inspector ts-node -T src/index.ts --log-level=debug",
         "start": "npx -y supergateway --port 9881 --sessionTimeout 300000 --stdio \"node ./dist/index.js\"",
