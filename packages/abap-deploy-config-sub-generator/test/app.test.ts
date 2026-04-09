@@ -1,119 +1,180 @@
-import yeomanTest from 'yeoman-test';
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
-import * as memfs from 'memfs';
-import * as abapInquirer from '@sap-ux/abap-deploy-config-inquirer';
-import * as abapWriter from '@sap-ux/abap-deploy-config-writer';
-import * as projectAccess from '@sap-ux/project-access';
-import AbapDeployGenerator from '../src/app';
-import { t } from '../src/utils/i18n';
-import { MessageType } from '@sap-devx/yeoman-ui-types';
-import { AuthenticationType, getService } from '@sap-ux/store';
-import { mockTargetSystems } from './fixtures/targets';
-import { TestFixture } from './fixtures';
-import { PackageInputChoices, TargetSystemType, TransportChoices } from '@sap-ux/abap-deploy-config-inquirer';
-import { UI5Config } from '@sap-ux/ui5-config';
-import { ABAP_DEPLOY_TASK } from '../src/utils/constants';
-import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import { getVariantNamespace } from '../src/utils/project';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
-    getService: jest.fn()
+const __dirname = join(fileURLToPath(import.meta.url), '..');
+
+const mockGetService = jest.fn();
+const mockGetVariantNamespace = jest.fn();
+const mockSendTelemetry = jest.fn();
+const mockGetHostEnvironment = jest.fn();
+const mockGetAppType = jest.fn();
+const mockGetPrompts = jest.fn();
+const mockHandleErrorMessage = jest.fn();
+
+// Pre-import only lightweight modules before mocking
+const realStore = await import('@sap-ux/store');
+const realProjectAccess = await import('@sap-ux/project-access');
+const realAbapInquirer = await import('@sap-ux/abap-deploy-config-inquirer');
+const realTelemetry = await import('@sap-ux/telemetry');
+const realUtilsProject = await import('../src/utils/project');
+const realDeployShared = await import('@sap-ux/deploy-config-generator-shared');
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
+    getService: mockGetService
 }));
 
-jest.mock('../src/utils/project.ts', () => ({
-    ...jest.requireActual('../src/utils/project.ts'),
-    getVariantNamespace: jest.fn()
+jest.unstable_mockModule('../src/utils/project.ts', () => ({
+    ...realUtilsProject,
+    getVariantNamespace: mockGetVariantNamespace
 }));
 
-const mockGetVariantNamespace = getVariantNamespace as jest.Mock;
-
-const mockGetService = getService as jest.Mock;
-mockGetService.mockResolvedValueOnce({
-    getAll: jest.fn().mockResolvedValueOnce(mockTargetSystems)
-});
-
-jest.mock('fs', () => {
-    const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
-    const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
-    const vol = require('memfs').vol;
-    const _fs = new Union().use(fsLib);
-    const memfs = _fs.use(vol as unknown as typeof fs);
-    memfs.constants = fsLib.constants;
-    memfs.realpath = fsLib.realpath;
-    memfs.realpathSync = fsLib.realpathSync;
-    return memfs;
-});
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
-    sendTelemetry: jest.fn(),
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    sendTelemetry: mockSendTelemetry,
     isExtensionInstalled: jest.fn().mockReturnValue(true),
-    getHostEnvironment: jest.fn(),
+    getHostEnvironment: mockGetHostEnvironment,
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),
         createTelemetryData: jest.fn()
-    }
+    },
+    hostEnvironment: { cli: 'CLI', bas: 'BAS', vscode: 'VSCode' },
+    DefaultLogger: {
+        info: jest.fn(),
+        error: jest.fn(),
+        warn: jest.fn(),
+        debug: jest.fn()
+    },
+    LogWrapper: jest.fn().mockImplementation(() => ({
+        info: jest.fn(),
+        error: jest.fn(),
+        warn: jest.fn(),
+        debug: jest.fn()
+    })),
+    setYeomanEnvConflicterForce: jest.fn(),
+    YUI_EXTENSION_ID: 'SAPOSS.app-studio-toolkit',
+    YUI_MIN_VER_FILES_GENERATED_MSG: '1.14.0',
+    getDefaultTargetFolder: jest.fn(),
+    isCommandRegistered: jest.fn(),
+    getPackageScripts: jest.fn(),
+    getBootstrapResourceUrls: jest.fn(),
+    getFlpId: jest.fn(),
+    getSemanticObject: jest.fn(),
+    generateAppGenInfo: jest.fn()
 }));
 
-const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
-const mockSendTelemetry = sendTelemetry as jest.Mock;
-
-jest.mock('@sap-ux/telemetry', () => ({
-    ...(jest.requireActual('@sap-ux/telemetry') as {}),
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    ...realTelemetry,
     initTelemetrySettings: jest.fn()
 }));
 
+jest.unstable_mockModule('@sap-ux/deploy-config-generator-shared', () => ({
+    ...realDeployShared,
+    handleErrorMessage: mockHandleErrorMessage
+}));
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
+    getAppType: mockGetAppType
+}));
+
+jest.unstable_mockModule('@sap-ux/abap-deploy-config-inquirer', () => ({
+    ...realAbapInquirer,
+    getPrompts: mockGetPrompts
+}));
+
+// Dynamic imports after mock registration
+const path = await import('node:path');
+const yeomanTest = (await import('yeoman-test')).default;
+const { default: AbapDeployGenerator } = await import('../src/app');
+const { t } = await import('../src/utils/i18n');
+const { MessageType } = await import('@sap-devx/yeoman-ui-types');
+const { TestFixture } = await import('./fixtures');
+const { PackageInputChoices, TargetSystemType, TransportChoices } = await import(
+    '@sap-ux/abap-deploy-config-inquirer'
+);
+const { UI5Config } = await import('@sap-ux/ui5-config');
+const { ABAP_DEPLOY_TASK } = await import('../src/utils/constants');
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
+const { AuthenticationType } = await import('@sap-ux/store');
+const { AdaptationProjectType } = await import('@sap-ux/axios-extension');
+const { rimraf } = await import('rimraf');
+
 const abapDeployGenPath = join(__dirname, '../../src/app');
+
+/** Helper to create a temp directory with project files and return it */
+function createTempProject(files: Record<string, string>): string {
+    const tmpDir = fs.mkdtempSync(join(__dirname, 'test-output-'));
+    for (const [relPath, content] of Object.entries(files)) {
+        const fullPath = join(tmpDir, relPath);
+        fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+        fs.writeFileSync(fullPath, content);
+    }
+    return tmpDir;
+}
 
 describe('Test abap deploy configuration generator', () => {
     jest.setTimeout(60000);
     const testFixture = new TestFixture();
-    let cwd: string;
-    const OUTPUT_DIR_PREFIX = join(`/output`);
+    const tempDirs: string[] = [];
+    const originalCwd = process.cwd();
+
+    function makeTempDir(files: Record<string, string>): string {
+        const dir = createTempProject(files);
+        tempDirs.push(dir);
+        return dir;
+    }
 
     beforeEach(() => {
         jest.clearAllMocks();
-        memfs.vol.reset();
-    });
-
-    beforeEach(() => {
         mockGetService.mockResolvedValueOnce({
             getAll: jest.fn().mockResolvedValue([])
         });
-        const mockChdir = jest.spyOn(process, 'chdir');
-        mockChdir.mockImplementation((dir): void => {
-            cwd = dir;
-        });
         mockGetVariantNamespace.mockResolvedValue(undefined);
+        // Default: delegate getPrompts to real implementation
+        mockGetPrompts.mockImplementation((...args: any[]) => (realAbapInquirer.getPrompts as any)(...args));
+        // Default: handleErrorMessage throws in CLI, shows error in VSCode/BAS
+        mockHandleErrorMessage.mockImplementation(
+            (appWizard: any, { errorType, errorMsg }: { errorType?: string; errorMsg?: string }) => {
+                const error =
+                    errorMsg ?? realDeployShared.ErrorHandler.getErrorMsgFromType(errorType as any);
+                const env = mockGetHostEnvironment();
+                if (env === hostEnvironment.cli) {
+                    throw new Error(error);
+                } else {
+                    // Non-CLI: just log, don't throw
+                    appWizard?.showError?.(error);
+                }
+            }
+        );
     });
 
     afterEach(() => {
         jest.resetAllMocks();
     });
 
+    afterAll(() => {
+        process.chdir(originalCwd);
+        for (const dir of tempDirs) {
+            rimraf.sync(dir);
+        }
+    });
+
     it('should run the generator', async () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
-        cwd = join(`${OUTPUT_DIR_PREFIX}/app1`);
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('/sample/ui5.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} })
-            },
-            '/'
-        );
+        const appDir = makeTempDir({
+            'ui5.yaml': testFixture.getContents('/sample/ui5.yaml'),
+            'package.json': JSON.stringify({ scripts: {} })
+        });
 
         const showInformationSpy = jest.fn();
         const mockAppWizard = {
             setHeaderTitle: jest.fn(),
             showInformation: showInformationSpy
         };
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
 
         const runContext = yeomanTest
             .create(
@@ -155,7 +216,6 @@ describe('Test abap deploy configuration generator', () => {
             'undeploy': 'npm run build && fiori undeploy --config ui5-deploy.yaml'
         });
 
-        // as rim raf version may change in future, we are just checking the presence of the dependency
         expect(pkgJson.devDependencies).toHaveProperty('rimraf');
 
         const ui5DeployConfig = await UI5Config.newInstance(
@@ -182,16 +242,10 @@ describe('Test abap deploy configuration generator', () => {
 
     it('should run the generator for a library', async () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
-        cwd = join(`${OUTPUT_DIR_PREFIX}/lib1`);
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/lib1/ui5.yaml`]: testFixture.getContents('/samplelib/ui5.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/lib1/package.json`]: JSON.stringify({ scripts: {} })
-            },
-            '/'
-        );
-
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/lib1`);
+        const appDir = makeTempDir({
+            'ui5.yaml': testFixture.getContents('/samplelib/ui5.yaml'),
+            'package.json': JSON.stringify({ scripts: {} })
+        });
 
         const runContext = yeomanTest
             .create(
@@ -228,7 +282,6 @@ describe('Test abap deploy configuration generator', () => {
             'undeploy': 'npm run build && fiori undeploy --config ui5-deploy.yaml'
         });
 
-        // as rim raf version may change in future, we are just checking the presence of the dependency
         expect(pkgJson.devDependencies).toHaveProperty('rimraf');
 
         const ui5Config = await UI5Config.newInstance(
@@ -259,16 +312,10 @@ describe('Test abap deploy configuration generator', () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         mockSendTelemetry.mockRejectedValueOnce(new Error('Telemetry error'));
 
-        cwd = join(`${OUTPUT_DIR_PREFIX}/app1`);
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('/sample/ui5.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} })
-            },
-            '/'
-        );
-
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
+        const appDir = makeTempDir({
+            'ui5.yaml': testFixture.getContents('/sample/ui5.yaml'),
+            'package.json': JSON.stringify({ scripts: {} })
+        });
 
         const runContext = yeomanTest
             .create(
@@ -319,19 +366,12 @@ describe('Test abap deploy configuration generator', () => {
 
     it('should run the generator with options and existing deploy config + index.html', async () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
-        const abapDeployConfigInquirerSpy = jest.spyOn(abapInquirer, 'getPrompts');
-        cwd = join(`${OUTPUT_DIR_PREFIX}/app1`);
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('/sample/ui5.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5-deploy.yaml`]: testFixture.getContents('/sample/ui5-deploy.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/index.html`]: '<html>mock index</html>'
-            },
-            '/'
-        );
-
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
+        const appDir = makeTempDir({
+            'ui5.yaml': testFixture.getContents('/sample/ui5.yaml'),
+            'ui5-deploy.yaml': testFixture.getContents('/sample/ui5-deploy.yaml'),
+            'package.json': JSON.stringify({ scripts: {} }),
+            'webapp/index.html': '<html>mock index</html>'
+        });
 
         const runContext = yeomanTest
             .create(
@@ -345,7 +385,7 @@ describe('Test abap deploy configuration generator', () => {
             )
             .withOptions({
                 skipInstall: true,
-                appRootPath: join(`${OUTPUT_DIR_PREFIX}/app1`),
+                appRootPath: appDir,
                 index: true
             })
             .withPrompts({
@@ -359,7 +399,7 @@ describe('Test abap deploy configuration generator', () => {
             });
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(abapDeployConfigInquirerSpy).toHaveBeenCalledWith(
+        expect(mockGetPrompts).toHaveBeenCalledWith(
             {
                 adpProjectType: undefined,
                 backendTarget: {
@@ -425,22 +465,18 @@ describe('Test abap deploy configuration generator', () => {
     it('should run the generator with correct prompt options for adp project', async () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         mockGetVariantNamespace.mockResolvedValue('apps/workcenter/appVariants/customer.app.variant');
-        const abapDeployConfigInquirerSpy = jest
-            .spyOn(abapInquirer, 'getPrompts')
-            .mockResolvedValue({ prompts: [], answers: {} as abapInquirer.AbapDeployConfigAnswersInternal });
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
-        cwd = join(`${OUTPUT_DIR_PREFIX}/app1`);
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('/sample/ui5.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5-deploy.yaml`]: testFixture.getContents('/sample/ui5-deploy.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/index.html`]: '<html>mock index</html>'
-            },
-            '/'
-        );
+        mockGetPrompts.mockResolvedValue({
+            prompts: [],
+            answers: {} as any
+        });
+        mockGetAppType.mockResolvedValue('Fiori Adaptation');
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
+        const appDir = makeTempDir({
+            'ui5.yaml': testFixture.getContents('/sample/ui5.yaml'),
+            'ui5-deploy.yaml': testFixture.getContents('/sample/ui5-deploy.yaml'),
+            'package.json': JSON.stringify({ scripts: {} }),
+            'webapp/index.html': '<html>mock index</html>'
+        });
 
         const runContext = yeomanTest
             .create(
@@ -454,7 +490,7 @@ describe('Test abap deploy configuration generator', () => {
             )
             .withOptions({
                 skipInstall: true,
-                appRootPath: join(`${OUTPUT_DIR_PREFIX}/app1`),
+                appRootPath: appDir,
                 index: true
             })
             .withPrompts({
@@ -468,7 +504,7 @@ describe('Test abap deploy configuration generator', () => {
             });
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(abapDeployConfigInquirerSpy).toHaveBeenCalledWith(
+        expect(mockGetPrompts).toHaveBeenCalledWith(
             {
                 adpProjectType: AdaptationProjectType.ON_PREMISE,
                 backendTarget: {
@@ -531,7 +567,7 @@ describe('Test abap deploy configuration generator', () => {
     it('should run the generator for adp project on-premise and generate a correct deploy task', async () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         mockGetVariantNamespace.mockResolvedValue('apps/workcenter/appVariants/customer.app.variant');
-        const abapDeployConfigInquirerSpy = jest.spyOn(abapInquirer, 'getPrompts').mockResolvedValue({
+        mockGetPrompts.mockResolvedValue({
             prompts: [],
             answers: {
                 targetSystem: 'https://mock.system.sap:24300',
@@ -539,20 +575,15 @@ describe('Test abap deploy configuration generator', () => {
                 packageManual: 'Z123456_UPDATED',
                 transportInputChoice: TransportChoices.EnterManualChoice,
                 transportManual: 'ZTESTK900001'
-            } as abapInquirer.AbapDeployConfigAnswersInternal
+            } as any
         });
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
-        cwd = join(`${OUTPUT_DIR_PREFIX}/app1`);
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('/sample/ui5.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/index.html`]: '<html>mock index</html>'
-            },
-            '/'
-        );
+        mockGetAppType.mockResolvedValue('Fiori Adaptation');
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
+        const appDir = makeTempDir({
+            'ui5.yaml': testFixture.getContents('/sample/ui5.yaml'),
+            'package.json': JSON.stringify({ scripts: {} }),
+            'webapp/index.html': '<html>mock index</html>'
+        });
 
         const runContext = yeomanTest
             .create(
@@ -566,13 +597,13 @@ describe('Test abap deploy configuration generator', () => {
             )
             .withOptions({
                 skipInstall: true,
-                appRootPath: join(`${OUTPUT_DIR_PREFIX}/app1`),
+                appRootPath: appDir,
                 index: true,
                 isS4HC: false
             });
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(abapDeployConfigInquirerSpy).toHaveBeenCalledWith(
+        expect(mockGetPrompts).toHaveBeenCalledWith(
             {
                 adpProjectType: AdaptationProjectType.ON_PREMISE,
                 backendTarget: {
@@ -636,7 +667,7 @@ describe('Test abap deploy configuration generator', () => {
 
     it('handleProjectDoesNotExist - ui5.yaml does not exist in the app folder (CLI)', async () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
+        const appDir = makeTempDir({});
         await expect(
             yeomanTest
                 .create(
@@ -654,11 +685,9 @@ describe('Test abap deploy configuration generator', () => {
     });
 
     it('handleProjectDoesNotExist - ui5.yaml does not exist in the app folder (VSCode)', async () => {
-        const abapDeployConfigInquirerSpy = jest.spyOn(abapInquirer, 'getPrompts');
-        const abapDeployConfigWriterSpy = jest.spyOn(abapWriter, 'generate');
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
+        const appDir = makeTempDir({});
         await expect(
             yeomanTest
                 .create(
@@ -674,7 +703,6 @@ describe('Test abap deploy configuration generator', () => {
                 .run()
         ).resolves.not.toThrow();
 
-        expect(abapDeployConfigInquirerSpy).not.toHaveBeenCalled();
-        expect(abapDeployConfigWriterSpy).not.toHaveBeenCalled();
+        expect(mockGetPrompts).not.toHaveBeenCalled();
     });
 });

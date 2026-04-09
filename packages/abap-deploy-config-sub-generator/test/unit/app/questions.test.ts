@@ -1,33 +1,70 @@
-import { type Destination, isAppStudio } from '@sap-ux/btp-utils';
-import * as abapInquirer from '@sap-ux/abap-deploy-config-inquirer';
-import { getAbapQuestions } from '../../../src/app/questions';
-import { readUi5Yaml } from '@sap-ux/project-access';
-import { AuthenticationType } from '@sap-ux/store';
-import { DefaultLogger, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { jest } from '@jest/globals';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...(jest.requireActual('@sap-ux/btp-utils') as {}),
-    isAppStudio: jest.fn()
-}));
-const mockIsAppStudio = isAppStudio as jest.Mock;
+import type { Destination } from '@sap-ux/btp-utils';
+import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';
 
-jest.mock('@sap-ux/project-access', () => ({
-    ...(jest.requireActual('@sap-ux/project-access') as {}),
-    readUi5Yaml: jest.fn()
-}));
-const mockReadUi5Yaml = readUi5Yaml as jest.Mock;
+// Pre-import real modules before mocking to avoid OOM
+const realBtpUtils = await import('@sap-ux/btp-utils');
+const realProjectAccess = await import('@sap-ux/project-access');
+const realAbapInquirer = await import('@sap-ux/abap-deploy-config-inquirer');
 
-jest.mock('@sap-ux/abap-deploy-config-inquirer', () => ({
-    ...(jest.requireActual('@sap-ux/abap-deploy-config-inquirer') as {}),
-    getPrompts: jest.fn()
+const mockIsAppStudio = jest.fn();
+const mockReadUi5Yaml = jest.fn();
+const mockGetPrompts = jest.fn();
+const mockGetHostEnvironment = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
-    getHostEnvironment: jest.fn()
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
+    readUi5Yaml: mockReadUi5Yaml
 }));
-const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
+
+jest.unstable_mockModule('@sap-ux/abap-deploy-config-inquirer', () => ({
+    ...realAbapInquirer,
+    getPrompts: mockGetPrompts
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    getHostEnvironment: mockGetHostEnvironment,
+    hostEnvironment: { cli: 'CLI', bas: 'BAS', vscode: 'VSCode' },
+    DefaultLogger: {
+        info: jest.fn(),
+        error: jest.fn(),
+        warn: jest.fn(),
+        debug: jest.fn()
+    },
+    LogWrapper: jest.fn().mockImplementation(() => ({
+        info: jest.fn(),
+        error: jest.fn(),
+        warn: jest.fn(),
+        debug: jest.fn()
+    })),
+    setYeomanEnvConflicterForce: jest.fn(),
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn(),
+        createTelemetryData: jest.fn()
+    },
+    sendTelemetry: jest.fn(),
+    isExtensionInstalled: jest.fn(),
+    YUI_EXTENSION_ID: 'SAPOSS.app-studio-toolkit',
+    YUI_MIN_VER_FILES_GENERATED_MSG: '1.14.0',
+    getDefaultTargetFolder: jest.fn(),
+    isCommandRegistered: jest.fn(),
+    getPackageScripts: jest.fn(),
+    getBootstrapResourceUrls: jest.fn(),
+    getFlpId: jest.fn(),
+    getSemanticObject: jest.fn(),
+    generateAppGenInfo: jest.fn()
+}));
+
+const { getAbapQuestions } = await import('../../../src/app/questions');
+const { AuthenticationType } = await import('@sap-ux/store');
+const { hostEnvironment, DefaultLogger } = await import('@sap-ux/fiori-generator-shared');
+const { AdaptationProjectType } = await import('@sap-ux/axios-extension');
 
 describe('Test getAbapQuestions', () => {
     beforeEach(() => {
@@ -36,7 +73,6 @@ describe('Test getAbapQuestions', () => {
 
     test('should return questions for destination', async () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.bas);
-        const getPromptsSpy = jest.spyOn(abapInquirer, 'getPrompts');
         mockIsAppStudio.mockReturnValue(true);
         mockReadUi5Yaml.mockRejectedValueOnce(new Error('No yaml config found'));
         await getAbapQuestions({
@@ -69,10 +105,10 @@ describe('Test getAbapQuestions', () => {
                         shouldValidateFormatAndSpecialCharacters: false
                     }
                 }
-            }
+            } as AbapDeployConfigPromptOptions
         });
 
-        expect(getPromptsSpy).toHaveBeenCalledWith(
+        expect(mockGetPrompts).toHaveBeenCalledWith(
             {
                 adpProjectType: AdaptationProjectType.CLOUD_READY,
                 backendTarget: {
@@ -116,7 +152,6 @@ describe('Test getAbapQuestions', () => {
     });
 
     test('should return questions for backend system', async () => {
-        const getPromptsSpy = jest.spyOn(abapInquirer, 'getPrompts');
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio.mockReturnValue(false);
         mockReadUi5Yaml.mockRejectedValueOnce(new Error('No yaml config found'));
@@ -152,10 +187,10 @@ describe('Test getAbapQuestions', () => {
                         shouldValidateFormatAndSpecialCharacters: false
                     }
                 }
-            }
+            } as AbapDeployConfigPromptOptions
         });
 
-        expect(getPromptsSpy).toHaveBeenCalledWith(
+        expect(mockGetPrompts).toHaveBeenCalledWith(
             {
                 backendTarget: {
                     abapTarget: {

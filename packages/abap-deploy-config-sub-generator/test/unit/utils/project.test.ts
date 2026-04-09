@@ -1,36 +1,39 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { existsSync, readFileSync } from 'node:fs';
 
-import { getWebappPath, FileName } from '@sap-ux/project-access';
-import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
+const mockExistsSync = jest.fn();
+const mockReadFileSync = jest.fn();
+const mockGetWebappPath = jest.fn();
+const mockLoggerDebug = jest.fn();
 
-import { getVariantNamespace } from '../../../src/utils/project';
-import { initI18n, t } from '../../../src/utils/i18n';
-
-jest.mock('fs', () => ({
-    existsSync: jest.fn(),
-    readFileSync: jest.fn()
+jest.unstable_mockModule('fs', () => ({
+    existsSync: mockExistsSync,
+    readFileSync: mockReadFileSync,
+    default: {
+        existsSync: mockExistsSync,
+        readFileSync: mockReadFileSync
+    }
 }));
 
-jest.mock('@sap-ux/project-access', () => ({
-    getWebappPath: jest.fn(),
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    getWebappPath: mockGetWebappPath,
     FileName: {
         ManifestAppDescrVar: 'manifest.appdescr_variant'
     }
 }));
 
-jest.mock('@sap-ux/deploy-config-generator-shared', () => ({
+jest.unstable_mockModule('@sap-ux/deploy-config-generator-shared', () => ({
     DeploymentGenerator: {
         logger: {
-            debug: jest.fn()
+            debug: mockLoggerDebug
         }
     }
 }));
 
-const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
-const mockReadFileSync = readFileSync as jest.MockedFunction<typeof readFileSync>;
-const mockGetWebappPath = getWebappPath as jest.MockedFunction<typeof getWebappPath>;
+const { getVariantNamespace } = await import('../../../src/utils/project');
+const { initI18n, t } = await import('../../../src/utils/i18n');
+const { FileName } = await import('@sap-ux/project-access');
 
 describe('getVariantNamespace', () => {
     const mockPath = '/test/project';
@@ -90,7 +93,7 @@ describe('getVariantNamespace', () => {
         const result = await getVariantNamespace(mockPath, false, mockFs);
 
         expect(result).toBeUndefined();
-        expect(DeploymentGenerator.logger.debug).toHaveBeenCalledWith(
+        expect(mockLoggerDebug).toHaveBeenCalledWith(
             t('debug.lrepNamespaceNotFound', { error: 'Memory filesystem error' })
         );
     });
