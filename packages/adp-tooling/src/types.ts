@@ -915,15 +915,6 @@ export interface Uaa {
 
 export type CfDestinationServiceCredentials = { uri: string; uaa: Uaa } | ({ uri: string } & Uaa);
 
-export interface BtpDestinationConfig {
-    Name: string;
-    Type: string;
-    URL: string;
-    Authentication: string;
-    ProxyType: string;
-    Description?: string;
-}
-
 export interface CfAppParams {
     appName: string;
     appVersion: string;
