@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type {
     AbapServiceProvider,
     ExternalService,
@@ -7,36 +8,29 @@ import type {
     ValueListService
 } from '@sap-ux/axios-extension';
 import { PromptState } from '../../src/data-download/prompt-state';
-import { getValueHelpSelectionPrompt } from '../../src/data-download/prompts/value-help-prompts';
 
 // Mock dependencies
-jest.mock('@sap-ux/annotation-converter', () => ({
-    convert: jest.fn()
+const mockConvert = jest.fn();
+jest.unstable_mockModule('@sap-ux/annotation-converter', () => ({
+    convert: mockConvert
 }));
 
-jest.mock('@sap-ux/edmx-parser', () => ({
-    parse: jest.fn()
+const mockParse = jest.fn();
+jest.unstable_mockModule('@sap-ux/edmx-parser', () => ({
+    parse: mockParse
 }));
 
-jest.mock('@sap-ux/odata-service-writer', () => ({
-    getExternalServiceReferences: jest.fn()
+const mockGetExternalServiceReferences = jest.fn();
+jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({
+    getExternalServiceReferences: mockGetExternalServiceReferences
 }));
 
-jest.mock('../../src/utils/i18n', () => ({
-    t: jest.fn((key: string) => key)
+const mockT = jest.fn((key: string) => key);
+jest.unstable_mockModule('../../src/utils/i18n', () => ({
+    t: mockT
 }));
 
-import { convert } from '@sap-ux/annotation-converter';
-import { parse } from '@sap-ux/edmx-parser';
-import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
-import { t } from '../../src/utils/i18n';
-
-const mockConvert = convert as jest.MockedFunction<typeof convert>;
-const mockParse = parse as jest.MockedFunction<typeof parse>;
-const mockGetExternalServiceReferences = getExternalServiceReferences as jest.MockedFunction<
-    typeof getExternalServiceReferences
->;
-const mockT = t as jest.MockedFunction<typeof t>;
+const { getValueHelpSelectionPrompt } = await import('../../src/data-download/prompts/value-help-prompts');
 
 // Helper function to create mock ValueListReference
 function createValueListRef(target: string, servicePath: string = '/sap/opu/odata/sap/VH_SERVICE'): ValueListReference {

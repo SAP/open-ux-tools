@@ -1,30 +1,34 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ReferencedEntities } from '../src/data-download/types';
 import { createEntitySetData } from '../src/data-download/utils';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+const __testdir = dirname(fileURLToPath(import.meta.url));
+
 describe('Test utils', () => {
     describe('createEntitySetData', () => {
         test('should create an entity set data map for writing to files', async () => {
             const rootEntity = JSON.parse(
-                await readFile(join(__dirname, './test-data/TravelEntityModel.json'), 'utf8')
+                await readFile(join(__testdir, './test-data/TravelEntityModel.json'), 'utf8')
             ) as ReferencedEntities['listEntity'];
             // No selected entities, only the unexpanded main/list entity is written
             let odataResult = (
-                JSON.parse(await readFile(join(__dirname, './test-data/odataResult1.json'), 'utf8')) as {
+                JSON.parse(await readFile(join(__testdir, './test-data/odataResult1.json'), 'utf8')) as {
                     value: unknown[];
                 }
             ).value;
             let entitySetData = createEntitySetData(odataResult, {}, rootEntity.entitySetName);
             let expectedEntitySetData = await readFile(
-                join(__dirname, './test-data/expected-output/test1/entityFileData.json'),
+                join(__testdir, './test-data/expected-output/test1/entityFileData.json'),
                 'utf8'
             );
             expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
 
             // More complex query, multiple entity set files created.
             odataResult = (
-                JSON.parse(await readFile(join(__dirname, './test-data/odataResult2.json'), 'utf8')) as {
+                JSON.parse(await readFile(join(__testdir, './test-data/odataResult2.json'), 'utf8')) as {
                     value: unknown[];
                 }
             ).value;
@@ -45,7 +49,7 @@ describe('Test utils', () => {
                 rootEntity.entitySetName
             );
             expectedEntitySetData = await readFile(
-                join(__dirname, './test-data/expected-output/test2/entityFileData.json'),
+                join(__testdir, './test-data/expected-output/test2/entityFileData.json'),
                 'utf8'
             );
             expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
@@ -53,7 +57,7 @@ describe('Test utils', () => {
 
         test('should create an entity set data map for large odata results', async () => {
             const odataResult = (
-                JSON.parse(await readFile(join(__dirname, './test-data/odataResult3.json'), 'utf8')) as {
+                JSON.parse(await readFile(join(__testdir, './test-data/odataResult3.json'), 'utf8')) as {
                     value: unknown[];
                 }
             ).value;
@@ -79,7 +83,7 @@ describe('Test utils', () => {
                 'CashBank'
             );
             const expectedEntitySetData = await readFile(
-                join(__dirname, './test-data/expected-output/test3/entityFileData.json'),
+                join(__testdir, './test-data/expected-output/test3/entityFileData.json'),
                 'utf8'
             );
             expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
