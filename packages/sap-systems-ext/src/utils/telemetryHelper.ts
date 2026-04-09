@@ -6,7 +6,8 @@ import {
     type TelemetryProperties,
     type ToolsSuiteTelemetryInitSettings
 } from '@sap-ux/telemetry';
-import { version } from '../../package.json';
+import { createRequire } from 'node:module';
+const { version } = createRequire(import.meta.url)('../../package.json');
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import osName from 'os-name';
 import { t } from './i18n';

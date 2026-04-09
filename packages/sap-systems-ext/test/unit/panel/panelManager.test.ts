@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { PanelManager } from '../../../src/panel';
 
 describe('Test the Panel Manager', () => {

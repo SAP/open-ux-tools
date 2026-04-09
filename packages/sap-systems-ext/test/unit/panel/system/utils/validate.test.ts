@@ -1,15 +1,19 @@
-import { validateSystemInfo, validateSystemName, validateSystemUrl } from '../../../../../src/panel/system/utils';
-import { initI18n } from '../../../../../src/utils';
-import { SystemPanelViewType } from '../../../../../src/utils/constants';
-
+import { jest } from '@jest/globals';
 const systemServiceGetAllMock = jest.fn();
 
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
+const realStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     getService: jest.fn().mockImplementation(() => ({
         getAll: systemServiceGetAllMock
     }))
 }));
+
+const { validateSystemInfo, validateSystemName, validateSystemUrl } = await import(
+    '../../../../../src/panel/system/utils'
+);
+const { initI18n } = await import('../../../../../src/utils');
+const { SystemPanelViewType } = await import('../../../../../src/utils/constants');
 
 describe('Test the panel action utils', () => {
     beforeAll(async () => {

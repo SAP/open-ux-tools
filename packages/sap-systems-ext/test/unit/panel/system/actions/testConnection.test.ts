@@ -1,28 +1,39 @@
+import { jest } from '@jest/globals';
 import type { PanelContext } from '../../../../../src/types';
-import { BackendSystem } from '@sap-ux/store';
-import { testSystemConnection } from '../../../../../src/panel/system/actions/testConnection';
-import * as utils from '../../../../../src/panel/system/utils';
-import { initI18n } from '../../../../../src/utils';
-import { SystemPanelViewType } from '../../../../../src/utils/constants';
 
-jest.mock('../../../../../src/panel/system/utils', () => ({
-    ...jest.requireActual('../../../../../src/panel/system/utils'),
-    validateSystemInfo: jest.fn(),
-    getCatalogServiceCount: jest.fn(),
-    createGALink: jest.fn(),
-    getErrorType: jest.fn(),
-    getSystemInfo: jest.fn(),
-    hasServiceMetadata: jest.fn()
-}));
+const mockValidateSystemInfo = jest.fn();
+const mockGetCatalogServiceCount = jest.fn();
+const mockCreateGALink = jest.fn();
+const mockGetErrorType = jest.fn();
+const mockGetSystemInfo = jest.fn();
+const mockHasServiceMetadata = jest.fn();
 
 const systemServicePartialUpdateMock = jest.fn();
 
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
+// Mock @sap-ux/store FIRST so that modules imported later pick up the mock
+const realStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     getService: jest.fn().mockImplementation(() => ({
         partialUpdate: systemServicePartialUpdateMock
     }))
 }));
+
+const realPanelUtils = await import('../../../../../src/panel/system/utils');
+jest.unstable_mockModule('../../../../../src/panel/system/utils', () => ({
+    ...realPanelUtils,
+    validateSystemInfo: mockValidateSystemInfo,
+    getCatalogServiceCount: mockGetCatalogServiceCount,
+    createGALink: mockCreateGALink,
+    getErrorType: mockGetErrorType,
+    getSystemInfo: mockGetSystemInfo,
+    hasServiceMetadata: mockHasServiceMetadata
+}));
+
+const { testSystemConnection } = await import('../../../../../src/panel/system/actions/testConnection');
+const { initI18n } = await import('../../../../../src/utils');
+const { SystemPanelViewType } = await import('../../../../../src/utils/constants');
+const { BackendSystem } = await import('@sap-ux/store');
 
 describe('Test Connection Action', () => {
     beforeAll(async () => {
@@ -44,8 +55,8 @@ describe('Test Connection Action', () => {
     });
 
     it('should post message to webview with service summary', async () => {
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
-        jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
+        mockValidateSystemInfo.mockReturnValue(true);
+        mockGetCatalogServiceCount.mockResolvedValue({
             v2Request: { count: 5, error: undefined },
             v4Request: { count: 3, error: undefined }
         });
@@ -86,7 +97,7 @@ describe('Test Connection Action', () => {
     });
 
     it('should post message to webview with validation message', async () => {
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue('Invalid system');
+        mockValidateSystemInfo.mockReturnValue('Invalid system');
 
         const postMessageMock = jest.fn();
         const panelContext = {
@@ -111,13 +122,13 @@ describe('Test Connection Action', () => {
     });
 
     it('should post message to webview with error messages', async () => {
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        mockValidateSystemInfo.mockReturnValue(true);
         const error = {
             message: 'Connection error',
             code: 'CONN_ERR',
             response: { status: 500, data: 'Internal Server Error', cause: 'Server is down' }
         };
-        jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
+        mockGetCatalogServiceCount.mockResolvedValue({
             v2Request: {
                 count: undefined,
                 error
@@ -150,8 +161,8 @@ describe('Test Connection Action', () => {
     });
 
     it('should post message to webview with generic error message', async () => {
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
-        jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
+        mockValidateSystemInfo.mockReturnValue(true);
+        mockGetCatalogServiceCount.mockResolvedValue({
             v2Request: {
                 count: undefined,
                 error: undefined
@@ -184,17 +195,16 @@ describe('Test Connection Action', () => {
     });
 
     it('should post message to webview with error messages containing guided answers link', async () => {
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        mockValidateSystemInfo.mockReturnValue(true);
         const error: any = {
             message: 'Connection error',
             code: 'CONN_ERR',
             response: { status: 500 }
         };
-        // Create circular reference in response.data
         error.response.data = { error: 'Internal Server Error' };
         error.response.data.circular = error.response.data;
 
-        jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
+        mockGetCatalogServiceCount.mockResolvedValue({
             v2Request: {
                 count: undefined,
                 error
@@ -206,7 +216,7 @@ describe('Test Connection Action', () => {
             url: 'https://example.com/self-signed-cert-help',
             subText: 'Click here for more information on self-signed certificates.'
         };
-        jest.spyOn(utils, 'createGALink').mockReturnValue(gaLink);
+        mockCreateGALink.mockReturnValue(gaLink);
         const postMessageMock = jest.fn();
         const panelContext = {
             postMessage: postMessageMock,
@@ -233,12 +243,12 @@ describe('Test Connection Action', () => {
     });
 
     it('should store system ID after testing connection', async () => {
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
-        jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
+        mockValidateSystemInfo.mockReturnValue(true);
+        mockGetCatalogServiceCount.mockResolvedValue({
             v2Request: { count: 2, error: undefined },
             v4Request: { count: 1, error: undefined }
         });
-        jest.spyOn(utils, 'getSystemInfo').mockResolvedValue({ systemId: 'SYS_ID_123', client: '100' });
+        mockGetSystemInfo.mockResolvedValue({ systemId: 'SYS_ID_123', client: '100' });
 
         const panelContext = {
             postMessage: jest.fn(),
@@ -260,12 +270,12 @@ describe('Test Connection Action', () => {
     });
 
     it('should not attempt partial update if system ID is not defined', async () => {
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
-        jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
+        mockValidateSystemInfo.mockReturnValue(true);
+        mockGetCatalogServiceCount.mockResolvedValue({
             v2Request: { count: 2, error: undefined },
             v4Request: { count: 1, error: undefined }
         });
-        jest.spyOn(utils, 'getSystemInfo').mockResolvedValue(undefined);
+        mockGetSystemInfo.mockResolvedValue(undefined);
 
         const panelContext = {
             postMessage: jest.fn(),
@@ -282,12 +292,12 @@ describe('Test Connection Action', () => {
     });
 
     it('should fail silently if updating system ID fails', async () => {
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
-        jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
+        mockValidateSystemInfo.mockReturnValue(true);
+        mockGetCatalogServiceCount.mockResolvedValue({
             v2Request: { count: 2, error: undefined },
             v4Request: { count: 1, error: undefined }
         });
-        jest.spyOn(utils, 'getSystemInfo').mockResolvedValue({ systemId: 'SYS_ID_123', client: '100' });
+        mockGetSystemInfo.mockResolvedValue({ systemId: 'SYS_ID_123', client: '100' });
         systemServicePartialUpdateMock.mockRejectedValueOnce(new Error('Update failed'));
         const panelContext = {
             postMessage: jest.fn(),
@@ -298,7 +308,6 @@ describe('Test Connection Action', () => {
             backendSystem: backendSystem
         } as PanelContext;
 
-        // test connection should not throw error
         await expect(
             testSystemConnection(panelContext, { type: 'TEST_CONNECTION', payload: { system: backendSystem } })
         ).resolves.not.toThrow();
@@ -314,8 +323,8 @@ describe('Test Connection Action', () => {
             connectionType: 'odata_service'
         });
 
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
-        jest.spyOn(utils, 'hasServiceMetadata').mockResolvedValue(true);
+        mockValidateSystemInfo.mockReturnValue(true);
+        mockHasServiceMetadata.mockResolvedValue(true);
 
         const postMessageMock = jest.fn();
         const panelContext = {
@@ -331,7 +340,7 @@ describe('Test Connection Action', () => {
             payload: { system: odataServiceSystem }
         });
 
-        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem, undefined);
+        expect(mockHasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem, undefined);
         expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
         expect(postMessageMock).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -357,8 +366,8 @@ describe('Test Connection Action', () => {
             connectionType: 'odata_service'
         });
 
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
-        jest.spyOn(utils, 'hasServiceMetadata').mockRejectedValue(new Error('Metadata not found'));
+        mockValidateSystemInfo.mockReturnValue(true);
+        mockHasServiceMetadata.mockRejectedValue(new Error('Metadata not found'));
 
         const postMessageMock = jest.fn();
         const panelContext = {
@@ -374,7 +383,7 @@ describe('Test Connection Action', () => {
             payload: { system: odataServiceSystem }
         });
 
-        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem, undefined);
+        expect(mockHasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem, undefined);
         expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
         expect(postMessageMock).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -400,8 +409,8 @@ describe('Test Connection Action', () => {
             connectionType: 'generic_host'
         });
 
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
-        jest.spyOn(utils, 'hasServiceMetadata').mockResolvedValue(true);
+        mockValidateSystemInfo.mockReturnValue(true);
+        mockHasServiceMetadata.mockResolvedValue(true);
 
         const postMessageMock = jest.fn();
         const panelContext = {
@@ -417,7 +426,7 @@ describe('Test Connection Action', () => {
             payload: { system: genericHostSystem, servicePath: '/sap/opu/odata/sap/MY_SERVICE' }
         });
 
-        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(genericHostSystem, '/sap/opu/odata/sap/MY_SERVICE');
+        expect(mockHasServiceMetadata).toHaveBeenCalledWith(genericHostSystem, '/sap/opu/odata/sap/MY_SERVICE');
         expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
         expect(postMessageMock).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -443,8 +452,8 @@ describe('Test Connection Action', () => {
             connectionType: 'generic_host'
         });
 
-        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
-        jest.spyOn(utils, 'hasServiceMetadata').mockRejectedValue(new Error('Metadata not found'));
+        mockValidateSystemInfo.mockReturnValue(true);
+        mockHasServiceMetadata.mockRejectedValue(new Error('Metadata not found'));
 
         const postMessageMock = jest.fn();
         const panelContext = {
@@ -460,7 +469,7 @@ describe('Test Connection Action', () => {
             payload: { system: genericHostSystem, servicePath: '/sap/opu/odata/sap/MY_SERVICE' }
         });
 
-        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(genericHostSystem, '/sap/opu/odata/sap/MY_SERVICE');
+        expect(mockHasServiceMetadata).toHaveBeenCalledWith(genericHostSystem, '/sap/opu/odata/sap/MY_SERVICE');
         expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
         expect(postMessageMock).toHaveBeenCalledWith(
             expect.objectContaining({

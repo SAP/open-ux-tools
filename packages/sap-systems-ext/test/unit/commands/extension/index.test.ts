@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type { ExtensionContext } from 'vscode';
 import * as vscodeMod from 'vscode';
 import { registerExtensionCommands } from '../../../../src/commands/extension';

@@ -1,7 +1,18 @@
-import * as views from '../../src/views';
-import * as commands from '../../src/commands/registerCommands';
-import { activate } from '../../src/extension';
+import { jest } from '@jest/globals';
 import type { ExtensionContext } from 'vscode';
+
+const mockRegisterViews = jest.fn();
+const mockRegisterCommands = jest.fn();
+
+jest.unstable_mockModule('../../src/views', () => ({
+    registerViews: mockRegisterViews
+}));
+
+jest.unstable_mockModule('../../src/commands/registerCommands', () => ({
+    registerCommands: mockRegisterCommands
+}));
+
+const { activate } = await import('../../src/extension');
 
 describe('Test the extension activate/deactivate', () => {
     it('should register commands and views with the extension context', async () => {
@@ -10,12 +21,9 @@ describe('Test the extension activate/deactivate', () => {
             subscriptions: [] as any[]
         } as ExtensionContext;
 
-        const registerViewsSpy = jest.spyOn(views, 'registerViews').mockImplementationOnce(() => {});
-        const registerCommandsSpy = jest.spyOn(commands, 'registerCommands').mockImplementationOnce(() => {});
-
         await activate(mockContext);
 
-        expect(registerViewsSpy).toHaveBeenCalledWith({ vscodeExtContext: mockContext });
-        expect(registerCommandsSpy).toHaveBeenCalledWith({ vscodeExtContext: mockContext });
+        expect(mockRegisterViews).toHaveBeenCalledWith({ vscodeExtContext: mockContext });
+        expect(mockRegisterCommands).toHaveBeenCalledWith({ vscodeExtContext: mockContext });
     });
 });

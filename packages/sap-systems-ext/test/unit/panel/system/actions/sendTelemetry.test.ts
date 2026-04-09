@@ -1,12 +1,17 @@
+import { jest } from '@jest/globals';
 import type { PanelContext } from '../../../../../src/types';
-import { fireGALinkClickedTelemetry } from '../../../../../src/panel/system/actions/sendTelemetry';
 import { SystemPanelViewType } from '../../../../../src/utils/constants';
-import * as panelActionUtils from '../../../../../src/utils';
 
-jest.mock('../../../../../src/utils', () => ({
-    ...jest.requireActual('../../../../../src/utils'),
-    logTelemetryEvent: jest.fn()
+const mockLogTelemetryEvent = jest.fn();
+
+const realUtils = await import('../../../../../src/utils');
+jest.unstable_mockModule('../../../../../src/utils', () => ({
+    ...realUtils,
+    logTelemetryEvent: mockLogTelemetryEvent
 }));
+
+const { fireGALinkClickedTelemetry } = await import('../../../../../src/panel/system/actions/sendTelemetry');
+const { TelemetryHelper } = await import('../../../../../src/utils');
 
 describe('Test the fireGALinkClickedTelemetry action', () => {
     afterEach(() => {
@@ -14,7 +19,7 @@ describe('Test the fireGALinkClickedTelemetry action', () => {
     });
 
     it('should call the log telemetry event function with correct data', async () => {
-        const logTelemetryEventSpy = jest.spyOn(panelActionUtils.TelemetryHelper, 'sendTelemetry');
+        const logTelemetryEventSpy = jest.spyOn(TelemetryHelper, 'sendTelemetry');
 
         const panelContextGADisabled = {
             backendSystem: {} as any,

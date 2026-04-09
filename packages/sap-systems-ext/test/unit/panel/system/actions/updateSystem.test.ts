@@ -1,33 +1,44 @@
-import { updateSystem } from '../../../../../src/panel/system/actions/updateSystem';
+import { jest } from '@jest/globals';
 import type { PanelContext } from '../../../../../src/types';
 import type { BackendSystem } from '@sap-ux/store';
-import { initI18n } from '../../../../../src/utils';
-import { SystemPanelViewType } from '../../../../../src/utils/constants';
-import * as extUtils from '../../../../../src/utils';
-import * as panelUtils from '../../../../../src/panel/system/utils';
 
-jest.mock('../../../../../src/utils', () => ({
-    ...jest.requireActual('../../../../../src/utils'),
-    getBackendSystem: jest.fn(),
-    saveSystem: jest.fn()
-}));
-
-jest.mock('../../../../../src/panel/system/utils', () => ({
-    ...jest.requireActual('../../../../../src/panel/system/utils'),
-    validateSystemName: jest.fn(),
-    validateSystemUrl: jest.fn(),
-    getSystemInfo: jest.fn()
-}));
+const mockGetBackendSystem = jest.fn();
+const mockSaveSystem = jest.fn();
+const mockValidateSystemName = jest.fn();
+const mockValidateSystemUrl = jest.fn();
+const mockGetSystemInfo = jest.fn();
 
 const systemServiceWriteMock = jest.fn();
 const systemServiceDeleteMock = jest.fn();
 
-jest.mock('@sap-ux/store', () => ({
+// Mock @sap-ux/store FIRST so that modules imported later pick up the mock
+const realStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     getService: jest.fn().mockImplementation(() => ({
         write: systemServiceWriteMock,
         delete: systemServiceDeleteMock
     }))
 }));
+
+const realUtils = await import('../../../../../src/utils');
+jest.unstable_mockModule('../../../../../src/utils', () => ({
+    ...realUtils,
+    getBackendSystem: mockGetBackendSystem,
+    saveSystem: mockSaveSystem
+}));
+
+const realPanelUtils = await import('../../../../../src/panel/system/utils');
+jest.unstable_mockModule('../../../../../src/panel/system/utils', () => ({
+    ...realPanelUtils,
+    validateSystemName: mockValidateSystemName,
+    validateSystemUrl: mockValidateSystemUrl,
+    getSystemInfo: mockGetSystemInfo
+}));
+
+const { updateSystem } = await import('../../../../../src/panel/system/actions/updateSystem');
+const { initI18n } = await import('../../../../../src/utils');
+const { SystemPanelViewType } = await import('../../../../../src/utils/constants');
 
 describe('Test Update System Action', () => {
     beforeAll(async () => {
@@ -62,9 +73,9 @@ describe('Test Update System Action', () => {
     } as PanelContext;
 
     it('should create a new system without errors', async () => {
-        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
-        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(undefined);
+        mockValidateSystemName.mockResolvedValue(true);
+        mockValidateSystemUrl.mockReturnValue(true);
+        mockGetBackendSystem.mockResolvedValue(undefined);
         systemServiceWriteMock.mockResolvedValue(backendSystem);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.Create };
 
@@ -72,7 +83,7 @@ describe('Test Update System Action', () => {
             updateSystem(panelContext, { type: 'UPDATE_SYSTEM', payload: { system: backendSystem } })
         ).resolves.toBeUndefined();
 
-        expect(panelUtils.validateSystemUrl).toHaveBeenCalledWith(backendSystem.url);
+        expect(mockValidateSystemUrl).toHaveBeenCalledWith(backendSystem.url);
         expect(disposePanelMock).toHaveBeenCalled();
         expect(postMessageMock).not.toHaveBeenCalled();
         expect(systemServiceWriteMock).toHaveBeenCalledWith(
@@ -82,10 +93,10 @@ describe('Test Update System Action', () => {
     });
 
     it('should create a new system with system info', async () => {
-        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
-        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(undefined);
-        jest.spyOn(panelUtils, 'getSystemInfo').mockResolvedValue({ systemId: 'SYS123', client: '100' });
+        mockValidateSystemName.mockResolvedValue(true);
+        mockValidateSystemUrl.mockReturnValue(true);
+        mockGetBackendSystem.mockResolvedValue(undefined);
+        mockGetSystemInfo.mockResolvedValue({ systemId: 'SYS123', client: '100' });
         systemServiceWriteMock.mockResolvedValue(backendSystem);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.Create };
 
@@ -102,10 +113,10 @@ describe('Test Update System Action', () => {
     });
 
     it('should still create a new system successfully if system info call returns undefined ', async () => {
-        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
-        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(undefined);
-        jest.spyOn(panelUtils, 'getSystemInfo').mockResolvedValue(undefined);
+        mockValidateSystemName.mockResolvedValue(true);
+        mockValidateSystemUrl.mockReturnValue(true);
+        mockGetBackendSystem.mockResolvedValue(undefined);
+        mockGetSystemInfo.mockResolvedValue(undefined);
         systemServiceWriteMock.mockResolvedValue(backendSystem);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.Create };
 
@@ -122,9 +133,9 @@ describe('Test Update System Action', () => {
     });
 
     it('should add a new system without errors via import', async () => {
-        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
-        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(undefined);
+        mockValidateSystemName.mockResolvedValue(true);
+        mockValidateSystemUrl.mockReturnValue(true);
+        mockGetBackendSystem.mockResolvedValue(undefined);
         systemServiceWriteMock.mockResolvedValue(backendSystem);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.Import };
 
@@ -146,9 +157,9 @@ describe('Test Update System Action', () => {
     });
 
     it('should throw an error when a system already exists', async () => {
-        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
-        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(backendSystem);
+        mockValidateSystemName.mockResolvedValue(true);
+        mockValidateSystemUrl.mockReturnValue(true);
+        mockGetBackendSystem.mockResolvedValue(backendSystem);
         systemServiceWriteMock.mockResolvedValue(backendSystem);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.Create };
 
@@ -172,11 +183,11 @@ describe('Test Update System Action', () => {
     });
 
     it('should update an existing system without errors (should handle trailing slash)', async () => {
-        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
-        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(backendSystem);
+        mockValidateSystemName.mockResolvedValue(true);
+        mockValidateSystemUrl.mockReturnValue(true);
+        mockGetBackendSystem.mockResolvedValue(backendSystem);
         const systemInfo = { systemId: 'SYS123', client: '100' };
-        jest.spyOn(panelUtils, 'getSystemInfo').mockResolvedValue(systemInfo);
+        mockGetSystemInfo.mockResolvedValue(systemInfo);
         systemServiceWriteMock.mockResolvedValue(backendSystem);
 
         const panelContext = {
@@ -192,7 +203,7 @@ describe('Test Update System Action', () => {
             })
         ).resolves.toBeUndefined();
 
-        expect(panelUtils.validateSystemUrl).toHaveBeenCalledWith(backendUrlWithTrailingSlash);
+        expect(mockValidateSystemUrl).toHaveBeenCalledWith(backendUrlWithTrailingSlash);
         expect(updateBackendSystemMock).toHaveBeenCalledWith({
             ...backendSystem,
             url: backendUrlWithTrailingSlash,
@@ -212,9 +223,9 @@ describe('Test Update System Action', () => {
     });
 
     it('should throw an error when a system exists (and is not the correct panel)', async () => {
-        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
-        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(backendSystem);
+        mockValidateSystemName.mockResolvedValue(true);
+        mockValidateSystemUrl.mockReturnValue(true);
+        mockGetBackendSystem.mockResolvedValue(backendSystem);
         systemServiceWriteMock.mockResolvedValue(backendSystem);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.View };
 
@@ -241,8 +252,8 @@ describe('Test Update System Action', () => {
     });
 
     it('should post an error message when validation fails', async () => {
-        jest.spyOn(panelUtils, 'validateSystemName').mockRejectedValue(new Error('Validation Error'));
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
+        mockValidateSystemName.mockRejectedValue(new Error('Validation Error'));
+        mockValidateSystemUrl.mockReturnValue(true);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.View };
 
         await expect(
@@ -260,10 +271,10 @@ describe('Test Update System Action', () => {
     });
 
     it('should save a system when a new system is created by updating an existing one', async () => {
-        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
-        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(undefined);
-        jest.spyOn(panelUtils, 'getSystemInfo').mockResolvedValue(undefined);
+        mockValidateSystemName.mockResolvedValue(true);
+        mockValidateSystemUrl.mockReturnValue(true);
+        mockGetBackendSystem.mockResolvedValue(undefined);
+        mockGetSystemInfo.mockResolvedValue(undefined);
         systemServiceWriteMock.mockResolvedValue(backendSystem);
         const panelContext = {
             ...basePanelContext,
@@ -300,10 +311,9 @@ describe('Test Update System Action', () => {
             hasSensitiveData: false
         };
 
-        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
-        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(undefined);
-        const getSystemInfoSpy = jest.spyOn(panelUtils, 'getSystemInfo');
+        mockValidateSystemName.mockResolvedValue(true);
+        mockValidateSystemUrl.mockReturnValue(true);
+        mockGetBackendSystem.mockResolvedValue(undefined);
         systemServiceWriteMock.mockResolvedValue(odataServiceSystem);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.Create };
 
@@ -311,7 +321,7 @@ describe('Test Update System Action', () => {
             updateSystem(panelContext, { type: 'UPDATE_SYSTEM', payload: { system: odataServiceSystem } })
         ).resolves.toBeUndefined();
 
-        expect(getSystemInfoSpy).not.toHaveBeenCalled();
+        expect(mockGetSystemInfo).not.toHaveBeenCalled();
         expect(disposePanelMock).toHaveBeenCalled();
         expect(systemServiceWriteMock).toHaveBeenCalledWith(
             { ...odataServiceSystem, userDisplayName: undefined },
@@ -330,10 +340,10 @@ describe('Test Update System Action', () => {
             hasSensitiveData: true
         };
 
-        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
-        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(odataServiceSystem);
-        jest.spyOn(panelUtils, 'getSystemInfo').mockResolvedValue({ systemId: 'SYS_OD123', client: '' });
+        mockValidateSystemName.mockResolvedValue(true);
+        mockValidateSystemUrl.mockReturnValue(true);
+        mockGetBackendSystem.mockResolvedValue(odataServiceSystem);
+        mockGetSystemInfo.mockResolvedValue({ systemId: 'SYS_OD123', client: '' });
         systemServiceWriteMock.mockResolvedValue(odataServiceSystem);
         const panelContext = {
             ...basePanelContext,
@@ -356,11 +366,11 @@ describe('Test Update System Action', () => {
     });
 
     it('should post an error message when URL validation fails', async () => {
-        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
-        jest.spyOn(panelUtils, 'validateSystemUrl').mockImplementation(() => {
+        mockValidateSystemName.mockResolvedValue(true);
+        mockValidateSystemUrl.mockImplementation(() => {
             throw new Error("The URL 'invalid url' provided is invalid");
         });
-        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(undefined);
+        mockGetBackendSystem.mockResolvedValue(undefined);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.Create };
 
         const invalidSystem = { ...backendSystem, url: 'invalid url', systemType: undefined };
@@ -371,7 +381,7 @@ describe('Test Update System Action', () => {
             })
         ).resolves.toBeUndefined();
 
-        expect(panelUtils.validateSystemUrl).toHaveBeenCalledWith('invalid url');
+        expect(mockValidateSystemUrl).toHaveBeenCalledWith('invalid url');
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {

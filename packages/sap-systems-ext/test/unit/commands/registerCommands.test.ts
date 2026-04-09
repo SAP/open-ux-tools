@@ -1,7 +1,14 @@
-import * as systemCommands from '../../../src/commands/system';
+import { jest } from '@jest/globals';
 import * as vscodeMod from 'vscode';
-import { registerCommands } from '../../../src/commands/registerCommands';
 import type { ExtensionContext } from 'vscode';
+
+const mockRegisterSystemViewCommands = jest.fn();
+
+jest.unstable_mockModule('../../../src/commands/system', () => ({
+    registerSystemViewCommands: mockRegisterSystemViewCommands
+}));
+
+const { registerCommands } = await import('../../../src/commands/registerCommands');
 
 describe('Test registering commands', () => {
     it('should register extension and system commands', () => {
@@ -9,10 +16,6 @@ describe('Test registering commands', () => {
         const mockContext = {
             subscriptions: [] as any[]
         } as ExtensionContext;
-
-        const registerSystemViewCommandsSpy = jest
-            .spyOn(systemCommands, 'registerSystemViewCommands')
-            .mockImplementationOnce(() => {});
 
         const cmds = vscodeMod.commands;
 
@@ -26,7 +29,7 @@ describe('Test registering commands', () => {
             'sap.ux.tools.sapSystems.openOutputChannel',
             expect.any(Function)
         );
-        expect(registerSystemViewCommandsSpy).toHaveBeenCalledWith({
+        expect(mockRegisterSystemViewCommands).toHaveBeenCalledWith({
             vscodeExtContext: mockContext
         });
     });

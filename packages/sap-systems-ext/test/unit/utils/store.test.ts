@@ -1,13 +1,15 @@
-import { getBackendSystem } from '../../../src/utils';
-
+import { jest } from '@jest/globals';
 const systemServiceReadMock = jest.fn();
 
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
+const realStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     getService: jest.fn().mockImplementation(() => ({
         read: systemServiceReadMock
     }))
 }));
+
+const { getBackendSystem } = await import('../../../src/utils');
 
 describe('Test the store utils', () => {
     it('should return the backend systems from the store', async () => {

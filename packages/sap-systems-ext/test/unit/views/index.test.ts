@@ -1,20 +1,23 @@
+import { jest } from '@jest/globals';
 import type { ExtensionContext } from 'vscode';
-import { registerViews } from '../../../src/views';
-import * as sapSystemsView from '../../../src/views/sapSystems';
 
-jest.mock('../../../src/views/sapSystems');
+const mockInitSapSystemsView = jest.fn();
+
+jest.unstable_mockModule('../../../src/views/sapSystems', () => ({
+    initSapSystemsView: mockInitSapSystemsView
+}));
+
+const { registerViews } = await import('../../../src/views');
 
 describe('Test registration of the views', () => {
     it('should register the views without errors', () => {
-        const initSapSystemsViewSpy = jest.spyOn(sapSystemsView, 'initSapSystemsView');
-
         const mockContext = {
             subscriptions: [],
             extensionPath: '/mock/extension/path'
         } as unknown as ExtensionContext;
 
         registerViews({ vscodeExtContext: mockContext });
-        expect(initSapSystemsViewSpy).toHaveBeenCalledWith({
+        expect(mockInitSapSystemsView).toHaveBeenCalledWith({
             vscodeExtContext: mockContext
         });
     });

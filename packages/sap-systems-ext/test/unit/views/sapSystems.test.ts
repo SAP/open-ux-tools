@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type { ExtensionContext } from 'vscode';
 import { initSapSystemsView } from '../../../src/views/sapSystems';
 import * as vscode from 'vscode';

@@ -1,25 +1,37 @@
+import { jest } from '@jest/globals';
 import type { SystemCommandContext } from '../../../../src/types/system';
-import { PanelManager, type SystemPanel } from '../../../../src/panel';
-import { importSystemCommandHandler } from '../../../../src/commands/system/import';
 import { join } from 'node:path';
-import * as utils from '../../../../src/utils';
 import * as vscodeMod from 'vscode';
-import { SystemPanelViewType } from '../../../../src/utils/constants';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const systemServiceReadMock = jest.fn();
+const mockConfirmPrompt = jest.fn();
+const mockLogTelemetryEvent = jest.fn();
 
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
+const realStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     getService: jest.fn().mockImplementation(() => ({
         read: systemServiceReadMock
     }))
 }));
 
-jest.mock('../../../../src/utils', () => ({
-    ...jest.requireActual('../../../../src/utils'),
-    confirmPrompt: jest.fn(),
-    logTelemetryEvent: jest.fn()
+const realUtils = await import('../../../../src/utils');
+jest.unstable_mockModule('../../../../src/utils', () => ({
+    ...realUtils,
+    confirmPrompt: mockConfirmPrompt,
+    logTelemetryEvent: mockLogTelemetryEvent
 }));
+
+const { importSystemCommandHandler } = await import('../../../../src/commands/system/import');
+const { PanelManager } = await import('../../../../src/panel');
+type SystemPanel = import('../../../../src/panel').SystemPanel;
+const { initI18n } = await import('../../../../src/utils');
+const { SystemPanelViewType } = await import('../../../../src/utils/constants');
 
 describe('Test the import system command handler', () => {
     const panelManager = new PanelManager<SystemPanel>();
@@ -36,7 +48,7 @@ describe('Test the import system command handler', () => {
     const getOrCreateNewPanelSpy = jest.spyOn(panelManager, 'getOrCreateNewPanel');
 
     beforeAll(async () => {
-        await utils.initI18n();
+        await initI18n();
     });
 
     afterEach(() => {
@@ -119,7 +131,7 @@ describe('Test the import system command handler', () => {
             name: 'Existing System',
             systemType: 'OnPrem'
         });
-        jest.spyOn(utils, 'confirmPrompt').mockResolvedValue(false);
+        mockConfirmPrompt.mockResolvedValue(false);
         const showWarningMessageSpy = jest.spyOn(vsCodeWindow, 'showWarningMessage');
 
         const handler = importSystemCommandHandler(mockContext);
@@ -142,7 +154,7 @@ describe('Test the import system command handler', () => {
             password: 'existingPass'
         });
 
-        jest.spyOn(utils, 'confirmPrompt').mockResolvedValue(true);
+        mockConfirmPrompt.mockResolvedValue(true);
 
         const handler = importSystemCommandHandler(mockContext);
         await handler();
