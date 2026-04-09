@@ -151,3 +151,52 @@ export async function requestCfApi<T = unknown>(url: string): Promise<T> {
         throw new Error(t('error.failedToRequestCFAPI', { error: e.message }));
     }
 }
+
+/**
+ * Check whether a CF app exists.
+ *
+ * @param appName - CF app name.
+ * @returns True if the app exists.
+ */
+export async function checkAppExists(appName: string): Promise<boolean> {
+    const result = await Cli.execute(['app', appName], ENV);
+    return result.exitCode === 0;
+}
+
+/**
+ * Push a minimal no-route CF app from a given directory.
+ *
+ * @param appName - CF app name.
+ * @param appPath - Local path to push.
+ * @param args - Additional cf push arguments.
+ */
+export async function pushApp(appName: string, appPath: string, args: string[] = []): Promise<void> {
+    const result = await Cli.execute(['push', appName, '-p', appPath, ...args], ENV);
+    if (result.exitCode !== 0) {
+        throw new Error(t('error.cfPushFailed', { appName, error: result.stderr }));
+    }
+}
+
+/**
+ * Enable SSH access on a CF app.
+ *
+ * @param appName - CF app name.
+ */
+export async function enableSsh(appName: string): Promise<void> {
+    const result = await Cli.execute(['enable-ssh', appName], ENV);
+    if (result.exitCode !== 0) {
+        throw new Error(t('error.cfEnableSshFailed', { appName, error: result.stderr }));
+    }
+}
+
+/**
+ * Restart a CF app using rolling strategy.
+ *
+ * @param appName - CF app name.
+ */
+export async function restartApp(appName: string): Promise<void> {
+    const result = await Cli.execute(['restart', appName, '--strategy', 'rolling', '--no-wait'], ENV);
+    if (result.exitCode !== 0) {
+        throw new Error(t('error.cfRestartFailed', { appName, error: result.stderr }));
+    }
+}

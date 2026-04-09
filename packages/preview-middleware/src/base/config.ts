@@ -215,8 +215,10 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
         delete config.rta; //NOSONAR
     }
     if (config.editors?.rta && config.adp === undefined) {
+        const scenario = config.editors.rta.options?.scenario;
+        const developerModeSupported = scenario === 'FE_FROM_SCRATCH' || scenario === 'ADAPTATION_PROJECT';
         config.editors.rta.endpoints = config.editors.rta.endpoints.map((editor) => {
-            if (editor.developerMode) {
+            if (editor.developerMode && !developerModeSupported) {
                 logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
                 logger.warn(`developerMode for ${editor.path} disabled`);
                 editor.developerMode = false;

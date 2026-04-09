@@ -1,5 +1,15 @@
 # @sap-ux/axios-extension
 
+## 1.25.29
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- f1e4481: chore(axios-extension): upgrade @xmldom/xmldom 0.8.11 → 0.8.12 (security fix)
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/btp-utils@1.1.12
+
 ## 1.25.28
 
 ### Patch Changes
