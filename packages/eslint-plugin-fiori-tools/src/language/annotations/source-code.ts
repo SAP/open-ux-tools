@@ -77,7 +77,7 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
                 const child = node[key];
 
                 if (!child) {
-                    return;
+                    continue;
                 }
                 if (Array.isArray(child)) {
                     for (const grandchild of child) {
