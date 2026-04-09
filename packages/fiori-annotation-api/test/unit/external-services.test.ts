@@ -1,26 +1,44 @@
+import { jest } from '@jest/globals';
 import { dirname, join, relative } from 'node:path';
-import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import type * as fsPromisesType from 'node:fs/promises';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { createElementNode, Range, Edm, Location } from '@sap-ux/odata-annotation-core-types';
 
-import { readExternalServiceMetadata } from '../../src/external-services';
 import { createFsEditorForProject } from './virtual-fs';
 import type { Editor } from 'mem-fs-editor';
 import { pathFromUri } from '../../src/utils/path';
 import { PROJECTS } from './projects';
-import { testRead } from './fiori-service.test';
 import type { ValueListReference } from '../../src/types/adapter';
 import { XMLAnnotationServiceAdapter } from '../../src/xml/adapter';
-import * as avtDependency from '../../src/avt';
 import type { FioriAnnotationService } from '../../src';
+
+const realFsPromises = await import('node:fs/promises');
+const mockReadFile = jest.fn<typeof fsPromisesType.readFile>().mockImplementation(realFsPromises.readFile as any);
+const mockAccess = jest.fn<typeof fsPromisesType.access>().mockImplementation(realFsPromises.access as any);
+jest.unstable_mockModule('node:fs/promises', () => ({
+    ...realFsPromises,
+    readFile: mockReadFile,
+    access: mockAccess
+}));
+
+const mockConvertMetadataToAvtSchema = jest.fn();
+const realAvt = await import('../../src/avt');
+jest.unstable_mockModule('../../src/avt', () => ({
+    ...realAvt,
+    convertMetadataToAvtSchema: mockConvertMetadataToAvtSchema
+}));
+
+const { readExternalServiceMetadata } = await import('../../src/external-services');
+const { testRead } = await import('./test-read');
 
 describe('external service loading', () => {
     test('placeholder test', async () => {
-        const accessSpy = jest.spyOn(promises, 'access').mockResolvedValue(undefined);
-        const readFileSpy = jest.spyOn(promises, 'readFile').mockResolvedValue('file');
+        mockAccess.mockResolvedValue(undefined);
+        mockReadFile.mockResolvedValue('file' as any);
+        try {
         const data = await readExternalServiceMetadata(
             join(__dirname, 'localService', 'metadata.xml'),
             '/sap/opu/odata4/my/main/service/path',
@@ -95,7 +113,7 @@ describe('external service loading', () => {
               },
             }
         `);
-        expect(readFileSpy).toHaveBeenNthCalledWith(
+        expect(mockReadFile).toHaveBeenNthCalledWith(
             1,
             join(
                 __dirname,
@@ -109,7 +127,7 @@ describe('external service loading', () => {
             ),
             'utf-8'
         );
-        expect(readFileSpy).toHaveBeenNthCalledWith(
+        expect(mockReadFile).toHaveBeenNthCalledWith(
             2,
             join(
                 __dirname,
@@ -123,8 +141,10 @@ describe('external service loading', () => {
             ),
             'utf-8'
         );
-        readFileSpy.mockRestore();
-        accessSpy.mockRestore();
+        } finally {
+            mockReadFile.mockReset().mockImplementation(realFsPromises.readFile as any);
+            mockAccess.mockReset().mockImplementation(realFsPromises.access as any);
+        }
     });
 
     describe('external service references and synchronization', () => {
@@ -237,7 +257,7 @@ describe('external service loading', () => {
                 }
             ]);
 
-            jest.spyOn(avtDependency, 'convertMetadataToAvtSchema').mockReturnValue({
+            mockConvertMetadataToAvtSchema.mockReturnValue({
                 annotations: {},
                 name: 'dummyAvtSchema'
             } as any);

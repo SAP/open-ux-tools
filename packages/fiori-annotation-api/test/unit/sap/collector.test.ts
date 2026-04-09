@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,10 +12,19 @@ import { parse } from '@xml-tools/parser';
 import { buildAst } from '@xml-tools/ast';
 import { convertDocument } from '@sap-ux/xml-odata-annotation-converter';
 
-import { collectODataAnnotations } from '../../../src/sap/collector';
 import { createComplexAnnotation, createComplexRecordProperty, createRecord } from '../../../src/sap/builders';
-import { logger } from '../../../src/logger';
 import type { ValueWithOrigin } from '../../../src/sap/types';
+
+const mockWarn = jest.fn();
+const mockLog = jest.fn();
+jest.unstable_mockModule('../../../src/logger', () => ({
+    logger: {
+        log: mockLog,
+        warn: mockWarn
+    }
+}));
+
+const { collectODataAnnotations } = await import('../../../src/sap/collector');
 
 function buildSnippet(target: string, annotation: string): string {
     return `<?xml version="1.0" encoding="utf-8"?>
@@ -48,14 +58,15 @@ async function getTestData(name: string, target = 'Service.Entity'): Promise<Ann
 
 describe('OData annotation collector', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        mockWarn.mockReset();
+        mockLog.mockReset();
     });
 
     test('log warning if no matching handler is found', () => {
         const target = createTarget('Service.Entity');
         target.terms.push(createComplexAnnotation('UI.LineItems', createElementNode({ name: Edm.Annotation })));
         const annotations = collectODataAnnotations('test', [target]);
-        expect(logger.warn).toHaveBeenCalledWith('No handler found for UI.LineItems');
+        expect(mockWarn).toHaveBeenCalledWith('No handler found for UI.LineItems');
         expect(annotations.length).toBe(0);
     });
     describe('UI.LineItem', () => {
@@ -63,14 +74,14 @@ describe('OData annotation collector', () => {
             const target = createTarget('Service.Entity');
             target.terms.push(createComplexAnnotation('UI.LineItem', createElementNode({ name: Edm.Annotation })));
             const annotations = collectODataAnnotations('test', [target]);
-            expect(logger.warn).toHaveBeenCalledWith('Invalid UI.LineItem structure, missing "Collection" element.');
+            expect(mockWarn).toHaveBeenCalledWith('Invalid UI.LineItem structure, missing "Collection" element.');
             expect(annotations.length).toBe(0);
         });
 
         test('data field with path value', async () => {
             const { uri, targets } = await getTestData(join('ui', 'line-item', 'path.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.LineItem',
@@ -92,7 +103,7 @@ describe('OData annotation collector', () => {
         test('data field with property path value', async () => {
             const { uri, targets } = await getTestData(join('ui', 'line-item', 'property-path.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.LineItem',
@@ -114,7 +125,7 @@ describe('OData annotation collector', () => {
         test('data field with string value', async () => {
             const { uri, targets } = await getTestData(join('ui', 'line-item', 'string.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toHaveBeenCalledWith('Invalid UI.DataField structure, missing "Value" property.');
+            expect(mockWarn).toHaveBeenCalledWith('Invalid UI.DataField structure, missing "Value" property.');
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.LineItem',
@@ -128,7 +139,7 @@ describe('OData annotation collector', () => {
         test('data field with label', async () => {
             const { uri, targets } = await getTestData(join('ui', 'line-item', 'label.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.LineItem',
@@ -157,7 +168,7 @@ describe('OData annotation collector', () => {
             const target = createTarget('Service.Entity');
             target.terms.push(createComplexAnnotation('UI.FieldGroup', createElementNode({ name: Edm.Annotation })));
             const annotations = collectODataAnnotations('test', [target]);
-            expect(logger.warn).toHaveBeenCalledWith('Invalid UI.FieldGroup structure, missing root "Record" element.');
+            expect(mockWarn).toHaveBeenCalledWith('Invalid UI.FieldGroup structure, missing root "Record" element.');
             expect(annotations.length).toBe(0);
         });
 
@@ -165,7 +176,7 @@ describe('OData annotation collector', () => {
             const target = createTarget('Service.Entity');
             target.terms.push(createComplexAnnotation('UI.FieldGroup', createRecord([])));
             const annotations = collectODataAnnotations('test', [target]);
-            expect(logger.warn).toHaveBeenCalledWith('Invalid UI.FieldGroup structure, missing "Data" property.');
+            expect(mockWarn).toHaveBeenCalledWith('Invalid UI.FieldGroup structure, missing "Data" property.');
             expect(annotations.length).toBe(0);
         });
 
@@ -178,7 +189,7 @@ describe('OData annotation collector', () => {
                 )
             );
             const annotations = collectODataAnnotations('test', [target]);
-            expect(logger.warn).toHaveBeenCalledWith(
+            expect(mockWarn).toHaveBeenCalledWith(
                 'Invalid UI.FieldGroup structure, missing "Collection" element in "Data" property.'
             );
             expect(annotations.length).toBe(0);
@@ -187,7 +198,7 @@ describe('OData annotation collector', () => {
         test('basic', async () => {
             const { uri, targets } = await getTestData(join('ui', 'field-group', 'basic.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.FieldGroup',
@@ -210,7 +221,7 @@ describe('OData annotation collector', () => {
         test('data field with label', async () => {
             const { uri, targets } = await getTestData(join('ui', 'field-group', 'field-with-label.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.FieldGroup',
@@ -237,7 +248,7 @@ describe('OData annotation collector', () => {
         test('no data field value', async () => {
             const { uri, targets } = await getTestData(join('ui', 'field-group', 'no-data-field-value.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toHaveBeenCalledWith('Invalid UI.DataField structure, missing "Value" property.');
+            expect(mockWarn).toHaveBeenCalledWith('Invalid UI.DataField structure, missing "Value" property.');
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.FieldGroup',
@@ -255,13 +266,13 @@ describe('OData annotation collector', () => {
             const target = createTarget('Service.Entity');
             target.terms.push(createComplexAnnotation('UI.Facets', createElementNode({ name: Edm.Annotation })));
             const annotations = collectODataAnnotations('test', [target]);
-            expect(logger.warn).toHaveBeenCalledWith('Invalid UI.Facets structure, missing "Collection" element.');
+            expect(mockWarn).toHaveBeenCalledWith('Invalid UI.Facets structure, missing "Collection" element.');
             expect(annotations.length).toBe(0);
         });
         test('basic', async () => {
             const { uri, targets } = await getTestData(join('ui', 'facets', 'basic.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.Facets',
@@ -290,7 +301,7 @@ describe('OData annotation collector', () => {
         test('no reference facet id', async () => {
             const { uri, targets } = await getTestData(join('ui', 'facets', 'no-id.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toHaveBeenCalledWith('ID for facet on "Service.Entity" is required!');
+            expect(mockWarn).toHaveBeenCalledWith('ID for facet on "Service.Entity" is required!');
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.Facets',
@@ -303,7 +314,7 @@ describe('OData annotation collector', () => {
         test('no record type', async () => {
             const { uri, targets } = await getTestData(join('ui', 'facets', 'no-record-type.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toHaveBeenCalledWith('Facet with type "" is not supported!');
+            expect(mockWarn).toHaveBeenCalledWith('Facet with type "" is not supported!');
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.Facets',
@@ -316,7 +327,7 @@ describe('OData annotation collector', () => {
         test('no target', async () => {
             const { uri, targets } = await getTestData(join('ui', 'facets', 'no-target.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toHaveBeenCalledWith('Could not find target qualifier for facet "GeneratedFacet1"!');
+            expect(mockWarn).toHaveBeenCalledWith('Could not find target qualifier for facet "GeneratedFacet1"!');
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.Facets',

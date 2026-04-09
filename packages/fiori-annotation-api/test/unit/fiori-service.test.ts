@@ -36,18 +36,12 @@ import { DiagnosticSeverity, Range } from '@sap-ux/odata-annotation-core-types';
 import type { ApiError, FioriAnnotationServiceOptions } from '../../src';
 
 import { pathFromUri } from '../../src/utils';
+import { testRead } from './test-read';
+export { testRead };
 
 /**
  * Configuration
  */
-
-jest.mock('../../src/cds/adapter', () => {
-    const act = jest.requireActual('../../src/cds/adapter');
-    return {
-        __esModule: true,
-        ...act
-    };
-});
 
 const SKIP_TARGETS = new Set<ProjectTestModel<Record<string, string>>>([
     // PROJECTS.V4_XML_START
@@ -220,25 +214,6 @@ function applyChanges(service: FioriAnnotationService, changes: Change[]): Set<s
         uris.add(change.uri);
     }
     return uris;
-}
-
-export async function testRead(
-    root: string,
-    initialChanges: Change[],
-    serviceName = 'mainService',
-    fsEditor?: Editor
-): Promise<FioriAnnotationService> {
-    const editor = fsEditor ?? (await createFsEditorForProject(root));
-    const project = await getProject(root);
-    const service = await FioriAnnotationService.createService(project, serviceName, '', editor, {
-        commitOnSave: false
-    });
-    await service.sync();
-    if (initialChanges.length > 0) {
-        service.edit(initialChanges);
-        await service.save({ resyncAfterSave: true });
-    }
-    return service;
 }
 
 async function testEditWithMockData(
