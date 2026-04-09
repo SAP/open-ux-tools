@@ -1,20 +1,54 @@
-import express from 'express';
-import supertest from 'supertest';
-import * as proxy from '../src/base/proxy';
-import * as proxyMiddleware from '../src/middleware';
+import { jest } from '@jest/globals';
 import type { BackendMiddlewareConfig } from '../src/base/types';
-import nock from 'nock';
 import type { Options } from 'http-proxy-middleware';
-import connect = require('connect');
-import { ToolsLogger } from '@sap-ux/logger';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...(jest.requireActual('@sap-ux/btp-utils') as object),
-    isAppStudio: jest.fn().mockReturnValue(false)
+const mockGenerateProxyMiddlewareOptions = jest.fn<any>();
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: jest.fn().mockReturnValue(false),
+    BAS_DEST_INSTANCE_CRED_HEADER: 'bas-destination-instance-cred',
+    getDestinationUrlForAppStudio: jest.fn(),
+    getCredentialsForDestinationService: jest.fn(),
+    isFullUrlDestination: jest.fn(),
+    listDestinations: jest.fn()
 }));
 
-// spy on createProxy and injectScripts to verify calls
-const generateProxyOptionsSpy = jest.spyOn(proxy, 'generateProxyMiddlewareOptions');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    AuthenticationType: {
+        Basic: 'basic',
+        ReentranceTicket: 'reentranceTicket',
+        OAuth2RefreshToken: 'oauth2',
+        OAuth2ClientCredential: 'oauth2ClientCredential'
+    },
+    BackendSystemKey: class {
+        constructor() {
+            /* stub */
+        }
+    },
+    getService: jest.fn().mockResolvedValue({ read: jest.fn(), write: jest.fn() })
+}));
+
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    AbapCloudEnvironment: { Standalone: 'Standalone', EmbeddedSteampunk: 'EmbeddedSteampunk' },
+    createForAbapOnCloud: jest.fn()
+}));
+
+// Import the real proxy module (its transitive deps are mocked above, so this is lightweight)
+const realProxy = await import('../src/base/proxy');
+mockGenerateProxyMiddlewareOptions.mockImplementation(realProxy.generateProxyMiddlewareOptions);
+
+// Now mock the proxy module, replacing generateProxyMiddlewareOptions with the spy
+jest.unstable_mockModule('../src/base/proxy', () => ({
+    ...realProxy,
+    generateProxyMiddlewareOptions: mockGenerateProxyMiddlewareOptions
+}));
+
+const express = (await import('express')).default;
+const supertest = (await import('supertest')).default;
+const nock = (await import('nock')).default;
+const connect = (await import('connect')).default;
+const proxyMiddleware = await import('../src/middleware');
+const { ToolsLogger } = await import('@sap-ux/logger');
 // middleware function wrapper for testing to simplify tests
 async function getTestServerForExpress(configuration: BackendMiddlewareConfig): Promise<any> {
     const router = await (proxyMiddleware as any).default({
@@ -41,12 +75,12 @@ describe('backend-proxy-middleware', () => {
     };
     describe('Different middleware configurations', () => {
         beforeEach(() => {
-            generateProxyOptionsSpy.mockClear();
+            mockGenerateProxyMiddlewareOptions.mockClear();
         });
 
         test('minimal configuration', async () => {
             await getTestServerForExpress({ backend });
-            expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
+            expect(mockGenerateProxyMiddlewareOptions).toHaveBeenCalledWith(
                 expect.objectContaining(backend),
                 expect.objectContaining({ secure: true, logger: undefined }),
                 expect.any(ToolsLogger)
@@ -55,7 +89,7 @@ describe('backend-proxy-middleware', () => {
 
         test('debug', async () => {
             await getTestServerForExpress({ backend, debug: true });
-            expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
+            expect(mockGenerateProxyMiddlewareOptions).toHaveBeenCalledWith(
                 expect.objectContaining(backend),
                 expect.objectContaining({ secure: true, logger: expect.objectContaining({}) }),
                 expect.any(ToolsLogger)
@@ -69,7 +103,7 @@ describe('backend-proxy-middleware', () => {
                 destination: '~destination'
             };
             await getTestServerForExpress({ backend: addtionalConfig });
-            expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
+            expect(mockGenerateProxyMiddlewareOptions).toHaveBeenCalledWith(
                 expect.objectContaining(addtionalConfig),
                 expect.objectContaining({ secure: true, logger: undefined }),
                 expect.any(ToolsLogger)
@@ -82,7 +116,7 @@ describe('backend-proxy-middleware', () => {
                 xfwd: true
             };
             await getTestServerForExpress({ backend, options });
-            expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
+            expect(mockGenerateProxyMiddlewareOptions).toHaveBeenCalledWith(
                 expect.objectContaining(backend),
                 expect.objectContaining({ ...options, secure: true, logger: undefined }),
                 expect.any(ToolsLogger)
@@ -126,12 +160,12 @@ describe('backend-proxy-middleware with connect', () => {
     };
 
     beforeEach(() => {
-        generateProxyOptionsSpy.mockClear();
+        mockGenerateProxyMiddlewareOptions.mockClear();
     });
 
     test('minimal configuration', async () => {
         await getTestServerForConnect({ backend });
-        expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
+        expect(mockGenerateProxyMiddlewareOptions).toHaveBeenCalledWith(
             expect.objectContaining(backend),
             expect.objectContaining({ secure: true, logger: undefined }),
             expect.any(ToolsLogger)
@@ -145,7 +179,7 @@ describe('backend-proxy-middleware with connect', () => {
             destination: '~destination'
         };
         await getTestServerForConnect({ backend: addtionalConfig });
-        expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
+        expect(mockGenerateProxyMiddlewareOptions).toHaveBeenCalledWith(
             expect.objectContaining(addtionalConfig),
             expect.objectContaining({ secure: true, logger: undefined }),
             expect.any(ToolsLogger)
@@ -158,7 +192,7 @@ describe('backend-proxy-middleware with connect', () => {
             xfwd: true
         };
         await getTestServerForConnect({ backend, options });
-        expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
+        expect(mockGenerateProxyMiddlewareOptions).toHaveBeenCalledWith(
             expect.objectContaining(backend),
             expect.objectContaining({ ...options, secure: true, logger: undefined }),
             expect.any(ToolsLogger)
