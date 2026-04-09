@@ -12,13 +12,16 @@ import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __testdirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe('metadata entity helpers', () => {
     let metadata: ReturnType<typeof convert>;
 
     beforeAll(() => {
         const edmx = fs.readFileSync(
-            path.resolve(__dirname, '../prompts/fixtures/metadataV4WithAggregateTransforms.xml'),
+            path.resolve(__testdirname, '../prompts/fixtures/metadataV4WithAggregateTransforms.xml'),
             'utf-8'
         );
         metadata = convert(parse(edmx));
@@ -1251,7 +1254,7 @@ describe('metadata entity helpers', () => {
 
         beforeAll(() => {
             validEdmxV4 = fs.readFileSync(
-                path.resolve(__dirname, '../prompts/fixtures/metadataV4WithAggregateTransforms.xml'),
+                path.resolve(__testdirname, '../prompts/fixtures/metadataV4WithAggregateTransforms.xml'),
                 'utf-8'
             );
         });

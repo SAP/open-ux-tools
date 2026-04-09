@@ -1,13 +1,30 @@
-import * as ui5Info from '@sap-ux/ui5-info';
-import { ui5ThemeIds, type UI5Version } from '@sap-ux/ui5-info';
+import { jest } from '@jest/globals';
+import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
-import { initI18nInquirerCommon } from '../../../src/i18n';
-import {
-    getDefaultUI5VersionChoice,
-    getUI5ThemesChoices,
-    searchChoices,
-    ui5VersionsGrouped
-} from '../../../src/prompts/utility';
+
+const mockGetUi5Themes = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    getUi5Themes: mockGetUi5Themes,
+    ui5ThemeIds: {
+        SAP_HORIZON: 'sap_horizon',
+        SAP_FIORI_3: 'sap_fiori_3',
+        SAP_FIORI_3_DARK: 'sap_fiori_3_dark',
+        SAP_FIORI_3_HCB: 'sap_fiori_3_hcb',
+        SAP_FIORI_3_HCW: 'sap_fiori_3_hcw',
+        SAP_HORIZON_DARK: 'sap_horizon_dark',
+        SAP_HORIZON_HCB: 'sap_horizon_hcb',
+        SAP_HORIZON_HCW: 'sap_horizon_hcw'
+    },
+    getUI5Versions: jest.fn(),
+    getUI5VersionSupportInfo: jest.fn()
+}));
+
+const { initI18nInquirerCommon } = await import('../../../src/i18n');
+const { getDefaultUI5VersionChoice, getUI5ThemesChoices, searchChoices, ui5VersionsGrouped } = await import(
+    '../../../src/prompts/utility'
+);
+const { ui5ThemeIds } = await import('@sap-ux/ui5-info');
 
 describe('utility.ts', () => {
     beforeAll(async () => {
@@ -15,8 +32,6 @@ describe('utility.ts', () => {
     });
 
     afterEach(() => {
-        // Reset all spys (not mocks)
-        // jest.restoreAllMocks() only works when the mock was created with jest.spyOn().
         jest.restoreAllMocks();
     });
 
@@ -54,30 +69,7 @@ describe('utility.ts', () => {
             ]
         `);
 
-        expect(ui5VersionsGrouped(ui5Vers, true)).toMatchInlineSnapshot(`
-            [
-              Separator {
-                "line": "[2mMaintained versions[22m",
-                "type": "separator",
-              },
-              {
-                "name": "1.118.0",
-                "value": "1.118.0",
-              },
-              {
-                "name": "1.117.0",
-                "value": "1.117.0",
-              },
-              Separator {
-                "line": "[2mOut of maintenance versions[22m",
-                "type": "separator",
-              },
-              {
-                "name": "1.116.0",
-                "value": "1.116.0",
-              },
-            ]
-        `);
+        expect(ui5VersionsGrouped(ui5Vers, true)).toMatchSnapshot();
 
         // No versions provided
         expect(ui5VersionsGrouped([])).toEqual([]);
@@ -153,30 +145,7 @@ describe('utility.ts', () => {
         // If version already exists in the list, it should be remain in place
         const defaultExistingChoice = { name: ui5Vers[1].version, value: ui5Vers[1].version };
         const ui5VersWithExistingChoice = ui5VersionsGrouped(ui5Vers, true, defaultExistingChoice);
-        expect(ui5VersWithExistingChoice).toMatchInlineSnapshot(`
-            [
-              Separator {
-                "line": "[2mMaintained versions[22m",
-                "type": "separator",
-              },
-              {
-                "name": "1.118.0",
-                "value": "1.118.0",
-              },
-              {
-                "name": "1.117.0",
-                "value": "1.117.0",
-              },
-              Separator {
-                "line": "[2mOut of maintenance versions[22m",
-                "type": "separator",
-              },
-              {
-                "name": "1.116.0",
-                "value": "1.116.0",
-              },
-            ]
-        `);
+        expect(ui5VersWithExistingChoice).toMatchSnapshot();
     });
 
     it('searchChoices', async () => {
@@ -291,7 +260,7 @@ describe('utility.ts', () => {
             }
         ];
         const testUI5Version = '1.1.1';
-        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockResolvedValue(mockThemes);
+        mockGetUi5Themes.mockResolvedValue(mockThemes);
         expect(await getUI5ThemesChoices(testUI5Version)).toEqual([
             {
                 'name': 'Morning Horizon',
@@ -302,7 +271,7 @@ describe('utility.ts', () => {
                 'value': 'sap_fiori_3'
             }
         ]);
-        expect(getUI5ThemesSpy).toHaveBeenCalledWith(testUI5Version);
+        expect(mockGetUi5Themes).toHaveBeenCalledWith(testUI5Version);
     });
 
     it('getDefaultUI5VersionChoice', () => {

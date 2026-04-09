@@ -1,5 +1,5 @@
 import { getUi5Themes, type UI5Theme, type UI5Version } from '@sap-ux/ui5-info';
-import * as fuzzy from 'fuzzy';
+import fuzzy from 'fuzzy';
 import type { ListChoiceOptions } from 'inquirer';
 import { coerce, eq, lte, type SemVer } from 'semver';
 import { t } from '../i18n';

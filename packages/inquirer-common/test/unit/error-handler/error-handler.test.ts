@@ -1,35 +1,44 @@
+import { jest } from '@jest/globals';
 import type { HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
-import {
+import type { ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
+import { AxiosError } from 'axios';
+import 'jest-extended';
+import type { Destination } from '@sap-ux/btp-utils';
+
+let mockIsAppStudio = false;
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: jest.fn<() => boolean>().mockImplementation(() => mockIsAppStudio),
+    isHTML5DynamicConfigured: jest.fn().mockImplementation((dest: Record<string, unknown>) => Boolean(dest['HTML5.DynamicDestination'])),
+    isOnPremiseDestination: jest.fn().mockReturnValue(false),
+    isAbapODataDestination: jest.fn().mockReturnValue(false),
+    isFullUrlDestination: jest.fn().mockReturnValue(false),
+    isPartialUrlDestination: jest.fn().mockReturnValue(false),
+    AbapEnvType: {},
+    Authentication: {
+        NO_AUTHENTICATION: 'NoAuthentication',
+        BASIC_AUTHENTICATION: 'BasicAuthentication',
+        SAML_ASSERTION: 'SAMLAssertion',
+        OAUTH2_CLIENT_CREDENTIALS: 'OAuth2ClientCredentials',
+        OAUTH2_USER_TOKEN_EXCHANGE: 'OAuth2UserTokenExchange',
+        PRINCIPAL_PROPAGATION: 'PrincipalPropagation'
+    }
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    getHostEnvironment: jest.fn().mockReturnValue({ name: 'CLI', technical: 'CLI' })
+}));
+
+const { ERROR_TYPE, ErrorHandler } = await import('../../../src/error-handler/error-handler');
+const { initI18nInquirerCommon, t } = await import('../../../src/i18n');
+const telemetryUtils = await import('../../../src/telemetry/telemetry');
+const {
     GUIDED_ANSWERS_ICON,
     GUIDED_ANSWERS_LAUNCH_CMD_ID,
     HELP_NODES,
     HELP_TREE
-} from '@sap-ux/guided-answers-helper';
-import type { ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
-import { SampleRate } from '@sap-ux/telemetry';
-import { AxiosError } from 'axios';
-import 'jest-extended';
-import { ERROR_TYPE, ErrorHandler } from '../../../src/error-handler/error-handler';
-import { initI18nInquirerCommon, t } from '../../../src/i18n';
-import * as telemetryUtils from '../../../src/telemetry/telemetry';
-import { type Destination } from '@sap-ux/btp-utils';
-
-let mockIsAppStudio = false;
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn().mockImplementation(() => mockIsAppStudio)
-}));
-
-jest.mock('@sap-ux/feature-toggle', () => ({
-    ...jest.requireActual('@sap-ux/feature-toggle'),
-    isFeatureEnabled: jest.fn().mockImplementation((featureId) => featureId === 'enableGAIntegration')
-}));
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn().mockReturnValue({ name: 'CLI', technical: 'CLI' })
-}));
+} = await import('@sap-ux/guided-answers-helper');
+const { SampleRate } = await import('@sap-ux/telemetry');
 
 describe('Test ErrorHandler', () => {
     beforeAll(async () => {
