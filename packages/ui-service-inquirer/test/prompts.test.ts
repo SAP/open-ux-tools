@@ -1,42 +1,81 @@
-import { getSystemSelectionPrompts, getConfigPrompts } from '../src';
+import { jest } from '@jest/globals';
 import nock from 'nock';
 import type { Answers, Question as YoQuestion } from 'inquirer';
-import * as promptHelper from '../src/prompts/prompt-helper';
-import * as abapDeployConfigInquirer from '@sap-ux/abap-deploy-config-inquirer';
-import { PromptState } from '../src/prompts/prompt-state';
-import { ObjectType } from '../src/types';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { initI18n, t } from '../src/i18n';
 
-jest.mock('../src/logger-helper');
+// Pre-import actual modules before setting up mocks (to avoid missing export errors)
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+const actualInquirerCommon = await import('@sap-ux/inquirer-common');
+const actualSystemAccess = await import('@sap-ux/system-access');
+const actualOdataServiceInquirer = await import('@sap-ux/odata-service-inquirer');
+const actualTelemetry = await import('@sap-ux/telemetry');
+const actualAbapDeployConfigInquirer = await import('@sap-ux/abap-deploy-config-inquirer');
 
-const mockIsAppStudio = jest.fn();
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/btp-utils') as object),
-        isAppStudio: () => mockIsAppStudio()
-    };
-});
-
-jest.mock('../src/logger-helper', () => ({
-    logger: {
-        warn: jest.fn(),
-        error: jest.fn()
+jest.unstable_mockModule('../src/logger-helper', () => ({
+    default: {
+        logger: {
+            warn: jest.fn(),
+            error: jest.fn()
+        }
     }
 }));
 
-jest.mock('@sap-ux/inquirer-common', () => ({
-    ...(jest.requireActual('@sap-ux/inquirer-common') as {}),
+const mockIsAppStudio = jest.fn();
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: () => mockIsAppStudio()
+}));
+
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    ...actualInquirerCommon,
     setTelemetryClient: () => jest.fn()
 }));
 
-jest.mock('@sap-ux/telemetry', () => ({
-    ...(jest.requireActual('@sap-ux/telemetry') as {}),
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    ...actualTelemetry,
     ClientFactory: {
         getTelemetryClient: jest.fn().mockResolvedValue({})
     }
 }));
+
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    ...actualSystemAccess,
+    createAbapServiceProvider: jest.fn().mockResolvedValue({ get: jest.fn() } as any)
+}));
+
+const getSystemSelectionQuestionsMock = jest.fn();
+jest.unstable_mockModule('@sap-ux/odata-service-inquirer', () => ({
+    ...actualOdataServiceInquirer,
+    getSystemSelectionQuestions: (promptOptions: any, isYUI: boolean) =>
+        getSystemSelectionQuestionsMock(promptOptions, isYUI)
+}));
+
+const mockGetBusinessObjects = jest.fn();
+const mockGetAbapCDSViews = jest.fn();
+
+// Import actual prompt-helper BEFORE mocking (for functions we want to keep real)
+const actualPromptHelperModule = await import('../src/prompts/prompt-helper');
+
+jest.unstable_mockModule('../src/prompts/prompt-helper', () => ({
+    ...actualPromptHelperModule,
+    getBusinessObjects: mockGetBusinessObjects,
+    getAbapCDSViews: mockGetAbapCDSViews
+}));
+
+const mockGetTransportRequestPrompts = jest.fn().mockImplementation(
+    actualAbapDeployConfigInquirer.getTransportRequestPrompts
+);
+jest.unstable_mockModule('@sap-ux/abap-deploy-config-inquirer', () => ({
+    ...actualAbapDeployConfigInquirer,
+    getTransportRequestPrompts: mockGetTransportRequestPrompts
+}));
+
+const { getSystemSelectionPrompts, getConfigPrompts } = await import('../src');
+const { PromptState } = await import('../src/prompts/prompt-state');
+const { ObjectType } = await import('../src/types');
+const { initI18n, t } = await import('../src/i18n');
+
 interface Question extends YoQuestion {
     when?: (answers: Answers) => boolean | Promise<boolean>;
     message?: (answers?: Answers) => string;
@@ -44,22 +83,6 @@ interface Question extends YoQuestion {
     source?: (answers: Answers, input: string) => string[];
     additionalInfo?: () => string;
 }
-
-jest.mock('@sap-ux/system-access', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/system-access') as object),
-        createAbapServiceProvider: jest.fn().mockResolvedValue({ get: jest.fn() } as any)
-    };
-});
-
-const getSystemSelectionQuestionsMock = jest.fn();
-jest.mock('@sap-ux/odata-service-inquirer', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/odata-service-inquirer') as object),
-        getSystemSelectionQuestions: (promptOptions: any, isYUI: boolean) =>
-            getSystemSelectionQuestionsMock(promptOptions, isYUI)
-    };
-});
 
 getSystemSelectionQuestionsMock.mockResolvedValue({
     prompts: [
@@ -167,8 +190,8 @@ describe('getSystemQuestions', () => {
             }
         };
 
-        jest.spyOn(promptHelper, 'getBusinessObjects').mockResolvedValue([businessObjectMockResp]);
-        jest.spyOn(promptHelper, 'getAbapCDSViews').mockResolvedValue([abapCDSViewsMockResp]);
+        mockGetBusinessObjects.mockResolvedValue([businessObjectMockResp]);
+        mockGetAbapCDSViews.mockResolvedValue([abapCDSViewsMockResp]);
         questions = (await getSystemSelectionPrompts()).prompts;
 
         expect(getSystemSelectionQuestionsMock).toHaveBeenCalledWith(
@@ -228,7 +251,6 @@ describe('getSystemQuestions', () => {
     });
 
     test('getServiceConfigQuestions', async () => {
-        const getTransportRequestPromptsSpy = jest.spyOn(abapDeployConfigInquirer, 'getTransportRequestPrompts');
         const genMock = {
             getContent: getContentMockDraftTrue,
             validateContent: jest.fn().mockResolvedValue({
@@ -260,7 +282,7 @@ describe('getSystemQuestions', () => {
             q[question.name] = question as Question;
         });
         expect(questions).toMatchSnapshot();
-        expect(getTransportRequestPromptsSpy.mock.calls[0][0]).toStrictEqual({
+        expect(mockGetTransportRequestPrompts.mock.calls[0][0]).toStrictEqual({
             backendTarget: {
                 abapTarget: {
                     url: 'https://mock.sap.system/sap',
