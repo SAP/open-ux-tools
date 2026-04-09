@@ -1,18 +1,85 @@
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { join } from 'node:path';
-import { applyCAPUpdates } from '../../../src/cap-writer';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/cap-config/types';
 import type { Editor } from 'mem-fs-editor';
-import { YamlDocument } from '@sap-ux/yaml';
 import type { Package } from '@sap-ux/project-access';
 
-jest.mock('@sap-ux/yaml', () => ({
-    ...jest.requireActual('@sap-ux/yaml'),
-    YamlDocument: {
-        newInstance: jest.fn()
+const mockYamlNewInstance = jest.fn();
+const mockYamlDocumentToYamlString = jest.fn((doc: Record<string, Record<string, string>>) => {
+    const lines: string[] = [];
+    for (const [key, value] of Object.entries(doc)) {
+        lines.push(`${key}:`);
+        if (typeof value === 'object' && value !== null) {
+            for (const [subKey, subValue] of Object.entries(value)) {
+                lines.push(`  ${subKey}: ${subValue}`);
+            }
+        }
     }
+    return lines.join('\n') + '\n';
+});
+
+jest.unstable_mockModule('@sap-ux/yaml', () => ({
+    YamlDocument: {
+        newInstance: mockYamlNewInstance
+    },
+    yamlDocumentToYamlString: mockYamlDocumentToYamlString,
+    errorCode: {},
+    YAMLError: class YAMLError extends Error {}
 }));
+
+const mockGetCapCustomPaths = jest.fn<(...args: unknown[]) => Promise<{ app: string; db: string; srv: string }>>().mockResolvedValue({ app: 'app/', db: 'db/', srv: 'srv/' });
+const mockGetWebappPath = jest.fn<(...args: unknown[]) => Promise<string>>();
+const mockHasMinCdsVersion = jest.fn().mockReturnValue(false);
+const mockGetWorkspaceInfo = jest.fn<(...args: unknown[]) => Promise<{ appWorkspace: string; workspaceEnabled: boolean; workspacePackages: string[] }>>().mockResolvedValue({
+    appWorkspace: 'app/*',
+    workspaceEnabled: false,
+    workspacePackages: []
+});
+const mockHasDependency = jest.fn().mockReturnValue(false);
+const mockCheckCdsUi5PluginEnabled = jest.fn<(...args: unknown[]) => Promise<boolean>>().mockResolvedValue(false);
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    FileName: {
+        AdaptationConfig: 'config.json',
+        CapJavaApplicationYaml: 'application.yaml',
+        ExtConfigJson: '.extconfig.json',
+        IndexCds: 'index.cds',
+        Library: '.library',
+        Manifest: 'manifest.json',
+        ManifestAppDescrVar: 'manifest.appdescr_variant',
+        MtaYaml: 'mta.yaml',
+        Package: 'package.json',
+        Pom: 'pom.xml',
+        SpecificationDistTags: 'specification-dist-tags.json',
+        ServiceCds: 'services.cds',
+        Tsconfig: 'tsconfig.json',
+        Ui5Yaml: 'ui5.yaml',
+        Ui5LocalYaml: 'ui5-local.yaml',
+        Ui5MockYaml: 'ui5-mock.yaml',
+        UI5DeployYaml: 'ui5-deploy.yaml',
+        PackageLock: 'package-lock.json',
+        XSAppJson: 'xs-app.json',
+        XSSecurityJson: 'xs-security.json',
+        DotGitIgnore: '.gitignore',
+        MtaExtYaml: 'mta-ext.mtaext'
+    },
+    MinCdsPluginUi5Version: '0.13.0',
+    MinCdsVersion: '6.8.2',
+    getCapCustomPaths: mockGetCapCustomPaths,
+    getWebappPath: mockGetWebappPath,
+    hasMinCdsVersion: mockHasMinCdsVersion,
+    getWorkspaceInfo: mockGetWorkspaceInfo,
+    hasDependency: mockHasDependency,
+    checkCdsUi5PluginEnabled: mockCheckCdsUi5PluginEnabled
+}));
+
+const { applyCAPUpdates } = await import('../../../src/cap-writer');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('Test applyCAPUpdates updates files correctly', () => {
     let fs: Editor;
@@ -32,6 +99,15 @@ describe('Test applyCAPUpdates updates files correctly', () => {
 
     beforeEach(() => {
         fs = create(createStorage());
+        jest.clearAllMocks();
+        mockGetCapCustomPaths.mockResolvedValue({ app: 'app/', db: 'db/', srv: 'srv/' });
+        mockGetWorkspaceInfo.mockResolvedValue({
+            appWorkspace: 'app/*',
+            workspaceEnabled: false,
+            workspacePackages: []
+        });
+        mockHasMinCdsVersion.mockReturnValue(false);
+        mockHasDependency.mockReturnValue(false);
     });
 
     test('applyCAPUpdates updates specific files for CAP Node js projects', async () => {
@@ -163,8 +239,8 @@ describe('Test applyCAPUpdates updates files correctly', () => {
         };
         const mockedResponse = {
             documents: [{ spring: { 'web.resources.static-locations': undefined } }]
-        } as unknown as YamlDocument;
-        (YamlDocument.newInstance as jest.Mock).mockResolvedValue(mockedResponse);
+        };
+        mockYamlNewInstance.mockResolvedValue(mockedResponse);
         await applyCAPUpdates(fs, capService, settings);
         // package json file should not be updated with watch scripts since its a Java project
         const packageJsonPath = join(capService.projectPath, 'package.json');

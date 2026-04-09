@@ -1,15 +1,46 @@
+import { jest } from '@jest/globals';
 import memFs from 'mem-fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import editor, { type Editor } from 'mem-fs-editor';
-import { updateTsConfig, updateStaticLocationsInApplicationYaml } from '../../../src/cap-writer/tsconfig-and-yaml';
-import { YamlDocument } from '@sap-ux/yaml';
 
-jest.mock('@sap-ux/yaml', () => ({
-    ...jest.requireActual('@sap-ux/yaml'),
+const mockYamlNewInstance = jest.fn();
+const mockYamlDocumentToYamlString = jest.fn((doc: Record<string, Record<string, string>>) => {
+    const lines: string[] = [];
+    for (const [key, value] of Object.entries(doc)) {
+        lines.push(`${key}:`);
+        if (typeof value === 'object' && value !== null) {
+            for (const [subKey, subValue] of Object.entries(value)) {
+                lines.push(`  ${subKey}: ${subValue}`);
+            }
+        }
+    }
+    return lines.join('\n') + '\n';
+});
+
+jest.unstable_mockModule('@sap-ux/yaml', () => ({
     YamlDocument: {
-        newInstance: jest.fn()
+        newInstance: mockYamlNewInstance
+    },
+    yamlDocumentToYamlString: mockYamlDocumentToYamlString,
+    errorCode: {},
+    YAMLError: class YAMLError extends Error {}
+}));
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    FileName: {
+        Tsconfig: 'tsconfig.json',
+        Package: 'package.json',
+        Manifest: 'manifest.json'
     }
 }));
+
+const { updateTsConfig, updateStaticLocationsInApplicationYaml } = await import(
+    '../../../src/cap-writer/tsconfig-and-yaml'
+);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('Writing tsConfig and yaml files', () => {
     let fs: Editor;
@@ -20,6 +51,7 @@ describe('Writing tsConfig and yaml files', () => {
         const store = memFs.create();
         // Create a new instance of the Editor class before each test
         fs = editor.create(store);
+        jest.clearAllMocks();
     });
 
     test('should update tsConfig files correctly', async () => {
@@ -41,8 +73,8 @@ describe('Writing tsConfig and yaml files', () => {
         const applicationYamlPath = join(projectPath, 'srv/src/main/resources', 'application.yaml');
         const mockedResponse = {
             documents: [{ spring: { 'web.resources.static-locations': undefined } }]
-        } as unknown as YamlDocument;
-        (YamlDocument.newInstance as jest.Mock).mockResolvedValue(mockedResponse);
+        };
+        mockYamlNewInstance.mockResolvedValue(mockedResponse);
         await updateStaticLocationsInApplicationYaml(fs, applicationYamlPath, 'capCustomPathsApp');
         const applicationYaml = (fs as any).dump(applicationYamlPath);
         const contents = applicationYaml[''].contents;
