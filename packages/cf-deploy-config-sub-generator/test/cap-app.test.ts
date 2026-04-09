@@ -1,65 +1,88 @@
-import hasbin from 'hasbin';
-import CFGenerator from '../src/app';
-import yeomanTest from 'yeoman-test';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { TestFixture } from './fixtures';
-import { initI18n, t } from '../src/utils';
-import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
-import type * as fs from 'node:fs';
-import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+import fs from 'node:fs';
 import * as memfs from 'memfs';
-import * as cfDeployWriter from '@sap-ux/cf-deploy-config-writer';
+import { Union } from 'unionfs';
+import yeomanTest from 'yeoman-test';
+import { TestFixture } from './fixtures';
 import type { Editor } from 'mem-fs-editor';
 
-const mockIsAppStudio = jest.fn();
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/btp-utils') as {}),
-        isAppStudio: () => mockIsAppStudio(),
-        listDestinations: () => jest.fn()
-    };
-});
+const require = createRequire(import.meta.url);
+const __testdirname = path.dirname(fileURLToPath(import.meta.url));
 
-const mockFindCapProjectRoot = jest.fn();
-jest.mock('@sap-ux/project-access', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/project-access') as {}),
-        findCapProjectRoot: () => mockFindCapProjectRoot()
-    };
-});
-
+// CJS mock for 'fs' — intercepted by yeoman-generator and other CJS consumers
 jest.mock('fs', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const fsLib = jest.requireActual('fs');
     // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const Union = require('unionfs').Union;
     // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
-    const memfs = _fs.use(vol as unknown as typeof fs);
-    memfs.constants = fsLib.constants;
-    memfs.realpath = fsLib.realpath;
-    memfs.realpathSync = fsLib.realpathSync;
-    return memfs;
+    const unionFs = _fs.use(vol as unknown as typeof import('fs'));
+    unionFs.constants = fsLib.constants;
+    unionFs.realpath = fsLib.realpath;
+    unionFs.realpathSync = fsLib.realpathSync;
+    return unionFs;
 });
 
-jest.mock('hasbin', () => ({
-    sync: jest.fn()
+// ESM mock for 'node:fs' — intercepted by ESM imports (e.g., mock-mta.ts)
+const realFs = { ...fs };
+const esmUnionFs = new Union()
+    .use(realFs as unknown as typeof fs)
+    .use(memfs.vol as unknown as typeof fs);
+(esmUnionFs as any).constants = fs.constants;
+(esmUnionFs as any).realpath = fs.realpath;
+(esmUnionFs as any).realpathSync = fs.realpathSync;
+
+jest.unstable_mockModule('node:fs', () => ({
+    ...esmUnionFs,
+    default: esmUnionFs
 }));
 
-jest.mock('@sap/mta-lib', () => {
-    return {
-        get Mta() {
-            return jest.requireActual('./utils/mock-mta').MockMta;
-        }
-    };
-});
+const mockHasbinSync = jest.fn();
+
+jest.unstable_mockModule('hasbin', () => ({
+    default: { sync: mockHasbinSync },
+    sync: mockHasbinSync
+}));
+
+// Import MockMta AFTER fs mocks are set up so it gets the mocked fs
+const { MockMta } = await import('./utils/mock-mta');
+
+jest.unstable_mockModule('@sap/mta-lib', () => ({
+    Mta: MockMta
+}));
+
+const mockIsAppStudio = jest.fn();
+const realBtpUtils = await import('@sap-ux/btp-utils');
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: () => mockIsAppStudio(),
+    listDestinations: () => jest.fn()
+}));
+
+const mockFindCapProjectRoot = jest.fn();
+const realProjectAccess = await import('@sap-ux/project-access');
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
+    findCapProjectRoot: () => mockFindCapProjectRoot()
+}));
 
 const mockGetHostEnvironment = jest.fn();
 const mockSendTelemetry = jest.fn();
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
+const mockIsExtensionInstalled = jest.fn().mockReturnValue(true);
+const realFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...realFioriGenShared,
     sendTelemetry: () => mockSendTelemetry(),
-    isExtensionInstalled: jest.fn().mockReturnValue(true),
+    isExtensionInstalled: (...args: unknown[]) => mockIsExtensionInstalled(...args),
     getHostEnvironment: () => mockGetHostEnvironment(),
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),
@@ -67,7 +90,20 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     }
 }));
 
-const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
+const mockGenerateCAPConfig = jest.fn<(...args: unknown[]) => unknown>();
+const mockGenerateAppConfig = jest.fn<(...args: unknown[]) => unknown>();
+const realCfDeployWriter = await import('@sap-ux/cf-deploy-config-writer');
+
+jest.unstable_mockModule('@sap-ux/cf-deploy-config-writer', () => ({
+    ...realCfDeployWriter,
+    generateCAPConfig: (...args: unknown[]) => mockGenerateCAPConfig(...args),
+    generateAppConfig: (...args: unknown[]) => mockGenerateAppConfig(...args)
+}));
+
+// Dynamic imports after mock registration
+const { default: CFGenerator } = await import('../src/app');
+const { initI18n, t } = await import('../src/utils');
+const { RouterModuleType } = await import('@sap-ux/cf-deploy-config-writer');
 
 const mockShowInformation = jest.fn();
 const mockShowError = jest.fn();
@@ -80,7 +116,7 @@ describe('Cloud foundry generator tests', () => {
     jest.setTimeout(10000);
     let cwd: string;
     let fsMock: Editor;
-    const cfGenPath = join(__dirname, '../src/app');
+    const cfGenPath = join(__testdirname, '../src/app');
     const OUTPUT_DIR_PREFIX = join('/output');
     const testFixture = new TestFixture();
 
@@ -95,6 +131,14 @@ describe('Cloud foundry generator tests', () => {
             dump: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
+        // Default: delegate to real implementations
+        mockGenerateCAPConfig.mockImplementation((...args: unknown[]) =>
+            (realCfDeployWriter.generateCAPConfig as Function)(...args)
+        );
+        mockGenerateAppConfig.mockImplementation((...args: unknown[]) =>
+            (realCfDeployWriter.generateAppConfig as Function)(...args)
+        );
+        mockIsExtensionInstalled.mockReturnValue(true);
     });
 
     beforeAll(async () => {
@@ -106,13 +150,10 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Validate Approuter prompting aborts if user doesnt want to proceed', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         mockFindCapProjectRoot.mockReturnValueOnce('/capmissingmta');
-        const mockGenerateCAPConfig = jest.spyOn(cfDeployWriter, 'generateCAPConfig').mockResolvedValue(fsMock);
-        const mockGenerateAppConfig = jest.spyOn(cfDeployWriter, 'generateAppConfig').mockResolvedValue(fsMock);
-        jest.spyOn(fioriGenShared, 'isExtensionInstalled').mockImplementation(() => {
-            return true;
-        });
+        mockGenerateCAPConfig.mockResolvedValue(fsMock);
+        mockGenerateAppConfig.mockResolvedValue(fsMock);
 
         memfs.vol.fromNestedJSON(
             {
@@ -164,13 +205,10 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Validate Approuter prompting is shown if HTML5 is being added to a CAP project with missing mta', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         mockFindCapProjectRoot.mockReturnValue(join('/output/', '/capmissingmta'));
-        const mockGenerateCAPConfig = jest.spyOn(cfDeployWriter, 'generateCAPConfig').mockResolvedValue(fsMock);
-        const mockGenerateAppConfig = jest.spyOn(cfDeployWriter, 'generateAppConfig').mockResolvedValue(fsMock);
-        const mockisExtensionInstalled = jest.spyOn(fioriGenShared, 'isExtensionInstalled').mockImplementation(() => {
-            return true;
-        });
+        mockGenerateCAPConfig.mockResolvedValue(fsMock);
+        mockGenerateAppConfig.mockResolvedValue(fsMock);
 
         memfs.vol.fromNestedJSON(
             {
@@ -229,6 +267,6 @@ describe('Cloud foundry generator tests', () => {
         expect(mockGenerateAppConfig).toHaveBeenCalled();
         expect(mockFindCapProjectRoot).toHaveBeenCalled();
         expect(mockSendTelemetry).toHaveBeenCalled();
-        expect(mockisExtensionInstalled).toHaveBeenCalled();
+        expect(mockIsExtensionInstalled).toHaveBeenCalled();
     });
 });

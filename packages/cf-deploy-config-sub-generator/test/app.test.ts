@@ -1,73 +1,90 @@
-import hasbin from 'hasbin';
-import CFGenerator from '../src/app';
-import yeomanTest from 'yeoman-test';
-import { load, dump } from 'js-yaml';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+import fs from 'node:fs';
+import * as memfs from 'memfs';
+import { Union } from 'unionfs';
+import { load, dump } from 'js-yaml';
+import yeomanTest from 'yeoman-test';
 import { TestFixture } from './fixtures';
 import type { Manifest } from '@sap-ux/project-access';
-import { initI18n, t } from '../src/utils';
-import { MessageType } from '@sap-devx/yeoman-ui-types';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { MockMta } from './utils/mock-mta';
-import { ApiHubType } from '@sap-ux/cf-deploy-config-writer';
-import * as fs from 'node:fs';
-import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
-import * as memfs from 'memfs';
-import * as questions from '../src/app/questions';
-import * as cfConfigWriter from '@sap-ux/cf-deploy-config-writer';
 import type { Editor } from 'mem-fs-editor';
 
-const mockIsAppStudio = jest.fn();
+const require = createRequire(import.meta.url);
+const __testdirname = path.dirname(fileURLToPath(import.meta.url));
 
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/btp-utils') as {}),
-        isAppStudio: () => mockIsAppStudio(),
-        listDestinations: () => jest.fn()
-    };
-});
-
-const mockFindCapProjectRoot = jest.fn();
-
-jest.mock('@sap-ux/project-access', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/project-access') as {}),
-        findCapProjectRoot: () => mockFindCapProjectRoot()
-    };
-});
-
+// CJS mock for 'fs' — intercepted by yeoman-generator and other CJS consumers
 jest.mock('fs', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const fsLib = jest.requireActual('fs');
     // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const Union = require('unionfs').Union;
     // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
-    const memfs = _fs.use(vol as unknown as typeof fs);
-    memfs.constants = fsLib.constants;
-    memfs.realpath = fsLib.realpath;
-    memfs.realpathSync = fsLib.realpathSync;
-    return memfs;
+    const unionFs = _fs.use(vol as unknown as typeof import('fs'));
+    unionFs.constants = fsLib.constants;
+    unionFs.realpath = fsLib.realpath;
+    unionFs.realpathSync = fsLib.realpathSync;
+    return unionFs;
 });
 
-jest.mock('hasbin', () => ({
-    sync: jest.fn()
+// ESM mock for 'node:fs' — intercepted by ESM imports (e.g., mock-mta.ts)
+const realFs = { ...fs };
+const esmUnionFs = new Union()
+    .use(realFs as unknown as typeof fs)
+    .use(memfs.vol as unknown as typeof fs);
+(esmUnionFs as any).constants = fs.constants;
+(esmUnionFs as any).realpath = fs.realpath;
+(esmUnionFs as any).realpathSync = fs.realpathSync;
+
+jest.unstable_mockModule('node:fs', () => ({
+    ...esmUnionFs,
+    default: esmUnionFs
 }));
 
-jest.mock('@sap/mta-lib', () => {
-    return {
-        get Mta() {
-            return jest.requireActual('./utils/mock-mta').MockMta;
-        }
-    };
-});
+const mockHasbinSync = jest.fn();
+
+jest.unstable_mockModule('hasbin', () => ({
+    default: { sync: mockHasbinSync },
+    sync: mockHasbinSync
+}));
+
+// Import MockMta AFTER fs mocks are set up so it gets the mocked fs
+const { MockMta } = await import('./utils/mock-mta');
+
+jest.unstable_mockModule('@sap/mta-lib', () => ({
+    Mta: MockMta
+}));
+
+const mockIsAppStudio = jest.fn();
+const realBtpUtils = await import('@sap-ux/btp-utils');
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: () => mockIsAppStudio(),
+    listDestinations: () => jest.fn()
+}));
+
+const mockFindCapProjectRoot = jest.fn();
+const realProjectAccess = await import('@sap-ux/project-access');
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
+    findCapProjectRoot: () => mockFindCapProjectRoot()
+}));
 
 const mockGetHostEnvironment = jest.fn();
 const mockSendTelemetry = jest.fn();
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
+const mockIsExtensionInstalled = jest.fn().mockReturnValue(true);
+const realFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...realFioriGenShared,
     sendTelemetry: () => mockSendTelemetry(),
-    isExtensionInstalled: jest.fn().mockReturnValue(true),
+    isExtensionInstalled: (...args: unknown[]) => mockIsExtensionInstalled(...args),
     getHostEnvironment: () => mockGetHostEnvironment(),
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),
@@ -75,10 +92,34 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     }
 }));
 
-const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
+const mockGetCFQuestions = jest.fn<(...args: unknown[]) => unknown>();
+const realQuestions = await import('../src/app/questions');
 
-const readJson = (path: string) => {
-    return JSON.parse(fs.readFileSync(path).toString());
+jest.unstable_mockModule('../src/app/questions.js', () => ({
+    ...realQuestions,
+    getCFQuestions: (...args: unknown[]) => mockGetCFQuestions(...args)
+}));
+
+const mockGenerateAppConfig = jest.fn<(...args: unknown[]) => unknown>();
+const realCfConfigWriter = await import('@sap-ux/cf-deploy-config-writer');
+
+jest.unstable_mockModule('@sap-ux/cf-deploy-config-writer', () => ({
+    ...realCfConfigWriter,
+    generateAppConfig: (...args: unknown[]) => mockGenerateAppConfig(...args)
+}));
+
+// Dynamic imports after mock registration
+const { default: CFGenerator } = await import('../src/app');
+const { initI18n, t } = await import('../src/utils');
+const { MessageType } = await import('@sap-devx/yeoman-ui-types');
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
+const { ApiHubType, RouterModuleType } = await import('@sap-ux/cf-deploy-config-writer');
+
+// Use memfs.fs to read files written to virtual paths by the generator
+const mockedFs = memfs.fs;
+
+const readJson = (filePath: string) => {
+    return JSON.parse(mockedFs.readFileSync(filePath).toString());
 };
 
 const mockShowInformation = jest.fn();
@@ -90,7 +131,7 @@ const mockAppWizard = {
 
 describe('Cloud foundry generator tests', () => {
     let cwd: string;
-    const cfGenPath = join(__dirname, '../src/app');
+    const cfGenPath = join(__testdirname, '../src/app');
     const OUTPUT_DIR_PREFIX = join('/output');
     const testFixture = new TestFixture();
     let fsMock: Editor;
@@ -101,6 +142,14 @@ describe('Cloud foundry generator tests', () => {
         mockChdir.mockImplementation((dir): void => {
             cwd = dir;
         });
+        // Delegate to real implementations by default
+        mockGetCFQuestions.mockImplementation((...args: unknown[]) =>
+            (realQuestions.getCFQuestions as Function)(...args)
+        );
+        mockGenerateAppConfig.mockImplementation((...args: unknown[]) =>
+            (realCfConfigWriter.generateAppConfig as Function)(...args)
+        );
+        mockIsExtensionInstalled.mockReturnValue(true);
     });
 
     beforeAll(async () => {
@@ -116,9 +165,9 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Generate CF deployment to an app within a managed app router', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
 
-        jest.spyOn(fioriGenShared, 'isExtensionInstalled').mockImplementation(() => {
+        mockIsExtensionInstalled.mockImplementation(() => {
             return true;
         });
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
@@ -155,7 +204,7 @@ describe('Cloud foundry generator tests', () => {
         ).resolves.not.toThrow();
 
         // Before
-        const mtaBeforeYaml = new MockMta(join(__dirname, '/fixtures/mta-types/managed/'));
+        const mtaBeforeYaml = new MockMta(join(__testdirname, '/fixtures/mta-types/managed/'));
         const modulesBefore = await mtaBeforeYaml.getModules();
         const resourcesBefore = await mtaBeforeYaml.getResources();
         const parametersBefore = await mtaBeforeYaml.getParameters();
@@ -272,13 +321,13 @@ describe('Cloud foundry generator tests', () => {
               "service": "myTestApp",
             }
         `);
-        const xsApp = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/xs-app.json`, 'utf-8');
+        const xsApp = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/xs-app.json`, 'utf-8');
         expect(xsApp).toMatchSnapshot(); // Uses the xs-app-nodestination config
         expect(mockShowInformation).toHaveBeenCalledWith(t('cfGen.info.filesGenerated'), MessageType.notification);
     });
 
     it('Validate app is added to an existing managed approuter project with an existing FE app', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed-apps/mta.yaml'));
 
         memfs.vol.fromNestedJSON(
@@ -308,7 +357,7 @@ describe('Cloud foundry generator tests', () => {
         ).resolves.not.toThrow();
 
         // Before
-        const mtaBeforeYaml = new MockMta(join(__dirname, '/fixtures/mta-types/managed-apps/'));
+        const mtaBeforeYaml = new MockMta(join(__testdirname, '/fixtures/mta-types/managed-apps/'));
         const modulesBefore = await mtaBeforeYaml.getModules();
         const resourcesBefore = await mtaBeforeYaml.getResources();
         const parametersBefore = await mtaBeforeYaml.getParameters();
@@ -467,12 +516,12 @@ describe('Cloud foundry generator tests', () => {
               "service": "myTestApp",
             }
         `);
-        const xsApp = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/xs-app.json`, 'utf-8');
+        const xsApp = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/xs-app.json`, 'utf-8');
         expect(xsApp).toMatchSnapshot();
     });
 
     it('Validate new managed approuter is added when there is no existing mta.yaml', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         const projectName = 'TestApp';
         const manifestId = 'a'.repeat(200);
         const manifestConfig = JSON.parse(testFixture.getContents('/app1/webapp/manifest.json'));
@@ -501,7 +550,7 @@ describe('Cloud foundry generator tests', () => {
                     appRootPath: join(appDir, projectName),
                     launchDeployConfigAsSubGenerator: false,
                     destinationAuthType: 'NoAuthentication', // Validating SH4
-                    routerType: cfConfigWriter.RouterModuleType.Managed
+                    routerType: RouterModuleType.Managed
                 })
                 .withPrompts({
                     destinationName: 'testDestination'
@@ -510,7 +559,7 @@ describe('Cloud foundry generator tests', () => {
         ).resolves.not.toThrow();
 
         // After
-        expect(fs.existsSync(`${OUTPUT_DIR_PREFIX}/app1/mta.yaml`)).toBeFalsy(); // Ensure nothing is added to the root folder
+        expect(mockedFs.existsSync(`${OUTPUT_DIR_PREFIX}/app1/mta.yaml`)).toBeFalsy(); // Ensure nothing is added to the root folder
 
         const mtaAfterYaml = new MockMta(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/`);
         const idAfter = await mtaAfterYaml.getMtaID();
@@ -536,7 +585,7 @@ describe('Cloud foundry generator tests', () => {
         expect(resourcesAfter).toMatchSnapshot();
         const xsSecurity = readJson(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/xs-security.json`);
         expect(xsSecurity).toMatchSnapshot();
-        const gitIgnore = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/.gitignore`, 'utf-8');
+        const gitIgnore = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/.gitignore`, 'utf-8');
         expect(gitIgnore).toMatchSnapshot();
         const changedManifest: Manifest = readJson(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/webapp/manifest.json`);
         expect(changedManifest['sap.cloud']).toMatchInlineSnapshot(`
@@ -547,13 +596,13 @@ describe('Cloud foundry generator tests', () => {
         `);
         const xsApp = readJson(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/xs-app.json`);
         expect(xsApp).toMatchSnapshot();
-        const ui5Deploy = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/ui5-deploy.yaml`, 'utf-8');
+        const ui5Deploy = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/ui5-deploy.yaml`, 'utf-8');
         const ui5DeployYaml = load(ui5Deploy);
         expect(ui5DeployYaml).toMatchSnapshot(); // Validates the archiveName is shortened
     });
 
     it('Validate app is added and configured for standalone approuter', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         const standaloneRouterConfig = load(testFixture.getContents('mta-types/standalone/mta.yaml'));
 
         memfs.vol.fromNestedJSON(
@@ -588,7 +637,7 @@ describe('Cloud foundry generator tests', () => {
         ).resolves.not.toThrow();
 
         // Before
-        const mtaBeforeYaml = new MockMta(join(__dirname, '/fixtures/mta-types/standalone/'));
+        const mtaBeforeYaml = new MockMta(join(__testdirname, '/fixtures/mta-types/standalone/'));
         const modulesBefore = await mtaBeforeYaml.getModules();
         const resourcesBefore = await mtaBeforeYaml.getResources();
         const parametersBefore = await mtaBeforeYaml.getParameters();
@@ -694,7 +743,7 @@ describe('Cloud foundry generator tests', () => {
         expect(changedManifest['sap.cloud']).toBeUndefined();
 
         // Validates ui5-deploy template being copied with comment
-        const ui5DeployYamlContent = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/ui5-deploy.yaml`, 'utf-8');
+        const ui5DeployYamlContent = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/ui5-deploy.yaml`, 'utf-8');
         const regExArr = ui5DeployYamlContent.match(/#.*/g);
 
         if (regExArr) {
@@ -712,9 +761,9 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Validate destination name is generated for for ApiHub Enterprise', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
-        const getCFQuestionsSpy = jest.spyOn(questions, 'getCFQuestions');
+        const getCFQuestionsSpy = mockGetCFQuestions;
 
         memfs.vol.fromNestedJSON(
             {
@@ -762,7 +811,7 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Validate target path is updated if already exists', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         mockIsAppStudio.mockReturnValue(true);
         const standaloneRouterConfig = load(testFixture.getContents('mta-types/standalone-with-ui/mta.yaml'));
 
@@ -795,7 +844,7 @@ describe('Cloud foundry generator tests', () => {
         ).resolves.not.toThrow();
 
         // Before
-        const mtaBeforeYaml = new MockMta(join(__dirname, '/fixtures/mta-types/standalone-with-ui/'));
+        const mtaBeforeYaml = new MockMta(join(__testdirname, '/fixtures/mta-types/standalone-with-ui/'));
         const modulesBefore = await mtaBeforeYaml.getModules();
         const resourcesBefore = await mtaBeforeYaml.getResources();
         const parametersBefore = await mtaBeforeYaml.getParameters();
@@ -860,7 +909,7 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Should throw error when mta executable is not found (CLI)', async () => {
-        hasbinSyncMock.mockReturnValue(false);
+        mockHasbinSync.mockReturnValue(false);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
@@ -896,7 +945,7 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Should show error when mta executable is not found (YUI) and skip lifecycle methods', async () => {
-        hasbinSyncMock.mockReturnValue(false);
+        mockHasbinSync.mockReturnValue(false);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
@@ -936,7 +985,7 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Should throw error when cds executable is not found for CAP project', async () => {
-        hasbinSyncMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
+        mockHasbinSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         mockFindCapProjectRoot.mockReturnValueOnce('/capRoot');
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
@@ -973,7 +1022,7 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Ensure init is loaded when loaded as a subgenerator', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         memfs.vol.fromNestedJSON({}, '/');
         const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
@@ -1004,12 +1053,12 @@ describe('Cloud foundry generator tests', () => {
                 .withPrompts({})
                 .run()
         ).resolves.not.toThrow();
-        expect(hasbinSyncMock).toHaveBeenCalledWith('mta');
+        expect(mockHasbinSync).toHaveBeenCalledWith('mta');
         expect(mockFindCapProjectRoot).toHaveBeenCalled();
     });
 
     it('Should throw error when base config is not found', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
 
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
@@ -1044,7 +1093,7 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Should throw error when manifest is not found', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
@@ -1080,7 +1129,7 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Should throw error when not app name is found in manifest', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
@@ -1119,9 +1168,9 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Should throw error if config writing fails', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
-        jest.spyOn(cfConfigWriter, 'generateAppConfig').mockImplementation(() => {
+        mockGenerateAppConfig.mockImplementation(() => {
             throw new Error('MTA Error');
         });
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
@@ -1157,11 +1206,11 @@ describe('Cloud foundry generator tests', () => {
     });
 
     it('Should not throw error in end phase if telemetry fails', async () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         mockSendTelemetry.mockImplementation(() => {
             throw new Error('Telemetry Error');
         });
-        jest.spyOn(cfConfigWriter, 'generateAppConfig').mockResolvedValue(fsMock);
+        mockGenerateAppConfig.mockResolvedValue(fsMock);
         const cfGenSpawnSpy = jest.spyOn(CFGenerator.prototype as any, 'spawnCommand').mockResolvedValue({});
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
