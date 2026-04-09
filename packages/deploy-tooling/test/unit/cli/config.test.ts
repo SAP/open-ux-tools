@@ -1,8 +1,11 @@
 import type { AbapDeployConfig, CliOptions } from '../../../src/types';
 import { getDeploymentConfig, mergeConfig } from '../../../src/cli/config';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import ProcessEnv = NodeJS.ProcessEnv;
+
+const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 describe('cli/config', () => {
     let env: ProcessEnv;
@@ -16,7 +19,7 @@ describe('cli/config', () => {
     });
 
     describe('getDeploymentConfig', () => {
-        const fixture = join(__dirname, '../../fixtures/simple-app');
+        const fixture = join(__testdirname, '../../fixtures/simple-app');
         test('valid config path', async () => {
             expect(await getDeploymentConfig(join(fixture, 'ui5-deploy.yaml'))).toBeDefined();
         });
@@ -73,7 +76,7 @@ describe('cli/config', () => {
         });
 
         test('service keys merged correctly', async () => {
-            const cloudServiceKey = join(__dirname, '../../fixtures/service-keys.json');
+            const cloudServiceKey = join(__testdirname, '../../fixtures/service-keys.json');
             const merged = await mergeConfig(config, {
                 cloud: true,
                 cloudServiceKey

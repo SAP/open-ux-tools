@@ -1,47 +1,106 @@
-import mockedStore from '@sap-ux/store';
-import mockedAxiosExtension from '@sap-ux/axios-extension';
-import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 
-type MockedStore = {
-    mockedService: {
-        read: jest.Mock;
-    };
+// Define all mock objects directly - these are shared across test files
+export const mockedAdtService = {
+    createTransportRequest: jest.fn(),
+    listPackages: jest.fn().mockResolvedValue([]),
+    getTransportRequests: jest.fn(),
+    getAtoInfo: jest.fn()
 };
 
-export const mockedStoreService = (mockedStore as unknown as MockedStore).mockedService;
-
-type MockedAxiosExtension = {
-    mockedProvider: {
-        getUi5AbapRepository: jest.Mock;
-        getLayeredRepository: jest.Mock;
-        getAdtService: jest.Mock;
-    };
-    mockedLrepService: {
-        deploy: jest.Mock;
-        undeploy: jest.Mock;
-    };
-    mockedUi5AbapRepositoryService: {
-        deploy: jest.Mock;
-        undeploy: jest.Mock;
-    };
-    mockedAdtServiceMethod: {
-        createTransportRequest: jest.Mock;
-        listPackages: jest.Mock;
-        getTransportRequests: jest.Mock;
-        getAtoInfo: jest.Mock;
-    };
+export const mockedUi5RepoService = {
+    defaults: {},
+    deploy: jest.fn(),
+    undeploy: jest.fn()
 };
-export const mockedUi5RepoService = (mockedAxiosExtension as unknown as MockedAxiosExtension)
-    .mockedUi5AbapRepositoryService;
 
-export const mockedLrepService = (mockedAxiosExtension as unknown as MockedAxiosExtension).mockedLrepService;
+export const mockedLrepService = {
+    defaults: {},
+    deploy: jest.fn(),
+    undeploy: jest.fn()
+};
 
-export const mockedAdtService = (mockedAxiosExtension as unknown as MockedAxiosExtension).mockedAdtServiceMethod;
+export const mockedProvider = {
+    defaults: {},
+    getUi5AbapRepository: jest.fn().mockReturnValue(mockedUi5RepoService),
+    getLayeredRepository: jest.fn().mockReturnValue(mockedLrepService),
+    getAdtService: jest.fn().mockReturnValue(mockedAdtService)
+};
 
-export const mockedProvider = (mockedAxiosExtension as unknown as MockedAxiosExtension).mockedProvider;
+export const mockedStoreService = {
+    read: jest.fn().mockReturnValue({})
+};
 
-export const mockIsAppStudio = isAppStudio as jest.Mock;
+export const mockCreateForAbap = jest.fn().mockReturnValue(mockedProvider);
+export const mockCreateForDestination = jest.fn().mockReturnValue(mockedProvider);
+export const mockCreateForAbapOnCloud = jest.fn().mockReturnValue(mockedProvider);
 
-export const mockListDestinations = listDestinations as jest.Mock;
+// Stub classes for @sap-ux/axios-extension
+class TransportChecksService {
+    static readonly LocalPackageError = 'LocalPackageError';
+}
 
-export const mockCreateForAbap = mockedAxiosExtension.createForAbap as jest.Mock;
+class ListPackageService {}
+
+class AtoService {}
+
+class TransportRequestService {}
+
+// Set up the module mocks
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    createForAbap: mockCreateForAbap,
+    createForAbapOnCloud: mockCreateForAbapOnCloud,
+    createForDestination: mockCreateForDestination,
+    isAxiosError: (error: any) => error?.isAxiosError === true,
+    TransportChecksService,
+    ListPackageService,
+    AtoService,
+    TransportRequestService,
+    AbapCloudEnvironment: {},
+    Ui5AbapRepositoryService: class {},
+    LayeredRepositoryService: class {}
+}));
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    getService: jest.fn().mockResolvedValue(mockedStoreService),
+    SystemService: class {},
+    BackendSystem: class {},
+    BackendSystemKey: class {
+        static from(system: any) { return new this({ url: system?.url, client: system?.client }); }
+        private url: string;
+        private client?: string;
+        constructor({ url, client }: { url: string; client?: string }) {
+            this.url = url;
+            this.client = client;
+        }
+        getId() { return this.url + (this.client ? '/' + this.client : ''); }
+    },
+    Entity: { BackendSystem: 'system', TelemetrySetting: 'telemetrySetting' },
+    AuthenticationType: {
+        Basic: 'basic',
+        ReentranceTicket: 'reentranceTicket',
+        OAuth2RefreshToken: 'oauth2',
+        OAuth2ClientCredential: 'oauth2ClientCredential'
+    },
+    SystemType: {
+        AbapCloud: 'AbapCloud',
+        AbapOnPrem: 'OnPrem',
+        Generic: 'Generic'
+    },
+    ConnectionType: {
+        AbapCatalog: 'abap_catalog',
+        GenericHost: 'generic_host',
+        ODataService: 'odata_service'
+    },
+    getBackendSystemType: jest.fn(),
+    getFioriToolsDirectory: jest.fn().mockReturnValue('/mock/.fioritools'),
+    getSapToolsDirectory: jest.fn().mockReturnValue('/mock/.saptools'),
+    getFilesystemWatcherFor: jest.fn(),
+    FioriToolsSettings: { dir: '.fioritools' },
+    SapTools: { dir: '.saptools' },
+    ApiHubSettingsService: class {},
+    ApiHubSettings: class {},
+    ApiHubSettingsKey: class {},
+    TelemetrySetting: class {},
+    TelemetrySettingKey: class {}
+}));

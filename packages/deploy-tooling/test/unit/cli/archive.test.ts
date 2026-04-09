@@ -1,21 +1,32 @@
+import { jest } from '@jest/globals';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { join, relative } from 'node:path';
-import { getArchive } from '../../../src/cli/archive';
+import { join, relative, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createUi5Archive } from '../../../src/ui5/archive';
-import axios from 'axios';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { Resource } from '@ui5/fs';
 import AdmZip from 'adm-zip';
 import { existsSync } from 'node:fs';
 
-jest.mock('axios');
+const __testfilename = fileURLToPath(import.meta.url);
+const __testdirname = dirname(__testfilename);
+
+const mockAxiosGet = jest.fn();
+
+jest.unstable_mockModule('axios', () => ({
+    default: {
+        get: mockAxiosGet
+    }
+}));
+
+const { getArchive } = await import('../../../src/cli/archive');
 
 describe('cli/archive', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
 
     describe('createArchiveFromFolder', () => {
         test('existing folder', async () => {
-            const archiveFolder = join(__dirname, '../../fixtures/simple-app/webapp');
+            const archiveFolder = join(__testdirname, '../../fixtures/simple-app/webapp');
             const archive = await getArchive(nullLogger, { archiveFolder } as any);
             expect(archive).toBeDefined();
             const files = new AdmZip(archive).getEntries().map((entry) => entry.entryName);
@@ -25,7 +36,7 @@ describe('cli/archive', () => {
         });
 
         test('not existing folder', async () => {
-            const archiveFolder = relative(process.cwd(), __dirname) + '.does.not.exist';
+            const archiveFolder = relative(process.cwd(), __testdirname) + '.does.not.exist';
             try {
                 await getArchive(nullLogger, { archiveFolder } as any);
                 fail('Should have thrown an error');
@@ -37,12 +48,12 @@ describe('cli/archive', () => {
 
     describe('getArchiveFromPath', () => {
         test('existing file', async () => {
-            const archivePath = __filename;
+            const archivePath = __testfilename;
             await getArchive(nullLogger, { archivePath } as any);
         });
 
         test('not existing folder', async () => {
-            const archivePath = __filename + '.does.not.exist';
+            const archivePath = __testfilename + '.does.not.exist';
             try {
                 await getArchive(nullLogger, { archivePath } as any);
                 fail('Should have thrown an error');
@@ -54,15 +65,14 @@ describe('cli/archive', () => {
 
     describe('fetchArchiveFromUrl', () => {
         const archiveUrl = 'http://test.example';
-        const axiosGetMock = axios.get as jest.Mock;
 
         test('existing url', async () => {
-            axiosGetMock.mockResolvedValueOnce({ date: {} });
+            mockAxiosGet.mockResolvedValueOnce({ data: {} });
             await getArchive(nullLogger, { archiveUrl } as any);
         });
 
         test('not existing url', async () => {
-            axiosGetMock.mockRejectedValueOnce({});
+            mockAxiosGet.mockRejectedValueOnce({});
             try {
                 await getArchive(nullLogger, { archiveUrl } as any);
                 fail('Should have thrown an error');

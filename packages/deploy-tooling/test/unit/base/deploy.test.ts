@@ -1,8 +1,17 @@
+import { jest } from '@jest/globals';
 import prompts from 'prompts';
 import AdmZip from 'adm-zip';
-import { join } from 'node:path';
-import { createTransportRequest, deploy, undeploy } from '../../../src/base/deploy';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { LogLevel, NullTransport, ToolsLogger } from '@sap-ux/logger';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapTarget } from '@sap-ux/system-access';
+import type { AbapDeployConfig } from '../../../src/types';
+import { AxiosError } from 'axios';
+
+const __testdirname = dirname(fileURLToPath(import.meta.url));
+
+// Import mock setup (this sets up jest.unstable_mockModule for @sap-ux/axios-extension and @sap-ux/store)
 import {
     mockedStoreService,
     mockedUi5RepoService,
@@ -10,15 +19,28 @@ import {
     mockedAdtService,
     mockedLrepService
 } from '../../__mocks__';
-import { SummaryStatus } from '../../../src/base/validate';
-import * as validate from '../../../src/base/validate';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { AbapTarget } from '@sap-ux/system-access';
-import type { AbapDeployConfig } from '../../../src/types';
-import { Axios, AxiosError } from 'axios';
 
-const validateBeforeDeployMock = jest.spyOn(validate, 'validateBeforeDeploy');
-const showAdditionalInfoForOnPremMock = jest.spyOn(validate, 'showAdditionalInfoForOnPrem');
+// Mock validate module to allow spying on ESM exports
+const validateBeforeDeployMock = jest.fn<any>().mockResolvedValue({ result: true, summary: [] });
+const showAdditionalInfoForOnPremMock = jest.fn<any>().mockResolvedValue(false);
+const formatSummaryMock = jest.fn<any>().mockReturnValue('');
+const checkForCredentialsMock = jest.fn<any>().mockResolvedValue(true);
+
+// Import the real validate module first to get the real SummaryStatus enum and other exports
+const realValidate = await import('../../../src/base/validate');
+
+jest.unstable_mockModule('../../../src/base/validate', () => ({
+    ...realValidate,
+    validateBeforeDeploy: validateBeforeDeployMock,
+    showAdditionalInfoForOnPrem: showAdditionalInfoForOnPremMock,
+    formatSummary: formatSummaryMock,
+    checkForCredentials: checkForCredentialsMock
+}));
+
+const { SummaryStatus } = realValidate;
+
+// Dynamic imports AFTER all mocks are set up
+const { createTransportRequest, deploy, undeploy } = await import('../../../src/base/deploy');
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -47,9 +69,13 @@ describe('base/deploy', () => {
             mockedUi5RepoService.deploy.mockReset();
             mockedLrepService.deploy.mockReset();
             mockedAdtService.createTransportRequest.mockReset();
-            validateBeforeDeployMock.mockReset();
             jest.clearAllMocks();
             jest.restoreAllMocks();
+            // Restore default mock implementations after clearAllMocks
+            validateBeforeDeployMock.mockResolvedValue({ result: true, summary: [] });
+            showAdditionalInfoForOnPremMock.mockResolvedValue(false);
+            formatSummaryMock.mockReturnValue('');
+            checkForCredentialsMock.mockResolvedValue(true);
         });
 
         test('No errors locally with url', async () => {
@@ -91,7 +117,6 @@ describe('base/deploy', () => {
         });
 
         test('Log validation summaries regardless of validation result', async () => {
-            const formatSummaryMock = jest.spyOn(validate, 'formatSummary');
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             validateBeforeDeployMock.mockResolvedValueOnce({
@@ -192,7 +217,7 @@ describe('base/deploy', () => {
         });
 
         test('Handle 401 error with unsupported authentication type', async () => {
-            const checkForCredentialsMock = jest.spyOn(validate, 'checkForCredentials').mockResolvedValue(true);
+            checkForCredentialsMock.mockResolvedValue(true);
             const sameIdError = axiosError(401);
             mockedUi5RepoService.deploy.mockRejectedValueOnce(sameIdError);
             checkForCredentialsMock.mockResolvedValue(false);
@@ -398,12 +423,12 @@ describe('base/deploy', () => {
             jest.spyOn(nullLogger, 'info');
             showAdditionalInfoForOnPremMock.mockResolvedValue(true);
             await deploy(archive, { app, target }, nullLogger);
-            expect(nullLogger.info).toHaveBeenCalledTimes(2);
+            expect(nullLogger.info).toHaveBeenCalledTimes(3);
         });
 
         describe('adaptation projects', () => {
             const adpArchive = new AdmZip();
-            adpArchive.addLocalFolder(join(__dirname, '../../fixtures/adp/webapp'));
+            adpArchive.addLocalFolder(join(__testdirname, '../../fixtures/adp/webapp'));
 
             test('No errors deploying to LREP', async () => {
                 mockedStoreService.read.mockResolvedValueOnce(credentials);
@@ -480,7 +505,7 @@ describe('base/deploy', () => {
 
         describe('adaptation projects', () => {
             const adpArchive = new AdmZip();
-            adpArchive.addLocalFolder(join(__dirname, '../../fixtures/adp/webapp'));
+            adpArchive.addLocalFolder(join(__testdirname, '../../fixtures/adp/webapp'));
 
             test('should undeploy successfully from LREP', async () => {
                 mockedStoreService.read.mockResolvedValueOnce(credentials);

@@ -1,13 +1,22 @@
+import { jest } from '@jest/globals';
 import { LogLevel } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../../../src/types';
-import ui5Task from '../../../src/ui5';
-import { task } from '../../../src';
 import { mockedUi5RepoService } from '../../__mocks__';
-import { config } from 'dotenv';
 import { readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('dotenv');
+const __testdirname = dirname(fileURLToPath(import.meta.url));
+
+const mockDotenvConfig = jest.fn();
+
+jest.unstable_mockModule('dotenv', () => ({
+    config: mockDotenvConfig
+}));
+
+const ui5TaskModule = await import('../../../src/ui5');
+const ui5Task = ui5TaskModule.default;
+const { task } = await import('../../../src');
 
 describe('ui5', () => {
     const configuration: AbapDeployConfig = {
@@ -26,7 +35,7 @@ describe('ui5', () => {
     const projectName = '~test';
     const workspace = {
         byGlob: jest.fn().mockReturnValue(
-            readdirSync(join(__dirname, '../../fixtures/simple-app/webapp')).map((file) => ({
+            readdirSync(join(__testdirname, '../../fixtures/simple-app/webapp')).map((file) => ({
                 getPath: () => `/resources/${projectName}/${file}`,
                 getBuffer: () => Promise.resolve(Buffer.from(''))
             }))
@@ -37,7 +46,7 @@ describe('ui5', () => {
     test('no errors', async () => {
         mockedUi5RepoService.deploy.mockResolvedValue(undefined);
         await task({ workspace, options } as any);
-        expect(config).toHaveBeenCalledTimes(1);
+        expect(mockDotenvConfig).toHaveBeenCalledTimes(1);
     });
 
     test('verify correct export', () => {

@@ -2,7 +2,7 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { TransportChecksService, ListPackageService, AtoService } from '@sap-ux/axios-extension';
 import type { TransportRequest } from '@sap-ux/axios-extension/src/abap/types';
 import type { Logger } from '@sap-ux/logger';
-import { green, red, yellow } from 'chalk';
+import chalk from 'chalk';
 import {
     validateAppName,
     validateAppDescription,
@@ -107,14 +107,14 @@ export function formatSummary(summary: SummaryRecord[]): string {
             let statusSymbol = '';
             switch (next.status) {
                 case SummaryStatus.Valid:
-                    statusSymbol = green('√');
+                    statusSymbol = chalk.green('√');
                     break;
                 case SummaryStatus.Invalid:
-                    statusSymbol = red('×');
+                    statusSymbol = chalk.red('×');
                     break;
                 case SummaryStatus.Unknown:
                 default:
-                    statusSymbol = yellow('?');
+                    statusSymbol = chalk.yellow('?');
                     break;
             }
             return `${' '.repeat(4)}${statusSymbol} ${next.message}`;
