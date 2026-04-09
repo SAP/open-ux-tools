@@ -1,14 +1,46 @@
-import { createAbapServiceProvider, isUrlTarget } from '../../../src/base/connect';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { mockedStoreService, mockIsAppStudio, mockListDestinations, mockReadFileSync } from '../../__mocks__';
+import { jest } from '@jest/globals';
+import {
+    mockedStoreService,
+    mockIsAppStudio,
+    mockListDestinations,
+    mockReadFileSync,
+    mockCreateForAbap,
+    mockCreateForAbapOnCloud,
+    mockCreateForDestination,
+    MockToolsLogger,
+    MockNullTransport
+} from '../../__mocks__';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { AbapTarget } from '../../../src/types';
-import prompts from 'prompts';
-import { AuthenticationType } from '@sap-ux/store';
-import nock from 'nock';
+
+// Dynamic imports after mocks are set up
+const { AuthenticationType } = await import('@sap-ux/store');
+const { default: prompts } = await import('prompts');
+const { createAbapServiceProvider, isUrlTarget } = await import('../../../src/base/connect');
+
+/**
+ * Create a mock ABAP service provider with the given options.
+ *
+ * @param options provider options
+ * @returns mock provider
+ */
+function createMockProvider(options: any = {}): any {
+    const interceptors = {
+        response: {
+            use: jest.fn(),
+            eject: jest.fn()
+        }
+    };
+    return {
+        defaults: { ...options, params: options.params ?? {} },
+        interceptors,
+        getAtoInfo: jest.fn(),
+        request: jest.fn()
+    };
+}
 
 describe('connect', () => {
-    const logger = new ToolsLogger({ transports: [new NullTransport()] });
+    const logger = new MockToolsLogger({ transports: [new MockNullTransport()] }) as any;
     const target = {
         url: 'http://target.example',
         client: '001'
@@ -16,13 +48,11 @@ describe('connect', () => {
     const username = '~user';
     const password = '~pass';
 
-    beforeAll(() => {
-        nock.disableNetConnect();
-    });
-
-    afterAll(() => {
-        nock.cleanAll();
-        nock.enableNetConnect();
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockCreateForAbap.mockImplementation((opts: any) => createMockProvider(opts));
+        mockCreateForAbapOnCloud.mockImplementation((opts: any) => createMockProvider(opts));
+        mockCreateForDestination.mockImplementation((opts: any) => createMockProvider(opts));
     });
 
     describe('createProvider', () => {
@@ -74,7 +104,9 @@ describe('connect', () => {
                     await createAbapServiceProvider({ destination: '~destination' }, undefined, true, logger);
                     fail('Should have thrown an error');
                 } catch (error) {
-                    expect(error.message).toBe('Unable to handle the configuration in the current environment.');
+                    expect((error as Error).message).toBe(
+                        'Unable to handle the configuration in the current environment.'
+                    );
                 }
             });
         });
@@ -123,7 +155,7 @@ describe('connect', () => {
                     await createAbapServiceProvider({ ...target, scp: true }, undefined, false, logger);
                     fail('Should have thrown an error');
                 } catch (error) {
-                    expect(error.message).toBe('Service keys required for ABAP Cloud environment.');
+                    expect((error as Error).message).toBe('Service keys required for ABAP Cloud environment.');
                 }
             });
 
@@ -133,7 +165,9 @@ describe('connect', () => {
                     await createAbapServiceProvider({ ...target, scp: false }, undefined, false, logger);
                     fail('Should have thrown an error');
                 } catch (error) {
-                    expect(error.message).toBe('This is an ABAP Cloud system, please correct your configuration.');
+                    expect((error as Error).message).toBe(
+                        'This is an ABAP Cloud system, please correct your configuration.'
+                    );
                 }
             });
         });
@@ -160,21 +194,29 @@ describe('connect', () => {
                     'sap-platform': 'abap'
                 } as Destination;
                 mockListDestinations.mockReturnValue({ [destination.Name]: destination });
+
+                // Set up mock provider that simulates 401 -> retry with auth
+                const mockProvider = createMockProvider();
+                mockProvider.interceptors.response.use.mockImplementation(
+                    (_onFulfilled: any, onRejected: any) => {
+                        // Store the error handler for later invocation
+                        mockProvider._onRejected = onRejected;
+                        return 0;
+                    }
+                );
+                mockCreateForDestination.mockReturnValue(mockProvider);
+
                 const provider = await createAbapServiceProvider(
                     { destination: destination.Name },
                     undefined,
                     true,
                     logger
                 );
-                // mock a 401 response if no auth is provided
-                nock(`https://${destination.Name}.dest`)
-                    .get(/.*/)
-                    .reply(function () {
-                        return this.req.headers.authorization ? [200] : [401];
-                    })
-                    .persist();
+
+                // Simulate the 401 error that triggers auth prompt
                 prompts.inject([username, password]);
-                await provider.getAtoInfo();
+                const error401 = { response: { status: 401 }, config: {} };
+                await provider._onRejected(error401);
                 expect(provider.defaults.auth).toStrictEqual({ username, password });
             });
 
