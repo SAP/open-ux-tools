@@ -1,31 +1,38 @@
-import * as utils from '../src/app/utils';
-import { checkConnection, getAppGenSystemData } from '../src/app/utils';
+import { jest } from '@jest/globals';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import type { Destination } from '@sap-ux/btp-utils';
 
+const __testdirname = dirname(fileURLToPath(import.meta.url));
+
 const mockIsAppStudio = jest.fn();
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...(jest.requireActual('@sap-ux/btp-utils') as {}),
-    isAppStudio: () => mockIsAppStudio()
+const mockCreateAbapServiceProvider = jest.fn().mockResolvedValue({ get: {} });
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: () => mockIsAppStudio(),
+    listDestinations: jest.fn(),
+    getDisplayName: jest.fn(),
+    WebIDEUsage: {},
+    WebIDEAdditionalData: {}
 }));
 
-jest.mock('@sap-ux/system-access', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/system-access') as any),
-        createAbapServiceProvider: jest.fn().mockResolvedValue({
-            get: {}
-        })
-    };
-});
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    createAbapServiceProvider: mockCreateAbapServiceProvider,
+    isUrlTarget: jest.fn(),
+    getCredentialsWithPrompts: jest.fn()
+}));
+
+const utils = await import('../src/app/utils');
+const { checkConnection, getAppGenSystemData } = utils;
 
 const store = createMemFs();
 const memFs = createEditor(store);
-const testOutputDir = join(__dirname, '../test-output');
-const metadata = fs.readFileSync(join(__dirname, 'fixtures', 'metadata.xml'), 'utf8');
+const testOutputDir = join(__testdirname, '../test-output');
+const metadata = fs.readFileSync(join(__testdirname, 'fixtures', 'metadata.xml'), 'utf8');
 const providerSystemMock = {
     name: 'testSystem',
     url: 'http://testsystem:44300',
@@ -195,12 +202,6 @@ describe('test helper functions', () => {
 
         test('validateConnection', async () => {
             const system = {};
-            const checkConnectionSpy = jest
-                .spyOn(utils, 'checkConnection')
-                .mockResolvedValueOnce(true)
-                .mockImplementation(() => {
-                    throw new Error('error');
-                });
             await utils.validateConnection('testSystem', system);
             expect(system).toEqual({
                 connectedSystem: {
@@ -338,8 +339,7 @@ describe('test helper functions', () => {
                 }
             }
         }`;
-        const metadata = fs.readFileSync(join(__dirname, 'fixtures', 'metadata.xml'), 'utf8');
-        const getMetadataSpy = jest.spyOn(utils, 'getMetadata').mockResolvedValue(metadata);
+        const metadata = fs.readFileSync(join(__testdirname, 'fixtures', 'metadata.xml'), 'utf8');
         providerMock1.get.mockResolvedValue({ data: '' });
         mockIsAppStudio.mockReturnValue(false);
         await utils.runPostGenHook(options, system, content, providerMock);
@@ -385,8 +385,6 @@ describe('test helper functions', () => {
             }
         }`;
         const targetPath = '/test/target/path/project1';
-        const metadata = fs.readFileSync(join(__dirname, 'fixtures', 'metadata.xml'), 'utf8');
-        const getMetadataSpy = jest.spyOn(utils, 'getMetadata').mockResolvedValue(metadata);
         mockIsAppStudio.mockReturnValue(false);
         const options = {
             vscode: {
@@ -446,8 +444,6 @@ describe('test helper functions', () => {
             }
         }`;
         const targetPath = '/test/target/path/project1';
-        const metadata = fs.readFileSync(join(__dirname, 'fixtures', 'metadata.xml'), 'utf8');
-        const getMetadataSpy = jest.spyOn(utils, 'getMetadata').mockResolvedValue(metadata);
         mockIsAppStudio.mockReturnValue(false);
         const options = {
             vsCodeMock,

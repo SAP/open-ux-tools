@@ -11,9 +11,11 @@ import {
     type SystemSelectionAnswers,
     getSystemSelectionQuestions as getSystemSelectionQuestionsBase
 } from './prompts/datasources/sap-system/system-selection';
-import type {
+import {
     CfAbapEnvServiceChoice,
-    NewSystemChoice,
+    NewSystemChoice
+} from './prompts/datasources/sap-system/system-selection/prompt-helpers';
+import type {
     SystemSelectionAnswerType
 } from './prompts/datasources/sap-system/system-selection/prompt-helpers';
 
@@ -29,10 +31,9 @@ import type {
     type OdataServicePromptOptions,
     type OdataServiceQuestion,
     type SapSystemType,
-    type ConnectedSystem,
-    DatasourceType,
-    promptNames
+    type ConnectedSystem
 } from './types';
+import { DatasourceType, promptNames } from './types';
 import { getPromptHostEnvironment, PromptState } from './utils';
 
 /**

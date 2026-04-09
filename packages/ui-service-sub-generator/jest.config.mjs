@@ -29,6 +29,12 @@ config.moduleNameMapper = {
     ...workspaceSourceMap,
     '^@sap-devx/yeoman-ui-types$': '<rootDir>/node_modules/@sap-devx/yeoman-ui-types/dist/cjs/src/index.js'
 };
+// Allow @vscode-logging/logger CJS module to be transformed for ESM named-export interop
+config.transformIgnorePatterns = [
+    'node_modules/(?!(@sap-ux|@sap-ux-private|@sap/ux-cds-compiler-facade|@vscode-logging)/)'
+];
+// Add package-specific setup file to mock CJS modules before any source imports
+config.setupFiles = [...(config.setupFiles || []), '<rootDir>/jest.setup.mjs'];
 config.snapshotFormat = {
     escapeString: false,
     printBasicPrototype: false

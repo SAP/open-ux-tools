@@ -1,82 +1,225 @@
+import { jest } from '@jest/globals';
 import yeomanTest from 'yeoman-test';
 import '@sap-ux/jest-file-matchers';
 import 'jest-extended';
-import ServiceGenerator from '../src/app';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-//import * as validators from '../src/utils/validators';
+const __testdirname = dirname(fileURLToPath(import.meta.url));
+
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { PromptOptions } from '../src/app/types';
 import type { SystemSelectionAnswers } from '@sap-ux/ui-service-inquirer';
-import { ObjectType } from '@sap-ux/ui-service-inquirer';
-import Environment from 'yeoman-environment';
-import * as utils from '../src/app/utils';
-import * as UiServiceInquirer from '@sap-ux/ui-service-inquirer';
+
+// ── Top-level mock functions ──────────────────────────────────────────────
 
 const mockIsAppStudio = jest.fn();
-jest.setTimeout(30000);
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/btp-utils') as object),
-        isAppStudio: () => mockIsAppStudio()
-    };
-});
-jest.mock('@sap-ux/system-access', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/system-access') as object),
-        createAbapServiceProvider: jest.fn().mockResolvedValue({
-            get: jest.fn(),
-            getUiServiceGenerator: jest.fn().mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
-        })
-    };
-});
+
+// UiServiceInquirer mocks
+const mockGetSystemSelectionPrompts = jest.fn<any>();
+const mockGetConfigPrompts = jest.fn<any>();
+
+// utils mocks
+const mockAuthenticateInputData = jest.fn<any>();
+const mockValidateConnection = jest.fn<any>();
+const mockGenerateService = jest.fn<any>();
+const mockWriteBASMetadata = jest.fn<any>();
+const mockRunPostGenHook = jest.fn<any>();
+const mockGetAppGenSystemData = jest.fn<any>();
+const mockSetToolbarMessage = jest.fn<any>();
+const mockAddToCache = jest.fn<any>();
+const mockGetFromCache = jest.fn<any>().mockReturnValue([{}, '']);
+const mockCheckConnection = jest.fn<any>();
+const mockGetRelativeUrlFromContent = jest.fn<any>();
+const mockGetMetadata = jest.fn<any>();
+const mockGetServiceMedadataContent = jest.fn<any>();
+
 const mockSendTelemetry = jest.fn().mockResolvedValue({});
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
+
+// ── Module mocks (BEFORE dynamic imports) ─────────────────────────────────
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: () => mockIsAppStudio(),
+    listDestinations: jest.fn(),
+    getDisplayName: jest.fn(),
+    WebIDEUsage: {},
+    WebIDEAdditionalData: {}
+}));
+
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    createAbapServiceProvider: jest.fn().mockResolvedValue({
+        get: jest.fn(),
+        getUiServiceGenerator: jest.fn().mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+    }),
+    isUrlTarget: jest.fn(),
+    getCredentialsWithPrompts: jest.fn()
+}));
+
+const mockDefaultLogger = {
+    fatal: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+    trace: jest.fn(),
+    getChildLogger: jest.fn(),
+    getLogLevel: jest.fn().mockReturnValue('off'),
+    log: jest.fn(),
+    add: jest.fn(),
+    remove: jest.fn(),
+    transports: jest.fn().mockReturnValue([]),
+    child: jest.fn()
+};
+mockDefaultLogger.getChildLogger.mockReturnValue(mockDefaultLogger);
+mockDefaultLogger.child.mockReturnValue(mockDefaultLogger);
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     sendTelemetry: () => mockSendTelemetry(),
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),
         createTelemetryData: jest.fn(),
-        markAppGenStartTime: jest.fn()
+        markAppGenStartTime: jest.fn(),
+        telemetryData: {}
+    },
+    DefaultLogger: mockDefaultLogger,
+    LogWrapper: class {
+        info = jest.fn();
+        warn = jest.fn();
+        error = jest.fn();
+        debug = jest.fn();
+        trace = jest.fn();
+        fatal = jest.fn();
+        getChildLogger = jest.fn().mockReturnValue(mockDefaultLogger);
+        getLogLevel = jest.fn().mockReturnValue('off');
+        log = jest.fn();
+        add = jest.fn();
+        remove = jest.fn();
+        transports = jest.fn().mockReturnValue([]);
+        child = jest.fn().mockReturnValue(mockDefaultLogger);
+    },
+    setYeomanEnvConflicterForce: jest.fn()
+}));
+
+jest.unstable_mockModule('@sap-ux/ui-service-inquirer', () => ({
+    getSystemSelectionPrompts: mockGetSystemSelectionPrompts,
+    getConfigPrompts: mockGetConfigPrompts,
+    ObjectType: {
+        BUSINESS_OBJECT: 'BusinessObject',
+        CDS_VIEW: 'CDSView'
     }
 }));
 
-const serviceGenPath = join(__dirname, '../src/app');
+const realUtils = await import('../src/app/utils');
+
+jest.unstable_mockModule('../src/app/utils', () => ({
+    ...realUtils,
+    authenticateInputData: mockAuthenticateInputData,
+    validateConnection: mockValidateConnection,
+    generateService: mockGenerateService,
+    writeBASMetadata: mockWriteBASMetadata,
+    runPostGenHook: mockRunPostGenHook,
+    getAppGenSystemData: mockGetAppGenSystemData,
+    addToCache: mockAddToCache,
+    getFromCache: mockGetFromCache
+}));
+
+// ── Dynamic imports (AFTER mocks) ─────────────────────────────────────────
+
+const { default: ServiceGenerator } = await import('../src/app');
+const { ObjectType } = await import('@sap-ux/ui-service-inquirer');
+
+// ── Test setup ────────────────────────────────────────────────────────────
+
+const serviceGenPath = join(__testdirname, '../src/app');
 const businessObjectName = 'I_BANKTP';
+
+jest.setTimeout(30000);
+
+function setupDefaultSystemSelectionPrompts(): void {
+    mockGetSystemSelectionPrompts.mockResolvedValue({
+        prompts: [
+            {
+                type: 'list',
+                name: 'systemSelection',
+                message: 'Select a system',
+                choices: [
+                    { name: 'system1', value: 'system1' },
+                    { name: 'system2', value: 'system2' },
+                    { name: 'system3', value: 'system3' }
+                ]
+            }
+        ] as any,
+        answers: {
+            connectedSystem: {
+                backendSystem: {
+                    name: 'system1'
+                },
+                destination: {
+                    Name: 'system1'
+                },
+                serviceProvider: {
+                    get: jest.fn(),
+                    getUiServiceGenerator: jest
+                        .fn()
+                        .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+                }
+            },
+            objectGenerator: { generate: jest.fn().mockResolvedValue({}) }
+        } as any
+    });
+}
+
+function setupDefaultConfigPrompts(): void {
+    mockGetConfigPrompts.mockReturnValue({
+        prompts: [
+            {
+                type: 'confirm',
+                name: 'launchAppGen',
+                message: 'Launch App Gen?',
+                default: false
+            }
+        ],
+        answers: {
+            content: '',
+            serviceName: '',
+            showDraftEnabled: false
+        }
+    });
+}
 
 describe('BAS service center', () => {
     beforeEach(() => {
-        const inquirerSpy = jest.spyOn(UiServiceInquirer, 'getSystemSelectionPrompts').mockResolvedValue({
-            prompts: [
-                {
-                    type: 'list',
-                    name: 'systemSelection',
-                    message: 'Select a system',
-                    choices: [
-                        { name: 'system1', value: 'system1' },
-                        { name: 'system2', value: 'system2' },
-                        { name: 'system3', value: 'system3' }
-                    ]
-                }
-            ] as any,
-            answers: {
-                connectedSystem: {
-                    backendSystem: {
-                        name: 'system1'
-                    },
-                    destination: {
-                        Name: 'system1'
-                    },
-                    serviceProvider: {
-                        get: jest.fn(),
-                        getUiServiceGenerator: jest
-                            .fn()
-                            .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+        jest.clearAllMocks();
+        setupDefaultSystemSelectionPrompts();
+        setupDefaultConfigPrompts();
+        // Default authenticateInputData populates connectedSystem like the real implementation
+        mockAuthenticateInputData.mockImplementation(
+            async (_data: any, system: any) => {
+                await mockValidateConnection(_data.systemName, system, undefined);
+            }
+        );
+        mockValidateConnection.mockImplementation(
+            async (systemName: string, system: any) => {
+                Object.assign(system, {
+                    connectedSystem: {
+                        serviceProvider: {
+                            get: jest.fn(),
+                            getUiServiceGenerator: jest
+                                .fn()
+                                .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+                        },
+                        destination: {
+                            Name: systemName
+                        }
                     }
-                },
-                objectGenerator: { generate: jest.fn().mockResolvedValue({}) }
-            } as any
-        });
+                });
+            }
+        );
+        mockGenerateService.mockResolvedValue(undefined);
+        mockWriteBASMetadata.mockResolvedValue(undefined);
+        mockRunPostGenHook.mockResolvedValue(undefined);
+        mockGetAppGenSystemData.mockReturnValue({});
+        mockGetFromCache.mockReturnValue([{}, '']);
     });
 
     test('authentication type passed to validator', async () => {
@@ -88,8 +231,6 @@ describe('BAS service center', () => {
         };
 
         mockIsAppStudio.mockReturnValue(true);
-        const authenicationSpy = jest.spyOn(utils, 'authenticateInputData');
-        //const validateConnectionSpy = jest.spyOn(utils, 'validateConnection');
 
         await expect(
             yeomanTest
@@ -118,13 +259,7 @@ describe('BAS service center', () => {
                     }
                 })
         ).resolves.not.toThrow();
-        expect(authenicationSpy).toHaveBeenCalled();
-        //expect(validateConnectionSpy).toHaveBeenCalled();
-        // expect(validateConnectionSpy).toHaveBeenCalledWith(
-        //     'system3',
-        //     expect.toBeObject(),
-        //     expect.objectContaining({ username: 'user', password: 'password' })
-        // );
+        expect(mockAuthenticateInputData).toHaveBeenCalled();
     });
 
     test('BAS service center options', async () => {
@@ -135,10 +270,8 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        const authenicationSpy = jest.spyOn(utils, 'authenticateInputData');
-        const validateConnectionSpy = jest
-            .spyOn(utils, 'validateConnection')
-            .mockImplementation((systemName, system, reqAuth) => {
+        mockValidateConnection.mockImplementation(
+            (systemName: string, system: any, reqAuth: any) => {
                 Object.assign(system, {
                     connectedSystem: {
                         serviceProvider: {
@@ -153,7 +286,8 @@ describe('BAS service center', () => {
                     }
                 });
                 return Promise.resolve();
-            });
+            }
+        );
         await expect(
             yeomanTest
                 .run(ServiceGenerator, { resolved: serviceGenPath })
@@ -180,15 +314,10 @@ describe('BAS service center', () => {
                     }
                 })
         ).resolves.not.toThrow();
-        expect(authenicationSpy).toHaveBeenCalledWith(
+        expect(mockAuthenticateInputData).toHaveBeenCalledWith(
             expect.objectContaining({ user: 'user', password: 'password' }),
             expect.objectContaining({})
         );
-        // expect(validateConnectionSpy).toHaveBeenCalledWith(
-        //     'system1',
-        //     expect.toBeObject(),
-        //     expect.objectContaining({ username: 'user', password: 'password' })
-        // );
     });
 
     test('BAS service center options - state is updated correctly during connection validation', async () => {
@@ -199,10 +328,8 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        const authenicationSpy = jest
-            .spyOn(utils, 'authenticateInputData')
-            .mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
-                //state.authenticated = true;
+        mockAuthenticateInputData.mockImplementation(
+            (data: PromptOptions, system: SystemSelectionAnswers) => {
                 Object.assign(system, {
                     connectedSystem: {
                         serviceProvider: {
@@ -217,8 +344,8 @@ describe('BAS service center', () => {
                     }
                 });
                 return Promise.resolve();
-            });
-        const validateConnectionSpy = jest.spyOn(utils, 'validateConnection').mockResolvedValue();
+            }
+        );
 
         await expect(
             yeomanTest
@@ -246,7 +373,6 @@ describe('BAS service center', () => {
                     }
                 })
                 .then((result: any) => {
-                    //console.log(JSON.stringify(result.generator.serviceConfigAnswers));
                     expect(result.generator.systemSelectionAnswers.connectedSystem.destination.Name).toEqual('system1');
                     expect(result.generator.systemSelectionAnswers.objectGenerator).toBeDefined();
                 })
@@ -261,13 +387,13 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        const generateSpy = jest.spyOn(utils, 'generateService').mockResolvedValue({
+        mockGenerateService.mockResolvedValue({
             objectReference: {
                 type: 'test',
                 uri: '/test/uri/from/generate'
             }
         });
-        const testOutputDir = join(__dirname, '../test-output');
+        const testOutputDir = join(__testdirname, '../test-output');
         const providerSystemMock = {
             name: 'testSystem',
             url: 'http://testsystem:44300',
@@ -283,7 +409,6 @@ describe('BAS service center', () => {
             path: testOutputDir,
             providerSystem: providerSystemMock
         };
-        const writeBASMetadataSpy = jest.spyOn(utils, 'writeBASMetadata').mockResolvedValue();
         await expect(
             yeomanTest
                 .run(ServiceGenerator, { resolved: serviceGenPath })
@@ -302,8 +427,8 @@ describe('BAS service center', () => {
                 })
                 .withOptions({ appWizard, data: inputData })
         ).resolves.not.toThrow();
-        expect(generateSpy).toHaveBeenCalled();
-        expect(writeBASMetadataSpy).toHaveBeenCalled();
+        expect(mockGenerateService).toHaveBeenCalled();
+        expect(mockWriteBASMetadata).toHaveBeenCalled();
     });
 
     test('generateService - should NOT write BAS service metadata file', async () => {
@@ -314,7 +439,7 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        const generateSpy = jest.spyOn(utils, 'generateService').mockResolvedValue({
+        mockGenerateService.mockResolvedValue({
             objectReference: {
                 type: 'test',
                 uri: '/test/uri/from/generate'
@@ -324,8 +449,6 @@ describe('BAS service center', () => {
             systemName: 'testSystem',
             businessObject: businessObjectName
         };
-        const writeBASMetadataSpy = jest.spyOn(utils, 'writeBASMetadata').mockResolvedValue();
-        const runPostGenHookSpy = jest.spyOn(utils, 'runPostGenHook').mockImplementation();
         const state = {
             service: {
                 serviceBindingName: '',
@@ -360,9 +483,9 @@ describe('BAS service center', () => {
                 })
                 .withOptions({ appWizard, data: inputData, vscode: {}, state })
         ).resolves.not.toThrow();
-        expect(generateSpy).toHaveBeenCalled();
+        expect(mockGenerateService).toHaveBeenCalled();
         expect(appWizard.showInformation).toHaveBeenCalledWith('The UI service:  was generated.', 1);
-        expect(runPostGenHookSpy).toHaveBeenCalled();
+        expect(mockRunPostGenHook).toHaveBeenCalled();
     });
 
     test('BAS service center - new interface with id and type BO', async () => {
@@ -373,10 +496,8 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        const authenicationSpy = jest
-            .spyOn(utils, 'authenticateInputData')
-            .mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
-                //state.authenticated = true;
+        mockAuthenticateInputData.mockImplementation(
+            (data: PromptOptions, system: SystemSelectionAnswers) => {
                 Object.assign(system, {
                     connectedSystem: {
                         serviceProvider: {
@@ -386,14 +507,9 @@ describe('BAS service center', () => {
                         }
                     }
                 });
-                // helper.PromptState.provider = {
-                //     getUiServiceGenerator: jest.fn().mockResolvedValue({
-                //         generate: jest.fn().mockResolvedValue({})
-                //     })
-                // } as any;
                 return Promise.resolve();
-            });
-        const validateConnectionSpy = jest.spyOn(utils, 'validateConnection').mockResolvedValue();
+            }
+        );
 
         await expect(
             yeomanTest
@@ -433,10 +549,8 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        const authenicationSpy = jest
-            .spyOn(utils, 'authenticateInputData')
-            .mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
-                //state.authenticated = true;
+        mockAuthenticateInputData.mockImplementation(
+            (data: PromptOptions, system: SystemSelectionAnswers) => {
                 Object.assign(system, {
                     connectedSystem: {
                         serviceProvider: {
@@ -446,14 +560,9 @@ describe('BAS service center', () => {
                         }
                     }
                 });
-                // helper.PromptState.provider = {
-                //     getUiServiceGenerator: jest.fn().mockResolvedValue({
-                //         generate: jest.fn().mockResolvedValue({})
-                //     })
-                // } as any;
                 return Promise.resolve();
-            });
-        const validateConnectionSpy = jest.spyOn(utils, 'validateConnection').mockResolvedValue();
+            }
+        );
 
         await expect(
             yeomanTest
@@ -488,38 +597,38 @@ describe('BAS service center', () => {
 
 describe('test ui service generator', () => {
     beforeEach(() => {
-        const inquirerSpy = jest.spyOn(UiServiceInquirer, 'getSystemSelectionPrompts').mockResolvedValue({
-            prompts: [
-                {
-                    type: 'list',
-                    name: 'systemSelection',
-                    message: 'Select a system',
-                    choices: [
-                        { name: 'system1', value: 'system1' },
-                        { name: 'system2', value: 'system2' },
-                        { name: 'system3', value: 'system3' }
-                    ]
-                }
-            ] as any,
-            answers: {
-                connectedSystem: {
-                    backendSystem: {
-                        name: 'system1'
-                    },
-                    destination: {
-                        Name: 'system1'
-                    },
-                    serviceProvider: {
-                        get: jest.fn(),
-                        getUiServiceGenerator: jest
-                            .fn()
-                            .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+        jest.clearAllMocks();
+        setupDefaultSystemSelectionPrompts();
+        setupDefaultConfigPrompts();
+        mockAuthenticateInputData.mockImplementation(
+            async (_data: any, system: any) => {
+                await mockValidateConnection(_data.systemName, system, undefined);
+            }
+        );
+        mockValidateConnection.mockImplementation(
+            async (systemName: string, system: any) => {
+                Object.assign(system, {
+                    connectedSystem: {
+                        serviceProvider: {
+                            get: jest.fn(),
+                            getUiServiceGenerator: jest
+                                .fn()
+                                .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+                        },
+                        destination: {
+                            Name: systemName
+                        }
                     }
-                },
-                objectGenerator: { generate: jest.fn().mockResolvedValue({}) }
-            } as any
-        });
+                });
+            }
+        );
+        mockGenerateService.mockResolvedValue(undefined);
+        mockWriteBASMetadata.mockResolvedValue(undefined);
+        mockRunPostGenHook.mockResolvedValue(undefined);
+        mockGetAppGenSystemData.mockReturnValue({});
+        mockGetFromCache.mockReturnValue([{}, '']);
     });
+
     test('UI Service generator', async () => {
         const appWizard: Partial<AppWizard> = {
             setHeaderTitle: jest.fn(),
@@ -528,7 +637,6 @@ describe('test ui service generator', () => {
             showInformation: jest.fn()
         };
 
-        const generateSpy = jest.spyOn(utils, 'generateService');
         await expect(
             yeomanTest
                 .create(ServiceGenerator, { resolved: serviceGenPath }, {})
@@ -548,7 +656,7 @@ describe('test ui service generator', () => {
                 .withOptions({ appWizard })
                 .run()
         ).resolves.not.toThrow();
-        expect(generateSpy).toHaveBeenCalled();
+        expect(mockGenerateService).toHaveBeenCalled();
     });
 
     test('Shows warning for no generator found', async () => {
@@ -558,10 +666,8 @@ describe('test ui service generator', () => {
             showError: jest.fn()
         };
 
-        const authenicationSpy = jest
-            .spyOn(utils, 'authenticateInputData')
-            .mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
-                //state.authenticated = true;
+        mockAuthenticateInputData.mockImplementation(
+            (data: PromptOptions, system: SystemSelectionAnswers) => {
                 Object.assign(system, {
                     connectedSystem: {
                         destination: {
@@ -574,9 +680,12 @@ describe('test ui service generator', () => {
                     }
                 });
                 return Promise.resolve();
-            });
+            }
+        );
 
-        const env = Environment.createEnv();
+        // Use real generateService so it throws when objectGenerator is undefined
+        mockGenerateService.mockImplementation(realUtils.generateService);
+
         await expect(
             yeomanTest
                 .run(ServiceGenerator, { resolved: serviceGenPath })
@@ -608,6 +717,6 @@ describe('test ui service generator', () => {
             'No generator found for the selected business object interface.',
             0
         );
-        expect(authenicationSpy).toHaveBeenCalled();
+        expect(mockAuthenticateInputData).toHaveBeenCalled();
     });
 });
