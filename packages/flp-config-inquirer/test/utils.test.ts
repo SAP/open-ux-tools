@@ -1,11 +1,20 @@
-import * as adpTooling from '@sap-ux/adp-tooling';
+import { jest } from '@jest/globals';
 
-import { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } from '../src/utils';
-import { tileActions, type TileSettingsAnswers, type FLPConfigAnswers } from '../src/types';
+// Pre-import real module before mocking to avoid missing export errors
+const realAdpTooling = await import('@sap-ux/adp-tooling');
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    flpConfigurationExists: jest.fn()
+const mockFlpConfigurationExists = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
+    flpConfigurationExists: mockFlpConfigurationExists
 }));
+
+const adpTooling = await import('@sap-ux/adp-tooling');
+const { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } = await import('../src/utils');
+const { tileActions } = await import('../src/types');
+import type { TileSettingsAnswers, FLPConfigAnswers } from '../src/types';
+import type { DescriptorVariant } from '@sap-ux/adp-tooling';
 
 describe('utils', () => {
     const inbounds = {
@@ -36,7 +45,7 @@ describe('utils', () => {
         });
 
         it('should return correct options when FLP configuration exists', () => {
-            jest.spyOn(adpTooling, 'flpConfigurationExists').mockReturnValue(true);
+            mockFlpConfigurationExists.mockReturnValue(true);
 
             const promptOptions = getAdpFlpConfigPromptOptions(
                 {
@@ -44,7 +53,7 @@ describe('utils', () => {
                     copyFromExisting: false
                 } as TileSettingsAnswers,
                 undefined,
-                {} as adpTooling.DescriptorVariant
+                {} as DescriptorVariant
             );
 
             expect(promptOptions).toEqual(

@@ -1,20 +1,26 @@
+import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
-import { validateText } from '@sap-ux/project-input-validator';
 
-import {
+// Pre-import real module before mocking to avoid missing export errors
+const realProjectInputValidator = await import('@sap-ux/project-input-validator');
+
+const mockValidateText = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    ...realProjectInputValidator,
+    validateText: mockValidateText
+}));
+
+const {
     getActionPrompt,
     getOverwritePrompt,
     getSemanticObjectPrompt,
     getSubTitlePrompt,
     getTitlePrompt
-} from '../../../src/prompts/questions';
-import { initI18n, t } from '../../../src/i18n';
-import { type FLPConfigAnswers, promptNames } from '../../../src/types';
-
-jest.mock('@sap-ux/project-input-validator', () => ({
-    ...jest.requireActual('@sap-ux/project-input-validator'),
-    validateText: jest.fn()
-}));
+} = await import('../../../src/prompts/questions');
+const { initI18n, t } = await import('../../../src/i18n');
+const { promptNames } = await import('../../../src/types');
+import type { FLPConfigAnswers } from '../../../src/types';
 
 describe('basic prompts', () => {
     const inbounds = {
@@ -37,8 +43,6 @@ describe('basic prompts', () => {
     });
 
     describe('getSemanticObjectPrompt', () => {
-        const mockValidateText = validateText as jest.Mock;
-
         beforeEach(() => {
             jest.clearAllMocks();
         });
@@ -121,8 +125,6 @@ describe('basic prompts', () => {
     });
 
     describe('getActionPrompt', () => {
-        const mockValidateText = validateText as jest.Mock;
-
         beforeEach(() => {
             jest.clearAllMocks();
         });
@@ -293,8 +295,6 @@ describe('basic prompts', () => {
     });
 
     describe('getTitlePrompt', () => {
-        const mockValidateText = validateText as jest.Mock;
-
         beforeEach(() => {
             jest.clearAllMocks();
         });
