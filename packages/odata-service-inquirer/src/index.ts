@@ -26,12 +26,12 @@ import { getEntitySelectionQuestions } from './prompts/edmx/questions';
 import LoggerHelper from './prompts/logger-helper';
 import type {
     EntityRelatedAnswers,
-    type EntityPromptOptions,
-    type OdataServiceAnswers,
-    type OdataServicePromptOptions,
-    type OdataServiceQuestion,
-    type SapSystemType,
-    type ConnectedSystem
+    EntityPromptOptions,
+    OdataServiceAnswers,
+    OdataServicePromptOptions,
+    OdataServiceQuestion,
+    SapSystemType,
+    ConnectedSystem
 } from './types';
 import { DatasourceType, promptNames } from './types';
 import { getPromptHostEnvironment, PromptState } from './utils';
