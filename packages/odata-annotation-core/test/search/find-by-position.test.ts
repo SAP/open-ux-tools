@@ -1,11 +1,15 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { Position, Range } from '@sap-ux/odata-annotation-core-types';
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 
 import type { FindPathResult } from '../../src';
 import { findPathToPosition, getPositionData } from '../../src';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 function findNodeByPosition(annotationFile: AnnotationFile, position: Position, forCompletion = false): FindPathResult {
     const result = findPathToPosition(annotationFile, position, forCompletion);
