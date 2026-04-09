@@ -4,4 +4,8 @@ config.snapshotFormat = {
     escapeString: false,
     printBasicPrototype: false
 };
+config.moduleNameMapper = {
+    ...config.moduleNameMapper,
+    '^vscode$': '<rootDir>/test/__mocks__/vscode.js'
+};
 export default config;

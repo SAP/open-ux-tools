@@ -1,4 +1,5 @@
-const URI = require('vscode-uri');
+import { URI } from 'vscode-uri';
+import { jest } from '@jest/globals';
 
 class Disposable {
     static from(...disposableLikes) {
@@ -278,6 +279,32 @@ const TreeItemCollapsibleState = {
     Expanded: 2
 };
 
+export {
+    commands,
+    Disposable,
+    EventEmitter,
+    ExtensionContext,
+    FileChangeType,
+    FileSystemError,
+    FileType,
+    languages,
+    workspace,
+    window,
+    env,
+    ViewColumn,
+    extensions,
+    ExtensionKind,
+    Position,
+    Range,
+    Selection,
+    TextLine,
+    TreeItemCollapsibleState,
+    TreeItem
+};
+
+const Uri = URI.URI;
+export { Uri };
+
 const vscode = {
     commands,
     Disposable,
@@ -302,4 +329,4 @@ const vscode = {
     TreeItem
 };
 
-module.exports = vscode;
+export default vscode;

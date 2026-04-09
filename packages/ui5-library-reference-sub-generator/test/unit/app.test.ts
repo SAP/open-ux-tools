@@ -1,25 +1,33 @@
-import yeomanTest from 'yeoman-test';
-import path from 'node:path';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import fsextra from 'fs-extra';
-import RefLibGenerator from '../../src/app';
-import { reuseLibs } from './util/constants';
 import { rimraf } from 'rimraf';
-import { EventName } from '../../src/telemetryEvents';
-import { t } from '../../src/utils/i18n';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
-import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
-import * as ui5LibRefWriter from '@sap-ux/ui5-library-reference-writer';
-import * as ui5LibraryRefInquirer from '@sap-ux/ui5-library-reference-inquirer';
 import type { UI5LibraryReferenceAnswers } from '@sap-ux/ui5-library-reference-inquirer';
 
-const testOutputDir = path.join(__dirname, '..', 'test-output', 'app');
+const testDirname = dirname(fileURLToPath(import.meta.url));
+const testOutputDir = join(testDirname, '..', 'test-output', 'app');
 const originalCwd = process.cwd();
-const refLibGenPath = path.join(__dirname, '../../src/app');
+const refLibGenPath = join(testDirname, '../../src/app');
 let yoEnv4 = false;
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
+// Pre-import actual modules for spreading
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+const actualUi5LibRefWriter = await import('@sap-ux/ui5-library-reference-writer');
+const actualUi5LibRefInquirer = await import('@sap-ux/ui5-library-reference-inquirer');
+
+// Mock functions
+const mockSendTelemetry = jest.fn();
+const mockIsExtensionInstalled = jest.fn().mockReturnValue(true);
+const mockGenerate = jest.fn<(...args: any[]) => Promise<any>>().mockImplementation(actualUi5LibRefWriter.generate);
+const mockPrompt = jest.fn<(...args: any[]) => Promise<UI5LibraryReferenceAnswers>>().mockImplementation(
+    actualUi5LibRefInquirer.prompt as any
+);
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),
         createTelemetryData: jest.fn().mockReturnValue({
@@ -27,20 +35,40 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
             Platform: 'darwin'
         })
     },
-    sendTelemetry: jest.fn(),
-    isExtensionInstalled: jest.fn().mockReturnValue(true)
+    sendTelemetry: mockSendTelemetry,
+    isExtensionInstalled: mockIsExtensionInstalled
 }));
 
-jest.mock('yeoman-test/lib/adapter', () => ({
-    TestAdapter: function TestAdapter() {
-        const testAdapter = new (jest.requireActual('yeoman-test/lib/adapter').TestAdapter)();
-        if (yoEnv4) {
-            Object.assign(testAdapter, { actualAdapter: {} });
-        }
-        return testAdapter;
-    },
-    DummyPrompt: jest.requireActual('yeoman-test/lib/adapter').DummyPrompt
+jest.unstable_mockModule('@sap-ux/ui5-library-reference-writer', () => ({
+    generate: mockGenerate
 }));
+
+jest.unstable_mockModule('@sap-ux/ui5-library-reference-inquirer', () => ({
+    ...actualUi5LibRefInquirer,
+    prompt: mockPrompt
+}));
+
+// Mock the yeoman-test adapter - this is a CJS module
+jest.unstable_mockModule('yeoman-test/lib/adapter', () => {
+    // We need the actual adapter from CJS
+    const actualAdapter = jest.requireActual('yeoman-test/lib/adapter') as any;
+    return {
+        TestAdapter: function TestAdapter() {
+            const testAdapter = new actualAdapter.TestAdapter();
+            if (yoEnv4) {
+                Object.assign(testAdapter, { actualAdapter: {} });
+            }
+            return testAdapter;
+        },
+        DummyPrompt: actualAdapter.DummyPrompt
+    };
+});
+
+const yeomanTest = (await import('yeoman-test')).default;
+const RefLibGenerator = (await import('../../src/app')).default;
+const { reuseLibs } = await import('./util/constants');
+const { EventName } = await import('../../src/telemetryEvents');
+const { t } = await import('../../src/utils/i18n');
 
 afterAll(() => {
     process.chdir(originalCwd); // Generation changes the cwd, this breaks sonar report so we restore later
@@ -50,11 +78,10 @@ afterAll(() => {
 describe('Test reference generator', () => {
     jest.setTimeout(60000);
     it('should run the generator', async () => {
-        const sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
-        const testProjectPath = path.join(testOutputDir, 'test_project');
+        const testProjectPath = join(testOutputDir, 'test_project');
         fs.mkdirSync(testOutputDir, { recursive: true });
         fs.mkdirSync(testProjectPath);
-        fsextra.copySync(path.join(__dirname, 'sample/test_project_lrop_v2'), testProjectPath);
+        fsextra.copySync(join(testDirname, 'sample/test_project_lrop_v2'), testProjectPath);
         const showInformationSpy = jest.fn();
         const mockAppWizard = {
             setHeaderTitle: jest.fn(),
@@ -74,12 +101,12 @@ describe('Test reference generator', () => {
                 referenceLibraries: reuseLibs.map((lib) => lib.value)
             });
 
-        const manifest = await fs.promises.readFile(path.join(testProjectPath, 'webapp/manifest.json'), {
+        const manifest = await fs.promises.readFile(join(testProjectPath, 'webapp/manifest.json'), {
             encoding: 'utf8'
         });
         const updatedManifest = JSON.parse(manifest);
         expect(updatedManifest).toMatchSnapshot();
-        expect(sendTelemetrySpy).toHaveBeenCalledWith(
+        expect(mockSendTelemetry).toHaveBeenCalledWith(
             EventName.LIB_REFERENCE_ADDED,
             expect.objectContaining({
                 OperatingSystem: 'CLI',
@@ -90,10 +117,10 @@ describe('Test reference generator', () => {
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.filesGenerated'), MessageType.notification);
     });
     it('should run the generator custom webapp path', async () => {
-        const testProject = path.join(testOutputDir, 'test_project_lrop_v2_custom_webapp_path');
+        const testProject = join(testOutputDir, 'test_project_lrop_v2_custom_webapp_path');
         fs.mkdirSync(testOutputDir, { recursive: true });
         fs.mkdirSync(testProject);
-        fsextra.copySync(path.join(__dirname, 'sample/test_project_lrop_v2_custom_webapp_path'), testProject);
+        fsextra.copySync(join(testDirname, 'sample/test_project_lrop_v2_custom_webapp_path'), testProject);
 
         await yeomanTest
             .run(RefLibGenerator, {
@@ -105,7 +132,7 @@ describe('Test reference generator', () => {
                 referenceLibraries: reuseLibs.map((lib) => lib.value)
             });
 
-        const manifest = await fs.promises.readFile(path.join(testProject, 'src/main/webapp/manifest.json'), {
+        const manifest = await fs.promises.readFile(join(testProject, 'src/main/webapp/manifest.json'), {
             encoding: 'utf8'
         });
         const updatedManifest = JSON.parse(manifest);
@@ -113,11 +140,12 @@ describe('Test reference generator', () => {
     });
 
     it('should throw error when writing fails', async () => {
-        const testProject = path.join(testOutputDir, 'test_project_lrop_v2_custom_webapp_path_2');
+        mockGenerate.mockRejectedValueOnce(new Error('Error'));
+
+        const testProject = join(testOutputDir, 'test_project_lrop_v2_custom_webapp_path_2');
         fs.mkdirSync(testOutputDir, { recursive: true });
         fs.mkdirSync(testProject);
-        fsextra.copySync(path.join(__dirname, 'sample/test_project_lrop_v2_custom_webapp_path'), testProject);
-        jest.spyOn(ui5LibRefWriter, 'generate').mockRejectedValueOnce(new Error('Error'));
+        fsextra.copySync(join(testDirname, 'sample/test_project_lrop_v2_custom_webapp_path'), testProject);
 
         try {
             await yeomanTest
@@ -135,16 +163,14 @@ describe('Test reference generator', () => {
     });
 
     it('prompting with yeoman-environment@^4 default adaptor (yo@5 support)', async () => {
-        const testProject = path.join(testOutputDir, 'test_project_lrop_v2_custom_webapp_path_2');
+        const testProject = join(testOutputDir, 'test_project_lrop_v2_custom_webapp_path_2');
         const promptAnswers = {
             targetProjectFolder: testProject,
             source: 'Workspace',
             referenceLibraries: reuseLibs.map((lib) => lib.value)
-        } as unknown as ui5LibraryRefInquirer.UI5LibraryReferenceAnswers;
-        jest.spyOn(ui5LibRefWriter, 'generate').mockResolvedValueOnce({} as any);
-        const promptSpy = jest
-            .spyOn(ui5LibraryRefInquirer, 'prompt')
-            .mockResolvedValue(promptAnswers as unknown as UI5LibraryReferenceAnswers);
+        } as unknown as UI5LibraryReferenceAnswers;
+        mockGenerate.mockImplementationOnce(async () => ({} as any));
+        mockPrompt.mockResolvedValueOnce(promptAnswers as unknown as UI5LibraryReferenceAnswers);
         // Use the mocked adapter representing yeoman-environment@4
         yoEnv4 = true;
         await expect(
@@ -154,6 +180,6 @@ describe('Test reference generator', () => {
                 })
                 .withOptions({ skipInstall: false })
         ).resolves.not.toThrow();
-        expect(promptSpy).toHaveBeenCalled();
+        expect(mockPrompt).toHaveBeenCalled();
     });
 });
