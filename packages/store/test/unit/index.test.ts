@@ -1,12 +1,23 @@
+import { jest } from '@jest/globals';
 import type { EnityName } from '../../src';
-import { getService } from '../../src';
-import { Entities } from '../../src/data-provider/constants';
-import * as i18n from '../../src/i18n';
+
+// Import actual text function BEFORE mocking
+const actualI18n = await import('../../src/i18n');
+const actualText = actualI18n.text;
+
+const mockInitI18n = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
+
+jest.unstable_mockModule('../../src/i18n', () => ({
+    initI18n: mockInitI18n,
+    text: (...args: any[]) => actualText(...args)
+}));
+
+const { getService } = await import('../../src');
+const { Entities } = await import('../../src/data-provider/constants');
 
 describe('store', () => {
     describe('getService', () => {
         it('initializes i18n resources', async () => {
-            const mockInitI18n = jest.spyOn(i18n, 'initI18n');
             await getService({ entityName: Entities.BackendSystem, options: { baseDirectory: 'foo' } });
             expect(mockInitI18n).toHaveBeenCalled();
         });
@@ -18,7 +29,7 @@ describe('store', () => {
         });
 
         it('throws an error for an invalid entity name', async () => {
-            const expectedMessage = i18n.text('error.unsupportedEntity', { entityName: 'foo' });
+            const expectedMessage = actualText('error.unsupportedEntity', { entityName: 'foo' });
             await expect(getService({ entityName: 'foo' as EnityName })).rejects.toThrow(expectedMessage);
         });
     });

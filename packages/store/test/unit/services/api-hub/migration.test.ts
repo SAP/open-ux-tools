@@ -1,23 +1,26 @@
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { jest } from '@jest/globals';
 import type { DataProvider } from '../../../../src/data-provider';
 import type { ApiHubSettings, ApiHubSettingsKey } from '../../../../src';
-import {
-    LEGACY_API_HUB_API_KEY,
-    LEGACY_API_HUB_API_SERVICE,
-    migrateToLatestVersion
-} from '../../../../src/services/api-hub/migration';
 import type { SecureStore } from '../../../../src/secure-store';
+
+const { LEGACY_API_HUB_API_KEY, LEGACY_API_HUB_API_SERVICE, migrateToLatestVersion } = await import(
+    '../../../../src/services/api-hub/migration'
+);
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
+
+type MockedSecureStore = { [K in keyof SecureStore]: ReturnType<typeof jest.fn> };
+type MockedDataProvider = { [K in keyof DataProvider<ApiHubSettings, ApiHubSettingsKey>]: ReturnType<typeof jest.fn> };
 
 describe('migration', () => {
     describe('migrateToLatestVersion', () => {
-        const mockSecureStore: jest.Mocked<SecureStore> = {
+        const mockSecureStore: MockedSecureStore = {
             save: jest.fn(),
             retrieve: jest.fn(),
             'delete': jest.fn(),
             getAll: jest.fn()
         };
 
-        const mockDataProvider: jest.Mocked<DataProvider<ApiHubSettings, ApiHubSettingsKey>> = {
+        const mockDataProvider: MockedDataProvider = {
             read: jest.fn(),
             write: jest.fn(),
             'delete': jest.fn(),

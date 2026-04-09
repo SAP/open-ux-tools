@@ -1,23 +1,57 @@
 import 'jest-extended';
-import { vol } from 'memfs';
-import { basedir, getFilesystemStore, getFilesystemWatcherFor } from '../../../src/data-access/filesystem';
-import path from 'node:path';
+import { jest } from '@jest/globals';
+import { vol, fs as memfs } from 'memfs';
 import type { FSWatcher } from 'node:fs';
-import fs from 'node:fs';
-import type { Entity } from '../../../src';
-import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 
-jest.mock('fs', () => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    return require('memfs');
+// Import actual modules BEFORE mocking to avoid infinite loops
+const actualOs = await import('node:os');
+const actualPath = await import('node:path');
+
+// Mock 'fs' and 'node:fs' with memfs — spread all named exports
+// Also add mockable functions for watcher and write tests
+const mockExistsSync = jest.fn<typeof memfs.existsSync>((...args: any[]) => (memfs.existsSync as any)(...args));
+const mockWatch = jest.fn();
+const mockWriteFileSync = jest.fn((...args: any[]) => (memfs.writeFileSync as any)(...args));
+
+const fsMockFactory = () => ({
+    ...memfs,
+    default: { ...memfs, existsSync: mockExistsSync, watch: mockWatch, writeFileSync: mockWriteFileSync },
+    existsSync: mockExistsSync,
+    watch: mockWatch,
+    writeFileSync: mockWriteFileSync
 });
 
-jest.mock('os', () => {
-    return {
-        ...(jest.requireActual('os') as object),
-        homedir: jest.fn().mockReturnValue('/')
-    };
+jest.unstable_mockModule('fs', fsMockFactory);
+jest.unstable_mockModule('node:fs', fsMockFactory);
+
+const mockHomedir = jest.fn().mockReturnValue('/');
+
+const osMockFactory = () => ({
+    ...actualOs,
+    default: { ...actualOs.default, homedir: mockHomedir },
+    homedir: mockHomedir
 });
+
+jest.unstable_mockModule('os', osMockFactory);
+jest.unstable_mockModule('node:os', osMockFactory);
+
+// Mock path so spyOn works (ESM module namespaces are frozen)
+const mockPathJoin = jest.fn<typeof actualPath.join>((...args: string[]) => actualPath.join(...args));
+jest.unstable_mockModule('node:path', () => ({
+    ...actualPath,
+    default: { ...actualPath.default, join: mockPathJoin },
+    join: mockPathJoin
+}));
+jest.unstable_mockModule('path', () => ({
+    ...actualPath,
+    default: { ...actualPath.default, join: mockPathJoin },
+    join: mockPathJoin
+}));
+
+const { basedir, getFilesystemStore, getFilesystemWatcherFor } = await import('../../../src/data-access/filesystem');
+const path = await import('node:path');
+const fs = await import('node:fs');
+const { ToolsLogger, NullTransport } = await import('@sap-ux/logger');
 
 describe('data-access/filesystem', () => {
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -324,9 +358,7 @@ describe('data-access/filesystem', () => {
 
         it('will throw an error if write fails', async () => {
             const entity = { prop1: 1, prop2: '2', prop3: undefined, prop4: 42 };
-            const mockFs = jest.mocked(fs, { shallow: true });
-            const originalFn = mockFs.writeFileSync;
-            mockFs.writeFileSync = jest.fn().mockImplementationOnce(() => {
+            mockWriteFileSync.mockImplementationOnce(() => {
                 throw new Error();
             });
 
@@ -334,7 +366,7 @@ describe('data-access/filesystem', () => {
                 getFilesystemStore(logger).write({ entityName: 'dummy', id: '42', entity })
             ).rejects.toThrow();
 
-            mockFs.writeFileSync = originalFn;
+            mockWriteFileSync.mockImplementation((...args: any[]) => (memfs.writeFileSync as any)(...args));
         });
 
         it('will create the file if missing', async () => {
@@ -568,35 +600,37 @@ describe('data-access/filesystem', () => {
 });
 
 describe('getFilesystemWatcherFor', () => {
-    let mockWatcher;
     beforeEach(() => {
-        mockWatcher = jest.spyOn(fs, 'watch').mockReturnValueOnce({} as FSWatcher);
+        mockWatch.mockReturnValueOnce({} as FSWatcher);
+        // Reset existsSync to use memfs default
+        mockExistsSync.mockImplementation((...args: any[]) => (memfs.existsSync as any)(...args));
     });
 
     afterEach(() => {
-        mockWatcher.mockReset();
-        mockWatcher.mockRestore();
+        mockWatch.mockReset();
+        mockExistsSync.mockImplementation((...args: any[]) => (memfs.existsSync as any)(...args));
+        mockPathJoin.mockImplementation((...args: string[]) => actualPath.join(...args));
     });
 
     it('will return a watcher if a file for an entity exists', () => {
         const fileName = 'dummyentities.json';
-        jest.spyOn(path, 'join').mockReturnValueOnce('/' + fileName);
-        jest.spyOn(fs, 'existsSync').mockImplementation((path: string) => {
-            return path.endsWith(fileName) ? true : jest.requireActual('fs').existsSync(path);
+        mockPathJoin.mockReturnValueOnce('/' + fileName);
+        mockExistsSync.mockImplementation((fpath: any) => {
+            return String(fpath).endsWith(fileName) ? true : false;
         });
 
-        expect(getFilesystemWatcherFor('DummyEntity' as Entity, () => jest.fn())).toBeTruthy();
-        expect(mockWatcher).toHaveBeenCalledTimes(1);
+        expect(getFilesystemWatcherFor('DummyEntity' as any, () => jest.fn())).toBeTruthy();
+        expect(mockWatch).toHaveBeenCalledTimes(1);
     });
 
     it('will return undefined if a file for an entity does not exist', () => {
         const fileName = 'dummyentities.json';
-        jest.spyOn(path, 'join').mockReturnValueOnce('/' + fileName);
-        jest.spyOn(fs, 'existsSync').mockImplementation((path: string) => {
-            return path.endsWith(fileName) ? false : jest.requireActual('fs').existsSync(path);
+        mockPathJoin.mockReturnValueOnce('/' + fileName);
+        mockExistsSync.mockImplementation((fpath: any) => {
+            return String(fpath).endsWith(fileName) ? false : false;
         });
 
-        expect(getFilesystemWatcherFor('DummyEntity' as Entity, () => jest.fn())).toBeUndefined();
-        expect(mockWatcher).toHaveBeenCalledTimes(0);
+        expect(getFilesystemWatcherFor('DummyEntity' as any, () => jest.fn())).toBeUndefined();
+        expect(mockWatch).toHaveBeenCalledTimes(0);
     });
 });

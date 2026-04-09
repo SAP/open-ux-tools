@@ -1,26 +1,37 @@
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import * as dataAccessFilesystem from '../../../src/data-access/filesystem';
-import { Entities } from '../../../src/data-provider/constants';
-import { SystemMigrationStatusDataProvider } from '../../../src/data-provider/system-migration';
-import { SystemMigrationStatus, SystemMigrationStatusKey } from '../../../src/entities/system-migration-status';
+import { jest } from '@jest/globals';
+import type { ToolsLogger } from '@sap-ux/logger';
+
+const mockFsStore = {
+    write: jest.fn(),
+    read: jest.fn(),
+    del: jest.fn(),
+    getAll: jest.fn(),
+    readAll: jest.fn(),
+    partialUpdate: jest.fn()
+};
+
+jest.unstable_mockModule('../../../src/data-access/filesystem', () => ({
+    getFilesystemStore: jest.fn().mockReturnValue(mockFsStore),
+    basedir: jest.fn(),
+    getFilesystemWatcherFor: jest.fn()
+}));
+
+const { SystemMigrationStatusDataProvider } = await import('../../../src/data-provider/system-migration');
+const { SystemMigrationStatus, SystemMigrationStatusKey } = await import(
+    '../../../src/entities/system-migration-status'
+);
+const { Entities } = await import('../../../src/data-provider/constants');
+const { NullTransport, ToolsLogger: ToolsLoggerClass } = await import('@sap-ux/logger');
 
 describe('System migration data provider', () => {
-    const logger = new ToolsLogger({ transports: [new NullTransport()] });
-    const mockGetFilesystemStore = jest.spyOn(dataAccessFilesystem, 'getFilesystemStore');
-    const mockFsStore = {
-        write: jest.fn(),
-        read: jest.fn(),
-        del: jest.fn(),
-        getAll: jest.fn(),
-        readAll: jest.fn(),
-        partialUpdate: jest.fn()
-    };
+    const logger = new ToolsLoggerClass({ transports: [new NullTransport()] });
+
     beforeEach(() => {
-        mockGetFilesystemStore.mockReturnValue(mockFsStore);
+        jest.clearAllMocks();
     });
 
     it('read delegates to data accessor', async () => {
-        const migrationStatus: SystemMigrationStatus = Object.freeze({
+        const migrationStatus: InstanceType<typeof SystemMigrationStatus> = Object.freeze({
             migrationDone: true,
             authTypeMigrated: false,
             migrationLogs: ['line1', 'line2', 'line3']
@@ -38,7 +49,7 @@ describe('System migration data provider', () => {
     });
 
     it('write delegates to data accessor', async () => {
-        const migrationStatus: SystemMigrationStatus = Object.freeze({
+        const migrationStatus: InstanceType<typeof SystemMigrationStatus> = Object.freeze({
             migrationDone: true,
             authTypeMigrated: false,
             migrationLogs: ['line1', 'line2', 'line3']
@@ -56,7 +67,7 @@ describe('System migration data provider', () => {
     });
 
     it('delete delegates to data accessor', async () => {
-        const migrationStatus: SystemMigrationStatus = Object.freeze({
+        const migrationStatus: InstanceType<typeof SystemMigrationStatus> = Object.freeze({
             migrationDone: true,
             authTypeMigrated: false,
             migrationLogs: ['line1', 'line2', 'line3']
@@ -73,7 +84,7 @@ describe('System migration data provider', () => {
     });
 
     it('getAll delegates to data accessor', async () => {
-        const migrationStatus: SystemMigrationStatus = Object.freeze({
+        const migrationStatus: InstanceType<typeof SystemMigrationStatus> = Object.freeze({
             migrationDone: true,
             authTypeMigrated: false,
             migrationLogs: ['line1', 'line2', 'line3']

@@ -1,12 +1,6 @@
 import 'jest-extended';
-import { sensitiveData, serializable } from '../../../src/decorators';
-import { getFilesystemStore } from '../../../src/data-access/filesystem';
-import { getSecureStore } from '../../../src/secure-store';
-import { getHybridStore } from '../../../src/data-access/hybrid';
-import { ToolsLogger, NullTransport } from '@sap-ux/logger';
+import { jest } from '@jest/globals';
 
-jest.mock('../../../src/data-access/filesystem');
-const mockFileSystemAccess = jest.mocked(getFilesystemStore);
 const mockFilesystemStore = {
     write: jest.fn(),
     read: jest.fn(),
@@ -15,17 +9,27 @@ const mockFilesystemStore = {
     readAll: jest.fn(),
     partialUpdate: jest.fn()
 };
-mockFileSystemAccess.mockReturnValue(mockFilesystemStore);
 
-jest.mock('../../../src/secure-store');
-const mockGetSecureStore = jest.mocked(getSecureStore);
+jest.unstable_mockModule('../../../src/data-access/filesystem', () => ({
+    getFilesystemStore: jest.fn().mockReturnValue(mockFilesystemStore),
+    basedir: jest.fn(),
+    getFilesystemWatcherFor: jest.fn()
+}));
+
 const mockSecureStore = {
     save: jest.fn(),
     retrieve: jest.fn(),
     'delete': jest.fn(),
     getAll: jest.fn()
 };
-mockGetSecureStore.mockReturnValue(mockSecureStore);
+
+jest.unstable_mockModule('../../../src/secure-store', () => ({
+    getSecureStore: jest.fn().mockReturnValue(mockSecureStore)
+}));
+
+const { sensitiveData, serializable } = await import('../../../src/decorators');
+const { getHybridStore } = await import('../../../src/data-access/hybrid');
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 class HasOnlyOrdinaryProps {
     public readonly ordinaryProperty1 = '1';

@@ -1,39 +1,56 @@
-import { BackendSystem, BackendSystemKey, SystemType } from '../../../src';
-import * as dataAccessHybrid from '../../../src/data-access/hybrid';
-import * as fileSystemAccess from '../../../src/data-access/filesystem';
-import { SystemDataProvider } from '../../../src/data-provider/backend-system';
-import { Entities } from '../../../src/data-provider/constants';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import * as fs from 'node:fs';
+import { jest } from '@jest/globals';
+import type { BackendSystem as BackendSystemType } from '../../../src';
 
-jest.mock('fs');
+const mockHybridStore = {
+    write: jest.fn(),
+    read: jest.fn(),
+    del: jest.fn(),
+    getAll: jest.fn(),
+    readAll: jest.fn(),
+    partialUpdate: jest.fn()
+};
+
+const mockFilesystemStore = {
+    write: jest.fn()
+};
+
+jest.unstable_mockModule('../../../src/data-access/hybrid', () => ({
+    getHybridStore: jest.fn().mockReturnValue(mockHybridStore)
+}));
+
+jest.unstable_mockModule('../../../src/data-access/filesystem', () => ({
+    getFilesystemStore: jest.fn().mockReturnValue(mockFilesystemStore),
+    basedir: jest.fn(),
+    getFilesystemWatcherFor: jest.fn()
+}));
+
+const mockExistsSync = jest.fn<(path: string) => boolean>();
+const mockReadFileSync = jest.fn();
+
+// Import actual fs BEFORE mocking to avoid infinite resolution loops
+const actualFs = await import('node:fs');
+
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    default: actualFs.default,
+    existsSync: mockExistsSync,
+    readFileSync: mockReadFileSync
+}));
+
+const { BackendSystem, BackendSystemKey, SystemType } = await import('../../../src');
+const { SystemDataProvider } = await import('../../../src/data-provider/backend-system');
+const { Entities } = await import('../../../src/data-provider/constants');
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('Backend system data provider', () => {
-    const mockGetHybridStore = jest.spyOn(dataAccessHybrid, 'getHybridStore');
-    const mockHybridStore = {
-        write: jest.fn(),
-        read: jest.fn(),
-        del: jest.fn(),
-        getAll: jest.fn(),
-        readAll: jest.fn(),
-        partialUpdate: jest.fn()
-    };
-    const mockGetFilesystemStore = jest.spyOn(fileSystemAccess, 'getFilesystemStore');
-    const mockFilesystemStore = {
-        write: jest.fn()
-    };
-
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
+
     beforeEach(() => {
-        mockGetHybridStore.mockReturnValue(mockHybridStore);
-        mockGetFilesystemStore.mockReturnValue(
-            mockFilesystemStore as unknown as ReturnType<typeof fileSystemAccess.getFilesystemStore>
-        );
         jest.clearAllMocks();
     });
 
     it('read delegates to the data accessor', async () => {
-        const expectedSystem: BackendSystem = {
+        const expectedSystem: BackendSystemType = {
             name: 'sys',
             url: 'url',
             client: 'client',
@@ -49,7 +66,7 @@ describe('Backend system data provider', () => {
     });
 
     it('write delegates to the data accessor', async () => {
-        const expectedSystem: BackendSystem = Object.freeze({
+        const expectedSystem: BackendSystemType = Object.freeze({
             name: 'sys',
             url: 'url',
             client: 'client',
@@ -71,7 +88,7 @@ describe('Backend system data provider', () => {
     });
 
     it('write creates an object of the correct class (to init annotations)', async () => {
-        const expectedSystem: BackendSystem = Object.freeze({
+        const expectedSystem: BackendSystemType = Object.freeze({
             name: 'sys',
             url: 'url',
             client: 'client',
@@ -93,7 +110,7 @@ describe('Backend system data provider', () => {
     });
 
     it('delete delegates to the data accessor', async () => {
-        const expectedSystem: BackendSystem = Object.freeze({
+        const expectedSystem: BackendSystemType = Object.freeze({
             name: 'sys',
             url: 'url',
             client: 'client',
@@ -111,11 +128,11 @@ describe('Backend system data provider', () => {
     });
 
     it('getAll delegates to the data accessor', async () => {
-        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => true);
-        jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
-            return JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() });
-        });
-        const sys1: BackendSystem = Object.freeze({
+        mockExistsSync.mockReturnValueOnce(true);
+        mockReadFileSync.mockReturnValueOnce(
+            JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() })
+        );
+        const sys1: BackendSystemType = Object.freeze({
             name: 'sys1',
             url: 'url1',
             client: 'client',
@@ -125,7 +142,7 @@ describe('Backend system data provider', () => {
             systemType: SystemType.AbapOnPrem,
             connectionType: 'abap_catalog'
         });
-        const sys2: BackendSystem = Object.freeze({
+        const sys2: BackendSystemType = Object.freeze({
             name: 'sys2',
             url: 'url2',
             client: 'client',
@@ -135,7 +152,7 @@ describe('Backend system data provider', () => {
             systemType: SystemType.AbapOnPrem,
             connectionType: 'abap_catalog'
         });
-        const sys3: BackendSystem = Object.freeze({
+        const sys3: BackendSystemType = Object.freeze({
             name: 'sys3',
             url: 'url3',
             client: 'client',
@@ -154,11 +171,11 @@ describe('Backend system data provider', () => {
     });
 
     it('getAll returns only the relevant system types', async () => {
-        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => true);
-        jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
-            return JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() });
-        });
-        const sys1: BackendSystem = Object.freeze({
+        mockExistsSync.mockReturnValueOnce(true);
+        mockReadFileSync.mockReturnValueOnce(
+            JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() })
+        );
+        const sys1: BackendSystemType = Object.freeze({
             name: 'sys1',
             url: 'url1',
             client: 'client',
@@ -168,7 +185,7 @@ describe('Backend system data provider', () => {
             systemType: SystemType.AbapOnPrem,
             connectionType: 'abap_catalog'
         });
-        const sys2: BackendSystem = Object.freeze({
+        const sys2: BackendSystemType = Object.freeze({
             name: 'sys2',
             url: 'url2',
             client: 'client',
@@ -178,7 +195,7 @@ describe('Backend system data provider', () => {
             systemType: SystemType.AbapOnPrem,
             connectionType: 'abap_catalog'
         });
-        const sys3: BackendSystem = Object.freeze({
+        const sys3: BackendSystemType = Object.freeze({
             name: 'sys3',
             url: 'url3',
             client: 'client',
@@ -193,11 +210,11 @@ describe('Backend system data provider', () => {
     });
 
     it('getAll returns only the relevant abap_catalog connectionType systems by default', async () => {
-        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => true);
-        jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
-            return JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() });
-        });
-        const sys1: BackendSystem = Object.freeze({
+        mockExistsSync.mockReturnValueOnce(true);
+        mockReadFileSync.mockReturnValueOnce(
+            JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() })
+        );
+        const sys1: BackendSystemType = Object.freeze({
             name: 'sys1',
             url: 'url1',
             client: 'client',
@@ -207,7 +224,7 @@ describe('Backend system data provider', () => {
             systemType: SystemType.AbapOnPrem,
             connectionType: 'abap_catalog'
         });
-        const sys2: BackendSystem = Object.freeze({
+        const sys2: BackendSystemType = Object.freeze({
             name: 'sys2',
             url: 'url2',
             client: 'client',
@@ -217,7 +234,7 @@ describe('Backend system data provider', () => {
             systemType: SystemType.AbapOnPrem,
             connectionType: 'odata_service'
         });
-        const sys3: BackendSystem = Object.freeze({
+        const sys3: BackendSystemType = Object.freeze({
             name: 'sys3',
             url: 'url3',
             client: 'client',
@@ -230,11 +247,11 @@ describe('Backend system data provider', () => {
     });
 
     it('getAll returns the systems based on the array of connection types provided', async () => {
-        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => true);
-        jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
-            return JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() });
-        });
-        const sys1: BackendSystem = Object.freeze({
+        mockExistsSync.mockReturnValueOnce(true);
+        mockReadFileSync.mockReturnValueOnce(
+            JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() })
+        );
+        const sys1: BackendSystemType = Object.freeze({
             name: 'sys1',
             url: 'url1',
             client: 'client',
@@ -244,7 +261,7 @@ describe('Backend system data provider', () => {
             systemType: SystemType.AbapOnPrem,
             connectionType: 'abap_catalog'
         });
-        const sys2: BackendSystem = Object.freeze({
+        const sys2: BackendSystemType = Object.freeze({
             name: 'sys2',
             url: 'url2',
             client: 'client',
@@ -254,7 +271,7 @@ describe('Backend system data provider', () => {
             systemType: SystemType.AbapOnPrem,
             connectionType: 'odata_service'
         });
-        const sys3: BackendSystem = Object.freeze({
+        const sys3: BackendSystemType = Object.freeze({
             name: 'sys3',
             url: 'url3',
             client: 'client',
@@ -262,7 +279,7 @@ describe('Backend system data provider', () => {
             systemType: SystemType.AbapCloud,
             connectionType: 'abap_catalog'
         });
-        const sys4: BackendSystem = Object.freeze({
+        const sys4: BackendSystemType = Object.freeze({
             name: 'sys4',
             url: 'url4',
             hasSensitiveData: false,
@@ -278,11 +295,11 @@ describe('Backend system data provider', () => {
     });
 
     it('getAll returns only backend systems matching the systemId/client', async () => {
-        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => true);
-        jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
-            return JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() });
-        });
-        const sys1: BackendSystem = Object.freeze({
+        mockExistsSync.mockReturnValueOnce(true);
+        mockReadFileSync.mockReturnValueOnce(
+            JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() })
+        );
+        const sys1: BackendSystemType = Object.freeze({
             name: 'sys1',
             url: 'url1',
             client: 'client',
@@ -293,7 +310,7 @@ describe('Backend system data provider', () => {
             connectionType: 'abap_catalog',
             systemInfo: { systemId: 'ID123', client: '999' }
         });
-        const sys2: BackendSystem = Object.freeze({
+        const sys2: BackendSystemType = Object.freeze({
             name: 'sys2',
             url: 'url2',
             client: 'client',
@@ -304,7 +321,7 @@ describe('Backend system data provider', () => {
             connectionType: 'abap_catalog',
             systemInfo: { systemId: 'ID456', client: '000' }
         });
-        const sys3: BackendSystem = Object.freeze({
+        const sys3: BackendSystemType = Object.freeze({
             name: 'sys3',
             url: 'url3',
             client: 'client',
@@ -322,21 +339,21 @@ describe('Backend system data provider', () => {
     });
 
     it('getAll performs necessary migration to add hasSensitveData', async () => {
-        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => false);
-        const sys1: BackendSystem = {
+        mockExistsSync.mockReturnValueOnce(false);
+        const sys1: BackendSystemType = {
             name: 'sys1',
             url: 'url1',
             systemType: 'OnPrem',
             connectionType: 'abap_catalog'
         };
-        const sys2: BackendSystem = {
+        const sys2: BackendSystemType = {
             name: 'sys2',
             url: 'url2',
             serviceKeys: '<serviceKey>',
             systemType: 'AbapCloud',
             connectionType: 'abap_catalog'
         };
-        const sys3: BackendSystem = {
+        const sys3: BackendSystemType = {
             name: 'sys3',
             url: 'url3',
             username: 'username',
@@ -370,21 +387,21 @@ describe('Backend system data provider', () => {
     });
 
     it('getAll does not crash which migration fails ', async () => {
-        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => false);
-        const sys1: BackendSystem = {
+        mockExistsSync.mockReturnValueOnce(false);
+        const sys1: BackendSystemType = {
             name: 'sys1',
             url: 'url1',
             systemType: 'OnPrem',
             connectionType: 'abap_catalog'
         };
-        const sys2: BackendSystem = {
+        const sys2: BackendSystemType = {
             name: 'sys2',
             url: 'url2',
             serviceKeys: '<serviceKey>',
             systemType: 'AbapCloud',
             connectionType: 'abap_catalog'
         };
-        const sys3: BackendSystem = {
+        const sys3: BackendSystemType = {
             name: 'sys3',
             url: 'url3',
             username: 'username',
