@@ -226,7 +226,13 @@ async function getAbapServiceUrl(projectPath: string): Promise<string | undefine
             return undefined;
         }
 
-        return target.url ?? (target.destination ? (await listDestinations())[target.destination]?.Host : undefined);
+        if (target.url) {
+            return target.url;
+        }
+        if (target.destination) {
+            const destinations = await listDestinations();
+            return destinations[target.destination]?.Host;
+        }
     } catch {
         // Message will not be shown
     }
@@ -281,9 +287,7 @@ export async function getPrompts(
     let destinationChoices: { name: string; value: Destination }[] | undefined;
 
     if (isCFEnv) {
-        const result = await getDestinationChoices(projectPath, logger);
-        destinationChoices = result.choices;
-        destinationError = result.error;
+        ({ choices: destinationChoices, error: destinationError } = await getDestinationChoices(projectPath, logger));
     }
 
     const buildResultingUrlMessage = (
