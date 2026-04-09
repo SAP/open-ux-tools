@@ -1,4 +1,4 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import {
     ClientChoiceValue,
     PackageInputChoices,
@@ -6,7 +6,59 @@ import {
     TransportChoices,
     type TransportConfig
 } from '../../src/types';
-import {
+
+const mockIsAppStudio = jest.fn();
+const mockFindBackendSystemByUrl = jest.fn();
+const mockInitTransportConfig = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio,
+    listDestinations: jest.fn(),
+    isAbapEnvironmentOnBtp: jest.fn(),
+    isOnPremiseDestination: jest.fn(),
+    isS4HC: jest.fn(),
+    getDisplayName: jest.fn(),
+    isAbapSystem: jest.fn(),
+    isAbapODataDestination: jest.fn(),
+    isFullUrlDestination: jest.fn(),
+    isPartialUrlDestination: jest.fn(),
+    isGenericODataDestination: jest.fn(),
+    isHTML5DynamicConfigured: jest.fn(),
+    getDestinationUrlForAppStudio: jest.fn(),
+    getAppStudioProxyURL: jest.fn(),
+    getAppStudioBaseURL: jest.fn(),
+    getCredentialsForDestinationService: jest.fn(),
+    exposePort: jest.fn(),
+    generateABAPCloudDestinationName: jest.fn(),
+    createOAuth2UserTokenExchangeDest: jest.fn(),
+    BAS_DEST_INSTANCE_CRED_HEADER: 'bas-destination-instance-cred',
+    DestinationType: {},
+    Authentication: {},
+    Suffix: {},
+    ProxyType: {},
+    WebIDEUsage: {},
+    WebIDEAdditionalData: {},
+    AbapEnvType: {},
+    DestinationProxyType: {},
+    OAuthUrlType: {},
+    ENV: {}
+}));
+
+jest.unstable_mockModule('../../src/utils', () => ({
+    findBackendSystemByUrl: mockFindBackendSystemByUrl,
+    initTransportConfig: mockInitTransportConfig,
+    getAbapSystems: jest.fn(),
+    findDestination: jest.fn(),
+    isSameSystem: jest.fn(),
+    getPackageAnswer: jest.fn(),
+    useCreateTrDuringDeploy: jest.fn(),
+    queryPackages: jest.fn(),
+    reconcileAnswers: jest.fn(),
+    getTransportAnswer: jest.fn(),
+    getSystemConfig: jest.fn()
+}));
+
+const {
     defaultOrShowManualPackageQuestion,
     defaultOrShowManualTransportQuestion,
     defaultOrShowSearchPackageQuestion,
@@ -22,15 +74,8 @@ import {
     showUi5AppDeployConfigQuestion,
     showUrlQuestion,
     showUsernameQuestion
-} from '../../src/prompts/conditions';
-import * as utils from '../../src/utils';
-import { PromptState } from '../../src/prompts/prompt-state';
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
-}));
-
-const mockIsAppStudio = isAppStudio as jest.Mock;
+} = await import('../../src/prompts/conditions');
+const { PromptState } = await import('../../src/prompts/prompt-state');
 
 describe('Test abap deploy config inquirer conditions', () => {
     beforeEach(() => {
@@ -53,7 +98,7 @@ describe('Test abap deploy config inquirer conditions', () => {
         expect(showScpQuestion({ targetSystem: 'Url', url: '', package: '' })).toBe(false);
 
         // 3 scp value has been retrieved from existing system
-        jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue({
+        mockFindBackendSystemByUrl.mockReturnValue({
             name: 'Target system 1',
             url: 'http://saved.target.url',
             client: '100',
@@ -65,7 +110,7 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should show scp question', async () => {
-        jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue(undefined);
+        mockFindBackendSystemByUrl.mockReturnValue(undefined);
         expect(showScpQuestion({ targetSystem: 'Url', url: 'http://new.target.url', package: '' })).toBe(true);
     });
 
@@ -162,7 +207,7 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should show username question', async () => {
-        jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+        mockInitTransportConfig.mockResolvedValueOnce({
             transportConfig: {} as any,
             transportConfigNeedsCreds: true
         });
@@ -170,7 +215,7 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should not show username question', async () => {
-        jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+        mockInitTransportConfig.mockResolvedValueOnce({
             transportConfig: {} as any,
             transportConfigNeedsCreds: false
         });

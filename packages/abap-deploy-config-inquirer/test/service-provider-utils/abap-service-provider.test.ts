@@ -1,24 +1,51 @@
-import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
-import { PromptState } from '../../src/prompts/prompt-state';
+import { jest } from '@jest/globals';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
-import LoggerHelper from '../../src/logger-helper';
 import { AuthenticationType } from '@sap-ux/store';
 import { t } from '../../src/i18n';
-import exp from 'node:constants';
 
-jest.mock('@sap-ux/system-access', () => ({
-    ...jest.requireActual('@sap-ux/system-access'),
-    createAbapServiceProvider: jest.fn()
+const mockCreateAbapServiceProvider = jest.fn();
+const mockIsAppStudio = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    createAbapServiceProvider: mockCreateAbapServiceProvider
 }));
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio,
+    isOnPremiseDestination: jest.fn(),
+    listDestinations: jest.fn(),
+    isAbapEnvironmentOnBtp: jest.fn(),
+    isS4HC: jest.fn(),
+    getDisplayName: jest.fn(),
+    isAbapSystem: jest.fn(),
+    isAbapODataDestination: jest.fn(),
+    isFullUrlDestination: jest.fn(),
+    isPartialUrlDestination: jest.fn(),
+    isGenericODataDestination: jest.fn(),
+    isHTML5DynamicConfigured: jest.fn(),
+    getDestinationUrlForAppStudio: jest.fn(),
+    getAppStudioProxyURL: jest.fn(),
+    getAppStudioBaseURL: jest.fn(),
+    getCredentialsForDestinationService: jest.fn(),
+    exposePort: jest.fn(),
+    generateABAPCloudDestinationName: jest.fn(),
+    createOAuth2UserTokenExchangeDest: jest.fn(),
+    BAS_DEST_INSTANCE_CRED_HEADER: 'bas-destination-instance-cred',
+    DestinationType: {},
+    Authentication: {},
+    Suffix: {},
+    ProxyType: {},
+    WebIDEUsage: {},
+    WebIDEAdditionalData: {},
+    AbapEnvType: {},
+    DestinationProxyType: {},
+    OAuthUrlType: {},
+    ENV: {}
 }));
 
-const mockCreateAbapServiceProvider = createAbapServiceProvider as jest.Mock;
-const mockIsAppStudio = isAppStudio as jest.Mock;
+const { AbapServiceProviderManager } = await import('../../src/service-provider-utils/abap-service-provider');
+const { PromptState } = await import('../../src/prompts/prompt-state');
+const LoggerHelper = (await import('../../src/logger-helper')).default;
 
 describe('getOrCreateServiceProvider', () => {
     beforeAll(() => {

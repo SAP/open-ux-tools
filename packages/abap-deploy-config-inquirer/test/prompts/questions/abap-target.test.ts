@@ -1,32 +1,116 @@
-import { isAppStudio, isOnPremiseDestination } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { AbapDeployConfigPromptOptions } from '../../../src/types';
 import { promptNames, ClientChoiceValue, TargetSystemType } from '../../../src/types';
-import { getAbapTargetPrompts } from '../../../src/prompts/questions';
-import { getAbapSystems } from '../../../src/utils';
 import { mockDestinations } from '../../fixtures/destinations';
 import { mockTargetSystems } from '../../fixtures/targets';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import * as validators from '../../../src/prompts/validators';
-import * as conditions from '../../../src/prompts/conditions';
-import { initI18n, t } from '../../../src/i18n';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { UrlAbapTarget } from '@sap-ux/system-access';
-import { PromptState } from '../../../src/prompts/prompt-state';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isOnPremiseDestination: jest.fn(),
-    isAppStudio: jest.fn()
+const mockIsOnPremiseDestination = jest.fn();
+const mockIsAppStudio = jest.fn();
+const mockGetAbapSystems = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio,
+    isOnPremiseDestination: mockIsOnPremiseDestination,
+    listDestinations: jest.fn(),
+    isAbapEnvironmentOnBtp: jest.fn().mockReturnValue(false),
+    isS4HC: jest.fn(),
+    getDisplayName: jest.fn().mockImplementation((dest: any) => dest?.Name),
+    isAbapSystem: jest.fn(),
+    isAbapODataDestination: jest.fn(),
+    isFullUrlDestination: jest.fn(),
+    isPartialUrlDestination: jest.fn(),
+    isGenericODataDestination: jest.fn(),
+    isHTML5DynamicConfigured: jest.fn(),
+    getDestinationUrlForAppStudio: jest.fn(),
+    getAppStudioProxyURL: jest.fn(),
+    getAppStudioBaseURL: jest.fn(),
+    getCredentialsForDestinationService: jest.fn(),
+    exposePort: jest.fn(),
+    generateABAPCloudDestinationName: jest.fn(),
+    createOAuth2UserTokenExchangeDest: jest.fn(),
+    BAS_DEST_INSTANCE_CRED_HEADER: 'bas-destination-instance-cred',
+    DestinationType: {},
+    Authentication: {},
+    Suffix: {},
+    ProxyType: {},
+    WebIDEUsage: {},
+    WebIDEAdditionalData: {},
+    AbapEnvType: {},
+    DestinationProxyType: {},
+    OAuthUrlType: {},
+    ENV: {}
 }));
 
-jest.mock('../../../src/utils', () => ({
-    ...jest.requireActual('../../../src/utils'),
-    getAbapSystems: jest.fn()
+jest.unstable_mockModule('../../../src/utils', () => ({
+    getAbapSystems: mockGetAbapSystems,
+    findBackendSystemByUrl: jest.fn(),
+    findDestination: jest.fn(),
+    isSameSystem: jest.fn(),
+    initTransportConfig: jest.fn(),
+    getPackageAnswer: jest.fn(),
+    useCreateTrDuringDeploy: jest.fn(),
+    queryPackages: jest.fn(),
+    reconcileAnswers: jest.fn(),
+    getTransportAnswer: jest.fn(),
+    getSystemConfig: jest.fn()
 }));
 
-const mockIsOnPremiseDestination = isOnPremiseDestination as jest.Mock;
-const mockIsAppStudio = isAppStudio as jest.Mock;
-const mockGetAbapSystems = getAbapSystems as jest.Mock;
+const mockValidateDestinationQuestion = jest.fn();
+const mockUpdateDestinationPromptState = jest.fn();
+const mockValidateTargetSystemUrlCli = jest.fn();
+const mockValidateUrl = jest.fn();
+const mockValidateClientChoiceQuestion = jest.fn();
+const mockValidateTargetSystem = jest.fn();
+const mockValidateClient = jest.fn();
+
+jest.unstable_mockModule('../../../src/prompts/validators', () => ({
+    validateDestinationQuestion: mockValidateDestinationQuestion,
+    updateDestinationPromptState: mockUpdateDestinationPromptState,
+    validateTargetSystemUrlCli: mockValidateTargetSystemUrlCli,
+    validateUrl: mockValidateUrl,
+    validateClientChoiceQuestion: mockValidateClientChoiceQuestion,
+    validateTargetSystem: mockValidateTargetSystem,
+    validateClient: mockValidateClient,
+    validateCredentials: jest.fn(),
+    validateUi5AbapRepoName: jest.fn(),
+    validateAppDescription: jest.fn(),
+    validatePackage: jest.fn(),
+    validatePackageChoiceInput: jest.fn(),
+    validatePackageChoiceInputForCli: jest.fn(),
+    validateTransportChoiceInput: jest.fn(),
+    validateTransportQuestion: jest.fn(),
+    validateConfirmQuestion: jest.fn()
+}));
+
+const mockShowScpQuestion = jest.fn();
+const mockShowClientChoiceQuestion = jest.fn();
+const mockShowClientQuestion = jest.fn();
+const mockShowUrlQuestion = jest.fn();
+
+jest.unstable_mockModule('../../../src/prompts/conditions', () => ({
+    showScpQuestion: mockShowScpQuestion,
+    showClientChoiceQuestion: mockShowClientChoiceQuestion,
+    showClientQuestion: mockShowClientQuestion,
+    showUrlQuestion: mockShowUrlQuestion,
+    showUsernameQuestion: jest.fn(),
+    showPasswordQuestion: jest.fn(),
+    showUi5AppDeployConfigQuestion: jest.fn(),
+    showPackageInputChoiceQuestion: jest.fn(),
+    defaultOrShowManualPackageQuestion: jest.fn(),
+    defaultOrShowSearchPackageQuestion: jest.fn(),
+    showTransportInputChoice: jest.fn(),
+    defaultOrShowTransportListQuestion: jest.fn(),
+    defaultOrShowTransportCreatedQuestion: jest.fn(),
+    defaultOrShowManualTransportQuestion: jest.fn(),
+    showIndexQuestion: jest.fn()
+}));
+
+const { initI18n, t } = await import('../../../src/i18n');
+const { getAbapTargetPrompts } = await import('../../../src/prompts/questions');
+const { PromptState } = await import('../../../src/prompts/prompt-state');
 
 describe('getAbapTargetPrompts', () => {
     beforeAll(async () => {
@@ -132,7 +216,7 @@ describe('getAbapTargetPrompts', () => {
             backendSystems: undefined
         });
         mockIsOnPremiseDestination.mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateDestinationQuestion').mockResolvedValueOnce(true);
+        mockValidateDestinationQuestion.mockResolvedValueOnce(true);
 
         const abapDeployConfigPromptOptions = {
             backendTarget: {
@@ -183,7 +267,7 @@ describe('getAbapTargetPrompts', () => {
             destinations: mockDestinations,
             backendSystems: undefined
         });
-        const updateDestinationPromptStateSpy = jest.spyOn(validators, 'updateDestinationPromptState');
+        const updateDestinationPromptStateSpy = mockUpdateDestinationPromptState;
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const destinationCliSetterPrompt = abapTargetPrompts.find(
             (prompt) => prompt.name === promptNames.destinationCliSetter
@@ -206,6 +290,7 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: mockTargetSystems
         });
+        mockValidateTargetSystem.mockResolvedValueOnce(true);
 
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const targetSystemPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.targetSystem);
@@ -267,7 +352,7 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: mockTargetSystems
         });
-        const validateTargetSystemUrlCliSpy = jest.spyOn(validators, 'validateTargetSystemUrlCli');
+        const validateTargetSystemUrlCliSpy = mockValidateTargetSystemUrlCli;
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const targetSystemCliSetterPrompt = abapTargetPrompts.find(
             (prompt) => prompt.name === promptNames.targetSystemCliSetter
@@ -291,8 +376,9 @@ describe('getAbapTargetPrompts', () => {
             backendSystems: undefined
         });
         PromptState.isYUI = true;
-        jest.spyOn(validators, 'validateTargetSystemUrlCli').mockResolvedValueOnce();
-        jest.spyOn(validators, 'validateUrl').mockReturnValueOnce(true);
+        mockValidateTargetSystemUrlCli.mockResolvedValueOnce();
+        mockValidateUrl.mockReturnValueOnce(true);
+        mockShowUrlQuestion.mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const urlPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.url);
 
@@ -312,7 +398,7 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: undefined
         });
-        jest.spyOn(conditions, 'showScpQuestion').mockReturnValueOnce(true);
+        mockShowScpQuestion.mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({
             backendTarget: { abapTarget: { scp: true } as UrlAbapTarget }
         });
@@ -381,8 +467,8 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: undefined
         });
-        jest.spyOn(conditions, 'showClientChoiceQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateClientChoiceQuestion').mockReturnValueOnce(true);
+        mockShowClientChoiceQuestion.mockReturnValueOnce(true);
+        mockValidateClientChoiceQuestion.mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const clientChoicePrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.clientChoice);
 
@@ -417,8 +503,8 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: undefined
         });
-        jest.spyOn(conditions, 'showClientQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateClientChoiceQuestion').mockReturnValueOnce(true);
+        mockShowClientQuestion.mockReturnValueOnce(true);
+        mockValidateClient.mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({
             backendTarget: { abapTarget: { client: '100' } as UrlAbapTarget }
         });

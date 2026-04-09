@@ -1,6 +1,40 @@
-import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import { mockDestinations } from './fixtures/destinations';
-import {
+import { mockTargetSystems } from './fixtures/targets';
+import type { AbapDeployConfigAnswers, AbapDeployConfigAnswersInternal } from '../src/types';
+import { PackageInputChoices, TransportChoices } from '../src/types';
+import { CREATE_TR_DURING_DEPLOY } from '../src/constants';
+
+const mockListPackages = jest.fn();
+const mockGetTransportConfigInstance = jest.fn();
+const mockGetService = jest.fn();
+const mockIsAppStudio = jest.fn();
+const mockListDestinations = jest.fn();
+
+jest.unstable_mockModule('../src/validator-utils', () => ({
+    listPackages: mockListPackages,
+    getTransportList: jest.fn(),
+    createTransportNumber: jest.fn(),
+    isAppNameValid: jest.fn()
+}));
+
+jest.unstable_mockModule('../src/service-provider-utils', () => ({
+    getTransportConfigInstance: mockGetTransportConfigInstance,
+    listPackagesFromService: jest.fn(),
+    getTransportListFromService: jest.fn(),
+    createTransportNumberFromService: jest.fn()
+}));
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    getService: mockGetService
+}));
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio,
+    listDestinations: mockListDestinations
+}));
+
+const {
     findBackendSystemByUrl,
     findDestination,
     getAbapSystems,
@@ -11,43 +45,10 @@ import {
     queryPackages,
     reconcileAnswers,
     getTransportAnswer
-} from '../src/utils';
-import { getService } from '@sap-ux/store';
-import { mockTargetSystems } from './fixtures/targets';
-import { getTransportConfigInstance } from '../src/service-provider-utils';
-import { listPackages } from '../src/validator-utils';
-import LoggerHelper from '../src/logger-helper';
-import { initI18n, t } from '../src/i18n';
-import type { AbapDeployConfigAnswers, AbapDeployConfigAnswersInternal } from '../src/types';
-import { PackageInputChoices, TransportChoices } from '../src/types';
-import { CREATE_TR_DURING_DEPLOY } from '../src/constants';
-import { PromptState } from '../src/prompts/prompt-state';
-
-jest.mock('../src/validator-utils', () => ({
-    ...jest.requireActual('../src/validator-utils'),
-    listPackages: jest.fn()
-}));
-
-jest.mock('../src/service-provider-utils', () => ({
-    ...jest.requireActual('../src/service-provider-utils'),
-    getTransportConfigInstance: jest.fn()
-}));
-
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
-    getService: jest.fn()
-}));
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn(),
-    listDestinations: jest.fn()
-}));
-
-const mockGetService = getService as jest.Mock;
-const mockIsAppStudio = isAppStudio as jest.Mock;
-const mockListDestinations = listDestinations as jest.Mock;
-const mockGetTransportConfigInstance = getTransportConfigInstance as jest.Mock;
-const mockListPackages = listPackages as jest.Mock;
+} = await import('../src/utils');
+const LoggerHelper = (await import('../src/logger-helper')).default;
+const { initI18n, t } = await import('../src/i18n');
+const { PromptState } = await import('../src/prompts/prompt-state');
 
 describe('Test utils', () => {
     beforeAll(async () => {

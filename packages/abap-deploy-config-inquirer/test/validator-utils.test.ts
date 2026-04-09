@@ -1,20 +1,17 @@
-import { createTransportNumber, getTransportList, isAppNameValid, listPackages } from '../src/validator-utils';
-import {
-    listPackagesFromService,
-    getTransportListFromService,
-    createTransportNumberFromService
-} from '../src/service-provider-utils';
-import { initI18n, t } from '../src/i18n';
+import { jest } from '@jest/globals';
 
-jest.mock('../src/service-provider-utils', () => ({
-    listPackagesFromService: jest.fn(),
-    getTransportListFromService: jest.fn(),
-    createTransportNumberFromService: jest.fn()
+const mockListPackagesFromService = jest.fn();
+const mockGetTransportListFromService = jest.fn();
+const mockCreateTransportNumberFromService = jest.fn();
+
+jest.unstable_mockModule('../src/service-provider-utils', () => ({
+    listPackagesFromService: mockListPackagesFromService,
+    getTransportListFromService: mockGetTransportListFromService,
+    createTransportNumberFromService: mockCreateTransportNumberFromService
 }));
 
-const mockListPackagesFromService = listPackagesFromService as jest.Mock;
-const mockGetTransportListFromService = getTransportListFromService as jest.Mock;
-const mockCreateTransportNumberFromService = createTransportNumberFromService as jest.Mock;
+const { createTransportNumber, getTransportList, isAppNameValid, listPackages } = await import('../src/validator-utils');
+const { initI18n, t } = await import('../src/i18n');
 
 describe('validator-utils', () => {
     beforeAll(async () => {
@@ -57,7 +54,7 @@ describe('validator-utils', () => {
         expect(await createTransportNumber(createTransportParams, {})).toEqual(undefined);
 
         mockCreateTransportNumberFromService.mockResolvedValueOnce('NEWTR1');
-        expect(await createTransportNumberFromService(createTransportParams)).toEqual('NEWTR1');
+        expect(await createTransportNumber(createTransportParams, { url: 'http://mock.url', client: '123' })).toEqual('NEWTR1');
     });
 
     describe('isAppNameValid', () => {

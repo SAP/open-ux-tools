@@ -1,13 +1,73 @@
-import { initI18n, t } from '../../../../src/i18n';
-import { getPackagePrompts } from '../../../../src/prompts/questions';
-import * as helpers from '../../../../src/prompts/helpers';
-import * as conditions from '../../../../src/prompts/conditions';
-import * as validators from '../../../../src/prompts/validators';
+import { jest } from '@jest/globals';
 import { promptNames, PackageInputChoices } from '../../../../src/types';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
-import { PromptState } from '../../../../src/prompts/prompt-state';
 import { Severity } from '@sap-devx/yeoman-ui-types';
+
+const mockShowPackageInputChoiceQuestion = jest.fn();
+const mockDefaultOrShowManualPackageQuestion = jest.fn();
+const mockDefaultOrShowSearchPackageQuestion = jest.fn();
+const mockValidatePackageChoiceInput = jest.fn();
+const mockValidatePackageChoiceInputForCli = jest.fn();
+const mockValidatePackage = jest.fn();
+const mockGetPackageChoices = jest.fn();
+
+jest.unstable_mockModule('../../../../src/prompts/conditions', () => ({
+    showPackageInputChoiceQuestion: mockShowPackageInputChoiceQuestion,
+    defaultOrShowManualPackageQuestion: mockDefaultOrShowManualPackageQuestion,
+    defaultOrShowSearchPackageQuestion: mockDefaultOrShowSearchPackageQuestion,
+    showUsernameQuestion: jest.fn(),
+    showPasswordQuestion: jest.fn(),
+    showUrlQuestion: jest.fn(),
+    showScpQuestion: jest.fn(),
+    showClientChoiceQuestion: jest.fn(),
+    showClientQuestion: jest.fn(),
+    showUi5AppDeployConfigQuestion: jest.fn(),
+    showTransportInputChoice: jest.fn(),
+    defaultOrShowTransportListQuestion: jest.fn(),
+    defaultOrShowTransportCreatedQuestion: jest.fn(),
+    defaultOrShowManualTransportQuestion: jest.fn(),
+    showIndexQuestion: jest.fn()
+}));
+
+jest.unstable_mockModule('../../../../src/prompts/validators', () => ({
+    validatePackageChoiceInput: mockValidatePackageChoiceInput,
+    validatePackageChoiceInputForCli: mockValidatePackageChoiceInputForCli,
+    validatePackage: mockValidatePackage,
+    validateUrl: jest.fn(),
+    validateTargetSystem: jest.fn(),
+    validateTargetSystemUrlCli: jest.fn(),
+    updateDestinationPromptState: jest.fn(),
+    validateDestinationQuestion: jest.fn(),
+    validateClientChoiceQuestion: jest.fn(),
+    validateClient: jest.fn(),
+    validateCredentials: jest.fn(),
+    validateUi5AbapRepoName: jest.fn(),
+    validateAppDescription: jest.fn(),
+    validateTransportChoiceInput: jest.fn(),
+    validateTransportQuestion: jest.fn(),
+    validateConfirmQuestion: jest.fn()
+}));
+
+jest.unstable_mockModule('../../../../src/prompts/helpers', () => ({
+    getPackageChoices: mockGetPackageChoices,
+    getAbapSystemChoices: jest.fn(),
+    getDestinationChoices: jest.fn(),
+    getClientChoiceDefaults: jest.fn(),
+    getClientChoicePromptChoices: jest.fn(),
+    getTransportChoices: jest.fn(),
+    getTransportListChoices: jest.fn(),
+    getPackageInputChoices: jest.fn().mockReturnValue([
+        { name: 'Enter Manually', value: 'EnterManualChoice' },
+        { name: 'Choose from Existing', value: 'ListExistingChoice' }
+    ]),
+    updatePromptStateUrl: jest.fn(),
+    shouldRunValidation: jest.fn().mockReturnValue(true)
+}));
+
+const { initI18n, t } = await import('../../../../src/i18n');
+const { getPackagePrompts } = await import('../../../../src/prompts/questions');
+const { PromptState } = await import('../../../../src/prompts/prompt-state');
 
 describe('getPackagePrompts', () => {
     beforeAll(async () => {
@@ -67,8 +127,8 @@ describe('getPackagePrompts', () => {
     });
 
     test('should return expected values from packageInputChoice prompt methods', async () => {
-        jest.spyOn(conditions, 'showPackageInputChoiceQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validatePackageChoiceInput').mockResolvedValueOnce(true);
+        mockShowPackageInputChoiceQuestion.mockReturnValueOnce(true);
+        mockValidatePackageChoiceInput.mockResolvedValueOnce(true);
 
         const packagePrompts = getPackagePrompts({});
         const packageInputChoicePrompt = packagePrompts.find(
@@ -101,8 +161,7 @@ describe('getPackagePrompts', () => {
     });
 
     test('should return expected values from packageCliExecution prompt methods', async () => {
-        const validatePackageChoiceInputForCliSpy = jest.spyOn(validators, 'validatePackageChoiceInputForCli');
-        validatePackageChoiceInputForCliSpy.mockResolvedValueOnce();
+        mockValidatePackageChoiceInputForCli.mockResolvedValueOnce();
         // Cli
         const packagePromptsCli = getPackagePrompts({}, false, false);
         const packageCliExecutionPromptCli = packagePromptsCli.find(
@@ -123,12 +182,12 @@ describe('getPackagePrompts', () => {
             expect(await (packageCliExecutionPrompt.when as Function)({})).toBe(false);
         }
 
-        expect(validatePackageChoiceInputForCliSpy).toHaveBeenCalledTimes(1);
+        expect(mockValidatePackageChoiceInputForCli).toHaveBeenCalledTimes(1);
     });
 
     test('should return expected values from packageManual prompt methods', async () => {
-        jest.spyOn(conditions, 'defaultOrShowManualPackageQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validatePackage').mockResolvedValueOnce(true);
+        mockDefaultOrShowManualPackageQuestion.mockReturnValueOnce(true);
+        mockValidatePackage.mockResolvedValueOnce(true);
 
         const packagePrompts = getPackagePrompts({});
         const packageManualPrompt = packagePrompts.find((prompt) => prompt.name === promptNames.packageManual);
@@ -147,10 +206,10 @@ describe('getPackagePrompts', () => {
     });
 
     test('should return expected values from packageAutocomplete prompt methods', async () => {
-        jest.spyOn(conditions, 'defaultOrShowSearchPackageQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validatePackage').mockResolvedValueOnce(true);
-        jest.spyOn(validators, 'validatePackageChoiceInput').mockResolvedValueOnce(true);
-        jest.spyOn(helpers, 'getPackageChoices').mockResolvedValueOnce({
+        mockDefaultOrShowSearchPackageQuestion.mockReturnValueOnce(true);
+        mockValidatePackage.mockResolvedValueOnce(true);
+        mockValidatePackageChoiceInput.mockResolvedValueOnce(true);
+        mockGetPackageChoices.mockResolvedValueOnce({
             packages: ['TEST_PACKAGE_1', 'TEST_PACKAGE_2'],
             morePackageResultsMsg: 'Test additional msg'
         });

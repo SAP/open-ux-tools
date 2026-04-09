@@ -1,8 +1,49 @@
-import * as conditions from '../../../src/prompts/conditions';
-import * as validators from '../../../src/prompts/validators';
-import { initI18n, t } from '../../../src/i18n';
-import { getAuthPrompts } from '../../../src/prompts/questions';
+import { jest } from '@jest/globals';
 import { promptNames } from '../../../src/types';
+
+const mockShowUsernameQuestion = jest.fn();
+const mockShowPasswordQuestion = jest.fn();
+const mockValidateCredentials = jest.fn();
+
+jest.unstable_mockModule('../../../src/prompts/conditions', () => ({
+    showUsernameQuestion: mockShowUsernameQuestion,
+    showPasswordQuestion: mockShowPasswordQuestion,
+    showUrlQuestion: jest.fn(),
+    showScpQuestion: jest.fn(),
+    showClientChoiceQuestion: jest.fn(),
+    showClientQuestion: jest.fn(),
+    showUi5AppDeployConfigQuestion: jest.fn(),
+    showPackageInputChoiceQuestion: jest.fn(),
+    defaultOrShowManualPackageQuestion: jest.fn(),
+    defaultOrShowSearchPackageQuestion: jest.fn(),
+    showTransportInputChoice: jest.fn(),
+    defaultOrShowTransportListQuestion: jest.fn(),
+    defaultOrShowTransportCreatedQuestion: jest.fn(),
+    defaultOrShowManualTransportQuestion: jest.fn(),
+    showIndexQuestion: jest.fn()
+}));
+
+jest.unstable_mockModule('../../../src/prompts/validators', () => ({
+    validateCredentials: mockValidateCredentials,
+    validateUrl: jest.fn(),
+    validateTargetSystem: jest.fn(),
+    validateTargetSystemUrlCli: jest.fn(),
+    updateDestinationPromptState: jest.fn(),
+    validateDestinationQuestion: jest.fn(),
+    validateClientChoiceQuestion: jest.fn(),
+    validateClient: jest.fn(),
+    validateUi5AbapRepoName: jest.fn(),
+    validateAppDescription: jest.fn(),
+    validatePackage: jest.fn(),
+    validatePackageChoiceInput: jest.fn(),
+    validatePackageChoiceInputForCli: jest.fn(),
+    validateTransportChoiceInput: jest.fn(),
+    validateTransportQuestion: jest.fn(),
+    validateConfirmQuestion: jest.fn()
+}));
+
+const { initI18n, t } = await import('../../../src/i18n');
+const { getAuthPrompts } = await import('../../../src/prompts/questions');
 
 describe('getAuthPrompts', () => {
     beforeAll(async () => {
@@ -38,7 +79,7 @@ describe('getAuthPrompts', () => {
     });
 
     test('should return expected values from username prompt methods', async () => {
-        jest.spyOn(conditions, 'showUsernameQuestion').mockResolvedValueOnce(true);
+        mockShowUsernameQuestion.mockResolvedValueOnce(true);
 
         const authPrompts = getAuthPrompts({});
         const usernamePrompt = authPrompts.find((prompt) => prompt.name === promptNames.username);
@@ -50,8 +91,8 @@ describe('getAuthPrompts', () => {
     });
 
     test('should return expected values from password prompt methods', async () => {
-        jest.spyOn(conditions, 'showPasswordQuestion').mockReturnValue(true);
-        jest.spyOn(validators, 'validateCredentials').mockResolvedValueOnce(true);
+        mockShowPasswordQuestion.mockReturnValue(true);
+        mockValidateCredentials.mockResolvedValueOnce(true);
 
         const authPrompts = getAuthPrompts({});
         const passwordPrompt = authPrompts.find((prompt) => prompt.name === promptNames.password);

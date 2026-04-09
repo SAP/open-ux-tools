@@ -1,13 +1,36 @@
-import { getPrompts, prompt } from '../src';
-import { getService } from '@sap-ux/store';
+import { jest } from '@jest/globals';
 import { mockTargetSystems } from './fixtures/targets';
 import type { AbapDeployConfigAnswersInternal } from '../src/types';
 
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
-    getService: jest.fn()
+const mockGetService = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    getService: mockGetService,
+    AuthenticationType: {},
+    BackendSystem: class {},
+    BackendSystemKey: class {},
+    SystemType: {},
+    ConnectionType: {},
+    Entity: {},
+    TelemetrySetting: class {},
+    TelemetrySettingKey: class {},
+    ApiHubSettings: class {},
+    ApiHubSettingsKey: class {},
+    SystemService: class {},
+    TelemetrySettingService: class {},
+    ApiHubSettingsService: class {},
+    SystemMigrationStatus: class {},
+    SystemMigrationStatusKey: class {},
+    getSecureStore: jest.fn(),
+    getBackendSystemType: jest.fn(),
+    getFioriToolsDirectory: jest.fn(),
+    getSapToolsDirectory: jest.fn(),
+    FioriToolsSettings: {},
+    SapTools: {},
+    getFilesystemWatcherFor: jest.fn()
 }));
-const mockGetService = getService as jest.Mock;
+
+const { getPrompts, prompt } = await import('../src');
 
 describe('index', () => {
     it('should return prompts from getPrompts', async () => {

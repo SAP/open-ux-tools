@@ -1,10 +1,51 @@
-import { initI18n, t } from '../../../../src/i18n';
-import { getAppConfigPrompts } from '../../../../src/prompts/questions';
-import * as conditions from '../../../../src/prompts/conditions';
-import * as validators from '../../../../src/prompts/validators';
+import { jest } from '@jest/globals';
 import type { TransportConfig } from '../../../../src/types';
 import { promptNames } from '../../../../src/types';
-import { PromptState } from '../../../../src/prompts/prompt-state';
+
+const mockShowUi5AppDeployConfigQuestion = jest.fn();
+const mockValidateUi5AbapRepoName = jest.fn();
+const mockValidateAppDescription = jest.fn();
+
+jest.unstable_mockModule('../../../../src/prompts/conditions', () => ({
+    showUi5AppDeployConfigQuestion: mockShowUi5AppDeployConfigQuestion,
+    showUsernameQuestion: jest.fn(),
+    showPasswordQuestion: jest.fn(),
+    showUrlQuestion: jest.fn(),
+    showScpQuestion: jest.fn(),
+    showClientChoiceQuestion: jest.fn(),
+    showClientQuestion: jest.fn(),
+    showPackageInputChoiceQuestion: jest.fn(),
+    defaultOrShowManualPackageQuestion: jest.fn(),
+    defaultOrShowSearchPackageQuestion: jest.fn(),
+    showTransportInputChoice: jest.fn(),
+    defaultOrShowTransportListQuestion: jest.fn(),
+    defaultOrShowTransportCreatedQuestion: jest.fn(),
+    defaultOrShowManualTransportQuestion: jest.fn(),
+    showIndexQuestion: jest.fn()
+}));
+
+jest.unstable_mockModule('../../../../src/prompts/validators', () => ({
+    validateUi5AbapRepoName: mockValidateUi5AbapRepoName,
+    validateAppDescription: mockValidateAppDescription,
+    validateUrl: jest.fn(),
+    validateTargetSystem: jest.fn(),
+    validateTargetSystemUrlCli: jest.fn(),
+    updateDestinationPromptState: jest.fn(),
+    validateDestinationQuestion: jest.fn(),
+    validateClientChoiceQuestion: jest.fn(),
+    validateClient: jest.fn(),
+    validateCredentials: jest.fn(),
+    validatePackage: jest.fn(),
+    validatePackageChoiceInput: jest.fn(),
+    validatePackageChoiceInputForCli: jest.fn(),
+    validateTransportChoiceInput: jest.fn(),
+    validateTransportQuestion: jest.fn(),
+    validateConfirmQuestion: jest.fn()
+}));
+
+const { initI18n, t } = await import('../../../../src/i18n');
+const { getAppConfigPrompts } = await import('../../../../src/prompts/questions');
+const { PromptState } = await import('../../../../src/prompts/prompt-state');
 
 describe('getConfirmPrompts', () => {
     beforeAll(async () => {
@@ -46,8 +87,8 @@ describe('getConfirmPrompts', () => {
     });
 
     test('should return expected values from ui5 abap repo prompt methods', async () => {
-        jest.spyOn(conditions, 'showUi5AppDeployConfigQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateUi5AbapRepoName').mockReturnValueOnce(true);
+        mockShowUi5AppDeployConfigQuestion.mockReturnValueOnce(true);
+        mockValidateUi5AbapRepoName.mockReturnValueOnce(true);
 
         PromptState.transportAnswers = {
             transportConfig: {
@@ -77,8 +118,8 @@ describe('getConfirmPrompts', () => {
     });
 
     test('should return expected values from overwrite prompt methods', async () => {
-        jest.spyOn(conditions, 'showUi5AppDeployConfigQuestion').mockReturnValue(true);
-        jest.spyOn(validators, 'validateAppDescription').mockReturnValue(true);
+        mockShowUi5AppDeployConfigQuestion.mockReturnValue(true);
+        mockValidateAppDescription.mockReturnValue(true);
 
         const appConfigPrompts = getAppConfigPrompts({ description: { default: 'Mock description' } });
         const descriptionPrompt = appConfigPrompts.find((prompt) => prompt.name === promptNames.description);

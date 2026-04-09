@@ -1,8 +1,48 @@
-import { initI18n, t } from '../../../src/i18n';
-import { getConfirmPrompts } from '../../../src/prompts/questions';
-import * as conditions from '../../../src/prompts/conditions';
-import * as validators from '../../../src/prompts/validators';
+import { jest } from '@jest/globals';
 import { promptNames } from '../../../src/types';
+
+const mockShowIndexQuestion = jest.fn();
+const mockValidateConfirmQuestion = jest.fn();
+
+jest.unstable_mockModule('../../../src/prompts/conditions', () => ({
+    showIndexQuestion: mockShowIndexQuestion,
+    showUsernameQuestion: jest.fn(),
+    showPasswordQuestion: jest.fn(),
+    showUrlQuestion: jest.fn(),
+    showScpQuestion: jest.fn(),
+    showClientChoiceQuestion: jest.fn(),
+    showClientQuestion: jest.fn(),
+    showUi5AppDeployConfigQuestion: jest.fn(),
+    showPackageInputChoiceQuestion: jest.fn(),
+    defaultOrShowManualPackageQuestion: jest.fn(),
+    defaultOrShowSearchPackageQuestion: jest.fn(),
+    showTransportInputChoice: jest.fn(),
+    defaultOrShowTransportListQuestion: jest.fn(),
+    defaultOrShowTransportCreatedQuestion: jest.fn(),
+    defaultOrShowManualTransportQuestion: jest.fn()
+}));
+
+jest.unstable_mockModule('../../../src/prompts/validators', () => ({
+    validateConfirmQuestion: mockValidateConfirmQuestion,
+    validateUrl: jest.fn(),
+    validateTargetSystem: jest.fn(),
+    validateTargetSystemUrlCli: jest.fn(),
+    updateDestinationPromptState: jest.fn(),
+    validateDestinationQuestion: jest.fn(),
+    validateClientChoiceQuestion: jest.fn(),
+    validateClient: jest.fn(),
+    validateCredentials: jest.fn(),
+    validateUi5AbapRepoName: jest.fn(),
+    validateAppDescription: jest.fn(),
+    validatePackage: jest.fn(),
+    validatePackageChoiceInput: jest.fn(),
+    validatePackageChoiceInputForCli: jest.fn(),
+    validateTransportChoiceInput: jest.fn(),
+    validateTransportQuestion: jest.fn()
+}));
+
+const { initI18n, t } = await import('../../../src/i18n');
+const { getConfirmPrompts } = await import('../../../src/prompts/questions');
 
 describe('getConfirmPrompts', () => {
     beforeAll(async () => {
@@ -37,7 +77,7 @@ describe('getConfirmPrompts', () => {
     });
 
     test('should return expected values from index prompt methods', async () => {
-        jest.spyOn(conditions, 'showIndexQuestion').mockReturnValueOnce(true);
+        mockShowIndexQuestion.mockReturnValueOnce(true);
 
         const confirmPrompts = getConfirmPrompts({});
         const indexPrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.index);
@@ -50,7 +90,7 @@ describe('getConfirmPrompts', () => {
     });
 
     test('should return expected values from overwrite prompt methods', async () => {
-        jest.spyOn(validators, 'validateConfirmQuestion').mockReturnValue(true);
+        mockValidateConfirmQuestion.mockReturnValue(true);
 
         const confirmPrompts = getConfirmPrompts({});
         const overwritePrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.overwriteAbapConfig);

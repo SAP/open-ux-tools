@@ -1,15 +1,15 @@
+import { jest } from '@jest/globals';
 import { AxiosError } from 'axios';
-import { initI18n, t } from '../../src/i18n';
-import LoggerHelper from '../../src/logger-helper';
-import { listPackagesFromService } from '../../src/service-provider-utils';
-import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
 
-jest.mock('../../src/service-provider-utils/abap-service-provider', () => ({
-    ...jest.requireActual('../../src/service-provider-utils/abap-service-provider'),
-    AbapServiceProviderManager: { getOrCreateServiceProvider: jest.fn() }
+const mockGetOrCreateServiceProvider = jest.fn();
+
+jest.unstable_mockModule('../../src/service-provider-utils/abap-service-provider', () => ({
+    AbapServiceProviderManager: { getOrCreateServiceProvider: mockGetOrCreateServiceProvider }
 }));
 
-const mockGetOrCreateServiceProvider = AbapServiceProviderManager.getOrCreateServiceProvider as jest.Mock;
+const { initI18n, t } = await import('../../src/i18n');
+const LoggerHelper = (await import('../../src/logger-helper')).default;
+const { listPackagesFromService } = await import('../../src/service-provider-utils');
 
 describe('Test list packages', () => {
     beforeAll(async () => {
