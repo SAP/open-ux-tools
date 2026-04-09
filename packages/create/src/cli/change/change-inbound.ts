@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import { getLogger, traceChanges } from '../../tracing';
+import { getLogger, traceChanges } from '../../tracing/index.js';
 import {
     ChangeType,
     generateChange,
@@ -8,8 +8,8 @@ import {
     isCFEnvironment
 } from '@sap-ux/adp-tooling';
 import type { DescriptorVariantContent } from '@sap-ux/adp-tooling';
-import { promptYUIQuestions } from '../../common';
-import { validateAdpAppType, validateCloudAdpProject } from '../../validation';
+import { promptYUIQuestions } from '../../common/index.js';
+import { validateAdpAppType, validateCloudAdpProject } from '../../validation/index.js';
 
 /**
  * Add a new sub-command to change the inbound of an adaptation project to the given command.

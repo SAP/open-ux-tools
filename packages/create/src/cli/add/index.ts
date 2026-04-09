@@ -1,17 +1,17 @@
 import { Command } from 'commander';
-import { addAddMockserverConfigCommand } from './mockserver-config';
-import { addAddSmartLinksConfigCommand } from './smartlinks-config';
-import { addAddCdsPluginUi5Command } from './cds-plugin-ui';
-import { addInboundNavigationConfigCommand } from './navigation-config';
-import { addCardsEditorConfigCommand } from './cards-generator';
-import { addNewModelCommand } from './new-model';
-import { addAnnotationsToOdataCommand } from './annotations-to-odata';
-import { addAddHtmlFilesCmd } from './html';
-import { addComponentUsagesCommand } from './component-usages';
-import { addDeployConfigCommand } from './deploy-config';
-import { addAddVariantsConfigCommand } from './variants-config';
-import { addAdaptationProjectCFConfigCommand } from './adp-cf-config';
-import { addAddEslintConfigCommand } from './eslint-config';
+import { addAddMockserverConfigCommand } from './mockserver-config.js';
+import { addAddSmartLinksConfigCommand } from './smartlinks-config.js';
+import { addAddCdsPluginUi5Command } from './cds-plugin-ui.js';
+import { addInboundNavigationConfigCommand } from './navigation-config.js';
+import { addCardsEditorConfigCommand } from './cards-generator.js';
+import { addNewModelCommand } from './new-model.js';
+import { addAnnotationsToOdataCommand } from './annotations-to-odata.js';
+import { addAddHtmlFilesCmd } from './html.js';
+import { addComponentUsagesCommand } from './component-usages.js';
+import { addDeployConfigCommand } from './deploy-config.js';
+import { addAddVariantsConfigCommand } from './variants-config.js';
+import { addAdaptationProjectCFConfigCommand } from './adp-cf-config.js';
+import { addAddEslintConfigCommand } from './eslint-config.js';
 /**
  * Return 'create-fiori add *' commands. Commands include also the handler action.
  *

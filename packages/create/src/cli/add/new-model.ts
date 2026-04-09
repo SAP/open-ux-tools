@@ -3,9 +3,9 @@ import type { Command } from 'commander';
 import type { DescriptorVariant, NewModelAnswers, NewModelData } from '@sap-ux/adp-tooling';
 import { generateChange, ChangeType, getPromptsForNewModel, getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
 
-import { promptYUIQuestions } from '../../common';
-import { getLogger, traceChanges } from '../../tracing';
-import { validateAdpAppType } from '../../validation/validation';
+import { promptYUIQuestions } from '../../common/index.js';
+import { getLogger, traceChanges } from '../../tracing/index.js';
+import { validateAdpAppType } from '../../validation/index.js';
 
 /**
  * Add a new sub-command to add new odata service and new sapui5 model of an adaptation project to the given command.

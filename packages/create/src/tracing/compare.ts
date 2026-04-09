@@ -1,7 +1,7 @@
 import { diffJson, diffTrimmedLines } from 'diff';
 import type { Change } from 'diff';
 import { green, grey, red } from 'chalk';
-import { getLogger } from './logger';
+import { getLogger } from './logger.js';
 
 /**
  * Compare two json files.

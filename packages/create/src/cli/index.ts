@@ -1,12 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Command, type Option } from 'commander';
-import { getLogger } from '../tracing';
-import { getAddCommands } from './add';
-import { getRemoveCommands } from './remove';
-import { getGenerateCommands } from './generate';
-import { getChangeCommands } from './change';
-import { getConvertCommands } from './convert';
+import { getLogger } from '../tracing/index.js';
+import { getAddCommands } from './add/index.js';
+import { getRemoveCommands } from './remove/index.js';
+import { getGenerateCommands } from './generate/index.js';
+import { getChangeCommands } from './change/index.js';
+import { getConvertCommands } from './convert/index.js';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:

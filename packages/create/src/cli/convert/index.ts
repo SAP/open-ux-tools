@@ -1,6 +1,6 @@
 import { Command } from 'commander';
-import { addConvertPreviewCommand } from './preview';
-import { addConvertEslintCommand } from './eslint-config';
+import { addConvertPreviewCommand } from './preview.js';
+import { addConvertEslintCommand } from './eslint-config.js';
 
 /**
  * Return 'create-fiori convert *' commands. Commands include also the handler action.

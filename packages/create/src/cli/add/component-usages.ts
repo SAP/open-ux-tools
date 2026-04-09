@@ -9,9 +9,9 @@ import {
     type AddComponentUsageAnswers,
     type DescriptorVariant
 } from '@sap-ux/adp-tooling';
-import { getLogger, traceChanges } from '../../tracing';
-import { validateAdpAppType } from '../../validation/validation';
-import { promptYUIQuestions } from '../../common';
+import { getLogger, traceChanges } from '../../tracing/index.js';
+import { validateAdpAppType } from '../../validation/index.js';
+import { promptYUIQuestions } from '../../common/index.js';
 
 /**
  * Add a new sub-command to add component usages of an adaptation project to the given command.

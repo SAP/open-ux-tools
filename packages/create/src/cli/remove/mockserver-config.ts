@@ -1,8 +1,8 @@
 import type { Command } from 'commander';
 import prompts from 'prompts';
 import { removeMockserverConfig } from '@sap-ux/mockserver-config-writer';
-import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
-import { hasFileDeletes, validateBasePath } from '../../validation';
+import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing/index.js';
+import { hasFileDeletes, validateBasePath } from '../../validation/index.js';
 
 /**
  * Add the "add mockserver config" command to a passed command.
