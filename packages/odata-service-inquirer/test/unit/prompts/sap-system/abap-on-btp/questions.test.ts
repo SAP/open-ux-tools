@@ -1,15 +1,11 @@
+import { jest } from '@jest/globals';
 import type { AbapServiceProvider, ServiceInfo, ServiceProvider } from '@sap-ux/axios-extension';
 import type { InputQuestion, Question } from 'inquirer';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import { apiGetServicesInstancesFilteredByType as getServicesFromCF, type ServiceInstanceInfo } from '@sap/cf-tools';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
-import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import { getAbapOnBTPSystemQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
-import { PromptState } from '../../../../../src/utils';
 import type { ConnectedSystem } from '../../../../../src/types';
 import type { BackendSystem } from '@sap-ux/store';
-import * as utils from '../../../../../src/utils';
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue(true);
@@ -28,31 +24,87 @@ const connectionValidatorMock = {
         connectionValidatorMock.connectedSystemName = undefined; // Mimic the behaviour of the real function
         return validateServiceInfoMock;
     }),
-    connectedSystemName: undefined,
+    connectedSystemName: undefined as string | undefined,
     setConnectedSystem: jest.fn(),
     resetConnectionState: jest.fn()
 };
-jest.mock('../../../../../src/prompts/connectionValidator', () => {
+jest.unstable_mockModule('../../../../../src/prompts/connectionValidator', () => {
     return {
         ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
     };
 });
 
-let cfDiscoveredAbapEnvsMock: ServiceInstanceInfo[] = [];
-let uaaCredsMock = {
-    credentials: {
-        url: '',
-        uaa: {}
-    }
+const mockState = {
+    cfDiscoveredAbapEnvs: [] as any[],
+    uaaCreds: {
+        credentials: {
+            url: '',
+            uaa: {}
+        }
+    } as any
 };
-jest.mock('@sap/cf-tools', () => {
-    return {
-        ...jest.requireActual('@sap/cf-tools'),
-        apiGetServicesInstancesFilteredByType: jest.fn().mockImplementation(() => cfDiscoveredAbapEnvsMock),
-        apiGetInstanceCredentials: jest.fn().mockImplementation(() => uaaCredsMock),
-        cfGetTarget: jest.fn().mockResolvedValue({ org: 'testOrg', space: 'testSpace' })
-    };
-});
+
+const actualCfTools = await import('@sap/cf-tools');
+const mockApiGetServicesInstancesFilteredByType = jest
+    .fn<any>()
+    .mockImplementation(() => mockState.cfDiscoveredAbapEnvs);
+const mockApiGetInstanceCredentials = jest.fn<any>().mockImplementation(() => mockState.uaaCreds);
+jest.unstable_mockModule('@sap/cf-tools', () => ({
+    ...actualCfTools,
+    apiGetServicesInstancesFilteredByType: mockApiGetServicesInstancesFilteredByType,
+    apiGetInstanceCredentials: mockApiGetInstanceCredentials,
+    cfGetTarget: jest.fn().mockResolvedValue({ org: 'testOrg', space: 'testSpace' })
+}));
+
+// Also need to mock getCFAbapInstanceChoices from @sap-ux/inquirer-common since it
+// transitively calls @sap/cf-tools which may not be intercepted for CJS modules in ESM mode
+const actualInquirerCommon = await import('@sap-ux/inquirer-common');
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    ...actualInquirerCommon,
+    getCFAbapInstanceChoices: jest.fn().mockImplementation(async (errorHandler: any) => {
+        const choices: any[] = [];
+        try {
+            const serviceInstanceInfo: any[] = await mockApiGetServicesInstancesFilteredByType([]);
+            if (serviceInstanceInfo.length > 0) {
+                serviceInstanceInfo.forEach((service: any) => {
+                    choices.push({ name: service['label'], value: service });
+                });
+            } else {
+                errorHandler.logErrorMsgs(
+                    actualInquirerCommon.ERROR_TYPE.NO_ABAP_ENVS,
+                    'No ABAP environments in CF space found. Ensure an ABAP environment exists.'
+                );
+            }
+        } catch (error) {
+            errorHandler.logErrorMsgs(
+                actualInquirerCommon.ERROR_TYPE.NO_ABAP_ENVS,
+                'Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry. For more information, see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login.'
+            );
+        }
+        return choices.sort((a: any, b: any) => (a.name ? a.name.localeCompare(b.name ?? '') : 0));
+    })
+}));
+
+const actualUtils = await import('../../../../../src/utils');
+const mockIsBackendSystemKeyExisting = jest.fn<any>(actualUtils.isBackendSystemKeyExisting);
+jest.unstable_mockModule('../../../../../src/utils', () => ({
+    ...actualUtils,
+    isBackendSystemKeyExisting: mockIsBackendSystemKeyExisting
+}));
+
+// Mock generateABAPCloudDestinationName from @sap-ux/btp-utils to avoid calling real cfGetTarget
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    generateABAPCloudDestinationName: jest
+        .fn()
+        .mockImplementation((name: string) => `abap-cloud-${name}-testorg-testspace`)
+}));
+
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
+const { getAbapOnBTPSystemQuestions } =
+    await import('../../../../../src/prompts/datasources/sap-system/abap-on-btp/questions');
+const { PromptState } = await import('../../../../../src/utils');
 
 describe('questions', () => {
     beforeAll(async () => {
@@ -62,7 +114,7 @@ describe('questions', () => {
 
     beforeEach(() => {
         // Restore default mock implementations
-        jest.restoreAllMocks();
+        jest.clearAllMocks();
         connectionValidatorMock.validity = {};
         connectionValidatorMock.validateUrl = validateUrlMock;
         connectionValidatorMock.validateAuth = validateAuthMock;
@@ -250,7 +302,7 @@ describe('questions', () => {
 
         PromptState.isYUI = true;
         // If user is not logged in to CF, a warning message is logged and shown
-        (getServicesFromCF as jest.Mock).mockRejectedValueOnce(new Error('Not logged in'));
+        mockApiGetServicesInstancesFilteredByType.mockRejectedValueOnce(new Error('Not logged in'));
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
         expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
             'Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry. For more information, see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login. For more information, view the logs.'
@@ -262,7 +314,7 @@ describe('questions', () => {
         let cfDiscoPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
 
         PromptState.isYUI = true;
-        cfDiscoveredAbapEnvsMock = [
+        mockState.cfDiscoveredAbapEnvs = [
             { label: 'test1', serviceName: 'test1Name' },
             { label: 'test2', serviceName: 'test2Name' }
         ];
@@ -282,19 +334,21 @@ describe('questions', () => {
                 }
             }
         ]);
-        expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)(cfDiscoveredAbapEnvsMock[1])).toBe(true);
+        expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)(mockState.cfDiscoveredAbapEnvs[1])).toBe(
+            true
+        );
         expect(connectionValidatorMock.connectedSystemName).toBe('abap-cloud-test2-testorg-testspace');
         expect(PromptState.odataService.connectedSystem).toEqual({ serviceProvider: serviceProviderMock });
 
         // Validation error message is returned
         validateServiceInfoMock = 'Cannot connect';
-        expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)(cfDiscoveredAbapEnvsMock[0])).toBe(
+        expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)(mockState.cfDiscoveredAbapEnvs[0])).toBe(
             'Cannot connect'
         );
         expect(connectionValidatorMock.connectedSystemName).toBe(undefined);
         expect(PromptState.odataService.connectedSystem).toBeUndefined();
 
-        uaaCredsMock = {
+        mockState.uaaCreds = {
             credentials: {
                 url: 'http://s4hc:1234',
                 uaa: {
@@ -311,7 +365,7 @@ describe('questions', () => {
             userDisplayName: 'testUser',
             newOrUpdated: true,
             serviceKeys: {
-                uaa: uaaCredsMock.credentials.uaa
+                uaa: mockState.uaaCreds.credentials.uaa
             },
             systemType: 'AbapCloud',
             connectionType: 'abap_catalog'
@@ -327,7 +381,9 @@ describe('questions', () => {
         cfDiscoPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
         PromptState.reset();
         validateServiceInfoMock = true;
-        expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)(cfDiscoveredAbapEnvsMock[1])).toBe(true);
+        expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)(mockState.cfDiscoveredAbapEnvs[1])).toBe(
+            true
+        );
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined(); // Should be set from cached connected system
         expect(connectionValidatorMock.setConnectedSystem).toHaveBeenCalledWith(cachedConnectedSystem);
     });
@@ -338,7 +394,7 @@ describe('questions', () => {
         const cfDiscoPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
         const cliCfServicePrompt = newSystemQuestions.find((q) => q.name === 'cliCfAbapService');
 
-        cfDiscoveredAbapEnvsMock = [
+        mockState.cfDiscoveredAbapEnvs = [
             { label: 'test1', serviceName: 'test1Name' },
             { label: 'test2', serviceName: 'test2Name' }
         ];
@@ -361,7 +417,7 @@ describe('questions', () => {
         expect(
             await ((cliCfServicePrompt as Question).when as Function)({
                 abapOnBtpAuthType: 'cloudFoundry',
-                cloudFoundryAbapSystem: cfDiscoveredAbapEnvsMock[1]
+                cloudFoundryAbapSystem: mockState.cfDiscoveredAbapEnvs[1]
             })
         ).toBe(false); // cliCfServicePrompt is never shown so when always should be false
         expect(connectionValidatorMock.connectedSystemName).toBe('abap-cloud-test2-testorg-testspace');
@@ -372,7 +428,7 @@ describe('questions', () => {
         await expect(
             ((cliCfServicePrompt as Question).when as Function)({
                 abapOnBtpAuthType: 'cloudFoundry',
-                cloudFoundryAbapSystem: cfDiscoveredAbapEnvsMock[1]
+                cloudFoundryAbapSystem: mockState.cfDiscoveredAbapEnvs[1]
             })
         ).rejects.toThrow('Cannot connect');
 
@@ -410,7 +466,7 @@ describe('questions', () => {
             systemType: 'AbapCloud',
             connectionType: 'abap_catalog'
         };
-        jest.spyOn(utils, 'isBackendSystemKeyExisting').mockReturnValue(backendSystemReentrance);
+        mockIsBackendSystemKeyExisting.mockReturnValue(backendSystemReentrance);
 
         connectionValidatorMock.validity.authenticated = true;
         const newSystemQuestions = getAbapOnBTPSystemQuestions();

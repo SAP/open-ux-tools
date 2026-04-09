@@ -1,34 +1,34 @@
+import { jest } from '@jest/globals';
 import type { ConfirmQuestion } from '@sap-ux/inquirer-common';
-import { sendTelemetryEvent } from '@sap-ux/inquirer-common';
 import type { ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import { getValueHelpDownloadPrompt } from '../../../../../src/prompts/datasources/sap-system/external-services/value-help-download';
 import { promptNames } from '../../../../../src/types';
-import { PromptState } from '../../../../../src/utils';
-import LoggerHelper from '../../../../../src/prompts/logger-helper';
-import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
 
+// Mock inquirer-common
+const actualInquirerCommon = await import('@sap-ux/inquirer-common');
+const mockSendTelemetryEvent = jest.fn<any>();
 const mockReportEvent = jest.fn();
 const mockTelemetryClient = {
     reportEvent: mockReportEvent
 };
-
-jest.mock('@sap-ux/inquirer-common', () => ({
-    ...jest.requireActual('@sap-ux/inquirer-common'),
-    sendTelemetryEvent: jest.fn(),
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    ...actualInquirerCommon,
+    sendTelemetryEvent: mockSendTelemetryEvent,
     getTelemetryClient: jest.fn(() => mockTelemetryClient)
 }));
 
-jest.mock('@sap-ux/odata-service-writer', () => ({
-    ...jest.requireActual('@sap-ux/odata-service-writer'),
-    getExternalServiceReferences: jest.fn()
+// Mock odata-service-writer
+const actualOdataServiceWriter = await import('@sap-ux/odata-service-writer');
+const mockGetExternalServiceReferences = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({
+    ...actualOdataServiceWriter,
+    getExternalServiceReferences: mockGetExternalServiceReferences
 }));
 
-jest.mock('../../../../../src/prompts/logger-helper', () => ({
-    __esModule: true,
+// Mock logger-helper
+jest.unstable_mockModule('../../../../../src/prompts/logger-helper', () => ({
     default: {
         logger: {
             info: jest.fn(),
@@ -39,10 +39,12 @@ jest.mock('../../../../../src/prompts/logger-helper', () => ({
     }
 }));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+// Mock fiori-generator-shared
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
     TelemetryHelper: {
-        createTelemetryData: jest.fn((props) => ({
+        createTelemetryData: jest.fn((props: any) => ({
             ...props,
             Platform: 'CLI',
             OperatingSystem: 'test'
@@ -55,18 +57,22 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     }
 }));
 
-jest.mock('../../../../../src/utils', () => {
-    const { hostEnvironment } = jest.requireActual('@sap-ux/fiori-generator-shared');
-    return {
-        ...jest.requireActual('../../../../../src/utils'),
-        getPromptHostEnvironment: jest.fn(() => hostEnvironment.vscode) // Default to non-CLI for most tests
-    };
-});
+// Mock utils
+const actualUtils = await import('../../../../../src/utils');
+const mockGetPromptHostEnvironment = jest.fn<any>();
+jest.unstable_mockModule('../../../../../src/utils', () => ({
+    ...actualUtils,
+    getPromptHostEnvironment: mockGetPromptHostEnvironment
+}));
 
-const mockGetExternalServiceReferences = getExternalServiceReferences as jest.Mock;
-const mockSendTelemetryEvent = sendTelemetryEvent as jest.Mock;
-const mockGetPromptHostEnvironment = jest.requireMock('../../../../../src/utils').getPromptHostEnvironment;
-const { hostEnvironment } = jest.requireMock('@sap-ux/fiori-generator-shared');
+const { getValueHelpDownloadPrompt } =
+    await import('../../../../../src/prompts/datasources/sap-system/external-services/value-help-download');
+const { PromptState } = await import('../../../../../src/utils');
+const LoggerHelper = (await import('../../../../../src/prompts/logger-helper')).default;
+const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n');
+
+// Get the hostEnvironment from the mocked module so object references match the source module's imports
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('getValueHelpDownloadPrompt', () => {
     let connectionValidator: ConnectionValidator;
@@ -125,6 +131,9 @@ describe('getValueHelpDownloadPrompt', () => {
         convertedMetadataRef = {
             convertedMetadata: {} as ConvertedMetadata
         };
+
+        // Default to non-CLI
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.vscode);
     });
 
     describe('when condition', () => {
@@ -432,9 +441,6 @@ describe('getValueHelpDownloadPrompt', () => {
                 'testNamespace:valueHelpDownload': true
             };
 
-            // In CLI mode, we need to manually trigger both prompts:
-            // 1. valueHelpPrompt.when() - Sets up externalServiceRefs from service selection
-            // 2. cliDownloadPrompt.when() - Executes the download logic (workaround for CLI validate limitation)
             (valueHelpPrompt.when as (answers: any) => boolean)(answers);
             await (cliDownloadPrompt.when as (answers: any) => Promise<boolean>)(answers);
 

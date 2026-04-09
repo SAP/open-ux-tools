@@ -1,15 +1,8 @@
-import { listDestinations } from '@sap-ux/btp-utils';
-import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
-import {
-    CfAbapEnvServiceChoice,
-    connectWithBackendSystem,
-    createSystemChoices,
-    findDefaultSystemSelectionIndex,
-    NewSystemChoice
-} from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
+import { jest } from '@jest/globals';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { AxiosError } from '@sap-ux/axios-extension';
+import type { BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey } from '@sap-ux/store';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 
@@ -43,29 +36,39 @@ const mockAxiosError403 = {
     message: 'Request failed with status code 403'
 } as AxiosError;
 
-jest.mock('@sap-ux/store', () => ({
-    __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
-    ...jest.requireActual('@sap-ux/store'),
-    // Mock store access
-    getService: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValue(backendSystems),
-        read: jest.fn().mockImplementation((key) => {
-            const system = backendSystems.find((s) => s.url === key.url);
-            return Promise.resolve(system);
-        }),
-        partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
-            return Promise.resolve(system);
-        })
-    }))
+const mockGetService = jest.fn().mockImplementation(() => ({
+    getAll: jest.fn().mockResolvedValue(backendSystems),
+    read: jest.fn().mockImplementation((key) => {
+        const system = backendSystems.find((s) => s.url === key.url);
+        return Promise.resolve(system);
+    }),
+    partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
+        return Promise.resolve(system);
+    })
+}));
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
+    getService: mockGetService
 }));
 
 let mockIsAppStudio = false;
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+const mockListDestinations = jest.fn<any>().mockImplementation(() => jest.fn());
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
     isAppStudio: jest.fn().mockImplementation(() => mockIsAppStudio),
-    listDestinations: jest.fn().mockImplementation(() => jest.fn())
+    listDestinations: mockListDestinations
 }));
-const mockListDestinations = listDestinations as jest.Mock;
+
+const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n');
+const {
+    CfAbapEnvServiceChoice,
+    connectWithBackendSystem,
+    createSystemChoices,
+    findDefaultSystemSelectionIndex,
+    NewSystemChoice
+} = await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers');
 
 describe('Test system selection prompt helpers', () => {
     beforeAll(async () => {
@@ -272,8 +275,7 @@ describe('connectWithBackendSystem', () => {
         };
 
         // Mock getService to return our test system with path
-        const { getService } = jest.requireMock('@sap-ux/store');
-        getService.mockImplementationOnce(() => ({
+        mockGetService.mockImplementationOnce(() => ({
             read: jest.fn().mockResolvedValue(backendSystemReentranceWithPath)
         }));
 

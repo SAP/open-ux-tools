@@ -1,10 +1,17 @@
+import { jest } from '@jest/globals';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
-import { getNewSystemQuestions } from '../../../../src/prompts/datasources/sap-system/new-system/questions';
 import type { ConnectedSystem } from '../../../../src/types';
 import type { BackendSystem } from '@sap-ux/store';
-import * as abapOnBtpQuestions from '../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
+
+const actualAbapOnBtpQuestions = await import('../../../../src/prompts/datasources/sap-system/abap-on-btp/questions');
+const mockGetAbapOnBTPSystemQuestions = jest.fn<any>(actualAbapOnBtpQuestions.getAbapOnBTPSystemQuestions);
+jest.unstable_mockModule('../../../../src/prompts/datasources/sap-system/abap-on-btp/questions', () => ({
+    ...actualAbapOnBtpQuestions,
+    getAbapOnBTPSystemQuestions: mockGetAbapOnBTPSystemQuestions
+}));
+
+const { initI18nOdataServiceInquirer } = await import('../../../../src/i18n');
+const { getNewSystemQuestions } = await import('../../../../src/prompts/datasources/sap-system/new-system/questions');
 
 describe('questions', () => {
     beforeAll(async () => {
@@ -225,8 +232,8 @@ describe('questions', () => {
             } as unknown as AbapServiceProvider,
             backendSystem: backendSystemReentrance
         };
-        const getAbapOnBTPSystemQuestionsSpy = jest.spyOn(abapOnBtpQuestions, 'getAbapOnBTPSystemQuestions');
+        mockGetAbapOnBTPSystemQuestions.mockClear();
         getNewSystemQuestions(undefined, cachedConnectedSystem);
-        expect(getAbapOnBTPSystemQuestionsSpy).toHaveBeenCalledWith(undefined, cachedConnectedSystem);
+        expect(mockGetAbapOnBTPSystemQuestions).toHaveBeenCalledWith(undefined, cachedConnectedSystem);
     });
 });

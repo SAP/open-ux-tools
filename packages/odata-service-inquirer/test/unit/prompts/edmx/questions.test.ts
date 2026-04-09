@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { TableType } from '@sap-ux/fiori-elements-writer';
 import type { ConfirmQuestion, ListQuestion, InputQuestion } from '@sap-ux/inquirer-common';
@@ -5,18 +6,44 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { readFile } from 'node:fs/promises';
 import type { ListChoiceOptions, Question } from 'inquirer';
-import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
-import * as EntityHelper from '../../../../src/prompts/edmx/entity-helper';
-import { getEntitySelectionQuestions } from '../../../../src/prompts/edmx/questions';
-import LoggerHelper from '../../../../src/prompts/logger-helper';
 import type { EntitySelectionAnswers, PageBuildingBlockAnswers } from '../../../../src/types';
-import * as Types from '../../../../src/types';
-import { EntityPromptNames } from '../../../../src/types';
-import { PromptState } from '../../../../src/utils';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
+
+// Mock entity-helper to allow spying on getEntityChoices
+const actualEntityHelper = await import('../../../../src/prompts/edmx/entity-helper');
+const mockGetEntityChoices = jest.fn<any>(actualEntityHelper.getEntityChoices);
+jest.unstable_mockModule('../../../../src/prompts/edmx/entity-helper', () => ({
+    ...actualEntityHelper,
+    getEntityChoices: mockGetEntityChoices
+}));
+
+// Mock types module — we cannot mutate MetadataSizeWarningLimitKb in ESM, so we'll generate
+// sufficiently large metadata to trigger the size warning in affected tests
+const actualTypes = await import('../../../../src/types');
+
+const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n');
+const { getEntitySelectionQuestions } = await import('../../../../src/prompts/edmx/questions');
+import LoggerHelper from '../../../../src/prompts/logger-helper';
+const { EntityPromptNames } = await import('../../../../src/types');
+const { PromptState } = await import('../../../../src/utils');
+
+/**
+ * Pad metadata to exceed MetadataSizeWarningLimitKb (1000KB) while keeping it parseable.
+ * We insert XML comments into the metadata to increase its size without changing structure.
+ */
+function padMetadataToExceedLimit(metadata: string): string {
+    // Insert a large XML comment just before the closing tag
+    const padding = '<!-- ' + 'X'.repeat(1024 * 1024) + ' -->';
+    const insertPos = metadata.lastIndexOf('</edmx:Edmx>');
+    return metadata.slice(0, insertPos) + padding + metadata.slice(insertPos);
+}
 
 describe('Test entity prompts', () => {
     let metadataV4WithAggregateTransforms: string;
@@ -37,6 +64,10 @@ describe('Test entity prompts', () => {
         metadataV2NoEntities = await readFile(join(__dirname, '../test-data/metadataV2NoEntities.xml'), 'utf8');
         // Ensure i18n texts are loaded so we can test localised strings
         await initI18nOdataServiceInquirer();
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
     test('getEntityQuestions should return the questions when no options specified', () => {
@@ -84,10 +115,10 @@ describe('Test entity prompts', () => {
     });
 
     test('getEntityQuestions should return the correct questions: `ovp`', async () => {
-        const getEntityChoicesSpy = jest.spyOn(EntityHelper, 'getEntityChoices');
+        mockGetEntityChoices.mockImplementation(actualEntityHelper.getEntityChoices);
         // Analytical List Page
         let questions = getEntitySelectionQuestions(metadataV2, 'ovp');
-        expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV2, {
+        expect(mockGetEntityChoices).toHaveBeenCalledWith(metadataV2, {
             defaultMainEntityName: undefined,
             entitySetFilter: undefined
         });
@@ -104,7 +135,7 @@ describe('Test entity prompts', () => {
         expect(validateResult).toBe(true);
 
         // Filter entity type prompt validation message when no choices
-        getEntityChoicesSpy.mockReturnValueOnce({
+        mockGetEntityChoices.mockReturnValueOnce({
             choices: [],
             odataVersion: OdataVersion.v2,
             convertedMetadata: { version: '2' } as ConvertedMetadata
@@ -117,12 +148,12 @@ describe('Test entity prompts', () => {
     });
 
     test('getEntityQuestions should return the correct questions: `lrop`', async () => {
-        const getEntityChoicesSpy = jest.spyOn(EntityHelper, 'getEntityChoices');
+        mockGetEntityChoices.mockImplementation(actualEntityHelper.getEntityChoices);
         // List Report Object Page
         let questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'lrop', false, {
             defaultMainEntityName: 'Customer'
         });
-        expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
+        expect(mockGetEntityChoices).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
             defaultMainEntityName: 'Customer',
             entitySetFilter: undefined
         });
@@ -223,8 +254,9 @@ describe('Test entity prompts', () => {
             severity: 2
         });
         // Large edmx processing warning, should be shown when the metadata size exceeds the warning limit
-        Object.defineProperty(Types, 'MetadataSizeWarningLimitKb', { value: 1 });
-        questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'lrop', true);
+        // In ESM, we cannot mutate the MetadataSizeWarningLimitKb constant, so we pad metadata > 1000KB
+        const largeMetadata = padMetadataToExceedLimit(metadataV4WithAggregateTransforms);
+        questions = getEntitySelectionQuestions(largeMetadata, 'lrop', true);
         addLineItemAnnotationsPrompt = questions.find(
             (question) => question.name === EntityPromptNames.addLineItemAnnotations
         ) as ConfirmQuestion;
@@ -235,8 +267,7 @@ describe('Test entity prompts', () => {
         });
 
         // FEOP template should not show the line item annotation prompt
-        Object.defineProperty(Types, 'MetadataSizeWarningLimitKb', { value: 1 });
-        questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'feop');
+        questions = getEntitySelectionQuestions(largeMetadata, 'feop');
         addLineItemAnnotationsPrompt = questions.find(
             (question) => question.name === EntityPromptNames.addLineItemAnnotations
         ) as ConfirmQuestion;
@@ -251,7 +282,7 @@ describe('Test entity prompts', () => {
     });
 
     test('getEntityQuestions should return the questions depending on the specified template type and odata version', () => {
-        const getEntityChoicesSpy = jest.spyOn(EntityHelper, 'getEntityChoices');
+        mockGetEntityChoices.mockImplementation(actualEntityHelper.getEntityChoices);
         // Analytical List Page
         let questions = getEntitySelectionQuestions(metadataV2, 'alp');
         expect(questions).toEqual(
@@ -264,11 +295,11 @@ describe('Test entity prompts', () => {
                 expect.objectContaining({ name: EntityPromptNames.smartVariantManagement })
             ])
         );
-        getEntityChoicesSpy.mockClear();
+        mockGetEntityChoices.mockClear();
 
         // Form Entry Object Page
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'feop');
-        expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
+        expect(mockGetEntityChoices).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
             defaultMainEntityName: undefined,
             entitySetFilter: undefined
         });
@@ -280,15 +311,15 @@ describe('Test entity prompts', () => {
         );
         // Filter draft enabled entities when the template is Form Entry Object Page and `isCapService` is true
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'feop', true);
-        expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
+        expect(mockGetEntityChoices).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
             defaultMainEntityName: undefined,
             entitySetFilter: 'filterDraftEnabled'
         });
-        getEntityChoicesSpy.mockClear();
+        mockGetEntityChoices.mockClear();
 
         // Filter draft enabled entities when the template is Form Entry Object Page and `isCapService` is true
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'worklist', true);
-        expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
+        expect(mockGetEntityChoices).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
             defaultMainEntityName: undefined,
             entitySetFilter: undefined
         });
@@ -298,11 +329,11 @@ describe('Test entity prompts', () => {
                 expect.objectContaining({ name: EntityPromptNames.addLineItemAnnotations })
             ])
         );
-        getEntityChoicesSpy.mockClear();
+        mockGetEntityChoices.mockClear();
 
         // Flexible Page Model aka. Custom Page
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'fpm');
-        expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
+        expect(mockGetEntityChoices).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
             defaultMainEntityName: undefined,
             entitySetFilter: undefined
         });
@@ -504,7 +535,7 @@ describe('Test entity prompts', () => {
     });
 
     test('should skip navigation entity prompt when metadata contains a valid parameterised main entity', async () => {
-        const getEntityChoicesSpy = jest.spyOn(EntityHelper, 'getEntityChoices');
+        mockGetEntityChoices.mockImplementation(actualEntityHelper.getEntityChoices);
         const v4ParamertrisedEntitiesMetadata = await readFile(
             join(__dirname, '../test-data/parameterised-entity-metadata.xml'),
             'utf8'
@@ -519,7 +550,7 @@ describe('Test entity prompts', () => {
                 }
             }
         ];
-        getEntityChoicesSpy.mockReturnValueOnce({
+        mockGetEntityChoices.mockReturnValueOnce({
             choices: mockChoices,
             odataVersion: OdataVersion.v4,
             convertedMetadata: convert(parse(v4ParamertrisedEntitiesMetadata)) as ConvertedMetadata
@@ -551,7 +582,7 @@ describe('Test entity prompts', () => {
     });
 
     test('should skip navigation entity prompt when metadata contains multiple parameterised main entities', async () => {
-        const getEntityChoicesSpy = jest.spyOn(EntityHelper, 'getEntityChoices');
+        mockGetEntityChoices.mockImplementation(actualEntityHelper.getEntityChoices);
         const metadataV4WithMultipleParameterisedEntities = await readFile(
             join(__dirname, '../test-data/multiple-parameterised-entities-metadata.xml'),
             'utf8'
@@ -584,7 +615,7 @@ describe('Test entity prompts', () => {
         ];
 
         // Mock for the first main entity
-        getEntityChoicesSpy.mockReturnValueOnce({
+        mockGetEntityChoices.mockReturnValueOnce({
             choices: mockChoices,
             odataVersion: OdataVersion.v4,
             convertedMetadata: convert(parse(metadataV4WithMultipleParameterisedEntities)) as ConvertedMetadata,
@@ -614,7 +645,7 @@ describe('Test entity prompts', () => {
         ).toBe(false);
 
         // Mock for the second main entity
-        getEntityChoicesSpy.mockReturnValueOnce({
+        mockGetEntityChoices.mockReturnValueOnce({
             choices: mockChoices,
             odataVersion: OdataVersion.v4,
             convertedMetadata: convert(parse(metadataV4WithMultipleParameterisedEntities)) as ConvertedMetadata,

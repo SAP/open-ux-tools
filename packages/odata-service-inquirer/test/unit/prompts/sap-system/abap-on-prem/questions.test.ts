@@ -1,18 +1,15 @@
+import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider, V2CatalogService, V4CatalogService } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { InputQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
-import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
 import { BasicCredentialsPromptNames } from '../../../../../src/prompts/datasources/sap-system/credentials/questions';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
 import { promptNames } from '../../../../../src/types';
-import * as utils from '../../../../../src/utils';
-import { PromptState } from '../../../../../src/utils';
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue({ valResult: true });
@@ -38,11 +35,23 @@ const connectionValidatorMock = {
     systemAuthType: 'basic',
     ignoreCertError: undefined
 };
-jest.mock('../../../../../src/prompts/connectionValidator', () => {
+jest.unstable_mockModule('../../../../../src/prompts/connectionValidator', () => {
     return {
         ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
     };
 });
+
+const actualUtils = await import('../../../../../src/utils');
+const mockIsBackendSystemKeyExisting = jest.fn<any>(actualUtils.isBackendSystemKeyExisting);
+jest.unstable_mockModule('../../../../../src/utils', () => ({
+    ...actualUtils,
+    isBackendSystemKeyExisting: mockIsBackendSystemKeyExisting
+}));
+
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
+const { getAbapOnPremQuestions } =
+    await import('../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions');
+const { PromptState } = await import('../../../../../src/utils');
 
 describe('questions', () => {
     beforeAll(async () => {
@@ -52,7 +61,7 @@ describe('questions', () => {
 
     beforeEach(() => {
         // Restore default mock implementations
-        jest.restoreAllMocks();
+        jest.clearAllMocks();
         connectionValidatorMock.validity = {};
         connectionValidatorMock.validateUrl = validateUrlMock;
         connectionValidatorMock.validateAuth = validateAuthMock;
@@ -252,17 +261,16 @@ describe('questions', () => {
     });
 
     test('Should not show an existing system validation error (since it is shown with client prompt)', async () => {
-        const isBackendSystemKeyExistingSpy = jest.spyOn(utils, 'isBackendSystemKeyExisting');
         const systemUrl = 'http://some.abap.system:1234';
         const systemUrlPromptName = `abapOnPrem:${newSystemPromptNames.newSystemUrl}`;
         const newSystemQuestions = getAbapOnPremQuestions();
         const systemUrlQuestion = newSystemQuestions.find((question) => question.name === systemUrlPromptName);
         expect(await (systemUrlQuestion?.validate as Function)('')).toBe(true);
-        expect(isBackendSystemKeyExistingSpy).not.toHaveBeenCalled();
+        expect(mockIsBackendSystemKeyExisting).not.toHaveBeenCalled();
     });
 
     test('Should validate sap-client input', () => {
-        jest.spyOn(utils, 'isBackendSystemKeyExisting').mockReturnValue({
+        mockIsBackendSystemKeyExisting.mockReturnValue({
             name: 'System1234',
             url: 'http://some.system.hos',
             systemType: 'OnPrem',

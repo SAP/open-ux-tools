@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import {
     type Annotations,
@@ -9,16 +10,37 @@ import {
 } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import {
-    getSelectedServiceMessage,
-    validateService
-} from '../../../../../src/prompts/datasources/sap-system/service-selection/service-helper';
 import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection/types';
-import * as sharedServiceHelpers from '../../../../../src/prompts/datasources/service-helpers/service-helpers';
-import { PromptState } from '../../../../../src/utils';
-import { errorHandler } from '../../../../../src/prompts/prompt-helpers';
+
+jest.unstable_mockModule('../../../../../src/prompts/connectionValidator', () => {
+    return {
+        ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
+    };
+});
+
+let catalogServiceMock = {};
+const actualAxiosExtension = await import('@sap-ux/axios-extension');
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    ...actualAxiosExtension,
+    createForAbap: jest.fn().mockImplementation(() => ({
+        catalog: jest.fn().mockImplementation(() => catalogServiceMock)
+    }))
+}));
+
+const actualSharedServiceHelpers =
+    await import('../../../../../src/prompts/datasources/service-helpers/service-helpers');
+const mockShowCollabDraftWarning = jest.fn<any>(actualSharedServiceHelpers.showCollabDraftWarning);
+jest.unstable_mockModule('../../../../../src/prompts/datasources/service-helpers/service-helpers', () => ({
+    ...actualSharedServiceHelpers,
+    showCollabDraftWarning: mockShowCollabDraftWarning
+}));
+
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
+const { getSelectedServiceMessage, validateService } =
+    await import('../../../../../src/prompts/datasources/sap-system/service-selection/service-helper');
+const { PromptState } = await import('../../../../../src/utils');
+const { errorHandler } = await import('../../../../../src/prompts/prompt-helpers');
 
 const serviceV2a = {
     id: 'ZTRAVEL_DESK_SRV_0002',
@@ -66,28 +88,13 @@ const serviceChoices = [
     }
 ];
 
-jest.mock('../../../../../src/prompts/connectionValidator', () => {
-    return {
-        ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
-    };
-});
-
-let catalogServiceMock = {};
-jest.mock('@sap-ux/axios-extension', () => {
-    return {
-        ...jest.requireActual('@sap-ux/axios-extension'),
-        createForAbap: jest.fn().mockImplementation(() => ({
-            catalog: jest.fn().mockImplementation(() => catalogServiceMock)
-        }))
-    };
-});
-
 describe('Test service-helper function `getSelectedServiceMessage`', () => {
-    // Note: there is some test overlap with the `questions.test.ts` which are more focused on integration between prompt functions.
-    // This is additionally needed to test uncovered branches in the `getSelectedServiceMessage` function.
-
     beforeAll(async () => {
         await initI18nOdataServiceInquirer();
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
     test('should return warning if no service choices', async () => {
@@ -151,7 +158,7 @@ describe('Test service-helper function `getSelectedServiceMessage`', () => {
     });
 
     test('should return warning if collaborative draft is not enabled', async () => {
-        jest.spyOn(sharedServiceHelpers, 'showCollabDraftWarning').mockReturnValue(true);
+        mockShowCollabDraftWarning.mockReturnValue(true);
         const serviceMsgResult = await getSelectedServiceMessage(
             serviceChoices,
             serviceAnswerV4,
@@ -305,10 +312,6 @@ describe('Test service-helper function `validateService`', () => {
     });
 
     test('Should get metadata and annotations for v2 services when using partial/full url destinations', async () => {
-        /**
-         * Partial/full URL destinations wont have a catalog defined in the connection validator.
-         * This test is to replicate that scenario.
-         */
         const serviceAnswer = {
             servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
         } as ServiceAnswer;

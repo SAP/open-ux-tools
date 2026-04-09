@@ -1,14 +1,9 @@
+import { jest } from '@jest/globals';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
-import { getCfAbapBASQuestions } from '../../../../../src/prompts/datasources/sap-system/cf-abap/questions';
-import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
-import * as btpUtils from '@sap-ux/btp-utils';
 import { type ServiceInstanceInfo } from '@sap/cf-tools';
-import * as cfTools from '@sap/cf-tools';
-import { PromptState } from '../../../../../src/utils/prompt-state';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
-import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
-import * as utils from '../../../../../src/utils';
 
 const serviceProviderMock = {} as Partial<ServiceProvider>;
 
@@ -17,12 +12,9 @@ const connectionValidatorMock = {
     validateDestination: jest.fn().mockResolvedValue({ valResult: true }),
     serviceProvider: serviceProviderMock
 };
-
-jest.mock('../../../../../src/prompts/connectionValidator', () => {
-    return {
-        ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
-    };
-});
+jest.unstable_mockModule('../../../../../src/prompts/connectionValidator', () => ({
+    ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
+}));
 
 const uaaCredsMock = {
     credentials: {
@@ -34,12 +26,12 @@ const uaaCredsMock = {
         url: 'http://123abcd-fully-resolved-host-url.abap.somewhereaws.hanavlab.ondemand.com'
     }
 };
-jest.mock('@sap/cf-tools', () => {
-    return {
-        ...jest.requireActual('@sap/cf-tools'),
-        apiGetInstanceCredentials: jest.fn().mockImplementation(() => uaaCredsMock)
-    };
-});
+const actualCfTools = await import('@sap/cf-tools');
+const mockApiGetInstanceCredentials = jest.fn<any>().mockImplementation(() => uaaCredsMock);
+jest.unstable_mockModule('@sap/cf-tools', () => ({
+    ...actualCfTools,
+    apiGetInstanceCredentials: mockApiGetInstanceCredentials
+}));
 
 const createdDestinationMock: Destination = {
     Name: 'testDestName',
@@ -50,16 +42,29 @@ const createdDestinationMock: Destination = {
     Description: 'testDescription'
 };
 
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        ...jest.requireActual('@sap-ux/btp-utils'),
-        createOAuth2UserTokenExchangeDest: jest.fn().mockImplementation(async () => createdDestinationMock),
-        generateABAPCloudDestinationName: jest
-            .fn()
-            .mockImplementation((name: string) => `${name}-someCfOrg-someCfSpace`),
-        isAppStudio: jest.fn().mockImplementation(() => true)
-    };
-});
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+const mockCreateOAuth2Dest = jest.fn<any>().mockImplementation(async () => createdDestinationMock);
+const mockGenerateABAPCloudDestinationName = jest
+    .fn<any>()
+    .mockImplementation((name: string) => `${name}-someCfOrg-someCfSpace`);
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    createOAuth2UserTokenExchangeDest: mockCreateOAuth2Dest,
+    generateABAPCloudDestinationName: mockGenerateABAPCloudDestinationName,
+    isAppStudio: jest.fn().mockImplementation(() => true)
+}));
+
+const actualUtils = await import('../../../../../src/utils');
+const mockIsBackendSystemKeyExisting = jest.fn<any>(actualUtils.isBackendSystemKeyExisting);
+jest.unstable_mockModule('../../../../../src/utils', () => ({
+    ...actualUtils,
+    isBackendSystemKeyExisting: mockIsBackendSystemKeyExisting
+}));
+
+const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n');
+const { getCfAbapBASQuestions } = await import('../../../../../src/prompts/datasources/sap-system/cf-abap/questions');
+const { PromptState } = await import('../../../../../src/utils');
+
 beforeAll(async () => {
     await initI18nOdataServiceInquirer();
 });
@@ -116,10 +121,6 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
 
     test('test getCfAbapBASQuestions validate() will create a new destination for services retreival', async () => {
         PromptState.isYUI = true;
-        const getCredsSpy = jest.spyOn(cfTools, 'apiGetInstanceCredentials');
-        const createDestSpy = jest.spyOn(btpUtils, 'createOAuth2UserTokenExchangeDest');
-        const validateDestSpy = jest.spyOn(connectionValidatorMock, 'validateDestination');
-        const existingBackendSpy = jest.spyOn(utils, 'isBackendSystemKeyExisting');
         const questions = getCfAbapBASQuestions();
         const cfDiscoQuestion = questions.find((question) => question.name === `cfAbapBas:cloudFoundryAbapSystem`);
         expect(
@@ -128,8 +129,8 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 serviceName: 'test1-cfServicetechnicalName'
             } as ServiceInstanceInfo)
         ).toBe(true);
-        expect(getCredsSpy).toHaveBeenCalledWith('test1-cFAbapService');
-        expect(createDestSpy).toHaveBeenCalledWith(
+        expect(mockApiGetInstanceCredentials).toHaveBeenCalledWith('test1-cFAbapService');
+        expect(mockCreateOAuth2Dest).toHaveBeenCalledWith(
             'test1-cFAbapService',
             {
                 uaaCredentials: uaaCredsMock.credentials.uaa,
@@ -137,16 +138,19 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
             },
             expect.any(LoggerHelper.logger.constructor)
         );
-        expect(validateDestSpy).toHaveBeenCalledWith(createdDestinationMock, undefined, undefined);
+        expect(connectionValidatorMock.validateDestination).toHaveBeenCalledWith(
+            createdDestinationMock,
+            undefined,
+            undefined
+        );
         expect(PromptState.odataService.connectedSystem?.destination).toEqual(createdDestinationMock);
-        expect(existingBackendSpy).not.toHaveBeenCalled();
+        expect(mockIsBackendSystemKeyExisting).not.toHaveBeenCalled();
     });
 
     test('test getCfAbapBASQuestions validate() will throw an exception if the user is missing privileges on CF', async () => {
         PromptState.isYUI = true;
         const errMsg = `Couldn't create the destination from following error: Request failed with status code 403. Error code=403`;
-        const getCredsSpy = jest.spyOn(cfTools, 'apiGetInstanceCredentials');
-        const createDestSpy = jest.spyOn(btpUtils, 'createOAuth2UserTokenExchangeDest').mockImplementation(() => {
+        mockCreateOAuth2Dest.mockImplementation(() => {
             throw new Error(errMsg);
         });
         const questions = getCfAbapBASQuestions();
@@ -157,8 +161,8 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 serviceName: 'test1-cfServicetechnicalName'
             } as ServiceInstanceInfo)
         ).toEqual(errMsg);
-        expect(getCredsSpy).toHaveBeenCalledWith('test1-cFAbapService');
-        expect(createDestSpy).toHaveBeenCalled();
+        expect(mockApiGetInstanceCredentials).toHaveBeenCalledWith('test1-cFAbapService');
+        expect(mockCreateOAuth2Dest).toHaveBeenCalled();
     });
 
     test('Should include value help download prompt when promptOptions.valueHelpDownload.hide is false', () => {

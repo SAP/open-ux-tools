@@ -1,20 +1,15 @@
+import { jest } from '@jest/globals';
 import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 import { type Destination, WebIDEUsage } from '@sap-ux/btp-utils';
 import type { InputQuestion, PasswordQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
 import { type BackendSystem } from '@sap-ux/store';
-import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
-import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import { getCredentialsPrompts } from '../../../../../src/prompts/datasources/sap-system/credentials/questions';
-import { promptNames } from '../../../../../src/types';
-import type { NewSystemAnswers } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
-import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
-import { PromptState } from '../../../../../src/utils';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 // Mock SystemService
 const mockSystemServiceRead = jest.fn();
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
     SystemService: jest.fn().mockImplementation(() => ({
         read: mockSystemServiceRead
     }))
@@ -28,7 +23,7 @@ const validateAuthMock = jest.fn().mockResolvedValue({ valResult: true });
 const isAuthRequiredMock = jest.fn().mockResolvedValue(false);
 
 const connectionValidatorMock = {
-    validity: {} as ConnectionValidator['validity'],
+    validity: {} as any,
     validatedUrl: validatedUrlMock,
     validateAuth: validateAuthMock,
     isAuthRequired: isAuthRequiredMock,
@@ -39,11 +34,17 @@ const connectionValidatorMock = {
     ignoreCertError: false
 };
 
-jest.mock('../../../../../src/prompts/connectionValidator', () => {
-    return {
-        ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
-    };
-});
+jest.unstable_mockModule('../../../../../src/prompts/connectionValidator', () => ({
+    ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
+}));
+
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
+const { ConnectionValidator } = await import('../../../../../src/prompts/connectionValidator');
+const { getCredentialsPrompts } =
+    await import('../../../../../src/prompts/datasources/sap-system/credentials/questions');
+const { promptNames } = await import('../../../../../src/types');
+const { newSystemPromptNames } = await import('../../../../../src/prompts/datasources/sap-system/new-system/types');
+const { PromptState } = await import('../../../../../src/utils');
 
 describe('Test credentials prompts', () => {
     const promptNamespace = 'someNamespace';
@@ -281,7 +282,7 @@ describe('Test credentials prompts', () => {
         expect(
             passwordPrompt.additionalMessages?.('123', {
                 [newSystemPromptNames.newSystemType]: 'abapOnPrem'
-            } as NewSystemAnswers)
+            } as any)
         ).toBeUndefined();
     });
 

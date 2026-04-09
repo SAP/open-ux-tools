@@ -1,13 +1,15 @@
-import { validateServiceKey, validateSystemName } from '../../../../src/prompts/datasources/sap-system/validators';
-import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
+import { jest } from '@jest/globals';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 
-jest.mock('@sap-ux/store', () => ({
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
     getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([{ name: 'new system' } as BackendSystem])
     }))
 }));
+
 const serviceInfoMock: Partial<ServiceInfo> = {
     uaa: {
         clientid: 'clientid',
@@ -24,14 +26,20 @@ const serviceInfoMock: Partial<ServiceInfo> = {
 };
 const serviceKeyFilePath = '/service/key/file/path';
 const unparseableServiceKey = 'unparseableServiceKey';
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
+
+const actualFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
     readFileSync: jest
         .fn()
-        .mockImplementation((path) =>
+        .mockImplementation((path: string) =>
             path === serviceKeyFilePath ? JSON.stringify(serviceInfoMock) : unparseableServiceKey
         )
 }));
+
+const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n');
+const { validateServiceKey, validateSystemName } =
+    await import('../../../../src/prompts/datasources/sap-system/validators');
 
 describe('prompt validators', () => {
     beforeAll(async () => {

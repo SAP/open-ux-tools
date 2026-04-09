@@ -1,16 +1,14 @@
-import { initI18nOdataServiceInquirer } from '../../../src/i18n';
-import { getDatasourceTypeChoices } from '../../../src/prompts/prompt-helpers';
-import * as btpUtils from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 
-/**
- * Workaround to for spyOn TypeError: Jest cannot redefine property
- */
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        __esModule: true,
-        ...jest.requireActual('@sap-ux/btp-utils')
-    };
-});
+let mockIsAppStudio = false;
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: jest.fn().mockImplementation(() => mockIsAppStudio)
+}));
+
+const { initI18nOdataServiceInquirer } = await import('../../../src/i18n');
+const { getDatasourceTypeChoices } = await import('../../../src/prompts/prompt-helpers');
 
 describe('prompt-helpers', () => {
     beforeAll(async () => {
@@ -21,6 +19,7 @@ describe('prompt-helpers', () => {
     afterEach(() => {
         // Ensure test isolation
         jest.restoreAllMocks();
+        mockIsAppStudio = false;
     });
 
     test('getDatasourceTypeChoices', () => {
@@ -45,7 +44,7 @@ describe('prompt-helpers', () => {
             ]
         `);
 
-        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValueOnce(true);
+        mockIsAppStudio = true;
         expect(getDatasourceTypeChoices({ includeNone: true })).toMatchInlineSnapshot(`
             [
               {

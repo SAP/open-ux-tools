@@ -1,12 +1,6 @@
+import { jest } from '@jest/globals';
 import type { Annotations } from '@sap-ux/axios-extension';
-import { AbapServiceProvider, V2CatalogService, createServiceForUrl } from '@sap-ux/axios-extension';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { AxiosError, AxiosResponse } from 'axios';
-import { ErrorHandler } from '@sap-ux/inquirer-common';
-import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
-import { validateService } from '../../../../src/prompts/datasources/service-url/validators'; // Import the validateService function from its module
-import LoggerHelper from '../../../../src/prompts/logger-helper';
-import { PromptState } from '../../../../src/utils';
 
 let mockAnnotations: Annotations[] = [];
 const catalogServiceMock = jest.fn().mockImplementation(() => ({
@@ -14,14 +8,24 @@ const catalogServiceMock = jest.fn().mockImplementation(() => ({
     interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } }
 }));
 
-jest.mock('@sap-ux/axios-extension', () => ({
-    __esModule: true,
-    ...jest.requireActual('@sap-ux/axios-extension'),
-    AbapServiceProvider: jest.fn().mockImplementation(() => ({
-        catalog: catalogServiceMock
-    })),
-    createForAbap: jest.fn().mockImplementation(() => new AbapServiceProvider())
+const mockAbapServiceProvider = {
+    catalog: catalogServiceMock
+};
+
+const actualAxiosExtension = await import('@sap-ux/axios-extension');
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    ...actualAxiosExtension,
+    AbapServiceProvider: jest.fn().mockImplementation(() => mockAbapServiceProvider),
+    createForAbap: jest.fn().mockImplementation(() => mockAbapServiceProvider)
 }));
+
+const { V2CatalogService, createServiceForUrl } = await import('@sap-ux/axios-extension');
+const { OdataVersion } = await import('@sap-ux/odata-service-writer');
+const { ErrorHandler } = await import('@sap-ux/inquirer-common');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n');
+const { validateService } = await import('../../../../src/prompts/datasources/service-url/validators');
+const LoggerHelper = (await import('../../../../src/prompts/logger-helper')).default;
+const { PromptState } = await import('../../../../src/utils');
 
 describe('Test service url validators', () => {
     const validMetadata =

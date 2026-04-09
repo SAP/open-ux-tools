@@ -1,13 +1,15 @@
-import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
-import { suggestSystemName } from '../../../../src/prompts/datasources/sap-system/prompt-helpers';
+import { jest } from '@jest/globals';
 
-jest.mock('@sap-ux/store', () => ({
-    __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
-    ...jest.requireActual('@sap-ux/store'),
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
     getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([{ name: 'system1' }, { name: 'system2' }, { name: 'system2 (1)' }])
     }))
 }));
+
+const { initI18nOdataServiceInquirer } = await import('../../../../src/i18n');
+const { suggestSystemName } = await import('../../../../src/prompts/datasources/sap-system/prompt-helpers');
 
 describe('Test prompt-helpers', () => {
     const systemUrl = 'https://ldciu1y.wdf.sap.corp:44355';

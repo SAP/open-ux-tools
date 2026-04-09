@@ -1,23 +1,37 @@
+import { jest } from '@jest/globals';
 import { ODataService, type ServiceProvider } from '@sap-ux/axios-extension';
 import type { SapSystemType } from '../../../../../src';
-import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
-import { getUserSystemNameQuestion } from '../../../../../src/prompts/datasources/sap-system/shared-prompts/shared-prompts';
-import * as sapSystemValidators from '../../../../../src/prompts/datasources/sap-system/validators';
-import { PromptState } from '../../../../../src/utils';
-import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 
-jest.mock('@sap-ux/store', () => ({
-    __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
-    ...jest.requireActual('@sap-ux/store'),
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
     getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([{ name: 'http://abap.on.prem:1234' }])
     }))
 }));
 
+const actualSapSystemValidators = await import('../../../../../src/prompts/datasources/sap-system/validators');
+const mockValidateSystemName = jest.fn<any>(actualSapSystemValidators.validateSystemName);
+jest.unstable_mockModule('../../../../../src/prompts/datasources/sap-system/validators', () => ({
+    ...actualSapSystemValidators,
+    validateSystemName: mockValidateSystemName
+}));
+
+const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n');
+const { getUserSystemNameQuestion } =
+    await import('../../../../../src/prompts/datasources/sap-system/shared-prompts/shared-prompts');
+const { PromptState } = await import('../../../../../src/utils');
+const { ConnectionValidator } = await import('../../../../../src/prompts/connectionValidator');
+
 describe('Test new system prompt', () => {
     beforeAll(async () => {
         await initI18nOdataServiceInquirer();
         delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
     test('Should prompt for system name', async () => {
@@ -52,7 +66,6 @@ describe('Test new system prompt', () => {
     });
 
     test('Should validate user input system name', async () => {
-        const validateSystemName = jest.spyOn(sapSystemValidators, 'validateSystemName');
         const connectValidator = new ConnectionValidator();
         const userSystemNamePrompt = getUserSystemNameQuestion(connectValidator);
         const serviceUrl = 'http://abap.on.prem:1234';
@@ -61,7 +74,7 @@ describe('Test new system prompt', () => {
         expect(await (userSystemNamePrompt.validate as Function)(serviceUrl)).toBe(
             'A system with that name already exists in the secure storage. Please try a different name.'
         );
-        expect(validateSystemName).toHaveBeenCalledWith(serviceUrl);
+        expect(mockValidateSystemName).toHaveBeenCalledWith(serviceUrl);
 
         // Only connected systems should be stored
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
@@ -76,7 +89,7 @@ describe('Test new system prompt', () => {
                 storeSystemCredentials: true
             })
         ).toBe(true);
-        expect(validateSystemName).toHaveBeenCalledWith('http://abap.on.prem:1234 12/08/24');
+        expect(mockValidateSystemName).toHaveBeenCalledWith('http://abap.on.prem:1234 12/08/24');
 
         expect(PromptState.odataService.connectedSystem.backendSystem).toEqual({
             authenticationType: 'basic',

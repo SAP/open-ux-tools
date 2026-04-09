@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type {
     ODataService,
@@ -7,21 +8,14 @@ import type {
     V4CatalogService
 } from '@sap-ux/axios-extension';
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ListQuestion, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers, ChoiceOptions } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
-import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
-import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection';
-import { getSystemServiceQuestion } from '../../../../../src/prompts/datasources/sap-system/service-selection';
-import * as serviceHelpers from '../../../../../src/prompts/datasources/sap-system/service-selection/service-helper';
-import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { promptNames } from '../../../../../src/types';
-import * as utils from '../../../../../src/utils';
-import { PromptState } from '../../../../../src/utils';
 
 const serviceV4a = {
     id: '/DMO/FLIGHT',
@@ -85,17 +79,43 @@ const connectionValidatorMock = {
     isAuthRequired: jest.fn().mockResolvedValue(false)
 };
 
-jest.mock('../../../../../src/prompts/connectionValidator', () => {
-    return {
-        ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
-    };
-});
+jest.unstable_mockModule('../../../../../src/prompts/connectionValidator', () => ({
+    ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
+}));
 
 let mockIsAppStudio = false;
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
     isAppStudio: jest.fn().mockImplementation(() => mockIsAppStudio)
 }));
+
+// Mock service-helper to allow spying on validateService
+const actualServiceHelpers =
+    await import('../../../../../src/prompts/datasources/sap-system/service-selection/service-helper');
+const mockValidateService = jest.fn<any>(actualServiceHelpers.validateService);
+jest.unstable_mockModule('../../../../../src/prompts/datasources/sap-system/service-selection/service-helper', () => ({
+    ...actualServiceHelpers,
+    validateService: mockValidateService
+}));
+
+// Mock utils to allow spying on getPromptHostEnvironment
+const actualUtils = await import('../../../../../src/utils');
+const mockGetPromptHostEnvironment = jest.fn<any>(actualUtils.getPromptHostEnvironment);
+jest.unstable_mockModule('../../../../../src/utils', () => ({
+    ...actualUtils,
+    getPromptHostEnvironment: mockGetPromptHostEnvironment
+}));
+
+// Dynamic imports after mocks
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
+const { ConnectionValidator: ConnectionValidatorClass } =
+    await import('../../../../../src/prompts/connectionValidator');
+const { getSystemServiceQuestion } =
+    await import('../../../../../src/prompts/datasources/sap-system/service-selection');
+const LoggerHelper = (await import('../../../../../src/prompts/logger-helper')).default;
+const { PromptState } = await import('../../../../../src/utils');
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('Test new system prompt', () => {
     const promptNamespace = 'someNamespace';
@@ -105,13 +125,15 @@ describe('Test new system prompt', () => {
 
     beforeEach(() => {
         // Restore default mock implementations
-        jest.restoreAllMocks();
+        jest.clearAllMocks();
+        mockValidateService.mockImplementation(actualServiceHelpers.validateService);
+        mockGetPromptHostEnvironment.mockImplementation(actualUtils.getPromptHostEnvironment);
         connectionValidatorMock.validity = {};
         connectionValidatorMock.catalogs = catalogs;
     });
 
     test('`getSystemServiceQuestion` should return correct prompts', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
         expect(systemServiceQuestions).toMatchInlineSnapshot(`
             [
@@ -140,7 +162,7 @@ describe('Test new system prompt', () => {
     });
 
     test('should prompt for service selection', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         let systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
         let serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
@@ -233,7 +255,7 @@ describe('Test new system prompt', () => {
     test('Should re-request service information if the prompt state has been reset (by a system reselection), and there is only one service selected', async () => {
         // This test replicates the reselection of a system where there is only one service listed
         // Or the case where system selection is changed but the same service url exists on that system also
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.validity = { authenticated: true, reachable: true };
         connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
         connectionValidatorMock.catalogs = {
@@ -262,7 +284,7 @@ describe('Test new system prompt', () => {
                 toString: expect.any(Function)
             }
         };
-        const validateServiceSpy = jest.spyOn(serviceHelpers, 'validateService').mockImplementation(async () => {
+        mockValidateService.mockImplementation(async () => {
             PromptState.odataService.metadata = '';
             PromptState.odataService.odataVersion = OdataVersion.v2;
             PromptState.odataService.servicePath = serviceTravelDeskV2.value.servicePath;
@@ -275,25 +297,25 @@ describe('Test new system prompt', () => {
         expect(
             await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)(serviceTravelDeskV2.value)
         ).toEqual(true);
-        expect(validateServiceSpy).toHaveBeenCalledWith(serviceTravelDeskV2.value, connectValidator, undefined);
-        validateServiceSpy.mockClear();
+        expect(mockValidateService).toHaveBeenCalledWith(serviceTravelDeskV2.value, connectValidator, undefined);
+        mockValidateService.mockClear();
         // Test the optimization: dont rerequest the same service data repeatedly
         expect(
             await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)(serviceTravelDeskV2.value)
         ).toEqual(true);
-        expect(validateServiceSpy).not.toHaveBeenCalled();
+        expect(mockValidateService).not.toHaveBeenCalled();
 
         // This replicates a system re-selection or any other interaction that resets the PromptState
         PromptState.reset();
         expect(
             await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)(serviceTravelDeskV2.value)
         ).toEqual(true);
-        expect(validateServiceSpy).toHaveBeenCalledWith(serviceTravelDeskV2.value, connectValidator, undefined);
+        expect(mockValidateService).toHaveBeenCalledWith(serviceTravelDeskV2.value, connectValidator, undefined);
         expect(PromptState.odataService.servicePath).toEqual(serviceTravelDeskV2.value.servicePath);
     });
 
     test('should show additional messages in service selection prompt when no matching services', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         let systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
         let serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
@@ -338,7 +360,7 @@ describe('Test new system prompt', () => {
     });
 
     test('should show additional messages in service selection prompt if selected service type is not UI', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         const annotations = [
             {
                 Definitions: v2Annotations,
@@ -422,7 +444,7 @@ describe('Test new system prompt', () => {
     });
 
     test('should show additional messages in service selection prompt if selected service has no annotations and is odata version "2"', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
         PromptState.odataService.annotations = [];
         const serviceV2HasAnnotations = {
@@ -459,7 +481,7 @@ describe('Test new system prompt', () => {
         expect(choices[2].value.serviceODataVersion).toBe(ODataVersion.v2);
 
         // No annotations, show warning
-        jest.spyOn(serviceHelpers, 'validateService').mockResolvedValue({
+        mockValidateService.mockResolvedValue({
             validationResult: true,
             hasAnnotations: false,
             convertedMetadata: { version: '2' } as ConvertedMetadata
@@ -475,7 +497,7 @@ describe('Test new system prompt', () => {
         });
 
         // Should not show the message if the service has annotations
-        jest.spyOn(serviceHelpers, 'validateService').mockResolvedValue({
+        mockValidateService.mockResolvedValue({
             validationResult: true,
             hasAnnotations: true,
             convertedMetadata: { version: '2' } as ConvertedMetadata
@@ -486,7 +508,7 @@ describe('Test new system prompt', () => {
         expect(message).toBeUndefined();
 
         // Should not show the message if the service is OData V4
-        jest.spyOn(serviceHelpers, 'validateService').mockResolvedValue({
+        mockValidateService.mockResolvedValue({
             validationResult: true,
             hasAnnotations: false,
             convertedMetadata: { version: '4' } as ConvertedMetadata
@@ -498,7 +520,7 @@ describe('Test new system prompt', () => {
     });
 
     test('should pre-select service if only one', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
                 listServices: jest.fn().mockResolvedValue([serviceV2a])
@@ -550,7 +572,7 @@ describe('Test new system prompt', () => {
                 Uri: 'http://some.abap.system:1234/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
             }
         ];
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
@@ -567,7 +589,7 @@ describe('Test new system prompt', () => {
                 metadata: jest.fn().mockResolvedValue(v2Metadata)
             } as Partial<ODataService>)
         } as Partial<ServiceProvider>;
-        let serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider, 'service');
+        let serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider as ServiceProvider, 'service');
 
         const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
         const serviceSelectionPrompt = systemServiceQuestions.find(
@@ -604,7 +626,7 @@ describe('Test new system prompt', () => {
             serviceODataVersion: '4',
             serviceType: 'WebUI'
         } as ServiceAnswer;
-        serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider, 'service');
+        serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider as ServiceProvider, 'service');
 
         validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedServiceV4);
         expect(validationResult).toBe(true);
@@ -619,7 +641,7 @@ describe('Test new system prompt', () => {
     });
 
     test('Should get the service details on CLI using `when` condition(list validators dont run on CLI)', async () => {
-        const getHostEnvSpy = jest.spyOn(utils, 'getPromptHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const annotations = [
             {
                 Definitions: v2Annotations,
@@ -628,7 +650,7 @@ describe('Test new system prompt', () => {
                 Uri: 'http://some.abap.system:1234/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
             }
         ];
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
                 listServices: jest.fn().mockResolvedValue([serviceV2a]),
@@ -647,7 +669,7 @@ describe('Test new system prompt', () => {
 
         const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
 
-        expect(getHostEnvSpy).toHaveBeenCalled();
+        expect(mockGetPromptHostEnvironment).toHaveBeenCalled();
         const cliServicePromptName = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:cliServiceSelection`
         );
@@ -670,7 +692,7 @@ describe('Test new system prompt', () => {
     });
 
     test('Should support type-ahead serivce search when using autocomplete option', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
                 listServices: jest.fn().mockResolvedValue([serviceV2a])
@@ -702,19 +724,17 @@ describe('Test new system prompt', () => {
 
         // autocomplete passes the entire choice object to the validate function instead of the value (as in YUI)
         // test to ensure this is handled correctly
-        const validateServiceSpy = jest
-            .spyOn(serviceHelpers, 'validateService')
-            .mockResolvedValue({ validationResult: true });
+        mockValidateService.mockResolvedValue({ validationResult: true });
         connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
         // change the choice service path otherwise the validate function not re-request the service details
         flightChoice!.value.servicePath = '/a/different/service/path';
         const validationResult = await (serviceSelectionPrompt?.validate as Function)(flightChoice);
         expect(validationResult).toBe(true);
-        expect(validateServiceSpy).toHaveBeenCalledWith(flightChoice?.value, connectionValidatorMock, undefined);
+        expect(mockValidateService).toHaveBeenCalledWith(flightChoice?.value, connectionValidatorMock, undefined);
     });
 
     test('Should apply `additionalMessages` prompt option', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
                 listServices: jest.fn().mockResolvedValue([serviceV2a])
@@ -742,7 +762,7 @@ describe('Test new system prompt', () => {
     });
 
     test('Should show and log error message when service validation fails', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
                 listServices: jest.fn().mockResolvedValue([serviceV2a])
@@ -782,7 +802,7 @@ describe('Test new system prompt', () => {
     });
 
     test('should show a guided answer link when no services are returned and an error was logged', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         const mockV2CatUri = 'http://some.abap.system:1234/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/';
         const mockV4CatUri =
             'http://some.abap.system:1234/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups';
@@ -821,7 +841,7 @@ describe('Test new system prompt', () => {
 
     test('Should set a single odata service as the only choice when catalogs not available (BAS full/partial URL destinations)', async () => {
         mockIsAppStudio = true;
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: undefined,
             [ODataVersion.v4]: undefined
@@ -842,7 +862,7 @@ describe('Test new system prompt', () => {
     });
 
     test('Should include value help download prompt when hideValueHelpDownloadPrompt is false', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.validity = { authenticated: true, reachable: true };
 
         const systemServiceQuestions = getSystemServiceQuestion(
@@ -861,7 +881,7 @@ describe('Test new system prompt', () => {
     });
 
     test('Should not include value help download prompt when hideValueHelpDownloadPrompt is true', async () => {
-        const connectValidator = new ConnectionValidator();
+        const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.validity = { authenticated: true, reachable: true };
 
         const systemServiceQuestions = getSystemServiceQuestion(

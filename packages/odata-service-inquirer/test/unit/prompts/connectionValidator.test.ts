@@ -1,14 +1,7 @@
-import {
-    ODataService,
-    ODataVersion,
-    ServiceProvider,
-    type AbapServiceProvider,
-    type ODataServiceInfo,
-    type AxiosRequestConfig
-} from '@sap-ux/axios-extension';
-import { createForAbap } from '@sap-ux/axios-extension';
-import * as axiosExtension from '@sap-ux/axios-extension';
+import { jest } from '@jest/globals';
+import type { AbapServiceProvider, ODataServiceInfo, AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
+import type { ConnectedSystem } from '../../../src/types';
 import {
     GUIDED_ANSWERS_ICON,
     GUIDED_ANSWERS_LAUNCH_CMD_ID,
@@ -17,23 +10,11 @@ import {
 } from '@sap-ux/guided-answers-helper';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import { AxiosError, type AxiosResponse } from 'axios';
-import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
-import { ConnectionValidator } from '../../../src/prompts/connectionValidator';
-import LoggerHelper from '../../../src/prompts/logger-helper';
-import type { ConnectedSystem } from '../../../src/types';
-import * as nodejsUtils from '@sap-ux/nodejs-utils';
-import { ToolsLogger } from '@sap-ux/logger';
-import { errorHandler } from '../../../src/prompts/prompt-helpers';
 
 const odataServicesMock: ODataServiceInfo[] = [];
 const catalogServiceMock = jest.fn().mockImplementation(() => ({
     interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
     listServices: jest.fn().mockImplementation(() => odataServicesMock)
-}));
-
-jest.mock('@sap-ux/nodejs-utils', () => ({
-    __esModule: true,
-    ...jest.requireActual('@sap-ux/nodejs-utils')
 }));
 
 const mockAbapServiceProvider = {
@@ -49,24 +30,47 @@ const mockAbapServiceProvider = {
     user: jest.fn().mockReturnValue('user1@acme.com')
 };
 
-jest.mock('@sap-ux/axios-extension', () => ({
-    __esModule: true,
-    ...jest.requireActual('@sap-ux/axios-extension'),
-    AbapServiceProvider: jest.fn().mockImplementation(() => mockAbapServiceProvider),
-    createForAbapOnCloud: jest.fn().mockImplementation(() => mockAbapServiceProvider),
-    createForAbap: jest.fn().mockImplementation((...args: Parameters<typeof createForAbap>): AbapServiceProvider => {
-        const { createForAbap } = jest.requireActual('@sap-ux/axios-extension');
-        const asp = createForAbap(args);
-        asp.getSystemInfo = mockAbapServiceProvider.getSystemInfo;
-        return asp;
-    })
+const actualNodejsUtils = await import('@sap-ux/nodejs-utils');
+const mockSetGlobalRejectUnauthorized = jest.fn(actualNodejsUtils.setGlobalRejectUnauthorized);
+jest.unstable_mockModule('@sap-ux/nodejs-utils', () => ({
+    ...actualNodejsUtils,
+    setGlobalRejectUnauthorized: mockSetGlobalRejectUnauthorized
+}));
+
+const actualAxiosExtension = await import('@sap-ux/axios-extension');
+const mockCreate = jest.fn(actualAxiosExtension.create);
+const mockCreateForAbap = jest.fn((...args: Parameters<typeof actualAxiosExtension.createForAbap>) => {
+    const asp = actualAxiosExtension.createForAbap(...args);
+    asp.getSystemInfo = mockAbapServiceProvider.getSystemInfo;
+    return asp;
+});
+const mockCreateForAbapOnCloud = jest.fn().mockImplementation(() => mockAbapServiceProvider);
+const mockCreateForDestination = jest.fn(actualAxiosExtension.createForDestination);
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    ...actualAxiosExtension,
+    create: mockCreate,
+    createForAbap: mockCreateForAbap,
+    createForAbapOnCloud: mockCreateForAbapOnCloud,
+    createForDestination: mockCreateForDestination,
+    AbapServiceProvider: jest.fn().mockImplementation(() => mockAbapServiceProvider)
 }));
 
 let mockIsAppStudio = false;
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
     isAppStudio: jest.fn().mockImplementation(() => mockIsAppStudio)
 }));
+
+const { ODataService, ODataVersion, ServiceProvider } = await import('@sap-ux/axios-extension');
+const { initI18nOdataServiceInquirer, t } = await import('../../../src/i18n');
+const { ConnectionValidator } = await import('../../../src/prompts/connectionValidator');
+const LoggerHelper = (await import('../../../src/prompts/logger-helper')).default;
+const { ToolsLogger } = await import('@sap-ux/logger');
+const { errorHandler } = await import('../../../src/prompts/prompt-helpers');
+
+// Re-export the module namespace for convenience in spyOn calls on prototypes
+const axiosExtension = await import('@sap-ux/axios-extension');
 
 describe('ConnectionValidator', () => {
     const newAxiosErrorWithStatus = (status: number | string): AxiosError => {
@@ -83,6 +87,7 @@ describe('ConnectionValidator', () => {
 
     beforeEach(() => {
         jest.restoreAllMocks();
+        jest.clearAllMocks();
         mockIsAppStudio = false;
         ErrorHandler.guidedAnswersEnabled = false;
         // Since having this environment variable set to '0' affects behaviour
@@ -213,7 +218,7 @@ describe('ConnectionValidator', () => {
             authenticated: false
         });
 
-        const createProviderSpy = jest.spyOn(axiosExtension, 'create');
+        const createProviderSpy = mockCreate;
         const serviceProviderSpy = jest.spyOn(ServiceProvider.prototype, 'service');
 
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
@@ -312,7 +317,8 @@ describe('ConnectionValidator', () => {
 
     test('should ignore cert errors if specified', async () => {
         const serviceUrl = 'https://localhost:8080';
-        const createProviderSpy = jest.spyOn(axiosExtension, 'create');
+        mockCreate.mockClear();
+        const createProviderSpy = mockCreate;
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
         const validator = new ConnectionValidator();
         expect(await validator.validateUrl(serviceUrl, { ignoreCertError: true })).toBe(true);
@@ -332,11 +338,11 @@ describe('ConnectionValidator', () => {
             newAxiosErrorWithStatus('DEPTH_ZERO_SELF_SIGNED_CERT')
         );
         // Mock second request to get the metadata for odata service urls
-        const createProviderSpy = jest.spyOn(axiosExtension, 'create');
+        const createProviderSpy = mockCreate;
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
         const warnLogSpy = jest.spyOn(LoggerHelper.logger, 'warn');
 
-        const setGlobalRejectUnauthSpy = jest.spyOn(nodejsUtils, 'setGlobalRejectUnauthorized');
+        const setGlobalRejectUnauthSpy = mockSetGlobalRejectUnauthorized;
 
         const validator = new ConnectionValidator();
         expect(await validator.validateUrl(serviceUrl)).toBe(true);
@@ -364,14 +370,14 @@ describe('ConnectionValidator', () => {
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
         const systemUrl = 'https://localhost:8080';
         // Mock first request to get the specific cert errors
-        jest.spyOn(axiosExtension, 'createForAbap');
+        mockCreateForAbap;
         jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
             .mockRejectedValueOnce(newAxiosErrorWithStatus('UNABLE_TO_GET_ISSUER_CERT'))
             .mockResolvedValue([]);
 
-        const createForAbapProviderSpy = jest.spyOn(axiosExtension, 'createForAbap');
+        const createForAbapProviderSpy = mockCreateForAbap;
         const warnLogSpy = jest.spyOn(LoggerHelper.logger, 'warn');
-        const setGlobalRejectUnauthSpy = jest.spyOn(nodejsUtils, 'setGlobalRejectUnauthorized');
+        const setGlobalRejectUnauthSpy = mockSetGlobalRejectUnauthorized;
 
         const validator = new ConnectionValidator();
         expect(await validator.validateUrl(systemUrl, { isSystem: true })).toBe(true);
@@ -397,7 +403,7 @@ describe('ConnectionValidator', () => {
     test('should pass additional params to axios-extension', async () => {
         mockIsAppStudio = true;
         const serviceUrl = 'https://somehost:1234/some/path?sap-client=010';
-        const createProviderSpy = jest.spyOn(axiosExtension, 'create');
+        const createProviderSpy = mockCreate;
         const serviceProviderSpy = jest
             .spyOn(ServiceProvider.prototype, 'service')
             .mockReturnValueOnce({} as ODataService);
@@ -481,7 +487,7 @@ describe('ConnectionValidator', () => {
     });
 
     test('should update axios-config with sap-client with calling validateAuth when connecting to sap system', async () => {
-        const createProviderSpy = jest.spyOn(axiosExtension, 'createForAbap');
+        const createProviderSpy = mockCreateForAbap;
         jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices').mockResolvedValueOnce([]);
 
         const connectValidator = new ConnectionValidator();
@@ -511,7 +517,7 @@ describe('ConnectionValidator', () => {
     });
 
     test('should validate auth with connectType odata_path using service endpoint instead of catalog', async () => {
-        const createProviderSpy = jest.spyOn(axiosExtension, 'createForAbap');
+        const createProviderSpy = mockCreateForAbap;
         const listServicesV2Mock = jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices');
         const listServicesV4Mock = jest.spyOn(axiosExtension.V4CatalogService.prototype, 'listServices');
         // Mock the service method on ServiceProvider to verify it's called with the right path
@@ -688,7 +694,7 @@ describe('ConnectionValidator', () => {
     });
 
     test('should validate service key info can be used to authenticate', async () => {
-        const createAbapOnCloudProviderSpy = jest.spyOn(axiosExtension, 'createForAbapOnCloud');
+        const createAbapOnCloudProviderSpy = mockCreateForAbapOnCloud;
         const serviceInfoMock: Partial<ServiceInfo> = {
             uaa: {
                 clientid: 'clientid',
@@ -782,9 +788,9 @@ describe('ConnectionValidator', () => {
             .mockRejectedValueOnce(newAxiosErrorWithStatus('CERT_HAS_EXPIRED'))
             .mockResolvedValue([]);
 
-        const createForAbapProviderSpy = jest.spyOn(axiosExtension, 'createForAbap');
+        const createForAbapProviderSpy = mockCreateForAbap;
         const warnLogSpy = jest.spyOn(LoggerHelper.logger, 'warn');
-        const setGlobalRejectUnauthSpy = jest.spyOn(nodejsUtils, 'setGlobalRejectUnauthorized');
+        const setGlobalRejectUnauthSpy = mockSetGlobalRejectUnauthorized;
 
         const connectValidator = new ConnectionValidator();
         await connectValidator.validateUrl('https://example.com:1234', { isSystem: true });
@@ -798,7 +804,7 @@ describe('ConnectionValidator', () => {
         );
 
         expect(warnLogSpy).toHaveBeenNthCalledWith(2, t('warnings.allowingUnauthorizedCertsNode'));
-        expect(createForAbap as jest.Mock).toHaveBeenCalledWith(
+        expect(mockCreateForAbap).toHaveBeenCalledWith(
             expect.objectContaining({
                 baseURL: 'https://example.com:1234',
                 ignoreCertErrors: true
@@ -1041,7 +1047,7 @@ describe('ConnectionValidator', () => {
     test('should use specified servicePath to create system connection with AbapServiceProvider and ODataService', async () => {
         const servicePath = '/sap/opu/odata/sap/TEST_SERVICE';
         const mockOdataServiceGet = jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
-        const createForDestinationSpy = jest.spyOn(axiosExtension, 'createForDestination');
+        const createForDestinationSpy = mockCreateForDestination;
 
         const connectValidator = new ConnectionValidator();
         const result = await connectValidator.validateDestination(
