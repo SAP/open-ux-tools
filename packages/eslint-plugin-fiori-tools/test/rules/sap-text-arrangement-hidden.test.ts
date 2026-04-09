@@ -2,14 +2,7 @@ import { RuleTester } from 'eslint';
 import textArrangementHiddenRule from '../../src/rules/sap-text-arrangement-hidden';
 import { meta, languages } from '../../src/index';
 import { TEXT_ARRANGEMENT_HIDDEN } from '../../src/language/diagnostics';
-import {
-    getAnnotationsAsXmlCode,
-    setup,
-    V4_ANNOTATIONS,
-    V4_ANNOTATIONS_PATH,
-    V4_MANIFEST,
-    V4_MANIFEST_PATH
-} from '../test-helper';
+import { getAnnotationsAsXmlCode, setup, V4_ANNOTATIONS, V4_ANNOTATIONS_PATH } from '../test-helper';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -117,11 +110,6 @@ const TEXT_ARRANGEMENT_ENTITY_TYPE_NOT_ON_PAGE = `
         <Annotation Term="UI.Hidden"/>
     </Annotations>`;
 
-const MANIFEST_FILE_CHANGE = {
-    filename: V4_MANIFEST_PATH,
-    code: JSON.stringify(V4_MANIFEST, undefined, 2)
-};
-
 ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
     valid: [
         createValidTest(
@@ -130,7 +118,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 filename: V4_ANNOTATIONS_PATH,
                 code: V4_ANNOTATIONS
             },
-            [MANIFEST_FILE_CHANGE]
+            []
         ),
         createValidTest(
             {
@@ -138,7 +126,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_WITHOUT_HIDDEN)
             },
-            [MANIFEST_FILE_CHANGE]
+            []
         ),
         createValidTest(
             {
@@ -146,7 +134,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, COMMON_TEXT_WITHOUT_TEXT_ARRANGEMENT)
             },
-            [MANIFEST_FILE_CHANGE]
+            []
         ),
         createValidTest(
             {
@@ -154,7 +142,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_WITH_NOT_HIDDEN_TEXT_PROPERTY)
             },
-            [MANIFEST_FILE_CHANGE]
+            []
         ),
         createValidTest(
             {
@@ -162,7 +150,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, COMMON_TEXT_ONLY_WITH_HIDDEN)
             },
-            [MANIFEST_FILE_CHANGE]
+            []
         ),
         createValidTest(
             {
@@ -170,7 +158,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_WITHOUT_HIDDEN)
             },
-            [MANIFEST_FILE_CHANGE]
+            []
         ),
         createValidTest(
             {
@@ -178,7 +166,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_ENTITY_TYPE_NOT_ON_PAGE)
             },
-            [MANIFEST_FILE_CHANGE]
+            []
         )
     ],
 
@@ -190,7 +178,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_WITH_DYNAMIC_HIDDEN),
                 errors: [{ messageId: TEXT_ARRANGEMENT_HIDDEN }]
             },
-            [MANIFEST_FILE_CHANGE]
+            []
         ),
         createInvalidTest(
             {
@@ -203,7 +191,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                     }
                 ]
             },
-            [MANIFEST_FILE_CHANGE]
+            []
         ),
         createInvalidTest(
             {
@@ -216,7 +204,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                     }
                 ]
             },
-            [MANIFEST_FILE_CHANGE]
+            []
         ),
         createInvalidTest(
             {
@@ -229,7 +217,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                     }
                 ]
             },
-            [MANIFEST_FILE_CHANGE]
+            []
         )
     ]
 });
