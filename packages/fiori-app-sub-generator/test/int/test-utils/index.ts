@@ -13,15 +13,14 @@ import {
 import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import os from 'node:os';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/fioriAppGeneratorOptions';
 import type { State } from '../../../src/types';
-import { TestWritingGenerator } from './testGeneratorWriting';
 
-export { TestWritingGenerator };
-
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const testOutputFolder = './test-output/';
 const testDir: string = join(__dirname, '../', testOutputFolder);
 export const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
@@ -92,10 +91,30 @@ export async function runWritingPhaseGen(
     state: Partial<State>,
     options?: Partial<FioriAppGeneratorOptions>
 ): Promise<any> {
+    const { TestWritingGenerator } = await import('./testGeneratorWriting');
     const mergedOptions = {
         state,
         skipInstall: true,
         ...options
     };
     return yeomanTest.create(TestWritingGenerator, {}, {}).withOptions(mergedOptions).run();
+}
+
+/**
+ * Runs the writing phase generator using dynamically imported classes.
+ * Use this in test files that mock modules with jest.unstable_mockModule
+ * to ensure the mocks are applied before the generator classes are loaded.
+ */
+export async function runWritingPhaseGenDynamic(
+    state: Partial<State>,
+    options?: Partial<FioriAppGeneratorOptions>
+): Promise<any> {
+    const { createTestWritingGeneratorClass } = await import('./testGeneratorWriting');
+    const GeneratorClass = await createTestWritingGeneratorClass();
+    const mergedOptions = {
+        state,
+        skipInstall: true,
+        ...options
+    };
+    return yeomanTest.create(GeneratorClass, {}, {}).withOptions(mergedOptions).run();
 }

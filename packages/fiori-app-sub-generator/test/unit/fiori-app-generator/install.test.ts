@@ -1,34 +1,46 @@
+import { jest } from '@jest/globals';
 import type { CapService } from '@sap-ux/cap-config-writer';
-import { DefaultLogger } from '@sap-ux/fiori-generator-shared';
-import childProcess from 'node:child_process';
 import os from 'node:os';
-import { installDependencies } from '../../../src/fiori-app-generator/install';
-import { CommandRunner, initI18nFioriAppSubGenerator, t } from '../../../src/utils';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const mockSpawn = require('mock-spawn');
+import { createRequire } from 'node:module';
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+const require = createRequire(import.meta.url);
+const mockSpawnLib = require('mock-spawn');
+
+// Pre-import actuals
+const actualChildProcess = await import('node:child_process');
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+const actualProjectAccess = await import('@sap-ux/project-access');
+
+let mockedSpawn = mockSpawnLib();
+
+jest.unstable_mockModule('node:child_process', () => ({
+    ...actualChildProcess,
+    spawn: (...args: any[]) => mockedSpawn(...args)
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
     sendTelemetry: jest.fn(),
     getHostEnvironment: jest.fn()
 }));
 
-jest.mock('@sap-ux/project-access', () => {
-    return {
-        addPackageDevDependency: jest.fn().mockResolvedValue(undefined)
-    };
-});
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    addPackageDevDependency: jest.fn().mockResolvedValue(undefined)
+}));
+
+const { installDependencies } = await import('../../../src/fiori-app-generator/install');
+const { CommandRunner, initI18nFioriAppSubGenerator, t } = await import('../../../src/utils');
+const { DefaultLogger } = await import('@sap-ux/fiori-generator-shared');
 
 describe('Test install queue functions', () => {
     jest.setTimeout(10000);
-    let mockedSpawn = mockSpawn();
-    const infoLog = jest.spyOn(DefaultLogger, 'info');
-    const debugLog = jest.spyOn(DefaultLogger, 'debug');
+    const infoLog = jest.spyOn(DefaultLogger as any, 'info');
+    const debugLog = jest.spyOn(DefaultLogger as any, 'debug');
     const commandRunSpy = jest.spyOn(CommandRunner.prototype, 'run');
 
     beforeAll(async () => {
-        mockedSpawn = mockSpawn();
-        childProcess.spawn = mockedSpawn;
+        mockedSpawn = mockSpawnLib();
         // Ensure texts are used in the tests
         await initI18nFioriAppSubGenerator();
     });

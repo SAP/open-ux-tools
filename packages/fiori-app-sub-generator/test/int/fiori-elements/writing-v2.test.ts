@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { readdirSync } from 'node:fs';
@@ -14,14 +15,17 @@ import {
     runWritingPhaseGen
 } from '../test-utils';
 import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
-    return {
-        ...fioriGenShared,
-        sendTelemetry: jest.fn()
-    };
-});
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: jest.fn()
+}));
 
 describe('Generate v2 apps', () => {
     let testProjectName: string;

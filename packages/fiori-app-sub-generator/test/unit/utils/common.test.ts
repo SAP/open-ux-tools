@@ -1,8 +1,6 @@
+import { jest } from '@jest/globals';
 import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
-import * as capConfigWriter from '@sap-ux/cap-config-writer';
-import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
-import { createLaunchConfig } from '@sap-ux/launch-config';
 import type { CapService } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import memFs from 'mem-fs';
@@ -11,13 +9,58 @@ import memFsEditor from 'mem-fs-editor';
 import { join } from 'node:path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types';
 import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants';
-import {
-    convertCapRuntimeToCapProjectType,
-    getCdsUi5PluginInfo,
-    initI18nFioriAppSubGenerator,
-    t
-} from '../../../src/utils';
-import {
+import type { Logger } from '@sap-ux/logger';
+
+// Pre-import actual modules
+const actualProjectAccess = await import('@sap-ux/project-access');
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+const actualFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
+const actualFs = await import('fs');
+const actualCapConfigWriter = await import('@sap-ux/cap-config-writer');
+
+const getProjectTypeMock = jest.fn();
+const mockWriteApplicationInfoSettings = jest.fn();
+const mockCreateLaunchConfig = jest.fn();
+const mockIsAppStudio = jest.fn<() => boolean>();
+const mockGenerateAppGenInfo = jest.fn();
+const mockCheckCdsUi5PluginEnabled = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getProjectType: () => getProjectTypeMock()
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-tools-settings', () => ({
+    writeApplicationInfoSettings: mockWriteApplicationInfoSettings
+}));
+
+jest.unstable_mockModule('@sap-ux/launch-config', () => ({
+    createLaunchConfig: mockCreateLaunchConfig
+}));
+
+jest.unstable_mockModule('fs', () => ({
+    ...actualFs,
+    existsSync: jest.fn().mockReturnValue(true)
+}));
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGeneratorShared,
+    generateAppGenInfo: mockGenerateAppGenInfo
+}));
+
+jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
+    ...actualCapConfigWriter,
+    checkCdsUi5PluginEnabled: mockCheckCdsUi5PluginEnabled
+}));
+
+const { convertCapRuntimeToCapProjectType, getCdsUi5PluginInfo, initI18nFioriAppSubGenerator, t } =
+    await import('../../../src/utils');
+const {
     buildSapClientParam,
     generateLaunchConfig,
     generateToolsId,
@@ -29,67 +72,8 @@ import {
     getReadMeDataSourceLabel,
     getRequiredOdataVersion,
     restoreServiceProviderLoggers
-} from '../../../src/utils/common';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import type { Logger } from '@sap-ux/logger';
+} = await import('../../../src/utils/common');
 
-const getProjectTypeMock = jest.fn();
-jest.mock('@sap-ux/project-access', () => ({
-    ...(jest.requireActual('@sap-ux/project-access') as object),
-    getProjectType: () => getProjectTypeMock()
-}));
-
-jest.mock('@sap-ux/fiori-tools-settings', () => ({
-    writeApplicationInfoSettings: jest.fn()
-}));
-
-jest.mock('@sap-ux/launch-config', () => ({
-    createLaunchConfig: jest.fn()
-}));
-
-jest.mock('fs', () => {
-    const fs = jest.requireActual('fs');
-    return {
-        ...fs,
-        existsSync: jest.fn().mockReturnValue(true)
-    };
-});
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
-}));
-
-const isAppStudioMock = isAppStudio as jest.Mock;
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    generateAppGenInfo: jest.fn()
-}));
-
-// rootPath exists only in SBAS
-const vscodeMock = {
-    workspace: {
-        workspaceFolders: [
-            { uri: { fsPath: '/1st/workspace/path', scheme: 'file' } },
-            { uri: { fsPath: '/2nd/workspace/path', scheme: 'file' } }
-        ],
-        workspaceFile: undefined,
-        getConfiguration: (id: string): object => {
-            if (id) {
-                return { configurations: [] };
-            }
-            return {
-                update: (): void => {
-                    return;
-                },
-                get: (): void => {
-                    return undefined;
-                }
-            };
-        }
-    }
-};
 describe('Test utils', () => {
     beforeAll(async () => {
         await initI18nFioriAppSubGenerator();
@@ -183,11 +167,9 @@ describe('Test utils', () => {
             hasMinCdsVersion: true,
             isWorkspaceEnabled: false
         };
-        const capConfigWriterSpy = jest
-            .spyOn(capConfigWriter, 'checkCdsUi5PluginEnabled')
-            .mockResolvedValueOnce(capCdsInfoMock);
+        mockCheckCdsUi5PluginEnabled.mockResolvedValueOnce(capCdsInfoMock);
         expect(await getCdsUi5PluginInfo('/some/cap/path', {} as Editor)).toBe(capCdsInfoMock);
-        expect(capConfigWriterSpy).toHaveBeenCalledWith('/some/cap/path', {}, true, undefined);
+        expect(mockCheckCdsUi5PluginEnabled).toHaveBeenCalledWith('/some/cap/path', {}, true, undefined);
     }, 10000);
 
     test('getCdsAnnotations', async () => {
@@ -297,7 +279,7 @@ describe('Test utils', () => {
         });
 
         it('should generate correct launch config for OData v2', async () => {
-            isAppStudioMock.mockReturnValue(true);
+            mockIsAppStudio.mockReturnValue(true);
             // Call the function under test
             await generateLaunchConfig(
                 {
@@ -333,12 +315,12 @@ describe('Test utils', () => {
                 startFile: undefined
             };
 
-            expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
-            expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
+            expect(mockCreateLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
+            expect(mockWriteApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
 
         it('should generate correct launch config for OData v4', async () => {
-            isAppStudioMock.mockReturnValue(false);
+            mockIsAppStudio.mockReturnValue(false);
             await generateLaunchConfig(
                 {
                     targetFolder: mockProject.targetFolder,
@@ -372,12 +354,12 @@ describe('Test utils', () => {
                 debugOptions: expectedDebugOptions,
                 startFile: 'test/flp.html'
             };
-            expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
-            expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
+            expect(mockCreateLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
+            expect(mockWriteApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
 
         it('should not set odataVersion if service version is not OData v2 or v4', async () => {
-            isAppStudioMock.mockReturnValue(false);
+            mockIsAppStudio.mockReturnValue(false);
             await generateLaunchConfig(
                 {
                     targetFolder: mockProject.targetFolder,
@@ -408,8 +390,8 @@ describe('Test utils', () => {
                 startFile: undefined
             };
 
-            expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
-            expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
+            expect(mockCreateLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
+            expect(mockWriteApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
     });
 

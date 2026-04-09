@@ -1,7 +1,8 @@
 import type { IPrompt as Step } from '@sap-devx/yeoman-ui-types';
 import { TemplateType as FETemplateType } from '@sap-ux/fiori-elements-writer';
 import { TemplateType as FFTemplateType } from '@sap-ux/fiori-freestyle-writer';
-import type { AppConfig, type Floorplan, FloorplanFE, FloorplanFF } from '@sap-ux/fiori-generator-shared';
+import type { AppConfig, type Floorplan } from '@sap-ux/fiori-generator-shared';
+import { FloorplanFE, FloorplanFF } from '@sap-ux/fiori-generator-shared';
 import type { CapRuntime, EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { promptNames as ui5AppInquirerPromptNames } from '@sap-ux/ui5-application-inquirer';

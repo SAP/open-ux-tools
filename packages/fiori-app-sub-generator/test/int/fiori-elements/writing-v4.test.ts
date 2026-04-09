@@ -1,11 +1,12 @@
-import * as projectAccess from '@sap-ux/project-access';
+import { jest } from '@jest/globals';
 import { TemplateTypeAttributes } from '@sap-ux/fiori-elements-writer';
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { copyFileSync, promises as fsPromise, mkdirSync, readdirSync } from 'node:fs';
 import 'jest-extended';
 import cloneDeep from 'lodash/cloneDeep';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Project, Service, State } from '../../../src/types';
 import { FloorplanFE } from '../../../src/types';
 import {
@@ -18,16 +19,20 @@ import {
 } from '../test-utils';
 import { baseTestProject, getExpectedOutputPath, v4EntityConfig, v4Service } from './test-utils';
 
-const appAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess');
-appAccessMock.mockResolvedValue({} as any);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
-    return {
-        ...fioriGenShared,
-        sendTelemetry: jest.fn()
-    };
-});
+const actualProjectAccess = await import('@sap-ux/project-access');
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    createApplicationAccess: jest.fn().mockResolvedValue({})
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: jest.fn()
+}));
 
 describe('Generate v4 apps', () => {
     let testProjectName: string;

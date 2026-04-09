@@ -1,45 +1,81 @@
+import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
-import * as featureToggle from '@sap-ux/feature-toggle';
-import { DefaultLogger, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { PromptSeverityMessage } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
-import * as odataServiceInquirer from '@sap-ux/odata-service-inquirer';
 import {
     DatasourceType,
     OdataVersion,
     promptNames as odataServiceInqPromptNames
 } from '@sap-ux/odata-service-inquirer';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '@sap-ux/ui5-application-inquirer';
-import * as ui5ApplicationInquirer from '@sap-ux/ui5-application-inquirer';
 import { promptNames } from '@sap-ux/ui5-application-inquirer';
-import * as ui5Info from '@sap-ux/ui5-info';
 import 'jest-extended';
 import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
-import {
-    createUI5ApplicationPromptOptions,
-    getViewQuestion,
-    promptOdataServiceAnswers,
-    promptUI5ApplicationAnswers
-} from '../../../src/fiori-app-generator/prompting';
 import { type Service, FloorplanFE } from '../../../src/types';
-import { initI18nFioriAppSubGenerator, t } from '../../../src/utils/i18n';
-import * as stepsHelper from '../../../src/utils/stepsHelper';
 import { minUi5VersionForPageBuildingBlock } from '../../../src/types/constants';
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+// Pre-import actuals
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+const actualTelemetry = await import('@sap-ux/telemetry');
+const actualFeatureToggle = await import('@sap-ux/feature-toggle');
+const actualOdataServiceInquirer = await import('@sap-ux/odata-service-inquirer');
+const actualUi5ApplicationInquirer = await import('@sap-ux/ui5-application-inquirer');
+const actualUi5Info = await import('@sap-ux/ui5-info');
+const actualStepsHelper = await import('../../../src/utils/stepsHelper');
+
+const mockGetHostEnvironment = jest.fn();
+const mockIsFeatureEnabled = jest.fn();
+const mockOdataServiceInquirerPrompt = jest.fn();
+const mockUi5ApplicationInquirerPrompt = jest.fn();
+const mockGetUI5Versions = jest.fn();
+const mockGetSapSystemUI5Version = jest.fn();
+const mockValidateNextStep = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
     sendTelemetry: jest.fn(),
-    getHostEnvironment: jest.fn()
+    getHostEnvironment: mockGetHostEnvironment
 }));
 
-jest.mock('@sap-ux/telemetry', () => ({
-    ...jest.requireActual('@sap-ux/telemetry'),
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    ...actualTelemetry,
     ClientFactory: {
         getTelemetryClient: jest.fn().mockResolvedValue({})
     }
 }));
+
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
+    ...actualFeatureToggle,
+    isFeatureEnabled: mockIsFeatureEnabled
+}));
+
+jest.unstable_mockModule('@sap-ux/odata-service-inquirer', () => ({
+    ...actualOdataServiceInquirer,
+    prompt: mockOdataServiceInquirerPrompt
+}));
+
+jest.unstable_mockModule('@sap-ux/ui5-application-inquirer', () => ({
+    ...actualUi5ApplicationInquirer,
+    prompt: mockUi5ApplicationInquirerPrompt
+}));
+
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    ...actualUi5Info,
+    getUI5Versions: mockGetUI5Versions,
+    getSapSystemUI5Version: mockGetSapSystemUI5Version
+}));
+
+jest.unstable_mockModule('../../../src/utils/stepsHelper', () => ({
+    ...actualStepsHelper,
+    validateNextStep: mockValidateNextStep
+}));
+
+const { createUI5ApplicationPromptOptions, getViewQuestion, promptOdataServiceAnswers, promptUI5ApplicationAnswers } =
+    await import('../../../src/fiori-app-generator/prompting');
+const { initI18nFioriAppSubGenerator, t } = await import('../../../src/utils/i18n');
+const { DefaultLogger, hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('prompting.ts', () => {
     beforeAll(async () => {
@@ -75,7 +111,7 @@ describe('prompting.ts', () => {
         beforeEach(() => {
             // Restore spies between each tests
             jest.restoreAllMocks();
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         });
 
         test('createUI5ApplicationPromptOptions - empty state', async () => {
@@ -243,7 +279,7 @@ describe('prompting.ts', () => {
         });
 
         test('createUI5ApplicationPromptOptions - sap system UI5 version is set as default choice', async () => {
-            jest.spyOn(ui5Info, 'getSapSystemUI5Version').mockResolvedValue('1.100.100');
+            mockGetSapSystemUI5Version.mockResolvedValue('1.100.100');
             const promptOptions = await createUI5ApplicationPromptOptions({
                 service: {
                     version: OdataVersion.v4,
@@ -267,7 +303,7 @@ describe('prompting.ts', () => {
         });
 
         test('createUI5ApplicationPromptOptions - ui5Version options set based on platform', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+            mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
             let promptOptions = await createUI5ApplicationPromptOptions({
                 service: { version: OdataVersion.v4 },
                 appGenStepConfigList: [],
@@ -281,7 +317,7 @@ describe('prompting.ts', () => {
                     useAutocomplete: false
                 }
             });
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
             promptOptions = await createUI5ApplicationPromptOptions({
                 service: { version: OdataVersion.v4 },
                 appGenStepConfigList: [],
@@ -379,7 +415,7 @@ describe('prompting.ts', () => {
         });
 
         test('createUI5ApplicationPromptOptions - validator callbacks are added by default', async () => {
-            const validateNextStepSpy = jest.spyOn(stepsHelper, 'validateNextStep').mockReturnValue(true);
+            mockValidateNextStep.mockReturnValue(true);
             const promptOptions = await createUI5ApplicationPromptOptions({
                 service: {},
                 appGenStepConfigList: [],
@@ -389,22 +425,22 @@ describe('prompting.ts', () => {
             expect(promptOptions.addFlpConfig?.validatorCallback).toBeDefined();
 
             (promptOptions.addDeployConfig?.validatorCallback as Function)(true);
-            expect(validateNextStepSpy).toHaveBeenCalledWith(
+            expect(mockValidateNextStep).toHaveBeenCalledWith(
                 true,
                 'Project Attributes',
                 [],
                 t('steps.deployConfig.title')
             );
-            validateNextStepSpy.mockClear();
+            mockValidateNextStep.mockClear();
 
             (promptOptions.addFlpConfig?.validatorCallback as Function)(true);
-            expect(validateNextStepSpy).toHaveBeenCalledWith(
+            expect(mockValidateNextStep).toHaveBeenCalledWith(
                 true,
                 t('steps.projectAttributesConfig.title'),
                 [],
                 t('steps.flpConfig.title')
             );
-            validateNextStepSpy.mockRestore();
+            mockValidateNextStep.mockClear();
         });
 
         test('createUI5ApplicationPromptOptions - generator extension settings are applied', async () => {
@@ -445,10 +481,10 @@ describe('prompting.ts', () => {
         });
 
         test('promptUI5ApplicationAnswers', async () => {
-            const getUI5VersionSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue([{ version: '1.1.1' }]);
-            const ui5ApplicationInquirerSpy = jest
-                .spyOn(ui5ApplicationInquirer, 'prompt')
-                .mockImplementation(async () => ({ ui5Version: '9.9.9' }) as UI5ApplicationAnswers);
+            mockGetUI5Versions.mockResolvedValue([{ version: '1.1.1' }]);
+            mockUi5ApplicationInquirerPrompt.mockImplementation(
+                async () => ({ ui5Version: '9.9.9' }) as UI5ApplicationAnswers
+            );
             expect(
                 await promptUI5ApplicationAnswers(
                     {
@@ -464,7 +500,7 @@ describe('prompting.ts', () => {
                     ui5Version: '9.9.9'
                 }
             });
-            expect(ui5ApplicationInquirerSpy).toHaveBeenCalledWith(
+            expect(mockUi5ApplicationInquirerPrompt).toHaveBeenCalledWith(
                 {},
                 {
                     addDeployConfig: { validatorCallback: expect.toBeFunction() },
@@ -486,7 +522,7 @@ describe('prompting.ts', () => {
                 undefined,
                 false
             );
-            expect(getUI5VersionSpy).toHaveBeenCalledWith({
+            expect(mockGetUI5Versions).toHaveBeenCalledWith({
                 minSupportedUI5Version: expect.toBeString(),
                 onlyNpmVersion: true,
                 onlyVersionNumbers: true,
@@ -495,10 +531,10 @@ describe('prompting.ts', () => {
         });
 
         test('promptOdataServiceAnswers - basic functionality', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            jest.spyOn(featureToggle, 'isFeatureEnabled').mockReturnValue(true);
+            mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
+            mockIsFeatureEnabled.mockReturnValue(true);
             const mockAdapter = {} as Adapter;
-            const promptOdataServiceInquirerSpy = jest.spyOn(odataServiceInquirer, 'prompt').mockResolvedValue({
+            mockOdataServiceInquirerPrompt.mockResolvedValue({
                 origin: 'http://some/sap/system/url',
                 sapClient: '100',
                 servicePath: '/some/service/path',
@@ -572,7 +608,7 @@ describe('prompting.ts', () => {
                 }
             });
             // Should have called prompt with the expected options (tests createOdataServicePromptOptions)
-            expect(promptOdataServiceInquirerSpy).toHaveBeenCalledWith(
+            expect(mockOdataServiceInquirerPrompt).toHaveBeenCalledWith(
                 mockAdapter,
                 expect.objectContaining({
                     [odataServiceInqPromptNames.capProject]: {
@@ -614,9 +650,9 @@ describe('prompting.ts', () => {
         });
 
         test('promptOdataServiceAnswers - cap related prompt options', async () => {
-            jest.spyOn(featureToggle, 'isFeatureEnabled').mockReturnValue(true);
+            mockIsFeatureEnabled.mockReturnValue(true);
             const mockAdapter = {} as Adapter;
-            const promptOdataServiceInquirerSpy = jest.spyOn(odataServiceInquirer, 'prompt').mockResolvedValue({
+            mockOdataServiceInquirerPrompt.mockResolvedValue({
                 origin: 'http://some/sap/system/url',
                 sapClient: '100',
                 servicePath: '/some/service/path',
@@ -673,7 +709,7 @@ describe('prompting.ts', () => {
                 }
             });
             // Should have called prompt with the expected options (tests createOdataServicePromptOptions)
-            expect(promptOdataServiceInquirerSpy).toHaveBeenCalledWith(
+            expect(mockOdataServiceInquirerPrompt).toHaveBeenCalledWith(
                 mockAdapter,
                 expect.objectContaining({
                     [odataServiceInqPromptNames.capProject]: {

@@ -1,16 +1,22 @@
-import * as btpUtils from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import '@sap-ux/jest-file-matchers';
 import { readdirSync, readFileSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ApiHubConfig, Project, Service, State } from '../../../src/types';
 import { ApiHubType, FloorplanFE } from '../../../src/types';
 import { cleanTestDir, getTestDir, ignoreMatcherOpts, originalCwd, runWritingPhaseGen } from '../test-utils';
 import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+const mockIsAppStudio = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
 /**
@@ -149,7 +155,7 @@ describe('Optional settings', () => {
             entityRelatedConfig: v2EntityConfig,
             floorplan: FloorplanFE.FE_LROP
         });
-        jest.spyOn(btpUtils, 'isAppStudio').mockImplementation(() => true);
+        mockIsAppStudio.mockImplementation(() => true);
         await runWritingPhaseGen(testFEState);
         const fileAsString = readFileSync(join(testDir, testProjectName, '.env')).toString();
         expect(fileAsString).toMatchInlineSnapshot(`

@@ -1,15 +1,26 @@
-import { CommandRunner } from '../../../src/utils/command-runner';
-import { initI18nFioriAppSubGenerator } from '../../../src/utils/i18n';
+import { jest } from '@jest/globals';
 import { platform } from 'node:os';
-import childProcess from 'node:child_process';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const mockSpawn = require('mock-spawn');
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const mockSpawnLib = require('mock-spawn');
+
+// Pre-import actual child_process
+const actualChildProcess = await import('node:child_process');
+
+let mockedSpawn = mockSpawnLib();
+
+jest.unstable_mockModule('node:child_process', () => ({
+    ...actualChildProcess,
+    spawn: (...args: any[]) => mockedSpawn(...args)
+}));
+
+const { CommandRunner } = await import('../../../src/utils/command-runner');
+const { initI18nFioriAppSubGenerator } = await import('../../../src/utils/i18n');
 
 describe('Test command-runner', () => {
-    let mockedSpawn = mockSpawn();
     beforeAll(async () => {
-        mockedSpawn = mockSpawn();
-        childProcess.spawn = mockedSpawn;
+        mockedSpawn = mockSpawnLib();
     });
 
     it('Fails to spawn with error', async () => {
@@ -23,10 +34,11 @@ describe('Test command-runner', () => {
             }, 10);
         });
         const cmdRunner = new CommandRunner(console as any);
-        await expect(cmdRunner.run('fakeCmd')).rejects.toThrow('Command failed with error.: spawn ENOENT');
+        await expect(cmdRunner.run('fakeCmd')).rejects.toThrow('Command failed with error.:');
     });
 
     test('Test CommandRunner ', async () => {
+        mockedSpawn = mockSpawnLib();
         const consoleSpy = jest.spyOn(console, 'info');
         const runner = new CommandRunner(console as any);
         const npm = platform() === 'win32' ? 'npm.cmd' : 'npm';

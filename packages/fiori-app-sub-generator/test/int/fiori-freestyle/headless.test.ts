@@ -1,35 +1,45 @@
+import { jest } from '@jest/globals';
 import '@sap-ux/jest-file-matchers';
 import { existsSync, readFileSync } from 'node:fs';
 import 'jest-extended';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import yeomanTest from 'yeoman-test';
-import { FioriAppGeneratorHeadless } from '../../../src/app-headless';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
-import * as install from '../../../src/fiori-app-generator/install';
 import { type FFAppConfig } from '../../../src/types';
 import { cleanTestDir, ignoreMatcherOpts } from '../test-utils';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const GENERATION_TEST_DIR = './test-output/headless';
 const MOCK_FILES_DIR_NAME = './expected-output';
 const testDir: string = join(__dirname, '..', GENERATION_TEST_DIR);
 const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
-    return {
-        ...fioriGenShared,
-        sendTelemetry: jest.fn()
-    };
-});
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+const actualTelemetry = await import('@sap-ux/telemetry');
+const actualInstall = await import('../../../src/fiori-app-generator/install');
 
-jest.mock('@sap-ux/telemetry', () => {
-    const telemetry = jest.requireActual('@sap-ux/telemetry');
-    return {
-        ...telemetry,
-        setEnableTelemetry: jest.fn(),
-        initTelemetrySettings: jest.fn()
-    };
-});
+const mockInstallDependencies = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: jest.fn()
+}));
+
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    ...actualTelemetry,
+    setEnableTelemetry: jest.fn(),
+    initTelemetrySettings: jest.fn()
+}));
+
+jest.unstable_mockModule('../../../src/fiori-app-generator/install', () => ({
+    ...actualInstall,
+    installDependencies: mockInstallDependencies
+}));
+
+// Import after mocks are set up
+const { FioriAppGeneratorHeadless } = await import('../../../src/app-headless');
 
 /**
  *
@@ -100,14 +110,14 @@ describe('Test headless generator', () => {
         // Mock writing, we are not testing that here
         jest.spyOn(FioriAppGeneratorHeadless.prototype, 'writing').mockImplementation(jest.fn());
         jest.spyOn(FioriAppGeneratorHeadless.prototype, 'end').mockImplementation(jest.fn());
-        const installDepsSpy = jest.spyOn(install, 'installDependencies').mockResolvedValue();
 
+        mockInstallDependencies.mockClear();
         await runHeadlessGen(testProjectName, undefined, { skipInstall: false });
-        expect(installDepsSpy).toHaveBeenCalled();
+        expect(mockInstallDependencies).toHaveBeenCalled();
 
-        installDepsSpy.mockClear();
+        mockInstallDependencies.mockClear();
         await runHeadlessGen(testProjectName, undefined, { force: true, skipInstall: true });
-        expect(installDepsSpy).not.toHaveBeenCalled();
+        expect(mockInstallDependencies).not.toHaveBeenCalled();
         // Restore only spies
         jest.restoreAllMocks();
     });

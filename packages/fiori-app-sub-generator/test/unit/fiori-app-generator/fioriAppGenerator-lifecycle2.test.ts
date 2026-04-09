@@ -1,36 +1,37 @@
+import { jest } from '@jest/globals';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { OdataVersion } from '@sap-ux/fiori-elements-writer';
 import type { FioriElementsApp } from '@sap-ux/fiori-elements-writer';
-import { OdataVersion, generate as generateFE } from '@sap-ux/fiori-elements-writer';
-import {
-    type FreestyleApp,
-    TemplateType as TemplateTypeFF,
-    generate as generateFF
-} from '@sap-ux/fiori-freestyle-writer';
+import type { FreestyleApp } from '@sap-ux/fiori-freestyle-writer';
+import { TemplateType as TemplateTypeFF } from '@sap-ux/fiori-freestyle-writer';
 import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types';
-import { DefaultLogger, TelemetryHelper, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import { type CapService, DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { ServiceType } from '@sap-ux/odata-service-writer';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import Generator from 'yeoman-generator';
 import yeomanTest from 'yeoman-test';
-import { type FioriAppGeneratorOptions, FioriAppGenerator } from '../../../src/fiori-app-generator';
-import { runPostGenerationTasks } from '../../../src/fiori-app-generator/end';
-import { installDependencies } from '../../../src/fiori-app-generator/install';
-import { transformState } from '../../../src/fiori-app-generator/transforms';
-import { writeAPIHubKeyFiles, writeAppGenInfoFiles } from '../../../src/fiori-app-generator/writing';
 import type { Project, State } from '../../../src/types';
-import { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorName } from '../../../src/types';
-import { deleteCache, getYeomanUiStepConfig, t } from '../../../src/utils';
 
-/**
- * FioriAppGenerator writing unit tests
- */
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Pre-import actuals
+const actualTransforms = await import('../../../src/fiori-app-generator/transforms');
+const actualWriting = await import('../../../src/fiori-app-generator/writing');
+const actualEnd = await import('../../../src/fiori-app-generator/end');
+const actualInstall = await import('../../../src/fiori-app-generator/install');
+const actualUtils = await import('../../../src/utils');
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+const actualUi5Info = await import('@sap-ux/ui5-info');
+const actualTelemetry = await import('@sap-ux/telemetry');
+const actualFioriFreestyleWriter = await import('@sap-ux/fiori-freestyle-writer');
+const actualFioriElementsWriter = await import('@sap-ux/fiori-elements-writer');
+const actualBtpUtils = await import('@sap-ux/btp-utils');
 
 const appConfigMocked: FioriElementsApp<unknown> | FreestyleApp<BasicAppSettings> | undefined = {
     template: {
-        type: TemplateTypeFF.Basic, // We only support one template type now so it can be hardcoded
+        type: TemplateTypeFF.Basic,
         settings: {
             viewName: 'testViewName'
         }
@@ -65,108 +66,103 @@ const appConfigMocked: FioriElementsApp<unknown> | FreestyleApp<BasicAppSettings
         addTests: true
     }
 };
-jest.mock('../../../src/fiori-app-generator/transforms', () => {
-    return {
-        ...jest.requireActual('../../../src/fiori-app-generator/transforms'),
-        transformState: jest.fn().mockImplementation(() => Promise.resolve(appConfigMocked))
-    };
-});
 
-jest.mock('../../../src/fiori-app-generator/writing', () => {
-    return {
-        ...jest.requireActual('../../../src/fiori-app-generator/writing'),
-        writeAPIHubKeyFiles: jest.fn(),
-        writeAppGenInfoFiles: jest.fn()
-    };
-});
+const mockTransformState = jest.fn().mockImplementation(() => Promise.resolve(appConfigMocked));
+const mockWriteAPIHubKeyFiles = jest.fn();
+const mockWriteAppGenInfoFiles = jest.fn();
+const mockRunPostGenerationTasks = jest.fn();
+const mockInstallDependencies = jest.fn();
+let mockPlatform = 'CLI';
+const mockGetPlatform = jest.fn().mockImplementation(() => mockPlatform);
+const mockDeleteCache = jest.fn();
+const mockIsAppStudio = jest.fn().mockReturnValue(false);
+const mockGenerateFE = jest.fn();
+const mockGenerateFF = jest.fn();
 
-jest.mock('../../../src/fiori-app-generator/end', () => {
-    return {
-        ...jest.requireActual('../../../src/fiori-app-generator/end'),
-        runPostGenerationTasks: jest.fn()
-    };
-});
-
-jest.mock('../../../src/fiori-app-generator/install', () => {
-    return {
-        ...jest.requireActual('../../../src/fiori-app-generator/install'),
-        installDependencies: jest.fn()
-    };
-});
-
-let mockPlatform = PLATFORMS.CLI;
-jest.mock('../../../src/utils', () => ({
-    __esModule: true,
-    ...jest.requireActual('../../../src/utils'),
-    getPlatform: jest.fn().mockImplementation(() => mockPlatform),
-    deleteCache: jest.fn()
+jest.unstable_mockModule('../../../src/fiori-app-generator/transforms', () => ({
+    ...actualTransforms,
+    transformState: mockTransformState
 }));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    return {
-        ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-        TelemetryHelper: {
-            createTelemetryData: jest.fn(),
-            markAppGenStartTime: jest.fn(),
-            telemetryData: {
-                data1: 'value1'
-            }
-        },
-        sendTelemetry: jest.fn(),
-        DefaultLogger: {
-            debug: jest.fn(),
-            error: jest.fn(),
-            info: jest.fn(),
-            fatal: jest.fn()
-        }
-    };
-});
-
-jest.mock('@sap-ux/ui5-info', () => {
-    return {
-        ...jest.requireActual('@sap-ux/ui5-info'),
-        getUI5Versions: jest.fn().mockResolvedValue(() => Promise.resolve([]))
-    };
-});
-
-jest.mock('@sap-ux/telemetry', () => {
-    return {
-        ...jest.requireActual('@sap-ux/telemetry'),
-        initTelemetrySettings: jest.fn().mockResolvedValue(() => Promise.resolve())
-    };
-});
-
-jest.mock('@sap-ux/fiori-freestyle-writer', () => {
-    return {
-        ...jest.requireActual('@sap-ux/fiori-freestyle-writer'),
-        generate: jest.fn()
-    };
-});
-jest.mock('@sap-ux/fiori-elements-writer', () => {
-    return {
-        ...jest.requireActual('@sap-ux/fiori-elements-writer'),
-        generate: jest.fn()
-    };
-});
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn().mockReturnValue(false)
+jest.unstable_mockModule('../../../src/fiori-app-generator/writing', () => ({
+    ...actualWriting,
+    writeAPIHubKeyFiles: mockWriteAPIHubKeyFiles,
+    writeAppGenInfoFiles: mockWriteAppGenInfoFiles
 }));
+
+jest.unstable_mockModule('../../../src/fiori-app-generator/end', () => ({
+    ...actualEnd,
+    runPostGenerationTasks: mockRunPostGenerationTasks
+}));
+
+jest.unstable_mockModule('../../../src/fiori-app-generator/install', () => ({
+    ...actualInstall,
+    installDependencies: mockInstallDependencies
+}));
+
+jest.unstable_mockModule('../../../src/utils', () => ({
+    ...actualUtils,
+    getPlatform: mockGetPlatform,
+    deleteCache: mockDeleteCache
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    TelemetryHelper: {
+        createTelemetryData: jest.fn(),
+        markAppGenStartTime: jest.fn(),
+        telemetryData: { data1: 'value1' }
+    },
+    sendTelemetry: jest.fn(),
+    DefaultLogger: {
+        debug: jest.fn(),
+        error: jest.fn(),
+        info: jest.fn(),
+        fatal: jest.fn()
+    }
+}));
+
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    ...actualUi5Info,
+    getUI5Versions: jest.fn().mockResolvedValue(() => Promise.resolve([]))
+}));
+
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    ...actualTelemetry,
+    initTelemetrySettings: jest.fn().mockResolvedValue(() => Promise.resolve())
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-freestyle-writer', () => ({
+    ...actualFioriFreestyleWriter,
+    generate: mockGenerateFF
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-elements-writer', () => ({
+    ...actualFioriElementsWriter,
+    generate: mockGenerateFE
+}));
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+// Import after all mocks are set up
+const { FioriAppGenerator } = await import('../../../src/fiori-app-generator');
+type FioriAppGeneratorOptions = import('../../../src/fiori-app-generator').FioriAppGeneratorOptions;
+const { DefaultLogger, TelemetryHelper, sendTelemetry } = await import('@sap-ux/fiori-generator-shared');
+const { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorName } = await import('../../../src/types');
+const { deleteCache, getYeomanUiStepConfig, t } = await import('../../../src/utils');
 
 /**
  * Test the FioriAppGenerator internal lifecycle code only, hence the extensive mocking.
- * There are multiple other integration tests that cover the full prompting and writing functionality.
- *
  */
 describe('Test FioriAppGenerator', () => {
     const allYUIStepsConfig = getYeomanUiStepConfig([...FIORI_STEPS]);
-    // Basic test options for the FioriAppGenerator
     let options: FioriAppGeneratorOptions = {};
     const targetFolder = join(__dirname, 'test-output');
 
     beforeEach(() => {
-        // Reset the options object
         options = {
             appWizard: {} as AppWizard,
             env: (yeomanTest as any).createEnv([]),
@@ -176,7 +172,7 @@ describe('Test FioriAppGenerator', () => {
         };
         mockPlatform = PLATFORMS.CLI;
         jest.restoreAllMocks();
-        (isAppStudio as jest.Mock).mockReturnValue(false);
+        mockIsAppStudio.mockReturnValue(false);
     });
 
     test('Should call `transformState`, `generate` and `writeInfoFiles` during writing phase', async () => {
@@ -204,10 +200,9 @@ describe('Test FioriAppGenerator', () => {
             floorplan: FloorplanFE.FE_WORKLIST
         };
         const mockGenVer = '9.9.9';
-        // Testing each branch of the floorplan condition
         for (const testFloorplan of [
-            { floorplan: FloorplanFE.FE_OVP, generateMockFunc: generateFE },
-            { floorplan: FloorplanFF.FF_SIMPLE, generateMockFunc: generateFF }
+            { floorplan: FloorplanFE.FE_OVP, generateMockFunc: mockGenerateFE },
+            { floorplan: FloorplanFF.FF_SIMPLE, generateMockFunc: mockGenerateFF }
         ]) {
             const floorplan = testFloorplan.floorplan;
             options.floorplan = floorplan;
@@ -221,7 +216,7 @@ describe('Test FioriAppGenerator', () => {
             console.log('Floorplan wrote:', floorplan);
 
             expect(DefaultLogger.info).toHaveBeenCalledWith(`Copying ${floorplan} template files...`);
-            expect(transformState).toHaveBeenCalledWith(fioriAppGen['state'], true);
+            expect(mockTransformState).toHaveBeenCalledWith(fioriAppGen['state'], true);
             expect(testFloorplan.generateMockFunc).toHaveBeenCalledWith(
                 appPath,
                 appConfigMocked,
@@ -242,7 +237,7 @@ describe('Test FioriAppGenerator', () => {
                 ToolsId: 'abcd1234',
                 ValueHelpCount: 0
             });
-            expect(writeAppGenInfoFiles).toHaveBeenCalledWith(
+            expect(mockWriteAppGenInfoFiles).toHaveBeenCalledWith(
                 {
                     project: mockState.project,
                     service: mockState.service,
@@ -255,12 +250,12 @@ describe('Test FioriAppGenerator', () => {
                 expect.objectContaining({ commit: expect.any(Function) }),
                 { ui5Version: appConfigMocked.ui5?.minUI5Version }
             );
-            expect(writeAPIHubKeyFiles).not.toHaveBeenCalled();
+            expect(mockWriteAPIHubKeyFiles).not.toHaveBeenCalled();
         }
     });
 
     test('Should call `writeAPIHubKeyFiles` if key is provided', async () => {
-        (isAppStudio as jest.Mock).mockReturnValue(true);
+        mockIsAppStudio.mockReturnValue(true);
         const mockState: State = {
             project: {
                 name: 'testApp',
@@ -285,7 +280,7 @@ describe('Test FioriAppGenerator', () => {
         fioriAppGen['state'] = { ...mockState, floorplan: FloorplanFE.FE_WORKLIST };
         await fioriAppGen.writing();
 
-        expect(writeAPIHubKeyFiles).toHaveBeenCalledWith(
+        expect(mockWriteAPIHubKeyFiles).toHaveBeenCalledWith(
             expect.objectContaining({ commit: expect.any(Function) }),
             join(targetFolder, 'testApp'),
             mockState.service.apiHubConfig
@@ -294,7 +289,6 @@ describe('Test FioriAppGenerator', () => {
 
     test('Should log, send telemetry event and exit if an error is thrown during writing', async () => {
         const fioriAppGen = new FioriAppGenerator([], options);
-        // Non-existent path should throw an error
         const mockState: Partial<State> = {
             project: {
                 name: 'testApp',
@@ -342,17 +336,16 @@ describe('Test FioriAppGenerator', () => {
         };
         fioriAppGen['state'] = mockState;
         await fioriAppGen.install();
-        expect(installDependencies).toHaveBeenCalledWith(
+        expect(mockInstallDependencies).toHaveBeenCalledWith(
             {
                 appPackagePath: appPath,
                 capService: mockState.service!.capService,
                 useNpmWorkspaces: true
             },
-            expect.objectContaining({ debug: expect.any(Function) }) // Logger
+            expect.objectContaining({ debug: expect.any(Function) })
         );
-        (installDependencies as jest.Mock).mockClear();
+        mockInstallDependencies.mockClear();
 
-        // Should call installDependencies with useNpmWorkspaces as enableTypescript is true
         fioriAppGen['state'] = {
             ...mockState,
             project: {
@@ -374,22 +367,20 @@ describe('Test FioriAppGenerator', () => {
         };
 
         await fioriAppGen.install();
-        expect(installDependencies).toHaveBeenCalledWith(
+        expect(mockInstallDependencies).toHaveBeenCalledWith(
             expect.objectContaining({ useNpmWorkspaces: true }),
-            expect.objectContaining({ debug: expect.any(Function) }) // Logger
+            expect.objectContaining({ debug: expect.any(Function) })
         );
-        (installDependencies as jest.Mock).mockClear();
+        mockInstallDependencies.mockClear();
 
-        // Should skip installation if option specified
         fioriAppGen = new FioriAppGenerator([], { ...options, skipInstall: true });
         await fioriAppGen.install();
-        expect(installDependencies).not.toHaveBeenCalled();
+        expect(mockInstallDependencies).not.toHaveBeenCalled();
         expect(DefaultLogger.info).toHaveBeenCalledWith(t('logMessages.installSkippedOptionSpecified'));
     });
 
     test('Should call `runPostGenerationTasks` during end phase', async () => {
         const fioriAppGen = new FioriAppGenerator([], { ...options, followUpCommand: { cmdName: 'testCommand' } });
-        // Note: The state object is not representative of a real state object, only for testing purposes
         const mockState: State = {
             project: {
                 name: 'testApp',
@@ -429,7 +420,7 @@ describe('Test FioriAppGenerator', () => {
         fioriAppGen['appWizard'] = { appWizard: 'appWizard' } as unknown as AppWizard;
 
         await fioriAppGen.end();
-        expect(runPostGenerationTasks).toHaveBeenCalledWith(
+        expect(mockRunPostGenerationTasks).toHaveBeenCalledWith(
             {
                 service: {
                     backendSystem: mockState.service?.connectedSystem?.backendSystem,
@@ -444,11 +435,11 @@ describe('Test FioriAppGenerator', () => {
                     flpAppId: mockState.project?.flpAppId
                 }
             },
-            expect.objectContaining({ commit: expect.any(Function) }), // mem-fs-editor
-            expect.objectContaining({ debug: expect.any(Function) }), // Logger
-            undefined, // vscode
-            { appWizard: 'appWizard' }, // appWizard
-            { cmdName: 'testCommand' } // followUpCommand
+            expect.objectContaining({ commit: expect.any(Function) }),
+            expect.objectContaining({ debug: expect.any(Function) }),
+            undefined,
+            { appWizard: 'appWizard' },
+            { cmdName: 'testCommand' }
         );
         expect(deleteCache).toHaveBeenCalled();
     });

@@ -1,23 +1,26 @@
+import { jest } from '@jest/globals';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { copyFileSync, promises as fsPromise, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
 import { FloorplanFF, type State } from '../../../src/types';
 import { cleanTestDir, getTestDir, ignoreMatcherOpts, runWritingPhaseGen } from '../test-utils';
 import { initI18nFioriAppSubGenerator } from '../../../src';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 const EXPECTED_OUT_PATH = './expected-output';
 const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
-    return {
-        ...fioriGenShared,
-        sendTelemetry: jest.fn()
-    };
-});
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: jest.fn()
+}));
 
 function setExpectedOutPath(projectName: string): string {
     return join(__dirname, EXPECTED_OUT_PATH, projectName);
