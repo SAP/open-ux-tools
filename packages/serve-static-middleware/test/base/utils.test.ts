@@ -1,5 +1,8 @@
 import { resolveServeStaticOptions, resolveSrcPath } from '../../src/base/utils';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const testDirname = dirname(fileURLToPath(import.meta.url));
 
 describe('utils', () => {
     test('resolveServeStaticOptions: global options', () => {
@@ -31,6 +34,6 @@ describe('utils', () => {
     });
 
     test('resolveSrcPath: call with relative src path', () => {
-        expect(resolveSrcPath(__dirname, 'path/to/resources')).toBe(join('test', 'base', 'path', 'to', 'resources'));
+        expect(resolveSrcPath(testDirname, 'path/to/resources')).toBe(join('test', 'base', 'path', 'to', 'resources'));
     });
 });

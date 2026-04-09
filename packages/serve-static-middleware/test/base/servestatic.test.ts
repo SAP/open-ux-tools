@@ -1,23 +1,33 @@
-import { serveStaticMiddleware } from '../../src';
+import { jest } from '@jest/globals';
 import type { ServeStaticConfig } from '../../src';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import * as expressServeStatic from 'serve-static';
-import { relative, join } from 'node:path';
+import { relative, join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('serve-static', () => ({
-    __esModule: true,
-    default: jest.fn()
+const mockServeStatic = jest.fn();
+
+jest.unstable_mockModule('serve-static', () => ({
+    default: mockServeStatic
 }));
+
+const { serveStaticMiddleware } = await import('../../src');
+
+const testDirname = dirname(fileURLToPath(import.meta.url));
 
 describe('serve-static-middleware', () => {
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
     });
-    const serveStaticMock = jest.spyOn(expressServeStatic as any, 'default').mockImplementation(() => {
-        return (req: any, res: any, next: any) => {
-            next();
-        };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockServeStatic.mockImplementation(() => {
+            return (req: any, res: any, next: any) => {
+                next();
+            };
+        });
     });
+
     const configuration: ServeStaticConfig = {
         paths: [
             { path: '/resources', src: '/path/to/resources' },
@@ -25,14 +35,10 @@ describe('serve-static-middleware', () => {
         ]
     };
 
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
     test('serveStaticMiddleware: call with minimal config', () => {
         serveStaticMiddleware('/root', configuration, logger);
-        expect(serveStaticMock).toHaveBeenCalledTimes(2);
-        expect(serveStaticMock.mock.calls).toMatchSnapshot();
+        expect(mockServeStatic).toHaveBeenCalledTimes(2);
+        expect(mockServeStatic.mock.calls).toMatchSnapshot();
     });
 
     test('serveStaticMiddleware: call with additional options', () => {
@@ -43,8 +49,8 @@ describe('serve-static-middleware', () => {
             ]
         };
         serveStaticMiddleware('/root', config, logger);
-        expect(serveStaticMock).toHaveBeenCalledTimes(2);
-        expect(serveStaticMock.mock.calls).toMatchSnapshot();
+        expect(mockServeStatic).toHaveBeenCalledTimes(2);
+        expect(mockServeStatic.mock.calls).toMatchSnapshot();
     });
 
     test('serveStaticMiddleware: call with src path resolution', () => {
@@ -54,12 +60,12 @@ describe('serve-static-middleware', () => {
                 { path: '/test-resources', src: 'test-resources' }
             ]
         };
-        serveStaticMiddleware(__dirname, config, logger);
-        expect(serveStaticMock).toHaveBeenCalledTimes(2);
-        expect(serveStaticMock).toHaveBeenNthCalledWith(1, relative(process.cwd(), join(__dirname, 'resources')), {});
-        expect(serveStaticMock).toHaveBeenNthCalledWith(
+        serveStaticMiddleware(testDirname, config, logger);
+        expect(mockServeStatic).toHaveBeenCalledTimes(2);
+        expect(mockServeStatic).toHaveBeenNthCalledWith(1, relative(process.cwd(), join(testDirname, 'resources')), {});
+        expect(mockServeStatic).toHaveBeenNthCalledWith(
             2,
-            relative(process.cwd(), join(__dirname, 'test-resources')),
+            relative(process.cwd(), join(testDirname, 'test-resources')),
             {}
         );
     });
@@ -75,7 +81,7 @@ describe('serve-static-middleware', () => {
             ]
         };
         serveStaticMiddleware('/root', config, logger);
-        expect(serveStaticMock).toHaveBeenCalledTimes(2);
-        expect(serveStaticMock.mock.calls).toMatchSnapshot();
+        expect(mockServeStatic).toHaveBeenCalledTimes(2);
+        expect(mockServeStatic.mock.calls).toMatchSnapshot();
     });
 });

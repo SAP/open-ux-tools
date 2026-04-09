@@ -5,7 +5,7 @@ import type { MiddlewareParameters } from '@ui5/server';
 import type { RequestHandler } from 'express';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 
-module.exports = ({ options, middlewareUtil }: MiddlewareParameters<ServeStaticConfig>): RequestHandler => {
+export default ({ options, middlewareUtil }: MiddlewareParameters<ServeStaticConfig>): RequestHandler => {
     const log = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'serve-static-middleware' })]
     });
