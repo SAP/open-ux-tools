@@ -1,12 +1,16 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import os from 'node:os';
 import fs from 'node:fs';
-import { getBootstrapResourceUrls } from '../src/index';
-import {
-    YEOMANUI_TARGET_FOLDER_CONFIG_PROP,
-    getDefaultTargetFolder,
-    isCommandRegistered
-} from '../src/vscode-helpers/vscode-helpers';
+
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: jest.fn()
+}));
+
+const { getBootstrapResourceUrls } = await import('../src/index');
+const { YEOMANUI_TARGET_FOLDER_CONFIG_PROP, getDefaultTargetFolder, isCommandRegistered } = await import(
+    '../src/vscode-helpers/vscode-helpers'
+);
 
 describe('getResourceUrlsForUi5Bootstrap', () => {
     it('should return relative paths for Edmx projects', () => {

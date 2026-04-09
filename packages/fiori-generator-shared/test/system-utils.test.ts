@@ -1,4 +1,10 @@
-import { getSystemDisplayName } from '../src';
+import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: jest.fn()
+}));
+
+const { getSystemDisplayName } = await import('../src');
 
 describe('Test SystemUtils', () => {
     describe('getSystemDisplayName', () => {

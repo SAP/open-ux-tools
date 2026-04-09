@@ -1,11 +1,22 @@
-import { ClientFactory } from '@sap-ux/telemetry';
-import { sendTelemetry, sendTelemetryBlocking, TelemetryHelper } from '../../src/telemetry';
-import * as envUtils from '../../src/environment';
+import { jest } from '@jest/globals';
 import { hostEnvironment } from '../../src/types';
+
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: jest.fn()
+}));
+
+const mockGetHostEnvironment = jest.fn();
+jest.unstable_mockModule('../../src/environment', () => ({
+    getHostEnvironment: mockGetHostEnvironment,
+    isCli: jest.fn()
+}));
+
+const { ClientFactory } = await import('@sap-ux/telemetry');
+const { sendTelemetry, sendTelemetryBlocking, TelemetryHelper } = await import('../../src/telemetry');
 
 describe('Telemetry utils', () => {
     beforeAll(() => {
-        jest.spyOn(envUtils, 'getHostEnvironment').mockReturnValue(hostEnvironment.cli);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
     });
 
     test('should call reportEvent with sample data', async () => {

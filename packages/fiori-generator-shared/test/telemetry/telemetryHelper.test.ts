@@ -1,25 +1,43 @@
-import { TelemetryHelper } from '../../src/telemetry';
-import * as sapUxTelemetry from '@sap-ux/telemetry';
-import * as envUtils from '../../src/environment';
+import { jest } from '@jest/globals';
 import { hostEnvironment } from '../../src/types';
+import * as actualSapUxTelemetry from '@sap-ux/telemetry';
+
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: jest.fn()
+}));
+
+const mockGetHostEnvironment = jest.fn();
+jest.unstable_mockModule('../../src/environment', () => ({
+    getHostEnvironment: mockGetHostEnvironment,
+    isCli: jest.fn()
+}));
+
+const mockInitTelemetrySettings = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    ...actualSapUxTelemetry,
+    initTelemetrySettings: mockInitTelemetrySettings
+}));
+
+const { TelemetryHelper } = await import('../../src/telemetry');
+const sapUxTelemetry = await import('@sap-ux/telemetry');
 
 describe('TelemetryHelper', () => {
     describe('initTelemetrySettings', () => {
         it('should call initTelemetrySettings with the provided options', async () => {
-            const initTelemetrySettingsSpy = jest.spyOn(sapUxTelemetry, 'initTelemetrySettings').mockResolvedValue();
+            mockInitTelemetrySettings.mockResolvedValue(undefined);
             const opts = {
                 consumerModule: { name: 'test', version: '1.0.0' },
                 internalFeature: true,
                 watchTelemetrySettingStore: false
             };
             await TelemetryHelper.initTelemetrySettings(opts);
-            expect(initTelemetrySettingsSpy).toHaveBeenCalledWith(opts);
+            expect(mockInitTelemetrySettings).toHaveBeenCalledWith(opts);
         });
     });
 
     describe('createTelemetryData', () => {
         beforeAll(() => {
-            jest.spyOn(envUtils, 'getHostEnvironment').mockReturnValue(hostEnvironment.cli);
+            mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         });
 
         it('should return default telemtry data', () => {

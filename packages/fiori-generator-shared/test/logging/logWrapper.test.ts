@@ -1,7 +1,30 @@
+import { jest } from '@jest/globals';
 import type { ChildLoggerOptions, Logger as SapUxLogger, Transport } from '@sap-ux/logger';
 import type { IVSCodeExtLogger } from '@vscode-logging/logger';
 import type { Logger as YoLogger } from 'yeoman-environment';
-import { createCLILogger, DefaultLogger, LogWrapper } from '../../src/logging/logWrapper';
+
+const mockGetExtensionLogger = jest.fn().mockReturnValue({
+    fatal: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+    trace: jest.fn(),
+    getChildLogger: jest.fn().mockReturnValue({
+        fatal: jest.fn(),
+        error: jest.fn(),
+        warn: jest.fn(),
+        info: jest.fn(),
+        debug: jest.fn(),
+        trace: jest.fn()
+    })
+});
+
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: mockGetExtensionLogger
+}));
+
+const { createCLILogger, DefaultLogger, LogWrapper } = await import('../../src/logging/logWrapper');
 
 describe('Test logWrapper', () => {
     afterEach(() => {
