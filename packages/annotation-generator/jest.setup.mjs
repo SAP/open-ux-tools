@@ -1,13 +1,13 @@
-const { spawnSync } = require('child_process');
-const { join } = require('path');
-const { platform } = require('os');
+import { spawnSync } from 'node:child_process';
+import { join, dirname } from 'node:path';
+import { platform } from 'node:os';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const fiveMinutes = 5 * 60000;
 const TEST_DATA_ROOT = join(__dirname, 'test', 'data');
-const CDS_PROJECTS = [
-    join(TEST_DATA_ROOT, 'cds-generation'),
-    join(TEST_DATA_ROOT, 'cds-incidents'),
-];
+const CDS_PROJECTS = [join(TEST_DATA_ROOT, 'cds-generation'), join(TEST_DATA_ROOT, 'cds-incidents')];
 
 function npmInstall(projectPath) {
     console.log(`Installing packages in ${projectPath}. Max time allocated is 5 min.`);
@@ -29,7 +29,7 @@ function npmInstall(projectPath) {
     }
 }
 
-module.exports = function () {
+export default function () {
     // for watch mode assume that node modules are already installed
     const skipInstall = process.argv.find((arg) => arg === '--watch');
 
@@ -40,4 +40,4 @@ module.exports = function () {
     for (const projectPath of CDS_PROJECTS) {
         npmInstall(projectPath);
     }
-};
+}

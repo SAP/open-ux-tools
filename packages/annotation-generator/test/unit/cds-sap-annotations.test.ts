@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStore } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
@@ -7,6 +8,8 @@ import { getProject } from '@sap-ux/project-access';
 import type { AnnotationServiceParameters, GenerateAnnotationsOptions } from '../../src';
 import { generateAnnotations } from '../../src';
 import { adaptFilePath } from '../../src/utils';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const testDataFolder = 'data';
 const cdsProjectFolder = 'cds-generation';
