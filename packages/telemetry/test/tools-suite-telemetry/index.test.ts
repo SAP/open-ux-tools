@@ -1,38 +1,49 @@
+import { jest } from '@jest/globals';
 import type { AxiosResponse } from 'axios';
 import * as memfs from 'memfs';
-import { processToolsSuiteTelemetry, getIdeType } from '../../src/tooling-telemetry';
-import { ToolingTelemetrySettings } from '../../src/tooling-telemetry/config-state';
 import fs from 'node:fs';
 import { join } from 'node:path';
-import { CommandRunner } from '@sap-ux/nodejs-utils';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { Union } from 'unionfs';
 
-jest.mock('fs', () => {
-    const fs1 = jest.requireActual('fs');
-    // eslint-disable-next-line  @typescript-eslint/no-require-imports
-    const Union = require('unionfs').Union;
-    // eslint-disable-next-line  @typescript-eslint/no-require-imports
-    const vol = require('memfs').vol;
-    const memfs = new Union().use(fs1).use(vol as unknown as typeof fs);
-    memfs.realpath = fs1.realpath;
-    memfs.realpathSync = fs1.realpathSync;
-    return memfs;
-});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const unionFs = new Union().use(fs).use(memfs.vol as unknown as typeof fs);
+(unionFs as any).realpath = fs.realpath;
+(unionFs as any).realpathSync = fs.realpathSync;
+
+jest.unstable_mockModule('node:fs', () => ({
+    ...unionFs,
+    default: unionFs
+}));
+jest.unstable_mockModule('fs', () => ({
+    ...unionFs,
+    default: unionFs
+}));
+
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+const actualAxios = await import('axios');
 
 const isAppStudioMock = jest.fn();
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/btp-utils') as {}),
-        isAppStudio: (): boolean => isAppStudioMock()
-    };
-});
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: (): boolean => isAppStudioMock()
+}));
 
 const axiosGetMock = jest.fn();
-jest.mock('axios', () => {
-    return {
-        ...(jest.requireActual('axios') as {}),
+jest.unstable_mockModule('axios', () => ({
+    ...actualAxios,
+    default: {
+        ...actualAxios.default,
         get: (): AxiosResponse => axiosGetMock()
-    };
-});
+    }
+}));
+
+const { processToolsSuiteTelemetry, getIdeType } = await import('../../src/tooling-telemetry');
+const { ToolingTelemetrySettings } = await import('../../src/tooling-telemetry/config-state');
+const { CommandRunner } = await import('@sap-ux/nodejs-utils');
 
 describe('Tools Suite Telemetry Tests', () => {
     jest.setTimeout(10000);

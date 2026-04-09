@@ -1,11 +1,9 @@
-import { ClientFactory } from '../../src/base/client';
+import { jest } from '@jest/globals';
 import type { Client } from '../../src/base/client/client';
-import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
-import { TelemetrySettings } from '../../src/base/config-state';
 
-const spyTrackEvent: jest.Mock = jest.fn();
+const spyTrackEvent = jest.fn();
 
-jest.mock('applicationinsights', () => {
+jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
         public channel: any;
@@ -21,11 +19,14 @@ jest.mock('applicationinsights', () => {
             this.addTelemetryProcessor = (fn: any) => {
                 fn({ tags: {} });
             };
-            this.trackEvent = (event: EventTelemetry) => spyTrackEvent(event);
+            this.trackEvent = (event: any) => spyTrackEvent(event);
         }
     }
     return { TelemetryClient };
 });
+
+const { ClientFactory } = await import('../../src/base/client');
+const { TelemetrySettings } = await import('../../src/base/config-state');
 
 describe('ClientFactory Tests', () => {
     test('Test function getTelemetryClient()', () => {

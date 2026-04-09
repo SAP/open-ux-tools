@@ -1,15 +1,8 @@
-import { TelemetrySettings } from '../../src/base/config-state';
-TelemetrySettings.azureInstrumentationKey = 'AzureInstrumentationKey';
-TelemetrySettings.telemetryLibName = '@sap-ux/telemetry';
-TelemetrySettings.telemetryLibVersion = '0.0.1';
-
-import { ClientFactory } from '../../src/base/client';
-import { EventName } from '../../src/base/types/event-name';
-import { SampleRate } from '../../src/base/types/sample-rate';
+import { jest } from '@jest/globals';
 
 const spyTrackEvent = jest.fn();
 
-jest.mock('applicationinsights', () => {
+jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
         public channel: any;
@@ -30,6 +23,15 @@ jest.mock('applicationinsights', () => {
     }
     return { TelemetryClient };
 });
+
+const { TelemetrySettings } = await import('../../src/base/config-state');
+TelemetrySettings.azureInstrumentationKey = 'AzureInstrumentationKey';
+TelemetrySettings.telemetryLibName = '@sap-ux/telemetry';
+TelemetrySettings.telemetryLibVersion = '0.0.1';
+
+const { ClientFactory } = await import('../../src/base/client');
+const { EventName } = await import('../../src/base/types/event-name');
+const { SampleRate } = await import('../../src/base/types/sample-rate');
 
 describe('ClientFactory Send Report Internal Extension', () => {
     test('Test function getTelemetryClient()', async () => {
