@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 import nock from 'nock';
-import fs from 'node:fs';
 import type { Message } from '../../src/abap/lrep-service';
 import type { AdaptationConfig, AxiosError } from '../../src';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -16,6 +15,15 @@ const actualLogger = await import('@sap-ux/logger');
 jest.unstable_mockModule('@sap-ux/logger', () => ({
     ...actualLogger,
     ToolsLogger: jest.fn().mockImplementation(() => loggerMock)
+}));
+
+// Mock readFileSync from node:fs so the named import in lrep-service.ts is intercepted
+const mockReadFileSync = jest.fn<any>();
+const actualFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    readFileSync: mockReadFileSync,
+    default: { ...actualFs, readFileSync: mockReadFileSync }
 }));
 
 const { LayeredRepositoryService, createForAbap } = await import('../../src');
@@ -53,7 +61,7 @@ describe('LayeredRepositoryService', () => {
         const testData = Buffer.from('TestData');
 
         beforeAll(() => {
-            jest.spyOn(fs, 'readFileSync').mockReturnValue(testData);
+            mockReadFileSync.mockReturnValue(testData);
         });
 
         test('deploy new adaptation project with path', async () => {
