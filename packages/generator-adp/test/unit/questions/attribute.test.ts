@@ -1,44 +1,49 @@
+import { jest } from '@jest/globals';
 import { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
-import {
-    validateProjectName,
-    validateNamespaceAdp,
-    validateEmptyString,
-    validateProjectFolder
-} from '@sap-ux/project-input-validator';
-import { FlexLayer, validateUI5VersionExists } from '@sap-ux/adp-tooling';
+const mockValidateProjectName = jest.fn();
+const mockValidateNamespaceAdp = jest.fn();
+const mockValidateEmptyString = jest.fn();
+const mockValidateProjectFolder = jest.fn();
+const mockValidateUI5VersionExists = jest.fn();
+const mockGetDefaultProjectName = jest.fn();
+const mockGetDefaultNamespace = jest.fn();
+const mockGetDefaultVersion = jest.fn();
+const mockGetProjectNameTooltip = jest.fn();
+const mockGetVersionAdditionalMessages = jest.fn();
 
-import {
-    getDefaultProjectName,
-    getDefaultNamespace,
-    getDefaultVersion
-} from '../../../src/app/questions/helper/default-values';
-import { attributePromptNames } from '../../../src/app/types';
-import { getPrompts } from '../../../src/app/questions/attributes';
-import { getProjectNameTooltip } from '../../../src/app/questions/helper/tooltip';
-import { getVersionAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
-import { getWizardPages } from '../../../src/utils/steps';
-
-jest.mock('@sap-ux/project-input-validator', () => ({
-    validateProjectName: jest.fn(),
-    validateNamespaceAdp: jest.fn(),
-    validateEmptyString: jest.fn(),
-    validateProjectFolder: jest.fn()
+const realProjectInputValidator = await import('@sap-ux/project-input-validator');
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    ...realProjectInputValidator,
+    validateProjectName: mockValidateProjectName,
+    validateNamespaceAdp: mockValidateNamespaceAdp,
+    validateEmptyString: mockValidateEmptyString,
+    validateProjectFolder: mockValidateProjectFolder
 }));
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    validateUI5VersionExists: jest.fn()
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
+    validateUI5VersionExists: mockValidateUI5VersionExists
 }));
 
-jest.mock('../../../src/app/questions/helper/default-values', () => ({
-    getDefaultProjectName: jest.fn(),
-    getDefaultNamespace: jest.fn(),
-    getDefaultVersion: jest.fn()
+jest.unstable_mockModule('../../../src/app/questions/helper/default-values', () => ({
+    getDefaultProjectName: mockGetDefaultProjectName,
+    getDefaultNamespace: mockGetDefaultNamespace,
+    getDefaultVersion: mockGetDefaultVersion
 }));
 
-jest.mock('../../../src/app/questions/helper/tooltip', () => ({ getProjectNameTooltip: jest.fn() }));
-jest.mock('../../../src/app/questions/helper/additional-messages', () => ({ getVersionAdditionalMessages: jest.fn() }));
+jest.unstable_mockModule('../../../src/app/questions/helper/tooltip', () => ({
+    getProjectNameTooltip: mockGetProjectNameTooltip
+}));
+jest.unstable_mockModule('../../../src/app/questions/helper/additional-messages', () => ({
+    getVersionAdditionalMessages: mockGetVersionAdditionalMessages
+}));
+
+const { FlexLayer } = await import('@sap-ux/adp-tooling');
+const { attributePromptNames } = await import('../../../src/app/types');
+const { getPrompts } = await import('../../../src/app/questions/attributes');
+const { getWizardPages } = await import('../../../src/utils/steps');
 
 const mockPath = '/project';
 const mockConfig = {
@@ -49,17 +54,6 @@ const mockConfig = {
     prompts: new YeomanUiSteps(getWizardPages(false))
 };
 
-const getDefaultVersionMock = getDefaultVersion as jest.Mock;
-const getDefaultNamespaceMock = getDefaultNamespace as jest.Mock;
-const validateProjectNameMock = validateProjectName as jest.Mock;
-const validateEmptyStringMock = validateEmptyString as jest.Mock;
-const validateNamespaceAdpMock = validateNamespaceAdp as jest.Mock;
-const validateProjectFolderMock = validateProjectFolder as jest.Mock;
-const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
-const getProjectNameTooltipMock = getProjectNameTooltip as jest.Mock;
-const validateUI5VersionExistsMock = validateUI5VersionExists as jest.Mock;
-const getVersionAdditionalMessagesMock = getVersionAdditionalMessages as jest.Mock;
-
 describe('Attribute Prompts', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -67,8 +61,8 @@ describe('Attribute Prompts', () => {
 
     describe('Project Name Prompt', () => {
         it('should include projectName prompt with correct config', () => {
-            getDefaultProjectNameMock.mockReturnValue('default-name');
-            getProjectNameTooltipMock.mockReturnValue('tooltip');
+            mockGetDefaultProjectName.mockReturnValue('default-name');
+            mockGetProjectNameTooltip.mockReturnValue('tooltip');
 
             const prompts = getPrompts(mockPath, mockConfig);
             const prompt = prompts.find((p) => p.name === attributePromptNames.projectName)!;
@@ -82,7 +76,7 @@ describe('Attribute Prompts', () => {
 
             const validateFn = (prompt as any).validate;
             validateFn('project1', { targetFolder: '' });
-            expect(validateProjectNameMock).toHaveBeenCalledWith('project1', mockPath, true, false);
+            expect(mockValidateProjectName).toHaveBeenCalledWith('project1', mockPath, true, false);
         });
     });
 
@@ -101,13 +95,13 @@ describe('Attribute Prompts', () => {
             expect((prompt as any).default).toBe('prompts.appTitleDefault');
 
             (prompt as any).validate('title');
-            expect(validateEmptyStringMock).toHaveBeenCalledWith('title');
+            expect(mockValidateEmptyString).toHaveBeenCalledWith('title');
         });
     });
 
     describe('Namespace Prompt', () => {
         it('should include namespace prompt with validation when CUSTOMER_BASE', () => {
-            getDefaultNamespaceMock.mockReturnValue('customer.project');
+            mockGetDefaultNamespace.mockReturnValue('customer.project');
 
             const prompts = getPrompts(mockPath, mockConfig);
             const prompt = prompts.find((p) => p.name === attributePromptNames.namespace)!;
@@ -120,7 +114,7 @@ describe('Attribute Prompts', () => {
 
             const validateFn = (prompt as any).validate;
             validateFn('ns', { projectName: 'project' });
-            expect(validateNamespaceAdpMock).toHaveBeenCalledWith('ns', 'project', true);
+            expect(mockValidateNamespaceAdp).toHaveBeenCalledWith('ns', 'project', true);
         });
 
         it('should not show namespace when not CUSTOMER_BASE', async () => {
@@ -146,15 +140,15 @@ describe('Attribute Prompts', () => {
             expect(defaultVal).toBeUndefined();
 
             (prompt as any).validate('path/to/project', { projectName: 'proj' });
-            expect(validateProjectFolderMock).toHaveBeenCalledWith('path/to/project', 'proj');
+            expect(mockValidateProjectFolder).toHaveBeenCalledWith('path/to/project', 'proj');
         });
     });
 
     describe('UI5 Version Prompt', () => {
         it('should include ui5Version prompt with async props', async () => {
-            getDefaultVersionMock.mockResolvedValue('1.119.0');
-            getVersionAdditionalMessagesMock.mockReturnValue(['info']);
-            validateUI5VersionExistsMock.mockResolvedValue(true);
+            mockGetDefaultVersion.mockResolvedValue('1.119.0');
+            mockGetVersionAdditionalMessages.mockReturnValue(['info']);
+            mockValidateUI5VersionExists.mockResolvedValue(true);
 
             const prompts = getPrompts(mockPath, mockConfig);
             const prompt = prompts.find((p) => p.name === attributePromptNames.ui5Version)!;
@@ -173,7 +167,7 @@ describe('Attribute Prompts', () => {
 
             const valid = await (prompt as any).validate('1.119.0');
             expect(valid).toBe(true);
-            expect(validateUI5VersionExistsMock).toHaveBeenCalledWith('1.119.0');
+            expect(mockValidateUI5VersionExists).toHaveBeenCalledWith('1.119.0');
         });
     });
 
@@ -187,19 +181,19 @@ describe('Attribute Prompts', () => {
         });
 
         it('should throw an error if version validation returns a string', async () => {
-            validateUI5VersionExistsMock.mockResolvedValue('Invalid version error');
+            mockValidateUI5VersionExists.mockResolvedValue('Invalid version error');
 
             await expect((prompt as any).when({ ui5Version: '1.118.0' })).rejects.toThrow('Invalid version error');
 
-            expect(validateUI5VersionExistsMock).toHaveBeenCalledWith('1.118.0');
+            expect(mockValidateUI5VersionExists).toHaveBeenCalledWith('1.118.0');
         });
 
         it('should return false if version validation passes', async () => {
-            validateUI5VersionExistsMock.mockResolvedValue(true);
+            mockValidateUI5VersionExists.mockResolvedValue(true);
 
             const result = await (prompt as any).when({ ui5Version: '1.119.0' });
             expect(result).toBe(false);
-            expect(validateUI5VersionExistsMock).toHaveBeenCalledWith('1.119.0');
+            expect(mockValidateUI5VersionExists).toHaveBeenCalledWith('1.119.0');
         });
     });
 

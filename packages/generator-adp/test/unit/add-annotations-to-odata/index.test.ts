@@ -1,51 +1,48 @@
+import { jest } from '@jest/globals';
 import fs from 'node:fs';
 import { join, resolve } from 'node:path';
 import yeomanTest from 'yeoman-test';
 
-import {
-    ChangeType,
-    generateChange,
-    getAdpConfig,
-    getVariant,
-    ManifestService,
-    ManifestServiceCF,
-    SystemLookup,
-    AnnotationFileSelectType,
-    isCFEnvironment
-} from '@sap-ux/adp-tooling';
-import { getTemplatesOverwritePath } from '../../../src/utils/templates';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { DescriptorVariant } from '@sap-ux/adp-tooling';
 
-import annotationGen from '../../../src/add-annotations-to-odata';
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    generateChange: jest.fn(),
-    getVariant: jest.fn(),
-    getAdpConfig: jest.fn(),
+const mockGenerateChange = jest.fn();
+const mockGetVariant = jest.fn();
+const mockGetAdpConfig = jest.fn();
+const mockIsCFEnvironment = jest.fn().mockResolvedValue(false);
+const mockManifestServiceCFInit = jest.fn();
+const mockGetTemplatesOverwritePath = jest.fn();
+
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
+    generateChange: mockGenerateChange,
+    getVariant: mockGetVariant,
+    getAdpConfig: mockGetAdpConfig,
     getAdpProjectData: jest.fn(),
-    isCFEnvironment: jest.fn().mockResolvedValue(false),
-    ManifestServiceCF: { init: jest.fn() }
+    isCFEnvironment: mockIsCFEnvironment,
+    ManifestServiceCF: { init: mockManifestServiceCFInit }
 }));
 
-jest.mock('../../../src/utils/templates', () => ({
-    getTemplatesOverwritePath: jest.fn(() => join(__dirname, '../../../src/add-annotations-to-odata/templates'))
+jest.unstable_mockModule('../../../src/utils/templates', () => ({
+    getTemplatesOverwritePath: mockGetTemplatesOverwritePath
 }));
 
-jest.mock('@sap-ux/odata-service-writer', () => ({
+jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({
     getAnnotationNamespaces: jest.fn(() => [{ namespace: 'ns', alias: 'ALIAS' }])
 }));
 
-jest.mock('@sap-ux/system-access', () => ({
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn().mockResolvedValue({})
 }));
 
-const generateChangeMock = generateChange as jest.MockedFunction<typeof generateChange>;
-const getVariantMock = getVariant as jest.MockedFunction<typeof getVariant>;
-const getAdpConfigMock = getAdpConfig as jest.MockedFunction<typeof getAdpConfig>;
-const isCFEnvironmentMock = isCFEnvironment as jest.MockedFunction<typeof isCFEnvironment>;
-const manifestServiceCFInitMock = ManifestServiceCF.init as jest.MockedFunction<typeof ManifestServiceCF.init>;
+const { ManifestService, SystemLookup, ChangeType, AnnotationFileSelectType } = await import('@sap-ux/adp-tooling');
+const { default: annotationGen } = await import('../../../src/add-annotations-to-odata');
+
+// Set template path mock to return the real template path
+const templatePath = join(globalThis.__dirname, 'src/add-annotations-to-odata/templates');
+mockGetTemplatesOverwritePath.mockReturnValue(templatePath);
 
 const manifest = {
     'sap.app': {
@@ -79,9 +76,9 @@ const answers = {
 
 jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(true);
 
-const generatorPath = join(__dirname, '../../src/add-annotations-to-odata/index.ts');
-const tmpDir = resolve(__dirname, 'test-output');
-const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
+const generatorPath = join(globalThis.__dirname, 'src/add-annotations-to-odata/index.ts');
+const tmpDir = resolve(globalThis.__dirname, 'test-output-add-annotations');
+const originalCwd: string = process.cwd();
 
 describe('AddAnnotationsToDataGenerator', () => {
     afterEach(() => {
@@ -100,8 +97,8 @@ describe('AddAnnotationsToDataGenerator', () => {
             getDataSourceMetadata: jest.fn().mockResolvedValue({ $Version: '4.0' })
         } as unknown as ManifestService);
 
-        getVariantMock.mockResolvedValue(variant);
-        getAdpConfigMock.mockResolvedValue({ target, ignoreCertErrors: false } as any);
+        mockGetVariant.mockResolvedValue(variant);
+        mockGetAdpConfig.mockResolvedValue({ target, ignoreCertErrors: false } as any);
 
         const runContext = yeomanTest
             .create(annotationGen, { resolved: generatorPath }, { cwd: tmpDir })
@@ -110,7 +107,7 @@ describe('AddAnnotationsToDataGenerator', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(generateChangeMock).toHaveBeenCalledWith(
+        expect(mockGenerateChange).toHaveBeenCalledWith(
             tmpDir,
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             expect.objectContaining({
@@ -129,13 +126,13 @@ describe('AddAnnotationsToDataGenerator', () => {
                 }
             }),
             expect.anything(),
-            expect.stringContaining(join(__dirname, '../../../src/add-annotations-to-odata', 'templates'))
+            expect.stringContaining('templates')
         );
     });
 
     it('invokes handleRuntimeCrash when manifest merge fails', async () => {
-        getVariantMock.mockResolvedValue(variant);
-        getAdpConfigMock.mockResolvedValue({ target, ignoreCertErrors: false } as any);
+        mockGetVariant.mockResolvedValue(variant);
+        mockGetAdpConfig.mockResolvedValue({ target, ignoreCertErrors: false } as any);
 
         jest.spyOn(ManifestService, 'initMergedManifest').mockRejectedValueOnce(new Error('merge fail'));
 
@@ -161,8 +158,8 @@ describe('AddAnnotationsToDataGenerator', () => {
     });
 
     it('invokes handleRuntimeCrash when system lookup fails during onInit', async () => {
-        getVariantMock.mockResolvedValue(variant);
-        getAdpConfigMock.mockResolvedValue({ target, ignoreCertErrors: false } as any);
+        mockGetVariant.mockResolvedValue(variant);
+        mockGetAdpConfig.mockResolvedValue({ target, ignoreCertErrors: false } as any);
 
         jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockRejectedValueOnce(
             new Error('system lookup fail')
@@ -190,15 +187,15 @@ describe('AddAnnotationsToDataGenerator', () => {
     });
 
     it('generates change for CF project using ManifestServiceCF', async () => {
-        isCFEnvironmentMock.mockResolvedValueOnce(true);
+        mockIsCFEnvironment.mockResolvedValueOnce(true);
 
-        manifestServiceCFInitMock.mockResolvedValue({
+        mockManifestServiceCFInit.mockResolvedValue({
             getManifest: jest.fn().mockReturnValue(manifest),
             getManifestDataSources: jest.fn().mockReturnValue(manifest['sap.app']?.dataSources),
             getDataSourceMetadata: jest.fn().mockRejectedValue(new Error('not supported'))
         } as any);
 
-        getVariantMock.mockResolvedValue(variant);
+        mockGetVariant.mockResolvedValue(variant);
 
         const runContext = yeomanTest
             .create(annotationGen, { resolved: generatorPath }, { cwd: tmpDir })
@@ -207,8 +204,8 @@ describe('AddAnnotationsToDataGenerator', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(manifestServiceCFInitMock).toHaveBeenCalledWith(tmpDir, expect.anything());
-        expect(generateChangeMock).toHaveBeenCalledWith(
+        expect(mockManifestServiceCFInit).toHaveBeenCalledWith(tmpDir, expect.anything());
+        expect(mockGenerateChange).toHaveBeenCalledWith(
             tmpDir,
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             expect.objectContaining({
@@ -219,7 +216,7 @@ describe('AddAnnotationsToDataGenerator', () => {
                 isCommand: true
             }),
             expect.anything(),
-            expect.stringContaining(join(__dirname, '../../../src/add-annotations-to-odata', 'templates'))
+            expect.stringContaining('templates')
         );
     });
 });

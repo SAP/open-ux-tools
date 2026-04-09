@@ -1,16 +1,19 @@
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
-import { initI18n } from '../../../src/utils/i18n';
-import type { ConfigPrompter } from '../../../src/app/questions/configuration';
-import { initCache, cachePut, cacheGet, cacheClear, type AppWizardWithCache } from '../../../src/utils/appWizardCache';
+const mockGetHostEnvironment = jest.fn();
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
-    getHostEnvironment: jest.fn()
+const realFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...realFioriGenShared,
+    getHostEnvironment: mockGetHostEnvironment
 }));
 
-const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
+const { initI18n } = await import('../../../src/utils/i18n');
+const { initCache, cachePut, cacheGet, cacheClear } = await import('../../../src/utils/appWizardCache');
+type AppWizardWithCache = import('../../../src/utils/appWizardCache').AppWizardWithCache;
+type ConfigPrompter = import('../../../src/app/questions/configuration').ConfigPrompter;
 
 describe('appWizardCache', () => {
     let logger: ToolsLogger;
@@ -61,7 +64,7 @@ describe('appWizardCache', () => {
     });
 
     it('should log warning if cache not initialized and running in vscode', () => {
-        getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
 
         cacheGet(undefined, 'prompter', logger);
         expect(logger.info).toHaveBeenCalledWith('Warning: caching is not supported');

@@ -1,18 +1,20 @@
+import { jest } from '@jest/globals';
 import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import { FlexLayer, type AttributesAnswers, type ConfigAnswers, type SystemLookup } from '@sap-ux/adp-tooling';
-
-import { t } from '../../../src/utils/i18n';
-import { addFlpGen, addDeployGen, addExtProjectGen } from '../../../src/utils/subgenHelpers';
-import { getExtensionProjectData } from '../../../src/app/extension-project';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-jest.mock('../../../src/app/extension-project', () => ({
-    getExtensionProjectData: jest.fn()
+const mockGetExtensionProjectData = jest.fn();
+
+const realExtProject = await import('../../../src/app/extension-project');
+jest.unstable_mockModule('../../../src/app/extension-project', () => ({
+    ...realExtProject,
+    getExtensionProjectData: mockGetExtensionProjectData
 }));
 
-const getExtensionProjectDataMock = getExtensionProjectData as jest.Mock;
+const { t } = await import('../../../src/utils/i18n');
+const { addFlpGen, addDeployGen, addExtProjectGen } = await import('../../../src/utils/subgenHelpers');
 
 describe('Sub-generator helpers', () => {
     const wizard = {} as unknown as AppWizard;
@@ -61,8 +63,6 @@ describe('Sub-generator helpers', () => {
                     ]
                 } as unknown as Prompts
             };
-            const resolvePath = 'flp-generator';
-            jest.spyOn(require, 'resolve').mockReturnValue(resolvePath);
 
             await addFlpGen(flpOptions, composeWith, logger, wizard);
 
@@ -190,9 +190,8 @@ describe('Sub-generator helpers', () => {
                 systemLookup: {} as SystemLookup
             };
             const fakeData = { foo: 'bar' };
-            const fakePath = 'ext-generator';
 
-            getExtensionProjectDataMock.mockResolvedValue(fakeData);
+            mockGetExtensionProjectData.mockResolvedValue(fakeData);
 
             await addExtProjectGen(answers, composeWith, logger);
 
@@ -206,7 +205,7 @@ describe('Sub-generator helpers', () => {
         });
 
         it('should handle errors and show user notification', async () => {
-            getExtensionProjectDataMock.mockRejectedValue(error);
+            mockGetExtensionProjectData.mockRejectedValue(error);
 
             await expect(addExtProjectGen({} as any, composeWith, logger, wizard)).rejects.toThrow();
 

@@ -1,23 +1,23 @@
-import { existsSync } from 'node:fs';
+import { jest } from '@jest/globals';
 
-import {
-    getDefaultNamespace,
-    getDefaultProjectName,
-    getDefaultVersion
-} from '../../../../src/app/questions/helper/default-values';
+const mockExistsSync = jest.fn();
+const mockReaddirSync = jest.fn();
 
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    readdirSync: jest.fn(),
-    existsSync: jest.fn()
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    existsSync: mockExistsSync,
+    readdirSync: mockReaddirSync
 }));
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
     validateUI5VersionExists: jest.fn().mockResolvedValue(true)
 }));
 
-const existsSyncMock = existsSync as jest.Mock;
+const { getDefaultNamespace, getDefaultProjectName, getDefaultVersion } =
+    await import('../../../../src/app/questions/helper/default-values');
 
 describe('generateValidNamespace', () => {
     const projectName = 'app.variant1';
@@ -40,7 +40,7 @@ describe('getDefaultProjectName', () => {
     });
 
     it('should return "app.variant1" if no matching project directories exist', () => {
-        existsSyncMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
+        mockExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
         const defaultName = getDefaultProjectName(testPath);
 

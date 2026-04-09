@@ -1,15 +1,16 @@
-import { readFileSync } from 'node:fs';
+import { jest } from '@jest/globals';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { setHeaderTitle } from '../../../src/utils/opts';
+const mockReadFileSync = jest.fn();
 
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    readFileSync: jest.fn()
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    readFileSync: mockReadFileSync
 }));
 
-const readFileSyncMock = readFileSync as jest.Mock;
+const { setHeaderTitle } = await import('../../../src/utils/opts');
 
 const mockPackage = { name: '@sap-ux/generator-adp', version: '0.0.1', displayName: 'SAPUI5 Adaptation Project' };
 
@@ -19,7 +20,7 @@ describe('setHeaderTitle', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        readFileSyncMock.mockReturnValue(JSON.stringify(mockPackage));
+        mockReadFileSync.mockReturnValue(JSON.stringify(mockPackage));
     });
 
     it('should call setHeaderTitle with displayName and version', () => {

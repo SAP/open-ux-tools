@@ -1,20 +1,21 @@
+import { jest } from '@jest/globals';
 import fs from 'node:fs';
 import { join, resolve } from 'node:path';
 import yeomanTest from 'yeoman-test';
 
-import { ChangeType, generateChange, getVariant } from '@sap-ux/adp-tooling';
 import type { NewModelAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
 
-import newModelGen from '../../../src/add-new-model';
+const mockGenerateChange = jest.fn();
+const mockGetVariant = jest.fn();
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    generateChange: jest.fn(),
-    getVariant: jest.fn()
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
+    generateChange: mockGenerateChange,
+    getVariant: mockGetVariant
 }));
 
-const generateChangeMock = generateChange as jest.MockedFunction<typeof generateChange>;
-const getVariantMock = getVariant as jest.MockedFunction<typeof getVariant>;
+const { default: newModelGen } = await import('../../../src/add-new-model');
 
 const variant = {
     reference: 'customer.adp.variant',
@@ -33,9 +34,9 @@ const answers: NewModelAnswers & { errorMessagePrompt: string } = {
     errorMessagePrompt: 'failed'
 };
 
-const generatorPath = join(__dirname, '../../src/add-new-model/index.ts');
-const tmpDir = resolve(__dirname, 'test-output');
-const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
+const generatorPath = join(globalThis.__dirname, 'src/add-new-model/index.ts');
+const tmpDir = resolve(globalThis.__dirname, 'test-output-add-new-model');
+const originalCwd: string = process.cwd();
 
 describe('AddNewModelGenerator', () => {
     afterEach(() => {
@@ -48,7 +49,7 @@ describe('AddNewModelGenerator', () => {
     });
 
     it('generates change with namespaces when new empty file selected', async () => {
-        getVariantMock.mockResolvedValue(variant);
+        mockGetVariant.mockResolvedValue(variant);
 
         const runContext = yeomanTest
             .create(newModelGen, { resolved: generatorPath }, { cwd: tmpDir })
@@ -57,9 +58,9 @@ describe('AddNewModelGenerator', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(generateChangeMock).toHaveBeenCalledWith(
+        expect(mockGenerateChange).toHaveBeenCalledWith(
             tmpDir,
-            ChangeType.ADD_NEW_MODEL,
+            realAdpTooling.ChangeType.ADD_NEW_MODEL,
             expect.objectContaining({
                 service: {
                     name: answers.name,
@@ -74,7 +75,7 @@ describe('AddNewModelGenerator', () => {
     });
 
     it('invokes handleRuntimeCrash when getVariant fails during initializing', async () => {
-        getVariantMock.mockRejectedValueOnce(new Error('variant fail'));
+        mockGetVariant.mockRejectedValueOnce(new Error('variant fail'));
 
         const handleCrashSpy = jest
             .spyOn((newModelGen as any).prototype, 'handleRuntimeCrash')
