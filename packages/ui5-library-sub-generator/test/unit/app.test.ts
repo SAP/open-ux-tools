@@ -1,65 +1,106 @@
-import * as ui5LibraryInquirer from '@sap-ux/ui5-library-inquirer';
-import * as ui5LibWriter from '@sap-ux/ui5-library-writer';
-import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
-import { toMatchFolder } from '@sap-ux/jest-file-matchers';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import 'jest-extended';
-import { join } from 'node:path';
 import { rimraf } from 'rimraf';
-import yeomanTest from 'yeoman-test';
-import ReuseLibGen from '../../src/app';
-import { CommandRunner } from '@sap-ux/nodejs-utils';
+import { toMatchFolder } from '@sap-ux/jest-file-matchers';
 import type { Editor } from 'mem-fs-editor';
-import * as fioriToolsSettings from '@sap-ux/fiori-tools-settings';
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line
-    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as typeof import('@sap-ux/fiori-generator-shared')),
-    getDefaultTargetFolder: jest.fn(),
-    isCli: jest.fn().mockReturnValue(true)
+const testDir = dirname(fileURLToPath(import.meta.url));
+
+// Mock functions
+const mockPrompt = jest.fn<any>();
+const mockGenerate = jest.fn<any>();
+const mockGetDefaultTargetFolder = jest.fn<any>();
+const mockIsCli = jest.fn<any>().mockReturnValue(true);
+const mockWriteApplicationInfoSettings = jest.fn<any>();
+
+// Mock @sap-ux/ui5-library-inquirer - inline mock to avoid circular loading OOM
+jest.unstable_mockModule('@sap-ux/ui5-library-inquirer', () => ({
+    prompt: mockPrompt
 }));
 
-jest.mock('@sap-ux/fiori-tools-settings', () => ({
-    writeApplicationInfoSettings: jest.fn()
+// Mock @sap-ux/ui5-library-writer
+jest.unstable_mockModule('@sap-ux/ui5-library-writer', () => ({
+    generate: mockGenerate
+}));
+
+// Create a mock logger that satisfies ILogWrapper interface
+const mockLoggerInstance: Record<string, any> = {
+    fatal: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+    trace: jest.fn(),
+    getChildLogger: jest.fn(),
+    getLogLevel: jest.fn().mockReturnValue('off'),
+    log: jest.fn()
+};
+mockLoggerInstance.getChildLogger.mockReturnValue(mockLoggerInstance);
+
+// Mock @sap-ux/fiori-generator-shared - inline mock to avoid circular loading OOM
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    getDefaultTargetFolder: mockGetDefaultTargetFolder,
+    isCli: mockIsCli,
+    DefaultLogger: mockLoggerInstance,
+    LogWrapper: class LogWrapper {
+        fatal = jest.fn();
+        error = jest.fn();
+        warn = jest.fn();
+        info = jest.fn();
+        debug = jest.fn();
+        trace = jest.fn();
+        getChildLogger = jest.fn().mockReturnValue(mockLoggerInstance);
+        getLogLevel = jest.fn().mockReturnValue('off');
+        log = jest.fn();
+        constructor() {}
+    }
+}));
+
+// Mock @sap-ux/fiori-tools-settings
+jest.unstable_mockModule('@sap-ux/fiori-tools-settings', () => ({
+    writeApplicationInfoSettings: mockWriteApplicationInfoSettings
 }));
 
 let yoEnv4 = false;
 
+// Mock yeoman-test/lib/adapter
+jest.unstable_mockModule('yeoman-test/lib/adapter', async () => {
+    const actual = await import('yeoman-test/lib/adapter');
+    return {
+        ...actual,
+        TestAdapter: function TestAdapter() {
+            // @ts-ignore - CJS interop
+            const ActualTestAdapter = actual.TestAdapter || (actual as any).default?.TestAdapter;
+            const testAdapter = new ActualTestAdapter();
+            if (yoEnv4) {
+                Object.assign(testAdapter, { actualAdapter: {} });
+            }
+            return testAdapter;
+        }
+    };
+});
+
+// Dynamic imports after mocks
+const yeomanTest = await import('yeoman-test');
+const { default: ReuseLibGen } = await import('../../src/app');
+const { CommandRunner } = await import('@sap-ux/nodejs-utils');
+
+// Import the real generate function from source path to bypass the jest mock
+// Jest's module mock only applies to the package name, not direct source imports
+const { generate: realGenerate } = await import('../../../ui5-library-writer/src/index');
+
+// Default mockGenerate to call the real implementation
+mockGenerate.mockImplementation(realGenerate);
+
 expect.extend({ toMatchFolder });
 
-jest.mock('yeoman-test/lib/adapter', () => ({
-    TestAdapter: function TestAdapter() {
-        const testAdapter = new (jest.requireActual('yeoman-test/lib/adapter').TestAdapter)();
-        if (yoEnv4) {
-            Object.assign(testAdapter, { actualAdapter: {} });
-        }
-        return testAdapter;
-    },
-    DummyPrompt: jest.requireActual('yeoman-test/lib/adapter').DummyPrompt
-}));
-
-const testOutputDir = join(__dirname, '../test-output');
-const reuseLibGenPath = join(__dirname, '../../src/app');
-const expectedOutputPath = join(__dirname, 'expected-output');
+const testOutputDir = join(testDir, '../test-output');
+const reuseLibGenPath = join(testDir, '../../src/app');
+const expectedOutputPath = join(testDir, 'expected-output');
 const originalCwd = process.cwd();
-
-const mockPrompts = [
-    {
-        name: 'libraryName'
-    },
-    {
-        name: 'namespace'
-    },
-    {
-        name: 'targetFolder'
-    },
-    {
-        name: 'ui5Version'
-    },
-    {
-        name: 'enableTypescript'
-    }
-];
 
 afterAll(() => {
     process.chdir(originalCwd); // Generation changes the cwd, this breaks sonar report so we restore later
@@ -75,16 +116,15 @@ describe('Test reuse lib generator', () => {
     it('should run the generator', async () => {
         fs.mkdirSync(testOutputDir, { recursive: true });
         // Mock the prompt function to avoid network calls during tests
-        jest.spyOn(ui5LibraryInquirer, 'prompt').mockResolvedValue({
+        mockPrompt.mockResolvedValue({
             libraryName: 'library1',
             namespace: 'com.sap',
             targetFolder: testOutputDir,
             ui5Version: '1.108.0',
             enableTypescript: false
         });
-        const writeApplicationInfoSettingsSpy = jest.spyOn(fioriToolsSettings, 'writeApplicationInfoSettings');
 
-        await yeomanTest
+        await yeomanTest.default
             .run(ReuseLibGen, {
                 resolved: reuseLibGenPath
             })
@@ -98,13 +138,13 @@ describe('Test reuse lib generator', () => {
             });
 
         expect(join(testOutputDir, 'com.sap.library1')).toMatchFolder(join(expectedOutputPath, 'library1'));
-        expect(writeApplicationInfoSettingsSpy).toHaveBeenCalledWith(join(testOutputDir, 'com.sap.library1'));
+        expect(mockWriteApplicationInfoSettings).toHaveBeenCalledWith(join(testOutputDir, 'com.sap.library1'));
     });
 
     it('should run the generator (typescript)', async () => {
         fs.mkdirSync(testOutputDir, { recursive: true });
         // Mock the prompt function to avoid network calls during tests
-        jest.spyOn(ui5LibraryInquirer, 'prompt').mockResolvedValue({
+        mockPrompt.mockResolvedValue({
             libraryName: 'tslibrary1',
             namespace: 'com.sap',
             targetFolder: testOutputDir,
@@ -112,7 +152,7 @@ describe('Test reuse lib generator', () => {
             enableTypescript: true
         });
 
-        await yeomanTest
+        await yeomanTest.default
             .run(ReuseLibGen, {
                 resolved: reuseLibGenPath
             })
@@ -136,12 +176,10 @@ describe('Test generator methods', () => {
     });
 
     it('should call getDefaultTargetFolder', async () => {
-        jest.spyOn(ui5LibWriter, 'generate').mockResolvedValueOnce({} as Editor);
-        const getDefaultTargetFolderSpy = jest
-            .spyOn(fioriGenShared, 'getDefaultTargetFolder')
-            .mockReturnValue('/some/path');
+        mockGenerate.mockResolvedValueOnce({} as Editor);
+        mockGetDefaultTargetFolder.mockReturnValue('/some/path');
         // Mock the prompt function to avoid network calls during tests
-        jest.spyOn(ui5LibraryInquirer, 'prompt').mockResolvedValue({
+        mockPrompt.mockResolvedValue({
             libraryName: 'defaultlib',
             namespace: 'com.sap',
             targetFolder: '/some/path',
@@ -149,7 +187,7 @@ describe('Test generator methods', () => {
             enableTypescript: false
         });
 
-        await yeomanTest
+        await yeomanTest.default
             .run(ReuseLibGen, {
                 resolved: reuseLibGenPath
             })
@@ -162,15 +200,15 @@ describe('Test generator methods', () => {
                 enableTypescript: false
             });
 
-        expect(getDefaultTargetFolderSpy).toHaveBeenCalled();
+        expect(mockGetDefaultTargetFolder).toHaveBeenCalled();
     });
 
     it('should throw error in writing phase', async () => {
-        jest.spyOn(ui5LibWriter, 'generate').mockImplementationOnce(() => {
+        mockGenerate.mockImplementationOnce(() => {
             throw new Error('Failed to generate UI5 lib');
         });
         // Mock the prompt function to avoid network calls during tests
-        jest.spyOn(ui5LibraryInquirer, 'prompt').mockResolvedValue({
+        mockPrompt.mockResolvedValue({
             libraryName: 'errorlib',
             namespace: 'com.sap',
             targetFolder: testOutputDir,
@@ -179,7 +217,7 @@ describe('Test generator methods', () => {
         });
 
         await expect(
-            yeomanTest
+            yeomanTest.default
                 .run(ReuseLibGen, {
                     resolved: reuseLibGenPath
                 })
@@ -195,12 +233,12 @@ describe('Test generator methods', () => {
     });
 
     it('should resolve despite error in install phase', async () => {
-        jest.spyOn(ui5LibWriter, 'generate').mockResolvedValueOnce({} as Editor);
+        mockGenerate.mockResolvedValueOnce({} as Editor);
         const commandRunSpy = (CommandRunner.prototype.run = jest
             .fn()
             .mockRejectedValueOnce('Error installing dependencies'));
         // Mock the prompt function to avoid network calls during tests
-        jest.spyOn(ui5LibraryInquirer, 'prompt').mockResolvedValue({
+        mockPrompt.mockResolvedValue({
             libraryName: 'installErrorLib',
             namespace: 'com.sap',
             targetFolder: testOutputDir,
@@ -209,7 +247,7 @@ describe('Test generator methods', () => {
         });
 
         await expect(
-            yeomanTest
+            yeomanTest.default
                 .run(ReuseLibGen, {
                     resolved: reuseLibGenPath
                 })
@@ -234,17 +272,17 @@ describe('Test generator methods', () => {
             ui5Version: '1.108.0',
             enableTypescript: true
         };
-        jest.spyOn(ui5LibWriter, 'generate').mockResolvedValueOnce({} as Editor);
-        const promptSpy = jest.spyOn(ui5LibraryInquirer, 'prompt').mockResolvedValue(promptAnswers);
+        mockGenerate.mockResolvedValueOnce({} as Editor);
+        mockPrompt.mockResolvedValue(promptAnswers);
         // Use the mocked adapter representing yeoman-environment@4
         yoEnv4 = true;
         await expect(
-            yeomanTest
+            yeomanTest.default
                 .run(ReuseLibGen, {
                     resolved: reuseLibGenPath
                 })
                 .withOptions({ skipInstall: false })
         ).resolves.not.toThrow();
-        expect(promptSpy).toHaveBeenCalled();
+        expect(mockPrompt).toHaveBeenCalled();
     });
 });
