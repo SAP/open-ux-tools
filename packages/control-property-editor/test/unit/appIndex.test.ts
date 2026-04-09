@@ -1,19 +1,37 @@
-import { start } from '../../src/index';
-import * as i18n from '../../src/i18n';
-import * as icons from '../../src/icons';
-import * as initIcon from '@sap-ux/ui-components/dist/components/Icons'; // bug in TS 4.6 https://github.com/microsoft/TypeScript/issues/43081
-import * as initTheme from '@sap-ux/ui-components/dist/theme';
-import ReactDOM from 'react-dom';
-import { store } from '../../src/store';
-import { initializeLivereload, setFeatureToggles, setProjectScenario } from '../../src/slice';
+import { jest } from '@jest/globals';
+import * as actualUiComponents from '@sap-ux/ui-components';
+
+const mockInitI18n = jest.fn();
+const mockRegisterAppIcons = jest.fn();
+const mockInitIcons = jest.fn();
+const mockInitTheme = jest.fn();
+const mockReactDOMRender = jest.fn();
+
+jest.unstable_mockModule('../../src/i18n', () => ({
+    initI18n: mockInitI18n
+}));
+
+jest.unstable_mockModule('../../src/icons', () => ({
+    registerAppIcons: mockRegisterAppIcons,
+    IconName: {}
+}));
+
+jest.unstable_mockModule('@sap-ux/ui-components', () => ({
+    ...actualUiComponents,
+    initIcons: mockInitIcons,
+    initTheme: mockInitTheme
+}));
+
+jest.unstable_mockModule('react-dom', () => ({
+    default: { render: mockReactDOMRender },
+    render: mockReactDOMRender
+}));
+
+const { start } = await import('../../src/index');
+const { store } = await import('../../src/store');
+const { initializeLivereload, setFeatureToggles, setProjectScenario } = await import('../../src/slice');
 
 describe('index', () => {
-    const i18nSpy = jest.spyOn(i18n, 'initI18n');
-    const iconsSpy = jest.spyOn(icons, 'registerAppIcons');
-    // ts-ignore
-    const initIconSpy = jest.spyOn(initIcon, 'initIcons');
-    const initThemeSpy = jest.spyOn(initTheme, 'initTheme');
-    const reactSpy = jest.spyOn(ReactDOM, 'render').mockReturnValue();
     const dispatchSpy = jest.spyOn(store, 'dispatch');
 
     test('start', () => {
@@ -26,11 +44,11 @@ describe('index', () => {
             }
         ];
         start({ previewUrl, rootElementId, livereloadPort: 8080, scenario: 'APP_VARIANT', features });
-        expect(i18nSpy).toHaveBeenCalledTimes(1);
-        expect(iconsSpy).toHaveBeenCalledTimes(1);
-        expect(initIconSpy).toHaveBeenCalledTimes(1);
-        expect(initThemeSpy).toHaveBeenCalledTimes(1);
-        expect(reactSpy).toHaveBeenCalledTimes(1);
+        expect(mockInitI18n).toHaveBeenCalledTimes(1);
+        expect(mockRegisterAppIcons).toHaveBeenCalledTimes(1);
+        expect(mockInitIcons).toHaveBeenCalledTimes(1);
+        expect(mockInitTheme).toHaveBeenCalledTimes(1);
+        expect(mockReactDOMRender).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenCalledTimes(3);
         expect(dispatchSpy).toHaveBeenNthCalledWith(1, setFeatureToggles(features));
         expect(dispatchSpy).toHaveBeenNthCalledWith(2, setProjectScenario('APP_VARIANT'));
