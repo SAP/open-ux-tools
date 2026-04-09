@@ -1,6 +1,6 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { readFile } from 'node:fs/promises';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 
 import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
@@ -11,6 +11,9 @@ import type { LinkerContext } from '../../../src/project-context/linker/types';
 import { ApplicationParser } from '../../../src/project-context/parser';
 import type { ManifestChange } from '../../test-helper';
 import { applyManifestChange } from '../../test-helper';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const parser = new ApplicationParser();
 

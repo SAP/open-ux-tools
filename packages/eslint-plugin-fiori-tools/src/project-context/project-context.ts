@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { createSyncFn } from 'synckit';
@@ -27,7 +27,7 @@ let artifactWorker: (file: string) => WorkerResult;
  */
 function getWorkerPath(name: string): string {
     // Create sync function to call the working draft-toggle-worker
-    const currentDir = __dirname;
+    const currentDir = dirname(fileURLToPath(import.meta.url));
 
     // Try multiple possible worker locations
     const workerPaths = [

@@ -1,8 +1,12 @@
 import { ESLint } from 'eslint';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { writeFileSync, mkdirSync, rmSync } from 'node:fs';
 // Import the plugin to use it directly
 import * as plugin from '../src/index';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('ESLint Plugin Integration Tests', () => {
     const testProjectPath = join(__dirname, 'test-output', 'integration-test-project');

@@ -1,6 +1,6 @@
 import baseConfig from '../../jest.base.mjs';
 export default {
-    ...config,
+    ...baseConfig,
     // Coverage is handled by c8 wrapper for worker thread support
     collectCoverage: false,
     setupFiles: ['<rootDir>/test/global-setup.ts']

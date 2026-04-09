@@ -1,5 +1,5 @@
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { join, dirname } from 'node:path';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 
 import type { RuleTester } from 'eslint';
@@ -13,6 +13,9 @@ export interface FileChange {
     filename: string;
     code: string;
 }
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const ROOT = join(__dirname, '..');
 

@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
-import { join, relative, posix } from 'node:path';
+import { join, relative, posix, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
 import js from '@eslint/js';
@@ -11,6 +12,9 @@ import { createSyncFn } from 'synckit';
 import type { getPathMappings } from '@sap-ux/project-access';
 import { uniformUrl } from './project-context/utils';
 export { DiagnosticCache } from './language/diagnostic-cache';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Use CommonJS require for modules with resolution issues
 // eslint-disable-next-line @typescript-eslint/no-require-imports
