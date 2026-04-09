@@ -1,19 +1,24 @@
-import * as sapuxProjectAccess from '@sap-ux/project-access';
-import path, { join, sep } from 'node:path';
-import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
-import {
-    getCapEdmx,
-    getCapProjectChoices,
-    getCapServiceChoices
-} from '../../../../src/prompts/datasources/cap-project/cap-helpers';
-import LoggerHelper from '../../../../src/prompts/logger-helper';
-import { errorHandler } from '../../../../src/prompts/prompt-helpers';
-import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-project/types';
+import { jest } from '@jest/globals';
+import { join, sep } from 'node:path';
 import os from 'node:os';
-import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { PathLike } from 'node:fs';
-import * as fsPromises from 'node:fs/promises';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-project/types';
+
+// Mock node:path with controllable isAbsolute and relative functions
+// We need to get the actual path module first via dynamic import to use win32 variants
+const pathModule = await import('node:path');
+const mockIsAbsolute = jest.fn<typeof pathModule.isAbsolute>(pathModule.isAbsolute);
+const mockRelative = jest.fn<typeof pathModule.relative>(pathModule.relative);
+jest.unstable_mockModule('node:path', () => ({
+    ...pathModule,
+    default: {
+        ...pathModule.default,
+        isAbsolute: mockIsAbsolute,
+        relative: mockRelative
+    },
+    isAbsolute: mockIsAbsolute,
+    relative: mockRelative
+}));
 
 const initMockCapModelAndServices = {
     model: {},
@@ -63,24 +68,54 @@ let currentMockCapModelAndServices = initMockCapModelAndServices;
 const initialMockEdmx = '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="2"/>';
 let mockEdmx: string = initialMockEdmx;
 
-jest.mock('@sap-ux/project-access', () => ({
-    __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
-    ...jest.requireActual('@sap-ux/project-access'),
-    getCapModelAndServices: jest.fn().mockImplementation(async () => {
-        return currentMockCapModelAndServices;
-    }),
-    getCdsRoots: jest.fn().mockResolvedValue([])
+// Controllable mocks for @sap-ux/project-access
+const mockFindCapProjects = jest.fn<any>().mockResolvedValue([]);
+const mockGetCapModelAndServices = jest.fn<any>().mockImplementation(async () => currentMockCapModelAndServices);
+const mockGetCdsRoots = jest.fn<any>().mockResolvedValue([]);
+const mockReadCapServiceMetadataEdmx = jest.fn<any>().mockImplementation(async () => mockEdmx);
+const mockGetCapCustomPaths = jest.fn<any>().mockResolvedValue({ app: 'app/', db: 'db/', srv: 'srv/' });
+
+const actualProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    findCapProjects: mockFindCapProjects,
+    getCapModelAndServices: mockGetCapModelAndServices,
+    getCdsRoots: mockGetCdsRoots,
+    readCapServiceMetadataEdmx: mockReadCapServiceMetadataEdmx,
+    getCapCustomPaths: mockGetCapCustomPaths
 }));
 
-jest.mock('fs/promises', () => ({
-    __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
-    ...jest.requireActual('fs/promises')
+// Mock fs/promises with controllable realpath
+const actualFsPromises = await import('node:fs/promises');
+const mockRealpath = jest.fn<any>();
+jest.unstable_mockModule('node:fs/promises', () => ({
+    ...actualFsPromises,
+    realpath: mockRealpath
+}));
+// Also mock 'fs/promises' (same module, different specifier)
+jest.unstable_mockModule('fs/promises', () => ({
+    ...actualFsPromises,
+    realpath: mockRealpath
 }));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
+const mockGetHostEnvironment = jest.fn<any>();
+const actualFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGeneratorShared,
+    getHostEnvironment: mockGetHostEnvironment
 }));
+
+// Dynamic imports after all mocks
+const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n');
+const {
+    getCapEdmx,
+    getCapProjectChoices,
+    getCapServiceChoices
+} = await import('../../../../src/prompts/datasources/cap-project/cap-helpers');
+const LoggerHelper = (await import('../../../../src/prompts/logger-helper')).default;
+const { errorHandler } = await import('../../../../src/prompts/prompt-helpers');
+const { ERROR_TYPE } = await import('@sap-ux/inquirer-common');
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('cap-helper', () => {
     beforeAll(async () => {
@@ -93,11 +128,19 @@ describe('cap-helper', () => {
         mockEdmx = initialMockEdmx;
         currentMockCapModelAndServices = initMockCapModelAndServices;
         jest.clearAllMocks();
+        // Reset default implementations
+        mockFindCapProjects.mockResolvedValue([]);
+        mockGetCapModelAndServices.mockImplementation(async () => currentMockCapModelAndServices);
+        mockReadCapServiceMetadataEdmx.mockImplementation(async () => mockEdmx);
+        mockGetCapCustomPaths.mockResolvedValue({ app: 'app/', db: 'db/', srv: 'srv/' });
+        // Reset path mocks to real implementations
+        mockIsAbsolute.mockImplementation(pathModule.isAbsolute);
+        mockRelative.mockImplementation(pathModule.relative);
     });
 
     test('getCapProjectChoices', async () => {
         // Zero state test
-        const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects').mockResolvedValue([]);
+        mockFindCapProjects.mockResolvedValue([]);
         let choices = await getCapProjectChoices(['/test/mock/']);
         expect(choices).toMatchInlineSnapshot(`
             [
@@ -109,10 +152,10 @@ describe('cap-helper', () => {
         `);
 
         // Multiple CAP projects found, some of which have the same folder names
-        findCapProjectsSpy.mockResolvedValue(['/test/mock/1/bookshop', '/test/mock/2/bookshop', '/test/mock/flight']);
+        mockFindCapProjects.mockResolvedValue(['/test/mock/1/bookshop', '/test/mock/2/bookshop', '/test/mock/flight']);
         // Mock the realpath function to return the non-existant test path as-is
         if (os.platform() === 'win32') {
-            jest.spyOn(fsPromises, 'realpath').mockImplementation(async (path: PathLike) => path as string);
+            mockRealpath.mockImplementation(async (path: PathLike) => path as string);
         }
 
         choices = await getCapProjectChoices(['/test/mock/']);
@@ -154,20 +197,19 @@ describe('cap-helper', () => {
               },
             ]
         `);
-        expect(findCapProjectsSpy).toHaveBeenCalledWith({ 'wsFolders': ['/test/mock/'] });
+        expect(mockFindCapProjects).toHaveBeenCalledWith({ 'wsFolders': ['/test/mock/'] });
     });
     test('getCapProjectChoices: Searches parent directories in CLI when no projects found', async () => {
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects');
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
 
         // First call returns empty, second call returns project from parent
-        findCapProjectsSpy.mockResolvedValueOnce([]).mockResolvedValueOnce(['/parent/cap-project']);
+        mockFindCapProjects.mockResolvedValueOnce([]).mockResolvedValueOnce(['/parent/cap-project']);
 
         const choices = await getCapProjectChoices(['/parent/cap-project/app/my-app']);
 
         // Verify parent search was called with noTraversal flag
-        expect(findCapProjectsSpy).toHaveBeenCalledTimes(2);
-        expect(findCapProjectsSpy).toHaveBeenNthCalledWith(2, {
+        expect(mockFindCapProjects).toHaveBeenCalledTimes(2);
+        expect(mockFindCapProjects).toHaveBeenNthCalledWith(2, {
             wsFolders: expect.any(Array),
             noTraversal: true
         });
@@ -175,22 +217,20 @@ describe('cap-helper', () => {
     });
 
     test('getCapProjectChoices: Does not search parent directories in YUI environment', async () => {
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-        const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects').mockResolvedValueOnce([]);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
+        mockFindCapProjects.mockResolvedValueOnce([]);
 
         await getCapProjectChoices(['/some/path']);
 
         // Should only be called once (no parent search)
-        expect(findCapProjectsSpy).toHaveBeenCalledTimes(1);
+        expect(mockFindCapProjects).toHaveBeenCalledTimes(1);
     });
 
     if (os.platform() === 'win32') {
         test('getCapProjectChoices: Windows specific drive letter casing test', async () => {
-            const findCapProjectsSpy = jest
-                .spyOn(sapuxProjectAccess, 'findCapProjects')
-                .mockResolvedValue(['c:\\test\\mock\\bookshop', 'c:\\test\\mock\\flight']);
+            mockFindCapProjects.mockResolvedValue(['c:\\test\\mock\\bookshop', 'c:\\test\\mock\\flight']);
 
-            jest.spyOn(fsPromises, 'realpath').mockImplementation(
+            mockRealpath.mockImplementation(
                 async (path: PathLike) => (path as string)[0].toUpperCase() + (path as string).slice(1)
             );
 
@@ -225,9 +265,7 @@ describe('cap-helper', () => {
     }
 
     test('getCapEdmx', async () => {
-        const readCapServiceMetadataEdmxSpy = jest
-            .spyOn(sapuxProjectAccess, 'readCapServiceMetadataEdmx')
-            .mockResolvedValue(mockEdmx);
+        mockReadCapServiceMetadataEdmx.mockResolvedValue(mockEdmx);
         // Valid CAP service
         expect(
             await getCapEdmx({
@@ -240,8 +278,8 @@ describe('cap-helper', () => {
         const errorHandlerSpy = jest.spyOn(errorHandler, 'logErrorMsgs');
         const logErrorSpy = jest.spyOn(LoggerHelper.logger, 'error');
 
-        // Ensure we get errors returned from readCapServiceMetadataEdmxSpy and log them
-        readCapServiceMetadataEdmxSpy.mockRejectedValue('Cannot read metadata');
+        // Ensure we get errors returned from readCapServiceMetadataEdmx and log them
+        mockReadCapServiceMetadataEdmx.mockRejectedValue('Cannot read metadata');
         expect(
             await getCapEdmx({
                 projectPath: '/test/mock/bookshop',
@@ -259,7 +297,7 @@ describe('cap-helper', () => {
         // CAP service `urlPath` not defined
         errorHandlerSpy.mockClear();
         logErrorSpy.mockClear();
-        readCapServiceMetadataEdmxSpy.mockRestore();
+        mockReadCapServiceMetadataEdmx.mockResolvedValue(mockEdmx);
         expect(
             await getCapEdmx({
                 projectPath: '/test/mock/bookshop',
@@ -313,9 +351,7 @@ describe('cap-helper', () => {
     test('getCapServiceChoices: getCapModelAndServices errors are caught, handled and logged correctly', async () => {
         const errorHandlerSpy = jest.spyOn(errorHandler, 'logErrorMsgs');
         const logErrorSpy = jest.spyOn(LoggerHelper.logger, 'error');
-        jest.spyOn(sapuxProjectAccess, 'getCapModelAndServices').mockRejectedValueOnce(
-            new Error('getCapModelAndServices error')
-        );
+        mockGetCapModelAndServices.mockRejectedValueOnce(new Error('getCapModelAndServices error'));
         const capProjectPaths: CapProjectPaths = {
             app: 'app/',
             db: 'db/',
@@ -351,12 +387,12 @@ describe('cap-helper', () => {
             if (mockOS === 'mockWin') {
                 pathSep = '\\'; // Windows path separator is escaped
                 drive = 'C:';
-                jest.spyOn(path, 'isAbsolute').mockImplementation(path.win32.isAbsolute);
-                jest.spyOn(path, 'relative').mockImplementation(path.win32.relative);
+                mockIsAbsolute.mockImplementation(pathModule.win32.isAbsolute);
+                mockRelative.mockImplementation(pathModule.win32.relative);
             }
             currentMockCapModelAndServices = mockCapModelAndServices1(drive, pathSep);
 
-            jest.spyOn(sapuxProjectAccess, 'getCapCustomPaths').mockResolvedValue({
+            mockGetCapCustomPaths.mockResolvedValue({
                 app: 'app/',
                 db: 'db/',
                 srv: 'srv/'
