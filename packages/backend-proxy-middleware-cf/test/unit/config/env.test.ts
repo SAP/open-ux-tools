@@ -1,40 +1,38 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import { jest } from '@jest/globals';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { EffectiveOptions } from '../../../src/types';
-import { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } from '../../../src/config/env';
 
-jest.mock('node:fs', () => ({
-    ...jest.requireActual('node:fs'),
-    existsSync: jest.fn(),
-    readFileSync: jest.fn()
+const __testdir = dirname(fileURLToPath(import.meta.url));
+
+const mockExistsSync = jest.fn();
+const mockReadFileSync = jest.fn();
+
+jest.unstable_mockModule('node:fs', () => ({
+    default: { existsSync: mockExistsSync, readFileSync: mockReadFileSync },
+    existsSync: mockExistsSync,
+    readFileSync: mockReadFileSync
 }));
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    buildVcapServicesFromResources: jest.fn(),
-    getSpaceGuidFromUi5Yaml: jest.fn(),
-    getYamlContent: jest.fn()
+const mockBuildVcapServicesFromResources = jest.fn();
+const mockGetSpaceGuidFromUi5Yaml = jest.fn();
+const mockGetYamlContent = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    buildVcapServicesFromResources: mockBuildVcapServicesFromResources,
+    getSpaceGuidFromUi5Yaml: mockGetSpaceGuidFromUi5Yaml,
+    getYamlContent: mockGetYamlContent
 }));
 
-const existsSyncMock = fs.existsSync as jest.Mock;
-const readFileSyncMock = fs.readFileSync as jest.Mock;
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports -- mock must be set before import
-const adpTooling = require('@sap-ux/adp-tooling') as {
-    buildVcapServicesFromResources: jest.Mock;
-    getSpaceGuidFromUi5Yaml: jest.Mock;
-    getYamlContent: jest.Mock;
-};
-const buildVcapServicesFromResourcesMock = adpTooling.buildVcapServicesFromResources;
-const getSpaceGuidFromUi5YamlMock = adpTooling.getSpaceGuidFromUi5Yaml;
-const getYamlContentMock = adpTooling.getYamlContent;
+const { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } = await import('../../../src/config/env');
 
 describe('env', () => {
     const logger = { warn: jest.fn(), debug: jest.fn() } as unknown as ToolsLogger;
-    const rootPath = path.join(__dirname, '../../fixtures/env');
+    const rootPath = path.join(__testdir, '../../fixtures/env');
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -43,7 +41,7 @@ describe('env', () => {
     describe('loadAndApplyEnvOptions', () => {
         describe('when envOptionsPath is set (load from file)', () => {
             test('throws when env options file does not exist', async () => {
-                existsSyncMock.mockReturnValue(false);
+                mockExistsSync.mockReturnValue(false);
                 const effectiveOptions = {
                     envOptionsPath: 'default-env.json',
                     destinations: []
@@ -54,12 +52,12 @@ describe('env', () => {
                 );
 
                 const resolvedPath = path.resolve(rootPath, 'default-env.json');
-                expect(existsSyncMock).toHaveBeenCalledWith(resolvedPath);
+                expect(mockExistsSync).toHaveBeenCalledWith(resolvedPath);
             });
 
             test('throws when env options file contains invalid JSON', async () => {
-                existsSyncMock.mockReturnValue(true);
-                readFileSyncMock.mockReturnValue('not valid json {');
+                mockExistsSync.mockReturnValue(true);
+                mockReadFileSync.mockReturnValue('not valid json {');
                 const effectiveOptions = {
                     envOptionsPath: 'opts.json',
                     destinations: []
@@ -69,7 +67,7 @@ describe('env', () => {
                     /Failed to read env options from/
                 );
 
-                expect(readFileSyncMock).toHaveBeenCalledWith(path.resolve(rootPath, 'opts.json'), 'utf8');
+                expect(mockReadFileSync).toHaveBeenCalledWith(path.resolve(rootPath, 'opts.json'), 'utf8');
             });
 
             test('should load file and merge destinations (file + effectiveOptions, same name wins from effectiveOptions)', async () => {
@@ -77,8 +75,8 @@ describe('env', () => {
                     VCAP_SERVICES: { xsuaa: [{ name: 'my-xsuaa' }] },
                     destinations: [{ name: 'backend', url: 'http://localhost:8080' }]
                 };
-                existsSyncMock.mockReturnValue(true);
-                readFileSyncMock.mockReturnValue(JSON.stringify(opts));
+                mockExistsSync.mockReturnValue(true);
+                mockReadFileSync.mockReturnValue(JSON.stringify(opts));
 
                 const effectiveOptions = {
                     envOptionsPath: 'default-env.json',
@@ -106,7 +104,7 @@ describe('env', () => {
             const mtaPath = path.resolve(rootPathCf, '..', 'mta.yaml');
 
             test('throws when getSpaceGuidFromUi5Yaml returns undefined', async () => {
-                getSpaceGuidFromUi5YamlMock.mockResolvedValue(undefined);
+                mockGetSpaceGuidFromUi5Yaml.mockResolvedValue(undefined);
                 const effectiveOptions = {
                     envOptionsPath: undefined,
                     destinations: []
@@ -116,12 +114,12 @@ describe('env', () => {
                     'No space GUID (from config or ui5.yaml). Cannot load CF env options.'
                 );
 
-                expect(getSpaceGuidFromUi5YamlMock).toHaveBeenCalledWith(rootPathCf, logger);
+                expect(mockGetSpaceGuidFromUi5Yaml).toHaveBeenCalledWith(rootPathCf, logger);
             });
 
             test('throws when mta.yaml does not exist', async () => {
-                getSpaceGuidFromUi5YamlMock.mockResolvedValue('space-guid-123');
-                existsSyncMock.mockReturnValue(false);
+                mockGetSpaceGuidFromUi5Yaml.mockResolvedValue('space-guid-123');
+                mockExistsSync.mockReturnValue(false);
                 const effectiveOptions = {
                     envOptionsPath: undefined,
                     destinations: []
@@ -131,7 +129,7 @@ describe('env', () => {
                     /mta.yaml not found at/
                 );
 
-                expect(existsSyncMock).toHaveBeenCalledWith(mtaPath);
+                expect(mockExistsSync).toHaveBeenCalledWith(mtaPath);
             });
 
             test('should call buildVcapServicesFromResources and apply result to process.env when spaceGuid and mta exist', async () => {
@@ -139,10 +137,10 @@ describe('env', () => {
                 const mtaYaml = { resources: [] };
                 const vcapServices = { destination: [{ label: 'destination' }] };
 
-                getSpaceGuidFromUi5YamlMock.mockResolvedValue(spaceGuid);
-                existsSyncMock.mockReturnValue(true);
-                getYamlContentMock.mockReturnValue(mtaYaml);
-                buildVcapServicesFromResourcesMock.mockResolvedValue(vcapServices);
+                mockGetSpaceGuidFromUi5Yaml.mockResolvedValue(spaceGuid);
+                mockExistsSync.mockReturnValue(true);
+                mockGetYamlContent.mockReturnValue(mtaYaml);
+                mockBuildVcapServicesFromResources.mockResolvedValue(vcapServices);
 
                 const effectiveOptions = {
                     envOptionsPath: undefined,
@@ -153,8 +151,8 @@ describe('env', () => {
 
                 await loadAndApplyEnvOptions(rootPathCf, effectiveOptions, logger);
 
-                expect(getYamlContentMock).toHaveBeenCalledWith(mtaPath);
-                expect(buildVcapServicesFromResourcesMock).toHaveBeenCalledWith(mtaYaml.resources, spaceGuid, logger);
+                expect(mockGetYamlContent).toHaveBeenCalledWith(mtaPath);
+                expect(mockBuildVcapServicesFromResources).toHaveBeenCalledWith(mtaYaml.resources, spaceGuid, logger);
                 expect(process.env.VCAP_SERVICES).toBe(JSON.stringify(vcapServices));
                 expect(process.env.destinations).toBe(JSON.stringify(effectiveOptions.destinations));
 

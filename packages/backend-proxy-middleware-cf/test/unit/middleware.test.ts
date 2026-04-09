@@ -1,16 +1,23 @@
-import fs from 'node:fs';
+import { jest } from '@jest/globals';
+import { createRequire } from 'node:module';
 
-import { createProxy } from '../../src/proxy/proxy';
-import { nextFreePort } from '../../src/utils';
-import { loadExtensions } from '../../src/approuter/extensions';
-import { loadAndApplyEnvOptions } from '../../src/config/env';
-import { startApprouter } from '../../src/approuter/approuter';
-import type { BackendProxyMiddlewareCfConfig } from '../../src/types';
-import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../src/proxy/routes';
-import { fetchBasUrlTemplate, resolveBasExternalUrl } from '../../src/platform/bas';
+// Provide global `module` and `require` for the source code (middleware.ts uses module.exports)
+if (typeof globalThis.module === 'undefined') {
+    (globalThis as Record<string, unknown>).module = { exports: {} };
+}
+if (typeof globalThis.require === 'undefined') {
+    (globalThis as Record<string, unknown>).require = createRequire(import.meta.url);
+}
+
+const mockExistsSync = jest.fn();
+
+jest.unstable_mockModule('node:fs', () => ({
+    default: { existsSync: mockExistsSync },
+    existsSync: mockExistsSync
+}));
 
 const noopFn = jest.fn();
-jest.mock('@sap-ux/logger', () => ({
+jest.unstable_mockModule('@sap-ux/logger', () => ({
     LogLevel: { Debug: 'debug', Info: 'info' },
     ToolsLogger: jest.fn().mockImplementation(() => ({
         debug: noopFn,
@@ -22,61 +29,61 @@ jest.mock('@sap-ux/logger', () => ({
     UI5ToolingTransport: jest.fn()
 }));
 
-jest.mock('node:fs', () => ({
-    ...jest.requireActual('node:fs'),
-    existsSync: jest.fn()
+const mockNextFreePort = jest.fn();
+jest.unstable_mockModule('../../src/utils', () => ({
+    nextFreePort: mockNextFreePort
 }));
 
-jest.mock('../../src/utils', () => ({
-    ...jest.requireActual('../../src/utils'),
-    nextFreePort: jest.fn()
+const mockLoadAndApplyEnvOptions = jest.fn().mockResolvedValue([]);
+const mockUpdateUi5ServerDestinationPort = jest.fn();
+jest.unstable_mockModule('../../src/config/env', () => ({
+    loadAndApplyEnvOptions: mockLoadAndApplyEnvOptions,
+    updateUi5ServerDestinationPort: mockUpdateUi5ServerDestinationPort
 }));
 
-jest.mock('../../src/config/env', () => ({
-    ...jest.requireActual('../../src/config/env'),
-    loadAndApplyEnvOptions: jest.fn().mockResolvedValue([])
+const mockLoadAndPrepareXsappConfig = jest.fn();
+const mockBuildRouteEntries = jest.fn();
+jest.unstable_mockModule('../../src/proxy/routes', () => ({
+    loadAndPrepareXsappConfig: mockLoadAndPrepareXsappConfig,
+    buildRouteEntries: mockBuildRouteEntries
 }));
 
-jest.mock('../../src/proxy/routes', () => ({
-    ...jest.requireActual('../../src/proxy/routes'),
-    loadAndPrepareXsappConfig: jest.fn(),
-    buildRouteEntries: jest.fn()
+const mockLoadExtensions = jest.fn();
+jest.unstable_mockModule('../../src/approuter/extensions', () => ({
+    loadExtensions: mockLoadExtensions
 }));
 
-jest.mock('../../src/approuter/extensions', () => ({
-    ...jest.requireActual('../../src/approuter/extensions'),
-    loadExtensions: jest.fn()
+const mockStartApprouter = jest.fn();
+jest.unstable_mockModule('../../src/approuter/approuter', () => ({
+    startApprouter: mockStartApprouter
 }));
 
-jest.mock('../../src/approuter/approuter', () => ({
-    startApprouter: jest.fn()
+const mockCreateProxy = jest.fn();
+jest.unstable_mockModule('../../src/proxy/proxy', () => ({
+    createProxy: mockCreateProxy
 }));
 
-jest.mock('../../src/proxy/proxy', () => ({ createProxy: jest.fn() }));
-
-jest.mock('../../src/platform/bas', () => ({
-    fetchBasUrlTemplate: jest.fn().mockResolvedValue(''),
-    resolveBasExternalUrl: jest.fn().mockReturnValue(undefined)
+const mockFetchBasUrlTemplate = jest.fn().mockResolvedValue('');
+const mockResolveBasExternalUrl = jest.fn().mockReturnValue(undefined);
+jest.unstable_mockModule('../../src/platform/bas', () => ({
+    fetchBasUrlTemplate: mockFetchBasUrlTemplate,
+    resolveBasExternalUrl: mockResolveBasExternalUrl
 }));
 
-jest.mock('../../src/platform/xssecurity', () => ({
+jest.unstable_mockModule('dotenv', () => ({
+    default: { config: jest.fn() },
+    config: jest.fn()
+}));
+
+jest.unstable_mockModule('../../src/platform/xssecurity', () => ({
     updateXsuaaService: jest.fn().mockResolvedValue(undefined)
 }));
 
-const createProxyMock = createProxy as jest.Mock;
-const existsSyncMock = fs.existsSync as jest.Mock;
-const nextFreePortMock = nextFreePort as jest.Mock;
-const loadExtensionsMock = loadExtensions as jest.Mock;
-const buildRouteEntriesMock = buildRouteEntries as jest.Mock;
-const loadAndApplyEnvOptionsMock = loadAndApplyEnvOptions as jest.Mock;
-const loadAndPrepareXsappConfigMock = loadAndPrepareXsappConfig as jest.Mock;
-const startApprouterMock = startApprouter as jest.Mock;
-const fetchBasUrlTemplateMock = fetchBasUrlTemplate as jest.Mock;
-const resolveBasExternalUrlMock = resolveBasExternalUrl as jest.Mock;
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports -- middleware is CommonJS
-const middleware = require('../../src/middleware') as (params: {
-    options: { configuration?: BackendProxyMiddlewareCfConfig };
+// Import middleware - it uses module.exports which we polyfilled globally
+// The import will execute the source file, setting globalThis.module.exports
+await import('../../src/middleware');
+const middleware = (globalThis as Record<string, { exports: unknown }>).module.exports as (params: {
+    options: { configuration?: import('../../src/types').BackendProxyMiddlewareCfConfig };
     middlewareUtil: { getProject: () => { getRootPath: () => string; getSourcePath: () => string } };
 }) => Promise<unknown>;
 
@@ -90,19 +97,19 @@ describe('middleware', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         delete process.env.destinations;
-        existsSyncMock.mockReturnValue(true);
-        loadAndApplyEnvOptionsMock.mockResolvedValue([]);
-        nextFreePortMock.mockResolvedValue(5000);
-        loadAndPrepareXsappConfigMock.mockReturnValue({
+        mockExistsSync.mockReturnValue(true);
+        mockLoadAndApplyEnvOptions.mockResolvedValue([]);
+        mockNextFreePort.mockResolvedValue(5000);
+        mockLoadAndPrepareXsappConfig.mockReturnValue({
             routes: [],
             login: { callbackEndpoint: '/login/callback' },
             logout: {}
         });
-        buildRouteEntriesMock.mockReturnValue([]);
-        loadExtensionsMock.mockReturnValue({ modules: [], routes: [] });
-        createProxyMock.mockReturnValue((_req: unknown, _res: unknown, next: () => void) => next());
-        fetchBasUrlTemplateMock.mockResolvedValue('');
-        resolveBasExternalUrlMock.mockReturnValue(undefined);
+        mockBuildRouteEntries.mockReturnValue([]);
+        mockLoadExtensions.mockReturnValue({ modules: [], routes: [] });
+        mockCreateProxy.mockReturnValue((_req: unknown, _res: unknown, next: () => void) => next());
+        mockFetchBasUrlTemplate.mockResolvedValue('');
+        mockResolveBasExternalUrl.mockReturnValue(undefined);
     });
 
     afterEach(() => {
@@ -113,11 +120,11 @@ describe('middleware', () => {
         await expect(middleware({ options: {}, middlewareUtil: { getProject } })).rejects.toThrow(
             'Backend proxy middleware (CF) has no configuration.'
         );
-        expect(createProxyMock).not.toHaveBeenCalled();
+        expect(mockCreateProxy).not.toHaveBeenCalled();
     });
 
     test('throws when xs-app.json does not exist', async () => {
-        existsSyncMock.mockReturnValue(false);
+        mockExistsSync.mockReturnValue(false);
 
         await expect(
             middleware({
@@ -126,7 +133,7 @@ describe('middleware', () => {
             })
         ).rejects.toThrow(/xs-app.json not found/);
 
-        expect(createProxyMock).not.toHaveBeenCalled();
+        expect(mockCreateProxy).not.toHaveBeenCalled();
     });
 
     test('should return request handler and call createProxy with expected options', async () => {
@@ -143,8 +150,8 @@ describe('middleware', () => {
         const mockNext = jest.fn();
         (handler as (req: unknown, res: unknown, next: () => void) => void)(mockReq, mockRes, mockNext);
 
-        expect(createProxyMock).toHaveBeenCalledTimes(1);
-        const [proxyOptions, loggerArg] = createProxyMock.mock.calls[0] as [
+        expect(mockCreateProxy).toHaveBeenCalledTimes(1);
+        const [proxyOptions, loggerArg] = mockCreateProxy.mock.calls[0] as [
             { baseUri: string; customRoutes: string[]; routes: unknown[]; effectiveOptions: unknown },
             unknown
         ];
@@ -157,7 +164,7 @@ describe('middleware', () => {
     });
 
     test('should apply subdomain, envOptionsPath, logout and globalThis correctly', async () => {
-        loadAndPrepareXsappConfigMock.mockReturnValue({
+        mockLoadAndPrepareXsappConfig.mockReturnValue({
             routes: [],
             login: { callbackEndpoint: '/login/callback' },
             logout: { logoutEndpoint: '/logout' }
@@ -174,7 +181,7 @@ describe('middleware', () => {
             middlewareUtil: { getProject }
         });
 
-        expect(loadAndApplyEnvOptionsMock).toHaveBeenCalledWith(
+        expect(mockLoadAndApplyEnvOptions).toHaveBeenCalledWith(
             rootPath,
             expect.objectContaining({ envOptionsPath: './adp/default-env.json', destinations: [] }),
             expect.any(Object)
@@ -186,7 +193,7 @@ describe('middleware', () => {
         const mockNext = jest.fn();
         (handler as (req: unknown, res: unknown, next: () => void) => void)(mockReq, mockRes, mockNext);
 
-        const [proxyOptions] = createProxyMock.mock.calls[0] as [{ baseUri: string; customRoutes: string[] }];
+        const [proxyOptions] = mockCreateProxy.mock.calls[0] as [{ baseUri: string; customRoutes: string[] }];
         expect(proxyOptions.baseUri).toBe('http://myapp.localhost:5000');
         expect(proxyOptions.customRoutes).toContain('/logout');
     });
@@ -205,11 +212,12 @@ describe('middleware', () => {
         const mockNext = jest.fn();
         (handler as (req: unknown, res: unknown, next: () => void) => void)(mockReq, mockRes, mockNext);
 
-        const [proxyOptions] = createProxyMock.mock.calls[0] as [{ customRoutes: string[] }];
+        const [proxyOptions] = mockCreateProxy.mock.calls[0] as [{ customRoutes: string[] }];
         expect(proxyOptions.customRoutes).not.toContain('/');
     });
 
     test('should auto-create ui5-server destination when not configured', async () => {
+        mockUpdateUi5ServerDestinationPort.mockReturnValue(true);
         const handler = await middleware({
             options: {
                 configuration: {
@@ -226,13 +234,16 @@ describe('middleware', () => {
         const mockNext = jest.fn();
         (handler as (req: unknown, res: unknown, next: () => void) => void)(mockReq, mockRes, mockNext);
 
-        // Should have auto-created ui5-server destination
-        expect(process.env.destinations).toBe(JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8080' }]));
+        // Should have called updateUi5ServerDestinationPort with correct args
+        expect(mockUpdateUi5ServerDestinationPort).toHaveBeenCalledWith(
+            expect.objectContaining({ destinations: [] }),
+            8080,
+            undefined
+        );
     });
 
     test('should update ui5-server destination when actual port differs from configured', async () => {
-        // Set up initial destinations in process.env (simulating what loadAndApplyEnvOptions would do)
-        process.env.destinations = JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8080' }]);
+        mockUpdateUi5ServerDestinationPort.mockReturnValue(true);
 
         const handler = await middleware({
             options: {
@@ -250,13 +261,18 @@ describe('middleware', () => {
         const mockNext = jest.fn();
         (handler as (req: unknown, res: unknown, next: () => void) => void)(mockReq, mockRes, mockNext);
 
-        // Should have updated process.env.destinations with the new destination
-        expect(process.env.destinations).toBe(JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8081' }]));
+        // Should have called updateUi5ServerDestinationPort with correct port
+        expect(mockUpdateUi5ServerDestinationPort).toHaveBeenCalledWith(
+            expect.objectContaining({
+                destinations: [{ name: 'ui5-server', url: 'http://localhost:8080' }]
+            }),
+            8081,
+            undefined
+        );
     });
 
     test('should not update process.env.destinations when actual port matches configured', async () => {
-        // Set up initial destinations in process.env (simulating what loadAndApplyEnvOptions would do)
-        process.env.destinations = JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8080' }]);
+        mockUpdateUi5ServerDestinationPort.mockReturnValue(false);
 
         const handler = await middleware({
             options: {
@@ -274,8 +290,14 @@ describe('middleware', () => {
         const mockNext = jest.fn();
         (handler as (req: unknown, res: unknown, next: () => void) => void)(mockReq, mockRes, mockNext);
 
-        // Should not have updated process.env.destinations since port matches
-        expect(process.env.destinations).toBe(JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8080' }]));
+        // Should have called updateUi5ServerDestinationPort which returned false (no change)
+        expect(mockUpdateUi5ServerDestinationPort).toHaveBeenCalledWith(
+            expect.objectContaining({
+                destinations: [{ name: 'ui5-server', url: 'http://localhost:8080' }]
+            }),
+            8080,
+            undefined
+        );
     });
 
     test('should only initialize approuter once on multiple requests', async () => {
@@ -294,29 +316,29 @@ describe('middleware', () => {
         (handler as (req: unknown, res: unknown, next: () => void) => void)(mockReq, mockRes, mockNext);
 
         // createProxy and startApprouter should only be called once
-        expect(createProxyMock).toHaveBeenCalledTimes(1);
-        expect(startApprouterMock).toHaveBeenCalledTimes(1);
+        expect(mockCreateProxy).toHaveBeenCalledTimes(1);
+        expect(mockStartApprouter).toHaveBeenCalledTimes(1);
     });
 
     test('should call fetchBasUrlTemplate during setup and pass resolved URL to createProxy', async () => {
         const basUrl = new URL('https://port8080-workspaces-xxx/');
-        fetchBasUrlTemplateMock.mockResolvedValue('https://port0-workspaces-xxx/');
-        resolveBasExternalUrlMock.mockReturnValue(basUrl);
+        mockFetchBasUrlTemplate.mockResolvedValue('https://port0-workspaces-xxx/');
+        mockResolveBasExternalUrl.mockReturnValue(basUrl);
 
         const handler = await middleware({
             options: { configuration: { xsappJsonPath: './xs-app.json' } },
             middlewareUtil: { getProject }
         });
 
-        expect(fetchBasUrlTemplateMock).toHaveBeenCalledWith(expect.any(Object));
+        expect(mockFetchBasUrlTemplate).toHaveBeenCalledWith(expect.any(Object));
 
         const mockReq = { socket: { localPort: 8080 } };
         const mockRes = {};
         const mockNext = jest.fn();
         (handler as (req: unknown, res: unknown, next: () => void) => void)(mockReq, mockRes, mockNext);
 
-        expect(resolveBasExternalUrlMock).toHaveBeenCalledWith('https://port0-workspaces-xxx/', 8080);
-        const [proxyOptions] = createProxyMock.mock.calls[0] as [{ basExternalUrl?: URL }];
+        expect(mockResolveBasExternalUrl).toHaveBeenCalledWith('https://port0-workspaces-xxx/', 8080);
+        const [proxyOptions] = mockCreateProxy.mock.calls[0] as [{ basExternalUrl?: URL }];
         expect(proxyOptions.basExternalUrl).toBe(basUrl);
     });
 });

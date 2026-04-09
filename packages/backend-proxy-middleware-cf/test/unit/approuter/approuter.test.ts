@@ -1,10 +1,14 @@
-import { startApprouter } from '../../../src/approuter/approuter';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 const mockApprouterStart = jest.fn();
-jest.mock('@sap/approuter', () => () => ({
-    start: mockApprouterStart
+jest.unstable_mockModule('@sap/approuter', () => ({
+    default: () => ({
+        start: mockApprouterStart
+    })
 }));
+
+const { startApprouter } = await import('../../../src/approuter/approuter');
 
 const mockLogger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() } as unknown as ToolsLogger;
 

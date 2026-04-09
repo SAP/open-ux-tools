@@ -1,27 +1,24 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { jest } from '@jest/globals';
 import path from 'node:path';
 
-import { getServicesForFile, updateServiceInstance } from '@sap-ux/adp-tooling';
+const mockExistsSync = jest.fn();
+const mockReadFileSync = jest.fn();
 
-import { updateXsuaaService } from '../../../src/platform/xssecurity';
-
-jest.mock('node:fs', () => ({
-    ...jest.requireActual('node:fs'),
-    existsSync: jest.fn(),
-    readFileSync: jest.fn()
+jest.unstable_mockModule('node:fs', () => ({
+    default: { existsSync: mockExistsSync, readFileSync: mockReadFileSync },
+    existsSync: mockExistsSync,
+    readFileSync: mockReadFileSync
 }));
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    getServicesForFile: jest.fn(),
-    updateServiceInstance: jest.fn()
+const mockGetServicesForFile = jest.fn();
+const mockUpdateServiceInstance = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    getServicesForFile: mockGetServicesForFile,
+    updateServiceInstance: mockUpdateServiceInstance
 }));
 
-const existsSyncMock = existsSync as jest.Mock;
-const readFileSyncMock = readFileSync as jest.Mock;
-
-const getServicesForFileMock = getServicesForFile as jest.Mock;
-const updateServiceInstanceMock = updateServiceInstance as jest.Mock;
+const { updateXsuaaService } = await import('../../../src/platform/xssecurity');
 
 describe('xssecurity', () => {
     const logger = { info: jest.fn(), error: jest.fn(), debug: jest.fn(), warn: jest.fn() };
@@ -45,46 +42,46 @@ describe('xssecurity', () => {
         };
 
         test('should warn and skip when xs-security.json not found', async () => {
-            existsSyncMock.mockImplementation((p: string) => p !== xsSecurityPath);
+            mockExistsSync.mockImplementation((p: string) => p !== xsSecurityPath);
 
             await updateXsuaaService(rootPath, logger as never);
 
             expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('xs-security.json not found'));
-            expect(updateServiceInstanceMock).not.toHaveBeenCalled();
+            expect(mockUpdateServiceInstance).not.toHaveBeenCalled();
         });
 
         test('should warn and skip when mta.yaml not found', async () => {
-            existsSyncMock.mockImplementation((p: string) => p !== mtaPath);
+            mockExistsSync.mockImplementation((p: string) => p !== mtaPath);
 
             await updateXsuaaService(rootPath, logger as never);
 
             expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('mta.yaml not found'));
-            expect(updateServiceInstanceMock).not.toHaveBeenCalled();
+            expect(mockUpdateServiceInstance).not.toHaveBeenCalled();
         });
 
         test('should warn and skip when no xsuaa service instance name in mta.yaml', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(JSON.stringify(xsSecurityContent));
-            getServicesForFileMock.mockReturnValue([{ name: 'some-destination', label: 'destination' }]);
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsSecurityContent));
+            mockGetServicesForFile.mockReturnValue([{ name: 'some-destination', label: 'destination' }]);
 
             await updateXsuaaService(rootPath, logger as never);
 
             expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('No xsuaa service instance name found'));
-            expect(updateServiceInstanceMock).not.toHaveBeenCalled();
+            expect(mockUpdateServiceInstance).not.toHaveBeenCalled();
         });
 
         test('should update xsuaa service instance with augmented xs-security', async () => {
             const serviceInstanceName = 'test_app_1234567890-xsuaa';
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(JSON.stringify(xsSecurityContent));
-            getServicesForFileMock.mockReturnValue([{ name: serviceInstanceName, label: 'xsuaa' }]);
-            updateServiceInstanceMock.mockResolvedValue(undefined);
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsSecurityContent));
+            mockGetServicesForFile.mockReturnValue([{ name: serviceInstanceName, label: 'xsuaa' }]);
+            mockUpdateServiceInstance.mockResolvedValue(undefined);
 
             await updateXsuaaService(rootPath, logger as never);
 
-            expect(readFileSyncMock).toHaveBeenCalledWith(xsSecurityPath, 'utf-8');
-            expect(getServicesForFileMock).toHaveBeenCalledWith(mtaPath, logger);
-            expect(updateServiceInstanceMock).toHaveBeenCalledWith(serviceInstanceName, {
+            expect(mockReadFileSync).toHaveBeenCalledWith(xsSecurityPath, 'utf-8');
+            expect(mockGetServicesForFile).toHaveBeenCalledWith(mtaPath, logger);
+            expect(mockUpdateServiceInstance).toHaveBeenCalledWith(serviceInstanceName, {
                 ...xsSecurityContent,
                 'oauth2-configuration': {
                     'redirect-uris': ['https://**.applicationstudio.cloud.sap/**', 'http://localhost:*/**']
@@ -93,10 +90,10 @@ describe('xssecurity', () => {
         });
 
         test('should log error but not throw when updateServiceInstance fails', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(JSON.stringify(xsSecurityContent));
-            getServicesForFileMock.mockReturnValue([{ name: 'test-xsuaa', label: 'xsuaa' }]);
-            updateServiceInstanceMock.mockRejectedValue(new Error('CF CLI failed'));
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsSecurityContent));
+            mockGetServicesForFile.mockReturnValue([{ name: 'test-xsuaa', label: 'xsuaa' }]);
+            mockUpdateServiceInstance.mockRejectedValue(new Error('CF CLI failed'));
 
             await updateXsuaaService(rootPath, logger as never);
 
