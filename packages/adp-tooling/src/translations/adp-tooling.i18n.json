@@ -77,6 +77,7 @@
         "errorDuplicateNamesOData": "An OData Service Name must be different from an OData Annotation Data Source Name. Rename and try again.",
         "errorInputInvalidValuePrefix": "{{value}} must start with '{{prefix}}'.",
         "errorCustomerEmptyValue": "{{value}} must contain at least one character in addition to '{{prefix}}'.",
+        "errorInputMustEndWithAlphanumeric": "The input must end with an alphanumeric character.",
         "errorInvalidDataSourceURI": "Invalid URI. The URI must start and end with '/' and contain no spaces.",
         "errorRouteAlreadyExists": "A route with the same Service URI already exists in xs-app.json. Use a different URI.",
         "appDoesNotSupportManifest": "The selected application is not supported by SAPUI5 Adaptation Project because it does not have a `manifest.json` file. Please select a different application.",

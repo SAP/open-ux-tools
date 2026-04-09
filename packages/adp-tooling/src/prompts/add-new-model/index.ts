@@ -80,6 +80,10 @@ function validatePromptInput(value: string): boolean | string {
         }
     }
 
+    if (!/[a-zA-Z0-9]$/.test(value)) {
+        return t('validators.errorInputMustEndWithAlphanumeric');
+    }
+
     return true;
 }
 

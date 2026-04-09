@@ -123,9 +123,7 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.')).toBe(
-            "Model and Data Source Name must contain at least one character in addition to 'customer.'."
-        );
+        expect(validation?.('customer.')).toBe('The input must end with an alphanumeric character.');
     });
 
     it('should return error message when validating service name prompt and has special characters', async () => {
@@ -138,7 +136,18 @@ describe('getPrompts', () => {
         expect(validation?.('customer.testName@')).toBe('general.invalidValueForSpecialChars');
     });
 
-    it('should return error message when validating service name prompt has content duplication', async () => {
+    it('should return error message when validating service name prompt and name ends with a non-alphanumeric character', async () => {
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
+
+        expect(typeof validation).toBe('function');
+        expect(validation?.('customer.testName.')).toBe('The value must end with an alphanumeric character.');
+        expect(validation?.('customer.testName-')).toBe('The value must end with an alphanumeric character.');
+        expect(validation?.('customer.testName$')).toBe('The value must end with an alphanumeric character.');
+    });
+
+    it('should return error message when validating service name prompt and has content duplication', async () => {
         jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
