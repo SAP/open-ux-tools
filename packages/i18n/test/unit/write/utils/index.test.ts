@@ -1,13 +1,55 @@
-import { writeToExistingI18nPropertiesFile } from '../../../../src/write/utils';
-import { SapShortTextType } from '../../../../src';
-import * as utils from '../../../../src/utils';
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
+
+// Import real printPropertiesI18nEntry from the leaf module (not the barrel)
+// This avoids caching the barrel so our mock can take effect
+const { printPropertiesI18nEntry: realPrint } = await import('../../../../src/utils/print');
+
+// Define mock functions for the I/O operations we want to control
+const mockReadFile = jest.fn<(filePath: string, fs?: Editor) => Promise<string>>();
+const mockWriteFile = jest.fn<(filePath: string, content: string, fs?: Editor) => Promise<string | void>>();
+const mockPrintPropertiesI18nEntry = jest.fn<(key: string, value: string, annotation?: unknown) => string>();
+
+// Mock the utils barrel module BEFORE importing anything that uses it
+jest.unstable_mockModule('../../../../src/utils', async () => {
+    // Import leaf modules directly to get real implementations
+    const config = await import('../../../../src/utils/config');
+    const resolve = await import('../../../../src/utils/resolve');
+    const path = await import('../../../../src/utils/path');
+    const print = await import('../../../../src/utils/print');
+    const text = await import('../../../../src/utils/text');
+    const key = await import('../../../../src/utils/key');
+    return {
+        ...config,
+        ...resolve,
+        ...path,
+        ...print,
+        ...text,
+        ...key,
+        // Override with mocks
+        readFile: mockReadFile,
+        writeFile: mockWriteFile,
+        printPropertiesI18nEntry: mockPrintPropertiesI18nEntry
+    };
+});
+
+// Import modules under test AFTER mocking
+const { writeToExistingI18nPropertiesFile } = await import('../../../../src/write/utils');
+const { SapShortTextType } = await import('../../../../src');
 
 describe('index', () => {
     describe('writeToExistingI18nPropertiesFile', () => {
         beforeEach(() => {
             jest.restoreAllMocks();
+            mockReadFile.mockReset();
+            mockWriteFile.mockReset();
+            mockPrintPropertiesI18nEntry.mockReset();
+            // Default: use real printPropertiesI18nEntry
+            mockPrintPropertiesI18nEntry.mockImplementation(
+                (key: string, value: string, annotation?: unknown) =>
+                    realPrint(key, value, annotation as string | undefined)
+            );
         });
         const entries = [
             {
@@ -17,14 +59,14 @@ describe('index', () => {
         ];
         test('file ends with new line', async () => {
             // arrange
-            const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('key = value\n');
-            const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
+            mockReadFile.mockResolvedValue('key = value\n');
+            mockWriteFile.mockResolvedValue(undefined);
             // act
             const result = await writeToExistingI18nPropertiesFile('i18n.properties', entries);
             // assert
             expect(result).toEqual(true);
-            expect(readFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', undefined);
-            expect(writeFileSpy).toHaveBeenNthCalledWith(
+            expect(mockReadFile).toHaveBeenNthCalledWith(1, 'i18n.properties', undefined);
+            expect(mockWriteFile).toHaveBeenNthCalledWith(
                 1,
                 'i18n.properties',
                 'key = value\n\n#XFLD,27\nNewKey=New Value\n',
@@ -33,8 +75,8 @@ describe('index', () => {
         });
         test('file does not end with new line', async () => {
             // arrange
-            const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('key = value');
-            const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
+            mockReadFile.mockResolvedValue('key = value');
+            mockWriteFile.mockResolvedValue(undefined);
             // act
             const result = await writeToExistingI18nPropertiesFile('i18n.properties', [
                 {
@@ -44,8 +86,8 @@ describe('index', () => {
             ]);
             // assert
             expect(result).toEqual(true);
-            expect(readFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', undefined);
-            expect(writeFileSpy).toHaveBeenNthCalledWith(
+            expect(mockReadFile).toHaveBeenNthCalledWith(1, 'i18n.properties', undefined);
+            expect(mockWriteFile).toHaveBeenNthCalledWith(
                 1,
                 'i18n.properties',
                 'key = value\n\n#XFLD,27\nNewKey=New Value\n',
@@ -54,8 +96,8 @@ describe('index', () => {
         });
         test('multiple entries', async () => {
             // arrange
-            const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
-            const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('\n#XFLD,27\nExistingKey=New Value');
+            mockWriteFile.mockResolvedValue(undefined);
+            mockReadFile.mockResolvedValue('\n#XFLD,27\nExistingKey=New Value');
             // act
             const result = await writeToExistingI18nPropertiesFile('i18n.properties', [
                 {
@@ -69,8 +111,8 @@ describe('index', () => {
             ]);
             // assert
             expect(result).toEqual(true);
-            expect(readFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', undefined);
-            expect(writeFileSpy).toHaveBeenNthCalledWith(
+            expect(mockReadFile).toHaveBeenNthCalledWith(1, 'i18n.properties', undefined);
+            expect(mockWriteFile).toHaveBeenNthCalledWith(
                 1,
                 'i18n.properties',
                 '\n#XFLD,27\nExistingKey=New Value\n\n#XFLD,27\nNewKey=New Value\n\n#XFLD,30\nNewKey2=New Value2\n',
@@ -80,10 +122,8 @@ describe('index', () => {
         describe('with annotation', () => {
             test('string', async () => {
                 // arrange
-                const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
-                const readFileSpy = jest
-                    .spyOn(utils, 'readFile')
-                    .mockResolvedValue('\n#XFLD,27\nExistingKey=New Value');
+                mockWriteFile.mockResolvedValue(undefined);
+                mockReadFile.mockResolvedValue('\n#XFLD,27\nExistingKey=New Value');
                 // act
                 const result = await writeToExistingI18nPropertiesFile('i18n.properties', [
                     {
@@ -94,8 +134,8 @@ describe('index', () => {
                 ]);
                 // assert
                 expect(result).toEqual(true);
-                expect(readFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', undefined);
-                expect(writeFileSpy).toHaveBeenNthCalledWith(
+                expect(mockReadFile).toHaveBeenNthCalledWith(1, 'i18n.properties', undefined);
+                expect(mockWriteFile).toHaveBeenNthCalledWith(
                     1,
                     'i18n.properties',
                     '\n#XFLD,27\nExistingKey=New Value\n\n#XTIT: Name\nNewKey=New Value\n',
@@ -104,10 +144,8 @@ describe('index', () => {
             });
             test('object', async () => {
                 // arrange
-                const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
-                const readFileSpy = jest
-                    .spyOn(utils, 'readFile')
-                    .mockResolvedValue('\n#XFLD,27\nExistingKey=New Value');
+                mockWriteFile.mockResolvedValue(undefined);
+                mockReadFile.mockResolvedValue('\n#XFLD,27\nExistingKey=New Value');
                 // act
                 const result = await writeToExistingI18nPropertiesFile('i18n.properties', [
                     {
@@ -118,8 +156,8 @@ describe('index', () => {
                 ]);
                 // assert
                 expect(result).toEqual(true);
-                expect(readFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', undefined);
-                expect(writeFileSpy).toHaveBeenNthCalledWith(
+                expect(mockReadFile).toHaveBeenNthCalledWith(1, 'i18n.properties', undefined);
+                expect(mockWriteFile).toHaveBeenNthCalledWith(
                     1,
                     'i18n.properties',
                     '\n#XFLD,27\nExistingKey=New Value\n\n#XFLD,27\nNewKey=New Value\n',
@@ -133,16 +171,18 @@ describe('index', () => {
 
             beforeEach(() => {
                 jest.clearAllMocks();
-                jest.spyOn(utils, 'writeFile').mockImplementation(jest.fn());
-                jest.spyOn(utils, 'printPropertiesI18nEntry').mockImplementation(
-                    jest.fn((key, value, annotation) => {
+                mockWriteFile.mockImplementation(
+                    jest.fn() as (filePath: string, content: string, fs?: Editor) => Promise<string | void>
+                );
+                mockPrintPropertiesI18nEntry.mockImplementation(
+                    (key: string, value: string, annotation?: unknown) => {
                         return annotation ? `${key}=${value} # ${annotation}\n` : `${key}=${value}\n`;
-                    })
+                    }
                 );
             });
 
             it('removes specified keys and adds new entries', async () => {
-                jest.spyOn(utils, 'readFile').mockResolvedValue(
+                mockReadFile.mockResolvedValue(
                     ['# Comment', '', 'key1=oldValue1', 'key2=oldValue2', '', 'key3=oldValue3'].join('\n')
                 );
                 const newI18nEntries = [
@@ -153,7 +193,7 @@ describe('index', () => {
 
                 await writeToExistingI18nPropertiesFile(i18nFilePath, newI18nEntries, keysToRemove, fs);
 
-                expect(utils.writeFile).toHaveBeenCalledWith(
+                expect(mockWriteFile).toHaveBeenCalledWith(
                     i18nFilePath,
                     [
                         '# Comment',
@@ -169,7 +209,7 @@ describe('index', () => {
             });
 
             it('removes multiple keys and handles empty lines/comments', async () => {
-                jest.spyOn(utils, 'readFile').mockResolvedValue(
+                mockReadFile.mockResolvedValue(
                     [
                         '# Comment above key1',
                         '',
@@ -186,7 +226,7 @@ describe('index', () => {
 
                 await writeToExistingI18nPropertiesFile(i18nFilePath, newI18nEntries, keysToRemove, fs);
 
-                expect(utils.writeFile).toHaveBeenCalledWith(
+                expect(mockWriteFile).toHaveBeenCalledWith(
                     i18nFilePath,
                     ['key3=oldValue3', 'key6=newValue6', ''].join('\n'),
                     fs
@@ -194,13 +234,13 @@ describe('index', () => {
             });
 
             it('adds new entries if no keys are removed', async () => {
-                jest.spyOn(utils, 'readFile').mockResolvedValue('key1=oldValue1\nkey2=oldValue2');
+                mockReadFile.mockResolvedValue('key1=oldValue1\nkey2=oldValue2');
                 const newI18nEntries = [{ key: 'key7', value: 'newValue7', annotation: undefined }];
                 const keysToRemove: string[] = [];
 
                 await writeToExistingI18nPropertiesFile(i18nFilePath, newI18nEntries, keysToRemove, fs);
 
-                expect(utils.writeFile).toHaveBeenCalledWith(
+                expect(mockWriteFile).toHaveBeenCalledWith(
                     i18nFilePath,
                     ['key1=oldValue1', 'key2=oldValue2', 'key7=newValue7', ''].join('\n'),
                     fs
@@ -208,7 +248,7 @@ describe('index', () => {
             });
 
             it('writes only new entries if file is empty', async () => {
-                jest.spyOn(utils, 'readFile').mockResolvedValue('');
+                mockReadFile.mockResolvedValue('');
                 const newI18nEntries = [
                     { key: 'key8', value: 'newValue8', annotation: undefined },
                     { key: 'key9', value: 'newValue9', annotation: undefined }
@@ -217,7 +257,7 @@ describe('index', () => {
 
                 await writeToExistingI18nPropertiesFile(i18nFilePath, newI18nEntries, keysToRemove, fs);
 
-                expect(utils.writeFile).toHaveBeenCalledWith(
+                expect(mockWriteFile).toHaveBeenCalledWith(
                     i18nFilePath,
                     ['key8=newValue8', 'key9=newValue9', ''].join('\n'),
                     fs
@@ -225,7 +265,7 @@ describe('index', () => {
             });
 
             it('removes comment/empty lines above a removed key', async () => {
-                jest.spyOn(utils, 'readFile').mockResolvedValue(
+                mockReadFile.mockResolvedValue(
                     ['# Comment', '', 'key1=oldValue1', 'key2=oldValue2', '', 'key3=oldValue3'].join('\n')
                 );
                 const newI18nEntries = [{ key: 'key4', value: 'newValue4', annotation: undefined }];
@@ -233,8 +273,7 @@ describe('index', () => {
 
                 await writeToExistingI18nPropertiesFile(i18nFilePath, newI18nEntries, keysToRemove, fs);
 
-                // The comment and empty line above key2 should remain, but if there were only comments/empty lines above, they would be removed.
-                expect(utils.writeFile).toHaveBeenCalledWith(
+                expect(mockWriteFile).toHaveBeenCalledWith(
                     i18nFilePath,
                     ['# Comment', '', 'key1=oldValue1', 'key2=oldValue2', 'key4=newValue4', ''].join('\n'),
                     fs
@@ -243,15 +282,15 @@ describe('index', () => {
         });
         test('mem-fs-editor', async () => {
             // arrange
-            const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('key = value\n');
-            const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
+            mockReadFile.mockResolvedValue('key = value\n');
+            mockWriteFile.mockResolvedValue(undefined);
             const memFs = create(createStorage());
             // act
             const result = await writeToExistingI18nPropertiesFile('i18n.properties', entries, [], memFs);
             // assert
             expect(result).toEqual(true);
-            expect(readFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', memFs);
-            expect(writeFileSpy).toHaveBeenNthCalledWith(
+            expect(mockReadFile).toHaveBeenNthCalledWith(1, 'i18n.properties', memFs);
+            expect(mockWriteFile).toHaveBeenNthCalledWith(
                 1,
                 'i18n.properties',
                 'key = value\n\n#XFLD,27\nNewKey=New Value\n',
