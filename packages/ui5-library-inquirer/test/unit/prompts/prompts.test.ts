@@ -1,29 +1,38 @@
-import { getQuestions } from '../../../src/prompts';
-import { t } from '../../../src/i18n';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { jest } from '@jest/globals';
 import type { Separator } from 'inquirer';
-import * as projectInputValidators from '@sap-ux/project-input-validator';
 import type { UI5VersionChoice } from '@sap-ux/inquirer-common';
-import * as utility from '@sap-ux/inquirer-common';
 
-jest.mock('@sap-ux/project-input-validator', () => {
-    return {
-        __esModule: true,
-        ...jest.requireActual('@sap-ux/project-input-validator')
-    };
-});
+const testDirname = dirname(fileURLToPath(import.meta.url));
 
-jest.mock('@sap-ux/inquirer-common', () => {
-    return {
-        __esModule: true,
-        ...jest.requireActual('@sap-ux/inquirer-common')
-    };
-});
+const mockValidateLibModuleName = jest.fn();
+const mockValidateNamespace = jest.fn();
+const mockValidateProjectFolder = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    validateLibModuleName: mockValidateLibModuleName,
+    validateNamespace: mockValidateNamespace,
+    validateProjectFolder: mockValidateProjectFolder
+}));
+
+const mockUi5VersionsGrouped = jest.fn();
+const mockSearchChoices = jest.fn();
+const mockAddi18nResourceBundle = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    ui5VersionsGrouped: mockUi5VersionsGrouped,
+    searchChoices: mockSearchChoices,
+    addi18nResourceBundle: mockAddi18nResourceBundle
+}));
+
+const { getQuestions } = await import('../../../src/prompts');
+const { t } = await import('../../../src/i18n');
 
 describe('getPrompts', () => {
     const ui5VersionsGrouped: (UI5VersionChoice | Separator)[] = [
         {
-            line: '[2mMaintained versions[22m',
+            line: '[2mMaintained versions[22m',
             type: 'separator'
         },
         {
@@ -39,7 +48,7 @@ describe('getPrompts', () => {
             value: '1.1.0-snapshot'
         },
         {
-            line: '[2mOut of maintenance versions[22m',
+            line: '[2mOut of maintenance versions[22m',
             type: 'separator'
         },
         {
@@ -49,11 +58,11 @@ describe('getPrompts', () => {
     ];
 
     it('getQuestions, no options specified', () => {
-        const ui5VersGroupedSpy = jest.spyOn(utility, 'ui5VersionsGrouped').mockReturnValueOnce(ui5VersionsGrouped);
+        mockUi5VersionsGrouped.mockReturnValueOnce(ui5VersionsGrouped);
 
         // Not passing any versions as internally called function `ui5VersionsGrouped` is mocked
         const projectQuestions = getQuestions([]);
-        expect(ui5VersGroupedSpy).toHaveBeenCalledWith([], undefined);
+        expect(mockUi5VersionsGrouped).toHaveBeenCalledWith([], undefined);
         expect(projectQuestions.length).toEqual(5);
 
         const prompts = projectQuestions.reduce(
@@ -70,9 +79,9 @@ describe('getPrompts', () => {
             mandatory: true
         });
         // Validators are fully tested in `@sap-ux/project-input-validators`
-        const validateLibModNameSpy = jest.spyOn(projectInputValidators, 'validateLibModuleName').mockReturnValue(true);
+        mockValidateLibModuleName.mockReturnValue(true);
         expect(libNameQ.validate('library1')).toEqual(true);
-        expect(validateLibModNameSpy).toHaveBeenCalledWith('library1');
+        expect(mockValidateLibModuleName).toHaveBeenCalledWith('library1');
 
         const namespaceQ = prompts['namespace'];
         expect(namespaceQ.type).toEqual('input');
@@ -82,9 +91,9 @@ describe('getPrompts', () => {
             mandatory: true
         });
 
-        const validateLibNamespaceSpy = jest.spyOn(projectInputValidators, 'validateNamespace').mockReturnValue(true);
+        mockValidateNamespace.mockReturnValue(true);
         expect(namespaceQ.validate('com.myorg', { libraryName: 'abc123' })).toEqual(true);
-        expect(validateLibNamespaceSpy).toHaveBeenCalledWith('com.myorg', 'abc123', false);
+        expect(mockValidateNamespace).toHaveBeenCalledWith('com.myorg', 'abc123', false);
 
         const targetFolderQ = prompts['targetFolder'];
         expect(targetFolderQ.type).toEqual('input');
@@ -96,12 +105,10 @@ describe('getPrompts', () => {
         });
         expect(targetFolderQ.default).toEqual(process.cwd());
 
-        const validateProjectFolderSpy = jest
-            .spyOn(projectInputValidators, 'validateProjectFolder')
-            .mockReturnValue(true);
-        const somePath = join(__dirname, 'any_where');
+        mockValidateProjectFolder.mockReturnValue(true);
+        const somePath = join(testDirname, 'any_where');
         expect(targetFolderQ.validate(somePath, { namespace: 'test.com', libraryName: 'test1' })).toEqual(true);
-        expect(validateProjectFolderSpy).toHaveBeenCalledWith(somePath, 'test.com.test1');
+        expect(mockValidateProjectFolder).toHaveBeenCalledWith(somePath, 'test.com.test1');
 
         const ui5VersionQ = prompts['ui5Version'];
         expect(ui5VersionQ.type).toEqual('list');
@@ -121,7 +128,7 @@ describe('getPrompts', () => {
     });
 
     it('getQuestions, test options', () => {
-        const ui5VersGroupedSpy = jest.spyOn(utility, 'ui5VersionsGrouped').mockReturnValueOnce(ui5VersionsGrouped);
+        mockUi5VersionsGrouped.mockReturnValueOnce(ui5VersionsGrouped);
 
         /**
          * Option: targetFolder
@@ -133,7 +140,7 @@ describe('getPrompts', () => {
             targetFolder,
             useAutocomplete: true
         });
-        expect(ui5VersGroupedSpy).toHaveBeenCalledWith([], true);
+        expect(mockUi5VersionsGrouped).toHaveBeenCalledWith([], true);
         expect(projectQuestions.length).toEqual(5);
 
         const prompts = projectQuestions.reduce(
@@ -142,12 +149,10 @@ describe('getPrompts', () => {
         ) as any;
 
         const targetFolderQ = prompts['targetFolder'];
-        const validateProjectFolderSpy = jest
-            .spyOn(projectInputValidators, 'validateProjectFolder')
-            .mockReturnValue(true);
-        const somePath = join(__dirname, 'any_where');
+        mockValidateProjectFolder.mockReturnValue(true);
+        const somePath = join(testDirname, 'any_where');
         expect(targetFolderQ.validate(somePath, { namespace: 'test.com', libraryName: 'test1' })).toEqual(true);
-        expect(validateProjectFolderSpy).toHaveBeenCalledWith(somePath, 'test.com.test1');
+        expect(mockValidateProjectFolder).toHaveBeenCalledWith(somePath, 'test.com.test1');
         expect(targetFolderQ.default).toEqual(targetFolder);
 
         /**
@@ -175,8 +180,8 @@ describe('getPrompts', () => {
                 }
             }
         ];
-        const searchChoicesSpy = jest.spyOn(utility, 'searchChoices').mockReturnValue(filteredUI5Versions);
+        mockSearchChoices.mockReturnValue(filteredUI5Versions);
         expect(ui5VersionQ.source({}, '1.0')).toEqual(filteredUI5Versions);
-        expect(searchChoicesSpy).toHaveBeenCalledWith('1.0', ui5VersionsGrouped);
+        expect(mockSearchChoices).toHaveBeenCalledWith('1.0', ui5VersionsGrouped);
     });
 });
