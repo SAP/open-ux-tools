@@ -50,6 +50,20 @@ function validateTarget(target: AbapTarget): AbapTarget {
 }
 
 /**
+ * Validates that credentials are provided as environment variable references, not as plain text.
+ *
+ * @param credentials - credentials to validate
+ */
+function validateCredentials(credentials: AbapDeployConfig['credentials']): void {
+    const isEnvRef = (value: string | undefined): boolean => !value || value.startsWith('env:');
+    if (credentials && (!isEnvRef(credentials.username) || !isEnvRef(credentials.password))) {
+        throw new Error(
+            'Credentials must be provided as environment variable references (e.g. env:MY_VAR), not as plain text.'
+        );
+    }
+}
+
+/**
  * Type checking the config object.
  *
  * @param config - config to be checked
@@ -86,6 +100,9 @@ export function validateConfig(config: AbapDeployConfig | undefined, logger?: Lo
     }
     if (!config.app) {
         throwConfigMissingError('app');
+    }
+    if (config.credentials) {
+        validateCredentials(config.credentials);
     }
 
     return config;

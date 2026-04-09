@@ -131,5 +131,82 @@ describe('base/config', () => {
             expect(() => validateConfig(config)).not.toThrow();
             expect(config.app.package).toBe('$TMP');
         });
+
+        describe('validateCredentials', () => {
+            test('throws when username is plaintext (no env: prefix)', () => {
+                // given a config with a plaintext username
+                const config = {
+                    ...validConfig,
+                    credentials: { username: 'admin', password: 'env:MY_PASSWORD' }
+                } as AbapDeployConfig;
+
+                // when validateConfig is called
+                // then it throws with the expected message
+                expect(() => validateConfig(config)).toThrow(
+                    'Credentials must be provided as environment variable references'
+                );
+            });
+
+            test('throws when password is plaintext (no env: prefix)', () => {
+                // given a config with a plaintext password
+                const config = {
+                    ...validConfig,
+                    credentials: { username: 'env:MY_USER', password: 'secret' }
+                } as AbapDeployConfig;
+
+                // when validateConfig is called
+                // then it throws with the expected message
+                expect(() => validateConfig(config)).toThrow(
+                    'Credentials must be provided as environment variable references'
+                );
+            });
+
+            test('throws when both username and password are plaintext', () => {
+                // given a config with plaintext username and password
+                const config = {
+                    ...validConfig,
+                    credentials: { username: 'admin', password: 'secret' }
+                } as AbapDeployConfig;
+
+                // when validateConfig is called
+                // then it throws with the expected message
+                expect(() => validateConfig(config)).toThrow(
+                    'Credentials must be provided as environment variable references'
+                );
+            });
+
+            test('passes when both username and password use env: prefix', () => {
+                // given a config with env-referenced credentials
+                const config = {
+                    ...validConfig,
+                    credentials: { username: 'env:MY_USER', password: 'env:MY_PASSWORD' }
+                } as AbapDeployConfig;
+
+                // when validateConfig is called
+                // then it does not throw
+                expect(() => validateConfig(config)).not.toThrow();
+            });
+
+            test('passes when credentials are absent', () => {
+                // given a config without credentials
+                const config = { ...validConfig } as AbapDeployConfig;
+
+                // when validateConfig is called
+                // then it does not throw
+                expect(() => validateConfig(config)).not.toThrow();
+            });
+
+            test('passes when only username is set with env: prefix and password is absent', () => {
+                // given a config with only username set via env:
+                const config = {
+                    ...validConfig,
+                    credentials: { username: 'env:MY_USER' }
+                } as unknown as AbapDeployConfig;
+
+                // when validateConfig is called
+                // then it does not throw
+                expect(() => validateConfig(config)).not.toThrow();
+            });
+        });
     });
 });
