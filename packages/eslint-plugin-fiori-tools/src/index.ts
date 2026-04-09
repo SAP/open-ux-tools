@@ -2,7 +2,6 @@ import { readFileSync } from 'node:fs';
 import { join, relative, posix } from 'node:path';
 import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
-import js from '@eslint/js';
 import babelParser from '@babel/eslint-parser';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import { rules } from './rules';
@@ -57,131 +56,11 @@ const plugin: Plugin = {
     processors: {}
 };
 
-/**
- * Common configuration shared across all config presets.
- */
-const commonConfig: Linter.Config[] = [
-    {
-        languageOptions: {
-            globals: {
-                ...globals.browser,
-                ...globals.node,
-                ...globals.es2020,
-                sap: 'readonly'
-            }
-        }
-    }
-];
-
-// Use synckit to create sync function for project-access getPathMappingsSync
-const workerPath = join(__dirname, 'worker-getPathMappingsSync.js');
-const getPathMappingsSync = createSyncFn<typeof getPathMappings>(workerPath);
-
-const pathMappingsAbsolute = getPathMappingsSync(process.cwd());
-const webappPathAbsolute =
-    'webapp' in pathMappingsAbsolute
-        ? pathMappingsAbsolute.webapp
-        : (pathMappingsAbsolute.src ?? join(process.cwd(), 'webapp'));
-const webappPathRelative = uniformUrl(relative(process.cwd(), webappPathAbsolute));
-const testPathRelative =
-    'webapp' in pathMappingsAbsolute
-        ? posix.join(webappPathRelative, 'test')
-        : uniformUrl(relative(process.cwd(), pathMappingsAbsolute.test ?? join(process.cwd(), 'webapp/test')));
-
-const localServiceUpperCase = posix.join(webappPathRelative, 'localService');
-const localServiceLowerCase = posix.join(webappPathRelative, 'localservice');
-
-// Base Fiori Tools rules (common across both configs)
-const baseFioriToolsRules = {
-    // Error rules (alphabetical)
-    '@sap-ux/fiori-tools/sap-no-absolute-component-path': 'error',
-    '@sap-ux/fiori-tools/sap-no-br-on-return': 'error',
-    '@sap-ux/fiori-tools/sap-no-commons-usage': 'error',
-    '@sap-ux/fiori-tools/sap-no-dynamic-style-insertion': 'error',
-    '@sap-ux/fiori-tools/sap-no-element-creation': 'error',
-    '@sap-ux/fiori-tools/sap-no-exec-command': 'error',
-    '@sap-ux/fiori-tools/sap-no-global-define': 'error',
-    '@sap-ux/fiori-tools/sap-no-global-event': 'error',
-    '@sap-ux/fiori-tools/sap-no-global-variable': 'error',
-    '@sap-ux/fiori-tools/sap-no-hardcoded-color': 'error',
-    '@sap-ux/fiori-tools/sap-no-hardcoded-url': 'error',
-    '@sap-ux/fiori-tools/sap-no-inner-html-write': 'error',
-    '@sap-ux/fiori-tools/sap-no-localstorage': 'error',
-    '@sap-ux/fiori-tools/sap-no-location-reload': 'error',
-    '@sap-ux/fiori-tools/sap-no-navigator': 'error',
-    '@sap-ux/fiori-tools/sap-no-override-rendering': 'error',
-    '@sap-ux/fiori-tools/sap-no-override-storage-prototype': 'error',
-    '@sap-ux/fiori-tools/sap-no-sessionstorage': 'error',
-    '@sap-ux/fiori-tools/sap-no-ui5base-prop': 'error',
-    // Warning rules (alphabetical)
-    '@sap-ux/fiori-tools/sap-bookmark-performance': 'warn',
-    '@sap-ux/fiori-tools/sap-browser-api-warning': 'warn',
-    '@sap-ux/fiori-tools/sap-cross-application-navigation': 'warn',
-    '@sap-ux/fiori-tools/sap-forbidden-window-property': 'warn',
-    '@sap-ux/fiori-tools/sap-message-toast': 'warn',
-    '@sap-ux/fiori-tools/sap-no-dom-access': 'warn',
-    '@sap-ux/fiori-tools/sap-no-dom-insertion': 'warn',
-    '@sap-ux/fiori-tools/sap-no-encode-file-service': 'warn',
-    '@sap-ux/fiori-tools/sap-no-global-selection': 'warn',
-    '@sap-ux/fiori-tools/sap-no-history-manipulation': 'warn',
-    '@sap-ux/fiori-tools/sap-no-inner-html-access': 'warn',
-    '@sap-ux/fiori-tools/sap-no-jquery-device-api': 'warn',
-    '@sap-ux/fiori-tools/sap-no-localhost': 'warn',
-    '@sap-ux/fiori-tools/sap-no-location-usage': 'warn',
-    '@sap-ux/fiori-tools/sap-no-proprietary-browser-api': 'warn',
-    '@sap-ux/fiori-tools/sap-no-ui5-prop-warning': 'warn',
-    '@sap-ux/fiori-tools/sap-timeout-usage': 'warn',
-    '@sap-ux/fiori-tools/sap-ui5-forms': 'warn',
-    '@sap-ux/fiori-tools/sap-ui5-global-eval': 'warn',
-    '@sap-ux/fiori-tools/sap-ui5-legacy-factories': 'warn',
-    '@sap-ux/fiori-tools/sap-ui5-legacy-jquerysap-usage': 'warn',
-    '@sap-ux/fiori-tools/sap-usage-basemastercontroller': 'warn',
-    // Off rules (alphabetical)
-    '@sap-ux/fiori-tools/sap-browser-api-error': 'off',
-    '@sap-ux/fiori-tools/sap-no-window-alert': 'off',
-    '@sap-ux/fiori-tools/sap-ui5-no-private-prop': 'off'
-} as Linter.RulesRecord;
-
-const prodConfig: Linter.Config[] = [
-    {
-        files: [`./${webappPathRelative}/**/*.js`, `./${webappPathRelative}/**/*.ts`],
-
-        ignores: [
-            'target/**',
-            `${testPathRelative}/**`,
-            `${localServiceLowerCase}/**`, // Ignore everything in the 'localservice' folder
-            `!${localServiceLowerCase}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
-            `${posix.join(localServiceLowerCase, 'mockserver.js')}`, // But DO ignore mockserver.js specifically
-            `${localServiceUpperCase}/**`, // Ignore everything in the 'localService' folder
-            `!${localServiceUpperCase}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
-            `${posix.join(localServiceUpperCase, 'mockserver.js')}`, // But DO ignore mockserver.js specifically
-            'backup/**',
-            '**/Gruntfile.js',
-            '**/changes_preview.js',
-            '**/changes_preview.ts',
-            '**/gulpfile.js',
-            '**/*.d.ts',
-            'test/**'
-        ],
-
-        languageOptions: {
-            parser: babelParser,
-            parserOptions: {
-                requireConfigFile: false
-            }
-        },
-
-        rules: {
-            ...js.configs.recommended.rules,
-            ...baseFioriToolsRules
-        }
-    }
-];
-
-// Shared globals for S/4HANA config (used in both prod and test configs)
-const s4hanaGlobals = {
+// Shared globals
+const globalsConfig = {
     ...globals.browser,
     ...globals.node,
+    ...globals.es2020,
     ...globals.amd,
     ...globals.mocha,
     // SAP-specific globals (from legacy S/4HANA eslintrc)
@@ -248,9 +127,8 @@ const s4hanaGlobals = {
     tl: 'off',
     travel: 'readonly'
 } as const;
-
 /**
- * Standard ESLint rules for S/4HANA config (based on legacy "fiori_tools_configure.eslintrc" configuration)
+ * Standard ESLint rules based on legacy "fiori_tools_configure.eslintrc" configuration
  *
  * These rules were completely removed from ESLint 9 and have no direct replacement:
  * valid-jsdoc - Originally: ['warn', { requireReturn: false }]
@@ -267,7 +145,7 @@ const s4hanaGlobals = {
  * no-native-reassign → no-global-assign
  * no-negated-in-lhs → no-unsafe-negation
  */
-const standardEslintRulesForS4Hana: Linter.RulesRecord = {
+const standardEslintRules: Linter.RulesRecord = {
     'no-unreachable': 'warn',
     'no-regex-spaces': 'error',
     'no-shadow': 'warn',
@@ -412,7 +290,76 @@ const standardEslintRulesForS4Hana: Linter.RulesRecord = {
     'no-this-before-super': 'off'
 };
 
-const prodConfigS4Hana: Linter.Config[] = [
+// Use synckit to create sync function for project-access getPathMappingsSync
+const workerPath = join(__dirname, 'worker-getPathMappingsSync.js');
+const getPathMappingsSync = createSyncFn<typeof getPathMappings>(workerPath);
+
+const pathMappingsAbsolute = getPathMappingsSync(process.cwd());
+const webappPathAbsolute =
+    'webapp' in pathMappingsAbsolute
+        ? pathMappingsAbsolute.webapp
+        : (pathMappingsAbsolute.src ?? join(process.cwd(), 'webapp'));
+const webappPathRelative = uniformUrl(relative(process.cwd(), webappPathAbsolute));
+const testPathRelative =
+    'webapp' in pathMappingsAbsolute
+        ? posix.join(webappPathRelative, 'test')
+        : uniformUrl(relative(process.cwd(), pathMappingsAbsolute.test ?? join(process.cwd(), 'webapp/test')));
+
+const localServiceUpperCase = posix.join(webappPathRelative, 'localService');
+const localServiceLowerCase = posix.join(webappPathRelative, 'localservice');
+
+// Base Fiori Tools rules (common across both configs)
+const baseFioriToolsRules = {
+    // Error rules (alphabetical)
+    '@sap-ux/fiori-tools/sap-no-absolute-component-path': 'error',
+    '@sap-ux/fiori-tools/sap-no-br-on-return': 'error',
+    '@sap-ux/fiori-tools/sap-no-commons-usage': 'error',
+    '@sap-ux/fiori-tools/sap-no-dynamic-style-insertion': 'error',
+    '@sap-ux/fiori-tools/sap-no-element-creation': 'error',
+    '@sap-ux/fiori-tools/sap-no-exec-command': 'error',
+    '@sap-ux/fiori-tools/sap-no-global-define': 'error',
+    '@sap-ux/fiori-tools/sap-no-global-event': 'error',
+    '@sap-ux/fiori-tools/sap-no-global-variable': 'error',
+    '@sap-ux/fiori-tools/sap-no-hardcoded-color': 'error',
+    '@sap-ux/fiori-tools/sap-no-hardcoded-url': 'error',
+    '@sap-ux/fiori-tools/sap-no-inner-html-write': 'error',
+    '@sap-ux/fiori-tools/sap-no-localstorage': 'error',
+    '@sap-ux/fiori-tools/sap-no-location-reload': 'error',
+    '@sap-ux/fiori-tools/sap-no-navigator': 'error',
+    '@sap-ux/fiori-tools/sap-no-override-rendering': 'error',
+    '@sap-ux/fiori-tools/sap-no-override-storage-prototype': 'error',
+    '@sap-ux/fiori-tools/sap-no-sessionstorage': 'error',
+    '@sap-ux/fiori-tools/sap-no-ui5base-prop': 'error',
+    // Warning rules (alphabetical)
+    '@sap-ux/fiori-tools/sap-bookmark-performance': 'warn',
+    '@sap-ux/fiori-tools/sap-browser-api-warning': 'warn',
+    '@sap-ux/fiori-tools/sap-cross-application-navigation': 'warn',
+    '@sap-ux/fiori-tools/sap-forbidden-window-property': 'warn',
+    '@sap-ux/fiori-tools/sap-message-toast': 'warn',
+    '@sap-ux/fiori-tools/sap-no-dom-access': 'warn',
+    '@sap-ux/fiori-tools/sap-no-dom-insertion': 'warn',
+    '@sap-ux/fiori-tools/sap-no-encode-file-service': 'warn',
+    '@sap-ux/fiori-tools/sap-no-global-selection': 'warn',
+    '@sap-ux/fiori-tools/sap-no-history-manipulation': 'warn',
+    '@sap-ux/fiori-tools/sap-no-inner-html-access': 'warn',
+    '@sap-ux/fiori-tools/sap-no-jquery-device-api': 'warn',
+    '@sap-ux/fiori-tools/sap-no-localhost': 'warn',
+    '@sap-ux/fiori-tools/sap-no-location-usage': 'warn',
+    '@sap-ux/fiori-tools/sap-no-proprietary-browser-api': 'warn',
+    '@sap-ux/fiori-tools/sap-no-ui5-prop-warning': 'warn',
+    '@sap-ux/fiori-tools/sap-timeout-usage': 'warn',
+    '@sap-ux/fiori-tools/sap-ui5-forms': 'warn',
+    '@sap-ux/fiori-tools/sap-ui5-global-eval': 'warn',
+    '@sap-ux/fiori-tools/sap-ui5-legacy-factories': 'warn',
+    '@sap-ux/fiori-tools/sap-ui5-legacy-jquerysap-usage': 'warn',
+    '@sap-ux/fiori-tools/sap-usage-basemastercontroller': 'warn',
+    // Off rules (alphabetical)
+    '@sap-ux/fiori-tools/sap-browser-api-error': 'off',
+    '@sap-ux/fiori-tools/sap-no-window-alert': 'off',
+    '@sap-ux/fiori-tools/sap-ui5-no-private-prop': 'off'
+} as Linter.RulesRecord;
+
+const prodConfig: Linter.Config[] = [
     {
         files: [`./${webappPathRelative}/**/*.js`, `./${webappPathRelative}/**/*.ts`],
 
@@ -439,11 +386,10 @@ const prodConfigS4Hana: Linter.Config[] = [
             parserOptions: {
                 requireConfigFile: false
             },
-            globals: s4hanaGlobals
+            globals: globalsConfig
         },
-
         rules: {
-            ...standardEslintRulesForS4Hana,
+            ...standardEslintRules,
             ...baseFioriToolsRules
         }
     }
@@ -459,7 +405,7 @@ const testConfig: Linter.Config[] = [
             parserOptions: {
                 requireConfigFile: false
             },
-            globals: s4hanaGlobals
+            globals: globalsConfig
         },
 
         rules: {
@@ -550,7 +496,6 @@ export const configs: Record<string, Linter.Config[]> = {
                 }
             }
         },
-        ...commonConfig,
         ...typescriptConfig,
         ...prodConfig,
         ...testConfig
@@ -565,9 +510,8 @@ export const configs: Record<string, Linter.Config[]> = {
                 }
             }
         },
-        ...commonConfig,
         ...typescriptConfig,
-        ...prodConfigS4Hana,
+        ...prodConfig,
         ...testConfig,
         ...fioriLanguageConfig
     ]
