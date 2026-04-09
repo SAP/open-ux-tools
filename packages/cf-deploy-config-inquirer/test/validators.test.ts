@@ -1,27 +1,37 @@
-import { initI18nCfDeployConfigInquirer, t } from '../src/i18n';
-import {
+import { jest } from '@jest/globals';
+
+// Pre-import real modules before mocking
+const realFs = await import('node:fs');
+const realProjectInputValidator = await import('@sap-ux/project-input-validator');
+
+const mockExistsSync = jest.fn();
+const mockValidateWindowsPathLength = jest.fn().mockImplementation(() => true);
+
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    existsSync: mockExistsSync,
+    default: {
+        ...realFs.default,
+        existsSync: mockExistsSync
+    }
+}));
+
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    ...realProjectInputValidator,
+    validateWindowsPathLength: mockValidateWindowsPathLength
+}));
+
+const { initI18nCfDeployConfigInquirer, t } = await import('../src/i18n');
+const {
     validateDestinationQuestion,
     validateMtaPath,
     validateMtaId,
     validateAbapService
-} from '../src/prompts/validators';
+} = await import('../src/prompts/validators');
+const { ErrorHandler } = await import('@sap-ux/inquirer-common');
+const projectInputValidator = await import('@sap-ux/project-input-validator');
 import { join } from 'node:path';
-import { existsSync } from 'node:fs';
-import { ErrorHandler } from '@sap-ux/inquirer-common';
-import * as projectInputValidator from '@sap-ux/project-input-validator';
 import type { CfAppRouterDeployConfigAnswers } from '../src/types';
-
-const mockedExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
-
-jest.mock('@sap-ux/project-input-validator', () => ({
-    ...jest.requireActual('@sap-ux/project-input-validator'),
-    validateWindowsPathLength: jest.fn().mockImplementation(() => true)
-}));
-
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    existsSync: jest.fn()
-}));
 
 describe('validators', () => {
     beforeAll(async () => {
@@ -68,13 +78,13 @@ describe('validators', () => {
 
     describe('validateMtaPath', () => {
         it('should return true when the file path exists', () => {
-            mockedExistsSync.mockReturnValue(true);
+            mockExistsSync.mockReturnValue(true);
             const result = validateMtaPath('/valid/path');
             expect(result).toBe(true);
         });
 
         it('should return an error message when the file path does not exist', () => {
-            mockedExistsSync.mockReturnValue(false);
+            mockExistsSync.mockReturnValue(false);
             const result = validateMtaPath('/invalid/path');
             expect(result).toBe(
                 'The folder path does not exist: /invalid/path. Check the folder has the correct permissions.'
@@ -96,7 +106,7 @@ describe('validators', () => {
         } as unknown as CfAppRouterDeployConfigAnswers;
 
         it('should return true for valid MTA ID', () => {
-            mockedExistsSync.mockReturnValue(false);
+            mockExistsSync.mockReturnValue(false);
             const result = validateMtaId('valid_id', previousAnswers);
             expect(result).toBe(true);
         });
@@ -114,7 +124,7 @@ describe('validators', () => {
         });
 
         it('should return an error message if MTA ID already exists at the given path', () => {
-            mockedExistsSync.mockReturnValue(true);
+            mockExistsSync.mockReturnValue(true);
             const result = validateMtaId('existing_id', previousAnswers);
             expect(result).toBe(
                 `A folder with the same name already exists at: /valid/path. Choose a different MTA ID.`
@@ -125,7 +135,7 @@ describe('validators', () => {
     describe('validateMtaId regex /^[a-zA-Z][a-zA-Z0-9_-.]*$/', () => {
         const previousAnswers = { mtaPath: '/valid/path' } as unknown as CfAppRouterDeployConfigAnswers;
         beforeEach(() => {
-            mockedExistsSync.mockReturnValue(false);
+            mockExistsSync.mockReturnValue(false);
         });
         it('should allow IDs starting with a letter', () => {
             expect(validateMtaId('A', previousAnswers)).toBe(true);
@@ -198,7 +208,7 @@ describe('validators', () => {
                 value: 'win32',
                 configurable: true
             });
-            mockedExistsSync.mockReturnValue(false);
+            mockExistsSync.mockReturnValue(false);
         });
 
         afterEach(() => {
@@ -219,7 +229,6 @@ describe('validators', () => {
         });
 
         it('should return error message if path length is >= 256 on win32', () => {
-            const validateWindowsPathLengthSpy = jest.spyOn(projectInputValidator, 'validateWindowsPathLength');
             const input = 'bbb';
             const longPath = 'C:'.padEnd(252, 'a');
             const previousAnswers: CfAppRouterDeployConfigAnswers = {
@@ -232,7 +241,7 @@ describe('validators', () => {
                 fullPath,
                 t('errors.windowsMtaIdPathTooLong', { length: '' })
             );
-            expect(validateWindowsPathLengthSpy).toHaveBeenCalledWith(
+            expect(mockValidateWindowsPathLength).toHaveBeenCalledWith(
                 fullPath,
                 'The combined length  of the MTA ID and MTA path exceeds the default Windows paths length. This may cause issues with MTA project generation.'
             );
@@ -240,7 +249,7 @@ describe('validators', () => {
     });
 
     describe('validateAbapService', () => {
-        let mockErrorHandler: ErrorHandler;
+        let mockErrorHandler: InstanceType<typeof ErrorHandler>;
 
         beforeEach(() => {
             mockErrorHandler = new ErrorHandler();

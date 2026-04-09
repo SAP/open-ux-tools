@@ -1,19 +1,26 @@
-import { t } from '../src/i18n';
-import {
-    type CfAppRouterDeployConfigQuestions,
-    type CfAppRouterDeployConfigPromptOptions,
-    RouterModuleType,
-    appRouterPromptNames
-} from '../src';
-import { type ListQuestion } from '@sap-ux/inquirer-common';
-import { getAppRouterQuestions } from '../src/prompts';
+import { jest } from '@jest/globals';
+
+// Pre-import real module before mocking
+const realCfTools = await import('@sap/cf-tools');
 
 let cfAbapServices: any[] = [];
 
-jest.mock('@sap/cf-tools', () => ({
-    ...jest.requireActual('@sap/cf-tools'),
+jest.unstable_mockModule('@sap/cf-tools', () => ({
+    ...realCfTools,
     apiGetServicesInstancesFilteredByType: jest.fn().mockImplementation(() => cfAbapServices)
 }));
+
+const { t } = await import('../src/i18n');
+const {
+    RouterModuleType,
+    appRouterPromptNames
+} = await import('../src');
+const { getAppRouterQuestions } = await import('../src/prompts');
+import type {
+    CfAppRouterDeployConfigQuestions,
+    CfAppRouterDeployConfigPromptOptions
+} from '../src';
+import { type ListQuestion } from '@sap-ux/inquirer-common';
 
 describe('App Router Prompt Generation Tests', () => {
     beforeEach(() => {
