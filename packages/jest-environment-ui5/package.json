@@ -2,7 +2,6 @@
     "name": "@sap-ux/jest-environment-ui5",
     "version": "5.3.20",
     "description": "Jest matchers for files and folders",
-    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -22,15 +21,15 @@
         "test-e2e": "pnpm run testlatest && pnpm run test71 && pnpm run test84 && pnpm run test96 && pnpm run test108 && pnpm run test120 && pnpm run test124 && pnpm run test127",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
-        "test71": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.71.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors",
-        "test84": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.84.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors",
-        "test96": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.96.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors",
-        "test108": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.108.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors",
-        "test120": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.120.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors",
-        "test124": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.124.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors",
-        "test127": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.127.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors",
-        "testlatest": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors",
-        "test20": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-2.0.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors"
+        "test71": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.71.yaml jest --config jest-ui5.config.mjs --ci --forceExit --detectOpenHandles --colors",
+        "test84": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.84.yaml jest --config jest-ui5.config.mjs --ci --forceExit --detectOpenHandles --colors",
+        "test96": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.96.yaml jest --config jest-ui5.config.mjs --ci --forceExit --detectOpenHandles --colors",
+        "test108": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.108.yaml jest --config jest-ui5.config.mjs --ci --forceExit --detectOpenHandles --colors",
+        "test120": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.120.yaml jest --config jest-ui5.config.mjs --ci --forceExit --detectOpenHandles --colors",
+        "test124": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.124.yaml jest --config jest-ui5.config.mjs --ci --forceExit --detectOpenHandles --colors",
+        "test127": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.127.yaml jest --config jest-ui5.config.mjs --ci --forceExit --detectOpenHandles --colors",
+        "testlatest": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5.yaml jest --config jest-ui5.config.mjs --ci --forceExit --detectOpenHandles --colors",
+        "test20": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-2.0.yaml jest --config jest-ui5.config.mjs --ci --forceExit --detectOpenHandles --colors"
     },
     "files": [
         "src",

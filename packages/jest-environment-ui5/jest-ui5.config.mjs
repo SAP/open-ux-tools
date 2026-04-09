@@ -1,4 +1,5 @@
-const config = require('../../jest.base');
+import baseConfig from '../../jest.base.mjs';
+const config = { ...baseConfig };
 config.testMatch = ['**/test/fixtures/**/?(*.)+(spec|test).[jt]s?(x)'];
 config.collectCoverage = false;
 config.testEnvironment = './src/index.js';
@@ -7,4 +8,4 @@ config.testEnvironmentOptions = {
     shimManifests: true,
     force: true
 };
-module.exports = config;
+export default config;
