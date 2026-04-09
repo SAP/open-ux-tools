@@ -1,8 +1,12 @@
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { getFilePaths } from '../../src';
 import { findBy, findFiles, findFilesByExtension, findFileUp } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = join(__filename, '..');
 
 describe('findFiles', () => {
     const root = join(__dirname, '../test-data/file');

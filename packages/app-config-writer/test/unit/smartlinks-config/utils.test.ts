@@ -1,31 +1,51 @@
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create as createFS } from 'mem-fs-editor';
 import nock from 'nock';
-import { join } from 'node:path';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
+import chalk from 'chalk';
 import type { TargetConfig } from '../../../src/types';
-import {
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+jest.unstable_mockModule('chalk', () => ({
+    default: chalk,
+    cyan: (s: string) => s,
+    yellow: (s: string) => s,
+    red: (s: string) => s,
+    green: (s: string) => s,
+    blue: (s: string) => s,
+    bold: (s: string) => s,
+    dim: (s: string) => s
+}));
+
+// mocks
+const storeRead = jest.fn();
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
+    getService: jest.fn(() => {
+        return { read: storeRead };
+    })
+}));
+
+const mockIsAppStudio = jest.fn();
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+const {
     getLocalStoredCredentials,
     getTargetDefinition,
     getTargetMappingsConfig,
     sendRequest,
     writeSmartLinksConfig
-} from '../../../src/smartlinks-config/utils';
-
-// mocks
-const storeRead = jest.fn();
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
-    getService: jest.fn(() => {
-        return { read: storeRead };
-    })
-}));
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
-}));
-const isAppStudioMock = isAppStudio as jest.Mock;
+} = await import('../../../src/smartlinks-config/utils');
 
 // logger mock
 const loggerMock = {
@@ -33,9 +53,9 @@ const loggerMock = {
     info: jest.fn(),
     warn: jest.fn()
 } as Partial<ToolsLogger> as ToolsLogger;
-let debugMock: jest.SpyInstance;
-let infoMock: jest.SpyInstance;
-let warnMock: jest.SpyInstance;
+let debugMock: jest.Mock;
+let infoMock: jest.Mock;
+let warnMock: jest.Mock;
 
 describe('utils', () => {
     // reusable test parameters
@@ -97,7 +117,7 @@ describe('utils', () => {
 
     describe('sendRequest', () => {
         beforeEach(() => {
-            isAppStudioMock.mockReturnValue(false);
+            mockIsAppStudio.mockReturnValue(false);
         });
 
         const targetResponseMock = { 'targetMappings': 'mockData' };
@@ -128,7 +148,7 @@ describe('utils', () => {
         });
         test('in BAS with destination', async () => {
             const destination = 'MOCK_DESTINATION';
-            isAppStudioMock.mockReturnValue(true);
+            mockIsAppStudio.mockReturnValue(true);
             nock(`https://${destination}.dest`)
                 .get(service)
                 .query(params)
@@ -188,7 +208,7 @@ describe('utils', () => {
                 fail('Error should have been thrown');
             } catch (error) {
                 expect(debugMock).not.toHaveBeenCalled();
-                expect(error.message).toEqual(errorMsg);
+                expect((error as Error).message).toEqual(errorMsg);
             }
         });
         test('No url/destination provided - throw error', async () => {
@@ -196,7 +216,7 @@ describe('utils', () => {
                 await sendRequest({ target: {} }, loggerMock);
                 fail('Error should have been thrown');
             } catch (error) {
-                expect(error.message).toEqual('Please provide a target for the configuration.');
+                expect((error as Error).message).toEqual('Please provide a target for the configuration.');
             }
         });
     });
@@ -332,7 +352,7 @@ describe('utils', () => {
                 await getTargetMappingsConfig(config, loggerMock);
                 fail('Error should have been thrown');
             } catch (error) {
-                expect(error.message).toEqual(errorMsg);
+                expect((error as Error).message).toEqual(errorMsg);
             }
         });
     });

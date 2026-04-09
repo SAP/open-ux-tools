@@ -1,9 +1,15 @@
-import { Uaa } from '../../src';
+import { jest } from '@jest/globals';
 import axios from 'axios';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
 let openMockCallback: (url: string) => void;
-jest.mock('open', () => jest.fn((url: string) => openMockCallback && openMockCallback(url)));
+const mockOpen = jest.fn<any>((url: string) => openMockCallback && openMockCallback(url));
+jest.unstable_mockModule('open', () => ({
+    __esModule: true,
+    default: mockOpen
+}));
+
+const { Uaa } = await import('../../src');
 
 describe('UAA', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });

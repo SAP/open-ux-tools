@@ -1,23 +1,43 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import chalk from 'chalk';
 import type { Editor } from 'mem-fs-editor';
-import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
-import { generateSmartLinksConfig } from '../../../src';
-import type { TargetConfig } from '../../../src/types';
 
-jest.mock('@sap-ux/axios-extension', () => ({
-    ...jest.requireActual('@sap-ux/axios-extension'),
-    createForAbap: jest.fn(),
-    createForDestination: jest.fn()
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+jest.unstable_mockModule('chalk', () => ({
+    default: chalk,
+    cyan: (s: string) => s,
+    yellow: (s: string) => s,
+    red: (s: string) => s,
+    green: (s: string) => s,
+    blue: (s: string) => s,
+    bold: (s: string) => s,
+    dim: (s: string) => s
 }));
-const createGetMock = jest.fn();
-const createForAbapMock = createForAbap as jest.Mock;
-const createForDestinationMock = createForDestination as jest.Mock;
 
-createForAbapMock.mockImplementation(() => ({ get: createGetMock }));
-createForDestinationMock.mockImplementation(() => ({ get: createGetMock }));
+jest.unstable_mockModule('prompts', () => ({
+    prompt: jest.fn(),
+    inject: jest.fn()
+}));
+
+const createGetMock = jest.fn();
+const mockCreateForAbap = jest.fn().mockImplementation(() => ({ get: createGetMock }));
+const mockCreateForDestination = jest.fn().mockImplementation(() => ({ get: createGetMock }));
+
+const actualAxiosExtension = await import('@sap-ux/axios-extension');
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    ...actualAxiosExtension,
+    createForAbap: mockCreateForAbap,
+    createForDestination: mockCreateForDestination
+}));
+
+const { generateSmartLinksConfig } = await import('../../../src');
 
 describe('Test generateSmartLinksConfig', () => {
-    const configMock: TargetConfig = {
+    const configMock = {
         target: { url: 'mockUrl', client: '000' },
         auth: { username: 'mockUser', password: 'mockPW' },
         ignoreCertErrors: true
@@ -67,7 +87,7 @@ describe('Test generateSmartLinksConfig', () => {
             fs = await generateSmartLinksConfig(basePath, configMock);
             fail('Error should have been thrown');
         } catch (error) {
-            expect(error.message).toEqual(`No target definition found: ${configMock.target.url}.`);
+            expect((error as Error).message).toEqual(`No target definition found: ${configMock.target.url}.`);
             expect(fs?.readJSON(join(basePath, 'appconfig', 'fioriSandboxConfig.json'))).not.toBeDefined();
             expect(fs?.read(join(basePath, 'ui5.yaml'))).not.toBeDefined();
         }

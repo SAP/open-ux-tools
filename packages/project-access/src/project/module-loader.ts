@@ -1,10 +1,13 @@
 import { existsSync } from 'node:fs';
 import { mkdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
+import { createRequire } from 'node:module';
 import type { Logger } from '@sap-ux/logger';
 import { getNodeModulesPath } from './dependencies';
 import { FileName, moduleCacheRoot } from '../constants';
 import { execNpmCommand } from '../command';
+
+const require = createRequire(import.meta.url);
 
 /**
  * Get the module path from project or app. Throws error if module is not installed.

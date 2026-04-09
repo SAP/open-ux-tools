@@ -1,7 +1,11 @@
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { getAppProgrammingLanguage, getAppType, getProject, getProjectType } from '../../src';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = join(__filename, '..');
 
 describe('Test getAppProgrammingLanguage()', () => {
     const sampleRoot = join(__dirname, '../test-data/project/info');

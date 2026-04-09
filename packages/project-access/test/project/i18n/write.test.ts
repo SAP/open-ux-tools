@@ -1,24 +1,70 @@
-import * as uxI18n from '@sap-ux/i18n';
-import * as cap from '../../../src/project/cap';
-import * as file from '../../../src/file';
-import {
+import { jest } from '@jest/globals';
+import type * as uxI18nType from '@sap-ux/i18n';
+import type * as capType from '../../../src/project/cap';
+import type * as fileType from '../../../src/file';
+import type * as fsPromisesType from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import type { I18nPropertiesPaths } from '../../../src';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+
+const mockCreateCapI18nEntries = jest.fn<typeof uxI18nType.createCapI18nEntries>();
+const mockCreatePropertiesI18nEntries = jest.fn<typeof uxI18nType.createPropertiesI18nEntries>();
+
+const realUxI18n = await import('@sap-ux/i18n');
+jest.unstable_mockModule('@sap-ux/i18n', () => ({
+    ...realUxI18n,
+    createCapI18nEntries: mockCreateCapI18nEntries,
+    createPropertiesI18nEntries: mockCreatePropertiesI18nEntries
+}));
+
+const mockGetCapEnvironment = jest.fn<typeof capType.getCapEnvironment>();
+
+const realCap = await import('../../../src/project/cap');
+jest.unstable_mockModule('../../../src/project/cap', () => ({
+    ...realCap,
+    getCapEnvironment: mockGetCapEnvironment
+}));
+
+const mockReadJSON = jest.fn<typeof fileType.readJSON>();
+const mockWriteFile = jest.fn<typeof fileType.writeFile>();
+
+const realFile = await import('../../../src/file');
+jest.unstable_mockModule('../../../src/file', () => ({
+    ...realFile,
+    readJSON: mockReadJSON,
+    writeFile: mockWriteFile
+}));
+
+const mockMkdir = jest.fn<typeof fsPromisesType.mkdir>();
+
+const realFsPromises = await import('node:fs/promises');
+jest.unstable_mockModule('node:fs/promises', () => ({
+    ...realFsPromises,
+    mkdir: mockMkdir
+}));
+
+const {
     createAnnotationI18nEntries,
     createCapI18nEntries,
     createManifestI18nEntries,
     createUI5I18nEntries
-} from '../../../src/project/i18n';
-import { dirname, join } from 'node:path';
-import type { I18nPropertiesPaths } from '../../../src';
-import * as fs from 'node:fs';
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
+} = await import('../../../src/project/i18n');
 
 describe('write', () => {
     const memFs = create(createStorage());
-    beforeEach(() => jest.restoreAllMocks());
+    beforeEach(() => {
+        jest.restoreAllMocks();
+        mockCreateCapI18nEntries.mockReset();
+        mockCreatePropertiesI18nEntries.mockReset();
+        mockGetCapEnvironment.mockReset();
+        mockReadJSON.mockReset();
+        mockWriteFile.mockReset();
+        mockMkdir.mockReset();
+    });
     const root = 'root';
     const manifestPath = join(root, 'app', 'path', 'manifestParent', 'manifest.json');
-    const newI18nEntries: uxI18n.NewI18nEntry[] = [
+    const newI18nEntries: uxI18nType.NewI18nEntry[] = [
         {
             key: 'key',
             value: 'value'
@@ -27,25 +73,25 @@ describe('write', () => {
     describe('createCapI18nEntries', () => {
         test('without mem-fs-editor', async () => {
             const filePath = 'my-cds-file';
-            const createCapI18nEntriesSpy = jest.spyOn(uxI18n, 'createCapI18nEntries').mockResolvedValue(true);
-            const getCapEnvironmentSoy = jest.spyOn(cap, 'getCapEnvironment').mockResolvedValue({});
+            mockCreateCapI18nEntries.mockResolvedValue(true);
+            mockGetCapEnvironment.mockResolvedValue({});
             const result = await createCapI18nEntries(root, filePath, newI18nEntries);
 
             expect(result).toBeTruthy();
 
-            expect(createCapI18nEntriesSpy).toHaveBeenNthCalledWith(1, root, filePath, newI18nEntries, {}, undefined);
-            expect(getCapEnvironmentSoy).toHaveBeenNthCalledWith(1, root);
+            expect(mockCreateCapI18nEntries).toHaveBeenNthCalledWith(1, root, filePath, newI18nEntries, {}, undefined);
+            expect(mockGetCapEnvironment).toHaveBeenNthCalledWith(1, root);
         });
         test('with mem-fs-editor', async () => {
             const filePath = 'my-cds-file';
-            const createCapI18nEntriesSpy = jest.spyOn(uxI18n, 'createCapI18nEntries').mockResolvedValue(true);
-            const getCapEnvironmentSoy = jest.spyOn(cap, 'getCapEnvironment').mockResolvedValue({});
+            mockCreateCapI18nEntries.mockResolvedValue(true);
+            mockGetCapEnvironment.mockResolvedValue({});
 
             const result = await createCapI18nEntries(root, filePath, newI18nEntries, memFs);
 
             expect(result).toBeTruthy();
-            expect(createCapI18nEntriesSpy).toHaveBeenNthCalledWith(1, root, filePath, newI18nEntries, {}, memFs);
-            expect(getCapEnvironmentSoy).toHaveBeenNthCalledWith(1, root);
+            expect(mockCreateCapI18nEntries).toHaveBeenNthCalledWith(1, root, filePath, newI18nEntries, {}, memFs);
+            expect(mockGetCapEnvironment).toHaveBeenNthCalledWith(1, root);
         });
     });
     describe('createUI5I18nEntries', () => {
@@ -59,16 +105,14 @@ describe('write', () => {
                     }
                 }
             };
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
+            mockMkdir.mockResolvedValue(undefined);
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
 
             const result = await createUI5I18nEntries(root, manifestPath, i18nPropertiesPaths, newI18nEntries, 'i18n');
 
             expect(result).toBeTruthy();
-            expect(mkdirSpy).toHaveBeenNthCalledWith(1, dirname(absolutePathI18n), { recursive: true });
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
+            expect(mockMkdir).toHaveBeenNthCalledWith(1, dirname(absolutePathI18n), { recursive: true });
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(
                 1,
                 absolutePathI18n,
                 newI18nEntries,
@@ -86,10 +130,7 @@ describe('write', () => {
                     }
                 }
             };
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
 
             const result = await createUI5I18nEntries(
                 root,
@@ -101,8 +142,8 @@ describe('write', () => {
             );
 
             expect(result).toBeTruthy();
-            expect(mkdirSpy).toHaveBeenCalledTimes(0);
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
+            expect(mockMkdir).toHaveBeenCalledTimes(0);
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(
                 1,
                 absolutePathI18n,
                 newI18nEntries,
@@ -115,17 +156,14 @@ describe('write', () => {
                 'sap.app': 'absolute-path',
                 models: {}
             };
-            const readJSONSpy = jest.spyOn(file, 'readJSON').mockResolvedValue({});
-            const writeFileSpy = jest.spyOn(file, 'writeFile').mockResolvedValue(undefined);
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
+            mockReadJSON.mockResolvedValue({});
+            mockWriteFile.mockResolvedValue(undefined);
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
 
             const result = await createUI5I18nEntries(root, manifestPath, i18nPropertiesPaths, newI18nEntries, 'i18n');
 
             expect(result).toBeTruthy();
-            expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
+            expect(mockReadJSON).toHaveBeenNthCalledWith(1, manifestPath);
             const absolutePathI18n = join(dirname(manifestPath), 'i18n/i18n.properties');
             const manifest = {
                 'sap.ui5': {
@@ -137,14 +175,14 @@ describe('write', () => {
                     }
                 }
             };
-            expect(writeFileSpy).toHaveBeenNthCalledWith(
+            expect(mockWriteFile).toHaveBeenNthCalledWith(
                 1,
                 manifestPath,
                 JSON.stringify(manifest, undefined, 4),
                 undefined
             );
-            expect(mkdirSpy).toHaveBeenNthCalledWith(1, dirname(absolutePathI18n), { recursive: true });
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
+            expect(mockMkdir).toHaveBeenNthCalledWith(1, dirname(absolutePathI18n), { recursive: true });
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(
                 1,
                 absolutePathI18n,
                 newI18nEntries,
@@ -157,12 +195,9 @@ describe('write', () => {
                 'sap.app': 'absolute-path',
                 models: {}
             };
-            const readJSONSpy = jest.spyOn(file, 'readJSON').mockResolvedValue({});
-            const writeFileSpy = jest.spyOn(file, 'writeFile').mockResolvedValue(undefined);
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
+            mockReadJSON.mockResolvedValue({});
+            mockWriteFile.mockResolvedValue(undefined);
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
 
             const result = await createUI5I18nEntries(
                 root,
@@ -174,7 +209,7 @@ describe('write', () => {
             );
 
             expect(result).toBeTruthy();
-            expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
+            expect(mockReadJSON).toHaveBeenNthCalledWith(1, manifestPath);
             const absolutePathI18n = join(dirname(manifestPath), 'i18n/i18n.properties');
             const manifest = {
                 'sap.ui5': {
@@ -186,14 +221,14 @@ describe('write', () => {
                     }
                 }
             };
-            expect(writeFileSpy).toHaveBeenNthCalledWith(
+            expect(mockWriteFile).toHaveBeenNthCalledWith(
                 1,
                 manifestPath,
                 JSON.stringify(manifest, undefined, 4),
                 memFs
             );
-            expect(mkdirSpy).toHaveBeenCalledTimes(0);
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
+            expect(mockMkdir).toHaveBeenCalledTimes(0);
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(
                 1,
                 absolutePathI18n,
                 newI18nEntries,
@@ -213,14 +248,11 @@ describe('write', () => {
                     }
                 }
             };
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
             const result = await createAnnotationI18nEntries(root, manifestPath, i18nPropertiesPaths, newI18nEntries);
             expect(result).toBeTruthy();
-            expect(mkdirSpy).toHaveBeenNthCalledWith(1, dirname(absolutePathI18n), { recursive: true });
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
+            expect(mockMkdir).toHaveBeenNthCalledWith(1, dirname(absolutePathI18n), { recursive: true });
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(
                 1,
                 absolutePathI18n,
                 newI18nEntries,
@@ -238,10 +270,7 @@ describe('write', () => {
                     }
                 }
             };
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
 
             const result = await createAnnotationI18nEntries(
                 root,
@@ -252,8 +281,8 @@ describe('write', () => {
             );
 
             expect(result).toBeTruthy();
-            expect(mkdirSpy).toHaveBeenCalledTimes(0);
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
+            expect(mockMkdir).toHaveBeenCalledTimes(0);
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(
                 1,
                 absolutePathI18n,
                 newI18nEntries,
@@ -266,15 +295,12 @@ describe('write', () => {
                 'sap.app': 'absolute-path',
                 models: {}
             };
-            const readJSONSpy = jest.spyOn(file, 'readJSON').mockResolvedValue({});
-            const writeFileSpy = jest.spyOn(file, 'writeFile').mockResolvedValue(undefined);
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
+            mockReadJSON.mockResolvedValue({});
+            mockWriteFile.mockResolvedValue(undefined);
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
             const result = await createAnnotationI18nEntries(root, manifestPath, i18nPropertiesPaths, newI18nEntries);
             expect(result).toBeTruthy();
-            expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
+            expect(mockReadJSON).toHaveBeenNthCalledWith(1, manifestPath);
             const absolutePathI18n = join(dirname(manifestPath), 'i18n/i18n.properties');
             const manifest = {
                 'sap.ui5': {
@@ -286,14 +312,14 @@ describe('write', () => {
                     }
                 }
             };
-            expect(writeFileSpy).toHaveBeenNthCalledWith(
+            expect(mockWriteFile).toHaveBeenNthCalledWith(
                 1,
                 manifestPath,
                 JSON.stringify(manifest, undefined, 4),
                 undefined
             );
-            expect(mkdirSpy).toHaveBeenNthCalledWith(1, dirname(absolutePathI18n), { recursive: true });
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
+            expect(mockMkdir).toHaveBeenNthCalledWith(1, dirname(absolutePathI18n), { recursive: true });
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(
                 1,
                 absolutePathI18n,
                 newI18nEntries,
@@ -306,12 +332,9 @@ describe('write', () => {
                 'sap.app': 'absolute-path',
                 models: {}
             };
-            const readJSONSpy = jest.spyOn(file, 'readJSON').mockResolvedValue({});
-            const writeFileSpy = jest.spyOn(file, 'writeFile').mockResolvedValue(undefined);
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
+            mockReadJSON.mockResolvedValue({});
+            mockWriteFile.mockResolvedValue(undefined);
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
 
             const result = await createAnnotationI18nEntries(
                 root,
@@ -322,7 +345,7 @@ describe('write', () => {
             );
 
             expect(result).toBeTruthy();
-            expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
+            expect(mockReadJSON).toHaveBeenNthCalledWith(1, manifestPath);
             const absolutePathI18n = join(dirname(manifestPath), 'i18n/i18n.properties');
             const manifest = {
                 'sap.ui5': {
@@ -334,14 +357,14 @@ describe('write', () => {
                     }
                 }
             };
-            expect(writeFileSpy).toHaveBeenNthCalledWith(
+            expect(mockWriteFile).toHaveBeenNthCalledWith(
                 1,
                 manifestPath,
                 JSON.stringify(manifest, undefined, 4),
                 memFs
             );
-            expect(mkdirSpy).toHaveBeenCalledTimes(0);
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
+            expect(mockMkdir).toHaveBeenCalledTimes(0);
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(
                 1,
                 absolutePathI18n,
                 newI18nEntries,
@@ -357,16 +380,13 @@ describe('write', () => {
                 'sap.app': absolutePathI18n,
                 models: {}
             };
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
 
             const result = await createManifestI18nEntries(root, i18nPropertiesPaths, newI18nEntries);
 
             expect(result).toBeTruthy();
-            expect(mkdirSpy).toHaveBeenNthCalledWith(1, dirname(absolutePathI18n), { recursive: true });
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
+            expect(mockMkdir).toHaveBeenNthCalledWith(1, dirname(absolutePathI18n), { recursive: true });
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(
                 1,
                 absolutePathI18n,
                 newI18nEntries,
@@ -380,16 +400,13 @@ describe('write', () => {
                 'sap.app': absolutePathI18n,
                 models: {}
             };
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
 
             const result = await createManifestI18nEntries(root, i18nPropertiesPaths, newI18nEntries, memFs);
 
             expect(result).toBeTruthy();
-            expect(mkdirSpy).toHaveBeenCalledTimes(0);
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
+            expect(mockMkdir).toHaveBeenCalledTimes(0);
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(
                 1,
                 absolutePathI18n,
                 newI18nEntries,

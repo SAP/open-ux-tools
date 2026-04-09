@@ -1,6 +1,10 @@
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Manifest } from '../../../src';
 import { getRelativeI18nPropertiesPaths, getI18nPropertiesPaths } from '../../../src/project/i18n/i18n';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = join(__filename, '..');
 
 describe('Test getI18nPropertiesPaths()', () => {
     test('All paths in manifest', async () => {

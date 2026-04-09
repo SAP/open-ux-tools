@@ -1,12 +1,17 @@
+import { jest } from '@jest/globals';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
     renameDefaultSandboxes,
     deleteNoLongerUsedFiles,
     renameSandbox
 } from '../../../src/preview-config/preview-files';
 import { ToolsLogger } from '@sap-ux/logger';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('preview-files', () => {
     const logger = new ToolsLogger();

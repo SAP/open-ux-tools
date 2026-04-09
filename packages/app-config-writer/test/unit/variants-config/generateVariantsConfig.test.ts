@@ -1,6 +1,29 @@
-import { join } from 'node:path';
-import { generateVariantsConfig } from '../../../src';
-import { ToolsLogger } from '@sap-ux/logger';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import chalk from 'chalk';
+
+jest.unstable_mockModule('chalk', () => ({
+    default: chalk,
+    cyan: (s: string) => s,
+    yellow: (s: string) => s,
+    red: (s: string) => s,
+    green: (s: string) => s,
+    blue: (s: string) => s,
+    bold: (s: string) => s,
+    dim: (s: string) => s
+}));
+
+jest.unstable_mockModule('prompts', () => ({
+    prompt: jest.fn(),
+    inject: jest.fn()
+}));
+
+const { generateVariantsConfig } = await import('../../../src');
+const { ToolsLogger } = await import('@sap-ux/logger');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('generateVariantsConfig', () => {
     const basePath = join(__dirname, '../../fixtures/variants-config');

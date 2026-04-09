@@ -1,27 +1,72 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-// Needs to be done before importing getSpecification() to mock the module cache path
-jest.doMock('../../src/constants', () => ({
-    ...(jest.requireActual('../../src/constants') as {}),
+import { fileURLToPath } from 'node:url';
+import * as fsMock from 'node:fs';
+import type * as fsPromisesType from 'node:fs/promises';
+import type { Logger } from '@sap-ux/logger';
+import type * as commandType from '../../src/command';
+import type * as moduleType from '../../src/project/module-loader';
+import type * as fileType from '../../src/file';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = join(__filename, '..');
+
+// Mock constants before importing getSpecification
+const realConstants = await import('../../src/constants');
+jest.unstable_mockModule('../../src/constants', () => ({
+    ...realConstants,
     moduleCacheRoot: join(__dirname, '../test-data/module-loader'),
     fioriToolsDirectory: join(__dirname, '../test-data/specification')
 }));
-import * as fsMock from 'node:fs';
-import type { Logger } from '@sap-ux/logger';
-import {
+
+const mockExecNpmCommand = jest.fn<typeof commandType.execNpmCommand>();
+const realCommand = await import('../../src/command');
+jest.unstable_mockModule('../../src/command', () => ({
+    ...realCommand,
+    execNpmCommand: mockExecNpmCommand
+}));
+
+const mockDeleteModule = jest.fn<typeof moduleType.deleteModule>();
+const realModule = await import('../../src/project/module-loader');
+jest.unstable_mockModule('../../src/project/module-loader', () => ({
+    ...realModule,
+    deleteModule: mockDeleteModule
+}));
+
+const mockWriteFile = jest.fn<typeof fileType.writeFile>();
+const realFile = await import('../../src/file');
+jest.unstable_mockModule('../../src/file', () => ({
+    ...realFile,
+    writeFile: mockWriteFile
+}));
+
+// Mock fs module
+const realFs = await import('node:fs');
+const mockExistsSync = jest.fn<typeof fsMock.existsSync>(realFs.existsSync);
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    default: {
+        ...realFs.default,
+        existsSync: mockExistsSync,
+        promises: realFs.default.promises
+    },
+    existsSync: mockExistsSync
+}));
+
+const mockMkdir = jest.fn<typeof fsPromisesType.mkdir>();
+const realFsPromises = await import('node:fs/promises');
+jest.unstable_mockModule('node:fs/promises', () => ({
+    ...realFsPromises,
+    mkdir: mockMkdir
+}));
+
+const {
     FileName,
     fioriToolsDirectory,
     getSpecification,
     getSpecificationPath,
     refreshSpecificationDistTags
-} from '../../src';
-import * as commandMock from '../../src/command';
-import * as moduleMock from '../../src/project/module-loader';
-import * as fileMock from '../../src/file';
-
-jest.mock('fs', () => {
-    const actual = jest.requireActual<typeof fsMock>('fs');
-    return { ...actual, existsSync: jest.fn().mockImplementation(actual.existsSync) };
-});
+} = await import('../../src');
 
 describe('Test getSpecification', () => {
     type Specification = { exec: () => string };
@@ -49,15 +94,15 @@ describe('Test getSpecification', () => {
     });
 
     test('Get specification from cache with dist tag refresh', async () => {
-        jest.spyOn(fsMock, 'existsSync').mockReturnValueOnce(false);
-        const npmCommandSpy = jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"UI5-1.2": "0.1.2"}');
-        jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
+        mockExistsSync.mockReturnValueOnce(false);
+        mockExecNpmCommand.mockResolvedValueOnce('{"UI5-1.2": "0.1.2"}');
+        mockWriteFile.mockResolvedValueOnce();
         const logger = getMockLogger();
         const root = join(__dirname, '../test-data/specification/app');
         const specification = await getSpecification<Specification>(root, { logger });
         expect(specification.exec()).toBe('specification-mock');
         expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('Specification dist-tags not found'));
-        expect(npmCommandSpy).toHaveBeenCalledWith(['view', '@sap/ux-specification', 'dist-tags', '--json'], {
+        expect(mockExecNpmCommand).toHaveBeenCalledWith(['view', '@sap/ux-specification', 'dist-tags', '--json'], {
             logger
         });
     });
@@ -75,8 +120,8 @@ describe('Test getSpecification', () => {
                 }
                 return originalReadFile(path);
             });
-        const npmCommandSpy = jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"UI5-1.2": "0.1.2"}');
-        jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
+        mockExecNpmCommand.mockResolvedValueOnce('{"UI5-1.2": "0.1.2"}');
+        mockWriteFile.mockResolvedValueOnce();
         const logger = getMockLogger();
         const root = join(__dirname, '../test-data/specification/app');
         const specification = await getSpecification<Specification>(root, { logger });
@@ -86,7 +131,7 @@ describe('Test getSpecification', () => {
             expect.stringContaining('Specification dist-tags file has error at')
         );
         expect(logger.debug).toHaveBeenNthCalledWith(2, "Specification loaded from cache using version '0.1.2'");
-        expect(npmCommandSpy).toHaveBeenCalledWith(['view', '@sap/ux-specification', 'dist-tags', '--json'], {
+        expect(mockExecNpmCommand).toHaveBeenCalledWith(['view', '@sap/ux-specification', 'dist-tags', '--json'], {
             logger
         });
         // Reset mock
@@ -142,31 +187,31 @@ describe('Test refreshSpecificationDistTags()', () => {
     });
 
     test('Refresh specification dist tags', async () => {
-        jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"UI5-1.2": "0.1.3"}');
-        jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
-        const moduleSpy = jest.spyOn(moduleMock, 'deleteModule').mockResolvedValueOnce();
+        mockExecNpmCommand.mockResolvedValueOnce('{"UI5-1.2": "0.1.3"}');
+        mockWriteFile.mockResolvedValueOnce();
+        mockDeleteModule.mockResolvedValueOnce();
         const logger = getMockLogger();
         await refreshSpecificationDistTags({ logger });
-        expect(moduleSpy).toHaveBeenCalledWith('@sap/ux-specification', '0.1.2');
+        expect(mockDeleteModule).toHaveBeenCalledWith('@sap/ux-specification', '0.1.2');
         expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('0.1.2'));
     });
 
     test('Refresh specification dist tags - missing ".fioritools" folder', async () => {
-        jest.spyOn(fsMock, 'existsSync').mockReturnValueOnce(false);
-        const mkdirSpy = jest.spyOn(fsMock.promises, 'mkdir').mockResolvedValueOnce(undefined);
-        jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"UI5-1.2": "0.1.3"}');
-        jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
-        const moduleSpy = jest.spyOn(moduleMock, 'deleteModule').mockResolvedValueOnce();
+        mockExistsSync.mockReturnValueOnce(false);
+        mockMkdir.mockResolvedValueOnce(undefined);
+        mockExecNpmCommand.mockResolvedValueOnce('{"UI5-1.2": "0.1.3"}');
+        mockWriteFile.mockResolvedValueOnce();
+        mockDeleteModule.mockResolvedValueOnce();
         const logger = getMockLogger();
         await refreshSpecificationDistTags({ logger });
-        expect(mkdirSpy).toHaveBeenCalledTimes(1);
-        expect(mkdirSpy).toHaveBeenCalledWith(fioriToolsDirectory, { recursive: true });
-        expect(moduleSpy).toHaveBeenCalledWith('@sap/ux-specification', '0.1.2');
+        expect(mockMkdir).toHaveBeenCalledTimes(1);
+        expect(mockMkdir).toHaveBeenCalledWith(fioriToolsDirectory, { recursive: true });
+        expect(mockDeleteModule).toHaveBeenCalledWith('@sap/ux-specification', '0.1.2');
         expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('0.1.2'));
     });
 
     test('Refresh specification dist tags, error handling', async () => {
-        jest.spyOn(commandMock, 'execNpmCommand').mockRejectedValueOnce('NPM_ERROR');
+        mockExecNpmCommand.mockRejectedValueOnce('NPM_ERROR');
         const logger = getMockLogger();
         await refreshSpecificationDistTags({ logger });
         expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('NPM_ERROR'));
@@ -174,7 +219,7 @@ describe('Test refreshSpecificationDistTags()', () => {
 
     test('Refresh specification dist tags - error in response. Contains code and summary.', async () => {
         const refreshResponse = '{"error": {"code": "ENOTFOUND", "summary": "Request to uri failed."}}';
-        jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce(refreshResponse);
+        mockExecNpmCommand.mockResolvedValueOnce(refreshResponse);
         const logger = getMockLogger();
         await refreshSpecificationDistTags({ logger });
         expect(logger.error).toHaveBeenCalledWith(

@@ -1,9 +1,13 @@
 import { join, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Package } from '../../src';
 import { FileName, getNodeModulesPath } from '../../src';
 import { addPackageDevDependency, hasDependency } from '../../src/project/dependencies';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = join(__filename, '..');
 
 describe('Test hasDependency()', () => {
     test('Test package.json has dependency', async () => {

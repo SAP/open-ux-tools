@@ -1,6 +1,50 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import nock from 'nock';
-import {
+import type { AbapCloudOptions, AxiosError, AxiosRequestConfig, ProviderConfiguration } from '../../src';
+import type { ArchiveFileNode, SystemInfo } from '../../src/abap/types';
+import fs from 'node:fs';
+import cloneDeep from 'lodash/cloneDeep';
+import type { ToolsLogger } from '@sap-ux/logger';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+} as Partial<ToolsLogger> as ToolsLogger;
+
+const actualLogger = await import('@sap-ux/logger');
+jest.unstable_mockModule('@sap-ux/logger', () => ({
+    ...actualLogger,
+    ToolsLogger: jest.fn().mockImplementation(() => loggerMock)
+}));
+
+jest.unstable_mockModule('open', () => ({
+    default: jest.fn()
+}));
+
+// Mock reentrance-ticket BEFORE importing auth, so auth's closure captures the mock
+const mockGetReentranceTicket = jest.fn<any>();
+jest.unstable_mockModule('../../src/auth/reentrance-ticket', () => ({
+    getReentranceTicket: mockGetReentranceTicket
+}));
+
+// Mock auth modules to allow spying on their exports
+const actualAuth = await import('../../src/auth');
+const mockAttachReentranceTicketAuthInterceptor = jest.fn(actualAuth.attachReentranceTicketAuthInterceptor);
+const mockAttachUaaAuthInterceptor = jest.fn(actualAuth.attachUaaAuthInterceptor);
+jest.unstable_mockModule('../../src/auth', () => ({
+    ...actualAuth,
+    attachReentranceTicketAuthInterceptor: mockAttachReentranceTicketAuthInterceptor,
+    attachUaaAuthInterceptor: mockAttachUaaAuthInterceptor
+}));
+
+const {
     createForAbap,
     createForAbapOnCloud,
     AbapCloudEnvironment,
@@ -12,28 +56,9 @@ import {
     GeneratorService,
     UI5RtVersionService,
     AbapCDSViewService
-} from '../../src';
-import type { AbapCloudOptions, AxiosError, AxiosRequestConfig, ProviderConfiguration } from '../../src';
-import * as auth from '../../src/auth';
-import type { ArchiveFileNode, SystemInfo } from '../../src/abap/types';
-import fs from 'node:fs';
-import cloneDeep from 'lodash/cloneDeep';
-import type { ToolsLogger } from '@sap-ux/logger';
-import * as Logger from '@sap-ux/logger';
-import { UiServiceGenerator } from '../../src/abap/adt-catalog/generators/ui-service-generator';
-import { Uaa } from '../../src/auth/uaa';
-import * as reentranceTicketAuth from '../../src/auth/reentrance-ticket';
-
-const loggerMock: ToolsLogger = {
-    debug: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn()
-} as Partial<ToolsLogger> as ToolsLogger;
-
-jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
-
-jest.mock('open');
+} = await import('../../src');
+const { UiServiceGenerator } = await import('../../src/abap/adt-catalog/generators/ui-service-generator');
+const { Uaa } = await import('../../src/auth/uaa');
 
 /**
  * URL are specific to the discovery schema.
@@ -351,14 +376,13 @@ describe('Transport checks', () => {
 });
 
 describe('Should create new connections', () => {
-    const attachReentranceTicketAuthInterceptorSpy = jest.spyOn(auth, 'attachReentranceTicketAuthInterceptor');
+    const attachReentranceTicketAuthInterceptorSpy = mockAttachReentranceTicketAuthInterceptor;
 
     test('abap service provider for cloud - credentials not provided, always use reentrance', async () => {
-        const getReentranceTicketSpy = jest
-            .spyOn(reentranceTicketAuth, 'getReentranceTicket')
-            .mockResolvedValueOnce({ reentranceTicket: 'reent_tecket_1234' });
+        mockGetReentranceTicket.mockResolvedValueOnce({ reentranceTicket: 'reent_tecket_1234' } as any);
+        const getReentranceTicketSpy = mockGetReentranceTicket;
 
-        const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
+        const attachUaaAuthInterceptorSpy = mockAttachUaaAuthInterceptor;
         Uaa.prototype.getAccessToken = jest.fn();
         Uaa.prototype.getAccessTokenWithClientCredentials = jest.fn();
         const configForAbapOnCloudNoCreds = {
@@ -399,7 +423,7 @@ describe('Should create new connections', () => {
     });
 
     test('abap service provider for cloud - credentials provided use UAA', async () => {
-        const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
+        const attachUaaAuthInterceptorSpy = mockAttachUaaAuthInterceptor;
         const configForAbapOnCloud = {
             service: {
                 log: console,
@@ -430,7 +454,7 @@ describe('Should create new connections', () => {
 });
 
 describe('Use existing connection session (cookies)', () => {
-    const attachReentranceTicketAuthInterceptorSpy = jest.spyOn(auth, 'attachReentranceTicketAuthInterceptor');
+    const attachReentranceTicketAuthInterceptorSpy = mockAttachReentranceTicketAuthInterceptor;
     const existingCookieConfig: AxiosRequestConfig & Partial<ProviderConfiguration> = {
         baseURL: server,
         cookies: 'sap-usercontext=sap-client=100;SAP_SESSIONID_Y05_100=abc'

@@ -1,10 +1,9 @@
-import { AppIndexService, createForAbap } from '../../src';
+import { jest } from '@jest/globals';
 import nock from 'nock';
 import appIndexMock from './mockResponses/appIndex.json';
-import type { AxiosError } from '../../src';
 import appInfoJsonMock from './mockResponses/ui5AppInfo.json';
 import type { ToolsLogger } from '@sap-ux/logger';
-import * as Logger from '@sap-ux/logger';
+import type { AxiosError } from '../../src';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -12,7 +11,14 @@ const loggerMock: ToolsLogger = {
     warn: jest.fn(),
     error: jest.fn()
 } as Partial<ToolsLogger> as ToolsLogger;
-jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
+
+const actualLogger = await import('@sap-ux/logger');
+jest.unstable_mockModule('@sap-ux/logger', () => ({
+    ...actualLogger,
+    ToolsLogger: jest.fn().mockImplementation(() => loggerMock)
+}));
+
+const { AppIndexService, createForAbap } = await import('../../src');
 
 describe('AppIndexService', () => {
     const server = 'https://sap.example';
@@ -31,7 +37,7 @@ describe('AppIndexService', () => {
 
     describe('search', () => {
         const provider = createForAbap(config);
-        const service: AppIndexService = provider.getAppIndex();
+        const service = provider.getAppIndex();
 
         beforeAll(() => {
             nock(server)
@@ -83,7 +89,7 @@ describe('AppIndexService', () => {
 
     describe('getIsManiFirstSupported', () => {
         const provider = createForAbap(config);
-        const service: AppIndexService = provider.getAppIndex();
+        const service = provider.getAppIndex();
 
         test('get is manifest first supported', async () => {
             nock.cleanAll();
@@ -110,13 +116,13 @@ describe('AppIndexService', () => {
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
-                expect(error.message).toBe('Request failed with status code 404');
+                expect((error as Error).message).toBe('Request failed with status code 404');
             }
         });
     });
     describe('getAppInfo', () => {
         const provider = createForAbap(config);
-        const service: AppIndexService = provider.getAppIndex();
+        const service = provider.getAppIndex();
 
         test('get the app info', async () => {
             nock.cleanAll();
@@ -125,7 +131,7 @@ describe('AppIndexService', () => {
                 .reply(200, appInfoJsonMock)
                 .persist();
             const appInfo = await service.getAppInfo('ExampleApp');
-            expect(appInfo).toStrictEqual(appInfoJsonMock);
+            expect(appInfo).toEqual(appInfoJsonMock);
         });
 
         test('get app info fails, application not found', async () => {
@@ -140,7 +146,7 @@ describe('AppIndexService', () => {
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
-                expect(error.message).toBe('Request failed with status code 404');
+                expect((error as Error).message).toBe('Request failed with status code 404');
             }
         });
 

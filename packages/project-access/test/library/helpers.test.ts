@@ -1,12 +1,27 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { checkDependencies, getReuseLibs, getLibraryDesc, getManifestDesc } from '../../src/library/helpers';
-import * as manifestJson from '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice/manifest.json';
+import { fileURLToPath } from 'node:url';
 import type { LibraryXml, Manifest, ReuseLib } from '../../src';
-import * as fileUtils from '../../src/file';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = join(__filename, '..');
+
+const realFileUtils = await import('../../src/file');
+const mockFindFiles = jest.fn(realFileUtils.findFiles);
+jest.unstable_mockModule('../../src/file', () => ({
+    ...realFileUtils,
+    findFiles: mockFindFiles
+}));
+
+const { checkDependencies, getReuseLibs, getLibraryDesc, getManifestDesc } = await import(
+    '../../src/library/helpers'
+);
+const manifestJson = await import(
+    '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice/manifest.json'
+);
 
 describe('library utils', () => {
     test('should return library choices', async () => {
-        const findFilesSpy = jest.spyOn(fileUtils, 'findFiles');
         const libChoices = await getReuseLibs([
             {
                 projectRoot: join(__dirname, '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice'),
@@ -22,7 +37,7 @@ describe('library utils', () => {
             }
         ]);
 
-        expect(findFilesSpy).toHaveBeenCalledTimes(3);
+        expect(mockFindFiles).toHaveBeenCalledTimes(3);
         expect(libChoices).toHaveLength(4);
         libChoices.sort((a, b) => a.name.localeCompare(b.name));
 

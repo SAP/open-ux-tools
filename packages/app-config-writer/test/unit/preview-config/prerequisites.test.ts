@@ -1,22 +1,37 @@
-import { checkPrerequisites } from '../../../src/preview-config/prerequisites';
+import { jest } from '@jest/globals';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ToolsLogger } from '@sap-ux/logger';
-import * as ProjectAccess from '@sap-ux/project-access';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const basePath = join(__dirname, '../../fixtures/preview-config');
+
+const mockFindCapProjectRoot = jest.fn().mockResolvedValue(basePath);
+const mockCheckCdsUi5PluginEnabled = jest.fn().mockResolvedValue(true);
+
+const actualProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    findCapProjectRoot: mockFindCapProjectRoot,
+    checkCdsUi5PluginEnabled: mockCheckCdsUi5PluginEnabled
+}));
+
+const { checkPrerequisites } = await import('../../../src/preview-config/prerequisites');
 
 describe('prerequisites', () => {
     const logger = new ToolsLogger();
     const errorLogMock = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
     const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
-    const basePath = join(__dirname, '../../fixtures/preview-config');
-    jest.spyOn(ProjectAccess, 'findCapProjectRoot').mockResolvedValue(basePath);
     const fs = create(createStorage());
 
     beforeEach(() => {
         jest.clearAllMocks();
         fs.delete(join(basePath, 'various-configs', 'package.json'));
-        jest.spyOn(ProjectAccess, 'checkCdsUi5PluginEnabled').mockResolvedValue(true);
+        mockFindCapProjectRoot.mockResolvedValue(basePath);
+        mockCheckCdsUi5PluginEnabled.mockResolvedValue(true);
     });
 
     test('check prerequisites w/o package.json', async () => {
@@ -129,7 +144,7 @@ describe('prerequisites', () => {
     });
 
     test('check prerequisites w/o mockserver dependency', async () => {
-        jest.spyOn(ProjectAccess, 'checkCdsUi5PluginEnabled').mockResolvedValue(false);
+        mockCheckCdsUi5PluginEnabled.mockResolvedValue(false);
         fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '3.0.0' } }));
 
         expect(await checkPrerequisites(basePath, fs, false, logger)).toBeFalsy();

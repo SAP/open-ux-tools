@@ -1,8 +1,13 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import * as utils from '../../../src/common/utils';
 import { create as createFS } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('utils', () => {
     const basePath = join(__dirname, '../../fixtures/variants-config');

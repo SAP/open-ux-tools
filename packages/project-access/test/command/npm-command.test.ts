@@ -1,6 +1,20 @@
-import childProcessMock from 'node:child_process';
+import { jest } from '@jest/globals';
 import type { Logger } from '@sap-ux/logger';
-import { execNpmCommand } from '../../src/command';
+import type childProcess from 'node:child_process';
+
+const mockSpawn = jest.fn<typeof childProcess.spawn>();
+
+const realChildProcess = await import('node:child_process');
+jest.unstable_mockModule('node:child_process', () => ({
+    ...realChildProcess,
+    default: {
+        ...realChildProcess.default,
+        spawn: mockSpawn
+    },
+    spawn: mockSpawn
+}));
+
+const { execNpmCommand } = await import('../../src/command');
 
 const originalPlatform = process.platform;
 
@@ -28,7 +42,7 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
                 cb(0);
             }
         });
-        const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        const spawnMock = mockSpawn.mockReturnValueOnce(processMock as any);
 
         // Test execution
         const stdout = await execNpmCommand(['install', '@scope/module@1.2.3']);
@@ -45,7 +59,7 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
                 cb(0);
             }
         });
-        const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        const spawnMock = mockSpawn.mockReturnValueOnce(processMock as any);
         const logger = {
             info: jest.fn(),
             error: jest.fn()
@@ -67,7 +81,7 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
                 cb(Error('ERROR_MOCK'));
             }
         });
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        mockSpawn.mockReturnValueOnce(processMock as any);
         const logger = {
             error: jest.fn()
         } as unknown as Logger;
@@ -89,7 +103,7 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
                 cb(1);
             }
         });
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        mockSpawn.mockReturnValueOnce(processMock as any);
         const logger = {
             error: jest.fn()
         } as unknown as Logger;
@@ -110,7 +124,7 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
                 cb(1);
             }
         });
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        mockSpawn.mockReturnValueOnce(processMock as any);
 
         // Test execution
         try {
@@ -129,7 +143,7 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
                 cb(null, 'SIGTERM');
             }
         });
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        mockSpawn.mockReturnValueOnce(processMock as any);
         const logger = {
             warn: jest.fn()
         } as unknown as Logger;
@@ -167,7 +181,7 @@ describe('Test execNpmCommand(), simulate windows', () => {
                 cb(0);
             }
         });
-        const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        const spawnMock = mockSpawn.mockReturnValueOnce(processMock as any);
 
         // Test execution
         const stdout = await execNpmCommand(['install', '@scope/module@1.2.3']);
@@ -187,7 +201,7 @@ describe('Test execNpmCommand(), simulate windows', () => {
                 cb(0);
             }
         });
-        const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        const spawnMock = mockSpawn.mockReturnValueOnce(processMock as any);
 
         // Test execution
         const stdout = await execNpmCommand(['install', '@scope/module@1.2.3'], { cwd: 'some/path' });
@@ -208,7 +222,7 @@ describe('Test execNpmCommand(), simulate windows', () => {
                 cb(Error('ERROR_MOCK'));
             }
         });
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        mockSpawn.mockReturnValueOnce(processMock as any);
 
         // Test execution
         try {
@@ -228,7 +242,7 @@ describe('Test execNpmCommand(), simulate windows', () => {
  */
 function getProcessMock(
     onHandler: (event: string, cb: (data?: any, data2?: any) => void) => void
-): childProcessMock.ChildProcess {
+): childProcess.ChildProcess {
     return {
         stdout: {
             on: jest.fn().mockImplementationOnce((event, cb) => cb(`${event}-STDOUT_MOCK_DATA`))

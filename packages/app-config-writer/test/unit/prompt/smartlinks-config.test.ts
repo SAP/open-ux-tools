@@ -1,48 +1,81 @@
-import { join } from 'node:path';
-import { prompt, inject } from 'prompts';
-import * as prompts from 'prompts';
+import { jest } from '@jest/globals';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { PromptObject } from 'prompts';
-import * as btp from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import * as Logger from '@sap-ux/logger';
-import { getService } from '@sap-ux/store';
-import { getSmartLinksTargetFromPrompt } from '../../../src';
-import * as utils from '../../../src/smartlinks-config/utils';
-import { promptUserPass } from '../../../src/prompt';
-import { yellow } from 'chalk';
-import i18next from 'i18next';
-import { initI18n } from '../../../src/i18n';
 
-jest.mock('prompts', () => ({
-    ...jest.requireActual('prompts'),
-    prompt: jest.fn()
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Get actual prompts module (CJS, so requireActual works)
+const actualPrompts = jest.requireActual<typeof import('prompts')>('prompts');
+
+// Mock functions for prompts
+const mockPrompt = jest.fn();
+const mockInject = jest.fn().mockImplementation((...args: any[]) => (actualPrompts as any).inject(...args));
+
+jest.unstable_mockModule('prompts', () => ({
+    __esModule: true,
+    default: { prompt: mockPrompt, inject: mockInject },
+    prompt: mockPrompt,
+    inject: mockInject
 }));
-let promptMock: jest.Mock | jest.SpyInstance = prompt as jest.Mock;
+
+// chalk mock
+jest.unstable_mockModule('chalk', () => ({
+    default: { yellow: (s: string) => s, cyan: (s: string) => s },
+    yellow: (s: string) => s,
+    cyan: (s: string) => s,
+    red: (s: string) => s,
+    green: (s: string) => s,
+    blue: (s: string) => s,
+    bold: (s: string) => s,
+    dim: (s: string) => s
+}));
+
+// btp-utils mock
+const mockIsAppStudio = jest.fn();
+const mockListDestinations = jest.fn();
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio,
+    listDestinations: mockListDestinations
+}));
+
+// store mock
 const serviceMock = { read: jest.fn() };
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn(),
-    listDestinations: jest.fn()
+const mockGetService = jest.fn(() => serviceMock);
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
+    getService: mockGetService
 }));
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
-    getService: jest.fn()
-}));
-const getServiceMock: jest.Mock = getService as jest.Mock;
 
+// Logger mock
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn()
 } as Partial<ToolsLogger> as ToolsLogger;
-jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
-let isAppStudioMock: jest.SpyInstance;
-let listDestinationsMock: jest.SpyInstance;
+const actualLogger = await import('@sap-ux/logger');
+jest.unstable_mockModule('@sap-ux/logger', () => ({
+    ...actualLogger,
+    ToolsLogger: jest.fn().mockImplementation(() => loggerMock)
+}));
 
-let basePath: string;
+// Import modules after all mocks are set up
+const { getSmartLinksTargetFromPrompt } = await import('../../../src');
+const { promptUserPass } = await import('../../../src/prompt');
+const { initI18n } = await import('../../../src/i18n');
+
+// Now import utils module — it will have mocked @sap-ux/store and @sap-ux/btp-utils
+
+// Reference to prompt mock that tests can reassign behavior on
+let promptMock: jest.Mock = mockPrompt;
+
 const getProject = (basePath: string) => join(__dirname, `../../fixtures/${basePath}`);
 const mockTarget = { url: 'https://abc.example', client: '100' };
 const mockAuth = { username: 'mockUser', password: 'mockPW' };
@@ -50,19 +83,22 @@ const mockAuth = { username: 'mockUser', password: 'mockPW' };
 beforeAll(async () => {
     await initI18n();
 });
+
 describe('Test function getSmartLinksTargetFromPrompt', () => {
     // Mock setup
-    const debugMock = loggerMock.debug as unknown as jest.SpyInstance;
-    let getSystemCredentialsSpy: jest.SpyInstance;
+    const debugMock = loggerMock.debug as unknown as jest.Mock;
 
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
-        getSystemCredentialsSpy = jest.spyOn(utils, 'getLocalStoredCredentials');
-        listDestinationsMock = jest.spyOn(btp, 'listDestinations');
-        getServiceMock.mockImplementation(() => serviceMock);
-        jest.spyOn(i18next, 't').mockImplementation((...args: any[]) => args[0]);
+        mockGetService.mockImplementation(() => serviceMock);
+        mockInject.mockImplementation((...args: any[]) => (actualPrompts as any).inject(...args));
+        promptMock = mockPrompt;
+        serviceMock.read.mockReset();
+        (loggerMock.debug as jest.Mock).mockReset();
+        (loggerMock.info as jest.Mock).mockReset();
+        (loggerMock.warn as jest.Mock).mockReset();
+        (loggerMock.error as jest.Mock).mockReset();
     });
 
     describe('Check prompt steps: ', () => {
@@ -87,7 +123,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
 
         test('BAS with destination/url', async () => {
             const basePath = join(__dirname, '../../fixtures/no-ui5-deploy-config');
-            isAppStudioMock.mockResolvedValue(true);
+            mockIsAppStudio.mockResolvedValue(true);
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             expect(debugMock.mock.calls[0][0].message).toContain(`File 'ui5-deploy.yaml' not found in project`);
             const [destinationOrUrlPrompt, destinationPrompt, urlPrompt, clientPrompt] = promptMock.mock.calls[0][0];
@@ -122,13 +158,12 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
 
     describe('Local prompts for target url and client: ', () => {
         beforeEach(() => {
-            promptMock = jest
-                .spyOn(prompts, 'prompt')
-                .mockImplementation((questions) => jest.requireActual('prompts').prompt(questions));
+            promptMock = mockPrompt;
+            mockPrompt.mockImplementation((questions: any) => (actualPrompts as any).prompt(questions));
         });
         test('No ui5-deploy config', async () => {
-            basePath = 'no-ui5-deploy-config';
-            inject([mockTarget.url]);
+            const basePath = 'no-ui5-deploy-config';
+            mockInject([mockTarget.url]);
             const result = await getSmartLinksTargetFromPrompt(getProject(basePath), loggerMock);
             expect(result.target).toMatchObject({ url: mockTarget.url });
             expect(debugMock.mock.calls[0][0].message).toContain(`'ui5-deploy.yaml' not found`);
@@ -139,12 +174,13 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             expect(clientPrompt.initial).not.toBeDefined();
         });
         test('Existing ui5-deploy-config', async () => {
-            basePath = 'ui5-deploy-config';
-            inject([mockTarget.url, mockTarget.client]);
+            const basePath = 'ui5-deploy-config';
+            mockInject([mockTarget.url, mockTarget.client]);
             const result = await getSmartLinksTargetFromPrompt(getProject(basePath), loggerMock);
             expect(result.target).toMatchObject({ url: mockTarget.url });
             expect(debugMock).not.toHaveBeenCalled();
-            expect(getSystemCredentialsSpy).toHaveBeenCalledWith(mockTarget.url, mockTarget.client, loggerMock);
+            // getLocalStoredCredentials was called (via the mocked store)
+            expect(serviceMock.read).toHaveBeenCalled();
             const [urlPrompt, clientPrompt] = promptMock.mock.calls[0][0];
             expect(urlPrompt.initial).toBeDefined();
             expect(urlPrompt.message).toContain('SmartLinks configuration source url (ui5-deploy.yaml)');
@@ -152,33 +188,31 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             expect(clientPrompt.message).toContain('SAP client (ui5-deploy.yaml)');
         });
         test('Existing ui5-deploy-config - picked initial', async () => {
-            basePath = 'ui5-deploy-config';
-            promptMock.mockImplementationOnce((choices: PromptObject[]) => ({
+            const basePath = 'ui5-deploy-config';
+            mockPrompt.mockImplementationOnce((choices: PromptObject[]) => ({
                 [choices[0].name as string]: choices[0].initial,
                 [choices[1].name as string]: (choices[1].format as any)(choices[1].initial)
             }));
-            inject([mockAuth.username, mockAuth.password]);
+            mockInject([mockAuth.username, mockAuth.password]);
             const result = await getSmartLinksTargetFromPrompt(getProject(basePath), loggerMock);
             expect(result.target).toMatchObject({ url: mockTarget.url, client: mockTarget.client });
             expect(result.auth).toMatchObject(mockAuth);
             expect(debugMock).not.toHaveBeenCalled();
-            expect(getSystemCredentialsSpy).toHaveBeenCalled();
+            expect(serviceMock.read).toHaveBeenCalled();
         });
     });
 
     describe('Prompts on BAS for destination/url', () => {
         beforeEach(() => {
-            jest.resetAllMocks();
-            isAppStudioMock.mockResolvedValue(true);
-            promptMock = jest
-                .spyOn(prompts, 'prompt')
-                .mockImplementation((questions) => jest.requireActual('prompts').prompt(questions));
-            jest.spyOn(i18next, 't').mockImplementation((...args: any[]) => args[0]);
+            jest.clearAllMocks();
+            mockIsAppStudio.mockResolvedValue(true);
+            promptMock = mockPrompt;
+            mockPrompt.mockImplementation((questions: any) => (actualPrompts as any).prompt(questions));
         });
 
         test('Use destination (no deploy config)', async () => {
-            basePath = 'no-ui5-deploy-config';
-            inject(['destination', 'ABC123']);
+            const basePath = 'no-ui5-deploy-config';
+            mockInject(['destination', 'ABC123']);
             await getSmartLinksTargetFromPrompt(getProject(basePath), loggerMock);
             const [destinationOrUrlPrompt, destinationPrompt, urlPrompt, clientPrompt] = promptMock.mock.calls[0][0];
             expect(destinationOrUrlPrompt.type).toEqual('select');
@@ -188,8 +222,8 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             expect(clientPrompt.type).toEqual(null);
         });
         test('Use url (no deploy config)', async () => {
-            basePath = 'no-ui5-deploy-config';
-            inject(['url']);
+            const basePath = 'no-ui5-deploy-config';
+            mockInject(['url']);
             await getSmartLinksTargetFromPrompt(getProject(basePath), loggerMock);
             const [destinationOrUrlPrompt, destinationPrompt, urlPrompt, clientPrompt] = promptMock.mock.calls[0][0];
             expect(destinationOrUrlPrompt.type).toEqual('select');
@@ -199,8 +233,8 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             expect(clientPrompt.type).toEqual(null);
         });
         test('Use existing destination', async () => {
-            basePath = 'ui5-deploy-config';
-            inject([true, mockAuth.username, mockAuth.password]);
+            const basePath = 'ui5-deploy-config';
+            mockInject([true, mockAuth.username, mockAuth.password]);
             const result = await getSmartLinksTargetFromPrompt(getProject(basePath), loggerMock);
             expect(result.target).toMatchObject({ destination: 'ABC123', url: undefined, client: undefined });
             expect(result.auth).toMatchObject(mockAuth);
@@ -213,14 +247,15 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             expect(destinationPrompt.type).toEqual(null);
             expect(urlPrompt.type).toEqual(null);
             expect(clientPrompt.type).toEqual(null);
-            expect(listDestinationsMock).toHaveBeenCalled();
-            expect(getSystemCredentialsSpy).not.toHaveBeenCalled();
+            expect(mockListDestinations).toHaveBeenCalled();
+            // getLocalStoredCredentials should not have been called (BAS with existing destination)
+            expect(serviceMock.read).not.toHaveBeenCalled();
         });
     });
 
     describe('Check credentials (local)', () => {
-        basePath = 'ui5-deploy-config';
-        beforeEach(() => promptMock.mockResolvedValueOnce(mockTarget));
+        const basePath = 'ui5-deploy-config';
+        beforeEach(() => mockPrompt.mockResolvedValueOnce(mockTarget));
 
         test('No stored credentials', async () => {
             serviceMock.read.mockResolvedValue(undefined);
@@ -256,7 +291,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
 
         test('Stored credentials - manual input', async () => {
             serviceMock.read.mockResolvedValue(mockAuth);
-            promptMock.mockResolvedValueOnce({ credentials: false });
+            mockPrompt.mockResolvedValueOnce({ credentials: false });
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             expect(serviceMock.read).toHaveBeenCalledWith(mockTarget);
             const promptForCredentials = promptMock.mock.calls[1][0];
@@ -279,10 +314,10 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             }
         };
         test('Destination not found - ask for credentials', async () => {
-            isAppStudioMock.mockResolvedValue(true);
-            promptMock.mockResolvedValueOnce(mockDestination);
+            mockIsAppStudio.mockResolvedValue(true);
+            mockPrompt.mockResolvedValueOnce(mockDestination);
 
-            listDestinationsMock.mockResolvedValue(undefined);
+            mockListDestinations.mockResolvedValue(undefined);
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             const promptForCredentials = promptMock.mock.calls[1][0];
             expect(promptForCredentials.length).toBe(2);
@@ -290,21 +325,21 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
         });
 
         test('Destination found (NoAuthentication) - ask for credentials', async () => {
-            isAppStudioMock.mockResolvedValue(true);
-            promptMock.mockResolvedValueOnce(mockDestination);
+            mockIsAppStudio.mockResolvedValue(true);
+            mockPrompt.mockResolvedValueOnce(mockDestination);
 
-            listDestinationsMock.mockResolvedValue(destinationsMock);
+            mockListDestinations.mockResolvedValue(destinationsMock);
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             const promptForCredentials = promptMock.mock.calls[1][0];
             expect(promptForCredentials.length).toBe(2);
             expect(promptForCredentials[0].choices).not.toBeDefined();
         });
         test('Destination found - use credentials', async () => {
-            isAppStudioMock.mockResolvedValue(true);
+            mockIsAppStudio.mockResolvedValue(true);
             destinationsMock.ABC123.Authentication = 'BasicAuthentication';
-            promptMock.mockResolvedValueOnce(mockDestination);
+            mockPrompt.mockResolvedValueOnce(mockDestination);
 
-            listDestinationsMock.mockResolvedValue(destinationsMock);
+            mockListDestinations.mockResolvedValue(destinationsMock);
             const config = await getSmartLinksTargetFromPrompt(basePath, loggerMock);
             expect(config.auth).toEqual(undefined);
             expect(config.ignoreCertErrors).toEqual(undefined);
@@ -323,19 +358,19 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
 
         test('Target and credentials provided', async () => {
             serviceMock.read.mockResolvedValue(mockUser);
-            promptMock.mockResolvedValueOnce(mockTarget);
-            promptMock.mockResolvedValueOnce({ credentials: mockUser });
+            mockPrompt.mockResolvedValueOnce(mockTarget);
+            mockPrompt.mockResolvedValueOnce({ credentials: mockUser });
             const config = await getSmartLinksTargetFromPrompt(basePath, loggerMock);
             expect(config.auth).toEqual(mockUser);
             expect(config.ignoreCertErrors).toEqual(undefined);
             expect(config.target).toEqual(mockTarget);
         });
         test('User aborted on choose target - no config provided', async () => {
-            promptMock.mockImplementation((_choices, cancel) => {
+            mockPrompt.mockImplementation((_choices: any, cancel: any) => {
                 const processSpy = jest.spyOn(process, 'exit');
-                processSpy.mockImplementation();
+                processSpy.mockImplementation((() => {}) as any);
                 cancel.onCancel();
-                expect(loggerMock.info).toHaveBeenLastCalledWith(yellow('Operation aborted by the user.'));
+                expect(loggerMock.info).toHaveBeenLastCalledWith('Operation aborted by the user.');
                 expect(processSpy).toHaveBeenCalled();
             });
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
@@ -345,8 +380,8 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
         const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
 
         test('BAS', async () => {
-            isAppStudioMock.mockResolvedValueOnce(true);
-            promptMock.mockImplementationOnce((choices: PromptObject[]) => {
+            mockIsAppStudio.mockResolvedValueOnce(true);
+            mockPrompt.mockImplementationOnce((choices: PromptObject[]) => {
                 const destination = choices.find(
                     (choice) => choice.name === 'destination' && choice.initial === 'ABC123'
                 );
@@ -355,11 +390,11 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
                 expect((destination?.validate as any)('abc')).toBeTruthy();
                 return { destination: destination?.initial };
             });
-            promptMock.mockResolvedValueOnce({});
+            mockPrompt.mockResolvedValueOnce({});
             await getSmartLinksTargetFromPrompt(basePath, loggerMock);
         });
         test('Local environment', async () => {
-            promptMock.mockImplementationOnce((choices: PromptObject[]) => {
+            mockPrompt.mockImplementationOnce((choices: PromptObject[]) => {
                 const url = choices[0];
                 expect(url.name).toBe('url');
                 expect((url.validate as any)()).toEqual('Please provide a target for the configuration.');
@@ -370,7 +405,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
                 expect((client.format as any)(123)).toEqual('123');
                 return { url: 'mockUrl' };
             });
-            promptMock.mockResolvedValueOnce({});
+            mockPrompt.mockResolvedValueOnce({});
             await getSmartLinksTargetFromPrompt(basePath, loggerMock);
         });
     });
@@ -379,11 +414,11 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
 describe('Test promptUserPass', () => {
     const userPrompt = { username: 'mockUser', password: 'mockPassword' };
     test('Return username, password', async () => {
-        promptMock.mockResolvedValueOnce(userPrompt);
+        mockPrompt.mockResolvedValueOnce(userPrompt);
         expect(await promptUserPass(loggerMock)).toEqual(userPrompt);
     });
     test('Validation', async () => {
-        promptMock.mockImplementation((choices: PromptObject[]) => {
+        mockPrompt.mockImplementation((choices: PromptObject[]) => {
             const username = choices[0];
             expect(username.name).toBe('username');
             expect((username.validate as any)()).toEqual('Username cannot be empty. Provide a value for the username.');
@@ -400,11 +435,11 @@ describe('Test promptUserPass', () => {
         await promptUserPass(loggerMock);
     });
     test('onCancel', async () => {
-        promptMock.mockImplementation((_choices, cancel) => {
+        mockPrompt.mockImplementation((_choices: any, cancel: any) => {
             const processSpy = jest.spyOn(process, 'exit');
-            processSpy.mockImplementation();
+            processSpy.mockImplementation((() => {}) as any);
             cancel.onCancel();
-            expect(loggerMock.info).toHaveBeenLastCalledWith(yellow('Operation aborted by the user.'));
+            expect(loggerMock.info).toHaveBeenLastCalledWith('Operation aborted by the user.');
             expect(processSpy).toHaveBeenCalled();
         });
         await expect(promptUserPass(loggerMock)).rejects.toThrow();

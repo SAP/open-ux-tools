@@ -1,10 +1,9 @@
+import { jest } from '@jest/globals';
 import nock from 'nock';
 import fs from 'node:fs';
 import type { Message } from '../../src/abap/lrep-service';
 import type { AdaptationConfig, AxiosError } from '../../src';
-import { LayeredRepositoryService, createForAbap } from '../../src';
 import type { ToolsLogger } from '@sap-ux/logger';
-import * as Logger from '@sap-ux/logger';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -12,7 +11,14 @@ const loggerMock: ToolsLogger = {
     warn: jest.fn(),
     error: jest.fn()
 } as Partial<ToolsLogger> as ToolsLogger;
-jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
+
+const actualLogger = await import('@sap-ux/logger');
+jest.unstable_mockModule('@sap-ux/logger', () => ({
+    ...actualLogger,
+    ToolsLogger: jest.fn().mockImplementation(() => loggerMock)
+}));
+
+const { LayeredRepositoryService, createForAbap } = await import('../../src');
 
 describe('LayeredRepositoryService', () => {
     const server = 'http://sap.example';

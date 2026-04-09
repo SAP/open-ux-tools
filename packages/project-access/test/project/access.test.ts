@@ -1,19 +1,59 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Manifest, Package } from '../../src';
-import { createApplicationAccess, createProjectAccess } from '../../src';
-import * as i18nMock from '../../src/project/i18n/write';
-import * as specMock from '../../src/project/specification';
-import * as capMock from '../../src/project/cap';
+import type * as i18nWriteType from '../../src/project/i18n/write';
+import type * as specType from '../../src/project/specification';
+import type * as capType from '../../src/project/cap';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { promises } from 'node:fs';
-import { readFile, readJSON } from '../../src/file';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = join(__filename, '..');
+
+const mockCreateAnnotationI18nEntries = jest.fn<typeof i18nWriteType.createAnnotationI18nEntries>();
+const mockCreateUI5I18nEntries = jest.fn<typeof i18nWriteType.createUI5I18nEntries>();
+const mockCreateManifestI18nEntries = jest.fn<typeof i18nWriteType.createManifestI18nEntries>();
+const mockCreateCapI18nEntries = jest.fn<typeof i18nWriteType.createCapI18nEntries>();
+const mockGetSpecification = jest.fn<typeof specType.getSpecification>();
+const mockReadCapServiceMetadataEdmx = jest.fn<typeof capType.readCapServiceMetadataEdmx>();
+
+// Set up all mocks BEFORE loading any source modules
+jest.unstable_mockModule('../../src/project/i18n/write', () => ({
+    createAnnotationI18nEntries: mockCreateAnnotationI18nEntries,
+    createUI5I18nEntries: mockCreateUI5I18nEntries,
+    createManifestI18nEntries: mockCreateManifestI18nEntries,
+    createCapI18nEntries: mockCreateCapI18nEntries
+}));
+
+const realSpec = await import('../../src/project/specification');
+jest.unstable_mockModule('../../src/project/specification', () => ({
+    ...realSpec,
+    getSpecification: mockGetSpecification
+}));
+
+// Load real cap module first (this also loads search.ts due to circular dep)
+const realCap = await import('../../src/project/cap');
+jest.unstable_mockModule('../../src/project/cap', () => ({
+    ...realCap,
+    readCapServiceMetadataEdmx: mockReadCapServiceMetadataEdmx
+}));
+
+const { createApplicationAccess, createProjectAccess } = await import('../../src');
+const { readFile, readJSON } = await import('../../src/file');
 
 describe('Test function createApplicationAccess()', () => {
     let memFs: Editor;
 
     beforeEach(() => {
         jest.restoreAllMocks();
+        mockCreateAnnotationI18nEntries.mockReset();
+        mockCreateUI5I18nEntries.mockReset();
+        mockCreateManifestI18nEntries.mockReset();
+        mockCreateCapI18nEntries.mockReset();
+        mockGetSpecification.mockReset();
+        mockReadCapServiceMetadataEdmx.mockReset();
         memFs = create(createStorage());
     });
 
@@ -87,22 +127,14 @@ describe('Test function createApplicationAccess()', () => {
     });
 
     test('Write access to i18n of standalone app (mocked)', async () => {
-        // Mock setup
-        const createAnnotationI18nEntriesMock = jest
-            .spyOn(i18nMock, 'createAnnotationI18nEntries')
-            .mockResolvedValue(true);
-        const createUI5I18nEntriesMock = jest.spyOn(i18nMock, 'createUI5I18nEntries').mockResolvedValue(true);
-        const createManifestI18nEntriesMock = jest.spyOn(i18nMock, 'createManifestI18nEntries').mockResolvedValue(true);
+        mockCreateAnnotationI18nEntries.mockResolvedValue(true);
+        mockCreateUI5I18nEntries.mockResolvedValue(true);
+        mockCreateManifestI18nEntries.mockResolvedValue(true);
         const appRoot = join(sampleRoot, 'fiori_elements');
 
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         await appAccess.createAnnotationI18nEntries([
-            {
-                key: 'newKey',
-                value: 'newValue',
-                annotation: 'newAnnotation'
-            }
+            { key: 'newKey', value: 'newValue', annotation: 'newAnnotation' }
         ]);
         await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }], 'modelKey');
         await appAccess.createManifestI18nEntries([
@@ -110,21 +142,14 @@ describe('Test function createApplicationAccess()', () => {
             { key: '2', value: '2v' }
         ]);
 
-        // Result check
-        expect(createAnnotationI18nEntriesMock).toHaveBeenCalledWith(
+        expect(mockCreateAnnotationI18nEntries).toHaveBeenCalledWith(
             appRoot,
             join(appRoot, 'webapp/manifest.json'),
             appAccess.project.apps[''].i18n,
-            [
-                {
-                    key: 'newKey',
-                    value: 'newValue',
-                    annotation: 'newAnnotation'
-                }
-            ],
+            [{ key: 'newKey', value: 'newValue', annotation: 'newAnnotation' }],
             undefined
         );
-        expect(createUI5I18nEntriesMock).toHaveBeenCalledWith(
+        expect(mockCreateUI5I18nEntries).toHaveBeenCalledWith(
             appRoot,
             appAccess.project.apps[''].manifest,
             appAccess.project.apps[''].i18n,
@@ -132,7 +157,7 @@ describe('Test function createApplicationAccess()', () => {
             'modelKey',
             undefined
         );
-        expect(createManifestI18nEntriesMock).toHaveBeenCalledWith(
+        expect(mockCreateManifestI18nEntries).toHaveBeenCalledWith(
             appRoot,
             appAccess.app.i18n,
             [
@@ -142,23 +167,16 @@ describe('Test function createApplicationAccess()', () => {
             undefined
         );
     });
+
     test('Write access to i18n of standalone app - mem-fs-editor (mocked)', async () => {
-        // Mock setup
-        const createAnnotationI18nEntriesMock = jest
-            .spyOn(i18nMock, 'createAnnotationI18nEntries')
-            .mockResolvedValue(true);
-        const createUI5I18nEntriesMock = jest.spyOn(i18nMock, 'createUI5I18nEntries').mockResolvedValue(true);
-        const createManifestI18nEntriesMock = jest.spyOn(i18nMock, 'createManifestI18nEntries').mockResolvedValue(true);
+        mockCreateAnnotationI18nEntries.mockResolvedValue(true);
+        mockCreateUI5I18nEntries.mockResolvedValue(true);
+        mockCreateManifestI18nEntries.mockResolvedValue(true);
         const appRoot = join(sampleRoot, 'fiori_elements');
 
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot, { fs: memFs });
         await appAccess.createAnnotationI18nEntries([
-            {
-                key: 'newKey',
-                value: 'newValue',
-                annotation: 'newAnnotation'
-            }
+            { key: 'newKey', value: 'newValue', annotation: 'newAnnotation' }
         ]);
         await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }], 'modelKey');
         await appAccess.createManifestI18nEntries([
@@ -166,21 +184,14 @@ describe('Test function createApplicationAccess()', () => {
             { key: '2', value: '2v' }
         ]);
 
-        // Result check
-        expect(createAnnotationI18nEntriesMock).toHaveBeenCalledWith(
+        expect(mockCreateAnnotationI18nEntries).toHaveBeenCalledWith(
             appRoot,
             join(appRoot, 'webapp/manifest.json'),
             appAccess.project.apps[''].i18n,
-            [
-                {
-                    key: 'newKey',
-                    value: 'newValue',
-                    annotation: 'newAnnotation'
-                }
-            ],
+            [{ key: 'newKey', value: 'newValue', annotation: 'newAnnotation' }],
             memFs
         );
-        expect(createUI5I18nEntriesMock).toHaveBeenCalledWith(
+        expect(mockCreateUI5I18nEntries).toHaveBeenCalledWith(
             appRoot,
             appAccess.project.apps[''].manifest,
             appAccess.project.apps[''].i18n,
@@ -188,7 +199,7 @@ describe('Test function createApplicationAccess()', () => {
             'modelKey',
             memFs
         );
-        expect(createManifestI18nEntriesMock).toHaveBeenCalledWith(
+        expect(mockCreateManifestI18nEntries).toHaveBeenCalledWith(
             appRoot,
             appAccess.app.i18n,
             [
@@ -200,20 +211,17 @@ describe('Test function createApplicationAccess()', () => {
     });
 
     test('Write access to i18n of app in CAP project (mocked)', async () => {
-        // Mock setup
-        const createCapI18nEntriesMock = jest.spyOn(i18nMock, 'createCapI18nEntries').mockResolvedValue(true);
-        const createUI5I18nEntriesMock = jest.spyOn(i18nMock, 'createUI5I18nEntries').mockResolvedValue(true);
+        mockCreateCapI18nEntries.mockResolvedValue(true);
+        mockCreateUI5I18nEntries.mockResolvedValue(true);
         const projectRoot = join(sampleRoot, 'cap-project');
         const appRoot = join(projectRoot, 'apps/one');
         const appAccess = await createApplicationAccess(appRoot);
 
-        // Test execution
         await appAccess.createCapI18nEntries('filePath', []);
         await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }]);
 
-        // Result check
-        expect(createCapI18nEntriesMock).toHaveBeenCalledWith(projectRoot, 'filePath', [], undefined);
-        expect(createUI5I18nEntriesMock).toHaveBeenCalledWith(
+        expect(mockCreateCapI18nEntries).toHaveBeenCalledWith(projectRoot, 'filePath', [], undefined);
+        expect(mockCreateUI5I18nEntries).toHaveBeenCalledWith(
             projectRoot,
             appAccess.app.manifest,
             appAccess.app.i18n,
@@ -222,21 +230,19 @@ describe('Test function createApplicationAccess()', () => {
             undefined
         );
     });
+
     test('Write access to i18n of app in CAP project - mem-fs-editor (mocked)', async () => {
-        // Mock setup
-        const createCapI18nEntriesMock = jest.spyOn(i18nMock, 'createCapI18nEntries').mockResolvedValue(true);
-        const createUI5I18nEntriesMock = jest.spyOn(i18nMock, 'createUI5I18nEntries').mockResolvedValue(true);
+        mockCreateCapI18nEntries.mockResolvedValue(true);
+        mockCreateUI5I18nEntries.mockResolvedValue(true);
         const projectRoot = join(sampleRoot, 'cap-project');
         const appRoot = join(projectRoot, 'apps', 'one');
         const appAccess = await createApplicationAccess(appRoot, memFs);
 
-        // Test execution
         await appAccess.createCapI18nEntries('filePath', []);
         await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }], 'i18n');
 
-        // Result check
-        expect(createCapI18nEntriesMock).toHaveBeenCalledWith(projectRoot, 'filePath', [], memFs);
-        expect(createUI5I18nEntriesMock).toHaveBeenCalledWith(
+        expect(mockCreateCapI18nEntries).toHaveBeenCalledWith(projectRoot, 'filePath', [], memFs);
+        expect(mockCreateUI5I18nEntries).toHaveBeenCalledWith(
             projectRoot,
             appAccess.app.manifest,
             appAccess.app.i18n,
@@ -247,105 +253,83 @@ describe('Test function createApplicationAccess()', () => {
     });
 
     test('Update package.json of standalone app (mocked)', async () => {
-        // Mock setup
         const appRoot = join(sampleRoot, 'fiori_elements');
         const updateFileContent = { sapux: false } as unknown as Package;
         const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
         const pckgPath = join(appRoot, 'package.json');
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         await appAccess.updatePackageJSON(updateFileContent);
-        // Result check
         expect(writeFileSpy).toHaveBeenCalledWith(pckgPath, '{\n    "sapux": false\n}\n', { encoding: 'utf8' });
     });
 
     test('Update package.json of standalone app - mem-fs-editor (mocked)', async () => {
-        // Mock setup
         const appRoot = join(sampleRoot, 'fiori_elements');
         const updateFileContent = { sapux: false } as unknown as Package;
         const pckgPath = join(appRoot, 'package.json');
         memFs.writeJSON(pckgPath, { sapux: true }, undefined, 4);
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         await appAccess.updatePackageJSON(updateFileContent, memFs);
-        // Result check
         const result = memFs.read(pckgPath);
         expect(result).toBe('{\n    "sapux": false\n}\n');
     });
 
     test('Update package.json of app in CAP project (mocked)', async () => {
-        // Mock setup
         const projectRoot = join(sampleRoot, 'cap-project');
         const appRoot = join(projectRoot, 'apps/one');
         const updateFileContent = { name: 'two' } as unknown as Package;
         const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
         const pckgPath = join(appRoot, 'package.json');
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         await appAccess.updatePackageJSON(updateFileContent);
-        // Result check
         expect(writeFileSpy).toHaveBeenCalledWith(pckgPath, '{\n    "name": "two"\n}\n', { encoding: 'utf8' });
     });
 
     test('Update package.json of app in CAP project - mem-fs-editor (mocked)', async () => {
-        // Mock setup
         const projectRoot = join(sampleRoot, 'cap-project');
         const appRoot = join(projectRoot, 'apps/one');
         const updateFileContent = { name: 'two' } as unknown as Package;
         const pckgPath = join(appRoot, 'package.json');
         memFs.writeJSON(pckgPath, { name: 'one' }, undefined, 4);
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         await appAccess.updatePackageJSON(updateFileContent, memFs);
-        // Result check
         const result = memFs.read(pckgPath);
         expect(result).toBe('{\n    "name": "two"\n}\n');
     });
 
     test('Update package.json of app in CAP project - mem-fs-editor (mocked)', async () => {
-        // Mock setup
         const projectRoot = join(sampleRoot, 'cap-project');
         const appRoot = join(projectRoot, 'apps/one');
         const updateFileContent = { name: 'two' } as unknown as Package;
         const pckgPath = join(appRoot, 'package.json');
         memFs.writeJSON(pckgPath, { name: 'one' }, undefined, 4);
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot, memFs);
         await appAccess.updatePackageJSON(updateFileContent);
-        // Result check
         const result = memFs.read(pckgPath);
         expect(result).toBe('{\n    "name": "two"\n}\n');
     });
 
     test('Update manifest.json of standalone app (mocked)', async () => {
-        // Mock setup
         const appRoot = join(sampleRoot, 'fiori_elements');
         const updateFileContent = { 'sap.app': {} } as unknown as Manifest;
         const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
         const manifestPath = join(appRoot, 'webapp', 'manifest.json');
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         await appAccess.updateManifestJSON(updateFileContent);
-        // Result check
         expect(writeFileSpy).toHaveBeenCalledWith(manifestPath, '{\n    "sap.app": {}\n}\n', { encoding: 'utf8' });
     });
 
     test('Update manifest.json of standalone app - mem-fs-editor (mocked)', async () => {
-        // Mock setup
         const appRoot = join(sampleRoot, 'fiori_elements');
         const updateFileContent = { 'sap.app': {} } as unknown as Manifest;
         const manifestPath = join(appRoot, 'webapp', 'manifest.json');
         memFs.writeJSON(manifestPath, { 'sap.app': { id: 'single_apps-fiori_elements' } }, undefined, 4);
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         await appAccess.updateManifestJSON(updateFileContent, memFs);
-        // Result check
         const result = memFs.read(manifestPath);
         expect(result).toBe('{\n    "sap.app": {}\n}\n');
     });
 
     test('Update manifest.json of standalone app - mem-fs-editor passed when created', async () => {
-        // Mock setup
         const appRoot = join(sampleRoot, 'fiori_elements');
         const updateFileContent = { 'sap.app': {} } as unknown as Manifest;
         const manifestPath = join(appRoot, 'webapp', 'manifest.json');
@@ -355,22 +339,17 @@ describe('Test function createApplicationAccess()', () => {
             undefined,
             4
         );
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot, memFs);
         await appAccess.updateManifestJSON(updateFileContent);
-        // Result check
         const result = memFs.read(manifestPath);
         expect(result).toBe('{\n    "sap.app": {}\n}\n');
     });
 
     test('Get instance of specification (mocked)', async () => {
-        // Mock setup
         const appRoot = join(sampleRoot, 'fiori_elements');
-        jest.spyOn(specMock, 'getSpecification').mockResolvedValueOnce({ test: 'specification' });
-        // Test execution
+        mockGetSpecification.mockResolvedValueOnce({ test: 'specification' });
         const appAccess = await createApplicationAccess(appRoot);
         const spec = await appAccess.getSpecification();
-        // Result check
         expect(spec).toEqual({ test: 'specification' });
     });
 
@@ -385,10 +364,8 @@ describe('Test function createApplicationAccess()', () => {
 
     test('Read manifest.json of standalone app without mem-fs', async () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         const manifest = await appAccess.readManifest();
-        // Result check
         expect(manifest).toEqual(await readJSON(join(appRoot, 'webapp/manifest.json')));
     });
 
@@ -398,10 +375,8 @@ describe('Test function createApplicationAccess()', () => {
         const newManifest = await readJSON<{ dummy: boolean }>(join(appRoot, 'webapp/manifest.json'), memFs);
         newManifest.dummy = true;
         memFs.writeJSON(manifestPath, newManifest, undefined, 4);
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         const manifest = await appAccess.readManifest(memFs);
-        // Result check
         expect('dummy' in manifest ? manifest.dummy : undefined).toEqual(true);
     });
 
@@ -411,30 +386,23 @@ describe('Test function createApplicationAccess()', () => {
         const newManifest = await readJSON<{ dummy: string }>(join(appRoot, 'webapp/manifest.json'), memFs);
         newManifest.dummy = 'Test';
         memFs.writeJSON(manifestPath, newManifest, undefined, 4);
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot, memFs);
         const manifest = await appAccess.readManifest();
-        // Result check
         expect('dummy' in manifest ? manifest.dummy : undefined).toEqual('Test');
     });
 
     test('Read flex changes of standalone app without mem-fs - without flex changes', async () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         const changes = await appAccess.readFlexChanges();
-        // Result check
         expect(Object.keys(changes)).toEqual([]);
     });
 
     test('Read flex changes of standalone app without mem-fs - with flex changes', async () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
-        // Mock changes folder
         appAccess.app.changes = join(__dirname, '../test-data/project/flex-changes/webapp/changes');
         const changes = await appAccess.readFlexChanges();
-        // Result check
         expect(Object.keys(changes)).toEqual([
             'id_1761320220775_1_propertyChange.change',
             'id_1761320220775_2_propertyChange.change'
@@ -447,11 +415,9 @@ describe('Test function createApplicationAccess()', () => {
         const changesPath = join(__dirname, '../test-data/project/flex-changes/webapp/changes');
         const changeFilePath = join(changesPath, changeFileName);
         memFs.write(changeFilePath, '{"dummy": true}');
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         appAccess.app.changes = changesPath;
         const changes = await appAccess.readFlexChanges(memFs);
-        // Result check
         expect(changes[changeFileName]).toEqual('{"dummy": true}');
     });
 
@@ -461,21 +427,17 @@ describe('Test function createApplicationAccess()', () => {
         const changesPath = join(__dirname, '../test-data/project/flex-changes/webapp/changes');
         const changeFilePath = join(changesPath, changeFileName);
         memFs.write(changeFilePath, '{"dummy": "test"}');
-        // Test execution
         const appAccess = await createApplicationAccess(appRoot, memFs);
         appAccess.app.changes = changesPath;
         const changes = await appAccess.readFlexChanges();
-        // Result check
         expect(changes[changeFileName]).toEqual('{"dummy": "test"}');
     });
 
     describe('readAnnotationFiles', () => {
         test('Read annotation files of standalone EDMX app without mem-fs', async () => {
             const appRoot = join(sampleRoot, 'fiori_elements');
-            // Test execution
             const appAccess = await createApplicationAccess(appRoot);
             const annotationFiles = await appAccess.readAnnotationFiles();
-            // Result check
             expect(annotationFiles.map((annotationFile) => annotationFile.dataSourceUri)).toEqual([
                 join(appRoot, 'webapp/localService/metadata.xml'),
                 join(appRoot, 'webapp/annotations/annotation.xml')
@@ -492,10 +454,8 @@ describe('Test function createApplicationAccess()', () => {
             ];
             memFs.write(expectedFiles[0], 'Test metadata.xml');
             memFs.write(expectedFiles[1], 'Test annotation.xml');
-            // Test execution
             const appAccess = await createApplicationAccess(appRoot);
             const annotationFiles = await appAccess.readAnnotationFiles(memFs);
-            // Result check
             expect(annotationFiles.map((annotationFile) => annotationFile.dataSourceUri)).toEqual(expectedFiles);
             expect(annotationFiles[0].fileContent).toEqual('Test metadata.xml');
             expect(annotationFiles[1].fileContent).toEqual('Test annotation.xml');
@@ -509,32 +469,26 @@ describe('Test function createApplicationAccess()', () => {
             ];
             memFs.write(expectedFiles[0], 'Test2 metadata.xml');
             memFs.write(expectedFiles[1], 'Test2 annotation.xml');
-            // Make sure manifest.json has original content in mem-fs
             const manifestPath = join(appRoot, 'webapp/manifest.json');
             const originalManifest = await readJSON<{ dummy: string }>(join(appRoot, 'webapp/manifest.json'));
             memFs.writeJSON(manifestPath, originalManifest, undefined, 4);
-            // Test execution
             const appAccess = await createApplicationAccess(appRoot, memFs);
             const annotationFiles = await appAccess.readAnnotationFiles();
-            // Result check
             expect(annotationFiles.map((annotationFile) => annotationFile.dataSourceUri)).toEqual(expectedFiles);
             expect(annotationFiles[0].fileContent).toEqual('Test2 metadata.xml');
             expect(annotationFiles[1].fileContent).toEqual('Test2 annotation.xml');
         });
 
         test('Read annotation files of CAP app', async () => {
-            // Mock setup
             const mockedMetadata = await readFile(
                 join(sampleRoot, 'fiori_elements', 'webapp/localService/metadata.xml')
             );
-            jest.spyOn(capMock, 'readCapServiceMetadataEdmx').mockResolvedValue(mockedMetadata);
+            mockReadCapServiceMetadataEdmx.mockResolvedValue(mockedMetadata);
 
             const projectRoot = join(sampleRoot, 'cap-project');
             const appRoot = join(projectRoot, 'apps/two');
-            // Test execution
             const appAccess = await createApplicationAccess(appRoot);
             const annotationFiles = await appAccess.readAnnotationFiles();
-            // Result check
             expect(annotationFiles.map((annotationFile) => annotationFile.dataSourceUri)).toEqual([
                 '/sap/opu/odata4/dmo/ODATA_SERVICE/'
             ]);
