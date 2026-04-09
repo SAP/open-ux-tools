@@ -1,5 +1,8 @@
-import { join, sep } from 'node:path';
+import { dirname, join, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { addServicesData, updateServicesData } from './update';
