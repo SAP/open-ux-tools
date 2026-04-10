@@ -5,7 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { generateCustomView } from '../../src';
 import type { CustomView } from '../../src/view/types';
-import * as manifest from './sample/view/webapp/manifest.json';
+import manifest from './sample/view/webapp/manifest.json';
 import type { Views, EventHandlerConfiguration } from '../../src/common/types';
 import type { Manifest } from '@sap-ux/project-access';
 import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';

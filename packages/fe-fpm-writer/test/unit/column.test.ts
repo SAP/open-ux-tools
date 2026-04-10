@@ -7,7 +7,7 @@ import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column';
 import type { CustomTableColumn } from '../../src/column/types';
 import { Availability, HorizontalAlign } from '../../src/column/types';
-import * as manifest from './sample/column/webapp/manifest.json';
+import manifest from './sample/column/webapp/manifest.json';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';

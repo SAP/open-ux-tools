@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -9,7 +10,7 @@ import type { EventHandlerConfiguration, FileContentPosition } from '../../src/c
 import { Placement } from '../../src/common/types';
 import { getEndOfLinesLength } from '../common';
 import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
-import * as fileAccess from '@sap-ux/project-access/dist/file';
+import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -57,7 +58,7 @@ describe('CustomFilter', () => {
             fs = create(createStorage());
             fs.delete(testDir);
             fs.write(join(testDir, 'webapp/manifest.json'), testAppManifest);
-            jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
+            findFilesByExtensionMock.mockResolvedValue([]);
         });
         test('New custom filter (no eventhandler)', async () => {
             const copyTplSpy = jest.spyOn(fs, 'copyTpl');

@@ -7,7 +7,7 @@ import { generateCustomField } from '../../src/field';
 import type { CustomField } from '../../src/field/types';
 import type { EventHandlerConfiguration, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import * as manifest from './sample/field/webapp/manifest.json';
+import manifest from './sample/field/webapp/manifest.json';
 import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { getEndOfLinesLength, tabSizingTestCases } from '../common';
 

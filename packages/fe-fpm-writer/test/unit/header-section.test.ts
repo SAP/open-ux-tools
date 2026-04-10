@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -12,9 +13,9 @@ import {
 } from '../../src/section/types';
 import type { Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import * as manifestSections from './sample/section/webapp/manifest.json';
+import manifestSections from './sample/section/webapp/manifest.json';
 import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
-import * as fileAccess from '@sap-ux/project-access/dist/file';
+import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -24,7 +25,7 @@ const testDir = join(__dirname, 'sample/headers-ection');
 describe('CustomHeaderSection generateCustomHeaderSection', () => {
     let fs: Editor;
     const testVersions = ['1.86', '1.98'];
-    jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
+    findFilesByExtensionMock.mockResolvedValue([]);
 
     const createCustomHeaderSectionWithEditFragment = (
         minUI5Version?: string,
