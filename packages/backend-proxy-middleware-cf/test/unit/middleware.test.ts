@@ -34,11 +34,15 @@ jest.unstable_mockModule('../../src/utils', () => ({
     nextFreePort: mockNextFreePort
 }));
 
-const mockLoadAndApplyEnvOptions = jest.fn().mockResolvedValue([]);
+const mockLoadEnvOptions = jest.fn().mockResolvedValue({});
 const mockUpdateUi5ServerDestinationPort = jest.fn();
+const mockGetConnectivityProxyInfo = jest.fn().mockReturnValue(undefined);
+const mockApplyToProcessEnv = jest.fn();
 jest.unstable_mockModule('../../src/config/env', () => ({
-    loadAndApplyEnvOptions: mockLoadAndApplyEnvOptions,
-    updateUi5ServerDestinationPort: mockUpdateUi5ServerDestinationPort
+    loadEnvOptions: mockLoadEnvOptions,
+    updateUi5ServerDestinationPort: mockUpdateUi5ServerDestinationPort,
+    getConnectivityProxyInfo: mockGetConnectivityProxyInfo,
+    applyToProcessEnv: mockApplyToProcessEnv
 }));
 
 const mockLoadAndPrepareXsappConfig = jest.fn();
@@ -79,6 +83,19 @@ jest.unstable_mockModule('../../src/platform/xssecurity', () => ({
     updateXsuaaService: jest.fn().mockResolvedValue(undefined)
 }));
 
+jest.unstable_mockModule('../../src/config/config', () => ({
+    mergeEffectiveOptions: jest.fn().mockImplementation((config) => ({
+        ...config,
+        destinations: config.destinations ?? [],
+        port: 5000,
+        xsappJsonPath: config.xsappJsonPath ?? './xs-app.json'
+    }))
+}));
+
+jest.unstable_mockModule('../../src/tunnel/tunnel', () => ({
+    setupSshTunnel: jest.fn().mockResolvedValue(undefined)
+}));
+
 // Import middleware - it uses module.exports which we polyfilled globally
 // The import will execute the source file, setting globalThis.module.exports
 await import('../../src/middleware');
@@ -98,7 +115,7 @@ describe('middleware', () => {
         jest.clearAllMocks();
         delete process.env.destinations;
         mockExistsSync.mockReturnValue(true);
-        mockLoadAndApplyEnvOptions.mockResolvedValue([]);
+        mockLoadEnvOptions.mockResolvedValue({});
         mockNextFreePort.mockResolvedValue(5000);
         mockLoadAndPrepareXsappConfig.mockReturnValue({
             routes: [],
@@ -181,7 +198,7 @@ describe('middleware', () => {
             middlewareUtil: { getProject }
         });
 
-        expect(mockLoadAndApplyEnvOptions).toHaveBeenCalledWith(
+        expect(mockLoadEnvOptions).toHaveBeenCalledWith(
             rootPath,
             expect.objectContaining({ envOptionsPath: './adp/default-env.json', destinations: [] }),
             expect.any(Object)

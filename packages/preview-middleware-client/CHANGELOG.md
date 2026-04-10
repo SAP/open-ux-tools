@@ -1,5 +1,13 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.21
+
+### Patch Changes
+
+- 9696e29: Linting auto fix
+
+## 0.25.20
+
 ## 0.25.19
 
 ### Patch Changes

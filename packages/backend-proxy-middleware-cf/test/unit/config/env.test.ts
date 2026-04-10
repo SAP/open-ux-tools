@@ -1,10 +1,8 @@
 import { jest } from '@jest/globals';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-
 import type { EffectiveOptions } from '../../../src/types';
 
 const __testdir = dirname(fileURLToPath(import.meta.url));
@@ -28,7 +26,10 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getYamlContent: mockGetYamlContent
 }));
 
-const { loadAndApplyEnvOptions, updateUi5ServerDestinationPort } = await import('../../../src/config/env');
+const { loadEnvOptions, getConnectivityProxyInfo, applyToProcessEnv, updateUi5ServerDestinationPort } = await import(
+    '../../../src/config/env'
+);
+
 
 describe('env', () => {
     const logger = { warn: jest.fn(), debug: jest.fn() } as unknown as ToolsLogger;
@@ -38,7 +39,7 @@ describe('env', () => {
         jest.clearAllMocks();
     });
 
-    describe('loadAndApplyEnvOptions', () => {
+    describe('loadEnvOptions', () => {
         describe('when envOptionsPath is set (load from file)', () => {
             test('throws when env options file does not exist', async () => {
                 mockExistsSync.mockReturnValue(false);
@@ -47,7 +48,7 @@ describe('env', () => {
                     destinations: []
                 } as unknown as EffectiveOptions;
 
-                await expect(loadAndApplyEnvOptions(rootPath, effectiveOptions, logger)).rejects.toThrow(
+                await expect(loadEnvOptions(rootPath, effectiveOptions, logger)).rejects.toThrow(
                     /Env options file not found/
                 );
 
@@ -63,14 +64,14 @@ describe('env', () => {
                     destinations: []
                 } as unknown as EffectiveOptions;
 
-                await expect(loadAndApplyEnvOptions(rootPath, effectiveOptions, logger)).rejects.toThrow(
+                await expect(loadEnvOptions(rootPath, effectiveOptions, logger)).rejects.toThrow(
                     /Failed to read env options from/
                 );
 
                 expect(mockReadFileSync).toHaveBeenCalledWith(path.resolve(rootPath, 'opts.json'), 'utf8');
             });
 
-            test('should load file and merge destinations (file + effectiveOptions, same name wins from effectiveOptions)', async () => {
+            test('should load file and merge destinations', async () => {
                 const opts = {
                     VCAP_SERVICES: { xsuaa: [{ name: 'my-xsuaa' }] },
                     destinations: [{ name: 'backend', url: 'http://localhost:8080' }]
@@ -80,22 +81,16 @@ describe('env', () => {
 
                 const effectiveOptions = {
                     envOptionsPath: 'default-env.json',
-                    destinations: []
+                    destinations: [{ name: 'extra', url: 'http://localhost:9090' }]
                 } as unknown as EffectiveOptions;
-                const beforeVcap = process.env.VCAP_SERVICES;
-                const beforeDest = process.env.destinations;
 
-                await loadAndApplyEnvOptions(rootPath, effectiveOptions, logger);
+                const result = await loadEnvOptions(rootPath, effectiveOptions, logger);
 
-                expect(process.env.VCAP_SERVICES).toBe(JSON.stringify(opts.VCAP_SERVICES));
-                expect(process.env.destinations).toBe(JSON.stringify(opts.destinations));
-                if (beforeVcap !== undefined) {
-                    process.env.VCAP_SERVICES = beforeVcap;
-                    process.env.destinations = beforeDest;
-                } else {
-                    delete process.env.VCAP_SERVICES;
-                    delete process.env.destinations;
-                }
+                expect(result.VCAP_SERVICES).toEqual(opts.VCAP_SERVICES);
+                expect(result.destinations).toEqual([
+                    { name: 'backend', url: 'http://localhost:8080' },
+                    { name: 'extra', url: 'http://localhost:9090' }
+                ]);
             });
         });
 
@@ -110,7 +105,7 @@ describe('env', () => {
                     destinations: []
                 } as unknown as EffectiveOptions;
 
-                await expect(loadAndApplyEnvOptions(rootPathCf, effectiveOptions, logger)).rejects.toThrow(
+                await expect(loadEnvOptions(rootPathCf, effectiveOptions, logger)).rejects.toThrow(
                     'No space GUID (from config or ui5.yaml). Cannot load CF env options.'
                 );
 
@@ -125,14 +120,14 @@ describe('env', () => {
                     destinations: []
                 } as unknown as EffectiveOptions;
 
-                await expect(loadAndApplyEnvOptions(rootPathCf, effectiveOptions, logger)).rejects.toThrow(
+                await expect(loadEnvOptions(rootPathCf, effectiveOptions, logger)).rejects.toThrow(
                     /mta.yaml not found at/
                 );
 
                 expect(mockExistsSync).toHaveBeenCalledWith(mtaPath);
             });
 
-            test('should call buildVcapServicesFromResources and apply result to process.env when spaceGuid and mta exist', async () => {
+            test('should build VCAP_SERVICES from mta resources and return options', async () => {
                 const spaceGuid = 'space-guid-123';
                 const mtaYaml = { resources: [] };
                 const vcapServices = { destination: [{ label: 'destination' }] };
@@ -146,27 +141,102 @@ describe('env', () => {
                     envOptionsPath: undefined,
                     destinations: [{ name: 'backend', url: 'http://localhost:8080' }]
                 } as unknown as EffectiveOptions;
-                const beforeVcap = process.env.VCAP_SERVICES;
-                const beforeDest = process.env.destinations;
 
-                await loadAndApplyEnvOptions(rootPathCf, effectiveOptions, logger);
+                const result = await loadEnvOptions(rootPathCf, effectiveOptions, logger);
 
                 expect(mockGetYamlContent).toHaveBeenCalledWith(mtaPath);
                 expect(mockBuildVcapServicesFromResources).toHaveBeenCalledWith(mtaYaml.resources, spaceGuid, logger);
-                expect(process.env.VCAP_SERVICES).toBe(JSON.stringify(vcapServices));
-                expect(process.env.destinations).toBe(JSON.stringify(effectiveOptions.destinations));
-
-                if (beforeVcap !== undefined) {
-                    process.env.VCAP_SERVICES = beforeVcap;
-                } else {
-                    delete process.env.VCAP_SERVICES;
-                }
-                if (beforeDest !== undefined) {
-                    process.env.destinations = beforeDest;
-                } else {
-                    delete process.env.destinations;
-                }
+                expect(result.VCAP_SERVICES).toEqual(vcapServices);
+                expect(result.destinations).toEqual(effectiveOptions.destinations);
             });
+        });
+    });
+
+    describe('getConnectivityProxyInfo', () => {
+        test('should return proxy info when connectivity service is present', () => {
+            const vcapServices = {
+                connectivity: [{ credentials: { onpremise_proxy_host: 'proxy.internal', onpremise_proxy_port: 20003 } }]
+            };
+
+            const result = getConnectivityProxyInfo(vcapServices);
+
+            expect(result).toEqual({ host: 'proxy.internal', port: 20003 });
+        });
+
+        test('should return undefined when vcapServices is undefined', () => {
+            expect(getConnectivityProxyInfo(undefined)).toBeUndefined();
+        });
+
+        test('should return undefined when no connectivity service', () => {
+            expect(getConnectivityProxyInfo({ xsuaa: [] })).toBeUndefined();
+        });
+
+        test('should return undefined when connectivity entry has no credentials', () => {
+            expect(getConnectivityProxyInfo({ connectivity: [{}] })).toBeUndefined();
+        });
+    });
+
+    describe('applyToProcessEnv', () => {
+        let savedVcap: string | undefined;
+        let savedDest: string | undefined;
+
+        beforeEach(() => {
+            savedVcap = process.env.VCAP_SERVICES;
+            savedDest = process.env.destinations;
+            delete process.env.VCAP_SERVICES;
+            delete process.env.destinations;
+        });
+
+        afterEach(() => {
+            if (savedVcap !== undefined) {
+                process.env.VCAP_SERVICES = savedVcap;
+            } else {
+                delete process.env.VCAP_SERVICES;
+            }
+            if (savedDest !== undefined) {
+                process.env.destinations = savedDest;
+            } else {
+                delete process.env.destinations;
+            }
+        });
+
+        test('should apply VCAP_SERVICES and destinations to process.env as JSON strings', () => {
+            const options = {
+                VCAP_SERVICES: { xsuaa: [{ name: 'my-xsuaa' }] },
+                destinations: [{ name: 'backend', url: 'http://localhost:8080' }]
+            };
+
+            applyToProcessEnv(options);
+
+            expect(process.env.destinations).toBe(JSON.stringify(options.destinations));
+            expect(JSON.parse(process.env.VCAP_SERVICES!)).toEqual(options.VCAP_SERVICES);
+        });
+
+        test('should override connectivity proxy host to localhost', () => {
+            const options = {
+                VCAP_SERVICES: {
+                    connectivity: [
+                        { credentials: { onpremise_proxy_host: 'proxy.internal', onpremise_proxy_port: 20003 } }
+                    ]
+                },
+                destinations: []
+            };
+
+            applyToProcessEnv(options);
+
+            const vcap = JSON.parse(process.env.VCAP_SERVICES!);
+            expect(vcap.connectivity[0].credentials.onpremise_proxy_host).toBe('localhost');
+        });
+
+        test('should handle options without VCAP_SERVICES', () => {
+            const options = {
+                destinations: [{ name: 'backend', url: 'http://localhost:8080' }]
+            };
+
+            applyToProcessEnv(options);
+
+            expect(process.env.destinations).toBe(JSON.stringify(options.destinations));
+            expect(process.env.VCAP_SERVICES).toBeUndefined();
         });
     });
 
