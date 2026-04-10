@@ -1,15 +1,68 @@
-import hasbin from 'hasbin';
-import * as childProcess from 'node:child_process';
-import { toMatchFolder } from '@sap-ux/jest-file-matchers';
-import { readdirSync, writeFileSync } from 'node:fs';
-import { copy, existsSync } from 'fs-extra';
+import { jest } from '@jest/globals';
+import { readdirSync, writeFileSync, cpSync, existsSync } from 'node:fs';
 import { readFile, rename } from 'node:fs/promises';
 import { rimraf } from 'rimraf';
-import { basename, join } from 'node:path';
-import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
-import { hostEnvironment, DeployTarget } from '@sap-ux/fiori-generator-shared';
-import type { AppConfig, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
-import {
+import { basename, join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { AppConfig } from '@sap-ux/fiori-generator-shared';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Pre-load modules before mocking so we can spread their exports
+
+// Pre-load @sap-ux/fiori-generator-shared (works because @vscode-logging/logger is mocked via jest config)
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+
+// Mock @sap-ux/fiori-generator-shared with real exports plus test overrides
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: jest.fn(),
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn(),
+        createTelemetryData: jest.fn()
+    },
+    getHostEnvironment: jest.fn(() => 'cli'),
+    DefaultLogger: {
+        fatal: jest.fn(),
+        error: jest.fn(),
+        warn: jest.fn(),
+        info: jest.fn(),
+        debug: jest.fn(),
+        trace: jest.fn(),
+        getChildLogger: jest.fn(),
+        getLogLevel: jest.fn(() => 'off'),
+        log: jest.fn()
+    }
+}));
+
+const actualChildProcess = await import('node:child_process');
+
+const spawnSyncMock = jest.fn().mockReturnValue({ status: 0 });
+const hasbinSyncMock = jest.fn().mockReturnValue(true);
+
+jest.unstable_mockModule('@sap/mta-lib', async () => {
+    const { MockMta } = await import('./mockMta.js');
+    return { Mta: MockMta };
+});
+
+jest.unstable_mockModule('os-name', () => ({
+    default: () => 'mocked-os'
+}));
+
+jest.unstable_mockModule('node:child_process', () => ({
+    ...actualChildProcess,
+    spawnSync: spawnSyncMock
+}));
+
+jest.unstable_mockModule('hasbin', () => ({
+    default: { sync: hasbinSyncMock },
+    sync: hasbinSyncMock
+}));
+
+const { toMatchFolder } = await import('@sap-ux/jest-file-matchers');
+const { default: CFGen } = await import('@sap-ux/cf-deploy-config-sub-generator');
+const { DeployTarget } = await import('@sap-ux/fiori-generator-shared');
+const {
     INPUT_APP_DIR_CF,
     INPUT_APP_NAME_BASE,
     INPUT_APP_NAME_TS,
@@ -20,43 +73,15 @@ import {
     INPUT_LCAP_CHANGES,
     INPUT_PARENT_APP,
     ignoreMatcherOpts
-} from './fixtures/constants';
-import { runHeadlessGen } from './utils';
-import { generatorNamespace, initI18n } from '../../src/utils';
-import HeadlessGenerator from '../../src/headless';
+} = await import('./fixtures/constants');
+const { runHeadlessGen } = await import('./utils');
+const { generatorNamespace, initI18n } = await import('../../src/utils');
+const { default: HeadlessGenerator } = await import('../../src/headless');
 
 expect.extend({ toMatchFolder });
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
-        sendTelemetry: jest.fn(),
-        TelemetryHelper: {
-            initTelemetrySettings: jest.fn(),
-            createTelemetryData: jest.fn()
-        } as TelemetryHelper,
-        getHostEnvironment: () => {
-            return hostEnvironment.cli;
-        }
-    };
-});
-
-jest.mock('@sap/mta-lib', () => {
-    return {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        Mta: require('./mockMta').MockMta
-    };
-});
-
-jest.mock('os-name', () => {
-    return () => 'mocked-os';
-});
-
-jest.mock('child_process');
-let spawnMock: jest.SpyInstance;
-
 export const OUTPUT_DIR = join(__dirname, '../test-output');
-export const ORIGINAL_CWD: string = process.cwd(); // Generators change the cwd, this breaks sonar report so we restore later
+export const ORIGINAL_CWD: string = process.cwd();
 
 /**
  * Headless tests for CF generator
@@ -66,15 +91,13 @@ describe('Test headless generator', () => {
 
     beforeAll(async () => {
         jest.restoreAllMocks();
-        jest.spyOn(hasbin, 'sync').mockReturnValue(true);
         rimraf.rimrafSync(OUTPUT_DIR);
-        await copy(INPUT_APP_DIR_CF, OUTPUT_DIR);
-        // This is a hack to ensure it only returns CLI in all situations
+        cpSync(INPUT_APP_DIR_CF, OUTPUT_DIR, { recursive: true });
         process.stdin.isTTY = true;
     });
 
     beforeEach(() => {
-        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 }) as any);
+        spawnSyncMock.mockReturnValue({ status: 0 });
     });
 
     afterEach(() => {
@@ -82,7 +105,6 @@ describe('Test headless generator', () => {
     });
 
     afterAll(() => {
-        // Remove the test folder if the folder is empty (i.e. no failed tests)
         try {
             if (readdirSync(OUTPUT_DIR).length === 0) {
                 console.log('Removing test output folder');
@@ -127,7 +149,7 @@ describe('Test headless generator', () => {
 
     it('Test: Headless deploy-config - addToManagedAppRouter ', async () => {
         const testAppName = 'app3';
-        await copy(join(OUTPUT_DIR, INPUT_APP_NAME), join(OUTPUT_DIR, testAppName));
+        cpSync(join(OUTPUT_DIR, INPUT_APP_NAME), join(OUTPUT_DIR, testAppName), { recursive: true });
         await runHeadlessGen(testAppName, DeployTarget.CF, OUTPUT_DIR);
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/mta.yaml`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/ui5-deploy.yaml`, 'utf-8')).toMatchSnapshot();
@@ -142,12 +164,10 @@ describe('Test headless generator', () => {
         const testAppName = 'feproject-ui';
 
         await runHeadlessGen(INPUT_CAP_APP_NAME, DeployTarget.CF, join(OUTPUT_DIR, INPUT_CAP_APP_NAME, 'app'));
-        // CAP specific change
         expect(await readFile(`${OUTPUT_DIR}/${INPUT_CAP_APP_NAME}/mta.yaml`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${INPUT_CAP_APP_NAME}/.gitignore`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${INPUT_CAP_APP_NAME}/xs-security.json`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${INPUT_CAP_APP_NAME}/package.json`, 'utf-8')).toMatchSnapshot();
-        // FE project changes
         expect(
             await readFile(`${OUTPUT_DIR}/${INPUT_CAP_APP_NAME}/app/${testAppName}/ui5-deploy.yaml`, 'utf-8')
         ).toMatchSnapshot();
@@ -168,11 +188,9 @@ describe('Test headless generator', () => {
             DeployTarget.CF,
             join(OUTPUT_DIR, INPUT_CAP_DEST_APP_NAME, 'app')
         );
-        // CAP specific change
         expect(await readFile(`${OUTPUT_DIR}/${INPUT_CAP_DEST_APP_NAME}/mta.yaml`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${INPUT_CAP_DEST_APP_NAME}/xs-security.json`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${INPUT_CAP_DEST_APP_NAME}/package.json`, 'utf-8')).toMatchSnapshot();
-        // FE project changes
         expect(
             await readFile(`${OUTPUT_DIR}/${INPUT_CAP_DEST_APP_NAME}/app/${testAppName}/ui5-deploy.yaml`, 'utf-8')
         ).toMatchSnapshot();
@@ -193,13 +211,11 @@ describe('Test headless generator', () => {
             DeployTarget.CF,
             join(OUTPUT_DIR, INPUT_CAP_JAVA_DEST_APP_NAME, 'app')
         );
-        // CAP Java specific change
         expect(await readFile(`${OUTPUT_DIR}/${INPUT_CAP_JAVA_DEST_APP_NAME}/mta.yaml`, 'utf-8')).toMatchSnapshot();
         expect(
             await readFile(`${OUTPUT_DIR}/${INPUT_CAP_JAVA_DEST_APP_NAME}/xs-security.json`, 'utf-8')
         ).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${INPUT_CAP_JAVA_DEST_APP_NAME}/package.json`, 'utf-8')).toMatchSnapshot();
-        // FE project changes
         expect(
             await readFile(`${OUTPUT_DIR}/${INPUT_CAP_JAVA_DEST_APP_NAME}/app/${testAppName}/ui5-deploy.yaml`, 'utf-8')
         ).toMatchSnapshot();
@@ -224,11 +240,9 @@ describe('Test headless generator', () => {
         const testAppName = 'feproject-ui';
 
         await runHeadlessGen(INPUT_PARENT_APP, DeployTarget.CF, join(OUTPUT_DIR, INPUT_PARENT_APP));
-        // Parent folder is not CAP so ignore the lcapModeOnly if set to true
         expect(await readFile(`${OUTPUT_DIR}/${INPUT_PARENT_APP}/mta.yaml`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${INPUT_PARENT_APP}/package.json`, 'utf-8')).toMatchSnapshot();
         expect(existsSync(`${OUTPUT_DIR}/${INPUT_PARENT_APP}/xs-security.json`)).toBeTruthy();
-        // FE project changes
         expect(
             await readFile(`${OUTPUT_DIR}/${INPUT_PARENT_APP}/${testAppName}/ui5-deploy.yaml`, 'utf-8')
         ).toMatchSnapshot();
@@ -245,25 +259,21 @@ describe('Test headless generator', () => {
     });
 
     it('Test: Headless deploy-config - pass app config as file path and options', async () => {
-        // Test passing file path instead of app config object
         const testConfigFilePathBase = join(
             __dirname,
             '/fixtures/headless-configs/cf',
             `${INPUT_LCAP_CHANGES}-config-abs.json`
         );
         const targetDir = join(OUTPUT_DIR, INPUT_LCAP_CHANGES, 'app');
-        // copy a fresh copy of the CAP project to test out
         const lcapTestProjectSrc = join(INPUT_APP_DIR_CF, INPUT_LCAP_CHANGES);
         const lcapTestProjectDest = join(OUTPUT_DIR, INPUT_LCAP_CHANGES);
         if (existsSync(lcapTestProjectDest)) {
             rimraf.rimrafSync(lcapTestProjectDest);
         }
-        await copy(lcapTestProjectSrc, lcapTestProjectDest);
-        // Create the app config file with absolute target folder property
+        cpSync(lcapTestProjectSrc, lcapTestProjectDest, { recursive: true });
         const appConfigAbsTarget = JSON.parse(await readFile(testConfigFilePathBase, 'utf-8')) as AppConfig;
 
         appConfigAbsTarget.project.targetFolder = targetDir;
-        // Write the updated app config file
         const appConfigFilePathTest = join(OUTPUT_DIR, `${basename(testConfigFilePathBase, '.json')}-copy.json`);
         writeFileSync(appConfigFilePathTest, JSON.stringify(appConfigAbsTarget));
 
@@ -283,9 +293,8 @@ describe('Test headless generator', () => {
             AppGenLaunchSourceVersion: '1.1.1'
         };
 
-        // Dont run the expensive phases that are not under test, prompting is run but doesnt prompt since `launchDeployConfigAsSubGenerator` is true
-        jest.spyOn(CFGen.prototype, 'writing').mockImplementation(jest.fn());
-        jest.spyOn(CFGen.prototype, 'initializing').mockImplementation(jest.fn());
+        jest.spyOn(CFGen.prototype, 'writing').mockImplementation(jest.fn() as any);
+        jest.spyOn(CFGen.prototype, 'initializing').mockImplementation(jest.fn() as any);
         const composeWithSpy = jest
             .spyOn(HeadlessGenerator.prototype as any, 'composeWith')
             .mockResolvedValue(undefined);

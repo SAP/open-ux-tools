@@ -1,77 +1,87 @@
-import { join } from 'node:path';
-import * as childProcess from 'node:child_process';
-import { copy, readdirSync } from 'fs-extra';
+import { join, dirname } from 'node:path';
+import { jest } from '@jest/globals';
+import { cpSync, readdirSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { rimraf } from 'rimraf';
-import { runHeadlessGen } from './utils';
-import { DeployTarget, type TelemetryHelper, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import {
-    backendSystemBtp,
-    backendSystemOnPrem,
-    INPUT_APP_DIR_ABAP,
-    INPUT_BASE_APP,
-    mockDestinations
-} from './fixtures/constants';
-import { getService } from '@sap-ux/store';
-import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
-        sendTelemetry: jest.fn(),
-        TelemetryHelper: {
-            initTelemetrySettings: jest.fn(),
-            createTelemetryData: jest.fn()
-        } as TelemetryHelper,
-        getHostEnvironment: () => {
-            return hostEnvironment.cli;
-        }
-    };
-});
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-jest.mock('@sap-ux/store', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/store') as {}),
-        getService: jest.fn()
-    };
-});
+const mockGetService = jest.fn();
+const mockIsAppStudio = jest.fn();
+const mockListDestinations = jest.fn();
+const spawnSyncMock = jest.fn().mockReturnValue({ status: 0 });
 
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/btp-utils') as {}),
-        isAppStudio: jest.fn(),
-        listDestinations: jest.fn()
-    };
-});
+// Pre-load @sap-ux/fiori-generator-shared (works because @vscode-logging/logger is mocked via jest config)
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 
-export const ORIGINAL_CWD: string = process.cwd(); // Generators change the cwd, this breaks sonar report so we restore later
+// Mock @sap-ux/fiori-generator-shared with real exports plus test overrides
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: jest.fn(),
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn(),
+        createTelemetryData: jest.fn()
+    },
+    getHostEnvironment: jest.fn(() => 'cli'),
+    DefaultLogger: {
+        fatal: jest.fn(),
+        error: jest.fn(),
+        warn: jest.fn(),
+        info: jest.fn(),
+        debug: jest.fn(),
+        trace: jest.fn(),
+        getChildLogger: jest.fn(),
+        getLogLevel: jest.fn(() => 'off'),
+        log: jest.fn()
+    }
+}));
+
+// Pre-load other modules that don't have vscode-logging issues
+const actualChildProcess = await import('node:child_process');
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+const actualStore = await import('@sap-ux/store');
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
+    getService: mockGetService
+}));
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio,
+    listDestinations: mockListDestinations
+}));
+
+jest.unstable_mockModule('node:child_process', () => ({
+    ...actualChildProcess,
+    spawnSync: spawnSyncMock
+}));
+
+const { runHeadlessGen } = await import('./utils');
+const { DeployTarget } = await import('@sap-ux/fiori-generator-shared');
+const { backendSystemBtp, backendSystemOnPrem, INPUT_APP_DIR_ABAP, INPUT_BASE_APP, mockDestinations } =
+    await import('./fixtures/constants');
+
+export const ORIGINAL_CWD: string = process.cwd();
 export const OUTPUT_DIR = join(__dirname, '../test-output/abap');
-
-jest.mock('child_process');
-let spawnMock: jest.SpyInstance;
-
-const getServiceMock = getService as jest.Mock;
-const isAppStudioMock = isAppStudio as jest.Mock;
-const listDestinationsMock = listDestinations as jest.Mock;
 
 describe('Test ABAP headless generator', () => {
     beforeAll(async () => {
         rimraf.rimrafSync(OUTPUT_DIR);
-        await copy(INPUT_APP_DIR_ABAP, OUTPUT_DIR);
-        // This is a hack to ensure it only returns CLI in all situations
+        cpSync(INPUT_APP_DIR_ABAP, OUTPUT_DIR, { recursive: true });
         process.stdin.isTTY = true;
     });
 
     beforeEach(() => {
         jest.resetAllMocks();
-        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 }) as any);
+        spawnSyncMock.mockReturnValue({ status: 0 });
     });
     afterEach(() => {
         process.chdir(ORIGINAL_CWD);
     });
 
     afterAll(() => {
-        // Remove the test folder if the folder is empty (i.e. no failed tests)
         try {
             if (readdirSync(OUTPUT_DIR).length === 0) {
                 console.log('Removing test output folder');
@@ -83,14 +93,14 @@ describe('Test ABAP headless generator', () => {
     });
 
     it('should generate ABAP deploy config for on-prem system (VSCode)', async () => {
-        isAppStudioMock.mockReturnValue(false);
-        getServiceMock.mockResolvedValue({
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetService.mockResolvedValue({
             getAll: jest.fn().mockResolvedValue([backendSystemOnPrem])
         });
         const headlessConfig = 'app1';
         const testAppName = 'app-on-prem';
 
-        await copy(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName));
+        cpSync(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName), { recursive: true });
         await runHeadlessGen(headlessConfig, DeployTarget.ABAP, OUTPUT_DIR, testAppName);
 
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/package.json`, 'utf-8')).toMatchSnapshot();
@@ -98,14 +108,14 @@ describe('Test ABAP headless generator', () => {
     });
 
     it('should generate ABAP deploy config for btp system (VSCode)', async () => {
-        isAppStudioMock.mockReturnValue(false);
-        getServiceMock.mockResolvedValue({
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetService.mockResolvedValue({
             getAll: jest.fn().mockResolvedValue([backendSystemBtp])
         });
         const headlessConfig = 'app1';
         const testAppName = 'app1-btp';
 
-        await copy(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName));
+        cpSync(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName), { recursive: true });
         await runHeadlessGen(headlessConfig, DeployTarget.ABAP, OUTPUT_DIR, testAppName);
 
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/package.json`, 'utf-8')).toMatchSnapshot();
@@ -113,12 +123,12 @@ describe('Test ABAP headless generator', () => {
     });
 
     it('should generate ABAP deploy config for an on-prem destination (BAS)', async () => {
-        isAppStudioMock.mockReturnValue(true);
-        listDestinationsMock.mockResolvedValue(mockDestinations);
+        mockIsAppStudio.mockReturnValue(true);
+        mockListDestinations.mockResolvedValue(mockDestinations);
         const headlessConfig = 'app2-bas';
         const testAppName = 'app2-bas-on-prem';
 
-        await copy(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName));
+        cpSync(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName), { recursive: true });
         await runHeadlessGen(headlessConfig, DeployTarget.ABAP, OUTPUT_DIR, testAppName);
 
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/package.json`, 'utf-8')).toMatchSnapshot();
@@ -126,12 +136,12 @@ describe('Test ABAP headless generator', () => {
     });
 
     it('should generate ABAP deploy config for an s4hc destination (BAS)', async () => {
-        isAppStudioMock.mockReturnValue(true);
-        listDestinationsMock.mockResolvedValue(mockDestinations);
+        mockIsAppStudio.mockReturnValue(true);
+        mockListDestinations.mockResolvedValue(mockDestinations);
         const headlessConfig = 'app3-bas';
         const testAppName = 'app3-bas-s4hc';
 
-        await copy(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName));
+        cpSync(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName), { recursive: true });
         await runHeadlessGen(headlessConfig, DeployTarget.ABAP, OUTPUT_DIR, testAppName);
 
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/package.json`, 'utf-8')).toMatchSnapshot();
