@@ -1,0 +1,119 @@
+packages/deploy-config-sub-generator test$ NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors
+packages/deploy-config-sub-generator test: (node:59480) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+packages/deploy-config-sub-generator test: (Use `node --trace-warnings ...` to show where the warning was created)
+packages/deploy-config-sub-generator test: (node:59480) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+packages/deploy-config-sub-generator test:   [2mconsole.log[22m
+packages/deploy-config-sub-generator test:     [dotenv@17.3.1] injecting env (0) from .env -- tip: 🛡️ auth for agents: https://vestauth.com
+packages/deploy-config-sub-generator test: [2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat _log ([22m[2m../../node_modules/.pnpm/dotenv@17.3.1/node_modules/dotenv/lib/main.js[2m:139:11)[22m[2m[22m
+packages/deploy-config-sub-generator test:   [2mconsole.log[22m
+packages/deploy-config-sub-generator test:     [dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+packages/deploy-config-sub-generator test: [2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat _log ([22m[2m../../node_modules/.pnpm/dotenv@17.3.1/node_modules/dotenv/lib/main.js[2m:139:11)[22m[2m[22m
+packages/deploy-config-sub-generator test:   [2mconsole.log[22m
+packages/deploy-config-sub-generator test:     [dotenv@17.3.1] injecting env (0) from ../../../../../../../output/mta-app/project1/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+packages/deploy-config-sub-generator test: [2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat _log ([22m[2m../../node_modules/.pnpm/dotenv@17.3.1/node_modules/dotenv/lib/main.js[2m:139:11)[22m[2m[22m
+packages/deploy-config-sub-generator test:   [2mconsole.log[22m
+packages/deploy-config-sub-generator test:     [dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+packages/deploy-config-sub-generator test: [2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat _log ([22m[2m../../node_modules/.pnpm/dotenv@17.3.1/node_modules/dotenv/lib/main.js[2m:139:11)[22m[2m[22m
+packages/deploy-config-sub-generator test:   [2mconsole.log[22m
+packages/deploy-config-sub-generator test:     [dotenv@17.3.1] injecting env (0) from ../../../../../../../output/project1/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+packages/deploy-config-sub-generator test: [2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat _log ([22m[2m../../node_modules/.pnpm/dotenv@17.3.1/node_modules/dotenv/lib/main.js[2m:139:11)[22m[2m[22m
+packages/deploy-config-sub-generator test:   [2mconsole.log[22m
+packages/deploy-config-sub-generator test:     [dotenv@17.3.1] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+packages/deploy-config-sub-generator test: [2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat _log ([22m[2m../../node_modules/.pnpm/dotenv@17.3.1/node_modules/dotenv/lib/main.js[2m:139:11)[22m[2m[22m
+packages/deploy-config-sub-generator test: [0m[7m[1m[32m PASS [39m[22m[27m[0m [2mtest/app/[22m[1mapp.test.ts[22m ([0m[1m[41m19.524 s[49m[22m[0m)
+packages/deploy-config-sub-generator test:   Deployment Generator
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mValidate deployment generator exists if the incorrect target is set (5762 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mValidate deployment generator is loaded as root generator (351 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mValidate deployment generator is loaded as sub generator (595 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mValidate deployment generator is loaded and backend config is loaded from options (341 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mValidate deployment generator is ran standalone (no backend config) (342 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mValidate deployment generator handles CAP project with missing MTA configuration (317 ms)[22m
+packages/deploy-config-sub-generator test: [0m[7m[1m[32m PASS [39m[22m[27m[0m [2mtest/headless/[22m[1mcf-headless.test.ts[22m
+packages/deploy-config-sub-generator test:   Test headless generator
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mTest: Headless deploy-config (524 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mTest: Headless deploy-config TypeScript - Headless Script (133 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mTest: Headless deploy-config - addToManagedAppRouter  (111 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mTest: Headless deploy-config - addToManagedAppRouter inside a cap project (89 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mTest: Headless deploy-config - addMTADestination inside a cap project (79 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mTest: Headless deploy-config - addMTADestination inside a cap java project (103 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mTest: Headless deploy-config - localAppChanges inside an existing CAP project (123 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mTest: Headless deploy-config - localAppChanges flag is ignored if set to true when parent is non-CAP (155 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mTest: Headless deploy-config - pass app config as file path and options (106 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mTest: Headless deploy-config - telemetry is sent (19 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mTest: Headless deploy-config - should throw an exception if appConfig is missing (18 ms)[22m
+packages/deploy-config-sub-generator test: [0m[7m[1m[32m PASS [39m[22m[27m[0m [2mtest/headless/[22m[1mabap-headless.test.ts[22m
+packages/deploy-config-sub-generator test:   Test ABAP headless generator
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mshould generate ABAP deploy config for on-prem system (VSCode) (984 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mshould generate ABAP deploy config for btp system (VSCode) (44 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mshould generate ABAP deploy config for an on-prem destination (BAS) (55 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mshould generate ABAP deploy config for an s4hc destination (BAS) (53 ms)[22m
+packages/deploy-config-sub-generator test:   [2m[33mconsole.warn[39m[22m
+packages/deploy-config-sub-generator test: [33m    errors.noBinary[39m
+packages/deploy-config-sub-generator test: [2m[22m
+packages/deploy-config-sub-generator test: [2m      15 |     },[22m
+packages/deploy-config-sub-generator test: [2m      16 |     warn: (msg) => {[22m
+packages/deploy-config-sub-generator test: [2m    > 17 |         console.warn(msg);[22m
+packages/deploy-config-sub-generator test: [2m         |                 ^[22m
+packages/deploy-config-sub-generator test: [2m      18 |     },[22m
+packages/deploy-config-sub-generator test: [2m      19 |     info: (msg) => {[22m
+packages/deploy-config-sub-generator test: [2m      20 |         console.log(msg);[22m
+packages/deploy-config-sub-generator test: [2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat Object.warn ([22m[2m../fiori-generator-shared/dist/logging/logWrapper.js[2m:17:17)[22m[2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat warn ([22m[2msrc/utils/environment.ts[2m:33:37)[22m[2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/app/utils.test.ts[39m[0m[2m:47:16)[22m[2m[22m
+packages/deploy-config-sub-generator test:   [2m[33mconsole.warn[39m[22m
+packages/deploy-config-sub-generator test: [33m    errors.noBinary[39m
+packages/deploy-config-sub-generator test: [2m[22m
+packages/deploy-config-sub-generator test: [2m      15 |     },[22m
+packages/deploy-config-sub-generator test: [2m      16 |     warn: (msg) => {[22m
+packages/deploy-config-sub-generator test: [2m    > 17 |         console.warn(msg);[22m
+packages/deploy-config-sub-generator test: [2m         |                 ^[22m
+packages/deploy-config-sub-generator test: [2m      18 |     },[22m
+packages/deploy-config-sub-generator test: [2m      19 |     info: (msg) => {[22m
+packages/deploy-config-sub-generator test: [2m      20 |         console.log(msg);[22m
+packages/deploy-config-sub-generator test: [2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat Object.warn ([22m[2m../fiori-generator-shared/dist/logging/logWrapper.js[2m:17:17)[22m[2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat warn ([22m[2msrc/utils/environment.ts[2m:33:37)[22m[2m[22m
+packages/deploy-config-sub-generator test: [2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/app/utils.test.ts[39m[0m[2m:49:16)[22m[2m[22m
+packages/deploy-config-sub-generator test: [0m[7m[1m[32m PASS [39m[22m[27m[0m [2mtest/app/[22m[1mutils.test.ts[22m
+packages/deploy-config-sub-generator test:   Test utils - Deploy
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mparseTarget (1 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mValidate isMTAInstalled with missing mta (17 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mValidate isMTAInstalled with installed mta (1 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mValidate getEnvApiHubConfig (1 ms)[22m
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mshould return prompt step details for yui usage[22m
+packages/deploy-config-sub-generator test: [0m[7m[1m[32m PASS [39m[22m[27m[0m [2mtest/prompts/[22m[1mdeploy-target.test.ts[22m
+packages/deploy-config-sub-generator test:   deploy-target
+packages/deploy-config-sub-generator test:     [32m✓[39m [2mshould return the deployment target question (2 ms)[22m
+packages/deploy-config-sub-generator test: -------------------|---------|----------|---------|---------|---------------------------------
+packages/deploy-config-sub-generator test: File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s               
+packages/deploy-config-sub-generator test: -------------------|---------|----------|---------|---------|---------------------------------
+packages/deploy-config-sub-generator test: [32;1mAll files         [0m | [32;1m  91.75[0m | [32;1m   80.66[0m | [32;1m  90.62[0m | [32;1m  91.66[0m | [31;1m                               [0m 
+packages/deploy-config-sub-generator test: [32;1m app              [0m | [32;1m   90.8[0m | [32;1m   87.71[0m | [32;1m     90[0m | [32;1m  90.69[0m | [31;1m                               [0m 
+packages/deploy-config-sub-generator test: [32;1m  index.ts        [0m | [32;1m   88.4[0m | [32;1m   86.66[0m | [32;1m  83.33[0m | [32;1m  88.23[0m | [31;1m105-106,138-139,202-203,231,235[0m 
+packages/deploy-config-sub-generator test: [32;1m  prompting.ts    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                               [0m 
+packages/deploy-config-sub-generator test: [32;1m  utils.ts        [0m | [32;1m    100[0m | [32;1m   83.33[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m15                             [0m 
+packages/deploy-config-sub-generator test: [32;1m headless         [0m | [32;1m  96.96[0m | [32;1m   81.25[0m | [32;1m    100[0m | [32;1m  96.96[0m | [31;1m                               [0m 
+packages/deploy-config-sub-generator test: [32;1m  index.ts        [0m | [32;1m  96.96[0m | [32;1m   81.25[0m | [32;1m    100[0m | [32;1m  96.96[0m | [31;1m51                             [0m 
+packages/deploy-config-sub-generator test: [32;1m prompts          [0m | [32;1m   92.3[0m | [33;1m   57.89[0m | [32;1m   87.5[0m | [32;1m     92[0m | [31;1m                               [0m 
+packages/deploy-config-sub-generator test: [32;1m  deploy-target.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                               [0m 
+packages/deploy-config-sub-generator test: [32;1m  sub-gen.ts      [0m | [32;1m   90.9[0m | [33;1m   57.89[0m | [33;1m     75[0m | [32;1m  90.47[0m | [31;1m121,154                        [0m 
+packages/deploy-config-sub-generator test: [32;1m utils            [0m | [32;1m  89.58[0m | [32;1m   80.95[0m | [32;1m     90[0m | [32;1m  89.58[0m | [31;1m                               [0m 
+packages/deploy-config-sub-generator test: [32;1m  config.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                               [0m 
+packages/deploy-config-sub-generator test: [32;1m  constants.ts    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                               [0m 
+packages/deploy-config-sub-generator test: [33;1m  environment.ts  [0m | [33;1m  71.42[0m | [33;1m   73.33[0m | [32;1m    100[0m | [33;1m  71.42[0m | [31;1m75-80                          [0m 
+packages/deploy-config-sub-generator test: [32;1m  i18n.ts         [0m | [32;1m    100[0m | [33;1m      75[0m | [33;1m  66.66[0m | [32;1m    100[0m | [33;1m31                             [0m 
+packages/deploy-config-sub-generator test: [32;1m  targets.ts      [0m | [32;1m   90.9[0m | [33;1m   76.92[0m | [32;1m    100[0m | [32;1m   90.9[0m | [31;1m43                             [0m 
+packages/deploy-config-sub-generator test: -------------------|---------|----------|---------|---------|---------------------------------
+packages/deploy-config-sub-generator test: [1mTest Suites: [22m[1m[32m5 passed[39m[22m, 5 total
+packages/deploy-config-sub-generator test: [1mTests:       [22m[1m[32m27 passed[39m[22m, 27 total
+packages/deploy-config-sub-generator test: [1mSnapshots:   [22m[1m[32m53 passed[39m[22m, 53 total
+packages/deploy-config-sub-generator test: [1mTime:[22m        [1m[33m27.238 s[39m[22m
+packages/deploy-config-sub-generator test: [2mRan all test suites[22m[2m.[22m
+packages/deploy-config-sub-generator test: Done

@@ -1,17 +1,9 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { AppConfig } from '@sap-ux/fiori-generator-shared';
+import type { AppConfig, DeployTarget } from '@sap-ux/fiori-generator-shared';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// Use dynamic imports to allow jest.unstable_mockModule to take effect
-const { default: HeadlessGenerator } = await import('../../src/headless');
-const { default: yeomanTest } = await import('yeoman-test');
-const { generatorNamespace } = await import('../../src/utils');
-const { default: CFGen } = await import('@sap-ux/cf-deploy-config-sub-generator');
-const { default: ABAPGen } = await import('@sap-ux/abap-deploy-config-sub-generator');
-const { DeployTarget } = await import('@sap-ux/fiori-generator-shared');
 
 /**
  * Runs the headless generator for deployment sub generators.
@@ -29,6 +21,13 @@ export async function runHeadlessGen(
     projectName?: string,
     opts?: {}
 ): Promise<any> {
+    // Dynamic imports inside function to allow jest.unstable_mockModule to take effect
+    const { default: HeadlessGenerator } = await import('../../src/headless.js');
+    const { default: yeomanTest } = await import('yeoman-test');
+    const { generatorNamespace } = await import('../../src/utils.js');
+    const { default: CFGen } = await import('@sap-ux/cf-deploy-config-sub-generator');
+    const { default: ABAPGen } = await import('@sap-ux/abap-deploy-config-sub-generator');
+
     let appConfig;
     const headlessGenPath = join(__dirname, '../../src/headless');
 
@@ -38,7 +37,7 @@ export async function runHeadlessGen(
         const testFilePath = join(
             __dirname,
             '/fixtures/headless-configs',
-            target === DeployTarget.CF ? 'cf' : 'abap',
+            target === 'CF' ? 'cf' : 'abap',
             `${testNameOrJsonOrPath}-config.json`
         );
         if (testFilePath) {
