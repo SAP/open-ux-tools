@@ -23095,9 +23095,9 @@ sap.ui.define([
 
         opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
             Then.onTheBookingObjectPage.iCheckNumberOfSections(2);
-            When.onTheBookingObjectPage.iGoToSection({ section: \\"Booking\\" });
+            When.onTheBookingObjectPage.iPressSectionIconTabFilterButton(\\"Booking\\");
             Then.onTheBookingObjectPage.iCheckSection({ section: \\"Booking\\" });
-            When.onTheBookingObjectPage.iGoToSection({ section: \\"BookingSupplement\\" });
+            When.onTheBookingObjectPage.iPressSectionIconTabFilterButton(\\"BookingSupplement\\");
             Then.onTheBookingObjectPage.iCheckSection({ section: \\"BookingSupplement\\" });
        });
 
@@ -23275,9 +23275,9 @@ sap.ui.define([
 
         opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
             Then.onTheTravelObjectPage.iCheckNumberOfSections(2);
-            When.onTheTravelObjectPage.iGoToSection({ section: \\"Travel\\" });
+            When.onTheTravelObjectPage.iPressSectionIconTabFilterButton(\\"Travel\\");
             Then.onTheTravelObjectPage.iCheckSection({ section: \\"Travel\\" });
-            When.onTheTravelObjectPage.iGoToSection({ section: \\"Booking\\" });
+            When.onTheTravelObjectPage.iPressSectionIconTabFilterButton(\\"Booking\\");
             Then.onTheTravelObjectPage.iCheckSection({ section: \\"Booking\\" });
        });
 
