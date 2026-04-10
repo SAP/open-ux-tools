@@ -8523,7 +8523,7 @@ title=App Title",
     \\"resources\\": \\"resources.json\\",
     \\"sourceTemplate\\": {
       \\"id\\": \\"@sap-ux/fiori-freestyle-writer:basic\\",
-      \\"version\\": \\"2.5.89\\",
+      \\"version\\": \\"2.5.90\\",
       \\"toolsId\\": \\"testToolsId:abcd1234\\"
     },
     \\"dataSources\\": {

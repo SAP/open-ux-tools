@@ -273,7 +273,7 @@ describe('convertEslintConfig', () => {
      * stripped config is only visible via the writeFileSync call made into the temp dir.
      */
     const getStrippedConfig = (): EslintRcJson => {
-        const calls = (writeFileSync as jest.Mock).mock.calls;
+        const calls = mockWriteFileSync.mock.calls;
         // The first writeFileSync call in runMigrationCommand writes the stripped eslintrc to the temp dir
         const strippedCall = calls.find(
             ([path]: [string]) => path.includes('eslint-migration-') && !path.endsWith('eslint.config.mjs')
