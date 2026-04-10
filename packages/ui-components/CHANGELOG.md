@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.9
+
+### Patch Changes
+
+- 9357457: fix(ui-components): add inline code block styling for VS Code webviews
+
 ## 2.1.8
 
 ### Patch Changes

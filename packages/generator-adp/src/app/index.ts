@@ -12,6 +12,7 @@ import {
     fetchPublicVersions,
     generate,
     generateCf,
+    getCfBaseAppInbounds,
     getCfConfig,
     getConfig,
     getConfiguredProvider,
@@ -580,7 +581,9 @@ export default class extends Generator {
             ui5Version: { hide: true },
             ui5ValidationCli: { hide: true },
             enableTypeScript: { hide: true },
-            addFlpConfig: { hide: true },
+            // In CF flow, inbounds are fetched after base app selection (CF services page), which comes after attributes.
+            // We assume true here so the wizard prepares the tile settings page; actual inbounds availability is handled by the FLP sub-gen.
+            addFlpConfig: { hasBaseAppInbounds: true },
             addDeployConfig: { hide: true },
             importKeyUserChanges: { hide: true }
         };
@@ -604,6 +607,39 @@ export default class extends Generator {
         const cfServicesQuestions = await this.cfPrompter.getPrompts(projectPath, this.cfConfig);
         this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(cfServicesQuestions);
         this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
+
+        const selectedApp = this.cfServicesAnswers.baseApp;
+        if (!selectedApp || !this.attributeAnswers?.addFlpConfig) {
+            return;
+        }
+
+        try {
+            const cfInbounds = await getCfBaseAppInbounds(
+                selectedApp.appId,
+                selectedApp.appHostId,
+                this.cfConfig,
+                this.logger
+            );
+            // Register FLP wizard pages now that we know if inbounds are available
+            updateFlpWizardSteps(!!cfInbounds, this.prompts, this.attributeAnswers.projectName, true);
+            if (cfInbounds) {
+                await addFlpGen(
+                    {
+                        vscode: this.vscode,
+                        projectRootPath: this._getProjectPath(),
+                        inbounds: cfInbounds,
+                        layer: this.layer,
+                        prompts: this.prompts,
+                        isCfProject: true
+                    },
+                    this.composeWith.bind(this),
+                    this.logger,
+                    this.appWizard
+                );
+            }
+        } catch (e) {
+            this.logger.warn(`Could not fetch CF inbounds for FLP configuration: ${e.message}`);
+        }
     }
 
     /**

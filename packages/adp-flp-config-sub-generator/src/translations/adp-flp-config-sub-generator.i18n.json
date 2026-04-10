@@ -25,6 +25,10 @@
         "authenticationFailed": "Authentication failed.",
         "projectNotCloudReady": "FLP Configuration is supported for Cloud Ready adaptation projects only",
         "baseAppInboundsFetching": "Error while fetching base application inbounds",
+        "cfConfigRequired": "Cloud Foundry configuration is required for Cloud Foundry adaptation projects.",
+        "cfLoginRequired": "Cloud Foundry login required. Please run `cf login` and try again.",
+        "cfAppHostIdMissing": "Could not determine the `appHostId` from the project's `ui5.yaml` configuration.",
+        "cfInboundsFetchFailed": "Failed to fetch inbounds for the Cloud Foundry application: {{error}}",
         "warningCachingNotSupported": "Warning: caching is not supported"
     }
 }
