@@ -1,5 +1,6 @@
 import { format } from 'node:util';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { render } from 'ejs';
 import { Mta, type mta } from '@sap/mta-lib';
@@ -906,7 +907,7 @@ export class MtaConfig {
                 destinationServiceName: destinationServiceName,
                 mtaVersion: '1.0.0'
             };
-            const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${FileName.MtaExtYaml}`), 'utf-8');
+            const mtaExtTemplate = readFileSync(join(dirname(fileURLToPath(import.meta.url)), `../../templates/app/${FileName.MtaExtYaml}`), 'utf-8');
             writeFileSync(mtaExtFilePath, render(mtaExtTemplate, mtaExt));
             this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: FileName.MtaExtYaml }));
         } else {

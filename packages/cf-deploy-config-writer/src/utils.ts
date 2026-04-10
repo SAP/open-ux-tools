@@ -1,4 +1,5 @@
-import { join, normalize, posix } from 'node:path';
+import { join, dirname, normalize, posix } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { coerce, satisfies } from 'semver';
 import type { Editor } from 'mem-fs-editor';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
@@ -57,7 +58,7 @@ export function readManifest(manifestPath: string, fs: Editor): Manifest {
  * @returns The path of the template specified or templates root folder
  */
 export function getTemplatePath(relativeTemplatePath: string): string {
-    return join(__dirname, '../templates', relativeTemplatePath);
+    return join(dirname(fileURLToPath(import.meta.url)), '../templates', relativeTemplatePath);
 }
 
 /**

@@ -57,31 +57,6 @@ jest.unstable_mockModule('hasbin', () => ({
     sync: hasbinSyncMock
 }));
 
-// Pre-load @sap-ux/fiori-generator-shared (works because @vscode-logging/logger is mocked via jest config)
-const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
-
-// Mock @sap-ux/fiori-generator-shared with real exports plus test overrides
-jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
-    ...actualFioriGenShared,
-    sendTelemetry: jest.fn(),
-    TelemetryHelper: {
-        initTelemetrySettings: jest.fn(),
-        createTelemetryData: jest.fn()
-    },
-    getHostEnvironment: jest.fn(() => 'cli'),
-    DefaultLogger: {
-        fatal: jest.fn(),
-        error: jest.fn(),
-        warn: jest.fn(),
-        info: jest.fn(),
-        debug: jest.fn(),
-        trace: jest.fn(),
-        getChildLogger: jest.fn(),
-        getLogLevel: jest.fn(() => 'off'),
-        log: jest.fn()
-    }
-}));
-
 // Phase 1: Pre-load and mock foundational modules first.
 // btp-utils, store, cf-deploy-config-writer must be mocked BEFORE importing
 // modules that depend on them (cf-deploy-config-inquirer, abap-deploy-config-sub-generator, etc.)
