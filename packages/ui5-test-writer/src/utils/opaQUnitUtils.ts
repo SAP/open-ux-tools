@@ -21,8 +21,11 @@ const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
  *   sap.ui.require(\n  [\n    "a",\n    "b",\n  ], function
  *                           ^^^^^^^^^^^^^^^^^
  *                           captured as group 1
+ *
+ * The `d` flag enables `match.indices` so we can read the capture group's
+ * exact start/end positions without fragile string searching.
  */
-const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([\s\S]*?)\]\s*,\s*function/;
+const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([\s\S]*?)\]\s*,\s*function/d;
 
 /**
  * Splices new module paths into the sap.ui.require array of the content string.
@@ -60,10 +63,8 @@ export function spliceModulesIntoQUnitContent(fileContent: string, moduleNames: 
     // Build the lines to insert, each terminated with a trailing comma
     const newLines = toAdd.map((name) => `${indent}"${name}",`).join('\n');
 
-    // Insert just before the closing `]` — find the position right after the
-    // last character of the captured array body inside the full match.
-    const arrayBodyStart = match.index + match[0].indexOf(match[1]);
-    const insertPosition = arrayBodyStart + arrayBody.length;
+    // Insert just before the closing `]` using the capture group's end index.
+    const insertPosition = match.indices![1][1];
 
     const before = fileContent.slice(0, insertPosition);
     const after = fileContent.slice(insertPosition);
