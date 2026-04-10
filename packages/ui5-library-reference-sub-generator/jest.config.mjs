@@ -6,6 +6,10 @@ config.snapshotFormat = {
 };
 config.moduleNameMapper = {
     ...config.moduleNameMapper,
-    '^vscode$': '<rootDir>/test/__mocks__/vscode.js'
+    '^vscode$': '<rootDir>/test/__mocks__/vscode.js',
+    '^@vscode-logging/logger$': '<rootDir>/test/__mocks__/vscode-logging-logger.mjs'
 };
+config.transformIgnorePatterns = [
+    'node_modules/(?!(@sap-ux|@sap-ux-private|@sap/ux-cds-compiler-facade|@vscode-logging)/)'
+];
 export default config;
