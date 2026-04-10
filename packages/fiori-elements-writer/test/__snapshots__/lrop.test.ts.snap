@@ -3033,7 +3033,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -10404,7 +10404,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -37430,7 +37430,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -41054,7 +41054,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -44125,7 +44125,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -47760,7 +47760,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -51497,7 +51497,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -54997,7 +54997,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -58497,7 +58497,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -59183,7 +59183,7 @@ appDescription=A Fiori application.",
               \\"controlConfiguration\\": {
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
                   \\"tableSettings\\": {
-                    \\"type\\": \\"TreeTable\\"
+                    \\"type\\": \\"ResponsiveTable\\"
                   }
                 }
               }
@@ -62320,7 +62320,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },

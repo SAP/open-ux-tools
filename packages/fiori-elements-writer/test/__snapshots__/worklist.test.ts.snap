@@ -3035,7 +3035,7 @@ appDescription=A Fiori application.",
             },
             \\"tableSettings\\": {
               \\"multiSelect\\": true,
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },

@@ -206,7 +206,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 ...Object.assign(feBaseConfig('felrop2'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
-                        settings: Object.assign(v2TemplateSettings, { tableType: TableType.TREE })
+                        settings: { ...v2TemplateSettings, tableType: TableType.TREE }
                     }
                 }),
                 service: v2Service
