@@ -1,24 +1,26 @@
 import { jest } from '@jest/globals';
 
-// Controllable mock for findFilesByExtension
-// Source code only imports findFilesByExtension from @sap-ux/project-access/dist/file
-// This mock is used via moduleNameMapper in jest.config.mjs to avoid the read-only
-// ESM module namespace issue with jest.spyOn
-export const findFilesByExtensionMock = jest.fn().mockResolvedValue([]);
+// Import the real implementation using a relative path to bypass moduleNameMapper.
+// moduleNameMapper only intercepts bare specifier `@sap-ux/project-access/dist/file`.
+const realModule = await import('../../../project-access/dist/file/index.js');
+
+// Controllable mock for findFilesByExtension that delegates to the real implementation
+// by default. Tests that need to override it can import findFilesByExtensionMock and
+// call e.g. findFilesByExtensionMock.mockResolvedValue([]).
+export const findFilesByExtensionMock = jest.fn(realModule.findFilesByExtension);
 export const findFilesByExtension = findFilesByExtensionMock;
 
-// Re-export other file utilities that might be imported transitively
-// (currently not used by fe-fpm-writer src, but provided for safety)
-export const findBy = jest.fn().mockResolvedValue([]);
-export const findFiles = jest.fn().mockResolvedValue([]);
-export const findFileUp = jest.fn().mockResolvedValue(undefined);
-export const getFilePaths = jest.fn().mockResolvedValue([]);
-export const deleteDirectory = jest.fn();
-export const deleteFile = jest.fn();
-export const fileExists = jest.fn().mockResolvedValue(false);
-export const readDirectory = jest.fn().mockResolvedValue([]);
-export const readFile = jest.fn().mockResolvedValue('');
-export const readJSON = jest.fn().mockResolvedValue({});
-export const updatePackageJSON = jest.fn();
-export const updateManifestJSON = jest.fn();
-export const writeFile = jest.fn();
+// Re-export everything else from the real module so the mock is a transparent wrapper
+export const findBy = realModule.findBy;
+export const findFiles = realModule.findFiles;
+export const findFileUp = realModule.findFileUp;
+export const getFilePaths = realModule.getFilePaths;
+export const deleteDirectory = realModule.deleteDirectory;
+export const deleteFile = realModule.deleteFile;
+export const fileExists = realModule.fileExists;
+export const readDirectory = realModule.readDirectory;
+export const readFile = realModule.readFile;
+export const readJSON = realModule.readJSON;
+export const updatePackageJSON = realModule.updatePackageJSON;
+export const updateManifestJSON = realModule.updateManifestJSON;
+export const writeFile = realModule.writeFile;
