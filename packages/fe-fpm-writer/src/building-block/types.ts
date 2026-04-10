@@ -455,7 +455,9 @@ export interface CustomFilterField extends BuildingBlock {
  *       label="Custom Field"
  *       placement="After"
  *       anchor="DataField::ExistingProperty">
- *       <core:Fragment fragmentName="myApp.ext.CustomField" type="XML" />
+ *       <macros:fields>
+ *         <core:Fragment fragmentName="myApp.ext.CustomField" type="XML" />
+ *       </macros:fields>
  *     </macros:FormElement>
  *   </macros:fields>
  * </macros:Form>

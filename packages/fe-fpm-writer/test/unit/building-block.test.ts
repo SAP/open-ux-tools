@@ -3103,6 +3103,8 @@ describe('Building Blocks', () => {
             expect(fs.exists(expectedFragmentPath)).toBe(true);
 
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('<macros:fields>');
+            expect(viewContent).toMatch(/<macros:fields>[\s\S]*FormElement[\s\S]*<\/macros:fields>/);
             expect(viewContent).toContain('FormElement');
             expect(viewContent).toContain('Custom Form Field 2');
             expect(viewContent).toContain('anchor="DataField::AnotherProperty"');
@@ -3185,6 +3187,15 @@ describe('Building Blocks', () => {
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
             expect(viewContent).toContain('FormElement');
             expect(viewContent).toContain('Form Field With Handler');
+
+            const handlerFilePath = join(
+                basePath,
+                'webapp',
+                customFormFieldData.embededFragment.folder!,
+                `${customFormFieldData.embededFragment.name}.js`
+            );
+            expect(fs.exists(handlerFilePath)).toBe(true);
+            expect(fs.read(handlerFilePath)).toContain('onPress');
 
             await writeFilesForDebugging(fs);
         });
