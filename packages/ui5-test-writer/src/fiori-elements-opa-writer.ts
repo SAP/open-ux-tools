@@ -467,11 +467,32 @@ export async function generateOPAFiles(
             const htmlTarget = readHtmlTargetFromQUnitJs(basePath, editor) ?? config.htmlTarget;
             const standaloneConfig = { ...config, htmlTarget };
 
-            writeCommonAndPageFiles(standaloneConfig, rootCommonTemplateDirPath, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams);
-            writeJourneyFiles(appFeatures, journeyParams, rootV4TemplateDirPath, testOutDirPath, editor, standaloneConfig);
+            writeCommonAndPageFiles(
+                standaloneConfig,
+                rootCommonTemplateDirPath,
+                rootV4TemplateDirPath,
+                testOutDirPath,
+                editor,
+                journeyParams
+            );
+            writeJourneyFiles(
+                appFeatures,
+                journeyParams,
+                rootV4TemplateDirPath,
+                testOutDirPath,
+                editor,
+                standaloneConfig
+            );
         }
     } else {
-        writeCommonAndPageFiles(config, rootCommonTemplateDirPath, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams);
+        writeCommonAndPageFiles(
+            config,
+            rootCommonTemplateDirPath,
+            rootV4TemplateDirPath,
+            testOutDirPath,
+            editor,
+            journeyParams
+        );
         writeJourneyFiles(appFeatures, journeyParams, rootV4TemplateDirPath, testOutDirPath, editor, config);
     }
 

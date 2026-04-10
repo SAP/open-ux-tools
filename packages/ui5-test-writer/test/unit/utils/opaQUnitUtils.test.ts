@@ -121,7 +121,7 @@ describe('spliceModulesIntoQUnitContent()', () => {
         // Each entry line (including the new one) should start with four spaces
         const lines = result.split('\n');
         const newEntryLine = lines.find((l) => l.includes('NewJourney'));
-        expect(newEntryLine).toMatch(/^    "/);
+        expect(newEntryLine).toMatch(/^ {4}"/);
     });
 
     test('each inserted entry ends with a trailing comma', () => {
@@ -136,7 +136,7 @@ describe('spliceModulesIntoQUnitContent()', () => {
         const lines = result.split('\n');
         const newEntryLine = lines.find((l) => l.includes('NewJourney') && !l.includes('TravelList'));
         // Must be on its own line, properly indented, not concatenated with the previous entry
-        expect(newEntryLine).toMatch(/^    "myApp\/test\/integration\/NewJourney",$/);
+        expect(newEntryLine).toMatch(/^ {4}"myApp\/test\/integration\/NewJourney",$/);
     });
 });
 
