@@ -1,30 +1,30 @@
-import fs from 'node:fs';
+import { jest } from '@jest/globals';
 import path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import { getToken, getBtpDestinationConfig } from '@sap-ux/adp-tooling';
 
-import { hasOnPremiseDestination } from '../../../src/tunnel/destination-check';
+const mockExistsSync = jest.fn();
+const mockReadFileSync = jest.fn();
 
-jest.mock('node:fs', () => ({
-    ...jest.requireActual('node:fs'),
-    existsSync: jest.fn(),
-    readFileSync: jest.fn()
+jest.unstable_mockModule('node:fs', () => ({
+    default: { existsSync: mockExistsSync, readFileSync: mockReadFileSync },
+    existsSync: mockExistsSync,
+    readFileSync: mockReadFileSync
 }));
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    getToken: jest.fn(),
-    getBtpDestinationConfig: jest.fn()
+const mockGetToken = jest.fn();
+const mockGetBtpDestinationConfig = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    getToken: mockGetToken,
+    getBtpDestinationConfig: mockGetBtpDestinationConfig
 }));
 
-jest.mock('@sap-ux/btp-utils', () => ({
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     DestinationProxyType: { ON_PREMISE: 'OnPremise' }
 }));
 
-const mockGetToken = getToken as jest.Mock;
-const existsSyncMock = fs.existsSync as jest.Mock;
-const readFileSyncMock = fs.readFileSync as jest.Mock;
-const mockGetBtpDestinationConfig = getBtpDestinationConfig as jest.Mock;
+const { hasOnPremiseDestination } = await import('../../../src/tunnel/destination-check');
 
 describe('destination-check', () => {
     const logger = {
@@ -67,18 +67,18 @@ describe('destination-check', () => {
 
     describe('hasOnPremiseDestination', () => {
         test('should return false when webapp/xs-app.json does not exist', async () => {
-            existsSyncMock.mockReturnValue(false);
+            mockExistsSync.mockReturnValue(false);
 
             const result = await hasOnPremiseDestination(rootPath, logger);
 
             expect(result).toBe(false);
-            expect(existsSyncMock).toHaveBeenCalledWith(path.join(rootPath, 'webapp', 'xs-app.json'));
+            expect(mockExistsSync).toHaveBeenCalledWith(path.join(rootPath, 'webapp', 'xs-app.json'));
             expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('No webapp/xs-app.json'));
         });
 
         test('should return false when xs-app.json has no routes with destinations', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(JSON.stringify({ routes: [{ source: '^/api/' }] }));
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify({ routes: [{ source: '^/api/' }] }));
 
             const result = await hasOnPremiseDestination(rootPath, logger);
 
@@ -86,8 +86,8 @@ describe('destination-check', () => {
         });
 
         test('should return false when xs-app.json parse fails', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue('not-json');
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue('not-json');
 
             const result = await hasOnPremiseDestination(rootPath, logger);
 
@@ -95,8 +95,8 @@ describe('destination-check', () => {
         });
 
         test('should return false when VCAP_SERVICES is not set', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(
                 JSON.stringify({ routes: [{ source: '^/api/', destination: 'backend' }] })
             );
 
@@ -107,8 +107,8 @@ describe('destination-check', () => {
         });
 
         test('should return false when VCAP_SERVICES has invalid JSON', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(
                 JSON.stringify({ routes: [{ source: '^/api/', destination: 'backend' }] })
             );
             process.env.VCAP_SERVICES = 'not-json';
@@ -119,8 +119,8 @@ describe('destination-check', () => {
         });
 
         test('should return false when no destination service in VCAP_SERVICES', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(
                 JSON.stringify({ routes: [{ source: '^/api/', destination: 'backend' }] })
             );
             process.env.VCAP_SERVICES = JSON.stringify({ xsuaa: [] });
@@ -131,8 +131,8 @@ describe('destination-check', () => {
         });
 
         test('should return false when destination credentials are incomplete', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(
                 JSON.stringify({ routes: [{ source: '^/api/', destination: 'backend' }] })
             );
             process.env.VCAP_SERVICES = JSON.stringify({
@@ -145,8 +145,8 @@ describe('destination-check', () => {
         });
 
         test('should return false when getToken fails', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(
                 JSON.stringify({ routes: [{ source: '^/api/', destination: 'backend' }] })
             );
             process.env.VCAP_SERVICES = validVcapServices;
@@ -159,8 +159,8 @@ describe('destination-check', () => {
         });
 
         test('should return true when an OnPremise destination is found', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(
                 JSON.stringify({
                     routes: [
                         { source: '^/api/', destination: 'backend' },
@@ -186,8 +186,8 @@ describe('destination-check', () => {
         });
 
         test('should return false when no destinations are OnPremise', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(
                 JSON.stringify({ routes: [{ source: '^/api/', destination: 'backend' }] })
             );
             process.env.VCAP_SERVICES = validVcapServices;
@@ -201,8 +201,8 @@ describe('destination-check', () => {
         });
 
         test('should continue checking other destinations when one fails', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(
                 JSON.stringify({
                     routes: [
                         { source: '^/a/', destination: 'dest-a' },
@@ -223,8 +223,8 @@ describe('destination-check', () => {
         });
 
         test('should deduplicate destination names', async () => {
-            existsSyncMock.mockReturnValue(true);
-            readFileSyncMock.mockReturnValue(
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(
                 JSON.stringify({
                     routes: [
                         { source: '^/a/', destination: 'same-dest' },
