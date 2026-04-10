@@ -203,7 +203,7 @@ function getEntitySelectionChoices(
                 value: entityChoice,
                 checked: entityChoice.entity.defaultSelected
             });
-            entitySetsFlat[expandPath] = navEntity.entitySetName; // Can overwrite since we will only need to know each unique entity set name later
+            entitySetsFlat[fullPath] = navEntity.entitySetName;
         }
     }
     return {

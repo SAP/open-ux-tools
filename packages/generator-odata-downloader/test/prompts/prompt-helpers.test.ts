@@ -336,8 +336,8 @@ describe('Test createEntityChoices', () => {
         // Verify entitySetsFlat contains all entity sets
         expect(result!.entitySetsFlat).toEqual({
             _Booking: 'Booking',
-            _BookSupplement: 'BookingSupplement',
-            _Carrier: 'Airline'
+            '_Booking/_BookSupplement': 'BookingSupplement',
+            '_Booking/_Carrier': 'Airline'
         });
     });
 

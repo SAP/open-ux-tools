@@ -46,13 +46,15 @@ function mergeEntitySetData(
  * @param entitySetsFlat - Map of entity paths to entity set names
  * @param entitySetName - The name of the entity set
  * @param hierarchyEntities - Optional hierarchy descriptors; when provided, root node parent properties are cleared
+ * @param parentPath
  * @returns Object keyed on entity set name containing entity data arrays
  */
 export function createEntitySetData(
     odataResult: object | unknown[],
     entitySetsFlat: EntitySetsFlat,
     entitySetName: string,
-    hierarchyEntities?: HierarchyEntity[]
+    hierarchyEntities?: HierarchyEntity[],
+    parentPath = ''
 ): { [key: string]: object[] } {
     const resultDataByEntitySet: { [key: string]: object[] } = {};
     const odataRestulAsArray: Record<string, unknown>[] = Array.isArray(odataResult)
@@ -65,15 +67,24 @@ export function createEntitySetData(
 
     // Each entry is of the same entity set data
     odataRestulAsArray.forEach((resultEntry) => {
-        Object.entries(entitySetsFlat).forEach(([entityPath, entitySetName]) => {
-            // There are nested expanded entities
-            if (resultEntry[entityPath]) {
-                const entitySetData = createEntitySetData(resultEntry[entityPath], entitySetsFlat, entitySetName);
-                mergeEntitySetData(resultDataByEntitySet, entitySetData);
-                // Since we have assigned the property value to its own entity set property we can remove it from the parent (to prevent dups and file bloat)
-                delete resultEntry[entityPath];
+        for (const propName of Object.keys(resultEntry)) {
+            const contextualKey = parentPath ? `${parentPath}/${propName}` : propName;
+            // Prefer full-path key for accurate mapping; fall back to flat prop name for backward compat
+            const childEntitySetName = entitySetsFlat[contextualKey] ?? entitySetsFlat[propName];
+            if (!childEntitySetName || !resultEntry[propName]) {
+                continue;
             }
-        });
+            const entitySetData = createEntitySetData(
+                resultEntry[propName] as object | unknown[],
+                entitySetsFlat,
+                childEntitySetName,
+                undefined,
+                contextualKey
+            );
+            mergeEntitySetData(resultDataByEntitySet, entitySetData);
+            // Since we have assigned the property value to its own entity set property we can remove it from the parent (to prevent dups and file bloat)
+            delete resultEntry[propName];
+        }
 
         // Initialize seen set for this entity set if needed
         if (!seenInThisCall[entitySetName]) {
