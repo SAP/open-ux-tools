@@ -58,6 +58,11 @@ jest.unstable_mockModule('node:child_process', () => ({
     spawnSync: spawnSyncMock
 }));
 
+jest.unstable_mockModule('hasbin', () => ({
+    default: { sync: jest.fn().mockReturnValue(true) },
+    sync: jest.fn().mockReturnValue(true)
+}));
+
 const { runHeadlessGen } = await import('./utils');
 const { DeployTarget } = await import('@sap-ux/fiori-generator-shared');
 const { backendSystemBtp, backendSystemOnPrem, INPUT_APP_DIR_ABAP, INPUT_BASE_APP, mockDestinations } =
