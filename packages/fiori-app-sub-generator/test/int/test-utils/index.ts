@@ -10,9 +10,7 @@ import {
     README_GENERATOR_REGEX,
     YAML_VERSION_REGEX
 } from '@sap-ux/jest-file-matchers';
-import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import os from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
@@ -27,16 +25,7 @@ export const originalCwd: string = process.cwd(); // Generation changes the cwd,
 
 export function cleanTestDir(path: string): void {
     console.log('Test path clean', path);
-    if (os.platform() === 'win32') {
-        try {
-            // falls back to powershell args if command shell version fails
-            execSync(`rmdir /s /q ${path} || rmdir -recurse ${path}`, { encoding: 'utf-8' });
-        } catch (err) {
-            console.log(err);
-        }
-    } else {
-        rimraf.rimrafSync(path);
-    }
+    rimraf.rimrafSync(path);
 }
 /**
  * Gets the specified service test data
