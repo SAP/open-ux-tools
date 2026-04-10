@@ -19,6 +19,13 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     createApplicationAccess: mockCreateApplicationAccess
 }));
 
+// Mock serviceStore to prevent deep FioriAnnotationService chain from executing
+const mockGetServiceFn = jest.fn<any>();
+jest.unstable_mockModule('../../../../../src/tools/functionalities/page/serviceStore', () => ({
+    getService: mockGetServiceFn,
+    removeService: jest.fn()
+}));
+
 // Dynamic imports after mocks
 const { ADD_PAGE_FUNCTIONALITY, addPageHandlers, DELETE_PAGE_FUNCTIONALITY, deletePageHandlers } = await import(
     '../../../../../src/tools/functionalities/page'
@@ -37,12 +44,45 @@ const generateCustomExtensionMock = jest.fn<any>().mockResolvedValue({
     commit: commitMock,
     dump: memFsDumpMock
 });
+
+// Mock entities/navigations matching the test project's metadata
+const mockAllowedEntities = [
+    {
+        entitySet: 'Travels',
+        entityType: 'manageTravelsSrv.Travels',
+        navigations: [{ name: 'Expenses', entitySet: 'Expenses' }]
+    },
+    { entitySet: 'Expenses', entityType: 'manageTravelsSrv.Expenses', navigations: [] },
+    {
+        entitySet: 'TravelsStatusCodeList',
+        entityType: 'manageTravelsSrv.TravelsStatusCodeList',
+        navigations: []
+    },
+    {
+        entitySet: 'TravelsStatusCodeList_texts',
+        entityType: 'manageTravelsSrv.TravelsStatusCodeList_texts',
+        navigations: []
+    }
+];
+
 beforeEach(() => {
     memFsDumpMock.mockReturnValue({
         'manifest.json': {}
     });
     readAppMock = jest.fn<any>().mockResolvedValue({
         files: []
+    });
+
+    // Setup the mock service for getService
+    mockGetServiceFn.mockResolvedValue({
+        getAllowedEntities: jest.fn<any>().mockResolvedValue(mockAllowedEntities),
+        getAllowedNavigations: jest.fn<any>().mockImplementation(
+            async (entitySet?: string, _entityType?: string) => {
+                const entity = mockAllowedEntities.find((e) => e.entitySet === entitySet);
+                return entity?.navigations ?? [];
+            }
+        ),
+        getNamespace: jest.fn<any>().mockResolvedValue('manageTravelsSrv')
     });
 
     // Setup the mock implementation using actual createApplicationAccess
