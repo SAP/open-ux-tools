@@ -19,23 +19,19 @@ const mockGetCapModelAndServices = jest.fn().mockResolvedValue({
 });
 const mockGetCapServiceName = jest.fn().mockResolvedValue('mappedMainServiceName');
 
-jest.unstable_mockModule('@sap-ux/project-access', () => {
-    const actual = jest.requireActual<typeof import('@sap-ux/project-access')>('@sap-ux/project-access');
-    return {
-        ...actual,
-        getCapModelAndServices: mockGetCapModelAndServices,
-        getCapServiceName: mockGetCapServiceName
-    };
-});
+const actualProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getCapModelAndServices: mockGetCapModelAndServices,
+    getCapServiceName: mockGetCapServiceName
+}));
 
 const mockGetEntitySetOptions = jest.fn();
-jest.unstable_mockModule('../../../../../src/building-block/prompts/utils/prompt-helpers', () => {
-    const actual = jest.requireActual<typeof import('../../../../../src/building-block/prompts/utils/prompt-helpers')>('../../../../../src/building-block/prompts/utils/prompt-helpers');
-    return {
-        ...actual,
-        getEntitySetOptions: mockGetEntitySetOptions
-    };
-});
+const actualPromptHelpers = await import('../../../../../src/building-block/prompts/utils/prompt-helpers');
+jest.unstable_mockModule('../../../../../src/building-block/prompts/utils/prompt-helpers', () => ({
+    ...actualPromptHelpers,
+    getEntitySetOptions: mockGetEntitySetOptions
+}));
 
 const { getProject } = await import('@sap-ux/project-access');
 const {
@@ -52,7 +48,6 @@ const {
     getFilterBarIdPrompt,
     getViewOrFragmentPathPrompt
 } = await import('../../../../../src/building-block/prompts/utils/questions');
-const actualPromptHelpers = await import('../../../../../src/building-block/prompts/utils/prompt-helpers');
 import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types';
 
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');

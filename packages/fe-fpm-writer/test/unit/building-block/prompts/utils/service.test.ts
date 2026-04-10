@@ -14,14 +14,12 @@ const mockGetCapModelAndServices = jest.fn().mockResolvedValue({
 });
 const mockGetCapServiceName = jest.fn().mockResolvedValue('mappedMainServiceName');
 
-jest.unstable_mockModule('@sap-ux/project-access', () => {
-    const actual = jest.requireActual<typeof import('@sap-ux/project-access')>('@sap-ux/project-access');
-    return {
-        ...actual,
-        getCapModelAndServices: mockGetCapModelAndServices,
-        getCapServiceName: mockGetCapServiceName
-    };
-});
+const actualProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getCapModelAndServices: mockGetCapModelAndServices,
+    getCapServiceName: mockGetCapServiceName
+}));
 
 const { getProject } = await import('@sap-ux/project-access');
 const { FioriAnnotationService } = await import('@sap-ux/fiori-annotation-api');

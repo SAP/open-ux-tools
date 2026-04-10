@@ -3,14 +3,29 @@ import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { PromptsType, PromptsAPI, BuildingBlockType } from '../../../src';
-import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
+import { jest } from '@jest/globals';
 import type { ChoiceOptions } from 'inquirer';
-import * as projectAccess from '@sap-ux/project-access';
-import { createIdGenerator } from '../../../src/common/file';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+let originalGetMinimumUI5Version: typeof import('@sap-ux/project-access').getMinimumUI5Version;
+const mockGetMinimumUI5Version = jest.fn<typeof import('@sap-ux/project-access').getMinimumUI5Version>(
+    (...args) => originalGetMinimumUI5Version(...args)
+);
+
+const actualProjectAccess = await import('@sap-ux/project-access');
+originalGetMinimumUI5Version = actualProjectAccess.getMinimumUI5Version;
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getMinimumUI5Version: mockGetMinimumUI5Version
+}));
+
+const { PromptsType, PromptsAPI, BuildingBlockType } = await import('../../../src');
+type TablePromptsAnswer = import('../../../src').TablePromptsAnswer;
+type SupportedGeneratorAnswers = import('../../../src').SupportedGeneratorAnswers;
+type BuildingBlockTypePromptsAnswer = import('../../../src').BuildingBlockTypePromptsAnswer;
+const { createIdGenerator } = await import('../../../src/common/file');
 
 describe('Prompts', () => {
     let fs: Editor;
@@ -290,27 +305,27 @@ describe('Prompts', () => {
         });
 
         test.each(types)('Type "%s", get code snippet, min ui5Version = 1.96.25', async (type: PromptsType) => {
-            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.96.25');
+            mockGetMinimumUI5Version.mockReturnValueOnce('1.96.25');
             const result = await promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
         });
 
         test.each(types)('Type "%s", get code snippet, min ui5Version = 1.97.0', async (type: PromptsType) => {
-            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.97.0');
+            mockGetMinimumUI5Version.mockReturnValueOnce('1.97.0');
             const result = await promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
         });
         test.each(types)('Type "%s", get code snippet, min ui5Version = 1.97.35', async (type: PromptsType) => {
-            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.97.35');
+            mockGetMinimumUI5Version.mockReturnValueOnce('1.97.35');
             const result = await promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
         });
 
         test.each(types)('Type "%s", get code snippet, min ui5Version is undefined', async (type: PromptsType) => {
-            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce(undefined);
+            mockGetMinimumUI5Version.mockReturnValueOnce(undefined);
             const result = await promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
