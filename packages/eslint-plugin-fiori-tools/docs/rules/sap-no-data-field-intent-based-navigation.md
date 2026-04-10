@@ -45,9 +45,9 @@ Using `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavi
 </Annotation>
 ```
 
-### Correct: Semantic Link or Smart Link Navigation Is Used (via `Common.SemanticObject` on Entity Property)
+### Correct: Semantic Link or Smart Link Navigation Is Used Using `Common.SemanticObject` on the Entity Property
 
-Annotate the entity property (e.g., `CustomerId`) with `Common.SemanticObject` before using it in `UI.LineItem` or `UI.FieldGroup`. SAP Fiori Elements automatically detects this and renders the field as a Semantic Link with Smart Link popover support.
+Annotate the entity property, for example,`CustomerId`, with the `Common.SemanticObject` annotation before using it in a `UI.LineItem` or `UI.FieldGroup`. SAP Fiori elements automatically detects this and renders the field as a semantic link with support for a smart link popover.
 
 #### Step 1: Annotate the Entity Property:
 
@@ -56,9 +56,10 @@ Annotate the entity property (e.g., `CustomerId`) with `Common.SemanticObject` b
 <Annotation Term="Common.SemanticObject" String="Customer" Target="YourEntityType/CustomerId"/>
 ```
 
-#### Step 2: Reference the Property in UI Annotations (no special navigation annotation needed):
+#### Step 2: Reference the Property in Your UI Annotations:
+Note: No navigation annotation is needed.
 
-For `UI.LineItem` (Table Column):
+For a table column using the `UI.LineItem` annotation:
 
 ```xml
 <Annotation Term="UI.LineItem">
@@ -72,7 +73,7 @@ For `UI.LineItem` (Table Column):
 </Annotation>
 ```
 
-For `UI.FieldGroup` (Form Field):
+For a form field using the `UI.FieldGroup` annotation:
 
 ```xml
 <Annotation Term="UI.FieldGroup" Qualifier="GeneralInformation">
@@ -96,5 +97,5 @@ If you encounter an issue with this rule, please open a [GitHub issue](https://g
 
 ## Further Reading
 
-- [Semantic Link implementation in Fiori Elements](https://ui5.sap.com/#/topic/c18ada4bc56e427a9a2df2d1898f28a5)
-- [Smart Link / Navigation Intents](https://ui5.sap.com/#/topic/d782acf8bfd74107ad6a04f0361c5f62)
+- [Semantic Link Implementation in SAP Fiori Elements](https://ui5.sap.com/#/topic/c18ada4bc56e427a9a2df2d1898f28a5)
+- [Smart Link and Navigation Intents](https://ui5.sap.com/#/topic/d782acf8bfd74107ad6a04f0361c5f62)
