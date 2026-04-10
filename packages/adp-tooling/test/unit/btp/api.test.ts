@@ -1,13 +1,21 @@
-import axios from 'axios';
+import { jest } from '@jest/globals';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-
-import { getToken, getBtpDestinationConfig } from '../../../src/btp/api';
-import { initI18n, t } from '../../../src/i18n';
 import type { Uaa } from '../../../src/types';
 
-jest.mock('axios');
-const mockAxios = axios as jest.Mocked<typeof axios>;
+const mockAxiosGet = jest.fn();
+const mockAxiosPost = jest.fn();
+
+jest.unstable_mockModule('axios', () => ({
+    default: {
+        get: mockAxiosGet,
+        post: mockAxiosPost
+    },
+    __esModule: true
+}));
+
+const { getToken, getBtpDestinationConfig } = await import('../../../src/btp/api');
+const { initI18n, t } = await import('../../../src/i18n');
 
 describe('btp/api', () => {
     const mockLogger = {
@@ -37,12 +45,12 @@ describe('btp/api', () => {
                     access_token: 'test-access-token'
                 }
             };
-            mockAxios.post.mockResolvedValue(mockResponse);
+            mockAxiosPost.mockResolvedValue(mockResponse);
 
             const result = await getToken(mockUaa);
 
             expect(result).toBe('test-access-token');
-            expect(mockAxios.post).toHaveBeenCalledWith('/test-uaa/oauth/token', 'grant_type=client_credentials', {
+            expect(mockAxiosPost).toHaveBeenCalledWith('/test-uaa/oauth/token', 'grant_type=client_credentials', {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Authorization': 'Basic ' + Buffer.from('test-client-id:test-client-secret').toString('base64')
@@ -52,7 +60,7 @@ describe('btp/api', () => {
 
         test('should throw error when token request fails', async () => {
             const error = new Error('Network error');
-            mockAxios.post.mockRejectedValue(error);
+            mockAxiosPost.mockRejectedValue(error);
 
             await expect(getToken(mockUaa)).rejects.toThrow(t('error.failedToGetAuthKey', { error: 'Network error' }));
         });
@@ -61,7 +69,7 @@ describe('btp/api', () => {
             const mockResponse = {
                 data: {}
             };
-            mockAxios.post.mockResolvedValue(mockResponse);
+            mockAxiosPost.mockResolvedValue(mockResponse);
 
             const result = await getToken(mockUaa);
 
@@ -81,21 +89,21 @@ describe('btp/api', () => {
                 URL: '/backend.example',
                 Authentication: 'PrincipalPropagation'
             };
-            mockAxios.get.mockResolvedValue({
+            mockAxiosGet.mockResolvedValue({
                 data: { destinationConfiguration: mockConfig }
             });
 
             const result = await getBtpDestinationConfig(mockUri, mockToken, mockDestinationName, mockLogger);
 
             expect(result).toEqual(mockConfig);
-            expect(mockAxios.get).toHaveBeenCalledWith(
+            expect(mockAxiosGet).toHaveBeenCalledWith(
                 `${mockUri}/destination-configuration/v1/destinations/${mockDestinationName}`,
                 { headers: { Authorization: `Bearer ${mockToken}` } }
             );
         });
 
         test('should return undefined when request fails', async () => {
-            mockAxios.get.mockRejectedValue(new Error('Network error'));
+            mockAxiosGet.mockRejectedValue(new Error('Network error'));
 
             const result = await getBtpDestinationConfig(mockUri, mockToken, mockDestinationName, mockLogger);
 
@@ -106,7 +114,7 @@ describe('btp/api', () => {
         });
 
         test('should return undefined when destinationConfiguration is missing from response', async () => {
-            mockAxios.get.mockResolvedValue({ data: {} });
+            mockAxiosGet.mockResolvedValue({ data: {} });
 
             const result = await getBtpDestinationConfig(mockUri, mockToken, mockDestinationName, mockLogger);
 
@@ -115,11 +123,11 @@ describe('btp/api', () => {
 
         test('should encode destination name in URL', async () => {
             const specialName = 'dest with spaces';
-            mockAxios.get.mockResolvedValue({ data: { destinationConfiguration: { Name: specialName } } });
+            mockAxiosGet.mockResolvedValue({ data: { destinationConfiguration: { Name: specialName } } });
 
             await getBtpDestinationConfig(mockUri, mockToken, specialName, mockLogger);
 
-            expect(mockAxios.get).toHaveBeenCalledWith(
+            expect(mockAxiosGet).toHaveBeenCalledWith(
                 `${mockUri}/destination-configuration/v1/destinations/${encodeURIComponent(specialName)}`,
                 expect.any(Object)
             );
