@@ -1,3 +1,4 @@
+import type { Ui5VersionInfo } from 'open/ux/preview/client/utils/version';
 import FlexBox from 'sap/m/FlexBox';
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
@@ -2090,7 +2091,7 @@ describe('FE V2 quick actions', () => {
             const testCases: {
                 supportedVersion: boolean;
                 isEnabled?: boolean;
-                ui5version?: versionUtils.Ui5VersionInfo;
+                ui5version?: Ui5VersionInfo;
             }[] = [
                 {
                     supportedVersion: true,
@@ -3061,7 +3062,7 @@ describe('FE V2 quick actions', () => {
             const testCases: {
                 innerTableType: string;
                 toString: () => string;
-                ui5version?: versionUtils.Ui5VersionInfo;
+                ui5version?: Ui5VersionInfo;
                 value?: string;
                 parentEntitySet?: string;
                 tableSectionId?: string;
@@ -3359,7 +3360,7 @@ describe('FE V2 quick actions', () => {
                 supportedVersion: boolean;
                 isEnabled?: boolean;
                 isCustomTable?: boolean;
-                ui5version?: versionUtils.Ui5VersionInfo;
+                ui5version?: Ui5VersionInfo;
                 tooltip?: string;
             }[] = [
                 {
@@ -3774,7 +3775,7 @@ describe('FE V2 quick actions', () => {
 
     describe('Add subpage', () => {
         const testCases: {
-            ui5version?: versionUtils.Ui5VersionInfo;
+            ui5version?: Ui5VersionInfo;
             isNewPageUnavailable?: boolean;
             isArrayStructuredManifest?: boolean;
             isUnexpectedOwnerComponent?: boolean;

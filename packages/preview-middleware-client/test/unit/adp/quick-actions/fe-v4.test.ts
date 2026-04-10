@@ -1,3 +1,4 @@
+import type { Ui5VersionInfo } from 'open/ux/preview/client/utils/version';
 import RuntimeAuthoring, { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -979,15 +980,15 @@ describe('FE V4 quick actions', () => {
                 jest.clearAllMocks();
 
                 reportTelemetrySpy = reportTelemetryMock;
-                jest.spyOn(appUtils, 'getApplicationType').mockReturnValue('fe-v4');
-                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue({
+                getApplicationTypeMock.mockReturnValue('fe-v4');
+                getUi5VersionMock.mockResolvedValue({
                     major: 1,
                     minor: 127,
                     patch: 0
                 });
             });
             test('initialize and execute action', async () => {
-                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                checkForExistingChangeMock.mockReturnValue(false);
                 const pageView = new XMLView();
                 mockTelemetryEventIdentifier();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -1122,7 +1123,7 @@ describe('FE V4 quick actions', () => {
             });
 
             test('initialize and execute action with existing controller change', async () => {
-                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
+                checkForExistingChangeMock.mockReturnValue(true);
                 const pageView = new XMLView();
                 mockTelemetryEventIdentifier();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -2390,7 +2391,7 @@ describe('FE V4 quick actions', () => {
         describe('enable table filtering', () => {
             const testCases: {
                 p13nMode: string[];
-                ui5version?: versionUtils.Ui5VersionInfo;
+                ui5version?: Ui5VersionInfo;
                 expectedIsNotApplicable?: boolean;
                 expectedIsEnabled: boolean;
                 expectedTooltip?: string;
@@ -2411,7 +2412,7 @@ describe('FE V4 quick actions', () => {
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
-                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                getUi5VersionMock.mockResolvedValue(
                     testCase.ui5version ?? { major: 1, minor: 131 }
                 );
                 jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
@@ -2766,7 +2767,7 @@ describe('FE V4 quick actions', () => {
             const testCases: {
                 supportedVersion: boolean;
                 varianManagmentValue?: string;
-                ui5version?: versionUtils.Ui5VersionInfo;
+                ui5version?: Ui5VersionInfo;
             }[] = [
                 {
                     supportedVersion: true,
@@ -2786,9 +2787,9 @@ describe('FE V4 quick actions', () => {
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                checkForExistingChangeMock.mockReturnValue(false);
                 const pageView = new XMLView();
-                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                getUi5VersionMock.mockResolvedValue(
                     testCase.ui5version ?? { major: 1, minor: 131 }
                 );
                 fetchMock.mockResolvedValue({
@@ -2999,7 +3000,7 @@ describe('FE V4 quick actions', () => {
                     }
                 ];
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                    jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                    checkForExistingChangeMock.mockReturnValue(false);
                     mockTelemetryEventIdentifier();
                     const pageView = new XMLView();
                     FlexUtils.getViewForControl.mockImplementation(() => {
@@ -3147,7 +3148,7 @@ describe('FE V4 quick actions', () => {
                     tableType: string;
                     toString: () => string;
                     isWithHeader: boolean;
-                    ui5version?: versionUtils.Ui5VersionInfo;
+                    ui5version?: Ui5VersionInfo;
                     expectDisabledReason?: string;
                     value?: string;
                     expectUnsupported?: boolean;
@@ -3197,7 +3198,7 @@ describe('FE V4 quick actions', () => {
                 test.each(testCases)(
                     'initialize and execute action (%s)',
                     async (testCase) => {
-                        jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                        getUi5VersionMock.mockResolvedValue(
                             testCase.ui5version ?? { major: 1, minor: 131 }
                         );
 
@@ -3207,7 +3208,7 @@ describe('FE V4 quick actions', () => {
 
                         const setSelectedSubSectionMock = jest.fn();
                         const fakeSubSection = new ManagedObject() as any;
-                        jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                        getParentContainerMock.mockImplementation((control: any, type: string) => {
                             if (type === 'sap.uxap.ObjectPageSection') {
                                 // Return a mock object with the getSubSections method
                                 return {
@@ -3441,11 +3442,11 @@ describe('FE V4 quick actions', () => {
                 );
             });
             describe('enable variant management in tables and charts', () => {
-                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                checkForExistingChangeMock.mockReturnValue(false);
                 const testCases: {
                     supportedVersion: boolean;
                     varianManagmentValue?: string;
-                    ui5version?: versionUtils.Ui5VersionInfo;
+                    ui5version?: Ui5VersionInfo;
                 }[] = [
                     {
                         supportedVersion: true,
@@ -3466,7 +3467,7 @@ describe('FE V4 quick actions', () => {
                 ];
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                     const pageView = new XMLView();
-                    jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                    getUi5VersionMock.mockResolvedValue(
                         testCase.ui5version ?? { major: 1, minor: 131 }
                     );
                     fetchMock.mockResolvedValue({
@@ -3689,7 +3690,7 @@ describe('FE V4 quick actions', () => {
 
             describe('add custom section', () => {
                 test('initialize and execute action', async () => {
-                    jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                    checkForExistingChangeMock.mockReturnValue(false);
                     mockTelemetryEventIdentifier();
                     const pageView = new XMLView();
                     FlexUtils.getViewForControl.mockImplementation(() => {
@@ -4171,7 +4172,7 @@ describe('FE V4 quick actions', () => {
 
     describe('Add subpage', () => {
         const testCases: {
-            ui5version?: versionUtils.Ui5VersionInfo;
+            ui5version?: Ui5VersionInfo;
             isNewPageUnavailable?: boolean;
             isUnexpectedOwnerComponent?: boolean;
             componentHasNoEntitySet?: boolean;
@@ -4268,7 +4269,7 @@ describe('FE V4 quick actions', () => {
         });
         test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
             mockTelemetryEventIdentifier();
-            jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+            getUi5VersionMock.mockResolvedValue(
                 testCase.ui5version ?? { major: 1, minor: 135 }
             );
             jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(!testCase.isBetaFeatureDisabled);
@@ -4458,7 +4459,7 @@ describe('FE V4 quick actions', () => {
             });
 
             const dummyAppComponent = {} as unknown as AppComponentV4;
-            jest.spyOn(utils, 'getV4AppComponent').mockReturnValue(dummyAppComponent);
+            getV4AppComponentMock.mockReturnValue(dummyAppComponent);
 
             const metaModelMock = {
                 requestObject: jest.fn().mockImplementation((path: string) => {
