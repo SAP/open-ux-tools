@@ -30,7 +30,7 @@
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
         "storybook": "storybook dev",
         "build:storybook": "storybook build -o ./storybook",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --colors --silent",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --colors --silent",
         "test-u": "jest --ci --forceExit --colors  --silent -u"
     },
     "dependencies": {

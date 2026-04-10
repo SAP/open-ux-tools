@@ -22,7 +22,7 @@
         "lint:summary": "eslint . -f summary",
         "lint:fix": "eslint --fix",
         "lint:report": "eslint . -f multiple ",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest  --maxWorkers=1 --ci --forceExit --detectOpenHandles",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest  --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "watch": "tsc  --build ./ -watch"
     },
     "files": [

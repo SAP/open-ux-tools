@@ -14,6 +14,7 @@
         "@types/node": "20.19.37",
         "autoprefixer": "10.4.27",
         "check-dependency-version-consistency": "6.0.0",
+        "cross-env": "10.1.0",
         "esbuild": "0.27.4",
         "esbuild-sass-plugin": "3.7.0",
         "eslint": "9.39.1",

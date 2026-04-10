@@ -23,7 +23,7 @@
         "lint:report": "eslint . -f multiple ",
         "lint:summary": "eslint . -f summary",
         "pre-commit": "lint-staged --quiet",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=2",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=2",
         "test:update": "node scripts/update-test-data.js",
         "watch": "tsc --build ./ -watch"
     },

@@ -24,7 +24,7 @@
         "clean-embeddings": "rm -rf dist data/embeddings",
         "clean-data": "rm -rf dist data/docs data/search",
         "clean": "npm-run-all -l -s clean-data clean-embeddings",
-        "test": "NODE_OPTIONS='--experimental-vm-modules --max-old-space-size=8192' jest --passWithNoTests --silent",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules --max-old-space-size=8192' jest --passWithNoTests --silent",
         "lint": "eslint",
         "lint:fix": "eslint --fix"
     },

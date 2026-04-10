@@ -17,7 +17,7 @@
         "build": "npm-run-all -l -s clean -p build:compile",
         "build:compile": "tsc --build ./tsconfig.json --pretty",
         "watch": "build:compile --watch",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "lint": "eslint",
         "lint:fix": "eslint --fix"
     },

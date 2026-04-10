@@ -79,6 +79,9 @@ importers:
       check-dependency-version-consistency:
         specifier: 6.0.0
         version: 6.0.0
+      cross-env:
+        specifier: 10.1.0
+        version: 10.1.0
       esbuild:
         specifier: 0.27.4
         version: 0.27.4

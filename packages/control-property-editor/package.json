@@ -19,7 +19,7 @@
         "build:webapp": "node esbuild.mjs",
         "watch": "npm-run-all -p watch:*",
         "watch:webapp": "node esbuild.mjs --watch --minify=false",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --colors",
         "lint": "eslint",
         "lint:fix": "eslint --fix"

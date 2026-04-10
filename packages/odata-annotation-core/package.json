@@ -25,7 +25,7 @@
         "lint:fix": "eslint --fix",
         "lint:report": "eslint . -f multiple ",
         "pre-commit": "lint-staged --quiet",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --maxWorkers=1",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --maxWorkers=1",
         "watch": "tsc  --build ./ -watch"
     },
     "dependencies": {

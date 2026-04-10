@@ -21,7 +21,7 @@
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "test:abap": "jest --ci --forceExit --detectOpenHandles --colors test/app.test.ts --testNamePattern=\"ABAP Environment\"",
         "test:cf": "jest --ci --forceExit --detectOpenHandles --colors test/app.test.ts --testNamePattern=\"CF Environment\"",
