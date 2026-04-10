@@ -3,6 +3,10 @@ import { jest } from '@jest/globals';
 const mockIsAppStudio = jest.fn();
 const mockListDestinations = jest.fn();
 
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: jest.fn()
+}));
+
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: mockIsAppStudio,
     listDestinations: mockListDestinations,
