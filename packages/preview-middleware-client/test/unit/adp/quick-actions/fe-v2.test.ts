@@ -39,19 +39,35 @@ import Model from 'sap/ui/model/Model';
 import { EntityContainer, EntitySet, EntityType, NavigationProperty } from 'sap/ui/model/odata/ODataMetaModel';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 
-// Pre-import for spread
+// Pre-import for spread - modules that don't depend on mocked modules
 const _versionUtils = await import('open/ux/preview/client/utils/version');
 const _QCUtils = await import('open/ux/preview/client/cpe/quick-actions/utils');
-const _adpUtils = await import('open/ux/preview/client/adp/utils');
-const _utils = await import('open/ux/preview/client/adp/quick-actions/fe-v2/utils');
 const _appUtils = await import('open/ux/preview/client/utils/application');
 const _cpeCommon = await import('@sap-ux-private/control-property-editor-common');
 
+// Register mocks for modules that other modules depend on
 const getUi5VersionMock = jest.fn();
 jest.unstable_mockModule('open/ux/preview/client/utils/version', () => ({
     ..._versionUtils,
     getUi5Version: getUi5VersionMock
 }));
+
+const getApplicationTypeMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/application', () => ({
+    ..._appUtils,
+    getApplicationType: getApplicationTypeMock
+}));
+
+const reportTelemetryMock = jest.fn();
+jest.unstable_mockModule('@sap-ux-private/control-property-editor-common', () => ({
+    ..._cpeCommon,
+    reportTelemetry: reportTelemetryMock
+}));
+
+// Import modules that depend on already-mocked modules so their internal
+// references to getUi5Version etc. resolve to the mocked versions.
+const _adpUtils = await import('open/ux/preview/client/adp/utils');
+const _utils = await import('open/ux/preview/client/adp/quick-actions/fe-v2/utils');
 
 const getParentContainerMock = jest.fn();
 jest.unstable_mockModule('open/ux/preview/client/cpe/quick-actions/utils', () => ({
@@ -71,18 +87,6 @@ jest.unstable_mockModule('open/ux/preview/client/adp/quick-actions/fe-v2/utils',
     getV2AppComponent: getV2AppComponentMock
 }));
 
-const getApplicationTypeMock = jest.fn();
-jest.unstable_mockModule('open/ux/preview/client/utils/application', () => ({
-    ..._appUtils,
-    getApplicationType: getApplicationTypeMock
-}));
-
-const reportTelemetryMock = jest.fn();
-jest.unstable_mockModule('@sap-ux-private/control-property-editor-common', () => ({
-    ..._cpeCommon,
-    reportTelemetry: reportTelemetryMock
-}));
-
 const { QuickActionService } = await import('open/ux/preview/client/cpe/quick-actions/quick-action-service');
 const { OutlineService } = await import('open/ux/preview/client/cpe/outline/service');
 const { FeatureService } = await import('open/ux/preview/client/cpe/feature-service');
@@ -97,7 +101,6 @@ const mockTelemetryEventIdentifier = () => {
 };
 
 describe('FE V2 quick actions', () => {
-    checkForExistingChangeMock.mockReturnValue(false);
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
     const mockChangeService = {
@@ -108,6 +111,19 @@ describe('FE V2 quick actions', () => {
         subscribeMock = jest.fn();
         jest.spyOn(DialogFactory, 'createDialog').mockResolvedValue();
         jest.clearAllMocks();
+        // Re-set default mock return values after clearAllMocks.
+        // Use the original getUi5Version as fallback so tests that set up VersionInfo.load
+        // still work correctly through areManifestChangesSupported etc.
+        getUi5VersionMock.mockImplementation((...args: unknown[]) =>
+            (_versionUtils.getUi5Version as Function)(...args)
+        );
+        checkForExistingChangeMock.mockReturnValue(false);
+        getV2AppComponentMock.mockImplementation((...args: unknown[]) =>
+            (_utils.getV2AppComponent as Function)(...args)
+        );
+        getParentContainerMock.mockImplementation((...args: unknown[]) =>
+            (_QCUtils.getParentContainer as Function)(...args)
+        );
     });
     afterEach(() => {
         fetchMock.mockRestore();
@@ -2115,9 +2131,7 @@ describe('FE V2 quick actions', () => {
             });
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
-                getUi5VersionMock.mockResolvedValue(
-                    testCase.ui5version ?? { major: 1, minor: 131 }
-                );
+                getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'DynamicPage') {
                         return {
@@ -2206,10 +2220,9 @@ describe('FE V2 quick actions', () => {
                 let tooltip;
                 let enabled = true;
                 if (!testCase.isEnabled) {
-                     
-                    (tooltip =
+                    ((tooltip =
                         'This option has been disabled because variant management is already enabled for tables and charts'),
-                        (enabled = false);
+                        (enabled = false));
                 }
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
@@ -3125,9 +3138,7 @@ describe('FE V2 quick actions', () => {
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                getUi5VersionMock.mockResolvedValue(
-                    testCase.ui5version ?? { major: 1, minor: 131 }
-                );
+                getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
 
                 const pageView = new XMLView();
                 pageView.getParent.mockReturnValue({
@@ -3388,9 +3399,7 @@ describe('FE V2 quick actions', () => {
                 jest.restoreAllMocks();
             });
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                getUi5VersionMock.mockResolvedValue(
-                    testCase.ui5version ?? { major: 1, minor: 131 }
-                );
+                getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
 
                 const pageView = new XMLView();
                 pageView.getParent.mockReturnValue({
@@ -3871,9 +3880,7 @@ describe('FE V2 quick actions', () => {
         });
         test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
             mockTelemetryEventIdentifier();
-            getUi5VersionMock.mockResolvedValue(
-                testCase.ui5version ?? { major: 1, minor: 131 }
-            );
+            getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
             jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(!testCase.isBetaFeatureDisabled);
 
             FlexUtils.getViewForControl.mockImplementation(() => {

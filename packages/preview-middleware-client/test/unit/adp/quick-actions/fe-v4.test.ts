@@ -36,15 +36,19 @@ import ManagedObject from 'sap/ui/base/ManagedObject';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
 import * as MacroTableHelper from 'mock/sap/fe/macros/table/designtime/Table.designtime.helper';
 
-// Pre-import for spread
+// Pre-import for spread - modules that don't depend on mocked modules
 const _cpeCommon = await import('@sap-ux-private/control-property-editor-common');
 const _QCUtils = await import('open/ux/preview/client/cpe/quick-actions/utils');
 const _versionUtils = await import('open/ux/preview/client/utils/version');
 const _utils = await import('open/ux/preview/client/utils/fe-v4');
-const _adpUtils = await import('open/ux/preview/client/adp/utils');
 const _appUtils = await import('open/ux/preview/client/utils/application');
-const _apiHandler = await import('open/ux/preview/client/adp/api-handler');
-const _fev4QAUtils = await import('open/ux/preview/client/adp/quick-actions/fe-v4/utils');
+
+// Register mocks for modules that other modules depend on
+const getUi5VersionMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/version', () => ({
+    ..._versionUtils,
+    getUi5Version: getUi5VersionMock
+}));
 
 const reportTelemetryMock = jest.fn();
 jest.unstable_mockModule('@sap-ux-private/control-property-editor-common', () => ({
@@ -52,16 +56,10 @@ jest.unstable_mockModule('@sap-ux-private/control-property-editor-common', () =>
     reportTelemetry: reportTelemetryMock
 }));
 
-const getParentContainerMock = jest.fn();
-jest.unstable_mockModule('open/ux/preview/client/cpe/quick-actions/utils', () => ({
-    ..._QCUtils,
-    getParentContainer: getParentContainerMock
-}));
-
-const getUi5VersionMock = jest.fn();
-jest.unstable_mockModule('open/ux/preview/client/utils/version', () => ({
-    ..._versionUtils,
-    getUi5Version: getUi5VersionMock
+const getApplicationTypeMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/application', () => ({
+    ..._appUtils,
+    getApplicationType: getApplicationTypeMock
 }));
 
 const getV4AppComponentMock = jest.fn();
@@ -70,16 +68,22 @@ jest.unstable_mockModule('open/ux/preview/client/utils/fe-v4', () => ({
     getV4AppComponent: getV4AppComponentMock
 }));
 
+// Import modules that depend on already-mocked modules so their internal
+// references resolve to the mocked versions.
+const _adpUtils = await import('open/ux/preview/client/adp/utils');
+const _apiHandler = await import('open/ux/preview/client/adp/api-handler');
+const _fev4QAUtils = await import('open/ux/preview/client/adp/quick-actions/fe-v4/utils');
+
+const getParentContainerMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/quick-actions/utils', () => ({
+    ..._QCUtils,
+    getParentContainer: getParentContainerMock
+}));
+
 const checkForExistingChangeMock = jest.fn().mockReturnValue(false);
 jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
     ..._adpUtils,
     checkForExistingChange: checkForExistingChangeMock
-}));
-
-const getApplicationTypeMock = jest.fn();
-jest.unstable_mockModule('open/ux/preview/client/utils/application', () => ({
-    ..._appUtils,
-    getApplicationType: getApplicationTypeMock
 }));
 
 const getExistingControllerMock = jest.fn();
@@ -120,6 +124,22 @@ describe('FE V4 quick actions', () => {
         subscribeMock = jest.fn();
         jest.spyOn(DialogFactory, 'createDialog').mockResolvedValue();
         jest.clearAllMocks();
+        // Re-establish pass-through defaults after clearAllMocks wipes implementations.
+        // With jest.unstable_mockModule + spread pattern, jest.fn() mocks lose their
+        // implementation on clearAllMocks, unlike jest.spyOn which preserves it.
+        getUi5VersionMock.mockImplementation((...args: unknown[]) =>
+            (_versionUtils.getUi5Version as Function)(...args)
+        );
+        checkForExistingChangeMock.mockReturnValue(false);
+        getV4AppComponentMock.mockImplementation((...args: unknown[]) =>
+            (_utils.getV4AppComponent as Function)(...args)
+        );
+        getParentContainerMock.mockImplementation((...args: unknown[]) =>
+            (_QCUtils.getParentContainer as Function)(...args)
+        );
+        getExistingControllerMock.mockImplementation((...args: unknown[]) =>
+            (_apiHandler.getExistingController as Function)(...args)
+        );
     });
 
     afterEach(() => {
@@ -4098,6 +4118,13 @@ describe('FE V4 quick actions', () => {
                             {
                                 title: 'OBJECT PAGE',
                                 actions: [
+                                    {
+                                        'kind': 'simple',
+                                        id: 'objectPage0-add-controller-to-page',
+                                        title: 'Add Controller to Page',
+                                        enabled: true,
+                                        tooltip: undefined
+                                    },
                                     {
                                         'kind': 'simple',
                                         id: 'objectPage0-add-page-action',
