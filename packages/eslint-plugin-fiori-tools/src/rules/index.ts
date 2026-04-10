@@ -6,6 +6,7 @@ import {
     WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     COPY_TO_CLIPBOARD,
     CREATION_MODE_FOR_TABLE,
+    DESCRIPTION_COLUMN_LABEL,
     ENABLE_EXPORT,
     ENABLE_PASTE,
     STATE_PRESERVATION_MODE,
@@ -73,6 +74,7 @@ import creationModeForTable from './sap-creation-mode-for-table';
 import statePreservationMode from './sap-state-preservation-mode';
 import strictUomFilteringRule from './sap-strict-uom-filtering';
 import copyToClipboard from './sap-copy-to-clipboard';
+import descriptionColumnLabel from './sap-description-column-label';
 import enableExport from './sap-enable-export';
 import enablePaste from './sap-enable-paste';
 import tablePersonalization from './sap-table-personalization';
@@ -135,6 +137,7 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [FLEX_ENABLED]: flexEnabledRule,
     [WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
     [COPY_TO_CLIPBOARD]: copyToClipboard,
+    [DESCRIPTION_COLUMN_LABEL]: descriptionColumnLabel,
     [ENABLE_EXPORT]: enableExport,
     [ENABLE_PASTE]: enablePaste,
     [CREATION_MODE_FOR_TABLE]: creationModeForTable,

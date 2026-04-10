@@ -15,6 +15,7 @@ export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignm
 export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-based-navigation';
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
+export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -137,12 +138,30 @@ export interface StrictUomFiltering {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export type DescriptionColumnLabelMessageId =
+    | 'trivialLabel' // label is "Name" or "Description"
+    | 'duplicateLabel'; // label of text property matches label of ID property
+
+export interface DescriptionColumnLabel {
+    type: typeof DESCRIPTION_COLUMN_LABEL;
+    messageId: DescriptionColumnLabelMessageId;
+    pageNames: string[];
+    annotation: {
+        reference: AnnotationReference;
+        idPropertyTarget: string;
+        textPropertyTarget: string;
+        textPropertyLabel: string;
+        idPropertyLabel?: string;
+    };
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
     | FlexEnabled
     | CopyToClipboard
     | CreationModeForTable
+    | DescriptionColumnLabel
     | EnableExport
     | EnablePaste
     | StatePreservationMode
