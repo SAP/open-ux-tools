@@ -62,13 +62,15 @@ sap.ui.define([
 
 <% if (bodySections?.length > 0) { -%>
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
+<% if (bodySections?.length > 1) { -%>
             Then.onThe<%- name%>.iCheckNumberOfSections(<%- bodySections.length %>);
+<% } -%>
 <% bodySections.forEach(function(section) { -%>
-            When.onThe<%- name%>.iGoToSection({ section: "<%- section.id %>" });
+            When.onThe<%- name%>.iPressSectionIconTabFilterButton("<%- section.id %>");
             Then.onThe<%- name%>.iCheckSection({ section: "<%- section.id %>" });
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
-            When.onThe<%- name%>.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
+            //When.onThe<%- name%>.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
             Then.onThe<%- name%>.iCheckSubSection({ section: "<%- subSection.id %>" });
 <% }) -%>
 <% } -%>

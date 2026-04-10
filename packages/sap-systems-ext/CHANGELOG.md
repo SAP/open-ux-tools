@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.4.5
+
+### Patch Changes
+
+- 66e2099: Fix right click options on systems
+
 ## 0.4.4
 
 ### Patch Changes

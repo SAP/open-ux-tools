@@ -1,5 +1,12 @@
 # @sap-ux-private/playwright
 
+## 0.2.15
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+
 ## 0.2.14
 
 ### Patch Changes
