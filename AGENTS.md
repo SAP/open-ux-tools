@@ -60,6 +60,39 @@ This uses `check-dependency-version-consistency` to validate that all packages u
 
 **Rule**: When updating a dependency in one package, update it in ALL packages that use it.
 
+**Exception — peerDependencies must keep open semver ranges:**
+
+`peerDependencies` declare compatibility with a host package the consumer provides. They must use **open caret (`^`) or tilde (`~`) ranges**, never exact (pinned) versions. Pinning a peerDependency forces every consumer to install that exact version, which breaks the moment they upgrade and defeats the purpose of peer ranges.
+
+```jsonc
+// ✅ Correct — open range
+"peerDependencies": {
+  "eslint": "^9"
+}
+
+// ❌ Wrong — pinned version
+"peerDependencies": {
+  "eslint": "9.39.1"
+}
+```
+
+**Guidelines:**
+- Use `^major` (e.g., `^9`) when the package works across the entire major version
+- Use `^major.minor` (e.g., `^8.57.2`) when a minimum minor/patch is required for a specific API
+- Never pin to an exact version — consumers must be free to use any compatible release
+- The corresponding `devDependencies` entry (used for testing) **can** be pinned to a specific version; only the `peerDependencies` entry must stay open
+- When bumping a peerDependency range (e.g., `^8` → `^9`), this is a **breaking change** and requires a major version bump of the package
+
+**Real example** (`@sap-ux/eslint-plugin-fiori-tools`):
+```jsonc
+"devDependencies": {
+  "eslint": "9.39.1"          // pinned for reproducible test runs — OK
+},
+"peerDependencies": {
+  "eslint": "^9"              // open range for consumers — required
+}
+```
+
 ### 2. Dependency Version Freshness
 
 Dependencies should **not be older than 6 months** to ensure security, bug fixes, and compatibility with the ecosystem.
@@ -691,6 +724,7 @@ pnpm outdated
 12. ❌ **Don't create circular dependencies** - Follow proper dependency hierarchy when refactoring to common libraries
 13. ❌ **Don't run all tests when working on a single package** - Use `pnpm --filter @sap-ux/[package-name] test` instead of `pnpm test` at root
 14. ❌ **Don't hardcode version numbers in documentation** - Reference source files (like package.json) instead, as versions change frequently
+15. ❌ **Don't pin peerDependencies to exact versions** - Use open semver ranges (e.g., `^9` not `9.39.1`) so consumers can use any compatible release
 
 ## Summary Checklist
 
