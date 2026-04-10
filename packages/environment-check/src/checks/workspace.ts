@@ -3,7 +3,7 @@ import type { ResultMessage } from '../types';
 import { findAllApps } from '@sap-ux/project-access';
 import { existsSync, promises as fsPromises } from 'node:fs';
 import { join } from 'node:path';
-import * as yaml from 'yamljs';
+import yamljs from 'yamljs';
 import { FileName, Severity } from '../types';
 import { t } from '../i18n';
 
@@ -15,7 +15,7 @@ import { t } from '../i18n';
  */
 async function getUi5CustomMiddleware(root: string): Promise<CustomMiddleware<FioriToolsProxyConfig>> {
     const yamlContent = (await fsPromises.readFile(join(root, FileName.Ui5Yaml))).toString();
-    const middlewares: CustomMiddleware<FioriToolsProxyConfig>[] = yaml.parse(yamlContent)?.server?.customMiddleware;
+    const middlewares: CustomMiddleware<FioriToolsProxyConfig>[] = yamljs.parse(yamlContent)?.server?.customMiddleware;
     return middlewares?.find((element) => element.name === 'fiori-tools-proxy');
 }
 
