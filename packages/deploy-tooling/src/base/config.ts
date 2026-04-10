@@ -58,7 +58,7 @@ function validateCredentials(credentials: NonNullable<AbapDeployConfig['credenti
     const isEnvRef = (value: string | undefined): boolean => !value || value.startsWith('env:');
     if (!isEnvRef(credentials.username) || !isEnvRef(credentials.password)) {
         throw new Error(
-            'Credentials must be provided as environment variable references (e.g. env:MY_VAR), not as plain text.'
+            'Credentials must be provided as environment variable references, such as env:MY_VAR, not as plain text.'
         );
     }
 }
