@@ -1,5 +1,13 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.48
+
+### Patch Changes
+
+- f1e4481: chore(fiori-mcp-server): upgrade @modelcontextprotocol/sdk 1.28.0 → 1.29.0 (hono/express-rate-limit/path-to-regexp security fixes)
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+    - @sap-ux/store@1.5.13
+
 ## 0.6.47
 
 ### Patch Changes
