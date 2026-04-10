@@ -197,7 +197,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 this.props.columns,
                 true
             ) as HTMLElement;
-            const input = cell.querySelector('input') as HTMLInputElement;
+            const input = cell?.querySelector('input') as HTMLInputElement;
             if (input && input.selectionStart !== this.caretPosition) {
                 input.setSelectionRange(this.caretPosition, this.caretPosition);
                 this.caretPosition = -1;
@@ -676,8 +676,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                     this.props.columns,
                     true
                 ) as HTMLElement;
-                const input = cell.querySelector('input') as HTMLInputElement;
-                this.caretPosition = input.selectionStart || 0;
+                const input = cell?.querySelector('input') as HTMLInputElement;
+                this.caretPosition = input?.selectionStart || 0;
             }
 
             editedCell.errorMessage = errorMessage || undefined;
