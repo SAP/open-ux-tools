@@ -478,6 +478,10 @@ export interface CustomFormField extends BuildingBlock {
      * The fragment that contains the template for the custom form field.
      */
     embededFragment: EmbededFragment;
+    /**
+     * Property used to construct the metaPath for the custom form field, e.g. "EntitySet/targetProperty".
+     */
+    targetProperty?: string;
 }
 
 export interface CustomColumn extends BuildingBlock {

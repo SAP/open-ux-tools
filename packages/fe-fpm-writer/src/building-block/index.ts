@@ -14,6 +14,7 @@ import {
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
+    type CustomFormField,
     type RichTextEditor,
     bindingContextAbsolute,
     type TemplateConfig
@@ -260,6 +261,9 @@ function getTemplateContent<T extends BuildingBlock>(
         if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
             // Get target property for RichTextEditor building block
             targetProperty = (buildingBlockData as RichTextEditor).targetProperty;
+        } else if (buildingBlockData.buildingBlockType === BuildingBlockType.CustomFormField) {
+            // Get target property for CustomFormField building block
+            targetProperty = (buildingBlockData as unknown as CustomFormField).targetProperty;
         }
 
         const applyContextPath =
