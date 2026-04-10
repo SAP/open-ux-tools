@@ -310,7 +310,7 @@ describe('Test odata query builder', () => {
             },
             []
         );
-        expect(query.query).toEqual("ListEntity1?$filter=IsActive eq 'true'&$count=true");
+        expect(query.query).toEqual('ListEntity1?$filter=IsActive eq true&$count=true');
 
         // Boolean in hierarchy query
         const hierarchy: HierarchyEntity = {
@@ -320,7 +320,8 @@ describe('Test odata query builder', () => {
             nodeProperty: 'ID',
             parentProperty: 'Parent',
             parentPropertyType: 'Edm.String',
-            isDraft: false
+            isDraft: false,
+            entityTypeKeys: []
         };
         query = createQueryFromEntities(
             {
@@ -332,7 +333,7 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            'ListEntity1?$apply=descendants($root/ListEntity1,MyHierarchy,ID,filter(IsActive eq true),3,keep start)'
+            "ListEntity1?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/ListEntity1,HierarchyQualifier='MyHierarchy',NodeProperty='ID',Levels=3)"
         );
     });
 
@@ -351,16 +352,17 @@ describe('Test odata query builder', () => {
             nodeProperty: 'ID',
             parentProperty: 'Parent',
             parentPropertyType: 'Edm.String',
-            isDraft: false
+            isDraft: false,
+            entityTypeKeys: []
         };
 
         // No filter - no semantic key values (filter param omitted entirely)
         let query = createQueryFromEntities(listEntity, [], 1, hierarchy);
         expect(query.query).toEqual(
-            'SalesOrganizations?$apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,3,keep start)'
+            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID',Levels=3)"
         );
 
-        // With string filter
+        // With string filter (non-draft: filter ignored in TopLevels, same output)
         query = createQueryFromEntities(
             { ...listEntity, semanticKeys: [{ name: 'ID', value: 'Sales', type: 'Edm.String' }] },
             [],
@@ -368,10 +370,10 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            "SalesOrganizations?$apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(ID eq 'Sales'),3,keep start)"
+            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID',Levels=3)"
         );
 
-        // With GUID filter (unquoted)
+        // With GUID filter (non-draft: filter ignored in TopLevels)
         query = createQueryFromEntities(
             {
                 ...listEntity,
@@ -382,10 +384,10 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            'SalesOrganizations?$apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(ID eq 550e8400-e29b-41d4-a716-446655440000),3,keep start)'
+            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID',Levels=3)"
         );
 
-        // With comma-separated filter values
+        // With comma-separated filter values (non-draft: filter ignored in TopLevels)
         query = createQueryFromEntities(
             { ...listEntity, semanticKeys: [{ name: 'ID', value: 'Sales,Marketing', type: 'Edm.String' }] },
             [],
@@ -393,7 +395,7 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            "SalesOrganizations?$apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter((ID eq 'Sales' or ID eq 'Marketing')),3,keep start)"
+            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID',Levels=3)"
         );
 
         // With expands
@@ -407,7 +409,7 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            "SalesOrganizations?$apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(ID eq 'Sales'),3,keep start)&$expand=Children"
+            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID',Levels=3)&$expand=Children"
         );
     });
 
@@ -426,16 +428,17 @@ describe('Test odata query builder', () => {
             nodeProperty: '__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId',
             parentProperty: 'OwnerCompany',
             parentPropertyType: 'Edm.Guid',
-            isDraft: true
+            isDraft: true,
+            entityTypeKeys: []
         };
 
-        // No user filter — no filter on ancestors or descendants
+        // No user filter — no filter on ancestors
         let query = createQueryFromEntities(listEntity, [], 1, hierarchy);
         expect(query.query).toEqual(
-            'P_SADL_HIER_UUID_D_COMPNY_ROOT?$apply=ancestors($root/P_SADL_HIER_UUID_D_COMPNY_ROOT,I_SADL_HIER_UUID_COMPANY_NODE,__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId,keep start)/descendants($root/P_SADL_HIER_UUID_D_COMPNY_ROOT,I_SADL_HIER_UUID_COMPANY_NODE,__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId,3,keep start)'
+            "P_SADL_HIER_UUID_D_COMPNY_ROOT?$apply=ancestors($root/P_SADL_HIER_UUID_D_COMPNY_ROOT,I_SADL_HIER_UUID_COMPANY_NODE,__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId,keep start)/com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/P_SADL_HIER_UUID_D_COMPNY_ROOT,HierarchyQualifier='I_SADL_HIER_UUID_COMPANY_NODE',NodeProperty='__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId',Levels=3)"
         );
 
-        // With GUID and boolean filters — same filter applied to both ancestors and descendants
+        // With GUID and boolean filters — filter applied to ancestors wrapper, TopLevels unaffected
         query = createQueryFromEntities(
             {
                 ...listEntity,
@@ -449,7 +452,7 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            'P_SADL_HIER_UUID_D_COMPNY_ROOT?$apply=ancestors($root/P_SADL_HIER_UUID_D_COMPNY_ROOT,I_SADL_HIER_UUID_COMPANY_NODE,__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId,filter(Company eq cb565aac-b20e-1fe1-8b88-3dca3ae3111a and IsActiveEntity eq true),keep start)/descendants($root/P_SADL_HIER_UUID_D_COMPNY_ROOT,I_SADL_HIER_UUID_COMPANY_NODE,__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId,filter(Company eq cb565aac-b20e-1fe1-8b88-3dca3ae3111a and IsActiveEntity eq true),3,keep start)'
+            "P_SADL_HIER_UUID_D_COMPNY_ROOT?$apply=ancestors($root/P_SADL_HIER_UUID_D_COMPNY_ROOT,I_SADL_HIER_UUID_COMPANY_NODE,__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId,filter(Company eq cb565aac-b20e-1fe1-8b88-3dca3ae3111a and IsActiveEntity eq true),keep start)/com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/P_SADL_HIER_UUID_D_COMPNY_ROOT,HierarchyQualifier='I_SADL_HIER_UUID_COMPANY_NODE',NodeProperty='__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId',Levels=3)"
         );
     });
 });

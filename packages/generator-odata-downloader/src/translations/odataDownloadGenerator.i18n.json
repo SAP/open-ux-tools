@@ -55,7 +55,7 @@
             "labelFalse": "Suppress the OData query (prevents multiple queries during selections)",
             "querySuccess": "OData query success. $t(texts.rows, {\"count\": \"{{count}}\") returned. $t(texts.seeLogForDetails)",
             "validation": {
-                "keyRequired": "Please enter at least one key field value to run the odata query"
+                "keyRequired": "Please enter at least one key valid field value to run the odata query"
             },
             "choiceLabel": "Skip data download"
         },

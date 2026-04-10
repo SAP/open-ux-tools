@@ -6,7 +6,7 @@ import type { PageV4 } from '@sap/ux-specification/dist/types/src/v4';
 import type { Answers, CheckboxChoiceOptions } from 'inquirer';
 import type { EntitySetsFlat } from './odata-query';
 
-export type SemanticKeyFilter = { name: string; type: string; value: string | undefined };
+export type SemanticKeyFilter = { name: string; keyName?: string; type: string; value: string | undefined };
 
 export type HierarchyEntity = {
     entitySetName: string;
@@ -16,6 +16,12 @@ export type HierarchyEntity = {
     parentProperty: string; // Resolved from ParentNavigationProperty referential constraint
     parentPropertyType: string; // EDM type of the parent property (e.g. Edm.Guid, Edm.String)
     isDraft: boolean; // Entity has IsActiveEntity key — requires ancestors() wrapper
+    entityTypeKeys: string[]; // Key property names of this hierarchy entity's type
+    missingReferentialConstraints?: {
+        // Set when the parent nav prop has no referentialConstraint in metadata
+        navPropName: string;
+        constraints: { sourceProperty: string; targetProperty: string }[];
+    };
 };
 
 export type ReferencedEntities = {

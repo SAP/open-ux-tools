@@ -52,10 +52,20 @@ async function validateKeysAndFetchData(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
     appConfig: AppConfig
 ): Promise<string | { odataQueryResult: [] }> {
-    const hasValidKeyInput = appConfig.referencedEntities?.listEntity.semanticKeys.some(
+    // Query will only execute if we have at least one input value and no invalid inputs
+    let hasOneValidKeyValue = false;
+    const validKeyInputs = appConfig.referencedEntities?.listEntity.semanticKeys.every((key, index) => {
+        if (!hasOneValidKeyValue) {
+            hasOneValidKeyValue = !!key.value;
+        }
+        // if we have a value, if we dont have a value but have an answer the input was invalid
+        return (key.value !== undefined && key.value !== '') || !answers[`entityKeyIdx:${index}`];
+    });
+
+    /* const hasValidKeyInput = appConfig.referencedEntities?.listEntity.semanticKeys.some(
         (key) => key.value !== undefined
-    );
-    if (!hasValidKeyInput) {
+    ); */
+    if (!validKeyInputs || !hasOneValidKeyValue) {
         return t('prompts.skipDataDownload.validation.keyRequired');
     }
 

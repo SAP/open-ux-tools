@@ -14,7 +14,7 @@ import { t } from '../../utils/i18n';
 import { fetchData, type EntitySetsFlat } from '../odata-query';
 import { ODataDownloadGenerator } from '../odata-download-generator';
 import type { SelectedEntityAnswer } from './prompts';
-import type { AppConfig, Entity } from '../types';
+import type { AppConfig, Entity, ReferencedEntities } from '../types';
 import { getSystemNameFromStore } from '../utils';
 import { PromptState } from '../prompt-state';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
@@ -44,16 +44,24 @@ export async function getData(
                 const queryStartTime = Date.now();
                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 TelemetryHelper.sendTelemetry('ODATA_DOWNLOAD_SEND_QUERY', { 'time': Date() });
-                // Use descendants query when the list entity is a hierarchy entity
+                // Use TopLevels query when the list entity is itself a hierarchy root
                 const hierarchyEntity = appConfig.referencedEntities.hierarchyEntities?.find(
                     (h) => h.entitySetName === appConfig.referencedEntities!.listEntity.entitySetName
                 );
+                // Detect hierarchy entities for selected nav-props (not the list entity itself)
+                const navPropHierarchyEntities =
+                    appConfig.referencedEntities.hierarchyEntities?.filter(
+                        (h) =>
+                            h.entitySetName !== appConfig.referencedEntities!.listEntity.entitySetName &&
+                            selectedEntities.some((s) => s.entity.entitySetName === h.entitySetName)
+                    ) ?? [];
                 const { odataResult } = await fetchData(
                     appConfig.referencedEntities.listEntity,
                     odataServiceProvider,
                     selectedEntities,
                     hierarchyEntity ? undefined : 1,
-                    hierarchyEntity
+                    hierarchyEntity,
+                    navPropHierarchyEntities
                 );
                 if (odataResult.entityData) {
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -63,7 +71,66 @@ export async function getData(
                     });
                     ODataDownloadGenerator.logger.debug(`Got result rows: ${odataResult.entityData.length}`);
 
-                    return { odataQueryResult: odataResult.entityData };
+                    const entitySetsFlat = appConfig.relatedEntityChoices?.entitySetsFlat ?? {};
+                    const draftKeyNames = new Set(['DraftUUID', 'IsActiveEntity']);
+                    const listEntityData = odataResult.entityData as Record<string, unknown>[];
+
+                    // For each hierarchy entity that appears as a companion in entitySetsFlat (not the list entity),
+                    // run a secondary flat query to fetch hierarchy props and merge them into nested nav-prop arrays.
+                    for (const companion of appConfig.referencedEntities.hierarchyEntities ?? []) {
+                        if (companion.entitySetName === appConfig.referencedEntities!.listEntity.entitySetName) {
+                            continue;
+                        }
+                        const flatKey = Object.keys(entitySetsFlat).find(
+                            (k) => entitySetsFlat[k] === companion.entitySetName && k.includes('/')
+                        );
+                        if (!flatKey) {
+                            continue;
+                        }
+                        // The first segment of the flat key is the nav-prop on the list entity
+                        const navPropName = flatKey.split('/')[0];
+                        // Build semantic keys filtered to companion's own entity type keys
+                        const companionKeys = new Set(companion.entityTypeKeys.filter((k) => !draftKeyNames.has(k)));
+                        const companionSemanticKeys = appConfig.referencedEntities!.listEntity.semanticKeys.filter(
+                            (sk) => companionKeys.has(sk.name)
+                        );
+                        const companionListEntity: ReferencedEntities['listEntity'] = {
+                            ...appConfig.referencedEntities!.listEntity,
+                            entitySetName: companion.entitySetName,
+                            semanticKeys: companionSemanticKeys
+                        };
+                        const { odataResult: secondaryResult } = await fetchData(
+                            companionListEntity,
+                            odataServiceProvider,
+                            [],
+                            undefined,
+                            companion
+                        );
+                        if (!secondaryResult.entityData) {
+                            continue;
+                        }
+                        // Derive hierarchy props property name from nodeProperty (e.g. '__HP/NodeId' → '__HP')
+                        const hierPropName = companion.nodeProperty.includes('/')
+                            ? companion.nodeProperty.split('/')[0]
+                            : companion.nodeProperty;
+                        const matchKeys = companion.entityTypeKeys.filter((k) => !draftKeyNames.has(k));
+                        const secondaryRows = secondaryResult.entityData as Record<string, unknown>[];
+                        // Merge hierarchy props into matching items in the nested nav-prop array
+                        for (const row of listEntityData) {
+                            const nestedItems = row[navPropName];
+                            if (!Array.isArray(nestedItems)) {
+                                continue;
+                            }
+                            for (const item of nestedItems as Record<string, unknown>[]) {
+                                const match = secondaryRows.find((sr) => matchKeys.every((k) => sr[k] === item[k]));
+                                if (match) {
+                                    item[hierPropName] = match[hierPropName];
+                                }
+                            }
+                        }
+                    }
+
+                    return { odataQueryResult: listEntityData as [] };
                 } else if (odataResult.error) {
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     TelemetryHelper.sendTelemetry('ODATA_DOWNLOAD_QUERY_ERRORED', {

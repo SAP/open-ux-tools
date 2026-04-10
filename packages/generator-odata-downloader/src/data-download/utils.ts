@@ -227,11 +227,23 @@ export async function getSystemNameFromStore(systemUrl: string, client?: string 
  */
 function getSemanticKeyProperties(entityType: EntityType): SemanticKeyFilter[] {
     const keyNames: SemanticKeyFilter[] = [];
+    const draftKeyNames = new Set(['DraftUUID', 'IsActiveEntity']);
+    const entityBusinessKeys = entityType.keys.filter((k) => !draftKeyNames.has(k.name));
+
     if (entityType?.annotations.Common?.SemanticKey) {
         const semanticKey = entityType.annotations.Common.SemanticKey;
-        semanticKey.forEach((keyProperty) => {
+        semanticKey.forEach((keyProperty, index) => {
+            const semName = keyProperty.value;
+            const isActualKey = entityBusinessKeys.some((k) => k.name === semName);
+            const actualKey = isActualKey ? undefined : entityBusinessKeys[index]?.name;
+            if (actualKey) {
+                ODataDownloadGenerator.logger.debug(
+                    `Semantic key '${semName}' mapped to actual entity key '${actualKey}'`
+                );
+            }
             keyNames.push({
-                name: keyProperty.value,
+                name: semName,
+                keyName: actualKey,
                 type: keyProperty.$target?.type ?? 'Edm.String',
                 value: undefined
             });
@@ -332,18 +344,70 @@ export function getHierarchyEntities(convertedMetadata: ConvertedMetadata): Hier
             continue;
         }
         const nodeProperty = (aggregationAnnotation as { NodeProperty?: { value?: string } }).NodeProperty?.value;
-        const parentNavProp = (
+        const parentNavPropAnnotation = (
             aggregationAnnotation as {
-                ParentNavigationProperty?: { $target?: { referentialConstraint?: { sourceProperty: string }[] } };
+                ParentNavigationProperty?: {
+                    value?: string;
+                    $target?: {
+                        referentialConstraint?: { sourceProperty: string }[];
+                    };
+                };
             }
-        ).ParentNavigationProperty?.$target;
-        const parentProperty = parentNavProp?.referentialConstraint?.[0]?.sourceProperty;
+        ).ParentNavigationProperty;
+        const parentNavPropName = parentNavPropAnnotation?.value;
+        const hasReferentialConstraint = (parentNavPropAnnotation?.$target?.referentialConstraint?.length ?? 0) > 0;
+        // When a referential constraint exists, use the source property directly.
+        // Otherwise, look for a non-key property whose name contains 'Parent' and whose type
+        // matches a business key (e.g. PurchasingParentItem for PurchaseOrderItem).
+        let parentProperty: string | undefined;
+        if (hasReferentialConstraint) {
+            parentProperty = parentNavPropAnnotation?.$target?.referentialConstraint?.[0]?.sourceProperty;
+        } else if (parentNavPropName) {
+            const businessKeys = entitySet.entityType.keys
+                .map((k) => k.name)
+                .filter((k) => !['DraftUUID', 'IsActiveEntity'].includes(k));
+            const keyTypes = new Set(
+                businessKeys.map((k) => entitySet.entityType.entityProperties.find((p) => p.name === k)?.type)
+            );
+            parentProperty =
+                entitySet.entityType.entityProperties.find(
+                    (p) =>
+                        !businessKeys.includes(p.name) &&
+                        p.name.toLowerCase().includes('parent') &&
+                        keyTypes.has(p.type)
+                )?.name ?? parentNavPropName;
+        }
 
         if (nodeProperty && parentProperty) {
             const isDraft = !!(entitySet.annotations?.Common?.DraftRoot ?? entitySet.annotations?.Common?.DraftNode);
             const parentPropertyType =
                 entitySet.entityType.entityProperties.find((prop) => prop.name === parentProperty)?.type ??
                 'Edm.String';
+            const entityTypeKeys = entitySet.entityType.keys.map((k) => k.name);
+            const draftKeyNames = new Set(['DraftUUID', 'IsActiveEntity']);
+            const businessKeys = entityTypeKeys.filter((k) => !draftKeyNames.has(k));
+
+            // When the parent nav prop has no referential constraint in metadata, derive it from hierarchy data
+            // so the generator can write a mock server .js file to compensate
+            let missingReferentialConstraints: HierarchyEntity['missingReferentialConstraints'];
+            if (!hasReferentialConstraint && parentNavPropName) {
+                const constraints: { sourceProperty: string; targetProperty: string }[] = [];
+                // node key → parent property (e.g. PurchaseOrderItem → PurchasingParentItem)
+                const nodeKey = businessKeys.find((k) => k !== parentProperty);
+                if (nodeKey) {
+                    constraints.push({ sourceProperty: nodeKey, targetProperty: parentProperty });
+                }
+                // shared key properties (same name on both sides, e.g. PurchaseOrder → PurchaseOrder)
+                businessKeys
+                    .filter((k) => k !== nodeKey)
+                    .forEach((k) => constraints.push({ sourceProperty: k, targetProperty: k }));
+
+                missingReferentialConstraints = { navPropName: parentNavPropName, constraints };
+                ODataDownloadGenerator.logger.debug(
+                    `getHierarchyEntities: '${entitySet.name}' nav prop '${parentNavPropName}' has no referentialConstraint in metadata — derived: ${JSON.stringify(constraints)}`
+                );
+            }
+
             hierarchyEntities.push({
                 entitySetName: entitySet.name,
                 entityTypeName: entitySet.entityType.fullyQualifiedName,
@@ -351,7 +415,9 @@ export function getHierarchyEntities(convertedMetadata: ConvertedMetadata): Hier
                 nodeProperty,
                 parentProperty,
                 parentPropertyType,
-                isDraft
+                isDraft,
+                entityTypeKeys,
+                missingReferentialConstraints
             });
         }
     }

@@ -256,7 +256,8 @@ describe('Test utils', () => {
                 nodeProperty: 'ID',
                 parentProperty: 'Parent',
                 parentPropertyType: 'Edm.String',
-                isDraft: false
+                isDraft: false,
+                entityTypeKeys: ['ID']
             });
         });
 
@@ -338,7 +339,8 @@ describe('Test utils', () => {
                     nodeProperty: 'NodeId',
                     parentProperty: 'OwnerCompany',
                     parentPropertyType: 'Edm.Guid',
-                    isDraft: true
+                    isDraft: true,
+                    entityTypeKeys: []
                 }
             ];
 
@@ -375,7 +377,8 @@ describe('Test utils', () => {
                     nodeProperty: '__HierProps/NodeId',
                     parentProperty: 'OwnerCompany',
                     parentPropertyType: 'Edm.Guid',
-                    isDraft: true
+                    isDraft: true,
+                    entityTypeKeys: []
                 }
             ];
 
@@ -401,7 +404,8 @@ describe('Test utils', () => {
                     nodeProperty: 'NodeId',
                     parentProperty: 'Parent',
                     parentPropertyType: 'Edm.String',
-                    isDraft: false
+                    isDraft: false,
+                    entityTypeKeys: []
                 }
             ];
 
@@ -428,7 +432,8 @@ describe('Test utils', () => {
                     nodeProperty: 'NodeId',
                     parentProperty: 'OwnerCompany',
                     parentPropertyType: 'Edm.Guid',
-                    isDraft: false
+                    isDraft: false,
+                    entityTypeKeys: []
                 }
             ];
 
@@ -458,7 +463,8 @@ describe('Test utils', () => {
                     nodeProperty: 'NodeId',
                     parentProperty: 'ParentID',
                     parentPropertyType: 'Edm.UUID',
-                    isDraft: false
+                    isDraft: false,
+                    entityTypeKeys: []
                 }
             ];
 
@@ -487,7 +493,8 @@ describe('Test utils', () => {
                     nodeProperty: 'ID',
                     parentProperty: 'Parent',
                     parentPropertyType: 'Edm.String',
-                    isDraft: false
+                    isDraft: false,
+                    entityTypeKeys: []
                 }
             ];
 
@@ -513,7 +520,8 @@ describe('Test utils', () => {
                     nodeProperty: '__HierProps/NodeId',
                     parentProperty: 'OwnerCompany',
                     parentPropertyType: 'Edm.Guid',
-                    isDraft: true
+                    isDraft: true,
+                    entityTypeKeys: []
                 }
             ];
 
@@ -536,7 +544,8 @@ describe('Test utils', () => {
                     nodeProperty: 'ID',
                     parentProperty: 'Parent',
                     parentPropertyType: 'Edm.String',
-                    isDraft: false
+                    isDraft: false,
+                    entityTypeKeys: []
                 }
             ];
 
@@ -544,6 +553,40 @@ describe('Test utils', () => {
 
             expect((entityFileData.SalesOrganizations[0] as Record<string, unknown>).Parent).toBe('');
             expect((entityFileData.Employees[0] as Record<string, unknown>).Name).toBe('John');
+        });
+    });
+
+    describe('getHierarchyEntities (integration)', () => {
+        test('should detect hierarchy entities from real purchase order service metadata', async () => {
+            const metadataXml = await readFile(
+                join(__dirname, './test-data/test-apps/purchaseorder/webapp/localService/mainService/metadata.xml'),
+                'utf-8'
+            );
+            const { convert } = await import('@sap-ux/annotation-converter');
+            const { parse } = await import('@sap-ux/edmx-parser');
+            const convertedMetadata = convert(parse(metadataXml));
+
+            const result = getHierarchyEntities(convertedMetadata);
+
+            // Real metadata has 8 entity sets with SAP__aggregation.RecursiveHierarchy annotations
+            expect(result.length).toBeGreaterThanOrEqual(7);
+
+            // PPS_PurchaseOrderItem: self-referential hierarchy, no referentialConstraint in EDMX
+            const poItem = result.find((h) => h.entitySetName === 'PPS_PurchaseOrderItem');
+            expect(poItem).toBeDefined();
+            expect(poItem?.qualifier).toBe('I_PPS_PurchaseOrderItemHNRltn');
+            expect(poItem?.nodeProperty).toBe('__HierarchyPropertiesForI_PPS_PurchaseOrderItemHNRltn/NodeId');
+            expect(poItem?.parentProperty).toBe('PurchasingParentItem');
+            expect(poItem?.isDraft).toBe(true);
+
+            // PPS_PurOrdItemHierarchy: companion source entity, same qualifier
+            const hierarchy = result.find((h) => h.entitySetName === 'PPS_PurOrdItemHierarchy');
+            expect(hierarchy).toBeDefined();
+            expect(hierarchy?.qualifier).toBe('I_PPS_PurchaseOrderItemHNRltn');
+            expect(hierarchy?.parentProperty).toBe('PurchasingParentItem');
+            expect(hierarchy?.isDraft).toBe(false);
+            expect(hierarchy?.entityTypeKeys).toContain('PurchaseOrder');
+            expect(hierarchy?.entityTypeKeys).toContain('PurchaseOrderItem');
         });
     });
 });

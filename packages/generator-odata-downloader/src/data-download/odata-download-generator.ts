@@ -247,6 +247,47 @@ export class ODataDownloadGenerator extends Generator {
                         this.writeDestinationJSON(join(this.state.mockDataRootPath!, `${entityName}.json`), entityData);
                     });
 
+                    // Write mock server .js constraint files for hierarchy entities whose parent nav prop
+                    // has no referentialConstraint in metadata — only for entity sets actually written,
+                    // and only if the .js file does not already exist
+                    this.state.appEntities.hierarchyEntities
+                        ?.filter(
+                            (h) =>
+                                h.missingReferentialConstraints && dataFiles.some(([name]) => name === h.entitySetName)
+                        )
+                        ?.forEach((h) => {
+                            const jsFilePath = join(this.state.mockDataRootPath!, `${h.entitySetName}.js`);
+                            if (!this.fs.exists(jsFilePath)) {
+                                const { navPropName, constraints } = h.missingReferentialConstraints!;
+                                const constraintsJson = JSON.stringify(constraints, null, 12).replace(
+                                    /\n/g,
+                                    '\n            '
+                                );
+                                const content = [
+                                    `module.exports = {`,
+                                    `    // See: https://github.com/SAP/open-ux-odata/blob/main/docs/MockserverAPI.md#getreferentialconstraints`,
+                                    `    getReferentialConstraints(navigationProperty) {`,
+                                    `        switch (navigationProperty.name) {`,
+                                    `            case "${navPropName}":`,
+                                    `                return ${constraintsJson};`,
+                                    `            default:`,
+                                    `                return navigationProperty.referentialConstraint;`,
+                                    `        }`,
+                                    `    }`,
+                                    `};`,
+                                    ``
+                                ].join('\n');
+                                this.writeDestination(jsFilePath, content);
+                                ODataDownloadGenerator.logger.info(
+                                    `Written referential constraint file: ${h.entitySetName}.js`
+                                );
+                            } else {
+                                ODataDownloadGenerator.logger.debug(
+                                    `Skipping referential constraint file for '${h.entitySetName}' — already exists`
+                                );
+                            }
+                        });
+
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     TelemetryHelper.sendTelemetry('ODATA_DOWNLOADER_WRITE_DATA_FILES_END', {
                         'writeFileDuration': `${Date.now() - writeStartTime} ms`,

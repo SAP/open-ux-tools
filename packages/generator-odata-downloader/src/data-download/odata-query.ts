@@ -104,12 +104,12 @@ export function createQueryFromEntities(
         const filterParam = filterParts.length > 0 ? `,filter(${filterParts.join(' and ')})` : '';
 
         const hierarchyArgs = `$root/${mainEntity.entitySetName},${hierarchyEntity.qualifier},${hierarchyEntity.nodeProperty}`;
-        const descendantsPart = `descendants(${hierarchyArgs}${filterParam},${defaultHierarchyLevels},keep start)`;
+        const topLevelsPart = `com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/${mainEntity.entitySetName},HierarchyQualifier='${hierarchyEntity.qualifier}',NodeProperty='${hierarchyEntity.nodeProperty}',Levels=${defaultHierarchyLevels})`;
 
         // Draft-enabled hierarchies require an ancestors() wrapper to scope to active entities
         const applyPart = hierarchyEntity.isDraft
-            ? `$apply=ancestors(${hierarchyArgs}${filterParam},keep start)/${descendantsPart}`
-            : `$apply=${descendantsPart}`;
+            ? `$apply=ancestors(${hierarchyArgs}${filterParam},keep start)/${topLevelsPart}`
+            : `$apply=${topLevelsPart}`;
 
         const expandQuery = entitiesToExpand ? buildQuery(entitiesToExpand) : '';
         const expandPart = expandQuery ? `&${expandQuery.substring(1)}` : '';
@@ -130,7 +130,7 @@ export function createQueryFromEntities(
                 mainEntityFilters.push(filters.length === 1 ? filters[0] : { or: filters });
             } else if (key.type === 'Edm.Boolean') {
                 mainEntityFilters.push({
-                    [key.name]: String(key.value)
+                    [key.name]: String(key.value) === 'true'
                 });
             } else if (key.type === 'Edm.String') {
                 // Create the range and set values
@@ -192,13 +192,72 @@ export function createQueryFromEntities(
     return { query };
 }
 /**
+ * Builds a nav-key-rooted TopLevels query for a nav-prop that has a hierarchy annotation.
+ * e.g. PPS_PurchaseOrder(PurchaseOrder='4500003676',DraftUUID=...,IsActiveEntity=true)/_PurchaseOrderItem
+ *      ?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/...,...)
+ *
+ * @param listEntity - The parent/list entity (provides entity set name and key values)
+ * @param navPropName - The navigation property name connecting parent to child
+ * @param hierarchyEntity - The hierarchy descriptor for the nav-prop entity
+ * @returns The query string, or undefined if no semantic key values are available
+ */
+export function buildNavPropHierarchyQuery(
+    listEntity: ReferencedEntities['listEntity'],
+    navPropName: string,
+    hierarchyEntity: HierarchyEntity
+): string | undefined {
+    const draftKeyNames = new Set(['DraftUUID', 'IsActiveEntity']);
+
+    // Build key segment: use keyName (actual entity key) if set, else name (semantic key = actual key)
+    const keyParts: string[] = [];
+    for (const key of listEntity.semanticKeys) {
+        if (key.value === undefined || key.value === '' || draftKeyNames.has(key.name)) {
+            continue;
+        }
+        const actualKeyName = key.keyName ?? key.name;
+        const firstValue = String(key.value).split(',')[0].trim();
+        const isGuid = ['Edm.UUID', 'Edm.Guid'].includes(key.type);
+        const isBoolean = key.type === 'Edm.Boolean';
+        keyParts.push(`${actualKeyName}=${isGuid || isBoolean ? firstValue : `'${firstValue}'`}`);
+    }
+
+    if (keyParts.length === 0) {
+        ODataDownloadGenerator.logger.debug(
+            `buildNavPropHierarchyQuery: no key values available for '${listEntity.entitySetName}', skipping nav-prop hierarchy query for '${navPropName}'`
+        );
+        return undefined;
+    }
+
+    // Draft entities always use fixed DraftUUID + IsActiveEntity for active reads
+    const isDraftListEntity = listEntity.entityType?.keys?.some((k) => k.name === 'IsActiveEntity') ?? false;
+    if (isDraftListEntity) {
+        keyParts.push(`DraftUUID=00000000-0000-0000-0000-000000000000`);
+        keyParts.push(`IsActiveEntity=true`);
+    }
+
+    ODataDownloadGenerator.logger.debug(
+        `buildNavPropHierarchyQuery: key segment for '${listEntity.entitySetName}': (${keyParts.join(',')})`
+    );
+
+    const keySegment = `${listEntity.entitySetName}(${keyParts.join(',')})`;
+    const navPath = `${keySegment}/${navPropName}`;
+    const hierarchyNodesRef = `$root/${navPath}`;
+
+    const topLevelsPart = `com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=${hierarchyNodesRef},HierarchyQualifier='${hierarchyEntity.qualifier}',NodeProperty='${hierarchyEntity.nodeProperty}',Levels=${defaultHierarchyLevels})`;
+    const query = `${navPath}?$apply=${topLevelsPart}`;
+    ODataDownloadGenerator.logger.debug(`Nav-prop hierarchy query: ${query}`);
+    return query;
+}
+
+/**
  * Builds an odata query and fetches the data from a backend.
  *
  * @param listEntity - The list entity to query from
  * @param odataService - The OData service to use for fetching
  * @param selectedEntities - The selected entities to include in the query
  * @param top - The maximum number of records to return
- * @param hierarchyEntity
+ * @param hierarchyEntity - Hierarchy entity when the list entity itself is a hierarchy root
+ * @param navPropHierarchyEntities - Hierarchy entities for selected nav-props (not the list entity)
  * @returns The fetched OData result
  */
 export async function fetchData(
@@ -206,13 +265,66 @@ export async function fetchData(
     odataService: ODataService,
     selectedEntities: SelectedEntityAnswer[],
     top?: number,
-    hierarchyEntity?: HierarchyEntity
+    hierarchyEntity?: HierarchyEntity,
+    navPropHierarchyEntities: HierarchyEntity[] = []
 ): Promise<{ odataResult: { entityData?: []; error?: string } }> {
     const query = createQueryFromEntities(listEntity, selectedEntities, top, hierarchyEntity);
     const odataResult = await executeQuery(odataService, query.query);
-    return {
-        odataResult
-    };
+
+    // Issue additional nav-key-rooted TopLevels queries for nav-prop hierarchy entities
+    for (const navHierarchy of navPropHierarchyEntities) {
+        const matchingEntity = selectedEntities.find((s) => s.entity.entitySetName === navHierarchy.entitySetName);
+        if (!matchingEntity) {
+            ODataDownloadGenerator.logger.debug(
+                `fetchData: no selected entity matched hierarchy entity '${navHierarchy.entitySetName}', skipping`
+            );
+            continue;
+        }
+        const navQuery = buildNavPropHierarchyQuery(listEntity, matchingEntity.entity.entityPath, navHierarchy);
+        if (!navQuery) {
+            ODataDownloadGenerator.logger.debug(
+                `fetchData: could not build nav-prop hierarchy query for '${navHierarchy.entitySetName}', skipping`
+            );
+            continue;
+        }
+        const navResult = await executeQuery(odataService, navQuery);
+        if (!navResult.entityData || !odataResult.entityData) {
+            ODataDownloadGenerator.logger.debug(
+                `fetchData: no data returned for nav-prop hierarchy query '${navHierarchy.entitySetName}', skipping merge`
+            );
+            continue;
+        }
+
+        ODataDownloadGenerator.logger.debug(
+            `fetchData: merging ${navResult.entityData.length} hierarchy records into '${matchingEntity.entity.entityPath}' expanded items`
+        );
+
+        // Patch hierarchy properties in-place onto matching expanded nav-prop records
+        const navPropName = matchingEntity.entity.entityPath;
+        const hierPropName = navHierarchy.nodeProperty.split('/')[0];
+        const navResultData = navResult.entityData as Record<string, unknown>[];
+        let patchCount = 0;
+
+        for (const rootRecord of odataResult.entityData as Record<string, unknown>[]) {
+            const expandedItems = rootRecord[navPropName];
+            if (!Array.isArray(expandedItems)) {
+                continue;
+            }
+            for (const item of expandedItems as Record<string, unknown>[]) {
+                const match = navResultData.find((h) => navHierarchy.entityTypeKeys.every((k) => h[k] === item[k]));
+                if (match) {
+                    item[hierPropName] = match[hierPropName];
+                    patchCount++;
+                }
+            }
+        }
+
+        ODataDownloadGenerator.logger.debug(
+            `fetchData: patched '${hierPropName}' onto ${patchCount} expanded '${navPropName}' records`
+        );
+    }
+
+    return { odataResult };
 }
 
 /**
