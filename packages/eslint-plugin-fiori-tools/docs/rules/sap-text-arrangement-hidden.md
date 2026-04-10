@@ -1,29 +1,29 @@
-# Disallow Hidden Text Properties Referenced by `UI.TextArrangement` (`sap-text-arrangement-hidden`)
+# Disallow Hidden Text Properties Referenced by the `UI.TextArrangement` Annotation (`sap-text-arrangement-hidden`)
 
-Ensures that a property referenced as the text (description) value via `Common.Text` for a field annotated with `UI.TextArrangement` is not hidden by `UI.Hidden`. `UI.TextArrangement` may be placed inline inside `Common.Text` (property level) or directly on the entity type as a fallback for all its `Common.Text` properties.
+Ensures that a property referenced as the text (description) value using the `Common.Text` annotation for a field annotated with the `UI.TextArrangement` annotation is not hidden by the `UI.Hidden` annotation. The `UI.TextArrangement` annotation may be placed inline inside the `Common.Text` annotation at the property level or directly on the entity type as a fallback for all its `Common.Text` properties.
 
 ## Rule Details
 
-When a field uses `UI.TextArrangement` (together with `Common.Text`) to display a human-readable description alongside a technical key, the referenced text property must be visible. If the text property has `UI.Hidden` set (without an explicit `false` value), the description will not be available to the UI and the text arrangement cannot work correctly.
+When a field uses the `UI.TextArrangement` and `Common.Text` annotations to display a human-readable description alongside a technical key, the referenced text property must be visible. If the text property has `UI.Hidden` set (without an explicit `false` value), the description is not available to the UI and the text arrangement does not work correctly.
 
 The rule checks:
-1. Every property whose `Common.Text` annotation contains an inline `UI.TextArrangement` child annotation (property-level placement).
-2. Every property that has a `Common.Text` annotation on an entity type which has `UI.TextArrangement` applied directly (entity-type level fallback — applies when no inline `UI.TextArrangement` is present on the property's `Common.Text`).
-3. Whether the referenced description property has `UI.Hidden` present and not explicitly set to `false`. Dynamic path expressions (e.g. `Path="IsHidden"`) are also flagged — the presence of `UI.Hidden` on the text property is considered problematic regardless of the runtime value.
+1. Every property whose `Common.Text` annotation contains an inline `UI.TextArrangement` child annotation at the property level.
+2. Every property that has a `Common.Text` annotation on an entity type which has a `UI.TextArrangement` annotation applied directly, which is an entity-type level fallback which applies when no inline `UI.TextArrangement` is present, on the property's `Common.Text` annotation.
+3. Whether the referenced description property has `UI.Hidden` present and not explicitly set to `false`. Dynamic path expressions, such as `Path="IsHidden"`, are also checked. The presence of `UI.Hidden` on the text property is considered problematic regardless of the runtime value.
 
 ### Why Was This Rule Introduced?
 
-`UI.TextArrangement` controls how a key–text pair is presented (e.g. "English (EN)" or "EN (English)"). If the referenced text property is hidden via `UI.Hidden`, the text part is unavailable, causing the annotation to have no effect and potentially confusing users with missing descriptions.
+The `UI.TextArrangement` annotation controls how a key–text pair is presented , for example, "English (EN)" or "EN (English"). If the referenced text property is hidden using `UI.Hidden`, the text part is unavailable, which causes the annotation to have no effect and missing descriptions.
 
 ### Warning Message
 
 ```
-The text property "{{textPropertyPath}}" referenced via Common.Text on "{{targetPath}}" is hidden. Remove the UI.Hidden annotation from the text property or set it to false.
+The text property "{{textPropertyPath}}" referenced using the Common.Text annotation on "{{targetPath}}" is hidden (UI.Hidden). Remove the UI.Hidden annotation from the text property or set it to false.
 ```
 
-### Incorrect Annotation
+### Incorrect Annotations
 
-**Property-level `UI.TextArrangement` (nested inline inside `Common.Text`):**
+**A `UI.TextArrangement` annotation which is nested inline inside a `Common.Text` annotation:**
 
 ```xml
 <!-- property_code has a TextArrangement (nested inside Common.Text) that references category/name as the text -->
@@ -39,7 +39,7 @@ The text property "{{textPropertyPath}}" referenced via Common.Text on "{{target
 </Annotations>
 ```
 
-**Entity-type level `UI.TextArrangement` (fallback for all `Common.Text` properties):**
+**An `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties):**
 
 ```xml
 <!-- TextArrangement applied at entity-type level — acts as fallback for all Common.Text properties -->
@@ -58,9 +58,9 @@ The text property "{{textPropertyPath}}" referenced via Common.Text on "{{target
 </Annotations>
 ```
 
-### Correct Annotation
+### Correct Annotations
 
-**Property-level `UI.TextArrangement` (nested inline inside `Common.Text`):**
+**A `UI.TextArrangement` annotation at the property level which is nested inline inside a `Common.Text` Annotation:**
 
 ```xml
 <!-- property_code has a TextArrangement (nested inside Common.Text) that references category/name as the text -->
@@ -76,7 +76,7 @@ The text property "{{textPropertyPath}}" referenced via Common.Text on "{{target
 </Annotations>
 ```
 
-**Entity-type level `UI.TextArrangement` (fallback for all `Common.Text` properties):**
+**A `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties):**
 
 ```xml
 <!-- TextArrangement applied at entity-type level -->
@@ -95,7 +95,7 @@ The text property "{{textPropertyPath}}" referenced via Common.Text on "{{target
 </Annotations>
 ```
 
-Or if the property should not be hidden in this context, explicitly set `UI.Hidden` to `false`:
+If the property should not be hidden in this context, set `UI.Hidden` to `false`:
 
 ```xml
 <Annotations Target="MyService.Category/name">
@@ -109,7 +109,7 @@ If you encounter an issue with this rule, please open a [GitHub issue](https://g
 
 ## When Not to Disable This Rule
 
-This rule should not be disabled unless you have a specific scenario where the text property needs to be hidden globally but the annotation is intentionally kept for a different consumption context (e.g. a back-end consumer that processes annotations directly). Such cases are very uncommon, and a `Bool="false"` override is the preferred solution.
+This rule must not be disabled unless you have a specific scenario where the text property must be hidden globally but the annotation is intentionally kept for a different consumption context, for example, a back-end consumer that processes annotations directly. Such use cases are very uncommon and a `Bool="false"` override is the preferred solution.
 
 ## Further Reading
 

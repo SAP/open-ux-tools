@@ -359,7 +359,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [TEXT_ARRANGEMENT_HIDDEN]:
-                'The text property "{{textPropertyPath}}" referenced via Common.Text on "{{targetPath}}" is hidden (UI.Hidden). Remove the UI.Hidden annotation from the text property or set it to false.'
+                'The text property "{{textPropertyPath}}" referenced using the Common.Text annotation on "{{targetPath}}" is hidden (UI.Hidden). Remove the UI.Hidden annotation from the text property or set it to false.'
         }
     },
 
