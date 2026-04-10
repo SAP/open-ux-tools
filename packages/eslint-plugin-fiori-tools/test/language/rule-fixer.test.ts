@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type { DocumentNode, MemberNode } from '@humanwhocodes/momoa';
 import { parse } from '@humanwhocodes/momoa';
 import type { JSONRuleContext } from '../../src/language/rule-factory';
