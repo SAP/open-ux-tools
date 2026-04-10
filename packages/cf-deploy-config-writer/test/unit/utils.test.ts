@@ -1,19 +1,21 @@
-import {
-    validateVersion,
-    toMtaModuleName,
-    runCommand,
-    getBTPDestinations,
-    getDestinationProperties
-} from '../../src/utils';
-import { MTAVersion } from '../../src/constants';
-import { CommandRunner } from '@sap-ux/nodejs-utils';
-import * as btp from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: jest.fn(),
     listDestinations: jest.fn()
 }));
+
+const btp = await import('@sap-ux/btp-utils');
+const { validateVersion, toMtaModuleName, runCommand, getBTPDestinations, getDestinationProperties } = await import(
+    '../../src/utils'
+);
+const { MTAVersion } = await import('../../src/constants');
+const { CommandRunner } = await import('@sap-ux/nodejs-utils');
+
+const isAppStudioMock = btp.isAppStudio as jest.Mock;
+const listDestinationsMock = btp.listDestinations as jest.Mock;
 
 describe('CF utils', () => {
     beforeAll(async () => {
@@ -41,7 +43,7 @@ describe('CF utils', () => {
         });
 
         test('Validate - runCommand', async () => {
-            const mockRun = jest.fn();
+            const mockRun = jest.fn() as jest.Mock;
             jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(mockRun);
 
             // Test successful command execution
@@ -67,10 +69,7 @@ describe('CF utils', () => {
     });
 
     describe('getBTPDestinations', () => {
-        let listDestinationsMock: jest.SpyInstance;
-
         beforeEach(() => {
-            listDestinationsMock = jest.spyOn(btp, 'listDestinations');
             listDestinationsMock.mockReset();
         });
 
@@ -128,9 +127,6 @@ describe('CF utils', () => {
     });
 
     describe('getDestinationProperties', () => {
-        let isAppStudioMock: jest.SpyInstance;
-        let listDestinationsMock: jest.SpyInstance;
-
         const mockDestinations = {
             fullUrlDest: {
                 Name: 'fullUrlDest',
@@ -146,8 +142,7 @@ describe('CF utils', () => {
         } as any;
 
         beforeEach(() => {
-            isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
-            listDestinationsMock = jest.spyOn(btp, 'listDestinations').mockResolvedValue(mockDestinations);
+            isAppStudioMock.mockReset();
             listDestinationsMock.mockReset();
             listDestinationsMock.mockResolvedValue(mockDestinations);
         });
