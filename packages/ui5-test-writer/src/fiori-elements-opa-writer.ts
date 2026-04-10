@@ -296,6 +296,7 @@ function writeCommonAndPageFiles(
  * @param testOutDirPath - output test directory (.../webapp/test)
  * @param editor - a reference to a mem-fs editor
  * @param config - OPA test configuration object
+ * @param isStandalone - whether the generation is run in standalone mode (not during app generation)
  * @param hasJourneyRunner - whether a JourneyRunner.js already exists (standalone upgrade path)
  */
 function writeJourneyFiles(
@@ -305,14 +306,15 @@ function writeJourneyFiles(
     testOutDirPath: string,
     editor: Editor,
     config: FEV4OPAConfig,
+    isStandalone: boolean,
     hasJourneyRunner = false
 ): void {
     const generatedJourneyPages: string[] = [];
 
-    if (appFeatures.listReport) {
+    if (appFeatures.listReport?.name) {
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration', 'ListReportJourney.js'),
-            join(testOutDirPath, 'integration', `${appFeatures.listReport.name!}Journey.js`),
+            join(testOutDirPath, 'integration', `${appFeatures.listReport.name}Journey.js`),
             {
                 ...journeyParams,
                 ...appFeatures.listReport
@@ -322,31 +324,34 @@ function writeJourneyFiles(
                 globOptions: { dot: true }
             }
         );
-        generatedJourneyPages.push(appFeatures.listReport.name!);
+        generatedJourneyPages.push(appFeatures.listReport.name);
     }
 
     if (appFeatures.objectPages && appFeatures.objectPages.length > 0) {
         appFeatures.objectPages.forEach((objectPage) => {
-            editor.copyTpl(
-                join(rootV4TemplateDirPath, 'integration', 'ObjectPageJourney.js'),
-                join(testOutDirPath, 'integration', `${objectPage.name!}Journey.js`),
-                {
-                    ...journeyParams,
-                    ...objectPage
-                },
-                undefined,
-                {
-                    globOptions: { dot: true }
-                }
-            );
-            generatedJourneyPages.push(objectPage.name!);
+            if (objectPage.name) {
+                editor.copyTpl(
+                    join(rootV4TemplateDirPath, 'integration', 'ObjectPageJourney.js'),
+                    join(testOutDirPath, 'integration', `${objectPage.name}Journey.js`),
+                    {
+                        ...journeyParams,
+                        ...objectPage,
+                        isStandalone
+                    },
+                    undefined,
+                    {
+                        globOptions: { dot: true }
+                    }
+                );
+                generatedJourneyPages.push(objectPage.name);
+            }
         });
     }
 
-    if (appFeatures.fpm) {
+    if (appFeatures.fpm?.name) {
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration', 'FPMJourney.js'),
-            join(testOutDirPath, 'integration', `${appFeatures.fpm.name!}Journey.js`),
+            join(testOutDirPath, 'integration', `${appFeatures.fpm.name}Journey.js`),
             {
                 ...journeyParams,
                 ...appFeatures.fpm
@@ -356,7 +361,7 @@ function writeJourneyFiles(
                 globOptions: { dot: true }
             }
         );
-        generatedJourneyPages.push(appFeatures.fpm.name!);
+        generatedJourneyPages.push(appFeatures.fpm.name);
     }
 
     if (hasJourneyRunner) {
@@ -481,7 +486,8 @@ export async function generateOPAFiles(
                 rootV4TemplateDirPath,
                 testOutDirPath,
                 editor,
-                standaloneConfig
+                standaloneConfig,
+                true
             );
         }
     } else {
@@ -493,7 +499,7 @@ export async function generateOPAFiles(
             editor,
             journeyParams
         );
-        writeJourneyFiles(appFeatures, journeyParams, rootV4TemplateDirPath, testOutDirPath, editor, config);
+        writeJourneyFiles(appFeatures, journeyParams, rootV4TemplateDirPath, testOutDirPath, editor, config, false);
     }
 
     return editor;

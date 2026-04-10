@@ -64,7 +64,10 @@ export function spliceModulesIntoQUnitContent(fileContent: string, moduleNames: 
     const newLines = toAdd.map((name) => `${indent}"${name}",`).join('\n');
 
     // Insert just before the closing `]` using the capture group's end index.
-    const insertPosition = match.indices![1][1];
+    const insertPosition = match.indices?.[1]?.[1];
+    if (insertPosition === undefined) {
+        return fileContent;
+    }
 
     const before = fileContent.slice(0, insertPosition);
     const after = fileContent.slice(insertPosition);
@@ -114,7 +117,7 @@ export function readHtmlTargetFromQUnitJs(basePath: string, fs: Editor): string 
         const htmlPath = launchUrl.split('?')[0];
         const hash = readHashFromFlpSandbox(htmlPath, basePath, fs);
         return hash ? `${launchUrl}#${hash}` : launchUrl;
-    } catch (error) {
+    } catch {
         return undefined;
     }
 }
