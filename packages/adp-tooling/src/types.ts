@@ -13,6 +13,36 @@ import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
 import type { SupportedProject } from './source';
 
+export type DataSources = Record<string, ManifestNamespace.DataSource>;
+
+/**
+ * Common interface for manifest services (ABAP and CF).
+ * Consumers should program against this interface to support both environments.
+ */
+export interface IManifestService {
+    /**
+     * Returns the manifest.
+     *
+     * @returns The manifest.
+     */
+    getManifest(): Manifest;
+
+    /**
+     * Returns the data sources from the manifest.
+     *
+     * @returns The data sources from the manifest.
+     */
+    getManifestDataSources(): DataSources;
+
+    /**
+     * Returns the metadata of a data source.
+     *
+     * @param dataSourceId - The ID of the data source.
+     * @returns A promise that resolves to the metadata of the data source.
+     */
+    getDataSourceMetadata(dataSourceId: string): Promise<string>;
+}
+
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
     reference: string;
@@ -145,6 +175,7 @@ export interface ConfigAnswers {
     password: string;
     storeCredentials?: boolean;
     application: SourceApplication;
+    projectType?: AdaptationProjectType;
     fioriId?: string;
     ach?: string;
     shouldCreateExtProject?: boolean;
@@ -874,6 +905,8 @@ export interface AppParamsExtended extends CfAppParams {
     spaceGuid: string;
 }
 
+export type ServiceKeySortField = 'updated_at' | 'created_at';
+
 export interface ServiceKeys {
     credentials: {
         [key: string]: any;
@@ -897,6 +930,39 @@ export interface HTML5Content {
 export interface ServiceInstance {
     name: string;
     guid: string;
+}
+
+/**
+ * Service key credentials with tags returned by the CF API.
+ */
+export interface ServiceKeyCredentialsWithTags {
+    label: string;
+    name: string;
+    tags: string[];
+    plan: string;
+    credentials: ServiceKeys['credentials'] | undefined;
+}
+
+/**
+ * Destination configuration returned by the BTP Destination Configuration API.
+ * Contains the known properties; additional custom properties may also be present.
+ */
+export interface BtpDestinationConfig {
+    Name: string;
+    Type: string;
+    URL: string;
+    Authentication: string;
+    ProxyType: string;
+    Description?: string;
+    User?: string;
+    Password?: string;
+    'sap-client'?: string;
+    [key: string]: string | undefined;
+}
+
+export interface AppRouterEnvOptions {
+    'VCAP_SERVICES'?: Record<string, unknown>;
+    destinations?: { name: string; url: string }[];
 }
 
 export interface GetServiceInstanceParams {

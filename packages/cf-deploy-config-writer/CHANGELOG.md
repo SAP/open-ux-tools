@@ -1,5 +1,132 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.95
+
+### Patch Changes
+
+- 6231731: refactor: scope BTP destinations cache to call site instead of module level
+
+    `getBTPDestinations` and `getDestinationProperties` now accept an optional
+    `cache` parameter (`{ list?: Destinations }`). Each generator run passes its own
+    cache object for deduplication within a single invocation; independent calls use
+    independent caches by default. This removes the module-level mutable variable
+    that caused cross-test contamination and prevented stale-cache detection.
+
+## 0.3.94
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/ui5-config@0.30.2
+    - @sap-ux/yaml@0.17.7
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.19
+
+## 0.3.93
+
+### Patch Changes
+
+- 9858ad4: refactor: replace hardcoded MTA file operation delays with predicate-based polling
+
+    Introduces `waitForMtaFile()` in `src/mta-config/wait-for-mta.ts` that polls `fs.existsSync` + `Mta.getMtaID()` with a configurable timeout instead of sleeping for a fixed duration. Both `getMtaConfig()` and `generateCAPConfig()` now use this mechanism, eliminating up to 5 × 1000ms silent delays on slow file systems while still handling the mta-lib file-readiness requirement correctly.
+
+## 0.3.92
+
+### Patch Changes
+
+- 551ae9a: Align mta.yaml for standalone and ensure external package.json changes are refected
+
+## 0.3.91
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+
+## 0.3.90
+
+### Patch Changes
+
+- c53a4ba: chore(cf-deploy-config-writer): upgrade js-yaml 3.x → 4.x; upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.3.89
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+
+## 0.3.88
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.3.87
+
+### Patch Changes
+
+- a41533f: chore(cf-deploy-config-writer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/nodejs-utils@0.2.18
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/yaml@0.17.6
+
+## 0.3.86
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.3.85
+
+### Patch Changes
+
+- 55d833f: fix i18next init showSupportNotice: false.
+
+## 0.3.84
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/project-access@1.35.14
+
+## 0.3.83
+
+### Patch Changes
+
+- 0e856a7: Ensure mta service-name is handled
+
+## 0.3.82
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/nodejs-utils@0.2.17
+    - @sap-ux/ui5-config@0.29.21
+
 ## 0.3.81
 
 ### Patch Changes

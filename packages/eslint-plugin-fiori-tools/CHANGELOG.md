@@ -1,5 +1,144 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.11.7
+
+### Patch Changes
+
+- 9696e29: Add legacy fiori_tools_configure.eslintrc for `recommended` and `recommended-for-s4hana`
+
+## 9.11.6
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+    - @sap-ux/fiori-annotation-api@0.9.41
+    - @sap-ux/project-access@1.35.19
+
+## 9.11.5
+
+### Patch Changes
+
+- 0f7f5f3: Fix: Check minUI5 version for the sap-width-including-column-header rule
+
+## 9.11.4
+
+### Patch Changes
+
+- f65d718: fix: revert eslint peerDependency to ^9 instead of exact version
+
+## 9.11.3
+
+### Patch Changes
+
+- 0153757: add es2020 globals
+
+## 9.11.2
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/fiori-annotation-api@0.9.40
+
+## 9.11.1
+
+### Patch Changes
+
+- 896be16: Add legacy eslint config from file `fiori_tools_configure.eslintrc` and `fiori_tools_testcode.eslintrc` for recommended-for-s4hana
+
+## 9.11.0
+
+### Minor Changes
+
+- a61cb9b: [rule] Add rule to check that intent-based navigation data fields are not used.
+
+## 9.10.5
+
+### Patch Changes
+
+- c53a4ba: chore(eslint-plugin-fiori-tools): upgrade typescript-eslint 8.46.2 → 8.57.2; upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/odata-vocabularies@0.4.30
+    - @sap-ux/fiori-annotation-api@0.9.39
+    - @sap-ux/project-access@1.35.17
+
+## 9.10.4
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/fiori-annotation-api@0.9.38
+
+## 9.10.3
+
+### Patch Changes
+
+- a41533f: fix(eslint-plugin-fiori-tools): upgrade runtime dependencies and fix @eslint/core 1.x compatibility
+    - Upgrade @babel/core, @eslint/json, @eslint/config-helpers, globals, synckit, yaml, semver, @sap-ux/vocabularies-types
+    - Cast rules to `Plugin['rules']` for stricter @eslint/core 1.x type definitions
+
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/fiori-annotation-api@0.9.37
+    - @sap-ux/project-access@1.35.16
+
+## 9.10.2
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/fiori-annotation-api@0.9.36
+
+## 9.10.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/fiori-annotation-api@0.9.35
+
+## 9.10.0
+
+### Minor Changes
+
+- 8ec22c9: [rule] add sap-condensed-table-layout eslint rule
+
+## 9.9.4
+
+### Patch Changes
+
+- Updated dependencies [436cad8]
+    - @sap-ux/fiori-annotation-api@0.9.34
+
+## 9.9.3
+
+### Patch Changes
+
+- 9afb66a: feat: add plugin version number to rule in readme
+
+## 9.9.2
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.33
+
+## 9.9.1
+
+### Patch Changes
+
+- Updated dependencies [dfa433e]
+    - @sap-ux/fiori-annotation-api@0.9.32
+    - @sap-ux/odata-entity-model@0.3.7
+    - @sap-ux/odata-annotation-core@0.2.17
+    - @sap-ux/odata-vocabularies@0.4.29
+
+## 9.9.0
+
+### Minor Changes
+
+- 5055dde: Feat: add sap-strict-uom-filtering eslint rule
+
 ## 9.8.0
 
 ### Minor Changes

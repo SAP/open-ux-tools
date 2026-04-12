@@ -1,5 +1,76 @@
 # @sap-ux/fe-fpm-cli
 
+## 0.1.133
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/fe-fpm-writer@0.43.19
+
+## 0.1.132
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.43.18
+
+## 0.1.131
+
+### Patch Changes
+
+- Updated dependencies [c53a4ba]
+    - @sap-ux/fe-fpm-writer@0.43.17
+
+## 0.1.130
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.43.16
+
+## 0.1.129
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+    - @sap-ux/fe-fpm-writer@0.43.15
+
+## 0.1.128
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.43.14
+
+## 0.1.127
+
+### Patch Changes
+
+- Updated dependencies [08f3a5c]
+    - @sap-ux/fe-fpm-writer@0.43.13
+
+## 0.1.126
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.43.12
+
+## 0.1.125
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.43.11
+
+## 0.1.124
+
+### Patch Changes
+
+- Updated dependencies [55417bb]
+    - @sap-ux/fe-fpm-writer@0.43.10
+
+## 0.1.123
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.43.9
+
 ## 0.1.122
 
 ### Patch Changes

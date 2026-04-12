@@ -1,5 +1,67 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.9.70
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/ui5-config@0.30.2
+    - @sap-ux/project-access@1.35.19
+
+## 0.9.69
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+
+## 0.9.68
+
+### Patch Changes
+
+- c53a4ba: chore(mockserver-config-writer): upgrade shared devDependencies (jest 30, i18next 25)
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.9.67
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.9.66
+
+### Patch Changes
+
+- a41533f: chore(mockserver-config-writer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.9.65
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.9.64
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/project-access@1.35.14
+
+## 0.9.63
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+    - @sap-ux/ui5-config@0.29.21
+
 ## 0.9.62
 
 ### Patch Changes

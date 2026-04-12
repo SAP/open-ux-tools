@@ -133,7 +133,7 @@ const updateVocabulary = async (namespace: string, config: VocabularyConfig, dat
         return;
     }
     options.parser = 'typescript';
-    const filePrettified = prettier.format(contentFile, options);
+    const filePrettified = await prettier.format(contentFile, options);
 
     await fs.writeFile(file, filePrettified, 'utf8');
 

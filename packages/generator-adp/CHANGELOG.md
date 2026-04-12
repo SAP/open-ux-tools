@@ -1,5 +1,288 @@
 # @sap-ux/generator-adp
 
+## 0.9.51
+
+### Patch Changes
+
+- Updated dependencies [7a8613b]
+    - @sap-ux/adp-tooling@0.18.113
+
+## 0.9.50
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+- Updated dependencies [f1e4481]
+    - @sap-ux/axios-extension@1.25.29
+    - @sap-ux/inquirer-common@0.11.34
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/adp-tooling@0.18.112
+    - @sap-ux/fiori-generator-shared@0.13.96
+    - @sap-ux/odata-service-writer@0.31.6
+    - @sap-ux/system-access@0.7.5
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/store@1.5.13
+    - @sap-ux/telemetry@0.6.96
+    - @sap-ux/project-input-validator@0.6.75
+
+## 0.9.49
+
+### Patch Changes
+
+- 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
+- Updated dependencies [1b10e9f]
+    - @sap-ux/adp-tooling@0.18.111
+
+## 0.9.48
+
+### Patch Changes
+
+- Updated dependencies [6b74074]
+    - @sap-ux/adp-tooling@0.18.110
+
+## 0.9.47
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/adp-tooling@0.18.109
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/fiori-generator-shared@0.13.95
+    - @sap-ux/inquirer-common@0.11.33
+    - @sap-ux/odata-service-writer@0.31.5
+    - @sap-ux/project-input-validator@0.6.74
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/telemetry@0.6.95
+
+## 0.9.46
+
+### Patch Changes
+
+- 68b5523: feat: Adjust FLP configuration wizard for CF scenario
+- Updated dependencies [68b5523]
+    - @sap-ux/adp-tooling@0.18.108
+
+## 0.9.45
+
+### Patch Changes
+
+- c53a4ba: chore(generator-adp): upgrade @sap-devx/yeoman-ui-types 1.22.0 → 1.23.0 (runtime dep); upgrade devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/adp-tooling@0.18.107
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/feature-toggle@0.3.8
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/odata-service-writer@0.31.4
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/store@1.5.12
+    - @sap-ux/telemetry@0.6.94
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+
+## 0.9.44
+
+### Patch Changes
+
+- Updated dependencies [e92850e]
+    - @sap-ux/telemetry@0.6.93
+    - @sap-ux/fiori-generator-shared@0.13.93
+    - @sap-ux/inquirer-common@0.11.31
+    - @sap-ux/adp-tooling@0.18.106
+
+## 0.9.43
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/adp-tooling@0.18.105
+    - @sap-ux/axios-extension@1.25.27
+    - @sap-ux/fiori-generator-shared@0.13.92
+    - @sap-ux/inquirer-common@0.11.30
+    - @sap-ux/system-access@0.7.3
+    - @sap-ux/telemetry@0.6.92
+    - @sap-ux/odata-service-writer@0.31.3
+
+## 0.9.42
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/adp-tooling@0.18.104
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/fiori-generator-shared@0.13.91
+    - @sap-ux/inquirer-common@0.11.29
+    - @sap-ux/odata-service-writer@0.31.3
+    - @sap-ux/project-input-validator@0.6.72
+    - @sap-ux/system-access@0.7.2
+    - @sap-ux/telemetry@0.6.91
+
+## 0.9.41
+
+### Patch Changes
+
+- 96a689b: fix(ADP): Change prompt's order, first appear applications then projectType if applicable.
+- Updated dependencies [96a689b]
+    - @sap-ux/adp-tooling@0.18.103
+
+## 0.9.40
+
+### Patch Changes
+
+- Updated dependencies [3dcd3f7]
+    - @sap-ux/adp-tooling@0.18.102
+
+## 0.9.39
+
+### Patch Changes
+
+- a41533f: chore(generator-adp): upgrade runtime dependencies (@sap-devx/feature-toggle-node 2.1.0, i18next 25.8.20)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/adp-tooling@0.18.101
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/odata-service-writer@0.31.2
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/project-input-validator@0.6.71
+    - @sap-ux/store@1.5.11
+    - @sap-ux/system-access@0.7.2
+    - @sap-ux/telemetry@0.6.90
+
+## 0.9.38
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/adp-tooling@0.18.100
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/fiori-generator-shared@0.13.89
+    - @sap-ux/inquirer-common@0.11.27
+    - @sap-ux/odata-service-writer@0.31.1
+    - @sap-ux/project-input-validator@0.6.70
+    - @sap-ux/system-access@0.7.1
+    - @sap-ux/telemetry@0.6.89
+
+## 0.9.37
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/adp-tooling@0.18.99
+    - @sap-ux/fiori-generator-shared@0.13.88
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/system-access@0.7.1
+
+## 0.9.36
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+
+## 0.9.35
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/adp-tooling@0.18.97
+    - @sap-ux/inquirer-common@0.11.26
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/telemetry@0.6.88
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/fiori-generator-shared@0.13.88
+    - @sap-ux/project-input-validator@0.6.69
+
+## 0.9.34
+
+### Patch Changes
+
+- 5307571: fix: Add logging and user friendly error messages for key user API calls in the generator
+
+## 0.9.33
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+    - @sap-ux/inquirer-common@0.11.25
+    - @sap-ux/adp-tooling@0.18.96
+
+## 0.9.32
+
+### Patch Changes
+
+- 4f86250: feat: Adjust mini wizard behavior for CF scenario
+- Updated dependencies [4f86250]
+    - @sap-ux/adp-tooling@0.18.95
+
+## 0.9.31
+
+### Patch Changes
+
+- Updated dependencies [3626b55]
+    - @sap-ux/adp-tooling@0.18.94
+
+## 0.9.30
+
+### Patch Changes
+
+- a854433: feat: Handle i18n translations from key user changes in ADP generator
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/adp-tooling@0.18.93
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/system-access@0.6.66
+
+## 0.9.29
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/adp-tooling@0.18.92
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/system-access@0.6.65
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/inquirer-common@0.11.24
+    - @sap-ux/odata-service-writer@0.30.1
+    - @sap-ux/project-input-validator@0.6.68
+    - @sap-ux/store@1.5.10
+    - @sap-ux/telemetry@0.6.87
+
 ## 0.9.28
 
 ### Patch Changes

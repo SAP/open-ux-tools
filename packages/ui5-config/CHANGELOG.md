@@ -1,5 +1,27 @@
 # @sap-ux/ui5-config
 
+## 0.30.2
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- Updated dependencies [f1e4481]
+    - @sap-ux/yaml@0.17.7
+
+## 0.30.1
+
+### Patch Changes
+
+- a41533f: chore(ui5-config): upgrade axios 1.13.5 → 1.13.6
+- Updated dependencies [a41533f]
+    - @sap-ux/yaml@0.17.6
+
+## 0.30.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
 ## 0.29.21
 
 ### Patch Changes

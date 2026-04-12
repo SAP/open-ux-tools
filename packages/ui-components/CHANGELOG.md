@@ -1,5 +1,65 @@
 # @sap-ux/ui-components
 
+## 2.1.9
+
+### Patch Changes
+
+- 9357457: fix(ui-components): add inline code block styling for VS Code webviews
+
+## 2.1.8
+
+### Patch Changes
+
+- 10f83b6: UIActionButton, UIDefaultButton - adjust `min height` after latest Fluent UI update
+
+## 2.1.7
+
+### Patch Changes
+
+- f101671: Add line-height to UITranslationInput text
+
+## 2.1.6
+
+### Patch Changes
+
+- 6b622e0: error, warning, info boxes have rounded corners
+
+## 2.1.5
+
+### Patch Changes
+
+- c53a4ba: chore(ui-components): upgrade @testing-library/jest-dom 5.17.0 → 6.9.1; upgrade sass-loader 13→16, style-loader 3→4, css-loader 6→7; implement custom jsdom env for writable window.location
+
+## 2.1.4
+
+### Patch Changes
+
+- a41533f: chore(ui-components): upgrade runtime dependencies (@fluentui/react 8.125.5, sanitize-html 2.17.2)
+
+## 2.1.3
+
+### Patch Changes
+
+- 7f2689f: `UITranslationInput` - removed unnecessary <span> elements and left-aligned message content.
+
+## 2.1.2
+
+### Patch Changes
+
+- addfdee: Add `GoToData` icon to `UiIcons` enum and `initIcons()` function
+
+## 2.1.1
+
+### Patch Changes
+
+- 59c6ac3: `UITranslationInput` — new property `invertedCalloutTheme` to toggle between normal and inverted callout styles. Default is `false`. Previously `invertedCalloutTheme` was applied by default.
+
+## 2.1.0
+
+### Minor Changes
+
+- 24bd091: feat(ui-component): add form, form field and mighty pen icons
+
 ## 2.0.3
 
 ### Patch Changes

@@ -105,6 +105,7 @@ describe('getFunctionalityDetails', () => {
                     'showRelatedApps': {
                         'artifactType': 'Manifest',
                         'description': 'Set showRelatedApps to true to show the navigation button for related apps.',
+                        'manifestPath': 'showRelatedApps',
                         'type': 'boolean'
                     }
                 },
@@ -140,20 +141,24 @@ describe('getFunctionalityDetails', () => {
                                 'value': 'Delete'
                             }
                         ],
+                        'manifestPath':
+                            '$["sap.ui5"].routing.targets.TravelObjectPage.options.settings.content.header.actions.DeleteAction',
                         'properties': {
                             'overflowGroup': {
                                 'artifactType': 'Manifest',
                                 'description':
-                                    "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+                                    "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
                                 'descriptionSrcURL': 'https://ui5.sap.com/#/topic/cbf16c599f2d4b8796e3702f7d4aae6c',
-                                'type': 'number'
+                                'manifestPath': 'overflowGroup',
+                                'type': 'integer'
                             },
                             'priority': {
                                 'artifactType': 'Manifest',
                                 'description':
-                                    'Defines the priority of the action. This determines ordering and whether the action is moved into overflow.',
+                                    'Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.',
                                 'descriptionSrcURL': 'https://ui5.sap.com/#/topic/cbf16c599f2d4b8796e3702f7d4aae6c',
                                 'enum': ['AlwaysOverflow', 'High', 'Low', 'NeverOverflow'],
+                                'manifestPath': 'priority',
                                 'type': 'string'
                             }
                         },
@@ -213,11 +218,14 @@ describe('getFunctionalityDetails', () => {
                                     'TwoColumnsBeginExpanded',
                                     'TwoColumnsMidExpanded'
                                 ],
+                                'manifestPath':
+                                    '$["sap.ui5"].routing.config.flexibleColumnLayout.defaultTwoColumnLayoutType',
                                 type: 'string'
                             },
                             limitFCLToTwoColumns: {
                                 description:
                                     'Determines whether the Flexible Column Layout is limited to two columns. If set to true, the third level will be displayed in full screen mode rather than a third column.',
+                                'manifestPath': '$["sap.ui5"].routing.config.flexibleColumnLayout.limitFCLToTwoColumns',
                                 type: 'boolean'
                             }
                         },

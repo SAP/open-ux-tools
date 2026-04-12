@@ -133,7 +133,7 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
     "type": "list",
   },
   {
-    "default": false,
+    "default": true,
     "guiOptions": {
       "breadcrumb": "ESLint",
     },

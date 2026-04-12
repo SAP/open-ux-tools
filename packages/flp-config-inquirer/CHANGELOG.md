@@ -1,5 +1,228 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.172
+
+### Patch Changes
+
+- Updated dependencies [7a8613b]
+    - @sap-ux/adp-tooling@0.18.113
+
+## 0.4.171
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- Updated dependencies [f1e4481]
+- Updated dependencies [f1e4481]
+    - @sap-ux/axios-extension@1.25.29
+    - @sap-ux/inquirer-common@0.11.34
+    - @sap-ux/adp-tooling@0.18.112
+    - @sap-ux/fiori-generator-shared@0.13.96
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/project-input-validator@0.6.75
+
+## 0.4.170
+
+### Patch Changes
+
+- Updated dependencies [1b10e9f]
+    - @sap-ux/adp-tooling@0.18.111
+
+## 0.4.169
+
+### Patch Changes
+
+- Updated dependencies [6b74074]
+    - @sap-ux/adp-tooling@0.18.110
+
+## 0.4.168
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/adp-tooling@0.18.109
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/fiori-generator-shared@0.13.95
+    - @sap-ux/inquirer-common@0.11.33
+    - @sap-ux/project-input-validator@0.6.74
+
+## 0.4.167
+
+### Patch Changes
+
+- Updated dependencies [68b5523]
+    - @sap-ux/adp-tooling@0.18.108
+
+## 0.4.166
+
+### Patch Changes
+
+- c53a4ba: chore(flp-config-inquirer): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/adp-tooling@0.18.107
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+
+## 0.4.165
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.93
+- @sap-ux/inquirer-common@0.11.31
+- @sap-ux/adp-tooling@0.18.106
+
+## 0.4.164
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/adp-tooling@0.18.105
+    - @sap-ux/axios-extension@1.25.27
+    - @sap-ux/fiori-generator-shared@0.13.92
+    - @sap-ux/inquirer-common@0.11.30
+
+## 0.4.163
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/adp-tooling@0.18.104
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/fiori-generator-shared@0.13.91
+    - @sap-ux/inquirer-common@0.11.29
+    - @sap-ux/project-input-validator@0.6.72
+
+## 0.4.162
+
+### Patch Changes
+
+- Updated dependencies [96a689b]
+    - @sap-ux/adp-tooling@0.18.103
+
+## 0.4.161
+
+### Patch Changes
+
+- Updated dependencies [3dcd3f7]
+    - @sap-ux/adp-tooling@0.18.102
+
+## 0.4.160
+
+### Patch Changes
+
+- a41533f: chore(flp-config-inquirer): reformat FLPConfigQuestion interface extends clause (Prettier upgrade autofix)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/adp-tooling@0.18.101
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/project-input-validator@0.6.71
+
+## 0.4.159
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/adp-tooling@0.18.100
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/fiori-generator-shared@0.13.89
+    - @sap-ux/inquirer-common@0.11.27
+    - @sap-ux/project-input-validator@0.6.70
+
+## 0.4.158
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/adp-tooling@0.18.99
+    - @sap-ux/fiori-generator-shared@0.13.88
+
+## 0.4.157
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+
+## 0.4.156
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.97
+- @sap-ux/inquirer-common@0.11.26
+- @sap-ux/project-access@1.35.14
+- @sap-ux/axios-extension@1.25.24
+- @sap-ux/fiori-generator-shared@0.13.88
+- @sap-ux/project-input-validator@0.6.69
+
+## 0.4.155
+
+### Patch Changes
+
+- Updated dependencies [ae6758f]
+    - @sap-ux/fiori-generator-shared@0.13.87
+    - @sap-ux/inquirer-common@0.11.25
+    - @sap-ux/adp-tooling@0.18.96
+
+## 0.4.154
+
+### Patch Changes
+
+- Updated dependencies [4f86250]
+    - @sap-ux/adp-tooling@0.18.95
+
+## 0.4.153
+
+### Patch Changes
+
+- Updated dependencies [3626b55]
+    - @sap-ux/adp-tooling@0.18.94
+
+## 0.4.152
+
+### Patch Changes
+
+- Updated dependencies [a854433]
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/adp-tooling@0.18.93
+    - @sap-ux/fiori-generator-shared@0.13.86
+
+## 0.4.151
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+- Updated dependencies [55417bb]
+    - @sap-ux/adp-tooling@0.18.92
+    - @sap-ux/axios-extension@1.25.23
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/fiori-generator-shared@0.13.86
+    - @sap-ux/inquirer-common@0.11.24
+    - @sap-ux/project-input-validator@0.6.68
+
 ## 0.4.150
 
 ### Patch Changes

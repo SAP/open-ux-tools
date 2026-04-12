@@ -1,5 +1,99 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.41
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/cds-odata-annotation-converter@0.7.16
+
+## 0.9.40
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/cds-odata-annotation-converter@0.7.16
+
+## 0.9.39
+
+### Patch Changes
+
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/cds-odata-annotation-converter@0.7.16
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/odata-vocabularies@0.4.30
+    - @sap-ux/xml-odata-annotation-converter@0.4.12
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/cds-annotation-parser@0.2.35
+
+## 0.9.38
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/cds-odata-annotation-converter@0.7.15
+
+## 0.9.37
+
+### Patch Changes
+
+- a41533f: chore(fiori-annotation-api): upgrade vscode-languageserver-textdocument 1.0.11 → 1.0.12
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/cds-odata-annotation-converter@0.7.15
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+
+## 0.9.36
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/cds-odata-annotation-converter@0.7.14
+
+## 0.9.35
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/cds-odata-annotation-converter@0.7.14
+
+## 0.9.34
+
+### Patch Changes
+
+- 436cad8: fix: Fixed an issue where path to external metadata is incorrectly resolved for actions or functions with ValueListReferences annotations applied.
+
+## 0.9.33
+
+### Patch Changes
+
+- Updated dependencies [55417bb]
+    - @sap-ux/cds-odata-annotation-converter@0.7.14
+
+## 0.9.32
+
+### Patch Changes
+
+- dfa433e: feat: Enabled support of referenced external metadata
+- Updated dependencies [dfa433e]
+    - @sap-ux/odata-annotation-core-types@0.5.7
+    - @sap-ux/odata-entity-model@0.3.7
+    - @sap-ux/cds-odata-annotation-converter@0.7.13
+    - @sap-ux/odata-annotation-core@0.2.17
+    - @sap-ux/odata-vocabularies@0.4.29
+    - @sap-ux/xml-odata-annotation-converter@0.4.11
+    - @sap-ux/cds-annotation-parser@0.2.34
+
 ## 0.9.31
 
 ### Patch Changes

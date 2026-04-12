@@ -103,7 +103,9 @@
         "emptyCFAPIResponse": "Empty response from CF API. Please verify your CF login status with 'cf target' and re-authenticate if needed with 'cf login'.",
         "xsSecurityJsonCouldNotBeParsed": "The xs-security.json file could not be parsed. Ensure the xs-security.json file exists and try again.",
         "failedToCreateServiceInstance": "Failed to create the service instance: '{{serviceInstanceName}}'. Error: {{error}}",
+        "failedToUpdateServiceInstance": "Failed to update the service instance: '{{serviceInstanceName}}'. Error: {{error}}",
         "failedToGetFDCApps": "Retrieving FDC apps failed: {{error}}",
+        "failedToGetFDCInbounds": "Retrieving inbounds from the UI5 Flexibility Design and Configuration service failed: {{error}}", 
         "failedToConnectToFDCService": "Failed to connect to the FDC service: '{{status}}'",
         "baseAppRequired": "A base app is required for Cloud Foundry project generation. Please select a base app and try again.",
         "projectTypeNotProvided": "The project type is missing." ,
@@ -111,7 +113,11 @@
         "xsAppJsonNotFound": "The xs-app.json file was not found in any of the expected locations: {{paths}}",
         "noServiceInstanceNameFound": "No serviceInstanceName found in the app-variant-bundler-build configuration",
         "noServiceKeysFoundForInstance": "No service keys found for service instance: {{serviceInstanceName}}",
-        "couldNotFetchServiceKeys": "Could not fetch the service keys: {{error}}"
+        "couldNotFetchServiceKeys": "Cannot fetch the service keys. Error: {{error}}",
+        "metadataFetchingNotSupportedForCF": "Metadata fetching is not supported for Cloud Foundry projects.",
+        "cfPushFailed": "cf push failed for the '{{appName}}' app: {{error}}",
+        "cfEnableSshFailed": "cf enable-ssh failed for the '{{appName}}' app: {{error}}",
+        "cfRestartFailed": "cf restart failed for the '{{appName}}' app: {{error}}"
     },
     "choices": {
         "true": "true",

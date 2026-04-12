@@ -1,5 +1,68 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.21
+
+### Patch Changes
+
+- 9696e29: Linting auto fix
+
+## 0.25.20
+
+## 0.25.19
+
+### Patch Changes
+
+- @sap-ux-private/control-property-editor-common@0.7.7
+
+## 0.25.18
+
+## 0.25.17
+
+## 0.25.16
+
+## 0.25.15
+
+### Patch Changes
+
+- 0153757: fix: RTA editor endpoint causing duplicate ID error if started from the launchpad sandbox
+
+## 0.25.14
+
+## 0.25.13
+
+## 0.25.12
+
+## 0.25.11
+
+### Patch Changes
+
+- c53a4ba: chore(preview-middleware-client): implement custom jsdom env for writable window.location; fix eslint config plugin scoping; upgrade shared devDependencies (jest 30)
+    - @sap-ux-private/control-property-editor-common@0.7.7
+
+## 0.25.10
+
+### Patch Changes
+
+- 8408e10: enhancedHomePage - initialize cdm before bootstrap
+
+## 0.19.1
+
+### Patch Changes
+
+- 55eb5dc: fix: disable condensing in workspace connector for older SAPUI5 versions
+
+## 0.19.0
+
+### Minor Changes
+
+- 428ee72: fix: Rename action missing for Object Page elements in Adaptation Editor. Annotation changes are now explicitly disabled as they are not supported in developer mode.
+
+## 0.18.27
+
+### Patch Changes
+
+- 3626b55: fix: Add New Card flow broken for OVP adaptation projects
+
 ## 0.18.26
 
 ### Patch Changes

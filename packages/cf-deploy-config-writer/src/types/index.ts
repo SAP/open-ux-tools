@@ -80,6 +80,15 @@ export interface CFConfig extends CFAppConfig, CFBaseConfig {
     firstServicePathSegment?: string;
     isMtaRoot?: boolean;
 }
+/**
+ * Configuration for CAP (Cloud Application Programming) project deployments.
+ * Extends CFBaseConfig but excludes ABAP service provider properties since CAP projects
+ * don't support direct ABAP service binding. This interface provides semantic clarity
+ * and type safety by explicitly excluding properties that are not applicable to CAP deployments.
+ *
+ * @remarks This is an intentionally narrow interface that omits ABAP-specific properties
+ * while inheriting all standard Cloud Foundry base configuration properties.
+ */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface CAPConfig extends Omit<CFBaseConfig, 'abapServiceProvider'> {}
 export const enum ApiHubType {

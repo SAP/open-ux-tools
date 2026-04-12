@@ -1,5 +1,63 @@
 # @sap-ux/axios-extension
 
+## 1.25.29
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- f1e4481: chore(axios-extension): upgrade @xmldom/xmldom 0.8.11 → 0.8.12 (security fix)
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/btp-utils@1.1.12
+
+## 1.25.28
+
+### Patch Changes
+
+- c53a4ba: chore(axios-extension): upgrade shared devDependencies (jest 30, axios 1.13.6, ws 8.20.0)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/feature-toggle@0.3.8
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/btp-utils@1.1.12
+
+## 1.25.27
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+
+## 1.25.26
+
+### Patch Changes
+
+- a41533f: chore(axios-extension): upgrade runtime dependencies (axios 1.13.6, fast-xml-parser 5.5.9, qs 6.15.0, xpath 0.0.34, @xmldom/xmldom 0.8.11)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/logger@0.8.3
+
+## 1.25.25
+
+### Patch Changes
+
+- c0e05ab: Updates catalog services dedup logic to include url
+
+## 1.25.24
+
+### Patch Changes
+
+- a854433: feat: Handle i18n translations from key user changes in ADP generator
+
+## 1.25.23
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+
 ## 1.25.22
 
 ### Patch Changes

@@ -2,11 +2,12 @@ import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { ParsedService } from '../parser';
 import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
 import { getParsedServiceByName } from '../utils';
-import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
-import { collectTables, collectSections } from './annotations';
+import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
+import { collectTables, collectSections, collectHeaderSections } from './annotations';
 
 export interface ApplicationSetting {
     createMode: string;
+    disableStrictUomFiltering: boolean;
 }
 
 export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSetting> {
@@ -20,7 +21,7 @@ export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
     contextPath: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
-    lookup: NodeLookup<Table | OrphanTable>;
+    lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
 }
 
 export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
@@ -29,7 +30,7 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     contextPath: string;
     entity: MetadataElement;
     sections: Section[];
-    lookup: NodeLookup<Table | Section>;
+    lookup: NodeLookup<Table | Section | FieldGroup>;
     header: {
         anchorBarVisible: ConfigurationProperty<boolean>;
         visible: ConfigurationProperty<boolean>;
@@ -38,16 +39,20 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
 
 export type FeV4PageType = FeV4ListReport | FeV4ObjectPage;
 
-export interface AnnotationBasedNode<T extends AnnotationNode, Configuration extends object = {}, Children = never>
-    extends ConfigurationBase<T['type'], Configuration> {
+export interface AnnotationBasedNode<
+    T extends AnnotationNode,
+    Configuration extends object = {},
+    Children = never
+> extends ConfigurationBase<T['type'], Configuration> {
     annotation?: T;
-
     children: Children[];
 }
 
 export type OrphanSection = ConfigurationBase<'orphan-section', {}>;
 export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
-export type Section = TableSection | OrphanSection;
+export type HeaderSection = AnnotationBasedNode<HeaderSectionNode, {}, FieldGroup>;
+export type Section = TableSection | OrphanSection | HeaderSection;
+
 export interface TableSettings {
     creationMode: string;
     tableType: string;
@@ -55,17 +60,22 @@ export interface TableSettings {
     disableCopyToClipboard: boolean;
     enableExport: boolean;
     enablePaste: boolean;
+    condensedTableLayout: boolean;
     personalization: boolean | { column?: boolean; filter?: boolean; sort?: boolean; group?: boolean };
 }
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
+export type FieldGroup = AnnotationBasedNode<FieldGroupNode, {}>;
 
 interface ManifestApplicationSettings {
     macros?: {
         table?: {
             defaultCreationMode?: string;
         };
+    };
+    app?: {
+        disableStrictUomFiltering?: boolean;
     };
 }
 
@@ -142,6 +152,18 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
                 ],
                 values: [true, false]
             },
+            condensedTableLayout: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'condensedTableLayout'
+                ],
+                values: [true, false]
+            },
             creationMode: {
                 configurationPath: [
                     ...pathToPage,
@@ -196,15 +218,44 @@ function getCreationModeValues(tableType?: string): string[] {
     return ['InlineCreationRows', 'NewPage'];
 }
 
-export type Node = Section | Table | OrphanTable;
+export type Node = Section | Table | OrphanTable | FieldGroup;
 export type NodeLookup<T extends Node> = {
     [K in T['type']]?: Extract<T, { type: K }>[];
 };
 
 /**
+ * Links OData V4 object page table and header sections with their tables and FieldGroup configurations.
+ *
+ * @param page - The object page being linked
+ * @param path - Configuration path segments to the page
+ * @param name - The name of the page
+ * @param sections - Array of table and header section nodes to link
+ * @param target - The routing target configuration
+ */
+function linkV4ObjectPageSections(
+    page: FeV4ObjectPage,
+    path: string[],
+    name: string,
+    sections: (TableSectionNode | HeaderSectionNode)[],
+    target: Target
+): void {
+    linkObjectPageSections(
+        page,
+        path,
+        name,
+        sections.filter((section) => section.type === 'table-section'),
+        target
+    );
+    for (const section of sections.filter((section) => section.type === 'header-section')) {
+        collectHeaderSections(section, page);
+    }
+}
+
+/**
  * Runs the Fiori Elements V4 linker to build linked app structure.
  *
  * @param context - The linker context containing app and service information
+ * @returns - V4 app pages with linked annotations
  */
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
     const linkedApp = linkApplicationSettings(context);
@@ -256,7 +307,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                     }
                 }
             };
-            linkObjectPageSections(page, path, name, sections, target);
+            linkV4ObjectPageSections(page, path, name, sections, target);
             linkObjectPageHeader(page, target);
             linkedApp.pages.push(page);
         }
@@ -288,6 +339,7 @@ interface TableConfiguration {
         disableCopyToClipboard?: boolean;
         enableExport?: boolean;
         enablePaste?: boolean;
+        condensedTableLayout?: boolean;
         creationMode?: {
             name?: string;
         };
@@ -385,6 +437,8 @@ function linkListReportTable(
                 tableControl.configuration.enableExport.valueInFile = enableExportValue;
                 const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
                 tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
+                const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
+                tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
                 const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
                 tableControl.configuration.creationMode.valueInFile = creationModeValue;
                 tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
@@ -480,6 +534,8 @@ function linkObjectPageSections(
             tableControl.configuration.enableExport.valueInFile = enableExportValue;
             const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
             tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
+            const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
+            tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
             const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
             tableControl.configuration.creationMode.valueInFile = creationModeValue;
             tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
@@ -613,6 +669,7 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
 function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
     const config: ManifestApplicationSettings = context.app.manifestObject['sap.fe'] ?? {};
     const createMode = config.macros?.table?.defaultCreationMode;
+    const disableStrictUomFiltering = config.app?.disableStrictUomFiltering;
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',
         pages: [],
@@ -621,6 +678,11 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
                 values: ['InlineCreationRows', 'NewPage'],
                 configurationPath: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
                 valueInFile: createMode
+            },
+            disableStrictUomFiltering: {
+                values: [true, false],
+                configurationPath: ['sap.fe', 'app', 'disableStrictUomFiltering'],
+                valueInFile: disableStrictUomFiltering
             }
         }
     };
