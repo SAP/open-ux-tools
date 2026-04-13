@@ -39,9 +39,11 @@ jest.unstable_mockModule('../../../../src/validation/validation', () => ({
 }));
 
 const mockGetAppType = jest.fn();
-jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
-    getAppType: mockGetAppType
-}));
+jest.unstable_mockModule('@sap-ux/project-access', () =>
+    createProjectAccessMock({
+        getAppType: mockGetAppType
+    })
+);
 
 const mockReadFileSync = jest.fn();
 jest.unstable_mockModule('fs', () => ({

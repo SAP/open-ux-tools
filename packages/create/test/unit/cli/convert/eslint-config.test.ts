@@ -28,9 +28,11 @@ jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
 }));
 
 const mockExecNpmCommand = jest.fn();
-jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
-    execNpmCommand: mockExecNpmCommand
-}));
+jest.unstable_mockModule('@sap-ux/project-access', () =>
+    createProjectAccessMock({
+        execNpmCommand: mockExecNpmCommand
+    })
+);
 
 jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
 
@@ -161,10 +163,7 @@ describe('Test command convert eslint-config', () => {
             undefined,
             expect.objectContaining({ logger: loggerMock })
         );
-        expect(mockConvertEslintConfig).toHaveBeenCalledWith(
-            appRoot,
-            expect.objectContaining({ config: 'strict' })
-        );
+        expect(mockConvertEslintConfig).toHaveBeenCalledWith(appRoot, expect.objectContaining({ config: 'strict' }));
     });
 
     test('Test create-fiori convert eslint-config with all options', async () => {
@@ -269,10 +268,7 @@ describe('Test command convert eslint-config', () => {
         expect(fsMock.delete).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
         expect(mockRunNpmInstallCommand).not.toHaveBeenCalled();
-        expect(mockConvertEslintConfig).toHaveBeenCalledWith(
-            appRoot,
-            expect.objectContaining({ config: 'strict' })
-        );
+        expect(mockConvertEslintConfig).toHaveBeenCalledWith(appRoot, expect.objectContaining({ config: 'strict' }));
     });
 
     test('Test create-fiori convert eslint-config --simulate with error', async () => {

@@ -16,10 +16,7 @@ describe('validation', () => {
     describe('validateCloudAdpProject', () => {
         test('throw error for omPremise project', async () => {
             const descriptorVariant = JSON.parse(
-                readFileSync(
-                    join(__dirname, '../../fixtures/adaptation-project', 'manifest.appdescr_variant'),
-                    'utf-8'
-                )
+                readFileSync(join(__dirname, '../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
             );
             (adp.getVariant as jest.Mock).mockReturnValue(descriptorVariant);
             try {

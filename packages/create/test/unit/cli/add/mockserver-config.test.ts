@@ -33,10 +33,12 @@ jest.unstable_mockModule('@sap-ux/mockserver-config-writer', () => ({
 
 const mockGetWebappPath = jest.fn();
 const mockExecNpmCommand = jest.fn().mockResolvedValue('');
-jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
-    getWebappPath: mockGetWebappPath,
-    execNpmCommand: mockExecNpmCommand
-}));
+jest.unstable_mockModule('@sap-ux/project-access', () =>
+    createProjectAccessMock({
+        getWebappPath: mockGetWebappPath,
+        execNpmCommand: mockExecNpmCommand
+    })
+);
 
 jest.unstable_mockModule('node:child_process', () => ({
     spawn: jest.fn(),

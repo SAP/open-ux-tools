@@ -79,7 +79,9 @@ const mockGetBaseAppInbounds = jest.fn();
 const mockIsCFEnvironment = jest.fn().mockResolvedValue(false);
 const mockGetCfBaseAppInbounds = jest.fn();
 const mockLoadCfConfig = jest.fn().mockReturnValue({});
-const mockGetAppParamsFromUI5Yaml = jest.fn().mockReturnValue({ appHostId: '', appName: '', appVersion: '', spaceGuid: '' });
+const mockGetAppParamsFromUI5Yaml = jest
+    .fn()
+    .mockReturnValue({ appHostId: '', appName: '', appVersion: '', spaceGuid: '' });
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     flpConfigurationExists: mockFlpConfigurationExists,
     getAdpConfig: mockGetAdpConfig,
@@ -98,9 +100,11 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
 }));
 
 const mockGetAppType = jest.fn();
-jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
-    getAppType: mockGetAppType
-}));
+jest.unstable_mockModule('@sap-ux/project-access', () =>
+    createProjectAccessMock({
+        getAppType: mockGetAppType
+    })
+);
 
 const mockGenerateInboundNavigationConfig = jest.fn();
 const mockReadManifest = jest.fn();
@@ -413,7 +417,12 @@ describe('Test command add navigation-config with ADP scenario', () => {
         addInboundNavigationConfigCommand(command);
         await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
 
-        expect(mockGetCfBaseAppInbounds).toHaveBeenCalledWith('base.app.id', 'test-host-id', mockCfConfig, expect.anything());
+        expect(mockGetCfBaseAppInbounds).toHaveBeenCalledWith(
+            'base.app.id',
+            'test-host-id',
+            mockCfConfig,
+            expect.anything()
+        );
         expect(mockGetAdpConfig).not.toHaveBeenCalled();
         expect(commitMock).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();

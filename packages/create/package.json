@@ -58,6 +58,7 @@
         "prompts": "2.4.2"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@types/diff": "8.0.0",

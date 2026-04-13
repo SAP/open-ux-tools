@@ -39,9 +39,11 @@ jest.unstable_mockModule('../../../../src/validation', () => validationMock);
 jest.unstable_mockModule('../../../../src/validation/validation', () => validationMock);
 
 const mockGetAppType = jest.fn();
-jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
-    getAppType: mockGetAppType
-}));
+jest.unstable_mockModule('@sap-ux/project-access', () =>
+    createProjectAccessMock({
+        getAppType: mockGetAppType
+    })
+);
 
 const mockGetAnnotationNamespaces = jest.fn();
 jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({

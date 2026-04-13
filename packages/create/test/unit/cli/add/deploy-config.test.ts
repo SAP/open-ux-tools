@@ -37,9 +37,11 @@ jest.unstable_mockModule('@sap-ux/abap-deploy-config-writer', () => ({
 }));
 
 const mockGetAppType = jest.fn();
-jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
-    getAppType: mockGetAppType
-}));
+jest.unstable_mockModule('@sap-ux/project-access', () =>
+    createProjectAccessMock({
+        getAppType: mockGetAppType
+    })
+);
 
 const mockPrompt = jest.fn();
 jest.unstable_mockModule('prompts', () => ({

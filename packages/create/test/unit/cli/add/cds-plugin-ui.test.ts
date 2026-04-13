@@ -22,9 +22,11 @@ jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
 }));
 
 const mockExecNpmCommand = jest.fn().mockResolvedValue('');
-jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
-    execNpmCommand: mockExecNpmCommand
-}));
+jest.unstable_mockModule('@sap-ux/project-access', () =>
+    createProjectAccessMock({
+        execNpmCommand: mockExecNpmCommand
+    })
+);
 
 jest.unstable_mockModule('node:child_process', () => ({
     spawn: jest.fn(),

@@ -43,9 +43,11 @@ jest.unstable_mockModule('../../../../src/validation', () => ({
 }));
 
 const mockGetAppType = jest.fn();
-jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
-    getAppType: mockGetAppType
-}));
+jest.unstable_mockModule('@sap-ux/project-access', () =>
+    createProjectAccessMock({
+        getAppType: mockGetAppType
+    })
+);
 
 const mockDataSources = {
     'annotation': {

@@ -37,9 +37,11 @@ jest.unstable_mockModule('../../../../src/validation', () => ({
 }));
 
 const mockGetAppType = jest.fn();
-jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
-    getAppType: mockGetAppType
-}));
+jest.unstable_mockModule('@sap-ux/project-access', () =>
+    createProjectAccessMock({
+        getAppType: mockGetAppType
+    })
+);
 
 const mockIsCFEnvironment = jest.fn();
 const mockGetVariant = jest.fn();
@@ -57,10 +59,7 @@ jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn
 const { addChangeInboundCommand } = await import('../../../../src/cli/change/change-inbound');
 
 const cloudDescriptorVariant = JSON.parse(
-    readFileSync(
-        join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant.cloud'),
-        'utf-8'
-    )
+    readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant.cloud'), 'utf-8')
 );
 
 describe('change/inbound', () => {

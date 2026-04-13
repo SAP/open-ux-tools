@@ -26,10 +26,12 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
 
 const mockFindProjectRoot = jest.fn();
 const mockGetProjectType = jest.fn();
-jest.unstable_mockModule('@sap-ux/project-access', () => createProjectAccessMock({
-    findProjectRoot: mockFindProjectRoot,
-    getProjectType: mockGetProjectType
-}));
+jest.unstable_mockModule('@sap-ux/project-access', () =>
+    createProjectAccessMock({
+        findProjectRoot: mockFindProjectRoot,
+        getProjectType: mockGetProjectType
+    })
+);
 
 jest.unstable_mockModule('mem-fs-editor', () => ({
     create(_store: Store) {
