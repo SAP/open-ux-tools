@@ -29,9 +29,8 @@ jest.unstable_mockModule('fs', () => ({
     writeFileSync: mockWriteFileSync
 }));
 
-const { default: executeFunctionality } = await import(
-    '../../../../../src/tools/functionalities/fetch-service-metadata/execute-functionality'
-);
+const { default: executeFunctionality } =
+    await import('../../../../../src/tools/functionalities/fetch-service-metadata/execute-functionality');
 
 describe('execute-functionality', () => {
     const mockAppPath = '/test/app/path';
@@ -66,11 +65,7 @@ describe('execute-functionality', () => {
 
         expect(mockFindSapSystem).toHaveBeenCalledWith('TestSystem');
         expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, mockServicePath);
-        expect(mockWriteFileSync).toHaveBeenCalledWith(
-            path.join(mockAppPath, 'metadata.xml'),
-            mockMetadata,
-            'utf-8'
-        );
+        expect(mockWriteFileSync).toHaveBeenCalledWith(path.join(mockAppPath, 'metadata.xml'), mockMetadata, 'utf-8');
         expect(result).toMatchObject({
             functionalityId: 'fetch-service-metadata',
             status: 'Success',
@@ -259,11 +254,7 @@ describe('execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(mockWriteFileSync).toHaveBeenCalledWith(
-            path.join(customAppPath, 'metadata.xml'),
-            mockMetadata,
-            'utf-8'
-        );
+        expect(mockWriteFileSync).toHaveBeenCalledWith(path.join(customAppPath, 'metadata.xml'), mockMetadata, 'utf-8');
     });
 
     test('should handle non-string parameters gracefully', async () => {

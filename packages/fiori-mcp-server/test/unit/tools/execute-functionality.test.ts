@@ -5,7 +5,12 @@ import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
-import { ensureSpecificationLoaded, mockSpecificationReadApp, mockSpecificationReadAppWithModel, readAppWithModel } from '../utils';
+import {
+    ensureSpecificationLoaded,
+    mockSpecificationReadApp,
+    mockSpecificationReadAppWithModel,
+    readAppWithModel
+} from '../utils';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

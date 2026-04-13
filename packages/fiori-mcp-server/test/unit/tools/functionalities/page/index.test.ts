@@ -27,9 +27,8 @@ jest.unstable_mockModule('../../../../../src/tools/functionalities/page/serviceS
 }));
 
 // Dynamic imports after mocks
-const { ADD_PAGE_FUNCTIONALITY, addPageHandlers, DELETE_PAGE_FUNCTIONALITY, deletePageHandlers } = await import(
-    '../../../../../src/tools/functionalities/page'
-);
+const { ADD_PAGE_FUNCTIONALITY, addPageHandlers, DELETE_PAGE_FUNCTIONALITY, deletePageHandlers } =
+    await import('../../../../../src/tools/functionalities/page');
 const { getManifest } = await import('../../../../../src/page-editor-api/project');
 
 const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', 'original', 'node-ai-created');
@@ -76,12 +75,10 @@ beforeEach(() => {
     // Setup the mock service for getService
     mockGetServiceFn.mockResolvedValue({
         getAllowedEntities: jest.fn<any>().mockResolvedValue(mockAllowedEntities),
-        getAllowedNavigations: jest.fn<any>().mockImplementation(
-            async (entitySet?: string, _entityType?: string) => {
-                const entity = mockAllowedEntities.find((e) => e.entitySet === entitySet);
-                return entity?.navigations ?? [];
-            }
-        ),
+        getAllowedNavigations: jest.fn<any>().mockImplementation(async (entitySet?: string, _entityType?: string) => {
+            const entity = mockAllowedEntities.find((e) => e.entitySet === entitySet);
+            return entity?.navigations ?? [];
+        }),
         getNamespace: jest.fn<any>().mockResolvedValue('manageTravelsSrv')
     });
 

@@ -9,6 +9,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default [
+    {
+        ignores: ['test/json-esm-transform.mjs']
+    },
     ...base,
     {
         languageOptions: {
@@ -18,5 +21,8 @@ export default [
                 project: './tsconfig.eslint.json',
             },
         },
+        rules: {
+            'import/no-unresolved': ['error', { ignore: ['^@modelcontextprotocol/sdk'] }]
+        }
     },
 ];

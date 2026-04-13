@@ -31,9 +31,8 @@ jest.unstable_mockModule('../../../../../src/utils', () => ({
 }));
 
 // Dynamic imports after mocks
-const { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY, createControllerExtensionHandlers } = await import(
-    '../../../../../src/tools/functionalities/controller-extension'
-);
+const { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY, createControllerExtensionHandlers } =
+    await import('../../../../../src/tools/functionalities/controller-extension');
 
 describe('create-controller-extension', () => {
     const appPath = join('root', 'app1');

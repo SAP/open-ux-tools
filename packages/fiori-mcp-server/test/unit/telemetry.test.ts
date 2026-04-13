@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-
-type TelemetryData = import('../../src/telemetry').TelemetryData;
+import type { TelemetryData } from '../../src/telemetry.js';
 
 const mockInitTelemetrySettings = jest.fn().mockResolvedValue(undefined);
 const mockGetTelemetryClient = jest.fn();

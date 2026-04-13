@@ -134,7 +134,7 @@ describe('SimpleVectorService', () => {
 
     afterAll(async () => {
         // Ensure all connections are closed to prevent Jest open handles
-        if (vectorService && vectorService.isInitialized()) {
+        if (vectorService?.isInitialized()) {
             await vectorService.close();
         }
     });
@@ -833,7 +833,8 @@ describe('SimpleVectorService', () => {
                 search: jest.fn<any>().mockReturnThis(),
                 where: jest.fn<any>().mockReturnThis(),
                 limit: jest.fn<any>().mockReturnThis(),
-                toArray: jest.fn<any>()
+                toArray: jest
+                    .fn<any>()
                     .mockResolvedValue([{ ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] }]),
                 vectorSearch: jest.fn<any>().mockReturnThis()
             } as any;

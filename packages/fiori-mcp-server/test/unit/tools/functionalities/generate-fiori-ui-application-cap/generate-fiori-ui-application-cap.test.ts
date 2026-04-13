@@ -33,9 +33,8 @@ jest.unstable_mockModule('node:child_process', () => ({
     exec: (...args: any) => mockExec(...args)
 }));
 
-const { GENERATE_FIORI_UI_APPLICATION_CAP, generateFioriUIApplicationCapHandlers } = await import(
-    '../../../../../src/tools/functionalities/generate-fiori-ui-application-cap'
-);
+const { GENERATE_FIORI_UI_APPLICATION_CAP, generateFioriUIApplicationCapHandlers } =
+    await import('../../../../../src/tools/functionalities/generate-fiori-ui-application-cap');
 
 // Read package.json for version
 const packageJsonModule = await import('../../../../../package.json', { with: { type: 'json' } });
