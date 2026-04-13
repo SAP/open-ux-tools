@@ -55,6 +55,14 @@ export interface BackendProxyMiddlewareCfConfig {
     disableWelcomeFile?: boolean;
     /** Disable automatic injection of ui5-server routes (resources, test-resources, catch-all) */
     disableUi5ServerRoutes?: boolean;
+    /** Disable SSH tunnel to connectivity proxy for OnPremise destinations */
+    disableSshTunnel?: boolean;
+    /** CF app name used as SSH tunnel target */
+    tunnelAppName?: string;
+    /** Local port for the SSH tunnel (defaults to connectivity proxy port) */
+    tunnelLocalPort?: number;
+    /** Skip cf enable-ssh and cf restart (assume SSH is already enabled on the tunnel app) */
+    skipSshEnable?: boolean;
 }
 
 /** Effective options with defaults applied. */
@@ -135,6 +143,24 @@ export interface CreateProxyOptions {
     effectiveOptions: EffectiveOptions;
     /** External URL for BAS (from exposePort). Overrides x-forwarded-host/proto in proxy requests. */
     basExternalUrl?: URL;
+}
+
+/**
+ * Connectivity proxy coordinates from VCAP_SERVICES.
+ */
+export interface ConnectivityProxyInfo {
+    host: string;
+    port: number;
+}
+
+/**
+ * Options for the SSH tunnel setup.
+ */
+export interface SshTunnelOptions {
+    /** Local port to bind the tunnel to (defaults to remotePort). */
+    localPort?: number;
+    /** Skip cf enable-ssh and cf restart (assume SSH is already enabled). */
+    skipSshEnable?: boolean;
 }
 
 /**
