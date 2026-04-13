@@ -63,9 +63,9 @@ jest.unstable_mockModule('../src/prompts/prompt-helper', () => ({
     getAbapCDSViews: mockGetAbapCDSViews
 }));
 
-const mockGetTransportRequestPrompts = jest.fn().mockImplementation(
-    actualAbapDeployConfigInquirer.getTransportRequestPrompts
-);
+const mockGetTransportRequestPrompts = jest
+    .fn()
+    .mockImplementation(actualAbapDeployConfigInquirer.getTransportRequestPrompts);
 jest.unstable_mockModule('@sap-ux/abap-deploy-config-inquirer', () => ({
     ...actualAbapDeployConfigInquirer,
     getTransportRequestPrompts: mockGetTransportRequestPrompts

@@ -45,6 +45,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
