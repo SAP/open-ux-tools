@@ -2,8 +2,7 @@ name: Publish to MCP Registry
 
 env:
     # Releases: https://github.com/modelcontextprotocol/registry/releases
-    DEFAULT_MCP_PUBLISHER_VERSION: 'v1.4.0'
-
+    DEFAULT_MCP_PUBLISHER_VERSION: 'v1.5.0'
 on:
     # Allow this workflow to be called from other workflows
     workflow_call:
