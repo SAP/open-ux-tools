@@ -7,8 +7,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const pkgPath = path.join(__dirname, '..', 'packages', 'fiori-mcp-server', 'package.json');
-const serverJsonPath = path.join(__dirname, '..', 'packages', 'fiori-mcp-server', 'server.json');
+const pkgPath = path.join(__dirname, '..', 'package.json');
+const serverJsonPath = path.join(__dirname, '..', 'server.json');
 
 const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
 const serverJson = JSON.parse(fs.readFileSync(serverJsonPath, 'utf8'));

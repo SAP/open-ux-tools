@@ -151,7 +151,7 @@ jobs:
                   git status
             - name: Sync server.json version
               if: steps.changesetVersion.outputs.changes == 'true'
-              run: node scripts/sync-mcp-server-json.js
+              run: node packages/fiori-mcp-server/scripts/sync-mcp-server-json.js
             - name: Commit and push changes
               if: steps.changesetVersion.outputs.changes == 'true'
               run: |
