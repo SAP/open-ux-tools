@@ -4145,6 +4145,9 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access

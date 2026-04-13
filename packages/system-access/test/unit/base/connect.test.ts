@@ -197,13 +197,11 @@ describe('connect', () => {
 
                 // Set up mock provider that simulates 401 -> retry with auth
                 const mockProvider = createMockProvider();
-                mockProvider.interceptors.response.use.mockImplementation(
-                    (_onFulfilled: any, onRejected: any) => {
-                        // Store the error handler for later invocation
-                        mockProvider._onRejected = onRejected;
-                        return 0;
-                    }
-                );
+                mockProvider.interceptors.response.use.mockImplementation((_onFulfilled: any, onRejected: any) => {
+                    // Store the error handler for later invocation
+                    mockProvider._onRejected = onRejected;
+                    return 0;
+                });
                 mockCreateForDestination.mockReturnValue(mockProvider);
 
                 const provider = await createAbapServiceProvider(
