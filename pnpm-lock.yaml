@@ -991,6 +991,9 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@types/connect':
         specifier: ^3.4.38
         version: 3.4.38
@@ -3733,6 +3736,10 @@ importers:
       lz-string:
         specifier: 1.5.0
         version: 1.5.0
+    devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
 
   packages/reload-middleware:
     dependencies:

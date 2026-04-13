@@ -25,7 +25,14 @@ jest.unstable_mockModule('../../../src/integrity/persistence', () => ({
     writeIntegrityData: mockWriteIntegrityData
 }));
 
-const { checkProjectIntegrity, disableProjectIntegrity, enableProjectIntegrity, initProject, isProjectIntegrityEnabled, updateProjectIntegrity } = await import('../../../src/integrity/project');
+const {
+    checkProjectIntegrity,
+    disableProjectIntegrity,
+    enableProjectIntegrity,
+    initProject,
+    isProjectIntegrityEnabled,
+    updateProjectIntegrity
+} = await import('../../../src/integrity/project');
 const persistence = await import('../../../src/integrity/persistence');
 
 describe('Test initProject()', () => {
