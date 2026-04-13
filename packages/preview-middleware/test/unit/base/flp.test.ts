@@ -19,7 +19,6 @@ import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
-import { getWebappPath } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
@@ -1724,7 +1723,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router with ui5 yaml type component', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             flp: {
                 enhancedHomePage: false,
