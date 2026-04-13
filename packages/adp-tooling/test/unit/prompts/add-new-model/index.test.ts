@@ -30,7 +30,7 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
 
 const { getPrompts } = await import('../../../../src/prompts/add-new-model');
 const i18n = await import('../../../../src/i18n');
-type NewModelAnswers = import('../../../../src').NewModelAnswers;
+import type { NewModelAnswers } from '../../../../src/index.js';
 
 describe('getPrompts', () => {
     const mockPath = '/path/to/project';

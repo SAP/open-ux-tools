@@ -64,6 +64,7 @@
         "uuid": "11.1.0"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-ux/store": "workspace:*",
         "@types/adm-zip": "0.5.8",
         "@types/ejs": "3.1.5",

@@ -48,9 +48,7 @@ jest.unstable_mockModule('../../../../src/cf/project/yaml-loader', () => ({
 const { isMtaProject, getSAPCloudService, getRouterType, getAppParamsFromUI5Yaml, adjustMtaYaml } =
     await import('../../../../src/cf/project/yaml');
 const { AppRouterType } = await import('../../../../src/types');
-type MtaYaml = import('../../../../src/types').MtaYaml;
-type CfUI5Yaml = import('../../../../src/types').CfUI5Yaml;
-type ServiceKeys = import('../../../../src/types').ServiceKeys;
+import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types.js';
 
 describe('YAML Project Functions', () => {
     const mockLogger = {

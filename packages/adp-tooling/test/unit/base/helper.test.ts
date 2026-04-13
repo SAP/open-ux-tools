@@ -1,13 +1,12 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { readFileSync as realReadFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-import type { Editor } from 'mem-fs-editor';
-import type { create } from 'mem-fs-editor';
+import type { Editor, create } from 'mem-fs-editor';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5Config, CustomMiddleware } from '@sap-ux/ui5-config';
 import type { DescriptorVariant } from '../../../src/types';
@@ -42,7 +41,6 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     DirName: { Changes: 'changes', Webapp: 'webapp' },
     FileName: { ManifestAppDescrVar: 'manifest.appdescr_variant', Ui5Yaml: 'ui5.yaml' },
     filterDataSourcesByType: jest.fn(),
-    FileName: { ManifestAppDescrVar: 'manifest.appdescr_variant', Ui5Yaml: 'ui5.yaml' },
     findAllApps: jest.fn(),
     findCapProjectRoot: jest.fn(),
     findCapProjects: jest.fn(),
@@ -333,18 +331,12 @@ describe('helper', () => {
                 { name: 'i18n', isFile: () => false, isDirectory: () => true },
                 { name: 'manifest.appdescr_variant', isFile: () => true, isDirectory: () => false }
             ];
-            const mockI18nDirents = [
-                { name: 'i18n.properties', isFile: () => true, isDirectory: () => false }
-            ];
+            const mockI18nDirents = [{ name: 'i18n.properties', isFile: () => true, isDirectory: () => false }];
 
             const { readdirSync: mockReaddirSync } = await import('node:fs');
-            (mockReaddirSync as any)
-                .mockReturnValueOnce(mockDirents)
-                .mockReturnValueOnce(mockI18nDirents);
+            (mockReaddirSync as any).mockReturnValueOnce(mockDirents).mockReturnValueOnce(mockI18nDirents);
 
-            mockReadFileSync
-                .mockReturnValueOnce('i18n content')
-                .mockReturnValueOnce('variant content');
+            mockReadFileSync.mockReturnValueOnce('i18n content').mockReturnValueOnce('variant content');
 
             const result = await getWebappFiles(basePath);
             expect(result).toEqual([

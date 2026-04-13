@@ -66,9 +66,7 @@ const {
     getOrCreateServiceInstanceKeys
 } = await import('../../../../src/cf/services/api');
 const { initI18n, t } = await import('../../../../src/i18n');
-type CfConfig = import('../../../../src/types').CfConfig;
-type ServiceInfo = import('../../../../src/types').ServiceInfo;
-type MtaYaml = import('../../../../src/types').MtaYaml;
+import type { CfConfig, ServiceInfo, MtaYaml } from '../../../../src/types.js';
 
 // Alias mockAxiosGet as mockAxios for compatibility with existing tests
 const mockAxios = { get: mockAxiosGet, post: mockAxiosPost } as any;

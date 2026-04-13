@@ -28,13 +28,7 @@ jest.unstable_mockModule('../../../../src/cf/utils/validation', () => ({
 const { getAppHostIds, getCfApps, getOAuthPathsFromXsApp, getBackendUrlsFromServiceKeys, getServiceKeyDestinations } =
     await import('../../../../src/cf/app/discovery');
 const { initI18n, t } = await import('../../../../src/i18n');
-type CFApp = import('../../../../src/types').CFApp;
-type CfConfig = import('../../../../src/types').CfConfig;
-type ServiceKeys = import('../../../../src/types').ServiceKeys;
-type Organization = import('../../../../src/types').Organization;
-type Space = import('../../../../src/types').Space;
-type Uaa = import('../../../../src/types').Uaa;
-type XsApp = import('../../../../src/types').XsApp;
+import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa, XsApp } from '../../../../src/types.js';
 
 const mockApps: CFApp[] = [
     {

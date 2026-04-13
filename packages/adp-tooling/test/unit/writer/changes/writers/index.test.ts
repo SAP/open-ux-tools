@@ -21,13 +21,15 @@ jest.unstable_mockModule('../../../../../src/base/change-utils', () => ({
 const { AnnotationsWriter, ComponentUsagesWriter, DataSourceWriter, InboundWriter, NewModelWriter } =
     await import('../../../../../src/writer/changes/writers');
 const { ChangeType } = await import('../../../../../src');
-type AnnotationsData = import('../../../../../src').AnnotationsData;
-type ComponentUsagesDataBase = import('../../../../../src').ComponentUsagesDataBase;
-type ComponentUsagesDataWithLibrary = import('../../../../../src').ComponentUsagesDataWithLibrary;
-type DataSourceData = import('../../../../../src').DataSourceData;
-type NewModelData = import('../../../../../src').NewModelData;
-type InboundData = import('../../../../../src').InboundData;
-type DescriptorVariant = import('../../../../../src').DescriptorVariant;
+import type {
+    AnnotationsData,
+    ComponentUsagesDataBase,
+    ComponentUsagesDataWithLibrary,
+    DataSourceData,
+    NewModelData,
+    InboundData,
+    DescriptorVariant
+} from '../../../../../src/index.js';
 
 const mockProjectPath = '/mock/project/path';
 const mockTemplatePath = '/mock/template/path';

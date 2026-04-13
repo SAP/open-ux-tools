@@ -49,9 +49,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 
 const { generateCf, writeUi5AppInfo, setupCfPreview } = await import('../../../src/writer/cf');
 const { AppRouterType, FlexLayer } = await import('../../../src/types');
-type CfAdpWriterConfig = import('../../../src/types').CfAdpWriterConfig;
-type CfUi5AppInfo = import('../../../src/types').CfUi5AppInfo;
-type CfConfig = import('../../../src/types').CfConfig;
+import type { CfAdpWriterConfig, CfUi5AppInfo, CfConfig } from '../../../src/types.js';
 
 const mockServiceKeys = [
     {

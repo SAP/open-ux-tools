@@ -32,7 +32,7 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
 
 const { getEndpointNames, getSupportedProject, SupportedProject, SystemLookup, transformBackendSystem } =
     await import('../../../src');
-type Endpoint = import('../../../src').Endpoint;
+import type { Endpoint } from '../../../src/index.js';
 import { type AxiosResponseHeaders, AxiosError } from 'axios';
 const { t } = await import('../../../src/i18n');
 

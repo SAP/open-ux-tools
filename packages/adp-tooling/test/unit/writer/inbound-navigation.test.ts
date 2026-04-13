@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import { readFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
@@ -43,14 +42,8 @@ jest.unstable_mockModule('@sap-ux/i18n', () => ({
     getPropertiesI18nBundle: jest.fn()
 }));
 
-const { getFlpI18nKeys, updateI18n, generateInboundConfig } = await import(
-    '../../../src/writer/inbound-navigation'
-);
-import type {
-    InternalInboundNavigation,
-    DescriptorVariant,
-    DescriptorVariantContent
-} from '../../../src/types';
+const { getFlpI18nKeys, updateI18n, generateInboundConfig } = await import('../../../src/writer/inbound-navigation');
+import type { InternalInboundNavigation, DescriptorVariant, DescriptorVariantContent } from '../../../src/types';
 
 describe('FLP Configuration Functions', () => {
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');

@@ -32,7 +32,7 @@ const {
     readMta,
     buildVcapServicesFromResources
 } = await import('../../../../src/cf/project/mta');
-type MtaYaml = import('../../../../src').MtaYaml;
+import type { MtaYaml } from '../../../../src/index.js';
 const { initI18n, t } = await import('../../../../src/i18n');
 
 const mtaProjectPath = '/test/project';

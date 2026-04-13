@@ -64,10 +64,12 @@ const {
     moduleNameContentMap,
     tryFixChange
 } = await import('../../../src/preview/change-handler');
-type AddXMLChange = import('../../../src').AddXMLChange;
-type CommonChangeProperties = import('../../../src').CommonChangeProperties;
-type AnnotationFileChange = import('../../../src').AnnotationFileChange;
-type DescriptorVariant = import('../../../src').DescriptorVariant;
+import type {
+    AddXMLChange,
+    CommonChangeProperties,
+    AnnotationFileChange,
+    DescriptorVariant
+} from '../../../src/index.js';
 const { addCustomFragment } = await import('../../../src/preview/descriptor-change-handler');
 
 describe('change-handler', () => {
@@ -810,12 +812,7 @@ id="<%- ids.customActionButton %>"`);
             );
 
             // Assert
-            expect(mockInitMergedManifest).toHaveBeenCalledWith(
-                {} as any,
-                'projectRoot',
-                variantResult,
-                mockLogger
-            );
+            expect(mockInitMergedManifest).toHaveBeenCalledWith({} as any, 'projectRoot', variantResult, mockLogger);
             expect(mockGetVariant).toHaveBeenCalledWith('projectRoot');
             expect(mockGenerateChange).toHaveBeenCalled();
         });

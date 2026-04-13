@@ -30,15 +30,15 @@ const { FlexLayer, getConfig, SupportedProject } = await import('../../../src');
 const { getCfConfig } = await import('../../../src/writer/writer-config');
 const { t } = await import('../../../src/i18n');
 const { AppRouterType } = await import('../../../src/types');
-type AttributesAnswers = import('../../../src').AttributesAnswers;
-type ConfigAnswers = import('../../../src').ConfigAnswers;
-type ConfigOptions = import('../../../src').ConfigOptions;
-type Language = import('../../../src').Language;
-type SourceApplication = import('../../../src').SourceApplication;
-type VersionDetail = import('../../../src').VersionDetail;
-type CfConfig = import('../../../src/types').CfConfig;
-type CfServicesAnswers = import('../../../src/types').CfServicesAnswers;
-type CreateCfConfigParams = import('../../../src/types').CreateCfConfigParams;
+import type {
+    AttributesAnswers,
+    ConfigAnswers,
+    ConfigOptions,
+    Language,
+    SourceApplication,
+    VersionDetail
+} from '../../../src/index.js';
+import type { CfConfig, CfServicesAnswers, CreateCfConfigParams } from '../../../src/types.js';
 
 const basePath = join(__dirname, '../../fixtures/base-app/manifest.json');
 const manifest = JSON.parse(readFileSync(basePath, 'utf-8'));

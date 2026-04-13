@@ -10,7 +10,7 @@ const { FlexLayer, MAIN_I18N_PATH, RESOURCE_BUNDLE_TEXT, BASE_I18N_DESCRIPTION, 
     await import('../../../../src');
 const { getI18nDescription, writeI18nModels, extractResourceModelPath, getI18nModels } =
     await import('../../../../src/writer/i18n');
-type ResourceModel = import('../../../../src').ResourceModel;
+import type { ResourceModel } from '../../../../src/index.js';
 
 describe('writeI18nModels', () => {
     const mockFs = { write: jest.fn() };

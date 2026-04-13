@@ -37,7 +37,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 
 const { SystemLookup } = await import('../../../src/source/systems');
 const { getProviderConfig } = await import('../../../src/abap/config');
-type RequestOptions = import('../../../src/abap/config').RequestOptions;
+import type { RequestOptions } from '../../../src/abap/config.js';
 
 const logger = {
     error: jest.fn(),

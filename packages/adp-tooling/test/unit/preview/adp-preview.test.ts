@@ -54,7 +54,7 @@ const realChangeHandler = await import('../../../src/preview/change-handler');
 const realDescriptorChangeHandler = await import('../../../src/preview/descriptor-change-handler');
 const realStore = await import('@sap-ux/store');
 const realEjs = await import('ejs');
-const realOs = await import('os');
+const realOs = await import('node:os');
 
 jest.unstable_mockModule('os', () => ({
     ...realOs,
@@ -145,9 +145,7 @@ jest.unstable_mockModule('../../../src/base/abap/manifest-service', () => ({
 }));
 
 const { AdpPreview } = await import('../../../src');
-type AddXMLChange = import('../../../src').AddXMLChange;
-type AdpPreviewConfig = import('../../../src').AdpPreviewConfig;
-type CommonChangeProperties = import('../../../src').CommonChangeProperties;
+import type { AddXMLChange, AdpPreviewConfig, CommonChangeProperties } from '../../../src/index.js';
 const { addXmlFragment, tryFixChange, addControllerExtension } = await import('../../../src/preview/change-handler');
 const { addCustomFragment } = await import('../../../src/preview/descriptor-change-handler');
 const { AdaptationProjectType } = await import('@sap-ux/axios-extension');

@@ -15,8 +15,7 @@ const { validateSmartTemplateApplication, extractXSApp, validateODataEndpoints }
     await import('../../../../src/cf/utils/validation');
 const { initI18n, t } = await import('../../../../src/i18n');
 const { ApplicationType } = await import('../../../../src/types');
-type ServiceKeys = import('../../../../src/types').ServiceKeys;
-type XsApp = import('../../../../src/types').XsApp;
+import type { ServiceKeys, XsApp } from '../../../../src/types.js';
 
 describe('CF Utils Validation', () => {
     beforeAll(async () => {

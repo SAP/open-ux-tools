@@ -31,7 +31,7 @@ jest.unstable_mockModule('../../../../src/base/helper', () => ({
 
 const { ManifestService, getInboundsFromManifest, getRegistrationIdFromManifest } =
     await import('../../../../src/base/abap/manifest-service');
-type DescriptorVariant = import('../../../../src/types').DescriptorVariant;
+import type { DescriptorVariant } from '../../../../src/types.js';
 
 describe('ManifestService', () => {
     let provider: jest.Mocked<axiosExtensionTypes.AbapServiceProvider>;

@@ -30,7 +30,7 @@ const {
     shouldSetMinUI5Version,
     getMinUI5VersionForManifest
 } = await import('../../../src/ui5/version-info');
-type UI5Version = import('../../../src').UI5Version;
+import type { UI5Version } from '../../../src/index.js';
 const { CURRENT_SYSTEM_VERSION, LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } =
     await import('../../../src/base/constants');
 

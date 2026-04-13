@@ -27,7 +27,7 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
 const { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml, writeCfUI5Yaml, getPackageJSONInfo, getTypes } =
     await import('../../../src/writer/project-utils');
 const { AppRouterType, FlexLayer } = await import('../../../src/types');
-type AdpWriterConfig = import('../../../src').AdpWriterConfig;
+import type { AdpWriterConfig } from '../../../src/index.js';
 
 const UI5_DEFAULT = {
     TYPES_PACKAGE_NAME: '@sapui5/types',
