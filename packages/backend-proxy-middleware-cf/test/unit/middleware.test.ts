@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { createRequire } from 'node:module';
+import type { BackendProxyMiddlewareCfConfig } from '../../src/types.js';
 
 // Provide global `module` and `require` for the source code (middleware.ts uses module.exports)
 if (typeof globalThis.module === 'undefined') {
@@ -100,7 +101,7 @@ jest.unstable_mockModule('../../src/tunnel/tunnel', () => ({
 // The import will execute the source file, setting globalThis.module.exports
 await import('../../src/middleware');
 const middleware = (globalThis as Record<string, { exports: unknown }>).module.exports as (params: {
-    options: { configuration?: import('../../src/types').BackendProxyMiddlewareCfConfig };
+    options: { configuration?: BackendProxyMiddlewareCfConfig };
     middlewareUtil: { getProject: () => { getRootPath: () => string; getSourcePath: () => string } };
 }) => Promise<unknown>;
 

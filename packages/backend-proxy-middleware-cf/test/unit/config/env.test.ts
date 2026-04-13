@@ -26,10 +26,8 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getYamlContent: mockGetYamlContent
 }));
 
-const { loadEnvOptions, getConnectivityProxyInfo, applyToProcessEnv, updateUi5ServerDestinationPort } = await import(
-    '../../../src/config/env'
-);
-
+const { loadEnvOptions, getConnectivityProxyInfo, applyToProcessEnv, updateUi5ServerDestinationPort } =
+    await import('../../../src/config/env');
 
 describe('env', () => {
     const logger = { warn: jest.fn(), debug: jest.fn() } as unknown as ToolsLogger;
