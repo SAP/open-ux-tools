@@ -250,12 +250,7 @@ describe('vocabularies', () => {
                 const path = `${join(Vocabularies.VOCABULARIES_LOCATION, namespace)}.ts`;
                 expect(mockAxiosGet).toHaveBeenNthCalledWith(callNumber, vocabulary.uri, { 'responseType': 'json' });
                 expect(mockResolveConfig).toHaveBeenNthCalledWith(callNumber, path);
-                expect(mockWriteFile).toHaveBeenNthCalledWith(
-                    callNumber,
-                    path,
-                    `prettifiedJson_${namespace}`,
-                    'utf8'
-                );
+                expect(mockWriteFile).toHaveBeenNthCalledWith(callNumber, path, `prettifiedJson_${namespace}`, 'utf8');
                 expect(consoleSpy).toHaveBeenNthCalledWith(callNumber, `Vocabulary file updated: ${namespace}`);
             });
         } catch (err) {
