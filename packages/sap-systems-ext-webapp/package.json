@@ -30,6 +30,7 @@
     },
     "devDependencies": {
         "@esbuild-plugins/node-modules-polyfill": "0.2.2",
+        "@jest/globals": "30.3.0",
         "@reduxjs/toolkit": "1.6.1",
         "@sap-ux/ui-components": "workspace:*",
         "@sap-ux/store": "workspace:*",
