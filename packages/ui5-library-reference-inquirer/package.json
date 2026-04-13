@@ -36,6 +36,7 @@
         "i18next": "25.10.10"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "inquirer": "8.2.7",
         "@sap-devx/yeoman-ui-types": "1.23.0",
         "@types/inquirer": "8.2.6"

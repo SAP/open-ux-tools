@@ -4802,6 +4802,9 @@ importers:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@sap-devx/yeoman-ui-types':
         specifier: 1.23.0
         version: 1.23.0
@@ -4842,6 +4845,9 @@ importers:
         specifier: 5.10.0
         version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@jest/types':
         specifier: 30.3.0
         version: 30.3.0
