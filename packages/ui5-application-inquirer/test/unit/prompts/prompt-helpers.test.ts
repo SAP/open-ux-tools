@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
-import path from 'node:path';
+import path, { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { join } from 'node:path';
 import * as actualFs from 'node:fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -13,7 +12,6 @@ jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync
 }));
 
-// eslint-disable-next-line @typescript-eslint/require-await
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateProjectFolder: jest.fn(),
     validateModuleName: jest.fn(),
@@ -24,9 +22,8 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
 }));
 
 const { initI18nUi5AppInquirer } = await import('../../../src/i18n');
-const { appPathExists, defaultAppName, hidePrompts, isVersionIncluded } = await import(
-    '../../../src/prompts/prompt-helpers'
-);
+const { appPathExists, defaultAppName, hidePrompts, isVersionIncluded } =
+    await import('../../../src/prompts/prompt-helpers');
 const { latestVersionString } = await import('@sap-ux/ui5-info');
 
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../../../src/types';

@@ -21,7 +21,6 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getMtaPath: jest.fn()
 }));
 
-// eslint-disable-next-line @typescript-eslint/require-await
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateModuleName: jest.fn(),
     validateNamespace: jest.fn(),

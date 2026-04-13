@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
 const mockValidateModuleName = jest.fn();
-// eslint-disable-next-line @typescript-eslint/require-await
+
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateModuleName: mockValidateModuleName,
     addi18nResourceBundle: jest.fn(),
@@ -13,7 +13,7 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
 }));
 
 const mockAppPathExists = jest.fn();
-// eslint-disable-next-line @typescript-eslint/require-await
+
 jest.unstable_mockModule('../../../src/prompts/prompt-helpers', () => ({
     appPathExists: mockAppPathExists,
     defaultAppName: jest.fn(),
