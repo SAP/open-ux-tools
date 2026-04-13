@@ -22,9 +22,9 @@ export async function runHeadlessGen(
     opts?: {}
 ): Promise<any> {
     // Dynamic imports inside function to allow jest.unstable_mockModule to take effect
-    const { default: HeadlessGenerator } = await import('../../src/headless.js');
+    const { default: HeadlessGenerator } = await import('../../src/headless/index.js');
     const { default: yeomanTest } = await import('yeoman-test');
-    const { generatorNamespace } = await import('../../src/utils.js');
+    const { generatorNamespace } = await import('../../src/utils/index.js');
     const { default: CFGen } = await import('@sap-ux/cf-deploy-config-sub-generator');
     const { default: ABAPGen } = await import('@sap-ux/abap-deploy-config-sub-generator');
 
