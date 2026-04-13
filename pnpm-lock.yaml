@@ -7,8 +7,8 @@ settings:
 overrides:
   '@sap-ux/vocabularies-types': 0.15.0
   '@storybook/manager-api>store2': 2.14.4
-  '@sap-ux/ui5-config>axios': ^1.13.5
-  '@sap/service-provider-apis>axios': ^1.13.5
+  '@sap-ux/ui5-config>axios': ^1.15.0
+  '@sap/service-provider-apis>axios': ^1.15.0
   '@sap/subaccount-destination-service-provider>@sap/bas-sdk': ^3.13.3
   esbuild@<=0.24.2: '>=0.25.0'
   fast-xml-parser: '>=5.5.6'
@@ -4685,8 +4685,8 @@ importers:
         specifier: 8.18.0
         version: 8.18.0
       axios:
-        specifier: ^1.13.5
-        version: 1.13.5(debug@4.4.3)
+        specifier: ^1.15.0
+        version: 1.15.0(debug@4.4.3)
       js-yaml:
         specifier: 4.1.1
         version: 4.1.1
@@ -23248,8 +23248,8 @@ snapshots:
       '@sap/xssec': 4.12.2
       agentkeepalive: 4.6.0
       axios: 1.13.5(debug@4.4.3)
-      axios-cookiejar-support: 5.0.5(axios@1.13.5)(tough-cookie@4.1.4)(undici@6.24.1)
-      axios-retry: 4.5.0(axios@1.13.5)
+      axios-cookiejar-support: 5.0.5(axios@1.13.5(debug@4.4.3))(tough-cookie@4.1.4)(undici@6.24.1)
+      axios-retry: 4.5.0(axios@1.13.5(debug@4.4.3))
       base64-url: 2.3.3
       basic-auth: 1.1.0
       body-parser: 2.2.2
@@ -25914,7 +25914,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios-cookiejar-support@5.0.5(axios@1.13.5)(tough-cookie@4.1.4)(undici@6.24.1):
+  axios-cookiejar-support@5.0.5(axios@1.13.5(debug@4.4.3))(tough-cookie@4.1.4)(undici@6.24.1):
     dependencies:
       axios: 1.13.5(debug@4.4.3)
       http-cookie-agent: 6.0.8(tough-cookie@4.1.4)(undici@6.24.1)
@@ -25927,7 +25927,7 @@ snapshots:
       chalk: 4.1.2
       dateformat: 3.0.3
 
-  axios-retry@4.5.0(axios@1.13.5):
+  axios-retry@4.5.0(axios@1.13.5(debug@4.4.3)):
     dependencies:
       axios: 1.13.5(debug@4.4.3)
       is-retry-allowed: 2.2.0
