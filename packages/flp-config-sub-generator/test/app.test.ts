@@ -16,9 +16,9 @@ const mockSendTelemetry = jest.fn();
 
 // Pre-import @sap-ux/i18n before mocking to get real implementations
 const realI18n = await import('@sap-ux/i18n');
-const mockCreatePropertiesI18nEntries = jest.fn<typeof realI18n.createPropertiesI18nEntries>().mockImplementation(
-    (...args) => realI18n.createPropertiesI18nEntries(...args)
-);
+const mockCreatePropertiesI18nEntries = jest
+    .fn<typeof realI18n.createPropertiesI18nEntries>()
+    .mockImplementation((...args) => realI18n.createPropertiesI18nEntries(...args));
 
 jest.unstable_mockModule('@sap-ux/i18n', () => ({
     ...realI18n,
@@ -126,9 +126,7 @@ describe('flp-config generator', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
-        mockCreatePropertiesI18nEntries.mockImplementation(
-            (...args) => realI18n.createPropertiesI18nEntries(...args)
-        );
+        mockCreatePropertiesI18nEntries.mockImplementation((...args) => realI18n.createPropertiesI18nEntries(...args));
     });
 
     afterAll(() => {
@@ -213,9 +211,7 @@ describe('flp-config generator', () => {
                 } as FLPConfigAnswers)
                 .run()
         ).resolves.not.toThrow();
-        expect(existingManifest).toBe(
-            fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString()
-        );
+        expect(existingManifest).toBe(fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString());
         expect(process.exit).toHaveBeenCalledWith(0);
         process.exit = exitImpl;
     });
@@ -248,9 +244,7 @@ describe('flp-config generator', () => {
                 .run()
         ).resolves.not.toThrow();
 
-        const changedManifest: Manifest = JSON.parse(
-            fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString()
-        );
+        const changedManifest: Manifest = JSON.parse(fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString());
         expect(changedManifest).toBeDefined();
         assertInboundsHasConfig(get(changedManifest, crossNavigationPropertyPath), answers);
     });
@@ -289,9 +283,7 @@ describe('flp-config generator', () => {
                 .run()
         ).resolves.not.toThrow();
 
-        const changedManifest: Manifest = JSON.parse(
-            fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString()
-        );
+        const changedManifest: Manifest = JSON.parse(fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString());
         expect(changedManifest).not.toBeUndefined();
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.filesGenerated'), MessageType.notification);
         assertInboundsHasConfig(get(changedManifest, crossNavigationPropertyPath), answers);
@@ -324,9 +316,7 @@ describe('flp-config generator', () => {
                 .run()
         ).resolves.not.toThrow();
 
-        const changedManifest = JSON.parse(
-            fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString()
-        );
+        const changedManifest = JSON.parse(fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString());
         expect(changedManifest).not.toBeUndefined();
         assertInboundsHasConfig(get(changedManifest, crossNavigationPropertyPath), answers);
     });
@@ -356,9 +346,7 @@ describe('flp-config generator', () => {
                 .run()
         ).resolves.not.toThrow();
 
-        const changedManifest: Manifest = JSON.parse(
-            fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString()
-        );
+        const changedManifest: Manifest = JSON.parse(fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString());
         expect(changedManifest).not.toBeUndefined();
         assertInboundsHasConfig(get(changedManifest, crossNavigationPropertyPath), answers);
     });
@@ -388,9 +376,7 @@ describe('flp-config generator', () => {
                 .run()
         ).resolves.not.toThrow();
 
-        const changedManifest: Manifest = JSON.parse(
-            fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString()
-        );
+        const changedManifest: Manifest = JSON.parse(fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString());
         expect(changedManifest).not.toBeUndefined();
         assertInboundsHasConfig(get(changedManifest, crossNavigationPropertyPath), answers);
     });
@@ -425,9 +411,7 @@ describe('flp-config generator', () => {
                 .run()
         ).resolves.not.toThrow();
 
-        const changedManifest: Manifest = JSON.parse(
-            fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString()
-        );
+        const changedManifest: Manifest = JSON.parse(fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString());
         expect(changedManifest).not.toBeUndefined();
         assertInboundsHasConfig(get(changedManifest, crossNavigationPropertyPath), answers, true);
 
@@ -466,9 +450,7 @@ describe('flp-config generator', () => {
                 .run()
         ).resolves.not.toThrow();
 
-        const changedManifest: Manifest = JSON.parse(
-            fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString()
-        );
+        const changedManifest: Manifest = JSON.parse(fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString());
         expect(changedManifest).not.toBeUndefined();
         assertInboundsHasConfig(get(changedManifest, crossNavigationPropertyPath), answers, true);
 
