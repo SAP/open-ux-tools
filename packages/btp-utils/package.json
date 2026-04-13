@@ -39,6 +39,7 @@
         "@sap/bas-sdk": "3.13.3"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "nock": "14.0.11",
         "@sap-ux/logger": "workspace:*"
     },
