@@ -24,6 +24,10 @@ annotate service.Incidents with @(UI.LineItem: [
         Value : priority_code,
     },
     {
+        $Type : 'UI.DataField',
+        Value : createdBy,
+    },
+    {
         $Type : 'UI.DataFieldWithNavigationPath',
         Target: processingThreshold,
         Value : processingThreshold.processingDays,
@@ -35,30 +39,4 @@ annotate service.Incidents with @(UI.LineItem: [
         Value: description,
         Label: 'withURL',
     }
-]);
-
-annotate service.Incidents with @(
-    UI.Facets         : [{
-        $Type : 'UI.ReferenceFacet',
-        Target: 'incidentFlow/@UI.LineItem#table_section',
-        Label : 'table_section',
-        ID    : 'table_section',
-    }, ],
-);
-
-annotate service.IncidentFlow with @(UI.LineItem #table_section: [
-    {
-        $Type : 'UI.DataField',
-        Value : criticality,
-        Label : 'criticality',
-    },
-    {
-        $Type : 'UI.DataField',
-        Value : id,
-        Label : 'id',
-    },
-    {
-        $Type : 'UI.DataField',
-        Value : stepStatus,
-    },
 ]);
