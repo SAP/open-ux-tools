@@ -1262,6 +1262,9 @@ importers:
         specifier: 5.10.0
         version: 5.10.0(encoding@0.1.13)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@20.19.37))
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger

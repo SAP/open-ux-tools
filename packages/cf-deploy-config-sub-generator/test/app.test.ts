@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
-import path from 'node:path';
+import path, { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
@@ -17,14 +16,13 @@ const __testdirname = path.dirname(fileURLToPath(import.meta.url));
 
 // CJS mock for 'fs' — intercepted by yeoman-generator and other CJS consumers
 jest.mock('fs', () => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
-    const unionFs = _fs.use(vol as unknown as typeof import('fs'));
+    const unionFs = _fs.use(vol as unknown as typeof fs);
     unionFs.constants = fsLib.constants;
     unionFs.realpath = fsLib.realpath;
     unionFs.realpathSync = fsLib.realpathSync;
@@ -33,9 +31,7 @@ jest.mock('fs', () => {
 
 // ESM mock for 'node:fs' — intercepted by ESM imports (e.g., mock-mta.ts)
 const realFs = { ...fs };
-const esmUnionFs = new Union()
-    .use(realFs as unknown as typeof fs)
-    .use(memfs.vol as unknown as typeof fs);
+const esmUnionFs = new Union().use(realFs as unknown as typeof fs).use(memfs.vol as unknown as typeof fs);
 (esmUnionFs as any).constants = fs.constants;
 (esmUnionFs as any).realpath = fs.realpath;
 (esmUnionFs as any).realpathSync = fs.realpathSync;
