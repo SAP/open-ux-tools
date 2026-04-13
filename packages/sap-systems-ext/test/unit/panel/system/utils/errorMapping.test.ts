@@ -8,9 +8,8 @@ jest.unstable_mockModule('@sap-ux/guided-answers-helper', () => ({
     getHelpUrl: (...args: any[]) => mockGetHelpUrl(...args)
 }));
 
-const { getErrorType, getErrorMessage, getErrorHelp, createGALink, ERROR_TYPE } = await import(
-    '../../../../../src/panel/system/utils/errorMapping'
-);
+const { getErrorType, getErrorMessage, getErrorHelp, createGALink, ERROR_TYPE } =
+    await import('../../../../../src/panel/system/utils/errorMapping');
 const { initI18n } = await import('../../../../../src/utils');
 
 describe('errorMapping', () => {

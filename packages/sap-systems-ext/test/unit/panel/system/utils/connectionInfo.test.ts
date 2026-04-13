@@ -29,9 +29,8 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     }))
 }));
 
-const { getCatalogServiceCount, getSystemInfo, hasServiceMetadata } = await import(
-    '../../../../../src/panel/system/utils'
-);
+const { getCatalogServiceCount, getSystemInfo, hasServiceMetadata } =
+    await import('../../../../../src/panel/system/utils');
 
 describe('getCatalogServiceCount', () => {
     beforeEach(() => {

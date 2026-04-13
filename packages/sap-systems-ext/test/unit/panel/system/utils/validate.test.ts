@@ -9,9 +9,8 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     }))
 }));
 
-const { validateSystemInfo, validateSystemName, validateSystemUrl } = await import(
-    '../../../../../src/panel/system/utils'
-);
+const { validateSystemInfo, validateSystemName, validateSystemUrl } =
+    await import('../../../../../src/panel/system/utils');
 const { initI18n } = await import('../../../../../src/utils');
 const { SystemPanelViewType } = await import('../../../../../src/utils/constants');
 

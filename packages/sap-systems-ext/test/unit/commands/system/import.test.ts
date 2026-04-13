@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 import type { SystemCommandContext } from '../../../../src/types/system';
-import { join } from 'node:path';
+import type { SystemPanel } from '../../../../src/panel';
+import path, { join } from 'node:path';
 import * as vscodeMod from 'vscode';
 import { fileURLToPath } from 'node:url';
-import path from 'node:path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,7 +29,7 @@ jest.unstable_mockModule('../../../../src/utils', () => ({
 
 const { importSystemCommandHandler } = await import('../../../../src/commands/system/import');
 const { PanelManager } = await import('../../../../src/panel');
-type SystemPanel = import('../../../../src/panel').SystemPanel;
+
 const { initI18n } = await import('../../../../src/utils');
 const { SystemPanelViewType } = await import('../../../../src/utils/constants');
 

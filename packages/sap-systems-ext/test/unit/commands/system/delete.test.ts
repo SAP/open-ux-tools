@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import type { SystemCommandContext } from '../../../../src/types/system';
+import type { SystemPanel } from '../../../../src/panel';
 import * as vscodeMod from 'vscode';
 
 const systemServiceReadMock = jest.fn();
@@ -25,7 +26,7 @@ jest.unstable_mockModule('../../../../src/utils', () => ({
 
 const { deleteSystemCommandHandler } = await import('../../../../src/commands/system/delete');
 const { PanelManager } = await import('../../../../src/panel');
-type SystemPanel = import('../../../../src/panel').SystemPanel;
+
 const { initI18n } = await import('../../../../src/utils');
 
 describe('Test the delete system command handler', () => {

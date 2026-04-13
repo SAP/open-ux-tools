@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import type { SystemCommandContext } from '../../../../src/types/system';
+import type { SystemPanel } from '../../../../src/panel';
 import * as vscodeMod from 'vscode';
 
 const systemServiceReadMock = jest.fn();
@@ -16,7 +17,7 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
 
 const { showSystemsCommandHandler } = await import('../../../../src/commands/system/show');
 const { PanelManager } = await import('../../../../src/panel');
-type SystemPanel = import('../../../../src/panel').SystemPanel;
+
 const { initI18n } = await import('../../../../src/utils');
 const { BackendSystemKey } = await import('@sap-ux/store');
 

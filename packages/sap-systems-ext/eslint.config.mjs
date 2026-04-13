@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 export default [
     {
-        ignores: ['dist', 'prebuilds'],
+        ignores: ['dist', 'prebuilds', 'test/json-esm-transform.mjs'],
     },
     ...base,
     {
