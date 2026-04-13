@@ -16,7 +16,6 @@ const mockGetService = jest.fn().mockImplementation(({ entityName }: { entityNam
     return {};
 });
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class -- lightweight stub of BackendSystemKey for mock
 class MockBackendSystemKey {
     private readonly url: string;
     private readonly client?: string;
@@ -86,19 +85,14 @@ jest.unstable_mockModule('prompts', () => ({
 
 // Dynamic imports after mocks
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
-const {
-    enhanceConfigsForDestination,
-    enhanceConfigForSystem,
-    ProxyEventHandlers,
-    PathRewriters,
-    proxyErrorHandler
-} = await import('../../src/base/proxy');
+const { enhanceConfigsForDestination, enhanceConfigForSystem, ProxyEventHandlers, PathRewriters, proxyErrorHandler } =
+    await import('../../src/base/proxy');
 const { generateProxyMiddlewareOptions, createProxy } = await import('../../src');
 const { AuthenticationType } = await import('@sap-ux/store');
 const { AbapCloudEnvironment } = await import('@sap-ux/axios-extension');
 const { getDestinationUrlForAppStudio, WebIDEUsage, WebIDEAdditionalData } = await import('@sap-ux/btp-utils');
-type BackendSystem = import('@sap-ux/store').BackendSystem;
-type EnhancedIncomingMessage = import('../../src/base/proxy').EnhancedIncomingMessage;
+import type { BackendSystem } from '@sap-ux/store';
+import type { EnhancedIncomingMessage } from '../../src/base/proxy.js';
 
 describe('proxy', () => {
     type OptionsWithHeaders = Options & { headers: object };
