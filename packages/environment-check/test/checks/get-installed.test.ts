@@ -31,12 +31,8 @@ jest.unstable_mockModule('../../src/command', () => ({
     npmCommand: 'npm'
 }));
 
-const {
-    getCFCliToolVersion,
-    getFioriGenVersion,
-    getInstalledExtensions,
-    getProcessVersions
-} = await import('../../src/checks/get-installed');
+const { getCFCliToolVersion, getFioriGenVersion, getInstalledExtensions, getProcessVersions } =
+    await import('../../src/checks/get-installed');
 const { getLogger } = await import('../../src/logger');
 const { t } = await import('../../src/i18n');
 

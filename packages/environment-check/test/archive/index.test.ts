@@ -49,9 +49,7 @@ describe('Test for archive project, archiveProject()', () => {
             }
         };
         mockCreateWriteStream.mockImplementation(() => writeStreamMock);
-        mockExistsSync
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => false);
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => false);
         mockGlob.mockImplementation(() => Promise.resolve(['FILE_ONE', 'FILE_TWO']));
 
         // Test execution
@@ -95,12 +93,8 @@ describe('Test for archive project, archiveProject()', () => {
             }
         };
         mockCreateWriteStream.mockImplementation(() => writeStreamMock);
-        mockExistsSync
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => true);
-        mockReadFile.mockReturnValueOnce(
-            Promise.resolve('#some comment\nexcludedir/\nexcludefile\n**/nm')
-        );
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => true);
+        mockReadFile.mockReturnValueOnce(Promise.resolve('#some comment\nexcludedir/\nexcludefile\n**/nm'));
         mockGlob.mockImplementation(() => Promise.resolve(['FILE_ONE', 'FILE_TWO']));
 
         // Test execution
@@ -146,9 +140,7 @@ describe('Test for archive project, archiveProject()', () => {
             }
         };
         mockCreateWriteStream.mockImplementation(() => writeStreamMock);
-        mockExistsSync
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => false);
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => false);
 
         // Test execution
         const result = await archiveProject({ projectRoot: 'PROJECT_ROOT', targetFileName: 'TEST' });
@@ -178,9 +170,7 @@ describe('Test for archive project, archiveProject()', () => {
             }
         };
         mockCreateWriteStream.mockImplementation(() => writeStreamMock);
-        mockExistsSync
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => false);
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => false);
 
         // Test execution
         const result = await archiveProject({ projectRoot: 'PROJECT_ROOT', targetFileName: 'PROJECT.zip' });
@@ -210,9 +200,7 @@ describe('Test for archive project, archiveProject()', () => {
             }
         };
         mockCreateWriteStream.mockImplementation(() => writeStreamMock);
-        mockExistsSync
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => false);
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => false);
 
         // Test execution
         const result = await archiveProject({
@@ -257,9 +245,7 @@ describe('Test for archive project, archiveProject()', () => {
 
     test('Call archive and error occurs during zip processing', async () => {
         // Mock setup
-        mockExistsSync
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => false);
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => false);
         mockCreateWriteStream.mockImplementation(() => {
             throw Error('ERROR');
         });

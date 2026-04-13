@@ -42,9 +42,8 @@ jest.unstable_mockModule('../../src/checks/service-checks', () => ({
     getServiceProvider: mockGetServiceProvider
 }));
 
-const { checkBASDestination, checkBASDestinations, needsUsernamePassword } = await import(
-    '../../src/checks/destination'
-);
+const { checkBASDestination, checkBASDestinations, needsUsernamePassword } =
+    await import('../../src/checks/destination');
 
 describe('Destination tests, function checkBASDestination()', () => {
     const checkCatalogServicesResult = {
