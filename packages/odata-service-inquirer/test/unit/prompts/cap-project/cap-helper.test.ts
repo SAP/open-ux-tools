@@ -107,11 +107,8 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
 
 // Dynamic imports after all mocks
 const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n');
-const {
-    getCapEdmx,
-    getCapProjectChoices,
-    getCapServiceChoices
-} = await import('../../../../src/prompts/datasources/cap-project/cap-helpers');
+const { getCapEdmx, getCapProjectChoices, getCapServiceChoices } =
+    await import('../../../../src/prompts/datasources/cap-project/cap-helpers');
 const LoggerHelper = (await import('../../../../src/prompts/logger-helper')).default;
 const { errorHandler } = await import('../../../../src/prompts/prompt-helpers');
 const { ERROR_TYPE } = await import('@sap-ux/inquirer-common');

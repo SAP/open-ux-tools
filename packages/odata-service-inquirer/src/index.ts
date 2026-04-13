@@ -15,9 +15,7 @@ import {
     CfAbapEnvServiceChoice,
     NewSystemChoice
 } from './prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type {
-    SystemSelectionAnswerType
-} from './prompts/datasources/sap-system/system-selection/prompt-helpers';
+import type { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection/prompt-helpers';
 
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';

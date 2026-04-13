@@ -55,6 +55,7 @@
         "@sap-devx/yeoman-ui-types": "1.23.0"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/fiori-elements-writer": "workspace:*",
         "@sap-ux/fiori-freestyle-writer": "workspace:*",

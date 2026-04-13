@@ -13,6 +13,9 @@ import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection/types';
 
+// eslint-disable-next-line prefer-const
+let connectionValidatorMock: Record<string, any>;
+
 jest.unstable_mockModule('../../../../../src/prompts/connectionValidator', () => {
     return {
         ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
@@ -59,7 +62,7 @@ const catalogs = {
     } as Partial<V2CatalogService> | undefined
 };
 
-const connectionValidatorMock = {
+connectionValidatorMock = {
     catalogs
 };
 

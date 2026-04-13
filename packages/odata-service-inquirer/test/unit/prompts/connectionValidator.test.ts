@@ -370,7 +370,6 @@ describe('ConnectionValidator', () => {
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
         const systemUrl = 'https://localhost:8080';
         // Mock first request to get the specific cert errors
-        mockCreateForAbap;
         jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
             .mockRejectedValueOnce(newAxiosErrorWithStatus('UNABLE_TO_GET_ISSUER_CERT'))
             .mockResolvedValue([]);

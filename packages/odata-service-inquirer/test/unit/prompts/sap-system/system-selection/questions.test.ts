@@ -174,7 +174,8 @@ const mockConnectWithDestination = jest.fn<any>();
 // and set the mock implementations in beforeEach.
 
 // Dynamic imports after mocks - order matters: import prompt-helpers first to get actual, then register its mock
-const actualPromptHelpers = await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers');
+const actualPromptHelpers =
+    await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers');
 // Now register the prompt-helpers mock with actual exports spread + spy functions
 jest.unstable_mockModule('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers', () => ({
     ...actualPromptHelpers,
@@ -183,13 +184,13 @@ jest.unstable_mockModule('../../../../../src/prompts/datasources/sap-system/syst
 }));
 
 const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
-const { ConnectionValidator: ConnectionValidatorClass } = await import('../../../../../src/prompts/connectionValidator');
+const { ConnectionValidator: ConnectionValidatorClass } =
+    await import('../../../../../src/prompts/connectionValidator');
 const { newSystemPromptNames } = await import('../../../../../src/prompts/datasources/sap-system/new-system/types');
-const { NewSystemChoice } = await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers');
-const {
-    getSystemConnectionQuestions,
-    getSystemSelectionQuestions
-} = await import('../../../../../src/prompts/datasources/sap-system/system-selection/questions');
+const { NewSystemChoice } =
+    await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers');
+const { getSystemConnectionQuestions, getSystemSelectionQuestions } =
+    await import('../../../../../src/prompts/datasources/sap-system/system-selection/questions');
 const LoggerHelper = (await import('../../../../../src/prompts/logger-helper')).default;
 const { promptNames } = await import('../../../../../src/types');
 const { PromptState } = await import('../../../../../src/utils');
