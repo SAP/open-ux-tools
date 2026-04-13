@@ -32,9 +32,8 @@ jest.unstable_mockModule('proxy-from-env', () => ({
     getProxyForUrl: mockGetProxyForUrl
 }));
 
-const { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } = await import(
-    '../src'
-);
+const { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } =
+    await import('../src');
 
 beforeAll(() => {
     nock.disableNetConnect();
