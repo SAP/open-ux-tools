@@ -244,11 +244,7 @@ describe('getAppConfig', () => {
         };
 
         mockReadManifest.mockReturnValue(mockManifest);
-        mockGetUI5Versions.mockResolvedValue([
-            { version: '1.134.0' },
-            { version: '1.132.0' },
-            { version: '1.124.0' }
-        ]);
+        mockGetUI5Versions.mockResolvedValue([{ version: '1.134.0' }, { version: '1.132.0' }, { version: '1.124.0' }]);
 
         const mockQfaJsonJsonWithNavEntity = {
             ...mockQfaJson,

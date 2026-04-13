@@ -14,9 +14,8 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
     return { default: mock, ...mock };
 });
 
-const { fetchAppListForSelectedSystem, formatAppChoices, getYUIDetails } = await import(
-    '../../src/prompts/prompt-helpers'
-);
+const { fetchAppListForSelectedSystem, formatAppChoices, getYUIDetails } =
+    await import('../../src/prompts/prompt-helpers');
 const { PromptState } = await import('../../src/prompts/prompt-state');
 const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
 

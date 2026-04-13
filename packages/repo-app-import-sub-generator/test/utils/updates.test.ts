@@ -4,7 +4,7 @@ import { t } from '../../src/utils/i18n';
 import { join } from 'node:path';
 import { fioriAppSourcetemplateId } from '../../src/utils/constants';
 
-type Manifest = import('@sap-ux/project-access').Manifest;
+import type { Manifest } from '@sap-ux/project-access';
 
 // Inline project-access constants to avoid loading full dependency chain
 const FileName = { Manifest: 'manifest.json' } as const;
@@ -46,7 +46,11 @@ const { validateAndUpdateManifestUI5Version, replaceWebappFiles } = await import
 const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
 
 describe('validateAndUpdateManifestUI5Version', () => {
-    let fs: { writeJSON: ReturnType<typeof jest.fn>; exists: ReturnType<typeof jest.fn>; readJSON: ReturnType<typeof jest.fn> };
+    let fs: {
+        writeJSON: ReturnType<typeof jest.fn>;
+        exists: ReturnType<typeof jest.fn>;
+        readJSON: ReturnType<typeof jest.fn>;
+    };
 
     beforeEach(() => {
         fs = {
@@ -66,9 +70,9 @@ describe('validateAndUpdateManifestUI5Version', () => {
         } as unknown as Manifest);
         mockGetUI5Versions.mockResolvedValue([{ version: '1.90.0' }]);
 
-        await expect(validateAndUpdateManifestUI5Version('path/to/manifest.json', fs as unknown as Editor)).rejects.toThrow(
-            t('error.readManifestErrors.invalidManifestStructureError')
-        );
+        await expect(
+            validateAndUpdateManifestUI5Version('path/to/manifest.json', fs as unknown as Editor)
+        ).rejects.toThrow(t('error.readManifestErrors.invalidManifestStructureError'));
     });
 
     it('should not modify the manifest if minUI5Version is valid', async () => {
@@ -169,7 +173,12 @@ describe('validateAndUpdateManifestUI5Version', () => {
 });
 
 describe('replaceWebappFiles', () => {
-    let fs: { exists: ReturnType<typeof jest.fn>; copy: ReturnType<typeof jest.fn>; readJSON: ReturnType<typeof jest.fn>; writeJSON: ReturnType<typeof jest.fn> };
+    let fs: {
+        exists: ReturnType<typeof jest.fn>;
+        copy: ReturnType<typeof jest.fn>;
+        readJSON: ReturnType<typeof jest.fn>;
+        writeJSON: ReturnType<typeof jest.fn>;
+    };
 
     beforeEach(() => {
         fs = {

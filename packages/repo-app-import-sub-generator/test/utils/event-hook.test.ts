@@ -16,7 +16,7 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
 
 const { runPostAppGenHook } = await import('../../src/utils/event-hook');
 const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
-type RepoAppGenContext = import('../../src/utils/event-hook').RepoAppGenContext;
+import type { RepoAppGenContext } from '../../src/utils/event-hook.js';
 
 describe('runPostAppGenHook', () => {
     let mockContext: RepoAppGenContext;
