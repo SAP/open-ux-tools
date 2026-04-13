@@ -11,12 +11,7 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     }
 }));
 
-const {
-    initAppWizardCache,
-    addToCache,
-    getFromCache,
-    deleteCache
-} = await import('../../src/utils/appWizardCache');
+const { initAppWizardCache, addToCache, getFromCache, deleteCache } = await import('../../src/utils/appWizardCache');
 
 const ADP_FLP_CONFIG_CACHE = '$adp-flp-config-cache';
 
