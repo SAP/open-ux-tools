@@ -253,13 +253,11 @@ function processCustomFormField(buildingBlockData: BuildingBlock, context: Proce
         formFieldConfig.eventHandler = processedEventHandler;
     }
 
-    if (formFieldConfig.content === undefined || formFieldConfig.content === null) {
-        formFieldConfig.content = getDefaultFragmentContent(
-            'Custom Form Field Content',
-            buildingBlockData.generateId,
-            processedEventHandler
-        );
-    }
+    formFieldConfig.content ??= getDefaultFragmentContent(
+        'Custom Form Field Content',
+        buildingBlockData.generateId,
+        processedEventHandler
+    );
     if (viewPath && !fs.exists(viewPath)) {
         fs.copyTpl(getTemplatePath(config.templateFile), viewPath, formFieldConfig);
     }
