@@ -27,6 +27,7 @@
     "devDependencies": {
         "@fluentui/react": "8.125.5",
         "@fluentui/react-hooks": "8.10.2",
+        "@jest/globals": "30.3.0",
         "@reduxjs/toolkit": "1.6.1",
         "@sap-ux/ui-components": "workspace:*",
         "@testing-library/jest-dom": "6.9.1",
