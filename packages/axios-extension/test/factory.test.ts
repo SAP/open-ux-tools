@@ -46,7 +46,7 @@ afterAll(() => {
 });
 test('create', async () => {
     mockIsAppStudio.mockReturnValue(true);
-    const getProxyForUrlSpy = jest.spyOn(ProxyFromEnv, 'getProxyForUrl').mockReturnValue(undefined);
+    const getProxyForUrlSpy = jest.spyOn(ProxyFromEnv, 'getProxyForUrl').mockReturnValue('');
     const response = await axios.get(`${server}${servicePath}${metadataPath}`, {
         params: { 'sap-client': client }
     });
@@ -69,7 +69,7 @@ test('create', async () => {
     const metadata = await service.metadata();
     expect(metadata).toBeDefined();
     expect(metadata).toBe(expectedMetadata);
-    expect(getProxyForUrlSpy).toHaveBeenNthCalledWith(1, `${server}${servicePath}${metadataPath}?sap-client=${client}`);
+    expect(getProxyForUrlSpy).toHaveBeenNthCalledWith(1, `${server}`);
     getProxyForUrlSpy.mockRestore();
     expect(provider.defaults.proxy).toBeUndefined();
     expect(provider.defaults.httpAgent).toBeUndefined();
