@@ -1,8 +1,5 @@
 import { jest } from '@jest/globals';
-import type {
-    AbapServiceProvider,
-    LayeredRepositoryService
-} from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, LayeredRepositoryService } from '@sap-ux/axios-extension';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import { GUIDED_ANSWERS_ICON, HELP_NODES, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import { AxiosError, type AxiosResponseHeaders } from 'axios';
@@ -568,9 +565,7 @@ describe('Test validators', () => {
         });
 
         it('should return a GA link when list packages is selected and querying packages fails due to cert error', async () => {
-            mockQueryPackages.mockRejectedValueOnce(
-                new AxiosError('Expired certificate', 'CERT_HAS_EXPIRED')
-            );
+            mockQueryPackages.mockRejectedValueOnce(new AxiosError('Expired certificate', 'CERT_HAS_EXPIRED'));
             const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {});
             expect(result).toEqual({
                 link: {

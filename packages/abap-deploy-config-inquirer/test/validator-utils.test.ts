@@ -10,7 +10,8 @@ jest.unstable_mockModule('../src/service-provider-utils', () => ({
     createTransportNumberFromService: mockCreateTransportNumberFromService
 }));
 
-const { createTransportNumber, getTransportList, isAppNameValid, listPackages } = await import('../src/validator-utils');
+const { createTransportNumber, getTransportList, isAppNameValid, listPackages } =
+    await import('../src/validator-utils');
 const { initI18n, t } = await import('../src/i18n');
 
 describe('validator-utils', () => {
@@ -54,7 +55,9 @@ describe('validator-utils', () => {
         expect(await createTransportNumber(createTransportParams, {})).toEqual(undefined);
 
         mockCreateTransportNumberFromService.mockResolvedValueOnce('NEWTR1');
-        expect(await createTransportNumber(createTransportParams, { url: 'http://mock.url', client: '123' })).toEqual('NEWTR1');
+        expect(await createTransportNumber(createTransportParams, { url: 'http://mock.url', client: '123' })).toEqual(
+            'NEWTR1'
+        );
     });
 
     describe('isAppNameValid', () => {

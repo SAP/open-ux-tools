@@ -20,12 +20,8 @@ jest.unstable_mockModule('../../src/utils', () => ({
 
 const { initI18n, t } = await import('../../src/i18n');
 const { PromptState } = await import('../../src/prompts/prompt-state');
-const {
-    getAbapSystemChoices,
-    getPackageChoices,
-    shouldRunValidation,
-    updatePromptStateUrl
-} = await import('../../src/prompts/helpers');
+const { getAbapSystemChoices, getPackageChoices, shouldRunValidation, updatePromptStateUrl } =
+    await import('../../src/prompts/helpers');
 
 describe('helpers', () => {
     beforeAll(async () => {
