@@ -62,9 +62,6 @@ async function validateKeysAndFetchData(
         return (key.value !== undefined && key.value !== '') || !answers[`entityKeyIdx:${index}`];
     });
 
-    /* const hasValidKeyInput = appConfig.referencedEntities?.listEntity.semanticKeys.some(
-        (key) => key.value !== undefined
-    ); */
     if (!validKeyInputs || !hasOneValidKeyValue) {
         return t('prompts.skipDataDownload.validation.keyRequired');
     }
