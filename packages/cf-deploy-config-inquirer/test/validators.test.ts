@@ -22,12 +22,8 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
 }));
 
 const { initI18nCfDeployConfigInquirer, t } = await import('../src/i18n');
-const {
-    validateDestinationQuestion,
-    validateMtaPath,
-    validateMtaId,
-    validateAbapService
-} = await import('../src/prompts/validators');
+const { validateDestinationQuestion, validateMtaPath, validateMtaId, validateAbapService } =
+    await import('../src/prompts/validators');
 const { ErrorHandler } = await import('@sap-ux/inquirer-common');
 const projectInputValidator = await import('@sap-ux/project-input-validator');
 import { join } from 'node:path';

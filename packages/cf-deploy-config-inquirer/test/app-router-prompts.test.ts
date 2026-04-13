@@ -11,15 +11,9 @@ jest.unstable_mockModule('@sap/cf-tools', () => ({
 }));
 
 const { t } = await import('../src/i18n');
-const {
-    RouterModuleType,
-    appRouterPromptNames
-} = await import('../src');
+const { RouterModuleType, appRouterPromptNames } = await import('../src');
 const { getAppRouterQuestions } = await import('../src/prompts');
-import type {
-    CfAppRouterDeployConfigQuestions,
-    CfAppRouterDeployConfigPromptOptions
-} from '../src';
+import type { CfAppRouterDeployConfigQuestions, CfAppRouterDeployConfigPromptOptions } from '../src';
 import { type ListQuestion } from '@sap-ux/inquirer-common';
 
 describe('App Router Prompt Generation Tests', () => {
