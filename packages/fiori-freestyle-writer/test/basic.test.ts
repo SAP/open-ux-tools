@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import type { FreestyleApp } from '../src';
 import type { BasicAppSettings } from '../src/types';
+import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 const { removeSync } = fsExtra;
@@ -369,7 +370,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     });
 
     describe('CAP updates', () => {
-        const capService: import('@sap-ux/cap-config-writer').CapServiceCdsInfo = {
+        const capService: CapServiceCdsInfo = {
             cdsUi5PluginInfo: {
                 isCdsUi5PluginEnabled: true,
                 hasMinCdsVersion: true,
@@ -381,7 +382,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             capType: 'Node.js'
         };
 
-        const getFreestyleApp = (options: { typescript: boolean; sapux: boolean; capService?: import('@sap-ux/cap-config-writer').CapServiceCdsInfo }) => {
+        const getFreestyleApp = (options: { typescript: boolean; sapux: boolean; capService?: CapServiceCdsInfo }) => {
             const { typescript, sapux, capService } = options;
             return {
                 app: {
