@@ -5,26 +5,23 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { jest } from '@jest/globals';
 import type { ChoiceOptions } from 'inquirer';
+import type { getMinimumUI5Version } from '@sap-ux/project-access';
+import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-let originalGetMinimumUI5Version: typeof import('@sap-ux/project-access').getMinimumUI5Version;
-const mockGetMinimumUI5Version = jest.fn<typeof import('@sap-ux/project-access').getMinimumUI5Version>(
-    (...args) => originalGetMinimumUI5Version(...args)
-);
-
 const actualProjectAccess = await import('@sap-ux/project-access');
-originalGetMinimumUI5Version = actualProjectAccess.getMinimumUI5Version;
+const originalGetMinimumUI5Version: typeof getMinimumUI5Version = actualProjectAccess.getMinimumUI5Version;
+const mockGetMinimumUI5Version = jest.fn<typeof getMinimumUI5Version>((...args) =>
+    originalGetMinimumUI5Version(...args)
+);
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,
     getMinimumUI5Version: mockGetMinimumUI5Version
 }));
 
 const { PromptsType, PromptsAPI, BuildingBlockType } = await import('../../../src');
-type TablePromptsAnswer = import('../../../src').TablePromptsAnswer;
-type SupportedGeneratorAnswers = import('../../../src').SupportedGeneratorAnswers;
-type BuildingBlockTypePromptsAnswer = import('../../../src').BuildingBlockTypePromptsAnswer;
 const { createIdGenerator } = await import('../../../src/common/file');
 
 describe('Prompts', () => {
