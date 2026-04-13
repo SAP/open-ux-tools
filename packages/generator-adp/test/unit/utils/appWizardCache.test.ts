@@ -12,8 +12,8 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 const { initI18n } = await import('../../../src/utils/i18n');
 const { initCache, cachePut, cacheGet, cacheClear } = await import('../../../src/utils/appWizardCache');
-type AppWizardWithCache = import('../../../src/utils/appWizardCache').AppWizardWithCache;
-type ConfigPrompter = import('../../../src/app/questions/configuration').ConfigPrompter;
+import type { AppWizardWithCache } from '../../../src/utils/appWizardCache.js';
+import type { ConfigPrompter } from '../../../src/app/questions/configuration.js';
 
 describe('appWizardCache', () => {
     let logger: ToolsLogger;

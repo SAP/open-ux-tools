@@ -300,7 +300,7 @@ const baseApp: CFApp = {
     title: 'test-app-title'
 };
 
-type TargetEnvAnswers = import('../src/app/types').TargetEnvAnswers;
+import type { TargetEnvAnswers, JsonInput } from '../src/app/types.js';
 
 const answersCf: CfServicesAnswers & AttributesAnswers & TargetEnvAnswers = {
     targetEnv: TargetEnv.CF,
@@ -393,8 +393,7 @@ const vscodeMock = {
     }
 };
 
-type AdpGeneratorOptions = import('../src/app').AdpGeneratorOptions;
-type JsonInput = import('../src/app/types').JsonInput;
+import type { AdpGeneratorOptions } from '../src/app/index.js';
 
 const mockSystemService = {
     read: jest.fn(),

@@ -28,7 +28,7 @@ jest.unstable_mockModule('../../../src/app/questions/helper/validators', () => (
 
 const { initI18n, t } = await import('../../../src/utils/i18n');
 const { TargetEnv } = await import('../../../src/app/types');
-type TargetEnvAnswers = import('../../../src/app/types').TargetEnvAnswers;
+import type { TargetEnvAnswers } from '../../../src/app/types.js';
 const { getTargetEnvPrompt, getEnvironments, getProjectPathPrompt } =
     await import('../../../src/app/questions/target-env');
 

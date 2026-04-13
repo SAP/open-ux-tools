@@ -29,7 +29,7 @@ const { initI18n, t } = await import('../../../../src/utils/i18n');
 const { configPromptNames } = await import('../../../../src/app/types');
 const { getCredentialsPrompts } = await import('../../../../src/base/questions/credentials');
 
-type Credentials = import('../../../../src/types').Credentials;
+import type { Credentials } from '../../../../src/types.js';
 
 describe('Credentials Prompts', () => {
     let mockLogger: ToolsLogger;
