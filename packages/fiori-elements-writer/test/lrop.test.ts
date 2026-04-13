@@ -42,7 +42,7 @@ jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
 
 // Dynamic imports after mocking
 const { generate, TemplateType, TableType } = await import('../src');
-type CapServiceCdsInfo = import('@sap-ux/cap-config-writer').CapServiceCdsInfo;
+import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 const {
     testOutputDir,
     debug,

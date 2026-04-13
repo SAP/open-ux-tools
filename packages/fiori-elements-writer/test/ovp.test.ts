@@ -13,14 +13,8 @@ jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
 }));
 
 const { generate, TemplateType } = await import('../src');
-const {
-    testOutputDir,
-    getTestData,
-    debug,
-    feBaseConfig,
-    projectChecks,
-    updatePackageJSONDependencyToUseLocalPath
-} = await import('./common');
+const { testOutputDir, getTestData, debug, feBaseConfig, projectChecks, updatePackageJSONDependencyToUseLocalPath } =
+    await import('./common');
 
 const TEST_NAME = 'ovpTemplate';
 if (debug?.enabled) {
