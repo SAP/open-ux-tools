@@ -41,7 +41,7 @@ const { generateSupportingConfig } = await import('../../src/utils');
 const { Mta } = await import('@sap/mta-lib');
 const { CommandRunner } = await import('@sap-ux/nodejs-utils');
 
-type CFConfig = import('../../src/types').CFConfig;
+import type { CFConfig } from '../../src/types.js';
 
 let hasSyncMock: jest.Mock;
 let isAppStudioMock: jest.Mock;
@@ -69,8 +69,8 @@ describe('CF Writer App', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        isAppStudioMock = (btp.isAppStudio as jest.Mock);
-        listDestinationsMock = (btp.listDestinations as jest.Mock);
+        isAppStudioMock = btp.isAppStudio as jest.Mock;
+        listDestinationsMock = btp.listDestinations as jest.Mock;
         hasSyncMock = (hasbin.sync as jest.Mock).mockImplementation(() => true);
         commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 }) as any);
     });

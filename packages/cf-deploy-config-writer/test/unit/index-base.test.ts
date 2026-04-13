@@ -40,7 +40,7 @@ const { generateBaseConfig } = await import('../../src');
 const { RouterModuleType } = await import('../../src/types');
 const { MTABinNotFound } = await import('../../src/constants');
 
-type CFBaseConfig = import('../../src').CFBaseConfig;
+import type { CFBaseConfig } from '../../src/index.js';
 
 let hasSyncMock: jest.Mock;
 

@@ -14,7 +14,7 @@ ufs.use(realFs as any).use(memfs.vol as any);
 (ufs as any).realpath = realFs.realpath;
 (ufs as any).realpathSync = realFs.realpathSync;
 
-jest.unstable_mockModule('fs', () => ufs);
+jest.unstable_mockModule('node:fs', () => ufs);
 
 const { MockMta } = await import('./mockMta');
 jest.unstable_mockModule('@sap/mta-lib', () => ({
@@ -28,7 +28,7 @@ jest.unstable_mockModule('../../src/mta-config/wait-for-mta', () => ({
     waitForMtaFile: mockWaitForMtaFile
 }));
 
-const fs = await import('fs');
+const fs = await import('node:fs');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 const { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } = await import('../../src/');
 const { deployMode, SRV_API } = await import('../../src/constants');
