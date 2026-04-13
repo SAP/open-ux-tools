@@ -45,7 +45,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
-        "axios": "1.13.6",
+        "axios": "1.15.0",
         "commander": "14.0.3",
         "dotenv": "17.3.1",
         "prompts": "2.4.2",

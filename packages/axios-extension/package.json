@@ -29,7 +29,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
-        "axios": "1.13.6",
+        "axios": "1.15.0",
         "detect-content-type": "1.2.0",
         "fast-xml-parser": "5.5.9",
         "lodash": "4.18.1",
