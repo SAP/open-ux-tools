@@ -36,6 +36,7 @@ export {
     Page,
     CustomColumn,
     CustomFilterField,
+    CustomFormField,
     RichTextEditor,
     ButtonGroupConfig,
     Action
