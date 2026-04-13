@@ -3449,6 +3449,9 @@ importers:
         specifier: workspace:*
         version: link:../odata-annotation-core-types
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       axios:
         specifier: 1.13.6
         version: 1.13.6(debug@4.4.3)
