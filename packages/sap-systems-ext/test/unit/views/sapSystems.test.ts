@@ -1,14 +1,18 @@
 import { jest } from '@jest/globals';
 import type { ExtensionContext } from 'vscode';
-import { initSapSystemsView } from '../../../src/views/sapSystems';
 import * as vscode from 'vscode';
 
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
+const mockClose = jest.fn();
+const realStore = await import('@sap-ux/store');
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     getFilesystemWatcherFor: jest.fn().mockReturnValue({
-        close: jest.fn()
+        close: mockClose
     })
 }));
+
+const { initSapSystemsView } = await import('../../../src/views/sapSystems');
 
 describe('Test the SAP Systems view', () => {
     it('should initialize the view without errors', () => {
