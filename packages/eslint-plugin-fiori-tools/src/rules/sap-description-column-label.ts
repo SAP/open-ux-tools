@@ -111,7 +111,7 @@ function collectRelevantEntityTypes(pages: AnyPage[], parsedService: ParsedServi
     const entityTypePages = new Map<string, string[]>();
     const annotationEntityTypeMap = buildAnnotationEntityTypeMap(parsedService);
 
-    const addEntityType = (entityTypeName: string, pageName: string) => {
+    const addEntityType = (entityTypeName: string, pageName: string): void => {
         const pageNames = entityTypePages.get(entityTypeName) ?? [];
         if (!pageNames.includes(pageName)) {
             pageNames.push(pageName);
@@ -213,6 +213,12 @@ function processTextAnnotation(
 
 /**
  * Processes one annotation index entry and returns diagnostics.
+ *
+ * @param annotationKey - Annotation index key (e.g. "Entity/property/@Common.Text")
+ * @param qualifiedAnnotations - Map of qualified annotations for this key
+ * @param parsedService - The parsed OData service
+ * @param relevantEntityTypes - Entity types used in the app, mapped to page names
+ * @returns Diagnostics found, if any
  */
 function processAnnotationEntry(
     annotationKey: string,
@@ -249,6 +255,10 @@ function processAnnotationEntry(
 
 /**
  * Collects all DescriptionColumnLabel diagnostics for a single parsed OData service.
+ *
+ * @param parsedService - The parsed OData service
+ * @param relevantEntityTypes - Entity types used in the app, mapped to page names
+ * @returns All diagnostics found for the service
  */
 function collectProblemsForService(
     parsedService: ParsedService,
@@ -307,7 +317,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             lookup.set(diagnostic.annotation.reference.value, diagnostic);
         }
         return {
-            ['target>element[name="Annotation"]'](node) {
+            ['target>element[name="Annotation"]'](node: Element): void {
                 const diagnostic = lookup.get(node);
                 if (!diagnostic) {
                     return;
