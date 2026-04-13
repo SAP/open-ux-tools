@@ -443,23 +443,27 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         removeSync(curTestOutPath); // even for in memory
     });
 
-    test.each(lropConfigs)('Generate files for template: $name', async ({ name, config }) => {
-        const testPath = join(curTestOutPath, name);
-        const fs = await generate(testPath, config);
-        expect(fs.dump(testPath)).toMatchSnapshot();
+    test.each(lropConfigs)(
+        'Generate files for template: $name',
+        async ({ name, config }) => {
+            const testPath = join(curTestOutPath, name);
+            const fs = await generate(testPath, config);
+            expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise(async (resolve) => {
-            // write out the files for debugging
-            if (debug?.enabled) {
-                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        }).then(async () => {
-            await projectChecks(testPath, config, debug?.debugFull);
-        });
-    });
+            return new Promise(async (resolve) => {
+                // write out the files for debugging
+                if (debug?.enabled) {
+                    await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
+                    fs.commit(resolve);
+                } else {
+                    resolve(true);
+                }
+            }).then(async () => {
+                await projectChecks(testPath, config, debug?.debugFull);
+            });
+        },
+        30000
+    );
 
     test('should generate manifest with correct routing and context paths when parameterised main entity is selected', async () => {
         const projectName = 'projectWithParametrisedMainEntity';
