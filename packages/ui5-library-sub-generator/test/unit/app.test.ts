@@ -72,7 +72,7 @@ jest.unstable_mockModule('yeoman-test/lib/adapter', async () => {
     return {
         ...actual,
         TestAdapter: function TestAdapter() {
-            // @ts-ignore - CJS interop
+            // @ts-expect-error - CJS interop
             const ActualTestAdapter = actual.TestAdapter || (actual as any).default?.TestAdapter;
             const testAdapter = new ActualTestAdapter();
             if (yoEnv4) {
