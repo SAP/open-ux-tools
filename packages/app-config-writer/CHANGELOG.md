@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.6.134
+
+### Patch Changes
+
+- 75bed3b: fix(app-config-writer): convert eslint-config to be aware of plugins used by eslint-plugin-fiori-tools
+
 ## 0.6.133
 
 ### Patch Changes
