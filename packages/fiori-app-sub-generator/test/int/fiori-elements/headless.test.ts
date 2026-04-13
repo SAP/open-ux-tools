@@ -119,7 +119,7 @@ async function runHeadlessGen(
 describe('Headless generation', () => {
     let testProjectName: string;
     let expectedOutputPath: string;
-    jest.setTimeout(60000);
+    jest.setTimeout(120000); // Increased to 120s for integration tests with multiple generations
 
     /**
      * Ignoring `appGenInfo.json` in headless tests as output has slight variations
@@ -175,20 +175,24 @@ describe('Headless generation', () => {
         cleanTestDir(join(testDir, testProjectName));
     });
 
-    it('LROP v4', async () => {
-        testProjectName = 'lrop_v4';
-        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
+    it(
+        'LROP v4',
+        async () => {
+            testProjectName = 'lrop_v4';
+            expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
 
-        await runHeadlessGen('LROP-v4-0.2', 'travel_v4');
-        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
-        cleanTestDir(join(testDir, testProjectName));
+            await runHeadlessGen('LROP-v4-0.2', 'travel_v4');
+            expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
+            cleanTestDir(join(testDir, testProjectName));
 
-        const testProjectNameNoVers = 'lrop_v4_no_ui5_version';
-        await runHeadlessGen('LROP-v4-0.2-no-ui5-version', 'travel_v4');
-        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectNameNoVers);
-        expect(join(testDir, testProjectNameNoVers)).toMatchFolder(expectedOutputPath, matcherOptions);
-        cleanTestDir(join(testDir, testProjectNameNoVers));
-    });
+            const testProjectNameNoVers = 'lrop_v4_no_ui5_version';
+            await runHeadlessGen('LROP-v4-0.2-no-ui5-version', 'travel_v4');
+            expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectNameNoVers);
+            expect(join(testDir, testProjectNameNoVers)).toMatchFolder(expectedOutputPath, matcherOptions);
+            cleanTestDir(join(testDir, testProjectNameNoVers));
+        },
+        300000
+    ); // 5 minutes for test with multiple generations (very slow on CI)
 
     it('LROP v4 CAP', async () => {
         testProjectName = 'lrop_v4_cap';
