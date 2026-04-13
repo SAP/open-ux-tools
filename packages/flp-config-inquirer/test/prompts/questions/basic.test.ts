@@ -11,13 +11,8 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateText: mockValidateText
 }));
 
-const {
-    getActionPrompt,
-    getOverwritePrompt,
-    getSemanticObjectPrompt,
-    getSubTitlePrompt,
-    getTitlePrompt
-} = await import('../../../src/prompts/questions');
+const { getActionPrompt, getOverwritePrompt, getSemanticObjectPrompt, getSubTitlePrompt, getTitlePrompt } =
+    await import('../../../src/prompts/questions');
 const { initI18n, t } = await import('../../../src/i18n');
 const { promptNames } = await import('../../../src/types');
 import type { FLPConfigAnswers } from '../../../src/types';
