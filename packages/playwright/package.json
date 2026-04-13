@@ -44,7 +44,9 @@
         "portfinder": "1.0.38",
         "promisify-child-process": "5.0.1"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "@jest/globals": "30.3.0"
+    },
     "engines": {
         "node": ">=20.x"
     }

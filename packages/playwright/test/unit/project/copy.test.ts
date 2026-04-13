@@ -26,7 +26,7 @@ jest.unstable_mockModule('../../../src/project/npm.js', () => ({
 }));
 
 const { copyProject } = await import('../../../src/project/copy.js');
-type CopyOptions = import('../../../src/types.js').CopyOptions;
+import type { CopyOptions } from '../../../src/types.js';
 
 const projectRoot = join(testDirname, '..', '..', 'fixtures', 'simple-app');
 const des = getDestinationProjectRoot(projectRoot);

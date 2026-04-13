@@ -13,7 +13,7 @@ jest.unstable_mockModule('promisify-child-process', () => ({
 const { getDestinationProjectRoot } = await import('../../../src/project/project.js');
 const { copyProject } = await import('../../../src/project/copy.js');
 const { install } = await import('../../../src/project/npm.js');
-type CopyOptions = import('../../../src/types.js').CopyOptions;
+import type { CopyOptions } from '../../../src/types.js';
 
 const projectRoot = join(testDirname, '..', '..', 'fixtures', 'simple-app');
 const des = getDestinationProjectRoot(projectRoot);
