@@ -57,7 +57,7 @@ export default [
 ];
 ```
 
-**Packages fixed with this pattern:** annotation-generator
+**Packages fixed with this pattern:** annotation-generator, fiori-annotation-api
 
 ## Pattern 4: `@typescript-eslint/ban-ts-comment` for `@ts-ignore`
 
