@@ -159,9 +159,7 @@ function setupDefaultSystemSelectionPrompts(): void {
                 },
                 serviceProvider: {
                     get: jest.fn(),
-                    getUiServiceGenerator: jest
-                        .fn()
-                        .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+                    getUiServiceGenerator: jest.fn().mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
                 }
             },
             objectGenerator: { generate: jest.fn().mockResolvedValue({}) }
@@ -193,28 +191,24 @@ describe('BAS service center', () => {
         setupDefaultSystemSelectionPrompts();
         setupDefaultConfigPrompts();
         // Default authenticateInputData populates connectedSystem like the real implementation
-        mockAuthenticateInputData.mockImplementation(
-            async (_data: any, system: any) => {
-                await mockValidateConnection(_data.systemName, system, undefined);
-            }
-        );
-        mockValidateConnection.mockImplementation(
-            async (systemName: string, system: any) => {
-                Object.assign(system, {
-                    connectedSystem: {
-                        serviceProvider: {
-                            get: jest.fn(),
-                            getUiServiceGenerator: jest
-                                .fn()
-                                .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
-                        },
-                        destination: {
-                            Name: systemName
-                        }
+        mockAuthenticateInputData.mockImplementation(async (_data: any, system: any) => {
+            await mockValidateConnection(_data.systemName, system, undefined);
+        });
+        mockValidateConnection.mockImplementation(async (systemName: string, system: any) => {
+            Object.assign(system, {
+                connectedSystem: {
+                    serviceProvider: {
+                        get: jest.fn(),
+                        getUiServiceGenerator: jest
+                            .fn()
+                            .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+                    },
+                    destination: {
+                        Name: systemName
                     }
-                });
-            }
-        );
+                }
+            });
+        });
         mockGenerateService.mockResolvedValue(undefined);
         mockWriteBASMetadata.mockResolvedValue(undefined);
         mockRunPostGenHook.mockResolvedValue(undefined);
@@ -270,24 +264,22 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockValidateConnection.mockImplementation(
-            (systemName: string, system: any, reqAuth: any) => {
-                Object.assign(system, {
-                    connectedSystem: {
-                        serviceProvider: {
-                            get: jest.fn(),
-                            getUiServiceGenerator: jest
-                                .fn()
-                                .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
-                        },
-                        destination: {
-                            Name: systemName
-                        }
+        mockValidateConnection.mockImplementation((systemName: string, system: any, reqAuth: any) => {
+            Object.assign(system, {
+                connectedSystem: {
+                    serviceProvider: {
+                        get: jest.fn(),
+                        getUiServiceGenerator: jest
+                            .fn()
+                            .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+                    },
+                    destination: {
+                        Name: systemName
                     }
-                });
-                return Promise.resolve();
-            }
-        );
+                }
+            });
+            return Promise.resolve();
+        });
         await expect(
             yeomanTest
                 .run(ServiceGenerator, { resolved: serviceGenPath })
@@ -328,24 +320,22 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation(
-            (data: PromptOptions, system: SystemSelectionAnswers) => {
-                Object.assign(system, {
-                    connectedSystem: {
-                        serviceProvider: {
-                            get: jest.fn(),
-                            getUiServiceGenerator: jest
-                                .fn()
-                                .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
-                        },
-                        destination: {
-                            Name: 'system1'
-                        }
+        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+            Object.assign(system, {
+                connectedSystem: {
+                    serviceProvider: {
+                        get: jest.fn(),
+                        getUiServiceGenerator: jest
+                            .fn()
+                            .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+                    },
+                    destination: {
+                        Name: 'system1'
                     }
-                });
-                return Promise.resolve();
-            }
-        );
+                }
+            });
+            return Promise.resolve();
+        });
 
         await expect(
             yeomanTest
@@ -496,20 +486,18 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation(
-            (data: PromptOptions, system: SystemSelectionAnswers) => {
-                Object.assign(system, {
-                    connectedSystem: {
-                        serviceProvider: {
-                            getUiServiceGenerator: jest.fn().mockResolvedValue({
-                                generate: jest.fn().mockResolvedValue({})
-                            })
-                        }
+        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+            Object.assign(system, {
+                connectedSystem: {
+                    serviceProvider: {
+                        getUiServiceGenerator: jest.fn().mockResolvedValue({
+                            generate: jest.fn().mockResolvedValue({})
+                        })
                     }
-                });
-                return Promise.resolve();
-            }
-        );
+                }
+            });
+            return Promise.resolve();
+        });
 
         await expect(
             yeomanTest
@@ -549,20 +537,18 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation(
-            (data: PromptOptions, system: SystemSelectionAnswers) => {
-                Object.assign(system, {
-                    connectedSystem: {
-                        serviceProvider: {
-                            getUiServiceGenerator: jest.fn().mockResolvedValue({
-                                generate: jest.fn().mockResolvedValue({})
-                            })
-                        }
+        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+            Object.assign(system, {
+                connectedSystem: {
+                    serviceProvider: {
+                        getUiServiceGenerator: jest.fn().mockResolvedValue({
+                            generate: jest.fn().mockResolvedValue({})
+                        })
                     }
-                });
-                return Promise.resolve();
-            }
-        );
+                }
+            });
+            return Promise.resolve();
+        });
 
         await expect(
             yeomanTest
@@ -600,28 +586,24 @@ describe('test ui service generator', () => {
         jest.clearAllMocks();
         setupDefaultSystemSelectionPrompts();
         setupDefaultConfigPrompts();
-        mockAuthenticateInputData.mockImplementation(
-            async (_data: any, system: any) => {
-                await mockValidateConnection(_data.systemName, system, undefined);
-            }
-        );
-        mockValidateConnection.mockImplementation(
-            async (systemName: string, system: any) => {
-                Object.assign(system, {
-                    connectedSystem: {
-                        serviceProvider: {
-                            get: jest.fn(),
-                            getUiServiceGenerator: jest
-                                .fn()
-                                .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
-                        },
-                        destination: {
-                            Name: systemName
-                        }
+        mockAuthenticateInputData.mockImplementation(async (_data: any, system: any) => {
+            await mockValidateConnection(_data.systemName, system, undefined);
+        });
+        mockValidateConnection.mockImplementation(async (systemName: string, system: any) => {
+            Object.assign(system, {
+                connectedSystem: {
+                    serviceProvider: {
+                        get: jest.fn(),
+                        getUiServiceGenerator: jest
+                            .fn()
+                            .mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+                    },
+                    destination: {
+                        Name: systemName
                     }
-                });
-            }
-        );
+                }
+            });
+        });
         mockGenerateService.mockResolvedValue(undefined);
         mockWriteBASMetadata.mockResolvedValue(undefined);
         mockRunPostGenHook.mockResolvedValue(undefined);
@@ -666,22 +648,20 @@ describe('test ui service generator', () => {
             showError: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation(
-            (data: PromptOptions, system: SystemSelectionAnswers) => {
-                Object.assign(system, {
-                    connectedSystem: {
-                        destination: {
-                            Name: 'system1'
-                        },
-                        serviceProvider: {
-                            get: jest.fn(),
-                            getUiServiceGenerator: jest.fn().mockResolvedValue(undefined)
-                        }
+        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+            Object.assign(system, {
+                connectedSystem: {
+                    destination: {
+                        Name: 'system1'
+                    },
+                    serviceProvider: {
+                        get: jest.fn(),
+                        getUiServiceGenerator: jest.fn().mockResolvedValue(undefined)
                     }
-                });
-                return Promise.resolve();
-            }
-        );
+                }
+            });
+            return Promise.resolve();
+        });
 
         // Use real generateService so it throws when objectGenerator is undefined
         mockGenerateService.mockImplementation(realUtils.generateService);
