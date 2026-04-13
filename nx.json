@@ -82,5 +82,6 @@
     "tui": {
         "enabled": false,
         "autoExit": true
-    }
+    },
+    "analytics": false
 }

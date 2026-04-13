@@ -1,5 +1,138 @@
 # @sap-ux/ui-components
 
+## 2.1.9
+
+### Patch Changes
+
+- 9357457: fix(ui-components): add inline code block styling for VS Code webviews
+
+## 2.1.8
+
+### Patch Changes
+
+- 10f83b6: UIActionButton, UIDefaultButton - adjust `min height` after latest Fluent UI update
+
+## 2.1.7
+
+### Patch Changes
+
+- f101671: Add line-height to UITranslationInput text
+
+## 2.1.6
+
+### Patch Changes
+
+- 6b622e0: error, warning, info boxes have rounded corners
+
+## 2.1.5
+
+### Patch Changes
+
+- c53a4ba: chore(ui-components): upgrade @testing-library/jest-dom 5.17.0 → 6.9.1; upgrade sass-loader 13→16, style-loader 3→4, css-loader 6→7; implement custom jsdom env for writable window.location
+
+## 2.1.4
+
+### Patch Changes
+
+- a41533f: chore(ui-components): upgrade runtime dependencies (@fluentui/react 8.125.5, sanitize-html 2.17.2)
+
+## 2.1.3
+
+### Patch Changes
+
+- 7f2689f: `UITranslationInput` - removed unnecessary <span> elements and left-aligned message content.
+
+## 2.1.2
+
+### Patch Changes
+
+- addfdee: Add `GoToData` icon to `UiIcons` enum and `initIcons()` function
+
+## 2.1.1
+
+### Patch Changes
+
+- 59c6ac3: `UITranslationInput` — new property `invertedCalloutTheme` to toggle between normal and inverted callout styles. Default is `false`. Previously `invertedCalloutTheme` was applied by default.
+
+## 2.1.0
+
+### Minor Changes
+
+- 24bd091: feat(ui-component): add form, form field and mighty pen icons
+
+## 2.0.3
+
+### Patch Changes
+
+- 12b8b2e: Change icon color to use default color variable
+
+## 2.0.2
+
+### Patch Changes
+
+- 5d458c7: fix(deps): update dependency uuid to v13
+
+## 2.0.1
+
+### Patch Changes
+
+- 14d8ab3: fix(deps): update dependency babel-loader to v10
+
+## 2.0.0
+
+### Major Changes
+
+- c4839f5: update border radius for UI components to improve consistency
+
+## 1.27.10
+
+### Patch Changes
+
+- 88a1f57: fix(deps): update dependency storybook to v8.6.17 [security]
+
+## 1.27.9
+
+### Patch Changes
+
+- 4e6c4d5: Update of Icons - `SidePanelRight`, `Edit`, `Trash`, `Add`, `Filter`
+
+## 1.27.8
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+
+## 1.27.7
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
+## 1.27.6
+
+### Patch Changes
+
+- 5deb976: Dropdowns and contextual menus: update header item style in dropdown list
+- d8a39ce: fix(deps): update dependency sanitize-html to v2.17.1
+
+## 1.27.5
+
+### Patch Changes
+
+- a22d236: fix(deps): update dependency sanitize-html to v2.17.0
+
+## 1.27.4
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
+## 1.27.3
+
+### Patch Changes
+
+- b990534: UIFlexibleTable. Large cell content in flexible table items no longer shifts the other column to the right.
+
 ## 1.27.2
 
 ### Patch Changes

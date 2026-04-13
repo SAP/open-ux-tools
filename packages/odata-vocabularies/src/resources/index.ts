@@ -1,6 +1,7 @@
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 import Aggregation from './Org.OData.Aggregation.V1';
+import Auditing from './com.sap.vocabularies.Auditing.v1';
 import Auth from './Org.OData.Authorization.V1';
 import Capabilities from './Org.OData.Capabilities.V1';
 import Core from './Org.OData.Core.V1';
@@ -33,6 +34,7 @@ export type CdsVocabularyNamespace =
 
 export type SapVocabularyNamespace =
     | 'com.sap.vocabularies.Analytics.v1'
+    | 'com.sap.vocabularies.Auditing.v1'
     | 'com.sap.vocabularies.CDS.v1'
     | 'com.sap.vocabularies.CodeList.v1'
     | 'com.sap.vocabularies.Common.v1'
@@ -50,6 +52,7 @@ export type SapVocabularyNamespace =
 
 export type SapVocabularyAlias =
     | 'Analytics'
+    | 'Auditing'
     | 'CDS'
     | 'CodeList'
     | 'Common'
@@ -103,6 +106,7 @@ export const NAMESPACE_TO_ALIAS: Map<VocabularyNamespace, VocabularyAlias> = new
     ['Org.OData.Validation.V1', 'Validation'],
     ['Org.OData.JSON.V1', 'JSON'],
     ['com.sap.vocabularies.Analytics.v1', 'Analytics'],
+    ['com.sap.vocabularies.Auditing.v1', 'Auditing'],
     ['com.sap.vocabularies.CDS.v1', 'CDS'],
     ['com.sap.vocabularies.CodeList.v1', 'CodeList'],
     ['com.sap.vocabularies.Common.v1', 'Common'],
@@ -132,6 +136,7 @@ export const ALIAS_TO_NAMESPACE: Map<VocabularyAlias, VocabularyNamespace> = new
     ['Validation', 'Org.OData.Validation.V1'],
     ['JSON', 'Org.OData.JSON.V1'],
     ['Analytics', 'com.sap.vocabularies.Analytics.v1'],
+    ['Auditing', 'com.sap.vocabularies.Auditing.v1'],
     ['CDS', 'com.sap.vocabularies.CDS.v1'],
     ['CodeList', 'com.sap.vocabularies.CodeList.v1'],
     ['Common', 'com.sap.vocabularies.Common.v1'],
@@ -161,6 +166,7 @@ const vocabularies: Record<string, CSDL> = {
     'Org.OData.Validation.V1': Validation,
     'Org.OData.JSON.V1': ODataJSON,
     'com.sap.vocabularies.Analytics.v1': Analytics,
+    'com.sap.vocabularies.Auditing.v1': Auditing,
     'com.sap.vocabularies.CDS.v1': CDS,
     'com.sap.vocabularies.CodeList.v1': CodeList,
     'com.sap.vocabularies.Common.v1': Common,

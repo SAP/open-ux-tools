@@ -17,6 +17,7 @@ import { ABAP_DEPLOY_TASK } from '../src/utils/constants';
 import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import { getVariantNamespace } from '../src/utils/project';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
@@ -42,10 +43,11 @@ jest.mock('fs', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
-    _fs.constants = fsLib.constants;
-    _fs.realpath = fsLib.realpath;
-    _fs.realpathSync = fsLib.realpathSync;
-    return _fs.use(vol as unknown as typeof fs);
+    const memfs = _fs.use(vol as unknown as typeof fs);
+    memfs.constants = fsLib.constants;
+    memfs.realpath = fsLib.realpath;
+    memfs.realpathSync = fsLib.realpathSync;
+    return memfs;
 });
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
@@ -359,6 +361,7 @@ describe('Test abap deploy configuration generator', () => {
 
         expect(abapDeployConfigInquirerSpy).toHaveBeenCalledWith(
             {
+                adpProjectType: undefined,
                 backendTarget: {
                     abapTarget: {
                         url: 'https://mock.url.target2.com',
@@ -394,8 +397,7 @@ describe('Test abap deploy configuration generator', () => {
                 overwriteAbapConfig: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: false
-                },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
+                }
             },
             {},
             false // isYUI
@@ -426,7 +428,7 @@ describe('Test abap deploy configuration generator', () => {
         const abapDeployConfigInquirerSpy = jest
             .spyOn(abapInquirer, 'getPrompts')
             .mockResolvedValue({ prompts: [], answers: {} as abapInquirer.AbapDeployConfigAnswersInternal });
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('Fiori Adaptation');
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
         cwd = join(`${OUTPUT_DIR_PREFIX}/app1`);
         memfs.vol.fromNestedJSON(
             {
@@ -468,6 +470,7 @@ describe('Test abap deploy configuration generator', () => {
 
         expect(abapDeployConfigInquirerSpy).toHaveBeenCalledWith(
             {
+                adpProjectType: AdaptationProjectType.ON_PREMISE,
                 backendTarget: {
                     abapTarget: {
                         url: 'https://mock.url.target2.com',
@@ -503,8 +506,7 @@ describe('Test abap deploy configuration generator', () => {
                 overwriteAbapConfig: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: true
-                },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: true } }
+                }
             },
             {},
             false // isYUI
@@ -539,7 +541,7 @@ describe('Test abap deploy configuration generator', () => {
                 transportManual: 'ZTESTK900001'
             } as abapInquirer.AbapDeployConfigAnswersInternal
         });
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('Fiori Adaptation');
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
         cwd = join(`${OUTPUT_DIR_PREFIX}/app1`);
         memfs.vol.fromNestedJSON(
             {
@@ -572,6 +574,7 @@ describe('Test abap deploy configuration generator', () => {
 
         expect(abapDeployConfigInquirerSpy).toHaveBeenCalledWith(
             {
+                adpProjectType: AdaptationProjectType.ON_PREMISE,
                 backendTarget: {
                     abapTarget: {
                         url: 'https://mock.system.sap:24300',
@@ -607,8 +610,7 @@ describe('Test abap deploy configuration generator', () => {
                 overwriteAbapConfig: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: true
-                },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: true } }
+                }
             },
             {},
             false // isYUI

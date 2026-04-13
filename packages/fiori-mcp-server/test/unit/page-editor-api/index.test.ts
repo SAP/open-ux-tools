@@ -1,6 +1,6 @@
 import { getTree } from '../../../src/page-editor-api/tree';
 import type { TreeNode, TreeNodeProperty } from '../../../src/page-editor-api/tree';
-import { join } from 'path';
+import { join } from 'node:path';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import type { Parser } from '@sap/ux-specification/dist/types/src';

@@ -9,7 +9,7 @@ import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
 import { readFileSync, promises } from 'node:fs';
 import path, { join } from 'node:path';
-import type { SuperTest, Test } from 'supertest';
+
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
 import type { EnhancedRequest } from '../../../src/base/flp';
@@ -23,9 +23,12 @@ import { getWebappPath } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(process.cwd()));
-jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+const getProjectTypeMock = jest
+    .spyOn(projectAccess, 'getProjectType')
+    .mockImplementation(() => Promise.resolve('EDMXBackend'));
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -319,7 +322,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             flp: {
                 enhancedHomePage: false,
@@ -663,6 +666,69 @@ describe('FlpSandbox', () => {
             expect(response.text.includes('livereloadPort: 35729')).toBe(true);
         });
 
+        test('resource roots are remapped to editor path depth (editor at root, flp one level deep)', async () => {
+            // FLP is at /test/flp.html (one level deep) → basePath ".."
+            // Editor is at /rta.html (root level)        → newBasePath should be "."
+            const flp = new FlpSandbox(
+                {
+                    ...mockConfig,
+                    rta: {
+                        layer: 'CUSTOMER_BASE',
+                        editors: [{ path: '/rta.html' }]
+                    }
+                } as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+            const localServer = supertest(app);
+
+            // The FLP at test/flp.html should still use "../" resource roots
+            const flpResponse = await localServer.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(flpResponse.text).toContain('"open.ux.preview.client":"../preview/client"');
+
+            // The editor at /rta.html should use "./" resource roots, not "../"
+            const editorResponse = await localServer.get('/rta.html?fiori-tools-rta-mode=true').expect(200);
+            // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
+            expect(editorResponse.text).toContain('"open.ux.preview.client":"preview/client"');
+            expect(editorResponse.text).not.toContain('"open.ux.preview.client":"../preview/client"');
+            // App resource root must also be remapped to "."
+            expect(editorResponse.text).toContain('"test.fe.v2.app":"."');
+            expect(editorResponse.text).not.toContain('"test.fe.v2.app":".."');
+        });
+
+        test('resource roots are unchanged when editor is at same depth as FLP', async () => {
+            // FLP is at /test/flp.html (one level deep)    → basePath ".."
+            // Editor is at /test/rta.html (same depth)     → newBasePath should still be ".."
+            const flp = new FlpSandbox(
+                {
+                    ...mockConfig,
+                    rta: {
+                        layer: 'CUSTOMER_BASE',
+                        editors: [{ path: '/test/rta.html' }]
+                    }
+                } as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+            const localServer = supertest(app);
+
+            const editorResponse = await localServer.get('/test/rta.html?fiori-tools-rta-mode=true').expect(200);
+            expect(editorResponse.text).toContain('"open.ux.preview.client":"../preview/client"');
+            expect(editorResponse.text).toContain('"test.fe.v2.app":".."');
+        });
+
         test('rta with developerMode=true and plugin', async () => {
             await server.get('/with/plugin.html').expect(200);
             const response = await server
@@ -800,10 +866,140 @@ describe('FlpSandbox', () => {
                 .expect(200);
             expect(response.text).toMatchSnapshot();
         });
+
+        test('test/flp.html UI5 1.108 removes flexExtensionPointEnabled from applicationDependencies', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.108.51' }]
+                });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1'
+            };
+            const url = 'http://sap.example';
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            const adpToolingMock = {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {
+                        'sap.ui5': {
+                            flexExtensionPointEnabled: true,
+                            dependencies: { libs: {} }
+                        }
+                    },
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn()
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
+
+            const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
+            expect(appDeps?.manifest?.['sap.ui5']?.flexExtensionPointEnabled).toBeUndefined();
+        });
+
+        test('test/flp.html UI5 1.142 preserves flexExtensionPointEnabled in applicationDependencies', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.142.9' }]
+                });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1'
+            };
+            const url = 'http://sap.example';
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            const adpToolingMock = {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {
+                        'sap.ui5': {
+                            flexExtensionPointEnabled: true,
+                            dependencies: { libs: {} }
+                        }
+                    },
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn()
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
+
+            const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
+            expect(appDeps?.manifest?.['sap.ui5']?.flexExtensionPointEnabled).toBe(true);
+        });
     });
 
     describe('router with enableCardGenerator', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             editors: {
                 cardGenerator: {
@@ -919,13 +1115,20 @@ describe('FlpSandbox', () => {
                 }
             ];
             const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const filePath = join(webappPath, 'i18n', 'i18n.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedFilePath = join(tmpdir(), 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedFilePath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
+                        value: 'new Entry'
+                    })
+                ])
+            );
         });
         test('should handle string i18n path', async () => {
             const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
@@ -933,12 +1136,20 @@ describe('FlpSandbox', () => {
             manifest['sap.app'].i18n = 'i18n/custom.properties';
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'custom_de.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedPath = join(tmpdir(), 'i18n', 'custom_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'HELLO',
+                        value: 'Hello World'
+                    })
+                ])
+            );
         });
 
         test('should handle bundleUrl with supported and fallback locales', async () => {
@@ -952,12 +1163,20 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
 
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'i18n_de.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'GREETING',
+                        value: 'Hallo Welt'
+                    })
+                ])
+            );
         });
 
         test('should reject unsupported locale', async () => {
@@ -983,17 +1202,227 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
 
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'i18n.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'HELLO',
+                        value: 'Hello World'
+                    })
+                ])
+            );
+        });
+
+        test('should handle bundleName (CAP project style) i18n config', async () => {
+            createPropertiesI18nEntriesMock.mockClear();
+            const newI18nEntry = [{ key: 'CAP_KEY', value: 'CAP Value' }];
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            // bundleName should start with the app ID prefix for correct path resolution
+            manifest['sap.app'].i18n = {
+                bundleName: 'test.fe.v2.app.i18n.i18n',
+                supportedLocales: ['en', 'de'],
+                fallbackLocale: 'en'
+            };
+            await flp.init(manifest);
+
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
+            // bundleName "test.fe.v2.app.i18n.i18n" should convert to "i18n/i18n.properties" by removing the app ID prefix
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n_de.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'CAP_KEY',
+                        value: 'CAP Value'
+                    })
+                ])
+            );
+        });
+
+        test('should use fallbackLocale when no locale provided', async () => {
+            createPropertiesI18nEntriesMock.mockClear();
+            const newI18nEntry = [{ key: 'FALLBACK_KEY', value: 'Fallback Value' }];
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            manifest['sap.app'].i18n = {
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: ['en', 'de'],
+                fallbackLocale: 'en'
+            };
+            await flp.init(manifest);
+
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n_en.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'FALLBACK_KEY',
+                        value: 'Fallback Value'
+                    })
+                ])
+            );
+        });
+
+        test('should use first supportedLocale when no locale and no fallbackLocale', async () => {
+            createPropertiesI18nEntriesMock.mockClear();
+            const newI18nEntry = [{ key: 'FIRST_LOCALE_KEY', value: 'First Locale Value' }];
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            manifest['sap.app'].i18n = {
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: ['fr', 'de']
+            };
+            await flp.init(manifest);
+
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n_fr.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'FIRST_LOCALE_KEY',
+                        value: 'First Locale Value'
+                    })
+                ])
+            );
+        });
+    });
+
+    describe('router with enableCardGenerator for CAP projects', () => {
+        let server!: supertest.Agent;
+        const webappPath = join(tmpdir(), 'webapp');
+        const mockCAPUtils = {
+            getProject() {
+                return {
+                    getSourcePath: () => webappPath
+                };
+            }
+        } as unknown as MiddlewareUtils;
+        const mockConfig = {
+            editors: {
+                cardGenerator: {
+                    path: '/test/flpCardGeneratorSandbox.html'
+                }
+            }
+        };
+
+        let mockFsPromisesWriteFile: jest.Mock;
+        let flp: FlpSandbox;
+
+        const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
+            // Set project type to CAPNodejs before initializing
+            getProjectTypeMock.mockImplementation(() => Promise.resolve('CAPNodejs'));
+            flp = new FlpSandbox(mockConfig, mockProject, mockCAPUtils, logger);
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = supertest(app);
+        };
+
+        beforeEach(() => {
+            mockFsPromisesWriteFile = jest.fn();
+            promises.writeFile = mockFsPromisesWriteFile;
+            createPropertiesI18nEntriesMock.mockClear();
+        });
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+            // Reset to default project type
+            getProjectTypeMock.mockImplementation(() => Promise.resolve('EDMXBackend'));
+        });
+
+        test('POST /cards/store with payload for CAP project (CAPNodejs)', async () => {
+            await setupMiddleware(mockConfig as MiddlewareConfig);
+            const projectAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess').mockImplementation(() => {
+                return Promise.resolve({
+                    updateManifestJSON: () => {
+                        return Promise.resolve({});
+                    }
+                }) as unknown as Promise<ApplicationAccess>;
+            });
+            const payload = {
+                floorplan: 'ObjectPage',
+                localPath: 'cards/op/op1',
+                fileName: 'manifest.json',
+                manifests: [
+                    {
+                        type: 'integration',
+                        manifest: {
+                            '_version': '1.15.0',
+                            'sap.card': {
+                                'type': 'Object',
+                                'header': {
+                                    'type': 'Numeric',
+                                    'title': 'Card title'
+                                }
+                            },
+                            'sap.insights': {
+                                'versions': {
+                                    'ui5': '1.120.1-202403281300'
+                                },
+                                'templateName': 'ObjectPage',
+                                'parentAppId': 'sales.order.wd20',
+                                'cardType': 'DT'
+                            }
+                        },
+                        default: true,
+                        entitySet: 'op1'
+                    }
+                ]
+            };
+            const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload);
+            expect(projectAccessMock).toHaveBeenCalled();
+            // For CAP projects, createApplicationAccess should be called with the parent of webappPath
+            expect(projectAccessMock).toHaveBeenCalledWith(path.dirname(webappPath), expect.anything());
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('Files were updated/created');
+        });
+
+        test('POST /editor/i18n with payload for CAP project (CAPNodejs)', async () => {
+            await setupMiddleware(mockConfig as MiddlewareConfig);
+            const newI18nEntry = [
+                {
+                    'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
+                    'value': 'new Entry'
+                }
+            ];
+            const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
+            // For CAP projects, the webappPath should be used directly from getSourcePath()
+            const expectedFilePath = join(webappPath, 'i18n', 'i18n.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedFilePath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
+                        value: 'new Entry'
+                    })
+                ])
+            );
         });
     });
 
     describe('router with test suite', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
@@ -1042,7 +1471,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router with test suite (negative)', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
@@ -1080,7 +1509,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router - existing FlpSandbox', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
@@ -1114,7 +1543,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('router - connect API', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             flp: {
                 enhancedHomePage: false,
@@ -1186,7 +1615,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('rta with new config', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const mockConfig = {
             flp: {
                 apps: [
@@ -1418,7 +1847,7 @@ describe('FlpSandbox', () => {
     });
 
     describe('cds-plugin-ui5', () => {
-        let server!: SuperTest<Test>;
+        let server!: supertest.Agent;
         const baseUrl = '/ui5.patched.router.base';
         const mockConfig = {
             flp: {
@@ -1610,7 +2039,7 @@ describe('initAdp', () => {
                 sync: syncSpy,
                 onChangeRequest: jest.fn(),
                 addApis: jest.fn(),
-                isCloudProject: true
+                projectType: AdaptationProjectType.CLOUD_READY
             } as unknown as adpTooling.AdpPreview;
         });
         const config = {
@@ -1658,7 +2087,7 @@ describe('initAdp', () => {
                 sync: syncSpy,
                 onChangeRequest: jest.fn(),
                 addApis: jest.fn(),
-                isCloudProject: false
+                projectType: AdaptationProjectType.ON_PREMISE
             } as unknown as adpTooling.AdpPreview;
         });
 
@@ -1681,5 +2110,6 @@ describe('initAdp', () => {
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String));
         expect(flp.rta?.options?.isCloud).toBe(false);
+        expect(flp.rta?.options?.isCloudFoundry).toBe(true);
     });
 });

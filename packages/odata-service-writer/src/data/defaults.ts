@@ -5,7 +5,7 @@ import { DEFAULT_DATASOURCE_NAME } from './constants';
 import type { Manifest } from '@sap-ux/project-access';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import { UI5Config } from '@sap-ux/ui5-config';
+import { UI5Config, type FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 
 /**
  * Sets the default path for a given service.
@@ -151,35 +151,101 @@ function setDefaultAnnotationsName(service: OdataService): void {
 }
 
 /**
+ * Returns the preview settings for the app configuration based on the service configuration.
+ *
+ * @param {OdataService} service - the OData service instance
+ * @returns {FioriToolsProxyConfigBackend} preview settings
+ */
+function getPreviewSettings(service: OdataService): Partial<FioriToolsProxyConfigBackend> {
+    const previewSettings: FioriToolsProxyConfigBackend = {
+        path: service.previewSettings?.path ?? `/${service.path?.split('/').find((s: string) => s !== '') ?? ''}`,
+        url: service.previewSettings?.url ?? service.url ?? 'http://localhost'
+    };
+
+    if (service.client && !service.previewSettings?.client) {
+        previewSettings.client = service.client;
+    }
+    if (service.destination && !service.previewSettings?.destination) {
+        previewSettings.destination = service.destination.name;
+        if (service.destination.instance) {
+            previewSettings.destinationInstance = service.destination.instance;
+        }
+    }
+    return previewSettings;
+}
+
+/**
+ * Preserves existing backend configuration when updating a service.
+ *
+ * @param {OdataService} service - the OData service instance
+ * @param {FioriToolsProxyConfigBackend[]} backends - existing backend configurations
+ * @param {string | undefined} explicitPreviewPath - explicitly set preview path
+ */
+function preserveExistingBackendConfig(
+    service: OdataService,
+    backends: FioriToolsProxyConfigBackend[],
+    explicitPreviewPath: string | undefined
+): void {
+    const existingBackend = backends.find((backend) => backend.path === service.previewSettings?.path);
+    if (!existingBackend) {
+        return;
+    }
+
+    if (existingBackend.pathPrefix) {
+        service.previewSettings!.pathPrefix = existingBackend.pathPrefix;
+    }
+    if (!explicitPreviewPath) {
+        service.previewSettings!.path = service.path;
+    }
+}
+
+/**
+ * Adjusts preview path for new services if /sap backend exists.
+ *
+ * @param {OdataService} service - the OData service instance
+ * @param {FioriToolsProxyConfigBackend[]} backends - existing backend configurations
+ */
+function adjustPreviewPathForNewService(service: OdataService, backends: FioriToolsProxyConfigBackend[]): void {
+    if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
+        service.previewSettings!.path = service.path;
+    }
+}
+
+/**
  * Sets default preview settings of a given service.
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose preview settings needs to be set or modified.
  * @param {Editor} fs - the memfs editor instance
+ * @param {boolean} update - whether the service update is running (if true, preserves explicitly set previewSettings.path)
  */
-async function setDefaultPreviewSettings(basePath: string, service: OdataService, fs: Editor): Promise<void> {
-    service.previewSettings = service.previewSettings ?? {};
-    service.previewSettings.path =
-        service.previewSettings.path ?? `/${service.path?.split('/').find((s: string) => s !== '') ?? ''}`;
-    service.previewSettings.url = service.previewSettings.url ?? service.url ?? 'http://localhost';
-    if (service.client && !service.previewSettings.client) {
-        service.previewSettings.client = service.client;
-    }
-    if (service.destination && !service.previewSettings.destination) {
-        service.previewSettings.destination = service.destination.name;
-        if (service.destination.instance) {
-            service.previewSettings.destinationInstance = service.destination.instance;
-        }
-    }
+async function setDefaultPreviewSettings(
+    basePath: string,
+    service: OdataService,
+    fs: Editor,
+    update = false
+): Promise<void> {
+    const previewSettings = getPreviewSettings(service);
+    const explicitPreviewPath = service.previewSettings?.path;
+
+    service.previewSettings = {
+        ...previewSettings,
+        ...service.previewSettings
+    };
+
     const ui5Yamlpath = join(basePath, FileName.Ui5Yaml);
-    if (fs.exists(ui5Yamlpath)) {
-        const yamlContents = fs.read(ui5Yamlpath);
-        const ui5Config = await UI5Config.newInstance(yamlContents);
-        const backends = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware();
-        // There should be only one /sap entry
-        if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
-            service.previewSettings.path = service.path;
-        }
+    if (!fs.exists(ui5Yamlpath)) {
+        return;
+    }
+
+    const yamlContents = fs.read(ui5Yamlpath);
+    const ui5Config = await UI5Config.newInstance(yamlContents);
+    const backends = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware();
+
+    if (update) {
+        preserveExistingBackendConfig(service, backends, explicitPreviewPath);
+    } else if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
+        adjustPreviewPathForNewService(service, backends);
     }
 }
 
@@ -210,5 +276,5 @@ export async function enhanceData(basePath: string, service: OdataService, fs: E
     }
 
     // enhance preview settings with service configuration
-    await setDefaultPreviewSettings(basePath, service, fs);
+    await setDefaultPreviewSettings(basePath, service, fs, update);
 }

@@ -12,6 +12,8 @@ import { prompt, type PromptObject } from 'prompts';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
 import { promptYUIQuestions } from '../../common';
+import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * Add the "add deploy config" command to a passed command.
@@ -104,9 +106,11 @@ async function addDeployConfig(
             logger.debug(`Called add deploy-config for path '${basePath}', simulate is '${simulate}'`);
 
             await validateBasePath(basePath);
+            const adpProjectType = await getExistingAdpProjectType(basePath);
+            const hideIfOnPremise = isAdp && adpProjectType === AdaptationProjectType.ON_PREMISE;
 
             const promptOptions: AbapDeployConfigPromptOptions = {
-                ui5AbapRepo: { hideIfOnPremise: isAdp },
+                ui5AbapRepo: { hideIfOnPremise },
                 packageAutocomplete: {
                     useAutocomplete: true,
                     additionalValidation: {
@@ -120,8 +124,8 @@ async function addDeployConfig(
                         shouldValidatePackageForStartingPrefix: isAdp
                     }
                 },
-                transportInputChoice: { hideIfOnPremise: isAdp },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: isAdp } }
+                transportInputChoice: { hideIfOnPremise },
+                adpProjectType
             };
             const { prompts: abapPrompts, answers: abapAnswers } = await getAbapDeployConfigPrompts(
                 promptOptions,

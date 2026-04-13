@@ -2,7 +2,7 @@ import type { ExecuteFunctionalityInput } from '../../../../../src/types';
 import executeFunctionality from '../../../../../src/tools/functionalities/fetch-service-metadata/execute-functionality';
 import * as serviceMetadata from '../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata';
 import fs from 'node:fs';
-import path from 'path';
+import path from 'node:path';
 
 // Mock dependencies
 jest.mock('../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata');

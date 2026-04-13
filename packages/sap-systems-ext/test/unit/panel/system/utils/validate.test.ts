@@ -1,5 +1,6 @@
-import { validateSystemInfo, validateSystemName } from '../../../../../src/panel/system/utils';
+import { validateSystemInfo, validateSystemName, validateSystemUrl } from '../../../../../src/panel/system/utils';
 import { initI18n } from '../../../../../src/utils';
+import { SystemPanelViewType } from '../../../../../src/utils/constants';
 
 const systemServiceGetAllMock = jest.fn();
 
@@ -41,6 +42,31 @@ describe('Test the panel action utils', () => {
                 })
             ).toBe('Please provide a valid URL to test the connection.');
         });
+
+        it('should return error message for generic_host without servicePath', () => {
+            expect(
+                validateSystemInfo({
+                    url: 'https://example.com',
+                    name: 'Generic Host System',
+                    systemType: 'OnPrem',
+                    connectionType: 'generic_host'
+                })
+            ).toBe('Please provide a service path to test the connection for a generic host.');
+        });
+
+        it('should return true for generic_host with servicePath', () => {
+            expect(
+                validateSystemInfo(
+                    {
+                        url: 'https://example.com',
+                        name: 'Generic Host System',
+                        systemType: 'OnPrem',
+                        connectionType: 'generic_host'
+                    },
+                    '/sap/opu/odata/sap/MY_SERVICE'
+                )
+            ).toBe(true);
+        });
     });
 
     describe('validateSystemName', () => {
@@ -51,14 +77,62 @@ describe('Test the panel action utils', () => {
             expect(await validateSystemName('New System 1 ', 'New System')).toBe(true);
         });
 
-        it('should return error message when the system already exists in the store', async () => {
+        it('should return error message when creating a new system and the same name already exists in the store', async () => {
             systemServiceGetAllMock.mockResolvedValue([
                 { name: 'Existing System 1', url: 'https://existing.com', systemType: 'OnPrem' }
             ]);
 
-            await expect(validateSystemName('Existing System 1 ', 'New System')).rejects.toBe(
-                'System name is already in use'
+            await expect(
+                validateSystemName('Existing System 1 ', 'New System', SystemPanelViewType.Create)
+            ).rejects.toBe('This connection name already exists. Choose a different name.');
+        });
+
+        it('should return error message when importing a new system and the same name already exists in the store', async () => {
+            systemServiceGetAllMock.mockResolvedValue([
+                { name: 'Existing System 1', url: 'https://existing.com', systemType: 'OnPrem' }
+            ]);
+
+            await expect(
+                validateSystemName('Existing System 1 ', 'New System', SystemPanelViewType.Import)
+            ).rejects.toBe('This connection name already exists. Choose a different name.');
+        });
+
+        it('should return error message when editing an existing system and the new name matches another system in the store', async () => {
+            systemServiceGetAllMock.mockResolvedValue([
+                { name: 'Existing System 1', url: 'https://existing.com', systemType: 'OnPrem' },
+                { name: 'Existing System 2', url: 'https://existing2.com', systemType: 'OnPrem' }
+            ]);
+
+            await expect(
+                validateSystemName('Existing System 2 ', 'Existing System 1', SystemPanelViewType.View)
+            ).rejects.toBe('This connection name already exists. Choose a different name.');
+        });
+
+        it('should return true when viewing a system and they have the same name (case insensitive)', async () => {
+            systemServiceGetAllMock.mockResolvedValue([
+                { name: 'existing system 1', url: 'https://existing.com', systemType: 'OnPrem' }
+            ]);
+            expect(await validateSystemName('Existing System 1', 'existing system 1', SystemPanelViewType.View)).toBe(
+                true
             );
+        });
+    });
+
+    describe('validateSystemUrl', () => {
+        it('should return true for valid URL with port', () => {
+            expect(validateSystemUrl('https://example.com:8080')).toBe(true);
+        });
+
+        it('should return true for valid URL with path', () => {
+            expect(validateSystemUrl('https://example.com/path/to/resource')).toBe(true);
+        });
+
+        it('should throw an error for invalid URL without protocol', () => {
+            expect(() => validateSystemUrl('example.com')).toThrow("The URL 'example.com' provided is invalid");
+        });
+
+        it('should throw an error for invalid URL without protocol', () => {
+            expect(() => validateSystemUrl('q!@#$%^')).toThrow("The URL 'q!@#$%^' provided is invalid");
         });
     });
 });

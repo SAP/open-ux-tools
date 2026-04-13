@@ -23,10 +23,12 @@ import {
     isCapJavaProject,
     getCapModelAndServices,
     getCapProjectType,
+    processServices,
     readCapServiceMetadataEdmx,
     toReferenceUri,
     isCapProject,
-    deleteCapApp
+    deleteCapApp,
+    getGlobalCdsHomePath
 } from '../../src';
 import * as file from '../../src/file';
 import os from 'node:os';
@@ -500,7 +502,9 @@ describe('Test getCapModelAndServices()', () => {
             },
             env: jestMockEnv
         };
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('home: /global/cds'));
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(
+            getChildProcessMock('{"_home_cds-dk": "/global/cds"}')
+        );
         jest.spyOn(projectModuleMock, 'loadModuleFromProject')
             .mockRejectedValueOnce('ERROR')
             .mockResolvedValue(cdsMock);
@@ -522,7 +526,7 @@ describe('Test getCapModelAndServices()', () => {
             },
             version: '7.0.0'
         };
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('home: /any/path'));
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('{"_home_cds-dk": "/any/path"}'));
         jest.spyOn(projectModuleMock, 'loadModuleFromProject')
             .mockRejectedValueOnce('ERROR')
             .mockResolvedValue(cdsMock);
@@ -767,7 +771,7 @@ describe('Test getCapEnvironment()', () => {
         }
     });
 
-    test('call to cds --version does not contain result', async () => {
+    test('call to cds env --json does not contain result', async () => {
         // Mock setup
         jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock(''));
         const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
@@ -782,7 +786,7 @@ describe('Test getCapEnvironment()', () => {
         expect(loadSpy).toHaveBeenCalledTimes(1);
     });
 
-    test('call to cds --version throws error', async () => {
+    test('call to cds env --json throws error', async () => {
         // Mock setup
         jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('', true));
         const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
@@ -797,11 +801,43 @@ describe('Test getCapEnvironment()', () => {
         expect(loadSpy).toHaveBeenCalledTimes(1);
     });
 
+    test('call to cds env --json gives empty json', async () => {
+        // Mock setup
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('{}', true));
+        const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+
+        // Test execution
+        try {
+            await getCapEnvironment('PROJECT_ROOT');
+            fail('Call to getCapEnvironment() should have thrown error due to missing cds module path but did not');
+        } catch (error) {
+            expect(error.toString()).toContain(
+                'Error: Can not find global installation of module @sap/cds, which should be part of @sap/cds-dk'
+            );
+        }
+        expect(loadSpy).toHaveBeenCalledTimes(1);
+    });
+
+    test('call to cds env --json gives incorrect json', async () => {
+        // Mock setup
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('error', true));
+        const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+
+        // Test execution
+        try {
+            await getCapEnvironment('PROJECT_ROOT');
+            fail('Call to getCapEnvironment() should have thrown error due to missing cds module path but did not');
+        } catch (error) {
+            expect(error.toString()).toContain('Error: Unexpected output of "cds env --json": Unexpected token');
+        }
+        expect(loadSpy).toHaveBeenCalledTimes(1);
+    });
+
     test('with cds loaded from other location than project', async () => {
         // Mock setup
         const spawnSpy = jest
             .spyOn(childProcessMock, 'spawn')
-            .mockReturnValueOnce(getChildProcessMock('anyKey: anyValue\nhome: GLOBAL_ROOT\n'));
+            .mockReturnValueOnce(getChildProcessMock('{\n "anyKey": "anyValue",\n "_home_cds-dk": "GLOBAL_ROOT"\n}'));
         const forSpy = jestMockEnv.for;
         const loadSpy = jest
             .spyOn(projectModuleMock, 'loadModuleFromProject')
@@ -812,10 +848,42 @@ describe('Test getCapEnvironment()', () => {
         await getCapEnvironment('PROJECT_ROOT');
 
         // Result check
-        expect(spawnSpy).toHaveBeenCalledWith('cds', ['--version'], { cwd: undefined, shell: true });
+        expect(spawnSpy).toHaveBeenCalledWith('cds', ['env', '--json'], { cwd: undefined, shell: true });
         expect(loadSpy).toHaveBeenNthCalledWith(1, 'PROJECT_ROOT', '@sap/cds');
-        expect(loadSpy).toHaveBeenNthCalledWith(2, 'GLOBAL_ROOT', '@sap/cds');
+        expect(loadSpy).toHaveBeenNthCalledWith(2, join('GLOBAL_ROOT', 'node_modules', '@sap', 'cds'), '@sap/cds');
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
+    });
+});
+
+describe('Test getGlobalCdsHomePath()', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+        // clearing cache after each test to make tests independent of each other
+        clearGlobalCdsModulePromiseCache();
+    });
+
+    test('Expected response from "cds env --json"', async () => {
+        // Mock setup
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(
+            getChildProcessMock('{"_home_cds-dk": "GLOBAL_ROOT"}')
+        );
+
+        // Test execution
+        const cdsHomePath = await getGlobalCdsHomePath();
+
+        // Result check
+        expect(cdsHomePath).toEqual('GLOBAL_ROOT');
+    });
+
+    test('Unexpected response from "cds env --json"', async () => {
+        // Mock setup
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('{}'));
+
+        // Test execution
+        const cdsHomePath = await getGlobalCdsHomePath();
+
+        // Result check
+        expect(cdsHomePath).toEqual(undefined);
     });
 });
 
@@ -1171,7 +1239,14 @@ describe('getCapServiceName', () => {
             load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
             compile: {
                 to: {
-                    serviceinfo: jest.fn().mockImplementation(() => [{ name: 'ServiceOne', urlPath: 'service/one' }])
+                    serviceinfo: jest.fn().mockImplementation(() => [
+                        { name: 'ServiceOne', urlPath: 'service/one' },
+                        { name: 'ServiceThree', urlPath: 'odata/v4/three/' },
+                        { name: 'ServiceFour', urlPath: 'odata/v4/four' },
+                        { name: 'ServiceFive', urlPath: 'dummy/odata/v4/three/' },
+                        { name: 'ServiceSix', urlPath: 'odata/v4/dummy/deep/service' },
+                        { name: 'ServiceSeven', urlPath: 'odata/v4/dummy/my.*' }
+                    ])
                 }
             },
             env: jestMockEnv
@@ -1185,13 +1260,114 @@ describe('getCapServiceName', () => {
     });
 
     test('Service not found error message', async () => {
-        try {
-            await getCapServiceName('/some/test/path', 'service/two');
-        } catch (error) {
-            expect(error.message).toBe(
-                'Service for uri: \'service/two\' not found. Available services: [{"name":"ServiceOne","urlPath":"service/one"}]'
+        await expect(getCapServiceName('/some/test/path', 'service/two')).rejects.toThrow(
+            /Service for uri: 'service\/two' not found\. Available services: \[\{"name":"ServiceOne","urlPath":"service\/one".*/
+        );
+    });
+
+    const servicePrefixValidationTests = [
+        // /<string>.<string>/external-ui/<inbound-service-name>/v<version>/...
+        {
+            name: 'valid service uri 1',
+            datasourceUri: '/external.uri/external-ui/dummy/v1/odata/v4/three/',
+            valid: 'ServiceThree'
+        },
+        {
+            name: 'valid service uri 2',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/three/',
+            valid: 'ServiceThree'
+        },
+        {
+            name: 'invalid service pattern 1',
+            datasourceUri: '/external/external-ui/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 2',
+            datasourceUri: '/external.uri/external/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 3',
+            datasourceUri: '/external-ui/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 4',
+            datasourceUri: '/external.uri/external-ui/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 5',
+            datasourceUri: '/external.uri/external-ui/dummy/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 6',
+            datasourceUri: '/external.uri/external-ui/dummy/1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'valid service pattern, but service is not listed',
+            datasourceUri: '/external.uri/external-ui/dummy/v1/odata/v4/two/',
+            valid: undefined
+        },
+        {
+            name: 'valid service uri - deep uri',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/dummy/deep/service/',
+            valid: 'ServiceSix'
+        },
+        {
+            name: 'escape service path - matching path',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/dummy/my.*/',
+            valid: 'ServiceSeven'
+        },
+        {
+            name: 'escape service path - unmatching path',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/dummy/my.test/',
+            valid: undefined
+        },
+        // /ui/<inbound-service-name>/v<version>/...
+        {
+            name: 'valid service uri 3',
+            datasourceUri: '/ui/dummy/v1/odata/v4/three/',
+            valid: 'ServiceThree'
+        },
+        {
+            name: 'valid service pattern, but service is not listed 2',
+            datasourceUri: '/ui/dummy/v1/odata/v4/two/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 7',
+            datasourceUri: '/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 8',
+            datasourceUri: '/ui/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 9',
+            datasourceUri: '/ui/dummy/1/odata/v4/three/',
+            valid: undefined
+        }
+    ];
+    test.each(servicePrefixValidationTests)('Ignore service prefixes - $name', async ({ datasourceUri, valid }) => {
+        if (valid) {
+            const capServiceName = await getCapServiceName('/some/test/path', datasourceUri);
+            expect(capServiceName).toEqual(valid);
+        } else {
+            await expect(getCapServiceName('/some/test/path', datasourceUri)).rejects.toThrow(
+                /Service for uri: .* not found\. Available services:.*/
             );
         }
+    });
+
+    test('Find exact service match', async () => {
+        const capServiceName = await getCapServiceName('/some/test/path', 'dummy/odata/v4/three/');
+        expect(capServiceName).toEqual('ServiceFive');
     });
 });
 
@@ -1653,6 +1829,94 @@ describe('Test hasMinCdsVersion()', () => {
                 dependencies: { '@sap/cds': '^7' }
             })
         ).toBe(true);
+    });
+});
+
+describe('Test processServices()', () => {
+    test('should return empty array for undefined input', () => {
+        expect(processServices(undefined)).toEqual([]);
+    });
+
+    test('should return empty array for non-array input', () => {
+        expect(processServices({})).toEqual([]);
+    });
+
+    test('should handle services where endpoint path and urlPath are both undefined', () => {
+        const services = [
+            {
+                name: 'TestService',
+                endpoints: [
+                    {
+                        kind: 'odata',
+                        path: undefined
+                    }
+                ],
+                urlPath: undefined
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([
+            {
+                name: 'TestService',
+                urlPath: '',
+                runtime: undefined
+            }
+        ]);
+    });
+
+    test('should use endpoint path when available', () => {
+        const services = [
+            {
+                name: 'TestService',
+                endpoints: [
+                    {
+                        kind: 'odata',
+                        path: 'odata/v4/test'
+                    }
+                ]
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([
+            {
+                name: 'TestService',
+                urlPath: 'odata/v4/test',
+                runtime: undefined
+            }
+        ]);
+    });
+
+    test('should fall back to urlPath when no odata endpoint path', () => {
+        const services = [
+            {
+                name: 'TestService',
+                urlPath: 'service/path'
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([
+            {
+                name: 'TestService',
+                urlPath: 'service/path',
+                runtime: undefined
+            }
+        ]);
+    });
+
+    test('should filter out non-odata services with endpoints', () => {
+        const services = [
+            {
+                name: 'WebSocketService',
+                endpoints: [
+                    {
+                        kind: 'websocket',
+                        path: 'ws/test'
+                    }
+                ]
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([]);
     });
 });
 

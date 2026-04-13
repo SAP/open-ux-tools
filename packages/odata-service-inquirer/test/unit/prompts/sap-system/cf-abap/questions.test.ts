@@ -160,4 +160,23 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
         expect(getCredsSpy).toHaveBeenCalledWith('test1-cFAbapService');
         expect(createDestSpy).toHaveBeenCalled();
     });
+
+    test('Should include value help download prompt when promptOptions.valueHelpDownload.hide is false', () => {
+        const questions = getCfAbapBASQuestions({ valueHelpDownload: { hide: false } });
+        const valueHelpPrompt = questions.find((question) => question.name === 'cfAbapBas:valueHelpDownload');
+        expect(valueHelpPrompt).toBeDefined();
+        expect(valueHelpPrompt?.type).toBe('confirm');
+    });
+
+    test('Should not include value help download prompt when promptOptions.valueHelpDownload.hide is true', () => {
+        const questions = getCfAbapBASQuestions({ valueHelpDownload: { hide: true } });
+        const valueHelpPrompt = questions.find((question) => question.name === 'cfAbapBas:valueHelpDownload');
+        expect(valueHelpPrompt).toBeUndefined();
+    });
+
+    test('Should not include value help download prompt by default when promptOptions is not provided', () => {
+        const questions = getCfAbapBASQuestions();
+        const valueHelpPrompt = questions.find((question) => question.name === 'cfAbapBas:valueHelpDownload');
+        expect(valueHelpPrompt).toBeUndefined();
+    });
 });

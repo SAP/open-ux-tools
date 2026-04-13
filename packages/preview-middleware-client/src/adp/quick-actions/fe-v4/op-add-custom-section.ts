@@ -81,7 +81,8 @@ export class AddCustomSectionQuickAction
             {
                 propertyPath: 'content/body/sections/',
                 title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION',
-                appDescriptor: this.currentPageDescriptor
+                appDescriptor: this.currentPageDescriptor,
+                type: 'section'
             },
             { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
         );

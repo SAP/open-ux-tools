@@ -27,7 +27,8 @@ describe('change/inbound', () => {
     const memFsEditorMock = {
         create: jest.fn().mockReturnValue({
             commit: jest.fn().mockImplementation((cb) => cb())
-        })
+        }),
+        commit: jest.fn().mockImplementation((cb) => cb())
     };
     const mockAnswers = {
         title: 'Some Title',
@@ -42,7 +43,6 @@ describe('change/inbound', () => {
     const promptYUIQuestionsSpy = jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
     const getArgv = (...arg: string[]) => ['', '', 'inbound', ...arg];
     const appRoot = join(__dirname, '../../../fixtures');
-    jest.spyOn(validations, 'validateAdpProject').mockResolvedValue(undefined);
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -53,10 +53,13 @@ describe('change/inbound', () => {
         jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
         jest.spyOn(adp, 'getVariant').mockReturnValue(cloudDescriptorVariant);
         jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
+        jest.spyOn(validations, 'validateAdpAppType').mockResolvedValue(undefined);
+        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValue(false);
+        jest.spyOn(validations, 'validateCloudAdpProject').mockResolvedValue(undefined);
     });
 
     test('change-inbound - not an Adaptation Project', async () => {
-        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
+        jest.spyOn(validations, 'validateAdpAppType').mockRejectedValueOnce(
             new Error('This command can only be used for an adaptation project')
         );
 
@@ -70,29 +73,27 @@ describe('change/inbound', () => {
     });
 
     test('change-inbound - CF environment', async () => {
-        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
-            new Error('This command is not supported for CF projects.')
-        );
+        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValueOnce(true);
 
         const command = new Command('inbound');
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for CF projects.');
+        expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for Cloud Foundry projects.');
         expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
     test('change-inbound - onPremise project', async () => {
-        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
-            new Error('This command can only be used for Cloud Adaptation Project')
+        jest.spyOn(validations, 'validateCloudAdpProject').mockRejectedValueOnce(
+            new Error('This command can only be used for Cloud Adaptation Project.')
         );
 
         const command = new Command('inbound');
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(appRoot));
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(loggerMock.error).toHaveBeenCalledWith('This command can only be used for Cloud Adaptation Project');
+        expect(loggerMock.error).toHaveBeenCalledWith('This command can only be used for Cloud Adaptation Project.');
         expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 

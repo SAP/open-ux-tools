@@ -8,7 +8,7 @@ import { getFDCApps } from '../services/api';
 import type { CfConfig, CFApp, ServiceKeys, XsApp } from '../../types';
 
 /**
- * Get the app host ids.
+ * Get the app host ids from service keys.
  *
  * @param {ServiceKeys[]} serviceKeys - The service keys.
  * @returns {string[]} The app host ids.
@@ -29,29 +29,81 @@ export function getAppHostIds(serviceKeys: ServiceKeys[]): string[] {
 }
 
 /**
- * Extracts the backend URL from service key credentials. Iterates through all endpoint keys to find the first endpoint with a URL.
+ * Extracts all backend URLs from service key credentials. Iterates through all endpoint keys to find all endpoints with URLs.
+ * Handles both string endpoints and object endpoints with url property.
  *
  * @param {ServiceKeys[]} serviceKeys - The credentials from service keys.
- * @returns {string | undefined} The backend URL or undefined if not found.
+ * @returns {string[]} Array of backend URLs (including full paths) or empty array if none found.
  */
-export function getBackendUrlFromServiceKeys(serviceKeys: ServiceKeys[]): string | undefined {
+export function getBackendUrlsFromServiceKeys(serviceKeys: ServiceKeys[]): string[] {
     if (!serviceKeys || serviceKeys.length === 0) {
-        return undefined;
+        return [];
     }
 
+    const urls: string[] = [];
     const endpoints = serviceKeys[0]?.credentials?.endpoints as Record<string, { url?: string }> | undefined;
-    if (endpoints) {
+    if (endpoints && typeof endpoints === 'object' && endpoints !== null) {
         for (const key in endpoints) {
-            if (Object.hasOwn(endpoints, key)) {
-                const endpoint = endpoints[key] as { url?: string } | undefined;
-                if (endpoint && typeof endpoint === 'object' && endpoint.url && typeof endpoint.url === 'string') {
-                    return endpoint.url;
+            const endpoint = endpoints[key];
+            if (endpoint?.url) {
+                urls.push(endpoint.url);
+            }
+        }
+    }
+
+    return urls;
+}
+
+/**
+ * Clean regex pattern from route source.
+ *
+ * @param {string} source - The route source pattern.
+ * @returns {string} Cleaned path.
+ */
+function cleanRoutePath(source: string): string {
+    let path = source;
+    // Remove leading ^ and trailing $
+    path = path.replace(/^\^/, '').replace(/\$$/, '');
+    // Remove capture groups like (.*) or $1
+    path = path.replace(/\([^)]*\)/g, '');
+    // Remove regex quantifiers
+    path = path.replace(/\$\d+/g, '');
+    // Clean up any remaining regex characters at the end
+    path = path.replace(/\/?\*$/, '');
+    // Normalize multiple consecutive slashes to single slash
+    while (path.includes('//')) {
+        path = path.replaceAll('//', '/');
+    }
+    // Remove trailing slash to ensure proper path matching
+    path = path.replace(/\/$/, '');
+    return path;
+}
+
+/**
+ * Extract endpoint destinations from service keys.
+ *
+ * @param {ServiceKeys[]} serviceKeys - The service keys.
+ * @returns {Array<{name: string; url: string}>} Array of endpoint destinations.
+ */
+export function getServiceKeyDestinations(serviceKeys: ServiceKeys[]): Array<{ name: string; url: string }> {
+    const endpointDestinations: Array<{ name: string; url: string }> = [];
+
+    for (const key of serviceKeys) {
+        const endpoints = key.credentials?.endpoints;
+        if (endpoints && typeof endpoints === 'object') {
+            for (const endpointKey in endpoints) {
+                const endpoint = endpoints[endpointKey];
+                if (endpoint?.url && endpoint.destination) {
+                    endpointDestinations.push({
+                        name: endpoint.destination,
+                        url: endpoint.url
+                    });
                 }
             }
         }
     }
 
-    return undefined;
+    return endpointDestinations;
 }
 
 /**
@@ -73,20 +125,7 @@ export function getOAuthPathsFromXsApp(zipEntries: AdmZip.IZipEntry[]): string[]
             continue;
         }
 
-        let path = route.source;
-        // Remove leading ^ and trailing $
-        path = path.replace(/^\^/, '').replace(/\$$/, '');
-        // Remove capture groups like (.*) or $1
-        path = path.replace(/\([^)]*\)/g, '');
-        // Remove regex quantifiers
-        path = path.replace(/\$\d+/g, '');
-        // Clean up any remaining regex characters at the end
-        path = path.replace(/\/?\*$/, '');
-        // Normalize multiple consecutive slashes to single slash
-        while (path.includes('//')) {
-            path = path.replaceAll('//', '/');
-        }
-
+        const path = cleanRoutePath(route.source);
         if (path) {
             pathsSet.add(path);
         }

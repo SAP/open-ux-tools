@@ -1,0 +1,4 @@
+<<%- macrosNamespace %>:Form
+	id="<%= data.id %>"
+	<% if (data.metaPath) { %>metaPath="<%- data.metaPath %>"<% } %>
+	title="<%= data.title %>"/>

@@ -1,1072 +1,868 @@
 
 --------------------------------
 
-**TITLE**: SAP Fiori elements for OData V4 — Feature Showcase (Developer Quick Reference)
+**TITLE**: SAP Fiori elements for OData V4 — Feature Showcase: Code Examples & Implementation Recipes
 
-**INTRODUCTION**: Concise, code-first reference showing how to enable and configure Fiori elements List Report, Object Page and Worklist features for CAP/OData V4 apps. Includes file paths, manifest entries, CDS annotations, XML fragments and TypeScript controller snippets used in the feature-showcase repository. Use this as copy-pasteable examples when implementing features.
+**INTRODUCTION**: This reference extracts actionable code examples and implementation guidance from the "SAP Fiori elements for OData V4 Feature Showcase". Use these snippets and short, task-focused instructions to implement List Report, Object Page, Table, Chart, Value Help, Actions, Tree Table and other features in a CAP + SAP Fiori elements V4 app. All file paths and code blocks are preserved for direct use.
 
-**TAGS**: fiori-features, sap, cds, manifest.json, annotations, odata-v4, ui5, cap, sap-fiori
+**TAGS**: CAP, CDS, ODataV4, FioriElements, manifest.json, annotations, TypeScript, XML, JSON
 
----
-
-STEP: Project setup & run
-
-DESCRIPTION: Install dependencies and run the local CAP + Fiori elements app. Open sandbox launchpad.
-
+STEP: Project startup
+DESCRIPTION: Install dependencies in repository root and run the CAP server to open the Fiori launchpad sandbox at /$launchpad.
 LANGUAGE: Shell
-
 CODE:
 ```bash
-# from repository root (see README)
+# In root folder (repository)
 npm install
 
-# run CAP + Fiori elements (watch mode)
+# Start CAP with watch (serves the application)
 cds watch
 
-# open the Fiori launchpad sandbox
+# Open in browser:
 # http://localhost:4008/$launchpad
 ```
 
----
-
-STEP: Enable drafts (CDS)
-
-DESCRIPTION: Annotate an entity to enable OData draft behavior.
-
+STEP: Enable Draft mode (CDS annotation)
+DESCRIPTION: Add draft support to an entity via @odata.draft.enabled in CDS.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-# file: any .cds annotation file (e.g. srv/<...>.cds)
 annotate srv.RootEntities with @odata.draft.enabled;
 ```
 
----
-
-STEP: Replace standard UI texts (manifest)
-
-DESCRIPTION: Provide a custom i18n file and point to it in manifest.json under the entity page options:settings.enhanceI18n.
-
+STEP: Replace standard UI texts (manifest + properties)
+DESCRIPTION: Add a custom i18n file and reference it in manifest.json under the specific page settings using "enhanceI18n".
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json
+// app/listreport-objectpage/webapp/manifest.json (snippet)
 "RootEntityListReport": {
-  "options": {
-    "settings": {
-      "enhanceI18n": "i18n/customI18N.properties"
+    ...
+    "options": {
+        "settings": {
+            ...
+            "enhanceI18n": "i18n/customI18N.properties",
+            ...
+        }
     }
-  }
-}
+},
 ```
 
 LANGUAGE: Properties
-
 CODE:
 ```properties
-# file: app/listreport-objectpage/webapp/i18n/customI18N.properties
+# i18n/customI18N.properties sample keys
 C_COMMON_ACTION_PARAMETER_DIALOG_CANCEL|RootEntities = Custom cancel text
+# Examples of override keys:
+# C_COMMON_DIALOG_OK (global)
+# C_TRANSACTION_HELPER_OBJECT_PAGE_CONFIRM_DELETE_WITH_OBJECTTITLE_SINGULAR|RootEntities
+# C_OPERATIONS_ACTION_CONFIRM_MESSAGE|RootEntities|criticalAction
 ```
 
----
-
-STEP: Add a custom front-end action (manifest + TS extension controller)
-
-DESCRIPTION: Define custom action metadata in manifest.json and implement handler in an extension controller. Use "press" path to controller function.
-
+STEP: Add custom front-end action (manifest + controller)
+DESCRIPTION: Define a custom action in manifest.json controlConfiguration and implement handler in extension controller. "press" is path to handler function. "enabled" can reference a function path.
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
+// app/listreport-objectpage/webapp/manifest.json (snippet)
 "CustomActionSection" : {
-  "press": "sap.fe.showcase.lrop.ext.CustomActions.messageBox",
-  "enabled": "{= ${ui>/editMode} !== 'Editable'}",
-  "visible" : true,
-  "text": "{i18n>CustomActionSection}"
+    "press": "sap.fe.showcase.lrop.ext.CustomActions.messageBox",
+    "enabled": "{= ${ui>/editMode} !== 'Editable'}",
+    "visible" : true,
+    "text": "{i18n>CustomActionSection}"
 }
 ```
 
 LANGUAGE: TypeScript
-
 CODE:
 ```ts
-// file: app/listreport-objectpage/webapp/ext/controller/RootEntityLRExtension.controller.ts
-import ControllerExtension from "sap/fe/core/ControllerExtension";
-import MessageBox from "sap/m/MessageBox";
-import type { ExtensionAPI } from "sap/fe/core/helpers/ExtensionAPI";
-import type { ODataContextBinding, Context } from "sap/ui/model/odata/v4";
-
+// app/listreport-objectpage/webapp/ext/controller/RootEntityLRExtension.controller.ts (snippet)
 export default class RootEntityLRExtension extends ControllerExtension<ExtensionAPI> {
   messageBox() {
-    MessageBox.alert("Button pressed");
+      MessageBox.alert("Button pressed");
   }
   enabled() {
-    return true;
+      return true;
   }
   enabledForSingleSelect(oBindingContext: ODataContextBinding, aSelectedContexts: [Context]) {
-    return !!(aSelectedContexts && aSelectedContexts.length === 1);
+      if (aSelectedContexts && aSelectedContexts.length === 1) {
+          return true;
+      }
+      return false;
   }
 }
 ```
-
----
 
 STEP: Invoke CAP action from custom action (EditFlow API)
-
-DESCRIPTION: Use EditFlow.invokeAction from extension to call server-side CAP action. Provide contexts, model, label, grouping.
-
+DESCRIPTION: Invoke a CAP action from a client-side handler using the SAP Fiori elements Edit-flow API's invokeAction. Provide contexts, model, label, and invocationGrouping where applicable.
 LANGUAGE: TypeScript
-
 CODE:
 ```ts
-// file: app/listreport-objectpage/webapp/ext/controller/RootEntityOPExtension.controller.ts
-import ControllerExtension from "sap/fe/core/ControllerExtension";
-import type { ExtensionAPI } from "sap/fe/core/helpers/ExtensionAPI";
-import type { Context, ODataModel } from "sap/ui/model/odata/v4";
-
+// Extension example using EditFlow API to invoke CAP action
 export default class RootEntityOPExtension extends ControllerExtension<ExtensionAPI> {
-  // Search-Term: #EditFlowAPI
-  onChangeCriticality(oEvent: any /* Button$PressEvent */) {
-    const sActionName = "LROPODataService.changeCriticality";
-    this.base.getExtensionAPI().getEditFlow().invokeAction(sActionName, {
-      contexts: oEvent.getSource().getBindingContext() as Context,
-      model: oEvent.getSource().getModel() as ODataModel,
-      label: 'Confirm',
-      invocationGrouping: "ChangeSet"
-    });
-  }
+    ...
+
+    // Search-Term: #EditFlowAPI
+    onChangeCriticality(oEvent: Button$PressEvent) {
+        let sActionName = "LROPODataService.changeCriticality";
+        this.base.getExtensionAPI().getEditFlow().invokeAction(sActionName, {
+            contexts: oEvent.getSource().getBindingContext()! as Context,
+            model: oEvent.getSource().getModel() as ODataModel,
+            label: 'Confirm',	
+            invocationGrouping: "ChangeSet" 
+        }); //SAP Fiori elements EditFlow API
+    }
 }
 ```
 
----
-
-STEP: Default sorting & advanced default filters (manifest + annotation)
-
-DESCRIPTION: Reference a SelectionPresentationVariant (only SPV allowed) in manifest to set default filters + presentation & sort.
-
+STEP: Default sorting/filtering via SelectionPresentationVariant (manifest)
+DESCRIPTION: Reference a UI.SelectionPresentationVariant annotation in manifest to apply default filters and sort. Only SelectionPresentationVariant (not SelectionVariant only) is allowed for defaultTemplateAnnotationPath.
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/worklist/webapp/manifest.json (snippet)
+// app/worklist/webapp/manifest.json (snippet)
 "OrdersList": {
-  "options": {
-    "settings": {
-      "contextPath": "/Orders",
-      "defaultTemplateAnnotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#DefaultFilter"
+    ...
+    "options": {
+        "settings": {
+            "contextPath": "/Orders",
+            "defaultTemplateAnnotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#DefaultFilter",
+            ...
+        }
     }
-  }
 }
 ```
 
-LANGUAGE: CDS
-
-CODE:
-```cds
-// file: app/listreport-objectpage/layout.cds (example)
-annotate srv.RootEntities with @(
-  UI.SelectionPresentationVariant #DefaultFilter : {
-    SelectionVariant : {
-      $Type : 'UI.SelectionVariantType',
-      SelectOptions : [ ... ]
-    },
-    PresentationVariant : { SortOrder: [ ... ], Visualizations: [ '@UI.LineItem' ] }
-  }
-);
-```
-
----
-
-STEP: Variant management toggle (manifest)
-
-DESCRIPTION: Disable variant management for an entity list by setting variantManagement to "None". Update app subTitle in manifest with i18n key.
-
+STEP: Disable Variant Management or set app subtitle (manifest + i18n)
+DESCRIPTION: Disable Variant Management for a view and set a custom app subtitle visible in the header via sap.app.subTitle manifest property and i18n.
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
+// app/listreport-objectpage/webapp/manifest.json (snippet)
 "RootEntityListReport": {
-  "options": {
-    "settings": {
-      "entitySet": "RootEntities",
-      "variantManagement": "None"
+    ...
+    "options": {
+        "settings": {
+            "entitySet": "RootEntities",
+            "variantManagement": "None",
+            ...
+        }
     }
-  }
-},
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json (sap.app snippet)
 "sap.app": {
-  "subTitle": "{{appSubTitle}}"
+    ...
+    "subTitle": "{{appSubTitle}}",
+    ...
 }
 ```
 
----
-
-STEP: Live mode (manifest)
-
-DESCRIPTION: Enable liveMode to apply filters immediately (no GO button).
-
+STEP: Enable Live Mode (manifest)
+DESCRIPTION: Remove GO button by enabling live filtering; set liveMode true in view settings.
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
+// app/listreport-objectpage/webapp/manifest.json (snippet)
 "RootEntityListReport": {
-  "options": {
-    "settings": {
-      "liveMode": true
+    ...
+    "options": {
+        "settings": {
+            "liveMode": true,
+            ...
+        }
     }
-  }
 }
 ```
 
----
-
-STEP: Define default filter values (CDS)
-
-DESCRIPTION: Use @Common.FilterDefaultValue on properties in CDS. For complex defaults prefer SelectionPresentationVariant.
-
+STEP: Default filter values (CDS)
+DESCRIPTION: Use @Common.FilterDefaultValue in CDS to set simple default filter values for selection fields. For complex filters use SelectionPresentationVariant instead.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/field-control.cds (example)
+// app/listreport-objectpage/field-control.cds (example usage)
 annotate srv.RootEntities {
-  someProperty @(Common.FilterDefaultValue : { path: '2022-01-01' });
-}
+    // Example default value annotation usage
+    someFilterField @(Common.FilterDefaultValue: 'example');
+};
 ```
-
----
 
 STEP: Hide filters (CDS)
-
-DESCRIPTION: Mark properties as hidden from filter bar with @UI.HiddenFilter.
-
+DESCRIPTION: Annotate a property with @UI.HiddenFilter to hide it from filter bar.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/field-control.cds
+// app/listreport-objectpage/field-control.cds (snippet)
 annotate srv.RootEntities {
-  fieldWithURLtext @UI.HiddenFilter;
+    ...
+    fieldWithURLtext @UI.HiddenFilter;
+    ...
 };
 ```
 
----
-
-STEP: Group filters with FilterFacets (CDS)
-
-DESCRIPTION: Use @UI.FilterFacets and @UI.FieldGroup to structure Adapt Filters dialog.
-
+STEP: Group filter facets (CDS)
+DESCRIPTION: Use @UI.FilterFacets and @UI.FieldGroup to structure filter adaptation groups. Reference in layout.cds.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/layout.cds
+// app/listreport-objectpage/layout.cds (snippet)
 annotate srv.RootEntities with @(
-  UI.FilterFacets : [
-    { Target : '@UI.FieldGroup#chartData', Label : '{i18n>chartData}' },
-    { Target : '@UI.FieldGroup#location', Label : '{i18n>location}' }
-  ]
+    UI.FilterFacets : [
+        {
+            Target : '@UI.FieldGroup#chartData',
+            Label : '{i18n>chartData}',
+        },
+        {
+            Target : '@UI.FieldGroup#location',
+            Label : '{i18n>location}',
+        },
+    ],
 );
-
 annotate srv.RootEntities with @(
-  UI.FieldGroup #chartData : {
-    Data  : [
-      { Value : integerValue },
-      { Value : targetValue },
-      { Value : forecastValue },
-      { Value : dimensions },
-      { Value : integerValue }
-    ]
-  }
-);
-```
-
----
-
-STEP: Selection fields default (CDS)
-
-DESCRIPTION: Use @UI.SelectionFields to show default filters in the filter bar.
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-// file: app/listreport-objectpage/layout.cds
-annotate srv.RootEntities with @(
-  UI.SelectionFields : [
-    field,
-    fieldWithPrice,
-    criticality_code
-  ]
+    UI.FieldGroup #chartData : {
+        Data  : [
+            {Value : integerValue},
+            {Value : targetValue},
+            {Value : forecastValue},
+            {Value : dimensions},
+            {Value : integerValue},
+        ]
+    },
 );
 ```
 
----
-
-STEP: Mandatory filter fields (CDS)
-
-DESCRIPTION: Use Capabilities.FilterRestrictions.RequiredProperties to mandate filters.
-
+STEP: Show selection fields in filter bar (CDS)
+DESCRIPTION: Use @UI.SelectionFields to predefine fields visible in the List Report filter bar.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/capabilities.cds
+// app/listreport-objectpage/layout.cds (snippet)
 annotate srv.RootEntities with @(
-  Capabilities.FilterRestrictions : {
-    RequiredProperties : [ stringProperty ]
-  }
+    UI.SelectionFields : [
+        field,
+        fieldWithPrice,
+        criticality_code,
+    ],
 );
 ```
 
----
-
-STEP: Semantic date ranges for Date filters (CDS + manifest)
-
-DESCRIPTION: Use FilterExpressionRestrictions to allow semantic date SingleValue/SingleRange. Optionally configure useSemanticDateRange and defaults in manifest.
-
+STEP: Define mandatory filter fields (CDS)
+DESCRIPTION: Use @Capabilities.FilterRestrictions.RequiredProperties to require fields in filter bar.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/layout.cds
+// app/listreport-objectpage/capabilities.cds (snippet)
 annotate srv.RootEntities with @(
-  Capabilities.FilterRestrictions : {
-    FilterExpressionRestrictions : [
-      { Property : 'validFrom', AllowedExpressions : 'SingleRange' }
-    ]
-  }
+    ...
+    Capabilities.FilterRestrictions : {
+        ...
+        RequiredProperties : [
+            stringProperty 
+        ],
+    },
+);
+```
+
+STEP: Enable semantic date ranges (CDS + manifest)
+DESCRIPTION: Configure permitted expressions for date fields using FilterExpressionRestrictions. Control client behavior via manifest controlConfiguration (useSemanticDateRange and defaultValues).
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/layout.cds (snippet)
+annotate srv.RootEntities with @(
+    Capabilities.FilterRestrictions : {
+        FilterExpressionRestrictions : [
+            {
+                Property : 'validFrom',
+                AllowedExpressions : 'SingleRange'
+            }
+        ],
+        ...
+    },
 );
 ```
 
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (controlConfiguration snippet)
+// app/listreport-objectpage/webapp/manifest.json (snippet)
 "RootEntityListReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.SelectionFields": {
-          "useSemanticDateRange": true,
-          "filterFields": {
-            "validFrom": {
-              "settings": {
-                "defaultValues": [{"operator": "LASTYEARS", "values": [10]}]
-              }
-            }
-          }
+    "options": {
+        "settings": {
+            "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": {
+                    "useSemanticDateRange":  true,
+                    "filterFields": {
+                        "validFrom": { 
+                            "settings": {
+                                "defaultValues": [{"operator": "LASTYEARS", "values": [10]}]
+                            }
+                        }
+                    }
+                }
+            },
         }
-      }
     }
-  }
-}
+},
 ```
-
----
 
 STEP: Case-insensitive filtering (CDS)
-
-DESCRIPTION: Enable tolower globally using Capabilities.FilterFunctions.
-
+DESCRIPTION: Annotate the service with @Capabilities.FilterFunctions: ['tolower'] to enable tolower-based filtering across service.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/capabilities.cds
+// app/listreport-objectpage/capabilities.cds (snippet)
 annotate LROPODataService with @(
-  Capabilities.FilterFunctions : [ 'tolower' ]
+    Capabilities.FilterFunctions : [
+        'tolower'
+    ],
 );
 ```
 
----
-
-STEP: Value help with @Common.ValueList (CDS)
-
-DESCRIPTION: Provide value help for property/association using @Common.ValueList with CollectionPath and Parameters.
-
+STEP: Value Help for filters and fields (CDS)
+DESCRIPTION: Annotate properties with @Common.ValueList to provide value help dialogs. Use parameters to map local and value-list properties. Use ValueListWithFixedValues to render dropdown or with ValueListShowValuesImmediately for radio buttons.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/value-helps.cds
-annotate schema.RootEntities with {
-  contact @(Common : {
-    Text            : contact.name,
-    TextArrangement : #TextOnly,
-    ValueList       : {
-      Label          : '{i18n>customer}',
-      CollectionPath : 'Contacts',
-      Parameters     : [
-        {
-          $Type             : 'Common.ValueListParameterInOut',
-          ValueListProperty : 'ID',
-          LocalDataProperty : contact_ID
-        },
-        {
-          $Type: 'Common.ValueListParameterDisplayOnly',
-          ValueListProperty: 'country_code'
-        },
-        {
-          $Type: 'Common.ValueListParameterDisplayOnly',
-          ValueListProperty: 'city'
-        }
-      ]
-    }
-  });
-};
-```
-
----
-
-STEP: Value list fixed values & radio buttons (CDS + manifest)
-
-DESCRIPTION: Use @Common.ValueListWithFixedValues to render dropdown/radio buttons. Use ValueListShowValuesImmediately to render radio buttons. Control layout possibly configured in manifest controlConfiguration formatOptions.
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-// file: app/listreport-objectpage/value-helps.cds
-annotate schema.RootEntities with {
-  criticality_code @(Common : {
-    ValueListWithFixedValues,
-    ValueListWithFixedValues.@Common.ValueListShowValuesImmediately,
-  });
-};
-```
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
-"RootEntityListReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.SelectionFields": {
-          "radioButtonsHorizontalLayout": false,
-          "filterFields": {
-            "validFrom": { "settings": { "defaultValues": [{"operator": "LASTYEARS", "values": [10]}] } }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
----
-
-STEP: Dependent value-help filtering (CDS)
-
-DESCRIPTION: Use ValueListParameterIn to pass parent property as input to value help; use ValueListParameterFilterOnly or Constant for static filtering.
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-// file: app/listreport-objectpage/value-helps.cds
+// app/listreport-objectpage/value-helps.cds (example)
 annotate schema.RootEntities with{
-  region @(Common : {
-    Text            : region.name,
-    TextArrangement : #TextFirst,
-    ValueListWithFixedValues: true,
-    ValueList       : {
-      Label          : '{i18n>Region}',
-      CollectionPath : 'Regions',
-      Parameters     : [
-        {
-          $Type             : 'Common.ValueListParameterInOut',
-          ValueListProperty : 'code',
-          LocalDataProperty : region_code
-        },
-        {
-          $Type : 'Common.ValueListParameterFilterOnly',
-          ValueListProperty : 'country_code'
-        },
-        {
-          $Type : 'Common.ValueListParameterIn',
-          LocalDataProperty : country_code,
-          ValueListProperty : 'country_code'
+    contact @(Common : {
+        Text            : contact.name,
+        TextArrangement : #TextOnly,
+        ValueList       : {
+            Label          : '{i18n>customer}',
+            CollectionPath : 'Contacts',
+            Parameters     : [
+                {
+                    $Type             : 'Common.ValueListParameterInOut',
+                    ValueListProperty : 'ID',
+                    LocalDataProperty : contact_ID
+                },
+                {
+                    $Type: 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'country_code',
+                },
+                {
+                    $Type: 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'city',
+                }
+                
+            ]
         }
-      ]
-    }
-  });
+    });
 };
 ```
 
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// static filter example with constant
+// Value help as dropdown or radio buttons (value-helps.cds)
+annotate schema.RootEntities with{
+    criticality_code @(Common : {
+        ValueListWithFixedValues,
+        ValueListWithFixedValues.@Common.ValueListShowValuesImmediately,
+    });
+};
+```
+
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json (format radio layout horizontal/vertical)
+"RootEntityListReport": {
+    "options": {
+        "settings": {
+            "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": {
+                    "formatOptions": {
+                        "radioButtonsHorizontalLayout": false
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+STEP: Dependent Value Help (CDS)
+DESCRIPTION: Use ValueList parameters to filter value help results based on another field (Common.ValueListParameterIn).
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/value-helps.cds (dependent VH)
+annotate schema.RootEntities with{
+    ...
+    region @(Common : {
+        Text            : region.name,
+        TextArrangement : #TextFirst,
+        ValueListWithFixedValues: true,
+        ValueList       : {
+            Label          : '{i18n>Region}',
+            CollectionPath : 'Regions',
+            Parameters     : [
+                {
+                    $Type             : 'Common.ValueListParameterInOut',
+                    ValueListProperty : 'code',
+                    LocalDataProperty : region_code
+                },
+                {
+                    $Type: 'Common.ValueListParameterOut',
+                    ValueListProperty: 'name',
+                    LocalDataProperty : region.name,
+                },
+                //To only show the connected values
+                {
+                    $Type : 'Common.ValueListParameterFilterOnly',
+                    ValueListProperty : 'country_code',
+                },
+                {
+                    $Type : 'Common.ValueListParameterIn', //Input parameter used for filtering
+                    LocalDataProperty : country_code,
+                    ValueListProperty : 'country_code',
+                },
+                
+            ]
+        }
+    });
+};
+```
+
+STEP: Constant-filtered Value Help (CDS)
+DESCRIPTION: Use ValueListParameterConstant to statically filter value help results to a constant.
+LANGUAGE: CDS
+CODE:
+```cds
 annotate schema.RootEntities with {
-  regionWithConstantValueHelp @(Common : {
-    Text            : regionWithConstantValueHelp.name,
-    TextArrangement : #TextFirst,
-    ValueListWithFixedValues: true,
-    ValueList       : {
-      Label          : '{i18n>region}',
-      CollectionPath : 'Regions',
-      Parameters     : [
-        {
-          $Type               : 'Common.ValueListParameterInOut',
-          ValueListProperty   : 'code',
-          LocalDataProperty   : region_code
-        },
-        {
-          $Type               : 'Common.ValueListParameterConstant',
-          ValueListProperty   : 'country_code',
-          Constant : 'DE'
+    regionWithConstantValueHelp @(Common : {
+        Text            : regionWithConstantValueHelp.name,
+        TextArrangement : #TextFirst,
+        ValueListWithFixedValues: true,
+        ValueList       : {
+            Label          : '{i18n>region}',
+            CollectionPath : 'Regions',
+            Parameters     : [
+                {
+                    $Type               : 'Common.ValueListParameterInOut',
+                    ValueListProperty   : 'code',
+                    LocalDataProperty   : region_code
+                },
+                {
+                    $Type               : 'Common.ValueListParameterConstant',
+                    ValueListProperty   : 'country_code',
+                    Constant : 'DE',
+                },
+            ]
         }
-      ]
-    }
-  });
+    });
 }
 ```
 
----
-
-STEP: Multi-input dependent value help (CDS)
-
-DESCRIPTION: For assignment entities use LocalDataProperty referencing root (root.country_code) to filter value help.
-
+STEP: Multi-input dependent Value Help using parent reference (CDS)
+DESCRIPTION: For multi-input fields where assigned items use a parent reference, reference parent property via LocalDataProperty path like root.country_code.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/value-helps.cds
 annotate schema.AssignedRegions with {
-  region @(Common : {
-    Text            : region.name,
-    TextArrangement : #TextFirst,
-    ValueListWithFixedValues: true,
-    ValueList       : {
-      Label          : '{i18n>Region}',
-      CollectionPath : 'Regions',
-      Parameters     : [
-        {
-          $Type               : 'Common.ValueListParameterInOut',
-          ValueListProperty   : 'code',
-          LocalDataProperty   : region_code
-        },
-        {
-          $Type               : 'Common.ValueListParameterIn',
-          LocalDataProperty   : root.country_code,
-          ValueListProperty   : 'country_code'
+    region @(Common : {
+        Text            : region.name,
+        TextArrangement : #TextFirst,
+        ValueListWithFixedValues: true,
+        ValueList       : {
+            Label          : '{i18n>Region}',
+            CollectionPath : 'Regions',
+            Parameters     : [
+                {
+                    $Type               : 'Common.ValueListParameterInOut',
+                    ValueListProperty   : 'code',
+                    LocalDataProperty   : region_code
+                },
+                {
+                    $Type               : 'Common.ValueListParameterIn',
+                    LocalDataProperty   : root.country_code,
+                    ValueListProperty   : 'country_code',
+                },
+                
+            ]
         }
-      ]
-    }
-  });
+    });
 }
 ```
 
----
-
-STEP: Add navigation properties to filter bar (CDS + manifest)
-
-DESCRIPTION: Add navigation-property path in @UI.SelectionFields and set navigationProperties list in manifest controlConfiguration.
-
+STEP: Add navigation properties to filters and Adapt Filters dialog (CDS + manifest)
+DESCRIPTION: Include navigation properties in @UI.SelectionFields and configure manifest controlConfiguration navigationProperties to show in Adapt Filters dialog.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/layout.cds
+// Add navigation property to filter bar
 annotate srv.RootEntities with @(
-  UI.SelectionFields : [
-    ...,
-    childEntities1.criticalityValue_code
-  ]
+    UI.SelectionFields : [
+        ...
+        childEntities1.criticalityValue_code
+    ],
 );
 ```
 
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
+// app/listreport-objectpage/webapp/manifest.json (Adapt Filters dialog navigationProperties)
 "RootEntityListReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.SelectionFields": {
-          "navigationProperties": [ "childEntities1", "Order/decimalProperty" ]
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": {
+                    "navigationProperties":  [ "childEntities1", "Order/decimalProperty" ],
+                    ...
+                }
+            },
+            ...
         }
-      }
     }
-  }
-}
+},
 ```
 
----
-
-STEP: Custom filter UI fragment + manifest + handler
-
-DESCRIPTION: Provide XML fragment for custom filter, reference in manifest controlConfiguration filterFields template and bind to filterValues> with sap.fe filter types. Provide reset via extension API setFilterValues.
+STEP: Custom filter (manifest + fragment + controller)
+DESCRIPTION: Add a custom filter template fragment via manifest.controlConfiguration under SelectionFields.filterFields -> template path. Build fragment to bind to filterValues> with correct filter type, add reset handler via extension API setFilterValues.
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json (custom filter registration)
+"RootEntityListReport": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                ...
+                "@com.sap.vocabularies.UI.v1.SelectionFields": {
+                    "filterFields": {
+                        "starsValue": {
+                            "label": "{i18n>customFilter}",
+                            "property": "starsValue",
+                            "template": "sap.fe.showcase.lrop.ext.CustomFilter-Rating"
+                        }
+                    }
+                }
+            },
+            ...
+        }
+    }
+},
+```
 
 LANGUAGE: XML
-
 CODE:
 ```xml
-<!-- file: app/listreport-objectpage/webapp/ext/CustomFilter-Rating.fragment.xml -->
+<!-- webapp/ext/CustomFilter-Rating.fragment.xml -->
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:l="sap.ui.layout">
-  <!-- Search-Term: "customFilter" -->
-  <HBox alignItems="Center" core:require="{handler: 'sap/fe/showcase/lrop/ext/CustomFilter-Rating'}" width="100%">
-    <RatingIndicator id="MyCustomRatingIndicatorId" maxValue="4" class="sapUiTinyMarginBegin"
-      value="{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'GE' }}" />
-    <core:Icon src="sap-icon://reset" press="handler.onReset" class="sapUiSmallMarginBegin" />
-  </HBox>
+	<!-- Search-Term: "customFilter" -->
+	<HBox alignItems="Center" core:require="{handler: 'sap/fe/showcase/lrop/ext/CustomFilter-Rating'}" width="100%" >
+			<!-- Example for using GE (greater than) instead of default EQ operator -->
+			<RatingIndicator
+				id="MyCustomRatingIndicatorId" maxValue="4" class="sapUiTinyMarginBegin"
+				value="{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'GE' }}"
+			/>
+			<core:Icon src="sap-icon://reset" press="handler.onReset" class="sapUiSmallMarginBegin" />
+	</HBox>
 </core:FragmentDefinition>
 ```
 
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
-"RootEntityListReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.SelectionFields": {
-          "filterFields": {
-            "starsValue": {
-              "label": "{i18n>customFilter}",
-              "property": "starsValue",
-              "template": "sap.fe.showcase.lrop.ext.CustomFilter-Rating"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
 LANGUAGE: TypeScript
-
 CODE:
 ```ts
-// file: app/listreport-objectpage/webapp/ext/controller/RootEntityLRExtension.controller.ts
+// Extension controller reset implementation (snippet)
 export default class RootEntityLRExtension extends ControllerExtension<ExtensionAPI> {
-  onResetRating(oEvent: any /* Button$PressEvent */) {
-    // clear "starsValue" filter
-    this.base.getExtensionAPI().setFilterValues("starsValue");
-  }
-}
-```
+    ...
 
----
-
-STEP: Custom actions in List Report header (manifest)
-
-DESCRIPTION: Add global header actions via content.header.actions in manifest.
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
-"RootEntityListReport": {
-  "options": {
-    "settings": {
-      "content": {
-        "header": {
-          "actions": {
-            "CustomActionLRGlobal": {
-              "press": "sap.fe.showcase.lrop.ext.CustomActions.messageBox",
-              "enabled": "sap.fe.showcase.lrop.ext.CustomActions.enabled",
-              "visible": true,
-              "text": "{i18n>CustomActionLRGlobal}"
-            }
-          }
-        }
-      }
+    onResetRating(oEvent: Button$PressEvent) {
+        this.base.getExtensionAPI().setFilterValues("starsValue");
     }
-  }
 }
 ```
 
----
-
-STEP: Table actions — bound, inline, unbound and annotation usage (CDS)
-
-DESCRIPTION: Add UI.DataFieldForAction entries to @UI.LineItem to display actions. For inline show Icon or set Inline:true. For unbound actions refer via EntityContainer path.
-
+STEP: Configure table actions (CDS line item annotations)
+DESCRIPTION: Add bound and unbound actions to @UI.LineItem. For unbound actions refer to EntityContainer/unboundAction. Use @Core.OperationAvailable for enabling/disabling. Add Inline: true to show an inline icon.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/layouts_RootEntities.cds (snippet)
+// app/listreport-objectpage/layouts_RootEntities.cds (line item actions)
 annotate srv.RootEntities with @(
-  UI.LineItem : [
-    {
-      $Type : 'UI.DataFieldForAction',
-      Action : 'LROPODataService.changeCriticality',
-      Label : '{i18n>changeCriticality}'
-    },
-    {
-      $Type : 'UI.DataFieldForAction',
-      Action : 'LROPODataService.changeProgress',
-      Label : '{i18n>changeProgess}',
-      IconUrl : 'sap-icon://status-critical',
-      Inline : true
-    },
-    {
-      $Type : 'UI.DataFieldForAction',
-      Action : 'LROPODataService.EntityContainer/unboundAction',
-      Label : '{i18n>unboundAction}'
-    }
-  ]
+    UI.LineItem : [
+        ...
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'LROPODataService.changeCriticality',
+            Label : '{i18n>changeCriticality}',
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'LROPODataService.changeProgress',
+            Label : '{i18n>changeProgess}',
+            IconUrl : 'sap-icon://status-critical',
+            Inline : true,
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'LROPODataService.EntityContainer/unboundAction',
+            Label : '{i18n>unboundAction}',
+        },
+        ...
+    ],
 );
 ```
 
----
-
-STEP: Enable/disable actions dynamically with Core.OperationAvailable (CDS)
-
-DESCRIPTION: Use @Core.OperationAvailable with $edmJson path to enable/disable actions dynamically.
-
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// inside service actions definition
+// Example: @Core.OperationAvailable with $edmJson path to singleton
 @Core.OperationAvailable: {$edmJson: {$Path: '/Singleton/enabled'}}
-action unboundAction(@(title : '{i18n>inputValue}') input : String);
+action unboundAction(@(title : '{i18n>inputValue}')input : String);
 ```
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-// bound action example (relative)
-@(
-  Core.OperationAvailable: ($self.integerValue > 0)
-)
-action changeProgress ( ... );
-```
-
----
 
 STEP: Side effects for actions (CDS)
-
-DESCRIPTION: Annotate action with Common.SideEffects and list TargetProperties using OData binding path (in/..).
-
+DESCRIPTION: Annotate actions with Common.SideEffects describing TargetProperties to update UI after action invocation.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: srv/list-report-srv.cds (service actions snippet)
+// app/listreport-objectpage/layouts_RootEntities.cds (action side effects)
 entity RootEntities as select from persistence.RootEntities actions {
-  @(
-    Common.SideEffects : { TargetProperties : ['in/integerValue'] }
-  )
-  action changeProgress (@(title : '{i18n>newProgress}', UI.ParameterDefaultValue : 50) newProgress : Integer);
-};
-```
-
----
-
-STEP: Value help for action parameters (CDS)
-
-DESCRIPTION: Annotate action parameter inline with Common.ValueList to provide value help.
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-entity RootEntities as select from persistence.RootEntities actions {
-  action changeCriticality (
+    ...
     @(
-      title : '{i18n>newCriticality}',
-      UI.ParameterDefaultValue : 0,
-      Common : {
-        ValueListWithFixedValues : true,
-        ValueList : {
-          Label          : '{i18n>Criticality}',
-          CollectionPath : 'Criticality',
-          Parameters     : [
-            {
-              $Type             : 'Common.ValueListParameterInOut',
-              ValueListProperty : 'code',
-              LocalDataProperty : newCriticality
-            },
-            {
-              $Type             : 'Common.ValueListParameterDisplayOnly',
-              ValueListProperty : 'name'
-            }
-          ]
+        Common.SideEffects              : {
+            TargetProperties : ['in/integerValue']
         }
-      }
     )
-    newCriticality : Integer
-  );
+    action changeProgress (@(title : '{i18n>newProgress}', UI.ParameterDefaultValue : 50)newProgress : Integer);
 };
 ```
 
----
-
-STEP: Default parameter values for actions (CDS)
-
-DESCRIPTION: Add UI.ParameterDefaultValue annotation inline on action parameter.
-
+STEP: Value help for action parameter & default parameter values (CDS)
+DESCRIPTION: Annotate action parameters inline with Common.ValueList to provide VH; use UI.ParameterDefaultValue for defaults.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-annotate srv.RootEntities with {
-  action changeProgress (@(title : '{i18n>newProgress}', UI.ParameterDefaultValue : 50) newProgress : Integer);
-};
-```
-
----
-
-STEP: Group actions into dropdown menu (manifest)
-
-DESCRIPTION: Use controlConfiguration under LineItem actions.MenuActions to define menu with identifiers referencing DataFieldForAction.
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
-"RootEntityListReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.LineItem": {
-          "actions": {
-            "MenuActions": {
-              "text": "{i18n>MenuButton}",
-              "menu": [
-                "DataFieldForAction::LROPODataService.changeCriticality",
-                "DataFieldForAction::LROPODataService.EntityContainer::unboundAction"
-              ]
+// app/listreport-objectpage/layouts_RootEntities.cds (value-help & default)
+entity RootEntities as select from persistence.RootEntities actions {
+    ...
+    action changeCriticality (
+        @(
+            title         : '{i18n>newCriticality}',
+            UI.ParameterDefaultValue : 0,
+            Common        : {
+                ValueListWithFixedValues : true,
+                ValueList : {
+                    Label          : '{i18n>Criticality}',
+                    CollectionPath : 'Criticality',
+                    Parameters     : [
+                    {
+                        $Type             : 'Common.ValueListParameterInOut',
+                        ValueListProperty : 'code',
+                        LocalDataProperty : newCriticality
+                    },
+                    {
+                        $Type             : 'Common.ValueListParameterDisplayOnly',
+                        ValueListProperty : 'name'
+                    },
+                    ]
+                }
             }
-          }
-        }
-      }
-    }
-  }
-}
+        )
+        newCriticality : Integer);
+    ...
+};
 ```
 
----
+STEP: Create action menu grouping (manifest)
+DESCRIPTION: Add a "MenuActions" entry under controlConfiguration @com.sap.vocabularies.UI.v1.LineItem.actions and include action identifiers using a double-colon format for unbound actions (EntityContainer::unboundAction).
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json (action menu)
+"RootEntityListReport": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                    "actions": {
+                        "MenuActions": {
+                            "text": "{i18n>MenuButton}",
+                            "menu": [
+                                "DataFieldForAction::LROPODataService.changeCriticality",
+                                "DataFieldForAction::LROPODataService.EntityContainer::unboundAction"
+                            ]
+                        }
+                    },
+                    ...
+                },
+                ...
+            }
+        }
+    }
+},
+```
 
-STEP: Dynamic CRUD restrictions and Singleton-based evaluation (CDS)
-
-DESCRIPTION: Use Capabilities.DeleteRestrictions, UI.UpdateHidden, UI.CreateHidden using fields or singleton paths with $edmJson path support.
-
+STEP: Dynamic CRUD restrictions (CDS / singleton paths)
+DESCRIPTION: Use Capabilities Delete/Update/Create restrictions; reference singleton path with absolute '/Singleton/property' for dynamic values. Use UI.UpdateHidden to hide Edit button.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/capabilities.cds
+// app/listreport-objectpage/capabilities.cds (dynamic CRUD)
 annotate srv.RootEntities with @(
-  Capabilities.DeleteRestrictions : {
-    Deletable : deletePossible
-  },
-  UI.UpdateHidden : updateHidden,
-  UI.CreateHidden: { $edmJson: { $Path: '/Singleton/createHidden' } }
+    Capabilities.DeleteRestrictions : {
+        Deletable : deletePossible,
+    },
+    UI.UpdateHidden : updateHidden,
+    UI.CreateHidden: { $edmJson: { $Path: '/Singleton/createHidden' } },
 );
 ```
 
----
-
-STEP: Navigation button in line item (intent-based navigation) (CDS)
-
-DESCRIPTION: Add UI.DataFieldForIntentBasedNavigation to LineItem with SemanticObject, Action, Mapping and RequiresContext.
-
+STEP: Add navigation button to another app (intent-based) from table (CDS + manifest inbound)
+DESCRIPTION: Add UI.DataFieldForIntentBasedNavigation in @UI.LineItem with SemanticObject and Mapping; declare inbound in sap.app.crossNavigation.inbounds in manifest with semanticObject and action.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/layouts_RootEntities.cds
+// app/listreport-objectpage/layouts_RootEntities.cds (intent nav)
 annotate srv.RootEntities with @(
-  UI.LineItem : [
-    {
-      $Type : 'UI.DataFieldForIntentBasedNavigation',
-      Label : '{i18n>inboundNavigation}',
-      SemanticObject : 'FeatureShowcaseOrder',
-      Action : 'manage',
-      RequiresContext : true,
-      Inline : true,
-      IconUrl : 'sap-icon://cart',
-      Mapping : [
+    UI.LineItem : [
+        ...
         {
-          $Type : 'Common.SemanticObjectMappingType',
-          LocalProperty : integerValue,
-          SemanticObjectProperty : 'integerProperty'
-        }
-      ],
-      @UI.Importance : #High
-    }
-  ]
+            $Type : 'UI.DataFieldForIntentBasedNavigation',
+            Label : '{i18n>inboundNavigation}',
+            SemanticObject : 'FeatureShowcaseOrder',
+            Action : 'manage',
+            RequiresContext : true,
+            Inline : true,
+            IconUrl : 'sap-icon://cart',
+            Mapping : [
+                {
+                    $Type : 'Common.SemanticObjectMappingType',
+                    LocalProperty : integerValue,
+                    SemanticObjectProperty : 'integerProperty',
+                },
+            ],
+            @UI.Importance : #High,
+        },
+        ...
+    ],
 );
 ```
 
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/worklist/webapp/manifest.json (application crossNavigation inbound)
-"sap.app": {
-  "crossNavigation": {
-    "inbounds": {
-      "feature-showcase-worklist": {
-        "signature": { "parameters": {}, "additionalParameters": "allowed" },
-        "semanticObject": "FeatureShowcaseOrder",
-        "action": "manage",
-        "title": "Work List",
-        "subTitle": "Manage"
-      }
+// app/worklist/webapp/manifest.json (sap.app crossNavigation inbound)
+"sap.app" : {
+    ...,
+    "crossNavigation": {
+        "inbounds": {
+            "feature-showcase-worklist": {
+                "signature": {
+                    "parameters": {},
+                    "additionalParameters": "allowed"
+                },
+                "semanticObject": "FeatureShowcaseOrder",
+                "action": "manage",
+                "title": "Work List",
+                "subTitle": "Manage"
+            }
+        }
     }
-  }
 }
 ```
 
----
-
-STEP: Critical actions (CDS)
-
-DESCRIPTION: Mark action critical using Common.IsActionCritical to show confirm popover.
-
+STEP: Mark actions as critical (CDS)
+DESCRIPTION: Add @Common.IsActionCritical : true to annotate action requiring confirmation popover.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/layouts_RootEntities.cds
+// app/listreport-objectpage/layouts_RootEntities.cds (critical action)
 annotate srv.criticalAction with @(
-  Common.IsActionCritical : true
+    Common.IsActionCritical : true
 );
 ```
 
----
-
-STEP: Message Toasts from CAP (Node.js)
-
-DESCRIPTION: Use req.notify from CAP to send messages with severity 1 (toast) and higher severities produce dialogs.
-
+STEP: Send message to UI (CAP JavaScript)
+DESCRIPTION: Use req.notify() in CAP handler to send messages with severity 1 (toast). Higher severities produce dialogs.
 LANGUAGE: JavaScript
-
 CODE:
 ```js
-// file: srv/list-report-srv.js (CAP handler)
-module.exports = (srv) => {
-  srv.on('someAction', async (req) => {
-    // notify a toast
-    req.notify(`Critical action pressed`);
-  });
-};
+// Example in CAP service handler
+req.notify(`Critical action pressed`);
 ```
 
----
-
-STEP: Add custom table action via manifest controlConfiguration (manifest)
-
-DESCRIPTION: Define custom actions for the table toolbar using controlConfiguration referencing the LineItem table settings.
-
+STEP: Configure table type & tree table (manifest + CDS)
+DESCRIPTION: Set table type via manifest controlConfiguration @LineItem.tableSettings.type. For TreeTable: set type TreeTable, hierarchyQualifier and define @Aggregation.RecursiveHierarchy qualifier in CDS; add Hierarchy.RecursiveHierarchy columns and helper properties (LimitedDescendantCount, DrillState, etc.) and ensure they exist as columns for CAP.
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
+// app/listreport-objectpage/webapp/manifest.json (table type)
 "RootEntityListReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.LineItem": {
-          "actions": {
-            "CustomActionLR" : {
-              "press": "sap.fe.showcase.lrop.ext.CustomActions.messageBox",
-              "enabled": "sap.fe.showcase.lrop.ext.CustomActions.enabledForSingleSelect",
-              "visible" : true,
-              "text": "{i18n>CustomActionLR}"
-            }
-          }
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                    ...
+                    "tableSettings": {
+                        "type": "ResponsiveTable",
+                        ...
+                    },
+                    ...
+                },
+                ...
+            },
+            ...
         }
-      }
     }
-  }
-}
+},
 ```
 
----
-
-STEP: Set table type (Responsive/Grid/Analytical/Tree) (manifest)
-
-DESCRIPTION: Configure table type for specific LineItem annotation via controlConfiguration.tableSettings.type. Recommended to use SAP Fiori tools Application Modeler.
-
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
+// app/listreport-objectpage/webapp/manifest.json (TreeTable settings)
 "RootEntityListReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.LineItem": {
-          "tableSettings": {
-            "type": "ResponsiveTable"
-          }
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                "/OrganizationalUnits/@com.sap.vocabularies.UI.v1.LineItem": {
+                    "tableSettings": {
+                        "type": "TreeTable",
+                        "hierarchyQualifier": "OrgUnitsHierarchy"
+                    }
+                }
+            },
+            ...
         }
-      }
     }
-  }
-}
-```
-
----
-
-STEP: Enable TreeTable with recursive hierarchy (manifest + CDS + extend)
-
-DESCRIPTION: Configure TreeTable in manifest with hierarchyQualifier matching @Aggregation.RecursiveHierarchy qualifier. Extend service entity with additional Hierarchy.RecursiveHierarchy and helper columns required by Fiori (LimitedDescendantCount, DistanceFromRoot, DrillState, LimitedRank). Optionally specify Hierarchy.RecursiveHierarchyActions and creationMode.
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
-"RootEntityListReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "/OrganizationalUnits/@com.sap.vocabularies.UI.v1.LineItem": {
-          "tableSettings": {
-            "type": "TreeTable",
-            "hierarchyQualifier": "OrgUnitsHierarchy"
-          }
-        }
-      }
-    }
-  }
 }
 ```
 
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/layouts_OrganizationalUnits.cds
+// app/listreport-objectpage/layouts_RootEntities.cds (RecursiveHierarchy qualifier)
 annotate srv.OrganizationalUnits @Aggregation.RecursiveHierarchy #OrgUnitsHierarchy : {
   ParentNavigationProperty : superOrdinateOrgUnit,
-  NodeProperty             : ID
+  NodeProperty             : ID,
 };
 ```
 
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/layouts_OrganizationalUnits.cds
+// Required CAP extensions for TreeTable (ensure fields exist)
 extend srv.OrganizationalUnits with @(
   Hierarchy.RecursiveHierarchy #OrgUnitsHierarchy : {
     LimitedDescendantCount : LimitedDescendantCount,
@@ -1075,1488 +871,1554 @@ extend srv.OrganizationalUnits with @(
     LimitedRank            : LimitedRank
   },
   Capabilities.FilterRestrictions.NonFilterableProperties: [
-    'LimitedDescendantCount','DistanceFromRoot','DrillState','LimitedRank'
+    'LimitedDescendantCount',
+    'DistanceFromRoot',
+    'DrillState',
+    'LimitedRank'
   ],
   Capabilities.SortRestrictions.NonSortableProperties    : [
-    'LimitedDescendantCount','DistanceFromRoot','DrillState','LimitedRank'
+    'LimitedDescendantCount',
+    'DistanceFromRoot',
+    'DrillState',
+    'LimitedRank'
   ],
 ) columns {
-  null as LimitedDescendantCount : Int16;
-  null as DistanceFromRoot       : Int16;
-  null as DrillState             : String;
-  null as LimitedRank            : Int16;
+  null as LimitedDescendantCount : Int16,
+  null as DistanceFromRoot       : Int16,
+  null as DrillState             : String,
+  null as LimitedRank            : Int16,
 };
 ```
 
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// add optional recursive hierarchy actions
+// Optional hierarchy actions (move/copy)
 annotate srv.OrganizationalUnits @(
-  Hierarchy.RecursiveHierarchyActions #OrgUnitsHierarchy : {
-    ChangeSiblingForRootsSupported,
-    ChangeNextSiblingAction : 'LROPODataService.moveOrgUnit',
-    CopyAction : 'LROPODataService.copyOrgUnit'
-  }
+    Hierarchy.RecursiveHierarchyActions #OrgUnitsHierarchy : {
+        ChangeSiblingForRootsSupported,
+        ChangeNextSiblingAction : 'LROPODataService.moveOrgUnit',
+        CopyAction : 'LROPODataService.copyOrgUnit',
+    },
 );
+```
+
+STEP: Customize create button and isCreateEnabled hook (manifest + TypeScript)
+DESCRIPTION: Configure creationMode.nodeType values in manifest and provide extension hook isCreateEnabled in extension controller to enable/disable create menu items depending on parent context.
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json (TreeTable creationMode)
+"RootEntityListReport": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                "/OrganizationalUnits/@com.sap.vocabularies.UI.v1.LineItem": {
+                    "tableSettings": {
+                        "type": "TreeTable",
+                        "hierarchyQualifier": "OrgUnitsHierarchy",
+                        "creationMode": {
+                            "name": "CreationDialog",
+                            "createInPlace": true,
+                            "creationFields": "@com.sap.vocabularies.UI.v1.FieldGroup#creationDialog",
+                            "nodeType": {
+                                "propertyName": "category_code",
+                                "values": {
+                                    "01": "Create a new department",
+                                    "02": {
+                                        "label": "Create a new division",
+                                        "creationFields": "name,description,isActive"
+                                    },
+                                    "03": "Create a new business unit"
+                                }
+                            },
+                            "isCreateEnabled": ".extension.sap.fe.showcase.lrop.ext.controller.RootEntityLRExtension.isCreateEnabled"
+                        },
+                        ...
+                    }
+                }
+            },
+            ...
+        }
+    }
+}
 ```
 
 LANGUAGE: TypeScript
-
 CODE:
 ```ts
-// extension hook example for create enablement in TreeTable
+// app/listreport-objectpage/webapp/ext/controller/RootEntityLRExtension.controller.ts (isCreateEnabled)
 export default class RootEntityLRExtension extends ControllerExtension<ExtensionAPI> {
-  isCreateEnabled(value: String, parentContext?: Context) {
-    switch (parentContext?.getProperty("category_code")) {
-      case "03": return value === "02"; // Only Divisions under Business Units
-      case "02": return value === "01"; // Only Departments under Divisions
-      case "01": return false;           // Nothing under Departments
-      default:   return value === "03";  // Only Business Units at root
-    }
-  }
-}
-```
-
----
-
-STEP: Multiple views — Single table quickVariantSelection (manifest)
-
-DESCRIPTION: Use quickVariantSelection.tableSettings to present multiple variant selection items in same table. Use annotationPath to selection variants.
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
-"RootEntityListReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.LineItem": {
-          "tableSettings": {
-            "quickVariantSelection": {
-              "paths": [
-                { "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#variant1" },
-                { "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#variant2" }
-              ],
-              "hideTableTitle": false,
-              "showCounts": true
-            }
-          }
+    ...
+    isCreateEnabled(value: String, parentContext?: Context) {
+        switch (parentContext?.getProperty("category_code")) {
+        case "03":
+            return value === "02"; // Only Divisions under Business Units
+        case "02":
+            return value === "01"; // Only Departments under Divisions
+        case "01":
+            return false; // Nothing under Departments
+        default:
+            return value === "03"; // Only Business Units at root level
         }
-      }
     }
-  }
+    ...
 }
 ```
 
----
-
-STEP: Multiple table views (manifest)
-
-DESCRIPTION: Use views.paths array to define multiple tabs with annotationPath referring to SelectionVariant or SelectionPresentationVariant and optionally entitySet.
-
+STEP: Multiple views (single table quickVariantSelection and multiple table views)
+DESCRIPTION: Configure quickVariantSelection in manifest for segmented/dropdown switching of views in same table or define "views" with annotationPath keys for multiple-table mode with own tables and optional different entitySet per tab.
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
+// Single table (quickVariantSelection)
 "RootEntityListReport": {
-  "options": {
-    "settings": {
-      "views": {
-        "paths": [
-          { "key": "tab1", "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#variant1" },
-          { "key": "tab2", "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#SelectionPresentationVariant" },
-          { "key": "tab3", "entitySet": "OrganizationalUnits", "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#activeOrgUnits" }
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                    ...
+                    "tableSettings": {
+                        ...
+                        "quickVariantSelection": {
+                            "paths": [
+                                {
+                                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#variant1"
+                                },
+                                {
+                                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#variant2"
+                                }
+                            ],
+                            "hideTableTitle": false,
+                            "showCounts": true
+                        }
+                    },
+                    ...
+                },
+                ...
+            },
+            ...
+        }
+    }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```json
+// Multiple table mode with tabs/views
+"RootEntityListReport": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "views": {
+                "paths": [
+                    {
+                        "key": "tab1",
+                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#variant1"
+                    },
+                    {
+                        "key": "tab2",
+                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#SelectionPresentationVariant"
+                    },
+                    {
+                        "key": "tab3",
+                        "entitySet": "OrganizationalUnits",
+                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#activeOrgUnits"
+                    }
+                ],
+                "showCounts": false
+            },
+            ...
+        }
+    }
+}
+```
+
+STEP: SelectionVariant & SelectionPresentationVariant (CDS)
+DESCRIPTION: Define UI.SelectionVariant and UI.SelectionPresentationVariant annotations in CDS to control filtering and presentation default options for views.
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (SelectionVariant)
+annotate srv.RootEntities with @(
+    UI.SelectionVariant #variant1 : {
+        Text : '{i18n>SVariant1}',
+        SelectOptions : [
+            {
+                PropertyName : criticality_code,
+                Ranges : [
+                    {
+                        Sign : #I,
+                        High : 2,
+                        Option : #BT,
+                        Low : 0,
+                    },
+                ],
+            },
         ],
-        "showCounts": false
-      }
-    }
-  }
-}
-```
-
----
-
-STEP: SelectionVariant (CDS)
-
-DESCRIPTION: Define selection filters (SelectOptions/Ranges) using UI.SelectionVariant with qualifier.
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-// file: app/listreport-objectpage/layouts_RootEntities.cds
-annotate srv.RootEntities with @(
-  UI.SelectionVariant #variant1 : {
-    Text : '{i18n>SVariant1}',
-    SelectOptions : [
-      {
-        PropertyName : criticality_code,
-        Ranges : [
-          { Sign : #I, High : 2, Option : #BT, Low : 0 }
-        ]
-      }
-    ]
-  }
-);
-```
-
----
-
-STEP: SelectionPresentationVariant (CDS)
-
-DESCRIPTION: Combine selection variant & presentation variant (SortOrder, Visualizations) in one annotated block.
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-// file: app/listreport-objectpage/layouts_RootEntities.cds
-annotate srv.RootEntities with @(
-  UI.SelectionPresentationVariant #SelectionPresentationVariant : {
-    Text : '{i18n>SelectionPresentationVariant}',
-    SelectionVariant : {
-      $Type : 'UI.SelectionVariantType',
-      SelectOptions : [
-        {
-          PropertyName : criticality_code,
-          Ranges : [ { Sign : #I, Option : #GT, Low : 0 } ]
-        }
-      ]
     },
-    PresentationVariant : {
-      SortOrder : [ { Property : fieldWithPrice, Descending : false } ],
-      Visualizations : [ '@UI.LineItem#simplified' ]
-    }
-  }
 );
 ```
 
----
-
-STEP: Creation dialog is triggered by @Core.Immutable fields (CDS)
-
-DESCRIPTION: Mark properties required at creation time using @Core.Immutable so they appear in creation dialog.
-
 LANGUAGE: CDS
-
 CODE:
 ```cds
+// app/listreport-objectpage/layout.cds (SelectionPresentationVariant)
+annotate srv.RootEntities with @(
+    UI.SelectionPresentationVariant #SelectionPresentationVariant : {
+        Text : '{i18n>SelectionPresentationVariant}',
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+                {
+                    PropertyName : criticality_code,
+                    Ranges : [
+                        {
+                            Sign : #I,
+                            Option : #GT,
+                            Low : 0,
+                        },
+                    ],
+                },
+            ],
+        },
+        PresentationVariant :{
+            SortOrder : [
+                {
+                    Property : fieldWithPrice,
+                    Descending : false,
+                },
+            ],
+            Visualizations : [
+                '@UI.LineItem#simplified',
+            ],
+        },
+    },
+);
+```
+
+STEP: Creation dialog via @Core.Immutable (CDS)
+DESCRIPTION: Mark properties required during creation with @Core.Immutable so they display in creation dialog.
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (creation)
 annotate srv.RootEntities {
-  stringProperty @Core.Immutable;
+    ...
+    stringProperty @Core.Immutable;
+    ...
 };
 ```
 
----
-
 STEP: Default sort order (CDS)
-
-DESCRIPTION: Use UI.PresentationVariant.SortOrder to set default sorting for list/table.
-
+DESCRIPTION: Use UI.PresentationVariant SortOrder to set default sort for a view; Visualizations defines target line items.
 LANGUAGE: CDS
-
 CODE:
 ```cds
+// app/listreport-objectpage/layout.cds (snippet)
 annotate srv.RootEntities with @(
-  UI.PresentationVariant : {
-    SortOrder : [ { Property : field, Descending : false } ],
-    Visualizations : [ '@UI.LineItem' ]
-  }
+    UI.PresentationVariant :{
+        SortOrder : [
+            {
+                Property : field,
+                Descending : false,
+            },
+        ],
+        Visualizations : [
+            '@UI.LineItem',
+        ],
+    },
 );
 ```
 
----
-
-STEP: Table multi-selection (manifest)
-
-DESCRIPTION: Set selectionMode in controlConfiguration.tableSettings to "Multi".
-
+STEP: Table multiple selection (manifest)
+DESCRIPTION: Configure table selectionMode in manifest.controlConfiguration.tableSettings to "Multi"/"Single"/"Auto"/"None".
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
+// app/listreport-objectpage/webapp/manifest.json (selectionMode)
 "RootEntityListReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.LineItem": {
-          "tableSettings": {
-            "type": "ResponsiveTable",
-            "selectionMode": "Multi"
-          }
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                    ...
+                    "tableSettings": {
+                        "type": "ResponsiveTable",
+                        "selectionMode": "Multi",
+                        ...
+                    },
+                    ...
+                },
+                ...
+            },
+            ...
         }
-      }
     }
-  }
-}
+},
 ```
-
----
 
 STEP: Semantic key fields (CDS)
-
-DESCRIPTION: Define Common.SemanticKey array to highlight fields as semantic keys.
-
+DESCRIPTION: Define semantic key grouping with Common.SemanticKey to highlight fields and display edit status.
 LANGUAGE: CDS
-
 CODE:
 ```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (SemanticKey)
 annotate srv.RootEntities with @(
-  Common.SemanticKey : [ field ]
+    Common.SemanticKey : [ field ],
 );
 ```
-
----
 
 STEP: Highlight line items by criticality (CDS)
-
-DESCRIPTION: Use UI.Criticality in UI.LineItem to highlight rows.
-
+DESCRIPTION: Use @UI.Criticality inside @UI.LineItem to map criticality property for semantic coloring.
 LANGUAGE: CDS
-
 CODE:
 ```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (LineItem criticality)
 annotate srv.RootEntities with @(
-  UI.LineItem.@UI.Criticality : criticality_code
+    UI.LineItem.@UI.Criticality : criticality_code,
 );
 ```
 
----
-
-STEP: Rating indicator and progress indicator in LineItem (CDS)
-
-DESCRIPTION: Define UI.DataPoint with Visualization #Rating or #Progress and reference via UI.DataFieldForAnnotation in UI.LineItem.
-
+STEP: Add rating and progress indicators to table (CDS)
+DESCRIPTION: Create UI.DataPoint annotations for Rating or Progress and reference them in @UI.LineItem as UI.DataFieldForAnnotation.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// Rating
+// app/listreport-objectpage/layouts_RootEntities.cds (rating)
 annotate srv.RootEntities with @(
-  UI.DataPoint #ratingIndicator : {
-    Value : starsValue,
-    TargetValue : 4,
-    Visualization : #Rating,
-    Title : '{i18n>ratingIndicator}',
-    @Common.QuickInfo : 'Tooltip via Common.QuickInfo'
-  }
+    UI.DataPoint #ratingIndicator : {
+        Value : starsValue,
+        TargetValue : 4,
+        Visualization : #Rating,
+        Title : '{i18n>ratingIndicator}',
+        @Common.QuickInfo : 'Tooltip via Common.QuickInfo',
+    },
 );
-
 annotate srv.RootEntities with @(
-  UI.LineItem : [
-    {
-      $Type : 'UI.DataFieldForAnnotation',
-      Label : '{i18n>ratingIndicator}',
-      Target : '@UI.DataPoint#ratingIndicator',
-      @UI.Importance : #Low
-    }
-  ]
-);
-
-// Progress
-annotate srv.RootEntities with @(
-  UI.DataPoint #progressIndicator : {
-    Value : integerValue,
-    TargetValue : 100,
-    Visualization : #Progress,
-    Title : '{i18n>progressIndicator}'
-  }
-);
-
-annotate srv.RootEntities with @(
-  UI.LineItem : [
-    {
-      $Type : 'UI.DataFieldForAnnotation',
-      Label : '{i18n>progressIndicator}',
-      Target : '@UI.DataPoint#progressIndicator',
-      @UI.Importance : #Low
-    }
-  ]
+    UI.LineItem : [
+        ...
+        {
+            $Type : 'UI.DataFieldForAnnotation',
+            Label : '{i18n>ratingIndicator}',
+            Target : '@UI.DataPoint#ratingIndicator',
+            @UI.Importance : #Low,
+        },
+        ...
+    ],
 );
 ```
 
----
-
-STEP: Tooltip on table field using DataPoint and Common.QuickInfo (CDS)
-
-DESCRIPTION: Define UI.DataPoint with Common.QuickInfo and reference via UI.DataFieldForAnnotation.
-
 LANGUAGE: CDS
-
 CODE:
 ```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (progress)
 annotate srv.RootEntities with @(
-  UI.DataPoint #fieldWithTooltip : {
-    Value : dimensions,
-    @Common.QuickInfo : '{i18n>Tooltip}'
-  }
+    UI.DataPoint #progressIndicator : {
+        Value : integerValue,
+        TargetValue : 100,
+        Visualization : #Progress,
+        Title : '{i18n>progressIndicator}',
+        //Criticality: criticality,
+    },
 );
 
 annotate srv.RootEntities with @(
-  UI.LineItem : [
-    {
-      $Type : 'UI.DataFieldForAnnotation',
-      Target : '@UI.DataPoint#fieldWithTooltip',
-      Label : '{i18n>fieldWithToolTip}'
-    }
-  ]
+    UI.LineItem : [
+        ...
+        {
+            $Type : 'UI.DataFieldForAnnotation',
+            Label : '{i18n>progressIndicator}',
+            Target : '@UI.DataPoint#progressIndicator',
+            @UI.Importance : #Low,
+        },
+        ...
+    ],
 );
 ```
 
----
-
-STEP: Add Smart Micro Chart to table (CDS)
-
-DESCRIPTION: Define UI.DataPoint for chart, UI.Chart referencing DataPoint in MeasureAttributes, then reference chart in UI.LineItem as DataFieldForAnnotation.
-
+STEP: Field tooltip via DataPoint (CDS)
+DESCRIPTION: Workaround: create UI.DataPoint with @Common.QuickInfo and add as UI.DataFieldForAnnotation to display tooltip for a table field.
 LANGUAGE: CDS
-
 CODE:
 ```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (tooltip)
 annotate srv.RootEntities with @(
-  UI.DataPoint #radialChart : { Value : integerValue, TargetValue : targetValue, Criticality : criticality_code }
+    UI.DataPoint #fieldWithTooltip : {
+        Value : dimensions,
+        @Common.QuickInfo : '{i18n>Tooltip}',
+    },
 );
 
 annotate srv.RootEntities with @(
-  UI.Chart #radialChart : {
-    Title : '{i18n>radialChart}',
-    Description : '{i18n>ThisIsAMicroChart}',
-    ChartType : #Donut,
-    Measures : [ integerValue ],
-    MeasureAttributes : [{
-      $Type : 'UI.ChartMeasureAttributeType',
-      Measure : integerValue,
-      Role : #Axis1,
-      DataPoint : '@UI.DataPoint#radialChart'
-    }]
-  }
-);
-
-annotate srv.RootEntities with @(
-  UI.LineItem : [
-    {
-      $Type : 'UI.DataFieldForAnnotation',
-      Target : '@UI.Chart#radialChart',
-      Label : '{i18n>radialChart}'
-    }
-  ]
+    UI.LineItem : [
+        ...
+        {
+            $Type : 'UI.DataFieldForAnnotation',
+            Target : '@UI.DataPoint#fieldWithTooltip',
+            Label : '{i18n>fieldWithToolTip}',
+        },
+        ...
+    ],
 );
 ```
 
----
-
-STEP: Contact Quick View setup (CDS)
-
-DESCRIPTION: Annotate contact entity using Communication.Contact and add DataFieldForAnnotation referencing contact/@Communication.Contact in parent LineItem.
-
+STEP: Add Smart Micro Chart to table and charts (CDS)
+DESCRIPTION: Create a UI.DataPoint and UI.Chart with ChartMeasureAttribute referencing the DataPoint; add to @UI.LineItem via UI.DataFieldForAnnotation or @UI.Chart facets in Object Page.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// Contact annotation
+// layouts_RootEntities.cds (radial micro chart)
+annotate srv.RootEntities with @(
+    UI.DataPoint #radialChart : { 
+        Value : integerValue,
+        TargetValue : targetValue,
+        Criticality : criticality_code,
+    },
+);
+
+annotate srv.RootEntities with @(
+    UI.Chart #radialChart : {
+        Title : '{i18n>radialChart}',
+        Description : '{i18n>ThisIsAMicroChart}',
+        ChartType : #Donut,
+        Measures : [integerValue],
+        MeasureAttributes : [{
+                $Type : 'UI.ChartMeasureAttributeType',
+                Measure : integerValue,
+                Role : #Axis1,
+                DataPoint : '@UI.DataPoint#radialChart',
+        }]
+    },
+);
+
+annotate srv.RootEntities with @(
+    UI.LineItem : [
+        ...
+        {
+            $Type : 'UI.DataFieldForAnnotation',
+            Target : '@UI.Chart#radialChart',
+            Label   : '{i18n>radialChart}',
+        },
+        ...
+    ],
+);
+```
+
+STEP: Contact quick view in table (CDS)
+DESCRIPTION: Annotate Contacts with Communication.Contact to build contact card and reference contact via DataFieldForAnnotation.
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/labels.cds & layouts_RootEntities.cds (contact)
 annotate srv.Contacts with @(
-  Communication.Contact : {
-    fn   : name,
-    kind : #org,
-    tel  : [{ uri : phone, type : #preferred }],
-    adr  : [{ building : building, country : country.name, street : street, locality : city, code : postCode, type : #preferred }]
-  }
+    Communication.Contact : {
+        fn   : name, //full name
+        kind : #org,
+        tel  : [{
+            uri  : phone,
+            type : #preferred
+        }],
+        adr  : [{
+            building : building,
+            country  : country.name,
+            street   : street,
+            locality : city,
+            code     : postCode,
+            type     : #preferred
+        }],
+    }
 );
 
-// Reference in RootEntities line item
 annotate srv.RootEntities with @(
-  UI.LineItem : [
-    {
-      $Type : 'UI.DataFieldForAnnotation',
-      Target : 'contact/@Communication.Contact',
-      Label : '{i18n>contactQuickView}'
-    }
-  ]
+    UI.LineItem : [
+        ...
+        {
+            $Type : 'UI.DataFieldForAnnotation',
+            Target : 'contact/@Communication.Contact',
+            Label : '{i18n>contactQuickView}'
+        },
+        ...
+    ],
 );
 ```
 
----
-
-STEP: Quick View Facet (CDS)
-
-DESCRIPTION: Create UI.FieldGroup, UI.HeaderInfo and UI.QuickViewFacets on association entity. Add DataField showing the association ID in LineItem.
-
+STEP: Quick view facet (CDS)
+DESCRIPTION: Annotate associated entity with UI.QuickViewFacets referencing UI.FieldGroup facets and add the association key as DataField in parent lineItem to enable quick view.
 LANGUAGE: CDS
-
 CODE:
 ```cds
+// layouts_RootEntities.cds (FieldGroup, HeaderInfo, QuickViewFacets)
 annotate srv.Orders with @(
-  UI.FieldGroup #data : {
-    Label : '{i18n>Order}',
-    Data : [ { Value : field2 }, { Value : integerProperty }, { Value : field4 } ]
-  }
+    UI.FieldGroup #data : {
+        Label : '{i18n>Order}',
+        Data : [
+            {Value : field2},
+            {Value : integerProperty},
+            {Value : field4},
+        ],
+    },
 );
 
 annotate srv.Orders with @(
-  UI.HeaderInfo : {
-    TypeName : '{i18n>Order}',
-    TypeNamePlural : '{i18n>Order.typeNamePlural}',
-    Title  : { $Type : 'UI.DataField', Value : '{i18n>Order}' },
-    Description : { $Type : 'UI.DataField', Value : field },
-    ImageUrl : '',
-    TypeImageUrl : 'sap-icon://blank-tag'
-  }
+    UI.HeaderInfo :{
+        TypeName : '{i18n>Order}',
+        TypeNamePlural : '{i18n>Order.typeNamePlural}',
+        Title          : {
+            $Type : 'UI.DataField',
+            Value : '{i18n>Order}',
+        },
+        Description    : {
+            $Type : 'UI.DataField',
+            Value : field,
+        },
+        ImageUrl : '',
+        TypeImageUrl : 'sap-icon://blank-tag',
+    },
 );
 
 annotate srv.Orders with @(
-  UI.QuickViewFacets : [
-    { $Type : 'UI.ReferenceFacet', Target : '@UI.FieldGroup#data' }
-  ]
+    UI.QuickViewFacets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Target : '@UI.FieldGroup#data',
+        }
+    ],
 );
 
-// Use association in RootEntities line item to show quick view
 annotate srv.RootEntities with @(
-  UI.LineItem : [
-    {
-      $Type : 'UI.DataField',
-      Value : association2one_ID,
-      Label : '{i18n>Order}',
-      @UI.Importance : #High
-    }
-  ]
+    UI.LineItem : [
+        ...
+        {
+            $Type : 'UI.DataField',
+            Value : association2one_ID,
+            Label : '{i18n>Order}',
+            @UI.Importance : #High,
+        },
+        ...
+    ],
 );
-
-// optionally annotate association for semantic object links
-association2one @Common.SemanticObject : 'FeatureShowcaseOrder';
 ```
 
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/worklist/webapp/manifest.json (crossNavigation inbound)
-"sap.app": {
-  "crossNavigation": {
-    "inbounds": {
-      "feature-showcase-worklist": {
-        "semanticObject": "FeatureShowcaseOrder",
-        "action": "manage",
-        "title": "Work List",
-        "subTitle": "Manage"
-      }
-    }
-  }
-}
-```
-
----
-
-STEP: Multiple fields per responsive column (CDS)
-
-DESCRIPTION: Create UI.FieldGroup with multiple Data entries and add it to UI.LineItem via DataFieldForAnnotation.
-
+STEP: Add multiple fields to one column (CDS)
+DESCRIPTION: Define UI.FieldGroup and add it in @UI.LineItem as UI.DataFieldForAnnotation target to render multiple fields in a single responsive table column.
 LANGUAGE: CDS
-
 CODE:
 ```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (multi-fields in one column)
 annotate srv.RootEntities with @(
-  UI.FieldGroup #AdminData : {
-    Data : [
-      { Value : createdAt },
-      { Value : createdBy },
-      { Value : modifiedAt },
-      { Value : modifiedBy }
-    ]
-  },
-  UI.LineItem : [
-    {
-      $Type : 'UI.DataFieldForAnnotation',
-      Target : '@UI.FieldGroup#AdminData',
-      Label : '{i18n>adminData}',
-      @UI.Importance : #High
-    }
-  ]
+    UI.FieldGroup #AdminData       : {
+        Data  : [
+            {Value : createdAt},
+            {Value : createdBy},
+            {Value : modifiedAt},
+            {Value : modifiedBy},
+        ]
+    },
+    ...
+);
+
+annotate srv.RootEntities with @(
+    UI.LineItem : [
+        ...
+        {
+            $Type : 'UI.DataFieldForAnnotation',
+            Target : '@UI.FieldGroup#AdminData', 
+            Label : '{i18n>adminData}',
+            @UI.Importance : #High,
+        },
+        ...
+    ],
 );
 ```
 
----
-
-STEP: Add image column to table (CDS)
-
-DESCRIPTION: Add DataField with property annotated @UI.IsImageURL.
-
+STEP: Add image URL column (CDS)
+DESCRIPTION: Add normal DataField with image property that is annotated with @UI.IsImageURL to display image in first column.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/labels.cds
+// app/listreport-objectpage/layouts_RootEntities.cds & labels.cds (image)
 annotate srv.RootEntities with @(
-  UI.LineItem : [
-    {
-      $Type : 'UI.DataField',
-      Value : imageUrl,
-      @UI.Importance : #High
-    }
-  ]
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : imageUrl,
+            @UI.Importance : #High,
+        },
+        ...
+    ],
 );
+```
 
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/labels.cds (is image URL)
 annotate srv.RootEntities {
-  imageUrl @UI.IsImageURL;
+    imageUrl @UI.IsImageURL;
 }
 ```
 
----
-
-STEP: Units and Currency (CDS)
-
-DESCRIPTION: Use @Measures.Unit for UoM or @Measures.ISOCurrency for currencies. For custom unit scale use @CodeList.UnitsOfMeasure and @Common.UnitSpecificScale.
-
+STEP: Currency/UoM fields & custom unit scale (CDS)
+DESCRIPTION: Annotate value property with @Measures.Unit or @Measures.ISOCurrency to link unit/ccy property. To customize fractional digits per unit, annotate CodeList UnitOfMeasures with @CodeList.UnitsOfMeasure and key property with @Common.UnitSpecificScale.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// labeling value's unit
-annotate srv.RootEntities with {
-  integerValueWithUoM @Measures.Unit : uom_code;
+// app/listreport-objectpage/labels.cds (unit/currency examples)
+annotate srv.RootEntities {
+    fieldWithUoM @Measures.Unit : uom_code;
+    fieldWithCurrency @Measures.ISOCurrency : ccy_code;
 }
+```
 
-// customize units of measure code list and scale
+LANGUAGE: CDS
+CODE:
+```cds
+// Custom Units of Measure code list and entity
 @CodeList.UnitsOfMeasure : {
-  Url : './$metadata',
-  CollectionPath : 'UnitOfMeasures'
+    Url : './$metadata',
+    CollectionPath : 'UnitOfMeasures',
 }
 service LROPODataService @(path : '/srv1') {
-  entity UnitOfMeasures as projection on persistence.UnitOfMeasures;
+    …
+    entity UnitOfMeasures as projection on persistence.UnitOfMeasures;
 }
 
 entity sap.common.UnitOfMeasures : CodeList {
-  key code  : String(30) @Common.Text : descr @Common.UnitSpecificScale : scale @CodeList.ExternalCode : name;
-  scale: Integer;
+  // Search-Term: #CustomUnitScale
+    key code  : String(30) @Common.Text : descr @Common.UnitSpecificScale : scale @CodeList.ExternalCode : name;
+    scale: Integer;
 };
 ```
 
----
-
-STEP: Add HTTP link column (CDS)
-
-DESCRIPTION: Use UI.DataFieldWithUrl with Value (visible) and Url (target). Optionally set HTML5.LinkTarget.
-
+STEP: Add hyperlink column (CDS)
+DESCRIPTION: Use UI.DataFieldWithUrl line item to add a link; annotate the visible text property with @HTML5.LinkTarget to control open behavior (e.g., _blank).
 LANGUAGE: CDS
-
 CODE:
 ```cds
-annotate srv.RootEntities with @(
-  UI.LineItem : [
+// app/listreport-objectpage/layouts_RootEntities.cds (link)
+@UI.LineItem : [
     {
-      $Type : 'UI.DataFieldWithUrl',
-      Url : fieldWithURL,
-      Value : fieldWithURLtext,
-      Label : '{i18n>dataFieldWithURL}',
-      @UI.Importance : #Medium
-    }
-  ]
-);
+        $Type               : 'UI.DataFieldWithUrl',
+        Url                 : fieldWithURL, //Target, when pressing the text
+        Value               : fieldWithURLtext, //Visible text
+        Label               : '{i18n>dataFieldWithURL}',
+        @UI.Importance   : #Medium,
+    },
+]
+```
 
-annotate srv.RootEntities {
-  fieldWithURLtext @HTML5.LinkTarget : '_blank';
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (link target)
+annotate srv.RootEntities with {
+    fieldWithURLtext @HTML5.LinkTarget : '_blank';
 }
 ```
 
----
-
-STEP: Add custom column via extension (XML fragment + manifest)
-
-DESCRIPTION: Create XML fragment for the column template and reference it in manifest controlConfiguration.@com.sap.vocabularies.UI.v1.LineItem.columns with key, header, template, properties and position.
-
+STEP: Add custom column via extension (fragment + manifest)
+DESCRIPTION: Implement XML fragment for column template and register it under manifest controlConfiguration @LineItem.columns with "template" path. Use "properties" to enable sorting and "position" to anchor.
 LANGUAGE: XML
-
 CODE:
 ```xml
-<!-- file: app/listreport-objectpage/webapp/ext/CustomColumn-DateRangeLR.fragment.xml -->
+<!-- webapp/ext/CustomColumn-DateRangeLR.fragment.xml -->
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
-  <Label text="{validFrom} - {validTo}"/>
+        <Label text="{validFrom} - {validTo}"/>
 </core:FragmentDefinition>
 ```
 
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
+// app/listreport-objectpage/webapp/manifest.json (custom column registration)
 "RootEntityListReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.LineItem": {
-          "columns": {
-            "CustomColumn": {
-              "key": "customColumnLR",
-              "header": "{i18n>validityPeriodLR}",
-              "template": "sap.fe.showcase.lrop.ext.CustomColumn-DateRangeLR",
-              "availability": "Adaptation",
-              "horizontalAlign": "Center",
-              "width": "auto",
-              "properties": ["validFrom","validTo"],
-              "position": { "placement": "After", "anchor": "DataField::fieldWithCriticality" }
-            }
-          }
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                    ...
+                    "columns": {
+                        "CustomColumn": {
+                            "key": "customColumnLR",
+                            "header": "{i18n>validityPeriodLR}",
+                            "template": "sap.fe.showcase.lrop.ext.CustomColumn-DateRangeLR",
+                            "availability": "Adaptation",
+                            "horizontalAlign": "Center",
+                            "width": "auto",
+                            "properties": [
+                                "validFrom",
+                                "validTo"
+                            ],
+                            "position": {
+                                "placement": "After",
+                                "anchor": "DataField::fieldWithCriticality"
+                            }
+                        }
+                    }
+                },
+                ...
+            },
+            ...
         }
-      }
     }
-  }
 }
 ```
 
----
-
-STEP: Object Page — Communication properties, time/date, multiline & placeholder (CDS + manifest)
-
-DESCRIPTION: Annotate communication fields for email/phone, use Date/Time types, annotate with @UI.MultiLineText and configure multiline formatOptions in manifest; use @UI.Placeholder for edit placeholders.
-
+STEP: Object Page — communication, date/time, multiline, placeholders (CDS + manifest)
+DESCRIPTION: Use annotations @Communication.IsEmailAddress / IsPhoneNumber; date/time types are inferred by type; use @UI.DateTimeStyle for display; @UI.MultiLineText for multiline; control lines display via manifest controlConfiguration; use @UI.Placeholder for input placeholders.
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// file: app/listreport-objectpage/labels.cds
-annotate schema.RootEntities with {
-  email     @title : '{i18n>email}'     @Communication.IsEmailAddress;
-  telephone @title : '{i18n>telephone}' @Communication.IsPhoneNumber;
+// app/listreport-objectpage/labels.cds (communication)
+annotate schema.RootEntities with{
+    ...
+    email                   @title : '{i18n>email}'                          @Communication.IsEmailAddress;
+    telephone               @title : '{i18n>telephone}'                      @Communication.IsPhoneNumber;
+    ...
+};
+```
 
-  description @title : '{i18n>description}' @UI.MultiLineText;
+LANGUAGE: CDS
+CODE:
+```cds
+// CDS aspect for Date/Time types
+aspect rootBasis : {
+    ...
+    validFrom   : Date;
+    validTo     : DateTime;
+    time        : Time;
+    timeStamp   : Timestamp;
+    ...
+};
+```
 
-  region @title : '{i18n>region}' @UI.Placeholder : 'Select a region';
+LANGUAGE: CDS
+CODE:
+```cds
+// DateTime style (since UI5 1.129.0)
+annotate srv.RootEntities with {
+    validTo @UI.DateTimeStyle : 'short'
+}
+```
+
+LANGUAGE: CDS
+CODE:
+```cds
+// Multi line text
+annotate schema.RootEntities with{
+    ...
+    description             @title : '{i18n>description}'                    @UI.MultiLineText;
+    ...
 };
 ```
 
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (controlConfiguration snippet)
+// app/listreport-objectpage/webapp/manifest.json (multiline controlConfiguration formatOptions)
 "RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.FieldGroup#Section": {
-          "fields": {
-            "DataField::description": {
-              "formatOptions": {
-                "textLinesDisplay": 1,
-                "textLinesEdit": 3
-              }
-            },
-            "DataField::description_customGrowing": {
-              "formatOptions": {
-                "textMaxLines": "5",
-                "textMaxCharactersDisplay": 400,
-                "textExpandBehaviorDisplay" : "Popover"
-              }
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.FieldGroup#Section": {
+                    "fields": {
+                        "DataField::description": {
+                            "formatOptions": {
+                                "textLinesDisplay": 1,
+                                "textLinesEdit": 3
+                            }
+                        },
+                        "DataField::description_customGrowing": {
+                            "formatOptions": {
+                                "textMaxLines": "5",
+                                "textMaxCharactersDisplay": 400,
+                                "textExpandBehaviorDisplay" : "Popover"
+                            }
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
-}
+},
 ```
-
----
-
-STEP: Object Page anchorBarVisible & header visibility (manifest)
-
-DESCRIPTION: Toggle header and anchor bar visibility for OP via options.settings.content.header in manifest.
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
-"RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "content": {
-        "header": {
-          "anchorBarVisible": true,
-          "visible": true
-        }
-      }
-    }
-  }
-}
-```
-
----
-
-STEP: Object Page HeaderInfo & dynamic title (CDS)
-
-DESCRIPTION: Configure @UI.HeaderInfo to set title, description, image. Use OData concat expressions for dynamic header Description/Title.
 
 LANGUAGE: CDS
-
 CODE:
 ```cds
-annotate srv.RootEntities with @(
-  UI.HeaderInfo : {
-    TypeName : '{i18n>RootEntities}',
-    TypeNamePlural : '{i18n>RootEntities.typeNamePlural}',
-    Title : { $Type : 'UI.DataField', Value : field },
-    Description : { $Type : 'UI.DataField', Value : '{i18n>RootEntities}' },
-    ImageUrl : imageUrl,
-    TypeImageUrl : 'sap-icon://sales-order'
-  }
-);
+// Placeholder
+annotate schema.RootEntities with {
+    ...
+    region @title : '{i18n>region}' @UI.Placeholder : 'Select a region';
+    ...
+};
+```
 
-// Dynamic description using odata.concat and inline $If
+STEP: Object Page header info and dynamic title (CDS)
+DESCRIPTION: Use @UI.HeaderInfo to set TypeName/Title/Description/ImageUrl. Use OData concatenation expressions for dynamic header values.
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (header info)
+annotate srv.RootEntities with @(
+    UI.HeaderInfo :{
+        TypeName : '{i18n>RootEntities}',
+        TypeNamePlural : '{i18n>RootEntities.typeNamePlural}',
+        Title          : {
+            $Type : 'UI.DataField',
+            Value : field,
+        },
+        Description    : {
+            $Type : 'UI.DataField',
+            Value : '{i18n>RootEntities}',
+        },
+        ImageUrl : imageUrl,
+        TypeImageUrl : 'sap-icon://sales-order',
+    },
+);
+```
+
+LANGUAGE: CDS
+CODE:
+```cds
+// Dynamic concatenation using odata.concat and conditional with $If
 annotate service.ChildEntities1 with @(
-  UI.HeaderInfo : {
-    Description : {
-      Value : ('Using odata.concat - Field: ' || field)
-    }
-  }
-);
-
-annotate service.ChildEntities1 with @(
-  UI.HeaderInfo : {
-    Description : {
-      Value : ('Using odata.concat - Field: ' || (field = 'child entity 1' ? field : 'Other child entities'))
-    }
-  }
+    UI.HeaderInfo : {
+        ...
+        Description     : {
+            Value : ('Using odata.concat - Field: ' || field),
+        },
+        ...
+    },
 );
 ```
 
----
-
-STEP: Header facets & field groups (CDS)
-
-DESCRIPTION: Add UI.HeaderFacets referencing UI.FieldGroup and UI.DataPoints/Reference facets for header content.
-
+STEP: Header facets: field groups, contact, address, data points (CDS)
+DESCRIPTION: Add header facets via @UI.HeaderFacets with ReferenceFacet/CollectionFacet. Use FieldGroup to package data fields; annotate contact/address/data points appropriately and reference them from header.
 LANGUAGE: CDS
-
 CODE:
 ```cds
+// Header facets reference to field group or datapoint
 annotate srv.RootEntities with @(
-  UI.FieldGroup #HeaderData : {
-    Data : [
-      { Value : field },
-      { Value : fieldWithCriticality, Criticality : criticality_code },
-      { Value : fieldWithUoM },
-      { Value : association2one_ID },
-      {
-        $Type : 'UI.DataFieldForAnnotation',
-        Target : 'contact/@Communication.Contact',
-        Label : '{i18n>contact}'
-      }
-    ]
-  }
-);
-
-annotate srv.RootEntities with @(
-  UI.HeaderFacets : [
-    { $Type : 'UI.ReferenceFacet', Target : '@UI.FieldGroup#HeaderData', Label : '{i18n>HeaderData}' }
-  ]
-);
-```
-
----
-
-STEP: Custom header facet via manifest (manifest + fragment)
-
-DESCRIPTION: Create XML fragment for header facet, reference it in manifest under content.header.facets with template/templateEdit, stashed, position.
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
-"childEntities1ObjectPage": {
-  "options": {
-    "settings": {
-      "content": {
-        "header": {
-          "facets": {
-            "CustomHeaderFacet": {
-              "template": "sap.fe.showcase.lrop.ext.CustomHeaderFacet-ProcessFlow",
-              "templateEdit" : "sap.fe.showcase.lrop.ext.CustomHeaderFacet-Edit",
-              "stashed": false,
-              "title": "{i18n>customHeaderFacet}",
-              "position": { "placement": "After", "anchor": "FacetWithPercent" },
-              "flexSettings": { "designtime": "not-adaptable-visibility" }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
----
-
-STEP: Header facet in-page navigation (manifest + CDS)
-
-DESCRIPTION: Configure controlConfiguration navigation targetSections to jump to section/subsection using anchor IDs. Define target section/subsection facets in UI.Facets (IDs required).
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
-"RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.DataPoint#progressIndicator": {
-          "navigation": {
-            "targetSections": {
-              "sectionId": "sap.fe.showcase.lrop::RootEntityObjectReport--fe::FacetSection::chartData",
-              "subSectionId": "sap.fe.showcase.lrop::RootEntityObjectReport--fe::FacetSubSection::advancedChartData"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-// file: app/listreport-objectpage/layout.cds
-annotate srv.RootEntities with @(
-  UI.Facets : [
-    {
-      $Type : 'UI.CollectionFacet',
-      Label : '{i18n>chartData}',
-      ID  : 'chartDataCollection',
-      Facets : [
+    UI.HeaderFacets : [
         {
-          $Type : 'UI.ReferenceFacet',
-          Target : '@UI.FieldGroup#advancedChartData',
-          ID : 'advancedChartData'
-        }
-      ]
-    }
-  ]
+            $Type : 'UI.ReferenceFacet',
+            Target : '@UI.DataPoint#progressIndicator',
+        },
+        {
+            $Type : 'UI.CollectionFacet',
+            Facets : [
+                ...
+            ],
+        },
+    ],
 );
 ```
 
----
-
-STEP: Header facet external navigation (manifest)
-
-DESCRIPTION: Add outbound in sap.app crossNavigation.outbounds and reference outbound in controlConfiguration targetOutbound.
-
-LANGUAGE: JSON
-
+LANGUAGE: CDS
 CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (sap.app snippet)
-"sap.app": {
-  "crossNavigation": {
-    "outbounds": {
-      "ExternalNavigation": {
-        "semanticObject": "FeatureShowcaseOrder",
-        "action": "manage"
-      }
-    }
-  }
-}
+```cds
+// Address facet / Communication.Address
+annotate srv.RootEntities with @(
+    UI.HeaderFacets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Target : 'contact/@Communication.Address',
+            Label : '{i18n>Address}'
+        },
+    ],
+);
 
-// reference in controlConfiguration
-"RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.DataPoint#ratingIndicator": {
-          "navigation": {
-            "targetOutbound": {
-              "outbound": "ExternalNavigation"
-            }
-          }
-        }
-      }
+annotate srv.Contacts with @(
+    Communication.Address : {
+        ...
+        label : addressLabel,
+        ...
     }
-  }
-}
+);
 ```
 
----
+STEP: Header custom facet via manifest (fragment + manifest)
+DESCRIPTION: Register a header custom facet template and optional edit template in manifest.header.facets. Use "stashed" to control initial visibility and "position.anchor" to place relative to other facets.
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json (custom header facet)
+"childEntities1ObjectPage": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "content": {
+                "header": {
+                    "facets": {
+                        "CustomHeaderFacet": {
+                            "template": "sap.fe.showcase.lrop.ext.CustomHeaderFacet-ProcessFlow",
+                            "templateEdit" : "sap.fe.showcase.lrop.ext.CustomHeaderFacet-Edit",
+                            "stashed": false,
+                            "title": "{i18n>customHeaderFacet}",
+                            "position": {
+                                "placement": "After",
+                                "anchor": "FacetWithPercent"
+                            },
+                            "flexSettings": {
+                                "designtime": "not-adaptable-visibility"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+},
+```
+
+STEP: Header facet navigation (in-page & external) (manifest + CDS)
+DESCRIPTION: For in-page navigation set controlConfiguration DataPoint navigation.targetSections with sectionId/subSectionId constructed as appId--fe::FacetSection::ID. For external navigation, define sap.app.crossNavigation.outbounds then set controlConfiguration dataPoint navigation.targetOutbound referencing qualifier.
+LANGUAGE: JSON
+CODE:
+```json
+// In-page navigation example (manifest snippet)
+"RootEntityObjectReport": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                ...
+                "@com.sap.vocabularies.UI.v1.DataPoint#progressIndicator":{
+                    "navigation":{
+                        "targetSections":{
+                            "sectionId": "sap.fe.showcase.lrop::RootEntityObjectReport--fe::FacetSection::chartData",
+                            "subSectionId": "sap.fe.showcase.lrop::RootEntityObjectReport--fe::FacetSubSection::advancedChartData"
+                        }
+                    }
+                },
+                ...
+            },
+            ...
+        }
+    }
+},
+```
+
+LANGUAGE: CDS
+CODE:
+```cds
+// App facets definition (CDS)
+annotate srv.RootEntities with @(
+    UI.Facets : [
+        {
+            $Type : 'UI.CollectionFacet',
+            Label : '{i18n>chartData}',
+            ID  : 'chartDataCollection',
+            Facets : [
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    Target : '@UI.FieldGroup#advancedChartData',
+                    ID : 'advancedChartData',
+                    ...
+                },
+            ],
+        },
+    ],
+);
+```
+
+LANGUAGE: JSON
+CODE:
+```json
+// External navigation outbound in app manifest
+"sap.app": {
+    ...
+    "crossNavigation": {
+        "outbounds": {
+            "ExternalNavigation": {
+                "semanticObject": "FeatureShowcaseOrder",
+                "action": "manage"
+            }
+        }
+    }
+},
+// Then controlConfiguration references:
+"@com.sap.vocabularies.UI.v1.DataPoint#ratingIndicator":{
+    "navigation":{
+        "targetOutbound": {
+            "outbound": "ExternalNavigation"
+        }
+    }
+}
+```
 
 STEP: Toggle header editability (manifest)
-
-DESCRIPTION: Set editableHeaderContent false to make header read-only even in edit mode.
-
+DESCRIPTION: Use "editableHeaderContent": false in view options settings to make header non-editable in edit mode.
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
+// app/listreport-objectpage/webapp/manifest.json (disable header editable)
 "RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "editableHeaderContent": false
-    }
-  }
-}
-```
-
----
-
-STEP: Add subpage (manifest routing + target + navigation)
-
-DESCRIPTION: Add route pattern and target entry for sub entity Object Page and add navigation entry in options.settings.navigation.
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (routing routes)
-"routes": [
-  {
-    "pattern": "RootEntities({key})/ChildEntities1({key2}):?query:",
-    "name": "childEntities1ObjectPage",
-    "target": "childEntities1ObjectPage"
-  }
-]
-
-// file: app/listreport-objectpage/webapp/manifest.json (targets)
-"targets": {
-  "childEntities1ObjectPage": {
-    "type": "Component",
-    "id": "childEntities1ObjectPage",
-    "name": "sap.fe.templates.ObjectPage",
+    ...
     "options": {
-      "settings": {
-        "entitySet": "ChildEntities1"
-      }
-    }
-  }
-}
-
-// file: app/listreport-objectpage/webapp/manifest.json (entity navigation)
-"RootEntityListReport": {
-  "options": {
-    "settings": {
-      "navigation": {
-        "childEntities1": {
-          "detail": { "route": "childEntities1ObjectPage" }
+        "settings": {
+            "editableHeaderContent": false,
+            ...
         }
-      }
     }
-  }
-}
+},
 ```
 
----
-
-STEP: Show related apps button (manifest)
-
-DESCRIPTION: Enable showRelatedApps true to show Related Apps button in header action row for same semantic object.
-
+STEP: Add subpages / routing (manifest)
+DESCRIPTION: Add a route pattern and a target component for a child entity Object Page. Configure navigation mapping in view options.
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
-"RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "showRelatedApps": true
-    }
-  }
-}
-```
-
----
-
-STEP: Side content toggle (manifest + extension API)
-
-DESCRIPTION: Define side content fragment in manifest under content.body.sections[].sideContent and toggle from extension using ExtensionAPI.showSideContent(key).
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (snippet)
-"RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "content": {
-        "body": {
-          "sections": {
-            "customSectionQualifier": {
-              "sideContent": {
-                "template": "sap.fe.showcase.lrop.ext.SideContent",
-                "equalSplit": true
-              }
-            },
-            "childEntities1Section": {
-              "sideContent": { "template": "sap.fe.showcase.lrop.ext.SideContent" }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-LANGUAGE: TypeScript
-
-CODE:
-```ts
-// file: app/listreport-objectpage/webapp/ext/controller/RootEntityOPExtension.controller.ts
-export default class RootEntityOPExtension extends ControllerExtension<ExtensionAPI> {
-  toggleSideContent(oBindingContext: any /* ODataContextBinding */) {
-    this.base.getExtensionAPI().showSideContent("customSectionQualifier");
-  }
-  toggleSideContentItem1(oContextInfo: any /* ODataContextBinding */) {
-    this.base.getExtensionAPI().showSideContent("childEntities1Section");
-  }
-}
-```
-
----
-
-STEP: Forms — FieldGroup, ConnectedFields, Form custom content (CDS + manifest)
-
-DESCRIPTION: Build forms using @UI.FieldGroup and include connected fields using @UI.ConnectedFields. Add custom form fields via XML fragments referenced in manifest controlConfiguration for the field group.
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-// Field group definition
-annotate srv.RootEntities with @(
-  UI.FieldGroup #ShowWhenInEdit : {
-    Data : [
-      { Value : field },
-      { Value : fieldWithCriticality },
-      { Value : fieldWithUoM },
-      { Value : fieldWithPrice },
-      { Value : criticality_code },
-      { Value : contact_ID },
-      { Value : association2one_ID }
-    ]
-  }
-);
-
-// Connected fields
-UI.ConnectedFields #ConnectedDates : {
-  Label : '{i18n>ConnectedField}',
-  Template : '{integerValue} / {targetValue}',
-  Data : {
-    integerValue : { $Type : 'UI.DataField', Value : integerValue },
-    targetValue  : { $Type : 'UI.DataField', Value : targetValue }
-  }
-};
-
-annotate srv.RootEntities with @(
-  UI.FieldGroup #Section : {
-    Data : [
-      {
-        $Type : 'UI.DataFieldForAnnotation',
-        Target : '@UI.ConnectedFields#ConnectedDates'
-      }
-    ]
-  }
-);
-```
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (custom form field snippet)
-"RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.FieldGroup#timeAndDate": {
-          "fields": {
-            "CustomContentFieldGroup": {
-              "label": "{i18n>validityPeriodOP}",
-              "template": "sap.fe.showcase.lrop.ext.CustomField-DatePicker",
-              "position": { "placement": "Before", "anchor": "DataField::validTo" }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
----
-
-STEP: Form actions and inline actions (CDS + manifest)
-
-DESCRIPTION: Add DataFieldForAction or DataFieldForIntentBasedNavigation inside FieldGroup Data array to display section-level actions or inline form toolbar actions (use Inline:true).
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-annotate srv.RootEntities with @(
-  UI.FieldGroup #Section : {
-    Data : [
-      {
-        $Type : 'UI.DataFieldForIntentBasedNavigation',
-        Label : '{i18n>inboundNavigation}',
-        SemanticObject : 'FeatureShowcaseOrder',
-        Action : 'manage',
-        RequiresContext : true,
-        IconUrl : 'sap-icon://cart',
-        Mapping : [
-          {
-            $Type : 'Common.SemanticObjectMappingType',
-            LocalProperty : integerValue,
-            SemanticObjectProperty : 'integerProperty'
-          }
-        ],
-        @UI.Importance : #High
-      },
-      {
-        $Type : 'UI.DataFieldForAction',
-        Action : 'LROPODataService.EntityContainer/unboundAction',
-        Label : '{i18n>formActionEmphasized}',
-        @UI.Emphasized : true
-      },
-      {
-        $Type : 'UI.DataFieldForAction',
-        Action : 'LROPODataService.changeProgress',
-        Label : '{i18n>formAction}',
-        Inline : true
-      }
-    ]
-  }
-);
-```
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (inline form action)
-"RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "controlConfiguration": {
-        "@com.sap.vocabularies.UI.v1.FieldGroup#Section": {
-          "actions" : {
-            "CustomActionForm" : {
-              "press": "sap.fe.showcase.lrop.ext.CustomActions.messageBox",
-              "enabled": true,
-              "visible" : true,
-              "inline" : true,
-              "text": "{i18n>CustomActionOPFooter}"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
----
-
-STEP: Object Page tables — LineItem reference facet + enable personalization, variant, full screen, inline creation (CDS + manifest)
-
-DESCRIPTION: Add child entity @UI.LineItem then reference via ReferenceFacet in root UI.Facets. Use manifest controlConfiguration to enable variantManagement, personalization, enableFullScreen, creationMode, enableExport, quickVariantSelection, etc.
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-// LineItem for child entity
-annotate srv.ChildEntities3 with @(
-  UI.LineItem : [
-    { Value : field }
-  ]
-);
-
-// Reference in RootEntities facets
-annotate srv.RootEntities with @(
-  UI.Facets : [
-    {
-      $Type : 'UI.ReferenceFacet',
-      Target : 'childEntities3/@UI.LineItem',
-      Label : '{i18n>childEntities3}'
-    }
-  ]
-);
-```
-
-LANGUAGE: JSON
-
-CODE:
-```json
-// file: app/listreport-objectpage/webapp/manifest.json (table options)
-"RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "variantManagement": "Control",
-      "controlConfiguration": {
-        "childEntities1/@com.sap.vocabularies.UI.v1.LineItem": {
-          "tableSettings": {
-            "personalization": { "column": true, "sort": false, "filter": true },
-            "enableFullScreen": true,
-            "creationMode": { "name": "Inline", "createAtEnd": true },
-            "enableExport": true,
-            "quickVariantSelection": {
-              "paths": [
-                { "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#variant1" }
-              ],
-              "showCounts": true
-            },
-            "actions": {
-              "CustomActionOPTableToolbar" : {
-                "press": "sap.fe.showcase.lrop.ext.CustomActions.messageBox",
-                "enabled": "{= %{deletePossible} === true}",
-                "visible" : true,
-                "text": "{i18n>CustomActionOPTableToolbar (enabled when delete enabled)}"
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
----
-
-STEP: Charts in Object Page sections (CDS)
-
-DESCRIPTION: Prepare entity with @Aggregation.ApplySupported and Analytics.AggregatedProperties, provide UI.Chart using aggregation method names (Measures = aggregated names) and reference as a ReferenceFacet in UI.Facets.
-
-LANGUAGE: CDS
-
-CODE:
-```cds
-// Aggregation support
-annotate srv.ChartDataEntities with @(
-  Aggregation.ApplySupported : {
-    GroupableProperties : [ dimensions, criticality_code ],
-    AggregatableProperties : [ { Property : integerValue } ]
-  }
-);
-
-// Define aggregated measures
-annotate service.ChartDataEntities with @(
-  Analytics.AggregatedProperties : [
-    { Name : 'minAmount', AggregationMethod : 'min', AggregatableProperty : 'integerValue', @Common.Label : 'Minimal Net Amount' },
-    { Name : 'maxAmount', AggregationMethod : 'max', AggregatableProperty : 'integerValue', @Common.Label : 'Maximal Net Amount' },
-    { Name : 'avgAmount', AggregationMethod : 'average', AggregatableProperty : 'integerValue', @Common.Label : 'Average Net Amount' }
-  ]
-);
-
-// UI.Chart referencing aggregated measure
-annotate service.ChartDataEntities with @(
-  UI.Chart : {
-    Title : '{i18n>chart}',
-    ChartType : #Column,
-    Measures : [ maxAmount ],
-    Dimensions : [ dimensions ],
-    MeasureAttributes : [{
-      $Type : 'UI.ChartMeasureAttributeType',
-      Measure : maxAmount,
-      Role : #Axis1
-    }],
-    DimensionAttributes : [
-      { $Type : 'UI.ChartDimensionAttributeType', Dimension : dimensions, Role : #Category },
-      { $Type : 'UI.ChartDimensionAttributeType', Dimension : criticality_code, Role : #Category }
+// app/listreport-objectpage/webapp/manifest.json (route)
+"routing": {
+    "routes": [
+        ...
+        {
+            "pattern": "RootEntities({key})/ChildEntities1({key2}):?query:",
+            "name": "childEntities1ObjectPage",
+            "target": "childEntities1ObjectPage"
+        },
     ],
-    Actions : [
-      {
-        $Type : 'UI.DataFieldForAction',
-        Action : 'LROPODataService.EntityContainer/unboundAction',
-        Label : '{i18n>unboundAction}'
-      }
-    ]
-  }
+    "targets": {
+        "childEntities1ObjectPage": {
+            "type": "Component",
+            "id": "childEntities1ObjectPage",
+            "name": "sap.fe.templates.ObjectPage",
+            "options": {
+                "settings": {
+                    "entitySet": "ChildEntities1",
+                    ...
+                }
+            }
+        },
+    }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```json
+// Navigation mapping from parent to child (manifest snippet)
+"RootEntityObjectReport": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "navigation": {
+                "childEntities1": {
+                    "detail": {
+                        "route": "childEntities1ObjectPage"
+                    }
+                },
+                ...
+            },
+            ...
+        }
+    }
+},
+```
+
+STEP: Show Related Apps button (manifest)
+DESCRIPTION: Enable showRelatedApps true in view options settings to show "Related Apps" button in header action row (requires related apps with same semantic object).
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json
+"RootEntityObjectReport": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "showRelatedApps": true,
+            ...
+        }
+    }
+},
+```
+
+STEP: Object Page content facets & forms (CDS + manifest)
+DESCRIPTION: Add facets via @UI.Facets using ReferenceFacet/CollectionFacet. Forms are UI.FieldGroup; add Data entries then reference the FieldGroup via ReferenceFacet. Use manifest settings "sectionLayout" to switch Tabs or Page layout.
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (form FieldGroup)
+annotate srv.RootEntities with @(
+    UI.FieldGroup #ShowWhenInEdit       : {
+        Data  : [
+            {Value : field},
+            {Value : fieldWithCriticality},
+            {Value : fieldWithUoM},
+            {Value : fieldWithPrice},
+            {Value : criticality_code},
+            {Value : contact_ID},
+            {Value : association2one_ID},
+        ]
+    },
+);
+```
+
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json (sectionLayout)
+"RootEntityObjectReport": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "sectionLayout": "Tabs",
+            ...
+        }
+    }
+},
+```
+
+STEP: Connected fields (CDS)
+DESCRIPTION: Define UI.ConnectedFields that compose two data fields with a template string and reference it via UI.DataFieldForAnnotation in a FieldGroup.
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (connected fields)
+UI.ConnectedFields #ConnectedDates :{
+    Label : '{i18n>ConnectedField}',
+    Template : '{integerValue} / {targetValue}',
+    Data : {
+        integerValue : {
+            $Type : 'UI.DataField',
+            Value : integerValue,
+        },
+        targetValue : {
+            $Type : 'UI.DataField',
+            Value : targetValue,
+        },
+    },
+},
+
+annotate srv.RootEntities with @(
+    UI.FieldGroup #Section : {
+        Data  : [
+            {
+                $Type : 'UI.DataFieldForAnnotation',
+                Target : '@UI.ConnectedFields#ConnectedDates',
+            },
+        ]
+    },
+);
+```
+
+STEP: Add custom content to forms (manifest)
+DESCRIPTION: Register custom form field fragments under controlConfiguration referencing fieldgroup qualifier and position placement anchor; use template namespace path.
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json (CustomContentFieldGroup)
+"RootEntityObjectReport": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                ...
+                "@com.sap.vocabularies.UI.v1.FieldGroup#timeAndDate": {
+                    "fields": {
+                        "CustomContentFieldGroup": {
+                            "label": "{i18n>validityPeriodOP}",
+                            "template": "sap.fe.showcase.lrop.ext.CustomField-DatePicker",
+                            "position": {
+                                "placement": "Before",
+                                "anchor": "DataField::validTo"
+                            }
+                        }
+                    }
+                },
+                ...
+            },
+            ...
+        }
+    }
+},
+```
+
+STEP: Form actions & inline actions in section (CDS + manifest)
+DESCRIPTION: Add DataFieldForAction or DataFieldForIntentBasedNavigation to FieldGroup.Data to display actions in section toolbar. For inline actions, set Inline: true in CDS or "inline": true in manifest controlConfiguration for fieldgroup actions.
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (form actions)
+annotate srv.RootEntities with @(
+    UI.FieldGroup #Section : {
+        Data  : [
+            {
+                $Type : 'UI.DataFieldForIntentBasedNavigation',
+                Label : '{i18n>inboundNavigation}',
+                SemanticObject : 'FeatureShowcaseOrder',
+                Action : 'manage',
+                RequiresContext : true,
+                IconUrl : 'sap-icon://cart',
+                Mapping : [
+                    {
+                        $Type : 'Common.SemanticObjectMappingType',
+                        LocalProperty : integerValue,
+                        SemanticObjectProperty : 'integerProperty',
+                    },
+                ],
+                @UI.Importance : #High,
+            },
+            {
+                $Type : 'UI.DataFieldForAction',
+                Action : 'LROPODataService.EntityContainer/unboundAction',
+                Label : '{i18n>formActionEmphasized}',
+                @UI.Emphasized   : true,
+            },
+            {
+                $Type   : 'UI.DataFieldForAction',
+                Action  : 'LROPODataService.changeProgress',
+                Label   : '{i18n>formAction}',
+                Inline  : true,
+            },
+        ]
+    },
+);
+```
+
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json (inline actions on fieldgroup)
+"RootEntityObjectReport": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.FieldGroup#Section": {
+                    "actions" : {
+                        "CustomActionForm" : {
+                            "press": "sap.fe.showcase.lrop.ext.CustomActions.messageBox",
+                            "enabled": true,
+                            "visible" : true,
+                            "inline" : true,
+                            "text": "{i18n>CustomActionOPFooter}"
+                        }
+                    }
+                },
+            ...
+            }
+        }
+    }
+},
+```
+
+STEP: Object Page tables — enable variant, personalization, fullscreen, inline creation, export & actions (manifest)
+DESCRIPTION: Configure tableSettings under controlConfiguration for the child entity @UI.LineItem: variantManagement, personalization, enableFullScreen, creationMode Inline/NewPage, enableExport, quickVariantSelection.
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json (table settings for childEntities1)
+"RootEntityObjectReport": {
+    ...
+    "options": {
+        "settings": {
+            ...
+            "variantManagement": "Control", // enable variant management for OP
+            "controlConfiguration": {
+                "childEntities1/@com.sap.vocabularies.UI.v1.LineItem": {
+                    "tableSettings": {
+                        "personalization": {
+                            "column": true,
+                            "sort": false,
+                            "filter": true
+                        },
+                        "enableFullScreen": true,
+                        "creationMode": {
+                            "name": "Inline",
+                            "createAtEnd": true
+                        },
+                        "enableExport": true,
+                        "quickVariantSelection": {
+                            "paths": [
+                                {"annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#variant1"},
+                                {"annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#variant2"}
+                            ],
+                            "hideTableTitle": false,
+                            "showCounts": true
+                        }
+                    },
+                    "actions" : {
+                        "CustomActionOPTableToolbar" : {
+                            "press": "sap.fe.showcase.lrop.ext.CustomActions.messageBox",
+                            "enabled": "{= %{deletePossible} === true}",
+                            "visible" : true,
+                            "text": "{i18n>CustomActionOPTableToolbar (enabled when delete enabled)}"
+                        }
+                    }
+                },
+                ...
+            },
+            ...
+        }
+    }
+},
+```
+
+STEP: Chart section — prepare entity with aggregation (CDS)
+DESCRIPTION: To add a full chart section, annotate the data source entity with Aggregation.ApplySupported, Analytics.AggregatedProperties, and define UI.Chart using aggregated measure names (not raw properties). Reference UI.Chart as a ReferenceFacet in @UI.Facets.
+LANGUAGE: CDS
+CODE:
+```cds
+// app/listreport-objectpage/layouts_RootEntities.cds (aggregation)
+annotate srv.ChartDataEntities with @(
+    Aggregation.ApplySupported : {
+        GroupableProperties : [
+            dimensions,
+            criticality_code
+        ],
+        AggregatableProperties : [
+            {
+                Property : integerValue,
+            },
+        ],
+    }
 );
 
-// Reference chart as facet
-annotate srv.RootEntities with @(
-  UI.Facets : [
-    { $Type : 'UI.ReferenceFacet', Target : 'chartEntities/@UI.Chart', Label : '{i18n>chart}' }
-  ]
+annotate service.ChartDataEntities with @(
+    Analytics.AggregatedProperties : [
+    {
+        Name                 : 'minAmount',
+        AggregationMethod    : 'min',
+        AggregatableProperty : 'integerValue',
+        @Common.Label     : 'Minimal Net Amount'
+    },
+    {
+        Name                 : 'maxAmount',
+        AggregationMethod    : 'max',
+        AggregatableProperty : 'integerValue',
+        @Common.Label     : 'Maximal Net Amount'
+    },
+    {
+        Name                 : 'avgAmount',
+        AggregationMethod    : 'average',
+        AggregatableProperty : 'integerValue',
+        @Common.Label     : 'Average Net Amount'
+    }
+    ],
 );
 ```
 
 LANGUAGE: CDS
-
 CODE:
 ```cds
-// Semantic coloring for dimension via UI.ValueCriticality
-annotate srv.ChartDataEntities with {
-  criticality @(
-    UI.ValueCriticality : [
-      { Value : 0, Criticality : #Neutral },
-      { Value : 1, Criticality : #Negative },
-      { Value : 2, Criticality : #Critical },
-      { Value : 3, Criticality : #Positive }
-    ]
-  );
-};
+// Define UI.Chart and add to facets
+annotate service.ChartDataEntities with @(
+    UI.Chart : {
+        Title : '{i18n>chart}',
+        ChartType : #Column,
+        Measures :  [maxAmount],
+        Dimensions : [dimensions],
+        MeasureAttributes   : [{
+                $Type   : 'UI.ChartMeasureAttributeType',
+                Measure : maxAmount,
+                Role    : #Axis1
+        }],
+        DimensionAttributes : [
+            {
+                $Type     : 'UI.ChartDimensionAttributeType',
+                Dimension : dimensions,
+                Role      : #Category
+            },
+            {
+                $Type     : 'UI.ChartDimensionAttributeType',
+                Dimension : criticality_code,
+                Role      : #Category
+            },
+        ],
+        Actions : [
+            {
+                $Type : 'UI.DataFieldForAction',
+                Action : 'LROPODataService.EntityContainer/unboundAction',
+                Label : '{i18n>unboundAction}',
+            },
+        ]
+    },
+);
+
+annotate srv.RootEntities with @(
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Target : 'chartEntities/@UI.Chart',
+            Label : '{i18n>chart}'
+        },
+    ],
+);
 ```
 
----
-
-STEP: Custom sections & subsections (manifest)
-
-DESCRIPTION: Add custom XML fragment section/subsection templates to content.body.sections and content.body.sections[].subSections with unique IDs, position and title.
-
+STEP: Custom section/subsection via manifest (fragment)
+DESCRIPTION: Register custom section fragments in manifest content.body.sections and custom subsections in subSections referencing fragment template and set position anchor.
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (custom section)
+// app/listreport-objectpage/webapp/manifest.json (custom section + custom subSection)
 "RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "content": {
-        "body": {
-          "sections": {
-            "customSectionQualifier": {
-              "template": "sap.fe.showcase.lrop.ext.CustomSection",
-              "position": { "anchor": "Section", "placement": "After" },
-              "title": "{i18n>CustomSection}"
-            },
-            "collectionFacetSection": {
-              "subSections": {
-                "customSubSectionQualifier": {
-                  "template": "sap.fe.showcase.lrop.ext.CustomSubSection",
-                  "title": "{i18n>customSubSection}",
-                  "visible": true
+    ...
+    "options": {
+        "settings": {
+            ...
+            "content": {
+                "body": {
+                    "sections": {
+                        "customSectionQualifier": {
+                            "template": "sap.fe.showcase.lrop.ext.CustomSection",
+                            "position": {
+                                "anchor": "Section",
+                                "placement": "After"
+                            },
+                            "title": "{i18n>CustomSection}"
+                        },
+                        "collectionFacetSection": {
+                            "subSections": {
+                                "customSubSectionQualifier": {
+                                    "template": "sap.fe.showcase.lrop.ext.CustomSubSection",
+                                    "title": "{i18n>customSubSection}",
+                                    "visible": true
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
         }
-      }
     }
-  }
-}
+},
 ```
-
----
 
 STEP: Footer determining actions and footer custom actions (CDS + manifest)
-
-DESCRIPTION: Add UI.DataFieldForAction with Determining:true in UI.Identification to show actions in footer. Add custom footer actions via manifest content.footer.actions.
-
+DESCRIPTION: Add DataFieldForAction entries with Determining : true in UI.Identification to render actions in footer. Use manifest.content.footer.actions to register custom footer actions and map press handlers.
 LANGUAGE: CDS
-
 CODE:
 ```cds
+// Footer determining action in CDS
 annotate srv.RootEntities with @(
-  UI.Identification : [
-    {
-      $Type : 'UI.DataFieldForAction',
-      Action : 'LROPODataService.changeCriticality',
-      Label : '{i18n>changeCriticality}',
-      Determining : true,
-      Criticality : criticality_code
-    }
-  ]
+    UI.Identification : [
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'LROPODataService.changeCriticality',
+            Label : '{i18n>changeCriticality}',
+            Determining : true,
+            Criticality : criticality_code,
+        },
+    ],
 );
 ```
 
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (footer actions)
+// app/listreport-objectpage/webapp/manifest.json (custom footer action)
 "RootEntityObjectReport": {
-  "options": {
-    "settings": {
-      "content": {
-        "footer": {
-          "actions" : {
-            "CustomActionOPFooter" : {
-              "press": "sap.fe.showcase.lrop.ext.CustomActions.messageBox",
-              "enabled": "{= ${ui>/editMode} !== 'Editable'}",
-              "visible" : true,
-              "text": "{i18n>CustomActionOPFooter}"
+    ...
+    "options": {
+        "settings": {
+            ...
+            "content": {
+                "footer": {
+                    "actions" : {
+                        "CustomActionOPFooter" : {
+                            "press": "sap.fe.showcase.lrop.ext.CustomActions.messageBox",
+                            "enabled": "{= ${ui>/editMode} !== 'Editable'}",
+                            "visible" : true,
+                            "text": "{i18n>CustomActionOPFooter}"
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
-}
+},
 ```
 
----
-
-STEP: Custom Object Page for sub-entity (manifest targets + routing)
-
-DESCRIPTION: Replace default sub-entity Object Page with custom component view. Use "sap.fe.core.fpm" component type and viewName to a custom XML view. Add route pattern for navigation.
+STEP: Custom Object Page (manifest — custom component)
+DESCRIPTION: Replace sub-entity object page with custom view: add target with type Component name "sap.fe.core.fpm" and viewName pointing to custom XML view; add route pattern to target. Use Building Blocks for consistency.
+LANGUAGE: JSON
+CODE:
+```json
+// app/listreport-objectpage/webapp/manifest.json (custom OP target)
+"CustomObjectPage_childEntities3": {
+    "type": "Component",
+    "Id": "CustomObjectPageView",
+    "name" : "sap.fe.core.fpm",
+    "options": {
+        "settings": {
+            "viewName": "sap.fe.showcase.lrop.ext.view.CustomObjectPage",
+            "entitySet": "ChildEntities3"
+        }
+    }
+}
+```
 
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/listreport-objectpage/webapp/manifest.json (targets)
-"CustomObjectPage_childEntities3": {
-  "type": "Component",
-  "Id": "CustomObjectPageView",
-  "name" : "sap.fe.core.fpm",
-  "options": {
-    "settings": {
-      "viewName": "sap.fe.showcase.lrop.ext.view.CustomObjectPage",
-      "entitySet": "ChildEntities3"
-    }
-  }
-}
-
-// file: app/listreport-objectpage/webapp/manifest.json (route)
+// app/listreport-objectpage/webapp/manifest.json (routing entry)
 {
-  "pattern": "RootEntities({key})/childEntities3({key2}):?query:",
-  "name": "CustomObjectPage_childEntities3",
-  "target": "CustomObjectPage_childEntities3"
+    "pattern": "RootEntities({key})/childEntities3({key2}):?query:",
+    "name": "CustomObjectPage_childEntities3",
+    "target": "CustomObjectPage_childEntities3"
 }
 ```
-
----
 
 STEP: Worklist floorplan — hide filter bar (manifest)
-
-DESCRIPTION: For Worklist, hide filter bar via hideFilterBar setting. Worklist is a List Report flavor.
-
+DESCRIPTION: For Worklist floorplan (List Report flavor) disable the filter bar with hideFilterBar true in view settings.
 LANGUAGE: JSON
-
 CODE:
 ```json
-// file: app/worklist/webapp/manifest.json (snippet)
+// app/worklist/webapp/manifest.json (Worklist)
 "OrdersList": {
-  "options": {
-    "settings": {
-      "hideFilterBar": true
+    ...
+    "options": {
+        "settings": {
+            ...
+            "hideFilterBar": true
+        }
     }
-  }
 }
 ```
 
----
-
-STEP: How to obtain support
-
-DESCRIPTION: Create an issue in repository or ask in SAP Community. Repo issue URL & SAP Community URL.
+STEP: Where to find code & support
+DESCRIPTION: Search terms are included in each section. File paths referenced throughout:
+- app/listreport-objectpage/webapp/manifest.json
+- app/listreport-objectpage/field-control.cds
+- app/listreport-objectpage/layout.cds
+- app/listreport-objectpage/layouts_RootEntities.cds
+- app/listreport-objectpage/value-helps.cds
+- app/listreport-objectpage/labels.cds
+- app/listreport-objectpage/ext/controller/RootEntityLRExtension.controller.ts
+- srv/list-report-srv.js
+- app/worklist/webapp/manifest.json
 
 LANGUAGE: Text
-
 CODE:
 ```text
-Create an issue: https://github.com/SAP-samples/fiori-elements-feature-showcase/issues
-Ask in SAP Community: https://answers.sap.com/questions/ask.html
+Support:
+- Create an issue: https://github.com/SAP-samples/fiori-elements-feature-showcase/issues
+- SAP Community: https://answers.sap.com/questions/ask.html
+License: Apache-2.0 (see LICENSES/Apache-2.0.txt)
 ```
 
----
 --------------------------------

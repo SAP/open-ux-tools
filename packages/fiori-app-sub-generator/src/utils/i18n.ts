@@ -21,6 +21,7 @@ export async function initI18nFioriAppSubGenerator(): Promise<void> {
         fallbackLng: 'en',
         defaultNS: fioriAppSubGeneratorNs,
         ns: [fioriAppSubGeneratorNs],
+        showSupportNotice: false,
         interpolation: {
             format: function odataVersionFormatter(odataVersion: OdataVersion) {
                 return odataVersion ? ` V${odataVersion}` : '';
@@ -44,7 +45,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: fioriAppSubGeneratorNs });
     }
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 initI18nFioriAppSubGenerator().catch(() => {

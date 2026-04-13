@@ -48,7 +48,7 @@ describe('errorMapping', () => {
     describe('getErrorMessage', () => {
         test('returns mapped message', () => {
             const msg = getErrorMessage(ERROR_TYPE.CERT_EXPIRED);
-            expect(msg).toContain('The system URL is using an expired security certificate.');
+            expect(msg).toContain('The connection URL uses an expired security certificate.');
         });
         test('falls back for unknown', () => {
             const msg = getErrorMessage(ERROR_TYPE.UNKNOWN);

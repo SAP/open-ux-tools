@@ -1,9 +1,11 @@
 {
     "labels": {
-        "name": "System Name",
+        "name": "Connection Name",
         "type": "System Type",
+        "connectionType": "Connection Type",
         "authenticationType": "Authentication Type",
         "url": "URL",
+        "servicePath": "Service Path",
         "client": "Client",
         "username": "Username",
         "password": "Password",
@@ -20,7 +22,15 @@
         "sapSystemDetails": "SAP System Details",
         "newSapSystem": "New SAP System",
         "onPremSystem": "ABAP On Premise",
-        "btpSystem": "ABAP Environment on SAP Business Technology Platform"
+        "btpSystem": "ABAP Environment on SAP Business Technology Platform",
+        "genericHost": "Generic Host",
+        "catalog": "Catalog",
+        "serviceUrl": "Service URL"
+    },
+    "options": {
+        "abapCatalog": "ABAP Catalog",
+        "serviceUrlEndpoint": "Service URL Endpoint",
+        "genericHost": "Generic Host"
     },
     "systemStatus": {
         "infoLoading": "Loading System Information...",
@@ -30,9 +40,12 @@
             "forMoreInfo": "For more information, check the ",
             "outputTab": "OUTPUT tab."
         },
+        "connectionExists": {
+            "prefix": "The [",
+            "suffix": "] connection already exists with the same URL and Client."
+        },
         "increaseLogLevel": "You might need to increase the log level to <b>Debug</b>."
     },
-
     "dialog": {
         "titleConfirmSave": "Save Confirmation",
         "subtextConfirmSave": "The SAP system has not been validated by testing the connection. Are you sure you want to save?",
@@ -48,5 +61,9 @@
     },
     "warnings": {
         "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
+    },
+    "tooltips": {
+        "servicePathDescription": "You can enter a service path to test the connection.",
+        "contentNotSaved": "The content in this field is not saved."
     }
 }

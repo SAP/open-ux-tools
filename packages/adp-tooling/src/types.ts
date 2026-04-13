@@ -1,11 +1,47 @@
 import type { UI5FlexLayer, ManifestNamespace, Manifest, Package } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
-import type { AxiosRequestConfig, KeyUserChangeContent, OperationsType } from '@sap-ux/axios-extension';
+import type {
+    AdaptationProjectType,
+    AxiosRequestConfig,
+    KeyUserChangeContent,
+    OperationsType
+} from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
+import type { SupportedProject } from './source';
+
+export type DataSources = Record<string, ManifestNamespace.DataSource>;
+
+/**
+ * Common interface for manifest services (ABAP and CF).
+ * Consumers should program against this interface to support both environments.
+ */
+export interface IManifestService {
+    /**
+     * Returns the manifest.
+     *
+     * @returns The manifest.
+     */
+    getManifest(): Manifest;
+
+    /**
+     * Returns the data sources from the manifest.
+     *
+     * @returns The data sources from the manifest.
+     */
+    getManifestDataSources(): DataSources;
+
+    /**
+     * Returns the metadata of a data source.
+     *
+     * @param dataSourceId - The ID of the data source.
+     * @returns A promise that resolves to the metadata of the data source.
+     */
+    getDataSourceMetadata(dataSourceId: string): Promise<string>;
+}
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -32,18 +68,33 @@ export interface ToolsSupport {
  */
 type AbapTarget = DestinationAbapTarget | Pick<UrlAbapTarget, 'url' | 'client' | 'scp'>;
 
-export interface AdpPreviewConfig {
+/**
+ * Configuration for ADP preview using ABAP target connection.
+ */
+export interface AdpPreviewConfigWithTarget {
     target: AbapTarget;
+    /**
+     * If set to true then certification validation errors are ignored.
+     */
+    ignoreCertErrors?: boolean;
+}
+
+/**
+ * Configuration for ADP preview using CF build output path.
+ */
+export interface AdpPreviewConfigWithBuildPath {
+    /**
+     * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
+     */
+    cfBuildPath: string;
 
     /**
      * If set to true then certification validation errors are ignored.
      */
     ignoreCertErrors?: boolean;
-    /**
-     * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
-     */
-    cfBuildPath?: string;
 }
+
+export type AdpPreviewConfig = AdpPreviewConfigWithTarget | AdpPreviewConfigWithBuildPath;
 
 export interface OnpremApp {
     /** Application variant id. */
@@ -122,7 +173,9 @@ export interface ConfigAnswers {
     system: string;
     username: string;
     password: string;
+    storeCredentials?: boolean;
     application: SourceApplication;
+    projectType?: AdaptationProjectType;
     fioriId?: string;
     ach?: string;
     shouldCreateExtProject?: boolean;
@@ -148,11 +201,12 @@ export interface SourceApplication {
     fileType: string;
     bspUrl: string;
     bspName: string;
+    cloudDevAdaptationStatus: string;
 }
 
-export interface FlexUISupportedSystem {
-    isUIFlex: boolean;
-    isOnPremise: boolean;
+export interface FlexUICapability {
+    isUIFlexSupported: boolean;
+    isDtaFolderDeploymentSupported: boolean;
 }
 
 export interface UI5Version {
@@ -192,6 +246,7 @@ export interface Endpoint extends Partial<Destination> {
     Credentials?: { username?: string; password?: string };
     UserDisplayName?: string;
     Scp?: boolean;
+    SystemType?: string;
 }
 
 export interface ChangeInboundNavigation {
@@ -750,6 +805,8 @@ export interface CustomConfig {
     adp: {
         environment: OperationsType;
         support: ToolsSupport;
+        projectType?: AdaptationProjectType;
+        supportedProject?: SupportedProject;
     };
 }
 
@@ -819,7 +876,10 @@ export interface InboundChange {
  */
 export interface XsAppRoute {
     source: string;
+    target?: string;
+    destination?: string;
     endpoint?: string;
+    service?: string;
     [key: string]: unknown;
 }
 
@@ -844,6 +904,8 @@ export interface CfAppParams {
 export interface AppParamsExtended extends CfAppParams {
     spaceGuid: string;
 }
+
+export type ServiceKeySortField = 'updated_at' | 'created_at';
 
 export interface ServiceKeys {
     credentials: {
@@ -870,6 +932,39 @@ export interface ServiceInstance {
     guid: string;
 }
 
+/**
+ * Service key credentials with tags returned by the CF API.
+ */
+export interface ServiceKeyCredentialsWithTags {
+    label: string;
+    name: string;
+    tags: string[];
+    plan: string;
+    credentials: ServiceKeys['credentials'] | undefined;
+}
+
+/**
+ * Destination configuration returned by the BTP Destination Configuration API.
+ * Contains the known properties; additional custom properties may also be present.
+ */
+export interface BtpDestinationConfig {
+    Name: string;
+    Type: string;
+    URL: string;
+    Authentication: string;
+    ProxyType: string;
+    Description?: string;
+    User?: string;
+    Password?: string;
+    'sap-client'?: string;
+    [key: string]: string | undefined;
+}
+
+export interface AppRouterEnvOptions {
+    'VCAP_SERVICES'?: Record<string, unknown>;
+    destinations?: { name: string; url: string }[];
+}
+
 export interface GetServiceInstanceParams {
     spaceGuids?: string[];
     planNames?: string[];
@@ -881,6 +976,15 @@ export interface BusinessServiceResource {
     label: string;
 }
 
+export interface CfUi5AppInfo {
+    asyncHints?: {
+        libs?: Array<{
+            name: string;
+            html5AppName?: string;
+            url?: { url: string };
+        }>;
+    };
+}
 /**
  * Cloud Foundry ADP UI5 YAML Types
  */
@@ -1055,18 +1159,27 @@ export interface CfAdpWriterConfig {
          */
         serviceInstanceGuid?: string;
         /**
-         * Backend URL from service instance keys.
+         * Backend URLs from service instance keys.
          */
-        backendUrl?: string;
+        backendUrls?: string[];
         /**
          * OAuth paths extracted from xs-app.json routes that have a source property.
          */
         oauthPaths?: string[];
+        /**
+         * Business service instance keys.
+         */
+        serviceInfo?: ServiceInfo | null;
+        /**
+         * GUID of the BTP space.
+         */
+        spaceGuid: string;
     };
     project: {
         name: string;
         path: string;
         folder: string;
+        xsSecurityAppName?: string;
     };
     customConfig?: CustomConfig;
     ui5: {
@@ -1093,13 +1206,15 @@ export interface CreateCfConfigParams {
     manifest: Manifest;
     html5RepoRuntimeGuid: string;
     serviceInstanceGuid?: string;
-    backendUrl?: string;
+    backendUrls?: string[];
     oauthPaths?: string[];
     projectPath: string;
     addStandaloneApprouter?: boolean;
     publicVersions: UI5Version;
     packageJson: Package;
     toolsId: string;
+    serviceInfo?: ServiceInfo | null;
+    spaceGuid: string;
 }
 
 export const AppRouterType = {

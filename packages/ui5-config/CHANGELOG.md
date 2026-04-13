@@ -1,5 +1,78 @@
 # @sap-ux/ui5-config
 
+## 0.30.2
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- Updated dependencies [f1e4481]
+    - @sap-ux/yaml@0.17.7
+
+## 0.30.1
+
+### Patch Changes
+
+- a41533f: chore(ui5-config): upgrade axios 1.13.5 → 1.13.6
+- Updated dependencies [a41533f]
+    - @sap-ux/yaml@0.17.6
+
+## 0.30.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+## 0.29.21
+
+### Patch Changes
+
+- Updated dependencies [2917c4c]
+    - @sap-ux/yaml@0.17.5
+
+## 0.29.20
+
+### Patch Changes
+
+- c09b843: (ADP) Add small refactoring to deployment validatiors and remove the redundant ui5 config hasBuilderKey() method.
+
+## 0.29.19
+
+### Patch Changes
+
+- d92cd35: fix(deps): update dependency ajv to v8.18.0 [security]
+
+## 0.29.18
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+
+## 0.29.17
+
+### Patch Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+
+## 0.29.16
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+
+## 0.29.15
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+
+## 0.29.14
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/yaml@0.17.4
+
 ## 0.29.13
 
 ### Patch Changes

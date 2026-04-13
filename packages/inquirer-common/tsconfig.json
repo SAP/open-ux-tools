@@ -28,6 +28,9 @@
       "path": "../odata-service-writer"
     },
     {
+      "path": "../project-access"
+    },
+    {
       "path": "../telemetry"
     },
     {

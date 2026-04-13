@@ -111,9 +111,9 @@ function _setProjectDefaults(project: AppConfig['project']): Project {
         ui5Version: ui5Version,
         localUI5Version: project.localUI5Version ?? ui5Version,
         ui5Theme: project.ui5Theme ?? getDefaultUI5Theme(ui5Version),
-        skipAnnotations: project.skipAnnotations || defaultPromptValues[promptNames.skipAnnotations],
-        enableEslint: project.enableEslint || defaultPromptValues[promptNames.enableEslint],
-        enableTypeScript: project.enableTypeScript || defaultPromptValues[promptNames.enableTypeScript],
+        skipAnnotations: project.skipAnnotations ?? defaultPromptValues[promptNames.skipAnnotations],
+        enableEslint: project.enableEslint ?? defaultPromptValues[promptNames.enableEslint],
+        enableTypeScript: project.enableTypeScript ?? defaultPromptValues[promptNames.enableTypeScript],
         sapux: project.sapux || false,
         flpAppId: '' // Mandatory property, will be generated in the writing phase transforms and overwritten
     };

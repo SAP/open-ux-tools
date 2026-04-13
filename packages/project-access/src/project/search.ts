@@ -46,7 +46,7 @@ type FileMapAndCache = {
 /**
  * Default folders to exclude from search.
  */
-const excludeFolders = ['.git', 'node_modules', 'dist'];
+const excludeFolders = ['.git', 'node_modules', 'dist', '.adp'];
 /**
  * WorkspaceFolder type guard.
  *

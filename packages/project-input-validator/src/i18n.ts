@@ -20,7 +20,8 @@ export function addi18nResourceBundle(): void {
 export async function initI18nProjectValidators(): Promise<void> {
     await i18n.init({
         lng: 'en',
-        fallbackLng: 'en'
+        fallbackLng: 'en',
+        showSupportNotice: false
     });
     addi18nResourceBundle();
 }
@@ -36,7 +37,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: PROJECT_INPUT_VALIDATOR_NS });
     }
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 initI18nProjectValidators().catch(() => {

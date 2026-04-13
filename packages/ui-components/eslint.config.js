@@ -4,7 +4,7 @@ const globals = require('globals');
 // const storybook = require('eslint-plugin-storybook');
 
 
-const tsParser = require('@typescript-eslint/parser');
+const { tsParser } = require('typescript-eslint');
 
 module.exports = [
     { ignores: ['stories', 'storybook', 'test'] },

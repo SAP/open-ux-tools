@@ -30,6 +30,7 @@
 
 # Module: eslint-plugin-fiori-tools
 /packages/eslint-plugin-fiori-tools/ @SAP/ux-tools-eslint-plugin-fiori-tools
+/packages/eslint-plugin-fiori-tools/docs/rules/ @SAP/ux-tools-text-reviewers
 
 # Module: logger
 /packages/logger/ @SAP/ux-tools-logger

@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
@@ -41,7 +41,7 @@ jobs:
           restore-keys: |
             ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install pnpm modules

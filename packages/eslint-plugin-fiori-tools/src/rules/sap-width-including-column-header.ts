@@ -9,6 +9,8 @@ import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics
 import { getRecordType } from '../project-context/linker/annotations';
 import type { FeV4ObjectPage, FeV4ListReport, Table } from '../project-context/linker/fe-v4';
 import type { ParsedApp, ParsedService } from '../project-context/parser';
+import { createJsonFixer } from '../language/rule-fixer';
+import { isLowerThanMinimalUi5Version } from '../utils/version';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
@@ -48,8 +50,8 @@ function shouldTableHaveWidthIncludingColumnHeader(table: Table, aliasInfo: Alia
  * Checks tables in a page for widthIncludingColumnHeader configuration issues.
  * Adds diagnostic problems for tables that should have this property set.
  *
- * @param page - FE v4 page to check (Object Page or List Report)
- * @param parsedApp - Parsed application containing manifest data
+ * @param page - SAP Fiori elements for OData V4 page to check (object page or list report)
+ * @param parsedApp - Parsed application containing manifest.json file data
  * @param parsedService - Parsed service containing metadata and annotations
  * @param problems - Array to collect diagnostic problems
  */
@@ -96,10 +98,11 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             ['width-including-column-header-manifest']:
-                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for better column width calculation. Add it to the control configuration for "{{table}}" table.',
+                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration for "{{table}}" table.',
             ['width-including-column-header']:
-                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for better column width calculation.'
-        }
+                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width.'
+        },
+        fixable: 'code'
     },
     check(context) {
         const problems: WidthIncludingColumnHeaderDiagnostic[] = [];
@@ -108,8 +111,14 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (app.type !== 'fe-v4') {
                 continue;
             }
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+            if (
+                !parsedApp.manifest.minUI5Version ||
+                isLowerThanMinimalUi5Version(parsedApp.manifest.minUI5Version, { major: 1, minor: 120 })
+            ) {
+                continue;
+            }
             for (const page of app.pages) {
-                const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
                 const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
                 if (!parsedService) {
                     continue;
@@ -121,14 +130,15 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJsonVisitorHandler: (context, diagnostic) =>
+    createJsonVisitorHandler: (context, diagnostic, paths) =>
         function report(node: MemberNode): void {
             context.report({
                 node,
                 messageId: 'width-including-column-header-manifest',
                 data: {
                     table: diagnostic.annotation.annotationPath
-                }
+                },
+                fix: createJsonFixer({ context, node, deepestPathResult: paths, value: true })
             });
         },
     createAnnotations(context, validationResult) {

@@ -21,7 +21,7 @@ import * as manifestService from '../../../src/base/abap/manifest-service';
 import * as helper from '../../../src/base/helper';
 import * as editors from '../../../src/writer/editors';
 import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotations';
-import { addCustomSectionFragment } from '../../../src/preview/descriptor-change-handler';
+import { addCustomFragment } from '../../../src/preview/descriptor-change-handler';
 
 describe('change-handler', () => {
     describe('moduleNameContentMap', () => {
@@ -804,7 +804,7 @@ id="<%- ids.customActionButton %>"`);
                 throw new Error('Copy failed');
             });
 
-            addCustomSectionFragment(
+            addCustomFragment(
                 pathOfProject,
                 {
                     changeType: 'appdescr_fe_changePageConfiguration',
@@ -827,12 +827,12 @@ id="<%- ids.customActionButton %>"`);
             );
         });
 
-        describe('custom fragment', () => {
+        describe('custom fragment - section', () => {
             it('should create Object Page custom section fragment', () => {
                 mockFs.exists.mockReturnValue(false);
                 mockFs.read.mockReturnValue(`
         id="<%- ids.hBox %>"`);
-                addCustomSectionFragment(
+                addCustomFragment(
                     pathOfProject,
                     {
                         projectId: 'adp.v1',
@@ -865,6 +865,50 @@ id="<%- ids.customActionButton %>"`);
                 expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
                                 "
                                         id=\\"hbox-30303030\\""
+                            `);
+
+                expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
+            });
+        });
+
+        describe('custom fragment - column', () => {
+            it('should create List report custom column fragment', () => {
+                mockFs.exists.mockReturnValue(false);
+                mockFs.read.mockReturnValue(`
+        id="<%- ids.text %>"`);
+                addCustomFragment(
+                    pathOfProject,
+                    {
+                        projectId: 'adp.v1',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        content: {
+                            entityPropertyChange: {
+                                propertyPath: 'controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/columns/test',
+                                operation: 'UPSERT',
+                                propertyValue: {
+                                    template: 'adp.v1.changes.fragments.test'
+                                }
+                            }
+                        }
+                    } as any,
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger
+                );
+
+                expect(mockFs.read).toHaveBeenCalled();
+                expect(
+                    (mockFs.read.mock.calls[0][0] as string)
+                        .replace(/\\/g, '/')
+                        .endsWith('templates/rta/v4/mdc-custom-column-config.xml')
+                ).toBe(true);
+
+                expect(mockFs.write).toHaveBeenCalled();
+                expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                    `"project/path/changes/fragments/test.fragment.xml"`
+                );
+                expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+                                "
+                                        id=\\"text-30303030\\""
                             `);
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);

@@ -1,6 +1,7 @@
 import type { ExtensionContext } from 'vscode';
 import type { PanelManager, SystemPanel } from '../../panel';
 import type { SapSystemsProvider } from '../../providers';
+import type { ConnectionType } from '@sap-ux/store';
 
 export interface SapSystemsExtContext {
     vscodeExtContext: ExtensionContext;
@@ -30,7 +31,7 @@ export interface SystemConfig {
     url: string;
     client?: string;
     name?: string;
-    type?: string;
+    connectionType?: ConnectionType;
 }
 
 /**

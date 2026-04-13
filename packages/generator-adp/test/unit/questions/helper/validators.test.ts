@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { SystemLookup } from '@sap-ux/adp-tooling';
+import type { CfConfig, SystemLookup } from '@sap-ux/adp-tooling';
 import { isExternalLoginEnabled, isMtaProject, getMtaServices } from '@sap-ux/adp-tooling';
 import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
@@ -180,7 +180,12 @@ describe('validateJsonInput', () => {
 });
 
 describe('validateEnvironment', () => {
-    const mockVscode = {};
+    const mockCfConfig: CfConfig = {
+        url: '/test',
+        org: { Name: 'test-org', GUID: 'org-guid' },
+        space: { Name: 'test-space', GUID: 'space-guid' },
+        token: 'test-token'
+    };
 
     beforeAll(async () => {
         await initI18n();
@@ -195,11 +200,11 @@ describe('validateEnvironment', () => {
         expect(result).toBe(true);
     });
 
-    test('should return true for CF when logged in', async () => {
+    test('should return true for CF when logged in with org and space', async () => {
         mockIsAppStudio.mockReturnValue(false);
         mockIsExternalLoginEnabled.mockResolvedValue(true);
 
-        const result = await validateEnvironment('CF', true);
+        const result = await validateEnvironment('CF', true, mockCfConfig);
         expect(result).toBe(true);
     });
 
@@ -211,7 +216,7 @@ describe('validateEnvironment', () => {
     test('should return true for CF when logged in and in AppStudio', async () => {
         mockIsAppStudio.mockReturnValue(true);
 
-        const result = await validateEnvironment('CF', true);
+        const result = await validateEnvironment('CF', true, mockCfConfig);
         expect(result).toBe(true);
     });
 
@@ -219,8 +224,26 @@ describe('validateEnvironment', () => {
         mockIsAppStudio.mockReturnValue(false);
         mockIsExternalLoginEnabled.mockResolvedValue(true);
 
-        const result = await validateEnvironment('CF', true);
+        const result = await validateEnvironment('CF', true, mockCfConfig);
         expect(result).toBe(true);
+    });
+
+    test('should return error when CF selected, logged in, but org is missing', async () => {
+        const configWithoutOrg = { ...mockCfConfig, org: undefined } as unknown as CfConfig;
+        const result = await validateEnvironment('CF', true, configWithoutOrg);
+        expect(result).toBe(t('error.cfOrgSpaceMissing'));
+    });
+
+    test('should return error when CF selected, logged in, but space is missing', async () => {
+        const configWithoutSpace = { ...mockCfConfig, space: undefined } as unknown as CfConfig;
+        const result = await validateEnvironment('CF', true, configWithoutSpace);
+        expect(result).toBe(t('error.cfOrgSpaceMissing'));
+    });
+
+    test('should return error when CF selected, logged in, but org name is empty', async () => {
+        const configWithEmptyOrg = { ...mockCfConfig, org: { Name: '', GUID: 'org-guid' } };
+        const result = await validateEnvironment('CF', true, configWithEmptyOrg);
+        expect(result).toBe(t('error.cfOrgSpaceMissing'));
     });
 });
 
@@ -300,6 +323,11 @@ describe('validateBusinessSolutionName', () => {
         expect(result).toBe(true);
     });
 
+    test('should return true for multi-segment name', () => {
+        const result = validateBusinessSolutionName('com.sap.test');
+        expect(result).toBe(true);
+    });
+
     test('should return error for empty string', () => {
         const result = validateBusinessSolutionName('');
         expect(result).toBe('The input cannot be empty.');
@@ -308,5 +336,15 @@ describe('validateBusinessSolutionName', () => {
     test('should return error for single part name', () => {
         const result = validateBusinessSolutionName('test');
         expect(result).toBe(t('error.businessSolutionNameInvalid'));
+    });
+
+    test('should return error for name with spaces', () => {
+        const result = validateBusinessSolutionName('test. solution');
+        expect(result).toBe(t('error.businessSolutionNameInvalidChars'));
+    });
+
+    test('should return error for name with special characters', () => {
+        const result = validateBusinessSolutionName('test.sol@tion');
+        expect(result).toBe(t('error.businessSolutionNameInvalidChars'));
     });
 });

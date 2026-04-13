@@ -38,6 +38,12 @@ export interface UITranslationInputProps<T extends TranslationEntry> extends ITe
     defaultPattern: TranslationTextPattern;
     // Allowed pattern
     allowedPatterns: TranslationTextPattern[];
+    /**
+     * Inverted style theme
+     *
+     * @default false
+     */
+    invertedCalloutTheme?: boolean;
 }
 
 /**
@@ -126,10 +132,33 @@ const getTranslationSuggestion = <T extends TranslationEntry>(
     };
     tooltip = formatText(tooltip, messageValues);
     return {
-        message: <UIFormattedText values={messageValues}>{message}</UIFormattedText>,
+        message: (
+            <UIFormattedText values={messageValues} className="ui-translatable__message__text">
+                {message}
+            </UIFormattedText>
+        ),
         tooltip,
         suggest
     };
+};
+
+/**
+ * Generates the CSS class names for the translation input component.
+ *
+ * @param props - Component props containing styling options.
+ * @returns A string containing the computed class names.
+ */
+const getClassNames = <T extends TranslationEntry = TranslationEntry>(props: UITranslationInputProps<T>): string => {
+    const { className, invertedCalloutTheme } = props;
+    let classNames = ' ui-translatable__input';
+    // Custom external classes
+    if (className) {
+        classNames += ` ${className}`;
+    }
+    if (invertedCalloutTheme) {
+        classNames += ` ui-translatable--inverted`;
+    }
+    return classNames;
 };
 
 /**
@@ -143,7 +172,6 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
 ): ReactElement => {
     const {
         id,
-        className,
         onChange,
         value,
         allowedPatterns,
@@ -156,16 +184,12 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
         onCreateNewEntry,
         onShowExistingEntry,
         disabled,
-        strings
+        strings,
+        invertedCalloutTheme
     } = props;
 
     const suggestion = getTranslationSuggestion(props);
-
-    let classNames = ' ui-translatable__input';
-    // Custom external classes
-    if (className) {
-        classNames += ` ${className}`;
-    }
+    const classNames = getClassNames(props);
 
     const onUpdateValue = useCallback(
         (newValue: string): void => {
@@ -199,6 +223,7 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
                 disabled={disabled}
                 strings={strings}
                 suggestion={suggestion}
+                invertedCalloutTheme={invertedCalloutTheme}
             />
         );
     }, [

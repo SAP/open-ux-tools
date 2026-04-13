@@ -8,7 +8,7 @@ import type http from 'node:http';
 import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
-import path, { dirname, join, posix } from 'node:path';
+import { dirname, join, posix } from 'node:path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
@@ -59,12 +59,14 @@ import {
     sanitizeRtaConfig,
     adjustRtaConfigPaths,
     adjustCardGeneratorPath,
-    CARD_GENERATOR_DEFAULT
+    CARD_GENERATOR_DEFAULT,
+    remapResourcesForPath
 } from './config';
 import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import { getResourcesPathPrefix, getTestResourcesPathPrefix } from './utils/project';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
@@ -325,6 +327,9 @@ export class FlpSandbox {
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
             this.removeAsyncHintsRequests();
         }
+        if (ui5Version.major === 1 && ui5Version.minor < 120) {
+            this.removeFlexExtensionPointEnabled();
+        }
 
         const config = structuredClone(this.templateConfig);
         if (!config.ui5.libs.includes('sap.ui.rta')) {
@@ -342,6 +347,8 @@ export class FlpSandbox {
             pluginScript: editor.pluginScript
         };
         config.features = FeatureToggleAccess.getAllFeatureToggles();
+        const appId = this.manifest['sap.app']?.id ?? '';
+        remapResourcesForPath(config, editor.path, appId);
 
         return render(this.getSandboxTemplate(ui5Version), config);
     }
@@ -427,7 +434,11 @@ export class FlpSandbox {
             params['fiori-tools-rta-mode'] = 'true';
             params['sap-ui-rta-skip-flex-validation'] = 'true';
             params['sap-ui-xx-condense-changes'] = 'true';
-            res.redirect(302, `${url}?${new URLSearchParams(params)}`);
+            const redirectUrl = new URL(
+                `${url}?${new URLSearchParams(params as Record<string, string>)}`,
+                'http://localhost'
+            );
+            res.redirect(302, `${redirectUrl.pathname}${redirectUrl.search}`);
             return;
         }
         const html = (await this.generateSandboxForEditor(req, rta, editor)).replace(
@@ -489,7 +500,11 @@ export class FlpSandbox {
                 'ui5-patched-router' in req ? posix.join(req['ui5-patched-router']?.baseUrl ?? '', req.path) : req.path;
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
-            res.redirect(302, `${url}?${new URLSearchParams(params)}`);
+            const redirectUrl = new URL(
+                `${url}?${new URLSearchParams(params as Record<string, string>)}`,
+                'http://localhost'
+            );
+            res.redirect(302, `${redirectUrl.pathname}${redirectUrl.search}`);
             return;
         }
         await this.setApplicationDependencies();
@@ -512,6 +527,9 @@ export class FlpSandbox {
                 this.templateConfig.baseUrl
             );
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
+            if (ui5Version.major === 1 && ui5Version.minor < 120) {
+                this.removeFlexExtensionPointEnabled();
+            }
             //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
             const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
@@ -652,6 +670,19 @@ export class FlpSandbox {
             const appDependencies = this.templateConfig.apps[app].applicationDependencies;
             if (appDependencies?.asyncHints.requests) {
                 appDependencies.asyncHints.requests = [];
+            }
+        }
+    }
+
+    /**
+     * For UI5 versions below 1.120, flexExtensionPointEnabled must be removed from the application
+     * dependencies manifest. Older UI5 versions cannot handle this property at bootstrap time.
+     */
+    private removeFlexExtensionPointEnabled(): void {
+        for (const app in this.templateConfig.apps) {
+            const manifest = this.templateConfig.apps[app].applicationDependencies?.manifest;
+            if (manifest?.['sap.ui5']?.flexExtensionPointEnabled !== undefined) {
+                delete manifest['sap.ui5'].flexExtensionPointEnabled;
             }
         }
     }
@@ -1046,7 +1077,11 @@ export class FlpSandbox {
                 fileName?: string;
                 manifests: MultiCardsPayload[];
             };
-            const webappPath = await getWebappPath(path.resolve(), this.fs);
+
+            // getSourcePath() returns the webapp path directly for all project types
+            const webappPath = this.utils.getProject().getSourcePath();
+            const projectRoot = dirname(webappPath);
+
             const fullPath = join(webappPath, localPath);
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
             const integrationCard = getIntegrationCard(manifests);
@@ -1066,7 +1101,7 @@ export class FlpSandbox {
                 }
             } satisfies ManifestNamespace.EmbedsSettings;
 
-            const appAccess = await createApplicationAccess(path.resolve(), this.fs);
+            const appAccess = await createApplicationAccess(projectRoot, this.fs);
             await appAccess.updateManifestJSON(this.manifest, this.fs);
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
         } catch (error) {
@@ -1104,35 +1139,13 @@ export class FlpSandbox {
      */
     private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
         try {
-            const webappPath = await getWebappPath(path.resolve(), this.fs);
-            const i18nConfig = this.manifest['sap.app'].i18n;
-            let i18nPath = 'i18n/i18n.properties';
-            let fallbackLocale: string | undefined;
-            let supportedLocales: string[] = [];
+            const webappPath = this.utils.getProject().getSourcePath();
+            const { i18nPath, supportedLocales, fallbackLocale } = this.parseI18nConfig();
 
-            if (typeof i18nConfig === 'string') {
-                i18nPath = i18nConfig;
-            } else if (typeof i18nConfig === 'object' && i18nConfig !== null && 'bundleUrl' in i18nConfig) {
-                const {
-                    bundleUrl: i18nPathFromConfig,
-                    supportedLocales: locales = [],
-                    fallbackLocale: fallback
-                } = i18nConfig as {
-                    bundleUrl: string;
-                    supportedLocales?: string[];
-                    fallbackLocale?: string;
-                };
-
-                i18nPath = i18nPathFromConfig;
-                supportedLocales = locales;
-                fallbackLocale = fallback;
+            let requestedLocale = (req.query.locale as string) ?? fallbackLocale ?? '';
+            if (!requestedLocale && supportedLocales.length > 0) {
+                requestedLocale = supportedLocales[0];
             }
-
-            const requestedLocale = (req.query.locale as string) ?? fallbackLocale ?? '';
-            const baseFilePath = join(webappPath, i18nPath);
-            const filePath = requestedLocale
-                ? baseFilePath.replace('.properties', `_${requestedLocale}.properties`)
-                : baseFilePath;
 
             if (requestedLocale && supportedLocales.length > 0 && !supportedLocales.includes(requestedLocale)) {
                 this.sendResponse(
@@ -1144,6 +1157,11 @@ export class FlpSandbox {
                 return;
             }
 
+            const baseFilePath = join(webappPath, i18nPath);
+            const filePath = requestedLocale
+                ? baseFilePath.replace('.properties', `_${requestedLocale}.properties`)
+                : baseFilePath;
+
             const entries = ((req.body as Array<I18nEntry>) || []).map((entry) => ({
                 ...entry,
                 annotation: entry.comment ?? entry.annotation
@@ -1154,6 +1172,53 @@ export class FlpSandbox {
             this.logger.error(`File could not be updated. Error: ${error}`);
             this.sendResponse(res, 'text/plain', 500, 'File could not be updated.');
         }
+    }
+
+    /**
+     * Parses i18n configuration from manifest and returns path and locale settings.
+     *
+     * @returns i18n path, supported locales, and fallback locale
+     */
+    private parseI18nConfig(): { i18nPath: string; supportedLocales: string[]; fallbackLocale: string | undefined } {
+        const i18nConfig = this.manifest['sap.app'].i18n;
+        let i18nPath = 'i18n/i18n.properties';
+        let fallbackLocale: string | undefined;
+        let supportedLocales: string[] = [];
+
+        if (typeof i18nConfig === 'string') {
+            i18nPath = i18nConfig;
+        } else if (typeof i18nConfig === 'object' && i18nConfig !== null) {
+            i18nPath = this.getI18nPathFromConfig(i18nConfig);
+            supportedLocales = (i18nConfig.supportedLocales as string[]) ?? [];
+            fallbackLocale = i18nConfig.fallbackLocale;
+        }
+
+        return { i18nPath, supportedLocales, fallbackLocale };
+    }
+
+    /**
+     * Extracts i18n path from object configuration (bundleName or bundleUrl).
+     *
+     * @param i18nConfig - The i18n configuration object
+     * @returns The resolved i18n path
+     */
+    private getI18nPathFromConfig(i18nConfig: NonNullable<Exclude<Manifest['sap.app']['i18n'], string>>): string {
+        if ('bundleName' in i18nConfig && i18nConfig.bundleName) {
+            const appId = this.manifest['sap.app'].id;
+            const bundlePath = i18nConfig.bundleName.startsWith(`${appId}.`)
+                ? i18nConfig.bundleName.substring(appId.length + 1)
+                : i18nConfig.bundleName;
+            if ('bundleUrl' in i18nConfig && i18nConfig.bundleUrl) {
+                this.logger.info(
+                    `Both bundleName and bundleUrl are provided in i18n config. Using bundleName: ${i18nConfig.bundleName}`
+                );
+            }
+            return `${bundlePath.replaceAll('.', '/')}.properties`;
+        }
+        if ('bundleUrl' in i18nConfig && i18nConfig.bundleUrl) {
+            return i18nConfig.bundleUrl;
+        }
+        return 'i18n/i18n.properties';
     }
 
     /**
@@ -1189,20 +1254,20 @@ export class FlpSandbox {
         const layer = await adp.init(variant);
 
         // CF ADP build path mode: serve built resources directly from build output
-        if (config.cfBuildPath) {
+        if ('cfBuildPath' in config) {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
-            configureRta(this.rta, layer, variant.id, false);
+            configureRta(this.rta, layer, variant.id, false, true);
             await this.init(manifest, variant.reference);
-            this.setupAdpCommonHandlers(adp);
+            await this.setupAdpCommonHandlers(adp);
             return;
         }
 
-        configureRta(this.rta, layer, variant.id, adp.isCloudProject);
+        configureRta(this.rta, layer, variant.id, adp.projectType === AdaptationProjectType.CLOUD_READY);
         const descriptor = adp.descriptor;
         const { name, manifest } = descriptor;
         await this.init(manifest, name, adp.resources, adp);
         this.router.use(adp.descriptor.url, adp.proxy.bind(adp));
-        this.setupAdpCommonHandlers(adp);
+        await this.setupAdpCommonHandlers(adp);
     }
 
     /**
@@ -1210,10 +1275,12 @@ export class FlpSandbox {
      *
      * @param adp AdpPreview instance
      */
-    private setupAdpCommonHandlers(adp: AdpPreview): void {
+    private async setupAdpCommonHandlers(adp: AdpPreview): Promise<void> {
         this.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         this.router.use(json());
         adp.addApis(this.router);
+        // Register i18n store route for ADP projects (used by OVP bridge functions)
+        await this.addStoreI18nKeysRoute();
     }
 
     /**
@@ -1247,8 +1314,15 @@ function serializeUi5Configuration(config: Map<string, string>): string {
  * @param layer UI5 flex layer
  * @param variantId variant identifier
  * @param isCloud whether this is a cloud project
+ * @param isCloudFoundry whether this is a Cloud Foundry ADP scenario
  */
-function configureRta(rta: RtaConfig | undefined, layer: UI5FlexLayer, variantId: string, isCloud: boolean): void {
+function configureRta(
+    rta: RtaConfig | undefined,
+    layer: UI5FlexLayer,
+    variantId: string,
+    isCloud: boolean,
+    isCloudFoundry?: boolean
+): void {
     if (!rta) {
         return;
     }
@@ -1258,7 +1332,8 @@ function configureRta(rta: RtaConfig | undefined, layer: UI5FlexLayer, variantId
         ...rta.options,
         projectId: variantId,
         scenario: 'ADAPTATION_PROJECT',
-        isCloud
+        isCloud,
+        ...(isCloudFoundry !== undefined && { isCloudFoundry })
     };
 
     for (const editor of rta.endpoints) {

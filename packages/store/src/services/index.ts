@@ -4,7 +4,9 @@ import type { BackendSerializableKeys } from '../types';
 /**
  * The backend system keys and their values to filter backend systems by.
  */
-export type BackendSystemFilter = Partial<{ [K in BackendSerializableKeys]: BackendSystem[K] }>;
+export type BackendSystemFilter = Partial<{
+    [K in BackendSerializableKeys]: BackendSystem[K] | BackendSystem[K][];
+}>;
 
 /**
  * Specifies options for retrieving backend systems from the service.

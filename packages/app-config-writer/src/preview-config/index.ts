@@ -29,7 +29,7 @@ export async function convertToVirtualPreview(
     const convertTests = options.convertTests ?? false;
 
     if (!(await checkPrerequisites(basePath, fs, convertTests, logger))) {
-        throw Error('The prerequisites are not met. For more information, see the log messages above.');
+        throw new Error('The prerequisites are not met. For more information, see the log messages above.');
     }
 
     await updatePreviewMiddlewareConfigs(fs, basePath, convertTests, logger);

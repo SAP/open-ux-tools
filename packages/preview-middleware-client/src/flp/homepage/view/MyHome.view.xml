@@ -3,6 +3,7 @@
     xmlns:m="sap.m"
     xmlns:mvc="sap.ui.core.mvc"
     displayBlock="true"
+    controllerName="open.ux.preview.client.flp.homepage.controller.MyHome"
     class="sapUShellFullHeight"
 >
     <m:Page
@@ -10,13 +11,6 @@
         showHeader="false"
         class="sapUiBaseLayout sapUiResponsiveContentPadding sapUiLayoutPadding sapCuxBaseLayout"
     >
-        <NewsAndPagesContainer id="newsContainer" class="homeNewsContainer">
-            <NewsPanel
-                id="news"
-                url="https://sapui5untested.int.sap.eu2.hana.ondemand.com/databinding/proxy/https/news.sap.com/feed"
-            />
-        </NewsAndPagesContainer>
-
         <AppsContainer id="appsContainer">
             <FavAppPanel id="favoriteApps" />
         </AppsContainer>

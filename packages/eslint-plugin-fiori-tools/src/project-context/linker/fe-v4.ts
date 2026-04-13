@@ -1,12 +1,13 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { ParsedService } from '../parser';
-import type { LinkerContext } from './types';
+import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
 import { getParsedServiceByName } from '../utils';
-import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
-import { collectTables, collectSections } from './annotations';
+import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
+import { collectTables, collectSections, collectHeaderSections } from './annotations';
 
 export interface ApplicationSetting {
     createMode: string;
+    disableStrictUomFiltering: boolean;
 }
 
 export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSetting> {
@@ -20,7 +21,7 @@ export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
     contextPath: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
-    lookup: NodeLookup<Table | OrphanTable>;
+    lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
 }
 
 export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
@@ -29,56 +30,52 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     contextPath: string;
     entity: MetadataElement;
     sections: Section[];
-    lookup: NodeLookup<Table | Section>;
+    lookup: NodeLookup<Table | Section | FieldGroup>;
+    header: {
+        anchorBarVisible: ConfigurationProperty<boolean>;
+        visible: ConfigurationProperty<boolean>;
+    };
 }
 
 export type FeV4PageType = FeV4ListReport | FeV4ObjectPage;
 
-export interface AnnotationBasedNode<T extends AnnotationNode, Configuration extends object = {}, Children = never>
-    extends ConfigurationBase<T['type'], Configuration> {
+export interface AnnotationBasedNode<
+    T extends AnnotationNode,
+    Configuration extends object = {},
+    Children = never
+> extends ConfigurationBase<T['type'], Configuration> {
     annotation?: T;
-
     children: Children[];
 }
 
-export interface ConfigurationBase<T extends string, Configuration extends object = {}> {
-    type: T;
-    annotation?: unknown;
-    configuration: {
-        [K in keyof Configuration]: {
-            /**
-             * All possible supported configuration values. Empty means dynamic value resolved by framework at runtime.
-             */
-            values: Configuration[K][];
-            /**
-             * Actual value as defined in the manifest file.
-             */
-            valueInFile?: Configuration[K];
-            /**
-             * Absolute path in manifest where this configuration is defined.
-             */
-            configurationPath: string[];
-        };
-    };
-}
 export type OrphanSection = ConfigurationBase<'orphan-section', {}>;
 export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
-export type Section = TableSection | OrphanSection;
+export type HeaderSection = AnnotationBasedNode<HeaderSectionNode, {}, FieldGroup>;
+export type Section = TableSection | OrphanSection | HeaderSection;
+
 export interface TableSettings {
     creationMode: string;
     tableType: string;
     widthIncludingColumnHeader: boolean;
     disableCopyToClipboard: boolean;
+    enableExport: boolean;
+    enablePaste: boolean;
+    condensedTableLayout: boolean;
+    personalization: boolean | { column?: boolean; filter?: boolean; sort?: boolean; group?: boolean };
 }
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
+export type FieldGroup = AnnotationBasedNode<FieldGroupNode, {}>;
 
 interface ManifestApplicationSettings {
     macros?: {
         table?: {
             defaultCreationMode?: string;
         };
+    };
+    app?: {
+        disableStrictUomFiltering?: boolean;
     };
 }
 
@@ -131,6 +128,42 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
                 ],
                 values: [true, false]
             },
+            enableExport: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'enableExport'
+                ],
+                values: [true, false]
+            },
+            enablePaste: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'enablePaste'
+                ],
+                values: [true, false]
+            },
+            condensedTableLayout: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'condensedTableLayout'
+                ],
+                values: [true, false]
+            },
             creationMode: {
                 configurationPath: [
                     ...pathToPage,
@@ -143,6 +176,18 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
                     'name'
                 ],
                 values: getCreationModeValues()
+            },
+            personalization: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'personalization'
+                ],
+                values: [true, false, {}]
             }
         }
     };
@@ -173,18 +218,47 @@ function getCreationModeValues(tableType?: string): string[] {
     return ['InlineCreationRows', 'NewPage'];
 }
 
-export type Node = Section | Table | OrphanTable;
+export type Node = Section | Table | OrphanTable | FieldGroup;
 export type NodeLookup<T extends Node> = {
     [K in T['type']]?: Extract<T, { type: K }>[];
 };
 
 /**
+ * Links OData V4 object page table and header sections with their tables and FieldGroup configurations.
+ *
+ * @param page - The object page being linked
+ * @param path - Configuration path segments to the page
+ * @param name - The name of the page
+ * @param sections - Array of table and header section nodes to link
+ * @param target - The routing target configuration
+ */
+function linkV4ObjectPageSections(
+    page: FeV4ObjectPage,
+    path: string[],
+    name: string,
+    sections: (TableSectionNode | HeaderSectionNode)[],
+    target: Target
+): void {
+    linkObjectPageSections(
+        page,
+        path,
+        name,
+        sections.filter((section) => section.type === 'table-section'),
+        target
+    );
+    for (const section of sections.filter((section) => section.type === 'header-section')) {
+        collectHeaderSections(section, page);
+    }
+}
+
+/**
  * Runs the Fiori Elements V4 linker to build linked app structure.
  *
  * @param context - The linker context containing app and service information
+ * @returns - V4 app pages with linked annotations
  */
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
-    const linkedApp = linkApplicationSettings(context.app.manifestObject['sap.fe'] ?? {});
+    const linkedApp = linkApplicationSettings(context);
     const manifest = context.app.manifestObject;
     const routingTargets = manifest['sap.ui5']?.routing?.targets;
     if (!routingTargets) {
@@ -221,9 +295,20 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                 entity: entity,
                 configuration: {},
                 sections: [],
-                lookup: {}
+                lookup: {},
+                header: {
+                    anchorBarVisible: {
+                        values: [true, false],
+                        configurationPath: []
+                    },
+                    visible: {
+                        values: [true, false],
+                        configurationPath: []
+                    }
+                }
             };
-            linkObjectPageSections(page, path, name, sections, target);
+            linkV4ObjectPageSections(page, path, name, sections, target);
+            linkObjectPageHeader(page, target);
             linkedApp.pages.push(page);
         }
     }
@@ -237,6 +322,12 @@ interface Target {
             contextPath?: string;
 
             controlConfiguration?: { [key: string]: TableConfiguration };
+            content?: {
+                header?: {
+                    anchorBarVisible?: boolean;
+                    visible?: boolean;
+                };
+            };
         };
     };
 }
@@ -246,9 +337,20 @@ interface TableConfiguration {
         type?: string;
         widthIncludingColumnHeader?: boolean;
         disableCopyToClipboard?: boolean;
+        enableExport?: boolean;
+        enablePaste?: boolean;
+        condensedTableLayout?: boolean;
         creationMode?: {
             name?: string;
         };
+        personalization?:
+            | boolean
+            | {
+                  column?: boolean;
+                  filter?: boolean;
+                  sort?: boolean;
+                  group?: boolean;
+              };
     };
 }
 
@@ -329,11 +431,19 @@ function linkListReportTable(
                 tableControl.configuration.tableType.valueInFile = tableType;
                 const columnHeaderValue = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
                 tableControl.configuration.widthIncludingColumnHeader.valueInFile = columnHeaderValue;
-                const value = controlConfiguration.tableSettings?.disableCopyToClipboard;
-                tableControl.configuration.disableCopyToClipboard.valueInFile = value;
+                const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
+                tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
+                const enableExportValue = controlConfiguration.tableSettings?.enableExport;
+                tableControl.configuration.enableExport.valueInFile = enableExportValue;
+                const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
+                tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
+                const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
+                tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
                 const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
                 tableControl.configuration.creationMode.valueInFile = creationModeValue;
                 tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
+                const personalization = controlConfiguration.tableSettings?.personalization;
+                tableControl.configuration.personalization.valueInFile = personalization;
             }
         } else {
             // no annotation definition found for this table, but configuration exists
@@ -420,9 +530,17 @@ function linkObjectPageSections(
             tableControl.configuration.widthIncludingColumnHeader.valueInFile = value;
             const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
             tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
+            const enableExportValue = controlConfiguration.tableSettings?.enableExport;
+            tableControl.configuration.enableExport.valueInFile = enableExportValue;
+            const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
+            tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
+            const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
+            tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
             const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
             tableControl.configuration.creationMode.valueInFile = creationModeValue;
             tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
+            const personalization = controlConfiguration.tableSettings?.personalization;
+            tableControl.configuration.personalization.valueInFile = personalization;
         } else {
             // no annotation definition found for this section, but configuration exists
             const orphanedSection: OrphanSection = {
@@ -439,6 +557,23 @@ function linkObjectPageSections(
         page.lookup[control.type] ??= [];
         (page.lookup[control.type]! as Extract<Section | Table, { type: typeof control.type }>[]).push(control);
     }
+}
+
+/**
+ * Links the object page header configuration for Fiori Elements V4.
+ *
+ * @param page - The object page being linked
+ * @param target - The routing target containing the header configuration
+ */
+function linkObjectPageHeader(page: FeV4ObjectPage, target: Target): void {
+    const header = target.options?.settings?.content?.header;
+    const basePath = ['sap.ui5', 'routing', 'targets', page.targetName, 'options', 'settings', 'content', 'header'];
+
+    page.header.anchorBarVisible.valueInFile = header?.anchorBarVisible;
+    page.header.anchorBarVisible.configurationPath = [...basePath, 'anchorBarVisible'];
+
+    page.header.visible.valueInFile = header?.visible;
+    page.header.visible.configurationPath = [...basePath, 'visible'];
 }
 
 interface PageSettings {
@@ -528,10 +663,13 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
 /**
  * Links application-level settings from manifest configuration for Fiori Elements V4.
  *
- * @param config - The manifest application settings
+ * @param context - Linker context containing parsed application data
+ * @returns A linked Fiori Elements V4 application object
  */
-function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV4App {
+function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
+    const config: ManifestApplicationSettings = context.app.manifestObject['sap.fe'] ?? {};
     const createMode = config.macros?.table?.defaultCreationMode;
+    const disableStrictUomFiltering = config.app?.disableStrictUomFiltering;
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',
         pages: [],
@@ -540,6 +678,11 @@ function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV
                 values: ['InlineCreationRows', 'NewPage'],
                 configurationPath: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
                 valueInFile: createMode
+            },
+            disableStrictUomFiltering: {
+                values: [true, false],
+                configurationPath: ['sap.fe', 'app', 'disableStrictUomFiltering'],
+                valueInFile: disableStrictUomFiltering
             }
         }
     };

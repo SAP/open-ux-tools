@@ -29,10 +29,15 @@ type AddActionFragmentsModel = JSONModel & {
 export interface AddActionOptions {
     name: string;
     propertyPath: string;
+    actionType: 'pageAction' | 'tableAction';
     title: string;
     controllerReference: string;
     appDescriptor?: PageDescriptorV4;
     validateActionId?: (actionId: string) => boolean;
+    position?: {
+        placement: 'Before' | 'After';
+        anchor: string;
+    };
 }
 
 /**
@@ -58,14 +63,9 @@ function validateActionId(
         return { isValid: false, errorMessage: resource.getText('ACTION_WITH_GIVEN_ID_ALREADY_EXISTS', [actionId]) };
     }
 
-    // Check for spaces
-    if (actionId.includes(' ')) {
-        return { isValid: false, errorMessage: resource.getText('ACTION_ID_CANNOT_CONTAIN_SPACES') };
-    }
-
     // Check starts and only allowed characters
     if (!/(^([A-Za-z_][-A-Za-z0-9_.:]*)$)/.test(actionId)) {
-        return { isValid: false, errorMessage: resource.getText('ACTION_ID_INVALID_FORMAT') };
+        return { isValid: false, errorMessage: resource.getText('ID_INVALID_FORMAT', ['Action']) };
     }
     return { isValid: true, errorMessage: '' };
 }
@@ -213,7 +213,9 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
                         press: this.options.controllerReference,
                         visible: true,
                         enabled: true,
-                        text: actionLabel
+                        text: actionLabel,
+                        ...(this.options.actionType === 'tableAction' ? { requiresSelection: false } : {}),
+                        ...(this.options.position && { position: this.options.position })
                     }
                 }
             }

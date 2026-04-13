@@ -271,7 +271,7 @@ key1: 42
 
             const doc = await YamlDocument.newInstance(serializedYaml);
             const newNode = doc.createNode({ value, comments });
-            expect(((newNode.items[0] as yaml.Pair).value as yaml.Scalar).comment).toBe('Y');
+            expect((newNode.items[0].value as yaml.Scalar).comment).toBe('Y');
         });
     });
 

@@ -2,7 +2,10 @@ import { sapCoreMock } from 'mock/window';
 import type Element from 'sap/ui/core/Element';
 import ManagedObjectMock from 'mock/sap/ui/base/ManagedObject';
 import type View from 'sap/ui/core/mvc/View';
-import { isA, isManagedObject, findViewByControl } from '../../../src/utils/core';
+import type Component from 'sap/ui/core/Component';
+import { isA, isManagedObject, findViewByControl, getControlBySelector } from '../../../src/utils/core';
+import JsControlTreeModifierMock from 'mock/sap/ui/core/util/reflection/JsControlTreeModifier';
+import Log from 'mock/sap/base/Log';
 
 describe('ui5Utils', () => {
     const testElement = {} as Element;
@@ -179,5 +182,65 @@ describe('findViewByControl', () => {
 
         expect(mockControl.isA).toHaveBeenCalledWith('sap.ui.core.mvc.View');
         expect(result).toBeUndefined();
+    });
+});
+
+describe('getControlBySelector', () => {
+    const mockElement = {
+        getId: jest.fn().mockReturnValue('testId'),
+        getMetadata: jest.fn().mockReturnValue({ getName: jest.fn().mockReturnValue('sap.m.Button') })
+    } as unknown as Element;
+
+    const mockAppComponent = {
+        getId: jest.fn().mockReturnValue('appComponent')
+    } as unknown as Component;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        sapCoreMock.byId.mockReturnValue(undefined);
+    });
+
+    test('returns control from getControlById when found', () => {
+        sapCoreMock.byId.mockReturnValue(mockElement);
+
+        const result = getControlBySelector({ id: 'testId', idIsLocal: false });
+
+        expect(result).toBe(mockElement);
+        expect(JsControlTreeModifierMock.bySelector).not.toHaveBeenCalled();
+    });
+
+    test('uses JsControlTreeModifier.bySelector when getControlById returns undefined and appComponent is provided', () => {
+        sapCoreMock.byId.mockReturnValue(undefined);
+        JsControlTreeModifierMock.bySelector.mockReturnValue(mockElement);
+
+        const selector = { id: 'localId', idIsLocal: true };
+        const result = getControlBySelector(selector, mockAppComponent);
+
+        expect(result).toBe(mockElement);
+        expect(JsControlTreeModifierMock.bySelector).toHaveBeenCalledWith(selector, mockAppComponent);
+    });
+
+    test('does not use JsControlTreeModifier.bySelector when appComponent is not provided', () => {
+        sapCoreMock.byId.mockReturnValue(undefined);
+
+        const result = getControlBySelector({ id: 'testId', idIsLocal: false });
+
+        expect(result).toBeUndefined();
+        expect(JsControlTreeModifierMock.bySelector).not.toHaveBeenCalled();
+    });
+
+    test('returns undefined and logs warning when JsControlTreeModifier.bySelector throws', () => {
+        sapCoreMock.byId.mockReturnValue(undefined);
+        const testError = new Error('bySelector failed');
+        JsControlTreeModifierMock.bySelector.mockImplementation(() => {
+            throw testError;
+        });
+
+        const selector = { id: 'testId', idIsLocal: false };
+        const result = getControlBySelector(selector, mockAppComponent);
+
+        expect(result).toBeUndefined();
+        expect(JsControlTreeModifierMock.bySelector).toHaveBeenCalledWith(selector, mockAppComponent);
+        expect(Log.warning).toHaveBeenCalledWith('Failed to get control by selector:', testError);
     });
 });

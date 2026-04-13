@@ -680,10 +680,10 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori freestyle template: basicTemplate Generate files for template: basic_cap_typescript 1`] = `
 Object {
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -828,7 +828,6 @@ export default class Component extends BaseComponent {
  */
 export default class App extends Controller {
 
-    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -843,7 +842,6 @@ export default class App extends Controller {
  */
 export default class View1 extends Controller {
 
-    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -2143,10 +2141,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -2462,7 +2460,6 @@ export default class Component extends BaseComponent {
  */
 export default class App extends Controller {
 
-    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -2477,7 +2474,6 @@ export default class App extends Controller {
  */
 export default class View1 extends Controller {
 
-    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -2918,7 +2914,6 @@ export default class View1Page extends Opa5 {
   "webapp/test/testsuite.qunit.ts": Object {
     "contents": "/* global window, parent, location */
 
-// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-global-define,@typescript-eslint/ban-ts-comment
 // @ts-nocheck
 window.suite = function() {
 	// eslint-disable-next-line
@@ -3030,10 +3025,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -3344,7 +3339,6 @@ export default class Component extends BaseComponent {
  */
 export default class App extends Controller {
 
-    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -3359,7 +3353,6 @@ export default class App extends Controller {
  */
 export default class View1 extends Controller {
 
-    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -3794,7 +3787,6 @@ export default class View1Page extends Opa5 {
   "webapp/test/testsuite.qunit.ts": Object {
     "contents": "/* global window, parent, location */
 
-// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-global-define,@typescript-eslint/ban-ts-comment
 // @ts-nocheck
 window.suite = function() {
 	// eslint-disable-next-line
@@ -3906,10 +3898,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -4211,7 +4203,6 @@ export default class Component extends BaseComponent {
  */
 export default class App extends Controller {
 
-    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -4226,7 +4217,6 @@ export default class App extends Controller {
  */
 export default class View1 extends Controller {
 
-    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -4550,10 +4540,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -4853,7 +4843,6 @@ export default class Component extends BaseComponent {
  */
 export default class App extends Controller {
 
-    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -4868,7 +4857,6 @@ export default class App extends Controller {
  */
 export default class View1 extends Controller {
 
-    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -5739,10 +5727,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",

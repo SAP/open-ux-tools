@@ -49,6 +49,10 @@ export interface FreestyleApp<T> extends Ui5App {
          * This will eventually move up to {@link Ui5App.appOptions}
          */
         addTests?: boolean;
+        /**
+         * Indicates if updates to the root package.json of CAP projects should be disabled. If true, the root package.json will not be updated with the sapux array or the cds watch scripts.
+         */
+        disableCapRootPkgJsonUpdates?: boolean;
     };
 }
 

@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { fireEvent, screen } from '@testing-library/dom';
 import { CloudSystem } from '../../../../../../src/components/layout/main/systemInfo/CloudSystem';
 
 describe('<CloudSystem />', () => {
-    it('should render url input box for reentrance ticket auth type', () => {
-        const setUrl = jest.fn();
-        const setIsDetailsUpdated = jest.fn();
+    const setUrl = jest.fn();
+    const setServicePath = jest.fn();
+    const setIsDetailsUpdated = jest.fn();
+    const setIsDetailsValid = jest.fn();
 
+    it('should render url input box for reentrance ticket auth type', () => {
         render(
             <CloudSystem
                 systemInfo={{
@@ -18,7 +20,9 @@ describe('<CloudSystem />', () => {
                     connectionType: 'abap_catalog'
                 }}
                 setUrl={setUrl}
+                setServicePath={setServicePath}
                 setIsDetailsUpdated={setIsDetailsUpdated}
+                setIsDetailsValid={setIsDetailsValid}
             />
         );
 
@@ -32,9 +36,6 @@ describe('<CloudSystem />', () => {
     });
 
     it('should render readonly url/client and service key component for service key auth type', () => {
-        const setUrl = jest.fn();
-        const setIsDetailsUpdated = jest.fn();
-
         render(
             <CloudSystem
                 systemInfo={{
@@ -47,7 +48,9 @@ describe('<CloudSystem />', () => {
                     connectionType: 'abap_catalog'
                 }}
                 setUrl={setUrl}
+                setServicePath={setServicePath}
                 setIsDetailsUpdated={setIsDetailsUpdated}
+                setIsDetailsValid={setIsDetailsValid}
             />
         );
 
@@ -58,9 +61,6 @@ describe('<CloudSystem />', () => {
     });
 
     it('should only ever return one component', () => {
-        const setUrl = jest.fn();
-        const setIsDetailsUpdated = jest.fn();
-
         // Test reentrance ticket takes priority over service keys if both are present
         const { rerender } = render(
             <CloudSystem
@@ -75,7 +75,9 @@ describe('<CloudSystem />', () => {
                     connectionType: 'abap_catalog'
                 }}
                 setUrl={setUrl}
+                setServicePath={setServicePath}
                 setIsDetailsUpdated={setIsDetailsUpdated}
+                setIsDetailsValid={setIsDetailsValid}
             />
         );
 
@@ -95,11 +97,35 @@ describe('<CloudSystem />', () => {
                     connectionType: 'abap_catalog'
                 }}
                 setUrl={setUrl}
+                setServicePath={setServicePath}
                 setIsDetailsUpdated={setIsDetailsUpdated}
+                setIsDetailsValid={setIsDetailsValid}
             />
         );
 
         // Should not show URL or client fields when no service keys
         expect(screen.queryByDisplayValue('https://mock.btp.system')).toBeNull();
+    });
+
+    it('should show validation error for cloud system URL with path beyond root', async () => {
+        render(
+            <CloudSystem
+                systemInfo={{
+                    name: 'btp system',
+                    url: 'https://myaccount.cloud.sap/path',
+                    authenticationType: 'reentranceTicket',
+                    systemType: 'AbapCloud',
+                    connectionType: 'abap_catalog'
+                }}
+                setUrl={setUrl}
+                setServicePath={setServicePath}
+                setIsDetailsUpdated={setIsDetailsUpdated}
+                setIsDetailsValid={setIsDetailsValid}
+            />
+        );
+
+        await waitFor(() => {
+            expect(setIsDetailsValid).toHaveBeenCalledWith(false);
+        });
     });
 });

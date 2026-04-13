@@ -2,7 +2,12 @@ import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
 import { join, basename } from 'node:path';
-import { type AxiosError, type AbapServiceProvider, isAxiosError } from '@sap-ux/axios-extension';
+import {
+    type AxiosError,
+    type AbapServiceProvider,
+    isAxiosError,
+    AdaptationProjectType
+} from '@sap-ux/axios-extension';
 import {
     getVariant,
     getAdpConfig,
@@ -11,9 +16,13 @@ import {
     flpConfigurationExists,
     SystemLookup,
     getBaseAppInbounds,
+    getCfBaseAppInbounds,
+    loadCfConfig,
+    getAppParamsFromUI5Yaml,
     type InternalInboundNavigation,
-    type AdpPreviewConfig,
-    type DescriptorVariant
+    type AdpPreviewConfigWithTarget,
+    type DescriptorVariant,
+    getExistingAdpProjectType
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
@@ -68,7 +77,7 @@ export default class AdpFlpConfigGenerator extends Generator {
     private authenticationRequired: boolean = false;
     // Flag to determine if the generator was aborted
     private abort: boolean = false;
-    private ui5Yaml: AdpPreviewConfig;
+    private ui5Yaml: AdpPreviewConfigWithTarget;
     private credentials: CredentialsAnswers;
     private inbounds?: ManifestNamespace.Inbound;
     private layer: UI5FlexLayer;
@@ -76,6 +85,7 @@ export default class AdpFlpConfigGenerator extends Generator {
     private variant: DescriptorVariant;
     private tileSettingsAnswers?: TileSettingsAnswers;
     private provider: AbapServiceProvider;
+    private isCfProject: boolean = false;
 
     /**
      * Creates an instance of the generator.
@@ -94,6 +104,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         this.vscode = opts.vscode;
         this.inbounds = opts.inbounds;
         this.layer = opts.layer;
+        this.isCfProject = !!opts.isCfProject;
 
         initAppWizardCache(this.logger, this.appWizard);
         this._setupFLPConfigPrompts();
@@ -135,8 +146,8 @@ export default class AdpFlpConfigGenerator extends Generator {
         if (this.abort) {
             return;
         }
-        if (!this.launchAsSubGen) {
-            await this._validateProject();
+        if (!this.launchAsSubGen && !this.isCfProject) {
+            await this._validateCloudProject();
             if (this.abort) {
                 return;
             }
@@ -247,6 +258,7 @@ export default class AdpFlpConfigGenerator extends Generator {
             );
 
             const errorHelp = this._getErrorHandlerMessage(error);
+
             if (errorHelp) {
                 this._abortExecution(
                     typeof errorHelp === 'string'
@@ -371,10 +383,15 @@ export default class AdpFlpConfigGenerator extends Generator {
     /**
      * Retrieves the error handler message for the provided error.
      *
-     * @param {Error | AxiosError} error - The error to handle.
+     * @param {AxiosError} error - The error to handle.
      * @returns {ValidationLink | string | undefined} The validation link or error message.
      */
-    private _getErrorHandlerMessage(error: Error | AxiosError): ValidationLink | string | undefined {
+    private _getErrorHandlerMessage(error: AxiosError): ValidationLink | string | undefined {
+        // If `system_info` endpoint returns 404, the system is not cloud ready
+        // `system_info` endpoint needs to be called before `isAbapCloud`, because `isAbapCloud` silently catches the errors
+        if (error.status === 404) {
+            return t('error.projectNotCloudReady');
+        }
         const errorHandler = new ErrorHandler(undefined, undefined, '@sap-ux/adp-flp-config');
         return errorHandler.getValidationErrorHelp(error);
     }
@@ -432,18 +449,27 @@ export default class AdpFlpConfigGenerator extends Generator {
     }
 
     /**
-     * Validates the project type and cloud readiness.
+     * Validates the project type.
      *
      * @throws {Error} If the project is not supported or not cloud ready.
      */
-    private async _validateProject(): Promise<void> {
+    private async _validateProjectType(): Promise<void> {
         const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
-        if (!isFioriAdaptation || isCFEnvironment(this.projectRootPath)) {
+        if (!isFioriAdaptation) {
             this._abortExecution(t('error.projectNotSupported'));
             return;
         }
-        const isCloud = await this.provider.isAbapCloud();
-        if (!isCloud) {
+        this.isCfProject = await isCFEnvironment(this.projectRootPath);
+    }
+
+    /**
+     * Validates the project is cloud ready.
+     *
+     * @throws {Error} If the project is not supported or not cloud ready.
+     */
+    private async _validateCloudProject(): Promise<void> {
+        const projectType = await getExistingAdpProjectType(this.projectRootPath);
+        if (projectType !== AdaptationProjectType.CLOUD_READY) {
             this._abortExecution(t('error.projectNotCloudReady'));
         }
     }
@@ -454,10 +480,32 @@ export default class AdpFlpConfigGenerator extends Generator {
      * @returns {Promise<void>} A promise that resolves when the initialization is complete.
      */
     private async _initializeStandAloneGenerator(): Promise<void> {
-        this.ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
+        await this._validateProjectType();
+        if (this.abort) {
+            return;
+        }
+
         this.variant = await getVariant(this.projectRootPath, this.fs);
         this.appId = this.variant.reference;
         this.layer = this.variant.layer;
+
+        if (this.isCfProject) {
+            await this._initializeCfGenerator();
+        } else {
+            await this._initializeAbapGenerator();
+        }
+    }
+
+    /**
+     * Initializes the ABAP-specific parts of the standalone generator.
+     *
+     * @returns {Promise<void>} A promise that resolves when initialization is complete.
+     */
+    private async _initializeAbapGenerator(): Promise<void> {
+        this.ui5Yaml = await getAdpConfig<AdpPreviewConfigWithTarget>(
+            this.projectRootPath,
+            join(this.projectRootPath, FileName.Ui5Yaml)
+        );
 
         await this._initAbapServiceProvider();
 
@@ -469,6 +517,34 @@ export default class AdpFlpConfigGenerator extends Generator {
                 return;
             }
             this._handleFetchingError(error);
+        }
+    }
+
+    /**
+     * Initializes the CF-specific parts of the standalone generator.
+     *
+     * @returns {Promise<void>} A promise that resolves when initialization is complete.
+     */
+    private async _initializeCfGenerator(): Promise<void> {
+        const cfConfig = loadCfConfig(this.toolsLogger);
+        if (!cfConfig?.token) {
+            this._abortExecution(t('error.cfLoginRequired'));
+            return;
+        }
+
+        const appParams = getAppParamsFromUI5Yaml(this.projectRootPath);
+        if (!appParams.appHostId) {
+            this._abortExecution(t('error.cfAppHostIdMissing'));
+            return;
+        }
+
+        try {
+            this.inbounds =
+                this.inbounds ??
+                (await getCfBaseAppInbounds(this.appId, appParams.appHostId, cfConfig, this.toolsLogger));
+        } catch (e) {
+            this.toolsLogger.error(`CF inbounds fetching failed: ${e}`);
+            this._abortExecution(t('error.cfInboundsFetchFailed', { error: (e as Error).message }));
         }
     }
 

@@ -5,7 +5,8 @@ import type {
     TablePromptsAnswer,
     PagePromptsAnswer,
     RichTextEditorPromptsAnswer,
-    RichTextEditorButtonGroupsPromptsAnswer
+    RichTextEditorButtonGroupsPromptsAnswer,
+    FormPromptsAnswer
 } from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'node:util';
 import { create as createStorage } from 'mem-fs';
@@ -31,7 +32,8 @@ import {
     REQUEST_I18N,
     RESPONSE_I18N,
     CREATE_I18N_ENTRY,
-    SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS
+    SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS,
+    SET_FORM_QUESTIONS
 } from '../utils/types';
 import type {
     Actions,
@@ -190,6 +192,14 @@ async function handleAction(action: Actions): Promise<void> {
                         questions,
                         groups,
                         initialAnswers: initialAnswers as Partial<RichTextEditorButtonGroupsPromptsAnswer>
+                    };
+                } else if (action.value === PromptsType.Form) {
+                    // Post processing
+                    responseAction = {
+                        type: SET_FORM_QUESTIONS,
+                        questions,
+                        groups,
+                        initialAnswers: initialAnswers as Partial<FormPromptsAnswer>
                     };
                 }
                 if (responseAction) {

@@ -758,6 +758,7 @@ describe('Test new system prompt', () => {
         } as Partial<ServiceProvider>;
 
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'error');
+
         const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
         const serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
@@ -770,13 +771,14 @@ describe('Test new system prompt', () => {
         } as ServiceAnswer;
 
         const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService);
-        expect(loggerSpy).toHaveBeenCalledWith(
-            t('errors.serviceMetadataErrorLog', {
+        expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(selectedService.servicePath));
+        expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to get metadata'));
+        expect(validationResult).toBe(
+            t('errors.serviceMetadataErrorUI', {
                 servicePath: selectedService.servicePath,
-                error: 'Error: Failed to get metadata'
+                errorText: 'An error occurred: Failed to get metadata'
             })
         );
-        expect(validationResult).toBe(t('errors.serviceMetadataErrorUI', { servicePath: selectedService.servicePath }));
     });
 
     test('should show a guided answer link when no services are returned and an error was logged', async () => {
@@ -839,7 +841,7 @@ describe('Test new system prompt', () => {
         ]);
     });
 
-    test('Should include value help download prompt when showValueHelpDownloadPrompt is true', async () => {
+    test('Should include value help download prompt when hideValueHelpDownloadPrompt is false', async () => {
         const connectValidator = new ConnectionValidator();
         connectionValidatorMock.validity = { authenticated: true, reachable: true };
 
@@ -847,7 +849,7 @@ describe('Test new system prompt', () => {
             connectValidator,
             promptNamespace,
             undefined,
-            true // showValueHelpDownloadPrompt = true
+            false // hideValueHelpDownloadPrompt = false
         );
 
         const valueHelpPrompt = systemServiceQuestions.find(
@@ -858,7 +860,7 @@ describe('Test new system prompt', () => {
         expect(valueHelpPrompt?.type).toBe('confirm');
     });
 
-    test('Should not include value help download prompt when showValueHelpDownloadPrompt is false', async () => {
+    test('Should not include value help download prompt when hideValueHelpDownloadPrompt is true', async () => {
         const connectValidator = new ConnectionValidator();
         connectionValidatorMock.validity = { authenticated: true, reachable: true };
 
@@ -866,7 +868,7 @@ describe('Test new system prompt', () => {
             connectValidator,
             promptNamespace,
             undefined,
-            false // showValueHelpDownloadPrompt = false
+            true // hideValueHelpDownloadPrompt = true
         );
 
         const valueHelpPrompt = systemServiceQuestions.find(

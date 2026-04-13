@@ -42,6 +42,11 @@ export async function getDeployConfig(config: AbapDeployConfig, baseConfig: UI5C
     if (config.target.url !== undefined) {
         target.url = config.target.url;
     }
+
+    if (config.target.connectPath !== undefined) {
+        target.connectPath = config.target.connectPath;
+    }
+
     if (config.target.client) {
         target.client = config.target.client;
     }

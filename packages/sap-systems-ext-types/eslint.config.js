@@ -1,6 +1,6 @@
 const { ignores } = require('eslint-plugin-prettier/recommended');
 const base = require('../../eslint.config.js');
-const tsParser = require('@typescript-eslint/parser');
+const { tsParser } = require('typescript-eslint');
 
 module.exports = [
     ...base,

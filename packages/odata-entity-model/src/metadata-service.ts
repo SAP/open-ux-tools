@@ -85,25 +85,36 @@ function getNamespace(path: string): string {
  * Metadata service
  */
 export class MetadataService implements IMetadataService {
+    private serviceId: string = '';
+
     /**
-     * Keeps all metadata based on file level (for invalidation when file changes)
+     * Keeps all metadata based on service id and file level (for invalidation when file changes)
      */
-    private metadata: MetadataMap = new Map();
+    private metadata: Map<string, MetadataMap> = new Map().set('', new Map()) as Map<string, MetadataMap>;
 
     /**
      * Keeps all namespaces based on file level (for invalidation when file changes)
      */
-    private namespaces = new Set<string>();
+    private namespaces: Map<string, Set<string>> = new Map().set('', new Set<string>()) as Map<string, Set<string>>;
 
     /**
      * Mapping of action names to set of overloads on file level (for invalidation when file changes)
      */
-    private actionNames: ActionNameMap = new Map();
+    private actionNames: Map<string, ActionNameMap> = new Map().set('', new Map()) as Map<string, ActionNameMap>;
 
     /**
      * Map of relative to absolute uri
      */
     private uriMap: Map<string, string>;
+
+    /**
+     * Returns service metadata (for current service).
+     *
+     * @returns Metadata map
+     */
+    private get serviceMetadata(): MetadataMap {
+        return this.metadata.get(this.serviceId) ?? new Map();
+    }
 
     /**
      * Lookup metadata element by its path.
@@ -112,7 +123,7 @@ export class MetadataService implements IMetadataService {
      * @returns Metadata element if it exists for the given path.
      */
     private lookup(path: Path): MetadataElement | undefined {
-        return this.metadata.get(path);
+        return this.serviceMetadata.get(path);
     }
 
     /**
@@ -129,7 +140,7 @@ export class MetadataService implements IMetadataService {
         } else {
             // action/function name? find all action/function overloads
 
-            const overloadPaths = this.actionNames.get(path);
+            const overloadPaths = this.actionNames.get(this.serviceId)?.get(path);
             if (overloadPaths) {
                 for (const overloadPath of overloadPaths) {
                     const overloadElement = this.getMetadataElement(overloadPath);
@@ -163,9 +174,27 @@ export class MetadataService implements IMetadataService {
     readonly isCds: boolean;
 
     /**
-     * Metadata file URI.
+     * Metadata file URIs.
      */
-    fileUri = '';
+    private fileUris: Map<string, string> = new Map().set('', '') as Map<string, string>;
+
+    /**
+     * Metadata file URI.
+     *
+     * @returns metadata file URI
+     */
+    get fileUri(): string {
+        return this.fileUris.get(this.serviceId) ?? '';
+    }
+
+    /**
+     * Sets the metadata file URI.
+     *
+     * @param uri - metadata file URI
+     */
+    set fileUri(uri: string) {
+        this.fileUris.set(this.serviceId, uri);
+    }
 
     /**
      * Create new metadata service instance.
@@ -203,10 +232,33 @@ export class MetadataService implements IMetadataService {
 
         buildMetadataElementLookup(metadataMap, actionNameMap, namespaceSet, rootNodes);
 
-        this.fileUri = fileUri;
-        this.namespaces = namespaceSet;
-        this.actionNames = actionNameMap;
-        this.metadata = metadataMap;
+        this.fileUris = new Map().set('', fileUri);
+        this.namespaces = new Map().set('', namespaceSet);
+        this.actionNames = new Map().set('', actionNameMap);
+        this.metadata = new Map().set('', metadataMap);
+    }
+
+    /**
+     * Import metadata without clearing existing metadata for other services.
+     *
+     * @param rootNodes Metadata elements.
+     * @param fileUri Metadata file URI.
+     * @param serviceId Service identifier.
+     *
+     * The metadata is cached and invalidated (on file change) based on file level
+     */
+    importServiceMetadata(rootNodes: MetadataElement[], fileUri: string, serviceId: string): void {
+        // build map of all metadata elements contained in file
+        const metadataMap: MetadataMap = new Map();
+        const actionNameMap: ActionNameMap = new Map();
+        const namespaceSet: Set<string> = new Set();
+
+        buildMetadataElementLookup(metadataMap, actionNameMap, namespaceSet, rootNodes);
+
+        this.fileUris.set(serviceId, fileUri);
+        this.namespaces.set(serviceId, namespaceSet);
+        this.actionNames.set(serviceId, actionNameMap);
+        this.metadata.set(serviceId, metadataMap);
     }
 
     /**
@@ -216,7 +268,7 @@ export class MetadataService implements IMetadataService {
      * The function should accept a single argument, which is the metadata element being visited.
      */
     visitMetadataElements(visitElement: MetadataElementVisitor): void {
-        for (const [, element] of this.metadata.entries()) {
+        for (const [, element] of this.serviceMetadata.entries()) {
             visitElement(element);
         }
     }
@@ -227,7 +279,7 @@ export class MetadataService implements IMetadataService {
      * @returns set of namespaces
      */
     getNamespaces(): Set<string> {
-        return new Set([...this.namespaces]);
+        return new Set(this.namespaces.get(this.serviceId) ?? []);
     }
 
     /**
@@ -237,7 +289,7 @@ export class MetadataService implements IMetadataService {
      */
     getRootMetadataElements(): Map<Path, MetadataElement> {
         const map: Map<Path, MetadataElement> = new Map();
-        for (const metadataElement of this.metadata.values()) {
+        for (const metadataElement of this.serviceMetadata.values()) {
             if (metadataElement.path.indexOf('/') < 0) {
                 map.set(metadataElement.path, metadataElement);
             }
@@ -284,7 +336,7 @@ export class MetadataService implements IMetadataService {
      * @returns if first segment represents action function name (without signature).
      */
     private getActionFunctionOverloads(topLevelName: string): Set<string> | undefined {
-        return this.actionNames.get(topLevelName);
+        return this.actionNames.get(this.serviceId)?.get(topLevelName);
     }
 
     /**
@@ -324,5 +376,64 @@ export class MetadataService implements IMetadataService {
             });
         }
         return result;
+    }
+
+    /**
+     * Set the current service to be used.
+     *
+     * Note: This method sets the current service context for the MetadataService instance.
+     * Subsequent calls to methods that depend on the service context will operate
+     * on the metadata associated with the specified serviceId.
+     * Should be called before invoking such methods to ensure correct behavior.
+     * Recommended to use it in the following way:
+     * {
+     *   using mdService = metadataService.useService(serviceId);
+     *   // Specific service context starts here
+     *   mdService.getMetadataElement(...);
+     * }
+     * // Specific service context ends here
+     *
+     * In that case service context is reset to the main service after leaving the using block (dispose method is called automatically).
+     *
+     * @param serviceId - service identifier
+     * @returns The current instance of MetadataService with the updated service context.
+     */
+    useService(serviceId: string): this {
+        this.serviceId = serviceId ?? '';
+        return this;
+    }
+
+    /**
+     * Resets the current service context to the default main service.
+     */
+    [Symbol.dispose](): void {
+        this.serviceId = '';
+    }
+
+    /**
+     * Returns namespace's service key
+     *
+     * @param namespace - namespace name
+     * @returns namespace's service key
+     */
+    getServiceKeyByNamespace(namespace?: string): string {
+        if (!namespace) {
+            return '';
+        }
+        let result = '';
+        for (const [serviceKey, namespaces] of this.namespaces.entries()) {
+            if (namespaces.has(namespace)) {
+                result = serviceKey;
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @returns service id list
+     */
+    getServiceIds(): string[] {
+        return Array.from(this.metadata.keys());
     }
 }

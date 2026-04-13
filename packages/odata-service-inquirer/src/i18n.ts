@@ -28,7 +28,8 @@ export async function initI18nOdataServiceInquirer(): Promise<void> {
                 }
                 return value;
             }
-        }
+        },
+        showSupportNotice: false
     });
     i18n.addResourceBundle('en', odataServiceInquirerNamespace, translations);
     // add other bundles that are used in consumed modules
@@ -47,7 +48,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: odataServiceInquirerNamespace });
     }
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 initI18nOdataServiceInquirer().catch(() => {

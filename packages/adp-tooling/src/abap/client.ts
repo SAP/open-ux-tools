@@ -5,7 +5,7 @@ import {
     type Inbound
 } from '@sap-ux/axios-extension';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { FlexUISupportedSystem } from '../types';
+import type { FlexUICapability } from '../types';
 import { filterAndMapInboundsToManifest } from '../base/helper';
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -19,29 +19,29 @@ const FILTER = {
  *
  * @param {AbapServiceProvider} provider - Instance of the ABAP provider.
  * @param {boolean} isCustomerBase - Indicates whether the adaptation layer is CUSTOMER_BASE.
- * @returns {Promise<FlexUISupportedSystem | undefined>} settings indicating support for onPremise and UI Flex capabilities.
+ * @returns {Promise<FlexUICapability | undefined>} settings indicating support for onPremise and UI Flex capabilities.
  */
-export async function getFlexUISupportedSystem(
+export async function getFlexUICapability(
     provider: AbapServiceProvider,
     isCustomerBase: boolean
-): Promise<FlexUISupportedSystem> {
+): Promise<FlexUICapability> {
     if (!isCustomerBase) {
         return {
-            isOnPremise: true,
-            isUIFlex: true
+            isDtaFolderDeploymentSupported: true,
+            isUIFlexSupported: true
         };
     }
 
-    const response = await provider.get(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, {
+    const response = await provider.get<string[]>(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, {
         headers: {
             Accept: 'application/*'
         }
     });
 
-    const isOnPremise = response.data.includes(FILTER.term);
-    const isUIFlex = response.data.includes(FILTER.scheme);
+    const isDtaFolderDeploymentSupported = response.data.includes(FILTER.term);
+    const isUIFlexSupported = response.data.includes(FILTER.scheme);
 
-    return { isOnPremise, isUIFlex };
+    return { isDtaFolderDeploymentSupported, isUIFlexSupported };
 }
 
 /**

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 
 import type { ServiceInfo } from '@sap-ux/project-access';
-import type { AliasInformation, AnnotationFile } from '@sap-ux/odata-annotation-core-types';
+import { type AliasInformation, type AnnotationFile, ODataVersionType } from '@sap-ux/odata-annotation-core-types';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import { MetadataService } from '@sap-ux/odata-entity-model';
@@ -22,7 +22,7 @@ import { addAllVocabulariesToAliasInformation } from './vocabularies';
  * @returns Service artifacts.
  */
 export function getXmlServiceArtifacts(
-    odataVersion: '2.0' | '4.0',
+    odataVersion: ODataVersionType,
     path: string,
     metadataFile: TextFile,
     annotationFiles: TextFile[],

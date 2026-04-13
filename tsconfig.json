@@ -139,6 +139,9 @@
       "path": "packages/generator-adp"
     },
     {
+      "path": "packages/generator-odata-downloader"
+    },
+    {
       "path": "packages/guided-answers-helper"
     },
     {

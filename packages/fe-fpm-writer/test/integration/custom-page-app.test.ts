@@ -36,7 +36,7 @@ describe('Test FPM features using a pre-generated Fiori Custom Page app', () => 
             await generateBuildingBlock<FilterBar>(
                 config.path,
                 {
-                    viewOrFragmentPath: join('webapp/ext/main/Main.view.xml'),
+                    viewOrFragmentPath: join('webapp/ext/view/Main.view.xml'),
                     aggregationPath: `/mvc:View/*[local-name()='Page']/*[local-name()='content']`,
                     buildingBlockData: {
                         id: 'testFilterBar',
@@ -52,7 +52,7 @@ describe('Test FPM features using a pre-generated Fiori Custom Page app', () => 
             await generateBuildingBlock<Chart>(
                 config.path,
                 {
-                    viewOrFragmentPath: join('webapp/ext/main/Main.view.xml'),
+                    viewOrFragmentPath: join('webapp/ext/view/Main.view.xml'),
                     aggregationPath: `/mvc:View/*[local-name()='Page']/*[local-name()='content']`,
                     buildingBlockData: {
                         id: 'testChart',
@@ -71,7 +71,7 @@ describe('Test FPM features using a pre-generated Fiori Custom Page app', () => 
             await generateBuildingBlock<Table>(
                 config.path,
                 {
-                    viewOrFragmentPath: join('webapp/ext/main/Main.view.xml'),
+                    viewOrFragmentPath: join('webapp/ext/view/Main.view.xml'),
                     aggregationPath: `/mvc:View/*[local-name()='Page']/*[local-name()='content']`,
                     buildingBlockData: {
                         id: 'testTable',

@@ -5,8 +5,11 @@ import type { BackendSystem } from '../entities/backend-system';
 
 /**
  * The backend system keys and their values to filter backend systems by.
+ * Each filter value can be either a single value or an array of values.
  */
-export type BackendSystemFilter = Partial<{ [K in BackendSerializableKeys]: BackendSystem[K] }>;
+export type BackendSystemFilter = Partial<{
+    [K in BackendSerializableKeys]: BackendSystem[K] | BackendSystem[K][];
+}>;
 
 /**
  * Specifies options for retrieving backend systems from the data provider.

@@ -14,7 +14,6 @@ import {
     runWritingPhaseGen
 } from '../test-utils';
 import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
-import { url } from 'node:inspector';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
@@ -324,7 +323,8 @@ describe('Generate v2 apps', () => {
 
         const testState: State = cloneDeep({
             project: Object.assign({}, v2Project, {
-                name: testProjectName
+                name: testProjectName,
+                enableEslint: false
             }) as Project,
             floorplan: FloorplanFE.FE_WORKLIST,
             service: {

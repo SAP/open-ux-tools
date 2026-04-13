@@ -295,8 +295,10 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
         delete config.rta; //NOSONAR
     }
     if (config.editors?.rta && config.adp === undefined) {
+        const scenario = config.editors.rta.options?.scenario;
+        const developerModeSupported = scenario === 'FE_FROM_SCRATCH' || scenario === 'ADAPTATION_PROJECT';
         config.editors.rta.endpoints = config.editors.rta.endpoints.map((editor) => {
-            if (editor.developerMode) {
+            if (editor.developerMode && !developerModeSupported) {
                 logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
                 logger.warn(`developerMode for ${editor.path} disabled`);
                 editor.developerMode = false;
@@ -339,10 +341,6 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
             applyConnector: localConnectorPath,
             writeConnector: localConnectorPath,
             custom: true
-        },
-        {
-            connector: 'LocalStorageConnector',
-            layers: ['CUSTOMER', 'USER']
         }
     ];
 }
@@ -439,6 +437,36 @@ async function getI18nTextFromProperty(
 }
 
 /**
+ * Remaps all relative resource-root URLs in a TemplateConfig so they are correct
+ * relative to a different HTML page path (e.g. an editor path vs the FLP path).
+ *
+ * Only the entries that are derived from `basePath` are updated:
+ * - the preview-client namespace (`open.ux.preview.client`)
+ * - the primary application namespace (keyed by `appId`)
+ *
+ * Additional applications configured via `flpConfig.apps` use absolute `target`
+ * values and therefore do not need remapping.
+ *
+ * @param config - cloned TemplateConfig already built for the FLP path
+ * @param newPagePath - the path of the HTML page that will serve the resources (e.g. `editor.path`)
+ * @param appId - the `sap.app.id` used as resource-root key for the primary application
+ */
+export function remapResourcesForPath(config: TemplateConfig, newPagePath: string, appId: string): void {
+    const newBasePath = posix.relative(posix.dirname(newPagePath), '/') || '.';
+
+    // Update the well-known client namespace to be relative to the new page path
+    config.ui5.resources[PREVIEW_URL.client.ns] = PREVIEW_URL.client.getUrl(newBasePath);
+
+    // Update the primary app's resource root (was set to basePath for the main app)
+    if (appId && appId in config.ui5.resources) {
+        config.ui5.resources[appId] = newBasePath;
+    }
+
+    // Keep basePath in sync for any other template usage (e.g. basePath/resources/...)
+    config.appBasePath = newBasePath;
+}
+
+/**
  * Creates the configuration object for the sandbox.html template.
  *
  * @param config FLP configuration
@@ -518,10 +546,17 @@ export function getPreviewPaths(
     const flpConfig = getFlpConfigWithDefaults(config.flp, utils);
     urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
     // add editor urls
-    if (config.editors?.rta) {
-        config.editors.rta.endpoints.forEach((endpoint) => {
-            urls.push({ path: endpoint.path, type: 'editor' });
+    if (config.editors) {
+        config.editors.rta?.endpoints.forEach((endpoint) => {
+            urls.push({ path: endpoint.path.startsWith('/') ? endpoint.path : `/${endpoint.path}`, type: 'editor' });
         });
+        if (config.editors.cardGenerator?.path) {
+            const cardGeneratorPath = config.editors.cardGenerator.path;
+            urls.push({
+                path: cardGeneratorPath.startsWith('/') ? cardGeneratorPath : `/${cardGeneratorPath}`,
+                type: 'editor'
+            });
+        }
     }
     // add test urls if configured
     if (config.test) {

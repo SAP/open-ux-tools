@@ -84,10 +84,16 @@ describe('ODataHealthChecker', () => {
 
     let healthChecker: ODataHealthChecker;
     const getManifestMock: jest.Mock = jest.fn();
+    const resolveUriMock: jest.Mock = jest.fn((uri: string) => uri);
+    const getFlexSettingsMock: jest.Mock = jest.fn().mockReturnValue({});
     const rtaMock: jest.Mocked<RuntimeAuthoring> = {
         getRootControlInstance: () => ({
-            getManifest: getManifestMock
-        })
+            getManifest: getManifestMock,
+            getManifestObject: () => ({
+                resolveUri: resolveUriMock
+            })
+        }),
+        getFlexSettings: getFlexSettingsMock
     } as unknown as jest.Mocked<RuntimeAuthoring>;
 
     beforeEach(() => {
@@ -112,6 +118,9 @@ describe('ODataHealthChecker', () => {
             expect(result[1]).toBeInstanceOf(ODataUpStatus);
             expect(result[0].serviceUrl).toBe('http://localhost:8080/service1');
             expect(result[1].serviceUrl).toBe('http://localhost:8080/service2');
+
+            // Assert resolveUri is NOT called for ABAP scenario
+            expect(resolveUriMock).not.toHaveBeenCalled();
 
             // Assert model v2 lifecycle
             expect(ODataModel2).toHaveBeenCalledWith({
@@ -164,6 +173,75 @@ describe('ODataHealthChecker', () => {
             });
             result = await healthChecker.getHealthStatus();
             expect(result).toHaveLength(0);
+        });
+
+        it('should resolve service URIs using manifest object in CF scenario', async () => {
+            getFlexSettingsMock.mockReturnValue({ isCloudFoundry: true });
+
+            const MANIFEST_WITH_RELATIVE_URIS: Manifest = {
+                'sap.app': {
+                    dataSources: {
+                        mainService: {
+                            uri: '/sap/opu/odata/service',
+                            type: 'OData',
+                            settings: {
+                                localUri: '/service'
+                            }
+                        }
+                    }
+                }
+            };
+
+            getManifestMock.mockReturnValue(MANIFEST_WITH_RELATIVE_URIS);
+            resolveUriMock.mockImplementation((uri: string) => `/cf-host${uri}`);
+            oDataMetadataLoadedSpy.mockResolvedValue({ metadata: 'test' });
+
+            const result = await healthChecker.getHealthStatus();
+
+            expect(resolveUriMock).toHaveBeenCalledWith('/sap/opu/odata/service');
+            expect(result).toHaveLength(1);
+            expect(result[0]).toBeInstanceOf(ODataUpStatus);
+            expect(result[0].serviceUrl).toBe('/cf-host/sap/opu/odata/service');
+
+            expect(ODataModel2).toHaveBeenCalledWith({
+                serviceUrl: '/cf-host/sap/opu/odata/service',
+                json: true,
+                loadAnnotationsJoined: false
+            });
+        });
+
+        it('should NOT resolve service URIs in ABAP scenario', async () => {
+            getFlexSettingsMock.mockReturnValue({ isCloud: false });
+
+            const MANIFEST_WITH_RELATIVE_URIS: Manifest = {
+                'sap.app': {
+                    dataSources: {
+                        mainService: {
+                            uri: '/sap/opu/odata/service',
+                            type: 'OData',
+                            settings: {
+                                localUri: '/service'
+                            }
+                        }
+                    }
+                }
+            };
+
+            getManifestMock.mockReturnValue(MANIFEST_WITH_RELATIVE_URIS);
+            oDataMetadataLoadedSpy.mockResolvedValue({ metadata: 'test' });
+
+            const result = await healthChecker.getHealthStatus();
+
+            expect(resolveUriMock).not.toHaveBeenCalled();
+            expect(result).toHaveLength(1);
+            expect(result[0]).toBeInstanceOf(ODataUpStatus);
+            expect(result[0].serviceUrl).toBe('/sap/opu/odata/service');
+
+            expect(ODataModel2).toHaveBeenCalledWith({
+                serviceUrl: '/sap/opu/odata/service',
+                json: true,
+                loadAnnotationsJoined: false
+            });
         });
     });
 });

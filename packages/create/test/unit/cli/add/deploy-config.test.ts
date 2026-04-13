@@ -8,13 +8,20 @@ import * as deployConfigInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import * as deployConfigWriter from '@sap-ux/abap-deploy-config-writer';
 import * as projectAccess from '@sap-ux/project-access';
 import { prompt } from 'prompts';
+import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.mock('prompts', () => ({
     ...jest.requireActual('prompts'),
     prompt: jest.fn()
 }));
 
+jest.mock('@sap-ux/adp-tooling', () => ({
+    getExistingAdpProjectType: jest.fn()
+}));
+
 const mockPrompt = prompt as jest.Mock;
+const getExistingAdpProjectTypeMock = getExistingAdpProjectType as jest.Mock;
 
 describe('add/deploy-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');
@@ -41,6 +48,7 @@ describe('add/deploy-config', () => {
             dump: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
+        getExistingAdpProjectTypeMock.mockResolvedValue(undefined);
     });
 
     test('should prompt for target when not provided', async () => {
@@ -92,7 +100,7 @@ describe('add/deploy-config', () => {
     test('should add deploy config for Fiori elements project', async () => {
         jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
         jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('SAP Fiori elements');
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('SAP Fiori elements');
 
         // Test execution
         const command = new Command('add');
@@ -109,9 +117,10 @@ describe('add/deploy-config', () => {
     });
 
     test('should add deploy config for Adp project', async () => {
+        getExistingAdpProjectTypeMock.mockResolvedValue(AdaptationProjectType.ON_PREMISE);
         jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
         jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('Fiori Adaptation');
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
 
         // Test execution
         const command = new Command('add');
@@ -125,6 +134,28 @@ describe('add/deploy-config', () => {
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
+        expect(deployConfigInquirer.getPrompts).toHaveBeenCalledWith(
+            {
+                ui5AbapRepo: { hideIfOnPremise: true },
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: {
+                        shouldValidatePackageType: true,
+                        shouldValidatePackageForStartingPrefix: true
+                    }
+                },
+                packageManual: {
+                    additionalValidation: {
+                        shouldValidatePackageType: true,
+                        shouldValidatePackageForStartingPrefix: true
+                    }
+                },
+                transportInputChoice: { hideIfOnPremise: true },
+                adpProjectType: AdaptationProjectType.ON_PREMISE
+            },
+            loggerMock,
+            false
+        );
     });
 
     test('should add deploy config --simulate', async () => {
@@ -239,7 +270,7 @@ describe('add/deploy-config', () => {
         };
 
         jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('Fiori Adaptation');
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
         jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
         mockPrompt.mockResolvedValueOnce({ target: 'abap' });
         jest.spyOn(deployConfigInquirer, 'reconcileAnswers').mockReturnValueOnce(promptAnswers);
@@ -281,7 +312,7 @@ describe('add/deploy-config', () => {
         };
 
         jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('Fiori Adaptation');
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
         jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
         mockPrompt.mockResolvedValueOnce({ target: 'abap' });
         jest.spyOn(deployConfigInquirer, 'reconcileAnswers').mockReturnValueOnce(promptAnswers);

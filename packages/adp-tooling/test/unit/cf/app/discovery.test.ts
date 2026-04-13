@@ -6,14 +6,22 @@ import { getFDCApps } from '../../../../src/cf/services/api';
 import { extractXSApp } from '../../../../src/cf/utils/validation';
 import {
     getAppHostIds,
-    getBackendUrlFromServiceKeys,
     getCfApps,
-    getOAuthPathsFromXsApp
+    getOAuthPathsFromXsApp,
+    getBackendUrlsFromServiceKeys,
+    getServiceKeyDestinations
 } from '../../../../src/cf/app/discovery';
 import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa, XsApp } from '../../../../src/types';
 
+jest.mock('mem-fs-editor', () => ({
+    create: jest.fn()
+}));
+
+jest.mock('@sap-ux/btp-utils', () => ({
+    isAppStudio: jest.fn()
+}));
+
 jest.mock('../../../../src/cf/services/api', () => ({
-    ...jest.requireActual('../../../../src/cf/services/api'),
     getFDCApps: jest.fn()
 }));
 
@@ -333,88 +341,87 @@ describe('CF App Discovery', () => {
         });
     });
 
-    describe('getBackendUrlFromServiceKeys', () => {
-        test('should extract backend URL from first endpoint with URL', () => {
+    describe('getBackendUrlsFromServiceKeys', () => {
+        test('should extract URLs from endpoints', () => {
             const serviceKeys: ServiceKeys[] = [
                 {
                     credentials: {
-                        uaa: {} as Uaa,
+                        uaa: {} as any,
                         uri: 'test-uri',
                         endpoints: {
-                            endpoint1: {
-                                url: '/backend.example'
-                            },
-                            endpoint2: {
-                                url: '/another-backend.example'
-                            }
-                        }
+                            'backend-service': { url: 'https://backend.example.com/api' },
+                            'odata-service': { url: 'https://odata.example.com/odata' }
+                        },
+                        'html5-apps-repo': {}
                     }
                 }
             ];
 
-            const result = getBackendUrlFromServiceKeys(serviceKeys);
+            const result = getBackendUrlsFromServiceKeys(serviceKeys);
 
-            expect(result).toBe('/backend.example');
+            expect(result).toEqual(['https://backend.example.com/api', 'https://odata.example.com/odata']);
         });
 
-        test('should return first endpoint with URL when multiple endpoints exist', () => {
+        test('should return empty array when no service keys', () => {
+            expect(getBackendUrlsFromServiceKeys([])).toEqual([]);
+        });
+
+        test('should return empty array when service keys is undefined', () => {
+            expect(getBackendUrlsFromServiceKeys(undefined as any)).toEqual([]);
+        });
+
+        test('should return empty array when endpoints is missing', () => {
             const serviceKeys: ServiceKeys[] = [
                 {
                     credentials: {
-                        uaa: {} as Uaa,
+                        uaa: {} as any,
                         uri: 'test-uri',
-                        endpoints: {
-                            endpoint1: {},
-                            endpoint2: {
-                                url: '/backend.example'
-                            },
-                            endpoint3: {
-                                url: '/another-backend.example'
-                            }
-                        }
+                        endpoints: {},
+                        'html5-apps-repo': {}
                     }
                 }
             ];
 
-            const result = getBackendUrlFromServiceKeys(serviceKeys);
+            const result = getBackendUrlsFromServiceKeys(serviceKeys);
 
-            expect(result).toBe('/backend.example');
+            expect(result).toEqual([]);
         });
 
-        test('should return undefined when no endpoints have URL', () => {
+        test('should skip endpoints without url property', () => {
             const serviceKeys: ServiceKeys[] = [
                 {
                     credentials: {
-                        uaa: {} as Uaa,
+                        uaa: {} as any,
                         uri: 'test-uri',
                         endpoints: {
-                            endpoint1: {},
-                            endpoint2: {}
-                        }
+                            'backend-service': { url: 'https://backend.example.com/api' },
+                            'invalid-service': {}
+                        },
+                        'html5-apps-repo': {}
                     }
                 }
             ];
 
-            const result = getBackendUrlFromServiceKeys(serviceKeys);
+            const result = getBackendUrlsFromServiceKeys(serviceKeys);
 
-            expect(result).toBeUndefined();
+            expect(result).toEqual(['https://backend.example.com/api']);
         });
 
-        test('should return undefined for various edge cases', () => {
-            expect(getBackendUrlFromServiceKeys([])).toBeUndefined();
-            expect(getBackendUrlFromServiceKeys(null as any)).toBeUndefined();
-            expect(getBackendUrlFromServiceKeys(undefined as any)).toBeUndefined();
-            expect(
-                getBackendUrlFromServiceKeys([
-                    {
-                        credentials: {
-                            uaa: {} as Uaa,
-                            uri: 'test-uri',
-                            endpoints: {}
-                        }
+        test('should handle empty endpoints object', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {},
+                        'html5-apps-repo': {}
                     }
-                ])
-            ).toBeUndefined();
+                }
+            ];
+
+            const result = getBackendUrlsFromServiceKeys(serviceKeys);
+
+            expect(result).toEqual([]);
         });
     });
 
@@ -520,6 +527,107 @@ describe('CF App Discovery', () => {
                 routes: [{ source: '/sap/opu/odata(.*)(.*)', service: 'odata-service' }]
             } as XsApp);
             expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual(['/sap/opu/odata']);
+        });
+    });
+
+    describe('getServiceKeyDestinations', () => {
+        test('should extract endpoint destinations from service keys with valid endpoints', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            backend: {
+                                url: '/backend-url',
+                                destination: 'backend-destination'
+                            },
+                            odata: {
+                                url: '/odata-url',
+                                destination: 'odata-destination'
+                            }
+                        }
+                    }
+                },
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-2',
+                        endpoints: {
+                            api: {
+                                url: '/api-url',
+                                destination: 'api-destination'
+                            }
+                        }
+                    }
+                }
+            ];
+
+            const result = getServiceKeyDestinations(serviceKeys);
+
+            expect(result).toEqual([
+                { name: 'backend-destination', url: '/backend-url' },
+                { name: 'odata-destination', url: '/odata-url' },
+                { name: 'api-destination', url: '/api-url' }
+            ]);
+        });
+
+        test('should return empty array when service keys are empty or endpoints are missing/invalid', () => {
+            expect(getServiceKeyDestinations([])).toEqual([]);
+
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {}
+                    }
+                },
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-2'
+                        // endpoints missing
+                    } as ServiceKeys['credentials']
+                },
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-3',
+                        endpoints: null as any
+                    }
+                }
+            ];
+
+            expect(getServiceKeyDestinations(serviceKeys)).toEqual([]);
+        });
+
+        test('should skip endpoints missing url or destination', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            valid: {
+                                url: '/valid-url',
+                                destination: 'valid-destination'
+                            },
+                            missingUrl: {
+                                destination: 'missing-url-destination'
+                            },
+                            missingDestination: {
+                                url: '/missing-dest-url'
+                            },
+                            missingBoth: {}
+                        }
+                    }
+                }
+            ];
+
+            const result = getServiceKeyDestinations(serviceKeys);
+
+            expect(result).toEqual([{ name: 'valid-destination', url: '/valid-url' }]);
         });
     });
 });

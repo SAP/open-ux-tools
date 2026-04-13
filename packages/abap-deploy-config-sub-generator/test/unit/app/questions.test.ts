@@ -2,9 +2,9 @@ import { type Destination, isAppStudio } from '@sap-ux/btp-utils';
 import * as abapInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import { getAbapQuestions } from '../../../src/app/questions';
 import { readUi5Yaml } from '@sap-ux/project-access';
-import type { BackendSystem } from '@sap-ux/store';
 import { AuthenticationType } from '@sap-ux/store';
 import { DefaultLogger, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...(jest.requireActual('@sap-ux/btp-utils') as {}),
@@ -52,6 +52,7 @@ describe('Test getAbapQuestions', () => {
             showOverwriteQuestion: false,
             logger: DefaultLogger,
             promptOptions: {
+                adpProjectType: AdaptationProjectType.CLOUD_READY,
                 ui5AbapRepo: { hideIfOnPremise: false },
                 transportInputChoice: { hideIfOnPremise: false },
                 packageAutocomplete: {
@@ -67,13 +68,13 @@ describe('Test getAbapQuestions', () => {
                         shouldValidatePackageType: false,
                         shouldValidateFormatAndSpecialCharacters: false
                     }
-                },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
+                }
             }
         });
 
         expect(getPromptsSpy).toHaveBeenCalledWith(
             {
+                adpProjectType: AdaptationProjectType.CLOUD_READY,
                 backendTarget: {
                     abapTarget: {
                         'authenticationType': undefined,
@@ -107,8 +108,7 @@ describe('Test getAbapQuestions', () => {
                     }
                 },
                 overwriteAbapConfig: { hide: true },
-                transportInputChoice: { hideIfOnPremise: false },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
+                transportInputChoice: { hideIfOnPremise: false }
             },
             expect.any(Object),
             true
@@ -151,8 +151,7 @@ describe('Test getAbapQuestions', () => {
                         shouldValidatePackageType: false,
                         shouldValidateFormatAndSpecialCharacters: false
                     }
-                },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
+                }
             }
         });
 
@@ -191,8 +190,7 @@ describe('Test getAbapQuestions', () => {
                     }
                 },
                 overwriteAbapConfig: { hide: true },
-                transportInputChoice: { hideIfOnPremise: false },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
+                transportInputChoice: { hideIfOnPremise: false }
             },
             expect.any(Object),
             false

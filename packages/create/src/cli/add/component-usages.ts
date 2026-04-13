@@ -4,12 +4,13 @@ import {
     getVariant,
     ChangeType,
     getPromptsForAddComponentUsages,
+    isCFEnvironment,
     type ComponentUsagesData,
     type AddComponentUsageAnswers,
     type DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
-import { validateAdpProject } from '../../validation/validation';
+import { validateAdpAppType } from '../../validation/validation';
 import { promptYUIQuestions } from '../../common';
 
 /**
@@ -42,7 +43,10 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
         if (!basePath) {
             basePath = process.cwd();
         }
-        await validateAdpProject(basePath);
+        await validateAdpAppType(basePath);
+        if (await isCFEnvironment(basePath)) {
+            throw new Error('This command is not supported for CF projects.');
+        }
 
         const variant = await getVariant(basePath);
 

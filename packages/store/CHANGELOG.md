@@ -1,5 +1,84 @@
 # @sap-ux/store
 
+## 1.5.13
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+
+## 1.5.12
+
+### Patch Changes
+
+- c53a4ba: chore(store): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+
+## 1.5.11
+
+### Patch Changes
+
+- a41533f: chore(store): upgrade runtime dependencies (i18next 25.8.20, reflect-metadata 0.2.2)
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+
+## 1.5.10
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
+## 1.5.9
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+
+## 1.5.8
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
+## 1.5.7
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
+## 1.5.6
+
+### Patch Changes
+
+- 9f94937: support adding full service urls as a new connection type
+
+## 1.5.5
+
+### Patch Changes
+
+- 38e215e: chore(deps): update dependency @zowe/secrets-for-zowe-sdk to v8.29.4
+
+## 1.5.4
+
+### Patch Changes
+
+- 83e3b70: check for presence of legacy systems.json file
+
+## 1.5.3
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+
+## 1.5.2
+
+### Patch Changes
+
+- be6ea11: fix(deps): update dependency i18next to v25.8.0
+
 ## 1.5.1
 
 ### Patch Changes

@@ -29,7 +29,8 @@ export async function initI18nInquirerCommon(): Promise<void> {
                 }
                 return value;
             }
-        }
+        },
+        showSupportNotice: false
     });
     addi18nResourceBundle();
 }
@@ -45,7 +46,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: inquirerCommonI18nNamespace });
     }
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 initI18nInquirerCommon().catch(() => {

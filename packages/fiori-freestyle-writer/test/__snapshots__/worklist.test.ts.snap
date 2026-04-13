@@ -6857,11 +6857,11 @@ server:
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - scp: true
-            path: /sap
+          - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: '012'
             destination: SIDCLNT012
+            scp: true
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -6894,11 +6894,11 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - scp: true
-            path: /sap
+          - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: '012'
             destination: SIDCLNT012
+            scp: true
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -6946,11 +6946,11 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - scp: true
-            path: /sap
+          - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: '012'
             destination: SIDCLNT012
+            scp: true
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -13113,10 +13113,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -13241,11 +13241,11 @@ server:
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - scp: true
-            path: /sap
+          - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: '012'
             destination: SIDCLNT012
+            scp: true
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -13286,11 +13286,11 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - scp: true
-            path: /sap
+          - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: '012'
             destination: SIDCLNT012
+            scp: true
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -13354,11 +13354,11 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - scp: true
-            path: /sap
+          - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: '012'
             destination: SIDCLNT012
+            scp: true
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -16518,10 +16518,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -16642,11 +16642,11 @@ server:
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - scp: true
-            path: /sap
+          - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: '012'
             destination: SIDCLNT012
+            scp: true
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -16687,11 +16687,11 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - scp: true
-            path: /sap
+          - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: '012'
             destination: SIDCLNT012
+            scp: true
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -16755,11 +16755,11 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - scp: true
-            path: /sap
+          - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: '012'
             destination: SIDCLNT012
+            scp: true
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

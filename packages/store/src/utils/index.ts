@@ -83,11 +83,14 @@ export function getEntityFileName(entityName: string): string {
  * Simple object matcher that supports nested objects
  *
  * @param obj - object to inspect
- * @param attrs - object of property values to match
+ * @param filter - properties and values used for filtering the object.
  * @returns - true if the `obj` has equivalent property values to `attrs`
  */
-export function isMatch(obj: any, attrs: any): boolean {
-    return Object.entries(attrs).every(([key, val]) => {
+export function isMatch(obj: any, filter: any): boolean {
+    return Object.entries(filter).every(([key, val]) => {
+        if (Array.isArray(val)) {
+            return val.includes(obj[key]);
+        }
         if (val && typeof val === 'object') {
             return isMatch(obj[key], val);
         }

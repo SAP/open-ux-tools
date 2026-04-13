@@ -89,32 +89,62 @@ export function SystemStatus({
         return (
             <div>
                 <div id="systemStatusInfo" className="system-status">
-                    {connectionStatus && showConnectionStatus && connectionStatus.connected !== true && (
+                    {showConnectionStatus && connectionStatus?.connected !== true && connectionStatus?.message && (
                         <div className="status-item">
                             <UIIcon className="status-icon" iconName={UiIcons.Error} />
                             <label className="system-status-error status-msg">
                                 {connectionStatus.message}
-                                <br />
-                                {outputTabLogMsg(true)}
+                                {connectionStatus?.showOutputChannelLink && (
+                                    <>
+                                        <br /> {outputTabLogMsg(true)}
+                                    </>
+                                )}
                             </label>
                         </div>
                     )}
-                    {connectionStatus && showConnectionStatus && connectionStatus.catalogResults && (
+                    {showConnectionStatus && connectionStatus?.connected && connectionStatus.message && (
+                        <div className="status-item">
+                            <UIIcon className="status-icon" iconName={UiIcons.Info} />
+                            <label className="system-status-info status-msg">{connectionStatus.message}</label>
+                        </div>
+                    )}
+                    {showConnectionStatus && connectionStatus?.catalogResults && (
                         <div className="catalog-messages">
                             {getCatalogMsgJsx('V2', connectionStatus.catalogResults.v2Request.count)}
                             {getCatalogMsgJsx('V4', connectionStatus.catalogResults.v4Request.count)}
                         </div>
                     )}
-                    {updateSystemStatus && showUpdateSystemStatus && updateSystemStatus.updateSuccess && (
+                    {updateSystemStatus && showUpdateSystemStatus && (
                         <div className="status-item">
-                            <UIIcon className="status-icon" iconName={UiIcons.Info} />
-                            <label className="system-status-info status-msg">{updateSystemStatus.message}</label>{' '}
-                        </div>
-                    )}
-                    {updateSystemStatus && showUpdateSystemStatus && !updateSystemStatus.updateSuccess && (
-                        <div className="status-item">
-                            <UIIcon className="status-icon" iconName={UiIcons.Error} />
-                            <label className="system-status-error status-msg">{updateSystemStatus.message}</label>
+                            <UIIcon
+                                className="status-icon"
+                                iconName={updateSystemStatus.updateSuccess ? UiIcons.Info : UiIcons.Error}
+                            />
+                            <label
+                                className={
+                                    updateSystemStatus.updateSuccess
+                                        ? 'system-status-info status-msg'
+                                        : 'system-status-error status-msg'
+                                }>
+                                {updateSystemStatus.existingSystem ? (
+                                    <>
+                                        {t('systemStatus.connectionExists.prefix')}
+                                        <UILink
+                                            onClick={() =>
+                                                actions.openExistingSystem(
+                                                    updateSystemStatus.existingSystem!.url,
+                                                    updateSystemStatus.existingSystem?.client
+                                                )
+                                            }
+                                            className="output-link-error">
+                                            {updateSystemStatus.existingSystem.name}
+                                        </UILink>
+                                        {t('systemStatus.connectionExists.suffix')}
+                                    </>
+                                ) : (
+                                    updateSystemStatus.message
+                                )}
+                            </label>
                         </div>
                     )}
                 </div>

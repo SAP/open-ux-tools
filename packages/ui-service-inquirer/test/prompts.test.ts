@@ -178,7 +178,8 @@ describe('getSystemQuestions', () => {
                     defaultChoice: undefined,
                     destinationFilters: {
                         odata_abap: true
-                    }
+                    },
+                    hideNewSystem: true
                 }
             },
             true
