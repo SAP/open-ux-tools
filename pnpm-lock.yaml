@@ -7,8 +7,8 @@ settings:
 overrides:
   '@sap-ux/vocabularies-types': 0.15.0
   '@storybook/manager-api>store2': 2.14.4
-  '@sap-ux/ui5-config>axios': ^1.13.5
-  '@sap/service-provider-apis>axios': ^1.13.5
+  '@sap-ux/ui5-config>axios': ^1.15.0
+  '@sap/service-provider-apis>axios': ^1.15.0
   '@sap/subaccount-destination-service-provider>@sap/bas-sdk': ^3.13.3
   esbuild@<=0.24.2: '>=0.25.0'
   fast-xml-parser: '>=5.5.6'
@@ -40,6 +40,8 @@ overrides:
   brace-expansion@>=2.0.0 <2.0.3: ^2.0.3
   brace-expansion@>=4.0.0 <5.0.5: ^5.0.5
   '@sap/approuter>http-proxy-agent': '>=7.0.0'
+  '@sap/approuter>axios': '>=1.15.0'
+  '@sap/bas-sdk>axios': '>=1.15.0'
   node-gyp@8>make-fetch-happen: ^14.0.3
   node-gyp@9>make-fetch-happen: ^14.0.3
   npm-registry-fetch@12>make-fetch-happen: ^14.0.3
@@ -48,13 +50,15 @@ overrides:
   '@sigstore/sign@1>make-fetch-happen': ^14.0.3
   tuf-js@1>make-fetch-happen: ^14.0.3
   promptfoo>@anthropic-ai/sdk: '>=0.81.0'
+  promptfoo>mathjs: '>=15.2.0'
+  '@langchain/core>langsmith': '>=0.5.18'
   jsdoc>markdown-it: '>=14.1.1'
   '@vscode/vsce>markdown-it': '>=14.1.1'
   '@octokit/request-error@<5.1.1': ^5.1.1
   '@octokit/plugin-paginate-rest@>=1.0.0 <9.2.2': ^9.2.2
   '@octokit/request@<8.4.1': ^8.4.1
   express>qs: 6.14.2
-  get-uri>basic-ftp: '=5.2.0'
+  get-uri>basic-ftp: '=5.2.2'
   '@puppeteer/browsers>proxy-agent': '>=6.5.0'
   minimatch@<3.1.5: ^3.1.5
   readdir-glob>minimatch@<5.1.9: ^5.1.9
@@ -275,8 +279,8 @@ importers:
         specifier: 5.2.11
         version: 5.2.11
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
 
   examples/ui-prompting-examples:
     dependencies:
@@ -460,8 +464,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
 
   packages/abap-deploy-config-sub-generator:
     dependencies:
@@ -712,8 +716,8 @@ importers:
         specifier: 0.5.16
         version: 0.5.16
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -898,8 +902,8 @@ importers:
         specifier: 7.7.1
         version: 7.7.1
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
       nock:
         specifier: 14.0.11
         version: 14.0.11
@@ -919,8 +923,8 @@ importers:
         specifier: '>=0.8.12'
         version: 0.8.12
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
       detect-content-type:
         specifier: 1.2.0
         version: 1.2.0
@@ -1090,8 +1094,8 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
     devDependencies:
       '@sap-ux/logger':
         specifier: workspace:*
@@ -1784,8 +1788,8 @@ importers:
         specifier: 0.5.16
         version: 0.5.16
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -1836,8 +1840,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
       glob-gitignore:
         specifier: 1.0.15
         version: 1.0.15
@@ -2527,10 +2531,10 @@ importers:
     devDependencies:
       '@langchain/core':
         specifier: 1.1.36
-        version: 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))
+        version: 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0)
       '@langchain/mcp-adapters':
         specifier: 1.1.3
-        version: 1.1.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(@langchain/langgraph@1.1.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6))
+        version: 1.1.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@langchain/langgraph@1.1.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6))
       '@modelcontextprotocol/sdk':
         specifier: '>=1.29.0'
         version: 1.29.0(@cfworker/json-schema@4.1.1)(zod@4.3.6)
@@ -2539,7 +2543,7 @@ importers:
         version: 2.9.0
       '@sap-ai-sdk/langchain':
         specifier: 2.9.0
-        version: 2.9.0(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))
+        version: 2.9.0(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))
       '@sap-ux/annotation-converter':
         specifier: 0.10.21
         version: 0.10.21
@@ -2611,7 +2615,7 @@ importers:
         version: 4.0.1
       promptfoo:
         specifier: 0.121.3
-        version: 0.121.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(@noble/hashes@1.8.0)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.19.10)(@types/react@16.14.69)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(pg@8.18.0)(playwright-core@1.58.2)(socks@2.8.7)(typescript@5.9.3)
+        version: 0.121.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@noble/hashes@1.8.0)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.19.10)(@types/react@16.14.69)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(pg@8.18.0)(playwright-core@1.58.2)(socks@2.8.7)(typescript@5.9.3)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)
@@ -3022,8 +3026,8 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -3334,8 +3338,8 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
       axios-logger:
         specifier: 2.8.1
         version: 2.8.1
@@ -3457,8 +3461,8 @@ importers:
         version: link:../odata-annotation-core-types
     devDependencies:
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
       npm-run-all2:
         specifier: 8.0.4
         version: 8.0.4
@@ -3747,8 +3751,8 @@ importers:
         specifier: 7.2.0
         version: 7.2.0
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
       express:
         specifier: 4.22.1
         version: 4.22.1
@@ -4151,8 +4155,8 @@ importers:
         specifier: 2.9.8
         version: 2.9.8
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
       performance-now:
         specifier: 2.1.0
         version: 2.1.0
@@ -4704,8 +4708,8 @@ importers:
         specifier: 8.18.0
         version: 8.18.0
       axios:
-        specifier: ^1.13.5
-        version: 1.13.5(debug@4.4.3)
+        specifier: ^1.15.0
+        version: 1.15.0(debug@4.4.3)
       js-yaml:
         specifier: 4.1.1
         version: 4.1.1
@@ -4735,8 +4739,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       axios:
-        specifier: 1.13.6
-        version: 1.13.6(debug@4.4.3)
+        specifier: 1.15.0
+        version: 1.15.0(debug@4.4.3)
       semver:
         specifier: 7.7.4
         version: 7.7.4
@@ -9862,9 +9866,6 @@ packages:
   '@types/unist@2.0.11':
     resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
 
-  '@types/uuid@10.0.0':
-    resolution: {integrity: sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ==}
-
   '@types/uuid@11.0.0':
     resolution: {integrity: sha512-HVyk8nj2m+jcFRNazzqyVKiZezyhDKrGUA3jlEcg/nZ6Ms+qHwocba1Y/AaVaznJTAM9xpdFSh+ptbNrhOGvZA==}
     deprecated: This is a stub types definition. uuid provides its own type definitions, so you do not need this installed.
@@ -10706,11 +10707,8 @@ packages:
     peerDependencies:
       axios: 0.x || 1.x
 
-  axios@1.13.5:
-    resolution: {integrity: sha512-cz4ur7Vb0xS4/KUN0tPWe44eqxrIu31me+fbang3ijiNscE129POzipJJA6zniq2C/Z6sJCjMimjS8Lc/GAs8Q==}
-
-  axios@1.13.6:
-    resolution: {integrity: sha512-ChTCHMouEe2kn713WHbQGcuYrr6fXTBiu460OTwWrWob16g1bXn4vtz07Ope7ewMozJAnEquLk5lWQWtBig9DQ==}
+  axios@1.15.0:
+    resolution: {integrity: sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==}
 
   azure-devops-node-api@12.5.0:
     resolution: {integrity: sha512-R5eFskGvOm3U/GzeAuxRkUsAl0hrAwGgWn6zAd2KrZmrEhWZVqLew4OOupbQlXUuojUzpGtq62SmdhJ06N88og==}
@@ -10862,8 +10860,8 @@ packages:
     resolution: {integrity: sha512-CtGuTyWf3ig+sgRyC7uP6DM3N+5ur/p8L+FPfsd+BbIfIs74TFfCajZTHnCw6K5dqM0bZEbRIqRy1fAdiUJhTA==}
     engines: {node: '>= 0.6'}
 
-  basic-ftp@5.2.0:
-    resolution: {integrity: sha512-VoMINM2rqJwJgfdHq6RiUudKt2BV+FY5ZFezP/ypmwayk68+NzzAQy4XXLlqsGD4MCzq3DrmNFD/uUmBJuGoXw==}
+  basic-ftp@5.2.2:
+    resolution: {integrity: sha512-1tDrzKsdCg70WGvbFss/ulVAxupNauGnOlgpyjKzeQxzyllBLS0CGLV7tjIXTK3ZQA9/FBEm9qyFFN1bciA6pw==}
     engines: {node: '>=10.0.0'}
 
   before-after-hook@2.2.3:
@@ -11473,9 +11471,6 @@ packages:
 
   console-control-strings@1.1.0:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
-
-  console-table-printer@2.15.0:
-    resolution: {integrity: sha512-SrhBq4hYVjLCkBVOWaTzceJalvn5K1Zq5aQA6wXC/cYjI3frKWNPEMK3sZsJfNNQApvCQmgBcc13ZKmFj8qExw==}
 
   constants-browserify@1.0.0:
     resolution: {integrity: sha512-xFxOwqIzR/e1k1gLiWEophSCMqXcwVHIH7akf7b/vxcUeGunlj3hvZaaqxwHsTgn+IndtkQJgSztIDWeumWJDQ==}
@@ -14419,13 +14414,14 @@ packages:
     resolution: {integrity: sha512-mtwfsNGIYvObRh+NYNGlJQJDiBN+Wr3Hnr++wN25mxuOpSTdXX+JQqVCyAqGL5GD2TAXRZ7COsN42Vmp9krYmg==}
     engines: {node: '>=18'}
 
-  langsmith@0.5.0:
-    resolution: {integrity: sha512-5U9Ar/wAu5vyTBBImvMLrM9sjynHzN703oLHScEqJaXWE6gm+uti0rWDryQZ6ObnuqSNa4IOUudYej9X6VNEwg==}
+  langsmith@0.5.18:
+    resolution: {integrity: sha512-3zuZUWffTHQ+73EAwnodADtf534VNEZUpXr9jC12qyG8/IQuJET7PRsCpTb9wX2lmBspakwLUpqpj3tNm/0bVA==}
     peerDependencies:
       '@opentelemetry/api': '*'
       '@opentelemetry/exporter-trace-otlp-proto': '*'
       '@opentelemetry/sdk-trace-base': '*'
       openai: '*'
+      ws: '>=7'
     peerDependenciesMeta:
       '@opentelemetry/api':
         optional: true
@@ -14434,6 +14430,8 @@ packages:
       '@opentelemetry/sdk-trace-base':
         optional: true
       openai:
+        optional: true
+      ws:
         optional: true
 
   latest-version@9.0.0:
@@ -14702,8 +14700,8 @@ packages:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
 
-  mathjs@15.1.1:
-    resolution: {integrity: sha512-rM668DTtpSzMVoh/cKAllyQVEbBApM5g//IMGD8vD7YlrIz9ITRr3SrdhjaDxcBNTdyETWwPebj2unZyHD7ZdA==}
+  mathjs@15.2.0:
+    resolution: {integrity: sha512-UAQzSVob9rNLdGpqcFMYmSu9dkuLYy7Lr2hBEQS5SHQdknA9VppJz3cy2KkpMzTODunad6V6cNv+5kOLsePLow==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -17154,9 +17152,6 @@ packages:
 
   simple-swizzle@0.2.4:
     resolution: {integrity: sha512-nAu1WFPQSMNr2Zn9PGSZK9AGn4t/y97lEm+MXTtUDwfP0ksAIX4nO+6ruD9Jwut4C49SB1Ws+fbXsm/yScWOHw==}
-
-  simple-wcswidth@1.1.2:
-    resolution: {integrity: sha512-j7piyCjAeTDSjzTSQ7DokZtMNwNlEAyxqSZeCS+CXH7fJ4jx3FuJ/mTW3mE+6JLs4VJBbcll0Kjn+KXI5t21Iw==}
 
   sinon@10.0.1:
     resolution: {integrity: sha512-1rf86mvW4Mt7JitEIgmNaLXaWnrWd/UrVKZZlL+kbeOujXVf9fmC4kQEQ/YeHoiIA23PLNngYWK+dngIx/AumA==}
@@ -21479,7 +21474,7 @@ snapshots:
       - typescript
     optional: true
 
-  '@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(encoding@0.1.13)':
+  '@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(encoding@0.1.13)':
     dependencies:
       '@ai-zen/node-fetch-event-source': 2.1.4(encoding@0.1.13)
       fetch-retry: 5.0.6
@@ -21488,7 +21483,7 @@ snapshots:
       p-queue-compat: 1.0.225
       yaml: 2.8.3
     optionalDependencies:
-      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))
+      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0)
     transitivePeerDependencies:
       - encoding
     optional: true
@@ -22065,7 +22060,7 @@ snapshots:
       '@lancedb/lancedb-win32-arm64-msvc': 0.22.0
       '@lancedb/lancedb-win32-x64-msvc': 0.22.0
 
-  '@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))':
+  '@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0)':
     dependencies:
       '@cfworker/json-schema': 4.1.1
       '@standard-schema/spec': 1.1.0
@@ -22073,7 +22068,7 @@ snapshots:
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.21
-      langsmith: 0.5.0(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))
+      langsmith: 0.5.18(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0)
       mustache: 4.2.0
       p-queue: 6.6.2
       uuid: 11.1.0
@@ -22083,28 +22078,29 @@ snapshots:
       - '@opentelemetry/exporter-trace-otlp-proto'
       - '@opentelemetry/sdk-trace-base'
       - openai
+      - ws
 
-  '@langchain/langgraph-checkpoint@1.0.0(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))':
+  '@langchain/langgraph-checkpoint@1.0.0(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))':
     dependencies:
-      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))
+      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0)
       uuid: 10.0.0
 
-  '@langchain/langgraph-sdk@1.6.5(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)':
+  '@langchain/langgraph-sdk@1.6.5(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@types/json-schema': 7.0.15
       p-queue: 9.1.0
       p-retry: 7.1.1
       uuid: 13.0.0
     optionalDependencies:
-      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))
+      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0)
       react: 19.2.4
       react-dom: 16.14.0(react@19.2.4)
 
-  '@langchain/langgraph@1.1.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)':
+  '@langchain/langgraph@1.1.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)':
     dependencies:
-      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))
-      '@langchain/langgraph-checkpoint': 1.0.0(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))
-      '@langchain/langgraph-sdk': 1.6.5(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)
+      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0)
+      '@langchain/langgraph-checkpoint': 1.0.0(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))
+      '@langchain/langgraph-sdk': 1.6.5(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)
       '@standard-schema/spec': 1.1.0
       uuid: 10.0.0
       zod: 4.3.6
@@ -22114,10 +22110,10 @@ snapshots:
       - react
       - react-dom
 
-  '@langchain/mcp-adapters@1.1.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(@langchain/langgraph@1.1.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6))':
+  '@langchain/mcp-adapters@1.1.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@langchain/langgraph@1.1.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6))':
     dependencies:
-      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))
-      '@langchain/langgraph': 1.1.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)
+      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0)
+      '@langchain/langgraph': 1.1.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)
       '@modelcontextprotocol/sdk': 1.29.0(@cfworker/json-schema@4.1.1)(zod@4.3.6)
       debug: 4.4.3
       zod: 4.3.6
@@ -23158,9 +23154,9 @@ snapshots:
       - debug
       - supports-color
 
-  '@sap-ai-sdk/langchain@2.9.0(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))':
+  '@sap-ai-sdk/langchain@2.9.0(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))':
     dependencies:
-      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))
+      '@langchain/core': 1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0)
       '@sap-ai-sdk/ai-api': 2.9.0
       '@sap-ai-sdk/core': 2.9.0
       '@sap-ai-sdk/foundation-models': 2.9.0
@@ -23198,7 +23194,7 @@ snapshots:
       '@sap/xsenv': 6.1.0
       '@sap/xssec': 4.12.2
       async-retry: 1.3.3
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       jks-js: 1.1.5
       jsonwebtoken: 9.0.3
     transitivePeerDependencies:
@@ -23210,7 +23206,7 @@ snapshots:
       '@sap-cloud-sdk/connectivity': 4.5.1
       '@sap-cloud-sdk/resilience': 4.5.1
       '@sap-cloud-sdk/util': 4.5.1
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -23221,7 +23217,7 @@ snapshots:
       '@sap-cloud-sdk/http-client': 4.5.1
       '@sap-cloud-sdk/resilience': 4.5.1
       '@sap-cloud-sdk/util': 4.5.1
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -23230,14 +23226,14 @@ snapshots:
     dependencies:
       '@sap-cloud-sdk/util': 4.5.1
       async-retry: 1.3.3
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       opossum: 9.0.0
     transitivePeerDependencies:
       - debug
 
   '@sap-cloud-sdk/util@4.5.1':
     dependencies:
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       chalk: 4.1.2
       logform: 2.7.0
       voca: 1.4.1
@@ -23413,7 +23409,7 @@ snapshots:
     dependencies:
       '@sap-ux/yaml': 0.17.5
       ajv: 8.18.0
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       js-yaml: 4.1.1
       lodash: 4.18.1
       semver: 7.7.4
@@ -23445,9 +23441,9 @@ snapshots:
       '@sap/xsenv': 5.6.1
       '@sap/xssec': 4.12.2
       agentkeepalive: 4.6.0
-      axios: 1.13.5(debug@4.4.3)
-      axios-cookiejar-support: 5.0.5(axios@1.13.5)(tough-cookie@4.1.4)(undici@6.24.1)
-      axios-retry: 4.5.0(axios@1.13.5)
+      axios: 1.15.0(debug@4.4.3)
+      axios-cookiejar-support: 5.0.5(axios@1.15.0)(tough-cookie@4.1.4)(undici@6.24.1)
+      axios-retry: 4.5.0(axios@1.15.0)
       base64-url: 2.3.3
       basic-auth: 1.1.0
       body-parser: 2.2.2
@@ -23504,7 +23500,7 @@ snapshots:
 
   '@sap/bas-sdk@3.13.3':
     dependencies:
-      axios: 1.13.5(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       cross-spawn: 7.0.6
       fs-extra: 11.3.2
       jwt-decode: 4.0.0
@@ -23553,7 +23549,7 @@ snapshots:
 
   '@sap/service-provider-apis@2.8.0':
     dependencies:
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       lodash: 4.18.1
       xml2js: 0.6.2
     transitivePeerDependencies:
@@ -23819,7 +23815,7 @@ snapshots:
       '@slack/types': 2.20.1
       '@types/node': 20.19.37
       '@types/retry': 0.12.0
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       eventemitter3: 5.0.4
       form-data: 4.0.5
       is-electron: 2.2.2
@@ -25069,8 +25065,6 @@ snapshots:
 
   '@types/unist@2.0.11': {}
 
-  '@types/uuid@10.0.0': {}
-
   '@types/uuid@11.0.0':
     dependencies:
       uuid: 11.1.0
@@ -26205,9 +26199,9 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios-cookiejar-support@5.0.5(axios@1.13.5)(tough-cookie@4.1.4)(undici@6.24.1):
+  axios-cookiejar-support@5.0.5(axios@1.15.0)(tough-cookie@4.1.4)(undici@6.24.1):
     dependencies:
-      axios: 1.13.5(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       http-cookie-agent: 6.0.8(tough-cookie@4.1.4)(undici@6.24.1)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
@@ -26218,24 +26212,16 @@ snapshots:
       chalk: 4.1.2
       dateformat: 3.0.3
 
-  axios-retry@4.5.0(axios@1.13.5):
+  axios-retry@4.5.0(axios@1.15.0):
     dependencies:
-      axios: 1.13.5(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       is-retry-allowed: 2.2.0
 
-  axios@1.13.5(debug@4.4.3):
+  axios@1.15.0(debug@4.4.3):
     dependencies:
       follow-redirects: 1.15.11(debug@4.4.3)
       form-data: 4.0.5
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-
-  axios@1.13.6(debug@4.4.3):
-    dependencies:
-      follow-redirects: 1.15.11(debug@4.4.3)
-      form-data: 4.0.5
-      proxy-from-env: 1.1.0
+      proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
 
@@ -26413,7 +26399,7 @@ snapshots:
 
   basic-auth@1.1.0: {}
 
-  basic-ftp@5.2.0: {}
+  basic-ftp@5.2.2: {}
 
   before-after-hook@2.2.3: {}
 
@@ -27125,10 +27111,6 @@ snapshots:
       - supports-color
 
   console-control-strings@1.1.0: {}
-
-  console-table-printer@2.15.0:
-    dependencies:
-      simple-wcswidth: 1.1.2
 
   constants-browserify@1.0.0: {}
 
@@ -29087,7 +29069,7 @@ snapshots:
 
   get-uri@6.0.5:
     dependencies:
-      basic-ftp: 5.2.0
+      basic-ftp: 5.2.2
       data-uri-to-buffer: 6.0.2
       debug: 4.4.3
     transitivePeerDependencies:
@@ -29095,7 +29077,7 @@ snapshots:
 
   get-uri@7.0.0:
     dependencies:
-      basic-ftp: 5.2.0
+      basic-ftp: 5.2.2
       data-uri-to-buffer: 7.0.0
       debug: 4.4.3
     transitivePeerDependencies:
@@ -29577,7 +29559,7 @@ snapshots:
       '@types/debug': 4.1.13
       '@types/node': 18.19.130
       '@types/tough-cookie': 4.0.5
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       camelcase: 6.3.0
       debug: 4.4.3
       dotenv: 16.6.1
@@ -29588,7 +29570,7 @@ snapshots:
       jsonwebtoken: 9.0.3
       load-esm: 1.0.3
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.13.6)
+      retry-axios: 2.6.0(axios@1.15.0)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -30940,18 +30922,15 @@ snapshots:
       langfuse-core: 3.38.6
     optional: true
 
-  langsmith@0.5.0(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)):
+  langsmith@0.5.18(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0):
     dependencies:
-      '@types/uuid': 10.0.0
-      chalk: 4.1.2
-      console-table-printer: 2.15.0
       p-queue: 6.6.2
-      semver: 7.7.4
       uuid: 10.0.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/sdk-trace-base': 2.6.0(@opentelemetry/api@1.9.0)
       openai: 6.33.0(ws@8.20.0)(zod@4.3.6)
+      ws: 8.20.0
 
   latest-version@9.0.0:
     dependencies:
@@ -31204,7 +31183,7 @@ snapshots:
 
   math-intrinsics@1.1.0: {}
 
-  mathjs@15.1.1:
+  mathjs@15.2.0:
     dependencies:
       '@babel/runtime': 7.29.2
       complex.js: 2.4.3
@@ -31505,7 +31484,7 @@ snapshots:
 
   mta-local@1.0.8:
     dependencies:
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       tar: 7.5.13
       unzip-stream: 0.3.4
     transitivePeerDependencies:
@@ -31513,7 +31492,7 @@ snapshots:
 
   mta@1.0.8:
     dependencies:
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       tar: 7.5.13
       unzip-stream: 0.3.4
     transitivePeerDependencies:
@@ -31927,7 +31906,7 @@ snapshots:
       '@yarnpkg/lockfile': 1.1.0
       '@yarnpkg/parsers': 3.0.2
       '@zkochan/js-yaml': 0.0.7
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       cliui: 8.0.1
@@ -32834,7 +32813,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.6
 
-  promptfoo@0.121.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(@noble/hashes@1.8.0)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.19.10)(@types/react@16.14.69)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(pg@8.18.0)(playwright-core@1.58.2)(socks@2.8.7)(typescript@5.9.3):
+  promptfoo@0.121.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@noble/hashes@1.8.0)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.19.10)(@types/react@16.14.69)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(pg@8.18.0)(playwright-core@1.58.2)(socks@2.8.7)(typescript@5.9.3):
     dependencies:
       '@anthropic-ai/sdk': 0.85.0(zod@4.3.6)
       '@apidevtools/json-schema-ref-parser': 15.3.1(@types/json-schema@7.0.15)
@@ -32896,7 +32875,7 @@ snapshots:
       keyv: 5.6.0
       keyv-file: 5.3.3
       lru-cache: 11.2.7
-      mathjs: 15.1.1
+      mathjs: 15.2.0
       minimatch: 10.2.4
       nunjucks: 3.2.4(chokidar@5.0.0)
       openai: 6.33.0(ws@8.20.0)(zod@4.3.6)
@@ -32935,7 +32914,7 @@ snapshots:
       '@fal-ai/client': 1.9.4
       '@huggingface/transformers': 3.8.1
       '@ibm-cloud/watsonx-ai': 1.7.10(@swc/core@1.15.18(@swc/helpers@0.5.19))(typescript@5.9.3)
-      '@ibm-generative-ai/node-sdk': 3.2.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6)))(encoding@0.1.13)
+      '@ibm-generative-ai/node-sdk': 3.2.4(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(encoding@0.1.13)
       '@openai/codex-sdk': 0.116.0
       '@playwright/browser-chromium': 1.58.2
       '@rollup/rollup-linux-x64-gnu': 4.59.0
@@ -33823,9 +33802,9 @@ snapshots:
 
   ret@0.1.15: {}
 
-  retry-axios@2.6.0(axios@1.13.6):
+  retry-axios@2.6.0(axios@1.15.0):
     dependencies:
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
     optional: true
 
   retry@0.12.0: {}
@@ -34444,8 +34423,6 @@ snapshots:
   simple-swizzle@0.2.4:
     dependencies:
       is-arrayish: 0.3.4
-
-  simple-wcswidth@1.1.2: {}
 
   sinon@10.0.1:
     dependencies:
@@ -35859,7 +35836,7 @@ snapshots:
 
   wait-on@8.0.5:
     dependencies:
-      axios: 1.13.6(debug@4.4.3)
+      axios: 1.15.0(debug@4.4.3)
       joi: 18.0.2
       lodash: 4.18.1
       minimist: 1.2.8
