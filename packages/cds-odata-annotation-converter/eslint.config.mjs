@@ -11,6 +11,9 @@ const __dirname = path.dirname(__filename);
 export default [
     ...base,
     {
+        ignores: ['**/*.cjs']
+    },
+    {
         languageOptions: {
             parserOptions: {
                 parser: tsParser,
