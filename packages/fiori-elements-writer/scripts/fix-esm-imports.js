@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const distDir = join(__dirname, '..', 'lib');
+const distDir = join(__dirname, '..', 'dist');
 
 function walkDir(dir) {
     let files = [];
