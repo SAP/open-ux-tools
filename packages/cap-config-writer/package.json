@@ -40,6 +40,7 @@
         "xml-js": "1.6.11"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.7.1"

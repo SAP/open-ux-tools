@@ -9,14 +9,24 @@ import type { Package } from '@sap-ux/project-access';
 const mockGetCdsVersionInfo = jest.fn();
 const mockSatisfiesMinCdsVersion = jest.fn().mockReturnValue(true);
 const mockCheckCdsUi5PluginEnabled = jest.fn<(...args: unknown[]) => Promise<boolean>>().mockResolvedValue(false);
-const mockGetCapCustomPaths = jest.fn<(...args: unknown[]) => Promise<{ app: string; db: string; srv: string }>>().mockResolvedValue({ app: 'app/', db: 'db/', srv: 'srv/' });
-const mockGetWebappPath = jest.fn<(...args: unknown[]) => Promise<string>>().mockImplementation(async (appPath: unknown) => join(appPath as string, 'webapp'));
+const mockGetCapCustomPaths = jest
+    .fn<(...args: unknown[]) => Promise<{ app: string; db: string; srv: string }>>()
+    .mockResolvedValue({ app: 'app/', db: 'db/', srv: 'srv/' });
+const mockGetWebappPath = jest
+    .fn<(...args: unknown[]) => Promise<string>>()
+    .mockImplementation(async (appPath: unknown) => join(appPath as string, 'webapp'));
 const mockHasMinCdsVersion = jest.fn().mockReturnValue(false);
-const mockGetWorkspaceInfo = jest.fn<(...args: unknown[]) => Promise<{ appWorkspace: string; workspaceEnabled: boolean; workspacePackages: string[] }>>().mockResolvedValue({
-    appWorkspace: 'app/*',
-    workspaceEnabled: false,
-    workspacePackages: []
-});
+const mockGetWorkspaceInfo = jest
+    .fn<
+        (
+            ...args: unknown[]
+        ) => Promise<{ appWorkspace: string; workspaceEnabled: boolean; workspacePackages: string[] }>
+    >()
+    .mockResolvedValue({
+        appWorkspace: 'app/*',
+        workspaceEnabled: false,
+        workspacePackages: []
+    });
 const mockHasDependency = jest.fn().mockReturnValue(false);
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
