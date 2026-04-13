@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.12.0
+
+### Minor Changes
+
+- 524690a: [rule] Add rule to check that a text property for a field with UI.TextArrangement is not hidden.
+
 ## 9.11.7
 
 ### Patch Changes
