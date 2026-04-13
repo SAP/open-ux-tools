@@ -121,6 +121,7 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
 |  new      | [sap-description-column-label](docs/rules/sap-description-column-label.md) | Ensures that the description (text) property referenced via `Common.Text` has a meaningful `Common.Label` — not a generic value such as `"Name"` or `"Description"`, and not the same label as the ID property. | | ✅ |
+|  9.12.0   | [sap-text-arrangement-hidden](docs/rules/sap-text-arrangement-hidden.md) | Ensures that the text property referenced by a `UI.TextArrangement` annotation using the `Common.Text` annotation is not hidden by the `UI.Hidden` annotation | | ✅ |
 |  9.11.0   | [sap-no-data-field-intent-based-navigation](docs/rules/sap-no-data-field-intent-based-navigation.md) | Ensures neither `DataFieldForIntentBasedNavigation` nor `DataFieldWithIntentBasedNavigation` are used in tables or form fields in SAP Fiori elements applications. | | ✅ |
 |  9.10.0   | [sap-condensed-table-layout](docs/rules/sap-condensed-table-layout.md) | Requires `condensedTableLayout` to be enabled when using a grid table, analytical table, or tree table. | | ✅ |
 |   9.9.0   | [sap-strict-uom-filtering](docs/rules/sap-strict-uom-filtering.md) | Ensures that `disableStrictUomFiltering` is not set to `true` in `sap.fe.app` manifest configuration | | ✅ |
