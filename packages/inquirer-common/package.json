@@ -53,6 +53,7 @@
         "semver": "7.7.4"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-ux/vocabularies-types": "0.15.0",
         "@sap-devx/yeoman-ui-types": "1.23.0",
         "@types/inquirer": "8.2.6",

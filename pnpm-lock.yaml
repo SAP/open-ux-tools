@@ -2253,6 +2253,9 @@ importers:
 
   packages/fiori-docs-embeddings:
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@lancedb/lancedb':
         specifier: 0.22.0
         version: 0.22.0(apache-arrow@18.1.0)
@@ -3042,6 +3045,9 @@ importers:
         specifier: 7.7.4
         version: 7.7.4
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@sap-devx/yeoman-ui-types':
         specifier: 1.23.0
         version: 1.23.0
