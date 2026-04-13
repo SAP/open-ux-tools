@@ -60,6 +60,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-devx/yeoman-ui-types": "1.23.0",
         "@sap-ux/deploy-config-sub-generator": "workspace:*",
         "@sap-ux/flp-config-sub-generator": "workspace:*",

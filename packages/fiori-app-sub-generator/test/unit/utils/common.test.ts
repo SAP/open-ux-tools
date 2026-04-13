@@ -15,7 +15,7 @@ import type { Logger } from '@sap-ux/logger';
 const actualProjectAccess = await import('@sap-ux/project-access');
 const actualBtpUtils = await import('@sap-ux/btp-utils');
 const actualFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
-const actualFs = await import('fs');
+const actualFs = await import('node:fs');
 const actualCapConfigWriter = await import('@sap-ux/cap-config-writer');
 
 const getProjectTypeMock = jest.fn();

@@ -8,6 +8,7 @@ import { TemplateType as TemplateTypeFF } from '@sap-ux/fiori-freestyle-writer';
 import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types';
 import { type CapService, DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { ServiceType } from '@sap-ux/odata-service-writer';
+import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Generator from 'yeoman-generator';
@@ -149,9 +150,9 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 
 // Import after all mocks are set up
 const { FioriAppGenerator } = await import('../../../src/fiori-app-generator');
-type FioriAppGeneratorOptions = import('../../../src/fiori-app-generator').FioriAppGeneratorOptions;
 const { DefaultLogger, TelemetryHelper, sendTelemetry } = await import('@sap-ux/fiori-generator-shared');
-const { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorName } = await import('../../../src/types');
+const { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorName } =
+    await import('../../../src/types');
 const { deleteCache, getYeomanUiStepConfig, t } = await import('../../../src/utils');
 
 /**

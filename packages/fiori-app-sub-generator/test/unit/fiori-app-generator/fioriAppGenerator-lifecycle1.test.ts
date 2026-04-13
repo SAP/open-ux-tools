@@ -6,6 +6,8 @@ import { type CapService, DatasourceType, type EntityRelatedAnswers } from '@sap
 import type { UI5ApplicationAnswers } from '@sap-ux/ui5-application-inquirer';
 import yeomanTest from 'yeoman-test';
 import type { Project, Service } from '../../../src/types';
+import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
+import type { AppWizardCache } from '../../../src/utils';
 
 // Pre-import actuals
 const actualPrompting = await import('../../../src/fiori-app-generator/prompting');
@@ -109,8 +111,6 @@ jest.unstable_mockModule('@sap-ux/telemetry', () => ({
 
 // Import after all mocks are set up
 const { FioriAppGenerator } = await import('../../../src/fiori-app-generator');
-const type_FioriAppGeneratorOptions = {} as import('../../../src/fiori-app-generator').FioriAppGeneratorOptions;
-type FioriAppGeneratorOptions = typeof type_FioriAppGeneratorOptions;
 const { DefaultLogger, TelemetryHelper, hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 const { getUI5Versions } = await import('@sap-ux/ui5-info');
 const { getEntityRelatedPrompts } = await import('@sap-ux/odata-service-inquirer');
@@ -118,7 +118,6 @@ const { initTelemetrySettings } = await import('@sap-ux/telemetry');
 const { FIORI_STEPS, FloorplanFE, FloorplanFF, STEP_DATASOURCE_AND_SERVICE, STEP_FLP_CONFIG, STEP_PROJECT_ATTRIBUTES } =
     await import('../../../src/types');
 const { getYeomanUiStepConfig, t } = await import('../../../src/utils');
-type AppWizardCache = import('../../../src/utils').AppWizardCache;
 
 /**
  * Tests the FioriAppGenerator generator lifecycle methods call what they should with the correct parameters.
