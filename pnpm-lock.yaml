@@ -1077,6 +1077,9 @@ importers:
         specifier: 1.13.6
         version: 1.13.6(debug@4.4.3)
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -2020,6 +2023,9 @@ importers:
 
   packages/feature-toggle:
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@types/vscode':
         specifier: 1.110.0
         version: 1.110.0
