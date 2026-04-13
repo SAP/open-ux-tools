@@ -93,9 +93,7 @@ const { default: AbapDeployGenerator } = await import('../src/app');
 const { t } = await import('../src/utils/i18n');
 const { MessageType } = await import('@sap-devx/yeoman-ui-types');
 const { TestFixture } = await import('./fixtures');
-const { PackageInputChoices, TargetSystemType, TransportChoices } = await import(
-    '@sap-ux/abap-deploy-config-inquirer'
-);
+const { PackageInputChoices, TargetSystemType, TransportChoices } = await import('@sap-ux/abap-deploy-config-inquirer');
 const { UI5Config } = await import('@sap-ux/ui5-config');
 const { ABAP_DEPLOY_TASK } = await import('../src/utils/constants');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
@@ -139,8 +137,7 @@ describe('Test abap deploy configuration generator', () => {
         // Default: handleErrorMessage throws in CLI, shows error in VSCode/BAS
         mockHandleErrorMessage.mockImplementation(
             (appWizard: any, { errorType, errorMsg }: { errorType?: string; errorMsg?: string }) => {
-                const error =
-                    errorMsg ?? realDeployShared.ErrorHandler.getErrorMsgFromType(errorType as any);
+                const error = errorMsg ?? realDeployShared.ErrorHandler.getErrorMsgFromType(errorType as any);
                 const env = mockGetHostEnvironment();
                 if (env === hostEnvironment.cli) {
                     throw new Error(error);
