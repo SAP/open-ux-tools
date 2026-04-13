@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
-import http from 'http';
-import https from 'https';
+import http from 'node:http';
+import https from 'node:https';
 
 // Define mock functions
 const mockUi5Proxy = jest.fn<any>();
@@ -79,12 +79,14 @@ describe('middleware', () => {
                     const version = config.version ? `/${config.version}` : '';
                     const targetUrl = `${url.origin}${version}${req.path}`;
                     const client = targetUrl.startsWith('https') ? https : http;
-                    client.get(targetUrl, (proxyRes) => {
-                        res.status(proxyRes.statusCode || 404);
-                        res.end();
-                    }).on('error', () => {
-                        res.status(502).end();
-                    });
+                    client
+                        .get(targetUrl, (proxyRes) => {
+                            res.status(proxyRes.statusCode || 404);
+                            res.end();
+                        })
+                        .on('error', () => {
+                            res.status(502).end();
+                        });
                 };
             });
 
