@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.96
+
+### Patch Changes
+
+- 5f3b63b: fix(cf-deploy-config-writer): update standalone router @sap/approuter to ^21.0.0
+
 ## 0.3.95
 
 ### Patch Changes
