@@ -192,7 +192,10 @@ jest.unstable_mockModule('../../src/data-download/prompts/value-help-prompts', (
 
 const { getODataDownloaderPrompts, promptNames } = await import('../../src/data-download/prompts/prompts');
 const { ODataDownloadGenerator } = await import('../../src/data-download/odata-download-generator');
-type SelectedEntityAnswer = { fullPath: string; entity: { entityPath: string; entitySetName: string; defaultSelected?: boolean } };
+type SelectedEntityAnswer = {
+    fullPath: string;
+    entity: { entityPath: string; entitySetName: string; defaultSelected?: boolean };
+};
 
 // Helper to create mock entity choice
 const createMockChoice = (
@@ -403,9 +406,7 @@ describe('Test prompts', () => {
 
             const result = await appSelectionPrompt.validate!('/test/app');
 
-            expect(result).toBe(
-                'prompts.appSelection.validation.appMainServiceOdataVersionNotSupported'
-            );
+            expect(result).toBe('prompts.appSelection.validation.appMainServiceOdataVersionNotSupported');
         });
 
         it('should configure appConfig correctly after successful validation', async () => {
@@ -459,10 +460,7 @@ describe('Test prompts', () => {
             // Verify helper functions were called with correct parameters
             expect(mockCreateApplicationAccess).toHaveBeenCalledWith('/test/app');
             expect(mockGetSpecification).toHaveBeenCalledWith(mockAppAccess);
-            expect(mockGetServiceDetails).toHaveBeenCalledWith(
-                '/test/app',
-                mockAppAccess.app.services.mainService
-            );
+            expect(mockGetServiceDetails).toHaveBeenCalledWith('/test/app', mockAppAccess.app.services.mainService);
         });
 
         it('should return false for empty app path', async () => {
@@ -924,9 +922,7 @@ describe('Test prompts', () => {
 
                 const message = (freshEntityPrompt as any).additionalMessages();
                 expect(message).toBeDefined();
-                expect(message.message).toEqual(
-                    'prompts.skipDataDownload.querySuccess'
-                );
+                expect(message.message).toEqual('prompts.skipDataDownload.querySuccess');
                 expect(message.severity).toBeDefined();
 
                 jest.useRealTimers();

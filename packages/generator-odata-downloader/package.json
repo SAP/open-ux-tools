@@ -42,6 +42,7 @@
     ],
     "dependencies": {},
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-devx/yeoman-ui-types": "1.23.0",
         "@sap-ux/annotation-converter": "0.10.21",
         "@sap-ux/axios-extension": "workspace:*",

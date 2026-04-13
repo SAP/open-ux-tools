@@ -39,15 +39,27 @@ const mockCreateApplicationAccess = jest.fn();
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     createApplicationAccess: mockCreateApplicationAccess,
     FileName: {
-        AdaptationConfig: 'config.json', CapJavaApplicationYaml: 'application.yaml',
-        ExtConfigJson: '.extconfig.json', IndexCds: 'index.cds', Library: '.library',
-        Manifest: 'manifest.json', ManifestAppDescrVar: 'manifest.appdescr_variant',
-        MtaYaml: 'mta.yaml', Package: 'package.json', Pom: 'pom.xml',
-        SpecificationDistTags: 'specification-dist-tags.json', ServiceCds: 'services.cds',
-        Tsconfig: 'tsconfig.json', Ui5Yaml: 'ui5.yaml', Ui5LocalYaml: 'ui5-local.yaml',
-        Ui5MockYaml: 'ui5-mock.yaml', UI5DeployYaml: 'ui5-deploy.yaml',
-        PackageLock: 'package-lock.json', XSAppJson: 'xs-app.json',
-        XSSecurityJson: 'xs-security.json', DotGitIgnore: '.gitignore',
+        AdaptationConfig: 'config.json',
+        CapJavaApplicationYaml: 'application.yaml',
+        ExtConfigJson: '.extconfig.json',
+        IndexCds: 'index.cds',
+        Library: '.library',
+        Manifest: 'manifest.json',
+        ManifestAppDescrVar: 'manifest.appdescr_variant',
+        MtaYaml: 'mta.yaml',
+        Package: 'package.json',
+        Pom: 'pom.xml',
+        SpecificationDistTags: 'specification-dist-tags.json',
+        ServiceCds: 'services.cds',
+        Tsconfig: 'tsconfig.json',
+        Ui5Yaml: 'ui5.yaml',
+        Ui5LocalYaml: 'ui5-local.yaml',
+        Ui5MockYaml: 'ui5-mock.yaml',
+        UI5DeployYaml: 'ui5-deploy.yaml',
+        PackageLock: 'package-lock.json',
+        XSAppJson: 'xs-app.json',
+        XSSecurityJson: 'xs-security.json',
+        DotGitIgnore: '.gitignore',
         MtaExtYaml: 'mta-ext.mtaext'
     },
     getSpecificationModuleFromCache: mockGetSpecificationModuleFromCache,
@@ -148,17 +160,11 @@ jest.unstable_mockModule('../../src/telemetry', () => ({
     }
 }));
 
-const {
-    createEntityChoices,
-    getData,
-    getServiceDetails,
-    getSpecification
-} = await import('../../src/data-download/prompts/prompt-helpers');
+const { createEntityChoices, getData, getServiceDetails, getSpecification } =
+    await import('../../src/data-download/prompts/prompt-helpers');
 
 // Import FileName from the mocked module (contains the real constant values we defined in the mock)
-const { FileName, createApplicationAccess, getSpecificationModuleFromCache } = await import(
-    '@sap-ux/project-access'
-);
+const { FileName, createApplicationAccess, getSpecificationModuleFromCache } = await import('@sap-ux/project-access');
 const { getEntityModel } = await import('../../src/data-download/utils');
 
 const __testdir = dirname(fileURLToPath(import.meta.url));
@@ -743,9 +749,7 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '24' })
         };
 
-        mockGetSpecificationModuleFromCache.mockResolvedValue(
-            mockSpecification as unknown as Specification
-        );
+        mockGetSpecificationModuleFromCache.mockResolvedValue(mockSpecification as unknown as Specification);
 
         const mockAppAccess = {
             app: {
@@ -763,9 +767,7 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '25' })
         };
 
-        mockGetSpecificationModuleFromCache.mockResolvedValue(
-            mockSpecification as unknown as Specification
-        );
+        mockGetSpecificationModuleFromCache.mockResolvedValue(mockSpecification as unknown as Specification);
 
         const mockAppAccess = {
             app: {
@@ -783,9 +785,7 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '23' })
         };
 
-        mockGetSpecificationModuleFromCache.mockResolvedValue(
-            mockSpecification as unknown as Specification
-        );
+        mockGetSpecificationModuleFromCache.mockResolvedValue(mockSpecification as unknown as Specification);
 
         const mockAppAccess = {
             app: {
@@ -804,9 +804,7 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: undefined })
         };
 
-        mockGetSpecificationModuleFromCache.mockResolvedValue(
-            mockSpecification as unknown as Specification
-        );
+        mockGetSpecificationModuleFromCache.mockResolvedValue(mockSpecification as unknown as Specification);
 
         const mockAppAccess = {
             app: {
@@ -826,9 +824,7 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '100' })
         };
 
-        mockGetSpecificationModuleFromCache.mockResolvedValue(
-            mockSpecification as unknown as Specification
-        );
+        mockGetSpecificationModuleFromCache.mockResolvedValue(mockSpecification as unknown as Specification);
 
         const mockAppAccess = {
             app: {

@@ -1,9 +1,8 @@
-import { dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ReferencedEntities } from '../src/data-download/types';
 import { createEntitySetData } from '../src/data-download/utils';
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 
 const __testdir = dirname(fileURLToPath(import.meta.url));
 
