@@ -44,6 +44,7 @@
         "portfinder": "1.0.38"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@types/connect-livereload": "0.6.3",
         "@types/express": "4.17.21",
         "@types/livereload": "0.9.5",
