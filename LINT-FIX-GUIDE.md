@@ -236,3 +236,29 @@ test('should work', () => {
 
 **Packages fixed with this pattern:** fiori-generator-shared
 
+## Pattern 11: Application Insights telemetry initialization errors in tests
+
+**Error:**
+```
+Instrumentation key not found, please provide a connection string before starting Application Insights SDK.
+```
+
+**Cause:** Integration tests that use generators with telemetry try to initialize Application Insights without a valid instrumentation key. The telemetry initialization code runs during module import, before mocks can be applied.
+
+**Fix:** Set the `SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY` environment variable to `'true'` at the top of the test file:
+```typescript
+import { jest } from '@jest/globals';
+// ... other imports ...
+
+// Disable telemetry for integration tests to avoid Application Insights initialization errors
+process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
+
+// Rest of test setup
+const actualTelemetry = await import('@sap-ux/telemetry');
+// ... etc
+```
+
+**Why this works:** Setting the environment variable before any imports ensures that telemetry code checks the flag and skips TelemetryClient instantiation, which requires an instrumentation key.
+
+**Packages fixed with this pattern:** fiori-app-sub-generator (headless integration tests)
+
