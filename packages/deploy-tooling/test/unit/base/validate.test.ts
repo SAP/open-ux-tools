@@ -23,13 +23,8 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     }
 }));
 
-const {
-    formatSummary,
-    showAdditionalInfoForOnPrem,
-    summaryMessage,
-    validateBeforeDeploy,
-    checkForCredentials
-} = await import('../../../src/base/validate');
+const { formatSummary, showAdditionalInfoForOnPrem, summaryMessage, validateBeforeDeploy, checkForCredentials } =
+    await import('../../../src/base/validate');
 const { Authentication } = await import('@sap-ux/btp-utils');
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -315,7 +310,9 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${chalk.yellow('?')} ${summaryMessage.adtServiceUndefined} for ListPackageService`);
+            expect(summaryStr).toContain(
+                `${chalk.yellow('?')} ${summaryMessage.adtServiceUndefined} for ListPackageService`
+            );
         });
     });
 

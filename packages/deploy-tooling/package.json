@@ -54,6 +54,7 @@
         "chalk": "4.1.2"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-ux/store": "workspace:*",
         "@types/prompts": "2.4.9",
         "@types/adm-zip": "0.5.8"

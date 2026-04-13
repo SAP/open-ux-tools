@@ -1810,6 +1810,9 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
@@ -2996,6 +2999,9 @@ importers:
         specifier: 1.0.12
         version: 1.0.12
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
