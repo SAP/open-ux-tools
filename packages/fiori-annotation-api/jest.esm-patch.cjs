@@ -12,11 +12,14 @@ const path = require('path');
 
 const workspacePackagesDir = path.resolve(__dirname, '..', '..', 'packages') + path.sep;
 
+/**
+ *
+ */
 function patchResolver() {
     // Try multiple resolution strategies to find jest-resolve
     const candidates = [
         // Direct pnpm path
-        path.resolve(__dirname, '../../node_modules/.pnpm/jest-resolve@30.3.0/node_modules/jest-resolve'),
+        path.resolve(__dirname, '../../node_modules/.pnpm/jest-resolve@30.3.0/node_modules/jest-resolve')
         // Try from jest-runner which loads jest-runtime which loads jest-resolve
     ];
 
@@ -33,12 +36,11 @@ function patchResolver() {
             if (ResolverClass && typeof ResolverClass.unstable_shouldLoadAsEsm === 'function') {
                 const original = ResolverClass.unstable_shouldLoadAsEsm;
 
-                ResolverClass.unstable_shouldLoadAsEsm = function patchedShouldLoadAsEsm(modulePath, extensionsToTreatAsEsm) {
-                    if (
-                        modulePath &&
-                        modulePath.endsWith('.js') &&
-                        modulePath.startsWith(workspacePackagesDir)
-                    ) {
+                ResolverClass.unstable_shouldLoadAsEsm = function patchedShouldLoadAsEsm(
+                    modulePath,
+                    extensionsToTreatAsEsm
+                ) {
+                    if (modulePath && modulePath.endsWith('.js') && modulePath.startsWith(workspacePackagesDir)) {
                         const relPath = modulePath.slice(workspacePackagesDir.length);
                         if (relPath.includes(path.sep + 'dist' + path.sep) || relPath.includes('/dist/')) {
                             return false;
@@ -59,21 +61,23 @@ if (!patchResolver()) {
     // We'll try to lazy-patch when jest-resolve is first loaded.
     const Module = require('module');
     const originalLoad = Module._load;
-    Module._load = function(request, parent, isMain) {
+    Module._load = function (request, parent, isMain) {
         const result = originalLoad.call(this, request, parent, isMain);
-        if (request === 'jest-resolve' || (typeof request === 'string' && request.endsWith('jest-resolve/build/index.js'))) {
+        if (
+            request === 'jest-resolve' ||
+            (typeof request === 'string' && request.endsWith('jest-resolve/build/index.js'))
+        ) {
             // Restore original _load
             Module._load = originalLoad;
             // Now patch the loaded jest-resolve
             const ResolverClass = result.default || result;
             if (ResolverClass && typeof ResolverClass.unstable_shouldLoadAsEsm === 'function') {
                 const original = ResolverClass.unstable_shouldLoadAsEsm;
-                ResolverClass.unstable_shouldLoadAsEsm = function patchedShouldLoadAsEsm(modulePath, extensionsToTreatAsEsm) {
-                    if (
-                        modulePath &&
-                        modulePath.endsWith('.js') &&
-                        modulePath.startsWith(workspacePackagesDir)
-                    ) {
+                ResolverClass.unstable_shouldLoadAsEsm = function patchedShouldLoadAsEsm(
+                    modulePath,
+                    extensionsToTreatAsEsm
+                ) {
+                    if (modulePath && modulePath.endsWith('.js') && modulePath.startsWith(workspacePackagesDir)) {
                         const relPath = modulePath.slice(workspacePackagesDir.length);
                         if (relPath.includes(path.sep + 'dist' + path.sep) || relPath.includes('/dist/')) {
                             return false;

@@ -1,6 +1,6 @@
 /**
  * Smart transformer for fiori-annotation-api tests.
- * 
+ *
  * - .ts files: use ts-jest ESM transformer (normal path)
  * - .js/.mjs files (workspace dist): convert ESM syntax to CJS directly
  *   without TypeScript compiler to avoid "Identifier 'require' already declared" errors
@@ -22,6 +22,7 @@ const esmTransformer = new TsJestTransformer({
 
 /**
  * Convert ESM JavaScript to CJS JavaScript using regex.
+ * @param code
  */
 function esmToCjs(code) {
     let result = code;
@@ -29,8 +30,14 @@ function esmToCjs(code) {
     // PHASE 0: Handle createRequire(import.meta.url) pattern
     // In CJS context, require is already available, so we just remove the createRequire setup.
     // Must happen BEFORE import.meta.url replacement.
-    result = result.replace(/^const\s+require\s*=\s*createRequire\s*\(\s*import\.meta\.url\s*\)\s*;?\s*$/gm, '// createRequire removed - require is native in CJS');
-    result = result.replace(/^import\s+\{\s*createRequire\s*\}\s*from\s+['"]node:module['"];?\s*$/gm, '// createRequire import removed');
+    result = result.replace(
+        /^const\s+require\s*=\s*createRequire\s*\(\s*import\.meta\.url\s*\)\s*;?\s*$/gm,
+        '// createRequire removed - require is native in CJS'
+    );
+    result = result.replace(
+        /^import\s+\{\s*createRequire\s*\}\s*from\s+['"]node:module['"];?\s*$/gm,
+        '// createRequire import removed'
+    );
 
     // PHASE 1: Replace import.meta
     result = result.replace(/import\.meta\.url/g, 'require("url").pathToFileURL(__filename).href');
@@ -41,7 +48,10 @@ function esmToCjs(code) {
 
     // export { Foo, Bar } from 'module' or export { Foo, Bar }
     result = result.replace(/^export\s*\{([^}]+)\}\s*(?:from\s*(['"][^'"]+['"]))?\s*;?$/gm, (match, names, from) => {
-        const items = names.split(',').map(s => s.trim()).filter(Boolean);
+        const items = names
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean);
         if (from) {
             const tempVar = '_reexport_' + Math.random().toString(36).slice(2, 8);
             const lines = [`const ${tempVar} = require(${from});`];
@@ -50,7 +60,9 @@ function esmToCjs(code) {
                 const source = parts[0].trim();
                 const target = (parts[1] || parts[0]).trim();
                 if (target === 'default') {
-                    lines.push(`Object.defineProperty(exports, "default", { enumerable: true, get() { return ${tempVar}.${source}; } });`);
+                    lines.push(
+                        `Object.defineProperty(exports, "default", { enumerable: true, get() { return ${tempVar}.${source}; } });`
+                    );
                 } else {
                     exportNames.push(target);
                     lines.push(`const ${target} = ${tempVar}.${source};`);
@@ -124,24 +136,37 @@ function esmToCjs(code) {
     });
 
     // Default + named: import def, { a, b } from 'module'
-    result = result.replace(/^import\s+(\w+)\s*,\s*\{([^}]+)\}\s*from\s+(['"][^'"]+['"]);?$/gm, (match, def, named, mod) => {
-        const tmpVar = '_mod_' + def;
-        const names = named.split(',').map(s => s.trim()).filter(Boolean);
-        const destructured = names.map(n => {
-            const parts = n.split(/\s+as\s+/);
-            return parts.length > 1 ? `${parts[0].trim()}: ${parts[1].trim()}` : parts[0].trim();
-        }).join(', ');
-        return `const ${tmpVar} = require(${mod});\nconst ${def} = ${tmpVar}.default || ${tmpVar};\nconst { ${destructured} } = ${tmpVar};`;
-    });
+    result = result.replace(
+        /^import\s+(\w+)\s*,\s*\{([^}]+)\}\s*from\s+(['"][^'"]+['"]);?$/gm,
+        (match, def, named, mod) => {
+            const tmpVar = '_mod_' + def;
+            const names = named
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean);
+            const destructured = names
+                .map((n) => {
+                    const parts = n.split(/\s+as\s+/);
+                    return parts.length > 1 ? `${parts[0].trim()}: ${parts[1].trim()}` : parts[0].trim();
+                })
+                .join(', ');
+            return `const ${tmpVar} = require(${mod});\nconst ${def} = ${tmpVar}.default || ${tmpVar};\nconst { ${destructured} } = ${tmpVar};`;
+        }
+    );
 
     // Named imports: import { a, b \n c, d } from 'module' (may span multiple lines)
     // First handle single-line
     result = result.replace(/^import\s+\{([^}]+)\}\s*from\s+(['"][^'"]+['"]);?$/gm, (match, named, mod) => {
-        const names = named.split(',').map(s => s.trim()).filter(Boolean);
-        const destructured = names.map(n => {
-            const parts = n.split(/\s+as\s+/);
-            return parts.length > 1 ? `${parts[0].trim()}: ${parts[1].trim()}` : parts[0].trim();
-        }).join(', ');
+        const names = named
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean);
+        const destructured = names
+            .map((n) => {
+                const parts = n.split(/\s+as\s+/);
+                return parts.length > 1 ? `${parts[0].trim()}: ${parts[1].trim()}` : parts[0].trim();
+            })
+            .join(', ');
         return `const { ${destructured} } = require(${mod});`;
     });
 
@@ -152,7 +177,7 @@ function esmToCjs(code) {
 
     // PHASE 4: Add named exports at end
     if (exportNames.length > 0) {
-        const exportLines = exportNames.map(n => {
+        const exportLines = exportNames.map((n) => {
             if (n.startsWith('__default__:')) {
                 const source = n.slice('__default__:'.length);
                 return `Object.defineProperty(exports, "default", { enumerable: true, get() { return ${source}; } });`;

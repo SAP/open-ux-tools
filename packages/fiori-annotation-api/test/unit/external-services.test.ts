@@ -39,65 +39,65 @@ describe('external service loading', () => {
         mockAccess.mockResolvedValue(undefined);
         mockReadFile.mockResolvedValue('file' as any);
         try {
-        const data = await readExternalServiceMetadata(
-            join(__dirname, 'localService', 'metadata.xml'),
-            '/sap/opu/odata4/my/main/service/path',
-            new Map([
-                [
-                    'TargetA',
+            const data = await readExternalServiceMetadata(
+                join(__dirname, 'localService', 'metadata.xml'),
+                '/sap/opu/odata4/my/main/service/path',
+                new Map([
                     [
-                        {
-                            location: Location.create('file:///main.xml', Range.create(0, 0, 0, 0)),
-                            annotation: createElementNode({
-                                name: Edm.Annotation
-                            }),
-                            uris: [
-                                "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer1.paymentcardtype'"
-                            ],
-                            namespace: 'test.namespace'
-                        }
-                    ]
-                ],
-                [
-                    'tns.TargetB(Collection(tns.param1),tns.param2,Edm.String,  test.namespace.param3, param4,Collection(param5),Collection(Edm.String),Collection( test.namespace.param6))',
+                        'TargetA',
+                        [
+                            {
+                                location: Location.create('file:///main.xml', Range.create(0, 0, 0, 0)),
+                                annotation: createElementNode({
+                                    name: Edm.Annotation
+                                }),
+                                uris: [
+                                    "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer1.paymentcardtype'"
+                                ],
+                                namespace: 'test.namespace'
+                            }
+                        ]
+                    ],
                     [
-                        {
-                            location: Location.create('file:///main.xml', Range.create(0, 0, 0, 0)),
-                            annotation: createElementNode({
-                                name: Edm.Annotation
-                            }),
-                            uris: [
-                                "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'"
-                            ],
-                            namespace: 'test.namespace',
-                            alias: 'tns'
-                        }
-                    ]
-                ],
-                [
-                    'tns.TargetC()',
+                        'tns.TargetB(Collection(tns.param1),tns.param2,Edm.String,  test.namespace.param3, param4,Collection(param5),Collection(Edm.String),Collection( test.namespace.param6))',
+                        [
+                            {
+                                location: Location.create('file:///main.xml', Range.create(0, 0, 0, 0)),
+                                annotation: createElementNode({
+                                    name: Edm.Annotation
+                                }),
+                                uris: [
+                                    "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'"
+                                ],
+                                namespace: 'test.namespace',
+                                alias: 'tns'
+                            }
+                        ]
+                    ],
                     [
-                        {
-                            location: Location.create('file:///main.xml', Range.create(0, 0, 0, 0)),
-                            annotation: createElementNode({
-                                name: Edm.Annotation
-                            }),
-                            uris: [
-                                "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer3.paymentcardtype'"
-                            ],
-                            namespace: 'test.namespace',
-                            alias: 'tns'
-                        }
+                        'tns.TargetC()',
+                        [
+                            {
+                                location: Location.create('file:///main.xml', Range.create(0, 0, 0, 0)),
+                                annotation: createElementNode({
+                                    name: Edm.Annotation
+                                }),
+                                uris: [
+                                    "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer3.paymentcardtype'"
+                                ],
+                                namespace: 'test.namespace',
+                                alias: 'tns'
+                            }
+                        ]
                     ]
-                ]
-            ])
-        );
-        data.forEach((value) => {
-            let relativePath = relative(__dirname, value.localFilePath);
-            relativePath = relativePath.split('\\').join('/');
-            value.localFilePath = relativePath;
-        });
-        expect(data).toMatchInlineSnapshot(`
+                ])
+            );
+            data.forEach((value) => {
+                let relativePath = relative(__dirname, value.localFilePath);
+                relativePath = relativePath.split('\\').join('/');
+                value.localFilePath = relativePath;
+            });
+            expect(data).toMatchInlineSnapshot(`
             Map {
               "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer1.paymentcardtype'" => Object {
                 "data": "file",
@@ -113,34 +113,34 @@ describe('external service loading', () => {
               },
             }
         `);
-        expect(mockReadFile).toHaveBeenNthCalledWith(
-            1,
-            join(
-                __dirname,
-                'localService',
-                'srvd_f4',
-                'sap',
-                'p_paymentcardtypevaluehelp',
-                '0001',
-                'TargetA',
-                'metadata.xml'
-            ),
-            'utf-8'
-        );
-        expect(mockReadFile).toHaveBeenNthCalledWith(
-            2,
-            join(
-                __dirname,
-                'localService',
-                'srvd_f4',
-                'sap',
-                'p_paymentcardtypevaluehelp',
-                '0001',
-                'TargetB(Collection(test.namespace.param1),test.namespace.param2,Edm.String,  test.namespace.param3,param4,Collection(param5),Collection(Edm.String),Collection( test.namespace.param6))',
-                'metadata.xml'
-            ),
-            'utf-8'
-        );
+            expect(mockReadFile).toHaveBeenNthCalledWith(
+                1,
+                join(
+                    __dirname,
+                    'localService',
+                    'srvd_f4',
+                    'sap',
+                    'p_paymentcardtypevaluehelp',
+                    '0001',
+                    'TargetA',
+                    'metadata.xml'
+                ),
+                'utf-8'
+            );
+            expect(mockReadFile).toHaveBeenNthCalledWith(
+                2,
+                join(
+                    __dirname,
+                    'localService',
+                    'srvd_f4',
+                    'sap',
+                    'p_paymentcardtypevaluehelp',
+                    '0001',
+                    'TargetB(Collection(test.namespace.param1),test.namespace.param2,Edm.String,  test.namespace.param3,param4,Collection(param5),Collection(Edm.String),Collection( test.namespace.param6))',
+                    'metadata.xml'
+                ),
+                'utf-8'
+            );
         } finally {
             mockReadFile.mockReset().mockImplementation(realFsPromises.readFile as any);
             mockAccess.mockReset().mockImplementation(realFsPromises.access as any);

@@ -43,6 +43,7 @@
         "vscode-languageserver-textdocument": "1.0.12"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap/cds-compiler": "4.8.0",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
