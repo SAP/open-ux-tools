@@ -5,8 +5,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AppRouterEnvOptions } from '@sap-ux/adp-tooling';
 import { buildVcapServicesFromResources, getSpaceGuidFromUi5Yaml, getYamlContent } from '@sap-ux/adp-tooling';
 
-import type { EffectiveOptions } from '../types';
 import { UI5_SERVER_DESTINATION } from './constants';
+import type { ConnectivityProxyInfo, EffectiveOptions } from '../types';
 
 /**
  * Destination entry as stored in process.env.destinations.
@@ -14,6 +14,32 @@ import { UI5_SERVER_DESTINATION } from './constants';
 interface EnvDestination {
     name: string;
     url: string;
+}
+
+/**
+ * Extract connectivity proxy host and port from VCAP_SERVICES.
+ *
+ * @param vcapServices - Parsed VCAP_SERVICES object.
+ * @returns Proxy info or undefined if no connectivity service is present.
+ */
+export function getConnectivityProxyInfo(
+    vcapServices: Record<string, unknown> | undefined
+): ConnectivityProxyInfo | undefined {
+    if (!vcapServices) {
+        return undefined;
+    }
+    const connectivity = vcapServices['connectivity'];
+    if (!Array.isArray(connectivity)) {
+        return undefined;
+    }
+    for (const entry of connectivity) {
+        const host = entry.credentials?.onpremise_proxy_host;
+        const port = entry.credentials?.onpremise_proxy_port;
+        if (host && port) {
+            return { host: String(host), port: Number(port) };
+        }
+    }
+    return undefined;
 }
 
 /**
@@ -40,10 +66,22 @@ function loadEnvOptionsFromFile(rootPath: string, envOptionsPath: string): AppRo
 
 /**
  * Apply options to process.env with JSON-stringified destinations and VCAP_SERVICES.
+ * Overrides the connectivity proxy host to localhost so traffic flows through the local SSH tunnel.
  *
  * @param options - Env options to apply.
  */
-function applyToProcessEnv(options: AppRouterEnvOptions): void {
+export function applyToProcessEnv(options: AppRouterEnvOptions): void {
+    if (options.VCAP_SERVICES) {
+        const connectivity = options.VCAP_SERVICES['connectivity'];
+        if (Array.isArray(connectivity)) {
+            for (const entry of connectivity) {
+                if (entry.credentials?.onpremise_proxy_host) {
+                    entry.credentials.onpremise_proxy_host = 'localhost';
+                }
+            }
+        }
+    }
+
     const envOptions = {
         ...options,
         ...(options.destinations ? { destinations: JSON.stringify(options.destinations) } : {}),
@@ -53,52 +91,49 @@ function applyToProcessEnv(options: AppRouterEnvOptions): void {
 }
 
 /**
- * Load env options from file or CF, apply to process.env, and add destinations from effectiveOptions.
+ * Load env options from file or CF and merge destinations from effectiveOptions.
  *
  * When effectiveOptions.envOptionsPath is set, loads that JSON file. When null, loads mta.yaml one level
- * above rootPath and fetches VCAP_SERVICES from CF. effectiveOptions.destinations is applied so
+ * above rootPath and fetches VCAP_SERVICES from CF. effectiveOptions.destinations is appended so
  * middleware config takes precedence over file/env.
  *
  * @param rootPath - Project root path.
  * @param effectiveOptions - Merged config; envOptionsPath and destinations are used.
  * @param logger - Logger for CF path.
- * @returns Promise resolving when env options are loaded and applied.
+ * @returns Loaded and merged env options.
  */
-export async function loadAndApplyEnvOptions(
+export async function loadEnvOptions(
     rootPath: string,
     effectiveOptions: EffectiveOptions,
     logger: ToolsLogger
-): Promise<void> {
+): Promise<AppRouterEnvOptions> {
     const { envOptionsPath, destinations: middlewareDestinations } = effectiveOptions;
-    let options: AppRouterEnvOptions;
 
     if (envOptionsPath) {
         const envOptions = loadEnvOptionsFromFile(rootPath, envOptionsPath);
         const destinations = envOptions.destinations
             ? [...envOptions.destinations, ...middlewareDestinations]
             : middlewareDestinations;
-        options = { ...envOptions, destinations };
-    } else {
-        const mtaPath = path.resolve(rootPath, '..', 'mta.yaml');
-        const spaceGuid = await getSpaceGuidFromUi5Yaml(rootPath, logger);
-
-        if (!spaceGuid) {
-            throw new Error('No space GUID (from config or ui5.yaml). Cannot load CF env options.');
-        }
-
-        if (!fs.existsSync(mtaPath)) {
-            throw new Error(`mta.yaml not found at "${mtaPath}". Cannot load CF env options.`);
-        }
-
-        const mtaYaml = getYamlContent(mtaPath);
-        const VCAP_SERVICES = await buildVcapServicesFromResources(mtaYaml.resources, spaceGuid, logger);
-        options = {
-            VCAP_SERVICES,
-            destinations: middlewareDestinations
-        };
+        return { ...envOptions, destinations };
     }
 
-    applyToProcessEnv(options);
+    const mtaPath = path.resolve(rootPath, '..', 'mta.yaml');
+    const spaceGuid = await getSpaceGuidFromUi5Yaml(rootPath, logger);
+
+    if (!spaceGuid) {
+        throw new Error('No space GUID (from config or ui5.yaml). Cannot load CF env options.');
+    }
+
+    if (!fs.existsSync(mtaPath)) {
+        throw new Error(`mta.yaml not found at "${mtaPath}". Cannot load CF env options.`);
+    }
+
+    const mtaYaml = getYamlContent(mtaPath);
+    const VCAP_SERVICES = await buildVcapServicesFromResources(mtaYaml.resources, spaceGuid, logger);
+    return {
+        VCAP_SERVICES,
+        destinations: middlewareDestinations
+    };
 }
 
 /**
