@@ -145,3 +145,54 @@ export default [
 ```
 
 **Packages fixed with this pattern:** sap-systems-ext, control-property-editor
+
+## Pattern 8: `@typescript-eslint/no-unused-expressions` for stray mock references
+
+**Error:**
+```
+error  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+```
+
+**Cause:** A standalone variable reference like `mockFn;` on its own line has no side effect. This is typically leftover from copy-paste or an incomplete mock setup.
+
+**Fix:** Remove the stray expression if it has no purpose, or convert it to a proper call/assignment:
+```typescript
+// Before (incorrect - no-op expression)
+mockCreateForAbap;
+
+// After (removed - the mock is already set up elsewhere)
+```
+
+**Packages fixed with this pattern:** odata-service-inquirer
+
+## Pattern 9: `@typescript-eslint/no-use-before-define` for mock closures
+
+**Error:**
+```
+error  'variableName' was used before it was defined  @typescript-eslint/no-use-before-define
+```
+
+**Cause:** A `jest.unstable_mockModule()` callback references a variable (e.g., mock object) that is defined later in the file. While this works at runtime because the callback is only executed when the module is imported (after the variable is defined), ESLint flags it.
+
+**Fix:** Forward-declare the variable before the mock setup with `let`, and assign its value later:
+```typescript
+// Before
+jest.unstable_mockModule('module', () => ({
+    Constructor: jest.fn().mockImplementation(() => myMock) // error: used before defined
+}));
+// ... later ...
+const myMock = { ... };
+
+// After
+// eslint-disable-next-line prefer-const
+let myMock: Record<string, any>;
+jest.unstable_mockModule('module', () => ({
+    Constructor: jest.fn().mockImplementation(() => myMock)
+}));
+// ... later ...
+myMock = { ... };
+```
+
+Note: The `eslint-disable-next-line prefer-const` comment may be needed because ESLint sees only one assignment and suggests `const`, but `const` cannot be used here since the variable must be declared before its value dependencies exist.
+
+**Packages fixed with this pattern:** odata-service-inquirer
