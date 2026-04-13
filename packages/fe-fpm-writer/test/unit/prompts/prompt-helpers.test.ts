@@ -15,9 +15,13 @@ jest.unstable_mockModule('../../../src/building-block/prompts/utils/service', ()
     getEntitySets: mockGetEntitySets
 }));
 
-const { getEntitySetOptions, resolveEntitySetTargets, resolveBindingContextTypeChoices, entitySetCache, getButtonGroupsChoices } = await import(
-    '../../../src/building-block/prompts/utils/prompt-helpers'
-);
+const {
+    getEntitySetOptions,
+    resolveEntitySetTargets,
+    resolveBindingContextTypeChoices,
+    entitySetCache,
+    getButtonGroupsChoices
+} = await import('../../../src/building-block/prompts/utils/prompt-helpers');
 
 const t = translate(i18nNamespaces.buildingBlock, 'prompts.');
 
@@ -278,10 +282,7 @@ describe('resolveBindingContextTypeChoices', () => {
         });
 
         it('returns empty array when project is not present', async () => {
-            const result = await getButtonGroupsChoices(
-                { ...mockContext, project: undefined } as any,
-                mockAnswers
-            );
+            const result = await getButtonGroupsChoices({ ...mockContext, project: undefined } as any, mockAnswers);
             expect(result).toEqual([]);
         });
 

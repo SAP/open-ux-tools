@@ -23,12 +23,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 
 const { getProject } = await import('@sap-ux/project-access');
 const { FioriAnnotationService } = await import('@sap-ux/fiori-annotation-api');
-const {
-    getAnnotationPathQualifiers,
-    getAnnotationTermAlias,
-    getEntitySets,
-    getMappedServiceName
-} = await import('../../../../../src/building-block/prompts/utils/service');
+const { getAnnotationPathQualifiers, getAnnotationTermAlias, getEntitySets, getMappedServiceName } =
+    await import('../../../../../src/building-block/prompts/utils/service');
 
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');

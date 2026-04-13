@@ -47,7 +47,8 @@ jest.unstable_mockModule('../../../../src/write/utils', () => ({
 }));
 
 // Import after mocking
-const { createPropertiesI18nEntries, removeAndCreateI18nEntries } = await import('../../../../src/write/properties/create');
+const { createPropertiesI18nEntries, removeAndCreateI18nEntries } =
+    await import('../../../../src/write/properties/create');
 
 describe('create', () => {
     describe('createPropertiesI18nEntries', () => {
@@ -215,7 +216,12 @@ describe('create', () => {
                 `# This is the resource bundle for ${basename(root)}\n`,
                 undefined
             );
-            expect(mockWriteToExistingI18nPropertiesFile).toHaveBeenCalledWith(i18nFilePath, newEntries, keysToRemove, undefined);
+            expect(mockWriteToExistingI18nPropertiesFile).toHaveBeenCalledWith(
+                i18nFilePath,
+                newEntries,
+                keysToRemove,
+                undefined
+            );
         });
 
         it('creates a new i18n file if it does not exist (mem-fs)', async () => {
@@ -232,7 +238,12 @@ describe('create', () => {
                 `# This is the resource bundle for ${basename(root)}\n`,
                 memFs
             );
-            expect(mockWriteToExistingI18nPropertiesFile).toHaveBeenCalledWith(i18nFilePath, newEntries, keysToRemove, memFs);
+            expect(mockWriteToExistingI18nPropertiesFile).toHaveBeenCalledWith(
+                i18nFilePath,
+                newEntries,
+                keysToRemove,
+                memFs
+            );
         });
 
         it('calls replaceI18nProperties if file exists (real fs)', async () => {
@@ -243,7 +254,12 @@ describe('create', () => {
 
             expect(mockDoesExist).toHaveBeenCalledWith(i18nFilePath);
             expect(mockWriteFile).not.toHaveBeenCalled();
-            expect(mockWriteToExistingI18nPropertiesFile).toHaveBeenCalledWith(i18nFilePath, newEntries, keysToRemove, undefined);
+            expect(mockWriteToExistingI18nPropertiesFile).toHaveBeenCalledWith(
+                i18nFilePath,
+                newEntries,
+                keysToRemove,
+                undefined
+            );
         });
 
         it('calls replaceI18nProperties if file exists (mem-fs)', async () => {
@@ -255,7 +271,12 @@ describe('create', () => {
             expect(mockDoesExist).not.toHaveBeenCalled();
             expect(memFs.exists).toHaveBeenCalledWith(i18nFilePath);
             expect(mockWriteFile).not.toHaveBeenCalled();
-            expect(mockWriteToExistingI18nPropertiesFile).toHaveBeenCalledWith(i18nFilePath, newEntries, keysToRemove, memFs);
+            expect(mockWriteToExistingI18nPropertiesFile).toHaveBeenCalledWith(
+                i18nFilePath,
+                newEntries,
+                keysToRemove,
+                memFs
+            );
         });
 
         it('uses default keysToRemove and root', async () => {

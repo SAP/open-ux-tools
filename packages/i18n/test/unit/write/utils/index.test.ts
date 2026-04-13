@@ -46,9 +46,8 @@ describe('index', () => {
             mockWriteFile.mockReset();
             mockPrintPropertiesI18nEntry.mockReset();
             // Default: use real printPropertiesI18nEntry
-            mockPrintPropertiesI18nEntry.mockImplementation(
-                (key: string, value: string, annotation?: unknown) =>
-                    realPrint(key, value, annotation as string | undefined)
+            mockPrintPropertiesI18nEntry.mockImplementation((key: string, value: string, annotation?: unknown) =>
+                realPrint(key, value, annotation as string | undefined)
             );
         });
         const entries = [
@@ -174,11 +173,9 @@ describe('index', () => {
                 mockWriteFile.mockImplementation(
                     jest.fn() as (filePath: string, content: string, fs?: Editor) => Promise<string | void>
                 );
-                mockPrintPropertiesI18nEntry.mockImplementation(
-                    (key: string, value: string, annotation?: unknown) => {
-                        return annotation ? `${key}=${value} # ${annotation}\n` : `${key}=${value}\n`;
-                    }
-                );
+                mockPrintPropertiesI18nEntry.mockImplementation((key: string, value: string, annotation?: unknown) => {
+                    return annotation ? `${key}=${value} # ${annotation}\n` : `${key}=${value}\n`;
+                });
             });
 
             it('removes specified keys and adds new entries', async () => {
