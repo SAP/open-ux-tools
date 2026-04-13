@@ -13,12 +13,17 @@ import { runFeV4Linker } from '../../../src/project-context/linker/fe-v4';
 import type { LinkerContext } from '../../../src/project-context/linker/types';
 import { ApplicationParser } from '../../../src/project-context/parser';
 import type { ManifestChange } from '../../test-helper';
-import { applyManifestChange, applyXmlAnnotationsChange, CAP_APP_PATH, CAP_PROJECT_PATH } from '../../test-helper';
-import { platform } from 'node:os';
-import { spawnSync } from 'node:child_process';
+import {
+    applyManifestChange,
+    applyXmlAnnotationsChange,
+    CAP_APP_PATH,
+    CAP_FACETS_ANNOTATIONS,
+    CAP_PROJECT_PATH,
+    npmInstall
+} from '../../test-helper';
 import type { AnnotationBasedNode } from '../../../src/project-context/linker/annotations';
 
-jest.setTimeout(5 * 60000);
+jest.setTimeout(3 * 60000);
 
 const parser = new ApplicationParser();
 
@@ -51,26 +56,6 @@ function findObjectPage(app: LinkedFeV4App, index = 0): FeV4ObjectPage {
         }
     }
     throw new Error('ObjectPage not found');
-}
-
-function npmInstall(projectPath: string): void {
-    console.log(`Installing packages in ${projectPath}.`);
-    const cmd = platform() === 'win32' ? `npm.cmd` : 'npm';
-    const npm = spawnSync(cmd, ['install', '--ignore-engines'], {
-        cwd: projectPath,
-        env: process.env,
-        shell: true,
-        stdio: 'inherit',
-        timeout: 5 * 60000
-    });
-
-    if (npm.error) {
-        console.log(`Error: ${npm.error.message}`);
-    } else if (npm.status !== 0) {
-        console.log(`npm process exited with code ${npm.status}`);
-    } else {
-        console.log(`Package installed successfully in ${projectPath}`);
-    }
 }
 
 describe('FE V4 Linker - XML', () => {
@@ -618,7 +603,10 @@ describe('FE V4 Linker - CAP', () => {
         ];
         for (const file of files) {
             const absolutePath = normalizePath(join(CAP_PROJECT_PATH, file));
-            const content = await readFile(absolutePath, 'utf-8');
+            let content = await readFile(absolutePath, 'utf-8');
+            if (file.endsWith('annotations.cds')) {
+                content += CAP_FACETS_ANNOTATIONS;
+            }
             const uri = pathToFileURL(absolutePath).toString();
             fileCache.set(uri, content);
         }
@@ -640,8 +628,7 @@ describe('FE V4 Linker - CAP', () => {
             const absolutePath = normalizePath(join(CAP_APP_PATH, 'annotations.cds'));
             const uri = pathToFileURL(absolutePath).toString();
             const annotations = fileCache.get(uri)!;
-            const modifiedAnnotations = `${annotations}
-${options?.annotationsChange}`;
+            const modifiedAnnotations = `${annotations}${options?.annotationsChange}`;
             testCache.set(uri, modifiedAnnotations);
         }
         const model = parser.parse('CAPNodejs', artifacts, testCache);
