@@ -15,18 +15,17 @@ export const PREDEFINED_GENERATOR_VALUES = {
     }
 };
 
-export const floorplan = z
-    .literal(['FE_FPM', 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_FEOP', 'FE_WORKLIST', 'FF_SIMPLE'])
-    .describe(
-        'SAP Fiori elements application template / floor plan type. ' +
-            'FE_LROP = List Report Object Page (OData V2/V4). ' +
-            'FE_ALP = Analytical List Page (OData V2/V4). ' +
-            'FE_OVP = Overview Page (OData V2/V4). ' +
-            'FE_WORKLIST = Worklist (OData V2/V4). ' +
-            'FE_FEOP = Form Entry Object Page (OData V4 only). ' +
-            'FE_FPM = Flexible Programming Model / Custom Page (OData V4 only). ' +
-            'FF_SIMPLE = Basic (SAPUI5 Freestyle template) — data source is optional for this template, supports "None".'
-    );
+export const floorplan = z.union([
+    z.literal('FE_LROP').describe('List Report Object Page (OData V2/V4).'),
+    z.literal('FE_ALP').describe('Analytical List Page (OData V2/V4).'),
+    z.literal('FE_OVP').describe('Overview Page (OData V2/V4).'),
+    z.literal('FE_WORKLIST').describe('Worklist (OData V2/V4).'),
+    z.literal('FE_FEOP').describe('Form Entry Object Page (OData V4 only).'),
+    z.literal('FE_FPM').describe('Flexible Programming Model / Custom Page (OData V4 only).'),
+    z.literal('FF_SIMPLE').describe(
+        'Basic (SAPUI5 Freestyle template) — data source is optional for this template, supports "None".'
+    )
+]);
 
 export const project = z.object({
     name: z

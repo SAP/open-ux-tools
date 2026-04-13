@@ -57,17 +57,43 @@ Object {
         "type": "object",
       },
       "floorplan": Object {
-        "description": "SAP Fiori elements application template / floor plan type. FE_LROP = List Report Object Page (OData V2/V4). FE_ALP = Analytical List Page (OData V2/V4). FE_OVP = Overview Page (OData V2/V4). FE_WORKLIST = Worklist (OData V2/V4). FE_FEOP = Form Entry Object Page (OData V4 only). FE_FPM = Flexible Programming Model / Custom Page (OData V4 only). FF_SIMPLE = Basic (SAPUI5 Freestyle template) — data source is optional for this template, supports \\"None\\".",
-        "enum": Array [
-          "FE_FPM",
-          "FE_LROP",
-          "FE_OVP",
-          "FE_ALP",
-          "FE_FEOP",
-          "FE_WORKLIST",
-          "FF_SIMPLE",
+        "anyOf": Array [
+          Object {
+            "const": "FE_LROP",
+            "description": "List Report Object Page (OData V2/V4).",
+            "type": "string",
+          },
+          Object {
+            "const": "FE_ALP",
+            "description": "Analytical List Page (OData V2/V4).",
+            "type": "string",
+          },
+          Object {
+            "const": "FE_OVP",
+            "description": "Overview Page (OData V2/V4).",
+            "type": "string",
+          },
+          Object {
+            "const": "FE_WORKLIST",
+            "description": "Worklist (OData V2/V4).",
+            "type": "string",
+          },
+          Object {
+            "const": "FE_FEOP",
+            "description": "Form Entry Object Page (OData V4 only).",
+            "type": "string",
+          },
+          Object {
+            "const": "FE_FPM",
+            "description": "Flexible Programming Model / Custom Page (OData V4 only).",
+            "type": "string",
+          },
+          Object {
+            "const": "FF_SIMPLE",
+            "description": "Basic (SAPUI5 Freestyle template) — data source is optional for this template, supports \\"None\\".",
+            "type": "string",
+          },
         ],
-        "type": "string",
       },
       "project": Object {
         "additionalProperties": false,
@@ -166,4 +192,3 @@ Object {
   },
 }
 `;
-

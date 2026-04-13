@@ -269,20 +269,83 @@ describe('executeFunctionality', () => {
         ).rejects.toThrowErrorMatchingInlineSnapshot(`
             "Missing required fields in parameters. [
                 {
-                    \\"code\\": \\"invalid_value\\",
-                    \\"values\\": [
-                        \\"FE_FPM\\",
-                        \\"FE_LROP\\",
-                        \\"FE_OVP\\",
-                        \\"FE_ALP\\",
-                        \\"FE_FEOP\\",
-                        \\"FE_WORKLIST\\",
-                        \\"FF_SIMPLE\\"
+                    \\"code\\": \\"invalid_union\\",
+                    \\"errors\\": [
+                        [
+                            {
+                                \\"code\\": \\"invalid_value\\",
+                                \\"values\\": [
+                                    \\"FE_LROP\\"
+                                ],
+                                \\"path\\": [],
+                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_LROP\\\\\\"\\"
+                            }
+                        ],
+                        [
+                            {
+                                \\"code\\": \\"invalid_value\\",
+                                \\"values\\": [
+                                    \\"FE_ALP\\"
+                                ],
+                                \\"path\\": [],
+                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_ALP\\\\\\"\\"
+                            }
+                        ],
+                        [
+                            {
+                                \\"code\\": \\"invalid_value\\",
+                                \\"values\\": [
+                                    \\"FE_OVP\\"
+                                ],
+                                \\"path\\": [],
+                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_OVP\\\\\\"\\"
+                            }
+                        ],
+                        [
+                            {
+                                \\"code\\": \\"invalid_value\\",
+                                \\"values\\": [
+                                    \\"FE_WORKLIST\\"
+                                ],
+                                \\"path\\": [],
+                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_WORKLIST\\\\\\"\\"
+                            }
+                        ],
+                        [
+                            {
+                                \\"code\\": \\"invalid_value\\",
+                                \\"values\\": [
+                                    \\"FE_FEOP\\"
+                                ],
+                                \\"path\\": [],
+                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_FEOP\\\\\\"\\"
+                            }
+                        ],
+                        [
+                            {
+                                \\"code\\": \\"invalid_value\\",
+                                \\"values\\": [
+                                    \\"FE_FPM\\"
+                                ],
+                                \\"path\\": [],
+                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_FPM\\\\\\"\\"
+                            }
+                        ],
+                        [
+                            {
+                                \\"code\\": \\"invalid_value\\",
+                                \\"values\\": [
+                                    \\"FF_SIMPLE\\"
+                                ],
+                                \\"path\\": [],
+                                \\"message\\": \\"Invalid input: expected \\\\\\"FF_SIMPLE\\\\\\"\\"
+                            }
+                        ]
                     ],
                     \\"path\\": [
                         \\"floorplan\\"
                     ],
-                    \\"message\\": \\"Invalid option: expected one of \\\\\\"FE_FPM\\\\\\"|\\\\\\"FE_LROP\\\\\\"|\\\\\\"FE_OVP\\\\\\"|\\\\\\"FE_ALP\\\\\\"|\\\\\\"FE_FEOP\\\\\\"|\\\\\\"FE_WORKLIST\\\\\\"|\\\\\\"FF_SIMPLE\\\\\\"\\"
+                    \\"message\\": \\"Invalid input\\"
                 },
                 {
                     \\"expected\\": \\"object\\",
