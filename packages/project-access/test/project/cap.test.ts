@@ -550,12 +550,8 @@ describe('Test getCapModelAndServices()', () => {
             },
             env: jestMockEnv
         };
-        mockSpawn.mockReturnValueOnce(
-            getChildProcessMock('{"_home_cds-dk": "/global/cds"}')
-        );
-        mockLoadModuleFromProject
-            .mockRejectedValueOnce('ERROR')
-            .mockResolvedValue(cdsMock);
+        mockSpawn.mockReturnValueOnce(getChildProcessMock('{"_home_cds-dk": "/global/cds"}'));
+        mockLoadModuleFromProject.mockRejectedValueOnce('ERROR').mockResolvedValue(cdsMock);
 
         // Test execution with object param
         const projectRoot = '/some/test/path';
@@ -575,9 +571,7 @@ describe('Test getCapModelAndServices()', () => {
             version: '7.0.0'
         };
         mockSpawn.mockReturnValueOnce(getChildProcessMock('{"_home_cds-dk": "/any/path"}'));
-        mockLoadModuleFromProject
-            .mockRejectedValueOnce('ERROR')
-            .mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockRejectedValueOnce('ERROR').mockResolvedValue(cdsMock);
         mockFileExists.mockResolvedValueOnce(true);
         mockReadJSON.mockResolvedValueOnce({ 'dependencies': { '@sap/cds': '6.0.0' } } as any);
 
@@ -794,9 +788,7 @@ describe('Test getCapEnvironment()', () => {
             version: 2,
             env: jestMockEnv
         };
-        mockLoadModuleFromProject
-            .mockResolvedValueOnce(cdsV1)
-            .mockResolvedValueOnce(cdsV2);
+        mockLoadModuleFromProject.mockResolvedValueOnce(cdsV1).mockResolvedValueOnce(cdsV2);
 
         await getCapEnvironment('PROJECT');
         expect((global as GlobalCds).cds).toBe(cdsV1);
@@ -883,7 +875,9 @@ describe('Test getCapEnvironment()', () => {
 
     test('with cds loaded from other location than project', async () => {
         // Mock setup
-        mockSpawn.mockReturnValueOnce(getChildProcessMock('{\n "anyKey": "anyValue",\n "_home_cds-dk": "GLOBAL_ROOT"\n}'));
+        mockSpawn.mockReturnValueOnce(
+            getChildProcessMock('{\n "anyKey": "anyValue",\n "_home_cds-dk": "GLOBAL_ROOT"\n}')
+        );
         const forSpy = jestMockEnv.for;
         mockLoadModuleFromProject
             .mockRejectedValueOnce('ERROR_LOCAL')
@@ -895,7 +889,11 @@ describe('Test getCapEnvironment()', () => {
         // Result check
         expect(mockSpawn).toHaveBeenCalledWith('cds', ['env', '--json'], { cwd: undefined, shell: true });
         expect(mockLoadModuleFromProject).toHaveBeenNthCalledWith(1, 'PROJECT_ROOT', '@sap/cds');
-        expect(mockLoadModuleFromProject).toHaveBeenNthCalledWith(2, join('GLOBAL_ROOT', 'node_modules', '@sap', 'cds'), '@sap/cds');
+        expect(mockLoadModuleFromProject).toHaveBeenNthCalledWith(
+            2,
+            join('GLOBAL_ROOT', 'node_modules', '@sap', 'cds'),
+            '@sap/cds'
+        );
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
     });
 });
@@ -909,9 +907,7 @@ describe('Test getGlobalCdsHomePath()', () => {
 
     test('Expected response from "cds env --json"', async () => {
         // Mock setup
-        mockSpawn.mockReturnValueOnce(
-            getChildProcessMock('{"_home_cds-dk": "GLOBAL_ROOT"}')
-        );
+        mockSpawn.mockReturnValueOnce(getChildProcessMock('{"_home_cds-dk": "GLOBAL_ROOT"}'));
 
         // Test execution
         const cdsHomePath = await getGlobalCdsHomePath();
@@ -1268,9 +1264,7 @@ describe('clearCdsModuleCache', () => {
 
     test('Unresolvable cds module - error is not thrown', async () => {
         // Mock setup
-        mockLoadModuleFromProject.mockImplementation(() =>
-            Promise.resolve({ default: undefined })
-        );
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve({ default: undefined }));
         // Test execution
         const result = await clearCdsModuleCache(projectRoot);
         expect(result).toEqual(false);
@@ -1566,9 +1560,9 @@ describe('deleteCapApp', () => {
         const nonCapPath = join(os.tmpdir(), 'non-existing-cap-project', 'apps', 'one');
 
         // Execute test
-        await expect(
-            async () => await deleteCapApp(nonCapPath, memFs, logggerMock)
-        ).rejects.toThrow(/Project root was not found for CAP application/);
+        await expect(async () => await deleteCapApp(nonCapPath, memFs, logggerMock)).rejects.toThrow(
+            /Project root was not found for CAP application/
+        );
         expect(logggerMock.error).toHaveBeenCalled();
     });
 

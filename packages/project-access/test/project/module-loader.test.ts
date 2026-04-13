@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import * as fsMock from 'node:fs';
-import * as promisesMock from 'node:fs/promises';
+import type * as fsMock from 'node:fs';
+import type * as promisesMock from 'node:fs/promises';
 import type * as commandType from '../../src/command/npm-command';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -115,11 +115,9 @@ describe('Test getModule()', () => {
 
     test('Module failed to load and there no "package-lock.json" -> run "npm i"', async () => {
         mockExecNpmCommand.mockResolvedValueOnce('');
-        mockExistsSync
-            .mockReturnValueOnce(true)
-            .mockImplementationOnce(() => {
-                throw new Error('Simulate load failure');
-            });
+        mockExistsSync.mockReturnValueOnce(true).mockImplementationOnce(() => {
+            throw new Error('Simulate load failure');
+        });
         const logger = new ToolsLogger();
         const module = await getModule<Module>('@scope/module', '1.2.3', { logger });
 

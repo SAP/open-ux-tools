@@ -44,12 +44,8 @@ jest.unstable_mockModule('node:fs/promises', () => ({
     mkdir: mockMkdir
 }));
 
-const {
-    createAnnotationI18nEntries,
-    createCapI18nEntries,
-    createManifestI18nEntries,
-    createUI5I18nEntries
-} = await import('../../../src/project/i18n');
+const { createAnnotationI18nEntries, createCapI18nEntries, createManifestI18nEntries, createUI5I18nEntries } =
+    await import('../../../src/project/i18n');
 
 describe('write', () => {
     const memFs = create(createStorage());

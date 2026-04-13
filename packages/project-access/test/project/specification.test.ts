@@ -60,13 +60,8 @@ jest.unstable_mockModule('node:fs/promises', () => ({
     mkdir: mockMkdir
 }));
 
-const {
-    FileName,
-    fioriToolsDirectory,
-    getSpecification,
-    getSpecificationPath,
-    refreshSpecificationDistTags
-} = await import('../../src');
+const { FileName, fioriToolsDirectory, getSpecification, getSpecificationPath, refreshSpecificationDistTags } =
+    await import('../../src');
 
 describe('Test getSpecification', () => {
     type Specification = { exec: () => string };
