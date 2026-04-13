@@ -13,9 +13,9 @@ export default [
             }
         }
     },
-    // Register @typescript-eslint plugin + typed linting for test/ files (recommended only covers src/)
+    // Register @typescript-eslint plugin + typed linting for src/ files (recommended only covers webapp/)
     {
-        files: ['test/**/*.ts'],
+        files: ['src/**/*.ts'],
         plugins: {
             '@typescript-eslint': tseslint.plugin
         },
@@ -26,16 +26,35 @@ export default [
             }
         }
     },
+    // Register @typescript-eslint plugin for test/ files without type-checked linting
+    {
+        files: ['test/**/*.ts'],
+        plugins: {
+            '@typescript-eslint': tseslint.plugin
+        },
+        languageOptions: {
+            parser: tseslint.parser,
+            parserOptions: {
+                project: null
+            }
+        }
+    },
     {
         files: ['src/**/*.ts', 'test/**/*.ts'],
         rules: {
             'quotes': ['error', 'single', { 'allowTemplateLiterals': true }],
             'no-unused-vars': 'off',
             'no-redeclare': 'off',
+            '@sap-ux/fiori-tools/sap-no-global-variable': 'warn'
+        }
+    },
+    // Type-checked rules only for src/ (test files have no type info)
+    {
+        files: ['src/**/*.ts'],
+        rules: {
             '@typescript-eslint/no-unsafe-argument': 'warn',
             '@typescript-eslint/no-unsafe-member-access': 'warn',
-            '@typescript-eslint/no-unsafe-assignment': 'warn',
-            '@sap-ux/fiori-tools/sap-no-global-variable': 'warn'
+            '@typescript-eslint/no-unsafe-assignment': 'warn'
         }
     },
     {

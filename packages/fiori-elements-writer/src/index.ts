@@ -13,7 +13,7 @@ import {
     type OdataService
 } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep.js';
 import type { FioriElementsApp } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';

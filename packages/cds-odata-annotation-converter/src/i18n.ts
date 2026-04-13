@@ -1,6 +1,6 @@
 import type { i18n as i18nNext } from 'i18next';
 import i18next from 'i18next';
-import i18nEn from './i18n/i18n.json';
+import i18nEn from './i18n/i18n.json' with { type: 'json' };
 
 export const i18n: i18nNext = i18next.createInstance();
 

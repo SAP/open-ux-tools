@@ -1,7 +1,7 @@
 import type { Document, Node, YAMLMap } from 'yaml';
 import yaml, { isMap, isSeq, YAMLSeq } from 'yaml';
 
-import merge from 'lodash/merge';
+import merge from 'lodash/merge.js';
 import { errorCode, errorTemplate, YAMLError } from './errors';
 import { interpolate } from './texts';
 

@@ -1,4 +1,4 @@
-import merge from 'lodash/mergeWith';
+import merge from 'lodash/mergeWith.js';
 import semVer from 'semver';
 import { UI5_DEFAULT } from './defaults';
 

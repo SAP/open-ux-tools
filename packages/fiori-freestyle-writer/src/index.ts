@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { render } from 'ejs';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep.js';
 import { TemplateType } from './types';
 import { setDefaults, escapeFLPText, setVirtualEndpointDefaults } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';

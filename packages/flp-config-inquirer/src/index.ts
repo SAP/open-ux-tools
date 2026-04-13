@@ -1,4 +1,4 @@
-import isNil from 'lodash/isNil';
+import isNil from 'lodash/isNil.js';
 
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';

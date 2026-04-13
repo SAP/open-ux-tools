@@ -6,7 +6,7 @@ import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';
 import type { SemVer } from 'semver';
 import { t } from '../i18n';
-import merge from 'lodash/mergeWith';
+import merge from 'lodash/mergeWith.js';
 
 /**
  * Returns a package instance with default properties.

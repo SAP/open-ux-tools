@@ -10,7 +10,7 @@ import type { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { type AgentOptions, Agent as HttpsAgent } from 'node:https';
 import { type HttpsProxyAgentOptions, HttpsProxyAgent } from 'https-proxy-agent';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep.js';
 import { getProxyForUrl } from 'proxy-from-env';
 import { inspect } from 'node:util';
 import { AbapServiceProvider } from './abap';

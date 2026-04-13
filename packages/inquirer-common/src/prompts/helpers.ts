@@ -1,6 +1,6 @@
 import type { Answers, Question, Validator } from 'inquirer';
 import type { CommonPromptOptions, PromptDefaultValue, PromptSeverityMessage, YUIQuestion } from '../types';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep.js';
 
 /**
  * Extends an additionalMessages function.

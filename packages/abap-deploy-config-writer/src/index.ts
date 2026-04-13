@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep.js';
 import { addPackageDevDependency, FileName, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
 import { getDeployConfig, updateBaseConfig } from './config';
 import { addUi5Dependency, getLibraryPath, writeUi5RepositoryFiles, writeUi5RepositoryIgnore } from './file';

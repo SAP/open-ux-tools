@@ -523,5 +523,8 @@ export const configs: Record<string, Linter.Config[]> = {
     ]
 };
 
+// Add configs to plugin so they are accessible via default import
+plugin.configs = configs;
+
 export { rules } from './rules';
 export default plugin;

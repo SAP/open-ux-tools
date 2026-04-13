@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep.js';
 import type { UI5LibConfig } from './types';
 import { enableTypescript } from './options';
 import { mergeWithDefaults } from './data';

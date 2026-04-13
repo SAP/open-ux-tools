@@ -15,7 +15,7 @@
     ],
     "main": "./lib/index.js",
     "scripts": {
-        "build": "tsc --build",
+        "build": "tsc --build && node scripts/fix-esm-imports.js",
         "watch": "tsc --build --watch",
         "clean": "rimraf --glob lib coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
