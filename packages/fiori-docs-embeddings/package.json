@@ -30,6 +30,7 @@
     },
     "dependencies": {},
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@npm/types": "2.1.0",
         "@types/node": "20.19.37",
         "@lancedb/lancedb": "0.22.0",
