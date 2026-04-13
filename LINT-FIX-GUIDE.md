@@ -262,3 +262,34 @@ const actualTelemetry = await import('@sap-ux/telemetry');
 
 **Packages fixed with this pattern:** fiori-app-sub-generator (headless integration tests)
 
+## Pattern 12: JavaScript heap out of memory during tests
+
+**Error:**
+```
+FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+```
+
+**Cause:** Tests consume more memory than Node.js's default heap size (~2GB on 64-bit systems). This commonly happens with:
+- Large test suites with many test cases
+- Tests that load large datasets or fixtures
+- Memory-intensive operations (code parsing, AST traversal, etc.)
+- Coverage collection with c8 or nyc
+
+**Fix:** Increase the Node.js heap size by adding `--max-old-space-size=4096` (or higher) to `NODE_OPTIONS`:
+```json
+{
+  "scripts": {
+    "test": "cross-env NODE_OPTIONS='--experimental-vm-modules --max-old-space-size=4096' jest --ci"
+  }
+}
+```
+
+**Common heap sizes:**
+- `--max-old-space-size=2048` - 2GB (sufficient for most packages)
+- `--max-old-space-size=4096` - 4GB (for large test suites)
+- `--max-old-space-size=8192` - 8GB (for very large test suites, requires sufficient system RAM)
+
+**Note:** Choose the smallest heap size that allows tests to pass. Excessive heap sizes can slow down garbage collection.
+
+**Packages fixed with this pattern:** eslint-plugin-fiori-tools
+
