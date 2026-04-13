@@ -196,3 +196,43 @@ myMock = { ... };
 Note: The `eslint-disable-next-line prefer-const` comment may be needed because ESLint sees only one assignment and suggests `const`, but `const` cannot be used here since the variable must be declared before its value dependencies exist.
 
 **Packages fixed with this pattern:** odata-service-inquirer
+
+## Pattern 10: `jest.spyOn()` not intercepting ESM named imports
+
+**Error:**
+Test returns unexpected value (e.g., `undefined` instead of expected result)
+
+**Cause:** Test uses `jest.spyOn(module, 'functionName')` to mock a function, but the implementation imports the function using named import destructuring (`import { functionName } from 'module'`). In ESM context, `jest.spyOn()` does not intercept named imports - the implementation gets the original function, not the spy.
+
+**Fix:** Convert to `jest.unstable_mockModule()` before importing the modules:
+```typescript
+// Before (CJS-style spy - doesn't work in ESM)
+import fs from 'node:fs';
+const { getDefaultTargetFolder } = await import('../src/helpers');
+
+test('should work', () => {
+    jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
+    // Test fails - implementation gets real existsSync, not the spy
+});
+
+// After (ESM-compatible mock)
+import * as actualFs from 'node:fs';
+
+const mockExistsSync = jest.fn();
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    existsSync: mockExistsSync
+}));
+
+const { getDefaultTargetFolder } = await import('../src/helpers');
+
+test('should work', () => {
+    mockExistsSync.mockReturnValueOnce(true);
+    // Test passes - implementation gets the mock
+});
+```
+
+**Key difference:** `jest.unstable_mockModule()` must be called BEFORE the `await import()` of the module being tested, so the mock is in place when the module loads.
+
+**Packages fixed with this pattern:** fiori-generator-shared
+
