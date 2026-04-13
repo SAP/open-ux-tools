@@ -10,6 +10,9 @@ import type { FEAppConfig } from '../../../src/types';
 import { cleanTestDir, getTestData, getTestDir, ignoreMatcherOpts, originalCwd } from '../test-utils';
 import { EXPECTED_OUTPUT_DIR_NAME } from './test-utils';
 
+// Disable telemetry for integration tests to avoid Application Insights initialization errors
+process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const testDir: string = getTestDir('headless');

@@ -9,6 +9,9 @@ import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator'
 import { type FFAppConfig } from '../../../src/types';
 import { cleanTestDir, ignoreMatcherOpts } from '../test-utils';
 
+// Disable telemetry for integration tests to avoid Application Insights initialization errors
+process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const GENERATION_TEST_DIR = './test-output/headless';
