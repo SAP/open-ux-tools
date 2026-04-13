@@ -9,7 +9,12 @@ import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const distDir = join(__dirname, '..', 'lib');
+const outDirName = process.argv[2] || 'dist';
+const distDir = join(__dirname, '..', outDirName);
+
+if (!existsSync(distDir)) {
+    process.exit(0);
+}
 
 function walkDir(dir) {
     let files = [];

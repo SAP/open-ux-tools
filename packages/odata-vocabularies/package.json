@@ -15,7 +15,7 @@
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
     "scripts": {
-        "compile": "tsc --build",
+        "compile": "tsc --build && node scripts/fix-esm-imports.js",
         "build": "npm-run-all clean compile",
         "clean": "rimraf --glob coverage dist *.tsbuildinfo",
         "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",

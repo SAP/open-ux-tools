@@ -15,7 +15,7 @@
     "author": "SAP SE",
     "license": "Apache-2.0",
     "scripts": {
-        "compile": "tsc --build",
+        "compile": "tsc --build && node scripts/fix-esm-imports.js",
         "build": "npm-run-all clean compile",
         "clean": "rimraf --glob coverage dist *.tsbuildinfo",
         "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",

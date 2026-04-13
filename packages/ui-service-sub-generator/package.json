@@ -11,7 +11,7 @@
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
     },
     "scripts": {
-        "build": "tsc --build",
+        "build": "tsc --build && node scripts/fix-esm-imports.js generators",
         "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
         "watch": "tsc --watch",
         "lint": "eslint",
