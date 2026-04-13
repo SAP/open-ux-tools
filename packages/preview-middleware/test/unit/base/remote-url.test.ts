@@ -1,9 +1,10 @@
 import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { NetworkInterfaceInfo } from 'node:os';
 
 // Mock functions
 const mockIsAppStudio = jest.fn<() => boolean>();
-const mockNetworkInterfaces = jest.fn<() => NodeJS.Dict<import('node:os').NetworkInterfaceInfo[]>>();
+const mockNetworkInterfaces = jest.fn<() => NodeJS.Dict<NetworkInterfaceInfo[]>>();
 const mockQRCodeToString = jest.fn<(...args: unknown[]) => Promise<string>>();
 const mockGetDevspaceInfo = jest.fn<() => Promise<{ url: string }>>();
 const mockGetAppExternalUri = jest.fn<() => string>();
