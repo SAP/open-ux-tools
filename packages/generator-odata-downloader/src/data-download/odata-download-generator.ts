@@ -22,7 +22,7 @@ import { initI18nODataDownloadGenerator, t } from '../utils/i18n';
 import type { EntitySetsFlat } from './odata-query';
 import { getODataDownloaderPrompts, promptNames } from './prompts/prompts';
 import { type ReferencedEntities } from './types';
-import { createEntitySetData } from './utils';
+import { buildReferentialConstraintFileContent, createEntitySetData } from './utils';
 import { getValueHelpSelectionPrompt } from './prompts/value-help-prompts';
 import type { MockserverConfig, MockserverService } from '@sap-ux/ui5-config';
 import {
@@ -259,24 +259,7 @@ export class ODataDownloadGenerator extends Generator {
                             const jsFilePath = join(this.state.mockDataRootPath!, `${h.entitySetName}.js`);
                             if (!this.fs.exists(jsFilePath)) {
                                 const { navPropName, constraints } = h.missingReferentialConstraints!;
-                                const constraintsJson = JSON.stringify(constraints, null, 12).replace(
-                                    /\n/g,
-                                    '\n            '
-                                );
-                                const content = [
-                                    `module.exports = {`,
-                                    `    // See: https://github.com/SAP/open-ux-odata/blob/main/docs/MockserverAPI.md#getreferentialconstraints`,
-                                    `    getReferentialConstraints(navigationProperty) {`,
-                                    `        switch (navigationProperty.name) {`,
-                                    `            case "${navPropName}":`,
-                                    `                return ${constraintsJson};`,
-                                    `            default:`,
-                                    `                return navigationProperty.referentialConstraint;`,
-                                    `        }`,
-                                    `    }`,
-                                    `};`,
-                                    ``
-                                ].join('\n');
+                                const content = buildReferentialConstraintFileContent(navPropName, constraints);
                                 this.writeDestination(jsFilePath, content);
                                 ODataDownloadGenerator.logger.info(
                                     `Written referential constraint file: ${h.entitySetName}.js`

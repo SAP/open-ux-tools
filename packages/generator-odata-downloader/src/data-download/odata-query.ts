@@ -228,12 +228,14 @@ export function buildNavPropHierarchyQuery(
         return undefined;
     }
 
-    // Draft entities always use fixed DraftUUID + IsActiveEntity for active reads
-    const isDraftListEntity = listEntity.entityType?.keys?.some((k) => k.name === 'IsActiveEntity') ?? false;
-    if (isDraftListEntity) {
-        keyParts.push(`DraftUUID=00000000-0000-0000-0000-000000000000`);
-        keyParts.push(`IsActiveEntity=true`);
-    }
+    // Draft entities: append fixed active-read values for whichever draft keys are present
+    const draftFixedValues: Record<string, string> = {
+        DraftUUID: '00000000-0000-0000-0000-000000000000',
+        IsActiveEntity: 'true'
+    };
+    listEntity.entityType?.keys
+        ?.filter((k) => k.name in draftFixedValues)
+        .forEach((k) => keyParts.push(`${k.name}=${draftFixedValues[k.name]}`));
 
     ODataDownloadGenerator.logger.debug(
         `buildNavPropHierarchyQuery: key segment for '${listEntity.entitySetName}': (${keyParts.join(',')})`

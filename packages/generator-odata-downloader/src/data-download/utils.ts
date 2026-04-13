@@ -517,3 +517,32 @@ export async function getEntityModel(
         return errLog;
     }
 }
+
+/**
+ * Builds the content of a mock server `.js` constraint file for a hierarchy entity
+ * whose parent navigation property has no referential constraint in the metadata.
+ *
+ * @param navPropName - The navigation property name (used in the switch case)
+ * @param constraints - The derived referential constraints to return
+ * @returns The complete `.js` file content as a string
+ */
+export function buildReferentialConstraintFileContent(
+    navPropName: string,
+    constraints: { sourceProperty: string; targetProperty: string }[]
+): string {
+    const constraintsJson = JSON.stringify(constraints, null, 12).replaceAll('\n', '\n            ');
+    return [
+        `module.exports = {`,
+        `    // See: https://github.com/SAP/open-ux-odata/blob/main/docs/MockserverAPI.md#getreferentialconstraints`,
+        `    getReferentialConstraints(navigationProperty) {`,
+        `        switch (navigationProperty.name) {`,
+        `            case "${navPropName}":`,
+        `                return ${constraintsJson};`,
+        `            default:`,
+        `                return navigationProperty.referentialConstraint;`,
+        `        }`,
+        `    }`,
+        `};`,
+        ``
+    ].join('\n');
+}
