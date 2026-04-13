@@ -21,7 +21,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' c8 --reporter=text --reporter=lcov --exclude='test/**' --exclude='**/*.test.ts' --include='src/**/*.ts' jest --ci --forceExit --detectOpenHandles --colors"
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules --max-old-space-size=4096' c8 --reporter=text --reporter=lcov --exclude='test/**' --exclude='**/*.test.ts' --include='src/**/*.ts' jest --ci --forceExit --detectOpenHandles --colors"
     },
     "devDependencies": {
         "@jest/globals": "30.3.0",
