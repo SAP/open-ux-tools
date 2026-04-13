@@ -1,10 +1,17 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import os from 'node:os';
-import fs from 'node:fs';
+import * as actualFs from 'node:fs';
 
 jest.unstable_mockModule('@vscode-logging/logger', () => ({
     getExtensionLogger: jest.fn()
+}));
+
+// Mock for fs.existsSync - will be controlled in tests
+const mockExistsSync = jest.fn();
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    existsSync: mockExistsSync
 }));
 
 const { getBootstrapResourceUrls } = await import('../src/index');
@@ -87,7 +94,7 @@ describe('getDefaultTargetFolder', () => {
         expect(getDefaultTargetFolder(vscodeMock)).toBe('/2nd/workspace/path');
 
         // No folders added to workspace
-        jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
+        mockExistsSync.mockReturnValueOnce(true);
         Object.assign(vscodeMock.workspace, { workspaceFolders: [] });
         expect(getDefaultTargetFolder(vscodeMock)).toBe(join(os.homedir(), 'projects'));
 
