@@ -22,9 +22,9 @@ export const floorplan = z.union([
     z.literal('FE_WORKLIST').describe('Worklist (OData V2/V4).'),
     z.literal('FE_FEOP').describe('Form Entry Object Page (OData V4 only).'),
     z.literal('FE_FPM').describe('Flexible Programming Model / Custom Page (OData V4 only).'),
-    z.literal('FF_SIMPLE').describe(
-        'Basic (SAPUI5 Freestyle template) — data source is optional for this template, supports "None".'
-    )
+    z
+        .literal('FF_SIMPLE')
+        .describe('Basic (SAPUI5 Freestyle template) — data source is optional for this template, supports "None".')
 ]);
 
 export const project = z.object({
