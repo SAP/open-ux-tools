@@ -484,17 +484,26 @@ describe('buildNavPropHierarchyQuery', () => {
         );
     });
 
-    test('should append DraftUUID and IsActiveEntity for draft list entities', () => {
-        const listEntity: ReferencedEntities['listEntity'] = {
+    test('should append only the draft keys that are present in entityType.keys', () => {
+        // Both DraftUUID and IsActiveEntity present → both appended
+        const listEntityBoth: ReferencedEntities['listEntity'] = {
             entitySetName: 'PPS_PurchaseOrder',
             semanticKeys: [{ name: 'PurchaseOrder', value: '4500003676', type: 'Edm.String' }],
             navPropEntities: [],
             entityPath: 'root',
+            entityType: { keys: [{ name: 'DraftUUID' }, { name: 'IsActiveEntity' }] } as unknown as EntityType
+        };
+        expect(buildNavPropHierarchyQuery(listEntityBoth, '_PurchaseOrderItem', hierarchy)).toEqual(
+            "PPS_PurchaseOrder(PurchaseOrder='4500003676',DraftUUID=00000000-0000-0000-0000-000000000000,IsActiveEntity=true)/_PurchaseOrderItem?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/PPS_PurchaseOrder(PurchaseOrder='4500003676',DraftUUID=00000000-0000-0000-0000-000000000000,IsActiveEntity=true)/_PurchaseOrderItem,HierarchyQualifier='I_PPS_PurchaseOrderItemHNRltn',NodeProperty='__HierarchyPropertiesForI_PPS_PurchaseOrderItemHNRltn/NodeId',Levels=3)"
+        );
+
+        // Only IsActiveEntity present → only IsActiveEntity appended
+        const listEntityActiveOnly: ReferencedEntities['listEntity'] = {
+            ...listEntityBoth,
             entityType: { keys: [{ name: 'IsActiveEntity' }] } as unknown as EntityType
         };
-        const result = buildNavPropHierarchyQuery(listEntity, '_PurchaseOrderItem', hierarchy);
-        expect(result).toEqual(
-            "PPS_PurchaseOrder(PurchaseOrder='4500003676',DraftUUID=00000000-0000-0000-0000-000000000000,IsActiveEntity=true)/_PurchaseOrderItem?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/PPS_PurchaseOrder(PurchaseOrder='4500003676',DraftUUID=00000000-0000-0000-0000-000000000000,IsActiveEntity=true)/_PurchaseOrderItem,HierarchyQualifier='I_PPS_PurchaseOrderItemHNRltn',NodeProperty='__HierarchyPropertiesForI_PPS_PurchaseOrderItemHNRltn/NodeId',Levels=3)"
+        expect(buildNavPropHierarchyQuery(listEntityActiveOnly, '_PurchaseOrderItem', hierarchy)).toEqual(
+            "PPS_PurchaseOrder(PurchaseOrder='4500003676',IsActiveEntity=true)/_PurchaseOrderItem?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/PPS_PurchaseOrder(PurchaseOrder='4500003676',IsActiveEntity=true)/_PurchaseOrderItem,HierarchyQualifier='I_PPS_PurchaseOrderItemHNRltn',NodeProperty='__HierarchyPropertiesForI_PPS_PurchaseOrderItemHNRltn/NodeId',Levels=3)"
         );
     });
 
