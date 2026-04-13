@@ -4,7 +4,14 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { Manifest } from '@sap-ux/project-access';
-import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget, JourneyParams, AppFeatures } from './types';
+import type {
+    FEV4OPAConfig,
+    FEV4OPAPageConfig,
+    FEV4ManifestTarget,
+    JourneyParams,
+    AppFeatures,
+    WriteContext
+} from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
 import { FileName, DirName } from '@sap-ux/project-access';
@@ -233,21 +240,12 @@ function findLROP(
 /**
  * Writes common test files, page objects, and the first journey file.
  *
- * @param config - the OPA test configuration object
+ * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param rootCommonTemplateDirPath - template root directory for common files
- * @param rootV4TemplateDirPath - template root directory for v4
- * @param testOutDirPath - output test directory (.../webapp/test)
- * @param editor - a reference to a mem-fs editor
- * @param journeyParams - parameters used to generate the first journey file
  */
-function writeCommonAndPageFiles(
-    config: FEV4OPAConfig,
-    rootCommonTemplateDirPath: string,
-    rootV4TemplateDirPath: string,
-    testOutDirPath: string,
-    editor: Editor,
-    journeyParams: JourneyParams
-): void {
+function writeCommonAndPageFiles(writeContext: WriteContext, rootCommonTemplateDirPath: string): void {
+    const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams } = writeContext;
+
     // Common test files
     editor.copyTpl(
         join(rootCommonTemplateDirPath),
@@ -291,24 +289,17 @@ function writeCommonAndPageFiles(
  * Writes journey files for list report, object pages and FPM pages.
  *
  * @param appFeatures - object containing feature data for list report, object pages, and FPM
- * @param journeyParams - parameters passed to the journey templates
- * @param rootV4TemplateDirPath - template root directory for v4
- * @param testOutDirPath - output test directory (.../webapp/test)
- * @param editor - a reference to a mem-fs editor
- * @param config - OPA test configuration object
+ * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param isStandalone - whether the generation is run in standalone mode (not during app generation)
  * @param hasJourneyRunner - whether a JourneyRunner.js already exists (standalone upgrade path)
  */
 function writeJourneyFiles(
     appFeatures: AppFeatures,
-    journeyParams: JourneyParams,
-    rootV4TemplateDirPath: string,
-    testOutDirPath: string,
-    editor: Editor,
-    config: FEV4OPAConfig,
+    writeContext: WriteContext,
     isStandalone: boolean,
     hasJourneyRunner = false
 ): void {
+    const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams } = writeContext;
     const generatedJourneyPages: string[] = [];
 
     if (appFeatures.listReport?.name) {
@@ -456,12 +447,14 @@ export async function generateOPAFiles(
         hideFilterBar: config.hideFilterBar
     };
 
+    const writeContext: WriteContext = { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams };
+
     if (standalone) {
         const hasJourneyRunner = existsSync(
             join(basePath, 'webapp', 'test', 'integration', 'pages', 'JourneyRunner.js')
         );
         if (hasJourneyRunner) {
-            writeJourneyFiles(appFeatures, journeyParams, rootV4TemplateDirPath, testOutDirPath, editor, config, true);
+            writeJourneyFiles(appFeatures, writeContext, true);
         } else {
             editor.move(
                 join(basePath, 'webapp', 'test', 'integration', '**'),
@@ -471,35 +464,14 @@ export async function generateOPAFiles(
             addIntegrationOldToGitignore(basePath, editor);
             const htmlTarget = readHtmlTargetFromQUnitJs(basePath, editor) ?? config.htmlTarget;
             const standaloneConfig = { ...config, htmlTarget };
+            const standaloneWriteContext: WriteContext = { ...writeContext, config: standaloneConfig };
 
-            writeCommonAndPageFiles(
-                standaloneConfig,
-                rootCommonTemplateDirPath,
-                rootV4TemplateDirPath,
-                testOutDirPath,
-                editor,
-                journeyParams
-            );
-            writeJourneyFiles(
-                appFeatures,
-                journeyParams,
-                rootV4TemplateDirPath,
-                testOutDirPath,
-                editor,
-                standaloneConfig,
-                true
-            );
+            writeCommonAndPageFiles(standaloneWriteContext, rootCommonTemplateDirPath);
+            writeJourneyFiles(appFeatures, standaloneWriteContext, true);
         }
     } else {
-        writeCommonAndPageFiles(
-            config,
-            rootCommonTemplateDirPath,
-            rootV4TemplateDirPath,
-            testOutDirPath,
-            editor,
-            journeyParams
-        );
-        writeJourneyFiles(appFeatures, journeyParams, rootV4TemplateDirPath, testOutDirPath, editor, config, false);
+        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath);
+        writeJourneyFiles(appFeatures, writeContext, false);
     }
 
     return editor;

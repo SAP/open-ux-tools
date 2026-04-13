@@ -1,3 +1,5 @@
+import type { Editor } from 'mem-fs-editor';
+
 export const SupportedPageTypes: { [id: string]: string } = {
     'sap.fe.templates.ListReport': 'ListReport',
     'sap.fe.templates.ObjectPage': 'ObjectPage',
@@ -159,6 +161,14 @@ export type AppFeatures = {
     listReport?: ListReportFeatures;
     objectPages?: ObjectPageFeatures[];
     fpm?: FPMFeatures;
+};
+
+export type WriteContext = {
+    config: FEV4OPAConfig;
+    rootV4TemplateDirPath: string;
+    testOutDirPath: string;
+    editor: Editor;
+    journeyParams: JourneyParams;
 };
 
 export type FormField = {
