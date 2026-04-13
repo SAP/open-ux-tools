@@ -183,7 +183,8 @@ describe('launchConfig Unit Tests', () => {
             });
 
             // Verify if handleOpenFolderButNoWorkspaceFile was called correctly indirectly
-            const expectedLaunchJsonPath = mockGetLaunchJsonPath(mockVscode.workspace.workspaceFolders) ?? mockTargetFolder;
+            const expectedLaunchJsonPath =
+                mockGetLaunchJsonPath(mockVscode.workspace.workspaceFolders) ?? mockTargetFolder;
             const expectedCwd = mockFormatCwd(path.relative(mockTargetFolder, mockProjectPath));
 
             expect(result.launchJsonPath).toBe(expectedLaunchJsonPath);

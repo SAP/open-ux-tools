@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import { basename, join } from 'node:path';
-import { posix, dirname } from 'node:path';
+import { basename, join, posix, dirname } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { DirName, FileName } from '@sap-ux/project-access';

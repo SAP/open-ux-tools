@@ -3144,6 +3144,9 @@ importers:
         specifier: 21.1.1
         version: 21.1.1
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -3500,6 +3503,10 @@ importers:
       promisify-child-process:
         specifier: 5.0.1
         version: 5.0.1
+    devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
 
   packages/preview-middleware:
     dependencies:
