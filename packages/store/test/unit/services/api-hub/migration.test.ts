@@ -3,9 +3,8 @@ import type { DataProvider } from '../../../../src/data-provider';
 import type { ApiHubSettings, ApiHubSettingsKey } from '../../../../src';
 import type { SecureStore } from '../../../../src/secure-store';
 
-const { LEGACY_API_HUB_API_KEY, LEGACY_API_HUB_API_SERVICE, migrateToLatestVersion } = await import(
-    '../../../../src/services/api-hub/migration'
-);
+const { LEGACY_API_HUB_API_KEY, LEGACY_API_HUB_API_SERVICE, migrateToLatestVersion } =
+    await import('../../../../src/services/api-hub/migration');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 type MockedSecureStore = { [K in keyof SecureStore]: ReturnType<typeof jest.fn> };

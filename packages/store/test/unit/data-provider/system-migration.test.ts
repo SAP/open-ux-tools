@@ -17,9 +17,8 @@ jest.unstable_mockModule('../../../src/data-access/filesystem', () => ({
 }));
 
 const { SystemMigrationStatusDataProvider } = await import('../../../src/data-provider/system-migration');
-const { SystemMigrationStatus, SystemMigrationStatusKey } = await import(
-    '../../../src/entities/system-migration-status'
-);
+const { SystemMigrationStatus, SystemMigrationStatusKey } =
+    await import('../../../src/entities/system-migration-status');
 const { Entities } = await import('../../../src/data-provider/constants');
 const { NullTransport, ToolsLogger: ToolsLoggerClass } = await import('@sap-ux/logger');
 

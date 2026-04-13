@@ -43,6 +43,7 @@
         "@zowe/secrets-for-zowe-sdk": "8.29.4"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@types/pluralize": "0.0.33",
         "@types/qs": "6.15.0",
         "fast-check": "2.25.0",

@@ -129,9 +129,7 @@ describe('Backend system data provider', () => {
 
     it('getAll delegates to the data accessor', async () => {
         mockExistsSync.mockReturnValueOnce(true);
-        mockReadFileSync.mockReturnValueOnce(
-            JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() })
-        );
+        mockReadFileSync.mockReturnValueOnce(JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() }));
         const sys1: BackendSystemType = Object.freeze({
             name: 'sys1',
             url: 'url1',
@@ -172,9 +170,7 @@ describe('Backend system data provider', () => {
 
     it('getAll returns only the relevant system types', async () => {
         mockExistsSync.mockReturnValueOnce(true);
-        mockReadFileSync.mockReturnValueOnce(
-            JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() })
-        );
+        mockReadFileSync.mockReturnValueOnce(JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() }));
         const sys1: BackendSystemType = Object.freeze({
             name: 'sys1',
             url: 'url1',
@@ -211,9 +207,7 @@ describe('Backend system data provider', () => {
 
     it('getAll returns only the relevant abap_catalog connectionType systems by default', async () => {
         mockExistsSync.mockReturnValueOnce(true);
-        mockReadFileSync.mockReturnValueOnce(
-            JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() })
-        );
+        mockReadFileSync.mockReturnValueOnce(JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() }));
         const sys1: BackendSystemType = Object.freeze({
             name: 'sys1',
             url: 'url1',
@@ -248,9 +242,7 @@ describe('Backend system data provider', () => {
 
     it('getAll returns the systems based on the array of connection types provided', async () => {
         mockExistsSync.mockReturnValueOnce(true);
-        mockReadFileSync.mockReturnValueOnce(
-            JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() })
-        );
+        mockReadFileSync.mockReturnValueOnce(JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() }));
         const sys1: BackendSystemType = Object.freeze({
             name: 'sys1',
             url: 'url1',
@@ -296,9 +288,7 @@ describe('Backend system data provider', () => {
 
     it('getAll returns only backend systems matching the systemId/client', async () => {
         mockExistsSync.mockReturnValueOnce(true);
-        mockReadFileSync.mockReturnValueOnce(
-            JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() })
-        );
+        mockReadFileSync.mockReturnValueOnce(JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() }));
         const sys1: BackendSystemType = Object.freeze({
             name: 'sys1',
             url: 'url1',
