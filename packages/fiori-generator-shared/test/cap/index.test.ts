@@ -1,8 +1,7 @@
 import { jest } from '@jest/globals';
 import * as actualFs from 'node:fs';
-import path from 'node:path';
+import path, { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { join } from 'node:path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

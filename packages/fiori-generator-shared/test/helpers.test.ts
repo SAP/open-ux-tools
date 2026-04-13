@@ -8,9 +8,8 @@ jest.unstable_mockModule('@vscode-logging/logger', () => ({
 }));
 
 const { getBootstrapResourceUrls } = await import('../src/index');
-const { YEOMANUI_TARGET_FOLDER_CONFIG_PROP, getDefaultTargetFolder, isCommandRegistered } = await import(
-    '../src/vscode-helpers/vscode-helpers'
-);
+const { YEOMANUI_TARGET_FOLDER_CONFIG_PROP, getDefaultTargetFolder, isCommandRegistered } =
+    await import('../src/vscode-helpers/vscode-helpers');
 
 describe('getResourceUrlsForUi5Bootstrap', () => {
     it('should return relative paths for Edmx projects', () => {
