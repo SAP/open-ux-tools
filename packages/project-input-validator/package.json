@@ -32,6 +32,7 @@
         "@sap-ux/project-access": "workspace:*"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@types/validate-npm-package-name": "4.0.2",
         "jest-extended": "7.0.0"
     },
