@@ -22,9 +22,9 @@ const actualUi5LibRefInquirer = await import('@sap-ux/ui5-library-reference-inqu
 const mockSendTelemetry = jest.fn();
 const mockIsExtensionInstalled = jest.fn().mockReturnValue(true);
 const mockGenerate = jest.fn<(...args: any[]) => Promise<any>>().mockImplementation(actualUi5LibRefWriter.generate);
-const mockPrompt = jest.fn<(...args: any[]) => Promise<UI5LibraryReferenceAnswers>>().mockImplementation(
-    actualUi5LibRefInquirer.prompt as any
-);
+const mockPrompt = jest
+    .fn<(...args: any[]) => Promise<UI5LibraryReferenceAnswers>>()
+    .mockImplementation(actualUi5LibRefInquirer.prompt as any);
 
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     ...actualFioriGenShared,
@@ -169,7 +169,7 @@ describe('Test reference generator', () => {
             source: 'Workspace',
             referenceLibraries: reuseLibs.map((lib) => lib.value)
         } as unknown as UI5LibraryReferenceAnswers;
-        mockGenerate.mockImplementationOnce(async () => ({} as any));
+        mockGenerate.mockImplementationOnce(async () => ({}) as any);
         mockPrompt.mockResolvedValueOnce(promptAnswers as unknown as UI5LibraryReferenceAnswers);
         // Use the mocked adapter representing yeoman-environment@4
         yoEnv4 = true;
