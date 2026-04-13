@@ -39,13 +39,8 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: mockIsAppStudio
 }));
 
-const {
-    getLocalStoredCredentials,
-    getTargetDefinition,
-    getTargetMappingsConfig,
-    sendRequest,
-    writeSmartLinksConfig
-} = await import('../../../src/smartlinks-config/utils');
+const { getLocalStoredCredentials, getTargetDefinition, getTargetMappingsConfig, sendRequest, writeSmartLinksConfig } =
+    await import('../../../src/smartlinks-config/utils');
 
 // logger mock
 const loggerMock = {

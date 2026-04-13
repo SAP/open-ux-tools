@@ -10,6 +10,7 @@ import type { Package } from '@sap-ux/project-access';
 import type { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import chalk from 'chalk';
+import type * as nodeFs from 'node:fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -68,7 +69,7 @@ const mockRmSync = jest.fn();
 const mockReadFileSync = jest.fn();
 
 jest.unstable_mockModule('node:fs', () => {
-    const actual = jest.requireActual<typeof import('node:fs')>('node:fs');
+    const actual = jest.requireActual<typeof nodeFs>('node:fs');
     const { default: _default, ...rest } = actual as any;
     const mockExports = {
         ...rest,
@@ -112,7 +113,7 @@ describe('convertEslintConfig', () => {
         const existingConfigBase = join(__dirname, '../../fixtures/eslint-config/existing-config');
         const missingConfigBase = join(__dirname, '../../fixtures/eslint-config/missing-config');
 
-        const { readFileSync: actualReadFileSync } = jest.requireActual<typeof import('node:fs')>('node:fs');
+        const { readFileSync: actualReadFileSync } = jest.requireActual<typeof nodeFs>('node:fs');
 
         // Load fixture files from disk and copy to in-memory fs
         const existingConfigPackageJson = JSON.parse(

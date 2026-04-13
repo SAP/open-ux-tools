@@ -3,12 +3,13 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { PromptObject } from 'prompts';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type * as promptsMod from 'prompts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Get actual prompts module (CJS, so requireActual works)
-const actualPrompts = jest.requireActual<typeof import('prompts')>('prompts');
+const actualPrompts = jest.requireActual<typeof promptsMod>('prompts');
 
 // Mock functions for prompts
 const mockPrompt = jest.fn();

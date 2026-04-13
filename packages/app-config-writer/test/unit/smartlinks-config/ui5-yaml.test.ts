@@ -11,12 +11,13 @@ const mockReadUi5Yaml = jest.fn();
 const actualProjectAccess = await import('@sap-ux/project-access');
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,
-    readUi5Yaml: mockReadUi5Yaml.mockImplementation((...args: any[]) => (actualProjectAccess.readUi5Yaml as any)(...args))
+    readUi5Yaml: mockReadUi5Yaml.mockImplementation((...args: any[]) =>
+        (actualProjectAccess.readUi5Yaml as any)(...args)
+    )
 }));
 
-const { readUi5DeployConfigTarget, addUi5YamlServeStaticMiddleware } = await import(
-    '../../../src/smartlinks-config/ui5-yaml'
-);
+const { readUi5DeployConfigTarget, addUi5YamlServeStaticMiddleware } =
+    await import('../../../src/smartlinks-config/ui5-yaml');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
