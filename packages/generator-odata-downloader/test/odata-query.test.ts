@@ -1,5 +1,10 @@
 import type { EntityType } from '@sap-ux/vocabularies-types';
-import { buildNavPropHierarchyQuery, createQueryFromEntities, fetchData, getExpands } from '../src/data-download/odata-query';
+import {
+    buildNavPropHierarchyQuery,
+    createQueryFromEntities,
+    fetchData,
+    getExpands
+} from '../src/data-download/odata-query';
 import type { ODataService } from '@sap-ux/axios-extension';
 import type { ReferencedEntities, HierarchyEntity } from '../src/data-download/types';
 import type { SelectedEntityAnswer } from '../src/data-download/prompts/prompts';
@@ -696,9 +701,7 @@ describe('fetchData', () => {
     });
 
     test('should skip patching when nav query returns no data', async () => {
-        const mainRows = [
-            { OrderID: 'ORD1', _Items: [{ OrderID: 'ORD1', ItemID: '10', __HP: null }] }
-        ];
+        const mainRows = [{ OrderID: 'ORD1', _Items: [{ OrderID: 'ORD1', ItemID: '10', __HP: null }] }];
         (mockOdataService.get as jest.Mock)
             .mockResolvedValueOnce({ data: '', odata: () => mainRows })
             .mockResolvedValueOnce({ data: '', odata: () => undefined }); // nav query returns no data
@@ -717,7 +720,7 @@ describe('fetchData', () => {
     test('should skip patching root records where nav prop is not an array', async () => {
         const mainRows = [
             { OrderID: 'ORD1', _Items: null }, // null — not an array
-            { OrderID: 'ORD2' }               // missing property entirely
+            { OrderID: 'ORD2' } // missing property entirely
         ];
         const navRows = [{ OrderID: 'ORD1', ItemID: '10', __HP: { NodeId: 'node-1' } }];
 
