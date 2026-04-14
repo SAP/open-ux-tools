@@ -7,7 +7,6 @@ import {
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
-
 /**
  * Matches the actual template output: the last entry has no trailing newline
  * before the closing `]`, i.e. the array body does NOT end with `\n`.
