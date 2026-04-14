@@ -382,3 +382,48 @@ const packageJson = JSON.parse(
 
 2. **TypeScript compilation error:** If you get `TS2823: Import attributes are only supported when the '--module' option is set to 'esnext'...`, update the package's `tsconfig.json` to change `"module": "ES2022"` to `"module": "ESNext"`. Import attributes require module set to one of: 'esnext', 'node18', 'node20', 'nodenext', or 'preserve'.
 
+## Pattern 15: Jest setupFiles with TypeScript fails on Windows ESM
+
+**Error:**
+```
+SyntaxError: Cannot use import statement outside a module
+
+  D:\a\open-ux-tools\packages\package-name\test\global-setup.ts:1
+  import { Something } from '../src/module';
+  ^^^^^^
+```
+
+**Cause:** On Windows, Jest's `setupFiles` in ESM mode may not properly apply the ts-jest transform to TypeScript setup files, resulting in the raw TypeScript being executed as JavaScript.
+
+**Fix:** Convert the setup file from `.ts` to `.mjs` and import from the compiled output instead of source:
+
+```javascript
+// Before: test/global-setup.ts
+import { DiagnosticCache } from '../src/language/diagnostic-cache';
+import { ProjectContext } from '../src/project-context/project-context';
+
+ProjectContext.forceReindexOnFirstUpdate = true;
+DiagnosticCache.forceReindexOnFirstUpdate = true;
+
+// After: test/global-setup.mjs
+import { DiagnosticCache } from '../lib/language/diagnostic-cache.js';
+import { ProjectContext } from '../lib/project-context/project-context.js';
+
+ProjectContext.forceReindexOnFirstUpdate = true;
+DiagnosticCache.forceReindexOnFirstUpdate = true;
+```
+
+Update `jest.config.mjs`:
+```javascript
+export default {
+    // Before
+    setupFiles: ['<rootDir>/test/global-setup.ts'],
+    // After
+    setupFiles: ['<rootDir>/test/global-setup.mjs'],
+}
+```
+
+**Note:** This requires the package to be built (`pnpm build`) before running tests, as the .mjs file imports from the compiled `lib/` or `dist/` directory.
+
+**Packages fixed with this pattern:** eslint-plugin-fiori-tools
+
