@@ -13,7 +13,12 @@ import {
     readUi5Config,
     extractCfBuildTask
 } from '@sap-ux/adp-tooling';
-import type { NewModelAnswers, NewModelData, DescriptorVariant, UI5YamlCustomTaskConfiguration } from '@sap-ux/adp-tooling';
+import type {
+    NewModelAnswers,
+    NewModelData,
+    DescriptorVariant,
+    UI5YamlCustomTaskConfiguration
+} from '@sap-ux/adp-tooling';
 
 import newModelGen from '../../../src/add-new-model';
 
