@@ -330,11 +330,6 @@ function getEntitySelectionPrompt(
                 };
             }
             return undefined;
-        },
-        // 'validationMessageOverflow' | (() => boolean | Promise<boolean>)
-        showOutputTabLink: () => {
-            ODataDownloadGenerator.logger.info('showOutputTabLink...');
-            return true;
         }
     } as CheckBoxQuestion;
 }
