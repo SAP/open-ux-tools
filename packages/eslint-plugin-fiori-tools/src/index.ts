@@ -6,12 +6,12 @@ import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
 import babelParser from '@babel/eslint-parser';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
-import { rules } from './rules';
-import { FioriLanguage } from './language/fiori-language';
+import { rules } from './rules/index.js';
+import { FioriLanguage } from './language/fiori-language.js';
 import { createSyncFn } from 'synckit';
 import type { getPathMappings } from '@sap-ux/project-access';
-import { uniformUrl } from './project-context/utils';
-export { DiagnosticCache } from './language/diagnostic-cache';
+import { uniformUrl } from './project-context/utils.js';
+export { DiagnosticCache } from './language/diagnostic-cache.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -527,5 +527,5 @@ export const configs: Record<string, Linter.Config[]> = {
 // Add configs to plugin so they are accessible via default import
 plugin.configs = configs;
 
-export { rules } from './rules';
+export { rules } from './rules/index.js';
 export default plugin;
