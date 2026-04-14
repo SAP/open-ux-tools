@@ -7,9 +7,6 @@ import {
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
-jest.mock('@sap-ux/project-access', () => ({
-    getWebappPath: jest.fn().mockResolvedValue('webapp')
-}));
 
 /**
  * Matches the actual template output: the last entry has no trailing newline
@@ -184,7 +181,8 @@ describe('addPathsToQUnitJs()', () => {
 
 describe('readHtmlTargetFromQUnitJs()', () => {
     const basePath = join('/', 'project');
-    const expectedFilePath = join(basePath, 'webapp', 'test', 'integration_old', 'opaTests.qunit.js');
+    const testPath = join(basePath, 'webapp', 'test');
+    const expectedFilePath = join(testPath, 'integration_old', 'opaTests.qunit.js');
 
     function makeFsMock(content: string): jest.Mocked<Pick<Editor, 'read' | 'exists'>> {
         return {
@@ -193,37 +191,37 @@ describe('readHtmlTargetFromQUnitJs()', () => {
         };
     }
 
-    test('extracts a simple html filename', async () => {
+    test('extracts a simple html filename', () => {
         const content = `sap.ui.require.toUrl('my/app') + '/index.html'`;
         const fs = makeFsMock(content) as unknown as Editor;
 
-        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe('index.html');
+        expect(readHtmlTargetFromQUnitJs(testPath, fs)).toBe('index.html');
         expect(fs.read).toHaveBeenCalledWith(expectedFilePath);
     });
 
-    test('extracts path with query parameters and hash fragment', async () => {
+    test('extracts path with query parameters and hash fragment', () => {
         const content = `launchUrl: sap.ui.require.toUrl('fin/ap/financingorder/manage') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#finapfinancingordermanage-tile'`;
         const fs = makeFsMock(content) as unknown as Editor;
 
-        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe(
+        expect(readHtmlTargetFromQUnitJs(testPath, fs)).toBe(
             'test/flpSandbox.html?sap-ui-xx-viewCache=false#finapfinancingordermanage-tile'
         );
     });
 
-    test('extracts path with whitespace around the + operator', async () => {
+    test('extracts path with whitespace around the + operator', () => {
         const content = `sap.ui.require.toUrl( 'my/app' )  +  '/test/sandbox.html#app-tile'`;
         const fs = makeFsMock(content) as unknown as Editor;
 
-        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe('test/sandbox.html#app-tile');
+        expect(readHtmlTargetFromQUnitJs(testPath, fs)).toBe('test/sandbox.html#app-tile');
     });
 
-    test('returns undefined when launchUrl pattern is not found', async () => {
+    test('returns undefined when launchUrl pattern is not found', () => {
         const fs = makeFsMock(BASE_FILE) as unknown as Editor;
 
-        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBeUndefined();
+        expect(readHtmlTargetFromQUnitJs(testPath, fs)).toBeUndefined();
     });
 
-    test('reads hash from HTML file when launch URL has no hash fragment', async () => {
+    test('reads hash from HTML file when launch URL has no hash fragment', () => {
         const qunitContent = `sap.ui.require.toUrl('my/app') + '/test/flpSandbox.html'`;
         const htmlContent = `applications: { "myapp-tile": { title: "My App" } }`;
         const fs = {
@@ -234,10 +232,10 @@ describe('readHtmlTargetFromQUnitJs()', () => {
                 .mockReturnValueOnce(htmlContent) // flpSandbox.html
         } as unknown as Editor;
 
-        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe('test/flpSandbox.html#myapp-tile');
+        expect(readHtmlTargetFromQUnitJs(testPath, fs)).toBe('test/flpSandbox.html#myapp-tile');
     });
 
-    test('reads hash from HTML file when launch URL has query params but no hash', async () => {
+    test('reads hash from HTML file when launch URL has query params but no hash', () => {
         const qunitContent = `sap.ui.require.toUrl('my/app') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false'`;
         const htmlContent = `applications: { "myapp-tile": { title: "My App" } }`;
         const fs = {
@@ -245,21 +243,21 @@ describe('readHtmlTargetFromQUnitJs()', () => {
             read: jest.fn().mockReturnValueOnce(qunitContent).mockReturnValueOnce(htmlContent)
         } as unknown as Editor;
 
-        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe(
+        expect(readHtmlTargetFromQUnitJs(testPath, fs)).toBe(
             'test/flpSandbox.html?sap-ui-xx-viewCache=false#myapp-tile'
         );
     });
 
-    test('falls back to Opa.qunit.js when opaTests.qunit.js does not exist', async () => {
+    test('falls back to Opa.qunit.js when opaTests.qunit.js does not exist', () => {
         const content = `sap.ui.require.toUrl('my/app') + '/test/sandbox.html#app-tile'`;
-        const opaTestsPath = join(basePath, 'webapp', 'test', 'integration_old', 'opaTests.qunit.js');
-        const opaPath = join(basePath, 'webapp', 'test', 'integration_old', 'Opa.qunit.js');
+        const opaTestsPath = join(testPath, 'integration_old', 'opaTests.qunit.js');
+        const opaPath = join(testPath, 'integration_old', 'Opa.qunit.js');
         const fs = {
             exists: jest.fn().mockImplementation((path: string) => path !== opaTestsPath),
             read: jest.fn().mockReturnValue(content)
         } as unknown as Editor;
 
-        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe('test/sandbox.html#app-tile');
+        expect(readHtmlTargetFromQUnitJs(testPath, fs)).toBe('test/sandbox.html#app-tile');
         expect(fs.read).toHaveBeenCalledWith(opaPath);
     });
 });

@@ -2,18 +2,15 @@ import { readHashFromFlpSandbox } from '../../../src/utils/flpSandboxUtils';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
-jest.mock('@sap-ux/project-access', () => ({
-    getWebappPath: jest.fn().mockResolvedValue('webapp')
-}));
-
 describe('readHashFromFlpSandbox()', () => {
     const basePath = join('/', 'project');
+    const webappPath = join(basePath, 'webapp');
 
     function makeFsMock(content: string): jest.Mocked<Pick<Editor, 'read'>> {
         return { read: jest.fn().mockReturnValue(content) };
     }
 
-    test('extracts the first application key from sap-ushell-config', async () => {
+    test('extracts the first application key from sap-ushell-config', () => {
         const content = `
             window["sap-ushell-config"] = {
                 applications: {
@@ -26,13 +23,11 @@ describe('readHashFromFlpSandbox()', () => {
             };`;
         const fs = makeFsMock(content) as unknown as Editor;
 
-        await expect(readHashFromFlpSandbox('test/flpSandbox.html', basePath, fs)).resolves.toBe(
-            'fincashbankmanage-tile'
-        );
-        expect(fs.read).toHaveBeenCalledWith(join(basePath, 'webapp', 'test', 'flpSandbox.html'));
+        expect(readHashFromFlpSandbox('test/flpSandbox.html', webappPath, fs)).toBe('fincashbankmanage-tile');
+        expect(fs.read).toHaveBeenCalledWith(join(webappPath, 'test', 'flpSandbox.html'));
     });
 
-    test('extracts key when multiple applications exist', async () => {
+    test('extracts key when multiple applications exist', () => {
         const content = `
             applications: {
                 "first-app-tile": {
@@ -44,23 +39,23 @@ describe('readHashFromFlpSandbox()', () => {
             }`;
         const fs = makeFsMock(content) as unknown as Editor;
 
-        await expect(readHashFromFlpSandbox('test/flpSandbox.html', basePath, fs)).resolves.toBe('first-app-tile');
+        expect(readHashFromFlpSandbox('test/flpSandbox.html', webappPath, fs)).toBe('first-app-tile');
     });
 
-    test('returns undefined when no applications block is found', async () => {
+    test('returns undefined when no applications block is found', () => {
         const content = `<html><body>No config here</body></html>`;
         const fs = makeFsMock(content) as unknown as Editor;
 
-        await expect(readHashFromFlpSandbox('test/flpSandbox.html', basePath, fs)).resolves.toBeUndefined();
+        expect(readHashFromFlpSandbox('test/flpSandbox.html', webappPath, fs)).toBeUndefined();
     });
 
-    test('returns undefined when file cannot be read', async () => {
+    test('returns undefined when file cannot be read', () => {
         const fs = {
             read: jest.fn().mockImplementation(() => {
                 throw new Error('file not found');
             })
         } as unknown as Editor;
 
-        await expect(readHashFromFlpSandbox('test/flpSandbox.html', basePath, fs)).resolves.toBeUndefined();
+        expect(readHashFromFlpSandbox('test/flpSandbox.html', webappPath, fs)).toBeUndefined();
     });
 });
