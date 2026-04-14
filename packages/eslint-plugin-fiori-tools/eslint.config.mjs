@@ -1,17 +1,18 @@
 import base from '../../eslint.config.mjs';
-import eslintPluginPackage from 'eslint-plugin-eslint-plugin';
+import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import tseslint from 'typescript-eslint';
+
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-const eslintPlugin = eslintPluginPackage.default || eslintPluginPackage;
-const tsParser = tseslint.parser;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const tsParser = tseslint.parser;
+
 export default [
     {
-        ignores: ['config/**/eslintrc*.js']
+        ignores: ['config/**/eslintrc*.js', 'test/global-setup.mjs']
     },
     ...base,
     {
