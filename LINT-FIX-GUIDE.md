@@ -374,7 +374,7 @@ const packageJson = JSON.parse(
 );
 ```
 
-**Packages fixed with this pattern:** preview-middleware, adp-tooling, store
+**Packages fixed with this pattern:** abap-deploy-config-inquirer, abap-deploy-config-sub-generator, adp-flp-config-sub-generator, adp-tooling, app-config-writer, backend-proxy-middleware, cap-config-writer, cf-deploy-config-inquirer, cf-deploy-config-sub-generator, cf-deploy-config-writer, control-property-editor, deploy-config-generator-shared, deploy-config-sub-generator, environment-check, fiori-app-sub-generator, fiori-elements-writer, fiori-freestyle-writer, fiori-generator-shared, fiori-mcp-server, flp-config-inquirer, flp-config-sub-generator, generator-adp, generator-odata-downloader, inquirer-common, launch-config, mockserver-config-writer, odata-service-inquirer, odata-service-writer, preview-middleware, project-input-validator, repo-app-import-sub-generator, sap-systems-ext, sap-systems-ext-webapp, store, telemetry, ui-service-inquirer, ui-service-sub-generator, ui5-application-inquirer, ui5-application-writer, ui5-library-inquirer, ui5-library-reference-inquirer, ui5-library-reference-sub-generator, ui5-library-sub-generator, ui5-library-writer, ui5-proxy-middleware, ui5-test-writer
 
 **Troubleshooting:** If CI reports "Cannot find module '.../dist/types'" but the local build is correct (with `.js` extensions in dist files), the issue is likely a stale build cache on CI. Ensure the package was rebuilt after ESM migration changes by running `pnpm --filter @sap-ux/<package> build` and committing any updated dist files.
 
