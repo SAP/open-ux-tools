@@ -142,9 +142,9 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName.')).toBe('The value must end with an alphanumeric character.');
-        expect(validation?.('customer.testName-')).toBe('The value must end with an alphanumeric character.');
-        expect(validation?.('customer.testName$')).toBe('The value must end with an alphanumeric character.');
+        expect(validation?.('customer.testName.')).toBe('The input must end with an alphanumeric character.');
+        expect(validation?.('customer.testName-')).toBe('The input must end with an alphanumeric character.');
+        expect(validation?.('customer.testName$')).toBe('The input must end with an alphanumeric character.');
     });
 
     it('should return error message when validating service name prompt and has content duplication', async () => {
