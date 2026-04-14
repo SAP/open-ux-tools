@@ -286,7 +286,10 @@ export async function getPrompts(
     const isCFEnv = await isCFEnvironment(projectPath);
     const abapServiceUrl = isCFEnv ? undefined : await getAbapServiceUrl(projectPath);
 
-    const changeFiles = getChangesByType(projectPath, ChangeType.ADD_NEW_MODEL, 'manifest');
+    const changeFiles = [
+        ...getChangesByType(projectPath, ChangeType.ADD_NEW_MODEL),
+        ...getChangesByType(projectPath, ChangeType.ADD_NEW_DATA_SOURCE)
+    ];
     let destinationError: string | undefined;
     let destinationChoices: { name: string; value: Destination }[] | undefined;
 
