@@ -42,7 +42,7 @@ export async function writeIntegrityData(integrityFilePath: string, content: Int
     }
 
     for (const fileIntegrity of clonedContent.fileIntegrity) {
-        fileIntegrity.filePath = relative(integrityDir, fileIntegrity.filePath);
+        fileIntegrity.filePath = relative(integrityDir, fileIntegrity.filePath).replace(/\\/g, '/');
         if (typeof fileIntegrity.content === 'string') {
             fileIntegrity.content = compressToBase64(fileIntegrity.content);
         }
