@@ -7,6 +7,10 @@ import {
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
+jest.mock('@sap-ux/project-access', () => ({
+    getWebappPath: jest.fn().mockResolvedValue('webapp')
+}));
+
 /**
  * Matches the actual template output: the last entry has no trailing newline
  * before the closing `]`, i.e. the array body does NOT end with `\n`.
@@ -189,37 +193,37 @@ describe('readHtmlTargetFromQUnitJs()', () => {
         };
     }
 
-    test('extracts a simple html filename', () => {
+    test('extracts a simple html filename', async () => {
         const content = `sap.ui.require.toUrl('my/app') + '/index.html'`;
         const fs = makeFsMock(content) as unknown as Editor;
 
-        expect(readHtmlTargetFromQUnitJs(basePath, fs)).toBe('index.html');
+        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe('index.html');
         expect(fs.read).toHaveBeenCalledWith(expectedFilePath);
     });
 
-    test('extracts path with query parameters and hash fragment', () => {
+    test('extracts path with query parameters and hash fragment', async () => {
         const content = `launchUrl: sap.ui.require.toUrl('fin/ap/financingorder/manage') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#finapfinancingordermanage-tile'`;
         const fs = makeFsMock(content) as unknown as Editor;
 
-        expect(readHtmlTargetFromQUnitJs(basePath, fs)).toBe(
+        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe(
             'test/flpSandbox.html?sap-ui-xx-viewCache=false#finapfinancingordermanage-tile'
         );
     });
 
-    test('extracts path with whitespace around the + operator', () => {
+    test('extracts path with whitespace around the + operator', async () => {
         const content = `sap.ui.require.toUrl( 'my/app' )  +  '/test/sandbox.html#app-tile'`;
         const fs = makeFsMock(content) as unknown as Editor;
 
-        expect(readHtmlTargetFromQUnitJs(basePath, fs)).toBe('test/sandbox.html#app-tile');
+        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe('test/sandbox.html#app-tile');
     });
 
-    test('returns undefined when launchUrl pattern is not found', () => {
+    test('returns undefined when launchUrl pattern is not found', async () => {
         const fs = makeFsMock(BASE_FILE) as unknown as Editor;
 
-        expect(readHtmlTargetFromQUnitJs(basePath, fs)).toBeUndefined();
+        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBeUndefined();
     });
 
-    test('reads hash from HTML file when launch URL has no hash fragment', () => {
+    test('reads hash from HTML file when launch URL has no hash fragment', async () => {
         const qunitContent = `sap.ui.require.toUrl('my/app') + '/test/flpSandbox.html'`;
         const htmlContent = `applications: { "myapp-tile": { title: "My App" } }`;
         const fs = {
@@ -230,10 +234,10 @@ describe('readHtmlTargetFromQUnitJs()', () => {
                 .mockReturnValueOnce(htmlContent) // flpSandbox.html
         } as unknown as Editor;
 
-        expect(readHtmlTargetFromQUnitJs(basePath, fs)).toBe('test/flpSandbox.html#myapp-tile');
+        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe('test/flpSandbox.html#myapp-tile');
     });
 
-    test('reads hash from HTML file when launch URL has query params but no hash', () => {
+    test('reads hash from HTML file when launch URL has query params but no hash', async () => {
         const qunitContent = `sap.ui.require.toUrl('my/app') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false'`;
         const htmlContent = `applications: { "myapp-tile": { title: "My App" } }`;
         const fs = {
@@ -241,12 +245,12 @@ describe('readHtmlTargetFromQUnitJs()', () => {
             read: jest.fn().mockReturnValueOnce(qunitContent).mockReturnValueOnce(htmlContent)
         } as unknown as Editor;
 
-        expect(readHtmlTargetFromQUnitJs(basePath, fs)).toBe(
+        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe(
             'test/flpSandbox.html?sap-ui-xx-viewCache=false#myapp-tile'
         );
     });
 
-    test('falls back to Opa.qunit.js when opaTests.qunit.js does not exist', () => {
+    test('falls back to Opa.qunit.js when opaTests.qunit.js does not exist', async () => {
         const content = `sap.ui.require.toUrl('my/app') + '/test/sandbox.html#app-tile'`;
         const opaTestsPath = join(basePath, 'webapp', 'test', 'integration_old', 'opaTests.qunit.js');
         const opaPath = join(basePath, 'webapp', 'test', 'integration_old', 'Opa.qunit.js');
@@ -255,7 +259,7 @@ describe('readHtmlTargetFromQUnitJs()', () => {
             read: jest.fn().mockReturnValue(content)
         } as unknown as Editor;
 
-        expect(readHtmlTargetFromQUnitJs(basePath, fs)).toBe('test/sandbox.html#app-tile');
+        await expect(readHtmlTargetFromQUnitJs(basePath, fs)).resolves.toBe('test/sandbox.html#app-tile');
         expect(fs.read).toHaveBeenCalledWith(opaPath);
     });
 });
@@ -273,37 +277,37 @@ describe('addIntegrationOldToGitignore()', () => {
         };
     }
 
-    test('creates .gitignore with the entry when the file does not exist', () => {
+    test('creates .gitignore with the entry when the file does not exist', async () => {
         const fs = makeFsMock(null) as unknown as Editor;
-        addIntegrationOldToGitignore(projectBasePath, fs);
+        await addIntegrationOldToGitignore(projectBasePath, fs);
 
         expect(fs.write).toHaveBeenCalledWith(gitignorePath, `${ENTRY}\n`);
     });
 
-    test('appends the entry to an existing file that ends with a newline', () => {
+    test('appends the entry to an existing file that ends with a newline', async () => {
         const fs = makeFsMock('node_modules/\ndist/\n') as unknown as Editor;
-        addIntegrationOldToGitignore(projectBasePath, fs);
+        await addIntegrationOldToGitignore(projectBasePath, fs);
 
         expect(fs.write).toHaveBeenCalledWith(gitignorePath, `node_modules/\ndist/\n${ENTRY}\n`);
     });
 
-    test('appends the entry with a leading newline when existing file has no trailing newline', () => {
+    test('appends the entry with a leading newline when existing file has no trailing newline', async () => {
         const fs = makeFsMock('node_modules/\ndist/') as unknown as Editor;
-        addIntegrationOldToGitignore(projectBasePath, fs);
+        await addIntegrationOldToGitignore(projectBasePath, fs);
 
         expect(fs.write).toHaveBeenCalledWith(gitignorePath, `node_modules/\ndist/\n${ENTRY}\n`);
     });
 
-    test('does not write when the entry is already present', () => {
+    test('does not write when the entry is already present', async () => {
         const fs = makeFsMock(`node_modules/\n${ENTRY}\ndist/\n`) as unknown as Editor;
-        addIntegrationOldToGitignore(projectBasePath, fs);
+        await addIntegrationOldToGitignore(projectBasePath, fs);
 
         expect(fs.write).not.toHaveBeenCalled();
     });
 
-    test('does not write when the entry is already present without trailing newline', () => {
+    test('does not write when the entry is already present without trailing newline', async () => {
         const fs = makeFsMock(`node_modules/\n${ENTRY}`) as unknown as Editor;
-        addIntegrationOldToGitignore(projectBasePath, fs);
+        await addIntegrationOldToGitignore(projectBasePath, fs);
 
         expect(fs.write).not.toHaveBeenCalled();
     });

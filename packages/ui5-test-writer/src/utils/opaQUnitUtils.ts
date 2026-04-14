@@ -7,6 +7,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { readHashFromFlpSandbox } from './flpSandboxUtils';
+import { getWebappPath } from '@sap-ux/project-access';
 
 /** Relative path from the test output directory to opaTests.qunit.js */
 const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
@@ -93,9 +94,9 @@ const LAUNCH_URL_REGEX = /\.toUrl\s*\([^)]+\)\s*\+\s*'([^']+)'/;
  * @param fs - mem-fs-editor instance used to read the file
  * @returns the html target string, or undefined if not found
  */
-export function readHtmlTargetFromQUnitJs(basePath: string, fs: Editor): string | undefined {
+export async function readHtmlTargetFromQUnitJs(basePath: string, fs: Editor): Promise<string | undefined> {
     try {
-        const integrationOldDir = join(basePath, 'webapp', 'test', 'integration_old');
+        const integrationOldDir = join(basePath, await getWebappPath(basePath), 'test', 'integration_old');
         let filePath = join(integrationOldDir, 'opaTests.qunit.js');
         if (!fs.exists(filePath)) {
             filePath = join(integrationOldDir, 'Opa.qunit.js');
@@ -115,7 +116,7 @@ export function readHtmlTargetFromQUnitJs(basePath: string, fs: Editor): string 
         // No hash fragment — read the referenced HTML file to extract the
         // application key from the sap-ushell-config applications object
         const htmlPath = launchUrl.split('?')[0];
-        const hash = readHashFromFlpSandbox(htmlPath, basePath, fs);
+        const hash = await readHashFromFlpSandbox(htmlPath, basePath, fs);
         return hash ? `${launchUrl}#${hash}` : launchUrl;
     } catch {
         return undefined;
@@ -132,7 +133,7 @@ const INTEGRATION_OLD_GITIGNORE_ENTRY = '/webapp/test/integration_old';
  * @param basePath - project root (contains .gitignore)
  * @param fs - mem-fs-editor instance used to read and write the file
  */
-export function addIntegrationOldToGitignore(basePath: string, fs: Editor): void {
+export async function addIntegrationOldToGitignore(basePath: string, fs: Editor): Promise<void> {
     const filePath = join(basePath, '.gitignore');
     const existing = fs.exists(filePath) ? fs.read(filePath) : '';
     const lines = existing.split('\n');

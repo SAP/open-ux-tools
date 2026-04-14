@@ -5,6 +5,7 @@
 
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
+import { getWebappPath } from '@sap-ux/project-access';
 
 /**
  * Regex to extract the first application key from the sap-ushell-config
@@ -27,9 +28,13 @@ const APPLICATIONS_KEY_REGEX = /applications\s*:\s*\{[^"]*"([^"]+)"\s*:/;
  * @param fs - mem-fs-editor instance used to read the file
  * @returns the application key (e.g. `fincashbankmanage-tile`), or undefined
  */
-export function readHashFromFlpSandbox(htmlRelativePath: string, basePath: string, fs: Editor): string | undefined {
+export async function readHashFromFlpSandbox(
+    htmlRelativePath: string,
+    basePath: string,
+    fs: Editor
+): Promise<string | undefined> {
     try {
-        const filePath = join(basePath, 'webapp', htmlRelativePath);
+        const filePath = join(basePath, await getWebappPath(basePath), htmlRelativePath);
         const content = fs.read(filePath);
         const match = APPLICATIONS_KEY_REGEX.exec(content);
         return match?.[1];

@@ -461,8 +461,8 @@ export async function generateOPAFiles(
                 join(basePath, 'webapp', 'test', 'integration_old')
             );
 
-            addIntegrationOldToGitignore(basePath, editor);
-            const htmlTarget = readHtmlTargetFromQUnitJs(basePath, editor) ?? config.htmlTarget;
+            await addIntegrationOldToGitignore(basePath, editor);
+            const htmlTarget = (await readHtmlTargetFromQUnitJs(basePath, editor)) ?? config.htmlTarget;
             const standaloneConfig = { ...config, htmlTarget };
             const standaloneWriteContext: WriteContext = { ...writeContext, config: standaloneConfig };
 
