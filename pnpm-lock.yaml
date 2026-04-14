@@ -9,7 +9,7 @@ overrides:
   '@storybook/manager-api>store2': 2.14.4
   '@sap-ux/ui5-config>axios': ^1.15.0
   '@sap/service-provider-apis>axios': ^1.15.0
-  '@sap/subaccount-destination-service-provider>@sap/bas-sdk': ^3.13.3
+  '@sap/subaccount-destination-service-provider>@sap/bas-sdk': ^3.13.6
   esbuild@<=0.24.2: '>=0.25.0'
   fast-xml-parser: '>=5.5.6'
   '@xmldom/xmldom': '>=0.8.12'
@@ -1088,8 +1088,8 @@ importers:
   packages/btp-utils:
     dependencies:
       '@sap/bas-sdk':
-        specifier: 3.13.3
-        version: 3.13.3
+        specifier: 3.13.6
+        version: 3.13.6
       '@sap/cf-tools':
         specifier: 3.3.0
         version: 3.3.0
@@ -1834,8 +1834,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@sap/bas-sdk':
-        specifier: 3.13.3
-        version: 3.13.3
+        specifier: 3.13.6
+        version: 3.13.6
       archiver:
         specifier: 7.0.1
         version: 7.0.1
@@ -3530,8 +3530,8 @@ importers:
         specifier: workspace:*
         version: link:../system-access
       '@sap/bas-sdk':
-        specifier: 3.13.3
-        version: 3.13.3
+        specifier: 3.13.6
+        version: 3.13.6
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -8799,8 +8799,8 @@ packages:
     resolution: {integrity: sha512-0wbXJlAOenEal6nMspDKJev8fWDYA+MuRbi6iTHNdusRT2fisM9v+IWllT4fzeut6+Sd3l+5qKtA/AlbM5zGfA==}
     engines: {node: ^20.20.0 || ^22.x || ^24.x}
 
-  '@sap/bas-sdk@3.13.3':
-    resolution: {integrity: sha512-HLOwEc6z/Dyu5qR7mSwhRSjz0KbRBPZGL8FIAVwvGP/6JHU0tc6UDMQRHBV6NoyrNXdGSYzbPlS9y2uPWlmuow==}
+  '@sap/bas-sdk@3.13.6':
+    resolution: {integrity: sha512-x+uwIczUyLIHS2Ap2yPdCdMvDyXRO1jyTgRK/YPzNkzQnc7K4QQmYKnVydL5uT1Q6w3evUwPWvnevx6vIVbl7g==}
 
   '@sap/cds-compiler@4.8.0':
     resolution: {integrity: sha512-C8IkzNfdMIzG136K/VvOmG65d8UnR9lcZF5q/c//Jp2/RZIZvwFvO5HHPre19+YWhuwJXbIMb3kc5x9CW9ZLNw==}
@@ -23498,7 +23498,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sap/bas-sdk@3.13.3':
+  '@sap/bas-sdk@3.13.6':
     dependencies:
       axios: 1.15.0(debug@4.4.3)
       cross-spawn: 7.0.6
@@ -23559,7 +23559,7 @@ snapshots:
     dependencies:
       '@sap-ux/logger': 0.8.1
       '@sap-ux/store': 1.5.8(typescript@5.9.3)
-      '@sap/bas-sdk': 3.13.3
+      '@sap/bas-sdk': 3.13.6
       '@sap/service-provider-apis': 2.8.0
       stream-json: 1.9.1
       vkbeautify: 0.99.3
