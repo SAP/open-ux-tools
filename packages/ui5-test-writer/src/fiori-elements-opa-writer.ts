@@ -462,7 +462,7 @@ export async function generateOPAFiles(
         const hasJourneyRunner = existsSync(join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js'));
         const virtualOPA5Configured = await hasVirtualOPA5(basePath);
         if (hasJourneyRunner) {
-            writeJourneyFiles(appFeatures, writeContext, true, virtualOPA5Configured);
+            writeJourneyFiles(appFeatures, writeContext, true, true, virtualOPA5Configured);
         } else {
             editor.move(join(testOutDirPath, 'integration', '**'), join(testOutDirPath, 'integration_old'));
 
@@ -473,7 +473,7 @@ export async function generateOPAFiles(
             if (!virtualOPA5Configured) {
                 writeCommonAndPageFiles(standaloneWriteContext, rootCommonTemplateDirPath);
             }
-            writeJourneyFiles(appFeatures, standaloneWriteContext, true, virtualOPA5Configured);
+            writeJourneyFiles(appFeatures, standaloneWriteContext, true, true, virtualOPA5Configured);
         }
     } else {
         writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath);
