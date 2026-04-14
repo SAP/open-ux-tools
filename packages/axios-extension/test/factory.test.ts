@@ -70,7 +70,7 @@ test('create', async () => {
     const metadata = await service.metadata();
     expect(metadata).toBeDefined();
     expect(metadata).toBe(expectedMetadata);
-    expect(mockGetProxyForUrl).toHaveBeenCalledWith(`${server}`);
+    expect(mockGetProxyForUrl).toHaveBeenNthCalledWith(1, `${server}${servicePath}${metadataPath}?sap-client=${client}`);
     mockGetProxyForUrl.mockReset();
     expect(provider.defaults.proxy).toBeUndefined();
     expect(provider.defaults.httpAgent).toBeUndefined();
@@ -80,6 +80,7 @@ test('create', async () => {
 test('create with proxy', async () => {
     mockIsAppStudio.mockReturnValue(false);
     mockGetProxyForUrl.mockReturnValue('http://proxy.example:8080');
+    mockGetProxyForUrl.mockClear(); // Clear any calls from previous tests
     const provider = create({
         baseURL: server,
         params: { 'sap-client': client }
