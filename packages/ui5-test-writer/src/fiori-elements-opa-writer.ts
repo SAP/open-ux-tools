@@ -467,7 +467,7 @@ export async function generateOPAFiles(
             editor.move(join(testOutDirPath, 'integration', '**'), join(testOutDirPath, 'integration_old'));
 
             await addIntegrationOldToGitignore(basePath, editor);
-            const htmlTarget = (await readHtmlTargetFromQUnitJs(testOutDirPath, editor)) ?? config.htmlTarget;
+            const htmlTarget = readHtmlTargetFromQUnitJs(testOutDirPath, editor) ?? config.htmlTarget;
             const standaloneConfig = { ...config, htmlTarget };
             const standaloneWriteContext: WriteContext = { ...writeContext, config: standaloneConfig };
             if (!virtualOPA5Configured) {
