@@ -1,5 +1,18 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.13
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/inquirer-common@0.11.35
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-input-validator@0.6.76
+
 ## 0.18.12
 
 ### Patch Changes
