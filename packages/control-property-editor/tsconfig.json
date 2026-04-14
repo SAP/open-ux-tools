@@ -9,7 +9,7 @@
     ],
     "strictNullChecks": true,
     "outDir": "dist",
-    "module": "ES2022",
+    "module": "ESNext",
     "rootDir": ".",
     "baseUrl": ".",
     "types": [
