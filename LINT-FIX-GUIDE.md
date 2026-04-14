@@ -338,3 +338,41 @@ const modulePath = require.resolve('some-package');
 
 **Packages fixed with this pattern:** preview-middleware (playwright.config.ts)
 
+## Pattern 14: JSON import requires type attribute in ESM
+
+**Error:**
+```
+TypeError [ERR_IMPORT_ATTRIBUTE_MISSING]: Module "file://.../package.json" needs an import attribute of "type: json"
+```
+
+**Cause:** Node.js ESM requires explicit type declaration when importing JSON files. Without the `with { type: 'json' }` attribute, Node.js doesn't know how to handle the .json file import.
+
+**Fix:** Add the `with { type: 'json' }` import attribute:
+
+```typescript
+// Before (missing import attribute)
+import packageJson from './package.json';
+import translations from './translations/i18n.json';
+
+// After (with import attribute)
+import packageJson from './package.json' with { type: 'json' };
+import translations from './translations/i18n.json' with { type: 'json' };
+```
+
+**Note:** This syntax is part of the ES Module Import Attributes proposal and is required in Node.js for JSON imports when using ES modules.
+
+**Alternative:** If you need dynamic JSON imports or want to avoid the import attribute, use `readFileSync` and `JSON.parse`:
+
+```typescript
+import { readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const packageJson = JSON.parse(
+    readFileSync(join(__dirname, 'package.json'), 'utf-8')
+);
+```
+
+**Packages fixed with this pattern:** preview-middleware, adp-tooling
+
