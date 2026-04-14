@@ -67,7 +67,9 @@ sap.ui.define([
 <% } -%>
 <% bodySections.forEach(function(section) { -%>
 <% if (!isStandalone) { -%>
+<% if (bodySections.length > 1) { -%>
             When.onThe<%- name%>.iPressSectionIconTabFilterButton("<%- section.id %>");
+<% } -%>
             Then.onThe<%- name%>.iCheckSection({ section: "<%- section.id %>" });
 <% } -%>
 <% if (section?.subSections?.length > 0) { -%>

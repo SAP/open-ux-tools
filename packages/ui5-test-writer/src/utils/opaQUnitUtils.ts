@@ -7,7 +7,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { readHashFromFlpSandbox } from './flpSandboxUtils';
-import { getWebappPath } from '@sap-ux/project-access';
+import { getAllUi5YamlFileNames, readUi5Yaml, getWebappPath } from '@sap-ux/project-access';
 
 /** Relative path from the test output directory to opaTests.qunit.js */
 const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
@@ -158,10 +158,49 @@ export async function addIntegrationOldToGitignore(basePath: string, fs: Editor)
  * @param fs - mem-fs-editor instance used to read and write the file
  */
 export function addPathsToQUnitJs(filePaths: string[], projectPath: string, fs: Editor): void {
-    const filePath = join(projectPath, OPA_QUNIT_FILE);
-    const content = fs.read(filePath);
-    const updated = spliceModulesIntoQUnitContent(content, filePaths);
-    if (updated !== content) {
-        fs.write(filePath, updated);
+    try {
+        const filePath = join(projectPath, OPA_QUNIT_FILE);
+        const content = fs.read(filePath);
+        const updated = spliceModulesIntoQUnitContent(content, filePaths);
+        if (updated !== content) {
+            fs.write(filePath, updated);
+        }
+    } catch {
+        // If the file doesn't exist or can't be read, do nothing
     }
+}
+
+/** Shape of one entry in the `test` array of a `fiori-tools-preview` middleware configuration */
+interface PreviewTestEntry {
+    framework?: string;
+    path?: string;
+}
+
+/** Shape of the `fiori-tools-preview` middleware configuration relevant to OPA5 detection */
+interface PreviewMiddlewareConfig {
+    test?: PreviewTestEntry[];
+}
+
+/**
+ * Returns true if any UI5 yaml file in the project contains a `fiori-tools-preview`
+ * middleware whose `test` array includes an entry with `framework: OPA5`.
+ *
+ * @param basePath - project root directory
+ * @returns true when OPA5 is configured in a preview middleware, false otherwise
+ */
+export async function hasVirtualOPA5(basePath: string): Promise<boolean> {
+    const yamlFileNames = await getAllUi5YamlFileNames(basePath);
+    for (const fileName of yamlFileNames) {
+        try {
+            const ui5Config = await readUi5Yaml(basePath, fileName);
+            const previewMiddleware = ui5Config.findCustomMiddleware<PreviewMiddlewareConfig>('fiori-tools-preview');
+            const testEntries = previewMiddleware?.configuration?.test;
+            if (testEntries?.some((entry) => entry.framework === 'OPA5')) {
+                return true;
+            }
+        } catch {
+            // Skip yaml files that cannot be read
+        }
+    }
+    return false;
 }

@@ -17,7 +17,12 @@ import { t } from './i18n';
 import { FileName, DirName } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { getAppFeatures } from './utils/modelUtils';
-import { addIntegrationOldToGitignore, addPathsToQUnitJs, readHtmlTargetFromQUnitJs } from './utils/opaQUnitUtils';
+import {
+    addIntegrationOldToGitignore,
+    addPathsToQUnitJs,
+    hasVirtualOPA5,
+    readHtmlTargetFromQUnitJs
+} from './utils/opaQUnitUtils';
 
 /**
  * Reads the manifest for an app.
@@ -292,12 +297,14 @@ function writeCommonAndPageFiles(writeContext: WriteContext, rootCommonTemplateD
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param isStandalone - whether the generation is run in standalone mode (not during app generation)
  * @param hasJourneyRunner - whether a JourneyRunner.js already exists (standalone upgrade path)
+ * @param virtualOPA5Configured - whether virtual OPA5 is configured
  */
 function writeJourneyFiles(
     appFeatures: AppFeatures,
     writeContext: WriteContext,
     isStandalone: boolean,
-    hasJourneyRunner = false
+    hasJourneyRunner = false,
+    virtualOPA5Configured = false
 ): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams } = writeContext;
     const generatedJourneyPages: string[] = [];
@@ -355,24 +362,26 @@ function writeJourneyFiles(
         generatedJourneyPages.push(appFeatures.fpm.name);
     }
 
-    if (hasJourneyRunner) {
-        addPathsToQUnitJs(
-            generatedJourneyPages.map((page) => {
-                return `${config.appPath}/test/integration/${page}Journey`;
-            }),
-            testOutDirPath,
-            editor
-        );
-    } else {
-        editor.copyTpl(
-            join(rootV4TemplateDirPath, 'integration', 'opaTests.*.*'),
-            join(testOutDirPath, 'integration'),
-            { ...config, generatedJourneyPages },
-            undefined,
-            {
-                globOptions: { dot: true }
-            }
-        );
+    if (!virtualOPA5Configured) {
+        if (hasJourneyRunner) {
+            addPathsToQUnitJs(
+                generatedJourneyPages.map((page) => {
+                    return `${config.appPath}/test/integration/${page}Journey`;
+                }),
+                testOutDirPath,
+                editor
+            );
+        } else {
+            editor.copyTpl(
+                join(rootV4TemplateDirPath, 'integration', 'opaTests.*.*'),
+                join(testOutDirPath, 'integration'),
+                { ...config, generatedJourneyPages },
+                undefined,
+                {
+                    globOptions: { dot: true }
+                }
+            );
+        }
     }
 }
 
@@ -453,8 +462,9 @@ export async function generateOPAFiles(
         const hasJourneyRunner = existsSync(
             join(basePath, 'webapp', 'test', 'integration', 'pages', 'JourneyRunner.js')
         );
+        const virtualOPA5Configured = await hasVirtualOPA5(basePath);
         if (hasJourneyRunner) {
-            writeJourneyFiles(appFeatures, writeContext, true);
+            writeJourneyFiles(appFeatures, writeContext, true, virtualOPA5Configured);
         } else {
             editor.move(
                 join(basePath, 'webapp', 'test', 'integration', '**'),
@@ -465,9 +475,10 @@ export async function generateOPAFiles(
             const htmlTarget = (await readHtmlTargetFromQUnitJs(basePath, editor)) ?? config.htmlTarget;
             const standaloneConfig = { ...config, htmlTarget };
             const standaloneWriteContext: WriteContext = { ...writeContext, config: standaloneConfig };
-
-            writeCommonAndPageFiles(standaloneWriteContext, rootCommonTemplateDirPath);
-            writeJourneyFiles(appFeatures, standaloneWriteContext, true);
+            if (!virtualOPA5Configured) {
+                writeCommonAndPageFiles(standaloneWriteContext, rootCommonTemplateDirPath);
+            }
+            writeJourneyFiles(appFeatures, standaloneWriteContext, true, virtualOPA5Configured);
         }
     } else {
         writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath);
