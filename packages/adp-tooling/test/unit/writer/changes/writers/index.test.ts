@@ -350,7 +350,7 @@ describe('NewModelWriter', () => {
             {
                 'dataSource': {
                     'customer.MyService': {
-                        'uri': '/customer/MyService/sap/opu/odata/v4/',
+                        'uri': 'customer/MyService/sap/opu/odata/v4/',
                         'type': 'OData',
                         'settings': {
                             'odataVersion': '4.0'

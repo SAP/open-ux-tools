@@ -44,7 +44,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
         const { service, isCloudFoundry, serviceType } = data;
         const isHttp = serviceType === ServiceType.HTTP;
 
-        const uri = isCloudFoundry ? `/${service.name.replaceAll('.', '/')}${service.uri}` : service.uri;
+        const uri = isCloudFoundry ? `${service.name.replaceAll('.', '/')}${service.uri}` : service.uri;
 
         const dataSourceEntry: DataSourceItem = {
             uri,
