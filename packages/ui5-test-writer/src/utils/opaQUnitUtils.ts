@@ -7,7 +7,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { readHashFromFlpSandbox } from './flpSandboxUtils';
-import { getAllUi5YamlFileNames, readUi5Yaml, getWebappPath } from '@sap-ux/project-access';
+import { getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
 
 /** Relative path from the test output directory to opaTests.qunit.js */
 const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
@@ -90,13 +90,13 @@ const LAUNCH_URL_REGEX = /\.toUrl\s*\([^)]+\)\s*\+\s*'([^']+)'/;
  * line, e.g. `test/flpSandbox.html?sap-ui-xx-viewCache=false#myApp-tile`.
  * Returns undefined if the file cannot be read or the pattern is not found.
  *
- * @param basePath - project root (contains webapp/)
+ * @param testPath - path to the test output directory (`.../webapp/test`)
  * @param fs - mem-fs-editor instance used to read the file
  * @returns the html target string, or undefined if not found
  */
-export async function readHtmlTargetFromQUnitJs(basePath: string, fs: Editor): Promise<string | undefined> {
+export function readHtmlTargetFromQUnitJs(testPath: string, fs: Editor): string | undefined {
     try {
-        const integrationOldDir = join(basePath, await getWebappPath(basePath), 'test', 'integration_old');
+        const integrationOldDir = join(testPath, 'integration_old');
         let filePath = join(integrationOldDir, 'opaTests.qunit.js');
         if (!fs.exists(filePath)) {
             filePath = join(integrationOldDir, 'Opa.qunit.js');
@@ -116,7 +116,7 @@ export async function readHtmlTargetFromQUnitJs(basePath: string, fs: Editor): P
         // No hash fragment — read the referenced HTML file to extract the
         // application key from the sap-ushell-config applications object
         const htmlPath = launchUrl.split('?')[0];
-        const hash = await readHashFromFlpSandbox(htmlPath, basePath, fs);
+        const hash = readHashFromFlpSandbox(htmlPath, join(testPath, '..'), fs);
         return hash ? `${launchUrl}#${hash}` : launchUrl;
     } catch {
         return undefined;

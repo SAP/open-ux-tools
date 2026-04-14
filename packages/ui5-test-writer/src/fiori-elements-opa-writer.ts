@@ -14,7 +14,7 @@ import type {
 } from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
-import { FileName, DirName } from '@sap-ux/project-access';
+import { FileName, DirName, getWebappPath } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { getAppFeatures } from './utils/modelUtils';
 import {
@@ -442,7 +442,7 @@ export async function generateOPAFiles(
 
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
     const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
-    const testOutDirPath = join(basePath, 'webapp/test');
+    const testOutDirPath = join(await getWebappPath(basePath), 'test');
 
     // Access ux-specification to get feature data for OPA test generation
     const appFeatures = await getAppFeatures(basePath, editor, log, metadata);
@@ -459,20 +459,15 @@ export async function generateOPAFiles(
     const writeContext: WriteContext = { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams };
 
     if (standalone) {
-        const hasJourneyRunner = existsSync(
-            join(basePath, 'webapp', 'test', 'integration', 'pages', 'JourneyRunner.js')
-        );
+        const hasJourneyRunner = existsSync(join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js'));
         const virtualOPA5Configured = await hasVirtualOPA5(basePath);
         if (hasJourneyRunner) {
             writeJourneyFiles(appFeatures, writeContext, true, virtualOPA5Configured);
         } else {
-            editor.move(
-                join(basePath, 'webapp', 'test', 'integration', '**'),
-                join(basePath, 'webapp', 'test', 'integration_old')
-            );
+            editor.move(join(testOutDirPath, 'integration', '**'), join(testOutDirPath, 'integration_old'));
 
             await addIntegrationOldToGitignore(basePath, editor);
-            const htmlTarget = (await readHtmlTargetFromQUnitJs(basePath, editor)) ?? config.htmlTarget;
+            const htmlTarget = (await readHtmlTargetFromQUnitJs(testOutDirPath, editor)) ?? config.htmlTarget;
             const standaloneConfig = { ...config, htmlTarget };
             const standaloneWriteContext: WriteContext = { ...writeContext, config: standaloneConfig };
             if (!virtualOPA5Configured) {
@@ -499,11 +494,11 @@ export async function generateOPAFiles(
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
-export function generatePageObjectFile(
+export async function generatePageObjectFile(
     basePath: string,
     pageObjectParameters: { targetKey: string; appID?: string },
     fs?: Editor
-): Editor {
+): Promise<Editor> {
     const editor = fs || create(createStorage());
 
     const manifest = readManifest(editor, basePath);
@@ -512,7 +507,7 @@ export function generatePageObjectFile(
     const pageConfig = createPageConfig(manifest, pageObjectParameters.targetKey, pageObjectParameters.appID);
     if (pageConfig) {
         const rootTemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
-        const testOutDirPath = join(basePath, 'webapp/test');
+        const testOutDirPath = join(await getWebappPath(basePath), 'test');
         writePageObject(pageConfig, rootTemplateDirPath, testOutDirPath, editor);
     } else {
         throw new ValidationError(
