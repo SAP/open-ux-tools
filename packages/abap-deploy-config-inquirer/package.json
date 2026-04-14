@@ -7,7 +7,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-inquirer"
     },
-    "version": "1.8.9",
+    "version": "1.8.10",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
