@@ -1,4 +1,4 @@
-import { toFullyQualifiedName } from '..';
+import { toFullyQualifiedName } from '../index.js';
 
 import type { ParsedPath, ParsedPathSegment } from './parse';
 import { PATH_SEPARATOR } from './parse';
