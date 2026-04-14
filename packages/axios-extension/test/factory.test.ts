@@ -84,11 +84,24 @@ test('create with proxy', async () => {
         baseURL: server,
         params: { 'sap-client': client }
     });
-    expect(mockGetProxyForUrl).toHaveBeenNthCalledWith(1, `${server}`);
+    // proxy is now resolved per-request, not at construction time
+    expect(mockGetProxyForUrl).not.toHaveBeenCalled();
+    expect(provider.defaults.proxy).toBeUndefined();
+    expect(provider.defaults.httpAgent).toBeUndefined();
+    // run the request interceptors against a synthetic config to verify proxy agents are injected
+    const syntheticConfig = { url: `${servicePath}${metadataPath}`, params: { 'sap-client': client } } as any;
+    const handlers: any[] = (provider.interceptors.request as any).handlers;
+    let config = syntheticConfig;
+    for (const handler of handlers) {
+        if (handler?.fulfilled) {
+            config = await handler.fulfilled(config);
+        }
+    }
+    expect(mockGetProxyForUrl).toHaveBeenCalledWith(`${server}${servicePath}${metadataPath}?sap-client=${client}`);
+    expect(config.proxy).toEqual(false);
+    expect(config.httpAgent).toBeDefined();
+    expect(config.httpsAgent).toBeDefined();
     mockGetProxyForUrl.mockReset();
-    expect(provider.defaults.proxy).toEqual(false);
-    expect(provider.defaults.httpAgent).toBeDefined();
-    expect(provider.defaults.httpsAgent).toBeDefined();
 });
 
 test('createForServiceUrl', async () => {
