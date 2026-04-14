@@ -21,6 +21,29 @@ import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// Mock node:module to intercept createRequire so that require.resolve works for
+// @sap-ux/control-property-editor-sources (its dist/app.js is not built in test env)
+const actualNodeModule = await import('node:module');
+jest.unstable_mockModule('node:module', () => ({
+    ...actualNodeModule,
+    createRequire: (url: string | URL) => {
+        const originalRequire = actualNodeModule.createRequire(url);
+        const wrappedRequire = Object.assign((id: string) => originalRequire(id), originalRequire);
+        const originalResolve = originalRequire.resolve.bind(originalRequire);
+        wrappedRequire.resolve = Object.assign(
+            (id: string, options?: { paths?: string[] }) => {
+                if (id === '@sap-ux/control-property-editor-sources') {
+                    // Return a dummy path; dirname() of this gives a usable directory for serveStatic
+                    return join(__dirname, '..', '..', 'fixtures', 'dummy-cpe', 'index.js');
+                }
+                return originalResolve(id, options);
+            },
+            { paths: originalRequire.resolve.paths }
+        ) as NodeJS.RequireResolve;
+        return wrappedRequire;
+    }
+}));
+
 // Pre-import actual modules (before mocking) to use as spread base
 const actualProjectAccess = await import('@sap-ux/project-access');
 const actualAdpTooling = await import('@sap-ux/adp-tooling');
