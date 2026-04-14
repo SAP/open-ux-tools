@@ -293,3 +293,48 @@ FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaS
 
 **Packages fixed with this pattern:** eslint-plugin-fiori-tools
 
+## Pattern 13: `require` is not defined in ES module scope
+
+**Error:**
+```
+ReferenceError: require is not defined in ES module scope, you can use import instead
+```
+
+**Cause:** Code uses `require()` or `require.resolve()` in a file that's treated as an ES module (either has `.mjs` extension, or package.json has `"type": "module"`). CommonJS `require` is not available in ESM scope.
+
+**Fix:** Replace `require.resolve()` with ESM-compatible path resolution:
+
+```typescript
+// Before (CommonJS style - doesn't work in ESM)
+const config = {
+    globalSetup: require.resolve('./test/utils/setup')
+};
+
+// After (ESM compatible)
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const config = {
+    globalSetup: join(__dirname, './test/utils/setup')
+};
+```
+
+**Alternative for runtime require:** If you need `require()` functionality in ESM for dynamic imports of CommonJS modules, use `createRequire`:
+
+```typescript
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+
+// Now you can use require() for CommonJS modules
+const modulePath = require.resolve('some-package');
+```
+
+**Use case distinction:**
+- **Static file paths** (like config files): Use `join(__dirname, ...)` with `import.meta.url`
+- **Resolving package locations** (like node_modules): Use `createRequire(import.meta.url)`
+
+**Packages fixed with this pattern:** preview-middleware (playwright.config.ts)
+
