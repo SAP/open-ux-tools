@@ -21,7 +21,8 @@ import {
     CAP_PROJECT_PATH,
     npmInstall
 } from '../../test-helper';
-import type { AnnotationBasedNode } from '../../../src/project-context/linker/annotations';
+import { collectSections, type AnnotationBasedNode } from '../../../src/project-context/linker/annotations';
+import { getParsedServiceByName } from '../../../src/project-context/utils';
 
 jest.setTimeout(3 * 60000);
 
@@ -586,6 +587,26 @@ describe('FE V4 Linker - XML', () => {
     });
 });
 
+const CAP_FACET_NO_ID = `
+                annotate service.Priority with @(
+    UI.Facets         : [{
+        $Type : 'UI.ReferenceFacet',
+        Target: 'incidentFlow/@UI.LineItem#table_section',
+        Label : 'table section',
+        // no ID
+    }, ],
+);`;
+
+const CAP_FACET_NO_ANNOTATION = `
+annotate service.Category with @(
+    UI.Facets         : [{
+        $Type : 'UI.ReferenceFacet',
+        // no annotation path
+        Label : 'table section',
+        ID    : 'table_section',
+    }, ],
+);`;
+
 describe('FE V4 Linker - CAP', () => {
     let artifacts: FoundFioriArtifacts;
     const fileCache = new Map<string, string>();
@@ -605,7 +626,7 @@ describe('FE V4 Linker - CAP', () => {
             const absolutePath = normalizePath(join(CAP_PROJECT_PATH, file));
             let content = await readFile(absolutePath, 'utf-8');
             if (file.endsWith('annotations.cds')) {
-                content += CAP_FACETS_ANNOTATIONS;
+                content += CAP_FACETS_ANNOTATIONS + CAP_FACET_NO_ID + CAP_FACET_NO_ANNOTATION;
             }
             const uri = pathToFileURL(absolutePath).toString();
             fileCache.set(uri, content);
@@ -1110,5 +1131,58 @@ describe('FE V4 Linker - CAP', () => {
                 'visible'
             ]);
         });
+    });
+
+    test('collectSections', async () => {
+        const context = await setup({});
+        const mainService = getParsedServiceByName(context.app);
+        expect(mainService).toBeDefined();
+        if (!mainService) {
+            return;
+        }
+        const entity = mainService.index.entitySets['Incidents'];
+        expect(entity).toBeDefined();
+        if (!entity?.structuredType) {
+            return;
+        }
+        const sections = collectSections('v4', entity.structuredType, mainService);
+        expect(sections).toHaveLength(1);
+        expect(sections[0].type).toBe('table-section');
+        expect(sections[0].annotationPath).toBe('@com.sap.vocabularies.UI.v1.Facets/0');
+        expect(sections[0].children[0].annotationPath).toBe(
+            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem#table_section'
+        );
+    });
+
+    test('collectSections - no section ID', async () => {
+        const context = await setup({});
+        const mainService = getParsedServiceByName(context.app);
+        expect(mainService).toBeDefined();
+        if (!mainService) {
+            return;
+        }
+        const entity = mainService.index.entitySets['Priority'];
+        expect(entity).toBeDefined();
+        if (!entity?.structuredType) {
+            return;
+        }
+        const sections = collectSections('v4', entity.structuredType, mainService);
+        expect(sections).toHaveLength(0);
+    });
+
+    test('collectSections - no section annotation path', async () => {
+        const context = await setup({});
+        const mainService = getParsedServiceByName(context.app);
+        expect(mainService).toBeDefined();
+        if (!mainService) {
+            return;
+        }
+        const entity = mainService.index.entitySets['Category'];
+        expect(entity).toBeDefined();
+        if (!entity?.structuredType) {
+            return;
+        }
+        const sections = collectSections('v4', entity.structuredType, mainService);
+        expect(sections).toHaveLength(0);
     });
 });
