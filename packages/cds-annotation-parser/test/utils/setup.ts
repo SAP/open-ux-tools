@@ -108,7 +108,8 @@ export const getAllNormalizeFolderPath = (base = getBase(), allFolderPath: strin
         } else if (itemPath.endsWith('.txt')) {
             const dirPath = dirname(itemPath);
             const relativeLike = dirPath.split(getBase())[1];
-            const normalizedPath = relativeLike.replace(platform() === 'win32' ? /\\/g : /\//g, '/');
+            // Only replace backslashes with forward slashes on Windows
+            const normalizedPath = platform() === 'win32' ? relativeLike.replace(/\\/g, '/') : relativeLike;
             allFolderPath.push(normalizedPath);
         }
     });
