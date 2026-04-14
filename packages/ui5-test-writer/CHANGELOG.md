@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.101
+
+### Patch Changes
+
+- 17d8e42: fixes for object page opa test failures
+
 ## 0.7.100
 
 ### Patch Changes

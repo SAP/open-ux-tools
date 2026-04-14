@@ -320,11 +320,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -712,11 +719,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -1081,11 +1095,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -1450,11 +1471,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -2085,11 +2113,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -2402,11 +2437,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -2812,11 +2854,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -2859,11 +2908,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/PositionsObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -2879,11 +2935,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TrainingsObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -3268,11 +3331,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -3315,11 +3385,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/PositionsObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -3335,11 +3412,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TrainingsObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -3719,11 +3803,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPageTarget.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -5538,11 +5629,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -7198,11 +7296,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -8985,11 +9090,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -10778,11 +10890,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -11073,11 +11192,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -12955,11 +13081,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -14808,11 +14941,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -15301,11 +15441,18 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPageTarget.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 

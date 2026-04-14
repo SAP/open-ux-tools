@@ -748,6 +748,43 @@ Object {
 }
 `;
 
+exports[`Building Blocks CustomFormField building block generate CustomFormField with macros:fields aggregation: generate-custom-form-field-with-fields 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Form id=\\"myForm\\" metaPath=\\"@com.sap.vocabularies.UI.v1.FieldGroup#General\\">
+                <macros:fields>
+                    <macros:FormElement label=\\"Existing Field\\"/>
+                    <macros:FormElement label=\\"Custom Form Field\\" id=\\"testCustomFormField\\" anchor=\\"DataField::TestProperty\\" placement=\\"After\\">
+                        <macros:fields>
+                            <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomFormField1\\" type=\\"XML\\"/>
+                        </macros:fields>
+                    </macros:FormElement>
+                </macros:fields>
+            </macros:Form>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Building Blocks CustomFormField building block generate CustomFormField without macros:fields - creates aggregation: generate-custom-form-field-without-fields 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Form id=\\"myForm\\" metaPath=\\"@com.sap.vocabularies.UI.v1.FieldGroup#General\\">
+                <macros:fields>
+                    <macros:FormElement label=\\"Custom Form Field 2\\" id=\\"testCustomFormField2\\" anchor=\\"DataField::AnotherProperty\\" placement=\\"Before\\">
+                        <macros:fields>
+                            <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomFormField2\\" type=\\"XML\\"/>
+                        </macros:fields>
+                    </macros:FormElement>
+                </macros:fields>
+            </macros:Form>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
 exports[`Building Blocks Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false" 1`] = `
 Object {
   "default": Object {
