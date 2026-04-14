@@ -161,19 +161,13 @@ function processReferenceFacetRecord(
         return undefined;
     }
 
-    let properties = getRecordPropertyValue(record);
-    if (!properties['ID'] || !properties['Target']) {
-        properties = getRecordContentPropertyValue(record.content);
-    }
+    const id = getId(record);
+    const annotationPath = getTargetAnnotationPath(record);
 
-    const id = properties['ID']?.value;
-    const target = properties['Target'];
-
-    if (!id || target?.kind !== Edm.AnnotationPath) {
+    if (!id || !annotationPath) {
         return undefined;
     }
 
-    const annotationPath = target.value;
     if (annotationPath.startsWith('/')) {
         // absolute path is not supported
         return undefined;
@@ -354,12 +348,6 @@ export function getRecordType(aliasInfo: AliasInformation, element: Element): st
     }
 }
 
-interface RecordProperty {
-    name: string;
-    value: string;
-    kind: Edm.String | Edm.AnnotationPath;
-}
-
 const findContentByName = (content: ElementChild[], name: string): ElementChild | undefined =>
     content.find((c) => (c as Element).name === name);
 
@@ -367,81 +355,59 @@ const getElementText = (element: ElementChild): string | undefined =>
     (element as Element).content.find((c) => c.type === 'text')?.text;
 
 /**
- * Extracts property values from a record element.
+ * Returns AnnotationPath property value.
  *
- * @param record - The record element to extract properties from
+ * @param record -The record element
+ * @returns - Annotation oath string
  */
-function getRecordPropertyValue(record: Element): Record<string, RecordProperty> {
-    const properties: Record<string, RecordProperty> = {};
-    for (const child of record.content) {
-        if (child.type !== ELEMENT_TYPE) {
-            continue;
-        }
-        if (child.name === Edm.PropertyValue) {
+function getTargetAnnotationPath(record: Element): string | undefined {
+    const target = record.content.find((child) => {
+        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
             const name = getElementAttributeValue(child, Edm.Property);
-            const annotationPathAttribute = getElementAttribute(child, Edm.AnnotationPath);
-            if (annotationPathAttribute) {
-                properties[name] = {
-                    name,
-                    value: annotationPathAttribute.value,
-                    kind: Edm.AnnotationPath
-                };
-                continue;
-            }
-            const stringAttribute = getElementAttribute(child, Edm.String);
-            if (stringAttribute) {
-                properties[name] = {
-                    name,
-                    value: stringAttribute.value,
-                    kind: Edm.String
-                };
+            return name === 'Target';
+        }
+        return false;
+    });
+    if (target?.type === ELEMENT_TYPE) {
+        const stringAttribute = getElementAttribute(target, Edm.AnnotationPath);
+        if (stringAttribute) {
+            return stringAttribute.value;
+        } else {
+            const annotationPathContent = findContentByName(target.content, Edm.AnnotationPath);
+            if (annotationPathContent) {
+                return getElementText(annotationPathContent);
             }
         }
     }
-    return properties;
+    return undefined;
 }
 
 /**
- * Extracts property values from a record content elements.
+ * Returns ID property value.
  *
- * @param content - The record content elements to extract properties from
- * @returns - Object of properties
+ * @param record - The record element
+ * @returns - String ID value
  */
-function getRecordContentPropertyValue(content: ElementChild[]): Record<string, RecordProperty> {
-    const properties: Record<string, RecordProperty> = {};
-    for (const child of content) {
-        if (child.type !== ELEMENT_TYPE) {
-            continue;
+function getId(record: Element): string | undefined {
+    const id = record.content.find((child) => {
+        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
+            const name = getElementAttributeValue(child, Edm.Property);
+            return name === 'ID';
         }
-        if (child.name !== Edm.PropertyValue) {
-            continue;
-        }
-        const name = getElementAttributeValue(child, Edm.Property);
-        const annotationPathContent = findContentByName(child.content, 'AnnotationPath');
-        if (annotationPathContent) {
-            const annotationValue = getElementText(annotationPathContent);
-            if (annotationValue) {
-                properties[name] = {
-                    name,
-                    value: annotationValue,
-                    kind: Edm.AnnotationPath
-                };
-                continue;
-            }
-        }
-        const cdsStringAttribute = findContentByName(child.content, 'String');
-        if (cdsStringAttribute) {
-            const textValue = getElementText(cdsStringAttribute);
-            if (textValue) {
-                properties[name] = {
-                    name,
-                    value: textValue,
-                    kind: Edm.String
-                };
+        return false;
+    });
+    if (id?.type === ELEMENT_TYPE) {
+        const stringAttribute = getElementAttribute(id, Edm.String);
+        if (stringAttribute) {
+            return stringAttribute.value;
+        } else {
+            const idContent = findContentByName(id.content, Edm.String);
+            if (idContent) {
+                return getElementText(idContent);
             }
         }
     }
-    return properties;
+    return undefined;
 }
 
 /**
