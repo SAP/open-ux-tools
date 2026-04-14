@@ -38,7 +38,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "chalk": "4.1.2",
-        "dotenv": "17.3.1",
+        "dotenv": "17.4.2",
         "http-proxy-middleware": "3.0.5",
         "https-proxy-agent": "7.0.6",
         "i18next": "25.10.10",

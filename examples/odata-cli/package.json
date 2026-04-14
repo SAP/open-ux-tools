@@ -18,7 +18,7 @@
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "dotenv": "17.3.1",
+        "dotenv": "17.4.2",
         "fast-xml-parser": "5.5.9"
     },
     "files": [
