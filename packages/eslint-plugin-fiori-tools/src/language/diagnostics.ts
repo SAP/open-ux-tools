@@ -12,6 +12,7 @@ export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 export const TABLE_PERSONALIZATION = 'sap-table-personalization';
 export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignment';
+export const TEXT_ARRANGEMENT_HIDDEN = 'sap-text-arrangement-hidden';
 export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-based-navigation';
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
@@ -137,6 +138,16 @@ export interface StrictUomFiltering {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export interface TextArrangementHidden {
+    type: typeof TEXT_ARRANGEMENT_HIDDEN;
+    pageNames: string[];
+    annotation: {
+        reference: AnnotationReference;
+        textPropertyPath: string;
+        targetWithTextArrangement: string;
+    };
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
@@ -150,4 +161,5 @@ export type Diagnostic =
     | NoDataFieldIntentBasedNavigation
     | CondensedTableLayout
     | TablePersonalization
+    | TextArrangementHidden
     | StrictUomFiltering;

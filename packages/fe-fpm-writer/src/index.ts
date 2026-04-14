@@ -40,6 +40,7 @@ export type {
     Page,
     CustomColumn,
     CustomFilterField,
+    CustomFormField,
     RichTextEditor,
     ButtonGroupConfig,
     Action
