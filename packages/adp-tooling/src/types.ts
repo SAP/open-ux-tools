@@ -1419,3 +1419,28 @@ export interface CfServiceOffering {
     };
     [key: string]: unknown;
 }
+
+/**
+ * Information about the MTA project and its modules for CF deployment.
+ */
+export interface CfDeploymentInfo {
+    mtaProjectName: string;
+    mtaVersion: string;
+    space: string;
+    org: string;
+    apiUrl: string;
+    mtaRoot: string;
+    modules: Array<{
+        name: string;
+        type: string;
+        path?: string;
+    }>;
+}
+
+/**
+ * Options for the CF deployment command.
+ */
+export interface DeployCfOptions {
+    confirmDeployment?: (summary: string) => Promise<boolean>;
+    onOutput?: (data: string) => void;
+}

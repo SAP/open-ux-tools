@@ -1,5 +1,20 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.227
+
+### Patch Changes
+
+- Updated dependencies [497317c]
+    - @sap-ux/adp-tooling@0.18.114
+    - @sap-ux/flp-config-inquirer@0.4.173
+
+## 0.1.226
+
+### Patch Changes
+
+- fa016e6: Error message when user is not logged in Cloud Foundry when starting FLP Config generator
+  Change current label for environment prompt from "Cloud Foundry" to "SAP BTP, Cloud Foundry environment".
+
 ## 0.1.225
 
 ### Patch Changes

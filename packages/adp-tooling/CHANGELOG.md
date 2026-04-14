@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.114
+
+### Patch Changes
+
+- 497317c: feat: Adjust deployment wizard behavior for CF scenario
+
 ## 0.18.113
 
 ### Patch Changes
