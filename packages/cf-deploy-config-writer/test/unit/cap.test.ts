@@ -145,6 +145,42 @@ describe('CF Writer', () => {
         expect(unitTestFs.dump(capPath)).toMatchSnapshot();
     });
 
+    test('Validate CAP project uses custom destination name when addMtaDestination is true', async () => {
+        const capPath = join(outputDir, 'capcdsmtacustomdest');
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(capPath);
+        fsExtra.copySync(join(__dirname, '../sample/capcds'), capPath);
+        fsExtra.copySync(join(__dirname, './fixtures/mta-types/cdsmta'), capPath);
+        await generateAppConfig(
+            {
+                appPath: join(capPath, 'app/project1'),
+                destinationName: 'MyCustomDest',
+                addMtaDestination: true
+            },
+            unitTestFs,
+            undefined
+        );
+        expect(unitTestFs.dump(capPath)).toMatchSnapshot();
+    });
+
+    test('Validate CAP project skips destination when addMtaDestination is false', async () => {
+        const capPath = join(outputDir, 'capcdsmtanodest');
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(capPath);
+        fsExtra.copySync(join(__dirname, '../sample/capcds'), capPath);
+        fsExtra.copySync(join(__dirname, './fixtures/mta-types/cdsmta'), capPath);
+        await generateAppConfig(
+            {
+                appPath: join(capPath, 'app/project1'),
+                destinationName: 'MyCustomDest',
+                addMtaDestination: false
+            },
+            unitTestFs,
+            undefined
+        );
+        expect(unitTestFs.dump(capPath)).toMatchSnapshot();
+    });
+
     test('Validate a 2nd HTML5 app is added', async () => {
         const capPath = join(outputDir, 'capcdsmulti');
         fsExtra.mkdirSync(outputDir, { recursive: true });
