@@ -389,7 +389,7 @@ describe('getValueHelpDownloadPrompt', () => {
             await valueHelpPrompt.validate!(true);
 
             // Check that downloadTimeMs is >= 99ms (allow 1ms tolerance for timer imprecision)
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
             const successCall = mockReportEvent.mock.calls.find(
                 (call: any[]) => call[0]?.eventName === 'VALUE_HELP_DOWNLOAD_SUCCESS'
             );
