@@ -1,6 +1,6 @@
 import type { i18n, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/mockserver-config-writer.i18n.json';
+import translations from './translations/mockserver-config-writer.i18n.json' with { type: 'json' };
 
 const NS = 'mockserver-config-writer';
 let i18nInstance: i18n;

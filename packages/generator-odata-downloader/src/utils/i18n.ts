@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 import type { i18n as i18nNext, TOptions } from 'i18next';
-import i18ntranslations from '../translations/odataDownloadGenerator.i18n.json';
+import i18ntranslations from '../translations/odataDownloadGenerator.i18n.json' with { type: 'json' };
 export const i18n: i18nNext = i18next.createInstance();
 
 export const odataDownloadGenerator = 'odata-dowload-generator';

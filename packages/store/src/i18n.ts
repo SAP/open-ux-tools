@@ -1,6 +1,6 @@
 import type { TOptions, TOptionsBase, i18n } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/ux-store.i18n.json';
+import translations from './translations/ux-store.i18n.json' with { type: 'json' };
 
 const NS = 'ux-store';
 let i18nInstance: i18n = i18next.createInstance();

@@ -15,7 +15,7 @@ import type { Options, RequestHandler } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import i18n from 'i18next';
-import translations from './i18n.json';
+import translations from './i18n.json' with { type: 'json' };
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';

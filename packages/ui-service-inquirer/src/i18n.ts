@@ -1,6 +1,6 @@
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/ui-service-inquirer.i18n.json';
+import translations from './translations/ui-service-inquirer.i18n.json' with { type: 'json' };
 
 const uiServiceI18nNamespace = 'ui-service-inquirer';
 export const i18n: i18nNext = i18next.createInstance();

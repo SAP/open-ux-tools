@@ -1,6 +1,6 @@
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translationsEn from '../translations/i18n.en.json';
+import translationsEn from '../translations/i18n.en.json' with { type: 'json' };
 
 const sapSystemsExtNs = 'sap-systems-ext';
 

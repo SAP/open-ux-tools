@@ -1,6 +1,6 @@
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from '../translations/adp-flp-config-sub-generator.i18n.json';
+import translations from '../translations/adp-flp-config-sub-generator.i18n.json' with { type: 'json' };
 import { addi18nResourceBundle as addInquirerCommonResourceBundle } from '@sap-ux/inquirer-common';
 import { addi18nResourceBundle as addFlpConfigInquirerResourceBundler } from '@sap-ux/flp-config-inquirer';
 

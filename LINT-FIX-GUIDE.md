@@ -374,5 +374,7 @@ const packageJson = JSON.parse(
 );
 ```
 
-**Packages fixed with this pattern:** preview-middleware, adp-tooling
+**Packages fixed with this pattern:** preview-middleware, adp-tooling, store
+
+**Troubleshooting:** If CI reports "Cannot find module '.../dist/types'" but the local build is correct (with `.js` extensions in dist files), the issue is likely a stale build cache on CI. Ensure the package was rebuilt after ESM migration changes by running `pnpm --filter @sap-ux/<package> build` and committing any updated dist files.
 

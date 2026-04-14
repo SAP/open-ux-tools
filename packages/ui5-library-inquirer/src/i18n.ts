@@ -1,6 +1,6 @@
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/ui5-library-inquirer.i18n.json';
+import translations from './translations/ui5-library-inquirer.i18n.json' with { type: 'json' };
 import { addi18nResourceBundle as addInquirerCommoni18nResourceBundle } from '@sap-ux/inquirer-common';
 
 const ui5LibI18nNamespace = 'ui5-library-inquirer';

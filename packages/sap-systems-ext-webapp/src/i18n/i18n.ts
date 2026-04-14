@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import * as i18nEn from './i18n.json';
+import * as i18nEn from './i18n.json' with { type: 'json' };
 
 export function initI18n(): void {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import { addi18nResourceBundle as addProjectInputI18nResourceBundle } from '@sap-ux/project-input-validator';
 
-import translations from './translations/flp-config-inquirer.i18n.json';
+import translations from './translations/flp-config-inquirer.i18n.json' with { type: 'json' };
 
 export const FLP_CONFIG_NAMESPACE = 'flp-config-inquirer';
 export const i18n: i18nNext = i18next.createInstance();

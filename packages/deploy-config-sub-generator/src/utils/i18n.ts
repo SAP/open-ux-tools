@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import translations from '../translations/deploy-config-sub-generator.i18n.json';
+import translations from '../translations/deploy-config-sub-generator.i18n.json' with { type: 'json' };
 import { addi18nResourceBundle as addInquirerCommonTexts } from '@sap-ux/inquirer-common';
 import type { i18n as i18nNext, TOptions } from 'i18next';
 
