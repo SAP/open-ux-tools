@@ -70,7 +70,10 @@ test('create', async () => {
     const metadata = await service.metadata();
     expect(metadata).toBeDefined();
     expect(metadata).toBe(expectedMetadata);
-    expect(mockGetProxyForUrl).toHaveBeenNthCalledWith(1, `${server}${servicePath}${metadataPath}?sap-client=${client}`);
+    expect(mockGetProxyForUrl).toHaveBeenNthCalledWith(
+        1,
+        `${server}${servicePath}${metadataPath}?sap-client=${client}`
+    );
     mockGetProxyForUrl.mockReset();
     expect(provider.defaults.proxy).toBeUndefined();
     expect(provider.defaults.httpAgent).toBeUndefined();
