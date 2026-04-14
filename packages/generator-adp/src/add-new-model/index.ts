@@ -8,7 +8,9 @@ import {
     createNewModelData,
     isCFEnvironment,
     isLoggedInCf,
-    loadCfConfig
+    loadCfConfig,
+    extractCfBuildTask,
+    readUi5Config
 } from '@sap-ux/adp-tooling';
 import { setYeomanEnvConflicterForce } from '@sap-ux/fiori-generator-shared';
 
@@ -62,6 +64,7 @@ class AddNewModelGenerator extends SubGeneratorBase {
                 if (!loggedIn) {
                     throw new Error(t('error.cfNotLoggedIn'));
                 }
+                await this._checkCfTargetMismatch();
             }
 
             this._registerPrompts(
@@ -75,6 +78,28 @@ class AddNewModelGenerator extends SubGeneratorBase {
             this.appWizard.showError(e.message, MessageType.notification);
             this.validationError = e as Error;
             this.logger.error(e);
+        }
+    }
+
+    /**
+     * Checks whether the project's CF target (org/space stored in ui5.yaml) matches the
+     * currently logged-in CF target.
+     */
+    private async _checkCfTargetMismatch(): Promise<void> {
+        let buildTask;
+        try {
+            const ui5Config = await readUi5Config(this.projectPath, 'ui5.yaml');
+            buildTask = extractCfBuildTask(ui5Config);
+        } catch (e) {
+            this.logger.error((e as Error).message);
+            throw new Error('CF target mismatch check failed. Check the logs for details.');
+        }
+
+        const orgMismatch = this.cfConfig?.org.GUID !== buildTask.org;
+        const spaceMismatch = this.cfConfig?.space.GUID !== buildTask.space;
+
+        if (orgMismatch || spaceMismatch) {
+            throw new Error(t('error.cfTargetMismatch'));
         }
     }
 
