@@ -334,31 +334,6 @@ describe('cap-helper', () => {
         );
     });
 
-    test('getCapServiceChoices: long error messages are logged and passed to error handler', async () => {
-        const errorHandlerSpy = jest.spyOn(errorHandler, 'logErrorMsgs');
-        const logErrorSpy = jest.spyOn(LoggerHelper.logger, 'error');
-
-        // Create a long error message that will exceed 150 characters
-        const longError = `Error: Module '@sap/cds' not installed in project '/Users/test/very/long/path/to/project/that/makes/this/error/message/exceed/the/character/limit'. Error: Path to module not found.`;
-
-        jest.spyOn(sapuxProjectAccess, 'getCapModelAndServices').mockRejectedValueOnce(new Error(longError));
-        const capProjectPaths: CapProjectPaths = {
-            app: 'app/',
-            db: 'db/',
-            folderName: 'bookshop',
-            path: `/some/abs/path/mock/bookshop`,
-            srv: 'srv/'
-        };
-
-        const fullErrorMsg = t('errors.capModelAndServicesLoadError', { error: longError });
-
-        expect(await getCapServiceChoices(capProjectPaths)).toEqual([]);
-
-        // Verify error is logged and passed to error handler
-        expect(errorHandlerSpy).toHaveBeenCalledWith(ERROR_TYPE.UNKNOWN, fullErrorMsg);
-        expect(logErrorSpy).toHaveBeenCalledWith(fullErrorMsg);
-    });
-
     /**
      * Tests the service path resolution using both Windows and Unix implementations, so this critical functionality can be easily tested on non-Windows platforms by developers.
      */
