@@ -374,7 +374,7 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations standard 3`
         \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^20.0.0\\"
+        \\"@sap/approuter\\": \\"^21.0.0\\"
     }
 }"
 `;

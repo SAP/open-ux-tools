@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 1.1.14
+
+### Patch Changes
+
+- ee68603: Axios upgrade from bas-sdk
+
+## 1.1.13
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+
 ## 1.1.12
 
 ### Patch Changes
