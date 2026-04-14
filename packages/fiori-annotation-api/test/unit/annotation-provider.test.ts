@@ -3,6 +3,7 @@ import { CdsAnnotationProvider, getXmlServiceArtifacts } from '../../src';
 import { fileURLToPath } from 'node:url';
 import { adaptedUrl, normalizeAnnotationNode, normalizeUriInKey } from './raw-metadata-serializer';
 import { npmInstall, PROJECTS, V4_CDS_LATEST } from './projects';
+import * as cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
 
 describe('annotation provider', () => {
     describe('xml', () => {
@@ -84,20 +85,41 @@ describe('annotation provider', () => {
         });
 
         test('with cdsCache', async () => {
-            const artifactsFromCdsCache = CdsAnnotationProvider.getCdsServiceArtifacts(
+            const createCdsCompilerFacadeForRootSyncSpy = jest.spyOn(
+                cdsCompilerFacade,
+                'createCdsCompilerFacadeForRootSync'
+            );
+            const artifacts = CdsAnnotationProvider.getCdsServiceArtifacts(
                 V4_CDS_LATEST.root,
                 'odata/v4/incident/',
                 fileCache
             );
-            expect(artifactsFromCdsCache).toBeDefined();
-            if (!artifactsFromCdsCache) {
+            expect(createCdsCompilerFacadeForRootSyncSpy).not.toHaveBeenCalled();
+            expect(artifacts).toBeDefined();
+            if (!artifacts) {
                 return;
             }
-            expect(artifactsFromCdsCache.path).toStrictEqual('odata/v4/incident/');
-            expect(normalizeUriInKey(artifactsFromCdsCache.aliasInfo, V4_CDS_LATEST.root)).toMatchSnapshot();
-            expect(
-                artifactsFromCdsCache.fileSequence.map((uri) => adaptedUrl(uri, V4_CDS_LATEST.root))
-            ).toMatchSnapshot();
+            expect(artifacts.path).toStrictEqual('odata/v4/incident/');
+            expect(normalizeUriInKey(artifacts.aliasInfo, V4_CDS_LATEST.root)).toMatchSnapshot();
+            expect(artifacts.fileSequence.map((uri) => adaptedUrl(uri, V4_CDS_LATEST.root))).toMatchSnapshot();
+        });
+
+        test('no service', async () => {
+            const artifacts = CdsAnnotationProvider.getCdsServiceArtifacts(
+                V4_CDS_LATEST.root,
+                'invalid/service/path/',
+                fileCache
+            );
+            expect(artifacts).toBeUndefined();
+        });
+
+        test('resetCache', async () => {
+            const createCdsCompilerFacadeForRootSyncSpy = jest.spyOn(
+                cdsCompilerFacade,
+                'createCdsCompilerFacadeForRootSync'
+            );
+            CdsAnnotationProvider.resetCache(V4_CDS_LATEST.root, fileCache);
+            expect(createCdsCompilerFacadeForRootSyncSpy).toHaveBeenCalled();
         });
     });
 });
