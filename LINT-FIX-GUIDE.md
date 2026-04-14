@@ -427,3 +427,45 @@ export default {
 
 **Packages fixed with this pattern:** eslint-plugin-fiori-tools
 
+## Pattern 16: Windows path separators in test snapshots/JSON output
+
+**Error:**
+```
+expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+- Expected
++ Received
+
+  "filePath": "../db/schema.cds",
+- "filePath": "..\\db\\schema.cds",
+```
+
+**Cause:** On Windows, path functions like `path.relative()` return paths with backslashes (`\`), while Unix systems use forward slashes (`/`). When these paths are serialized to JSON or used in test assertions, the tests fail on Windows due to path separator mismatch.
+
+**Fix:** Normalize all paths to use forward slashes when writing to files or comparing in tests:
+
+```typescript
+// Before (platform-specific separators)
+const relativePath = relative(baseDir, filePath);
+await writeFile(outputPath, JSON.stringify({ filePath: relativePath }));
+
+// After (normalized to forward slashes)
+const relativePath = relative(baseDir, filePath).replace(/\\/g, '/');
+await writeFile(outputPath, JSON.stringify({ filePath: relativePath }));
+```
+
+**When to normalize:**
+- When writing paths to JSON files
+- When creating test snapshots
+- When comparing paths in assertions
+- When paths will be stored/transmitted cross-platform
+
+**When NOT to normalize:**
+- Internal path operations (join, resolve, etc. handle separators correctly)
+- When passing paths to Node.js APIs (they accept both separators)
+- When the path will only be used on the current platform
+
+**Best practice:** Always use forward slashes in stored data (JSON, config files, etc.) as they work on all platforms. Use `path.join()` and `path.resolve()` for runtime path operations, which handle platform differences automatically.
+
+**Packages fixed with this pattern:** project-integrity
+
