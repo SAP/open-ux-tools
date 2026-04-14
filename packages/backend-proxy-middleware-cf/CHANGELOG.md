@@ -1,5 +1,13 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.1.3
+
+### Patch Changes
+
+- 7a8613b: feat: Enable SSH tunnel in CF backend middleware for OnPremise destinations
+- Updated dependencies [7a8613b]
+    - @sap-ux/adp-tooling@0.18.113
+
 ## 0.1.2
 
 ### Patch Changes

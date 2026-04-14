@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.20
+
+### Patch Changes
+
+- 9700a95: feat(fpm-writer): Support custom fields for form building block
+
 ## 0.43.19
 
 ### Patch Changes

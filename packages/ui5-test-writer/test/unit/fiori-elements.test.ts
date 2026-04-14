@@ -360,21 +360,13 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
-
-            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "BookingDetails" })');
+            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
-            expect(bookingObjPageJourneyContent).toContain(
-                'iGoToSection({ section: "BookingDetails", subSection: "BookingData" })'
-            );
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "BookingData" })');
-            expect(bookingObjPageJourneyContent).toContain(
-                'iGoToSection({ section: "BookingDetails", subSection: "AdministrativeData" })'
-            );
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
-
-            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "FlightData" })');
+            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
-            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "PriceData" })');
+            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
         });
     });
