@@ -1,5 +1,41 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.98
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/nodejs-utils@0.2.21
+
+## 0.3.97
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/nodejs-utils@0.2.20
+    - @sap-ux/project-access@1.35.20
+
+## 0.3.96
+
+### Patch Changes
+
+- 5f3b63b: fix(cf-deploy-config-writer): update standalone router @sap/approuter to ^21.0.0
+
+## 0.3.95
+
+### Patch Changes
+
+- 6231731: refactor: scope BTP destinations cache to call site instead of module level
+
+    `getBTPDestinations` and `getDestinationProperties` now accept an optional
+    `cache` parameter (`{ list?: Destinations }`). Each generator run passes its own
+    cache object for deduplication within a single invocation; independent calls use
+    independent caches by default. This removes the module-level mutable variable
+    that caused cross-test contamination and prevented stale-cache detection.
+
 ## 0.3.94
 
 ### Patch Changes

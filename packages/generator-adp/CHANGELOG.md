@@ -1,5 +1,49 @@
 # @sap-ux/generator-adp
 
+## 0.9.55
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/adp-tooling@0.18.116
+    - @sap-ux/axios-extension@1.25.31
+    - @sap-ux/fiori-generator-shared@0.13.98
+    - @sap-ux/inquirer-common@0.11.36
+    - @sap-ux/system-access@0.7.7
+    - @sap-ux/telemetry@0.6.98
+    - @sap-ux/odata-service-writer@0.31.7
+
+## 0.9.54
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/adp-tooling@0.18.115
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/inquirer-common@0.11.35
+    - @sap-ux/telemetry@0.6.97
+    - @sap-ux/fiori-generator-shared@0.13.97
+    - @sap-ux/odata-service-writer@0.31.7
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-access@1.35.20
+    - @sap-ux/project-input-validator@0.6.76
+
+## 0.9.53
+
+### Patch Changes
+
+- Updated dependencies [497317c]
+    - @sap-ux/adp-tooling@0.18.114
+
+## 0.9.52
+
+### Patch Changes
+
+- fa016e6: Error message when user is not logged in Cloud Foundry when starting FLP Config generator
+  Change current label for environment prompt from "Cloud Foundry" to "SAP BTP, Cloud Foundry environment".
+
 ## 0.9.51
 
 ### Patch Changes
