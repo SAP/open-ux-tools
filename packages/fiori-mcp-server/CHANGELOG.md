@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.49
+
+### Patch Changes
+
+- 7746b58: feat: add MCP registry manifest for registry.modelcontextprotocol.io
+
 ## 0.6.48
 
 ### Patch Changes
