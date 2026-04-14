@@ -139,7 +139,7 @@ describe('FE V2 quick actions', () => {
             });
         });
         afterEach(() => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+             
             const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
             if (typeof closeDialogFunction === 'function') {
                 // make sure that dialog factory is in clean state after each test

@@ -18,9 +18,9 @@ const __dirname = dirname(__filename);
 const require = createRequire(import.meta.url);
 
 // Use CommonJS require for modules with resolution issues
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 const tsParser = require('@typescript-eslint/parser') as any;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 const globals = require('globals') as any;
 
 // Read package.json to get version
