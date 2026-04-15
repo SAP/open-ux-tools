@@ -71,6 +71,9 @@ export const V2_ANNOTATIONS_PATH = join(
 );
 export const V2_ANNOTATIONS = readFileSync(V2_ANNOTATIONS_PATH, 'utf-8');
 
+export const V2_METADATA_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'localService', 'metadata.xml');
+export const V2_METADATA = readFileSync(V2_METADATA_PATH, 'utf-8');
+
 export function setup(name: string) {
     const lookup: Record<string, FileChange[]> = {};
 

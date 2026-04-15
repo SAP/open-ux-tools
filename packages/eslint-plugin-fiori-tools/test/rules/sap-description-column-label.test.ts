@@ -1,7 +1,16 @@
 import { RuleTester } from 'eslint';
 import descriptionColumnLabelRule from '../../src/rules/sap-description-column-label';
 import { meta, languages } from '../../src/index';
-import { getAnnotationsAsXmlCode, setup, V4_ANNOTATIONS, V4_ANNOTATIONS_PATH } from '../test-helper';
+import {
+    getAnnotationsAsXmlCode,
+    setup,
+    V4_ANNOTATIONS,
+    V4_ANNOTATIONS_PATH,
+    V2_ANNOTATIONS,
+    V2_ANNOTATIONS_PATH,
+    V2_METADATA,
+    V2_METADATA_PATH
+} from '../test-helper';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -131,6 +140,42 @@ ruleTester.run(TEST_NAME, descriptionColumnLabelRule, {
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_PROPERTY_DUPLICATE_LABEL),
                 errors: [{ messageId: 'duplicateLabel' }]
+            },
+            []
+        )
+    ]
+});
+
+// ─── V2 rule tests (inline sap:text / sap:label injection) ───────────────────
+
+// The V2 metadata fixture, when linted directly, produces 3 errors from injected sap: attributes:
+//   1. SEPMRA_C_ALP_ProductType/ProductName  sap:label="Name"         → trivialLabel
+//   2. SEPMRA_C_ALP_ProductType/Currency_T   sap:label="Description"  → trivialLabel
+//   3. Z_SEPMRA_SO_SALESORDERANALYSISType/QuantityUnitT  sap:label="Quantity Unit"
+//      == QuantityUnit sap:label="Quantity Unit"          → duplicateLabel
+//
+// Linting annotation.xml for the same project produces no errors because the synthetic
+// annotation elements are injected only into the metadata.xml annotation file AST, and the
+// createAnnotations selector does not match them during annotation.xml traversal.
+
+ruleTester.run(`${TEST_NAME} (V2)`, descriptionColumnLabelRule, {
+    valid: [
+        createValidTest(
+            {
+                name: 'V2 annotation.xml - no errors (synthetic sap:text/sap:label elements live in metadata.xml AST)',
+                filename: V2_ANNOTATIONS_PATH,
+                code: V2_ANNOTATIONS
+            },
+            []
+        )
+    ],
+    invalid: [
+        createInvalidTest(
+            {
+                name: 'V2 metadata.xml - trivial and duplicate labels from injected sap:text/sap:label are flagged',
+                filename: V2_METADATA_PATH,
+                code: V2_METADATA,
+                errors: [{ messageId: 'trivialLabel' }, { messageId: 'trivialLabel' }, { messageId: 'duplicateLabel' }]
             },
             []
         )
