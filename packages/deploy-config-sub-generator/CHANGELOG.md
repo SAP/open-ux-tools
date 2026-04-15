@@ -1,5 +1,17 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.143
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+    - @sap-ux/abap-deploy-config-sub-generator@0.3.21
+    - @sap-ux/fiori-generator-shared@0.13.99
+    - @sap-ux/inquirer-common@0.11.37
+    - @sap-ux/odata-service-inquirer@2.20.12
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.170
+    - @sap-ux/deploy-config-generator-shared@0.1.118
+
 ## 0.5.142
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.15
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+    - @sap-ux/inquirer-common@0.11.37
+
 ## 0.18.14
 
 ### Patch Changes

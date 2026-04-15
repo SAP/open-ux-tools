@@ -1,5 +1,12 @@
 # @sap-ux/adp-tooling
 
+## 0.18.118
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+    - @sap-ux/inquirer-common@0.11.37
+
 ## 0.18.117
 
 ### Patch Changes
