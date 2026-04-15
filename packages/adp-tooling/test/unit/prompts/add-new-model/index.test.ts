@@ -403,18 +403,15 @@ describe('getPrompts', () => {
         expect(validation?.('"key": "value"')).toBe(true);
     });
 
-    it('should display the dataSourceName, dataSourceURI, and annotationSettings prompts when addAnnotationMode is true', async () => {
+    it('should display the dataSourceURI and annotationSettings prompts when addAnnotationMode is true', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const answers = { addAnnotationMode: true } as NewModelAnswers;
 
-        const dataSourceNamePromptWhen = prompts.find((p) => p.name === 'dataSourceName')?.when as Function;
         const dataSourceURIPromptWhen = prompts.find((p) => p.name === 'dataSourceURI')?.when as Function;
         const annotationSettingsPromptWhen = prompts.find((p) => p.name === 'annotationSettings')?.when as Function;
 
-        expect(typeof dataSourceNamePromptWhen).toBe('function');
         expect(typeof dataSourceURIPromptWhen).toBe('function');
         expect(typeof annotationSettingsPromptWhen).toBe('function');
-        expect(dataSourceNamePromptWhen(answers)).toBe(true);
         expect(dataSourceURIPromptWhen(answers)).toBe(true);
         expect(annotationSettingsPromptWhen(answers)).toBe(true);
     });

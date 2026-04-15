@@ -74,6 +74,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     generateChange: jest.fn(),
     ChangeType: {},
     getPromptsForNewModel: jest.fn(),
+    createNewModelData: jest.fn(),
     getPromptsForAddComponentUsages: jest.fn(),
     getPromptsForChangeDataSource: jest.fn(),
     getPromptsForChangeInbound: jest.fn(),
