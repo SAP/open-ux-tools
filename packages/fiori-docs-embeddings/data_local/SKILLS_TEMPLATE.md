@@ -1,7 +1,10 @@
-# [Skill Title]
+---
+name: [kebab-case-skill-identifier]
+description: '[One clear sentence describing what this skill accomplishes and when to use it. Use for: specific use case 1, specific use case 2, specific use case 3.]'
+argument-hint: '[expected parameters, inputs, or field names needed for this skill]'
+---
 
-## Skill ID
-`[kebab-case-skill-identifier]`
+# [Skill Title]
 
 ## Goal
 [One clear sentence describing what this skill accomplishes]
