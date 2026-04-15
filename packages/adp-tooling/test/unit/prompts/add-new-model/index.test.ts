@@ -55,23 +55,24 @@ describe('getPrompts', () => {
         const vendorPrompts = await getPrompts(mockPath, 'VENDOR');
 
         expect(vendorPrompts.length).toBeGreaterThan(0);
-        expect(vendorPrompts[0].default).toBe('');
-        expect(vendorPrompts.some((prompt) => prompt.name === 'version')).toBeTruthy();
+        const modelNamePrompt = vendorPrompts.find((p) => p.name === 'modelAndDatasourceName');
+        expect(modelNamePrompt?.default).toBe('');
     });
 
     it('should adjust defaults based on customer layer', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
-        expect(prompts[0].default).toBe('customer.');
+        const modelNamePrompt = prompts.find((p) => p.name === 'modelAndDatasourceName');
+        expect(modelNamePrompt?.default).toBe('customer.');
     });
 
     it('should return true when validating service name prompt', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers)).toBe(true);
+        expect(validation?.('customer.testName', {} as NewModelAnswers)).toBe(true);
         expect(mockHasContentDuplication).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
     });
 
@@ -80,22 +81,22 @@ describe('getPrompts', () => {
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('testName', { dataSourceName: 'otherName' } as NewModelAnswers)).toBe(
-            "OData Service Name must start with 'customer.'."
+        expect(validation?.('testName', {} as NewModelAnswers)).toBe(
+            "Model and Data Source Name must start with 'customer.'."
         );
     });
 
     it('should return error message when validating service name prompt and name is only "customer."', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.', { dataSourceName: 'otherName' } as NewModelAnswers)).toBe(
-            "OData Service Name must contain at least one character in addition to 'customer.'."
+        expect(validation?.('customer.', {} as NewModelAnswers)).toBe(
+            "Model and Data Source Name must contain at least one character in addition to 'customer.'."
         );
     });
 
@@ -103,10 +104,10 @@ describe('getPrompts', () => {
         mockValidateSpecialChars.mockReturnValueOnce('general.invalidValueForSpecialChars');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName@', { dataSourceName: 'otherName' } as NewModelAnswers)).toBe(
+        expect(validation?.('customer.testName@', {} as NewModelAnswers)).toBe(
             'general.invalidValueForSpecialChars'
         );
     });
@@ -116,7 +117,7 @@ describe('getPrompts', () => {
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
         expect(
@@ -131,7 +132,7 @@ describe('getPrompts', () => {
     it('should return error message when validating service name prompt has name duplication', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
-        const validation = prompts.find((p) => p.name === 'name')?.validate;
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
         expect(
@@ -219,62 +220,6 @@ describe('getPrompts', () => {
         expect(dafaultFn({ uri: '/sap/opu/odata4/' })).toBe('4.0');
     });
 
-    it('should return true when validating model name prompt', async () => {
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'modelName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName')).toBe(true);
-        expect(mockHasContentDuplication).toHaveBeenCalledWith('customer.testName', 'model', []);
-    });
-
-    it('should return error message when validating model name prompt without "customer." prefix', async () => {
-        mockHasCustomerPrefix.mockReturnValueOnce(false);
-
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'modelName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('testName')).toBe("OData Service SAPUI5 Model Name must start with 'customer.'.");
-    });
-
-    it('should return error message when validating model name contains only "customer."', async () => {
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'modelName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.')).toBe(
-            "OData Service SAPUI5 Model Name must contain at least one character in addition to 'customer.'."
-        );
-    });
-
-    it('should return error message when validating model name prompt and has special characters', async () => {
-        mockValidateSpecialChars.mockReturnValueOnce('general.invalidValueForSpecialChars');
-
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'modelName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName@')).toBe('general.invalidValueForSpecialChars');
-    });
-
-    it('should return error message when validating model name prompt has content duplication', async () => {
-        mockHasContentDuplication.mockReturnValueOnce(true);
-
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'modelName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName')).toBe(
-            'An SAPUI5 model with the same name was already added to the project. Rename and try again.'
-        );
-    });
-
     it('should return true when validating model settings prompt', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -304,75 +249,6 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('{"key": "value"}')).toBe('general.invalidJSON');
-    });
-
-    it('should return error message when validating data source name prompt without "customer." prefix', async () => {
-        mockHasCustomerPrefix.mockReturnValueOnce(false);
-
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('testName', { name: 'testName' } as NewModelAnswers)).toBe(
-            "OData Annotation Data Source Name must start with 'customer.'."
-        );
-    });
-
-    it('should return error message when validating data source name prompt with only "customer." prefix', async () => {
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.', { name: 'customer.testName' } as NewModelAnswers)).toBe(
-            "OData Annotation Data Source Name must contain at least one character in addition to 'customer.'."
-        );
-    });
-
-    it('should return true when validating data source name prompt', async () => {
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(mockHasContentDuplication).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
-        expect(validation?.('customer.testName', { name: 'otherName' } as NewModelAnswers)).toBe(true);
-    });
-
-    it('should return error message when validating data source name prompt and has special characters', async () => {
-        mockValidateSpecialChars.mockReturnValueOnce('general.invalidValueForSpecialChars');
-
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName@', { name: 'otherName' } as NewModelAnswers)).toBe(
-            'general.invalidValueForSpecialChars'
-        );
-    });
-
-    it('should return error message when validating data source name prompt has content duplication', async () => {
-        mockHasContentDuplication.mockReturnValueOnce(true);
-
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName', { name: 'otherName' } as NewModelAnswers)).toBe(
-            'An OData annotation or service with the same name was already added to the project. Rename and try again.'
-        );
-    });
-
-    it('should return error message when validating data source name prompt has name duplication', async () => {
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'dataSourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName', { name: 'customer.testName' } as NewModelAnswers)).toBe(
-            'An OData Service Name must be different from an OData Annotation Data Source Name. Rename and try again.'
-        );
     });
 
     it('should return true when validating data source uri prompt', async () => {
