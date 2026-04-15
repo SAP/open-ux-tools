@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.56
+
+### Patch Changes
+
+- 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
+- Updated dependencies [8fb08a2]
+    - @sap-ux/adp-tooling@0.18.117
+
 ## 0.9.55
 
 ### Patch Changes

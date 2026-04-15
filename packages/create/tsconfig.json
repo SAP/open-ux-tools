@@ -25,6 +25,9 @@
       "path": "../axios-extension"
     },
     {
+      "path": "../btp-utils"
+    },
+    {
       "path": "../cap-config-writer"
     },
     {

@@ -1,5 +1,16 @@
 # @sap-ux/create
 
+## 0.15.76
+
+### Patch Changes
+
+- 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
+- Updated dependencies [8fb08a2]
+    - @sap-ux/adp-tooling@0.18.117
+    - @sap-ux/flp-config-inquirer@0.4.176
+    - @sap-ux/preview-middleware@0.25.25
+    - @sap-ux/app-config-writer@0.6.136
+
 ## 0.15.75
 
 ### Patch Changes

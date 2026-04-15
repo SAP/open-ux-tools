@@ -14,7 +14,7 @@ jest.unstable_mockModule('axios', () => ({
     __esModule: true
 }));
 
-const { getToken, getBtpDestinationConfig } = await import('../../../src/btp/api');
+const { getToken, getBtpDestinationConfig, listBtpDestinations } = await import('../../../src/btp/api');
 const { initI18n, t } = await import('../../../src/i18n');
 
 describe('btp/api', () => {
@@ -130,6 +130,99 @@ describe('btp/api', () => {
             expect(mockAxiosGet).toHaveBeenCalledWith(
                 `${mockUri}/destination-configuration/v1/destinations/${encodeURIComponent(specialName)}`,
                 expect.any(Object)
+            );
+        });
+    });
+
+    describe('listBtpDestinations', () => {
+        const mockCredentials = {
+            uri: 'https://destination.cfapps.example.com',
+            uaa: { clientid: 'client-id', clientsecret: 'client-secret', url: 'https://auth.example.com' }
+        };
+
+        const mockBtpConfigs = [
+            {
+                Name: 'DEST_ONE',
+                Type: 'HTTP',
+                URL: 'https://one.example.com',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'First dest'
+            },
+            {
+                Name: 'DEST_TWO',
+                Type: 'HTTP',
+                URL: 'https://two.example.com',
+                Authentication: 'BasicAuthentication',
+                ProxyType: 'OnPremise'
+            }
+        ];
+
+        beforeEach(() => {
+            mockAxiosPost.mockResolvedValueOnce({ data: { access_token: 'mock-token' } });
+        });
+
+        it('should return a Destinations map built from the BTP API response', async () => {
+            mockAxiosGet.mockResolvedValueOnce({ data: mockBtpConfigs });
+
+            const result = await listBtpDestinations(mockCredentials);
+
+            expect(result).toEqual({
+                DEST_ONE: {
+                    Name: 'DEST_ONE',
+                    Host: 'https://one.example.com',
+                    Type: 'HTTP',
+                    Authentication: 'NoAuthentication',
+                    ProxyType: 'Internet',
+                    Description: 'First dest'
+                },
+                DEST_TWO: {
+                    Name: 'DEST_TWO',
+                    Host: 'https://two.example.com',
+                    Type: 'HTTP',
+                    Authentication: 'BasicAuthentication',
+                    ProxyType: 'OnPremise',
+                    Description: ''
+                }
+            });
+        });
+
+        it('should handle flat credentials (no nested uaa object)', async () => {
+            const flatCredentials = {
+                uri: 'https://destination.cfapps.example.com',
+                clientid: 'client-id',
+                clientsecret: 'client-secret',
+                url: 'https://auth.example.com'
+            };
+            mockAxiosGet.mockResolvedValueOnce({ data: mockBtpConfigs });
+
+            const result = await listBtpDestinations(flatCredentials);
+
+            expect(result).toEqual({
+                DEST_ONE: {
+                    Name: 'DEST_ONE',
+                    Host: 'https://one.example.com',
+                    Type: 'HTTP',
+                    Authentication: 'NoAuthentication',
+                    ProxyType: 'Internet',
+                    Description: 'First dest'
+                },
+                DEST_TWO: {
+                    Name: 'DEST_TWO',
+                    Host: 'https://two.example.com',
+                    Type: 'HTTP',
+                    Authentication: 'BasicAuthentication',
+                    ProxyType: 'OnPremise',
+                    Description: ''
+                }
+            });
+        });
+
+        it('should throw when the BTP destination API call fails', async () => {
+            mockAxiosGet.mockRejectedValueOnce(new Error('Network error'));
+
+            await expect(listBtpDestinations(mockCredentials)).rejects.toThrow(
+                t('error.failedToListBtpDestinations', { error: 'Network error' })
             );
         });
     });
