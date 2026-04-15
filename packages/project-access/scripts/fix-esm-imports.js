@@ -22,7 +22,7 @@ function walkDir(dir) {
         const fullPath = join(dir, entry.name);
         if (entry.isDirectory()) {
             files = files.concat(walkDir(fullPath));
-        } else if (entry.name.endsWith('.js')) {
+        } else if (entry.name.endsWith('.js') || entry.name.endsWith('.d.ts')) {
             files.push(fullPath);
         }
     }
@@ -34,6 +34,7 @@ const jsFiles = walkDir(distDir);
 for (const file of jsFiles) {
     let content = readFileSync(file, 'utf8');
     const originalContent = content;
+    const isDeclarationFile = file.endsWith('.d.ts');
 
     content = content.replace(
         /((?:import|export)\s+(?:[^;]*?\s+from\s+|)['"])(\.\.?(?:\/[^'"]*)?)(['"])/g,
