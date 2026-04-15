@@ -296,12 +296,10 @@ async function appendAppRouter(cfConfig: CFConfig, fs: Editor): Promise<void> {
 
     // Resolve destination name before any mutations — DefaultMTADestination is a sentinel for "use SRV_API"
     const shouldAddDestination =
-        (cfConfig.addMtaDestination && cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination;
-    const resolvedDestinationName = shouldAddDestination
-        ? cfConfig.destinationName === DefaultMTADestination
-            ? SRV_API
-            : cfConfig.destinationName
-        : cfConfig.destinationName;
+        (!!cfConfig.addMtaDestination && !!cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination;
+    const destinationNameForMta =
+        cfConfig.destinationName === DefaultMTADestination ? SRV_API : cfConfig.destinationName;
+    const resolvedDestinationName = shouldAddDestination ? destinationNameForMta : cfConfig.destinationName;
 
     if (shouldAddDestination) {
         await mtaInstance.addDestinationToAppRouter(resolvedDestinationName);
