@@ -23,14 +23,19 @@ const mockAdjustMtaYaml = jest.fn().mockResolvedValue('');
 const realProjectAccess = await import('@sap-ux/project-access');
 const realHelper = await import('../../../src/base/helper');
 const realCf = await import('../../../src/cf');
+const realCfAppDiscovery = await import('../../../src/cf/app/discovery');
 
 jest.unstable_mockModule('../../../src/cf', () => ({
     ...realCf,
     adjustMtaYaml: mockAdjustMtaYaml,
-    getAppHostIds: mockGetAppHostIds,
     getOrCreateServiceInstanceKeys: mockGetOrCreateServiceInstanceKeys,
     getCfUi5AppInfo: mockGetCfUi5AppInfo,
     getProjectNameForXsSecurity: mockGetProjectNameForXsSecurity
+}));
+
+jest.unstable_mockModule('../../../src/cf/app/discovery', () => ({
+    ...realCfAppDiscovery,
+    getAppHostIds: mockGetAppHostIds
 }));
 
 jest.unstable_mockModule('../../../src/base/helper', () => ({
