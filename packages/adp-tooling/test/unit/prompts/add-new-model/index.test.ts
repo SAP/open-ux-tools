@@ -107,9 +107,7 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName@', {} as NewModelAnswers)).toBe(
-            'general.invalidValueForSpecialChars'
-        );
+        expect(validation?.('customer.testName@', {} as NewModelAnswers)).toBe('general.invalidValueForSpecialChars');
     });
 
     it('should return error message when validating service name prompt has content duplication', async () => {
