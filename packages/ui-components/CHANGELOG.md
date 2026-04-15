@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.10
+
+### Patch Changes
+
+- 4357b0b: generate opa5 tests from app info
+
 ## 2.1.9
 
 ### Patch Changes

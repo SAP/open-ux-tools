@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 1.1.14
+
+### Patch Changes
+
+- ee68603: Axios upgrade from bas-sdk
+
 ## 1.1.13
 
 ### Patch Changes

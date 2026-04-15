@@ -20,12 +20,42 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     })
 }));
 
+const existsSyncMock = jest.fn();
+jest.unstable_mockModule('node:fs', () => {
+    const actual = jest.requireActual('node:fs') as object;
+    return {
+        ...actual,
+        existsSync: (...args: unknown[]) => existsSyncMock(...args)
+    };
+});
+
+const hasVirtualOPA5Mock = jest.fn();
+const addPathsToQUnitJsMock = jest.fn();
+jest.unstable_mockModule('../../src/utils/opaQUnitUtils.js', () => ({
+    ...(jest.requireActual('../../src/utils/opaQUnitUtils.js') as object),
+    hasVirtualOPA5: (...args: unknown[]) => hasVirtualOPA5Mock(...args),
+    addPathsToQUnitJs: (...args: unknown[]) => addPathsToQUnitJsMock(...args)
+}));
+
 const { generateOPAFiles, generatePageObjectFile } = await import('../../src/fiori-elements-opa-writer.js');
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
     const debug = !!process.env['UX_DEBUG'];
     jest.setTimeout(600000);
+
+    beforeAll(() => {
+        // Pass existsSync and addPathsToQUnitJs through to real implementations by default
+        const realExistsSync: typeof existsSyncMock = jest.requireActual<{
+            existsSync: typeof existsSyncMock;
+        }>('node:fs').existsSync;
+        existsSyncMock.mockImplementation(realExistsSync);
+
+        const { addPathsToQUnitJs: realAddPaths } = jest.requireActual<{
+            addPathsToQUnitJs: typeof addPathsToQUnitJsMock;
+        }>('../../src/utils/opaQUnitUtils');
+        addPathsToQUnitJsMock.mockImplementation(realAddPaths);
+    });
 
     function prepareTestFiles(testConfigurationName: string): string {
         // Copy input templates into output directory
@@ -345,6 +375,37 @@ describe('ui5-test-writer', () => {
                     'Unable to extract table columns from project model using specification. No table column tests will be generated.'
                 )
             );
+        });
+
+        describe('standalone mode with virtual OPA5', () => {
+            let realExistsSync: (path: string) => boolean;
+
+            beforeAll(() => {
+                realExistsSync = jest.requireActual<{ existsSync: (path: string) => boolean }>('node:fs').existsSync;
+            });
+
+            beforeEach(() => {
+                hasVirtualOPA5Mock.mockResolvedValue(true);
+            });
+
+            afterEach(() => {
+                hasVirtualOPA5Mock.mockReset();
+                // Restore pass-through so subsequent tests are unaffected
+                existsSyncMock.mockImplementation(realExistsSync);
+                const { addPathsToQUnitJs: realAddPaths } = jest.requireActual<{
+                    addPathsToQUnitJs: typeof addPathsToQUnitJsMock;
+                }>('../../src/utils/opaQUnitUtils');
+                addPathsToQUnitJsMock.mockImplementation(realAddPaths);
+            });
+
+            it('generates journey files but skips opaTests.qunit.js when OPA5 is configured in yaml and JourneyRunner exists', async () => {
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                // Simulate JourneyRunner.js existing on disk
+                existsSyncMock.mockReturnValue(true);
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
         });
 
         it('generates tests for v4 application with sub object page', async () => {
