@@ -15,7 +15,7 @@ import {
     TABLE_PERSONALIZATION,
     TEXT_ARRANGEMENT_HIDDEN,
     STRICT_UOM_FILTERING
-} from '../language/diagnostics';
+} from '../language/diagnostics.js';
 
 // Import all rules
 import sapBookmarkPerformance from './sap-bookmark-performance';
