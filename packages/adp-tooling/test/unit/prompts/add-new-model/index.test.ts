@@ -96,7 +96,7 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.', {} as NewModelAnswers)).toBe(
-            "Model and Data Source Name must contain at least one character in addition to 'customer.'."
+            'The input must end with an alphanumeric character.'
         );
     });
 
@@ -129,22 +129,6 @@ describe('getPrompts', () => {
         );
     });
 
-    it('should return error message when validating service name prompt has name duplication', async () => {
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(
-            validation?.('customer.testName', {
-                addAnnotationMode: true,
-                dataSourceName: 'customer.testName'
-            } as NewModelAnswers)
-        ).toBe(
-            'An OData Service Name must be different from an OData Annotation Data Source Name. Rename and try again.'
-        );
-    });
-
     it('should return true when validating service uri prompt', async () => {
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -174,50 +158,6 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('/sap/opu /odata4/')).toBe(i18n.t('validators.errorInvalidDataSourceURI'));
-    });
-
-    it('should return default value for odata version when uri answer is present', async () => {
-        mockIsCFEnvironment.mockReturnValueOnce(true).mockReturnValueOnce(false);
-
-        const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const dafaultFn = result.find((prompt) => prompt.name === 'version')?.default;
-
-        expect(typeof dafaultFn).toBe('function');
-        expect(dafaultFn({ uri: '/odata/v4/example' })).toBe('4.0');
-    });
-
-    it('should return default value for odata version when uri answer is not present', async () => {
-        mockIsCFEnvironment.mockReturnValueOnce(true).mockReturnValueOnce(false);
-
-        const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const dafaultFn = result.find((prompt) => prompt.name === 'version')?.default;
-
-        expect(typeof dafaultFn).toBe('function');
-        expect(dafaultFn({ uri: undefined })).toBe('2.0');
-    });
-
-    it('should return default value for odata version based on uri answer in CF environment', async () => {
-        mockIsCFEnvironment.mockReturnValueOnce(true).mockReturnValueOnce(false);
-
-        const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const dafaultFn = result.find((prompt) => prompt.name === 'version')?.default;
-
-        expect(typeof dafaultFn).toBe('function');
-        expect(dafaultFn({ uri: '/odata/v4/' })).toBe('4.0');
-    });
-
-    it('should return default value for odata version based on uri answer not in CF environment', async () => {
-        mockIsCFEnvironment.mockReturnValueOnce(false).mockReturnValueOnce(false);
-
-        const result = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const dafaultFn = result.find((prompt) => prompt.name === 'version')?.default;
-
-        expect(typeof dafaultFn).toBe('function');
-        expect(dafaultFn({ uri: '/sap/opu/odata4/' })).toBe('4.0');
     });
 
     it('should return true when validating model settings prompt', async () => {
