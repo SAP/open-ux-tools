@@ -1,5 +1,12 @@
 # @sap-ux/axios-extension
 
+## 1.25.31
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+
 ## 1.25.30
 
 ### Patch Changes
