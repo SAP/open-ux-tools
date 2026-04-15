@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.103
+
+### Patch Changes
+
+- 4357b0b: generate opa5 tests from app info
+
 ## 0.7.102
 
 ### Patch Changes

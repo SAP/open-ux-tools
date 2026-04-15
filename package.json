@@ -82,7 +82,7 @@
             "@storybook/manager-api>store2": "2.14.4",
             "@sap-ux/ui5-config>axios": "^1.15.0",
             "@sap/service-provider-apis>axios": "^1.15.0",
-            "@sap/subaccount-destination-service-provider>@sap/bas-sdk": "^3.13.3",
+            "@sap/subaccount-destination-service-provider>@sap/bas-sdk": "^3.13.6",
             "esbuild@<=0.24.2": ">=0.25.0",
             "fast-xml-parser": ">=5.5.6",
             "@xmldom/xmldom": ">=0.8.12",

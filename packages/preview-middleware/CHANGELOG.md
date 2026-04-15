@@ -1,5 +1,15 @@
 # @sap-ux/preview-middleware
 
+## 0.25.24
+
+### Patch Changes
+
+- ee68603: Axios upgrade from bas-sdk
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/adp-tooling@0.18.116
+    - @sap-ux/system-access@0.7.7
+
 ## 0.25.23
 
 ### Patch Changes
