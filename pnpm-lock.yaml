@@ -1541,6 +1541,9 @@ importers:
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer
