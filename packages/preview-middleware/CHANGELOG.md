@@ -1,5 +1,238 @@
 # @sap-ux/preview-middleware
 
+## 0.25.25
+
+### Patch Changes
+
+- Updated dependencies [8fb08a2]
+    - @sap-ux/adp-tooling@0.18.117
+
+## 0.25.24
+
+### Patch Changes
+
+- ee68603: Axios upgrade from bas-sdk
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/adp-tooling@0.18.116
+    - @sap-ux/system-access@0.7.7
+
+## 0.25.23
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/adp-tooling@0.18.115
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-access@1.35.20
+
+## 0.25.22
+
+### Patch Changes
+
+- Updated dependencies [497317c]
+    - @sap-ux/adp-tooling@0.18.114
+
+## 0.25.21
+
+## 0.25.20
+
+### Patch Changes
+
+- Updated dependencies [7a8613b]
+    - @sap-ux/adp-tooling@0.18.113
+
+## 0.25.19
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/adp-tooling@0.18.112
+    - @sap-ux/system-access@0.7.5
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.19
+
+## 0.25.18
+
+### Patch Changes
+
+- Updated dependencies [1b10e9f]
+    - @sap-ux/adp-tooling@0.18.111
+
+## 0.25.17
+
+### Patch Changes
+
+- 4237e59: fix(preview-middleware): preserve developerMode for CPE and ADP scenarios in sanitizeConfig
+
+## 0.25.16
+
+### Patch Changes
+
+- Updated dependencies [6b74074]
+    - @sap-ux/adp-tooling@0.18.110
+
+## 0.25.15
+
+### Patch Changes
+
+- 0153757: fix: RTA editor endpoint causing duplicate ID error if started from the launchpad sandbox
+
+## 0.25.14
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/adp-tooling@0.18.109
+    - @sap-ux/system-access@0.7.4
+
+## 0.25.13
+
+### Patch Changes
+
+- Updated dependencies [68b5523]
+    - @sap-ux/adp-tooling@0.18.108
+
+## 0.25.12
+
+### Patch Changes
+
+- f305285: fix: sanitize cards generator manifest URL to avoid issues with double slashes when joining paths
+
+## 0.25.11
+
+### Patch Changes
+
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/adp-tooling@0.18.107
+    - @sap-ux/feature-toggle@0.3.8
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+
+## 0.25.10
+
+### Patch Changes
+
+- 8408e10: enhancedHomePage - initialize cdm before bootstrap
+
+## 0.25.9
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.106
+
+## 0.25.8
+
+### Patch Changes
+
+- 3013bf0: fix: i18n configuration handling for CAP projects
+
+## 0.25.7
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/adp-tooling@0.18.105
+    - @sap-ux/system-access@0.7.3
+
+## 0.25.6
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/adp-tooling@0.18.104
+    - @sap-ux/system-access@0.7.2
+
+## 0.25.5
+
+### Patch Changes
+
+- Updated dependencies [96a689b]
+    - @sap-ux/adp-tooling@0.18.103
+
+## 0.25.4
+
+### Patch Changes
+
+- 8e7d529: fix(preview-middleware): ADP Extension Points: blank iframe on reload for UI5 < 1.120
+
+## 0.25.3
+
+### Patch Changes
+
+- Updated dependencies [3dcd3f7]
+    - @sap-ux/adp-tooling@0.18.102
+
+## 0.25.2
+
+### Patch Changes
+
+- a41533f: fix(preview-middleware): cast ParsedQs to Record<string,string> for URLSearchParams (stricter @types/qs 6.15)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/adp-tooling@0.18.101
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/i18n@0.3.10
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/system-access@0.7.2
+
+## 0.25.1
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/adp-tooling@0.18.100
+    - @sap-ux/system-access@0.7.1
+
+## 0.25.0
+
+### Minor Changes
+
+- 997f605: fix: adjust resource-roots for rta editor endpoints
+
+## 0.24.6
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.99
+- @sap-ux/system-access@0.7.1
+
+## 0.24.5
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+
+## 0.24.4
+
+### Patch Changes
+
+- 55eb5dc: fix: disable condensing in workspace connector for older SAPUI5 versions
+
+## 0.24.3
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/adp-tooling@0.18.97
+    - @sap-ux/project-access@1.35.14
+
 ## 0.24.2
 
 ### Patch Changes

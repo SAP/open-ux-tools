@@ -1,5 +1,11 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.30
+
+### Patch Changes
+
+- c53a4ba: chore(odata-vocabularies): upgrade prettier 2.5.1 → 3.8.1; remove @types/prettier (types now bundled in prettier 3.x)
+
 ## 0.4.29
 
 ### Patch Changes

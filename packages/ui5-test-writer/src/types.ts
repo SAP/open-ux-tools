@@ -1,3 +1,5 @@
+import type { Editor } from 'mem-fs-editor';
+
 export const SupportedPageTypes: { [id: string]: string } = {
     'sap.fe.templates.ListReport': 'ListReport',
     'sap.fe.templates.ObjectPage': 'ObjectPage',
@@ -23,6 +25,13 @@ export type FEV4OPAConfig = {
     htmlTarget: string;
     hideFilterBar: boolean;
     filterBarItems?: string[];
+};
+
+export type JourneyParams = {
+    startPages: string[];
+    startLR: string | undefined;
+    navigatedOP: string | undefined;
+    hideFilterBar: boolean;
 };
 
 export type FEV4ManifestTarget = {
@@ -79,12 +88,28 @@ export type ObjectPageNavigationParents = {
     parentOPTableSection?: string;
 };
 
+export type BodySubSectionFeatureData = {
+    id: string;
+    isTable: boolean;
+    custom: boolean;
+    order: number;
+};
+
+export type BodySectionFeatureData = {
+    id: string;
+    isTable: boolean;
+    custom: boolean;
+    order: number;
+    subSections: BodySubSectionFeatureData[];
+};
+
 export type ObjectPageFeatures = {
     name?: string;
     navigationParents?: ObjectPageNavigationParents;
     headerTitle?: string;
     headerDescription?: string;
     headerSections?: HeaderSectionFeatureData[];
+    bodySections?: BodySectionFeatureData[];
 };
 
 export type ListReportFeatures = {
@@ -138,6 +163,20 @@ export type AppFeatures = {
     fpm?: FPMFeatures;
 };
 
+export type WriteContext = {
+    config: FEV4OPAConfig;
+    rootV4TemplateDirPath: string;
+    testOutDirPath: string;
+    editor: Editor;
+    journeyParams: JourneyParams;
+};
+
+export type FormField = {
+    fieldGroupQualifier?: string;
+    field?: string;
+    targetAnnotation?: string;
+};
+
 export type HeaderSectionFeatureData = {
     facetId?: string;
     title?: string;
@@ -146,10 +185,7 @@ export type HeaderSectionFeatureData = {
     microChart?: boolean;
     form?: boolean;
     stashed?: boolean | string;
-    fields?: {
-        fieldGroupQualifier?: string;
-        field?: string;
-    }[];
+    fields?: FormField[];
 };
 
 export interface ButtonState {

@@ -1,5 +1,177 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.20.11
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/axios-extension@1.25.31
+    - @sap-ux/fiori-generator-shared@0.13.98
+    - @sap-ux/inquirer-common@0.11.36
+    - @sap-ux/nodejs-utils@0.2.21
+    - @sap-ux/telemetry@0.6.98
+
+## 2.20.10
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/inquirer-common@0.11.35
+    - @sap-ux/telemetry@0.6.97
+    - @sap-ux/fiori-generator-shared@0.13.97
+    - @sap-ux/nodejs-utils@0.2.20
+    - @sap-ux/project-access@1.35.20
+    - @sap-ux/project-input-validator@0.6.76
+
+## 2.20.9
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+- Updated dependencies [f1e4481]
+    - @sap-ux/axios-extension@1.25.29
+    - @sap-ux/inquirer-common@0.11.34
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/fiori-generator-shared@0.13.96
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/store@1.5.13
+    - @sap-ux/telemetry@0.6.96
+    - @sap-ux/project-input-validator@0.6.75
+
+## 2.20.8
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/fiori-generator-shared@0.13.95
+    - @sap-ux/inquirer-common@0.11.33
+    - @sap-ux/project-input-validator@0.6.74
+    - @sap-ux/telemetry@0.6.95
+
+## 2.20.7
+
+### Patch Changes
+
+- c53a4ba: chore(odata-service-inquirer): upgrade @sap-devx/yeoman-ui-types 1.22.0 → 1.23.0 (runtime dep); upgrade devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/fiori-generator-shared@0.13.94
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/store@1.5.12
+    - @sap-ux/telemetry@0.6.94
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.17
+
+## 2.20.6
+
+### Patch Changes
+
+- Updated dependencies [e92850e]
+    - @sap-ux/telemetry@0.6.93
+    - @sap-ux/fiori-generator-shared@0.13.93
+    - @sap-ux/inquirer-common@0.11.31
+
+## 2.20.5
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/axios-extension@1.25.27
+    - @sap-ux/fiori-generator-shared@0.13.92
+    - @sap-ux/inquirer-common@0.11.30
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/telemetry@0.6.92
+
+## 2.20.4
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/fiori-generator-shared@0.13.91
+    - @sap-ux/inquirer-common@0.11.29
+    - @sap-ux/project-input-validator@0.6.72
+    - @sap-ux/telemetry@0.6.91
+
+## 2.20.3
+
+### Patch Changes
+
+- a41533f: chore(odata-service-inquirer): upgrade runtime dependencies (axios 1.13.6, fast-xml-parser 5.5.9, i18next 25.8.20)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/fiori-generator-shared@0.13.90
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/nodejs-utils@0.2.18
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/project-input-validator@0.6.71
+    - @sap-ux/store@1.5.11
+    - @sap-ux/telemetry@0.6.90
+
+## 2.20.2
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/fiori-generator-shared@0.13.89
+    - @sap-ux/inquirer-common@0.11.27
+    - @sap-ux/project-input-validator@0.6.70
+    - @sap-ux/telemetry@0.6.89
+
+## 2.20.1
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/fiori-generator-shared@0.13.88
+
+## 2.20.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.26
+- @sap-ux/project-access@1.35.14
+- @sap-ux/telemetry@0.6.88
+- @sap-ux/axios-extension@1.25.24
+- @sap-ux/fiori-generator-shared@0.13.88
+- @sap-ux/project-input-validator@0.6.69
+
 ## 2.19.14
 
 ### Patch Changes

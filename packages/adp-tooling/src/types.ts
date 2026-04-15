@@ -11,6 +11,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { SupportedProject } from './source';
 
 export type DataSources = Record<string, ManifestNamespace.DataSource>;
@@ -175,6 +176,7 @@ export interface ConfigAnswers {
     password: string;
     storeCredentials?: boolean;
     application: SourceApplication;
+    projectType?: AdaptationProjectType;
     fioriId?: string;
     ach?: string;
     shouldCreateExtProject?: boolean;
@@ -528,6 +530,7 @@ export interface IWriter<T> {
  */
 export const enum ChangeType {
     ADD_NEW_MODEL = 'appdescr_ui5_addNewModel',
+    ADD_NEW_DATA_SOURCE = 'appdescr_app_addNewDataSource',
     ADD_ANNOTATIONS_TO_ODATA = 'appdescr_app_addAnnotationsToOData',
     CHANGE_DATA_SOURCE = 'appdescr_app_changeDataSource',
     ADD_COMPONENT_USAGES = 'appdescr_ui5_addComponentUsages',
@@ -535,11 +538,20 @@ export const enum ChangeType {
     CHANGE_INBOUND = 'appdescr_app_changeInbound'
 }
 
+export const ServiceType = {
+    ODATA_V2: 'OData v2',
+    ODATA_V4: 'OData v4',
+    HTTP: 'HTTP'
+} as const;
+
+export type ServiceType = (typeof ServiceType)[keyof typeof ServiceType];
+
 /**
  * A mapping of ChangeType values to their respective change names.
  */
 export const ChangeTypeMap: Record<ChangeType, string> = {
     [ChangeType.ADD_NEW_MODEL]: 'addNewModel',
+    [ChangeType.ADD_NEW_DATA_SOURCE]: 'addNewDataSource',
     [ChangeType.ADD_ANNOTATIONS_TO_ODATA]: 'addAnnotationsToOData',
     [ChangeType.CHANGE_DATA_SOURCE]: 'changeDataSource',
     [ChangeType.ADD_COMPONENT_USAGES]: 'addComponentUsages',
@@ -647,15 +659,25 @@ export type AddComponentUsageAnswers = AddComponentUsageAnswersBase &
 
 export interface NewModelDataBase {
     variant: DescriptorVariant;
+    /** The type of service being added. Determines dataSource type and whether a model entry is created. */
+    serviceType: ServiceType;
+    /** Whether the project is deployed on Cloud Foundry. Affects URI construction and model settings. */
+    isCloudFoundry?: boolean;
+    /** Name of the BTP destination. Required when isCloudFoundry is true to write the xs-app.json route. */
+    destinationName?: string;
+    /** True when the selected CF destination is OnPremise (ProxyType: 'OnPremise'). Triggers connectivity service in mta.yaml. */
+    isOnPremiseDestination?: boolean;
+    /** Optional logger passed to the writer for use during the write operation. */
+    logger?: ToolsLogger;
     service: {
         /** Name of the OData service. */
         name: string;
         /** URI of the OData service. */
         uri: string;
-        /** Name of the OData service model. */
-        modelName: string;
-        /** Version of OData used. */
-        version: string;
+        /** Name of the OData service model. Optional for absent for HTTP service type. */
+        modelName?: string;
+        /** Version of OData used. Optional for HTTP service type. */
+        version?: string;
         /** Settings for the OData service model. */
         modelSettings?: string;
     };
@@ -675,23 +697,20 @@ export interface NewModelDataWithAnnotations extends NewModelDataBase {
 export type NewModelData = NewModelDataBase | NewModelDataWithAnnotations;
 
 export interface NewModelAnswersBase {
-    /** Name of the OData service. */
-    name: string;
+    /** Selected BTP destination. Only relevant for CF projects. */
+    destination?: Destination;
+    /** Type of service to add. */
+    serviceType: ServiceType;
+    /** Name used for both the OData service datasource and the SAPUI5 model. */
+    modelAndDatasourceName: string;
     /** URI of the OData service. */
     uri: string;
-    /** Name of the OData service model. */
-    modelName: string;
-    /** Version of OData used. */
-    version: string;
     /** Settings for the OData service model. */
     modelSettings: string;
-    /** Name of the OData annotation data source. */
 }
 
 export interface NewModelAnswersWithAnnotations extends NewModelAnswersBase {
     addAnnotationMode: true;
-    /** Name of the OData annotation data source. */
-    dataSourceName: string;
     /** Optional URI of the OData annotation data source. */
     dataSourceURI?: string;
     /** Optional settings for the OData annotation. */
@@ -894,6 +913,8 @@ export interface Uaa {
     url: string;
 }
 
+export type CfDestinationServiceCredentials = { uri: string; uaa: Uaa } | ({ uri: string } & Uaa);
+
 export interface CfAppParams {
     appName: string;
     appVersion: string;
@@ -903,6 +924,8 @@ export interface CfAppParams {
 export interface AppParamsExtended extends CfAppParams {
     spaceGuid: string;
 }
+
+export type ServiceKeySortField = 'updated_at' | 'created_at';
 
 export interface ServiceKeys {
     credentials: {
@@ -927,6 +950,39 @@ export interface HTML5Content {
 export interface ServiceInstance {
     name: string;
     guid: string;
+}
+
+/**
+ * Service key credentials with tags returned by the CF API.
+ */
+export interface ServiceKeyCredentialsWithTags {
+    label: string;
+    name: string;
+    tags: string[];
+    plan: string;
+    credentials: ServiceKeys['credentials'] | undefined;
+}
+
+/**
+ * Destination configuration returned by the BTP Destination Configuration API.
+ * Contains the known properties; additional custom properties may also be present.
+ */
+export interface BtpDestinationConfig {
+    Name: string;
+    Type: string;
+    URL: string;
+    Authentication: string;
+    ProxyType: string;
+    Description?: string;
+    User?: string;
+    Password?: string;
+    'sap-client'?: string;
+    [key: string]: string | undefined;
+}
+
+export interface AppRouterEnvOptions {
+    'VCAP_SERVICES'?: Record<string, unknown>;
+    destinations?: { name: string; url: string }[];
 }
 
 export interface GetServiceInstanceParams {
@@ -1382,4 +1438,29 @@ export interface CfServiceOffering {
         [key: string]: unknown;
     };
     [key: string]: unknown;
+}
+
+/**
+ * Information about the MTA project and its modules for CF deployment.
+ */
+export interface CfDeploymentInfo {
+    mtaProjectName: string;
+    mtaVersion: string;
+    space: string;
+    org: string;
+    apiUrl: string;
+    mtaRoot: string;
+    modules: Array<{
+        name: string;
+        type: string;
+        path?: string;
+    }>;
+}
+
+/**
+ * Options for the CF deployment command.
+ */
+export interface DeployCfOptions {
+    confirmDeployment?: (summary: string) => Promise<boolean>;
+    onOutput?: (data: string) => void;
 }

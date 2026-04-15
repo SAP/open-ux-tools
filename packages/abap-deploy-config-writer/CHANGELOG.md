@@ -1,5 +1,98 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.3.10
+
+### Patch Changes
+
+- @sap-ux/system-access@0.7.7
+
+## 0.3.9
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-access@1.35.20
+
+## 0.3.8
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- Updated dependencies [f1e4481]
+    - @sap-ux/ui5-config@0.30.2
+    - @sap-ux/system-access@0.7.5
+    - @sap-ux/project-access@1.35.19
+
+## 0.3.7
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/system-access@0.7.4
+
+## 0.3.6
+
+### Patch Changes
+
+- @sap-ux/system-access@0.7.4
+- @sap-ux/project-access@1.35.17
+- @sap-ux/ui5-config@0.30.1
+
+## 0.3.5
+
+### Patch Changes
+
+- @sap-ux/system-access@0.7.3
+
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/system-access@0.7.2
+
+## 0.3.3
+
+### Patch Changes
+
+- a41533f: chore(abap-deploy-config-writer): upgrade fast-glob 3.3.1 → 3.3.3
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/system-access@0.7.2
+
+## 0.3.2
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/system-access@0.7.1
+
+## 0.3.1
+
+### Patch Changes
+
+- @sap-ux/system-access@0.7.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/project-access@1.35.14
+
 ## 0.2.93
 
 ### Patch Changes

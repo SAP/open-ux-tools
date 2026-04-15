@@ -215,8 +215,10 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
         delete config.rta; //NOSONAR
     }
     if (config.editors?.rta && config.adp === undefined) {
+        const scenario = config.editors.rta.options?.scenario;
+        const developerModeSupported = scenario === 'FE_FROM_SCRATCH' || scenario === 'ADAPTATION_PROJECT';
         config.editors.rta.endpoints = config.editors.rta.endpoints.map((editor) => {
-            if (editor.developerMode) {
+            if (editor.developerMode && !developerModeSupported) {
                 logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
                 logger.warn(`developerMode for ${editor.path} disabled`);
                 editor.developerMode = false;
@@ -352,6 +354,36 @@ async function getI18nTextFromProperty(
         logger.warn('Failed to load i18n properties bundle');
     }
     return propertyI18nKey;
+}
+
+/**
+ * Remaps all relative resource-root URLs in a TemplateConfig so they are correct
+ * relative to a different HTML page path (e.g. an editor path vs the FLP path).
+ *
+ * Only the entries that are derived from `basePath` are updated:
+ * - the preview-client namespace (`open.ux.preview.client`)
+ * - the primary application namespace (keyed by `appId`)
+ *
+ * Additional applications configured via `flpConfig.apps` use absolute `target`
+ * values and therefore do not need remapping.
+ *
+ * @param config - cloned TemplateConfig already built for the FLP path
+ * @param newPagePath - the path of the HTML page that will serve the resources (e.g. `editor.path`)
+ * @param appId - the `sap.app.id` used as resource-root key for the primary application
+ */
+export function remapResourcesForPath(config: TemplateConfig, newPagePath: string, appId: string): void {
+    const newBasePath = posix.relative(posix.dirname(newPagePath), '/') || '.';
+
+    // Update the well-known client namespace to be relative to the new page path
+    config.ui5.resources[PREVIEW_URL.client.ns] = PREVIEW_URL.client.getUrl(newBasePath);
+
+    // Update the primary app's resource root (was set to basePath for the main app)
+    if (appId && appId in config.ui5.resources) {
+        config.ui5.resources[appId] = newBasePath;
+    }
+
+    // Keep basePath in sync for any other template usage (e.g. basePath/resources/...)
+    config.basePath = newBasePath;
 }
 
 /**

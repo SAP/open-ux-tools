@@ -1,5 +1,238 @@
 # @sap-ux/adp-tooling
 
+## 0.18.117
+
+### Patch Changes
+
+- 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
+
+## 0.18.116
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/axios-extension@1.25.31
+    - @sap-ux/inquirer-common@0.11.36
+    - @sap-ux/nodejs-utils@0.2.21
+    - @sap-ux/system-access@0.7.7
+    - @sap-ux/odata-service-writer@0.31.7
+
+## 0.18.115
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/inquirer-common@0.11.35
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/ui5-info@0.13.19
+    - @sap-ux/odata-service-writer@0.31.7
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/nodejs-utils@0.2.20
+    - @sap-ux/project-access@1.35.20
+    - @sap-ux/project-input-validator@0.6.76
+
+## 0.18.114
+
+### Patch Changes
+
+- 497317c: feat: Adjust deployment wizard behavior for CF scenario
+
+## 0.18.113
+
+### Patch Changes
+
+- 7a8613b: feat: Enable SSH tunnel in CF backend middleware for OnPremise destinations
+
+## 0.18.112
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+- Updated dependencies [f1e4481]
+    - @sap-ux/axios-extension@1.25.29
+    - @sap-ux/inquirer-common@0.11.34
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/ui5-config@0.30.2
+    - @sap-ux/odata-service-writer@0.31.6
+    - @sap-ux/system-access@0.7.5
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/store@1.5.13
+    - @sap-ux/ui5-info@0.13.18
+    - @sap-ux/project-input-validator@0.6.75
+
+## 0.18.111
+
+### Patch Changes
+
+- 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
+
+## 0.18.110
+
+### Patch Changes
+
+- 6b74074: feat: Change `backend-proxy-middleware-cf` to use `approuter` instead of token exchange
+
+## 0.18.109
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/inquirer-common@0.11.33
+    - @sap-ux/odata-service-writer@0.31.5
+    - @sap-ux/project-input-validator@0.6.74
+    - @sap-ux/system-access@0.7.4
+
+## 0.18.108
+
+### Patch Changes
+
+- 68b5523: feat: Adjust FLP configuration wizard for CF scenario
+
+## 0.18.107
+
+### Patch Changes
+
+- c53a4ba: chore(adp-tooling): upgrade @sap-devx/yeoman-ui-types 1.22.0 → 1.23.0 (runtime dep); upgrade devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/odata-service-writer@0.31.4
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/store@1.5.12
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-info@0.13.17
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.18.106
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.31
+
+## 0.18.105
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/axios-extension@1.25.27
+    - @sap-ux/inquirer-common@0.11.30
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/system-access@0.7.3
+    - @sap-ux/odata-service-writer@0.31.3
+
+## 0.18.104
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/inquirer-common@0.11.29
+    - @sap-ux/odata-service-writer@0.31.3
+    - @sap-ux/project-input-validator@0.6.72
+    - @sap-ux/system-access@0.7.2
+
+## 0.18.103
+
+### Patch Changes
+
+- 96a689b: fix(ADP): Change prompt's order, first appear applications then projectType if applicable.
+
+## 0.18.102
+
+### Patch Changes
+
+- 3dcd3f7: Annotation changes are not generated from Replace OData
+
+## 0.18.101
+
+### Patch Changes
+
+- a41533f: chore(adp-tooling): upgrade runtime dependencies (adm-zip 0.5.16, axios 1.13.6, i18next 25.8.20, sanitize-filename 1.6.4)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/i18n@0.3.10
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/nodejs-utils@0.2.18
+    - @sap-ux/odata-service-writer@0.31.2
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/project-input-validator@0.6.71
+    - @sap-ux/store@1.5.11
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/ui5-info@0.13.16
+    - @sap-ux/system-access@0.7.2
+
+## 0.18.100
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/inquirer-common@0.11.27
+    - @sap-ux/odata-service-writer@0.31.1
+    - @sap-ux/project-input-validator@0.6.70
+    - @sap-ux/system-access@0.7.1
+
+## 0.18.99
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/system-access@0.7.1
+
+## 0.18.98
+
+### Patch Changes
+
+- 2cd2544: feat: Change the way business service credentials are retrieved in the ADP generator
+
+## 0.18.97
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/odata-service-writer@0.31.0
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/inquirer-common@0.11.26
+    - @sap-ux/project-access@1.35.14
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/project-input-validator@0.6.69
+
 ## 0.18.96
 
 ### Patch Changes

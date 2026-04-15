@@ -1,5 +1,42 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.49
+
+### Patch Changes
+
+- 7746b58: feat: add MCP registry manifest for registry.modelcontextprotocol.io
+
+## 0.6.48
+
+### Patch Changes
+
+- f1e4481: chore(fiori-mcp-server): upgrade @modelcontextprotocol/sdk 1.28.0 → 1.29.0 (hono/express-rate-limit/path-to-regexp security fixes)
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+    - @sap-ux/store@1.5.13
+
+## 0.6.47
+
+### Patch Changes
+
+- c53a4ba: chore(fiori-mcp-server): remove stale @types/diff devDependency (diff v8 ships own types); upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/store@1.5.12
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.46
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+    - @sap-ux/store@1.5.11
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.45
+
+### Patch Changes
+
+- 55d833f: fix i18next init showSupportNotice: false.
+
 ## 0.6.44
 
 ### Patch Changes

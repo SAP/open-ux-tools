@@ -85,7 +85,7 @@ export async function generateCustomColumn(
     validateVersion(customColumn.minUI5Version);
     fs ??= create(createStorage());
     await validateBasePath(basePath, fs);
-    const fnGenerateId = await createIdGenerator(basePath, fs);
+    const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 

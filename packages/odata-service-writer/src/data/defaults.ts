@@ -151,20 +151,27 @@ function setDefaultAnnotationsName(service: OdataService): void {
 }
 
 /**
- * Sets client and destination defaults for preview settings.
+ * Returns the preview settings for the app configuration based on the service configuration.
  *
  * @param {OdataService} service - the OData service instance
+ * @returns {FioriToolsProxyConfigBackend} preview settings
  */
-function setClientAndDestinationDefaults(service: OdataService): void {
+function getPreviewSettings(service: OdataService): Partial<FioriToolsProxyConfigBackend> {
+    const previewSettings: FioriToolsProxyConfigBackend = {
+        path: service.previewSettings?.path ?? `/${service.path?.split('/').find((s: string) => s !== '') ?? ''}`,
+        url: service.previewSettings?.url ?? service.url ?? 'http://localhost'
+    };
+
     if (service.client && !service.previewSettings?.client) {
-        service.previewSettings!.client = service.client;
+        previewSettings.client = service.client;
     }
     if (service.destination && !service.previewSettings?.destination) {
-        service.previewSettings!.destination = service.destination.name;
+        previewSettings.destination = service.destination.name;
         if (service.destination.instance) {
-            service.previewSettings!.destinationInstance = service.destination.instance;
+            previewSettings.destinationInstance = service.destination.instance;
         }
     }
+    return previewSettings;
 }
 
 /**
@@ -218,13 +225,13 @@ async function setDefaultPreviewSettings(
     fs: Editor,
     update = false
 ): Promise<void> {
-    service.previewSettings = service.previewSettings ?? {};
-    const explicitPreviewPath = service.previewSettings.path;
-    service.previewSettings.path =
-        service.previewSettings.path ?? `/${service.path?.split('/').find((s: string) => s !== '') ?? ''}`;
-    service.previewSettings.url = service.previewSettings.url ?? service.url ?? 'http://localhost';
+    const previewSettings = getPreviewSettings(service);
+    const explicitPreviewPath = service.previewSettings?.path;
 
-    setClientAndDestinationDefaults(service);
+    service.previewSettings = {
+        ...previewSettings,
+        ...service.previewSettings
+    };
 
     const ui5Yamlpath = join(basePath, FileName.Ui5Yaml);
     if (!fs.exists(ui5Yamlpath)) {

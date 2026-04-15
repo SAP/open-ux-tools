@@ -38,10 +38,10 @@ server:
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - authenticationType: reentranceTicket # SAML support for vscode
-            path: /sap
+          - path: /sap
             url: https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com
             destination: mock_saml_assertion_dest
+            authenticationType: reentranceTicket # SAML support for vscode
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:

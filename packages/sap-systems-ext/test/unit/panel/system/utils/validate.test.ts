@@ -42,6 +42,31 @@ describe('Test the panel action utils', () => {
                 })
             ).toBe('Please provide a valid URL to test the connection.');
         });
+
+        it('should return error message for generic_host without servicePath', () => {
+            expect(
+                validateSystemInfo({
+                    url: 'https://example.com',
+                    name: 'Generic Host System',
+                    systemType: 'OnPrem',
+                    connectionType: 'generic_host'
+                })
+            ).toBe('Please provide a service path to test the connection for a generic host.');
+        });
+
+        it('should return true for generic_host with servicePath', () => {
+            expect(
+                validateSystemInfo(
+                    {
+                        url: 'https://example.com',
+                        name: 'Generic Host System',
+                        systemType: 'OnPrem',
+                        connectionType: 'generic_host'
+                    },
+                    '/sap/opu/odata/sap/MY_SERVICE'
+                )
+            ).toBe(true);
+        });
     });
 
     describe('validateSystemName', () => {
@@ -81,6 +106,15 @@ describe('Test the panel action utils', () => {
             await expect(
                 validateSystemName('Existing System 2 ', 'Existing System 1', SystemPanelViewType.View)
             ).rejects.toBe('This connection name already exists. Choose a different name.');
+        });
+
+        it('should return true when viewing a system and they have the same name (case insensitive)', async () => {
+            systemServiceGetAllMock.mockResolvedValue([
+                { name: 'existing system 1', url: 'https://existing.com', systemType: 'OnPrem' }
+            ]);
+            expect(await validateSystemName('Existing System 1', 'existing system 1', SystemPanelViewType.View)).toBe(
+                true
+            );
         });
     });
 

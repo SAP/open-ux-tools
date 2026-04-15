@@ -1,5 +1,82 @@
 # @sap-ux/odata-service-writer
 
+## 0.31.7
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/mockserver-config-writer@0.9.71
+    - @sap-ux/project-access@1.35.20
+
+## 0.31.6
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/ui5-config@0.30.2
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/mockserver-config-writer@0.9.70
+
+## 0.31.5
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/mockserver-config-writer@0.9.69
+
+## 0.31.4
+
+### Patch Changes
+
+- c53a4ba: chore(odata-service-writer): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/mockserver-config-writer@0.9.68
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.31.3
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/mockserver-config-writer@0.9.67
+
+## 0.31.2
+
+### Patch Changes
+
+- a41533f: chore(odata-service-writer): simplify array element null check with optional chaining
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/mockserver-config-writer@0.9.66
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.31.1
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/mockserver-config-writer@0.9.65
+
+## 0.31.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/mockserver-config-writer@0.9.64
+    - @sap-ux/project-access@1.35.14
+
 ## 0.30.1
 
 ### Patch Changes

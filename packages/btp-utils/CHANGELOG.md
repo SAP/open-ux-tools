@@ -1,5 +1,31 @@
 # @sap-ux/btp-utils
 
+## 1.1.14
+
+### Patch Changes
+
+- ee68603: Axios upgrade from bas-sdk
+
+## 1.1.13
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+
+## 1.1.12
+
+### Patch Changes
+
+- 2e17a6b: fix: allow deployment to OnPremise destinations with WebIDEUsage odata_gen
+
+    isAbapSystem now returns true for destinations with ProxyType=OnPremise, fixing deployments that failed with a cryptic 'bind' error when WebIDEUsage was set to odata_gen. deploy-tooling also now surfaces an actionable error message if a non-ABAP provider is resolved.
+
+## 1.1.11
+
+### Patch Changes
+
+- a41533f: chore(btp-utils): fix indentation in boolean expressions (Prettier upgrade autofix)
+
 ## 1.1.10
 
 ### Patch Changes

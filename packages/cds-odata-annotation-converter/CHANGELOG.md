@@ -1,5 +1,20 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.16
+
+### Patch Changes
+
+- c53a4ba: chore(cds-odata-annotation-converter): upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/odata-vocabularies@0.4.30
+    - @sap-ux/cds-annotation-parser@0.2.35
+
+## 0.7.15
+
+### Patch Changes
+
+- a41533f: chore(cds-odata-annotation-converter): upgrade i18next 25.8.18 → 25.8.20
+
 ## 0.7.14
 
 ### Patch Changes

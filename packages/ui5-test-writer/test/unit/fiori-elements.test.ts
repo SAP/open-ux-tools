@@ -17,10 +17,40 @@ jest.mock('@sap-ux/project-access', () => ({
     })
 }));
 
+const existsSyncMock = jest.fn();
+jest.mock('node:fs', () => {
+    const actual = jest.requireActual('node:fs') as object;
+    return {
+        ...actual,
+        existsSync: (...args: unknown[]) => existsSyncMock(...args)
+    };
+});
+
+const hasVirtualOPA5Mock = jest.fn();
+const addPathsToQUnitJsMock = jest.fn();
+jest.mock('../../src/utils/opaQUnitUtils', () => ({
+    ...(jest.requireActual('../../src/utils/opaQUnitUtils') as object),
+    hasVirtualOPA5: (...args: unknown[]) => hasVirtualOPA5Mock(...args),
+    addPathsToQUnitJs: (...args: unknown[]) => addPathsToQUnitJsMock(...args)
+}));
+
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
     const debug = !!process.env['UX_DEBUG'];
     jest.setTimeout(600000);
+
+    beforeAll(() => {
+        // Pass existsSync and addPathsToQUnitJs through to real implementations by default
+        const realExistsSync: typeof existsSyncMock = jest.requireActual<{
+            existsSync: typeof existsSyncMock;
+        }>('node:fs').existsSync;
+        existsSyncMock.mockImplementation(realExistsSync);
+
+        const { addPathsToQUnitJs: realAddPaths } = jest.requireActual<{
+            addPathsToQUnitJs: typeof addPathsToQUnitJsMock;
+        }>('../../src/utils/opaQUnitUtils');
+        addPathsToQUnitJsMock.mockImplementation(realAddPaths);
+    });
 
     function prepareTestFiles(testConfigurationName: string): string {
         // Copy input templates into output directory
@@ -342,6 +372,37 @@ describe('ui5-test-writer', () => {
             );
         });
 
+        describe('standalone mode with virtual OPA5', () => {
+            let realExistsSync: (path: string) => boolean;
+
+            beforeAll(() => {
+                realExistsSync = jest.requireActual<{ existsSync: (path: string) => boolean }>('node:fs').existsSync;
+            });
+
+            beforeEach(() => {
+                hasVirtualOPA5Mock.mockResolvedValue(true);
+            });
+
+            afterEach(() => {
+                hasVirtualOPA5Mock.mockReset();
+                // Restore pass-through so subsequent tests are unaffected
+                existsSyncMock.mockImplementation(realExistsSync);
+                const { addPathsToQUnitJs: realAddPaths } = jest.requireActual<{
+                    addPathsToQUnitJs: typeof addPathsToQUnitJsMock;
+                }>('../../src/utils/opaQUnitUtils');
+                addPathsToQUnitJsMock.mockImplementation(realAddPaths);
+            });
+
+            it('generates journey files but skips opaTests.qunit.js when OPA5 is configured in yaml and JourneyRunner exists', async () => {
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                // Simulate JourneyRunner.js existing on disk
+                existsSyncMock.mockReturnValue(true);
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+        });
+
         it('generates tests for v4 application with sub object page', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
             const projectDir = prepareTestFiles('LROPv4');
@@ -356,7 +417,18 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('fieldGroup: "FieldGroup::Names"');
             expect(bookingObjPageJourneyContent).toContain('field: "AirlineName"');
             expect(bookingObjPageJourneyContent).toContain('field: "CustomerName"');
+            expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
+            expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
+            expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
+            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
+            expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "BookingData" })');
+            expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
+            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
+            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
         });
     });
 });

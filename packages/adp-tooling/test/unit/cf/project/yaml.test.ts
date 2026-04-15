@@ -1,9 +1,8 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { UI5Config } from '@sap-ux/ui5-config';
 
 import {
     isMtaProject,
@@ -11,22 +10,23 @@ import {
     getRouterType,
     getAppParamsFromUI5Yaml,
     adjustMtaYaml,
-    addServeStaticMiddleware,
-    addBackendProxyMiddleware
+    addConnectivityServiceToMta
 } from '../../../../src/cf/project/yaml';
 import { AppRouterType } from '../../../../src/types';
 import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types';
-import { createServices } from '../../../../src/cf/services/api';
+import { createServices, createServiceInstance, getOrCreateServiceInstanceKeys } from '../../../../src/cf/services/api';
 import { getProjectNameForXsSecurity, getYamlContent } from '../../../../src/cf/project/yaml-loader';
-import { getBackendUrlsWithPaths } from '../../../../src/cf/app/discovery';
 
 jest.mock('fs', () => ({
-    existsSync: jest.fn(),
-    readFileSync: jest.fn()
+    existsSync: jest.fn()
 }));
 
+const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
+
 jest.mock('../../../../src/cf/services/api', () => ({
-    createServices: jest.fn()
+    createServices: jest.fn(),
+    createServiceInstance: jest.fn(),
+    getOrCreateServiceInstanceKeys: jest.fn()
 }));
 
 jest.mock('../../../../src/cf/project/yaml-loader', () => ({
@@ -34,26 +34,15 @@ jest.mock('../../../../src/cf/project/yaml-loader', () => ({
     getYamlContent: jest.fn()
 }));
 
-jest.mock('../../../../src/cf/app/discovery', () => ({
-    ...jest.requireActual('../../../../src/cf/app/discovery'),
-    getBackendUrlsWithPaths: jest.fn()
-}));
-
-jest.mock('../../../../src/base/helper', () => ({
-    getVariant: jest.fn()
-}));
-
-import { getVariant } from '../../../../src/base/helper';
-
-const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
-const mockReadFileSync = readFileSync as jest.MockedFunction<typeof readFileSync>;
 const mockCreateServices = createServices as jest.MockedFunction<typeof createServices>;
+const mockCreateServiceInstance = createServiceInstance as jest.MockedFunction<typeof createServiceInstance>;
+const mockGetOrCreateServiceInstanceKeys = getOrCreateServiceInstanceKeys as jest.MockedFunction<
+    typeof getOrCreateServiceInstanceKeys
+>;
 const mockGetYamlContent = getYamlContent as jest.MockedFunction<typeof getYamlContent>;
 const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
     typeof getProjectNameForXsSecurity
 >;
-const mockGetBackendUrlsWithPaths = getBackendUrlsWithPaths as jest.MockedFunction<typeof getBackendUrlsWithPaths>;
-const mockGetVariant = getVariant as jest.MockedFunction<typeof getVariant>;
 
 describe('YAML Project Functions', () => {
     const mockLogger = {
@@ -892,250 +881,102 @@ describe('YAML Project Functions', () => {
         });
     });
 
-    describe('addServeStaticMiddleware', () => {
-        const basePath = '/test/project';
-        const mockLogger = {
-            warn: jest.fn(),
-            info: jest.fn()
-        } as unknown as ToolsLogger;
+    describe('addConnectivityServiceToMta', () => {
+        const projectPath = '/test/project';
+        const mtaYamlPath = join(projectPath, 'mta.yaml');
+        const mockMtaYaml: MtaYaml = {
+            '_schema-version': '3.2.0',
+            ID: 'MyProject',
+            version: '1.0.0',
+            modules: [],
+            resources: []
+        };
 
-        let mockUi5Config: UI5Config;
+        let mockMemFs: { write: jest.Mock };
 
         beforeEach(() => {
-            mockUi5Config = {
-                findCustomMiddleware: jest.fn().mockReturnValue(true),
-                removeCustomMiddleware: jest.fn(),
-                addCustomMiddleware: jest.fn()
-            } as unknown as UI5Config;
+            mockMemFs = { write: jest.fn() };
         });
 
-        test('should add fiori-tools-servestatic middleware with reusable libraries and changes path', async () => {
-            const ui5AppInfo = {
-                asyncHints: {
-                    libs: [
-                        {
-                            name: 'my.reusable.lib',
-                            html5AppName: 'myreusablelib',
-                            url: { url: '/resources/my/reusable/lib' }
-                        }
-                    ]
-                }
-            };
-
+        test('should add connectivity resource when mta.yaml exists and resource is not yet present', async () => {
             mockExistsSync.mockReturnValue(true);
-            mockReadFileSync.mockReturnValue(JSON.stringify({ 'test-app': ui5AppInfo }));
-            mockGetVariant.mockResolvedValue({
-                id: 'test.variant.id',
-                layer: 'CUSTOMER_BASE',
-                reference: 'com.sap.test.app',
-                namespace: 'apps/com.sap.test.app/appVariants/test.variant.id/',
-                content: []
-            });
+            mockGetYamlContent.mockReturnValue({ ...mockMtaYaml, resources: [] });
 
-            await addServeStaticMiddleware(basePath, mockUi5Config, mockLogger);
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
 
-            expect(mockUi5Config.removeCustomMiddleware).toHaveBeenCalledWith('fiori-tools-servestatic');
-            expect(mockUi5Config.addCustomMiddleware).toHaveBeenCalledWith([
-                {
-                    name: 'fiori-tools-servestatic',
-                    beforeMiddleware: 'compression',
-                    configuration: {
-                        paths: [
-                            {
-                                path: '/resources/my/reusable/lib',
-                                src: './.adp/reuse/myreusablelib',
-                                fallthrough: true
-                            },
-                            {
-                                path: '/changes/test_variant_id',
-                                src: './webapp/changes',
-                                fallthrough: true
-                            },
-                            {
-                                path: '/test_variant_id/i18n',
-                                src: './webapp/i18n',
-                                fallthrough: true
-                            }
-                        ]
-                    }
-                }
-            ]);
+            expect(mockMemFs.write).toHaveBeenCalledWith(
+                mtaYamlPath,
+                expect.stringContaining('myproject-connectivity')
+            );
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.stringContaining('connectivity'));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.stringContaining('lite'));
+            expect(mockMemFs.write).toHaveBeenCalledWith(
+                mtaYamlPath,
+                expect.stringContaining('service-name: myproject-connectivity')
+            );
+            expect(mockCreateServiceInstance).toHaveBeenCalledWith(
+                'lite',
+                'myproject-connectivity',
+                'connectivity',
+                expect.any(Object)
+            );
+            expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
+                { names: ['myproject-connectivity'] },
+                undefined
+            );
         });
 
-        test('should add fiori-tools-servestatic middleware with changes path from manifest.appdescr_variant id', async () => {
-            const ui5AppInfo = {
-                asyncHints: {
-                    libs: [
-                        {
-                            name: 'my.reusable.lib',
-                            html5AppName: 'myreusablelib',
-                            url: { url: '/resources/my/reusable/lib' }
-                        }
-                    ]
-                }
-            };
-
-            mockExistsSync.mockReturnValue(true);
-            mockReadFileSync.mockReturnValue(JSON.stringify({ 'test-app': ui5AppInfo }));
-            mockGetVariant.mockResolvedValue({
-                id: 'customer.app.variant',
-                layer: 'CUSTOMER_BASE',
-                reference: 'com.sap.test.app',
-                namespace: 'apps/com.sap.test.app/appVariants/customer.app.variant/',
-                content: []
-            });
-
-            await addServeStaticMiddleware(basePath, mockUi5Config, mockLogger);
-
-            expect(mockUi5Config.addCustomMiddleware).toHaveBeenCalledWith([
-                {
-                    name: 'fiori-tools-servestatic',
-                    beforeMiddleware: 'compression',
-                    configuration: {
-                        paths: [
-                            {
-                                path: '/resources/my/reusable/lib',
-                                src: './.adp/reuse/myreusablelib',
-                                fallthrough: true
-                            },
-                            {
-                                path: '/changes/customer_app_variant',
-                                src: './webapp/changes',
-                                fallthrough: true
-                            },
-                            {
-                                path: '/customer_app_variant/i18n',
-                                src: './webapp/i18n',
-                                fallthrough: true
-                            }
-                        ]
-                    }
-                }
-            ]);
-        });
-
-        test('should add changes path even when ui5AppInfo.json does not exist', async () => {
+        test('should not create service when project has no mta.yaml', async () => {
             mockExistsSync.mockReturnValue(false);
-            mockGetVariant.mockResolvedValue({
-                id: 'customer.app.variant',
-                layer: 'CUSTOMER_BASE',
-                reference: 'com.sap.test.app',
-                namespace: 'apps/com.sap.test.app/appVariants/customer.app.variant/',
-                content: []
-            });
 
-            await addServeStaticMiddleware(basePath, mockUi5Config, mockLogger);
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
 
-            expect(mockLogger.warn).toHaveBeenCalledWith('ui5AppInfo.json not found in project root');
-            expect(mockUi5Config.addCustomMiddleware).toHaveBeenCalledWith([
-                {
-                    name: 'fiori-tools-servestatic',
-                    beforeMiddleware: 'compression',
-                    configuration: {
-                        paths: [
-                            {
-                                path: '/changes/customer_app_variant',
-                                src: './webapp/changes',
-                                fallthrough: true
-                            },
-                            {
-                                path: '/customer_app_variant/i18n',
-                                src: './webapp/i18n',
-                                fallthrough: true
-                            }
-                        ]
-                    }
-                }
-            ]);
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
         });
 
-        test('should throw and warn on error when getVariant fails', async () => {
+        test('should not create service when yaml content cannot be read', async () => {
             mockExistsSync.mockReturnValue(true);
-            mockReadFileSync.mockReturnValue(JSON.stringify({ 'test-app': { asyncHints: { libs: [] } } }));
-            mockGetVariant.mockRejectedValue(new Error('Variant read error'));
+            mockGetYamlContent.mockReturnValue(null);
 
-            await expect(addServeStaticMiddleware(basePath, mockUi5Config, mockLogger)).rejects.toThrow(
-                'Variant read error'
-            );
-            expect(mockLogger.warn).toHaveBeenCalledWith(
-                'Could not add fiori-tools-servestatic configuration: Variant read error'
-            );
-        });
-    });
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
 
-    describe('addBackendProxyMiddleware', () => {
-        const basePath = '/test/project';
-        const mockLogger = {
-            warn: jest.fn(),
-            info: jest.fn()
-        } as unknown as ToolsLogger;
-
-        let mockUi5Config: UI5Config;
-        const mockServiceKeys = [
-            {
-                credentials: {
-                    uaa: {} as any,
-                    uri: '/backend-url',
-                    endpoints: {
-                        'odata-v2': '/backend-url/odata/v2'
-                    },
-                    'html5-apps-repo': {}
-                }
-            }
-        ];
-
-        beforeEach(() => {
-            mockUi5Config = {
-                findCustomMiddleware: jest.fn().mockReturnValue(true),
-                removeCustomMiddleware: jest.fn(),
-                addCustomMiddleware: jest.fn()
-            } as unknown as UI5Config;
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
         });
 
-        test('should add backend-proxy-middleware-cf with backend URLs', async () => {
-            const urlsWithPaths = [
-                { url: '/backend-url', paths: ['/backend'] },
-                { url: '/api-url', paths: ['/api'] }
-            ];
-
-            mockGetBackendUrlsWithPaths.mockReturnValue(urlsWithPaths);
-
-            addBackendProxyMiddleware(basePath, mockUi5Config, mockServiceKeys, mockLogger);
-
-            expect(mockUi5Config.removeCustomMiddleware).toHaveBeenCalledWith('backend-proxy-middleware-cf');
-            expect(mockUi5Config.addCustomMiddleware).toHaveBeenCalledWith([
-                {
-                    name: 'backend-proxy-middleware-cf',
-                    afterMiddleware: 'compression',
-                    configuration: {
-                        backends: urlsWithPaths
+        test('should not create service when connectivity resource already exists (idempotent)', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue({
+                ...mockMtaYaml,
+                resources: [
+                    {
+                        name: 'myproject-connectivity',
+                        type: 'org.cloudfoundry.managed-service',
+                        parameters: { service: 'connectivity', 'service-plan': 'lite' }
                     }
-                }
-            ]);
-        });
-
-        test('should skip configuration when no backend URLs found', async () => {
-            mockGetBackendUrlsWithPaths.mockReturnValue([]);
-
-            addBackendProxyMiddleware(basePath, mockUi5Config, mockServiceKeys, mockLogger);
-
-            expect(mockLogger.info).toHaveBeenCalledWith(
-                'No backend URLs with paths found. Skipping backend-proxy-middleware-cf configuration.'
-            );
-            expect(mockUi5Config.addCustomMiddleware).not.toHaveBeenCalled();
-        });
-
-        test('should warn on error', async () => {
-            mockGetBackendUrlsWithPaths.mockImplementation(() => {
-                throw new Error('Discovery error');
+                ]
             });
 
-            addBackendProxyMiddleware(basePath, mockUi5Config, mockServiceKeys, mockLogger);
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
 
-            expect(mockLogger.warn).toHaveBeenCalledWith(
-                'Could not add backend-proxy-middleware-cf configuration: Discovery error'
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should not modify mta.yaml when createServiceInstance fails', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue({ ...mockMtaYaml, resources: [] });
+            mockCreateServiceInstance.mockRejectedValueOnce(new Error('CF error'));
+
+            await expect(addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor)).rejects.toThrow(
+                'CF error'
             );
-            expect(mockUi5Config.addCustomMiddleware).not.toHaveBeenCalled();
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
         });
     });
 });

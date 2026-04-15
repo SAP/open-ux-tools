@@ -1,5 +1,64 @@
 # @sap-ux/axios-extension
 
+## 1.25.31
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+
+## 1.25.30
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+
+## 1.25.29
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- f1e4481: chore(axios-extension): upgrade @xmldom/xmldom 0.8.11 → 0.8.12 (security fix)
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/btp-utils@1.1.12
+
+## 1.25.28
+
+### Patch Changes
+
+- c53a4ba: chore(axios-extension): upgrade shared devDependencies (jest 30, axios 1.13.6, ws 8.20.0)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/feature-toggle@0.3.8
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/btp-utils@1.1.12
+
+## 1.25.27
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+
+## 1.25.26
+
+### Patch Changes
+
+- a41533f: chore(axios-extension): upgrade runtime dependencies (axios 1.13.6, fast-xml-parser 5.5.9, qs 6.15.0, xpath 0.0.34, @xmldom/xmldom 0.8.11)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/logger@0.8.3
+
+## 1.25.25
+
+### Patch Changes
+
+- c0e05ab: Updates catalog services dedup logic to include url
+
 ## 1.25.24
 
 ### Patch Changes

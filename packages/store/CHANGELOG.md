@@ -1,5 +1,28 @@
 # @sap-ux/store
 
+## 1.5.13
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+
+## 1.5.12
+
+### Patch Changes
+
+- c53a4ba: chore(store): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+
+## 1.5.11
+
+### Patch Changes
+
+- a41533f: chore(store): upgrade runtime dependencies (i18next 25.8.20, reflect-metadata 0.2.2)
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+
 ## 1.5.10
 
 ### Patch Changes

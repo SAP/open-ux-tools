@@ -29,6 +29,9 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
             )
         )
         .addOption(new Option('--url <target-url>', 'URL of target ABAP system').conflicts('destination'))
+        .addOption(
+            new Option('--connect-path <path>', 'Service URL path used to retrieve credentials from secure storage')
+        )
         .addOption(new Option('--client <sap-client>', 'Client number of target ABAP system').conflicts('destination'))
         .addOption(new Option('--cloud', 'Target is an ABAP Cloud system').conflicts('destination'))
         .addOption(new Option('--service <service-path>', 'Target alias for deployment service'))
@@ -110,7 +113,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
 }
 
 /**
- * Prepare the run of the task based on on the configured command i.e. read and validate configuration and create logger.
+ * Prepare the run of the task based on the configured command i.e. read and validate configuration and create logger.
  *
  * @param cmd - CLI command configuration to be executed
  * @returns a set of objects required for the command execution
