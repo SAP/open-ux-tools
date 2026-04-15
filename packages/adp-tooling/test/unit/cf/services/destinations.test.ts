@@ -1,27 +1,27 @@
+import { jest } from '@jest/globals';
 import { join, dirname } from 'node:path';
-import { getBtpDestinations } from '../../../../src/cf/services/destinations';
-import { getOrCreateServiceInstanceKeys } from '../../../../src/cf/services/api';
-import { listBtpDestinations } from '../../../../src/btp/api';
-import { getYamlContent } from '../../../../src/cf/project/yaml-loader';
-import { initI18n, t } from '../../../../src/i18n';
 
-jest.mock('@sap-ux/btp-utils');
+// Create mocks before any imports
+const mockGetOrCreateServiceInstanceKeys = jest.fn();
+const mockListBtpDestinations = jest.fn();
+const mockGetYamlContent = jest.fn();
 
-jest.mock('../../../../src/cf/services/api', () => ({
-    getOrCreateServiceInstanceKeys: jest.fn()
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({}));
+
+jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
+    getOrCreateServiceInstanceKeys: mockGetOrCreateServiceInstanceKeys
 }));
 
-jest.mock('../../../../src/btp/api', () => ({
-    listBtpDestinations: jest.fn()
+jest.unstable_mockModule('../../../../src/btp/api', () => ({
+    listBtpDestinations: mockListBtpDestinations
 }));
 
-jest.mock('../../../../src/cf/project/yaml-loader', () => ({
-    getYamlContent: jest.fn()
+jest.unstable_mockModule('../../../../src/cf/project/yaml-loader', () => ({
+    getYamlContent: mockGetYamlContent
 }));
 
-const getOrCreateServiceInstanceKeysMock = getOrCreateServiceInstanceKeys as jest.Mock;
-const listBtpDestinationsMock = listBtpDestinations as jest.Mock;
-const getYamlContentMock = getYamlContent as jest.Mock;
+const { getBtpDestinations } = await import('../../../../src/cf/services/destinations');
+const { initI18n, t } = await import('../../../../src/i18n');
 
 const mockProjectPath = join('path', 'to', 'project');
 
@@ -74,20 +74,20 @@ describe('getBtpDestinations', () => {
     });
 
     it('should fetch destinations from the logged-in CF subaccount using service keys', async () => {
-        getYamlContentMock.mockReturnValue(mockMtaYaml);
-        getOrCreateServiceInstanceKeysMock.mockResolvedValue(mockServiceInfo);
-        listBtpDestinationsMock.mockResolvedValue(mockDestinations);
+        mockGetYamlContent.mockReturnValue(mockMtaYaml);
+        mockGetOrCreateServiceInstanceKeys.mockResolvedValue(mockServiceInfo);
+        mockListBtpDestinations.mockResolvedValue(mockDestinations);
 
         const result = await getBtpDestinations(mockProjectPath);
 
-        expect(getYamlContentMock).toHaveBeenCalledWith(join(dirname(mockProjectPath), 'mta.yaml'));
-        expect(getOrCreateServiceInstanceKeysMock).toHaveBeenCalledWith({ names: ['test-project-destination'] });
-        expect(listBtpDestinationsMock).toHaveBeenCalledWith(mockCredentials);
+        expect(mockGetYamlContent).toHaveBeenCalledWith(join(dirname(mockProjectPath), 'mta.yaml'));
+        expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith({ names: ['test-project-destination'] });
+        expect(mockListBtpDestinations).toHaveBeenCalledWith(mockCredentials);
         expect(result).toBe(mockDestinations);
     });
 
     it('should throw an error when no destination service is found in mta.yaml', async () => {
-        getYamlContentMock.mockReturnValue({
+        mockGetYamlContent.mockReturnValue({
             ...mockMtaYaml,
             resources: [
                 {
@@ -102,22 +102,22 @@ describe('getBtpDestinations', () => {
             t('error.destinationServiceNotFoundInMtaYaml')
         );
 
-        expect(getOrCreateServiceInstanceKeysMock).not.toHaveBeenCalled();
+        expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
     });
 
     it('should throw an error when mta.yaml cannot be read', async () => {
-        getYamlContentMock.mockImplementation(() => {
+        mockGetYamlContent.mockImplementation(() => {
             throw new Error('File not found');
         });
 
         await expect(getBtpDestinations(mockProjectPath)).rejects.toThrow('File not found');
 
-        expect(getOrCreateServiceInstanceKeysMock).not.toHaveBeenCalled();
+        expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
     });
 
     it('should throw an error when no service keys are available', async () => {
-        getYamlContentMock.mockReturnValue(mockMtaYaml);
-        getOrCreateServiceInstanceKeysMock.mockResolvedValue({
+        mockGetYamlContent.mockReturnValue(mockMtaYaml);
+        mockGetOrCreateServiceInstanceKeys.mockResolvedValue({
             serviceKeys: [],
             serviceInstance: { name: 'test-project-destination', guid: 'some-guid' }
         });
@@ -126,17 +126,17 @@ describe('getBtpDestinations', () => {
             t('error.noServiceKeysFoundForDestination', { serviceInstanceName: 'test-project-destination' })
         );
 
-        expect(listBtpDestinationsMock).not.toHaveBeenCalled();
+        expect(mockListBtpDestinations).not.toHaveBeenCalled();
     });
 
     it('should throw an error when getOrCreateServiceInstanceKeys does not return any keys', async () => {
-        getYamlContentMock.mockReturnValue(mockMtaYaml);
-        getOrCreateServiceInstanceKeysMock.mockResolvedValue(null);
+        mockGetYamlContent.mockReturnValue(mockMtaYaml);
+        mockGetOrCreateServiceInstanceKeys.mockResolvedValue(null);
 
         await expect(getBtpDestinations(mockProjectPath)).rejects.toThrow(
             t('error.noServiceKeysFoundForDestination', { serviceInstanceName: 'test-project-destination' })
         );
 
-        expect(listBtpDestinationsMock).not.toHaveBeenCalled();
+        expect(mockListBtpDestinations).not.toHaveBeenCalled();
     });
 });

@@ -33,7 +33,9 @@ jest.unstable_mockModule('node:fs', () => ({
 }));
 
 jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
-    createServices: mockCreateServices
+    createServices: mockCreateServices,
+    createServiceInstance: jest.fn(),
+    getOrCreateServiceInstanceKeys: jest.fn()
 }));
 
 jest.unstable_mockModule('../../../../src/cf/app/discovery', () => ({
