@@ -1,5 +1,5 @@
 import { MetadataService } from '@sap-ux/odata-entity-model';
-import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
+import type { AnnotationFile } from '@sap-ux/odata-annotation-core';
 import type { ServiceArtifacts } from '@sap-ux/fiori-annotation-api/src/types';
 
 import { buildAnnotationIndexKey, buildServiceIndex } from '../../../src/project-context/parser/service';
