@@ -1,10 +1,9 @@
 ---
-'@sap-ux/fe-fpm-cli': patch
-'@sap-ux/control-property-editor': patch
-'@sap-ux/fiori-app-sub-generator': patch
-'@sap-ux/ui5-library-sub-generator': patch
+'@sap-ux/eslint-plugin-fiori-tools': major
+'@sap-ux/app-config-writer': patch
 '@sap-ux/ui5-application-writer': patch
 '@sap-ux/ui5-library-writer': patch
+'@sap-ux-private/preview-middleware-client': patch
 ---
 
-Support ESlint 10
+feat: support ESLint 10
