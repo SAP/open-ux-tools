@@ -3,16 +3,36 @@ import fs from 'node:fs';
 import { join, resolve } from 'node:path';
 import yeomanTest from 'yeoman-test';
 
-import type { NewModelAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
+import type {
+    NewModelAnswers,
+    NewModelData,
+    DescriptorVariant,
+    UI5YamlCustomTaskConfiguration
+} from '@sap-ux/adp-tooling';
 
 const mockGenerateChange = jest.fn();
 const mockGetVariant = jest.fn();
+const mockIsCFEnvironment = jest.fn();
+const mockIsLoggedInCf = jest.fn();
+const mockLoadCfConfig = jest.fn();
+const mockCreateNewModelData = jest.fn();
+const mockReadUi5Config = jest.fn();
+const mockExtractCfBuildTask = jest.fn();
 
+// Get real module for ChangeType and other constants
 const realAdpTooling = await import('@sap-ux/adp-tooling');
+
+// Mock the module
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
     generateChange: mockGenerateChange,
-    getVariant: mockGetVariant
+    getVariant: mockGetVariant,
+    isCFEnvironment: mockIsCFEnvironment,
+    isLoggedInCf: mockIsLoggedInCf,
+    loadCfConfig: mockLoadCfConfig,
+    createNewModelData: mockCreateNewModelData,
+    readUi5Config: mockReadUi5Config,
+    extractCfBuildTask: mockExtractCfBuildTask
 }));
 
 const { default: newModelGen } = await import('../../../src/add-new-model');
@@ -25,20 +45,41 @@ const variant = {
 } as DescriptorVariant;
 
 const answers: NewModelAnswers & { errorMessagePrompt: string } = {
-    name: 'OData_ServiceName',
+    modelAndDatasourceName: 'OData_ServiceName',
     uri: '/sap/opu/odata/some-name',
-    modelName: 'OData_ServiceModelName',
-    version: '4.0',
+    serviceType: 'OData v2' as NewModelAnswers['serviceType'],
     modelSettings: '{}',
     addAnnotationMode: false,
     errorMessagePrompt: 'failed'
 };
 
+const mockNewModelData = { variant, isCloudFoundry: false } as unknown as NewModelData;
+
 const generatorPath = join(globalThis.__dirname, 'src/add-new-model/index.ts');
 const tmpDir = resolve(globalThis.__dirname, 'test-output-add-new-model');
 const originalCwd: string = process.cwd();
 
+const mockCfConfig = {
+    url: 'cf.example.com',
+    token: 'token',
+    org: { Name: 'my-org', GUID: 'org-guid-123' },
+    space: { Name: 'my-space', GUID: 'space-guid-456' }
+};
+
+const mockBuildTask = {
+    org: 'org-guid-123',
+    space: 'space-guid-456'
+} as unknown as UI5YamlCustomTaskConfiguration;
+
 describe('AddNewModelGenerator', () => {
+    beforeEach(() => {
+        mockIsCFEnvironment.mockResolvedValue(false);
+        mockIsLoggedInCf.mockResolvedValue(true);
+        mockLoadCfConfig.mockReturnValue(mockCfConfig as any);
+        mockCreateNewModelData.mockResolvedValue(mockNewModelData);
+        mockReadUi5Config.mockResolvedValue({} as any);
+        mockExtractCfBuildTask.mockReturnValue(mockBuildTask);
+    });
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -61,15 +102,7 @@ describe('AddNewModelGenerator', () => {
         expect(mockGenerateChange).toHaveBeenCalledWith(
             tmpDir,
             realAdpTooling.ChangeType.ADD_NEW_MODEL,
-            expect.objectContaining({
-                service: {
-                    name: answers.name,
-                    uri: answers.uri,
-                    modelName: answers.modelName,
-                    version: answers.version,
-                    modelSettings: answers.modelSettings
-                }
-            }),
+            mockNewModelData,
             expect.anything()
         );
     });
