@@ -779,6 +779,63 @@ describe('parse', () => {
             expect(result).toMatchSnapshot();
         });
 
+        test('V2 property with sap:text and sap:label', () => {
+            const result = parseWithMarkup(
+                `<EntityType Name="ProductType">
+                <Key>
+                    <PropertyRef Name="Product"/>
+                </Key>
+                <Property Name="Product" Type="Edm.String" Nullable="false" MaxLength="10" sap:text="ProductName" sap:label="Product ID" />
+                <Property Name="ProductName" Type="Edm.String" MaxLength="40" sap:label="Name" />
+                <Property Name="Quantity" Type="Edm.Int32" />
+            </EntityType>`
+            );
+            const productType = result.find((element) => element.name === 'Z2SEPMRA_C_PD_PRODUCT_CDS.ProductType');
+            const productProp = productType?.content.find((element) => element.name === 'Product');
+            const productNameProp = productType?.content.find((element) => element.name === 'ProductName');
+            const quantityProp = productType?.content.find((element) => element.name === 'Quantity');
+
+            // Property with both sap:text and sap:label
+            expect(productProp?.sapText).toBe('ProductName');
+            expect(productProp?.sapTextRange).toBeDefined();
+            expect(productProp?.sapLabel).toBe('Product ID');
+            expect(productProp?.sapLabelRange).toBeDefined();
+
+            // Property with only sap:label
+            expect(productNameProp?.sapText).toBeUndefined();
+            expect(productNameProp?.sapTextRange).toBeUndefined();
+            expect(productNameProp?.sapLabel).toBe('Name');
+            expect(productNameProp?.sapLabelRange).toBeDefined();
+
+            // Property without sap:text or sap:label
+            expect(quantityProp?.sapText).toBeUndefined();
+            expect(quantityProp?.sapTextRange).toBeUndefined();
+            expect(quantityProp?.sapLabel).toBeUndefined();
+            expect(quantityProp?.sapLabelRange).toBeUndefined();
+        });
+
+        test('V2 sap:text and sap:label not set on non-Property elements', () => {
+            const result = parseWithMarkup(
+                `<EntityType Name="OrderType" sap:label="Order">
+                <Key>
+                    <PropertyRef Name="OrderID"/>
+                </Key>
+                <Property Name="OrderID" Type="Edm.String" Nullable="false" />
+                <NavigationProperty Name="to_Items" Relationship="Z2SEPMRA_C_PD_PRODUCT_CDS.assoc_OrderItems" FromRole="FromRole_assoc_OrderItems" ToRole="ToRole_assoc_OrderItems"/>
+            </EntityType>
+            <Association Name="assoc_OrderItems" sap:content-version="1">
+                <End Type="Z2SEPMRA_C_PD_PRODUCT_CDS.OrderType" Multiplicity="1" Role="FromRole_assoc_OrderItems"/>
+                <End Type="Z2SEPMRA_C_PD_PRODUCT_CDS.OrderType" Multiplicity="*" Role="ToRole_assoc_OrderItems"/>
+            </Association>`
+            );
+            const entityType = result.find((element) => element.name === 'Z2SEPMRA_C_PD_PRODUCT_CDS.OrderType');
+            const navProp = entityType?.content.find((element) => element.name === 'to_Items');
+
+            // NavigationProperty should not have sapText or sapLabel even though EntityType has sap:label
+            expect(navProp?.sapText).toBeUndefined();
+            expect(navProp?.sapLabel).toBeUndefined();
+        });
+
         test('type definition and enum type', () => {
             const result = parseWithMarkup(`
               <TypeDefinition Name="Length" UnderlyingType="Edm.Int32">
