@@ -1,7 +1,10 @@
-# Configure Text and TextArrangement
+---
+name: configure-text-textarrangement
+description: 'Configure how ID and description fields are displayed together in SAP Fiori Elements applications using @Common.Text and @UI.TextArrangement annotations. Use for: displaying IDs with descriptions, configuring dropdown display formats, showing code-description pairs in tables and forms, enhancing user experience with meaningful text.'
+argument-hint: 'entity name, ID field name, text/description field name, and display arrangement preference (TextFirst, TextLast, TextOnly, TextSeparate)'
+---
 
-## Skill ID
-`configure-text-textarrangement`
+# Configure Text and TextArrangement
 
 ## Goal
 Configure how ID and description fields are displayed together in SAP Fiori Elements applications using @Common.Text and @UI.TextArrangement annotations.

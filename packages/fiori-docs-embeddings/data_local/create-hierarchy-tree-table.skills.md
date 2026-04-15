@@ -1,10 +1,10 @@
+---
+name: create-hierarchy-tree-table
+description: 'Automatically create a recursive hierarchy data model in a CAP project and configure it to display as a tree table in a SAP Fiori Elements List Report application. Use for: displaying parent-child relationships, building organizational hierarchies, creating category trees, showing nested structures, implementing recursive hierarchies.'
+argument-hint: 'entity name, namespace, service name, and app path'
+---
+
 # Skill: Create Hierarchical Tree Table in SAP Fiori Elements
-
-## Skill ID
-`create-hierarchy-tree-table`
-
-## Description
-Automatically create a recursive hierarchy data model in a CAP project and configure it to display as a tree table in a SAP Fiori Elements List Report application.
 
 ## When to Use This Skill
 - When you need to display parent-child relationships in a tree structure

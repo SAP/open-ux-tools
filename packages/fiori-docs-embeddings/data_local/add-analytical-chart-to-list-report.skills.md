@@ -1,7 +1,10 @@
-# Add Chart to SAP Fiori List Report
+---
+name: add-analytical-chart-to-list-report
+description: 'Add an analytical chart view to a SAP Fiori Elements List Report page to visualize aggregated data (average, sum, min, max) grouped by dimensions. Use for: displaying data trends and patterns through visual charts, adding chart views to List Reports, enabling aggregation support in OData V4 applications.'
+argument-hint: 'entity name, dimension field (grouping), measure field (aggregation), aggregation method (average/sum/min/max), and chart type'
+---
 
-## Skill ID
-`add-chart-to-list-report`
+# Add Analytical Chart to SAP Fiori List Report
 
 ## Goal
 Add an analytical chart view to a SAP Fiori Elements List Report page to visualize aggregated data (average, sum, min, max) grouped by dimensions.

@@ -1,7 +1,10 @@
-# Configure External ID for Associations
+---
+name: configure-externalid
+description: 'Hide technical GUID keys and display readable business IDs instead when using associations in SAP Fiori Elements applications using the @Common.ExternalID annotation. Use for: showing business keys instead of UUIDs in UI, configuring associations to display readable IDs, improving user experience with meaningful identifiers.'
+argument-hint: 'association field name, target entity external ID field name'
+---
 
-## Skill ID
-`configure-externalid`
+# Configure External ID for Associations
 
 ## Goal
 Hide technical GUID keys and display readable business IDs instead when using associations in SAP Fiori Elements applications using the @Common.ExternalID annotation.
