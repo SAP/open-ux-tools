@@ -11,7 +11,7 @@ import type { FullyQualifiedTypeName, FullyQualifiedName } from '@sap-ux/odata-a
 import { toFullyQualifiedName, parseIdentifier, Edm, Location, Edmx } from '@sap-ux/odata-annotation-core';
 
 import { getAttributeValue, getElementAttributeByName } from './attribute-getters';
-import { transformElementRange } from './range';
+import { transformElementRange, transformRange } from './range';
 import { getElementsWithName } from './element-getters';
 
 const EDMX_METADATA_ELEMENT_NAMES = new Set<string>([
@@ -396,6 +396,21 @@ function createMetadataElementNodeForType(
         });
     }
     const range = transformElementRange(element.position, element);
+
+    // OData V2: read inline sap:text and sap:label attributes from Property elements
+    if (element.name === Edm.Property) {
+        const sapTextAttr = getElementAttributeByName('sap:text', element);
+        if (sapTextAttr?.value) {
+            metadataElementProperties.sapText = sapTextAttr.value;
+            metadataElementProperties.sapTextRange = transformRange(sapTextAttr.position);
+        }
+        const sapLabelAttr = getElementAttributeByName('sap:label', element);
+        if (sapLabelAttr?.value) {
+            metadataElementProperties.sapLabel = sapLabelAttr.value;
+            metadataElementProperties.sapLabelRange = transformRange(sapLabelAttr.position);
+        }
+    }
+
     return {
         path: context.parentPath
             ? `${context.parentPath}/${metadataElementProperties.name}`
