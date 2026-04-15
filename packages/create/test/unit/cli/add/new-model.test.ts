@@ -60,11 +60,13 @@ const mockGenerateChange = jest.fn().mockResolvedValue({
 } as Partial<Editor> as Editor);
 const mockGetPromptsForNewModel = jest.fn();
 const mockGetVariant = jest.fn();
+const mockCreateNewModelData = jest.fn();
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     generateChange: mockGenerateChange,
     ChangeType: { ADD_NEW_MODEL: 'appdescr_ui5_addNewModel' },
     getPromptsForNewModel: mockGetPromptsForNewModel,
     getVariant: mockGetVariant,
+    createNewModelData: mockCreateNewModelData,
     isCFEnvironment: jest.fn().mockResolvedValue(false)
 }));
 
@@ -122,6 +124,10 @@ describe('add/model', () => {
         mockGetVariant.mockReturnValue(descriptorVariant);
         mockReadFileSync.mockReturnValue(JSON.stringify(descriptorVariant));
         mockTraceChanges.mockResolvedValue(undefined);
+        mockCreateNewModelData.mockResolvedValue({
+            service: mockAnswers,
+            variant: descriptorVariant
+        });
     });
 
     afterEach(() => {
@@ -143,6 +149,11 @@ describe('add/model', () => {
 
     test('should generate change with correct data and annotation', async () => {
         mockPromptYUIQuestions.mockResolvedValue(mockAnswersWithAnnotation);
+        mockCreateNewModelData.mockResolvedValue({
+            service: mockService,
+            annotation: mockAnnotation,
+            variant: descriptorVariant
+        });
 
         const command = new Command('model');
         addNewModelCommand(command);
