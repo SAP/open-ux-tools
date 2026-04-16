@@ -28,10 +28,10 @@ declare module '@sap-ux/vocabularies-types/vocabularies/Common' {
     }
 }
 declare module '@sap-ux/vocabularies-types/vocabularies/Edm_Types' {
-    export type PropertyAnnotations = any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    export type PropertyAnnotations = any;
 }
 declare module '@sap-ux/vocabularies-types/vocabularies/UI' {
-    export type Hidden = any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    export type Hidden = any;
     export const enum UIAnnotationTerms {
         HeaderInfo = 'com.sap.vocabularies.UI.v1.HeaderInfo',
         Identification = 'com.sap.vocabularies.UI.v1.Identification',
