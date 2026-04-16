@@ -31,7 +31,7 @@
                 "{projectRoot}/lib",
                 "{projectRoot}/storybook"
             ],
-            "cache": false
+            "cache": true
         },
         "test": {
             "inputs": [
@@ -42,7 +42,7 @@
                 "sharedGlobals"
             ],
             "outputs": ["{projectRoot}/coverage"],
-            "cache": false
+            "cache": true
         },
         "test:integration": {
             "inputs": [
@@ -53,29 +53,28 @@
                 "sharedGlobals"
             ],
             "outputs": ["{projectRoot}/playwright-report"],
-            "cache": false
+            "cache": true
         },
         "build:extension": {
             "outputs": ["{projectRoot}/*.vsix"],
-            "cache": false
+            "cache": true
         },
         "build:storybook": {
             "outputs": ["{projectRoot}/storybook"],
-            "cache": false
+            "cache": true
         },
         "lint": {
             "inputs": ["default", "^prod"],
-            "cache": false
+            "cache": true
         },
         "lint:fix": {
-            "inputs": ["default", "^prod"],
-            "cache": false
+            "inputs": ["default", "^prod"]
         },
         "clean": {
             "inputs": []
         },
         "build:storybook:bundle": {
-            "cache": false
+            "cache": true
         }
     },
     "defaultBase": "main",
