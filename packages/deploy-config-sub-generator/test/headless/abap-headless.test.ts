@@ -72,9 +72,11 @@ export const ORIGINAL_CWD: string = process.cwd();
 export const OUTPUT_DIR = join(__dirname, '../test-output/abap');
 
 describe('Test ABAP headless generator', () => {
+    let originalStdinIsTTY: boolean | undefined;
     beforeAll(async () => {
         rimraf.rimrafSync(OUTPUT_DIR);
         cpSync(INPUT_APP_DIR_ABAP, OUTPUT_DIR, { recursive: true });
+        originalStdinIsTTY = process.stdin.isTTY;
         process.stdin.isTTY = true;
     });
 
@@ -87,6 +89,8 @@ describe('Test ABAP headless generator', () => {
     });
 
     afterAll(() => {
+        process.stdin.isTTY = originalStdinIsTTY;
+        process.stdin.unref();
         try {
             if (readdirSync(OUTPUT_DIR).length === 0) {
                 console.log('Removing test output folder');
