@@ -1,11 +1,11 @@
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 import type { RuleTester } from 'eslint';
 
 import type { Manifest } from '@sap-ux/project-access';
-import { normalizePath } from '@sap-ux/project-access';
+import { loadModuleFromProject, normalizePath } from '@sap-ux/project-access';
 
 import { ProjectContext } from '../src/project-context/project-context';
 import { platform } from 'node:os';
@@ -93,7 +93,6 @@ annotate service.IncidentFlow with @(UI.LineItem #table_section: [
     }
 ]);
 `;
-export const CAP_METADATA = readFileSync(CAP_ANNOTATIONS_PATH, 'utf-8');
 
 // XML V2
 export const V2_PROJECT_PATH = join(ROOT, 'test', 'data', 'v2-xml-start');
@@ -110,7 +109,23 @@ export const V2_ANNOTATIONS_PATH = join(
 );
 export const V2_ANNOTATIONS = readFileSync(V2_ANNOTATIONS_PATH, 'utf-8');
 
-export function npmInstall(projectPath: string): void {
+const cdsModuleInstalled = async (root: string): Promise<boolean> => {
+    const modulePath = join(root, 'node_modules');
+    const result = existsSync(modulePath);
+    if (result) {
+        const cdsModule = await loadModuleFromProject(root, '@sap/cds');
+        if (cdsModule) {
+            return true;
+        }
+    }
+    return false;
+};
+
+export async function npmInstall(projectPath: string, checkCds = true): Promise<void> {
+    if (checkCds && (await cdsModuleInstalled(projectPath))) {
+        console.log(`@sap/cds module found. Skipping package install in ${projectPath}.`);
+        return;
+    }
     console.log(`Installing packages in ${projectPath}.`);
     const cmd = platform() === 'win32' ? `npm.cmd` : 'npm';
     const npm = spawnSync(cmd, ['install', '--ignore-engines'], {
@@ -122,7 +137,7 @@ export function npmInstall(projectPath: string): void {
     });
 
     if (npm.error) {
-        console.log(`Error: ${npm.error.message}`);
+        fail(`Error: ${npm.error.message}`);
     } else if (npm.status !== 0) {
         console.log(`npm process exited with code ${npm.status}`);
     } else {
@@ -130,9 +145,10 @@ export function npmInstall(projectPath: string): void {
     }
 }
 
-export function setup(name: string, appPath?: string) {
+export function setup(name: string, capAppPath?: string) {
     const lookup: Record<string, { changes: FileChange[]; filename: string }> = {};
-    if (appPath) {
+    if (capAppPath) {
+        // install relevant cds-dk for cds compilation
         npmInstall(CAP_PROJECT_PATH);
     }
 
@@ -152,7 +168,7 @@ export function setup(name: string, appPath?: string) {
             return;
         }
         const { changes = [], filename } = lookup[key] ?? [];
-        const projectCwdCap = appPath && CAP_PROJECT_PATH;
+        const projectCwdCap = capAppPath && CAP_PROJECT_PATH;
         const projectCwdXml = filename?.includes(V4_PROJECT_PATH) ? V4_PROJECT_PATH : V2_PROJECT_PATH;
         const cwd = projectCwdCap ?? projectCwdXml;
         jest.spyOn(process, 'cwd').mockReturnValue(cwd);
