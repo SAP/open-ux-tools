@@ -1,16 +1,9 @@
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
 const __testdir = dirname(fileURLToPath(import.meta.url));
-
-// Provide global `require` so that the source code (extensions.ts) can use require() and require.resolve()
-// This is needed because the source uses CJS require patterns but is now transpiled as ESM
-if (typeof globalThis.require === 'undefined') {
-    (globalThis as Record<string, unknown>).require = createRequire(import.meta.url);
-}
 
 import { getExtensionRoutes, loadExtensions, toExtensionModule } from '../../../src/approuter/extensions';
 

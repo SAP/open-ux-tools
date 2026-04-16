@@ -1,5 +1,9 @@
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
  * This function is used to get the path to the templates directory when this generator is bundled inside `@sap/generator-fiori`.

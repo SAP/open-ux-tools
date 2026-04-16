@@ -6,7 +6,10 @@ import type { SecureStore } from './types.js';
 import type { keyring as zoweKeyring } from '@zowe/secrets-for-zowe-sdk';
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
+import { createRequire } from 'node:module';
 import fs from 'node:fs';
+
+const require = createRequire(import.meta.url);
 
 // Ensure the require is not bundled by webpack and resolved at runtime
 declare function __non_webpack_require__(moduleName: string): any;

@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const mockExistsSync = jest.fn();
 
@@ -9,9 +10,10 @@ jest.unstable_mockModule('node:fs', () => ({
 
 const { getTemplatesOverwritePath } = await import('../../../src/utils/templates');
 
-// The source code uses join(__dirname, 'templates') where __dirname comes from globalThis.__dirname
-// set by jest.setup.mjs (repo root). Compute the expected path the same way.
-const expectedPath = join(globalThis.__dirname, 'templates');
+// The source code derives __dirname from import.meta.url, so compute
+// the expected path relative to the actual source file location.
+const srcUtilsDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'src', 'utils');
+const expectedPath = join(srcUtilsDir, 'templates');
 
 describe('getTemplatesOverwritePath', () => {
     beforeEach(() => {

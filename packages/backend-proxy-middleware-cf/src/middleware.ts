@@ -135,4 +135,4 @@ async function backendProxyMiddlewareCf({
     };
 }
 
-module.exports = backendProxyMiddlewareCf;
+export default backendProxyMiddlewareCf;

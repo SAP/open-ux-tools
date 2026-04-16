@@ -3,7 +3,7 @@ export default {
     ...baseConfig,
     // Coverage is handled by c8 wrapper for worker thread support
     collectCoverage: false,
-    setupFiles: ['<rootDir>/test/global-setup.mjs'],
+    setupFiles: ['<rootDir>/test/global-setup.js'],
     moduleNameMapper: {
         ...baseConfig.moduleNameMapper,
         // Mock synckit to prevent worker thread deadlock in Jest ESM mode.

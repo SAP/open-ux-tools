@@ -1,14 +1,5 @@
 import { jest } from '@jest/globals';
-import { createRequire } from 'node:module';
 import type { BackendProxyMiddlewareCfConfig } from '../../src/types.js';
-
-// Provide global `module` and `require` for the source code (middleware.ts uses module.exports)
-if (typeof globalThis.module === 'undefined') {
-    (globalThis as Record<string, unknown>).module = { exports: {} };
-}
-if (typeof globalThis.require === 'undefined') {
-    (globalThis as Record<string, unknown>).require = createRequire(import.meta.url);
-}
 
 const mockExistsSync = jest.fn();
 
@@ -97,13 +88,13 @@ jest.unstable_mockModule('../../src/tunnel/tunnel', () => ({
     setupSshTunnel: jest.fn().mockResolvedValue(undefined)
 }));
 
-// Import middleware - it uses module.exports which we polyfilled globally
-// The import will execute the source file, setting globalThis.module.exports
-await import('../../src/middleware');
-const middleware = (globalThis as Record<string, { exports: unknown }>).module.exports as (params: {
-    options: { configuration?: BackendProxyMiddlewareCfConfig };
-    middlewareUtil: { getProject: () => { getRootPath: () => string; getSourcePath: () => string } };
-}) => Promise<unknown>;
+// Import middleware - uses ESM export default
+const { default: middleware } = (await import('../../src/middleware.js')) as {
+    default: (params: {
+        options: { configuration?: BackendProxyMiddlewareCfConfig };
+        middlewareUtil: { getProject: () => { getRootPath: () => string; getSourcePath: () => string } };
+    }) => Promise<unknown>;
+};
 
 describe('middleware', () => {
     const rootPath = '/project/root';

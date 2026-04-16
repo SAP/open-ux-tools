@@ -12,7 +12,7 @@ const tsParser = tseslint.parser;
 
 export default [
     {
-        ignores: ['config/**/eslintrc*.js', 'test/global-setup.mjs']
+        ignores: ['config/**/eslintrc*.js', 'test/global-setup.js']
     },
     ...base,
     {

@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { ApprouterExtension, ExtensionHandler, ExtensionModule, LoadedExtensions } from '../types.js';
@@ -77,9 +78,9 @@ export function toExtensionModule(
     logger: ToolsLogger
 ): ExtensionModule | undefined {
     try {
-        const extensionModulePath = require.resolve(extension.module, { paths: [rootPath] });
-        // eslint-disable-next-line @typescript-eslint/no-require-imports -- dynamic user extension path
-        const originalModule = require(extensionModulePath) as ExtensionModule;
+        const esmRequire = createRequire(import.meta.url);
+        const extensionModulePath = esmRequire.resolve(extension.module, { paths: [rootPath] });
+        const originalModule = esmRequire(extensionModulePath) as ExtensionModule;
         const insertMiddleware = originalModule?.insertMiddleware;
 
         if (!insertMiddleware) {

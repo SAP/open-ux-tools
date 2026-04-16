@@ -1,9 +1,13 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import * as util from 'node:util';
 import { readFileSync } from 'node:fs';
 import { exec } from 'node:child_process';
 
 import type { Package } from '@sap-ux/project-access';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
  * Reads the package.json of the current package.

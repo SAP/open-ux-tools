@@ -25,6 +25,21 @@ jest.unstable_mockModule('node:os', () => ({
     homedir: () => 'test_dir'
 }));
 
+// Mock createRequire so the source module's require() throws for '@zowe/secrets-for-zowe-sdk'
+const actualModule = await import('node:module');
+jest.unstable_mockModule('node:module', () => ({
+    ...actualModule,
+    createRequire: (url: string) => {
+        const realRequire = actualModule.createRequire(url);
+        return (id: string) => {
+            if (id === '@zowe/secrets-for-zowe-sdk') {
+                throw new Error('Cannot find module @zowe/secrets-for-zowe-sdk');
+            }
+            return realRequire(id);
+        };
+    }
+}));
+
 const { getSecureStore } = await import('../../../src/secure-store');
 const { DummyStore } = await import('../../../src/secure-store/dummy-store');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
