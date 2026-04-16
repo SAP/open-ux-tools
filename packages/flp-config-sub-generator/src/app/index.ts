@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
-import FlpGenLogger from '../utils/logger';
+import FlpGenLogger from '../utils/logger.js';
 import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 import { handleErrorMessage, getExtensionGenPromptOpts } from '@sap-ux/deploy-config-generator-shared';
 import { getPrompts, promptNames } from '@sap-ux/flp-config-inquirer';
@@ -17,13 +17,13 @@ import {
     setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
 import { extendWithOptions } from '@sap-ux/inquirer-common';
-import { generatorTitle, i18nKeySubTitle, i18nKeyTitle } from '../utils/constants';
-import { t, getPromptOptions, getYUIDetails } from '../utils';
-import { EventName } from '../telemetryEvents';
+import { generatorTitle, i18nKeySubTitle, i18nKeyTitle } from '../utils/constants.js';
+import { t, getPromptOptions, getYUIDetails } from '../utils/index.js';
+import { EventName } from '../telemetryEvents/index.js';
 import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-import type { FlpConfigOptions } from './types';
+import type { FlpConfigOptions } from './types.js';
 import type { Question } from 'inquirer';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 

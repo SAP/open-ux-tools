@@ -59,8 +59,8 @@ import { TARGET_TYPE, printTarget } from '@sap-ux/cds-odata-annotation-converter
 
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
-import { convertTargets } from '../sap';
-import { logger } from '../logger';
+import { convertTargets } from '../sap/index.js';
+import { logger } from '../logger.js';
 
 import {
     type CompiledService,
@@ -85,16 +85,16 @@ import {
     INSERT_ATTRIBUTE,
     DELETE_ATTRIBUTE,
     UPDATE_ATTRIBUTE_VALUE
-} from '../types';
-import { ApiError, ApiErrorCode } from '../error';
-import type { AstNode, CDSDocument, Document } from './document';
+} from '../types/index.js';
+import { ApiError, ApiErrorCode } from '../error.js';
+import type { AstNode, CDSDocument, Document } from './document.js';
 
-import { CDSWriter } from './writer';
-import { getMissingRefs } from './references';
-import { addAllVocabulariesToAliasInformation } from '../vocabularies';
-import { CDS_DOCUMENT_TYPE, getDocument, getGhostFileDocument } from './document';
-import { convertPointer, getAstNodesFromPointer } from './pointer';
-import { getGenericNodeFromPointer, pathFromUri, PRIMITIVE_TYPE_NAMES } from '../utils';
+import { CDSWriter } from './writer.js';
+import { getMissingRefs } from './references.js';
+import { addAllVocabulariesToAliasInformation } from '../vocabularies.js';
+import { CDS_DOCUMENT_TYPE, getDocument, getGhostFileDocument } from './document.js';
+import { convertPointer, getAstNodesFromPointer } from './pointer.js';
+import { getGenericNodeFromPointer, pathFromUri, PRIMITIVE_TYPE_NAMES } from '../utils/index.js';
 import {
     INSERT_PRIMITIVE_VALUE_TYPE,
     INSERT_TARGET_CHANGE_TYPE,
@@ -108,7 +108,7 @@ import {
     createInsertReferenceChange,
     createInsertTargetChange,
     createUpdatePrimitiveValueChange
-} from './change';
+} from './change.js';
 import {
     DELETE_REFERENCE,
     MOVE_ELEMENT,
@@ -117,8 +117,8 @@ import {
     REPLACE_ELEMENT_CONTENT,
     REPLACE_TEXT,
     UPDATE_ELEMENT_NAME
-} from '../types/internal-change';
-import type { ValueListReference } from '../types/adapter';
+} from '../types/internal-change.js';
+import type { ValueListReference } from '../types/adapter.js';
 
 type ChangeHandlerFunction<T extends AnnotationFileChange> = (writer: CDSWriter, document: Document, change: T) => void;
 type ChangeHandler = {

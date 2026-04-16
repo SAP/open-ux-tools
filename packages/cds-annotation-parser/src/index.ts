@@ -1,6 +1,6 @@
 import type { Position } from '@sap-ux/text-document-utils';
-import { parse as cdsAnnotationParser } from './parser';
-import { buildAst } from './transformer';
+import { parse as cdsAnnotationParser } from './parser/index.js';
+import { buildAst } from './transformer/index.js';
 
 export const parse = (text: string, startPosition?: Position) => {
     const { cst, tokens } = cdsAnnotationParser(text);
@@ -37,7 +37,7 @@ export {
     getEdmOperatorMap,
     nodeRange,
     isContainer
-} from './transformer';
+} from './transformer/index.js';
 
 export type {
     Record,
@@ -68,8 +68,8 @@ export type {
     Assignment,
     Separator,
     NarrowAnnotationNode
-} from './transformer';
+} from './transformer/index.js';
 
-export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './transformer';
-export { ReservedProperties, isReservedProperty } from './constants';
-export { findAnnotationNode, getNode, getAstNodes } from './find-annotation-node';
+export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './transformer/index.js';
+export { ReservedProperties, isReservedProperty } from './constants.js';
+export { findAnnotationNode, getNode, getAstNodes } from './find-annotation-node.js';

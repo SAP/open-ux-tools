@@ -1,19 +1,19 @@
 import type * as zod from 'zod';
 import type { ApplicationAccess } from '@sap-ux/project-access';
-import type { FioriAppSchema, FunctionalityIdSchema, FunctionalitySchema, ParameterSchema } from './basic';
+import type { FioriAppSchema, FunctionalityIdSchema, FunctionalitySchema, ParameterSchema } from './basic.js';
 import type {
     ExecuteFunctionalityInputSchema,
     GetFunctionalityDetailsInputSchema,
     ListFioriAppsInputSchema,
     ListFunctionalitiesInputSchema,
     DocSearchInputSchema
-} from './input';
+} from './input.js';
 import type {
     ExecuteFunctionalityOutputSchema,
     GetFunctionalityDetailsOutputSchema,
     ListFioriAppsOutputSchema,
     ListFunctionalitiesOutputSchema
-} from './output';
+} from './output.js';
 
 export type FioriApp = zod.infer<typeof FioriAppSchema>;
 export type FunctionalityId = zod.infer<typeof FunctionalityIdSchema>;

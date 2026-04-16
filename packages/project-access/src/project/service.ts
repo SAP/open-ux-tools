@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path';
-import type { Manifest, ManifestNamespace, ServiceSpecification } from '../types';
-import { readJSON } from '../file';
+import type { Manifest, ManifestNamespace, ServiceSpecification } from '../types/index.js';
+import { readJSON } from '../file/index.js';
 import type { Editor } from 'mem-fs-editor';
 
 /**

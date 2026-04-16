@@ -9,7 +9,7 @@ import type {
     MiddlewareConfig,
     RtaConfig,
     TestConfig
-} from '../types';
+} from '../types/index.js';
 import { render } from 'ejs';
 import { resolve, dirname, join, posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,7 +18,7 @@ import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
-import { mergeTestConfigDefaults } from './test';
+import { mergeTestConfigDefaults } from './test.js';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';

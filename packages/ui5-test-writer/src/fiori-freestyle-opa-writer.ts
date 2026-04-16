@@ -3,10 +3,10 @@ import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { FFOPAConfig } from './types';
+import type { FFOPAConfig } from './types.js';
 import type { Logger } from '@sap-ux/logger';
 import { getFilePaths, FileName } from '@sap-ux/project-access';
-import { t } from './i18n';
+import { t } from './i18n.js';
 import { compareUI5VersionGte, ui5LtsVersion_1_71, ui5LtsVersion_1_120 } from '@sap-ux/ui5-application-writer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

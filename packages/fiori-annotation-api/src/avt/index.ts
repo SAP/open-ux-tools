@@ -1,5 +1,5 @@
-export { convertAnnotationFile, type AnnotationListWithOrigins } from './annotations';
-export { convertMetadataToAvtSchema } from './metadata';
+export { convertAnnotationFile, type AnnotationListWithOrigins } from './annotations.js';
+export { convertMetadataToAvtSchema } from './metadata.js';
 export {
     convertAnnotationToInternal,
     convertDynamicExpressionToInternal,
@@ -10,9 +10,9 @@ export {
     convertPropertyValueToInternal,
     convertRecordToInternal,
     convertTargetAnnotationsToInternal
-} from './to-internal';
-export { convertPointerInAnnotationToInternal } from './pointer';
-export { resolvePath, isAnnotation, isAnnotationList, isCollection, isRecord } from './utils';
-export { type AVTNode } from './types';
-export { getAvtNodeFromPointer, findAnnotation, findAnnotationByReference } from './find';
-export { isExpression } from './expressions';
+} from './to-internal.js';
+export { convertPointerInAnnotationToInternal } from './pointer.js';
+export { resolvePath, isAnnotation, isAnnotationList, isCollection, isRecord } from './utils.js';
+export { type AVTNode } from './types.js';
+export { getAvtNodeFromPointer, findAnnotation, findAnnotationByReference } from './find.js';
+export { isExpression } from './expressions.js';

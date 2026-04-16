@@ -1,8 +1,8 @@
-import { showUi5AppDeployConfigQuestion } from '../../conditions';
-import { validateAppDescription, validateUi5AbapRepoName } from '../../validators';
-import { PromptState } from '../../prompt-state';
-import { t } from '../../../i18n';
-import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../../types';
+import { showUi5AppDeployConfigQuestion } from '../../conditions.js';
+import { validateAppDescription, validateUi5AbapRepoName } from '../../validators.js';
+import { PromptState } from '../../prompt-state.js';
+import { t } from '../../../i18n.js';
+import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../../types.js';
 import type { InputQuestion, Question } from 'inquirer';
 
 /**

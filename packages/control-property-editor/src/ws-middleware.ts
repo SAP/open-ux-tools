@@ -1,9 +1,9 @@
 import type { AnyAction, Dispatch } from 'redux';
 import type { Middleware, MiddlewareAPI } from '@reduxjs/toolkit';
 
-import type { Action } from './actions';
-import type reducer from './slice';
-import { fileChanged, initializeLivereload } from './slice';
+import type { Action } from './actions.js';
+import type reducer from './slice.js';
+import { fileChanged, initializeLivereload } from './slice.js';
 import { externalFileChange } from '@sap-ux-private/control-property-editor-common';
 
 /**

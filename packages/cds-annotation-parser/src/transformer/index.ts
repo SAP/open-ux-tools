@@ -1,4 +1,4 @@
-export { buildAst } from './ast';
+export { buildAst } from './ast.js';
 
 export {
     EMPTY_VALUE_TYPE,
@@ -26,7 +26,7 @@ export {
     EXPRESSION_TYPES,
     nodeRange,
     isContainer
-} from './annotation-ast-nodes';
+} from './annotation-ast-nodes.js';
 
 export type {
     Expression,
@@ -57,13 +57,13 @@ export type {
     Assignment,
     Separator,
     NarrowAnnotationNode
-} from './annotation-ast-nodes';
+} from './annotation-ast-nodes.js';
 
-export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './range';
+export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './range.js';
 
 export {
     operatorMap,
     positionIsInExpressionWhiteSpace,
     getEdmOperatorMap,
     containsIncorrectExpressions
-} from './expressions';
+} from './expressions.js';

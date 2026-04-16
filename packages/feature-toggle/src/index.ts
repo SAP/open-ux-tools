@@ -3,6 +3,6 @@ export {
     isFeatureEnabled,
     isInternalFeaturesSettingEnabled,
     enableFeature
-} from './featureToggle';
-export { FeatureToggleKey, ExperimentalFeatures } from './constants';
-export type { FeatureToggle } from './types';
+} from './featureToggle.js';
+export { FeatureToggleKey, ExperimentalFeatures } from './constants.js';
+export type { FeatureToggle } from './types.js';

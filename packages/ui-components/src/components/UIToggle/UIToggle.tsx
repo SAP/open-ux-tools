@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import type { IToggleProps, IToggleStyleProps, IToggleStyles } from '@fluentui/react';
 import { Toggle } from '@fluentui/react';
 
-import type { UIComponentMessagesProps } from '../../helper/ValidationMessage';
-import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage';
-import { UIIcon } from '../UIIcon';
-import { UiIcons } from '../Icons';
+import type { UIComponentMessagesProps } from '../../helper/ValidationMessage/index.js';
+import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage/index.js';
+import { UIIcon } from '../UIIcon/index.js';
+import { UiIcons } from '../Icons.js';
 
 export interface UIToggleProps extends IToggleProps, UIComponentMessagesProps {
     inlineLabelLeft?: boolean;

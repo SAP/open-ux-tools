@@ -2,9 +2,9 @@ import React from 'react';
 import type { ICheckboxProps, ICheckboxStyles, ICheckboxStyleProps } from '@fluentui/react';
 import { Checkbox, HighContrastSelector, IsFocusVisibleClassName } from '@fluentui/react';
 
-import type { UIComponentMessagesProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
-import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage';
-import { COMMON_INPUT_STYLES } from '../UIInput';
+import type { UIComponentMessagesProps, InputValidationMessageInfo } from '../../helper/ValidationMessage/index.js';
+import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage/index.js';
+import { COMMON_INPUT_STYLES } from '../UIInput/index.js';
 
 export interface UICheckboxProps extends ICheckboxProps, UIComponentMessagesProps {
     CheckboxMinWidth?: number;

@@ -11,10 +11,10 @@ import { ProviderType } from '@sap/service-provider-apis';
 import type { Editor } from 'mem-fs-editor';
 import { basename, dirname, join } from 'node:path';
 import type { GeneratorOptions } from 'yeoman-generator';
-import { SAP_NAMESPACE, SERVICE_GENERATION_FAIL, UI_SERVICE_CACHE } from '../utils';
-import { t } from '../utils/i18n';
-import UiServiceGenLogger from '../utils/logger';
-import type { AppGenData, AppGenSystemSystemData, PromptOptions, ReqAuth } from './types';
+import { SAP_NAMESPACE, SERVICE_GENERATION_FAIL, UI_SERVICE_CACHE } from '../utils/index.js';
+import { t } from '../utils/i18n.js';
+import UiServiceGenLogger from '../utils/logger.js';
+import type { AppGenData, AppGenSystemSystemData, PromptOptions, ReqAuth } from './types.js';
 
 /**
  * Generate the service.

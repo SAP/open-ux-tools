@@ -7,7 +7,7 @@ import type {
     HeaderSectionFeatureData,
     ObjectPageFeatures,
     ObjectPageNavigationParents
-} from '../types';
+} from '../types.js';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import {
     type AggregationItem,
@@ -16,7 +16,7 @@ import {
     type HeaderSectionItem,
     type SectionItem,
     getAggregations
-} from './modelUtils';
+} from './modelUtils.js';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
 
 /**

@@ -3,11 +3,11 @@ import { join, dirname } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { ToolsLogger } from '@sap-ux/logger';
 
-import { ChangeType, ServiceType } from '../../../types';
-import type { IWriter, NewModelData, DataSourceItem } from '../../../types';
-import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
-import { addConnectivityServiceToMta } from '../../../cf/project/yaml';
-import { ensureTunnelAppExists, DEFAULT_TUNNEL_APP_NAME } from '../../../cf/services/ssh';
+import { ChangeType, ServiceType } from '../../../types.js';
+import type { IWriter, NewModelData, DataSourceItem } from '../../../types.js';
+import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils.js';
+import { addConnectivityServiceToMta } from '../../../cf/project/yaml.js';
+import { ensureTunnelAppExists, DEFAULT_TUNNEL_APP_NAME } from '../../../cf/services/ssh.js';
 
 type NewModelContent = {
     model?: {

@@ -440,7 +440,7 @@ const typescriptConfig: Linter.Config[] = [
         ],
 
         plugins: {
-            '@typescript-eslint': typescriptEslint
+            '@typescript-eslint': typescriptEslint as unknown as Plugin
         },
 
         languageOptions: {

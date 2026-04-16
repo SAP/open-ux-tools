@@ -3,7 +3,7 @@
 // ------------------------------------------------------------------------------
 
 import type { Rule } from 'eslint';
-import { contains, isIdentifier, isMember } from '../utils/helpers';
+import { contains, isIdentifier, isMember } from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Rule Definition

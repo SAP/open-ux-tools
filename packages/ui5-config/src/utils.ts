@@ -1,6 +1,6 @@
 import merge from 'lodash/mergeWith.js';
 import semVer from 'semver';
-import { UI5_DEFAULT } from './defaults';
+import { UI5_DEFAULT } from './defaults.js';
 
 /**
  * Merges two objects. All properties from base and from extension will be present.

@@ -7,24 +7,24 @@ import {
     DROPDOWN_EDITOR_TYPE,
     INPUT_EDITOR_TYPE
 } from '@sap-ux-private/control-property-editor-common';
-import { Separator } from '../../components/Separator';
-import type { RootState } from '../../store';
-import { DropdownEditor } from './DropdownEditor';
-import { HeaderField } from './HeaderField';
-import { getDefaultInputType, getInputTypeToggleOptions, InputTypeWrapper } from './InputTypeWrapper';
-import { setCachedValue } from './propertyValuesCache';
-import { StringEditor } from './StringEditor';
-import type { InputTypeWrapperProps } from './types';
-import { isExpression } from './types';
-import { sectionHeaderFontSize } from './constants';
+import { Separator } from '../../components/Separator.js';
+import type { RootState } from '../../store.js';
+import { DropdownEditor } from './DropdownEditor.js';
+import { HeaderField } from './HeaderField.js';
+import { getDefaultInputType, getInputTypeToggleOptions, InputTypeWrapper } from './InputTypeWrapper.js';
+import { setCachedValue } from './propertyValuesCache.js';
+import { StringEditor } from './StringEditor.js';
+import type { InputTypeWrapperProps } from './types.js';
+import { isExpression } from './types.js';
+import { sectionHeaderFontSize } from './constants.js';
 import { useSelector } from 'react-redux';
 import { UISearchBox } from '@sap-ux/ui-components';
-import { NoControlSelected } from './NoControlSelected';
+import { NoControlSelected } from './NoControlSelected.js';
 import { Label } from '@fluentui/react';
 import './Properties.scss';
-import { Funnel } from './Funnel';
-import type { ControlChangeStats, FilterOptions } from '../../slice';
-import { FilterName } from '../../slice';
+import { Funnel } from './Funnel.js';
+import type { ControlChangeStats, FilterOptions } from '../../slice.js';
+import { FilterName } from '../../slice.js';
 
 /**
  * React element for all properties including id & type and property editors.

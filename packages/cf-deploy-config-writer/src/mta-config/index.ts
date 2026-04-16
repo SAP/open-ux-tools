@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { render } from 'ejs';
-import { MtaConfig } from './mta';
+import { MtaConfig } from './mta.js';
 import {
     addXSSecurityConfig,
     getTemplatePath,
@@ -9,7 +9,7 @@ import {
     validateVersion,
     runCommand,
     toMtaModuleName as toMtaModuleNameUtil
-} from '../utils';
+} from '../utils.js';
 import {
     MTAVersion,
     MTADescription,
@@ -23,12 +23,18 @@ import {
     CDSHTML5RepoService,
     RouterModule,
     MAX_MTA_ID_LENGTH
-} from '../constants';
-import { waitForMtaFile } from './wait-for-mta';
-import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, type CAPConfig, RouterModuleType } from '../types';
-import LoggerHelper from '../logger-helper';
+} from '../constants.js';
+import { waitForMtaFile } from './wait-for-mta.js';
+import {
+    type MTABaseConfig,
+    type CFBaseConfig,
+    type CDSServiceType,
+    type CAPConfig,
+    RouterModuleType
+} from '../types/index.js';
+import LoggerHelper from '../logger-helper.js';
 import { sync } from 'hasbin';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import { type Editor } from 'mem-fs-editor';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import { FileName } from '@sap-ux/project-access';
@@ -260,4 +266,4 @@ export async function generateCAPMTA(config: CAPConfig, fs: Editor): Promise<voi
     }
 }
 
-export * from './mta';
+export * from './mta.js';

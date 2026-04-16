@@ -1,12 +1,12 @@
 import type { ChangeDefinition } from 'sap/ui/fl/Change';
-import { TextBundle } from '../../i18n';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
+import { TextBundle } from '../../i18n.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version.js';
 import FlexChange from 'sap/ui/fl/Change';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
 import Log from 'sap/base/Log';
-import { getError } from '../../utils/error';
+import { getError } from '../../utils/error.js';
 import { AppComponent } from 'sap/ui/rta/RuntimeAuthoring';
-import { getConfigMapControlIdMap } from '../../utils/fe-v4';
+import { getConfigMapControlIdMap } from '../../utils/fe-v4.js';
 import { PropertyValue } from '@sap-ux-private/control-property-editor-common';
 
 export const ADD_NEW_ANNOTATION_FILE_CHANGE = 'appdescr_app_addAnnotationsToOData';

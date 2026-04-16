@@ -1,7 +1,7 @@
-import type { CdsEnvironment, NewI18nEntry } from '../../types';
-import { printPropertiesI18nEntry, capPropertiesPath, doesExist, writeFile } from '../../utils';
-import { tryAddCsvTexts } from './csv';
-import { writeToExistingI18nPropertiesFile } from '../utils';
+import type { CdsEnvironment, NewI18nEntry } from '../../types.js';
+import { printPropertiesI18nEntry, capPropertiesPath, doesExist, writeFile } from '../../utils/index.js';
+import { tryAddCsvTexts } from './csv.js';
+import { writeToExistingI18nPropertiesFile } from '../utils/index.js';
 import type { Editor } from 'mem-fs-editor';
 
 /**

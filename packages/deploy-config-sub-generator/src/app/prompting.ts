@@ -1,8 +1,8 @@
-import { getSubGenPrompts, getDeployTargetQuestion } from '../prompts';
+import { getSubGenPrompts, getDeployTargetQuestion } from '../prompts/index.js';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { ApiHubConfig, CfDeployConfigAnswers } from '@sap-ux/cf-deploy-config-sub-generator';
 import type { Answers } from 'inquirer';
-import type { Target, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types';
+import type { Target, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types/index.js';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
 import type { GeneratorOptions } from 'yeoman-generator';

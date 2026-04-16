@@ -1,1 +1,1 @@
-export * from './vocabulary-service';
+export * from './vocabulary-service.js';

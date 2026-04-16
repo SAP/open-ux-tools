@@ -2,12 +2,12 @@ import * as path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { t } from '../../i18n';
-import type { CfServiceOffering, CfAPIResponse, BusinessServiceResource, AppRouterType, MtaYaml } from '../../types';
-import { getServiceKeyCredentialsWithTags } from '../services/api';
-import { requestCfApi } from '../services/cli';
-import { getRouterType } from './yaml';
-import { getYamlContent } from './yaml-loader';
+import { t } from '../../i18n.js';
+import type { CfServiceOffering, CfAPIResponse, BusinessServiceResource, AppRouterType, MtaYaml } from '../../types.js';
+import { getServiceKeyCredentialsWithTags } from '../services/api.js';
+import { requestCfApi } from '../services/cli.js';
+import { getRouterType } from './yaml.js';
+import { getYamlContent } from './yaml-loader.js';
 
 const EXCLUDED_SERVICES_VCAP = new Set(['html5-apps-repo', 'portal']);
 

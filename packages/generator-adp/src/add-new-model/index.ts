@@ -14,10 +14,10 @@ import {
 } from '@sap-ux/adp-tooling';
 import { setYeomanEnvConflicterForce } from '@sap-ux/fiori-generator-shared';
 
-import { GeneratorTypes } from '../types';
-import { initI18n, t } from '../utils/i18n';
-import type { GeneratorOpts } from '../utils/opts';
-import SubGeneratorBase from '../base/sub-gen-base';
+import { GeneratorTypes } from '../types.js';
+import { initI18n, t } from '../utils/i18n.js';
+import type { GeneratorOpts } from '../utils/opts.js';
+import SubGeneratorBase from '../base/sub-gen-base.js';
 
 /**
  * Generator for adding a new model to an OData service.

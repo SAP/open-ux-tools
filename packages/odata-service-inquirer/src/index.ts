@@ -4,24 +4,24 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import type { Question } from 'inquirer';
 import autocomplete from 'inquirer-autocomplete-prompt';
-import { initI18nOdataServiceInquirer } from './i18n';
-import { getQuestions } from './prompts';
-import type { ServiceAnswer } from './prompts/datasources/sap-system/service-selection';
+import { initI18nOdataServiceInquirer } from './i18n.js';
+import { getQuestions } from './prompts/index.js';
+import type { ServiceAnswer } from './prompts/datasources/sap-system/service-selection/index.js';
 import {
     type SystemSelectionAnswers,
     getSystemSelectionQuestions as getSystemSelectionQuestionsBase
-} from './prompts/datasources/sap-system/system-selection';
+} from './prompts/datasources/sap-system/system-selection/index.js';
 import {
     CfAbapEnvServiceChoice,
     NewSystemChoice
-} from './prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection/prompt-helpers';
+} from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
+import type { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
 
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import type { TemplateType } from '@sap-ux/fiori-elements-writer';
-import { getEntitySelectionQuestions } from './prompts/edmx/questions';
-import LoggerHelper from './prompts/logger-helper';
+import { getEntitySelectionQuestions } from './prompts/edmx/questions.js';
+import LoggerHelper from './prompts/logger-helper.js';
 import type {
     EntityRelatedAnswers,
     EntityPromptOptions,
@@ -30,9 +30,9 @@ import type {
     OdataServiceQuestion,
     SapSystemType,
     ConnectedSystem
-} from './types';
-import { DatasourceType, promptNames } from './types';
-import { getPromptHostEnvironment, PromptState } from './utils';
+} from './types.js';
+import { DatasourceType, promptNames } from './types.js';
+import { getPromptHostEnvironment, PromptState } from './utils/index.js';
 
 /**
  * Get the inquirer prompts for odata service.

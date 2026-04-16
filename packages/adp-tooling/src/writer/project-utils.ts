@@ -6,7 +6,7 @@ import type { Editor } from 'mem-fs-editor';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-import type { CloudApp, AdpWriterConfig, TypesConfig, CfAdpWriterConfig, DescriptorVariant } from '../types';
+import type { CloudApp, AdpWriterConfig, TypesConfig, CfAdpWriterConfig, DescriptorVariant } from '../types.js';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -16,7 +16,7 @@ import {
     enhanceUI5YamlWithTranspileMiddleware,
     enhanceUI5YamlWithCfCustomTask,
     enhanceUI5YamlWithFioriToolsMiddleware
-} from './options';
+} from './options.js';
 
 import type { Package } from '@sap-ux/project-access';
 import { UI5Config, UI5_DEFAULT, getEsmTypesVersion, getTypesPackage, getTypesVersion } from '@sap-ux/ui5-config';

@@ -3,9 +3,9 @@ import os from 'node:os';
 import { join } from 'node:path';
 import { coerce, minor } from 'semver';
 import { getWebappPath } from '@sap-ux/project-access';
-import { getTemplatePath } from '../templates';
-import type { FileContentPosition, Manifest, ManifestData } from './types';
-import { copyTpl } from './file';
+import { getTemplatePath } from '../templates.js';
+import type { FileContentPosition, Manifest, ManifestData } from './types.js';
+import { copyTpl } from './file.js';
 import { DOMParser } from '@xmldom/xmldom';
 
 /**

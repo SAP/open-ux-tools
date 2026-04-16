@@ -1,12 +1,18 @@
 import Generator from 'yeoman-generator';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { join } from 'node:path';
-import ReuseLibGenLogger from '../utils/logger';
-import { t, prompts, runPostLibGenHook, generatorTitle } from '../utils';
+import ReuseLibGenLogger from '../utils/logger.js';
+import { t, prompts, runPostLibGenHook, generatorTitle } from '../utils/index.js';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import { platform } from 'node:os';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { defaultAuthor, defaultFramework, defaultLibraryName, defaultNamespace, defaultUi5Version } from './defaults';
+import {
+    defaultAuthor,
+    defaultFramework,
+    defaultLibraryName,
+    defaultNamespace,
+    defaultUi5Version
+} from './defaults.js';
 import {
     isCli,
     getDefaultTargetFolder,
@@ -15,7 +21,7 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { generate, type UI5LibConfig } from '@sap-ux/ui5-library-writer';
 import { prompt, type UI5LibraryAnswers, type InquirerAdapter } from '@sap-ux/ui5-library-inquirer';
-import type { Ui5LibGenerator } from './types';
+import type { Ui5LibGenerator } from './types.js';
 
 /**
  * Generator for creating a new UI5 library.

@@ -1,13 +1,13 @@
 import { searchChoices, ui5VersionsGrouped, getDefaultUI5VersionChoice } from '@sap-ux/inquirer-common';
 import { getMtaPath } from '@sap-ux/project-access';
 import { validateModuleName, validateNamespace, validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
-import { t } from '../i18n';
-import { promptNames } from '../types';
-import { defaultAppName } from './prompt-helpers';
-import { validateAppName } from './validators';
+import { t } from '../i18n.js';
+import { promptNames } from '../types.js';
+import { defaultAppName } from './prompt-helpers.js';
+import { validateAppName } from './validators.js';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
-import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types.js';
 import type { ConfirmQuestion, FileBrowserQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
 /**

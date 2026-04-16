@@ -31,14 +31,14 @@ import {
     generateDestinationName,
     getDestination
 } from '@sap-ux/deploy-config-generator-shared';
-import { t, initI18n, DESTINATION_AUTHTYPE_NOTFOUND, API_BUSINESS_HUB_ENTERPRISE_PREFIX } from '../utils';
-import { loadManifest } from './utils';
+import { t, initI18n, DESTINATION_AUTHTYPE_NOTFOUND, API_BUSINESS_HUB_ENTERPRISE_PREFIX } from '../utils/index.js';
+import { loadManifest } from './utils.js';
 import { getMtaPath, findCapProjectRoot, FileName, type Package } from '@sap-ux/project-access';
-import { EventName } from '../telemetryEvents';
-import { getCFQuestions, getCAPMTAQuestions } from './questions';
+import { EventName } from '../telemetryEvents/index.js';
+import { getCFQuestions, getCAPMTAQuestions } from './questions.js';
 import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
-import type { CfDeployConfigOptions } from './types';
+import type { CfDeployConfigOptions } from './types.js';
 import {
     type CfAppRouterDeployConfigAnswers,
     type CfDeployConfigQuestions,

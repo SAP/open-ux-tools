@@ -1,5 +1,5 @@
 import type { AnyNode } from '@sap-ux/odata-annotation-core-types';
-import type { JsonPointer } from '../types';
+import type { JsonPointer } from '../types/index.js';
 
 /**
  *  Traverses the object tree and finds a node based on the pointer.

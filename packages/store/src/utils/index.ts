@@ -100,5 +100,5 @@ export function isMatch(obj: any, filter: any): boolean {
     });
 }
 
-export * from './app-studio';
-export * from './backend';
+export * from './app-studio.js';
+export * from './backend.js';

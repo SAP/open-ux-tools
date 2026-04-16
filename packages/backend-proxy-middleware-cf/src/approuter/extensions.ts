@@ -1,6 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { ApprouterExtension, ExtensionHandler, ExtensionModule, LoadedExtensions } from '../types';
+import type { ApprouterExtension, ExtensionHandler, ExtensionModule, LoadedExtensions } from '../types.js';
 
 /**
  * Create a wrapper that injects parameters as 4th argument for approuter extension handlers.

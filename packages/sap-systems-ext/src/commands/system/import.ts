@@ -1,17 +1,17 @@
-import type { SystemConfig, SystemCommandContext, SystemConfigFile } from '../../types/system';
+import type { SystemConfig, SystemCommandContext, SystemConfigFile } from '../../types/system/index.js';
 import { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import { window, workspace } from 'vscode';
 import { platform } from 'node:os';
 import { readFileSync } from 'node:fs';
-import { confirmPrompt, TelemetryHelper, t, getBackendSystemService } from '../../utils';
+import { confirmPrompt, TelemetryHelper, t, getBackendSystemService } from '../../utils/index.js';
 import {
     ConfirmationPromptType,
     SystemAction,
     SystemActionStatus,
     SystemPanelViewType,
     SYSTEMS_EVENT
-} from '../../utils/constants';
-import { SystemPanel } from '../../panel';
+} from '../../utils/constants/index.js';
+import { SystemPanel } from '../../panel/index.js';
 
 /**
  * Returns a command handler function that handles importing a system configuration from a file.

@@ -1,9 +1,9 @@
 import type { TreeDataProvider, Command, ExtensionContext, Event } from 'vscode';
 import type { BackendSystem, ConnectionType } from '@sap-ux/store';
 import { commands, TreeItem, TreeItemCollapsibleState, Uri, EventEmitter } from 'vscode';
-import { t, getDisplayName, getBackendSystemService } from '../utils';
-import { SystemCommands } from '../utils/constants';
-import SystemsLogger from '../utils/logger';
+import { t, getDisplayName, getBackendSystemService } from '../utils/index.js';
+import { SystemCommands } from '../utils/constants/index.js';
+import SystemsLogger from '../utils/logger.js';
 
 interface SapSystemTreeItem extends TreeItem {
     name: string;

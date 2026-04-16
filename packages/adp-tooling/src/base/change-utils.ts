@@ -19,9 +19,9 @@ import {
     type PropertyValueType,
     ChangeTypeMap,
     type AdpWriterConfig
-} from '../types';
+} from '../types.js';
 import { renderFile } from 'ejs';
-import { replaceTextsWithI18nBindings, writeKeyUserTranslations } from '../writer/i18n/key-user-translations';
+import { replaceTextsWithI18nBindings, writeKeyUserTranslations } from '../writer/i18n/key-user-translations.js';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 

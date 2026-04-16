@@ -1,1 +1,1 @@
-export { parseCsv } from './csv-parser';
+export { parseCsv } from './csv-parser.js';

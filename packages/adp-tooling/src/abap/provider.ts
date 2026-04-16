@@ -2,7 +2,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { type RequestOptions, getProviderConfig } from './config';
+import { type RequestOptions, getProviderConfig } from './config.js';
 
 interface ProviderOptions {
     system: string;

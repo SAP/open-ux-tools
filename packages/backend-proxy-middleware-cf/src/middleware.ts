@@ -7,22 +7,22 @@ import type { RequestHandler, Request, Response, NextFunction } from 'express';
 
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 
-import { nextFreePort } from './utils';
-import { createProxy } from './proxy/proxy';
-import { startApprouter } from './approuter/approuter';
-import { loadExtensions } from './approuter/extensions';
-import { mergeEffectiveOptions } from './config/config';
-import { updateXsuaaService } from './platform/xssecurity';
-import type { BackendProxyMiddlewareCfConfig } from './types';
-import { fetchBasUrlTemplate, resolveBasExternalUrl } from './platform/bas';
-import { buildRouteEntries, loadAndPrepareXsappConfig } from './proxy/routes';
+import { nextFreePort } from './utils.js';
+import { createProxy } from './proxy/proxy.js';
+import { startApprouter } from './approuter/approuter.js';
+import { loadExtensions } from './approuter/extensions.js';
+import { mergeEffectiveOptions } from './config/config.js';
+import { updateXsuaaService } from './platform/xssecurity.js';
+import type { BackendProxyMiddlewareCfConfig } from './types.js';
+import { fetchBasUrlTemplate, resolveBasExternalUrl } from './platform/bas.js';
+import { buildRouteEntries, loadAndPrepareXsappConfig } from './proxy/routes.js';
 import {
     loadEnvOptions,
     updateUi5ServerDestinationPort,
     getConnectivityProxyInfo,
     applyToProcessEnv
-} from './config/env';
-import { setupSshTunnel } from './tunnel/tunnel';
+} from './config/env.js';
+import { setupSshTunnel } from './tunnel/tunnel.js';
 
 dotenv.config();
 

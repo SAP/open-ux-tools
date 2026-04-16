@@ -4,7 +4,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
-import type { DeployConfigOptions } from '../types';
+import type { DeployConfigOptions } from '../types/index.js';
 
 /**
  * Retrieves backend configuration from either the base config (ui5.yaml) or from the options passed in.

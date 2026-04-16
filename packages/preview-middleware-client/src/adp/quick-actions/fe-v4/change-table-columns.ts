@@ -4,12 +4,12 @@ import FlexRuntimeInfoAPI from 'sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
 import type {
     QuickActionContext,
     NestedQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { getControlById } from '../../../utils/core';
-import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
-import { MDC_TABLE_TYPE } from '../control-types';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
-import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { getControlById } from '../../../utils/core.js';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
+import { MDC_TABLE_TYPE } from '../control-types.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
+import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils.js';
 import type Table from 'sap/ui/mdc/Table';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';

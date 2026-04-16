@@ -1,5 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { CommandRunner } from './commandRunner';
+import { CommandRunner } from './commandRunner.js';
 import fastGlob from 'fast-glob';
 import { join } from 'node:path';
 import readPkgUp from 'read-pkg-up';

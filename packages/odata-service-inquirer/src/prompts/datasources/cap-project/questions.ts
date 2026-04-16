@@ -4,20 +4,20 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Question } from 'inquirer';
-import { t } from '../../../i18n';
-import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types';
-import { promptNames } from '../../../types';
-import { PromptState, getPromptHostEnvironment } from '../../../utils';
-import { errorHandler } from '../../prompt-helpers';
-import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers';
+import { t } from '../../../i18n.js';
+import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types.js';
+import { promptNames } from '../../../types.js';
+import { PromptState, getPromptHostEnvironment } from '../../../utils/index.js';
+import { errorHandler } from '../../prompt-helpers.js';
+import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers.js';
 import {
     capInternalPromptNames,
     type CapProjectChoice,
     type CapProjectPaths,
     type CapProjectRootPath,
     type CapServiceAnswers
-} from './types';
-import { validateCapPath } from './validators';
+} from './types.js';
+import { validateCapPath } from './validators.js';
 import { realpath } from 'node:fs/promises';
 
 /**

@@ -6,14 +6,14 @@ import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import type AppState from 'sap/ushell/services/AppState';
-import { getManifestAppdescr } from '../adp/api-handler';
-import { getError } from '../utils/error';
-import initConnectors from './initConnectors';
-import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { getManifestAppdescr } from '../adp/api-handler.js';
+import { getError } from '../utils/error.js';
+import initConnectors from './initConnectors.js';
+import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version.js';
 import type Component from 'sap/ui/core/Component';
 import type Extension from 'sap/ushell/services/Extension';
 import type { CardGeneratorType } from 'sap/cards/ap/generator';
-import { sendInfoCenterMessage } from '../utils/info-center-message';
+import { sendInfoCenterMessage } from '../utils/info-center-message.js';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap

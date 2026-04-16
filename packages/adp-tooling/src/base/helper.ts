@@ -15,7 +15,7 @@ import {
     getAppType
 } from '@sap-ux/project-access';
 
-import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
+import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types.js';
 
 const ADP_CLOUD_PROJECT_BUILD_TASK_NAME = 'app-variant-bundler-build';
 

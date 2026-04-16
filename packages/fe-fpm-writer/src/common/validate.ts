@@ -2,8 +2,8 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { coerce, lt } from 'semver';
-import type { Manifest } from './types';
-import { getManifestPath } from './utils';
+import type { Manifest } from './types.js';
+import { getManifestPath } from './utils.js';
 
 /**
  * Validate that the UI5 version requirement is valid.

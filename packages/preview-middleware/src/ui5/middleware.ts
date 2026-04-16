@@ -2,10 +2,10 @@ import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareParameters } from '@ui5/server';
-import { type EnhancedRouter, FlpSandbox } from '../base/flp';
-import type { MiddlewareConfig } from '../types';
-import { getPreviewPaths, sanitizeConfig } from '../base/config';
-import { logRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url';
+import { type EnhancedRouter, FlpSandbox } from '../base/flp.js';
+import type { MiddlewareConfig } from '../types/index.js';
+import { getPreviewPaths, sanitizeConfig } from '../base/config.js';
+import { logRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url.js';
 
 /**
  * Create the router that is to be exposed as UI5 middleware.

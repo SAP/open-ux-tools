@@ -8,5 +8,5 @@ export type {
     I18nEntry,
     NewI18nEntry,
     SapTextType
-} from '../types';
-export { SapLongTextType, SapShortTextType } from '../types';
+} from '../types.js';
+export { SapLongTextType, SapShortTextType } from '../types.js';

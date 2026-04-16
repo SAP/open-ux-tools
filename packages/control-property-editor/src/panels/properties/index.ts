@@ -1,1 +1,1 @@
-export { PropertiesList } from './PropertiesList';
+export { PropertiesList } from './PropertiesList.js';

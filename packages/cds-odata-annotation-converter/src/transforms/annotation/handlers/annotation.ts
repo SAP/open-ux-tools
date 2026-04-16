@@ -9,12 +9,12 @@ import {
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { Range, createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';
-import { convertFlattenedPath } from '../flattened';
+import { convertFlattenedPath } from '../flattened.js';
 
-import type { ConvertResult, NodeHandler, Subtree } from '../handler';
-import { getTerm } from '../type-resolver';
-import type { VisitorState } from '../visitor-state';
-import { createQualifierAttribute, createTermAttribute } from '../creators';
+import type { ConvertResult, NodeHandler, Subtree } from '../handler.js';
+import { getTerm } from '../type-resolver.js';
+import type { VisitorState } from '../visitor-state.js';
+import { createQualifierAttribute, createTermAttribute } from '../creators.js';
 
 export const annotationHandler: NodeHandler<Annotation> = {
     type: ANNOTATION_TYPE,

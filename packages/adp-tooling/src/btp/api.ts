@@ -3,8 +3,8 @@ import axios from 'axios';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Destinations } from '@sap-ux/btp-utils';
 
-import { t } from '../i18n';
-import type { Uaa, BtpDestinationConfig, CfDestinationServiceCredentials } from '../types';
+import { t } from '../i18n.js';
+import type { Uaa, BtpDestinationConfig, CfDestinationServiceCredentials } from '../types.js';
 
 /**
  * Obtain an OAuth2 access token using the client credentials grant.

@@ -6,7 +6,7 @@ import { DestinationProxyType } from '@sap-ux/btp-utils';
 import type { ServiceKeyCredentialsWithTags, Uaa } from '@sap-ux/adp-tooling';
 import { getToken, getBtpDestinationConfig } from '@sap-ux/adp-tooling';
 
-import type { XsappConfig } from '../types';
+import type { XsappConfig } from '../types.js';
 
 /**
  * Auth info needed to call the BTP Destination Configuration API.

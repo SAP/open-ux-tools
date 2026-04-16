@@ -7,10 +7,10 @@ import { type Logger } from '@sap-ux/logger';
 import type { ServiceConfig, SystemSelectionAnswers, UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
 import { getConfigPrompts, getSystemSelectionPrompts, ObjectType } from '@sap-ux/ui-service-inquirer';
 import Generator from 'yeoman-generator';
-import { boUri, cdsUri, initI18n, prompts, SERVICE_GENERATION_SUCCESS, t, UI_SERVICE_CACHE } from '../utils';
-import UiServiceGenLogger from '../utils/logger';
-import { getTelemetryData } from './telemetryHelper';
-import { BAS_OBJECT } from './types';
+import { boUri, cdsUri, initI18n, prompts, SERVICE_GENERATION_SUCCESS, t, UI_SERVICE_CACHE } from '../utils/index.js';
+import UiServiceGenLogger from '../utils/logger.js';
+import { getTelemetryData } from './telemetryHelper.js';
+import { BAS_OBJECT } from './types.js';
 import {
     addToCache,
     authenticateInputData,
@@ -20,7 +20,7 @@ import {
     runPostGenHook,
     setToolbarMessage,
     writeBASMetadata
-} from './utils';
+} from './utils.js';
 
 /**
  * Generator for creating a new UI Service.

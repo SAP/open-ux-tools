@@ -1,6 +1,6 @@
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
 import { GUIDED_ANSWERS_LAUNCH_CMD_ID, HELP_NODES, HELP_TREE, getHelpUrl } from '@sap-ux/guided-answers-helper';
-import { t } from '../../../utils';
+import { t } from '../../../utils/index.js';
 
 /**
  * Error type categorization

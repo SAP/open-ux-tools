@@ -34,8 +34,8 @@ import {
     MAX_ABAP_SERVICE_PREFIX_LENGTH,
     MAX_ABAP_SERVICE_NAME_LENGTH,
     MAX_MTA_ID_LENGTH
-} from '../constants';
-import { t } from '../i18n';
+} from '../constants.js';
+import { t } from '../i18n.js';
 import type { Logger } from '@sap-ux/logger';
 import type { YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import {
@@ -46,7 +46,7 @@ import {
     type MTADestinationType,
     type SupportedResources,
     RouterModuleType
-} from '../types';
+} from '../types/index.js';
 
 /**
  * A class representing interactions with the MTA binary, found at https://sap.github.io/cloud-mta-build-tool/.

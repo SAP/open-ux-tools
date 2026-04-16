@@ -9,7 +9,7 @@
  * annotation-modeler core or annotation modeler APIs
  */
 
-import type { FullyQualifiedName, FullyQualifiedTypeName } from '../specification';
+import type { FullyQualifiedName, FullyQualifiedTypeName } from '../specification/index.js';
 
 /**
  * Constraints can be provided via Annotations on terms or properties

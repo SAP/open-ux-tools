@@ -1,5 +1,5 @@
 import { UI5_DEFAULT } from '@sap-ux/ui5-config';
-import { t } from './i18n';
+import { t } from './i18n.js';
 export const WelcomeFile = 'welcomeFile';
 export const MTABuildResult = 'build-result';
 export const MTABuildParams = 'build-parameters';

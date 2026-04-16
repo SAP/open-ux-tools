@@ -6,25 +6,25 @@ import { type InputQuestion, type ListQuestion, searchChoices, withCondition } f
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
-import { t } from '../../../../i18n';
-import { type ConnectedSystem, type OdataServicePromptOptions, promptNames } from '../../../../types';
-import { getPromptHostEnvironment, PromptState } from '../../../../utils';
-import { ConnectionValidator } from '../../../connectionValidator';
-import LoggerHelper from '../../../logger-helper';
-import type { ValidationResult } from '../../../types';
-import { getCfAbapBASQuestions } from '../cf-abap/questions';
-import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions';
-import { getNewSystemQuestions } from '../new-system/questions';
-import type { ServiceAnswer } from '../service-selection';
-import { getSystemServiceQuestion } from '../service-selection/questions';
-import { validateServiceUrl } from '../validators';
+import { t } from '../../../../i18n.js';
+import { type ConnectedSystem, type OdataServicePromptOptions, promptNames } from '../../../../types.js';
+import { getPromptHostEnvironment, PromptState } from '../../../../utils/index.js';
+import { ConnectionValidator } from '../../../connectionValidator.js';
+import LoggerHelper from '../../../logger-helper.js';
+import type { ValidationResult } from '../../../types.js';
+import { getCfAbapBASQuestions } from '../cf-abap/questions.js';
+import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions.js';
+import { getNewSystemQuestions } from '../new-system/questions.js';
+import type { ServiceAnswer } from '../service-selection/index.js';
+import { getSystemServiceQuestion } from '../service-selection/questions.js';
+import { validateServiceUrl } from '../validators.js';
 import {
     type SystemSelectionAnswerType,
     connectWithBackendSystem,
     connectWithDestination,
     createSystemChoices,
     findDefaultSystemSelectionIndex
-} from './prompt-helpers';
+} from './prompt-helpers.js';
 
 const systemSelectionPromptNamespace = 'systemSelection';
 

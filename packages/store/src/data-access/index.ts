@@ -1,4 +1,4 @@
-import type { ServiceOptions } from '../types';
+import type { ServiceOptions } from '../types.js';
 import type { Logger } from '@sap-ux/logger';
 
 /**
@@ -26,4 +26,4 @@ export interface DataAccessConstructor<Entity> {
     new (logger: Logger, options?: ServiceOptions): DataAccess<Entity>;
 }
 
-export { getFilesystemWatcherFor } from './filesystem';
+export { getFilesystemWatcherFor } from './filesystem.js';

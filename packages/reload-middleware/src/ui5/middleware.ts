@@ -3,14 +3,14 @@ import {
     getConnectLivereload,
     defaultLiveReloadOpts,
     defaultConnectLivereloadOpts
-} from '../base';
-import type { ReloaderConfig, HttpsOptions } from '../base';
+} from '../base/index.js';
+import type { ReloaderConfig, HttpsOptions } from '../base/index.js';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareParameters } from '@ui5/server';
 import type { RequestHandler } from 'express';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import { resolve } from 'node:path';
-import { watchManifestChanges } from '../base/livereload';
+import { watchManifestChanges } from '../base/livereload.js';
 
 export default async ({ options, middlewareUtil }: MiddlewareParameters<ReloaderConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({

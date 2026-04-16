@@ -1,5 +1,5 @@
-export { getCapI18nBundle, getPropertiesI18nBundle } from './read';
-export { createCapI18nEntries, createPropertiesI18nEntries, removeAndCreateI18nEntries } from './write';
+export { getCapI18nBundle, getPropertiesI18nBundle } from './read/index.js';
+export { createCapI18nEntries, createPropertiesI18nEntries, removeAndCreateI18nEntries } from './write/index.js';
 
 export {
     getI18nFolderNames,
@@ -12,7 +12,7 @@ export {
     convertToPascalCase,
     printPropertiesI18nEntry,
     printPropertiesI18nAnnotation
-} from './utils';
+} from './utils/index.js';
 
 export type {
     CdsEnvironment,
@@ -25,8 +25,8 @@ export type {
     NewI18nEntry,
     SapTextType,
     ValueNode
-} from './types';
+} from './types.js';
 
-export { SapLongTextType, SapShortTextType } from './types';
+export { SapLongTextType, SapShortTextType } from './types.js';
 
-export { csvToI18nBundle, jsonToI18nBundle, propertiesToI18nEntry } from './transformer';
+export { csvToI18nBundle, jsonToI18nBundle, propertiesToI18nEntry } from './transformer/index.js';

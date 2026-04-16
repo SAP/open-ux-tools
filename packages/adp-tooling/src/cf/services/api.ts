@@ -26,10 +26,10 @@ import type {
     ServiceInfo,
     CfUi5AppInfo,
     ServiceKeyCredentialsWithTags
-} from '../../types';
-import { t } from '../../i18n';
-import { getProjectNameForXsSecurity } from '../project';
-import { createServiceKey, getServiceKeys, requestCfApi } from './cli';
+} from '../../types.js';
+import { t } from '../../i18n.js';
+import { getProjectNameForXsSecurity } from '../project/index.js';
+import { createServiceKey, getServiceKeys, requestCfApi } from './cli.js';
 
 interface FDCResponse {
     results: CFApp[];

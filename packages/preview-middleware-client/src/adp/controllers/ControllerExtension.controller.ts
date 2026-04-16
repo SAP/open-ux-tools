@@ -20,18 +20,18 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
-import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
-import { getResourceModel, getTextBundle, TextBundle } from '../../i18n';
-import { getControlById } from '../../utils/core';
-import { getError } from '../../utils/error';
-import { sendInfoCenterMessage } from '../../utils/info-center-message';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
-import type { CodeExtResponse, ControllersResponse } from '../api-handler';
-import { getExistingController, readControllers, writeChange, writeController } from '../api-handler';
-import CommandExecutor from '../command-executor';
-import type { DeferredExtendControllerData, ExtendControllerData } from '../extend-controller';
-import { checkForExistingChange, getControllerInfo } from '../utils';
-import BaseDialog from './BaseDialog.controller';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition.js';
+import { getResourceModel, getTextBundle, TextBundle } from '../../i18n.js';
+import { getControlById } from '../../utils/core.js';
+import { getError } from '../../utils/error.js';
+import { sendInfoCenterMessage } from '../../utils/info-center-message.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version.js';
+import type { CodeExtResponse, ControllersResponse } from '../api-handler.js';
+import { getExistingController, readControllers, writeChange, writeController } from '../api-handler.js';
+import CommandExecutor from '../command-executor.js';
+import type { DeferredExtendControllerData, ExtendControllerData } from '../extend-controller.js';
+import { checkForExistingChange, getControllerInfo } from '../utils.js';
+import BaseDialog from './BaseDialog.controller.js';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;

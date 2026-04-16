@@ -8,7 +8,7 @@ import type {
 import { getExtensionLogger } from '@vscode-logging/logger';
 import { format } from 'logform';
 import type { Logger } from 'yeoman-environment';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 
 // Re-export so we dont need to add vscode-logging dependencies to all app gen sub-modules
 export type { ILogWrapper };

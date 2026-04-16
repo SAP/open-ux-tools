@@ -1,12 +1,12 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { updateRootPackage } from '../utils';
-import { validateMtaConfig, isMTAFound, addRoutingConfig, generateCAPMTA } from '../mta-config';
-import { waitForMtaFile } from '../mta-config/wait-for-mta';
-import LoggerHelper from '../logger-helper';
+import { updateRootPackage } from '../utils.js';
+import { validateMtaConfig, isMTAFound, addRoutingConfig, generateCAPMTA } from '../mta-config/index.js';
+import { waitForMtaFile } from '../mta-config/wait-for-mta.js';
+import LoggerHelper from '../logger-helper.js';
 import type { Logger } from '@sap-ux/logger';
-import { type CAPConfig, type CFBaseConfig } from '../types';
-import { t } from '../i18n';
+import { type CAPConfig, type CFBaseConfig } from '../types/index.js';
+import { t } from '../i18n.js';
 import { getCapProjectType } from '@sap-ux/project-access';
 
 /**

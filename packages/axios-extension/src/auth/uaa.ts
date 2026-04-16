@@ -6,11 +6,11 @@ import type { AddressInfo } from 'node:net';
 import qs from 'qs';
 import type { Logger } from '@sap-ux/logger';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
-import { Redirect } from './redirect';
-import { prettyPrintTimeInMs } from '../abap/message';
-import { UAATimeoutError } from './error';
-import { redirectSuccessHtml } from './static';
-import { defaultTimeout } from './connection';
+import { Redirect } from './redirect.js';
+import { prettyPrintTimeInMs } from '../abap/message.js';
+import { UAATimeoutError } from './error.js';
+import { redirectSuccessHtml } from './static.js';
+import { defaultTimeout } from './connection.js';
 
 export type RefreshTokenChanged = (refreshToken?: string, accessToken?: string) => void | Promise<void>;
 

@@ -28,10 +28,10 @@ import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
-import { t } from '../../utils/i18n';
-import { validateBusinessSolutionName } from './helper/validators';
-import { getAppRouterChoices, getCFAppChoices } from './helper/choices';
-import { shouldShowBaseAppPrompt, showBusinessSolutionNameQuestion } from './helper/conditions';
+import { t } from '../../utils/i18n.js';
+import { validateBusinessSolutionName } from './helper/validators.js';
+import { getAppRouterChoices, getCFAppChoices } from './helper/choices.js';
+import { shouldShowBaseAppPrompt, showBusinessSolutionNameQuestion } from './helper/conditions.js';
 
 /**
  * Prompter for CF services.

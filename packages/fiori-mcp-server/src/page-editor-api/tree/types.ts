@@ -1,4 +1,4 @@
-import type { ArtifactType, PropertyMessage } from '@sap/ux-specification/dist/types/src';
+import type { ArtifactType, PropertyMessage } from '@sap/ux-specification';
 import type { JSONSchema4 } from 'json-schema';
 
 export type PropertyPath = Array<string | number>;

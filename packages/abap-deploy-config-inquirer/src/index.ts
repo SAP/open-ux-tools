@@ -1,9 +1,9 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
-import { initI18n } from './i18n';
-import { PromptState } from './prompts/prompt-state';
-import { getAbapDeployConfigQuestions, getPackagePrompts, getTransportRequestPrompts } from './prompts';
-import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from './utils';
-import LoggerHelper from './logger-helper';
+import { initI18n } from './i18n.js';
+import { PromptState } from './prompts/prompt-state.js';
+import { getAbapDeployConfigQuestions, getPackagePrompts, getTransportRequestPrompts } from './prompts/index.js';
+import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from './utils.js';
+import LoggerHelper from './logger-helper.js';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import {
     promptNames,
@@ -14,8 +14,8 @@ import {
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type AbapDeployConfigQuestion
-} from './types';
-import { AbapServiceProviderManager } from './service-provider-utils/abap-service-provider';
+} from './types.js';
+import { AbapServiceProviderManager } from './service-provider-utils/abap-service-provider.js';
 
 /**
  * Get the inquirer prompts for abap deploy config.
@@ -85,3 +85,4 @@ export {
     type AbapDeployConfigAnswers,
     type AbapDeployConfigPromptOptions
 };
+export { DEFAULT_PACKAGE_ABAP } from './constants.js';

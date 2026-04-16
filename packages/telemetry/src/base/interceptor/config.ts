@@ -1,4 +1,4 @@
-import * as interceptors from './index';
+import * as interceptors from './index.js';
 
 export enum InterceptorTypes {
     /**

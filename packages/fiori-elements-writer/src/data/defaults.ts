@@ -14,17 +14,17 @@ import type {
     LROPSettings,
     Template,
     WorklistSettings
-} from '../types';
-import { TableSelectionMode, TableType, TemplateType } from '../types';
+} from '../types.js';
+import { TableSelectionMode, TableType, TemplateType } from '../types.js';
 import {
     getBaseComponent,
     getTemplateUi5Libs,
     TemplateTypeAttributes,
     changesPreviewToVersion,
     getTemplateManifestLibs
-} from './templateAttributes';
-import { getAnnotationV4Libs } from './annotationCustomUi5Libs';
-import { type TemplateOptions } from './templateAttributes';
+} from './templateAttributes.js';
+import { getAnnotationV4Libs } from './annotationCustomUi5Libs.js';
+import { type TemplateOptions } from './templateAttributes.js';
 import semVer from 'semver';
 import { getFlpId } from '@sap-ux/fiori-generator-shared';
 

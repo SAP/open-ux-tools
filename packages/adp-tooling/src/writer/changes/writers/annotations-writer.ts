@@ -1,9 +1,9 @@
 import path, { isAbsolute } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
-import { ChangeType } from '../../../types';
-import { FlexLayer, type IWriter, type AnnotationsData } from '../../../types';
-import { getChange, writeAnnotationChange } from '../../../base/change-utils';
+import { ChangeType } from '../../../types.js';
+import { FlexLayer, type IWriter, type AnnotationsData } from '../../../types.js';
+import { getChange, writeAnnotationChange } from '../../../base/change-utils.js';
 
 /**
  * Handles the creation and writing of annotations data changes for a project.

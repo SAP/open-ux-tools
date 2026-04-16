@@ -7,14 +7,14 @@ import {
     ELEMENT_TYPE
 } from '@sap-ux/odata-annotation-core';
 
-import { createFioriRule } from '../language/rule-factory';
-import type { FioriRuleDefinition } from '../types';
-import { TEXT_ARRANGEMENT_HIDDEN, type TextArrangementHidden } from '../language/diagnostics';
-import { buildAnnotationIndexKey } from '../project-context/parser';
-import type { IndexedAnnotation, ParsedService } from '../project-context/parser';
-import { COMMON_TEXT, UI_HIDDEN, UI_TEXT_ARRANGEMENT } from '../constants';
-import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4';
-import type { FeV2ListReport, FeV2ObjectPage } from '../project-context/linker/fe-v2';
+import { createFioriRule } from '../language/rule-factory.js';
+import type { FioriRuleDefinition } from '../types.js';
+import { TEXT_ARRANGEMENT_HIDDEN, type TextArrangementHidden } from '../language/diagnostics.js';
+import { buildAnnotationIndexKey } from '../project-context/parser/index.js';
+import type { IndexedAnnotation, ParsedService } from '../project-context/parser/index.js';
+import { COMMON_TEXT, UI_HIDDEN, UI_TEXT_ARRANGEMENT } from '../constants.js';
+import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4.js';
+import type { FeV2ListReport, FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
 
 type AnyPage = FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage;
 

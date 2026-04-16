@@ -2,7 +2,7 @@ import type { CustomRuleDefinitionType, CustomRuleTypeDefinitions, RuleVisitor }
 import type { JSONLanguageOptions } from '@eslint/json';
 import type { AnyNode } from '@humanwhocodes/momoa';
 
-import type { FioriJSONSourceCode } from './source-code';
+import type { FioriJSONSourceCode } from './source-code.js';
 
 /**
  * Type definition for JSON-specific ESLint rules in Fiori context.

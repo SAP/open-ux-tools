@@ -23,7 +23,7 @@ import type {
     Operator,
     UnsupportedOperatorExpression,
     IncorrectExpression
-} from './annotation-ast-nodes';
+} from './annotation-ast-nodes.js';
 import {
     ANNOTATION_TYPE,
     ANNOTATION_GROUP_TYPE,
@@ -47,9 +47,9 @@ import {
     Delimiter,
     UNSUPPORTED_OPERATOR_EXPRESSION_TYPE,
     INCORRECT_EXPRESSION_TYPE
-} from './annotation-ast-nodes';
-import { Visitor } from '../parser/factory';
-import { buildExpression, operatorImageMap, operatorMap, rebuildNumberSigns } from './expressions';
+} from './annotation-ast-nodes.js';
+import { Visitor } from '../parser/factory.js';
+import { buildExpression, operatorImageMap, operatorMap, rebuildNumberSigns } from './expressions.js';
 import type {
     DeclarationChildren,
     AssignmentChildren,
@@ -65,11 +65,11 @@ import type {
     MultiLineStringChildren,
     MultiLineStringStripIndentChildren,
     ExpressionChildren
-} from '../parser/parser';
+} from '../parser/parser.js';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
-import { tokenMap } from '../parser/tokens';
-import { copyPosition, copyRange } from './range';
-import { hasItems, isDefined, hasNaNOrUndefined } from '../utils';
+import { tokenMap } from '../parser/tokens.js';
+import { copyPosition, copyRange } from './range.js';
+import { hasItems, isDefined, hasNaNOrUndefined } from '../utils/index.js';
 
 /**
  * Extracts qualifier part from term and adapt range and value for term.

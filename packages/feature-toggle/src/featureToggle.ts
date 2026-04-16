@@ -1,5 +1,5 @@
-import type { FeatureToggle } from './types';
-import { extensionConfigKeys, tokenToggleGuid, FeatureToggleKey, ExperimentalFeatures } from './constants';
+import type { FeatureToggle } from './types.js';
+import { extensionConfigKeys, tokenToggleGuid, FeatureToggleKey, ExperimentalFeatures } from './constants.js';
 
 /**
  * Returns an instance of vscode if available.

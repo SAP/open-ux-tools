@@ -7,11 +7,11 @@ import { useSelector } from 'react-redux';
 import type { QuickActionGroup } from '@sap-ux-private/control-property-editor-common';
 import { NESTED_QUICK_ACTION_KIND, SIMPLE_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
 
-import type { RootState } from '../../store';
-import { sectionHeaderFontSize } from '../properties/constants';
+import type { RootState } from '../../store.js';
+import { sectionHeaderFontSize } from '../properties/constants.js';
 
-import { SimpleQuickActionListItem } from './SimpleQuickAction';
-import { NestedQuickActionListItem } from './NestedQuickAction';
+import { SimpleQuickActionListItem } from './SimpleQuickAction.js';
+import { NestedQuickActionListItem } from './NestedQuickAction.js';
 
 import './QuickAction.scss';
 

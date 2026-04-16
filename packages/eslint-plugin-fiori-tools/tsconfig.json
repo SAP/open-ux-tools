@@ -1,6 +1,6 @@
 {
     "extends": "../../tsconfig-esm.json",
-    "include": ["src/**/*.ts"],
+    "include": ["src/**/*.ts", "../project-access/src/types/webapp/ui5-manifest.d.ts"],
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "lib"

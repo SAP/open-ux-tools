@@ -1,5 +1,5 @@
 import type { Element, Target as AnnotationFileTarget } from '@sap-ux/odata-annotation-core';
-import type { JsonPointer } from '../types';
+import type { JsonPointer } from '../types/index.js';
 
 //#region Insert Changes
 export const INSERT_TARGET_CHANGE_TYPE = 'insert-target';

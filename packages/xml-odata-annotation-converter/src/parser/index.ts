@@ -1,3 +1,3 @@
-export { convertDocument } from './document';
-export { transformRange } from './range';
-export { convertMetadataDocument } from './metadata';
+export { convertDocument } from './document.js';
+export { transformRange } from './range.js';
+export { convertMetadataDocument } from './metadata.js';

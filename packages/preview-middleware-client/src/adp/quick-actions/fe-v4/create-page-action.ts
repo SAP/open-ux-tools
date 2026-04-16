@@ -1,15 +1,15 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { DialogFactory, DialogNames } from '../../dialog-factory';
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
-import { getExistingController } from '../../api-handler';
-import { getControllerInfoForControl } from '../../utils';
-import { getV4AppComponent } from '../../../utils/fe-v4';
-import { isA } from '../../../utils/core';
+import { DialogFactory, DialogNames } from '../../dialog-factory.js';
+import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition.js';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
+import { getExistingController } from '../../api-handler.js';
+import { getControllerInfoForControl } from '../../utils.js';
+import { getV4AppComponent } from '../../../utils/fe-v4.js';
+import { isA } from '../../../utils/core.js';
 import DynamicPageTitle from 'sap/f/DynamicPageTitle';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import ObjectPageDynamicHeaderTitle from 'sap/uxap/ObjectPageDynamicHeaderTitle';

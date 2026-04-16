@@ -3,7 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
-import { addCdsPluginUi5, enableWorkspaces, ensureMinCdsVersion } from './package-json';
+import { addCdsPluginUi5, enableWorkspaces, ensureMinCdsVersion } from './package-json.js';
 
 /**
  * Enable workspace and cds-plugin-ui5 for given CAP project.

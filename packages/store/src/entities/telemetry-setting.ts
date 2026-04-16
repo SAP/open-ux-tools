@@ -1,5 +1,5 @@
-import type { EntityKey } from '.';
-import { serializable } from '../decorators';
+import type { EntityKey } from './index.js';
+import { serializable } from '../decorators/index.js';
 
 /**
  * Central telemetry settings data to be accessed by

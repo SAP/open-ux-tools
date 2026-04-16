@@ -19,17 +19,17 @@ import {
     getFunctionalityDetails,
     executeFunctionality,
     tools
-} from './tools';
-import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
-import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant';
+} from './tools/index.js';
+import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
+import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant.js';
 import type {
     ExecuteFunctionalityInput,
     GetFunctionalityDetailsInput,
     DocSearchInput,
     ListFioriAppsInput,
     ListFunctionalitiesInput
-} from './types';
-import { logger } from './utils/logger';
+} from './types/index.js';
+import { logger } from './utils/logger.js';
 
 type ToolArgs =
     | DocSearchInput

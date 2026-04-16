@@ -1,5 +1,5 @@
-import type { QuickActionDefinitionRegistry } from '../../cpe/quick-actions/registry';
-import type { ApplicationType } from '../../utils/application';
+import type { QuickActionDefinitionRegistry } from '../../cpe/quick-actions/registry.js';
+import type { ApplicationType } from '../../utils/application.js';
 
 /**
  * Loads the appropriate Quick Action registries for the given application type.

@@ -9,7 +9,7 @@
     ],
     "strictNullChecks": true,
     "outDir": "dist",
-    "module": "ESNext",
+    "module": "NodeNext",
     "rootDir": ".",
     "baseUrl": ".",
     "types": [

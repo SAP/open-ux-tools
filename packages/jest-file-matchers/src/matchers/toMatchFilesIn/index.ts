@@ -1,9 +1,9 @@
-import { toMatchFile } from '../toMatchFileSnapshot';
+import { toMatchFile } from '../toMatchFileSnapshot/index.js';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import minimatch from 'minimatch';
-import type { Filter, MatcherOptions } from '../types';
-import { extractMessage } from '../utils';
+import type { Filter, MatcherOptions } from '../types.js';
+import { extractMessage } from '../utils.js';
 
 /**
  * Matcher to assert the content of files in `receivedFolder` match the contents of

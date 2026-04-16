@@ -2,8 +2,8 @@ import React from 'react';
 import type { IButtonProps as IBaseButtonProps, IButtonStyles } from '@fluentui/react';
 import { IconButton } from '@fluentui/react';
 
-import { UIContextualMenu } from '../UIContextualMenu';
-import type { UIIContextualMenuProps } from '../UIContextualMenu';
+import { UIContextualMenu } from '../UIContextualMenu/index.js';
+import type { UIIContextualMenuProps } from '../UIContextualMenu/index.js';
 
 export enum UIIconButtonSizes {
     Default = 'Default',

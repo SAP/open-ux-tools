@@ -6,8 +6,8 @@ import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 import { PrintPattern, resolveTarget } from '@sap-ux/cds-odata-annotation-converter';
 import type { Annotation } from '@sap-ux/cds-annotation-parser';
 
-import { getTokenRange } from './utils';
-import { tokenColumn, tokenLine, type CompilerToken } from './cds-compiler-tokens';
+import { getTokenRange } from './utils.js';
+import { tokenColumn, tokenLine, type CompilerToken } from './cds-compiler-tokens.js';
 
 interface IndexRange {
     start: number;

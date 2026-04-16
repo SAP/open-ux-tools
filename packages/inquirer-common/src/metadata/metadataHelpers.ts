@@ -1,7 +1,7 @@
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from '@sap-ux/project-access';
 
 /**

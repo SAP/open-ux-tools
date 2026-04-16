@@ -2,9 +2,9 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ChangeDataSourceAnswers } from '@sap-ux/adp-tooling';
 import { getPromptsForChangeDataSource, generateChange, ChangeType } from '@sap-ux/adp-tooling';
 
-import { GeneratorTypes } from '../types';
-import type { GeneratorOpts } from '../utils/opts';
-import SubGeneratorWithAuthBase from '../base/sub-gen-auth-base';
+import { GeneratorTypes } from '../types.js';
+import type { GeneratorOpts } from '../utils/opts.js';
+import SubGeneratorWithAuthBase from '../base/sub-gen-auth-base.js';
 
 /**
  * Generator for changing the data source of an OData service.

@@ -1,5 +1,5 @@
 import { dirname, join } from 'node:path';
-import { ui5Libs } from './constants';
+import { ui5Libs } from './constants.js';
 import {
     ReuseLibType,
     type LibraryResults,
@@ -7,12 +7,12 @@ import {
     type ManifestNamespace,
     type ReuseLib,
     type LibraryXml
-} from '../types';
-import { findFiles, readJSON } from '../file';
-import { FileName } from '../constants';
+} from '../types/index.js';
+import { findFiles, readJSON } from '../file/index.js';
+import { FileName } from '../constants.js';
 import { existsSync, promises as fs } from 'node:fs';
 import { XMLParser } from 'fast-xml-parser';
-import { getI18nPropertiesPaths } from '../project/i18n';
+import { getI18nPropertiesPaths } from '../project/i18n/index.js';
 import { getPropertiesI18nBundle } from '@sap-ux/i18n';
 
 /**
@@ -37,10 +37,10 @@ const getLibraryFromManifest = async (
         const libDeps = getManifestDependencies(manifest);
         const description = await getManifestDesc(manifest, manifestPath);
 
-        const libIndex = reuseLibs.findIndex((reuseLib) => reuseLib.name === manifest?.['sap.app'].id);
+        const libIndex = reuseLibs.findIndex((reuseLib) => reuseLib.name === manifest?.['sap.app']?.id);
         if (libIndex === -1) {
             reuseLib = {
-                name: `${manifest['sap.app'].id}`,
+                name: `${manifest['sap.app']?.id ?? ''}`,
                 path: dirname(manifestPath),
                 type: reuseType,
                 uri: manifest['sap.platform.abap']?.uri ?? '',

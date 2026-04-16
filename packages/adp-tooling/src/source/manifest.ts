@@ -2,8 +2,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { t } from '../i18n';
-import { ApplicationType } from '../types';
+import { t } from '../i18n.js';
+import { ApplicationType } from '../types.js';
 
 /**
  * Evaluates whether the application described by the manifest is a SAP Fiori Elements version 4 application.

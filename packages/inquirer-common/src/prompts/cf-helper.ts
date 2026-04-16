@@ -1,8 +1,8 @@
 import type { ServiceInstanceInfo } from '@sap/cf-tools';
 import { apiGetServicesInstancesFilteredByType as getServicesInstances } from '@sap/cf-tools';
 import type { ListChoiceOptions } from 'inquirer';
-import { ERROR_TYPE, type ErrorHandler } from '../error-handler/error-handler';
-import { t } from '../i18n';
+import { ERROR_TYPE, type ErrorHandler } from '../error-handler/error-handler.js';
+import { t } from '../i18n.js';
 import { AbapEnvType } from '@sap-ux/btp-utils';
 
 /**

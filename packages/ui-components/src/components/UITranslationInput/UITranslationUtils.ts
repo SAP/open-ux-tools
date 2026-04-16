@@ -1,5 +1,5 @@
-import type { I18nBundle, TranslationEntry } from './UITranslationButton.types';
-import { TranslationKeyGenerator, TranslationTextPattern } from './UITranslationButton.types';
+import type { I18nBundle, TranslationEntry } from './UITranslationButton.types.js';
+import { TranslationKeyGenerator, TranslationTextPattern } from './UITranslationButton.types.js';
 
 /**
  * Method extracts i18n binding and returns key of i18n entry.

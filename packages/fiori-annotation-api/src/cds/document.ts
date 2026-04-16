@@ -14,12 +14,12 @@ import { type CdsCompilerFacade, type MetadataCollector, type PropagatedTargetMa
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
-import { compareByRange, pathFromUri } from '../utils';
-import type { TextFile } from '../types';
+import { compareByRange, pathFromUri } from '../utils/index.js';
+import type { TextFile } from '../types/index.js';
 
-import type { Comment } from './comments';
-import { collectComments } from './comments';
-import type { CompilerToken } from './cds-compiler-tokens';
+import type { Comment } from './comments.js';
+import { collectComments } from './comments.js';
+import type { CompilerToken } from './cds-compiler-tokens.js';
 
 export const CDS_DOCUMENT_TYPE = 'document';
 export type CDSDocument = {

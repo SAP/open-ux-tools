@@ -1,15 +1,15 @@
-import type { StoredSystemViewNode, SystemCommandContext } from '../../types/system';
+import type { StoredSystemViewNode, SystemCommandContext } from '../../types/system/index.js';
 import { commands, window } from 'vscode';
-import { TelemetryHelper, getBackendSystemService, t } from '../../utils';
+import { TelemetryHelper, getBackendSystemService, t } from '../../utils/index.js';
 import {
     fioriToolsAppModAppGenLaunchCmd,
     launchAppGenCmdType,
     SystemAction,
     SystemActionStatus,
     SYSTEMS_EVENT
-} from '../../utils/constants';
+} from '../../utils/constants/index.js';
 import { BackendSystemKey } from '@sap-ux/store';
-import SystemsLogger from '../../utils/logger';
+import SystemsLogger from '../../utils/logger.js';
 
 /**
  * Returns a command handler function that launches the Fiori Application Generator for a specified system.

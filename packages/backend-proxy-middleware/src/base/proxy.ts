@@ -16,7 +16,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import i18n from 'i18next';
 import translations from './i18n.json' with { type: 'json' };
-import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
+import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types.js';
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
 import type connect from 'connect';
@@ -24,8 +24,8 @@ import type { Request } from 'express';
 import type { Socket } from 'node:net';
 import type { Url } from 'node:url';
 import { getProxyForUrl } from 'proxy-from-env';
-import { addOptionsForEmbeddedBSP } from '../ext/bsp';
-import { updateProxyEnv } from './config';
+import { addOptionsForEmbeddedBSP } from '../ext/bsp.js';
+import { updateProxyEnv } from './config.js';
 
 export type EnhancedIncomingMessage = (IncomingMessage & Pick<Request, 'originalUrl'>) | connect.IncomingMessage;
 

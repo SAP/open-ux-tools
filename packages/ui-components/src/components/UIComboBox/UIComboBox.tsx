@@ -11,18 +11,18 @@ import type {
     IOnRenderComboBoxLabelProps
 } from '@fluentui/react';
 import { ComboBox, initializeComponentRef, KeyCodes, SelectableOptionMenuItemType } from '@fluentui/react';
-import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption';
+import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption.js';
 import './UIComboBox.scss';
 import './Callout.scss';
-import { UILoader } from '../UILoader';
-import { UiIcons } from '../Icons';
-import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
-import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
-import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from '../UIDropdown';
-import { CalloutCollisionTransform } from '../UICallout';
-import { isHTMLInputElement, debounce } from '../../utilities';
-import { REQUIRED_LABEL_INDICATOR } from '../types';
+import { UILoader } from '../UILoader/index.js';
+import { UiIcons } from '../Icons.js';
+import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage/index.js';
+import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage/index.js';
+import { labelGlobalStyle } from '../UILabel/index.js';
+import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from '../UIDropdown/index.js';
+import { CalloutCollisionTransform } from '../UICallout/index.js';
+import { isHTMLInputElement, debounce } from '../../utilities/index.js';
+import { REQUIRED_LABEL_INDICATOR } from '../types.js';
 
 export {
     type IComboBoxOption as UIComboBoxOption,

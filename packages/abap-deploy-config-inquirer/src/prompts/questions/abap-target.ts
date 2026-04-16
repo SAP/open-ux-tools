@@ -1,4 +1,4 @@
-import { showClientChoiceQuestion, showClientQuestion, showScpQuestion, showUrlQuestion } from '../conditions';
+import { showClientChoiceQuestion, showClientQuestion, showScpQuestion, showUrlQuestion } from '../conditions.js';
 import {
     validateClientChoiceQuestion,
     validateClient,
@@ -7,12 +7,12 @@ import {
     validateTargetSystemUrlCli,
     validateUrl,
     updateDestinationPromptState
-} from '../validators';
-import { t } from '../../i18n';
-import { getClientChoicePromptChoices, getAbapSystemChoices, updatePromptStateUrl } from '../helpers';
-import { defaultTargetSystem, defaultUrl } from '../defaults';
-import { getAbapSystems } from '../../utils';
-import { PromptState } from '../prompt-state';
+} from '../validators.js';
+import { t } from '../../i18n.js';
+import { getClientChoicePromptChoices, getAbapSystemChoices, updatePromptStateUrl } from '../helpers.js';
+import { defaultTargetSystem, defaultUrl } from '../defaults.js';
+import { getAbapSystems } from '../../utils.js';
+import { PromptState } from '../prompt-state.js';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio, isOnPremiseDestination, type Destinations } from '@sap-ux/btp-utils';
 import {
@@ -22,10 +22,10 @@ import {
     type AbapDeployConfigPromptOptions,
     type AbapSystemChoice,
     type BackendTarget
-} from '../../types';
+} from '../../types.js';
 import type { InputQuestion, ListQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Question } from 'inquirer';
-import { TargetSystemType } from '../../types';
+import { TargetSystemType } from '../../types.js';
 import type { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**

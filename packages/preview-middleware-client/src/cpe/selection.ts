@@ -7,9 +7,9 @@ import {
     reportTelemetry,
     selectControl
 } from '@sap-ux-private/control-property-editor-common';
-import { buildControlData } from './control-data';
-import type { ActionSenderFunction, Service, SubscribeFunction } from './types';
-import { getOverlay, getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
+import { buildControlData } from './control-data.js';
+import type { ActionSenderFunction, Service, SubscribeFunction } from './types.js';
+import { getOverlay, getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils.js';
 
 import Log from 'sap/base/Log';
 import type Event from 'sap/ui/base/Event';
@@ -19,10 +19,10 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
-import { getComponent, getControlById } from '../utils/core';
-import { getError } from '../utils/error';
-import { ChangeService } from './changes';
-import { getDocumentation } from './documentation';
+import { getComponent, getControlById } from '../utils/core.js';
+import { getError } from '../utils/error.js';
+import { ChangeService } from './changes/index.js';
+import { getDocumentation } from './documentation.js';
 
 export interface PropertyChangeParams {
     name: string;

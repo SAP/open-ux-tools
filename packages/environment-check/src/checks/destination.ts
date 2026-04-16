@@ -1,10 +1,10 @@
-import type { Endpoint, ResultMessage, EndpointResults } from '../types';
+import type { Endpoint, ResultMessage, EndpointResults } from '../types.js';
 import axios from 'axios';
 import { getAppStudioProxyURL, listDestinations } from '@sap-ux/btp-utils';
-import { getLogger } from '../logger';
-import { UrlServiceType, Severity } from '../types';
-import { t } from '../i18n';
-import { getServiceProvider, checkCatalogServices } from './service-checks';
+import { getLogger } from '../logger.js';
+import { UrlServiceType, Severity } from '../types.js';
+import { t } from '../i18n.js';
+import { getServiceProvider, checkCatalogServices } from './service-checks.js';
 
 /**
  * Check a BAS destination, like catalog service v2 & v4.

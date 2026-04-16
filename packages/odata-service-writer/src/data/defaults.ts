@@ -1,8 +1,8 @@
 import { join } from 'node:path';
-import type { OdataService, EdmxAnnotationsInfo, DataSources } from '../types';
-import { ServiceType } from '../types';
-import { DEFAULT_DATASOURCE_NAME } from './constants';
-import type { Manifest } from '@sap-ux/project-access';
+import type { OdataService, EdmxAnnotationsInfo, DataSources } from '../types.js';
+import { ServiceType } from '../types.js';
+import { DEFAULT_DATASOURCE_NAME } from './constants.js';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import { UI5Config, type FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
@@ -60,7 +60,9 @@ async function setDefaultServiceName(
     const dataSources = manifest?.['sap.app']?.dataSources;
     if (dataSources) {
         // Filter out ODataAnnotation dataSources and keep only OData ones
-        const oDataSources = Object.values(dataSources).filter((dataSource) => dataSource.type === 'OData');
+        const oDataSources = Object.values(dataSources).filter(
+            (dataSource: ManifestNamespace.DataSource) => dataSource.type === 'OData'
+        );
         if (oDataSources.length === 0) {
             service.name = DEFAULT_DATASOURCE_NAME;
         } else if (service.name && !update) {
@@ -95,11 +97,14 @@ async function setDefaultServiceModel(
         const models = manifest?.['sap.ui5']?.models;
         if (models) {
             // Filter dataSource models by dataSource property
-            const servicesModels = Object.values(models).filter((model) => model.dataSource);
+            const modelValues = Object.values(models) as Record<string, unknown>[];
+            const servicesModels = modelValues.filter((model) => model.dataSource);
             if (
                 servicesModels.length === 0 ||
                 (update &&
-                    servicesModels.find((serviceModel) => serviceModel.dataSource === DEFAULT_DATASOURCE_NAME) &&
+                    servicesModels.find(
+                        (serviceModel) => serviceModel.dataSource === DEFAULT_DATASOURCE_NAME
+                    ) &&
                     service.name === DEFAULT_DATASOURCE_NAME)
             ) {
                 service.model = '';

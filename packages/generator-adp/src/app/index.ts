@@ -42,13 +42,13 @@ import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-e
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
 
-import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
-import { getPackageInfo, installDependencies } from '../utils/deps';
-import { initI18n, t } from '../utils/i18n';
-import AdpGeneratorLogger from '../utils/logger';
-import { setHeaderTitle } from '../utils/opts';
-import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
-import { TelemetryCollector, EventName } from '../telemetry';
+import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache.js';
+import { getPackageInfo, installDependencies } from '../utils/deps.js';
+import { initI18n, t } from '../utils/i18n.js';
+import AdpGeneratorLogger from '../utils/logger.js';
+import { setHeaderTitle } from '../utils/opts.js';
+import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input.js';
+import { TelemetryCollector, EventName } from '../telemetry/index.js';
 import {
     getDeployPage,
     getWizardPages,
@@ -56,16 +56,16 @@ import {
     updateFlpWizardSteps,
     updateWizardSteps,
     getKeyUserImportPage
-} from '../utils/steps';
-import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
-import { getTemplatesOverwritePath } from '../utils/templates';
-import { existsInWorkspace, handleWorkspaceFolderChoice, showWorkspaceFolderWarning } from '../utils/workspace';
-import { getFlexLayer } from './layer';
-import { getPrompts } from './questions/attributes';
-import { CFServicesPrompter } from './questions/cf-services';
-import { ConfigPrompter } from './questions/configuration';
-import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import { validateJsonInput } from './questions/helper/validators';
+} from '../utils/steps.js';
+import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers.js';
+import { getTemplatesOverwritePath } from '../utils/templates.js';
+import { existsInWorkspace, handleWorkspaceFolderChoice, showWorkspaceFolderWarning } from '../utils/workspace.js';
+import { getFlexLayer } from './layer.js';
+import { getPrompts } from './questions/attributes.js';
+import { CFServicesPrompter } from './questions/cf-services.js';
+import { ConfigPrompter } from './questions/configuration.js';
+import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values.js';
+import { validateJsonInput } from './questions/helper/validators.js';
 import {
     TargetEnv,
     type TargetEnvAnswers,
@@ -73,10 +73,10 @@ import {
     type AttributePromptOptions,
     type JsonInput,
     type OptionalPromptsConfig
-} from './types';
-import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
-import type { AdpTelemetryData } from '../types';
-import { KeyUserImportPrompter } from './questions/key-user';
+} from './types.js';
+import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env.js';
+import type { AdpTelemetryData } from '../types.js';
+import { KeyUserImportPrompter } from './questions/key-user.js';
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 
 const generatorTitle = 'Adaptation Project';

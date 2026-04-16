@@ -1,12 +1,12 @@
 import type { NavigationProperty, Property, EntitySet } from '@sap-ux/vocabularies-types';
-import { bindingContextRelative, bindingContextAbsolute } from '../../types';
-import type { PromptContext } from '../../../prompts/types';
-import { getEntitySets } from './service';
-import { i18nNamespaces, translate } from '../../../i18n';
+import { bindingContextRelative, bindingContextAbsolute } from '../../types.js';
+import type { PromptContext } from '../../../prompts/types.js';
+import { getEntitySets } from './service.js';
+import { i18nNamespaces, translate } from '../../../i18n.js';
 import { join } from 'node:path';
-import { getExistingButtonGroups } from '../utils/xml';
+import { getExistingButtonGroups } from '../utils/xml.js';
 import type { Answers } from 'inquirer';
-import { BUTTON_GROUP_CONFIGS } from '../../processor';
+import { BUTTON_GROUP_CONFIGS } from '../../processor.js';
 
 /**
  * Loads entity sets from cache or fetches them for the given context.

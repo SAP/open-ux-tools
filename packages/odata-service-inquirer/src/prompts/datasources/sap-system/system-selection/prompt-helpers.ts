@@ -12,14 +12,14 @@ import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
-import { t } from '../../../../i18n';
-import type { ConnectedSystem, DestinationFilters } from '../../../../types';
-import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
-import type { ConnectionValidator } from '../../../connectionValidator';
-import LoggerHelper from '../../../logger-helper';
-import type { ValidationResult } from '../../../types';
+import { t } from '../../../../i18n.js';
+import type { ConnectedSystem, DestinationFilters } from '../../../../types.js';
+import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils/index.js';
+import type { ConnectionValidator } from '../../../connectionValidator.js';
+import LoggerHelper from '../../../logger-helper.js';
+import type { ValidationResult } from '../../../types.js';
 import { getBackendSystemDisplayName } from '@sap-ux/fiori-generator-shared';
-import { getAllBackendSystems, getBackendSystemService } from '../../../../utils/store';
+import { getAllBackendSystems, getBackendSystemService } from '../../../../utils/store.js';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.

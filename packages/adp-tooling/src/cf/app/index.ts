@@ -1,2 +1,2 @@
-export * from './discovery';
-export * from './html5-repo';
+export * from './discovery.js';
+export * from './html5-repo.js';

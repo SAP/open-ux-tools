@@ -1,5 +1,5 @@
-export * from './types/vocabulary-service';
-export type { VocabularyNamespace, VocabularyAlias } from './resources/index';
+export * from './types/vocabulary-service.js';
+export type { VocabularyNamespace, VocabularyAlias } from './resources/index.js';
 export {
     type Namespace,
     COMPLEX_TYPE_KIND,
@@ -7,4 +7,4 @@ export {
     TERM_KIND,
     TYPE_DEFINITION_KIND
 } from '@sap-ux/odata-annotation-core-types';
-export { VocabularyService } from './vocabulary-service';
+export { VocabularyService } from './vocabulary-service.js';

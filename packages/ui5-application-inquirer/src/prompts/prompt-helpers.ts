@@ -2,14 +2,14 @@ import { latestVersionString } from '@sap-ux/ui5-info';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { coerce, gte } from 'semver';
-import { defaultProjectNumber, t } from '../i18n';
+import { defaultProjectNumber, t } from '../i18n.js';
 import {
     promptNames,
     type AddDeployPromptOptions,
     type UI5ApplicationCommonPromptOptions,
     type UI5ApplicationPromptOptions,
     type UI5ApplicationQuestion
-} from '../types';
+} from '../types.js';
 import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 
 /**

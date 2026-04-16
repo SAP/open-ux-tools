@@ -1,7 +1,7 @@
 import { basename } from 'node:path';
-import { getLaunchConfig } from '../launch-config-crud/utils';
-import type { LaunchConfig, LaunchJSON, DebugOptions, LaunchConfigEnv } from '../types';
-import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
+import { getLaunchConfig } from '../launch-config-crud/utils.js';
+import type { LaunchConfig, LaunchJSON, DebugOptions, LaunchConfigEnv } from '../types/index.js';
+import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types/index.js';
 
 // debug constants
 const testFlpSandboxHtml = 'test/flpSandbox.html';

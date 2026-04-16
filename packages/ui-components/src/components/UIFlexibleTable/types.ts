@@ -1,4 +1,4 @@
-import type { IItemProps } from 'react-movable/lib/types';
+import type { IItemProps } from 'react-movable';
 
 export enum UIFlexibleTableLayout {
     InlineFlex = 'InlineFlex',

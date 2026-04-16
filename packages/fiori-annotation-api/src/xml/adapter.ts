@@ -61,17 +61,17 @@ import {
     DELETE_ATTRIBUTE,
     INSERT_TARGET,
     REPLACE_TEXT
-} from '../types';
-import { ApiError, ApiErrorCode } from '../error';
+} from '../types/index.js';
+import { ApiError, ApiErrorCode } from '../error.js';
 
-import { XMLWriter } from './writer';
-import { REPLACE_ELEMENT_CONTENT } from './changes';
-import type { Document } from './document';
-import type { Comment } from './comments';
-import { collectUsedNamespaces } from './references';
-import { collectComments } from './comments';
-import { getNodeFromPointer } from './pointer';
-import type { ValueListReference } from '../types/adapter';
+import { XMLWriter } from './writer.js';
+import { REPLACE_ELEMENT_CONTENT } from './changes.js';
+import type { Document } from './document.js';
+import type { Comment } from './comments.js';
+import { collectUsedNamespaces } from './references.js';
+import { collectComments } from './comments.js';
+import { getNodeFromPointer } from './pointer.js';
+import type { ValueListReference } from '../types/adapter.js';
 import { pathToFileURL } from 'node:url';
 
 /**

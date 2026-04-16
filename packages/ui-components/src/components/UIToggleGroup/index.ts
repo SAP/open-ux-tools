@@ -1,2 +1,2 @@
-export * from './UIToggleGroup';
-export * from './UIToggleGroup.types';
+export * from './UIToggleGroup.js';
+export * from './UIToggleGroup.types.js';

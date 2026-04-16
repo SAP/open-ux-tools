@@ -5,13 +5,13 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type {
     QuickActionContext,
     SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { getRelevantControlFromActivePage, pageHasControlId } from '../../../cpe/quick-actions/utils';
-import { GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
-import { areManifestChangesSupported, prepareManifestChange } from './utils';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { getRelevantControlFromActivePage, pageHasControlId } from '../../../cpe/quick-actions/utils.js';
+import { GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types.js';
+import { areManifestChangesSupported, prepareManifestChange } from './utils.js';
 
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { isA } from '../../../utils/core';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base.js';
+import { isA } from '../../../utils/core.js';
 
 const COMPONENT = 'sap.suite.ui.generic.template.ListReport';
 

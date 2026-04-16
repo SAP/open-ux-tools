@@ -1,14 +1,14 @@
 import type { Editor } from 'mem-fs-editor';
 
-import { ChangeType } from '../../../types';
+import { ChangeType } from '../../../types.js';
 import {
     getParsedPropertyValue,
     findChangeWithInboundId,
     getChange,
     writeChangeToFolder,
     writeChangeToFile
-} from '../../../base/change-utils';
-import type { IWriter, InboundData, InboundContent } from '../../../types';
+} from '../../../base/change-utils.js';
+import type { IWriter, InboundData, InboundContent } from '../../../types.js';
 
 /**
  * Handles the creation and writing of inbound data changes for a project.

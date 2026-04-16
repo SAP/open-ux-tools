@@ -2,11 +2,11 @@ import type { Answers } from 'inquirer';
 import { SapShortTextType } from '@sap-ux/i18n';
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 
-import type { PromptContext, Prompts, PromptsGroup } from '../../../prompts/types';
-import type { BuildingBlockConfig, Form } from '../../types';
+import type { PromptContext, Prompts, PromptsGroup } from '../../../prompts/types.js';
+import type { BuildingBlockConfig, Form } from '../../types.js';
 
-import { i18nNamespaces, translate } from '../../../i18n';
-import { getManifestPromptsGroup } from './building-blocks';
+import { i18nNamespaces, translate } from '../../../i18n.js';
+import { getManifestPromptsGroup } from './building-blocks.js';
 import {
     getBuildingBlockIdPrompt,
     getBindingContextTypePrompt,
@@ -16,8 +16,8 @@ import {
     getViewOrFragmentPathPrompt,
     getCAPServicePrompt,
     isCapProject
-} from '../utils';
-import { BuildingBlockType } from '../../types';
+} from '../utils/index.js';
+import { BuildingBlockType } from '../../types.js';
 
 const MANIFEST_LIBRARIES_GROUP = getManifestPromptsGroup();
 

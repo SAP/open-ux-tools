@@ -1,11 +1,11 @@
 import type { CustomMiddleware, FioriToolsProxyConfig } from '@sap-ux/ui5-config';
-import type { ResultMessage } from '../types';
+import type { ResultMessage } from '../types.js';
 import { findAllApps } from '@sap-ux/project-access';
 import { existsSync, promises as fsPromises } from 'node:fs';
 import { join } from 'node:path';
 import yamljs from 'yamljs';
-import { FileName, Severity } from '../types';
-import { t } from '../i18n';
+import { FileName, Severity } from '../types.js';
+import { t } from '../i18n.js';
 
 /**
  * Internal function to return the ui5 middleware settings of a given Fiori elements project (v2 or v4).

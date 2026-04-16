@@ -1,4 +1,4 @@
-import type { JsonInput } from '../app/types';
+import type { JsonInput } from '../app/types.js';
 
 /**
  * Type guard for a string values.

@@ -9,7 +9,7 @@ import {
 } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions, Question } from 'inquirer';
-import { t } from '../../i18n';
+import { t } from '../../i18n.js';
 import type {
     AlpTableConfigAnswers,
     AnnotationGenerationAnswers,
@@ -17,11 +17,11 @@ import type {
     EntitySelectionAnswers,
     TableConfigAnswers,
     PageBuildingBlockAnswers
-} from '../../types';
-import { EntityPromptNames, MetadataSizeWarningLimitKb } from '../../types';
-import { PromptState } from '../../utils';
-import LoggerHelper from '../logger-helper';
-import { getAnalyticListPageQuestions } from './alp-questions';
+} from '../../types.js';
+import { EntityPromptNames, MetadataSizeWarningLimitKb } from '../../types.js';
+import { PromptState } from '../../utils/index.js';
+import LoggerHelper from '../logger-helper.js';
+import { getAnalyticListPageQuestions } from './alp-questions.js';
 import {
     type EntityAnswer,
     type EntityChoiceOptions,
@@ -30,7 +30,7 @@ import {
     getEntityChoices,
     getNavigationEntityChoices,
     type NavigationEntityAnswer
-} from './entity-helper';
+} from './entity-helper.js';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 /**

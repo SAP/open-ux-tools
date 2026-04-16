@@ -1,12 +1,18 @@
 import Generator from 'yeoman-generator';
-import RepoAppDownloadLogger from '../utils/logger';
+import RepoAppDownloadLogger from '../utils/logger.js';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { Logger } from '@sap-ux/logger';
-import { generatorTitle, extractedFilePath, generatorName, defaultAnswers, qfaJsonFileName } from '../utils/constants';
-import { t } from '../utils/i18n';
-import { extractZip } from '../utils/download-utils';
-import { EventName } from '../telemetryEvents';
+import {
+    generatorTitle,
+    extractedFilePath,
+    generatorName,
+    defaultAnswers,
+    qfaJsonFileName
+} from '../utils/constants.js';
+import { t } from '../utils/i18n.js';
+import { extractZip } from '../utils/download-utils.js';
+import { EventName } from '../telemetryEvents/index.js';
 import {
     getDefaultTargetFolder,
     generateAppGenInfo,
@@ -16,12 +22,17 @@ import {
     isCli,
     setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
-import type { RepoAppDownloadOptions, RepoAppDownloadAnswers, RepoAppDownloadQuestions, QfaJsonConfig } from './types';
-import { getPrompts } from '../prompts/prompts';
+import type {
+    RepoAppDownloadOptions,
+    RepoAppDownloadAnswers,
+    RepoAppDownloadQuestions,
+    QfaJsonConfig
+} from './types.js';
+import { getPrompts } from '../prompts/prompts.js';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { join, basename } from 'node:path';
 import { platform } from 'node:os';
-import { runPostAppGenHook } from '../utils/event-hook';
+import { runPostAppGenHook } from '../utils/event-hook.js';
 import { getDefaultUI5Theme } from '@sap-ux/ui5-info';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig, updateWorkspaceFoldersIfNeeded, handleWorkspaceConfig } from '@sap-ux/launch-config';
@@ -29,14 +40,14 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
-import { PromptState } from '../prompts/prompt-state';
-import { PromptNames } from './types';
-import { getAbapDeployConfig, getAppConfig, type AppDownloadContext } from './app-config';
+import { PromptState } from '../prompts/prompt-state.js';
+import { PromptNames } from './types.js';
+import { getAbapDeployConfig, getAppConfig, type AppDownloadContext } from './app-config.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import { makeValidJson } from '../utils/file-helpers';
-import { replaceWebappFiles, validateAndUpdateManifestUI5Version } from '../utils/updates';
-import { getYUIDetails } from '../prompts/prompt-helpers';
-import { isValidPromptState, validateQfaJsonFile } from '../utils/validators';
+import { makeValidJson } from '../utils/file-helpers.js';
+import { replaceWebappFiles, validateAndUpdateManifestUI5Version } from '../utils/updates.js';
+import { getYUIDetails } from '../prompts/prompt-helpers.js';
+import { isValidPromptState, validateQfaJsonFile } from '../utils/validators.js';
 import { FileName, DirName } from '@sap-ux/project-access';
 
 /**

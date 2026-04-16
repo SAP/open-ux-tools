@@ -1,9 +1,9 @@
 import type { Editor } from 'mem-fs-editor';
 import { dirname, join, sep } from 'node:path';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { DirName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
-import type { DataSources, EdmxAnnotationsInfo, OdataService } from '../types';
+import type { DataSources, EdmxAnnotationsInfo, OdataService } from '../types.js';
 import semVer from 'semver';
 
 interface DataSourceUpdateSettings {
@@ -530,7 +530,7 @@ export async function updateManifest(
     if (
         !forceServiceUpdate &&
         service.path &&
-        Object.values(dataSources).find((dataSource) => dataSource.uri === service.path)
+        Object.values(dataSources).find((dataSource: ManifestNamespace.DataSource) => dataSource.uri === service.path)
     ) {
         throw new Error(
             t('error.requiredServiceAlreadyExists', {

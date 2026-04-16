@@ -7,7 +7,7 @@ import { UILink } from '@sap-ux/ui-components';
 import type { SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 
-import type { RootState } from '../../store';
+import type { RootState } from '../../store.js';
 
 export interface SimpleQuickActionListItemProps {
     action: Readonly<SimpleQuickAction>;

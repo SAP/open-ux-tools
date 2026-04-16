@@ -8,7 +8,7 @@ import {
     TargetName,
     getExtensionGenPromptOpts
 } from '@sap-ux/deploy-config-generator-shared';
-import { parseTarget, getYUIDetails } from './utils';
+import { parseTarget, getYUIDetails } from './utils.js';
 import {
     getApiHubOptions,
     getEnvApiHubConfig,
@@ -18,12 +18,12 @@ import {
     getSupportedTargets,
     generatorTitle,
     promptNames
-} from '../utils';
+} from '../utils/index.js';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
-import { promptDeployConfigQuestions } from './prompting';
+import { promptDeployConfigQuestions } from './prompting.js';
 import type { Answers } from 'inquirer';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
-import type { DeployConfigGenerator, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types';
+import type { DeployConfigGenerator, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types/index.js';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type {

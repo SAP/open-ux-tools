@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path';
-import type { I18nPropertiesPaths, Manifest } from '../../types';
-import { readJSON } from '../../file';
+import type { I18nPropertiesPaths, Manifest } from '../../types/index.js';
+import { readJSON } from '../../file/index.js';
 import type { Editor } from 'mem-fs-editor';
 
 /**
@@ -105,7 +105,8 @@ function getI18nModelPaths(manifest: Manifest): { [modelKey: string]: { path: st
             // bundleName wins over `bundleUrl`
             if (i18nModel.settings.bundleName) {
                 // module name is in dot notation
-                const withoutAppId = i18nModel.settings.bundleName.replace(manifest['sap.app'].id, '');
+                const appId = manifest['sap.app']?.id ?? '';
+                const withoutAppId = i18nModel.settings.bundleName.replace(appId, '');
                 const i18nPath = `${join(...withoutAppId.split('.'))}.properties`;
                 result[modelKey] = { path: join(i18nPath) };
                 continue;

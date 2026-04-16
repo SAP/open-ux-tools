@@ -1,10 +1,10 @@
 import { generateFreestyleOPAFiles } from '@sap-ux/ui5-test-writer';
 import type { Package } from '@sap-ux/ui5-application-writer';
-import type { FreestyleApp, BasicAppSettings } from './types';
-import { TemplateType } from './types';
+import type { FreestyleApp, BasicAppSettings } from './types.js';
+import { TemplateType } from './types.js';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
-import { t } from './i18n';
+import { t } from './i18n.js';
 
 /**
  * Adds test scripts to the package.json object.

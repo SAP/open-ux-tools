@@ -1,2 +1,2 @@
-export { actions, store } from './store';
-export { reducer, getInitialState } from './reducers';
+export { actions, store } from './store.js';
+export { reducer, getInitialState } from './reducers.js';

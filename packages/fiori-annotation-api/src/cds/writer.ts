@@ -35,15 +35,15 @@ import {
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
 import { TARGET_TYPE, printPrimitiveValue, indent, print, printTarget } from '@sap-ux/cds-odata-annotation-converter';
 
-import { increaseIndent, compareByRange } from '../utils';
-import { ApiError } from '../error';
+import { increaseIndent, compareByRange } from '../utils/index.js';
+import { ApiError } from '../error.js';
 
-import type { Comment } from './comments';
-import type { AstNode, CDSDocument, ContainerNode } from './document';
-import { CDS_DOCUMENT_TYPE, getChildCount, getItems } from './document';
-import type { DeletionRange } from './deletion';
-import { getTextEditsForDeletionRanges, getDeletionRangeForNode } from './deletion';
-import { getAstNodesFromPointer } from './pointer';
+import type { Comment } from './comments.js';
+import type { AstNode, CDSDocument, ContainerNode } from './document.js';
+import { CDS_DOCUMENT_TYPE, getChildCount, getItems } from './document.js';
+import type { DeletionRange } from './deletion.js';
+import { getTextEditsForDeletionRanges, getDeletionRangeForNode } from './deletion.js';
+import { getAstNodesFromPointer } from './pointer.js';
 
 import type {
     CDSDocumentChange,
@@ -72,7 +72,7 @@ import type {
     ConvertToCompoundAnnotation,
     ElementInserts,
     DeleteAnnotationGroup
-} from './change';
+} from './change.js';
 import {
     INSERT_PRIMITIVE_VALUE_TYPE,
     MOVE_COLLECTION_VALUE_CHANGE_TYPE,
@@ -100,9 +100,9 @@ import {
     DELETE_ANNOTATION_GROUP_CHANGE_TYPE,
     DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE,
     createDeleteAnnotationChange
-} from './change';
-import { createReferenceElement, preprocessChanges } from './preprocessor';
-import type { CompilerToken } from './cds-compiler-tokens';
+} from './change.js';
+import { createReferenceElement, preprocessChanges } from './preprocessor.js';
+import type { CompilerToken } from './cds-compiler-tokens.js';
 import {
     findLastTokenBeforePosition,
     findFirstTokenAfterPosition,
@@ -111,8 +111,8 @@ import {
     isOldToken,
     tokenLine,
     tokenColumn
-} from './cds-compiler-tokens';
-import { getIndentLevelFromPointer, getIndentLevelFromNode } from './indent';
+} from './cds-compiler-tokens.js';
+import { getIndentLevelFromPointer, getIndentLevelFromNode } from './indent.js';
 
 const printOptions: typeof defaultPrintOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
 

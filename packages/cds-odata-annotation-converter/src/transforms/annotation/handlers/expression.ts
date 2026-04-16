@@ -16,8 +16,8 @@ import {
 import type { Element, Range } from '@sap-ux/odata-annotation-core-types';
 import { Edm, createAttributeNode, createElementNode } from '@sap-ux/odata-annotation-core-types';
 
-import type { ConvertResult, NodeHandler, Subtree } from '../handler';
-import type { VisitorState } from '../visitor-state';
+import type { ConvertResult, NodeHandler, Subtree } from '../handler.js';
+import type { VisitorState } from '../visitor-state.js';
 
 export const correctExpressionHandler: NodeHandler<CorrectExpression> = {
     type: CORRECT_EXPRESSION_TYPE,

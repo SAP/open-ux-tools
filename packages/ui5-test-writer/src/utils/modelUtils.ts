@@ -10,9 +10,9 @@ import type {
     TreeModel,
     ApplicationModel
 } from '@sap/ux-specification/dist/types/src/parser';
-import type { AppFeatures, FPMFeatures } from '../types';
-import { getObjectPageFeatures, getObjectPages } from './objectPageUtils';
-import { getFilterFieldNames, getListReportFeatures } from './listReportUtils';
+import type { AppFeatures, FPMFeatures } from '../types.js';
+import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
+import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;

@@ -1,8 +1,8 @@
 import { join } from 'node:path';
 import { existsSync } from 'node:fs';
 
-import { t } from '../i18n';
-import { validateEmptyString } from '../general/validators';
+import { t } from '../i18n.js';
+import { validateEmptyString } from '../general/validators.js';
 
 /**
  * Validates a value for duplication in existing change files.

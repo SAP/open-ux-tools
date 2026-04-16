@@ -1,9 +1,9 @@
-import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
+import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types/index.js';
 
 import path from 'node:path';
 import fs from 'node:fs';
-import { getServiceMetadata, findSapSystem } from './service-metadata';
-import details from './details';
+import { getServiceMetadata, findSapSystem } from './service-metadata.js';
+import details from './details.js';
 
 /**
  * Executes the tool's functionality.

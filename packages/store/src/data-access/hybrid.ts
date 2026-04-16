@@ -1,11 +1,11 @@
-import { getFilesystemStore as dataAccessFilesystem } from './filesystem';
-import { hasAnyValue, pick } from '../utils';
+import { getFilesystemStore as dataAccessFilesystem } from './filesystem.js';
+import { hasAnyValue, pick } from '../utils/index.js';
 import type { Logger } from '@sap-ux/logger';
-import type { SecureStore } from '../secure-store';
-import { getSecureStore } from '../secure-store';
-import { getSensitiveDataProperties, getSerializableProperties } from '../decorators';
-import type { DataAccess } from '.';
-import type { ServiceOptions } from '../types';
+import type { SecureStore } from '../secure-store/index.js';
+import { getSecureStore } from '../secure-store/index.js';
+import { getSensitiveDataProperties, getSerializableProperties } from '../decorators/index.js';
+import type { DataAccess } from './index.js';
+import type { ServiceOptions } from '../types.js';
 import { inspect } from 'node:util';
 
 function getFullyQualifiedServiceName(name: string): string {

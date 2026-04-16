@@ -5,9 +5,9 @@ import {
     getPackagePrompts,
     getTransportRequestPrompts,
     getConfirmPrompts
-} from './questions';
-import { PromptState } from './prompt-state';
-import type { AbapDeployConfigQuestion, AbapDeployConfigPromptOptions } from '../types';
+} from './questions/index.js';
+import { PromptState } from './prompt-state.js';
+import type { AbapDeployConfigQuestion, AbapDeployConfigPromptOptions } from '../types.js';
 
 /**
  * Get the abap deployment config questions.

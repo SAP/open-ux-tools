@@ -4,9 +4,9 @@ import { join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import type { IManifestService, DataSources } from '../../types';
-import { runBuild } from '../../base/project-builder';
-import { t } from '../../i18n';
+import type { IManifestService, DataSources } from '../../types.js';
+import { runBuild } from '../../base/project-builder.js';
+import { t } from '../../i18n.js';
 
 /** Default build output folder used by CF ADP projects. */
 const CF_BUILD_PATH = 'dist';

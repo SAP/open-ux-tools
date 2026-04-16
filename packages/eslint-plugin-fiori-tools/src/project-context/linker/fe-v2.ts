@@ -1,9 +1,9 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
-import type { LinkerContext, ConfigurationBase } from './types';
-import { getParsedServiceByName } from '../utils';
-import type { ParsedService } from '../parser';
-import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
-import { collectHeaderSections, collectSections, collectTables, getConfigurationKey } from './annotations';
+import type { LinkerContext, ConfigurationBase } from './types.js';
+import { getParsedServiceByName } from '../utils.js';
+import type { ParsedService } from '../parser/index.js';
+import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations.js';
+import { collectHeaderSections, collectSections, collectTables, getConfigurationKey } from './annotations.js';
 
 export interface FlexibleColumnLayoutSettings {
     defaultTwoColumnLayoutType: string;
@@ -284,7 +284,7 @@ export function runFeV2Linker(context: LinkerContext): LinkedFeV2App {
         return linkedApp;
     }
     if (config) {
-        for (const [name, target] of Object.entries(config?.pages ?? {})) {
+        for (const [name, target] of Object.entries(config?.pages ?? {}) as [string, ManifestPageSettings][]) {
             linkPage(context, service, linkedApp, ['sap.ui.generic.app', 'pages'], name, target);
         }
     }

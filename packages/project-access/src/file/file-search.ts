@@ -2,7 +2,7 @@ import type { Editor, FileMap } from 'mem-fs-editor';
 import { basename, dirname, extname, join, sep, posix } from 'node:path';
 import type { FindError } from 'findit2';
 import find from 'findit2';
-import { fileExists } from './file-access';
+import { fileExists } from './file-access.js';
 import { promises as fs } from 'node:fs';
 
 /**

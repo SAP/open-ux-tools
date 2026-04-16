@@ -1,20 +1,20 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { getUi5Version } from '../../../utils/version';
-import { getControllerInfoForControl, getReuseComponentChecker, checkForExistingChange } from '../../utils';
-import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import { getUi5Version } from '../../../utils/version.js';
+import { getControllerInfoForControl, getReuseComponentChecker, checkForExistingChange } from '../../utils.js';
+import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils.js';
 import type {
     QuickActionContext,
     SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { getTextBundle } from '../../../i18n';
-import { getExistingController } from '../../api-handler';
-import { DialogFactory, DialogNames } from '../../dialog-factory';
-import { isControllerExtensionEnabledForControl } from '../../init-dialogs';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
-import type { EnablementValidatorResult } from '../enablement-validator';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { getTextBundle } from '../../../i18n.js';
+import { getExistingController } from '../../api-handler.js';
+import { DialogFactory, DialogNames } from '../../dialog-factory.js';
+import { isControllerExtensionEnabledForControl } from '../../init-dialogs.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
+import type { EnablementValidatorResult } from '../enablement-validator.js';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base.js';
 
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];

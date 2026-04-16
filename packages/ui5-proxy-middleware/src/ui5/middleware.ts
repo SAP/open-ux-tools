@@ -2,8 +2,14 @@ import type { RequestHandler } from 'express';
 import { Router as createRouter } from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { ProxyConfig } from '../base';
-import { getCorporateProxyServer, directLoadProxy, ui5Proxy, resolveUI5Version, hideProxyCredentials } from '../base';
+import type { ProxyConfig } from '../base/index.js';
+import {
+    getCorporateProxyServer,
+    directLoadProxy,
+    ui5Proxy,
+    resolveUI5Version,
+    hideProxyCredentials
+} from '../base/index.js';
 import dotenv from 'dotenv';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';

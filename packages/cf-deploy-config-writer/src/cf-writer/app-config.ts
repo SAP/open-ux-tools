@@ -33,7 +33,7 @@ import {
     UI5DeployBuildScriptForCap,
     undeployMTAScript,
     WelcomeFile
-} from '../constants';
+} from '../constants.js';
 import {
     addCommonPackageDependencies,
     enforceValidRouterConfig,
@@ -44,7 +44,7 @@ import {
     readManifest,
     toPosixPath,
     updateRootPackage
-} from '../utils';
+} from '../utils.js';
 import {
     createMTA,
     doesCDSBinaryExist,
@@ -54,10 +54,10 @@ import {
     getMtaId,
     type MtaConfig,
     toMtaModuleName
-} from '../mta-config';
-import LoggerHelper from '../logger-helper';
-import { t } from '../i18n';
-import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig } from '../types';
+} from '../mta-config/index.js';
+import LoggerHelper from '../logger-helper.js';
+import { t } from '../i18n.js';
+import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig } from '../types/index.js';
 
 /**
  * Add a managed approuter configuration to an existing HTML5 application, any exceptions thrown will be handled by the calling client.

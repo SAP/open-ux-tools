@@ -39,6 +39,9 @@ module.exports = {
             include: path.resolve(__dirname, '../')
         });
         config.resolve.extensions.push('.ts', '.tsx');
+        config.resolve.extensionAlias = {
+            '.js': ['.ts', '.tsx', '.js']
+        };
         return config;
     },
     framework: {

@@ -1,8 +1,8 @@
 import type { Element, ElementName } from '@sap-ux/odata-annotation-core-types';
 import { TEXT_TYPE, ELEMENT_TYPE, Edm } from '@sap-ux/odata-annotation-core-types';
 
-import type { JsonPointer } from '../types';
-import { expressionNames } from './expressions';
+import type { JsonPointer } from '../types/index.js';
+import { expressionNames } from './expressions.js';
 
 /*
   Fiori Annotation API uses paths (in JsonPointer format) to specify locations inside a (non embedded) annotation value.

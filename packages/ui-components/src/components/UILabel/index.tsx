@@ -1,1 +1,1 @@
-export * from './UILabel';
+export * from './UILabel.js';

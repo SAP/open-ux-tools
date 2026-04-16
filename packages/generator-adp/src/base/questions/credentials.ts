@@ -5,9 +5,9 @@ import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { getConfiguredProvider } from '@sap-ux/adp-tooling';
 import type { InputQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
-import { t } from '../../utils/i18n';
-import type { Credentials } from '../../types';
-import { configPromptNames } from '../../app/types';
+import { t } from '../../utils/i18n.js';
+import type { Credentials } from '../../types.js';
+import { configPromptNames } from '../../app/types.js';
 import type { LayeredRepositoryService } from '@sap-ux/axios-extension';
 
 interface ClientCredentials {

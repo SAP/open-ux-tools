@@ -1,6 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { JsonInput } from '../app/types';
-import { isJsonInput, isString } from './type-guards';
+import type { JsonInput } from '../app/types.js';
+import { isJsonInput, isString } from './type-guards.js';
 
 /**
  * Returns the first argument from a list of CLI arguments. If the first argument

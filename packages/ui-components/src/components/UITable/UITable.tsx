@@ -24,11 +24,11 @@ import {
     FocusZoneDirection
 } from '@fluentui/react';
 
-import { UICheckbox } from '../UICheckbox';
-import { UITextInput } from '../UIInput';
-import { UIDropdown } from '../UIDropdown';
-import { UIComboBox } from '../UIComboBox';
-import { UIDatePicker } from '../UIDatePicker';
+import { UICheckbox } from '../UICheckbox/index.js';
+import { UITextInput } from '../UIInput/index.js';
+import { UIDropdown } from '../UIDropdown/index.js';
+import { UIComboBox } from '../UIComboBox/index.js';
+import { UIDatePicker } from '../UIDatePicker/index.js';
 import {
     scrollToColumn,
     addRowNumbers,
@@ -41,9 +41,9 @@ import {
     scrollToRow,
     getComboBoxInput,
     getCellFromCoords
-} from './UITable-helper';
-import type { UITableProps, UITableState, UIDocument, UIColumn, EditedCell } from './types';
-import { ColumnControlType } from './types';
+} from './UITable-helper.js';
+import type { UITableProps, UITableState, UIDocument, UIColumn, EditedCell } from './types.js';
+import { ColumnControlType } from './types.js';
 import './UITable.scss';
 
 /**

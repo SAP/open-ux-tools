@@ -21,13 +21,13 @@ import type {
     AddFlpConfigPromptOptions,
     OptionalPromptsConfig,
     ImportKeyUserChangesPromptOptions
-} from '../types';
-import { t } from '../../utils/i18n';
-import { attributePromptNames, SystemType } from '../types';
-import { getProjectNameTooltip } from './helper/tooltip';
-import { getVersionAdditionalMessages } from './helper/additional-messages';
-import { updateWizardSteps, getDeployPage, updateFlpWizardSteps, getKeyUserImportPage } from '../../utils/steps';
-import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values';
+} from '../types.js';
+import { t } from '../../utils/i18n.js';
+import { attributePromptNames, SystemType } from '../types.js';
+import { getProjectNameTooltip } from './helper/tooltip.js';
+import { getVersionAdditionalMessages } from './helper/additional-messages.js';
+import { updateWizardSteps, getDeployPage, updateFlpWizardSteps, getKeyUserImportPage } from '../../utils/steps.js';
+import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values.js';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**

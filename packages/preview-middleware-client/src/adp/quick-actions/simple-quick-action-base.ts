@@ -3,10 +3,10 @@ import type UI5Element from 'sap/ui/core/Element';
 import type { SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { SIMPLE_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
 
-import { getRelevantControlFromActivePage } from '../../cpe/quick-actions/utils';
-import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
-import type { EnablementValidator } from './enablement-validator';
-import { QuickActionDefinitionBase } from './quick-action-base';
+import { getRelevantControlFromActivePage } from '../../cpe/quick-actions/utils.js';
+import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition.js';
+import type { EnablementValidator } from './enablement-validator.js';
+import { QuickActionDefinitionBase } from './quick-action-base.js';
 
 /**
  * Base class for all simple quick actions.

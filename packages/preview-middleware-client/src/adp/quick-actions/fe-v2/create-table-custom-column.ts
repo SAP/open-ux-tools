@@ -12,20 +12,20 @@ import type IconTabBar from 'sap/m/IconTabBar';
 
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { getControlById, isA } from '../../../utils/core';
-import { DialogNames, DialogFactory } from '../../dialog-factory';
+import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition.js';
+import { getControlById, isA } from '../../../utils/core.js';
+import { DialogNames, DialogFactory } from '../../dialog-factory.js';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
     M_TABLE_TYPE,
     SMART_TABLE_TYPE,
     TREE_TABLE_TYPE
-} from '../control-types';
-import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+} from '../control-types.js';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
-import { sendInfoCenterMessage } from '../../../utils/info-center-message';
+import { sendInfoCenterMessage } from '../../../utils/info-center-message.js';
 
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
 

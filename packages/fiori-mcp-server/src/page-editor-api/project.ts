@@ -1,10 +1,10 @@
 import { FileName, getCapServiceName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
 import type { ApplicationAccess, Manifest, Package } from '@sap-ux/project-access';
-import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
+import { FlexChangeLayer } from '@sap/ux-specification';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 /**
  * Method returns main service of the application.

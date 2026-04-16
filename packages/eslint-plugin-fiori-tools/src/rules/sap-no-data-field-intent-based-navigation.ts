@@ -1,13 +1,18 @@
 import type { Element, AliasInformation } from '@sap-ux/odata-annotation-core';
 import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
-import { createFioriRule } from '../language/rule-factory';
-import type { FioriRuleDefinition } from '../types';
-import type { NoDataFieldIntentBasedNavigation } from '../language/diagnostics';
-import { NO_DATA_FIELD_INTENT_BASED_NAVIGATION } from '../language/diagnostics';
-import { getRecordType } from '../project-context/linker/annotations';
-import type { FeV4ObjectPage, FeV4ListReport, Table as FeV4Table, FieldGroup } from '../project-context/linker/fe-v4';
-import type { FeV2ListReport, FeV2ObjectPage, Table as FeV2Table } from '../project-context/linker/fe-v2';
-import { type ParsedService } from '../project-context/parser';
+import { createFioriRule } from '../language/rule-factory.js';
+import type { FioriRuleDefinition } from '../types.js';
+import type { NoDataFieldIntentBasedNavigation } from '../language/diagnostics.js';
+import { NO_DATA_FIELD_INTENT_BASED_NAVIGATION } from '../language/diagnostics.js';
+import { getRecordType } from '../project-context/linker/annotations.js';
+import type {
+    FeV4ObjectPage,
+    FeV4ListReport,
+    Table as FeV4Table,
+    FieldGroup
+} from '../project-context/linker/fe-v4.js';
+import type { FeV2ListReport, FeV2ObjectPage, Table as FeV2Table } from '../project-context/linker/fe-v2.js';
+import { type ParsedService } from '../project-context/parser/index.js';
 
 /**
  * Collects DataFieldForIntentBasedNavigation and DataFieldWithIntentBasedNavigation used in a page

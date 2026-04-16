@@ -1,2 +1,2 @@
-export * from './UIDropdown';
-export * from './utils';
+export * from './UIDropdown.js';
+export * from './utils.js';

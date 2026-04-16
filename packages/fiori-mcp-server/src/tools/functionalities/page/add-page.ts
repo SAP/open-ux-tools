@@ -4,14 +4,14 @@ import type {
     FunctionalityHandlers,
     GetFunctionalityDetailsInput,
     GetFunctionalityDetailsOutput
-} from '../../../types';
-import { Application } from './application';
-import { convertToSchema, resolveApplication, validateWithSchema } from '../../../utils';
-import { ADD_PAGE } from '../../../constant';
-import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
-import { buildPageCreationSchema } from './schema';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
-import { getFioriElementsVersion } from './utils';
+} from '../../../types/index.js';
+import { Application } from './application.js';
+import { convertToSchema, resolveApplication, validateWithSchema } from '../../../utils/index.js';
+import { ADD_PAGE } from '../../../constant.js';
+import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api/index.js';
+import { buildPageCreationSchema } from './schema.js';
+import { PageTypeV4 } from '@sap/ux-specification';
+import { getFioriElementsVersion } from './utils.js';
 
 export const ADD_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
     functionalityId: ADD_PAGE,

@@ -1,16 +1,16 @@
-import { CustomExtensionType, PageTypeV4, FioriElementsVersion } from '@sap/ux-specification/dist/types/src';
+import { CustomExtensionType, PageTypeV4, FioriElementsVersion } from '@sap/ux-specification';
 import type { ApplicationAccess } from '@sap-ux/project-access';
-import { SapuxFtfsFileIO, type AppData } from '../../../page-editor-api';
-import type { ExecuteFunctionalityOutput, GetFunctionalityDetailsInput } from '../../../types';
-import { getService } from './serviceStore';
-import type { NewPage, PageDef, AllowedNavigationOptions } from './types';
-import { MissingNavigationReason } from './types';
-import { generatePageId, getFioriElementsVersion } from './utils';
+import { SapuxFtfsFileIO, type AppData } from '../../../page-editor-api/index.js';
+import type { ExecuteFunctionalityOutput, GetFunctionalityDetailsInput } from '../../../types/index.js';
+import { getService } from './serviceStore.js';
+import type { NewPage, PageDef, AllowedNavigationOptions } from './types.js';
+import { MissingNavigationReason } from './types.js';
+import { generatePageId, getFioriElementsVersion } from './utils.js';
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'node:path';
-import { ADD_PAGE, DELETE_PAGE } from '../../../constant';
-import type { Application as ApplicationConfig, CustomExtensionData, v4 } from '@sap/ux-specification/dist/types/src';
-import { getDefaultExtensionFolder } from '../../../utils';
+import { ADD_PAGE, DELETE_PAGE } from '../../../constant.js';
+import type { Application as ApplicationConfig, CustomExtensionData, v4 } from '@sap/ux-specification';
+import { getDefaultExtensionFolder } from '../../../utils/index.js';
 
 /**
  * Represents an application instance with its metadata, access configuration and functionality details.
@@ -614,7 +614,7 @@ export class Application {
      */
     public async createPage(newPage: NewPage): Promise<ExecuteFunctionalityOutput> {
         const { parent, navigation, pageType, entitySet } = newPage;
-        const viewName = newPage.pageType === PageTypeV4.CustomPage ? newPage.viewName : undefined;
+        const viewName = 'viewName' in newPage ? newPage.viewName : undefined;
         const pages = this.getPages();
 
         // Validate input parameters

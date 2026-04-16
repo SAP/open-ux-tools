@@ -11,14 +11,13 @@ import type {
     Template as TemplateSettingsFE
 } from '@sap-ux/fiori-elements-writer';
 import { OdataVersion, TemplateType as TemplateTypeFE } from '@sap-ux/fiori-elements-writer';
-import type { FreestyleApp, Template as TemplateSettingsFF } from '@sap-ux/fiori-freestyle-writer';
+import type { FreestyleApp, Template as TemplateSettingsFF, BasicAppSettings } from '@sap-ux/fiori-freestyle-writer';
 import { TemplateType as TemplateTypeFF } from '@sap-ux/fiori-freestyle-writer';
-import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types';
 import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import { ServiceType, type OdataService } from '@sap-ux/odata-service-writer';
 import { AuthenticationType } from '@sap-ux/store';
 import { latestVersionString } from '@sap-ux/ui5-info';
-import type { Floorplan, State, Service } from '../types';
+import type { Floorplan, State, Service } from '../types/index.js';
 import {
     DEFAULT_HOST,
     DEFAULT_SERVICE_PATH,
@@ -28,7 +27,7 @@ import {
     MAIN_DATASOURCE_NAME,
     MAIN_MODEL_NAME,
     UI5_VERSION_PROPS
-} from '../types';
+} from '../types/index.js';
 import {
     assignSapUxLayerValue,
     convertCapRuntimeToCapProjectType,
@@ -36,7 +35,7 @@ import {
     getAnnotations,
     getAppId,
     getMinSupportedUI5Version
-} from '../utils';
+} from '../utils/index.js';
 import type { Package } from '@sap-ux/project-access';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -395,7 +394,9 @@ function getBaseAppConfig(
             // Striclty speaking we should not need to guard here. If a template is not supported for OPA test generation then nothing should be generated.
             addTests: canGenerateTests(template.type),
             generateIndex: generateIndexHtml,
-            addAnnotations: entityRelatedConfig?.addFEOPAnnotations || entityRelatedConfig?.addLineItemAnnotations,
+            ...(!(floorplan === FloorplanFF.FF_SIMPLE) && {
+                addAnnotations: entityRelatedConfig?.addFEOPAnnotations || entityRelatedConfig?.addLineItemAnnotations
+            }),
             useVirtualPreviewEndpoints: project.enableVirtualEndpoints,
             addCdsUi5Plugin: project.addCdsUi5Plugin ?? true // Defaults to true
         },

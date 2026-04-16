@@ -2,8 +2,8 @@ import type { CatalogServicesCounts, RequestCount } from '@sap-ux/sap-systems-ex
 import type { BackendSystem, SystemType } from '@sap-ux/store';
 import type { AbapServiceProvider, AxiosRequestConfig, ODataService } from '@sap-ux/axios-extension';
 import { AbapCloudEnvironment, createForAbap, createForAbapOnCloud, ODataVersion } from '@sap-ux/axios-extension';
-import SystemsLogger from '../../../utils/logger';
-import { t } from '../../../utils';
+import SystemsLogger from '../../../utils/logger.js';
+import { t } from '../../../utils/index.js';
 
 /**
  * Returns an abap service provider for an on-premise system using the specified details.

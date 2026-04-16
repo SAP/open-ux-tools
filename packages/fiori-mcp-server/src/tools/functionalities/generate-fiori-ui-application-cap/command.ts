@@ -1,11 +1,11 @@
-import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
-import type { GeneratorConfigCAP, GeneratorConfigCAPWithAPI } from '../../schemas';
+import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types/index.js';
+import type { GeneratorConfigCAP, GeneratorConfigCAPWithAPI } from '../../schemas/index.js';
 
 import { promises as FSpromises, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { generatorConfigCAP, PREDEFINED_GENERATOR_VALUES } from '../../schemas';
-import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../../../constant';
-import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../../../utils';
+import { generatorConfigCAP, PREDEFINED_GENERATOR_VALUES } from '../../schemas/index.js';
+import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../../../constant.js';
+import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../../../utils/index.js';
 
 /**
  * Method to generate fiori app.

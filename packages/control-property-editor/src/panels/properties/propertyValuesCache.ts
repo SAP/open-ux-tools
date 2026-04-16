@@ -1,4 +1,4 @@
-import { InputType, isExpression } from './types';
+import { InputType, isExpression } from './types.js';
 
 export type CacheValue = string | boolean | number;
 

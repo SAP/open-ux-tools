@@ -10,15 +10,15 @@ import { UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { readFile } from 'node:fs/promises';
 import type { CheckboxChoiceOptions } from 'inquirer';
 import { join } from 'node:path';
-import { t } from '../../utils/i18n';
-import { fetchData, type EntitySetsFlat } from '../odata-query';
-import { ODataDownloadGenerator } from '../odata-download-generator';
-import type { SelectedEntityAnswer } from './prompts';
-import type { AppConfig, Entity } from '../types';
-import { getSystemNameFromStore } from '../utils';
-import { PromptState } from '../prompt-state';
+import { t } from '../../utils/i18n.js';
+import { fetchData, type EntitySetsFlat } from '../odata-query.js';
+import { ODataDownloadGenerator } from '../odata-download-generator.js';
+import type { SelectedEntityAnswer } from './prompts.js';
+import type { AppConfig, Entity } from '../types.js';
+import { getSystemNameFromStore } from '../utils.js';
+import { PromptState } from '../prompt-state.js';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
-import { TelemetryHelper } from '../../telemetry';
+import { TelemetryHelper } from '../../telemetry/index.js';
 
 /**
  * Fetches OData from the backend service.

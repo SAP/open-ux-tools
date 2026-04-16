@@ -10,11 +10,11 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import type { AnnotationsData, AddAnnotationsAnswers } from '@sap-ux/adp-tooling';
 
-import { t } from '../utils/i18n';
-import { GeneratorTypes } from '../types';
-import SubGeneratorWithAuthBase from '../base/sub-gen-auth-base';
-import type { GeneratorOpts } from '../utils/opts';
-import { getTemplatesOverwritePath } from '../utils/templates';
+import { t } from '../utils/i18n.js';
+import { GeneratorTypes } from '../types.js';
+import SubGeneratorWithAuthBase from '../base/sub-gen-auth-base.js';
+import type { GeneratorOpts } from '../utils/opts.js';
+import { getTemplatesOverwritePath } from '../utils/templates.js';
 
 /**
  * Generator for adding annotations to OData services.

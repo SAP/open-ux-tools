@@ -1,7 +1,7 @@
 import type { AuthenticationType } from '@sap-ux/store';
 
-export * from './ui5yaml';
-export * from './middlewares';
+export * from './ui5yaml.js';
+export * from './middlewares.js';
 
 export interface BspApp {
     name: string;

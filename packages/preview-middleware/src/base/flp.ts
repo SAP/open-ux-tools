@@ -40,8 +40,8 @@ import {
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
-import { deleteChange, readChanges, writeChange } from './flex';
-import { generateImportList, mergeTestConfigDefaults } from './test';
+import { deleteChange, readChanges, writeChange } from './flex.js';
+import { generateImportList, mergeTestConfigDefaults } from './test.js';
 import type {
     RtaEditor,
     FlpConfig,
@@ -52,7 +52,7 @@ import type {
     CardGeneratorConfig,
     MultiCardsPayload,
     I18nEntry
-} from '../types';
+} from '../types/index.js';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -65,10 +65,10 @@ import {
     sanitizeRtaConfig,
     CARD_GENERATOR_DEFAULT,
     remapResourcesForPath
-} from './config';
-import { generateCdm } from './cdm';
+} from './config.js';
+import { generateCdm } from './cdm.js';
 import { readFileSync } from 'node:fs';
-import { getIntegrationCard } from './utils/cards';
+import { getIntegrationCard } from './utils/cards.js';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 

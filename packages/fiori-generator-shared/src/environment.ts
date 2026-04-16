@@ -1,5 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { hostEnvironment, type HostEnvironmentId } from './types';
+import { hostEnvironment, type HostEnvironmentId } from './types/index.js';
 
 /**
  * Determine if the current prompting environment is cli .

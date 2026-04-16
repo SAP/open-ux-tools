@@ -1,5 +1,5 @@
-import type { Transport, TransportOptions } from '../types';
-import { LogLevel } from '../types';
+import type { Transport, TransportOptions } from '../types.js';
+import { LogLevel } from '../types.js';
 import type WinstonTransport from 'winston-transport';
 import winston, { format } from 'winston';
 import {
@@ -9,9 +9,9 @@ import {
     NullTransport,
     UI5ToolingTransport,
     VSCodeTransport
-} from '../transports';
-import { NullTransport as WinstonNullTransport } from './null-transport';
-import { VSCodeTransport as WinstonVSCodeTransport } from './vscode-output-channel-transport';
+} from '../transports/index.js';
+import { NullTransport as WinstonNullTransport } from './null-transport.js';
+import { VSCodeTransport as WinstonVSCodeTransport } from './vscode-output-channel-transport.js';
 import type { Format } from 'logform';
 import { inspect } from 'node:util';
 import chalk from 'chalk';

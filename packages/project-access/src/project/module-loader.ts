@@ -3,9 +3,9 @@ import { mkdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
 import type { Logger } from '@sap-ux/logger';
-import { getNodeModulesPath } from './dependencies';
-import { FileName, moduleCacheRoot } from '../constants';
-import { execNpmCommand } from '../command';
+import { getNodeModulesPath } from './dependencies.js';
+import { FileName, moduleCacheRoot } from '../constants.js';
+import { execNpmCommand } from '../command/index.js';
 
 const require = createRequire(import.meta.url);
 

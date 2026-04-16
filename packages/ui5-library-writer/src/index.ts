@@ -4,10 +4,10 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import cloneDeep from 'lodash/cloneDeep.js';
-import type { UI5LibConfig } from './types';
-import { enableTypescript } from './options';
-import { mergeWithDefaults } from './data';
-import { getTemplateVersionPath } from './utils';
+import type { UI5LibConfig } from './types.js';
+import { enableTypescript } from './options/index.js';
+import { mergeWithDefaults } from './data/index.js';
+import { getTemplateVersionPath } from './utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -3,13 +3,13 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { addPackageDevDependency, FileName, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
-import { getDeployConfig, updateBaseConfig } from './config';
-import { addUi5Dependency, getLibraryPath, writeUi5RepositoryFiles, writeUi5RepositoryIgnore } from './file';
-import { UI5_TASK_FLATTEN_LIB, UI5_TASK_FLATTEN_LIB_VERSION } from './constants';
-import type { DeployConfigOptions } from './types';
+import { getDeployConfig, updateBaseConfig } from './config.js';
+import { addUi5Dependency, getLibraryPath, writeUi5RepositoryFiles, writeUi5RepositoryIgnore } from './file.js';
+import { UI5_TASK_FLATTEN_LIB, UI5_TASK_FLATTEN_LIB_VERSION } from './constants.js';
+import type { DeployConfigOptions } from './types.js';
 import type { Editor } from 'mem-fs-editor';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import { updateScripts } from './scripts';
+import { updateScripts } from './scripts.js';
 
 /**
  * Writes the template to the memfs editor instance.

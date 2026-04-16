@@ -12,13 +12,13 @@ import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
-import { t } from '../../utils/i18n';
-import { ODataDownloadGenerator } from '../odata-download-generator';
-import type { EntitySetsFlat } from '../odata-query';
-import type { AppConfig, ReferencedEntities } from '../types';
-import { getEntityModel } from '../utils';
-import { createEntityChoices, getData, getServiceDetails, getSpecification } from './prompt-helpers';
-import { PromptState } from '../prompt-state';
+import { t } from '../../utils/i18n.js';
+import { ODataDownloadGenerator } from '../odata-download-generator.js';
+import type { EntitySetsFlat } from '../odata-query.js';
+import type { AppConfig, ReferencedEntities } from '../types.js';
+import { getEntityModel } from '../utils.js';
+import { createEntityChoices, getData, getServiceDetails, getSpecification } from './prompt-helpers.js';
+import { PromptState } from '../prompt-state.js';
 
 let debounceTimer: ReturnType<typeof setTimeout> | undefined;
 const debouncedGetData = (...args: Parameters<typeof getData>): Promise<Awaited<ReturnType<typeof getData>>> => {

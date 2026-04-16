@@ -1,5 +1,5 @@
 import type { Answers } from 'inquirer';
-import { i18nNamespaces, translate } from '../../../i18n';
+import { i18nNamespaces, translate } from '../../../i18n.js';
 import {
     getBindingContextTypePrompt,
     getBuildingBlockIdPrompt,
@@ -7,11 +7,11 @@ import {
     getTargetPropertiesPrompt,
     getAggregationPathPrompt,
     getViewOrFragmentPathPrompt
-} from '../utils';
-import type { PromptContext, Prompts } from '../../../prompts/types';
-import { BuildingBlockType, bindingContextAbsolute } from '../../types';
-import type { BuildingBlockConfig, RichTextEditor } from '../../types';
-import { resolveBindingContextTypeChoices } from '../utils/prompt-helpers';
+} from '../utils/index.js';
+import type { PromptContext, Prompts } from '../../../prompts/types.js';
+import { BuildingBlockType, bindingContextAbsolute } from '../../types.js';
+import type { BuildingBlockConfig, RichTextEditor } from '../../types.js';
+import { resolveBindingContextTypeChoices } from '../utils/prompt-helpers.js';
 
 export type RichTextEditorPromptsAnswer = BuildingBlockConfig<RichTextEditor> & Answers;
 

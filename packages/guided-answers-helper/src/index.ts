@@ -1,4 +1,4 @@
-export { GUIDED_ANSWERS_ICON } from './guided-answers-icon_svg_base64';
+export { GUIDED_ANSWERS_ICON } from './guided-answers-icon_svg_base64.js';
 
 /**
  * Mapping of human readable help topic to implementation specific ids

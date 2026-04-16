@@ -4,7 +4,7 @@ import type { EntityType } from '@sap-ux/vocabularies-types';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import type { PageV4 } from '@sap/ux-specification/dist/types/src/v4';
 import type { Answers, CheckboxChoiceOptions } from 'inquirer';
-import type { EntitySetsFlat } from './odata-query';
+import type { EntitySetsFlat } from './odata-query.js';
 
 export type SemanticKeyFilter = { name: string; type: string; value: string | undefined };
 

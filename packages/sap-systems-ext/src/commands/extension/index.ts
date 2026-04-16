@@ -1,5 +1,5 @@
 import { commands, type ExtensionContext } from 'vscode';
-import SystemsLogger from '../../utils/logger';
+import SystemsLogger from '../../utils/logger.js';
 
 /**
  * Registers extension-level commands.

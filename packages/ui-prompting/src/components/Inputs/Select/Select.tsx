@@ -2,8 +2,8 @@ import React, { useEffect, useMemo } from 'react';
 import type { ChoiceOptions, Answers } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxRef, UISelectableOption } from '@sap-ux/ui-components';
-import { useValue, getLabelRenderer, useOptions, usePromptMessage } from '../../../utilities';
-import type { AnswerValue, ListPromptQuestion, PromptListChoices } from '../../../types';
+import { useValue, getLabelRenderer, useOptions, usePromptMessage } from '../../../utilities/index.js';
+import type { AnswerValue, ListPromptQuestion, PromptListChoices } from '../../../types.js';
 
 export interface SelectProps extends ListPromptQuestion {
     id?: string;

@@ -5,9 +5,9 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import type { CapService } from '@sap-ux/cap-config-writer';
-import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper';
+import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper.js';
 import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
-import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types';
+import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types.js';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.

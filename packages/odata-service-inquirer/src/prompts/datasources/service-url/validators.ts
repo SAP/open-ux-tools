@@ -3,12 +3,12 @@ import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import { setGlobalRejectUnauthorized } from '@sap-ux/nodejs-utils';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { t } from '../../../i18n';
-import { SAP_CLIENT_KEY } from '../../../types';
-import { PromptState, originToRelative } from '../../../utils';
-import LoggerHelper from '../../logger-helper';
-import { errorHandler } from '../../prompt-helpers';
-import { validateODataVersion } from '../../validators';
+import { t } from '../../../i18n.js';
+import { SAP_CLIENT_KEY } from '../../../types.js';
+import { PromptState, originToRelative } from '../../../utils/index.js';
+import LoggerHelper from '../../logger-helper.js';
+import { errorHandler } from '../../prompt-helpers.js';
+import { validateODataVersion } from '../../validators.js';
 
 type ValidateServiceUrlResult = {
     validationResult: boolean | string;

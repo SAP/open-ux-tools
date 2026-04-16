@@ -1,6 +1,6 @@
 import { Position, Range } from '@sap-ux/text-document-utils';
 import { copyRange, copyPosition, ANNOTATION_GROUP_TYPE, ANNOTATION_TYPE, parse } from '@sap-ux/cds-annotation-parser';
-import { convertAnnotation } from './annotation';
+import { convertAnnotation } from './annotation/index.js';
 import type { Annotation, AnnotationGroup, Assignment, Identifier } from '@sap-ux/cds-annotation-parser';
 import type { CdsVocabulary, VocabularyService } from '@sap-ux/odata-vocabularies';
 
@@ -13,7 +13,7 @@ import type {
     PropagatedTargetMap
 } from '@sap/ux-cds-compiler-facade';
 
-import type { ToTermsOptions } from './types';
+import type { ToTermsOptions } from './types.js';
 
 import {
     getElementAttribute,

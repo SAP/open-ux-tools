@@ -3,12 +3,12 @@ import { AdaptationProjectType, isAxiosError, type SystemInfo } from '@sap-ux/ax
 import { isAbapEnvironmentOnBtp, isS4HC, type Destinations } from '@sap-ux/btp-utils';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { AuthenticationType } from '@sap-ux/store';
-import { DEFAULT_PACKAGE_ABAP } from '../constants';
-import { handleTransportConfigError } from '../error-handler';
-import { t } from '../i18n';
-import LoggerHelper from '../logger-helper';
-import { getTransportListFromService } from '../service-provider-utils';
-import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
+import { DEFAULT_PACKAGE_ABAP } from '../constants.js';
+import { handleTransportConfigError } from '../error-handler.js';
+import { t } from '../i18n.js';
+import LoggerHelper from '../logger-helper.js';
+import { getTransportListFromService } from '../service-provider-utils/index.js';
+import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider.js';
 import {
     ClientChoiceValue,
     PackageInputChoices,
@@ -21,14 +21,14 @@ import {
     type PackagePromptOptions,
     type SystemConfig,
     type UI5AbapRepoPromptOptions
-} from '../types';
+} from '../types.js';
 import {
     findBackendSystemByUrl,
     getPackageAnswer,
     getSystemConfig,
     initTransportConfig,
     queryPackages
-} from '../utils';
+} from '../utils.js';
 import {
     createTransportNumber,
     getTransportList,
@@ -36,8 +36,8 @@ import {
     isEmptyString,
     isValidClient,
     isValidUrl
-} from '../validator-utils';
-import { PromptState } from './prompt-state';
+} from '../validator-utils.js';
+import { PromptState } from './prompt-state.js';
 
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 

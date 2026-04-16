@@ -1,7 +1,7 @@
 import serveStatic from 'serve-static';
 import type { ServeStaticOptions } from 'serve-static';
-import type { ServeStaticConfig } from './types';
-import { resolveServeStaticOptions, resolveSrcPath } from './utils';
+import type { ServeStaticConfig } from './types.js';
+import { resolveServeStaticOptions, resolveSrcPath } from './utils.js';
 import { ToolsLogger } from '@sap-ux/logger';
 import { type RequestHandler, Router } from 'express';
 

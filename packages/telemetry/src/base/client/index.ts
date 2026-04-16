@@ -1,6 +1,6 @@
-import type { Client } from './client';
-import { ToolsSuiteTelemetryClient } from '../../tooling-telemetry';
-import { TelemetrySettings } from '../config-state';
+import type { Client } from './client.js';
+import { ToolsSuiteTelemetryClient } from '../../tooling-telemetry/index.js';
+import { TelemetrySettings } from '../config-state.js';
 
 /**
  * Factory to get telemetry client instance.

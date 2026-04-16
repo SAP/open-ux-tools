@@ -2,9 +2,12 @@ import { createWriteStream, existsSync, promises } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import * as archiver from 'archiver';
 import { glob } from 'glob-gitignore';
-import ignore from 'ignore';
-import { t } from '../i18n';
-import { byteNumberToSizeString } from '../formatter';
+import type { Ignore } from 'ignore';
+import ignoreModule from 'ignore';
+const ignore: (options?: { ignorecase?: boolean; ignoreCase?: boolean; allowRelativePaths?: boolean }) => Ignore =
+    typeof ignoreModule === 'function' ? ignoreModule : (ignoreModule as any).default;
+import { t } from '../i18n.js';
+import { byteNumberToSizeString } from '../formatter.js';
 
 interface ArchiveProjectOptions {
     projectRoot: string;

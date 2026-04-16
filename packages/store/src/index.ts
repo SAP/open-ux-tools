@@ -1,12 +1,12 @@
 import type { Logger } from '@sap-ux/logger';
-import type { ServiceOptions } from './types';
-import { Entity } from './constants';
-import { initI18n, text } from './i18n';
-import type { Service } from './services';
-import { getInstance as getSystemService } from './services/backend-system';
-import { getInstance as getTelemetrySettingService } from './services/telemetry-setting';
-import { getInstance as getApiHubSettingsService } from './services/api-hub';
-import { getDefaultLogger } from './defaults';
+import type { ServiceOptions } from './types.js';
+import { Entity } from './constants.js';
+import { initI18n, text } from './i18n.js';
+import type { Service } from './services/index.js';
+import { getInstance as getSystemService } from './services/backend-system.js';
+import { getInstance as getTelemetrySettingService } from './services/telemetry-setting.js';
+import { getInstance as getApiHubSettingsService } from './services/api-hub/index.js';
+import { getDefaultLogger } from './defaults.js';
 
 export type EnityName = 'system' | 'telemetrySetting' | 'api-hub';
 
@@ -36,16 +36,16 @@ export async function getService<Entity, Key>({
     }
 }
 
-export * from './services';
-export * from './entities/backend-system';
-export * from './entities/telemetry-setting';
-export * from './entities/api-hub';
+export * from './services/index.js';
+export * from './entities/backend-system.js';
+export * from './entities/telemetry-setting.js';
+export * from './entities/api-hub.js';
 
 // @todo: change notification needs to be more generic and not tied to filesystems
 // Support any filesystem watchers
-export { getFilesystemWatcherFor } from './data-access';
+export { getFilesystemWatcherFor } from './data-access/index.js';
 export type { ServiceOptions };
 export { Entity };
-export { getBackendSystemType } from './utils';
-export { getFioriToolsDirectory, getSapToolsDirectory, FioriToolsSettings, SapTools } from './utils';
-export { SystemType, AuthenticationType, ConnectionType } from './types';
+export { getBackendSystemType } from './utils/index.js';
+export { getFioriToolsDirectory, getSapToolsDirectory, FioriToolsSettings, SapTools } from './utils/index.js';
+export { SystemType, AuthenticationType, ConnectionType } from './types.js';

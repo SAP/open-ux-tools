@@ -5,8 +5,8 @@ import { getMtaServices, isMtaProject } from '@sap-ux/adp-tooling';
 import type { CfConfig, SystemLookup } from '@sap-ux/adp-tooling';
 import { validateEmptyString, validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
-import { t } from '../../../utils/i18n';
-import { isString } from '../../../utils/type-guards';
+import { t } from '../../../utils/i18n.js';
+import { isString } from '../../../utils/type-guards.js';
 
 interface JsonInputParams {
     projectName: string;

@@ -3,10 +3,10 @@ import type { TableSelectionMode } from '@sap-ux/fiori-elements-writer';
 import type { ConfirmQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ChoiceOptions, Question } from 'inquirer';
-import { t } from '../../i18n';
-import type { AlpTableConfigAnswers, EntitySelectionAnswers } from '../../types';
-import { EntityPromptNames } from '../../types';
-import { xmlToJson } from '../../utils';
+import { t } from '../../i18n.js';
+import type { AlpTableConfigAnswers, EntitySelectionAnswers } from '../../types.js';
+import { EntityPromptNames } from '../../types.js';
+import { xmlToJson } from '../../utils/index.js';
 
 /**
  * Return the annotation `UI.selectionPresentationVariant.qualifier` properties as prompt choices for the specified annotations and entityType.

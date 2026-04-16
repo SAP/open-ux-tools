@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ReactElement } from 'react';
-import { SapSystem } from './layout/SapSystem';
+import { SapSystem } from './layout/SapSystem.js';
 
 import '../styles/App.scss';
 

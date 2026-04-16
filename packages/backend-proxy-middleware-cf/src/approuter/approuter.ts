@@ -2,7 +2,7 @@ import createApprouter from '@sap/approuter';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { XsappConfig } from '../types';
+import type { XsappConfig } from '../types.js';
 
 /**
  * Options for starting the approuter.

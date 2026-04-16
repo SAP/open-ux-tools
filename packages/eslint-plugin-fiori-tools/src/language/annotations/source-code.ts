@@ -12,8 +12,8 @@ import {
     TEXT_TYPE
 } from '@sap-ux/odata-annotation-core';
 
-import { AnnotationVisitNodeStep, STEP_PHASE } from './traversal-step';
-import type { ProjectContext } from '../../project-context/project-context';
+import { AnnotationVisitNodeStep, STEP_PHASE } from './traversal-step.js';
+import type { ProjectContext } from '../../project-context/project-context.js';
 
 /**
  * Visitor keys mapping annotation node types to their traversable child properties.

@@ -2,8 +2,8 @@
 import type { Attributes, Element, ODataNamespaceAlias, TextNode } from '@sap-ux/odata-annotation-core';
 import { ELEMENT_TYPE, TEXT_TYPE, EDM_NAMESPACE_ALIAS, EDMX_NAMESPACE_ALIAS, Edm } from '@sap-ux/odata-annotation-core';
 
-import type { Concat, Document, Options } from './builders';
-import { concat, hardline, indent, line, printDocumentToString } from './builders';
+import type { Concat, Document, Options } from './builders.js';
+import { concat, hardline, indent, line, printDocumentToString } from './builders.js';
 
 // TODO: figure out how to provide only valid context for namespaces, prefixes and default combinations or validate context
 export interface PrintContext {

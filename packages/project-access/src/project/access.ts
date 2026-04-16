@@ -13,7 +13,7 @@ import type {
     Package,
     Manifest,
     AnnotationFile
-} from '../types';
+} from '../types/index.js';
 
 import {
     getI18nBundles,
@@ -22,17 +22,17 @@ import {
     createManifestI18nEntries,
     createUI5I18nEntries,
     createAnnotationI18nEntries
-} from './i18n';
+} from './i18n/index.js';
 
-import { getProject } from './info';
-import { findAllApps } from './search';
+import { getProject } from './info.js';
+import { findAllApps } from './search.js';
 
 import type { Editor } from 'mem-fs-editor';
-import { readFile, readJSON, updateManifestJSON, updatePackageJSON } from '../file';
-import { FileName } from '../constants';
-import { getSpecification } from './specification';
-import { readFlexChanges } from './flex-changes';
-import { readCapServiceMetadataEdmx } from './cap';
+import { readFile, readJSON, updateManifestJSON, updatePackageJSON } from '../file/index.js';
+import { FileName } from '../constants.js';
+import { getSpecification } from './specification.js';
+import { readFlexChanges } from './flex-changes.js';
+import { readCapServiceMetadataEdmx } from './cap.js';
 
 /**
  *

@@ -1,16 +1,16 @@
 import { sep } from 'node:path';
 import { type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { getCapFolderPathsSync } from '@sap-ux/fiori-generator-shared';
-import { TemplateType, type EntityConfig, type FioriElementsApp } from './types';
+import { TemplateType, type EntityConfig, type FioriElementsApp } from './types.js';
 import {
     generateAnnotations,
     type AnnotationServiceParameters,
     type GenerateAnnotationsOptions
 } from '@sap-ux/annotation-generator';
 import type { Editor } from 'mem-fs-editor';
-import { TemplateTypeAttributes } from './data/templateAttributes';
+import { TemplateTypeAttributes } from './data/templateAttributes.js';
 import type { Logger } from '@sap-ux/logger';
-import { t } from './i18n';
+import { t } from './i18n.js';
 
 /**
  * Generates the annotation file path based on whether the CAP service is available.

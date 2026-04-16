@@ -1,5 +1,5 @@
-export type { AppInfo, BspConfig, DeployConfig, UndeployConfig } from './ui5-abap-repository-service';
-export { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
+export type { AppInfo, BspConfig, DeployConfig, UndeployConfig } from './ui5-abap-repository-service.js';
+export { Ui5AbapRepositoryService } from './ui5-abap-repository-service.js';
 export type {
     AdaptationConfig,
     MergedAppDescriptor,
@@ -12,14 +12,14 @@ export type {
     KeyUserChangeContent,
     KeyUserTextTranslations,
     FlexVersion
-} from './lrep-service';
-export { LayeredRepositoryService, AdaptationProjectType } from './lrep-service';
-export { AbapServiceProvider } from './abap-service-provider';
-export { AppIndexService } from './app-index-service';
-export type { AppIndex, Ui5AppInfo, Ui5AppInfoContent, App } from './app-index-service';
-export * from './message';
-export * from './catalog';
-export * from './adt-catalog';
+} from './lrep-service.js';
+export { LayeredRepositoryService, AdaptationProjectType } from './lrep-service.js';
+export { AbapServiceProvider } from './abap-service-provider.js';
+export { AppIndexService } from './app-index-service.js';
+export type { AppIndex, Ui5AppInfo, Ui5AppInfoContent, App } from './app-index-service.js';
+export * from './message.js';
+export * from './catalog/index.js';
+export * from './adt-catalog/index.js';
 export type {
     ArchiveFileNode,
     AtoSettings,
@@ -30,6 +30,7 @@ export type {
     CodeListService,
     ValueListService,
     ExternalServiceReference,
-    ExternalService
-} from './types';
-export { TenantType } from './types';
+    ExternalService,
+    TransportRequest
+} from './types/index.js';
+export { TenantType } from './types/index.js';

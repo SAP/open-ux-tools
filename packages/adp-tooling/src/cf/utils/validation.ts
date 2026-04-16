@@ -3,9 +3,9 @@ import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
-import { t } from '../../i18n';
-import type { ServiceKeys, XsApp, XsAppRoute } from '../../types';
-import { getApplicationType, isSupportedAppTypeForAdp } from '../../source/manifest';
+import { t } from '../../i18n.js';
+import type { ServiceKeys, XsApp, XsAppRoute } from '../../types.js';
+import { getApplicationType, isSupportedAppTypeForAdp } from '../../source/manifest.js';
 
 /**
  * Normalize the xs-app route regex.

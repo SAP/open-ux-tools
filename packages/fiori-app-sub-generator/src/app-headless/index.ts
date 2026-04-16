@@ -1,9 +1,9 @@
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
-import type { FioriAppGeneratorOptions } from '../fiori-app-generator';
-import { APP_GENERATOR_MODULE, FioriAppGenerator } from '../fiori-app-generator';
-import { initI18nFioriAppSubGenerator, t } from '../utils/i18n';
-import { transformExtState } from './transforms';
+import type { FioriAppGeneratorOptions } from '../fiori-app-generator/index.js';
+import { APP_GENERATOR_MODULE, FioriAppGenerator } from '../fiori-app-generator/index.js';
+import { initI18nFioriAppSubGenerator, t } from '../utils/i18n.js';
+import { transformExtState } from './transforms.js';
 
 /**
  * Generator that allows the creation of a Fiori applications without prompting based on a provided app config.

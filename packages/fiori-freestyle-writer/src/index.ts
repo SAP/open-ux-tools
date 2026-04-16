@@ -4,18 +4,18 @@ import { render } from 'ejs';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import cloneDeep from 'lodash/cloneDeep.js';
-import { TemplateType } from './types';
-import { setDefaults, escapeFLPText, setVirtualEndpointDefaults } from './defaults';
+import { TemplateType } from './types.js';
+import { setDefaults, escapeFLPText, setVirtualEndpointDefaults } from './defaults.js';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { initI18n } from './i18n';
+import { initI18n } from './i18n.js';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { getTemplateVersionPath, processDestinationPath } from './utils';
+import { getTemplateVersionPath, processDestinationPath } from './utils.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
-import { generateOPATests } from './generateOPATests';
+import { generateOPATests } from './generateOPATests.js';
 import type { Logger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import type { Editor } from 'mem-fs-editor';
-import type { BasicAppSettings, FreestyleApp } from './types';
+import type { BasicAppSettings, FreestyleApp } from './types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -209,5 +209,5 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
 
 export { generate };
 export type { FreestyleApp };
-export type { WorklistSettings, ListDetailSettings, BasicAppSettings, Template } from './types';
-export { TemplateType, OdataVersion } from './types';
+export type { WorklistSettings, ListDetailSettings, BasicAppSettings, Template } from './types.js';
+export { TemplateType, OdataVersion } from './types.js';

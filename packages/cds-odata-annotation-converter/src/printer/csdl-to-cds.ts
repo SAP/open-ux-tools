@@ -15,7 +15,7 @@ import {
     getElementAttributeValue
 } from '@sap-ux/odata-annotation-core';
 
-import type { ContainerItemType } from './primitives';
+import type { ContainerItemType } from './primitives.js';
 import {
     valuePair,
     struct,
@@ -25,9 +25,9 @@ import {
     keyAlone,
     PRIMITIVE_VALUE_ATTRIBUTE_NAMES,
     CDS_NULL_EXPRESSION_LITERAL
-} from './primitives';
-import { printEdmJson } from './edm-json';
-import { indent } from './indent';
+} from './primitives.js';
+import { printEdmJson } from './edm-json.js';
+import { indent } from './indent.js';
 
 /**
  * Kind of target which is annotated

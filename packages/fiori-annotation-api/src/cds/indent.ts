@@ -1,10 +1,10 @@
 import { printOptions as defaultPrintOptions } from '@sap-ux/odata-annotation-core';
 import { TARGET_TYPE } from '@sap-ux/cds-odata-annotation-converter';
 
-import type { AstNode, CDSDocument } from './document';
-import { getAstNodesFromPointer } from './pointer';
-import type { CompilerToken } from './cds-compiler-tokens';
-import { createTokenRange, findLastTokenBeforePosition, tokenColumn, tokenLine } from './cds-compiler-tokens';
+import type { AstNode, CDSDocument } from './document.js';
+import { getAstNodesFromPointer } from './pointer.js';
+import type { CompilerToken } from './cds-compiler-tokens.js';
+import { createTokenRange, findLastTokenBeforePosition, tokenColumn, tokenLine } from './cds-compiler-tokens.js';
 
 const printOptions: typeof defaultPrintOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
 const ANNOTATE_PATTERN = /annotate/i;

@@ -1,11 +1,11 @@
-import type { FioriRuleDefinition } from '../types';
-import { COPY_TO_CLIPBOARD, type CopyToClipboard } from '../language/diagnostics';
-import { createFioriRule } from '../language/rule-factory';
+import type { FioriRuleDefinition } from '../types.js';
+import { COPY_TO_CLIPBOARD, type CopyToClipboard } from '../language/diagnostics.js';
+import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import type { FeV2PageType } from '../project-context/linker/fe-v2';
-import type { ParsedApp } from '../project-context/parser';
-import type { FeV4PageType } from '../project-context/linker/fe-v4';
-import { createJsonFixer } from '../language/rule-fixer';
+import type { FeV2PageType } from '../project-context/linker/fe-v2.js';
+import type { ParsedApp } from '../project-context/parser/index.js';
+import type { FeV4PageType } from '../project-context/linker/fe-v4.js';
+import { createJsonFixer } from '../language/rule-fixer.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: COPY_TO_CLIPBOARD,

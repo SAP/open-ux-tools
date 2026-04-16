@@ -2,8 +2,8 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { AxiosRequestConfig, BspConfig, ServiceInfo } from '@sap-ux/axios-extension';
 import { readFileSync } from 'node:fs';
 import { dirname, isAbsolute, join } from 'node:path';
-import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
-import { NAME } from '../types';
+import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types/index.js';
+import { NAME } from '../types/index.js';
 
 /**
  * Tries to read the version of the modules package.json but in case of an error, it returns the manually maintained version matching major.minor of the module.

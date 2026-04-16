@@ -3,9 +3,9 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 
-import type { Endpoint } from '../types';
+import type { Endpoint } from '../types.js';
 import { type AbapServiceProvider, AdaptationProjectType, isAxiosError } from '@sap-ux/axios-extension';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 
 export enum SupportedProject {
     ON_PREM = 'onPremise',

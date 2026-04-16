@@ -7,7 +7,7 @@ import type {
     ICalloutContentStyleProps
 } from '@fluentui/react';
 import { Callout, getDocument } from '@fluentui/react';
-import { isHTMLElement, focusToSibling } from '../../utilities';
+import { isHTMLElement, focusToSibling } from '../../utilities/index.js';
 
 export interface UICalloutProps extends ICalloutProps {
     calloutMinWidth?: number;

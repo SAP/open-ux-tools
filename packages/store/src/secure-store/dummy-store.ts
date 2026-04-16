@@ -1,4 +1,4 @@
-import type { SecureStore } from './types';
+import type { SecureStore } from './types.js';
 import type { Logger } from '@sap-ux/logger';
 
 export class DummyStore implements SecureStore {

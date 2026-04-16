@@ -33,8 +33,8 @@ import {
     CDSDKPackage,
     CDSPackage,
     MAX_MTA_PREFIX_LENGTH
-} from './constants';
-import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types';
+} from './constants.js';
+import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types/index.js';
 
 /**
  * Read manifest file for processing.

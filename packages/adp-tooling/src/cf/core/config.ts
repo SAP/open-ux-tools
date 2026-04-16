@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { CfConfig, Config } from '../../types';
+import type { CfConfig, Config } from '../../types.js';
 
 /**
  * Get the home directory.

@@ -1,6 +1,6 @@
-import { SimpleVectorService } from './services/vector-simple';
-import { TextEmbeddingService } from './services/text-embedding';
-import { logger } from '../utils/logger';
+import { SimpleVectorService } from './services/vector-simple.js';
+import { TextEmbeddingService } from './services/text-embedding.js';
+import { logger } from '../utils/logger.js';
 
 export type DocSearchInput = {
     query: string;

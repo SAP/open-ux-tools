@@ -2,10 +2,10 @@ import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { AddComponentUsageAnswers, ComponentUsagesData, DescriptorVariant } from '@sap-ux/adp-tooling';
 import { ChangeType, generateChange, getPromptsForAddComponentUsages, getVariant } from '@sap-ux/adp-tooling';
 
-import { GeneratorTypes } from '../types';
-import { initI18n, t } from '../utils/i18n';
-import type { GeneratorOpts } from '../utils/opts';
-import SubGeneratorBase from '../base/sub-gen-base';
+import { GeneratorTypes } from '../types.js';
+import { initI18n, t } from '../utils/i18n.js';
+import type { GeneratorOpts } from '../utils/opts.js';
+import SubGeneratorBase from '../base/sub-gen-base.js';
 
 /**
  * Generator for adding component usages to a project.

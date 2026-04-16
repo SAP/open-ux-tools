@@ -9,12 +9,12 @@ import { normalizePath, type FoundFioriArtifacts, type Manifest } from '@sap-ux/
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core';
 import type { XMLDocument } from '@xml-tools/ast';
 
-import type { WorkerResult } from './types';
-import type { ParsedApp, ParsedProject, ParsedService } from './parser';
-import { ApplicationParser } from './parser';
-import { DiagnosticCache } from '../language/diagnostic-cache';
-import type { LinkedModel } from './linker';
-import { linkProject } from './linker';
+import type { WorkerResult } from './types.js';
+import type { ParsedApp, ParsedProject, ParsedService } from './parser/index.js';
+import { ApplicationParser } from './parser/index.js';
+import { DiagnosticCache } from '../language/diagnostic-cache.js';
+import type { LinkedModel } from './linker/index.js';
+import { linkProject } from './linker/index.js';
 
 // Sync function for worker calls
 let artifactWorker: (file: string) => WorkerResult;

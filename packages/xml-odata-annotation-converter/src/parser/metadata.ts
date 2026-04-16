@@ -10,9 +10,9 @@ import type {
 import type { FullyQualifiedTypeName, FullyQualifiedName } from '@sap-ux/odata-annotation-core';
 import { toFullyQualifiedName, parseIdentifier, Edm, Location, Edmx } from '@sap-ux/odata-annotation-core';
 
-import { getAttributeValue, getElementAttributeByName } from './attribute-getters';
-import { transformElementRange } from './range';
-import { getElementsWithName } from './element-getters';
+import { getAttributeValue, getElementAttributeByName } from './attribute-getters.js';
+import { transformElementRange } from './range.js';
+import { getElementsWithName } from './element-getters.js';
 
 const EDMX_METADATA_ELEMENT_NAMES = new Set<string>([
     Edm.Schema,

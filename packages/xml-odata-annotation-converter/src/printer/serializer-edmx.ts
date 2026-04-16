@@ -19,10 +19,10 @@ import {
     indent
 } from '@sap-ux/odata-annotation-core';
 
-import type { NamespaceAliasMap } from './csdl-to-xml';
-import { printCsdlNodeToXmlString } from './csdl-to-xml';
+import type { NamespaceAliasMap } from './csdl-to-xml.js';
+import { printCsdlNodeToXmlString } from './csdl-to-xml.js';
 import type { Vocabulary } from '@sap-ux/odata-vocabularies';
-import { EDMX_V4_NAMESPACE, EDM_V4_NAMESPACE } from './namespaces';
+import { EDMX_V4_NAMESPACE, EDM_V4_NAMESPACE } from './namespaces.js';
 
 const namespaces: NamespaceAliasMap = {
     Edmx: 'edmx'

@@ -3,15 +3,15 @@ import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-commo
 import { getDefaultUI5Theme, getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import autocomplete from 'inquirer-autocomplete-prompt';
 import isNil from 'lodash/isNil.js';
-import { getQuestions } from './prompts';
+import { getQuestions } from './prompts/index.js';
 import type {
     UI5ApplicationAnswers,
     UI5ApplicationCommonPromptOptions,
     UI5ApplicationPromptOptions,
     UI5ApplicationQuestion
-} from './types';
-import { promptNames } from './types';
-import { initI18nUi5AppInquirer } from './i18n';
+} from './types.js';
+import { promptNames } from './types.js';
+import { initI18nUi5AppInquirer } from './i18n.js';
 /**
  * Get the inquirer prompts for ui5 library inquirer.
  *

@@ -1,10 +1,10 @@
 import type { Answers } from 'inquirer';
-import { i18nNamespaces, translate } from '../../../i18n';
-import type { Prompts, PromptContext } from '../../../prompts/types';
-import { BuildingBlockType } from '../../types';
-import type { BuildingBlockConfig, RichTextEditorButtonGroups } from '../../types';
-import { getAggregationPathPrompt, getViewOrFragmentPathPrompt } from '../utils';
-import { getButtonGroupsChoices } from '../utils/prompt-helpers';
+import { i18nNamespaces, translate } from '../../../i18n.js';
+import type { Prompts, PromptContext } from '../../../prompts/types.js';
+import { BuildingBlockType } from '../../types.js';
+import type { BuildingBlockConfig, RichTextEditorButtonGroups } from '../../types.js';
+import { getAggregationPathPrompt, getViewOrFragmentPathPrompt } from '../utils/index.js';
+import { getButtonGroupsChoices } from '../utils/prompt-helpers.js';
 
 export type RichTextEditorButtonGroupsPromptsAnswer = BuildingBlockConfig<RichTextEditorButtonGroups> & Answers;
 

@@ -1,6 +1,6 @@
 import * as z from 'zod';
 import { createRequire } from 'node:module';
-import { LATEST_UI5_VERSION } from '../../constant';
+import { LATEST_UI5_VERSION } from '../../constant.js';
 
 const require = createRequire(import.meta.url);
 const packageJson = require('../../../package.json');

@@ -1,1 +1,1 @@
-export * from './UIDatePicker';
+export * from './UIDatePicker.js';

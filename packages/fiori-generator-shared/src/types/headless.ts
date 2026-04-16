@@ -1,7 +1,7 @@
 import { Authentication } from '@sap-ux/btp-utils';
 import type { Annotations } from '@sap-ux/axios-extension';
-import type { FloorplanKey } from './app-gen';
-import type { CapRuntime } from './cap';
+import type { FloorplanKey } from './app-gen.js';
+import type { CapRuntime } from './cap.js';
 
 /**
  * Shared types used by headless generation from multiple modules

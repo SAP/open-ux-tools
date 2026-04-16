@@ -3,7 +3,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
-import type { ConfigPrompter } from '../app/questions/configuration';
+import type { ConfigPrompter } from '../app/questions/configuration.js';
 
 /**
  * Values that are stashed in the App-Wizard cache.

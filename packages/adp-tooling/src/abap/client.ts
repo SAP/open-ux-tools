@@ -5,8 +5,8 @@ import {
     type Inbound
 } from '@sap-ux/axios-extension';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { FlexUICapability } from '../types';
-import { filterAndMapInboundsToManifest } from '../base/helper';
+import type { FlexUICapability } from '../types.js';
+import { filterAndMapInboundsToManifest } from '../base/helper.js';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 const FILTER = {

@@ -12,12 +12,12 @@ import type {
     Manifest,
     Package,
     WorkspaceFolder
-} from '../types';
-import { FileName } from '../constants';
-import { fileExists, findBy, findFileUp, readJSON } from '../file';
-import { hasDependency } from './dependencies';
-import { getCapProjectType } from './cap';
-import { getWebappPath } from './ui5-config';
+} from '../types/index.js';
+import { FileName } from '../constants.js';
+import { fileExists, findBy, findFileUp, readJSON } from '../file/index.js';
+import { hasDependency } from './dependencies.js';
+import { getCapProjectType } from './cap.js';
+import { getWebappPath } from './ui5-config.js';
 
 /**
  * Map artifact to file that is specific to the artifact type. Some artifacts can

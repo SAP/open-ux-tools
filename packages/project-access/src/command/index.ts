@@ -1,1 +1,1 @@
-export { execNpmCommand } from './npm-command';
+export { execNpmCommand } from './npm-command.js';

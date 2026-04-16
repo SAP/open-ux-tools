@@ -1,2 +1,2 @@
-export * from './system/systemPanel';
-export * from './panelManager';
+export * from './system/systemPanel.js';
+export * from './panelManager.js';

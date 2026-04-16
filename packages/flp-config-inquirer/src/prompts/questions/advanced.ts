@@ -1,9 +1,9 @@
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InboundContent } from '@sap-ux/axios-extension';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import { t } from '../../i18n';
-import { promptNames } from '../../types';
-import type { FLPConfigQuestion, FLPConfigAnswers, IconPromptOptions } from '../../types';
+import { t } from '../../i18n.js';
+import { promptNames } from '../../types.js';
+import type { FLPConfigQuestion, FLPConfigAnswers, IconPromptOptions } from '../../types.js';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**

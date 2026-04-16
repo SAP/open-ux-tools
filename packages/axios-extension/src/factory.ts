@@ -13,18 +13,18 @@ import { type HttpsProxyAgentOptions, HttpsProxyAgent } from 'https-proxy-agent'
 import cloneDeep from 'lodash/cloneDeep.js';
 import { getProxyForUrl } from 'proxy-from-env';
 import { inspect } from 'node:util';
-import { AbapServiceProvider } from './abap';
-import type { RefreshTokenChanged, ServiceInfo } from './auth';
+import { AbapServiceProvider } from './abap/index.js';
+import type { RefreshTokenChanged, ServiceInfo } from './auth/index.js';
 import {
     attachBasicAuthInterceptor,
     attachConnectionHandler,
     attachReentranceTicketAuthInterceptor,
     attachUaaAuthInterceptor
-} from './auth';
-import type { ODataService } from './base/odata-service';
-import { TlsPatch } from './base/patchTls';
-import type { ProviderConfiguration } from './base/service-provider';
-import { ServiceProvider } from './base/service-provider';
+} from './auth/index.js';
+import type { ODataService } from './base/odata-service.js';
+import { TlsPatch } from './base/patchTls.js';
+import type { ProviderConfiguration } from './base/service-provider.js';
+import { ServiceProvider } from './base/service-provider.js';
 
 type Class<T> = new (...args: any[]) => T;
 

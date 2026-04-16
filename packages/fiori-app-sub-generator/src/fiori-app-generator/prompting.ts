@@ -25,9 +25,9 @@ import type { Question } from 'inquirer';
 import merge from 'lodash/merge.js';
 import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
-import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
-import { Features, defaultPromptValues } from '../types';
-import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
+import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types/index.js';
+import { Features, defaultPromptValues } from '../types/index.js';
+import { getMinSupportedUI5Version, t, validateNextStep } from '../utils/index.js';
 
 /**
  * Validates the view name.

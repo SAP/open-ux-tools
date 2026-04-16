@@ -25,22 +25,22 @@ import {
     determineScpFromTarget,
     determineUrlFromDestination,
     determineS4HCFromTarget
-} from '../utils';
-import { getAbapQuestions } from './questions';
-import { EventName } from '../telemetryEvents';
-import { DeployProjectType } from './types';
-import { initI18n } from '../utils/i18n';
+} from '../utils/index.js';
+import { getAbapQuestions } from './questions.js';
+import { EventName } from '../telemetryEvents/index.js';
+import { DeployProjectType } from './types.js';
+import { initI18n } from '../utils/i18n.js';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/constants';
+import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer';
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { AbapDeployConfigOptions } from './types';
+import type { AbapDeployConfigOptions } from './types.js';
 import type {
     AbapDeployConfigAnswersInternal,
     AbapDeployConfigPromptOptions,
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-inquirer';
-import { getVariantNamespace } from '../utils/project';
+import { getVariantNamespace } from '../utils/project.js';
 import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
@@ -377,7 +377,7 @@ export default class extends DeploymentGenerator {
 }
 
 export { AbapDeployConfigQuestion, AbapDeployConfigAnswersInternal };
-export { getAbapQuestions } from './questions';
-export { indexHtmlExists } from '../utils';
-export { type AbapDeployConfigOptions, DeployProjectType } from './types';
+export { getAbapQuestions } from './questions.js';
+export { indexHtmlExists } from '../utils/index.js';
+export { type AbapDeployConfigOptions, DeployProjectType } from './types.js';
 export type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';

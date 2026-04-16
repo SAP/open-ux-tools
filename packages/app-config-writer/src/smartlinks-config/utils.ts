@@ -10,16 +10,16 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName } from '@sap-ux/project-access';
 import { BackendSystemKey, getService } from '@sap-ux/store';
 import type { BackendSystem } from '@sap-ux/store';
-import { t } from '../i18n';
-import { getTemplatePath } from '../templates';
+import { t } from '../i18n.js';
+import { getTemplatePath } from '../templates.js';
 import type {
     InboundTargetsConfig,
     SmartLinksSandboxConfig,
     SystemDetailsResponse,
     TargetConfig,
     TargetMapping
-} from '../types';
-import { addUi5YamlServeStaticMiddleware, readUi5DeployConfigTarget } from './ui5-yaml';
+} from '../types/index.js';
+import { addUi5YamlServeStaticMiddleware, readUi5DeployConfigTarget } from './ui5-yaml.js';
 
 /**
  * URL parameters for call to backend

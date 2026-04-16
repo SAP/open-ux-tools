@@ -1,2 +1,2 @@
-export { convertAnnotation } from './convert';
-export type { AnnotationConversionResult } from './convert';
+export { convertAnnotation } from './convert.js';
+export type { AnnotationConversionResult } from './convert.js';

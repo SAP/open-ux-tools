@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { YamlDocument, yamlDocumentToYamlString } from '@sap-ux/yaml';
 import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 
 /**
  * Updates the tsconfig.json file to correct the type roots when node_modules

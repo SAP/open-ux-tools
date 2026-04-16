@@ -6,8 +6,8 @@ import type {
     FullyQualifiedTypeName,
     AliasInformation
 } from '@sap-ux/odata-annotation-core-types';
-import type { ParsedName } from '.';
-import { COLLECTION_PREFIX, parseIdentifier } from '.';
+import type { ParsedName } from './index.js';
+import { COLLECTION_PREFIX, parseIdentifier } from './index.js';
 
 /**
  * Normalize qualified name string to fully qualified name, based on the available namespaces.

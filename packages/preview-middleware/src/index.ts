@@ -1,4 +1,4 @@
-export * from './ui5/middleware';
+export * from './ui5/middleware.js';
 export {
     FlpSandbox,
     generatePreviewFiles,
@@ -6,7 +6,7 @@ export {
     sanitizeRtaConfig,
     logRemoteUrl,
     isRemoteConnectionsEnabled
-} from './base';
+} from './base/index.js';
 export type {
     FlpConfig,
     RtaConfig,
@@ -15,4 +15,4 @@ export type {
     DefaultFlpPath,
     DefaultIntent,
     TestConfigDefaults
-} from './types';
+} from './types/index.js';

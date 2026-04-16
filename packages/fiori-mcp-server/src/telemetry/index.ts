@@ -15,8 +15,8 @@ import osName from 'os-name';
 
 const require = createRequire(import.meta.url);
 const { version } = require('../../package.json');
-import { logger } from '../utils/logger';
-import { t } from '../i18n';
+import { logger } from '../utils/logger.js';
+import { t } from '../i18n.js';
 
 export const mcpServerName = '@sap-ux/fiori-mcp-server';
 export const unknownTool = 'unknown-tool';

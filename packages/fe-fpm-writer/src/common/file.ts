@@ -1,5 +1,5 @@
 import type { CopyOptions, Editor } from 'mem-fs-editor';
-import type { TabInfo } from '../common/types';
+import type { TabInfo } from '../common/types.js';
 import { sep, normalize } from 'node:path';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import { DOMParser } from '@xmldom/xmldom';

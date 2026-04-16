@@ -12,18 +12,18 @@ import type {
     JourneyParams,
     AppFeatures,
     WriteContext
-} from './types';
-import { SupportedPageTypes, ValidationError } from './types';
-import { t } from './i18n';
+} from './types.js';
+import { SupportedPageTypes, ValidationError } from './types.js';
+import { t } from './i18n.js';
 import { FileName, DirName, getWebappPath } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
-import { getAppFeatures } from './utils/modelUtils';
+import { getAppFeatures } from './utils/modelUtils.js';
 import {
     addIntegrationOldToGitignore,
     addPathsToQUnitJs,
     hasVirtualOPA5,
     readHtmlTargetFromQUnitJs
-} from './utils/opaQUnitUtils';
+} from './utils/opaQUnitUtils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

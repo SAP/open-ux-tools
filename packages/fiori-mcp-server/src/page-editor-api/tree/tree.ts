@@ -1,10 +1,10 @@
-import type { ArtifactType, Parser } from '@sap/ux-specification/dist/types/src';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
-import { isArrayEqual } from './utils';
+import type { ArtifactType, Parser } from '@sap/ux-specification';
+import { PageTypeV4 } from '@sap/ux-specification';
+import { isArrayEqual } from './utils.js';
 import type { JSONSchema4, JSONSchema4Type } from 'json-schema';
-import { logger } from '../../utils/logger';
-import { SortingOptions } from './types';
-import type { AllowedMoveRange, ObjectAggregation, SettingOption, PropertyPath } from './types';
+import { logger } from '../../utils/logger.js';
+import { SortingOptions } from './types.js';
+import type { AllowedMoveRange, ObjectAggregation, SettingOption, PropertyPath } from './types.js';
 
 interface TraverseNodeData {
     text: string;

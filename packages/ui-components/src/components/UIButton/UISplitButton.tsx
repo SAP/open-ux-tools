@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { UIDefaultButton } from './UIDefaultButton';
-import { UIContextualMenu } from '../UIContextualMenu';
-import { UiIcons } from '../Icons';
-import type { UIContextualMenuProps, UIContextualMenuItem } from '../UIContextualMenu';
+import { UIDefaultButton } from './UIDefaultButton.js';
+import { UIContextualMenu } from '../UIContextualMenu/index.js';
+import { UiIcons } from '../Icons.js';
+import type { UIContextualMenuProps, UIContextualMenuItem } from '../UIContextualMenu/index.js';
 
-import { getUIId } from '../../utilities';
+import { getUIId } from '../../utilities/index.js';
 
 export interface UISplitButtonProps {
     button: UIContextualMenuItem;

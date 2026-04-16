@@ -10,23 +10,23 @@ import { type ListQuestion, ERROR_TYPE, getCFAbapInstanceChoices, withCondition 
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-tools';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
-import { t } from '../../../../i18n';
-import type { ConnectedSystem, OdataServiceAnswers, OdataServicePromptOptions } from '../../../../types';
+import { t } from '../../../../i18n.js';
+import type { ConnectedSystem, OdataServiceAnswers, OdataServicePromptOptions } from '../../../../types.js';
 import {
     getDefaultChoiceIndex,
     getPromptHostEnvironment,
     isBackendSystemKeyExisting,
     PromptState,
     removeCircularFromServiceProvider
-} from '../../../../utils';
-import { ConnectionValidator } from '../../../connectionValidator';
-import LoggerHelper from '../../../logger-helper';
-import { errorHandler } from '../../../prompt-helpers';
-import type { ValidationResult } from '../../../types';
-import { newSystemPromptNames } from '../new-system/types';
-import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
-import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
-import { connectWithDestination } from '../system-selection/prompt-helpers';
+} from '../../../../utils/index.js';
+import { ConnectionValidator } from '../../../connectionValidator.js';
+import LoggerHelper from '../../../logger-helper.js';
+import { errorHandler } from '../../../prompt-helpers.js';
+import type { ValidationResult } from '../../../types.js';
+import { newSystemPromptNames } from '../new-system/types.js';
+import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection/index.js';
+import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts.js';
+import { connectWithDestination } from '../system-selection/prompt-helpers.js';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;

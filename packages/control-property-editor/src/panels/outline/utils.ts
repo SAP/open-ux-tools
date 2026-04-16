@@ -1,6 +1,6 @@
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-import type { FilterOptions } from '../../slice';
-import { FilterName } from '../../slice';
+import type { FilterOptions } from '../../slice.js';
+import { FilterName } from '../../slice.js';
 import type { IGroup } from '@fluentui/react';
 
 const commonVisibleControls = new Set([

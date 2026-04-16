@@ -3,8 +3,8 @@ import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import type { BackendMiddlewareConfig } from './base/types';
-import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
+import type { BackendMiddlewareConfig } from './base/types.js';
+import { generateProxyMiddlewareOptions, initI18n } from './base/proxy.js';
 import type { MiddlewareParameters } from '@ui5/server'; // eslint-disable-line sonarjs/no-implicit-dependencies
 
 /**

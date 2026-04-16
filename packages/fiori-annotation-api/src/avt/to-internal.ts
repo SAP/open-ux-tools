@@ -15,9 +15,9 @@ import {
     ELEMENT_TYPE,
     TEXT_TYPE
 } from '@sap-ux/odata-annotation-core-types';
-import { expressionNames, isExpression } from './expressions';
-import { getAliasedEnumMember, resolveEnumMemberValue, resolvePath } from './utils';
-import type { AnnotationListWithOrigins } from './annotations';
+import { expressionNames, isExpression } from './expressions.js';
+import { getAliasedEnumMember, resolveEnumMemberValue, resolvePath } from './utils.js';
+import type { AnnotationListWithOrigins } from './annotations.js';
 
 /**
  * Convert target annotations to internal format.

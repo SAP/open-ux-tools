@@ -1,9 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
 import type { AddressInfo } from 'node:net';
 import open from 'open';
-import { defaultTimeout } from '../connection';
-import { ABAPVirtualHostProvider } from './abap-virtual-host-provider';
-import { setupRedirectHandling } from './redirect';
+import { defaultTimeout } from '../connection.js';
+import { ABAPVirtualHostProvider } from './abap-virtual-host-provider.js';
+import { setupRedirectHandling } from './redirect.js';
 
 const ADT_REENTRANCE_ENDPOINT = '/sap/bc/sec/reentrance';
 

@@ -1,7 +1,7 @@
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
-import { MiddlewareConfigs } from '../types';
+import { MiddlewareConfigs } from '../types/index.js';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
-import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
+import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types/index.js';
 import type { Editor } from 'mem-fs-editor';
 import { basename } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';

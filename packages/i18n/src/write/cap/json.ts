@@ -1,6 +1,6 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import type { TextEdit } from 'vscode-languageserver-textdocument';
-import type { CdsEnvironment, NewI18nEntry } from '../../types';
+import type { CdsEnvironment, NewI18nEntry } from '../../types.js';
 import {
     getI18nConfiguration,
     jsonPath,
@@ -10,7 +10,7 @@ import {
     doesExist,
     readFile,
     writeFile
-} from '../../utils';
+} from '../../utils/index.js';
 import { Range } from '@sap-ux/text-document-utils';
 import type { Node } from 'jsonc-parser';
 import { parseTree } from 'jsonc-parser';

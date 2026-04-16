@@ -3,12 +3,12 @@ import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
-import { getManifestContent } from './manifest';
-import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
-import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
-import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types';
-import { getApplicationType } from '../source';
-import { writeKeyUserChanges } from '../base/change-utils';
+import { getManifestContent } from './manifest/index.js';
+import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n/index.js';
+import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils.js';
+import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types.js';
+import { getApplicationType } from '../source/index.js';
+import { writeKeyUserChanges } from '../base/change-utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

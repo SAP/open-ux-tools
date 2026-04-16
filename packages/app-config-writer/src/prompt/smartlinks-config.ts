@@ -5,10 +5,10 @@ import { prompt } from 'prompts';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName } from '@sap-ux/project-access';
-import { t } from '../i18n';
-import { getLocalStoredCredentials, getTargetDefinition } from '../smartlinks-config';
-import type { TargetConfig, DeployTarget } from '../types';
-import { TargetType } from '../types';
+import { t } from '../i18n.js';
+import { getLocalStoredCredentials, getTargetDefinition } from '../smartlinks-config/index.js';
+import type { TargetConfig, DeployTarget } from '../types/index.js';
+import { TargetType } from '../types/index.js';
 
 /**
  * Validator helper function for prompts.

@@ -1,8 +1,8 @@
-import type { PREDEFINED_GENERATOR_VALUES } from './appgen-config-schema-props';
+import type { PREDEFINED_GENERATOR_VALUES } from './appgen-config-schema-props.js';
 
 import { z } from 'zod';
-import { convertToSchema } from '../../utils';
-import { entityConfig, floorplan, project, serviceCap as service } from './appgen-config-schema-props';
+import { convertToSchema } from '../../utils/index.js';
+import { entityConfig, floorplan, project, serviceCap as service } from './appgen-config-schema-props.js';
 
 export const generatorConfigCAP = z.object({
     entityConfig,

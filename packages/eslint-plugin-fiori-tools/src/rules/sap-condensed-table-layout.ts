@@ -1,11 +1,11 @@
-import type { FioriRuleDefinition } from '../types';
-import { CONDENSED_TABLE_LAYOUT, type CondensedTableLayout } from '../language/diagnostics';
-import { createFioriRule } from '../language/rule-factory';
+import type { FioriRuleDefinition } from '../types.js';
+import { CONDENSED_TABLE_LAYOUT, type CondensedTableLayout } from '../language/diagnostics.js';
+import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import type { ParsedApp } from '../project-context/parser';
-import type { FeV2PageType, LinkedFeV2App } from '../project-context/linker/fe-v2';
-import type { FeV4PageType, LinkedFeV4App, Table, OrphanTable } from '../project-context/linker/fe-v4';
-import { createJsonFixer } from '../language/rule-fixer';
+import type { ParsedApp } from '../project-context/parser/index.js';
+import type { FeV2PageType, LinkedFeV2App } from '../project-context/linker/fe-v2.js';
+import type { FeV4PageType, LinkedFeV4App, Table, OrphanTable } from '../project-context/linker/fe-v4.js';
+import { createJsonFixer } from '../language/rule-fixer.js';
 
 const COMPACT_TABLE_TYPES = new Set(['GridTable', 'AnalyticalTable', 'TreeTable']);
 

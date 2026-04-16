@@ -1,17 +1,22 @@
-import { CustomExtensionType, DirName } from '@sap/ux-specification/dist/types/src';
-import type { ControllerExtensionPageType } from '@sap/ux-specification/dist/types/src';
-import { SapuxFtfsFileIO } from '../../../page-editor-api';
+import { CustomExtensionType, DirName } from '@sap/ux-specification';
+import type { ControllerExtensionPageType } from '@sap/ux-specification';
+import { SapuxFtfsFileIO } from '../../../page-editor-api/index.js';
 import type {
     ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
     GetFunctionalityDetailsInput,
     GetFunctionalityDetailsOutput
-} from '../../../types';
-import { convertToSchema, getDefaultExtensionFolder, resolveApplication, validateWithSchema } from '../../../utils';
+} from '../../../types/index.js';
+import {
+    convertToSchema,
+    getDefaultExtensionFolder,
+    resolveApplication,
+    validateWithSchema
+} from '../../../utils/index.js';
 import { join } from 'node:path';
-import { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../../constant';
-import { buildControllerExtensionSchema, ControllerExtensionCreationSchema } from './schema';
+import { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../../constant.js';
+import { buildControllerExtensionSchema, ControllerExtensionCreationSchema } from './schema.js';
 
 export const CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
     functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID,

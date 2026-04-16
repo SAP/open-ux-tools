@@ -1,7 +1,7 @@
 import { toFullyQualifiedName } from '../index.js';
 
-import type { ParsedPath, ParsedPathSegment } from './parse';
-import { PATH_SEPARATOR } from './parse';
+import type { ParsedPath, ParsedPathSegment } from './parse.js';
+import { PATH_SEPARATOR } from './parse.js';
 
 /**
  * Converts path to fully qualified representation.

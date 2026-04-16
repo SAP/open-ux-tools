@@ -1,3 +1,3 @@
-export * from './i18n';
-export { prompts, generatorTitle } from './constants';
-export { runPostLibGenHook } from './eventHook';
+export * from './i18n.js';
+export { prompts, generatorTitle } from './constants.js';
+export { runPostLibGenHook } from './eventHook.js';

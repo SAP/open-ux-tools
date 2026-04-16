@@ -1,2 +1,2 @@
-export * from './MessageWrapper';
-export * from './utils';
+export * from './MessageWrapper.js';
+export * from './utils.js';

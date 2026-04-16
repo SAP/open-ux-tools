@@ -13,13 +13,13 @@ import type {
 } from '@fluentui/react';
 import { DirectionalHint, FocusZoneTabbableElements, setIconOptions } from '@fluentui/react';
 
-import { UITextInput } from '../UIInput';
-import { UIContextualMenu, UIHighlightMenuOption } from '../UIContextualMenu';
-import { UIIconButton } from '../UIButton/UIIconButton';
-import { UiIcons } from '../Icons';
+import { UITextInput } from '../UIInput/index.js';
+import { UIContextualMenu, UIHighlightMenuOption } from '../UIContextualMenu/index.js';
+import { UIIconButton } from '../UIButton/UIIconButton.js';
+import { UiIcons } from '../Icons.js';
 
-import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
-import { getMessageInfo } from '../../helper/ValidationMessage';
+import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage/index.js';
+import { getMessageInfo } from '../../helper/ValidationMessage/index.js';
 
 import './UITreeDropdown.scss';
 

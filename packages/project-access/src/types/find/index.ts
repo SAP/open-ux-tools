@@ -1,4 +1,4 @@
-import type { Manifest } from '../webapp';
+import type { Manifest } from '../webapp/index.js';
 
 export type FioriArtifactTypes = 'applications' | 'adaptations' | 'extensions' | 'libraries' | 'components';
 

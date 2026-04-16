@@ -2,12 +2,12 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type {
     QuickActionContext,
     SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { pageHasControlId } from '../../../cpe/quick-actions/utils';
-import { getControlById, isA } from '../../../utils/core';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { areManifestChangesSupported, prepareManifestChange } from './utils';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { pageHasControlId } from '../../../cpe/quick-actions/utils.js';
+import { getControlById, isA } from '../../../utils/core.js';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base.js';
+import { areManifestChangesSupported, prepareManifestChange } from './utils.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
 import type SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';

@@ -1,3 +1,3 @@
-export { toAnnotationFile, toTargetMap, adjustCdsTermNames } from './annotation-file';
-export type { CdsAnnotationFile, Target } from './annotation-file';
-export { toAbsoluteUriString } from './misc';
+export { toAnnotationFile, toTargetMap, adjustCdsTermNames } from './annotation-file.js';
+export type { CdsAnnotationFile, Target } from './annotation-file.js';
+export { toAbsoluteUriString } from './misc.js';

@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
-import type { CheckIntegrityResult, Content, ContentIntegrity, FileIntegrity, Integrity } from '../types';
-import { getContentIntegrity, getFileIntegrity } from './hash';
+import type { CheckIntegrityResult, Content, ContentIntegrity, FileIntegrity, Integrity } from '../types.js';
+import { getContentIntegrity, getFileIntegrity } from './hash.js';
 
 /**
  * Check existing integrity data.

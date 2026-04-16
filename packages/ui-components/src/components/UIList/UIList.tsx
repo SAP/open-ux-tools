@@ -10,7 +10,7 @@ import type {
 } from '@fluentui/react';
 import { GroupedList } from '@fluentui/react';
 
-import { UiIcons } from '../Icons';
+import { UiIcons } from '../Icons.js';
 
 import './UIList.scss';
 

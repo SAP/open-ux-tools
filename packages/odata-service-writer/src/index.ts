@@ -5,15 +5,15 @@ import { create as createStorage } from 'mem-fs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { addServicesData, updateServicesData } from './update';
-import { enhanceData, removeAnnotationsFromCDSFiles, updateCdsFilesWithAnnotations } from './data';
-import { t } from './i18n';
-import type { EdmxOdataService, ProjectPaths, OdataService, CdsAnnotationsInfo } from './types';
-import { ServiceType } from './types';
+import { addServicesData, updateServicesData } from './update.js';
+import { enhanceData, removeAnnotationsFromCDSFiles, updateCdsFilesWithAnnotations } from './data/index.js';
+import { t } from './i18n.js';
+import type { EdmxOdataService, ProjectPaths, OdataService, CdsAnnotationsInfo } from './types.js';
+import { ServiceType } from './types.js';
 
-import { deleteServiceData } from './delete';
+import { deleteServiceData } from './delete.js';
 import { getWebappPath } from '@sap-ux/project-access';
-import { updateManifest } from './data/manifest';
+import { updateManifest } from './data/manifest.js';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -176,5 +176,5 @@ export {
     type CdsAnnotationsInfo,
     type ExternalServiceCollectionOptions,
     type NamespaceAlias
-} from './types';
-export { getExternalServiceReferences, getAnnotationNamespaces, writeExternalServiceMetadata } from './data';
+} from './types.js';
+export { getExternalServiceReferences, getAnnotationNamespaces, writeExternalServiceMetadata } from './data/index.js';

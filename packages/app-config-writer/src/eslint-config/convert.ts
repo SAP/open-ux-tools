@@ -3,7 +3,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'node:path';
 import { FileName, hasDependency, type Package } from '@sap-ux/project-access';
-import { isLowerThanMinimalVersion } from '../common/package-json';
+import { isLowerThanMinimalVersion } from '../common/package-json.js';
 import crossSpawn from 'cross-spawn';
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';

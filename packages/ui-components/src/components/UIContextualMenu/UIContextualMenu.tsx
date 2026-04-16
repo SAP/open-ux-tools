@@ -16,7 +16,7 @@ export type { IContextualMenuItem as UIContextualMenuItem };
 export type { IContextualMenuProps as UIContextualMenuProps };
 export { ContextualMenuItemType as UIContextualMenuItemType };
 
-import { UiIcons } from '../Icons';
+import { UiIcons } from '../Icons.js';
 
 export enum UIContextualMenuLayoutType {
     DropdownMenu = 'DropdownMenu',

@@ -1,6 +1,6 @@
 import type { BackendSystem } from '@sap-ux/store';
-import { getBackendSystemService, t } from '../../../utils';
-import { SystemPanelViewType } from '../../../utils/constants';
+import { getBackendSystemService, t } from '../../../utils/index.js';
+import { SystemPanelViewType } from '../../../utils/constants/index.js';
 
 /**
  * Validates the provided system information.

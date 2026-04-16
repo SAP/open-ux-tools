@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import type { UIComboBoxOption, UISelectableOption } from '@sap-ux/ui-components';
-import { convertChoicesToOptions, getAnswer, getDynamicQuestions, isDeepEqual, setAnswer } from './utils';
-import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
+import { convertChoicesToOptions, getAnswer, getDynamicQuestions, isDeepEqual, setAnswer } from './utils.js';
+import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types.js';
 import type { Answers, ChoiceOptions, AsyncDynamicQuestionProperty } from 'inquirer';
 
 interface RequestedChoices {

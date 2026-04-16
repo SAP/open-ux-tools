@@ -1,4 +1,4 @@
-import type { PackageJson } from './package-json';
+import type { PackageJson } from './package-json.js';
 
 interface SapUxPackage {
     sapux?: boolean | string[];

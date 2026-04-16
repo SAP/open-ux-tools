@@ -8,10 +8,10 @@ import {
     initProject,
     isProjectIntegrityEnabled,
     updateProjectIntegrity
-} from '../integrity';
-import type { CheckIntegrityResult, Content } from '../types';
-import { getContentIntegrity, getFileIntegrity } from '../integrity/hash';
-import { readIntegrityData, writeIntegrityData } from '../integrity/persistence';
+} from '../integrity/index.js';
+import type { CheckIntegrityResult, Content } from '../types.js';
+import { getContentIntegrity, getFileIntegrity } from '../integrity/hash.js';
+import { readIntegrityData, writeIntegrityData } from '../integrity/persistence.js';
 
 export const fioriIntegrityDataPath = join('.fiori-ai/ai-integrity.json');
 

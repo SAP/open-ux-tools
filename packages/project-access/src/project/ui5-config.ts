@@ -2,8 +2,8 @@ import { basename, dirname, join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type { MockserverConfig, MockserverService, Ui5Document, Configuration } from '@sap-ux/ui5-config';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { DirName, FileName } from '../constants';
-import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file';
+import { DirName, FileName } from '../constants.js';
+import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file/index.js';
 
 /**
  * Type representing the possible path mappings defined in the UI5 configuration for the different project types.

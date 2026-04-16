@@ -1,4 +1,4 @@
-import type { FlpConfigOptions } from './types';
+import type { FlpConfigOptions } from './types.js';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
 import { join, basename } from 'node:path';
@@ -26,7 +26,7 @@ import {
     getExistingAdpProjectType
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
-import { EventName } from '../telemetryEvents';
+import { EventName } from '../telemetryEvents/index.js';
 import {
     getPrompts,
     getAdpFlpConfigPromptOptions,
@@ -48,7 +48,7 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName, getAppType } from '@sap-ux/project-access';
-import { AdpFlpConfigLogger, t, initI18n, getAbapServiceProvider } from '../utils';
+import { AdpFlpConfigLogger, t, initI18n, getAbapServiceProvider } from '../utils/index.js';
 import {
     ErrorHandler,
     type CredentialsAnswers,
@@ -58,7 +58,7 @@ import {
 import type { AbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
-import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../utils/appWizardCache';
+import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../utils/appWizardCache.js';
 /**
  * Generator for adding a FLP configuration to an adaptation project.
  *
@@ -293,7 +293,7 @@ export default class AdpFlpConfigGenerator extends Generator {
      */
     private _setupReplacePage(): void {
         const tileEntries = this.inbounds
-            ? Object.values(this.inbounds).map((inboundData) => {
+            ? Object.values(this.inbounds).map((inboundData: ManifestNamespace.Inbound) => {
                   const title = inboundData.title ?? '';
                   const navigationIntent = `${inboundData.semanticObject}-${inboundData.action}`;
                   return t('yuiNavSteps.flpConfigReplaceTile', { navigationIntent, title });

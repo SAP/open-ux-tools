@@ -18,12 +18,12 @@ import type { CreatableProps } from 'react-select/creatable';
 import { components } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
-import { UIIcon } from '../UIIcon';
-import { UILoader } from '../UILoader';
-import { UIHighlightMenuOption } from '../UIContextualMenu';
+import { UIIcon } from '../UIIcon/index.js';
+import { UILoader } from '../UILoader/index.js';
+import { UIHighlightMenuOption } from '../UIContextualMenu/index.js';
 
 import './UICreateSelect.scss';
-import { COMMON_INPUT_STYLES } from '../UIInput';
+import { COMMON_INPUT_STYLES } from '../UIInput/index.js';
 
 export { MultiValue as UICreateSelectMultiValue };
 export { ActionMeta as UICreateSelectActionMeta };

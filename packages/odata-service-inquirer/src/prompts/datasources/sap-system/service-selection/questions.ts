@@ -19,23 +19,23 @@ import {
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
-import { t } from '../../../../i18n';
-import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types';
-import { promptNames } from '../../../../types';
-import { areArraysEquivalent, getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
-import type { ConnectionValidator } from '../../../connectionValidator';
-import LoggerHelper from '../../../logger-helper';
-import { errorHandler } from '../../../prompt-helpers';
+import { t } from '../../../../i18n.js';
+import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types.js';
+import { promptNames } from '../../../../types.js';
+import { areArraysEquivalent, getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils/index.js';
+import type { ConnectionValidator } from '../../../connectionValidator.js';
+import LoggerHelper from '../../../logger-helper.js';
+import { errorHandler } from '../../../prompt-helpers.js';
 import {
     getSelectedServiceLabel,
     getSelectedServiceMessage,
     getServiceChoices,
     sendDestinationServiceSuccessTelemetryEvent,
     validateService
-} from '../service-selection/service-helper';
-import type { SystemSelectionAnswers } from '../system-selection';
-import { type ServiceAnswer } from './types';
-import { getValueHelpDownloadPrompt } from '../external-services/value-help-download';
+} from '../service-selection/service-helper.js';
+import type { SystemSelectionAnswers } from '../system-selection/index.js';
+import { type ServiceAnswer } from './types.js';
+import { getValueHelpDownloadPrompt } from '../external-services/value-help-download.js';
 
 const cliServicePromptName = 'cliServiceSelection';
 

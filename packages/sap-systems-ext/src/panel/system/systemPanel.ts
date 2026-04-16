@@ -1,14 +1,14 @@
-import type { SystemPanelViewType } from '../../utils/constants';
+import type { SystemPanelViewType } from '../../utils/constants/index.js';
 import type { BackendSystem } from '@sap-ux/store';
-import type { DisposeCallback, PanelContext } from '../../types/system';
+import type { DisposeCallback, PanelContext } from '../../types/system/index.js';
 import type { WebAppActions } from '@sap-ux/sap-systems-ext-types';
 import { extensions, type WebviewPanel, type Disposable } from 'vscode';
-import { t } from '../../utils';
+import { t } from '../../utils/index.js';
 import { join, resolve } from 'node:path';
-import { createWebviewPanel } from './utils';
-import { dispatchPanelAction } from './actions';
+import { createWebviewPanel } from './utils/index.js';
+import { dispatchPanelAction } from './actions/index.js';
 import { GUIDED_ANSWERS_EXTENSION_ID } from '@sap-ux/guided-answers-helper';
-import SystemsLogger from '../../utils/logger';
+import SystemsLogger from '../../utils/logger.js';
 
 /**
  * Class representing a system panel in the extension.

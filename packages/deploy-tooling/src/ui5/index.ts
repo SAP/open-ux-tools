@@ -1,10 +1,10 @@
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { TaskParameters } from '@ui5/builder';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { AbapDeployConfig } from '../types';
-import { NAME } from '../types';
-import { deploy, validateConfig } from '../base';
-import { createUi5Archive } from './archive';
+import type { AbapDeployConfig } from '../types/index.js';
+import { NAME } from '../types/index.js';
+import { deploy, validateConfig } from '../base/index.js';
+import { createUi5Archive } from './archive.js';
 import { config as loadEnvConfig } from 'dotenv';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 

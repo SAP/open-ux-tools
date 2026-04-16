@@ -10,9 +10,9 @@ import {
     toFullyQualifiedPath,
     parsePath
 } from '@sap-ux/odata-annotation-core';
-import type { IndexedAnnotation, ParsedService } from '../parser';
-import { buildAnnotationIndexKey } from '../parser';
-import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants';
+import type { IndexedAnnotation, ParsedService } from '../parser/index.js';
+import { buildAnnotationIndexKey } from '../parser/index.js';
+import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants.js';
 
 /**
  * Creates a configuration key from an annotation path

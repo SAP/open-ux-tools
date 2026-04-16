@@ -13,16 +13,16 @@ import {
     getUi5Version,
     isLowerThanMinimalUi5Version,
     minVersionInfo
-} from '../utils/version';
+} from '../utils/version.js';
 
-import init from '../cpe/init';
-import { updateSyncViewsIds, showSyncViewsWarning } from './sync-views-utils';
-import { getApplicationType } from '../utils/application';
+import init from '../cpe/init.js';
+import { updateSyncViewsIds, showSyncViewsWarning } from './sync-views-utils.js';
+import { getApplicationType } from '../utils/application.js';
 
-import { loadDefinitions } from './quick-actions/load';
-import { initDialogs } from './init-dialogs';
-import { sendInfoCenterMessage } from '../utils/info-center-message';
-import { CommunicationService } from '../cpe/communication-service';
+import { loadDefinitions } from './quick-actions/load.js';
+import { initDialogs } from './init-dialogs.js';
+import { sendInfoCenterMessage } from '../utils/info-center-message.js';
+import { CommunicationService } from '../cpe/communication-service.js';
 
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();

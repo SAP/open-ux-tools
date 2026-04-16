@@ -1,12 +1,12 @@
 import { writeFile } from 'node:fs';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import minimist from 'minimist';
 import prompts from 'prompts';
-import type { CheckEnvironmentOptions, EnvironmentCheckResult, Endpoint } from '../types';
-import { OutputMode, Severity } from '../types';
-import { convertResultsToMarkdown } from '../output/markdown';
-import { checkEnvironment } from '../checks/environment';
-import { storeResultsZip } from '../output';
+import type { CheckEnvironmentOptions, EnvironmentCheckResult, Endpoint } from '../types.js';
+import { OutputMode, Severity } from '../types.js';
+import { convertResultsToMarkdown } from '../output/markdown.js';
+import { checkEnvironment } from '../checks/environment.js';
+import { storeResultsZip } from '../output/index.js';
 
 /**
  * Output usage information to console.

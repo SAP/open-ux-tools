@@ -19,12 +19,12 @@ import {
     COMMON_CASE_ISSUE
 } from '@sap-ux/odata-annotation-core-types';
 
-import { i18n } from '../../../i18n';
+import { i18n } from '../../../i18n.js';
 
-import type { NodeHandler } from '../handler';
-import type { VisitorState } from '../visitor-state';
+import type { NodeHandler } from '../handler.js';
+import type { VisitorState } from '../visitor-state.js';
 
-import { pathLikeTypeElementName } from '../path-utils';
+import { pathLikeTypeElementName } from '../path-utils.js';
 
 export const pathHandler: NodeHandler<Path> = {
     type: PATH_TYPE,

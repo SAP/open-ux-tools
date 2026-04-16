@@ -1,7 +1,7 @@
 import * as zod from 'zod';
-import { PageTypeV4, FioriElementsVersion } from '@sap/ux-specification/dist/types/src';
-import type { AllowedNavigationOptions, PageDef } from './types';
-import { EXTENSION_FILE_NAME_PATTERN } from '../../../constant';
+import { PageTypeV4, FioriElementsVersion } from '@sap/ux-specification';
+import type { AllowedNavigationOptions, PageDef } from './types.js';
+import { EXTENSION_FILE_NAME_PATTERN } from '../../../constant.js';
 
 /**
  * Enum of allowed page types.
@@ -42,12 +42,8 @@ const childPageSchema = (page: string, navigations: AllowedNavigationOptions[], 
     const pageTypeEntries = version === FioriElementsVersion.v2 ? PageTypeEnumV2 : PageTypeEnumV4;
     const zodObject: {
         parentPage: zod.ZodLiteral<string>;
-        pageNavigation: zod.ZodEnum;
-        pageType: zod.ZodEnum<{
-            ObjectPage: PageTypeV4.ObjectPage;
-            ListReport?: PageTypeV4.ListReport;
-            CustomPage?: PageTypeV4.CustomPage;
-        }>;
+        pageNavigation: zod.ZodEnum<any>;
+        pageType: zod.ZodEnum<any>;
         pageViewName?: zod.ZodOptional<zod.ZodString>;
     } = {
         parentPage: zod

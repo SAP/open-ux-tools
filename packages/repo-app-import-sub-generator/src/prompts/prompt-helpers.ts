@@ -1,9 +1,9 @@
-import { appListSearchParams, appListResultFields, generatorTitle, generatorDescription } from '../utils/constants';
+import { appListSearchParams, appListResultFields, generatorTitle, generatorDescription } from '../utils/constants.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import type { AppInfo, AppItem } from '../app/types';
-import { PromptState } from './prompt-state';
-import { t } from '../utils/i18n';
-import RepoAppDownloadLogger from '../utils/logger';
+import type { AppInfo, AppItem } from '../app/types.js';
+import { PromptState } from './prompt-state.js';
+import { t } from '../utils/i18n.js';
+import RepoAppDownloadLogger from '../utils/logger.js';
 import { type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 /**
  * Returns the details for the YUI prompt.

@@ -8,14 +8,14 @@ import type {
     InternalControllerExtension,
     ManifestControllerExtension,
     ControllerExtensionPageTarget
-} from './types';
-import { ControllerExtensionPageType } from './types';
-import { validateBasePath } from '../common/validate';
-import type { Manifest } from '../common/types';
-import { setCommonDefaults } from '../common/defaults';
-import { getTemplatePath } from '../templates';
-import { addExtensionTypes, getManifest } from '../common/utils';
-import { copyTpl, extendJSON } from '../common/file';
+} from './types.js';
+import { ControllerExtensionPageType } from './types.js';
+import { validateBasePath } from '../common/validate.js';
+import type { Manifest } from '../common/types.js';
+import { setCommonDefaults } from '../common/defaults.js';
+import { getTemplatePath } from '../templates.js';
+import { addExtensionTypes, getManifest } from '../common/utils.js';
+import { copyTpl, extendJSON } from '../common/file.js';
 
 export const UI5_CONTROLLER_EXTENSION_LIST_REPORT = 'sap.fe.templates.ListReport.ListReportController';
 export const UI5_CONTROLLER_EXTENSION_OBJECT_PAGE = 'sap.fe.templates.ObjectPage.ObjectPageController';

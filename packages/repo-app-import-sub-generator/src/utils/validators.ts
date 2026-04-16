@@ -1,15 +1,15 @@
-import { t } from '../utils/i18n';
-import RepoAppDownloadLogger from '../utils/logger';
-import { PromptState } from '../prompts/prompt-state';
+import { t } from '../utils/i18n.js';
+import RepoAppDownloadLogger from '../utils/logger.js';
+import { PromptState } from '../prompts/prompt-state.js';
 import type { AppIndex } from '@sap-ux/axios-extension';
 import { HELP_NODES } from '@sap-ux/guided-answers-helper';
 import type { ValidationLink } from '@sap-ux/inquirer-common';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
-import type { AppInfo, QuickDeployedAppConfig, QfaJsonConfig } from '../app/types';
-import { downloadApp, hasQfaJson } from '../utils/download-utils';
+import type { AppInfo, QuickDeployedAppConfig, QfaJsonConfig } from '../app/types.js';
+import { downloadApp, hasQfaJson } from '../utils/download-utils.js';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
-import { qfaJsonFileName } from '../utils/constants';
+import { qfaJsonFileName } from '../utils/constants.js';
 
 /**
  * Validates the metadata section of the app configuration.

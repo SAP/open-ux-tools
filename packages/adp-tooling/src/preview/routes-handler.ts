@@ -15,11 +15,11 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
-import { TemplateFileName, HttpStatusCodes } from '../types';
+import { TemplateFileName, HttpStatusCodes } from '../types.js';
 import { DirName } from '@sap-ux/project-access';
-import type { DataSources, CodeExtChange } from '../types';
-import { ManifestService } from '../base/abap/manifest-service';
-import { getVariant, isTypescriptSupported } from '../base/helper';
+import type { DataSources, CodeExtChange } from '../types.js';
+import { ManifestService } from '../base/abap/manifest-service.js';
+import { getVariant, isTypescriptSupported } from '../base/helper.js';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 interface WriteControllerBody {

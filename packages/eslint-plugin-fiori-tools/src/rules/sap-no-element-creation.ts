@@ -10,7 +10,7 @@ import {
     isLiteral,
     contains,
     createDocumentBasedRuleVisitors
-} from '../utils/helpers';
+} from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Rule Definition

@@ -1,2 +1,2 @@
-export * from './system';
-export * from './telemetry';
+export * from './system.js';
+export * from './telemetry.js';

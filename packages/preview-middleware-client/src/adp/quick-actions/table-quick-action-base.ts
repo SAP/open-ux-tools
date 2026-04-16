@@ -5,18 +5,18 @@ import type IconTabFilter from 'sap/m/IconTabFilter';
 import type Table from 'sap/m/Table';
 import type MdcTable from 'sap/ui/mdc/Table';
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
-import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
+import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition.js';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import type { NestedQuickActionChild, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
-import { getParentContainer, getRelevantControlFromActivePage } from '../../cpe/quick-actions/utils';
-import { getControlById, isA, isManagedObject } from '../../utils/core';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
+import { getParentContainer, getRelevantControlFromActivePage } from '../../cpe/quick-actions/utils.js';
+import { getControlById, isA, isManagedObject } from '../../utils/core.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version.js';
 import type ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import type ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import type ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
-import type { EnablementValidator } from './enablement-validator';
-import { QuickActionDefinitionBase } from './quick-action-base';
+import type { EnablementValidator } from './enablement-validator.js';
+import { QuickActionDefinitionBase } from './quick-action-base.js';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
@@ -24,9 +24,9 @@ import {
     MDC_TABLE_TYPE,
     SMART_TABLE_TYPE,
     TREE_TABLE_TYPE
-} from './control-types';
-import { isVariantManagementEnabledOPPage } from './fe-v2/utils';
-import { isMacroTable } from '../../utils/fe-v4';
+} from './control-types.js';
+import { isVariantManagementEnabledOPPage } from './fe-v2/utils.js';
+import { isMacroTable } from '../../utils/fe-v4.js';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';

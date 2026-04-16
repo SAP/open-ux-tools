@@ -1,8 +1,8 @@
 import type { Logger } from '@sap-ux/logger';
-import { isAppStudio, errorString } from '../utils';
-import { DummyStore } from './dummy-store';
-import { KeyStoreManager } from './key-store';
-import type { SecureStore } from './types';
+import { isAppStudio, errorString } from '../utils/index.js';
+import { DummyStore } from './dummy-store.js';
+import { KeyStoreManager } from './key-store.js';
+import type { SecureStore } from './types.js';
 import type { keyring as zoweKeyring } from '@zowe/secrets-for-zowe-sdk';
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
@@ -99,4 +99,4 @@ export const getSecureStore = (log: Logger): SecureStore => {
     return new DummyStore(log);
 };
 
-export * from './types';
+export * from './types.js';

@@ -1,9 +1,9 @@
 import type { AbapTarget } from '@sap-ux/ui5-config';
-import { t } from '../i18n';
-import { ABAP_PACKAGE_SEARCH_MAX_RESULTS } from '../constants';
-import { queryPackages } from '../utils';
-import { PromptState } from './prompt-state';
-import LoggerHelper from '../logger-helper';
+import { t } from '../i18n.js';
+import { ABAP_PACKAGE_SEARCH_MAX_RESULTS } from '../constants.js';
+import { queryPackages } from '../utils.js';
+import { PromptState } from './prompt-state.js';
+import LoggerHelper from '../logger-helper.js';
 import { getDisplayName, isAbapEnvironmentOnBtp, type Destinations } from '@sap-ux/btp-utils';
 import {
     promptNames,
@@ -15,7 +15,7 @@ import {
     type AbapDeployConfigAnswersInternal,
     type BackendTarget,
     type SystemConfig
-} from '../types';
+} from '../types.js';
 import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
 import type { ChoiceOptions, ListChoiceOptions } from 'inquirer';
 import { getBackendSystemDisplayName, getSystemDisplayName } from '@sap-ux/fiori-generator-shared';

@@ -18,8 +18,8 @@ import { parse } from '@sap-ux/edmx-parser';
 import { DirName } from '@sap-ux/project-access';
 import type { ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
 
-import type { ExternalServiceCollectionOptions } from '../types';
-import { DEFAULT_DATASOURCE_NAME } from './constants';
+import type { ExternalServiceCollectionOptions } from '../types.js';
+import { DEFAULT_DATASOURCE_NAME } from './constants.js';
 
 const INDENT_SIZE = 4;
 

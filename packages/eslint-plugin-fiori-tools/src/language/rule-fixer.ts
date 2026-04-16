@@ -1,6 +1,6 @@
-import type { JSONRuleContext } from './rule-factory';
+import type { JSONRuleContext } from './rule-factory.js';
 import type { AnyNode, MemberNode, ObjectNode } from '@humanwhocodes/momoa';
-import { type DeepestExistingPathResult } from '../utils/helpers';
+import { type DeepestExistingPathResult } from '../utils/helpers.js';
 import type { RuleTextEdit, RuleTextEditor } from '@eslint/core';
 
 /**

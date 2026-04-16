@@ -1,6 +1,6 @@
 import { getService, type BackendSystem, type BackendSystemKey, type Service } from '@sap-ux/store';
-import LoggerHelper from '../prompts/logger-helper';
-import { t } from '../i18n';
+import LoggerHelper from '../prompts/logger-helper.js';
+import { t } from '../i18n.js';
 
 /**
  *  Get the backend system service instance.

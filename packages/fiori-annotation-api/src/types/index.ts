@@ -1,6 +1,6 @@
-export { type TextFile } from './text-file';
-export { type CDSService, type LocalEDMXService, type Service, type CompiledService } from './service';
-export { type AnnotationServiceAdapter, type AnnotationServiceConstructor, type ServiceArtifacts } from './adapter';
+export { type TextFile } from './text-file.js';
+export { type CDSService, type LocalEDMXService, type Service, type CompiledService } from './service.js';
+export { type AnnotationServiceAdapter, type AnnotationServiceConstructor, type ServiceArtifacts } from './adapter.js';
 export {
     DELETE_ATTRIBUTE,
     DELETE_ELEMENT,
@@ -27,6 +27,6 @@ export {
     type ReplaceAttribute,
     type ReplaceText,
     type MoveElements
-} from './internal-change';
-export * from './change';
-export * from './project-info';
+} from './internal-change.js';
+export * from './change.js';
+export * from './project-info.js';

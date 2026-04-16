@@ -2,7 +2,7 @@ import { pathToFileURL } from 'node:url';
 
 import { getCdsFiles } from '@sap/ux-cds-compiler-facade';
 
-import type { CDSService, TextFile } from '../types';
+import type { CDSService, TextFile } from '../types/index.js';
 
 /**
  * Creates CDS service structure.

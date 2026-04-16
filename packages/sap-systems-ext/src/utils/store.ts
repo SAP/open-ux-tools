@@ -1,5 +1,5 @@
 import { getService, BackendSystemKey, type BackendSystem, type Service } from '@sap-ux/store';
-import SystemsLogger from './logger';
+import SystemsLogger from './logger.js';
 
 /**
  *  Get the backend system service instance.

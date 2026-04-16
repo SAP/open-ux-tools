@@ -3,11 +3,11 @@ import type {
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
     GetFunctionalityDetailsOutput
-} from '../../../types';
+} from '../../../types/index.js';
 
-import { command } from './command';
-import { generatorConfigCAPJson as parameters } from '../../schemas';
-import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../../../constant';
+import { command } from './command.js';
+import { generatorConfigCAPJson as parameters } from '../../schemas/index.js';
+import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../../../constant.js';
 
 export const GENERATE_FIORI_UI_APPLICATION_CAP: GetFunctionalityDetailsOutput = {
     functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,

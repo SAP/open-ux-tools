@@ -18,10 +18,10 @@ import type {
     CloudCustomTaskConfigTarget,
     CfAdpWriterConfig,
     CustomConfig
-} from '../types';
-import { UI5_CDN_URL } from '../base/constants';
+} from '../types.js';
+import { UI5_CDN_URL } from '../base/constants/index.js';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { SupportedProject } from '../source';
+import { SupportedProject } from '../source/index.js';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 

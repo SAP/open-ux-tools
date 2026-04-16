@@ -13,6 +13,8 @@ config.transformIgnorePatterns = ['node_modules/(?!(@sap-ux-private|@sap-ux)/)']
 // Resolve vscode-languageserver-types CJS/UMD from its sibling package (avoids ESM exports condition in jsdom)
 const vscodeTextdocDir = path.dirname(path.dirname(require.resolve('vscode-languageserver-textdocument')));
 config.moduleNameMapper = {
+    // Strip .js extensions from relative imports for Jest resolution (NodeNext compat)
+    '^(\\.{1,2}/.*)\\.js$': '$1',
     '^sap/(.+)$': '<rootDir>/test/__mock__/sap/$1.ts',
     // Jest will try to load browser version, because environment is set to jsdom, but that is not what we want
     // https://jest-archive-august-2023.netlify.app/docs/28.x/upgrading-to-jest28#packagejson-exports

@@ -1,7 +1,7 @@
-export * from './deploy/validators';
-export * from './ui5/validators';
-export * from './general/project-path-validators';
-export * from './general/validators';
-export * from './adp/validators';
-export * from './flp/validators';
-export { addi18nResourceBundle } from './i18n';
+export * from './deploy/validators.js';
+export * from './ui5/validators.js';
+export * from './general/project-path-validators.js';
+export * from './general/validators.js';
+export * from './adp/validators.js';
+export * from './flp/validators.js';
+export { addi18nResourceBundle } from './i18n.js';

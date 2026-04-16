@@ -1,1 +1,1 @@
-export * from './UIIcon';
+export * from './UIIcon.js';

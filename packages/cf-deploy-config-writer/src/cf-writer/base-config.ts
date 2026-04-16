@@ -2,11 +2,11 @@ import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { type Logger } from '@sap-ux/logger';
-import { generateSupportingConfig, fileExists } from '../utils';
-import LoggerHelper from '../logger-helper';
-import { createMTA, validateMtaConfig, addRoutingConfig } from '../mta-config';
-import { type CFBaseConfig, type MTABaseConfig } from '../types';
-import { t } from '../i18n';
+import { generateSupportingConfig, fileExists } from '../utils.js';
+import LoggerHelper from '../logger-helper.js';
+import { createMTA, validateMtaConfig, addRoutingConfig } from '../mta-config/index.js';
+import { type CFBaseConfig, type MTABaseConfig } from '../types/index.js';
+import { t } from '../i18n.js';
 
 /**
  * Add a standalone | managed | frontend app router to an empty target folder.

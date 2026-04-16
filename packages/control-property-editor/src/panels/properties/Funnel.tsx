@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UICheckbox, UIIconButton, UICallout, UICalloutContentPadding } from '@sap-ux/ui-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { IconName } from '../../icons';
-import type { FilterOptions } from '../../slice';
-import { FilterName, filterNodes } from '../../slice';
-import type { RootState } from '../../store';
+import { IconName } from '../../icons.js';
+import type { FilterOptions } from '../../slice.js';
+import { FilterName, filterNodes } from '../../slice.js';
+import type { RootState } from '../../store.js';
 import './Properties.scss';
 
 const TARGET = 'control-property-editor-property-search-funnel-callout-target-id';

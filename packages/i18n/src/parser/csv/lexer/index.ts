@@ -1,5 +1,5 @@
-import type { Token } from '../types';
-import { TokenType } from '../types';
+import type { Token } from '../types.js';
+import { TokenType } from '../types.js';
 const SEPARATOR = /[,;\t]/;
 
 /**

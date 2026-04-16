@@ -2,8 +2,8 @@ import { type CFResource, Cli, cfGetServiceKeys, eFilters } from '@sap/cf-tools'
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { t } from '../../i18n';
-import type { ServiceKeys, ServiceKeySortField } from '../../types';
+import { t } from '../../i18n.js';
+import type { ServiceKeys, ServiceKeySortField } from '../../types.js';
 
 const ENV = { env: { 'CF_COLOR': 'false' } };
 

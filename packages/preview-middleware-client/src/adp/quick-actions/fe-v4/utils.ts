@@ -1,8 +1,8 @@
-import { getControlById } from '../../../utils/core';
+import { getControlById } from '../../../utils/core.js';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import type { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
+import type { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition.js';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { getV4AppComponent, getPageName, getReference, isMacroTable } from '../../../utils/fe-v4';
+import { getV4AppComponent, getPageName, getReference, isMacroTable } from '../../../utils/fe-v4.js';
 import UI5Element from 'sap/ui/core/Element';
 
 export async function executeToggleAction(

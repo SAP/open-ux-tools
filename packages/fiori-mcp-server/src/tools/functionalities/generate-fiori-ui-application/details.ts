@@ -1,5 +1,5 @@
-import type { GetFunctionalityDetailsOutput } from '../../../types';
-import { generatorConfigODataJson as parameters } from '../../schemas';
+import type { GetFunctionalityDetailsOutput } from '../../../types/index.js';
+import { generatorConfigODataJson as parameters } from '../../schemas/index.js';
 
 export default {
     functionalityId: 'generate-fiori-ui-application',

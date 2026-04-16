@@ -1,9 +1,9 @@
-export * from './prompts/utility';
-export * from './types';
-export * from './prompts/helpers';
-export * from './error-handler/error-handler';
-export * from './prompts/cf-helper';
-export * from './telemetry/telemetry';
-export * from './prompts/credentials';
-export * from './metadata';
-export { addi18nResourceBundle } from './i18n';
+export * from './prompts/utility.js';
+export * from './types.js';
+export * from './prompts/helpers.js';
+export * from './error-handler/error-handler.js';
+export * from './prompts/cf-helper.js';
+export * from './telemetry/telemetry.js';
+export * from './prompts/credentials.js';
+export * from './metadata/index.js';
+export { addi18nResourceBundle } from './i18n.js';

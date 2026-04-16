@@ -6,14 +6,14 @@ import type {
     ButtonState,
     ButtonVisibilityResult,
     ListReportFeatures
-} from '../types';
+} from '../types.js';
 import {
     getFilterFields,
     getSelectionFieldItems,
     getTableColumnData,
     type AggregationItem,
     getAggregations
-} from './modelUtils';
+} from './modelUtils.js';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';

@@ -1,17 +1,17 @@
 import type { RuleContext, RulesMeta, RuleVisitor } from '@eslint/core';
-import type { FioriLanguageOptions, FioriSourceCode, Node } from './fiori-language';
+import type { FioriLanguageOptions, FioriSourceCode, Node } from './fiori-language.js';
 import { JSONSourceCode } from '@eslint/json';
-import type { FioriJSONSourceCode } from './json/source-code';
+import type { FioriJSONSourceCode } from './json/source-code.js';
 import type { AnyNode, MemberNode } from '@humanwhocodes/momoa';
-import { FioriXMLSourceCode } from './xml/source-code';
+import { FioriXMLSourceCode } from './xml/source-code.js';
 import type { XMLAstNode, XMLToken } from '@xml-tools/ast';
-import type { FioriRuleDefinition } from '../types';
-import { FioriAnnotationSourceCode } from './annotations/source-code';
+import type { FioriRuleDefinition } from '../types.js';
+import { FioriAnnotationSourceCode } from './annotations/source-code.js';
 import type { AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
-import { DiagnosticCache } from './diagnostic-cache';
-import type { Diagnostic } from './diagnostics';
-import type { DeepestExistingPathResult } from '../utils/helpers';
-import { findDeepestExistingPath } from '../utils/helpers';
+import { DiagnosticCache } from './diagnostic-cache.js';
+import type { Diagnostic } from './diagnostics.js';
+import type { DeepestExistingPathResult } from '../utils/helpers.js';
+import { findDeepestExistingPath } from '../utils/helpers.js';
 import { pathToFileURL } from 'node:url';
 import { normalizePath } from '@sap-ux/project-access';
 

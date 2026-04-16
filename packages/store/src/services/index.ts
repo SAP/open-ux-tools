@@ -1,5 +1,5 @@
-import type { BackendSystem } from '../entities/backend-system';
-import type { BackendSerializableKeys } from '../types';
+import type { BackendSystem } from '../entities/backend-system.js';
+import type { BackendSerializableKeys } from '../types.js';
 
 /**
  * The backend system keys and their values to filter backend systems by.
@@ -67,5 +67,5 @@ export interface Service<Entity, EntityKey> {
     getAll(options?: ServiceGetAllOptions<Entity>): Promise<Entity[] | []>;
 }
 
-export type { SystemService } from './backend-system';
-export { ApiHubSettingsService } from './api-hub';
+export type { SystemService } from './backend-system.js';
+export { ApiHubSettingsService } from './api-hub/index.js';

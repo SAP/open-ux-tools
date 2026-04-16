@@ -1,9 +1,9 @@
 import type { Answers } from 'inquirer';
-import { i18nNamespaces, translate } from '../../../i18n';
-import { getBuildingBlockIdPrompt, getViewOrFragmentPathPrompt, getAggregationPathPrompt } from '../utils';
-import type { PromptContext, Prompts } from '../../../prompts/types';
-import { BuildingBlockType } from '../../types';
-import type { BuildingBlockConfig, Page } from '../../types';
+import { i18nNamespaces, translate } from '../../../i18n.js';
+import { getBuildingBlockIdPrompt, getViewOrFragmentPathPrompt, getAggregationPathPrompt } from '../utils/index.js';
+import type { PromptContext, Prompts } from '../../../prompts/types.js';
+import { BuildingBlockType } from '../../types.js';
+import type { BuildingBlockConfig, Page } from '../../types.js';
 import { SapShortTextType, SapLongTextType } from '@sap-ux/i18n';
 
 export type PagePromptsAnswer = BuildingBlockConfig<Page> & Answers;

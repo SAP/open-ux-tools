@@ -1,7 +1,7 @@
-import { FileFormat } from './types';
-import type { ParseResult } from './types';
-import { parseProperties } from './properties/parser';
-import { parseCsv } from './csv/parser';
+import { FileFormat } from './types.js';
+import type { ParseResult } from './types.js';
+import { parseProperties } from './properties/parser/index.js';
+import { parseCsv } from './csv/parser/index.js';
 
 /**
  * Parse text.

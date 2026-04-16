@@ -1,5 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { AbapTarget, AbapDeployConfig } from '../types';
+import type { AbapTarget, AbapDeployConfig } from '../types/index.js';
 import { isUrlTarget } from '@sap-ux/system-access';
 import type { BspConfig } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';

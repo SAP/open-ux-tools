@@ -8,12 +8,12 @@ import { isAxiosError, TransportRequestService } from '@sap-ux/axios-extension';
 import { LogLevel } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
 import { writeFileSync } from 'node:fs';
-import type { AbapDeployConfig } from '../types';
-import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './config';
-import { promptConfirmation } from './prompt';
+import type { AbapDeployConfig } from '../types/index.js';
+import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './config.js';
+import { promptConfirmation } from './prompt.js';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
-import { getAppDescriptorVariant } from './archive';
-import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem, checkForCredentials } from './validate';
+import { getAppDescriptorVariant } from './archive.js';
+import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem, checkForCredentials } from './validate.js';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**

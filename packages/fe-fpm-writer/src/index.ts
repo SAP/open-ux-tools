@@ -1,34 +1,34 @@
-export type { CustomPage, ObjectPage, ListReport } from './page/types';
-export { generateCustomPage, generateObjectPage, generateListReport } from './page';
+export type { CustomPage, ObjectPage, ListReport } from './page/types.js';
+export { generateCustomPage, generateObjectPage, generateListReport } from './page/index.js';
 
-export type { CustomAction } from './action/types';
-export { TargetControl } from './action/types';
-export { generateCustomAction } from './action';
+export type { CustomAction } from './action/types.js';
+export { TargetControl } from './action/types.js';
+export { generateCustomAction } from './action/index.js';
 
-export type { ActionMenu } from './action-menu/types';
-export { TargetControl as ActionMenuTargetControl } from './action-menu/types';
-export { generateActionMenu } from './action-menu';
+export type { ActionMenu } from './action-menu/types.js';
+export { TargetControl as ActionMenuTargetControl } from './action-menu/types.js';
+export { generateActionMenu } from './action-menu/index.js';
 
-export type { CustomTableColumn } from './column/types';
-export { generateCustomColumn } from './column';
+export type { CustomTableColumn } from './column/types.js';
+export { generateCustomColumn } from './column/index.js';
 
-export type { CustomHeaderSection, CustomSection, CustomSubSection } from './section/types';
-export { RequestGroupId, DesignTime } from './section/types';
-export { generateCustomSection, generateCustomSubSection, generateCustomHeaderSection } from './section';
+export type { CustomHeaderSection, CustomSection, CustomSubSection } from './section/types.js';
+export { RequestGroupId, DesignTime } from './section/types.js';
+export { generateCustomSection, generateCustomSubSection, generateCustomHeaderSection } from './section/index.js';
 
-export type { CustomFilter } from './filter/types';
-export { generateCustomFilter } from './filter';
+export type { CustomFilter } from './filter/types.js';
+export { generateCustomFilter } from './filter/index.js';
 
-export type { CustomView } from './view/types';
-export { generateCustomView } from './view';
+export type { CustomView } from './view/types.js';
+export { generateCustomView } from './view/index.js';
 
-export { enableFPM } from './app';
-export type { FPMConfig } from './app';
+export { enableFPM } from './app/index.js';
+export type { FPMConfig } from './app/index.js';
 
-export { validateBasePath, validateVersion } from './common/validate';
-export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file';
+export { validateBasePath, validateVersion } from './common/validate.js';
+export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file.js';
 
-export { BuildingBlockType } from './building-block/types';
+export { BuildingBlockType } from './building-block/types.js';
 export type {
     FilterBar,
     Form,
@@ -44,8 +44,8 @@ export type {
     RichTextEditor,
     ButtonGroupConfig,
     Action
-} from './building-block/types';
-export { generateBuildingBlock, getSerializedFileContent } from './building-block';
+} from './building-block/types.js';
+export { generateBuildingBlock, getSerializedFileContent } from './building-block/index.js';
 export type {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
@@ -55,8 +55,8 @@ export type {
     RichTextEditorPromptsAnswer,
     RichTextEditorButtonGroupsPromptsAnswer,
     BuildingBlockTypePromptsAnswer
-} from './building-block/prompts/questions';
-export { PromptsType, PromptsAPI } from './prompts';
+} from './building-block/prompts/questions/index.js';
+export { PromptsType, PromptsAPI } from './prompts/index.js';
 export type {
     SupportedGeneratorAnswers,
     PromptsGroup,
@@ -65,13 +65,13 @@ export type {
     Answers,
     Subset,
     CodeSnippet
-} from './prompts';
+} from './prompts/index.js';
 
-export type { ControllerExtension } from './controller-extension/types';
-export { ControllerExtensionPageType } from './controller-extension/types';
-export { generateControllerExtension } from './controller-extension';
+export type { ControllerExtension } from './controller-extension/types.js';
+export { ControllerExtensionPageType } from './controller-extension/types.js';
+export { generateControllerExtension } from './controller-extension/index.js';
 
-export type { CustomField } from './field/types';
-export { generateCustomField } from './field';
+export type { CustomField } from './field/types.js';
+export { generateCustomField } from './field/index.js';
 
-export { initI18n } from './i18n';
+export { initI18n } from './i18n.js';

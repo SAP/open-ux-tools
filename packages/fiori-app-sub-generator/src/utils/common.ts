@@ -22,11 +22,11 @@ import { isCapJavaProject, toReferenceUri } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import { v4 as uuidV4 } from 'uuid';
-import type { GenerateLaunchConfigOptions, Service } from '../types';
-import { ApiHubType, SapSystemSourceType, FloorplanFE, minUi5VersionForPageBuildingBlock } from '../types';
-import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants';
-import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external';
-import { t } from './i18n';
+import type { GenerateLaunchConfigOptions, Service } from '../types/index.js';
+import { ApiHubType, SapSystemSourceType, FloorplanFE, minUi5VersionForPageBuildingBlock } from '../types/index.js';
+import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants.js';
+import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external.js';
+import { t } from './i18n.js';
 import { getBackendSystemType } from '@sap-ux/store';
 
 /**

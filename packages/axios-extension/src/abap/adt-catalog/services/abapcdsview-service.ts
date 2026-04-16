@@ -1,5 +1,5 @@
-import { AdtService } from './adt-service';
-import type { AbapCDSView, AdtCategory } from '../../types';
+import { AdtService } from './adt-service.js';
+import type { AbapCDSView, AdtCategory } from '../../types/index.js';
 
 /**
  * AbapCDSViewService implements ADT requests to obtain the list of abap cds views.

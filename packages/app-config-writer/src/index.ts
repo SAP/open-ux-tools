@@ -1,7 +1,7 @@
-export { getSmartLinksTargetFromPrompt, simulatePrompt, includeTestRunnersPrompt } from './prompt';
-export { generateSmartLinksConfig } from './smartlinks-config';
-export { generateEslintConfig, convertEslintConfig } from './eslint-config';
-export { generateInboundNavigationConfig, readManifest } from './navigation-config';
-export { generateVariantsConfig } from './variants-config';
-export { convertToVirtualPreview } from './preview-config';
-export { enableCardGeneratorConfig } from './cards-config';
+export { getSmartLinksTargetFromPrompt, simulatePrompt, includeTestRunnersPrompt } from './prompt/index.js';
+export { generateSmartLinksConfig } from './smartlinks-config/index.js';
+export { generateEslintConfig, convertEslintConfig } from './eslint-config/index.js';
+export { generateInboundNavigationConfig, readManifest } from './navigation-config/index.js';
+export { generateVariantsConfig } from './variants-config/index.js';
+export { convertToVirtualPreview } from './preview-config/index.js';
+export { enableCardGeneratorConfig } from './cards-config/index.js';

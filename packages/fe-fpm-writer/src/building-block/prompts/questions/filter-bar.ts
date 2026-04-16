@@ -1,6 +1,6 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers } from 'inquirer';
-import { i18nNamespaces, translate } from '../../../i18n';
+import { i18nNamespaces, translate } from '../../../i18n.js';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -10,11 +10,11 @@ import {
     getEntityPrompt,
     getViewOrFragmentPathPrompt,
     isCapProject
-} from '../utils';
-import type { Prompts, PromptContext, PromptsGroup } from '../../../prompts/types';
-import { BuildingBlockType } from '../../types';
-import type { BuildingBlockConfig, FilterBar } from '../../types';
-import { getManifestPromptsGroup } from './building-blocks';
+} from '../utils/index.js';
+import type { Prompts, PromptContext, PromptsGroup } from '../../../prompts/types.js';
+import { BuildingBlockType } from '../../types.js';
+import type { BuildingBlockConfig, FilterBar } from '../../types.js';
+import { getManifestPromptsGroup } from './building-blocks.js';
 
 const MANIFEST_LIBRARIES_GROUP = getManifestPromptsGroup();
 

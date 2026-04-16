@@ -1,4 +1,4 @@
-import type { UiIcons } from '../Icons';
+import type { UiIcons } from '../Icons.js';
 
 export interface TranslationInputStrings {
     acceptButtonLabel: string;

@@ -6,7 +6,7 @@
 
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { readHashFromFlpSandbox } from './flpSandboxUtils';
+import { readHashFromFlpSandbox } from './flpSandboxUtils.js';
 import { getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
 
 /** Relative path from the test output directory to opaTests.qunit.js */

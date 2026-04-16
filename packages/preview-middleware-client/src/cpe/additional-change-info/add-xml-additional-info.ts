@@ -1,11 +1,11 @@
 import FlexChange from 'sap/ui/fl/Change';
-import { getControlBySelector, findViewByControl } from '../../utils/core';
+import { getControlBySelector, findViewByControl } from '../../utils/core.js';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
     MDC_TABLE_TYPE,
     TREE_TABLE_TYPE
-} from '../../adp/quick-actions/control-types';
+} from '../../adp/quick-actions/control-types.js';
 import Element from 'sap/ui/core/Element';
 import type Component from 'sap/ui/core/Component';
 import type Selector from 'sap/ui/fl/Selector';

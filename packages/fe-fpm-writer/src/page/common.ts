@@ -3,7 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import { validateBasePath, validateDependenciesLibs } from '../common/validate';
+import { validateBasePath, validateDependenciesLibs } from '../common/validate.js';
 import type {
     CustomPage,
     FCL,
@@ -15,14 +15,14 @@ import type {
     Navigation,
     InternalListReport,
     Libraries
-} from './types';
-import { PageType } from './types';
-import type { Manifest } from '../common/types';
-import { FCL_ROUTER } from '../common/defaults';
-import { extendJSON } from '../common/file';
-import { getTemplatePath } from '../templates';
+} from './types.js';
+import { PageType } from './types.js';
+import type { Manifest } from '../common/types.js';
+import { FCL_ROUTER } from '../common/defaults.js';
+import { extendJSON } from '../common/file.js';
+import { getTemplatePath } from '../templates.js';
 import { coerce, gte } from 'semver';
-import { getManifest } from '../common/utils';
+import { getManifest } from '../common/utils.js';
 
 type EnhancePageConfigFunction = (
     data: ObjectPage | ListReport,
@@ -237,7 +237,7 @@ export async function validatePageConfig(
         }
         const routes: { [k: string]: ManifestNamespace.RouteWithoutName } = {};
         if (manifest['sap.ui5']?.routing?.routes?.constructor === Array) {
-            manifest['sap.ui5'].routing.routes.forEach((routeWithName) => {
+            manifest['sap.ui5'].routing.routes.forEach((routeWithName: ManifestNamespace.Route) => {
                 routes[routeWithName.name] = routeWithName;
             });
         } else {

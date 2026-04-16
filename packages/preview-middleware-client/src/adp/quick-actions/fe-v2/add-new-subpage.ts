@@ -3,12 +3,12 @@ import ODataMetaModelV2, { EntityContainer, EntitySet, EntityType } from 'sap/ui
 import TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
 import type AppComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
 
-import { getV2ApplicationPages } from '../../../utils/fe-v2';
-import { AddNewSubpageBase, ApplicationPageData } from '../add-new-subpage-quick-action-base';
+import { getV2ApplicationPages } from '../../../utils/fe-v2.js';
+import { AddNewSubpageBase, ApplicationPageData } from '../add-new-subpage-quick-action-base.js';
 import Component from 'sap/ui/core/Component';
-import { isA } from '../../../utils/core';
-import { areManifestChangesSupported, getV2AppComponent } from './utils';
-import { PageDescriptorV2 } from '../../controllers/AddSubpage.controller';
+import { isA } from '../../../utils/core.js';
+import { areManifestChangesSupported, getV2AppComponent } from './utils.js';
+import { PageDescriptorV2 } from '../../controllers/AddSubpage.controller.js';
 
 const OBJECT_PAGE_COMPONENT_NAME_V2 = 'sap.suite.ui.generic.template.ObjectPage';
 

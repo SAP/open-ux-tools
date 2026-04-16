@@ -10,8 +10,8 @@ import type {
     OdataServiceAnswers,
     OdataVersion
 } from '@sap-ux/odata-service-inquirer';
-import type { ApiHubType, SapSystemSourceType } from '../types/constants';
-import type { Script } from './common';
+import type { ApiHubType, SapSystemSourceType } from '../types/constants.js';
+import type { Script } from './common.js';
 import type { AppGenInfo, Floorplan } from '@sap-ux/fiori-generator-shared';
 
 export interface Project {

@@ -1,3 +1,3 @@
-export * from './api';
-export * from './types';
-export type { SupportedGeneratorAnswers } from './map';
+export * from './api.js';
+export * from './types.js';
+export type { SupportedGeneratorAnswers } from './map.js';

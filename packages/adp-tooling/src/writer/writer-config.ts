@@ -14,7 +14,7 @@ import type {
     CustomConfig,
     OnpremApp,
     UI5Version
-} from '../types';
+} from '../types.js';
 import {
     getFormattedVersion,
     getLatestVersion,
@@ -22,11 +22,11 @@ import {
     getOfficialBaseUI5VersionUrl,
     getVersionToBeUsed,
     shouldSetMinUI5Version
-} from '../ui5';
-import { getProviderConfig } from '../abap';
-import { AppRouterType, FlexLayer } from '../types';
-import { t } from '../i18n';
-import { getSupportedProject } from '../source';
+} from '../ui5/index.js';
+import { getProviderConfig } from '../abap/index.js';
+import { AppRouterType, FlexLayer } from '../types.js';
+import { t } from '../i18n.js';
+import { getSupportedProject } from '../source/index.js';
 
 export interface ConfigOptions {
     /**

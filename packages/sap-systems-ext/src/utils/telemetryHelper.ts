@@ -10,8 +10,8 @@ import { createRequire } from 'node:module';
 const { version } = createRequire(import.meta.url)('../../package.json');
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import osName from 'os-name';
-import { t } from './i18n';
-import SystemsLogger from './logger';
+import { t } from './i18n.js';
+import SystemsLogger from './logger.js';
 
 export const sapSystemsExtName = 'sap-systems-ext';
 const resourceId = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';

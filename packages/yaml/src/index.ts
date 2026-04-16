@@ -1,4 +1,4 @@
-export { YamlDocument, yamlDocumentToYamlString } from './yaml-document';
-export type { NodeComment } from './yaml-document';
+export { YamlDocument, yamlDocumentToYamlString } from './yaml-document.js';
+export type { NodeComment } from './yaml-document.js';
 export type { Node, YAMLSeq, YAMLMap } from 'yaml';
-export { errorCode, YAMLError } from './errors';
+export { errorCode, YAMLError } from './errors/index.js';

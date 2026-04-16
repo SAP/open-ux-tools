@@ -3,13 +3,13 @@ import ODataMetaModelV4 from 'sap/ui/model/odata/v4/ODataMetaModel';
 import Component from 'sap/ui/core/Component';
 import AppComponent from 'sap/fe/core/AppComponent';
 
-import { getV4AppComponent, getV4ApplicationPages } from '../../../utils/fe-v4';
-import { AddNewSubpageBase, ApplicationPageData } from '../add-new-subpage-quick-action-base';
-import { isA } from '../../../utils/core';
+import { getV4AppComponent, getV4ApplicationPages } from '../../../utils/fe-v4.js';
+import { AddNewSubpageBase, ApplicationPageData } from '../add-new-subpage-quick-action-base.js';
+import { isA } from '../../../utils/core.js';
 import FEObjectPageComponent from 'sap/fe/templates/ObjectPage/Component';
 import FEListReportComponent from 'sap/fe/templates/ListReport/Component';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import { PageDescriptorV4 } from '../../controllers/types';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
+import { PageDescriptorV4 } from '../../controllers/types.js';
 
 export const OBJECT_PAGE_COMPONENT_NAME_V4 = 'sap.fe.templates.ObjectPage.ObjectPage';
 

@@ -1,9 +1,9 @@
 import { existsSync, promises, readdirSync } from 'node:fs';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import { join } from 'node:path';
-import { spawnCommand, npmCommand } from '../command';
-import { Extensions, NpmModules } from '../types';
-import type { ILogger } from '../types';
+import { spawnCommand, npmCommand } from '../command.js';
+import { Extensions, NpmModules } from '../types.js';
+import type { ILogger } from '../types.js';
 import type { Extension } from 'vscode';
 import { isAppStudio } from '@sap-ux/btp-utils';
 

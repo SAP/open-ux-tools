@@ -6,10 +6,10 @@ import { VocabularyService } from '@sap-ux/odata-vocabularies';
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import { MetadataService } from '@sap-ux/odata-entity-model';
 
-import { XML_VOCABULARY_SERVICE, XMLAnnotationServiceAdapter } from './xml';
-import type { ServiceArtifacts, TextFile } from './types';
+import { XML_VOCABULARY_SERVICE, XMLAnnotationServiceAdapter } from './xml/index.js';
+import type { ServiceArtifacts, TextFile } from './types/index.js';
 import { getAliasInformation, getAllNamespacesAndReferences } from '@sap-ux/odata-annotation-core';
-import { addAllVocabulariesToAliasInformation } from './vocabularies';
+import { addAllVocabulariesToAliasInformation } from './vocabularies.js';
 
 /**
  * Get XML service artifacts.

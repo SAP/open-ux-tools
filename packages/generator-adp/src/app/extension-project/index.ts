@@ -5,8 +5,8 @@ import {
     type SystemLookup
 } from '@sap-ux/adp-tooling';
 
-import { t } from '../../utils/i18n';
-import type { ExtensionProjectData } from '../types';
+import { t } from '../../utils/i18n.js';
+import type { ExtensionProjectData } from '../types.js';
 
 /**
  * Prepares data required for generating an extension project.

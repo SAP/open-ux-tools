@@ -14,29 +14,29 @@ import {
 } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import cloneDeep from 'lodash/cloneDeep.js';
-import type { FioriElementsApp } from './types';
-import { TemplateType } from './types';
-import { validateApp, validateRequiredProperties } from './validate';
+import type { FioriElementsApp } from './types.js';
+import { TemplateType } from './types.js';
+import { validateApp, validateRequiredProperties } from './validate.js';
 import {
     setAppDefaults,
     setDefaultTemplateSettings,
     getTemplateOptions,
     setVirtualEndpointDefaults
-} from './data/defaults';
+} from './data/defaults.js';
 import {
     TemplateTypeAttributes,
     minSupportedUI5Version,
     minSupportedUI5VersionV4,
     escapeFLPText
-} from './data/templateAttributes';
-import { extendManifestJson } from './data/manifestSettings';
+} from './data/templateAttributes.js';
+import { extendManifestJson } from './data/manifestSettings.js';
 import semVer from 'semver';
-import { initI18n } from './i18n';
+import { initI18n } from './i18n.js';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { generateFpmConfig } from './fpmConfig';
+import { generateFpmConfig } from './fpmConfig.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import type { Logger } from '@sap-ux/logger';
-import { writeAnnotations } from './writeAnnotations';
+import { writeAnnotations } from './writeAnnotations.js';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -285,4 +285,4 @@ async function generate<T extends {}>(
 }
 
 export { generate, FioriElementsApp, App, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
-export * from './types';
+export * from './types.js';

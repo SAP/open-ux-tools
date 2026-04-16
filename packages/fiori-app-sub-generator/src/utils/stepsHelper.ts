@@ -1,7 +1,7 @@
 import type { IPrompt as YeomanUiStep } from '@sap-devx/yeoman-ui-types';
 import { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
-import { t } from '../utils/i18n';
-import type { FioriStep, YeomanUiStepConfig } from '../types/yeomanUiStepConfig';
+import { t } from '../utils/i18n.js';
+import type { FioriStep, YeomanUiStepConfig } from '../types/yeomanUiStepConfig.js';
 
 /**
  * Find the index of a step in the Yeoman UI steps.

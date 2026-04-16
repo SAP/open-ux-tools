@@ -1,5 +1,5 @@
 import packageJson from '../../../package.json' with { type: 'json' };
-import type { MultiCardsPayload, CardManifest } from '../../types';
+import type { MultiCardsPayload, CardManifest } from '../../types/index.js';
 
 const CARD_TYPES = {
     INTEGRATION: 'integration',

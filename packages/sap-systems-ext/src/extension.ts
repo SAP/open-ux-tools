@@ -1,8 +1,8 @@
 import type { ExtensionContext } from 'vscode';
-import type { SapSystemsExtContext } from './types';
-import { registerViews } from './views';
-import { registerCommands } from './commands/registerCommands';
-import { initI18n, TelemetryHelper } from './utils';
+import type { SapSystemsExtContext } from './types/index.js';
+import { registerViews } from './views/index.js';
+import { registerCommands } from './commands/registerCommands.js';
+import { initI18n, TelemetryHelper } from './utils/index.js';
 
 /**
  * Runs when the extension is activated.

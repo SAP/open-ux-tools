@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { readDirectory, readFile } from '../file';
+import { readDirectory, readFile } from '../file/index.js';
 import { existsSync } from 'node:fs';
 
 /**

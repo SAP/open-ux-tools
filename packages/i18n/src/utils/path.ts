@@ -1,6 +1,6 @@
 import { stat } from 'node:fs';
-import type { CdsEnvironment } from '../types';
-import { getI18nConfiguration } from './config';
+import type { CdsEnvironment } from '../types.js';
+import { getI18nConfiguration } from './config.js';
 
 /**
  * Get json path.

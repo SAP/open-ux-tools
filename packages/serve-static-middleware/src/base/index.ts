@@ -1,2 +1,2 @@
-export { serveStaticMiddleware } from './servestatic';
-export type { ServeStaticConfig } from './types';
+export { serveStaticMiddleware } from './servestatic.js';
+export type { ServeStaticConfig } from './types.js';

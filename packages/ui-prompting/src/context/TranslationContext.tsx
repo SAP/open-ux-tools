@@ -1,6 +1,6 @@
 import type { TranslationEntry } from '@sap-ux/ui-components';
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
-import type { TranslateEvent, TranslationProps } from '../types';
+import type { TranslateEvent, TranslationProps } from '../types.js';
 
 const TranslationContext = createContext<TranslationProps>({ bundle: {} });
 

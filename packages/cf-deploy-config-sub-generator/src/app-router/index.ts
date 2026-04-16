@@ -10,10 +10,10 @@ import {
 } from '@sap-ux/deploy-config-generator-shared';
 import { getAppRouterPrompts, appRouterPromptNames } from '@sap-ux/cf-deploy-config-inquirer';
 import { generateBaseConfig } from '@sap-ux/cf-deploy-config-writer';
-import { t, initI18n } from '../utils';
-import { defaultMtaVersion, generatorTitle, prompts } from './constants';
+import { t, initI18n } from '../utils/index.js';
+import { defaultMtaVersion, generatorTitle, prompts } from './constants.js';
 import type { Logger } from '@sap-ux/logger';
-import type { CfApprouterGenOptions } from './types';
+import type { CfApprouterGenOptions } from './types.js';
 import type { CFBaseConfig, RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
 import type {
     CfAppRouterDeployConfigPromptOptions,

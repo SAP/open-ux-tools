@@ -20,8 +20,8 @@ import {
     executeContextMenuAction
 } from '@sap-ux-private/control-property-editor-common';
 
-import type reducer from './slice';
-import { changeProperty } from './slice';
+import type reducer from './slice.js';
+import { changeProperty } from './slice.js';
 
 type Action = ReturnType<typeof changeProperty>;
 

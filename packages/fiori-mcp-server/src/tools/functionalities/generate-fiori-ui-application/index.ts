@@ -1,7 +1,7 @@
-import type { FunctionalityHandlers, GetFunctionalityDetailsOutput } from '../../../types';
+import type { FunctionalityHandlers, GetFunctionalityDetailsOutput } from '../../../types/index.js';
 
-import details from './details';
-import executeFunctionality from './execute-functionality';
+import details from './details.js';
+import executeFunctionality from './execute-functionality.js';
 
 export default {
     id: details.functionalityId as string,

@@ -1,10 +1,10 @@
-import type { FioriRuleDefinition } from '../types';
-import { createFioriRule } from '../language/rule-factory';
-import { STATE_PRESERVATION_MODE, type StatePreservationMode } from '../language/diagnostics';
+import type { FioriRuleDefinition } from '../types.js';
+import { createFioriRule } from '../language/rule-factory.js';
+import { STATE_PRESERVATION_MODE, type StatePreservationMode } from '../language/diagnostics.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import { createJsonFixer } from '../language/rule-fixer';
-import type { LinkedFeV2App } from '../project-context/linker/fe-v2';
-import type { ParsedApp } from '../project-context/parser';
+import { createJsonFixer } from '../language/rule-fixer.js';
+import type { LinkedFeV2App } from '../project-context/linker/fe-v2.js';
+import type { ParsedApp } from '../project-context/parser/index.js';
 
 /**
  * Checks if state preservation mode value is invalid and returns problem if so.

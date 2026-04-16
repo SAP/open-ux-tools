@@ -1,5 +1,5 @@
-import type { SapSystemsExtContext } from '../types';
-import { initSapSystemsView } from './sapSystems';
+import type { SapSystemsExtContext } from '../types/index.js';
+import { initSapSystemsView } from './sapSystems.js';
 
 /**
  * Register all views for the extension.

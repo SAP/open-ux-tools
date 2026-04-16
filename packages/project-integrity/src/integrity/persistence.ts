@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { compressToBase64, decompressFromBase64 } from 'lz-string';
-import type { ContentIntegrity, FileIntegrity, Integrity } from '../types';
+import type { ContentIntegrity, FileIntegrity, Integrity } from '../types.js';
 
 /**
  * Read hashes from a previously stored hash file.

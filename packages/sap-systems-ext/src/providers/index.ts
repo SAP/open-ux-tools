@@ -1,1 +1,1 @@
-export { SapSystemsProvider } from './sapSystemsProvider';
+export { SapSystemsProvider } from './sapSystemsProvider.js';

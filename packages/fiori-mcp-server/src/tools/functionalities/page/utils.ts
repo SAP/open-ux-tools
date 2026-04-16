@@ -1,6 +1,6 @@
-import type { PageDef } from './types';
-import { FioriElementsVersion, PageTypeV4 } from '@sap/ux-specification/dist/types/src';
-import type { Application } from '@sap/ux-specification/dist/types/src';
+import type { PageDef } from './types.js';
+import { FioriElementsVersion, PageTypeV4 } from '@sap/ux-specification';
+import type { Application } from '@sap/ux-specification';
 
 const newPagePrefixForType = new Map<PageTypeV4, string>([
     [PageTypeV4.ListReport, 'List'],
