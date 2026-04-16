@@ -81,6 +81,7 @@ describe('cli', () => {
         const cliCmdWithUaa = [...cliCmd, '--cloud-service-env', '--service', '/bc/my/uaa/deploy/service'];
         const cliCmdWithAuthType = [...cliCmd, '--authentication-type', 'reentranceTicket'];
         const cliCmdWithConnectPath = [...cliCmd, '--connect-path', '/my/connect/path'];
+        const cliCmdWithBasicAuth = [...cliCmd, '--username', 'env:username', '--password', 'env:password'];
 
         test.each([
             {
@@ -127,11 +128,19 @@ describe('cli', () => {
                 writeFileSyncCalled: 0,
                 deployFn: mockedUi5RepoService.deploy,
                 object: { connectPath: '/my/connect/path' }
+            },
+            {
+                params: cliCmdWithBasicAuth,
+                writeFileSyncCalled: 0,
+                deployFn: mockedUi5RepoService.deploy,
+                object: { retry: false, strictSsl: false }
             }
         ])(
             'successful deploy with different options %s',
             async ({ params, writeFileSyncCalled, object, provider, deployFn }) => {
                 process.argv = params;
+                delete process.env.username;
+                delete process.env.password;
                 await runDeploy();
                 expect(deployFn).toHaveBeenCalled();
                 if (provider) {
