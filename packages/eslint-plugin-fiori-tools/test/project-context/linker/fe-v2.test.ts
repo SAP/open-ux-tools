@@ -281,14 +281,12 @@ describe('FE V2 Linker', () => {
     test('collectSections', async () => {
         const context = await setup({});
         const mainService = getParsedServiceByName(context.app);
-        expect(mainService).toBeDefined();
         if (!mainService) {
-            return;
+            fail('Service not found');
         }
         const entity = mainService.index.entitySets['Z_SEPMRA_SO_SALESORDERANALYSIS'];
-        expect(entity).toBeDefined();
         if (!entity?.structuredType) {
-            return;
+            fail('Entity not found');
         }
         const sections = collectSections('v2', entity.structuredType, mainService);
         expect(sections).toHaveLength(1);
@@ -300,14 +298,12 @@ describe('FE V2 Linker', () => {
     test('collectSections - no ID', async () => {
         const context = await setup({ annotationsChange: XML_FACET_NO_ID });
         const mainService = getParsedServiceByName(context.app);
-        expect(mainService).toBeDefined();
         if (!mainService) {
-            return;
+            fail('Service not found');
         }
         const entity = mainService.index.entitySets['SEPMRA_C_ALP_CurrencyVH'];
-        expect(entity).toBeDefined();
         if (!entity?.structuredType) {
-            return;
+            fail('Entity not found');
         }
         const sections = collectSections('v2', entity.structuredType, mainService);
         expect(sections).toHaveLength(0);
@@ -316,14 +312,12 @@ describe('FE V2 Linker', () => {
     test('collectSections - no annotation path', async () => {
         const context = await setup({ annotationsChange: XML_FACET_NO_ANNOTATION });
         const mainService = getParsedServiceByName(context.app);
-        expect(mainService).toBeDefined();
         if (!mainService) {
-            return;
+            fail('Service not found');
         }
         const entity = mainService.index.entitySets['SEPMRA_C_ALP_SupplierVH'];
-        expect(entity).toBeDefined();
         if (!entity?.structuredType) {
-            return;
+            fail('Entity not found');
         }
         const sections = collectSections('v2', entity.structuredType, mainService);
         expect(sections).toHaveLength(0);

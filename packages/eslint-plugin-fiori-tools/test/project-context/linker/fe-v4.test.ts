@@ -24,7 +24,7 @@ import {
 import { collectSections, type AnnotationBasedNode } from '../../../src/project-context/linker/annotations';
 import { getParsedServiceByName } from '../../../src/project-context/utils';
 
-jest.setTimeout(3 * 60000);
+jest.setTimeout(60000); // time needed for Windows
 
 const parser = new ApplicationParser();
 
@@ -1136,14 +1136,12 @@ describe('FE V4 Linker - CAP', () => {
     test('collectSections', async () => {
         const context = await setup({});
         const mainService = getParsedServiceByName(context.app);
-        expect(mainService).toBeDefined();
         if (!mainService) {
-            return;
+            fail('Service not found');
         }
         const entity = mainService.index.entitySets['Incidents'];
-        expect(entity).toBeDefined();
         if (!entity?.structuredType) {
-            return;
+            fail('Entity not found');
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(1);
@@ -1157,14 +1155,12 @@ describe('FE V4 Linker - CAP', () => {
     test('collectSections - no section ID', async () => {
         const context = await setup({});
         const mainService = getParsedServiceByName(context.app);
-        expect(mainService).toBeDefined();
         if (!mainService) {
-            return;
+            fail('Service not found');
         }
         const entity = mainService.index.entitySets['Priority'];
-        expect(entity).toBeDefined();
         if (!entity?.structuredType) {
-            return;
+            fail('Entity not found');
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(0);
@@ -1173,14 +1169,12 @@ describe('FE V4 Linker - CAP', () => {
     test('collectSections - no section annotation path', async () => {
         const context = await setup({});
         const mainService = getParsedServiceByName(context.app);
-        expect(mainService).toBeDefined();
         if (!mainService) {
-            return;
+            fail('Service not found');
         }
         const entity = mainService.index.entitySets['Category'];
-        expect(entity).toBeDefined();
         if (!entity?.structuredType) {
-            return;
+            fail('Entity not found');
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(0);
