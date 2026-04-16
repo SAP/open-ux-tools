@@ -6,7 +6,11 @@ import {
     generate as generateFioriElementsApp,
     type TemplateType as TemplateTypeFE
 } from '@sap-ux/fiori-elements-writer';
-import { type FreestyleApp, generate as generateFioriFreestyleApp, type BasicAppSettings } from '@sap-ux/fiori-freestyle-writer';
+import {
+    type FreestyleApp,
+    generate as generateFioriFreestyleApp,
+    type BasicAppSettings
+} from '@sap-ux/fiori-freestyle-writer';
 import {
     DefaultLogger,
     getHostEnvironment,

@@ -22,7 +22,12 @@ import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types.js';
 import { promptNames } from '../../../../types.js';
-import { areArraysEquivalent, getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils/index.js';
+import {
+    areArraysEquivalent,
+    getDefaultChoiceIndex,
+    getPromptHostEnvironment,
+    PromptState
+} from '../../../../utils/index.js';
 import type { ConnectionValidator } from '../../../connectionValidator.js';
 import LoggerHelper from '../../../logger-helper.js';
 import { errorHandler } from '../../../prompt-helpers.js';

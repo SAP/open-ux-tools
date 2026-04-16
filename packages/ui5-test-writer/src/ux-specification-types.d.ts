@@ -7,7 +7,6 @@
 
 declare module '@sap/ux-specification/dist/types/src/parser' {
     import type { PageType } from '@sap/ux-specification/dist/types/src/common/page';
-    import type { JSONSchema4 } from 'json-schema';
 
     export type PropertyPath = Array<string | number>;
 
@@ -18,7 +17,7 @@ declare module '@sap/ux-specification/dist/types/src/parser' {
     export interface TreeModel {
         name: string;
         pageType?: PageType;
-        schema: JSONSchema4;
+        schema: object;
         root: TreeAggregation;
     }
 

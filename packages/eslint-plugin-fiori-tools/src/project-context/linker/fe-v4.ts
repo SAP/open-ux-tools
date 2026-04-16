@@ -269,9 +269,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
         if (!settings) {
             continue;
         }
-        const contextPath =
-            settings.contextPath ??
-            (settings.entitySet ? `/${settings.entitySet}` : undefined);
+        const contextPath = settings.contextPath ?? (settings.entitySet ? `/${settings.entitySet}` : undefined);
         if (!contextPath) {
             continue;
         }

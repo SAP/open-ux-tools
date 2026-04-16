@@ -102,9 +102,7 @@ async function setDefaultServiceModel(
             if (
                 servicesModels.length === 0 ||
                 (update &&
-                    servicesModels.find(
-                        (serviceModel) => serviceModel.dataSource === DEFAULT_DATASOURCE_NAME
-                    ) &&
+                    servicesModels.find((serviceModel) => serviceModel.dataSource === DEFAULT_DATASOURCE_NAME) &&
                     service.name === DEFAULT_DATASOURCE_NAME)
             ) {
                 service.model = '';
