@@ -382,7 +382,7 @@ const annotationFilter = (node: Element | TextNode): node is Element =>
     node.type === ELEMENT_TYPE && node.name === Edm.Annotation;
 
 const encodeSnippet = (options: FormatterOptions, text: string): string =>
-    options.useSnippetSyntax ? text.replace(/\$/g, '\\$') : text;
+    options.useSnippetSyntax ? text.replace(/\\/g, '\\\\').replace(/\$/g, '\\$') : text;
 
 const printValue = (element: Element, context: Element[], options: FormatterOptions): string | undefined => {
     const valueElement =
