@@ -88,7 +88,7 @@ describe('Target Environment', () => {
             const choices = (choicesFn as () => Promise<string[]>)();
             expect(choices).toEqual([
                 { name: 'ABAP', value: TargetEnv.ABAP },
-                { name: 'Cloud Foundry', value: TargetEnv.CF }
+                { name: 'SAP BTP, Cloud Foundry environment', value: TargetEnv.CF }
             ]);
         });
 
@@ -130,7 +130,7 @@ describe('Target Environment', () => {
 
             expect(choices).toHaveLength(2);
             expect(choices[0]).toEqual({ name: 'ABAP', value: TargetEnv.ABAP });
-            expect(choices[1]).toEqual({ name: 'Cloud Foundry', value: TargetEnv.CF });
+            expect(choices[1]).toEqual({ name: 'SAP BTP, Cloud Foundry environment', value: TargetEnv.CF });
             expect(mockAppWizard.showInformation).not.toHaveBeenCalled();
         });
 

@@ -1,5 +1,18 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.21
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/fiori-annotation-api@0.9.42
+
+## 0.43.20
+
+### Patch Changes
+
+- 9700a95: feat(fpm-writer): Support custom fields for form building block
+
 ## 0.43.19
 
 ### Patch Changes
