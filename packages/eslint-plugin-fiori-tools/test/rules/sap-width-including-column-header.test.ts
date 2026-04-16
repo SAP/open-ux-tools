@@ -309,8 +309,8 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
         ),
         createValidTestCAP(
             {
-                name: 'non manifest file - xml',
-                filename: 'some-other-file.xml',
+                name: 'non manifest file - cds',
+                filename: 'some-other-file.cds',
                 code: ''
             },
             []
@@ -416,6 +416,7 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
                         column: 38
                     }
                 ]
+                // no fix in .cds file
             },
             [
                 {
