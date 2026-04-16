@@ -1,5 +1,14 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.310
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.99
+- @sap-ux/inquirer-common@0.11.37
+- @sap-ux/odata-service-inquirer@2.20.12
+- @sap-ux/fiori-elements-writer@2.8.125
+
 ## 0.3.309
 
 ### Patch Changes

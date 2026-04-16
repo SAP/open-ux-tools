@@ -45,7 +45,7 @@ export default async ({ options }: MiddlewareParameters<BackendMiddlewareConfig>
     });
 
     await initI18n();
-    dotenv.config();
+    dotenv.config({ quiet: true });
     const router = express.Router();
 
     const configOptions = options.configuration?.options ?? {};

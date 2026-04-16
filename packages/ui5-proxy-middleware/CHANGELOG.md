@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.33
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+
 ## 1.6.32
 
 ### Patch Changes

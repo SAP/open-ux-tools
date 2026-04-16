@@ -61,7 +61,7 @@ export default async ({ resources, options }: MiddlewareParameters<UI5ProxyConfi
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
 
-    dotenv.config();
+    dotenv.config({ quiet: true });
     const config: UI5ProxyConfig = {
         ui5: {
             path: ['/resources', '/test-resources'],
