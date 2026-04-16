@@ -719,8 +719,8 @@ importers:
         specifier: 1.15.0
         version: 1.15.0(debug@4.4.3)
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -862,8 +862,8 @@ importers:
         specifier: 7.0.6
         version: 7.0.6
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -1340,8 +1340,8 @@ importers:
         specifier: 1.7.4
         version: 1.7.4
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       hasbin:
         specifier: 1.2.3
         version: 1.2.3
@@ -1446,8 +1446,8 @@ importers:
         specifier: 4.0.5
         version: 4.0.5
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       esbuild-plugin-alias:
         specifier: 0.2.1
         version: 0.2.1
@@ -1998,8 +1998,8 @@ importers:
         specifier: '>=0.8.12'
         version: 0.8.12
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -2331,8 +2331,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-test-writer
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -2404,8 +2404,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-test-writer
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -3408,8 +3408,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       fast-xml-parser:
         specifier: '>=5.5.6'
         version: 5.5.9
@@ -3536,8 +3536,8 @@ importers:
         specifier: 3.13.6
         version: 3.13.6
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -4656,8 +4656,8 @@ importers:
         specifier: 1.84.0
         version: 1.84.0
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -4976,8 +4976,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -5089,8 +5089,8 @@ importers:
         specifier: 1.144.0
         version: 1.144.0(typescript@5.9.3)
       ejs:
-        specifier: 3.1.10
-        version: 3.1.10
+        specifier: 5.0.2
+        version: 5.0.2
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -12088,6 +12088,11 @@ packages:
   ejs@3.1.10:
     resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
     engines: {node: '>=0.10.0'}
+    hasBin: true
+
+  ejs@5.0.2:
+    resolution: {integrity: sha512-IpbUaI/CAW86l3f+T8zN0iggSc0LmMZLcIW5eRVStLVNCoTXkE0YlncbbH50fp8Cl6zHIky0sW2uUbhBqGw0Jw==}
+    engines: {node: '>=0.12.18'}
     hasBin: true
 
   electron-to-chromium@1.5.286:
@@ -27646,6 +27651,8 @@ snapshots:
   ejs@3.1.10:
     dependencies:
       jake: 10.9.4
+
+  ejs@5.0.2: {}
 
   electron-to-chromium@1.5.286: {}
 

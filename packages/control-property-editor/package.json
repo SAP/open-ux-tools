@@ -54,7 +54,7 @@
         "ts-import-plugin": "3.0.0",
         "ts-jest": "29.4.9",
         "postcss-modules": "6.0.1",
-        "ejs": "3.1.10",
+        "ejs": "5.0.2",
         "@ui5/fs": "4.0.5",
         "esbuild-plugin-alias": "0.2.1",
         "esbuild-plugin-copy": "2.1.1",
