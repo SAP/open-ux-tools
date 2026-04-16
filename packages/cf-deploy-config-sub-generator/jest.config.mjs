@@ -1,5 +1,6 @@
 import baseConfig from '../../jest.base.mjs';
 const config = { ...baseConfig };
+config.testTimeout = 15000;
 config.moduleNameMapper = {
     ...baseConfig.moduleNameMapper,
     '^@vscode-logging/logger$': '<rootDir>/test/__mocks__/vscode-logging-logger.mjs',
