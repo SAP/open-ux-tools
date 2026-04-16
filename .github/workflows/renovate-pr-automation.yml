@@ -27,7 +27,7 @@ jobs:
                   token: ${{ secrets.ACCESS_PAT }}
 
             - name: Create changeset
-              uses: mscharley/dependency-changesets-action@v1.2.3
+              uses: mscharley/dependency-changesets-action@v1.2.4
               with:
                   token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'
@@ -85,7 +85,7 @@ jobs:
                   git push --no-verify
 
             - name: Create changeset
-              uses: mscharley/dependency-changesets-action@v1.2.3
+              uses: mscharley/dependency-changesets-action@v1.2.4
               with:
                   token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'
