@@ -1,5 +1,20 @@
 # @sap-ux/preview-middleware
 
+## 0.25.26
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+- Updated dependencies [67d1f8b]
+    - @sap-ux/adp-tooling@0.18.118
+
+## 0.25.25
+
+### Patch Changes
+
+- Updated dependencies [8fb08a2]
+    - @sap-ux/adp-tooling@0.18.117
+
 ## 0.25.24
 
 ### Patch Changes

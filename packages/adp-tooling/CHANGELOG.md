@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.18.118
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+    - @sap-ux/inquirer-common@0.11.37
+
+## 0.18.117
+
+### Patch Changes
+
+- 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
+
 ## 0.18.116
 
 ### Patch Changes
