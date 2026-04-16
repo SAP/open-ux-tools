@@ -13,7 +13,7 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "compile": "tsc --build && node scripts/fix-esm-imports.js",
+        "compile": "tsc --build",
         "build": "npm-run-all clean compile",
         "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo  ./reports",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",

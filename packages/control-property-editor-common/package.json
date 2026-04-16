@@ -15,7 +15,7 @@
     "scripts": {
         "clean": "rimraf --glob dist reports *.tsbuildinfo",
         "build": "npm-run-all -l -s clean -p build:compile",
-        "build:compile": "tsc --build ./tsconfig.json --pretty && node scripts/fix-esm-imports.js",
+        "build:compile": "tsc --build ./tsconfig.json --pretty",
         "watch": "build:compile --watch",
         "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "lint": "eslint",

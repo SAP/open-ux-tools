@@ -12,7 +12,7 @@
     "private": false,
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --build && node scripts/fix-esm-imports.js",
+        "build": "tsc --build",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",

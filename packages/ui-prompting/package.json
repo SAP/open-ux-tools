@@ -22,7 +22,7 @@
     "scripts": {
         "clean": "rimraf --glob dist coverage *.tsbuildinfo storybook",
         "build": "npm-run-all -l -p build:extension build:copyfiles",
-        "build:extension": "tsc --build --pretty && node scripts/fix-esm-imports.js",
+        "build:extension": "tsc --build --pretty",
         "build:copyfiles": "copyfiles --up 1 \"./src/**/*.scss\" ./dist/",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
