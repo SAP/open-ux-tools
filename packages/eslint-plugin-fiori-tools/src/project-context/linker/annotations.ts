@@ -358,7 +358,7 @@ const getElementText = (element: ElementChild): string | undefined =>
  * Returns AnnotationPath property value.
  *
  * @param record -The record element
- * @returns - Annotation oath string
+ * @returns - Annotation path string
  */
 function getTargetAnnotationPath(record: Element): string | undefined {
     const target = record.content.find((child) => {
