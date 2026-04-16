@@ -50,7 +50,7 @@ function getZoweSdkPaths(insiders: boolean): string[] {
 function loadZoweSecretSdk(log: Logger): typeof zoweKeyring | undefined {
     try {
         // Attempt to load the Zowe SDK directly
-        // eslint-disable-next-line
+
         return require('@zowe/secrets-for-zowe-sdk').keyring;
     } catch (primaryError) {
         log.warn(errorString(primaryError));
@@ -65,7 +65,7 @@ function loadZoweSecretSdk(log: Logger): typeof zoweKeyring | undefined {
                     log.info(`Attempting to load Zowe secrets SDK from: ${path}`);
                     return typeof __non_webpack_require__ === 'function'
                         ? __non_webpack_require__(path)
-                        : require(path); // eslint-disable-line @typescript-eslint/no-require-imports
+                        : require(path);
                 } catch (fallbackError) {
                     log.warn(`Failed to load Zowe secrets SDK from ${path}: ${errorString(fallbackError)}`);
                 }
