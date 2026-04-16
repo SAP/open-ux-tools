@@ -978,6 +978,8 @@ Replace all placeholder names with your actual values:
 
 **CRITICAL PITFALL F — `TimelineItem` controls inside a bound `Timeline` need an explicit `id` attribute when `flexEnabled: true`**: When `sap.ui5.flexEnabled: true` is set in manifest.json, all controls need stable IDs for SAPUI5 Flexibility. Add `id="timelineItemTemplate"` (or similar) to the `suite:TimelineItem` element inside the Timeline's content aggregation binding template.
 
+**CRITICAL PITFALL G — Inside a ControllerExtension, `sap.ui.core.UIComponent.getRouterFor(this.base.getView())` returns `undefined` — use `this.base.getAppComponent().getRouter().navTo()` instead**: When a toolbar action press handler is implemented as a method on a registered `ControllerExtension` (using the `.extension.<namespace>.<ControllerName>.<method>` press format rather than a plain module), the static helper `sap.ui.core.UIComponent.getRouterFor(view)` may return `undefined` because the view's owner component chain is not resolved as expected within the FPM controller extension lifecycle. Calling `.navTo()` on `undefined` throws `TypeError: Cannot read properties of undefined (reading 'navTo')`. **Fix**: Use `this.base.getAppComponent().getRouter().navTo("RouteName")`. `this.base` is the FE base controller; `getAppComponent()` reliably returns the app component from within any ControllerExtension; `getRouter()` then returns the router. Pass the **route name** (e.g. `"TravelTimelinePage"`), NOT the route pattern. This is distinct from Pitfall B (which applies to plain `.js` modules where `this.base` does not exist at all and `HashChanger` must be used instead).
+
 ---
 
 **STEP 1**: Add the timeline route and FPM target to manifest.json routing
@@ -1126,6 +1128,30 @@ sap.ui.define(["sap/ui/core/routing/HashChanger"], function (HashChanger) {
     };
 });
 ```
+
+**STEP 4b (ALTERNATIVE)**: Add the press handler to the existing ControllerExtension instead of a separate plain module
+
+**DESCRIPTION**: If you already have a `ListReportExt.controller.js` ControllerExtension registered in manifest.json, you can add the navigation handler directly to it instead of creating a separate `ListReportExt.js` plain module. In this case the manifest `press` value must use the `.extension.<namespace>.<ControllerName>.<method>` format (not a bare module path). Inside the ControllerExtension, use `this.base.getAppComponent().getRouter().navTo("RouteName")` for navigation — do NOT use `sap.ui.core.UIComponent.getRouterFor(this.base.getView())` which returns `undefined` in this context (see Pitfall G). Pass the route **name** (e.g. `"TravelTimelinePage"`), not the route pattern.
+
+Manifest action entry for this approach:
+```JSON
+"showTimeline": {
+  "press": ".extension.my.app.namespace.ext.controller.ListReportExt.showTimeline",
+  "text": "{i18n>showTimeline}",
+  "enabled": true
+}
+```
+
+Method added to the ControllerExtension (outside the `override` block):
+```JavaScript
+showTimeline: function () {
+    // CORRECT: getAppComponent() reliably returns the app component from any ControllerExtension
+    // Do NOT use: sap.ui.core.UIComponent.getRouterFor(this.base.getView()) — returns undefined (Pitfall G)
+    this.base.getAppComponent().getRouter().navTo("TravelTimelinePage");
+}
+```
+
+Choose this approach over Step 4 when: (a) you already have a ControllerExtension and want to keep all List Report logic in one file, or (b) you need access to `this.base` (view, model, etc.) inside the handler. Choose Step 4 (plain module + HashChanger) when: you have no existing ControllerExtension, or you want minimal coupling.
 
 **STEP 5**: Create the timeline view
 
