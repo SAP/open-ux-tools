@@ -5,6 +5,7 @@
 .project
 .DS_Store
 .pnpm-store
+.worktrees
 
 ## Original Source: https://github.com/github/gitignore/blob/master/Node.gitignore
 
