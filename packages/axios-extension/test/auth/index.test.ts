@@ -81,8 +81,8 @@ describe('attachUaaAuthInterceptor', () => {
     const callback = jest.fn();
 
     it('check interceptor request handlers length', () => {
-        expect(Object.keys((provider.interceptors.request as any)['handlers']).length).toEqual(2);
-        attachUaaAuthInterceptor(provider, service, refreshToken, callback);
         expect(Object.keys((provider.interceptors.request as any)['handlers']).length).toEqual(3);
+        attachUaaAuthInterceptor(provider, service, refreshToken, callback);
+        expect(Object.keys((provider.interceptors.request as any)['handlers']).length).toEqual(4);
     });
 });
