@@ -4,4 +4,4 @@ export * from './types/change';
 export * from './external-services';
 export { ServiceArtifacts } from './types/adapter';
 export { findAnnotation, getAvtNodeFromPointer } from './avt';
-export { getXmlServiceArtifacts, CdsAnnotationProvider } from './annotation-provider';
+export { getXmlServiceArtifacts, CdsAnnotationProvider, uniformUrl } from './annotation-provider';

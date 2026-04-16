@@ -7,10 +7,10 @@ import { getMainService } from '@sap-ux/project-access';
 import { CdsAnnotationProvider, getXmlServiceArtifacts, type ServiceArtifacts } from '@sap-ux/fiori-annotation-api';
 
 import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types';
-import { uniformUrl } from '../utils';
 import type { Diagnostic } from '../../language/diagnostics';
 import { buildServiceIndex } from './service';
 import type { ParsedProject, ParsedApp, ParsedManifest, FoundODataService, CustomViews, MinUI5Version } from './types';
+import { uniformUrl } from '@sap-ux/fiori-annotation-api';
 
 export interface ParseResult {
     index: ParsedProject;

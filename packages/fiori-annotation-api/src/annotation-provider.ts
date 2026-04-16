@@ -66,7 +66,7 @@ export function getXmlServiceArtifacts(
  * @param url - The URL to normalize.
  * @returns The normalized URL.
  */
-function uniformUrl(url: string): string {
+export function uniformUrl(url: string): string {
     return url
         .replaceAll('\\', '/')
         .replaceAll('//', '/')
