@@ -57,7 +57,7 @@
         "inquirer": "8.2.7",
         "js-yaml": "4.1.1",
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
+        "mem-fs-editor": "9.7.0",
         "prompts": "2.4.2",
         "sanitize-filename": "1.6.4",
         "uuid": "11.1.0"
@@ -70,7 +70,7 @@
         "@types/inquirer": "8.2.6",
         "@types/js-yaml": "4.0.9",
         "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs-editor": "7.0.7",
         "@types/prompts": "2.4.9",
         "@types/supertest": "7.2.0",
         "@types/uuid": "11.0.0",
