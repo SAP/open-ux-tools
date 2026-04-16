@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/create",
     "description": "SAP Fiori tools module to add or remove features",
-    "version": "0.15.70",
+    "version": "0.15.77",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -36,6 +36,7 @@
         "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
         "@sap-ux/abap-deploy-config-writer": "workspace:*",
         "@sap-ux/adp-tooling": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/app-config-writer": "workspace:*",
         "@sap-ux/cap-config-writer": "workspace:*",
         "@sap-ux/logger": "workspace:*",

@@ -1,5 +1,24 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.12.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/fiori-annotation-api@0.9.42
+
+## 9.12.0
+
+### Minor Changes
+
+- 524690a: [rule] Add rule to check that a text property for a field with UI.TextArrangement is not hidden.
+
+## 9.11.7
+
+### Patch Changes
+
+- 9696e29: Add legacy fiori_tools_configure.eslintrc for `recommended` and `recommended-for-s4hana`
+
 ## 9.11.6
 
 ### Patch Changes
