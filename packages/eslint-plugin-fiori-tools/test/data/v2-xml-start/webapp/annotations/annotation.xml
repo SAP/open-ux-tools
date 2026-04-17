@@ -51,12 +51,12 @@
                         </Record>
                     </Collection>
                 </Annotation>
-                <Annotation Term="UI.Facets" >
+                <Annotation Term="UI.Facets">
                     <Collection>
                         <Record Type="UI.ReferenceFacet">
-                            <PropertyValue Property="ID" String="Products"/>
-                            <PropertyValue Property="Label" String="Prducts"/>
-                            <PropertyValue Property="Target" AnnotationPath="to_Product/@UI.LineItem"/>
+                            <PropertyValue Property="ID" String="Products" />
+                            <PropertyValue Property="Label" String="Products" />
+                            <PropertyValue Property="Target" AnnotationPath="to_Product/@UI.LineItem" />
                         </Record>
                     </Collection>
                 </Annotation>
@@ -201,7 +201,7 @@
                 </Annotation>
             </Annotations>
             <Annotations Target="TECHED_ALP_SOA_SRV.SEPMRA_C_ALP_ProductType">
-                 <Annotation Term="UI.LineItem">
+                <Annotation Term="UI.LineItem">
                     <Collection>
                         <Record Type="UI.DataField">
                             <PropertyValue Property="Value" Path="Product" />
