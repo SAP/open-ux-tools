@@ -28,6 +28,7 @@ export function getConfigurationKey(annotationPath: string): string {
 export interface AnnotationBasedNode<T extends string, Children = never> {
     type: T;
     annotation: IndexedAnnotation;
+    label?: string;
     /**
      * Path used by Fiori elements to reference this control
      */
@@ -188,12 +189,34 @@ function processReferenceFacetRecord(
     const [, _annotationPath] = fullyQualifiedPath.split('@');
     const [term, qualifier] = _annotationPath.split('#');
 
+    const propValues = elementsWithName(Edm.PropertyValue, record);
+    const propValue = propValues.find((p) => p.attributes.Property?.value === 'Label');
+    const sectionLabel = propValue?.attributes?.String?.value;
+
     if (term === UI_LINE_ITEM) {
-        return createTableSection(facets, index, referencedEntityType, qualifier, annotationPath, aliasInfo, service);
+        return createTableSection(
+            facets,
+            index,
+            referencedEntityType,
+            qualifier,
+            annotationPath,
+            aliasInfo,
+            service,
+            sectionLabel
+        );
     }
 
     if (term === UI_FIELD_GROUP) {
-        return addHeaderSection(facets, index, referencedEntityType, qualifier, annotationPath, aliasInfo, service);
+        return addHeaderSection(
+            facets,
+            index,
+            referencedEntityType,
+            qualifier,
+            annotationPath,
+            aliasInfo,
+            service,
+            sectionLabel
+        );
     }
 
     return undefined;
@@ -244,11 +267,13 @@ function createTableSection(
     qualifier: string | undefined,
     annotationPath: string,
     aliasInfo: AliasInformation,
-    service: ParsedService
+    service: ParsedService,
+    sectionLabel?: string
 ): TableSectionNode | undefined {
     const section: TableSectionNode = {
         type: 'table-section',
         annotationPath: `@com.sap.vocabularies.UI.v1.Facets/${index}`,
+        label: sectionLabel,
         annotation: facets,
         children: []
     };
@@ -297,12 +322,14 @@ function addHeaderSection(
     qualifier: string | undefined,
     annotationPath: string,
     aliasInfo: AliasInformation,
-    service: ParsedService
+    service: ParsedService,
+    sectionLabel?: string
 ): HeaderSectionNode | undefined {
     const section: HeaderSectionNode = {
         type: 'header-section',
         annotationPath: `@com.sap.vocabularies.UI.v1.HeaderFacet/${index}`,
         annotation: headerFacets,
+        label: sectionLabel,
         children: []
     };
 
