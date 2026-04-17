@@ -1,9 +1,13 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
 import Generator from 'yeoman-generator';
 import yeomanTest from 'yeoman-test';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 import type {
     AttributesAnswers,
@@ -254,11 +258,11 @@ const { CFServicesPrompter } = await import('../src/app/questions/cf-services');
 // ─── Test data ───
 
 const originalCwd = process.cwd();
-const testOutputDir = join(globalThis.__dirname, 'test-output-app');
-const generatorPath = join(globalThis.__dirname, 'packages/generator-adp/src/app/index.ts');
+const testOutputDir = join(__dirname, 'test-output-app');
+const generatorPath = join(__dirname, '../src/app/index.ts');
 
 // Set template path to the real adp-tooling templates directory
-const adpToolingTemplatesPath = join(globalThis.__dirname, 'packages/adp-tooling/templates');
+const adpToolingTemplatesPath = join(__dirname, '../../adp-tooling/templates');
 mockGetTemplatesOverwritePath.mockReturnValue(adpToolingTemplatesPath);
 
 const endpoints = [{ Name: 'SystemA', Client: '010', Url: 'urlA' }];
@@ -786,14 +790,14 @@ describe('Adaptation Project Generator Integration Test', () => {
     });
 
     describe('CF Environment', () => {
-        const cfTestOutputDir = join(globalThis.__dirname, 'test-output-app-cf');
+        const cfTestOutputDir = join(__dirname, 'test-output-app-cf');
 
         beforeEach(() => {
             fs.mkdirSync(cfTestOutputDir, { recursive: true });
 
             const mtaYamlSource = join(
-                globalThis.__dirname,
-                'packages/generator-adp/test/fixtures',
+                __dirname,
+                'fixtures',
                 'mta-project',
                 'mta.yaml'
             );

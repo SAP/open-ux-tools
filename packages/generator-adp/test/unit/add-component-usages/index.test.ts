@@ -1,7 +1,11 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import yeomanTest from 'yeoman-test';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 import type { AddComponentUsageAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
 
@@ -34,8 +38,8 @@ const answers: AddComponentUsageAnswers & { errorMessagePrompt: string } = {
     errorMessagePrompt: 'failed'
 };
 
-const generatorPath = join(globalThis.__dirname, 'src/add-component-usages/index.ts');
-const tmpDir = resolve(globalThis.__dirname, 'test-output-add-component-usages');
+const generatorPath = join(__dirname, 'src/add-component-usages/index.ts');
+const tmpDir = resolve(__dirname, 'test-output-add-component-usages');
 const originalCwd: string = process.cwd();
 
 describe('AddComponentUsagesGenerator', () => {

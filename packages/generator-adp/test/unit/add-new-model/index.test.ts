@@ -1,7 +1,11 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import yeomanTest from 'yeoman-test';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 import type {
     NewModelAnswers,
@@ -55,8 +59,8 @@ const answers: NewModelAnswers & { errorMessagePrompt: string } = {
 
 const mockNewModelData = { variant, isCloudFoundry: false } as unknown as NewModelData;
 
-const generatorPath = join(globalThis.__dirname, 'src/add-new-model/index.ts');
-const tmpDir = resolve(globalThis.__dirname, 'test-output-add-new-model');
+const generatorPath = join(__dirname, 'src/add-new-model/index.ts');
+const tmpDir = resolve(__dirname, 'test-output-add-new-model');
 const originalCwd: string = process.cwd();
 
 const mockCfConfig = {

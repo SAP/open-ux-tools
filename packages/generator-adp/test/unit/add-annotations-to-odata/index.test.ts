@@ -1,7 +1,11 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join, resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import yeomanTest from 'yeoman-test';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';
@@ -41,7 +45,7 @@ const { ManifestService, SystemLookup, ChangeType, AnnotationFileSelectType } = 
 const { default: annotationGen } = await import('../../../src/add-annotations-to-odata');
 
 // Set template path mock to return the real template path
-const templatePath = join(globalThis.__dirname, 'src/add-annotations-to-odata/templates');
+const templatePath = join(__dirname, 'src/add-annotations-to-odata/templates');
 mockGetTemplatesOverwritePath.mockReturnValue(templatePath);
 
 const manifest = {
@@ -76,8 +80,8 @@ const answers = {
 
 jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(true);
 
-const generatorPath = join(globalThis.__dirname, 'src/add-annotations-to-odata/index.ts');
-const tmpDir = resolve(globalThis.__dirname, 'test-output-add-annotations');
+const generatorPath = join(__dirname, 'src/add-annotations-to-odata/index.ts');
+const tmpDir = resolve(__dirname, 'test-output-add-annotations');
 const originalCwd: string = process.cwd();
 
 describe('AddAnnotationsToDataGenerator', () => {

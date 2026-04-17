@@ -1,7 +1,11 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import yeomanTest from 'yeoman-test';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';
@@ -75,8 +79,8 @@ const answers: ChangeDataSourceAnswers & Credentials & { errorMessagePrompt: str
 
 jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(true);
 
-const generatorPath = join(globalThis.__dirname, 'src/change-data-source/index.ts');
-const tmpDir = resolve(globalThis.__dirname, 'test-output-change-data-source');
+const generatorPath = join(__dirname, 'src/change-data-source/index.ts');
+const tmpDir = resolve(__dirname, 'test-output-change-data-source');
 const originalCwd: string = process.cwd();
 
 describe('ChangeDataSourceGenerator', () => {
