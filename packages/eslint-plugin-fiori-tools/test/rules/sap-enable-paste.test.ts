@@ -110,7 +110,7 @@ ruleTester.run(TEST_NAME, enablePasteRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-enable-paste',
+                        message: 'Paste functionality in the Products table must be enabled',
                         line: 145,
                         column: 21
                     }
