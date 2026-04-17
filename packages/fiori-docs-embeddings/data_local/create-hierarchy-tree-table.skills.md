@@ -16,6 +16,28 @@ argument-hint: 'entity name, namespace, service name, and app path'
 - SAP Fiori Elements List Report application
 - Entity must use `cuid` or have a UUID primary key
 
+### Version Requirements
+
+**Minimum CAP Versions for Hierarchy Support:**
+- **CAP Node.js**: 9.0 or higher (released May 2025)
+- **CAP Java**: 4.0 or higher (released May 2025)
+
+**For Simplified `@hierarchy` Annotation:**
+- **CAP Node.js**: 9.6 or higher 
+- **CAP Java**: 4.6 or higher 
+- **Recommended**: Latest version for full feature support
+
+**Version Check:**
+```bash
+# Check your current CAP version
+npm list @sap/cds
+
+# Update to latest (if needed)
+npm install @sap/cds@latest
+```
+
+**Note:** The `@hierarchy` annotation used in this skill requires CAP 9.6+ (December 2025). Earlier versions (9.0-9.5) required verbose OData annotations for hierarchical tree views.
+
 ## Parameters Required
 - `entityName`: The name of the entity to make hierarchical (e.g., "Travel", "Category", "Task")
 - `namespace`: The CDS namespace (e.g., "sap.fe.cap.travel")
@@ -242,7 +264,3 @@ After successful execution, the following changes will be made:
 - CAP Associations: https://cap.cloud.sap/docs/cds/cdl#associations
 - Fiori TreeTable: https://sapui5.hana.ondemand.com/#/topic/c337707a119c4e6ca7b8800858bb5f1c
 - OData Hierarchy: https://docs.oasis-open.org/odata/odata-data-aggregation-ext/v4.0/
-
-## Version History
-
-- v1.0 (2026-04-01): Initial skill creation for CAP + Fiori Elements hierarchies
