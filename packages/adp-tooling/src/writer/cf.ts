@@ -6,20 +6,15 @@ import { create, type Editor } from 'mem-fs-editor';
 import { type ToolsLogger } from '@sap-ux/logger';
 import { readUi5Yaml } from '@sap-ux/project-access';
 
-import {
-    adjustMtaYaml,
-    getAppHostIds,
-    getOrCreateServiceInstanceKeys,
-    getCfUi5AppInfo,
-    getProjectNameForXsSecurity
-} from '../cf';
+import { adjustMtaYaml, getOrCreateServiceInstanceKeys, getCfUi5AppInfo, getProjectNameForXsSecurity } from '../cf';
 import { getApplicationType } from '../source';
 import { fillDescriptorContent } from './manifest';
-import type { CfAdpWriterConfig, Content, CfUi5AppInfo, CfConfig } from '../types';
+import type { CfAdpWriterConfig, Content, CfConfig, CfUi5AppInfo } from '../types';
 import { getCfVariant, writeCfTemplates, writeCfUI5Yaml } from './project-utils';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
-import { getBaseAppId } from '../base/helper';
 import { runBuild } from '../base/project-builder';
+import { getBaseAppId } from '../base/helper';
+import { getAppHostIds } from '../cf/app/discovery';
 
 /**
  * Writes the CF adp-project template to the mem-fs-editor instance.

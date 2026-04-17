@@ -6,6 +6,7 @@ import {
     type BuildingBlock,
     type CustomColumn,
     type CustomFilterField,
+    type CustomFormField,
     type EmbededFragment,
     type RichTextEditorButtonGroups,
     type ButtonGroupConfig,
@@ -95,6 +96,12 @@ export const BUILDING_BLOCK_CONFIG: Partial<Record<BuildingBlockType, BuildingBl
         templateFile: 'filter/fragment.xml',
         namespace: { uri: 'sap.fe.macros.filterBar', prefix: 'macros' },
         processor: processCustomFilterField
+    },
+    [BuildingBlockType.CustomFormField]: {
+        aggregationConfig: { aggregationName: 'fields', elementName: 'FormElement' },
+        templateFile: 'common/Fragment.xml',
+        namespace: { uri: 'sap.fe.macros', prefix: 'macros' },
+        processor: processCustomFormField
     },
     [BuildingBlockType.RichTextEditorButtonGroups]: {
         aggregationConfig: { aggregationName: 'buttonGroups', elementName: 'ButtonGroup' },
@@ -214,6 +221,45 @@ function processCustomFilterField(buildingBlockData: BuildingBlock, context: Pro
 
     if (viewPath && !fs.exists(viewPath)) {
         fs.copyTpl(getTemplatePath(config.templateFile), viewPath, filterConfig);
+    }
+}
+
+/**
+ * Processes custom form field building block.
+ *
+ * @param {BuildingBlock} buildingBlockData - The building block data
+ * @param {ProcessingContext} context - Processing context
+ */
+function processCustomFormField(buildingBlockData: BuildingBlock, context: ProcessingContext): void {
+    const { fs, viewPath } = context;
+    if (!isBuildingBlockType<CustomFormField>(buildingBlockData, BuildingBlockType.CustomFormField)) {
+        throw new Error('Expected CustomFormField building block data');
+    }
+
+    if (!buildingBlockData.embededFragment) {
+        throw new Error('EmbeddedFragment is required for CustomFormField');
+    }
+
+    const config = getBuildingBlockConfig(BuildingBlockType.CustomFormField);
+    const formFieldConfig = buildingBlockData.embededFragment;
+    let processedEventHandler: string | undefined;
+
+    // Apply event handler
+    if (formFieldConfig.eventHandler) {
+        processedEventHandler = applyEventHandlerConfiguration(fs, formFieldConfig, formFieldConfig.eventHandler, {
+            controllerSuffix: false,
+            typescript: formFieldConfig.typescript
+        });
+        formFieldConfig.eventHandler = processedEventHandler;
+    }
+
+    formFieldConfig.content ??= getDefaultFragmentContent(
+        'Custom Form Field Content',
+        buildingBlockData.generateId,
+        processedEventHandler
+    );
+    if (viewPath && !fs.exists(viewPath)) {
+        fs.copyTpl(getTemplatePath(config.templateFile), viewPath, formFieldConfig);
     }
 }
 
@@ -553,7 +599,8 @@ export function processBuildingBlock<T extends BuildingBlock>(
     // Process embedded fragment for types that support it
     if (
         (isBuildingBlockType<CustomColumn>(buildingBlockData, BuildingBlockType.CustomColumn) ||
-            isBuildingBlockType<CustomFilterField>(buildingBlockData, BuildingBlockType.CustomFilterField)) &&
+            isBuildingBlockType<CustomFilterField>(buildingBlockData, BuildingBlockType.CustomFilterField) ||
+            isBuildingBlockType<CustomFormField>(buildingBlockData, BuildingBlockType.CustomFormField)) &&
         buildingBlockData.embededFragment
     ) {
         embeddedFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);

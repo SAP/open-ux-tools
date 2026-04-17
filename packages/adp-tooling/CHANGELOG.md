@@ -1,5 +1,53 @@
 # @sap-ux/adp-tooling
 
+## 0.18.118
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+    - @sap-ux/inquirer-common@0.11.37
+
+## 0.18.117
+
+### Patch Changes
+
+- 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
+
+## 0.18.116
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/axios-extension@1.25.31
+    - @sap-ux/inquirer-common@0.11.36
+    - @sap-ux/nodejs-utils@0.2.21
+    - @sap-ux/system-access@0.7.7
+    - @sap-ux/odata-service-writer@0.31.7
+
+## 0.18.115
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/inquirer-common@0.11.35
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/ui5-info@0.13.19
+    - @sap-ux/odata-service-writer@0.31.7
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/nodejs-utils@0.2.20
+    - @sap-ux/project-access@1.35.20
+    - @sap-ux/project-input-validator@0.6.76
+
+## 0.18.114
+
+### Patch Changes
+
+- 497317c: feat: Adjust deployment wizard behavior for CF scenario
+
 ## 0.18.113
 
 ### Patch Changes
