@@ -32,7 +32,7 @@ jest.unstable_mockModule('node:child_process', () => ({
     spawn: mockSpawn
 }));
 
-const { startSshTunnelIfNeeded, setupSshTunnel } = await import('../../../src/tunnel/tunnel');
+const { startSshTunnelIfNeeded, setupSshTunnel } = await import('../../../src/tunnel/tunnel.js');
 
 function createMockChildProcess(): EventEmitter & { killed: boolean; kill: jest.Mock; stderr: EventEmitter } {
     const child = new EventEmitter() as EventEmitter & { killed: boolean; kill: jest.Mock; stderr: EventEmitter };
@@ -100,7 +100,6 @@ describe('tunnel', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockIsAppStudio.mockReturnValue(false);
         processOnSpy = jest.spyOn(process, 'on');
         processOnceSpy = jest.spyOn(process, 'once');
     });
@@ -125,15 +124,6 @@ describe('tunnel', () => {
     }
 
     describe('startSshTunnelIfNeeded', () => {
-        test('should return undefined when running in BAS', async () => {
-            mockIsAppStudio.mockReturnValue(true);
-
-            const result = await startSshTunnelIfNeeded(connectivityInfo, 'tunnel-app', logger);
-
-            expect(result).toBeUndefined();
-            expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('BAS'));
-        });
-
         test('should return undefined when port is already in use', async () => {
             createServerSpy = jest
                 .spyOn(net, 'createServer')

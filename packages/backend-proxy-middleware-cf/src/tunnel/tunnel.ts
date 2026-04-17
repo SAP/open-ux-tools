@@ -2,7 +2,6 @@ import net from 'node:net';
 import { spawn } from 'node:child_process';
 import type { ChildProcess } from 'node:child_process';
 
-import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { ensureTunnelAppExists, enableSshAndRestart, DEFAULT_TUNNEL_APP_NAME } from '@sap-ux/adp-tooling';
 
@@ -118,7 +117,7 @@ function registerCleanup(tunnelProcess: ChildProcess, logger: ToolsLogger): void
 
 /**
  * Start an SSH tunnel to the connectivity proxy if needed.
- * Skips if running in BAS, if the port is already in use, or if no connectivity service is present.
+ * Skips if the port is already in use or if no connectivity service is present.
  * Errors are logged as warnings; the middleware continues without the tunnel.
  *
  * @param connectivityInfo - Original connectivity proxy host and port from VCAP_SERVICES.
@@ -134,11 +133,6 @@ export async function startSshTunnelIfNeeded(
     options?: SshTunnelOptions
 ): Promise<ChildProcess | undefined> {
     try {
-        if (isAppStudio()) {
-            logger.debug('Running in BAS, SSH tunnel not needed.');
-            return undefined;
-        }
-
         const localPort = options?.localPort ?? connectivityInfo.port;
 
         if (await isPortInUse(localPort)) {
