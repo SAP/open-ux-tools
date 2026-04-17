@@ -795,12 +795,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         beforeEach(() => {
             fs.mkdirSync(cfTestOutputDir, { recursive: true });
 
-            const mtaYamlSource = join(
-                __dirname,
-                'fixtures',
-                'mta-project',
-                'mta.yaml'
-            );
+            const mtaYamlSource = join(__dirname, 'fixtures', 'mta-project', 'mta.yaml');
             const mtaYamlTarget = join(cfTestOutputDir, 'mta.yaml');
             fs.copyFileSync(mtaYamlSource, mtaYamlTarget);
 
