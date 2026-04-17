@@ -18,7 +18,6 @@
 '@sap-ux-private/adaptation-editor-tests': major
 '@sap-ux/abap-deploy-config-writer': major
 '@sap-ux/cf-deploy-config-inquirer': major
-'@sap-ux/eslint-plugin-fiori-tools': major
 '@sap-ux-private/preview-middleware-client': major
 '@sap-ux/ui5-library-sub-generator': major
 '@sap-ux/backend-proxy-middleware': major
@@ -96,4 +95,100 @@
 '@sap-ux/types': major
 ---
 
-ESM migration
+# BREAKING CHANGE: Migration to ECMAScript Modules (ESM)
+
+All packages in the SAP UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+## What Changed
+
+- **Module System**: All packages now use native ESM (`"type": "module"` in package.json)
+- **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+- **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+- **Build Output**: Generated JavaScript files are now ESM modules
+- **Node.js Requirement**: Minimum Node.js version remains >=20.x (ESM is stable in Node 20+)
+
+## Action Required for Consuming Projects
+
+### 1. TypeScript Projects
+
+If your project imports these packages and uses TypeScript, update your `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
+  }
+}
+```
+
+Or use `"module": "ESNext"` with `"moduleResolution": "Bundler"` if using a modern bundler.
+
+### 2. Bundler Configuration
+
+Ensure your bundler (webpack, rollup, esbuild, vite, etc.) is configured to handle ESM modules:
+
+- **webpack 5+**: ESM is supported by default
+- **rollup**: Use `format: 'es'` in output config
+- **esbuild**: Use `format: 'esm'`
+- **vite**: ESM is the default
+
+### 3. Jest Configuration (for Testing)
+
+If your project tests code that imports these packages, update your Jest configuration:
+
+```js
+export default {
+  extensionsToTreatAsEsm: ['.ts'],
+  transform: {
+    '^.+\\.ts$': ['ts-jest', { useESM: true }]
+  }
+};
+```
+
+And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### 4. Runtime Imports
+
+- **ESM projects**: No changes needed - imports work as before
+- **CJS projects**: You may need to use dynamic `import()` to load these packages:
+
+```javascript
+// CJS project importing ESM package
+const { someFunction } = await import('@sap-ux/package-name');
+```
+
+### 5. Package.json Type
+
+If your project is ESM (`"type": "module"`), ensure you're using `.js` extensions in your own relative imports.
+
+## Why This Change?
+
+- **Modern JavaScript Standard**: ESM is the official JavaScript module standard
+- **Better Tree-shaking**: ESM enables better dead code elimination in bundlers
+- **Native Node.js Support**: Node.js has stabilized ESM support since version 12
+- **Future-proof**: The JavaScript ecosystem is moving to ESM
+
+## Migration Guide
+
+For detailed migration guidance, common issues, and troubleshooting, see:
+- [TypeScript ESM Documentation](https://www.typescriptlang.org/docs/handbook/modules/theory.html#the-esm-syntax-of-typescript-source-does-not-always-match-the-esm-syntax-of-the-emitted-javascript)
+- [Node.js ESM Documentation](https://nodejs.org/api/esm.html)
+- [Jest ESM Support](https://jestjs.io/docs/ecmascript-modules)
+
+## Need Help?
+
+If you encounter issues during migration:
+1. Check that your TypeScript version is >= 5.0
+2. Verify your bundler supports ESM
+3. Review the documentation links above
+4. Open an issue at https://github.com/SAP/open-ux-tools/issues
+
+## Breaking Change Details
+
+This is marked as a **major version** because:
+- Projects using older TypeScript configurations may need updates
+- CJS-only projects will need to use dynamic imports
+- Build tooling may require configuration changes
+
+Most modern projects with up-to-date tooling should require minimal changes.
