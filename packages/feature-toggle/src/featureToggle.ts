@@ -21,6 +21,7 @@ let _vscodeInstance: any = null;
 
 // Initialize vscode instance without top-level await
 // This uses an IIFE to start the async initialization immediately
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 (async () => {
     _vscodeInstance = await getVSCodeInstance();
 })();
