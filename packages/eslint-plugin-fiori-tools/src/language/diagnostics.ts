@@ -21,6 +21,7 @@ export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
     manifest: ManifestPropertyDiagnosticData;
     pageName: string;
+    pageSectionName?: string;
     annotation: {
         file: string;
         annotationPath: string;
@@ -54,6 +55,7 @@ export type CreateModeMessageId =
 export interface CreationModeForTable {
     type: typeof CREATION_MODE_FOR_TABLE;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
     messageId: CreateModeMessageId;
     tableType: string;
@@ -64,18 +66,21 @@ export interface CreationModeForTable {
 export interface CopyToClipboard {
     type: typeof COPY_TO_CLIPBOARD;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
 export interface EnableExport {
     type: typeof ENABLE_EXPORT;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
 export interface EnablePaste {
     type: typeof ENABLE_PASTE;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
@@ -107,6 +112,7 @@ export interface TablePersonalization {
     property?: PersonalizationProperty;
     undefinedProperties?: PersonalizationProperty[];
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
@@ -130,6 +136,7 @@ export interface NoDataFieldIntentBasedNavigation {
 export interface CondensedTableLayout {
     type: typeof CONDENSED_TABLE_LAYOUT;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 

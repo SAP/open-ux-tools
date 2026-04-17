@@ -3,7 +3,7 @@ import { ENABLE_EXPORT, type EnableExport } from '../language/diagnostics';
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import type { ParsedApp } from '../project-context/parser';
-import type { FeV4PageType } from '../project-context/linker/fe-v4';
+import type { FeV4PageType, Table } from '../project-context/linker/fe-v4';
 import { createJsonFixer } from '../language/rule-fixer';
 
 const rule: FioriRuleDefinition = createFioriRule({
@@ -16,7 +16,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-enable-export.md'
         },
         messages: {
-            [ENABLE_EXPORT]: 'Export functionality in the table must be enabled'
+            [ENABLE_EXPORT]: 'Export functionality in the {{sectionText}}table must be enabled'
         },
         fixable: 'code'
     },
@@ -43,6 +43,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             context.report({
                 node,
                 messageId: ENABLE_EXPORT,
+                data: { sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : '' },
                 fix: createJsonFixer({
                     context,
                     deepestPathResult,
@@ -54,6 +55,35 @@ const rule: FioriRuleDefinition = createFioriRule({
 });
 
 /**
+ *
+ * @param page
+ * @param table
+ * @param parsedApp
+ * @param problems
+ * @param pageSectionName
+ */
+function checkConfiguration(
+    page: FeV4PageType,
+    table: Table,
+    parsedApp: ParsedApp,
+    problems: EnableExport[],
+    pageSectionName?: string
+): void {
+    if (table.configuration.enableExport.valueInFile === false) {
+        problems.push({
+            type: ENABLE_EXPORT,
+            pageName: page.targetName,
+            pageSectionName,
+            manifest: {
+                uri: parsedApp.manifest.manifestUri,
+                object: parsedApp.manifestObject,
+                propertyPath: table.configuration.enableExport.configurationPath
+            }
+        });
+    }
+}
+
+/**
  * Looks through V4 app page tables and returns problems if enableExport is set to false.
  *
  * @param page - V4 app page
@@ -62,17 +92,16 @@ const rule: FioriRuleDefinition = createFioriRule({
  */
 function handleExportInTableV4(page: FeV4PageType, parsedApp: ParsedApp): EnableExport[] {
     const problems: EnableExport[] = [];
-    for (const table of page.lookup['table'] ?? []) {
-        if (table.configuration.enableExport.valueInFile === false) {
-            problems.push({
-                type: ENABLE_EXPORT,
-                pageName: page.targetName,
-                manifest: {
-                    uri: parsedApp.manifest.manifestUri,
-                    object: parsedApp.manifestObject,
-                    propertyPath: table.configuration.enableExport.configurationPath
-                }
-            });
+    if (page.type === 'list-report-page') {
+        for (const table of page.lookup['table'] ?? []) {
+            checkConfiguration(page, table, parsedApp, problems);
+        }
+    } else if (page.type === 'object-page') {
+        for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
+            const table = tableSection.children.find((element) => element.type === 'table');
+            if (table) {
+                checkConfiguration(page, table, parsedApp, problems, tableSection.annotation?.label);
+            }
         }
     }
     return problems;

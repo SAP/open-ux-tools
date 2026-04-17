@@ -28,6 +28,7 @@ interface CreateModeConfig {
  * @param options - Diagnostic options
  * @param options.messageId - The message identifier for the diagnostic
  * @param options.pageName - Name of the page where the issue occurs
+ * @param options.pageSectionName - Name of the object page section where the issue occurs
  * @param options.parsedApp - Parsed application context
  * @param options.configurationPath - Path to the configuration in manifest
  * @param options.tableType - Type of table (for example, 'GridTable' or 'ResponsiveTable')
@@ -39,6 +40,7 @@ function reportDiagnostic(
     {
         messageId,
         pageName,
+        pageSectionName,
         parsedApp,
         configurationPath,
         tableType,
@@ -47,6 +49,7 @@ function reportDiagnostic(
     }: {
         messageId: CreateModeMessageId;
         pageName: string;
+        pageSectionName?: string;
         parsedApp: ParsedApp;
         configurationPath: string[];
         tableType: string;
@@ -58,6 +61,7 @@ function reportDiagnostic(
         type: CREATION_MODE_FOR_TABLE,
         messageId,
         pageName,
+        pageSectionName,
         tableType,
         validValues,
         recommendedValue,
@@ -128,6 +132,7 @@ function checkAnalyticalTableV2(
  * @param parsedApp - Parsed application context
  * @param tableType - Type of the table
  * @param problems - Array to collect diagnostic problems
+ * @param pageSectionName - Name of the object page section where the issue occurs
  * @returns True, if a configuration is found and an issue reported. False, if no configuration exists
  */
 function validateCreateModeV2(
@@ -135,7 +140,8 @@ function validateCreateModeV2(
     pageName: string,
     parsedApp: ParsedApp,
     tableType: string,
-    problems: CreationModeForTable[]
+    problems: CreationModeForTable[],
+    pageSectionName?: string
 ): boolean {
     if (!createMode.valueInFile) {
         return false;
@@ -149,7 +155,8 @@ function validateCreateModeV2(
             configurationPath: createMode.configurationPath,
             tableType,
             validValues: createMode.values,
-            recommendedValue: RECOMMENDED_MODE_V2
+            recommendedValue: RECOMMENDED_MODE_V2,
+            pageSectionName
         });
         return true;
     }
@@ -161,7 +168,8 @@ function validateCreateModeV2(
             parsedApp,
             configurationPath: createMode.configurationPath,
             tableType,
-            recommendedValue: RECOMMENDED_MODE_V2
+            recommendedValue: RECOMMENDED_MODE_V2,
+            pageSectionName
         });
     }
     return true;
@@ -176,13 +184,15 @@ function validateCreateModeV2(
  * @param appCreateMode - Application-level create mode configuration
  * @param parsedApp - Parsed application context
  * @param problems - Array to collect diagnostic problems
+ * @param pageSectionName - Name of the object page section where the issue occurs
  */
 function processTableV2(
     table: V2Table,
     page: FeV2ObjectPage,
     appCreateMode: CreateModeConfig,
     parsedApp: ParsedApp,
-    problems: CreationModeForTable[]
+    problems: CreationModeForTable[],
+    pageSectionName?: string
 ): void {
     const sectionCreateMode = table.configuration.createMode;
     const pageCreateMode = page.configuration.createMode;
@@ -204,7 +214,7 @@ function processTableV2(
     }
 
     // Check section, page, then app level
-    if (validateCreateModeV2(sectionCreateMode, page.targetName, parsedApp, tableType, problems)) {
+    if (validateCreateModeV2(sectionCreateMode, page.targetName, parsedApp, tableType, problems, pageSectionName)) {
         return;
     }
     if (validateCreateModeV2(pageCreateMode, page.targetName, parsedApp, tableType, problems)) {
@@ -288,6 +298,7 @@ function getRecommendedValueV4(tableType: string): string {
  * @param recommendedValue - The recommended value for this table type
  * @param problems - Array to collect diagnostic problems
  * @param shouldSuggestAppLevel - Whether to report on page level or not based on app level suggestion
+ * @param pageSectionName - Name of the object page section where the issue occurs
  * @returns True, if a configuration was found and issue was reported. False, if no configuration exists
  */
 function validateCreationModeV4(
@@ -297,7 +308,8 @@ function validateCreationModeV4(
     tableType: string,
     recommendedValue: string,
     problems: CreationModeForTable[],
-    shouldSuggestAppLevel: boolean
+    shouldSuggestAppLevel: boolean,
+    pageSectionName?: string
 ): boolean {
     const value = creationMode.valueInFile;
     if (value === undefined && shouldSuggestAppLevel === true) {
@@ -313,7 +325,8 @@ function validateCreationModeV4(
             configurationPath: creationMode.configurationPath,
             tableType,
             validValues,
-            recommendedValue
+            recommendedValue,
+            pageSectionName
         });
         return true;
     }
@@ -326,7 +339,8 @@ function validateCreationModeV4(
             configurationPath: creationMode.configurationPath,
             tableType,
             validValues,
-            recommendedValue
+            recommendedValue,
+            pageSectionName
         });
         return true;
     }
@@ -339,7 +353,8 @@ function validateCreationModeV4(
             configurationPath: creationMode.configurationPath,
             tableType,
             validValues,
-            recommendedValue
+            recommendedValue,
+            pageSectionName
         });
     }
     return true;
@@ -356,6 +371,7 @@ function validateCreationModeV4(
  * @param parsedApp - Parsed application context
  * @param problems - Array to collect diagnostic problems
  * @param shouldSuggestAppLevel - Whether to suggest app-level configuration (only if all tables have same recommended value)
+ * @param pageSectionName - Name of the object page section where the issue occurs
  */
 function processTableV4(
     table: V4Table,
@@ -363,7 +379,8 @@ function processTableV4(
     appCreateMode: CreateModeConfig,
     parsedApp: ParsedApp,
     problems: CreationModeForTable[],
-    shouldSuggestAppLevel: boolean
+    shouldSuggestAppLevel: boolean,
+    pageSectionName?: string
 ): void {
     const tableCreationMode = table.configuration.creationMode;
     const tableType = table.configuration.tableType?.valueInFile ?? '';
@@ -384,7 +401,8 @@ function processTableV4(
             tableType,
             recommendedValue,
             problems,
-            shouldSuggestAppLevel
+            shouldSuggestAppLevel,
+            pageSectionName
         )
     ) {
         return;
@@ -463,9 +481,11 @@ function processV2Apps(
             if (page.type !== 'object-page') {
                 continue;
             }
-
-            for (const table of page.lookup['table'] ?? []) {
-                processTableV2(table, page, appCreateMode, parsedApp, problems);
+            for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
+                const table = tableSection.children.find((element) => element.type === 'table');
+                if (table) {
+                    processTableV2(table, page, appCreateMode, parsedApp, problems, tableSection.annotation?.label);
+                }
             }
         }
     }
@@ -530,9 +550,19 @@ function processV4Apps(
             if (page.type !== 'object-page') {
                 continue;
             }
-
-            for (const table of page.lookup['table'] ?? []) {
-                processTableV4(table, page, appCreateMode, parsedApp, problems, shouldSuggestAppLevel);
+            for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
+                const table = tableSection.children.find((element) => element.type === 'table');
+                if (table) {
+                    processTableV4(
+                        table,
+                        page,
+                        appCreateMode,
+                        parsedApp,
+                        problems,
+                        shouldSuggestAppLevel,
+                        tableSection.annotation?.label
+                    );
+                }
             }
         }
     }
@@ -550,13 +580,13 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
         },
         messages: {
             invalidCreateMode:
-                'Invalid createMode value: "{{value}}"{{tableType}}. The recommended value is "creationRows".{{validValues}}.',
+                'Invalid createMode value: "{{value}}"{{tableType}}{{sectionText}}. The recommended value is "creationRows".{{validValues}}.',
             recommendCreationRows: 'Consider using "creationRows" for a better user experience instead of "{{value}}".',
             suggestAppLevel: 'Consider adding createMode at the application level for a better user experience.',
             analyticalTableNotSupported:
                 'Creation mode is not supported for analytical tables. Remove the createMode or creationMode property.',
             invalidCreateModeV4:
-                'Invalid creationMode value "{{value}}"{{tableType}}. The recommended value is "{{recommendedValue}}".{{validValues}}',
+                'Invalid creationMode value "{{value}}"{{tableType}}{{sectionText}}. The recommended value is "{{recommendedValue}}".{{validValues}}',
             recommendInlineCreationRowsV4:
                 'Consider using "{{recommendedValue}}" for a better user experience instead of "{{value}}".',
             suggestAppLevelV4: 'Consider adding creationMode at the application level for better user experience.'
@@ -600,7 +630,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                         diagnostic.validValues.length > 0
                             ? ` Valid values are: ${diagnostic.validValues.join(', ')}.`
                             : '',
-                    recommendedValue: diagnostic.recommendedValue ?? ''
+                    recommendedValue: diagnostic.recommendedValue ?? '',
+                    sectionText: diagnostic.pageSectionName ? ` in ${diagnostic.pageSectionName} section.` : ''
                 },
                 fix: createJsonFixer({
                     value: operation === 'delete' ? undefined : diagnostic.recommendedValue,

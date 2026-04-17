@@ -3,7 +3,7 @@ import { ENABLE_PASTE, type EnablePaste } from '../language/diagnostics';
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import type { ParsedApp } from '../project-context/parser';
-import type { FeV4PageType } from '../project-context/linker/fe-v4';
+import type { FeV4PageType, Table } from '../project-context/linker/fe-v4';
 import { createJsonFixer } from '../language/rule-fixer';
 
 const rule: FioriRuleDefinition = createFioriRule({
@@ -16,7 +16,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-enable-paste.md'
         },
         messages: {
-            [ENABLE_PASTE]: 'Paste functionality in the table must be enabled'
+            [ENABLE_PASTE]: 'Paste functionality in the {{sectionText}}table must be enabled'
         },
         fixable: 'code'
     },
@@ -46,6 +46,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             context.report({
                 node,
                 messageId: ENABLE_PASTE,
+                data: { sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : '' },
                 fix: createJsonFixer({
                     context,
                     deepestPathResult,
@@ -57,6 +58,35 @@ const rule: FioriRuleDefinition = createFioriRule({
 });
 
 /**
+ *
+ * @param page
+ * @param table
+ * @param parsedApp
+ * @param problems
+ * @param pageSectionName
+ */
+function checkConfiguration(
+    page: FeV4PageType,
+    table: Table,
+    parsedApp: ParsedApp,
+    problems: EnablePaste[],
+    pageSectionName?: string
+): void {
+    if (table.configuration.enablePaste.valueInFile === false) {
+        problems.push({
+            type: ENABLE_PASTE,
+            pageName: page.targetName,
+            pageSectionName,
+            manifest: {
+                uri: parsedApp.manifest.manifestUri,
+                object: parsedApp.manifestObject,
+                propertyPath: table.configuration.enablePaste.configurationPath
+            }
+        });
+    }
+}
+
+/**
  * Looks through V4 app page tables and returns problems if enablePaste is set to false.
  *
  * @param page - V4 app page
@@ -65,17 +95,16 @@ const rule: FioriRuleDefinition = createFioriRule({
  */
 function handlePasteInTableV4(page: FeV4PageType, parsedApp: ParsedApp): EnablePaste[] {
     const problems: EnablePaste[] = [];
-    for (const table of page.lookup['table'] ?? []) {
-        if (table.configuration.enablePaste.valueInFile === false) {
-            problems.push({
-                type: ENABLE_PASTE,
-                pageName: page.targetName,
-                manifest: {
-                    uri: parsedApp.manifest.manifestUri,
-                    object: parsedApp.manifestObject,
-                    propertyPath: table.configuration.enablePaste.configurationPath
-                }
-            });
+    if (page.type === 'list-report-page') {
+        for (const table of page.lookup['table'] ?? []) {
+            checkConfiguration(page, table, parsedApp, problems);
+        }
+    } else if (page.type === 'object-page') {
+        for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
+            const table = tableSection.children.find((element) => element.type === 'table');
+            if (table) {
+                checkConfiguration(page, table, parsedApp, problems, tableSection.annotation?.label);
+            }
         }
     }
     return problems;

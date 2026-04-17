@@ -42,12 +42,13 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [TABLE_PERSONALIZATION]:
-                'Table personalization should be enabled. Currently every table personalization setting is disabled.',
-            [TABLE_PERSONALIZATION_COLUMN]: 'Adding or removing table columns should be enabled.',
-            [TABLE_PERSONALIZATION_FILTER]: 'Table data filtering should be enabled.',
-            [TABLE_PERSONALIZATION_SORT]: 'Table data sorting should be enabled.',
+                'Table personalization should be enabled. Currently every{{sectionText}} table personalization settingis disabled.',
+            [TABLE_PERSONALIZATION_COLUMN]:
+                'Adding or removing table columns should be enabled in the{{sectionText}} table.',
+            [TABLE_PERSONALIZATION_FILTER]: 'Data filtering should be enabled in the{{sectionText}} table.',
+            [TABLE_PERSONALIZATION_SORT]: 'Data sorting should be enabled in the{{sectionText}} table.',
             [TABLE_PERSONALIZATION_GROUP]:
-                'Table data grouping should be enabled for analytical and responsive type tables.',
+                'Data grouping should be enabled in the{{sectionText}} table. Grouping is available for analytical and responsive type tables.',
             [MISSING_PERSONALIZATION_PROPERTIES]:
                 'In case of using an object, omitting a setting is treated as false. {{undefinedPropertiesString}}.'
         },
@@ -68,10 +69,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             }
 
             for (const page of app.pages) {
-                for (const table of page.lookup['table'] ?? []) {
-                    const tableProblems = checkPersonalizationValue(table, page, parsedApp);
-                    problems.push(...tableProblems);
-                }
+                checkTableConfiguration(page, parsedApp, problems);
             }
         }
         return problems;
@@ -82,13 +80,14 @@ const rule: FioriRuleDefinition = createFioriRule({
             let undefinedPropertiesString = '';
             let messageId = MessageIdByProperty[diagnostic.property ?? ''];
             if (diagnostic.undefinedProperties?.length) {
-                undefinedPropertiesString = `Currently ${diagnostic.undefinedProperties.join(', ')} ${diagnostic.undefinedProperties.length === 1 ? 'is disabled' : 'are disabled'}`;
+                undefinedPropertiesString = `Currently ${diagnostic.undefinedProperties.join(', ')} ${diagnostic.undefinedProperties.length === 1 ? 'is disabled' : 'are disabled'} in the${diagnostic.pageSectionName ? ` ${diagnostic.pageSectionName} table` : ' table'}`;
                 messageId = MISSING_PERSONALIZATION_PROPERTIES;
             }
             return context.report({
                 node,
                 data: {
-                    undefinedPropertiesString
+                    undefinedPropertiesString,
+                    sectionText: diagnostic.pageSectionName ? ` ${diagnostic.pageSectionName}` : ''
                 },
                 messageId,
                 fix: createJsonFixer({
@@ -141,7 +140,12 @@ function shouldCheckProperty(table: Table, parsedApp: ParsedApp, propertyName: P
  * @param parsedApp - Parsed application.
  * @returns TablePersonalization issues collected for all properties
  */
-function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: ParsedApp): TablePersonalization[] {
+function checkPersonalizationValue(
+    table: Table,
+    page: FeV4PageType,
+    parsedApp: ParsedApp,
+    pageSectionName?: string
+): TablePersonalization[] {
     const problems: TablePersonalization[] = [];
 
     const personalization = table.configuration.personalization.valueInFile;
@@ -156,6 +160,7 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
             {
                 type: TABLE_PERSONALIZATION,
                 pageName: page.targetName,
+                pageSectionName,
                 messageId: MessageIdByProperty[''],
                 manifest: {
                     uri: parsedApp.manifest.manifestUri,
@@ -175,6 +180,7 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
                 problems.push({
                     type: TABLE_PERSONALIZATION,
                     pageName: page.targetName,
+                    pageSectionName,
                     property,
                     messageId: MessageIdByProperty[property],
                     manifest: {
@@ -192,6 +198,7 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
         problems.push({
             type: TABLE_PERSONALIZATION,
             pageName: page.targetName,
+            pageSectionName,
             undefinedProperties,
             messageId: MISSING_PERSONALIZATION_PROPERTIES,
             manifest: {
@@ -202,6 +209,29 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
         });
     }
     return problems;
+}
+
+/**
+ *
+ * @param page
+ * @param parsedApp
+ * @param problems
+ */
+function checkTableConfiguration(page: FeV4PageType, parsedApp: ParsedApp, problems: TablePersonalization[]): void {
+    if (page.type === 'list-report-page') {
+        for (const table of page.lookup['table'] ?? []) {
+            const tableProblems = checkPersonalizationValue(table, page, parsedApp);
+            problems.push(...tableProblems);
+        }
+    } else if (page.type === 'object-page') {
+        for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
+            const table = tableSection.children.find((element) => element.type === 'table');
+            if (table) {
+                const tableProblems = checkPersonalizationValue(table, page, parsedApp, tableSection.annotation?.label);
+                problems.push(...tableProblems);
+            }
+        }
+    }
 }
 
 export default rule;
