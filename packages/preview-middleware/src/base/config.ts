@@ -46,8 +46,17 @@ type TestTemplateConfig = {
     id: string;
     framework: TestConfig['framework'];
     basePath: string;
+    rootBasePath: string;
     initPath: string;
     theme: string;
+    testNs?: string;
+    testResourcesPath?: string;
+};
+
+export type TestsuiteTemplateConfig = {
+    basePath: string;
+    rootBasePath: string;
+    initPath: string;
 };
 
 export type PreviewUrls = {
@@ -60,11 +69,13 @@ export type PreviewUrls = {
  */
 export interface TemplateConfig {
     /**
-     * Base path to the app root
-     * Example:
-     * - UI5 project type 'application': relative '..' (depending on the nesting level of the HTML file)
-     * - UI5 project type 'component': absolute '/resources/the/app/id'
-     * todo 1: check if we can use absolute paths for both project types
+     * Base path to the app root. The value differs by project type:
+     * - UI5 project type 'application': relative path (e.g. '..'), computed from the HTML page nesting depth
+     * - UI5 project type 'component': absolute path (e.g. '/resources/the/app/id'), from `getResourcesPathPrefix()`
+     * Used as the resourceroots value for the app namespace in `data-sap-ui-resourceroots` and as the `target`
+     * when registering the app via `addApp()`. Unifying to absolute paths for both types is theoretically possible
+     * (application type could use '/') but is out of scope — `remapResourcesForPath()` would need rethinking
+     * and it could affect existing application type behavior.
      */
     appBasePath: string;
     /**
@@ -75,8 +86,8 @@ export interface TemplateConfig {
      */
     rootBasePath: string;
     /**
-     * Base url from ui5-patched-router
-     * todo
+     * Base URL provided by `ui5-patched-router` (e.g. from `cds-plugin-ui5`).
+     * Rendered into `data-open-ux-preview-base-url` in the FLP templates so the preview client can construct correct URLs.
      */
     baseUrl: string;
     apps: Record<
@@ -514,15 +525,28 @@ export function createFlpTemplateConfig(
  * @param config test configuration
  * @param id application id
  * @param theme theme to be used
+ * @param utils middleware utils
+ * @param ns namespace for the test files (required for component type projects)
  * @returns configuration object for the test template
  */
-export function createTestTemplateConfig(config: CompleteTestConfig, id: string, theme: string): TestTemplateConfig {
+export function createTestTemplateConfig(
+    config: CompleteTestConfig,
+    id: string,
+    theme: string,
+    utils?: MiddlewareUtils,
+    ns?: string
+): TestTemplateConfig {
+    const rootBasePath = posix.relative(posix.dirname(config.path), '/') || '.';
+    const testResourcesPath = getTestResourcesPathPrefix(utils);
     return {
         id,
         framework: config.framework,
-        basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
+        rootBasePath,
+        basePath: getResourcesPathPrefix(utils) ?? rootBasePath,
         initPath: posix.relative(posix.dirname(config.path), config.init),
-        theme
+        theme,
+        testNs: testResourcesPath && ns ? posix.join(ns, 'test') : undefined,
+        testResourcesPath: testResourcesPath && ns ? posix.join(testResourcesPath, 'test') : undefined
     } satisfies TestTemplateConfig;
 }
 
@@ -602,10 +626,11 @@ function generateTestRunners(
             fs.write(join(basePath, testConfig.path), render(testTemplate, testTemplateConfig));
         } else if (test.framework === 'Testsuite') {
             const testTemplate = readFileSync(join(TEMPLATE_PATH, 'test/testsuite.qunit.ejs'), 'utf-8');
-            const testTemplateConfig = {
-                basePath: flpTemplConfig.appBasePath,
-                initPath: testConfig.init
-            };
+            const testTemplateConfig = createTestTemplateConfig(
+                testConfig,
+                manifest['sap.app'].id,
+                flpTemplConfig.ui5.theme
+            );
             fs.write(join(basePath, testConfig.path), render(testTemplate, testTemplateConfig));
         }
     }

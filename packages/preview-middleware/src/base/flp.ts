@@ -52,6 +52,7 @@ import {
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
+    type TestsuiteTemplateConfig,
     isFlexConnector,
     createTestTemplateConfig,
     addApp,
@@ -454,9 +455,15 @@ export class FlpSandbox {
      * @param rta runtime authoring configuration
      */
     private addEditorRoutes(rta: RtaConfig): void {
-        //todo: do we need to have a more specific path for open/ux/preview/client/* for project type component?
-        // multiple apps can run in parallel so one central route might cause conflicts
-        // or is the UI5 resourceroots mapping enough, e.g. {"open.ux.preview.client":"/resources/com/sap/cap/fe/ts/sample/preview/client"}
+        // For UI5 project type 'component', multiple apps can run in parallel, each with a different namespace.
+        // Each app's FLP page has its own UI5 bootstrap with a 'data-sap-ui-resourceroots' entry mapping
+        // 'open.ux.preview.client' to its own app-specific path, e.g.:
+        //   app1: { "open.ux.preview.client": "/resources/my/first/app/preview/client" }
+        //   app2: { "open.ux.preview.client": "/resources/my/second/app/preview/client" }
+        // Both URL paths serve the same physical files from dist/client via separate static routes.
+        // UI5's AMD loader uses the resourceroots from the current page's bootstrap only, so there is
+        // no cross-contamination between apps. The resourceroots mapping is sufficient — no disjunct
+        // namespace or path per app is needed.
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
         for (const editor of rta.endpoints) {
             let previewUrl = editor.path;
@@ -834,13 +841,14 @@ export class FlpSandbox {
     private async testSuiteHtmlGetHandler(
         res: Response | http.ServerResponse,
         testsuite: string,
-        config: TestConfig
+        config: CompleteTestConfig
     ): Promise<void> {
         this.logger.debug(`Serving test route: ${config.path}`);
         const templateConfig = {
             basePath: this.templateConfig.appBasePath,
+            rootBasePath: this.templateConfig.rootBasePath,
             initPath: config.init
-        }; //todo: create type
+        } satisfies TestsuiteTemplateConfig;
         const html = render(testsuite, templateConfig);
         this.sendResponse(res, 'text/html', 200, html);
     }
@@ -959,13 +967,15 @@ export class FlpSandbox {
      * @param config test configuration
      * @param htmlTemplate the test runner template
      * @param id application id from manifest
+     * @param ns namespace for the test files
      */
     private async testRunnerHtmlGetHandler(
         res: Response | http.ServerResponse,
         next: NextFunction,
         config: CompleteTestConfig,
         htmlTemplate: string,
-        id: string
+        id: string,
+        ns: string
     ): Promise<void> {
         this.logger.debug(`Serving test route: ${config.path}`);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -974,7 +984,7 @@ export class FlpSandbox {
             this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
             next();
         } else {
-            const templateConfig = createTestTemplateConfig(config, id, this.templateConfig.ui5.theme);
+            const templateConfig = createTestTemplateConfig(config, id, this.templateConfig.ui5.theme, this.utils, ns);
             const html = render(htmlTemplate, templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
@@ -1005,7 +1015,9 @@ export class FlpSandbox {
             next();
         } else {
             const testFiles = await this.project.byGlob(config.pattern);
-            const templateConfig = { tests: generateImportList(ns, testFiles) };
+            const templateConfig = {
+                tests: generateImportList(ns, testFiles, this.utils)
+            };
             const js = render(initTemplate, templateConfig);
             this.sendResponse(res, 'application/javascript', 200, js);
         }
@@ -1018,7 +1030,7 @@ export class FlpSandbox {
      * @param id application id from manifest
      */
     private addTestRoutes(configs: CompleteTestConfig[], id: string): void {
-        const ns = id.replace(/\./g, '/');
+        const ns = this.utils.getProject().getNamespace() ?? id.replace(/\./g, '/');
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
         for (const config of configs) {
             // Config is already merged with defaults in constructor
@@ -1031,7 +1043,7 @@ export class FlpSandbox {
                     res: Response | http.ServerResponse,
                     next: NextFunction
                 ) => {
-                    await this.testRunnerHtmlGetHandler(res, next, config, htmlTemplate, id);
+                    await this.testRunnerHtmlGetHandler(res, next, config, htmlTemplate, id, ns);
                 }
             );
 

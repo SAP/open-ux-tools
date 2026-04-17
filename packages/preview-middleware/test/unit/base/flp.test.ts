@@ -53,7 +53,8 @@ const mockUtils = {
     getProject() {
         return {
             getSourcePath: () => tmpdir(),
-            getType: () => 'application'
+            getType: () => 'application',
+            getNamespace: () => undefined
         };
     }
 } as unknown as MiddlewareUtils;

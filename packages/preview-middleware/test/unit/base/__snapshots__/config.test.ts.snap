@@ -316,7 +316,8 @@ Object {
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/unit/unitTests.html": Object {
@@ -345,7 +346,8 @@ Object {
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
 }
@@ -379,7 +381,8 @@ Object {
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/flp.html": Object {
@@ -557,7 +560,8 @@ Object {
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.html": Object {
@@ -566,7 +570,7 @@ Object {
 <head>
     <title>QUnit TestSuite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
-    <script src=\\"/test/testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
 </head>
 <body>
 </body>

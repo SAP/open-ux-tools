@@ -80,5 +80,25 @@ describe('test', () => {
             const result = generateImportList('ns', [{ getPath: () => '/test/opaTests.qunit.html' } as Resource]);
             expect(result).toEqual(['ns/test/opaTests.qunit']);
         });
+        test('component type strips test path prefix from file paths', () => {
+            const mockComponentUtils = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'test/fe/v2/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+            const result = generateImportList(
+                'test/fe/v2/app',
+                [
+                    {
+                        getPath: () => '/test-resources/test/fe/v2/app/test/unit/SomeTest.js'
+                    } as Resource
+                ],
+                mockComponentUtils
+            );
+            expect(result).toEqual(['test/fe/v2/app/test/unit/SomeTest']);
+        });
     });
 });

@@ -5,10 +5,11 @@
 	<meta charset="utf-8">
 
 	<script
-		src="<%- basePath %>/resources/sap-ui-core.js"
+		src="<%- rootBasePath %>/resources/sap-ui-core.js"
 		data-sap-ui-theme='<%- theme %>'
 		data-sap-ui-resourceroots='{
-			"<%- id %>": "<%- basePath %>"
+			"<%- id %>": "<%- basePath %>"<% if (testNs && testResourcesPath) { %>,
+			"<%- testNs %>": "<%- testResourcesPath %>"<% } %>
 		}'
 		data-sap-ui-animation="false"
 		data-sap-ui-compatVersion="edge"
@@ -17,7 +18,7 @@
 
 	<script src="<%- initPath %>"></script>
 
-	<link rel="stylesheet" type="text/css" href="<%- basePath %>/resources/sap/ui/thirdparty/qunit-2.css">
+	<link rel="stylesheet" type="text/css" href="<%- rootBasePath %>/resources/sap/ui/thirdparty/qunit-2.css">
 </head>
 <body>
 	<div id="qunit"></div>

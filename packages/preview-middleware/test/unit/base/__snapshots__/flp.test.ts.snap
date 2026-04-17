@@ -697,7 +697,8 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router - connect API GET default routes with connect API (used by karma test runner) 3`] = `
@@ -729,7 +730,8 @@ sap.ui.require([
     sap.ui.require([], function() {
         QUnit.start();
     });
-});"
+});
+"
 `;
 
 exports[`FlpSandbox router - connect API GET default routes with connect API (used by karma test runner) 4`] = `
@@ -758,7 +760,8 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router - connect API GET default routes with connect API (used by karma test runner) 5`] = `
@@ -922,7 +925,8 @@ exports[`FlpSandbox router custom opa5 path test/integration/opaTests.qunit.html
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router default Qunit init test/unitTests.qunit.js 1`] = `
@@ -954,7 +958,8 @@ sap.ui.require([
     sap.ui.require([], function() {
         QUnit.start();
     });
-});"
+});
+"
 `;
 
 exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
@@ -983,7 +988,8 @@ exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router enhanced homepage disabled editor with config 1`] = `

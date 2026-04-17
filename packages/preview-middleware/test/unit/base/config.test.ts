@@ -68,9 +68,35 @@ describe('config', () => {
             const templateConfig = createTestTemplateConfig(config, manifest['sap.app'].id, 'sap_horizon');
             expect(templateConfig).toMatchObject({
                 basePath: '..',
+                rootBasePath: '..',
                 framework: 'OPA5',
                 id: manifest['sap.app'].id,
                 initPath: 'opaTests.qunit.js',
+                theme: 'sap_horizon'
+            });
+        });
+
+        test('component type uses absolute basePath for resourceroots', () => {
+            const mockComponentUtils = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'test/fe/v2/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+            const config = mergeTestConfigDefaults({ framework: 'QUnit' }, mockComponentUtils);
+            const templateConfig = createTestTemplateConfig(
+                config,
+                'test.fe.v2.app',
+                'sap_horizon',
+                mockComponentUtils
+            );
+            expect(templateConfig).toMatchObject({
+                basePath: '/resources/test/fe/v2/app',
+                rootBasePath: '../../../../..',
+                framework: 'QUnit',
+                id: 'test.fe.v2.app',
                 theme: 'sap_horizon'
             });
         });

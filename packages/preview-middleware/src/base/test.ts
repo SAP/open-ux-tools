@@ -97,12 +97,22 @@ export function mergeTestConfigDefaults(config: TestConfig, utils?: MiddlewareUt
  *
  * @param ns namespace of the test files
  * @param resourceList list of resources representing test files
+ * @param utils middleware utils
  * @returns array of strings representing the tests
  */
-export function generateImportList(ns: string, resourceList: Resource[]): string[] {
+export function generateImportList(ns: string, resourceList: Resource[], utils?: MiddlewareUtils): string[] {
+    const testPathPrefix = getTestResourcesPathPrefix(utils);
     return resourceList
         ? resourceList.map((file) => {
-              const path = file.getPath().split('.');
+              const filePath = file.getPath();
+              if (testPathPrefix) {
+                  // For component type: strip /test-resources/<namespace>/ prefix, then prepend namespace
+                  const strippedPath = filePath.replace(`${testPathPrefix}/`, '');
+                  const parts = strippedPath.split('.');
+                  parts.pop();
+                  return `${ns}/${parts.join('.')}`;
+              }
+              const path = filePath.split('.');
               path.pop();
               return `${ns}${path.join('.')}`;
           })
