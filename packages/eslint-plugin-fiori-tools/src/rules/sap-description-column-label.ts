@@ -280,14 +280,14 @@ const rule: FioriRuleDefinition = createFioriRule({
         docs: {
             recommended: true,
             description:
-                'The description (text) property referenced via Common.Text must have a meaningful label — not a generic value such as "Name" or "Description", and not the same label as the ID property it describes.',
+                'The description (text) property referenced using the Common.Text annotation must have a meaningful label which is not a generic value such as "Name" or "Description" nor the same label as the ID property it describes.',
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-description-column-label.md'
         },
         messages: {
             trivialLabel:
-                'The text property "{{textPropertyTarget}}" has a generic label "{{textPropertyLabel}}". Use a more descriptive label that distinguishes it from other properties.',
+                'The "{{textPropertyTarget}}" text property has a "{{textPropertyLabel}}" generic label. Use a more descriptive label that distinguishes it from other properties.',
             duplicateLabel:
-                'The text property "{{textPropertyTarget}}" has the same label "{{textPropertyLabel}}" as the ID property "{{idPropertyTarget}}". The description column label should be different from the ID label.'
+                'The "{{textPropertyTarget}}" text property has the same "{{textPropertyLabel}}" label as the "{{idPropertyTarget}}" ID property. The description column label must be different from the ID label.'
         }
     },
 
