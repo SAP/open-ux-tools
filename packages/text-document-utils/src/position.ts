@@ -5,9 +5,9 @@ import { Position } from 'vscode-languageserver-types';
  *
  * @param lineOffsets Array of indices with line start offsets.
  * e.g [0] represents a document with one line that starts at offset 0.
- * @param offset
- * @param textLength
- * @returns
+ * @param offset The character offset within the document.
+ * @param textLength The total length of the document text.
+ * @returns the position
  */
 export function positionAt(lineOffsets: number[], offset: number, textLength: number): Position {
     const target = Math.max(Math.min(offset, textLength), 0);
@@ -88,8 +88,8 @@ export function rangeContained(a: Range, b: Range): boolean {
 /**
  * Get indent level based on the start position and tab width.
  *
- * @param startPosition
- * @param tabWidth
+ * @param startPosition The starting character position (column).
+ * @param tabWidth The number of spaces per tab stop.
  * @returns numeric indent level
  */
 export function getIndentLevel(startPosition: number, tabWidth: number): number {
@@ -105,7 +105,7 @@ export function getIndentLevel(startPosition: number, tabWidth: number): number 
 /**
  * Returns an indentation string using tabs.
  *
- * @param level
+ * @param level The number of tab characters to repeat.
  * @returns indentation string
  */
 export function indentWithTabs(level: number): string {
@@ -115,10 +115,26 @@ export function indentWithTabs(level: number): string {
 /**
  * Returns an indentation string using spaces.
  *
- * @param tabWidth
- * @param level
+ * @param tabWidth The number of spaces per indentation level.
+ * @param level The number of indentation levels.
  * @returns indentation string
  */
 export function indentWithSpaces(tabWidth: number, level: number): string {
     return ' '.repeat(tabWidth * level);
+}
+
+/**
+ * Indents based on tabs or tab width.
+ *
+ * @param tabWidth The number of spaces per indentation level.
+ * @param useTabs Whether to use tab characters instead of spaces.
+ * @param level The number of indentation levels.
+ * @returns indentation string
+ */
+export function indent(tabWidth: number, useTabs: boolean, level: number): string {
+    if (useTabs) {
+        return indentWithTabs(level);
+    } else {
+        return indentWithSpaces(tabWidth, level);
+    }
 }
