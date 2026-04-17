@@ -36,7 +36,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/vocabularies-types": "0.15.0",
         "@xmldom/xmldom": "0.8.12",
-        "ejs": "3.1.10",
+        "ejs": "5.0.2",
         "i18next": "25.10.10",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
