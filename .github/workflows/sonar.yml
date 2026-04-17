@@ -12,6 +12,7 @@ jobs:
     permissions:
       actions: read # Required to download artifacts
       pull-requests: write # Required for PR decoration comments
+      statuses: write # Required for SonarCloud to post quality gate commit status
     steps:
       - name: 'Checkout project'
         uses: actions/checkout@v6
