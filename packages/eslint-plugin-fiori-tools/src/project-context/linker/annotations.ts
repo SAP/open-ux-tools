@@ -259,6 +259,7 @@ function getReferencedEntityType(
  * @param annotationPath
  * @param aliasInfo
  * @param service
+ * @param sectionLabel
  */
 function createTableSection(
     facets: IndexedAnnotation,
@@ -313,6 +314,7 @@ function createTableSection(
  * @param annotationPath - Header facet annotation path
  * @param aliasInfo - Alias information for resolving namespaces
  * @param service - The parsed OData service
+ * @param sectionLabel
  * @returns Header section annotation node
  */
 function addHeaderSection(

@@ -138,6 +138,7 @@ function shouldCheckProperty(table: Table, parsedApp: ParsedApp, propertyName: P
  * @param table - OData V4 table.
  * @param page - OData V4 page.
  * @param parsedApp - Parsed application.
+ * @param pageSectionName
  * @returns TablePersonalization issues collected for all properties
  */
 function checkPersonalizationValue(
