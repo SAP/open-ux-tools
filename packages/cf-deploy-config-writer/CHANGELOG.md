@@ -1,5 +1,29 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.98
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/nodejs-utils@0.2.21
+
+## 0.3.97
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/nodejs-utils@0.2.20
+    - @sap-ux/project-access@1.35.20
+
+## 0.3.96
+
+### Patch Changes
+
+- 5f3b63b: fix(cf-deploy-config-writer): update standalone router @sap/approuter to ^21.0.0
+
 ## 0.3.95
 
 ### Patch Changes
