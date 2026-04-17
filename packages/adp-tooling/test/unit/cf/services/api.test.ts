@@ -14,9 +14,9 @@ import {
     createServiceInstance,
     getServiceNameByTags,
     createServices,
+    getOrCreateServiceInstanceKeys,
     getServiceTags,
-    getServiceKeyCredentialsWithTags,
-    getOrCreateServiceInstanceKeys
+    getServiceKeyCredentialsWithTags
 } from '../../../../src/cf/services/api';
 import { initI18n, t } from '../../../../src/i18n';
 import { isLoggedInCf } from '../../../../src/cf/core/auth';
