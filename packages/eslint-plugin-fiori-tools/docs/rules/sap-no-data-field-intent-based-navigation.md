@@ -47,7 +47,7 @@ Using `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavi
 
 ### Correct: Semantic Link or Smart Link Navigation Is Used Using `Common.SemanticObject` on the Entity Property
 
-Annotate the entity property, for example,`CustomerId`, with the `Common.SemanticObject` annotation before using it in a `UI.LineItem` or `UI.FieldGroup`. SAP Fiori elements automatically detects this and renders the field as a semantic link with support for a smart link popover.
+Annotate the entity property, for example,`CustomerId`, with the `Common.SemanticObject` annotation before using it in a `UI.LineItem` or `UI.FieldGroup`. SAP Fiori elements automatically detects this and renders the field as a semantic link.
 
 #### Step 1: Annotate the Entity Property:
 
