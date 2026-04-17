@@ -42,7 +42,6 @@ import type {
     CompleteTestConfig,
     MiddlewareConfig,
     RtaConfig,
-    TestConfig,
     CardGeneratorConfig,
     MultiCardsPayload,
     I18nEntry
