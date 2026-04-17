@@ -1,31 +1,23 @@
-import { jest } from '@jest/globals';
 import type { PanelContext } from '../../../../../src/types';
+import { renderWebApp } from '../../../../../src/panel/system/actions/renderWebapp';
+import { initI18n } from '../../../../../src/utils';
 import { SystemPanelViewType } from '../../../../../src/utils/constants';
 
 const systemServiceReadMock = jest.fn();
 
-const realStore = await import('@sap-ux/store');
-jest.unstable_mockModule('@sap-ux/store', () => ({
-    ...realStore,
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
     getService: jest.fn().mockImplementation(() => ({
         read: systemServiceReadMock
     }))
 }));
 
-const realPanelUtils = await import('../../../../../src/panel/system/utils');
-jest.unstable_mockModule('../../../../../src/panel/system/utils', () => ({
-    ...realPanelUtils,
+jest.mock('../../../../../src/panel/system/utils', () => ({
+    ...jest.requireActual('../../../../../src/panel/system/utils'),
     showFileSaveDialog: jest.fn()
 }));
 
-jest.unstable_mockModule('fs', () => ({
-    default: {},
-    writeFileSync: jest.fn(),
-    readFileSync: jest.fn()
-}));
-
-const { renderWebApp } = await import('../../../../../src/panel/system/actions/renderWebapp');
-const { initI18n } = await import('../../../../../src/utils');
+jest.mock('fs');
 
 describe('Test the render webapp action', () => {
     beforeAll(async () => {

@@ -1,19 +1,16 @@
-import { jest } from '@jest/globals';
+import { SapSystemsProvider } from '../../../src/providers/sapSystemsProvider';
 import * as vscodeMod from 'vscode';
+import { initI18n } from '../../../src/utils';
 import type { BackendSystem } from '@sap-ux/store';
 
 const systemServiceGetAllMock = jest.fn();
 
-const realStore = await import('@sap-ux/store');
-jest.unstable_mockModule('@sap-ux/store', () => ({
-    ...realStore,
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
     getService: jest.fn().mockImplementation(() => ({
         getAll: systemServiceGetAllMock
     }))
 }));
-
-const { SapSystemsProvider } = await import('../../../src/providers/sapSystemsProvider');
-const { initI18n } = await import('../../../src/utils');
 
 describe('Test the SAP Systems provider', () => {
     beforeAll(async () => {

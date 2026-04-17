@@ -1,14 +1,9 @@
-import type { StoredSystemViewNode, SystemCommandContext } from '../../types/system/index.js';
-import type { PanelManager, SystemPanel } from '../../panel/index.js';
+import type { StoredSystemViewNode, SystemCommandContext } from '../../types/system';
+import type { PanelManager, SystemPanel } from '../../panel';
 import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import { window } from 'vscode';
-import { t, confirmPrompt, TelemetryHelper, geti18nOpts, getBackendSystemService } from '../../utils/index.js';
-import {
-    ConfirmationPromptType,
-    SYSTEMS_EVENT,
-    SystemAction,
-    SystemActionStatus
-} from '../../utils/constants/index.js';
+import { t, confirmPrompt, TelemetryHelper, geti18nOpts, getBackendSystemService } from '../../utils';
+import { ConfirmationPromptType, SYSTEMS_EVENT, SystemAction, SystemActionStatus } from '../../utils/constants';
 
 /**
  * Returns a command handler function that deletes a specified system.

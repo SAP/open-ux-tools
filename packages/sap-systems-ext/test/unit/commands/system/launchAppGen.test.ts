@@ -1,22 +1,17 @@
-import { jest } from '@jest/globals';
 import type { SystemCommandContext } from '../../../../src/types/system';
-import type { SystemPanel } from '../../../../src/panel';
+import { launchAppGenCommandHandler } from '../../../../src/commands/system/launchAppGen';
+import { PanelManager, type SystemPanel } from '../../../../src/panel';
 import * as vscodeMod from 'vscode';
+import { initI18n } from '../../../../src/utils';
 
 const systemServiceReadMock = jest.fn();
 
-const realStore = await import('@sap-ux/store');
-jest.unstable_mockModule('@sap-ux/store', () => ({
-    ...realStore,
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
     getService: jest.fn().mockImplementation(() => ({
         read: systemServiceReadMock
     }))
 }));
-
-const { launchAppGenCommandHandler } = await import('../../../../src/commands/system/launchAppGen');
-const { PanelManager } = await import('../../../../src/panel');
-
-const { initI18n } = await import('../../../../src/utils');
 
 describe('Test the launch app generator command handler', () => {
     const panelManager = new PanelManager<SystemPanel>();

@@ -67,7 +67,6 @@
 '@sap-ux/fiori-mcp-server': major
 '@sap-ux/axios-extension': major
 '@sap-ux/inquirer-common': major
-'sap-ux-sap-systems-ext': major
 '@sap-ux/ui5-test-writer': major
 '@sap-ux/deploy-tooling': major
 '@sap-ux/feature-toggle': major

@@ -1,12 +1,7 @@
-import path from 'path';
-import { URI } from 'vscode-uri';
-import { jest } from '@jest/globals';
-import { fileURLToPath } from 'url';
+const path = require('path');
+const { URI } = require('vscode-uri');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-export class Disposable {
+class Disposable {
     static from(...disposableLikes) {
         //
     }
@@ -18,7 +13,7 @@ export class Disposable {
     }
 }
 
-export class EventEmitter {
+class EventEmitter {
     constructor(e) {
         this.eventHandler = new Set();
     }
@@ -44,26 +39,35 @@ export class EventEmitter {
     }
 }
 
-export const TreeItemCollapsibleState = {
+const TreeItemCollapsibleState = {
+    /**
+     * Determines an item can be neither collapsed nor expanded. Implies it has no children.
+     */
     None: 0,
+    /**
+     * Determines an item is collapsed
+     */
     Collapsed: 1,
+    /**
+     * Determines an item is expanded
+     */
     Expanded: 2
 };
 
-export class TreeItem {
+class TreeItem {
     constructor(label, collapsibleState) {
         this.label = label;
         this.collapsibleState = collapsibleState;
     }
 }
 
-export const FileChangeType = {
+const FileChangeType = {
     Changed: 1,
     Created: 2,
     Deleted: 3
 };
 
-export class FileSystemError extends Error {
+class FileSystemError extends Error {
     static FileNotFound(uri) {
         throw `FileNotFound ${uri ? uri.toString() : typeof uri}`;
     }
@@ -84,24 +88,24 @@ export class FileSystemError extends Error {
     }
 }
 
-export const RelativePattern = jest.fn().mockImplementation(() => {
+const RelativePattern = jest.fn().mockImplementation(() => {
     return { toString: jest.fn() };
 });
 
-export const FileType = {
+const FileType = {
     Unknown: 0,
     File: 1,
     Directory: 2,
     SymbolicLink: 64
 };
 
-export class Terminal {
+class Terminal {
     constructor(name) {
         this.name = name;
     }
 }
 
-export const workspace = {
+const workspace = {
     registerFileSystemProvider: () => true,
     createFileSystemWatcher: jest.fn().mockImplementation(() => {
         return {
@@ -125,7 +129,7 @@ export const workspace = {
     onDidChangeConfiguration: jest.fn()
 };
 
-export const window = {
+const window = {
     registerTreeDataProvider: jest.fn(),
     createOutputChannel: () => {
         return {
@@ -184,7 +188,7 @@ export const window = {
     visibleTextEditors: []
 };
 
-export const Uri = {
+const Uri = {
     file: (f) => f,
     parse: jest.fn(),
     joinPath: (a, b) => {
@@ -193,20 +197,20 @@ export const Uri = {
     }
 };
 
-export const env = {
+const env = {
     appName: 'VSCode'
 };
 
-export const extensions = {
+const extensions = {
     getExtension: jest.fn()
 };
 
-export const commands = {
+const commands = {
     executeCommand: jest.fn(),
     registerCommand: jest.fn()
 };
 
-export const ViewColumn = {
+const ViewColumn = {
     Active: -1,
     Beside: -2,
     One: 1,
@@ -220,8 +224,31 @@ export const ViewColumn = {
     Nine: 9
 };
 
-export const ExtensionContext = {};
+const ExtensionContext = {};
 
-export const debug = {
+const debug = {
     startDebugging: jest.fn()
 };
+
+const vscode = {
+    commands,
+    Disposable,
+    EventEmitter,
+    ExtensionContext,
+    FileChangeType,
+    FileSystemError,
+    FileType,
+    Uri: URI.URI,
+    workspace,
+    window,
+    env,
+    extensions,
+    RelativePattern,
+    ViewColumn,
+    Uri,
+    debug,
+    TreeItemCollapsibleState,
+    TreeItem
+};
+
+module.exports = vscode;

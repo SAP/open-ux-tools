@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import * as vscodeMod from 'vscode';
 import { showFileSaveDialog } from '../../../../../src/panel/system/utils';
 

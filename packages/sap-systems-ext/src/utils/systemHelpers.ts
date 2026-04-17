@@ -1,8 +1,8 @@
 import type { TOptions } from 'i18next';
-import type { ConfirmationPromptType } from './constants/index.js';
+import type { ConfirmationPromptType } from './constants';
 
-import { t } from './i18n.js';
-import { confirmationPromptMap } from './constants/index.js';
+import { t } from './i18n';
+import { confirmationPromptMap } from './constants';
 import { window } from 'vscode';
 import type { BackendSystem } from '@sap-ux/store';
 

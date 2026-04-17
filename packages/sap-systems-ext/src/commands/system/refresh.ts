@@ -1,6 +1,6 @@
-import type { SystemCommandContext } from '../../types/system/index.js';
-import { t } from '../../utils/index.js';
-import SystemsLogger from '../../utils/logger.js';
+import type { SystemCommandContext } from '../../types/system';
+import { t } from '../../utils';
+import SystemsLogger from '../../utils/logger';
 
 /**
  * Returns a command handler function that refreshes the list of systems.

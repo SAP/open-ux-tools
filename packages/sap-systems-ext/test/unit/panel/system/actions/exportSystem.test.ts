@@ -1,33 +1,25 @@
-import { jest } from '@jest/globals';
 import type { SystemConfigFile } from '../../../../../src/types';
+import { exportSystem } from '../../../../../src/panel/system/actions/exportSystem';
+import { initI18n } from '../../../../../src/utils';
 import * as vscodeMod from 'vscode';
+import * as fs from 'node:fs';
+import * as panelActionUtils from '../../../../../src/panel/system/utils';
 
 const systemServiceReadMock = jest.fn();
-const mockShowFileSaveDialog = jest.fn();
-const mockWriteFileSync = jest.fn();
 
-const realStore = await import('@sap-ux/store');
-jest.unstable_mockModule('@sap-ux/store', () => ({
-    ...realStore,
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
     getService: jest.fn().mockImplementation(() => ({
         read: systemServiceReadMock
     }))
 }));
 
-const realPanelUtils = await import('../../../../../src/panel/system/utils');
-jest.unstable_mockModule('../../../../../src/panel/system/utils', () => ({
-    ...realPanelUtils,
-    showFileSaveDialog: mockShowFileSaveDialog
+jest.mock('../../../../../src/panel/system/utils', () => ({
+    ...jest.requireActual('../../../../../src/panel/system/utils'),
+    showFileSaveDialog: jest.fn()
 }));
 
-const realNodeFs = await import('node:fs');
-jest.unstable_mockModule('node:fs', () => ({
-    ...realNodeFs,
-    writeFileSync: mockWriteFileSync
-}));
-
-const { exportSystem } = await import('../../../../../src/panel/system/actions/exportSystem');
-const { initI18n } = await import('../../../../../src/utils');
+jest.mock('fs');
 
 describe('Test the export system action', () => {
     beforeAll(async () => {
@@ -48,8 +40,11 @@ describe('Test the export system action', () => {
 
     it('should call writeFileSync to export the system', async () => {
         systemServiceReadMock.mockResolvedValue(backendSystem);
+        const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation();
         const showInformationMessageSpy = jest.spyOn(vscodeMod.window, 'showInformationMessage').mockImplementation();
-        mockShowFileSaveDialog.mockResolvedValue({ fsPath: '/mock/path/system.json' } as vscodeMod.Uri);
+        const showSaveDialogSpy = jest
+            .spyOn(panelActionUtils, 'showFileSaveDialog')
+            .mockResolvedValue({ fsPath: '/mock/path/system.json' } as vscodeMod.Uri);
 
         await exportSystem({} as any, {
             type: 'EXPORT_SYSTEM',
@@ -64,8 +59,8 @@ describe('Test the export system action', () => {
             }
         });
 
-        expect(mockShowFileSaveDialog).toHaveBeenCalled();
-        expect(mockWriteFileSync).toHaveBeenCalledWith(
+        expect(showSaveDialogSpy).toHaveBeenCalled();
+        expect(writeFileSyncSpy).toHaveBeenCalledWith(
             '/mock/path/system.json',
             JSON.stringify(
                 {
@@ -87,11 +82,13 @@ describe('Test the export system action', () => {
 
     it('should show the error when exporting the system fails', async () => {
         systemServiceReadMock.mockResolvedValue(backendSystem);
-        mockWriteFileSync.mockImplementationOnce(() => {
+        const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementationOnce(() => {
             throw new Error('Writing failure');
         });
         const showErrorMessageSpy = jest.spyOn(vscodeMod.window, 'showErrorMessage').mockImplementation();
-        mockShowFileSaveDialog.mockResolvedValue({ fsPath: '/mock/path/system.json' } as vscodeMod.Uri);
+        const showSaveDialogSpy = jest
+            .spyOn(panelActionUtils, 'showFileSaveDialog')
+            .mockResolvedValue({ fsPath: '/mock/path/system.json' } as vscodeMod.Uri);
 
         await exportSystem({} as any, {
             type: 'EXPORT_SYSTEM',
@@ -106,8 +103,24 @@ describe('Test the export system action', () => {
             }
         });
 
-        expect(mockShowFileSaveDialog).toHaveBeenCalled();
-        expect(mockWriteFileSync).toHaveBeenCalled();
+        expect(showSaveDialogSpy).toHaveBeenCalled();
+        expect(writeFileSyncSpy).toHaveBeenCalledWith(
+            '/mock/path/system.json',
+            JSON.stringify(
+                {
+                    systems: [
+                        {
+                            name: 'Test System',
+                            url: 'https://example.com',
+                            client: '100',
+                            connectionType: 'abap_catalog'
+                        }
+                    ]
+                },
+                null,
+                2
+            )
+        );
         expect(showErrorMessageSpy).toHaveBeenCalledWith('Failed to export connection information: Writing failure.');
     });
 
@@ -119,8 +132,11 @@ describe('Test the export system action', () => {
             connectionType: 'odata_service' as const
         };
         systemServiceReadMock.mockResolvedValue(systemWithoutClient);
+        const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation();
         const showInformationMessageSpy = jest.spyOn(vscodeMod.window, 'showInformationMessage').mockImplementation();
-        mockShowFileSaveDialog.mockResolvedValue({ fsPath: '/mock/path/odata-system.json' } as vscodeMod.Uri);
+        const showSaveDialogSpy = jest
+            .spyOn(panelActionUtils, 'showFileSaveDialog')
+            .mockResolvedValue({ fsPath: '/mock/path/odata-system.json' } as vscodeMod.Uri);
 
         await exportSystem({} as any, {
             type: 'EXPORT_SYSTEM',
@@ -129,8 +145,8 @@ describe('Test the export system action', () => {
             }
         });
 
-        expect(mockShowFileSaveDialog).toHaveBeenCalled();
-        expect(mockWriteFileSync).toHaveBeenCalledWith(
+        expect(showSaveDialogSpy).toHaveBeenCalled();
+        expect(writeFileSyncSpy).toHaveBeenCalledWith(
             '/mock/path/odata-system.json',
             JSON.stringify(
                 {
@@ -151,8 +167,9 @@ describe('Test the export system action', () => {
 
     it('should not export if file path is not provided', async () => {
         systemServiceReadMock.mockResolvedValue(backendSystem);
+        const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation();
         const showInformationMessageSpy = jest.spyOn(vscodeMod.window, 'showInformationMessage').mockImplementation();
-        mockShowFileSaveDialog.mockResolvedValue(undefined);
+        const showSaveDialogSpy = jest.spyOn(panelActionUtils, 'showFileSaveDialog').mockResolvedValue(undefined);
 
         await exportSystem({} as any, {
             type: 'EXPORT_SYSTEM',
@@ -161,13 +178,15 @@ describe('Test the export system action', () => {
             }
         });
 
-        expect(mockShowFileSaveDialog).toHaveBeenCalled();
-        expect(mockWriteFileSync).not.toHaveBeenCalled();
+        expect(showSaveDialogSpy).toHaveBeenCalled();
+        expect(writeFileSyncSpy).not.toHaveBeenCalled();
         expect(showInformationMessageSpy).not.toHaveBeenCalled();
     });
 
     it('should return early if system is not found in store', async () => {
         systemServiceReadMock.mockResolvedValue(undefined);
+        const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation();
+        const showSaveDialogSpy = jest.spyOn(panelActionUtils, 'showFileSaveDialog');
 
         await exportSystem({} as any, {
             type: 'EXPORT_SYSTEM',
@@ -182,7 +201,7 @@ describe('Test the export system action', () => {
             }
         });
 
-        expect(mockShowFileSaveDialog).not.toHaveBeenCalled();
-        expect(mockWriteFileSync).not.toHaveBeenCalled();
+        expect(showSaveDialogSpy).not.toHaveBeenCalled();
+        expect(writeFileSyncSpy).not.toHaveBeenCalled();
     });
 });

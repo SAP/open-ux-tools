@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import type { SystemCommandContext } from '../../../../src/types/system';
 import type { SapSystemsProvider } from '../../../../src/providers';
 import { refreshSystemsCommandHandler } from '../../../../src/commands/system/refresh';

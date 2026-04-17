@@ -1,6 +1,6 @@
 import type { BackendSystem } from '@sap-ux/store';
 import type { WebAppActions } from '@sap-ux/sap-systems-ext-types';
-import type { SystemPanelViewType } from '../../utils/constants/index.js';
+import type { SystemPanelViewType } from '../../utils/constants';
 
 export interface PanelContext {
     panelViewType: SystemPanelViewType;

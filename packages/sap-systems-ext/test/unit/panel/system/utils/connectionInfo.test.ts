@@ -1,6 +1,6 @@
-import { jest } from '@jest/globals';
 import type { BackendSystem } from '@sap-ux/store';
 import { ODataVersion, type ODataServiceInfo } from '@sap-ux/axios-extension';
+import { getCatalogServiceCount, getSystemInfo, hasServiceMetadata } from '../../../../../src/panel/system/utils';
 
 const listServicesMock = jest.fn();
 
@@ -15,9 +15,8 @@ const serviceMock = jest.fn().mockImplementation(() => ({
     metadata: metadataMock
 }));
 
-const realAxiosExtension = await import('@sap-ux/axios-extension');
-jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
-    ...realAxiosExtension,
+jest.mock('@sap-ux/axios-extension', () => ({
+    ...jest.requireActual('@sap-ux/axios-extension'),
     createForAbap: jest.fn().mockImplementation(({ refreshTokenChangedCb }) => ({
         catalog: catalogServiceMock,
         getSystemInfo: getSystemInfoMock,
@@ -28,9 +27,6 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
         service: serviceMock
     }))
 }));
-
-const { getCatalogServiceCount, getSystemInfo, hasServiceMetadata } =
-    await import('../../../../../src/panel/system/utils');
 
 describe('getCatalogServiceCount', () => {
     beforeEach(() => {

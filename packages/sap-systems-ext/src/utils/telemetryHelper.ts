@@ -6,12 +6,11 @@ import {
     type TelemetryProperties,
     type ToolsSuiteTelemetryInitSettings
 } from '@sap-ux/telemetry';
-import { createRequire } from 'node:module';
-const { version } = createRequire(import.meta.url)('../../package.json');
+import { version } from '../../package.json';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import osName from 'os-name';
-import { t } from './i18n.js';
-import SystemsLogger from './logger.js';
+import { t } from './i18n';
+import SystemsLogger from './logger';
 
 export const sapSystemsExtName = 'sap-systems-ext';
 const resourceId = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';

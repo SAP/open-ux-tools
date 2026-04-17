@@ -1,11 +1,11 @@
 import type { WebAppActions } from '@sap-ux/sap-systems-ext-types';
-import type { DisposeCallback } from '../../../types/system/index.js';
+import type { DisposeCallback } from '../../../types/system';
 import { Uri, ViewColumn, window, type WebviewPanel } from 'vscode';
-import { t } from '../../../utils/index.js';
+import { t } from '../../../utils';
 import { basename, join } from 'node:path';
 import normalizePath from 'normalize-path';
 import fastGlob from 'fast-glob';
-import SystemsLogger from '../../../utils/logger.js';
+import SystemsLogger from '../../../utils/logger';
 
 /**
  * Creates and returns a new webview panel for the system view.

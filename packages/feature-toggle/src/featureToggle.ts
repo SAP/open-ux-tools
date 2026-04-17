@@ -16,8 +16,14 @@ async function getVSCodeInstance(): Promise<any> {
     return vscode;
 }
 
-// Module-level vscode instance, initialized via top-level await
-const _vscodeInstance: any = await getVSCodeInstance();
+// Module-level vscode instance cache
+let _vscodeInstance: any = null;
+
+// Initialize vscode instance without top-level await
+// This uses an IIFE to start the async initialization immediately
+(async () => {
+    _vscodeInstance = await getVSCodeInstance();
+})();
 
 /**
  * Utility class for accessing and managing feature toggles.

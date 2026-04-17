@@ -1,16 +1,20 @@
-import { jest } from '@jest/globals';
-const mockGetHelpUrl = jest.fn().mockImplementation((_treeId: any, _path: number[]) => 'https://help.example/node');
+import {
+    getErrorType,
+    getErrorMessage,
+    getErrorHelp,
+    createGALink,
+    ERROR_TYPE
+} from '../../../../../src/panel/system/utils/errorMapping';
+import { initI18n } from '../../../../../src/utils';
 
-jest.unstable_mockModule('@sap-ux/guided-answers-helper', () => ({
+// Mocks
+const mockGetHelpUrl = jest.fn().mockImplementation((_treeId: any, _path: number[]) => 'https://help.example/node');
+jest.mock('@sap-ux/guided-answers-helper', () => ({
     GUIDED_ANSWERS_LAUNCH_CMD_ID: 'ga.launch',
     HELP_TREE: { FIORI_TOOLS: 42 },
     HELP_NODES: { CERTIFICATE_ERROR: 777 },
     getHelpUrl: (...args: any[]) => mockGetHelpUrl(...args)
 }));
-
-const { getErrorType, getErrorMessage, getErrorHelp, createGALink, ERROR_TYPE } =
-    await import('../../../../../src/panel/system/utils/errorMapping');
-const { initI18n } = await import('../../../../../src/utils');
 
 describe('errorMapping', () => {
     beforeAll(async () => {

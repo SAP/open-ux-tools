@@ -1,9 +1,9 @@
-import type { StoredSystemViewNode, SystemCommandContext } from '../../types/system/index.js';
+import type { StoredSystemViewNode, SystemCommandContext } from '../../types/system';
 import { BackendSystemKey, type BackendSystem, type Service } from '@sap-ux/store';
 import { window } from 'vscode';
-import { SystemPanel } from '../../panel/index.js';
-import { TelemetryHelper, getBackendSystemService, t } from '../../utils/index.js';
-import { SystemAction, LaunchViewStatus, SystemPanelViewType, SYSTEMS_EVENT } from '../../utils/constants/index.js';
+import { SystemPanel } from '../../panel';
+import { TelemetryHelper, getBackendSystemService, t } from '../../utils';
+import { SystemAction, LaunchViewStatus, SystemPanelViewType, SYSTEMS_EVENT } from '../../utils/constants';
 
 /**
  * Returns a command handler function that shows the details of a specified system.

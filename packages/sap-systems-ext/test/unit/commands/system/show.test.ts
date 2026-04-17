@@ -1,25 +1,20 @@
-import { jest } from '@jest/globals';
 import type { SystemCommandContext } from '../../../../src/types/system';
-import type { SystemPanel } from '../../../../src/panel';
+import { showSystemsCommandHandler } from '../../../../src/commands/system/show';
+import { PanelManager, type SystemPanel } from '../../../../src/panel';
+import { initI18n } from '../../../../src/utils';
+import { BackendSystemKey } from '@sap-ux/store';
 import * as vscodeMod from 'vscode';
 
 const systemServiceReadMock = jest.fn();
 const systemServiceGetAllMock = jest.fn();
 
-const realStore = await import('@sap-ux/store');
-jest.unstable_mockModule('@sap-ux/store', () => ({
-    ...realStore,
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
     getService: jest.fn().mockImplementation(() => ({
         read: systemServiceReadMock,
         getAll: systemServiceGetAllMock
     }))
 }));
-
-const { showSystemsCommandHandler } = await import('../../../../src/commands/system/show');
-const { PanelManager } = await import('../../../../src/panel');
-
-const { initI18n } = await import('../../../../src/utils');
-const { BackendSystemKey } = await import('@sap-ux/store');
 
 describe('Test the show system command handler', () => {
     const backendSystem = {
@@ -81,6 +76,28 @@ describe('Test the show system command handler', () => {
         );
     });
 
+    it('should show an error when reading the store does not return a system', async () => {
+        const panelManager = new PanelManager<SystemPanel>();
+        const mockContext = {
+            panelManager,
+            extContext: {
+                vscodeExtContext: {
+                    extensionPath: '/mock/extension/path'
+                }
+            }
+        } as SystemCommandContext;
+        const showErrorMessageSpy = jest.spyOn(vsCodeWindow, 'showErrorMessage');
+
+        systemServiceReadMock.mockRejectedValueOnce(undefined);
+
+        const handler = showSystemsCommandHandler(mockContext);
+        await handler({ url: 'https://example.com', client: '100' });
+
+        expect(showErrorMessageSpy).toHaveBeenCalledWith(
+            'An error occurred when executing the command to view the connection details.'
+        );
+    });
+
     it('should pick a system when no system is provided', async () => {
         const panelManager = new PanelManager<SystemPanel>();
         const getOrCreateNewPanelSpy = jest.spyOn(panelManager, 'getOrCreateNewPanel');
@@ -106,28 +123,6 @@ describe('Test the show system command handler', () => {
 
         expect(showQuickPickSpy).toHaveBeenCalled();
         expect(getOrCreateNewPanelSpy).toHaveBeenCalledWith('https://example.com/100', expect.any(Function));
-    });
-
-    it('should show an error when reading the store does not return a system', async () => {
-        const panelManager = new PanelManager<SystemPanel>();
-        const mockContext = {
-            panelManager,
-            extContext: {
-                vscodeExtContext: {
-                    extensionPath: '/mock/extension/path'
-                }
-            }
-        } as SystemCommandContext;
-        const showErrorMessageSpy = jest.spyOn(vsCodeWindow, 'showErrorMessage');
-
-        systemServiceReadMock.mockRejectedValueOnce(undefined);
-
-        const handler = showSystemsCommandHandler(mockContext);
-        await handler({ url: 'https://example.com', client: '100' });
-
-        expect(showErrorMessageSpy).toHaveBeenCalledWith(
-            'An error occurred when executing the command to view the connection details.'
-        );
     });
 
     it('should handle no selection in the system picker', async () => {

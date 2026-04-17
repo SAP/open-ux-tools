@@ -1,9 +1,9 @@
-import type { PanelContext } from '../../../types/system/index.js';
+import type { PanelContext } from '../../../types/system';
 import type { CreateFioriProject, OpenExistingSystem, OpenGuidedAnswers } from '@sap-ux/sap-systems-ext-types';
 import { commands } from 'vscode';
-import { t } from '../../../utils/index.js';
-import { ExtensionCommands, SystemCommands } from '../../../utils/constants/index.js';
-import SystemsLogger from '../../../utils/logger.js';
+import { t } from '../../../utils';
+import { ExtensionCommands, SystemCommands } from '../../../utils/constants';
+import SystemsLogger from '../../../utils/logger';
 
 /**
  * Executes the launch app gen command with the provided system name.

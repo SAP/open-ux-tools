@@ -1,11 +1,11 @@
-import type { ActionHandler, ActionHandlerMap, PanelContext } from '../../../types/system/index.js';
+import type { ActionHandler, ActionHandlerMap, PanelContext } from '../../../types/system';
 import type { WebAppActions } from '@sap-ux/sap-systems-ext-types';
-import { exportSystem } from './exportSystem.js';
-import { renderWebApp } from './renderWebapp.js';
-import { updateSystem } from './updateSystem.js';
-import { testSystemConnection } from './testConnection.js';
-import { fireGALinkClickedTelemetry } from './sendTelemetry.js';
-import { createFioriProject, openExistingSystem, openGuidedAnswers, openOutputChannel } from './executeCommads.js';
+import { exportSystem } from './exportSystem';
+import { renderWebApp } from './renderWebapp';
+import { updateSystem } from './updateSystem';
+import { testSystemConnection } from './testConnection';
+import { fireGALinkClickedTelemetry } from './sendTelemetry';
+import { createFioriProject, openExistingSystem, openGuidedAnswers, openOutputChannel } from './executeCommads';
 
 export const actionHandlerMap: ActionHandlerMap = {
     WEBVIEW_READY: renderWebApp,

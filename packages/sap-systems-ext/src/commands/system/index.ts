@@ -1,13 +1,13 @@
-import type { SapSystemsExtContext, SystemCommandContext, SystemCommandHandler } from '../../types/system/index.js';
+import type { SapSystemsExtContext, SystemCommandContext, SystemCommandHandler } from '../../types/system';
 import { commands } from 'vscode';
-import { PanelManager, type SystemPanel } from '../../panel/index.js';
-import { SystemCommands } from '../../utils/constants/index.js';
-import { createSystemCommandHandler } from './create.js';
-import { showSystemsCommandHandler } from './show.js';
-import { deleteSystemCommandHandler } from './delete.js';
-import { refreshSystemsCommandHandler } from './refresh.js';
-import { importSystemCommandHandler } from './import.js';
-import { launchAppGenCommandHandler } from './launchAppGen.js';
+import { PanelManager, type SystemPanel } from '../../panel';
+import { SystemCommands } from '../../utils/constants';
+import { createSystemCommandHandler } from './create';
+import { showSystemsCommandHandler } from './show';
+import { deleteSystemCommandHandler } from './delete';
+import { refreshSystemsCommandHandler } from './refresh';
+import { importSystemCommandHandler } from './import';
+import { launchAppGenCommandHandler } from './launchAppGen';
 
 export const commandHandlers: Record<string, SystemCommandHandler> = {
     create: createSystemCommandHandler,

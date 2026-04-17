@@ -1,6 +1,6 @@
 import type { ExtensionContext } from 'vscode';
-import type { PanelManager, SystemPanel } from '../../panel/index.js';
-import type { SapSystemsProvider } from '../../providers/index.js';
+import type { PanelManager, SystemPanel } from '../../panel';
+import type { SapSystemsProvider } from '../../providers';
 import type { ConnectionType } from '@sap-ux/store';
 
 export interface SapSystemsExtContext {
@@ -41,4 +41,4 @@ export interface SystemConfigFile {
     systems: SystemConfig[];
 }
 
-export * from './panel.js';
+export * from './panel';

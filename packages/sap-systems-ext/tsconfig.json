@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig-esm.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "sourceMap": true,
     "outDir": "dist"
@@ -11,8 +11,7 @@
   ],
   "exclude": [
     "dist",
-    "node_modules",
-    "test"
+    "node_modules"
   ],
   "references": [
     {

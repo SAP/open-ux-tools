@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import type { SystemCommandContext } from '../../../../src/types';
 import { createSystemCommandHandler } from '../../../../src/commands/system/create';
 import { PanelManager, type SystemPanel } from '../../../../src/panel';

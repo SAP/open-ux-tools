@@ -1,6 +1,6 @@
-import type { SystemCommandContext } from '../../types/system/index.js';
-import { NEW_SYSTEM_PANEL_KEY, SystemPanelViewType } from '../../utils/constants/index.js';
-import { SystemPanel } from '../../panel/index.js';
+import type { SystemCommandContext } from '../../types/system';
+import { NEW_SYSTEM_PANEL_KEY, SystemPanelViewType } from '../../utils/constants';
+import { SystemPanel } from '../../panel';
 
 /**
  * Returns a command handler function that creates or reveals the system panel.

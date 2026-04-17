@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import type { BackendSystem } from '@sap-ux/store';
 import { initI18n, getDisplayName, confirmPrompt } from '../../../src/utils';
 import * as vscodeMod from 'vscode';

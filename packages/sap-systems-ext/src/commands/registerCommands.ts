@@ -1,6 +1,6 @@
-import type { SapSystemsExtContext } from '../types/index.js';
-import { registerSystemViewCommands } from './system/index.js';
-import { registerExtensionCommands } from './extension/index.js';
+import type { SapSystemsExtContext } from '../types';
+import { registerSystemViewCommands } from './system';
+import { registerExtensionCommands } from './extension';
 
 /**
  * Register all commands for the extension.

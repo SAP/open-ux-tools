@@ -1,17 +1,10 @@
-import { jest } from '@jest/globals';
 import type { WebAppActions } from '@sap-ux/sap-systems-ext-types';
 import type { BackendSystem } from '@sap-ux/store';
 import { initI18n } from '../../../../src/utils';
+import { SystemPanel } from '../../../../src/panel/system/systemPanel';
 import { SystemPanelViewType } from '../../../../src/utils/constants';
 import * as vscodeMod from 'vscode';
-
-const mockDispatchPanelAction = jest.fn();
-
-jest.unstable_mockModule('../../../../src/panel/system/actions', () => ({
-    dispatchPanelAction: mockDispatchPanelAction
-}));
-
-const { SystemPanel } = await import('../../../../src/panel/system/systemPanel');
+import * as actions from '../../../../src/panel/system/actions';
 
 describe('Test the system panel class', () => {
     beforeAll(async () => {
@@ -52,6 +45,7 @@ describe('Test the system panel class', () => {
             systemType: 'OnPrem',
             connectionType: 'abap_catalog'
         };
+        const dispatchPanelActionSpy = jest.spyOn(actions, 'dispatchPanelAction');
 
         const panelContext = {
             extensionPath: '/mock/extension/path',
@@ -66,7 +60,7 @@ describe('Test the system panel class', () => {
         await systemPanel.reveal();
 
         emitter({ type: 'WEBVIEW_READY' });
-        expect(mockDispatchPanelAction).toHaveBeenCalledWith(
+        expect(dispatchPanelActionSpy).toHaveBeenCalledWith(
             {
                 panelViewType: panelContext.systemPanelViewType,
                 backendSystem: panelContext.backendSystem,
@@ -79,8 +73,8 @@ describe('Test the system panel class', () => {
             { type: 'WEBVIEW_READY' }
         );
 
-        mockDispatchPanelAction.mockClear();
-        mockDispatchPanelAction.mockRejectedValueOnce(new Error('Dispatch failed'));
+        dispatchPanelActionSpy.mockClear();
+        dispatchPanelActionSpy.mockRejectedValueOnce(new Error('Dispatch failed'));
         emitter({ type: 'WEBVIEW_READY' });
 
         await systemPanel.dispose();

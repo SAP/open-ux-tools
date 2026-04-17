@@ -1,6 +1,6 @@
-import type { PanelContext } from '../../../types/system/index.js';
-import { TelemetryHelper } from '../../../utils/index.js';
-import { GuidedAnswersLinkAction, SystemAction, SYSTEMS_EVENT } from '../../../utils/constants/index.js';
+import type { PanelContext } from '../../../types/system';
+import { TelemetryHelper } from '../../../utils';
+import { GuidedAnswersLinkAction, SystemAction, SYSTEMS_EVENT } from '../../../utils/constants';
 
 /**
  * Fires telemetry when the Guided Answers link is clicked.

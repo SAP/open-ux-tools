@@ -1,17 +1,17 @@
-import { jest } from '@jest/globals';
-const mockInitTelemetrySettings = jest.fn().mockResolvedValue(undefined);
+import { TelemetryHelper } from '../../../src/utils';
+import * as uxTelemetry from '@sap-ux/telemetry';
 
-const realTelemetry = await import('@sap-ux/telemetry');
-jest.unstable_mockModule('@sap-ux/telemetry', () => ({
-    ...realTelemetry,
-    initTelemetrySettings: mockInitTelemetrySettings
-}));
+jest.mock('@sap-ux/telemetry', () => {
+    jest.requireActual('@sap-ux/telemetry');
+    return {
+        ...jest.requireActual('@sap-ux/telemetry'),
+        initTelemetrySettings: jest.fn().mockResolvedValue(undefined)
+    };
+});
 
-jest.unstable_mockModule('os-name', () => ({
-    default: () => 'mocked-os'
-}));
-
-const { TelemetryHelper } = await import('../../../src/utils');
+jest.mock('os-name', () => {
+    return () => 'mocked-os';
+});
 
 describe('Test the TelemetryHelper', () => {
     it('should create telemetry data with default properties', async () => {
@@ -19,8 +19,9 @@ describe('Test the TelemetryHelper', () => {
             customProp1: 'value1',
             customProp2: 'value2'
         };
+        const initTelemetrySpy = jest.spyOn(uxTelemetry, 'initTelemetrySettings');
         await TelemetryHelper.initTelemetrySettings();
-        expect(mockInitTelemetrySettings).toHaveBeenCalled();
+        expect(initTelemetrySpy).toHaveBeenCalled();
 
         const telemetryData = TelemetryHelper.createTelemetryData(additionalData);
         expect(telemetryData).toBeDefined();

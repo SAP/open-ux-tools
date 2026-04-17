@@ -1,7 +1,7 @@
 import type { FSWatcher } from 'node:fs';
-import type { SapSystemsExtContext } from '../types/index.js';
+import type { SapSystemsExtContext } from '../types';
 import { window } from 'vscode';
-import { SapSystemsProvider } from '../providers/index.js';
+import { SapSystemsProvider } from '../providers';
 import { Entity, getFilesystemWatcherFor, getSapToolsDirectory } from '@sap-ux/store';
 
 /**

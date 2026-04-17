@@ -1,7 +1,7 @@
 import type { AxiosError } from '@sap-ux/axios-extension';
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
 import type { TestConnection, CatalogServicesCounts } from '@sap-ux/sap-systems-ext-types';
-import type { PanelContext } from '../../../types/index.js';
+import type { PanelContext } from '../../../types';
 import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import {
@@ -14,22 +14,16 @@ import {
     validateSystemInfo,
     getSystemInfo,
     hasServiceMetadata
-} from '../utils/index.js';
-import {
-    TelemetryHelper,
-    compareSystems,
-    getBackendSystemService,
-    shouldStoreSystemInfo,
-    t
-} from '../../../utils/index.js';
+} from '../utils';
+import { TelemetryHelper, compareSystems, getBackendSystemService, shouldStoreSystemInfo, t } from '../../../utils';
 import {
     GuidedAnswersLinkAction,
     SystemAction,
     SystemPanelViewType,
     SYSTEMS_EVENT,
     TestConnectionStatus
-} from '../../../utils/constants/index.js';
-import SystemsLogger from '../../../utils/logger.js';
+} from '../../../utils/constants';
+import SystemsLogger from '../../../utils/logger';
 
 /**
  * Tests the connection to a specified backend system and retrieves the count of available OData services.

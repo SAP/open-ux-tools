@@ -1,37 +1,29 @@
-import { jest } from '@jest/globals';
 import type { SystemCommandContext } from '../../../../src/types/system';
-import type { SystemPanel } from '../../../../src/panel';
+import { PanelManager, type SystemPanel } from '../../../../src/panel';
+import { deleteSystemCommandHandler } from '../../../../src/commands/system/delete';
+import * as utils from '../../../../src/utils';
 import * as vscodeMod from 'vscode';
 
 const systemServiceReadMock = jest.fn();
 const systemServiceDeleteMock = jest.fn();
-const mockConfirmPrompt = jest.fn();
-const mockLogTelemetryEvent = jest.fn();
 
-const realStore = await import('@sap-ux/store');
-jest.unstable_mockModule('@sap-ux/store', () => ({
-    ...realStore,
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
     getService: jest.fn().mockImplementation(() => ({
         read: systemServiceReadMock,
         delete: systemServiceDeleteMock
     }))
 }));
 
-const realUtils = await import('../../../../src/utils');
-jest.unstable_mockModule('../../../../src/utils', () => ({
-    ...realUtils,
-    confirmPrompt: mockConfirmPrompt,
-    logTelemetryEvent: mockLogTelemetryEvent
+jest.mock('../../../../src/utils', () => ({
+    ...jest.requireActual('../../../../src/utils'),
+    confirmPrompt: jest.fn(),
+    logTelemetryEvent: jest.fn()
 }));
-
-const { deleteSystemCommandHandler } = await import('../../../../src/commands/system/delete');
-const { PanelManager } = await import('../../../../src/panel');
-
-const { initI18n } = await import('../../../../src/utils');
 
 describe('Test the delete system command handler', () => {
     beforeAll(async () => {
-        await initI18n();
+        await utils.initI18n();
     });
 
     afterEach(() => {
@@ -60,8 +52,9 @@ describe('Test the delete system command handler', () => {
         const deleteAndDisposeSpy = jest.spyOn(panelManager, 'deleteAndDispose');
         const vsCodeWindow = vscodeMod.window;
         const showInformationMessageSpy = jest.spyOn(vsCodeWindow, 'showInformationMessage');
+        const confirmPromptSpy = jest.spyOn(utils, 'confirmPrompt');
 
-        mockConfirmPrompt.mockResolvedValue(true);
+        confirmPromptSpy.mockResolvedValue(true);
         systemServiceReadMock.mockResolvedValue(backendSystem);
         systemServiceDeleteMock.mockResolvedValue(true);
 
@@ -84,8 +77,9 @@ describe('Test the delete system command handler', () => {
     it('should show a warning message if the deletion of the specific system is not successful', async () => {
         const vsCodeWindow = vscodeMod.window;
         const showWarningMessageSpy = jest.spyOn(vsCodeWindow, 'showWarningMessage');
+        const confirmPromptSpy = jest.spyOn(utils, 'confirmPrompt');
 
-        mockConfirmPrompt.mockResolvedValue(true);
+        confirmPromptSpy.mockResolvedValue(true);
         systemServiceReadMock.mockResolvedValue(backendSystem);
         systemServiceDeleteMock.mockResolvedValue(false);
 
@@ -123,8 +117,9 @@ describe('Test the delete system command handler', () => {
     it('should not delete the system if the user cancels the confirmation prompt', async () => {
         const vsCodeWindow = vscodeMod.window;
         const showWarningMessageSpy = jest.spyOn(vsCodeWindow, 'showWarningMessage');
+        const confirmPromptSpy = jest.spyOn(utils, 'confirmPrompt');
 
-        mockConfirmPrompt.mockResolvedValue(false);
+        confirmPromptSpy.mockResolvedValue(false);
         systemServiceReadMock.mockResolvedValue({
             url: 'https://example.com',
             client: '100',

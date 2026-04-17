@@ -1,7 +1,7 @@
-import type { PanelContext } from '../../../types/system/index.js';
+import type { PanelContext } from '../../../types/system';
 import { getBackendSystemType, type BackendSystem } from '@sap-ux/store';
-import { SystemPanelViewType } from '../../../utils/constants/index.js';
-import { createNewSystem, systemInfoLoading, updateSystemInfo, updateSystemStatus } from '../utils/index.js';
+import { SystemPanelViewType } from '../../../utils/constants';
+import { createNewSystem, systemInfoLoading, updateSystemInfo, updateSystemStatus } from '../utils';
 
 /**
  * Renders the webview based on the panel context.

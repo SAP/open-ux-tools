@@ -4050,9 +4050,6 @@ importers:
 
   packages/sap-systems-ext:
     devDependencies:
-      '@jest/globals':
-        specifier: 30.3.0
-        version: 30.3.0
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension

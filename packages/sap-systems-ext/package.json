@@ -4,7 +4,6 @@
     "displayName": "Connection Manager for SAP Systems",
     "description": "Enables you to store connection information for remote SAP systems.",
     "main": "./dist/extension.js",
-    "type": "module",
     "publisher": "SAPOSS",
     "icon": "resources/icon-extension-plug-systems.png",
     "repository": {
@@ -18,24 +17,24 @@
     },
     "files": [
         "dist/**/*.{js,css}",
-        "resources",
         "prebuilds",
+        "resources",
         "LICENSE"
     ],
     "scripts": {
         "vscode:prepublish": "pnpm run build",
         "build": "npm-run-all -l -s clean -p check-types bundle:dev",
-        "bundle:dev": "node esbuild.mjs --development",
-        "bundle:prod": "node esbuild.mjs --production",
+        "bundle:dev": "node esbuild.js --development",
+        "bundle:prod": "node esbuild.js --production",
         "clean": "rimraf dist",
         "clean:coverage": "rimraf coverage",
         "watch": "npm-run-all -p watch:*",
-        "watch:esbuild": "node esbuild.mjs --watch",
+        "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
         "check-types": "tsc --noEmit",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "cross-env SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --silent",
+        "test": "cross-env SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true jest --ci --forceExit --detectOpenHandles --colors --silent",
         "ide-ext:package": "vsce package"
     },
     "activationEvents": [
@@ -49,7 +48,6 @@
     ],
     "dependencies": {},
     "devDependencies": {
-        "@jest/globals": "30.3.0",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",

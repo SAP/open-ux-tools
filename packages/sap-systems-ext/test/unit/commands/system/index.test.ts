@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import type { ExtensionContext } from 'vscode';
 import { registerSystemViewCommands } from '../../../../src/commands/system';
 import * as vscodeMod from 'vscode';

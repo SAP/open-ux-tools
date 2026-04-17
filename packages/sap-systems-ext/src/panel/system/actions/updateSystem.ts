@@ -1,5 +1,5 @@
 import type { UpdateSystem } from '@sap-ux/sap-systems-ext-types';
-import type { PanelContext } from '../../../types/system/index.js';
+import type { PanelContext } from '../../../types/system';
 import type { BackendSystem } from '@sap-ux/store';
 import { commands, window } from 'vscode';
 import {
@@ -10,22 +10,22 @@ import {
     getBackendSystemService,
     compareSystems,
     shouldStoreSystemInfo
-} from '../../../utils/index.js';
+} from '../../../utils';
 import {
     getSystemInfo,
     updateSystemStatus,
     validateSystemName,
     validateSystemUrl,
     ConnectionExistsError
-} from '../utils/index.js';
+} from '../utils';
 import {
     SystemAction,
     SystemActionStatus,
     SystemCommands,
     SystemPanelViewType,
     SYSTEMS_EVENT
-} from '../../../utils/constants/index.js';
-import SystemsLogger from '../../../utils/logger.js';
+} from '../../../utils/constants';
+import SystemsLogger from '../../../utils/logger';
 
 /**
  * This action updates or creates a system based on the provided details.
