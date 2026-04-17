@@ -145,7 +145,7 @@ const checkOPA5 = async (param: { page: Page }) => {
 const UI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
 
 // @ui5/cli@5 (used for type:component) requires Node >=22; skip on older runtimes
-const isNode22Plus = parseInt(process.versions.node.split('.')[0]) >= 22;
+const isNode22Plus = parseInt(process.versions.node.split('.')[0], 10) >= 22;
 
 for (const { version } of isNode22Plus ? UI5Versions : []) {
     test.describe(`UI5 version: ${version}`, () => {
