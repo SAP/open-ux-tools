@@ -53,7 +53,9 @@ Annotate the entity property, for example,`CustomerId`, with the `Common.Semanti
 
 ```xml
 <!-- Applied to the actual OData property, NOT inside DataField -->
-<Annotation Term="Common.SemanticObject" String="Customer" Target="YourEntityType/CustomerId"/>
+<Annotations Target="YourEntityType/CustomerId">
+    <Annotation Term="Common.SemanticObject" String="Customer"/>
+</Annotations>
 ```
 
 #### Step 2: Reference the Property in Your UI Annotations:
