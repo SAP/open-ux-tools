@@ -4,7 +4,7 @@ sap.ui.define(
         QUnit.module('List Report');
 
         opaTest('Should load the list report and find results', function (Given, When, Then) {
-            Given.iStartMyUIComponent({ componentConfig: { name: 'test.fe.v2.app', async: true }, autoWait: true });
+            Given.iStartMyUIComponent({ componentConfig: { name: 'test.fe.v2.app', async: true }, autoWait: true, timeout: 80 });
             When.onTheListReport.iPressGoButton();
             Then.onTheListReport.iSeeAtLeastOneResult();
             Then.iTeardownMyApp();

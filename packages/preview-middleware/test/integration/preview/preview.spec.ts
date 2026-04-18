@@ -131,13 +131,10 @@ const checkOPA5 = async (param: { page: Page }) => {
     const client = await page.context().newCDPSession(page);
     await client.send('Network.clearBrowserCache');
     await page.goto(`${getUrl()}/test/opaTests.qunit.html`);
-    await expect(page.getByText('Product_0', { exact: true })).toBeVisible({ timeout: 60000 });
+    await expect(page.locator('#qunit-banner.qunit-pass')).toBeVisible({ timeout: 60000 });
 };
 
 const UI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
-
-// OPA5 journey uses autoWait which is not supported in UI5 1.71.x
-const supportsAutoWait = (version: string) => !version.startsWith('1.71.');
 
 for (const { version } of UI5Versions) {
     test.describe(`UI5 version: ${version}`, () => {
@@ -157,11 +154,9 @@ for (const { version } of UI5Versions) {
             await checkQUnit({ page });
         });
 
-        if (supportsAutoWait(version)) {
-            test('virtual OPA5 page runs a journey and loads app data', async ({ page }) => {
-                test.setTimeout(TIMEOUT);
-                await checkOPA5({ page });
-            });
-        }
+        test('virtual OPA5 page runs a journey and loads app data', async ({ page }) => {
+            test.setTimeout(TIMEOUT);
+            await checkOPA5({ page });
+        });
     });
 }
