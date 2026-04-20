@@ -67,7 +67,7 @@ import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { getResourcesPathPrefix, getTestResourcesPathPrefix } from './utils/project';
+import { getResourcesPathPrefix } from './utils/project';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -321,8 +321,12 @@ export class FlpSandbox {
             : '@sap-ux/preview-middleware';
 
         await this.setApplicationDependencies();
-        this.templateConfig.baseUrl = req['ui5-patched-router']?.baseUrl ?? '';
-        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, this.templateConfig.baseUrl);
+        const patchedRouterBaseUrl = req['ui5-patched-router']?.baseUrl ?? '';
+        const resourcesPrefix = getResourcesPathPrefix(this.utils);
+        this.templateConfig.baseUrl = resourcesPrefix
+            ? posix.join(patchedRouterBaseUrl, resourcesPrefix)
+            : patchedRouterBaseUrl;
+        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, patchedRouterBaseUrl);
         this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
             this.removeAsyncHintsRequests();
@@ -523,14 +527,18 @@ export class FlpSandbox {
             next();
         } else {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            this.templateConfig.baseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
+            const patchedRouterBaseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
+            const resourcesPrefix = getResourcesPathPrefix(this.utils);
+            this.templateConfig.baseUrl = resourcesPrefix
+                ? posix.join(patchedRouterBaseUrl, resourcesPrefix)
+                : patchedRouterBaseUrl;
             const ui5Version = await this.getUi5Version(
                 //use protocol from request header referer as fallback for connect API (karma test runner)
                 'protocol' in req
                     ? req.protocol
                     : (req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http'),
                 req.headers.host,
-                this.templateConfig.baseUrl
+                patchedRouterBaseUrl
             );
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
             if (ui5Version.major === 1 && ui5Version.minor < 120) {
@@ -548,7 +556,6 @@ export class FlpSandbox {
     private addStandardRoutes(): void {
         // register static client sources
         this.router.use(
-            //todo: endpoint at /test-resources or /resources? use getTestResourcesPathPrefix instead?
             posix.join(getResourcesPathPrefix(this.utils) ?? '/', PREVIEW_URL.client.path),
             serveStatic(PREVIEW_URL.client.local)
         );
@@ -816,7 +823,7 @@ export class FlpSandbox {
      * Create required routes for flex.
      */
     private createFlexHandler(): void {
-        const api = `${PREVIEW_URL.api}/changes`;
+        const api = posix.join(getResourcesPathPrefix(this.utils) ?? '/', PREVIEW_URL.api, 'changes');
         this.router.use(api, json());
         this.router.get(api, async (_req: Request, res: Response) => {
             await this.flexGetHandler(res);
@@ -1029,7 +1036,7 @@ export class FlpSandbox {
      * @param id application id from manifest
      */
     private addTestRoutes(configs: CompleteTestConfig[], id: string): void {
-        const ns = this.utils.getProject().getNamespace() ?? id.replace(/\./g, '/');
+        const ns = this.utils.getProject().getNamespace() ?? id.replaceAll('.', '/');
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
         for (const config of configs) {
             // Config is already merged with defaults in constructor
@@ -1128,15 +1135,23 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreCardManifestRoute(): Promise<void> {
-        //todo: endpoint at /test-resources or /resources? use getResourcesPathPrefix instead?
+        // For type:component projects the route is registered under /resources/<ns>/cards/store.
+        // The server side is correct, but the SAP Cards AP generator library (sap/cards/ap/generator,
+        // delivered via UI5 CDN) constructs its POST URL as `${FetchResources.getBaseUrl()}/cards/store`
+        // where getBaseUrl() reads data-open-ux-preview-base-url from #sap-ui-bootstrap.
+        // We cannot safely fold getResourcesPathPrefix() into that attribute because other clients
+        // (WorkspaceConnector, enableFakeConnector) read the same attribute for /preview/api/changes.
+        // Required fix: CardGenerator team should read a separate data-open-ux-preview-api-base-path
+        // attribute and use `${getBaseUrl()}${getApiBasePath()}/cards/store` for the POST.
+        // Until then, the card generator feature does not work for type:component projects.
         const storeCardManifestPath = posix.join(
-            getTestResourcesPathPrefix(this.utils) ?? '/',
+            getResourcesPathPrefix(this.utils) ?? '/',
             CARD_GENERATOR_DEFAULT.cardsStore
         );
         this.router.use(storeCardManifestPath, json());
         this.logger.debug(`Add route for ${storeCardManifestPath}`);
 
-        this.router.post(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
+        this.router.post(storeCardManifestPath, async (req: Request, res: Response) => {
             await this.storeCardManifestHandler(req, res);
         });
     }
@@ -1239,15 +1254,14 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreI18nKeysRoute(): Promise<void> {
-        //todo: endpoint at /test-resources or /resources? use getResourcesPathPrefix instead?
         const storeI18nKeysPath = posix.join(
-            getTestResourcesPathPrefix(this.utils) ?? '/',
+            getResourcesPathPrefix(this.utils) ?? '/',
             CARD_GENERATOR_DEFAULT.i18nStore
         );
         this.router.use(storeI18nKeysPath, json());
         this.logger.debug(`Add route for ${storeI18nKeysPath}`);
 
-        this.router.post(CARD_GENERATOR_DEFAULT.i18nStore, async (req: Request, res: Response) => {
+        this.router.post(storeI18nKeysPath, async (req: Request, res: Response) => {
             await this.storeI18nKeysHandler(req, res);
         });
     }

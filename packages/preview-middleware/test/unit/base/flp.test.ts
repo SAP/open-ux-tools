@@ -1785,7 +1785,8 @@ describe('FlpSandbox', () => {
                 getProject() {
                     return {
                         getType: () => 'component',
-                        getNamespace: () => 'test/fe/v2/app'
+                        getNamespace: () => 'test/fe/v2/app',
+                        getSourcePath: () => tmpdir()
                     };
                 }
             } as unknown as MiddlewareUtils;
@@ -1843,6 +1844,56 @@ describe('FlpSandbox', () => {
             );
             expect(response.status).toBe(200);
             expect(response.type).toBe('text/html');
+        });
+
+        test('GET /resources/test/fe/v2/app/preview/api/changes', async () => {
+            const response = await server.get('/resources/test/fe/v2/app/preview/api/changes').expect(200);
+            expect(response.text).toBeTruthy();
+            // bare path must NOT be registered for type:component
+            await server.get('/preview/api/changes').expect(404);
+        });
+
+        test('POST /resources/test/fe/v2/app/preview/api/changes', async () => {
+            await server
+                .post('/resources/test/fe/v2/app/preview/api/changes')
+                .set('Content-Type', 'application/json')
+                .send({ change: { fileName: 'componentChange', fileType: 'ctrl_variant' } })
+                .expect(200);
+            // bare path must NOT respond
+            await server
+                .post('/preview/api/changes')
+                .set('Content-Type', 'application/json')
+                .send({ change: { fileName: 'x', fileType: 'ctrl_variant' } })
+                .expect(404);
+        });
+
+        test('POST /resources/test/fe/v2/app/cards/store', async () => {
+            jest.spyOn(projectAccess, 'createApplicationAccess').mockResolvedValueOnce({
+                updateManifestJSON: () => Promise.resolve({})
+            } as unknown as ApplicationAccess);
+            const payload = {
+                floorplan: 'ObjectPage',
+                localPath: 'cards/op/op1',
+                fileName: 'manifest.json',
+                manifests: []
+            };
+            await server
+                .post(`/resources/test/fe/v2/app${CARD_GENERATOR_DEFAULT.cardsStore}`)
+                .send(payload)
+                .expect(201);
+            // bare path must NOT be registered for type:component
+            await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload).expect(404);
+        });
+
+        test('POST /resources/test/fe/v2/app/editor/i18n', async () => {
+            createPropertiesI18nEntriesMock.mockResolvedValueOnce(undefined);
+            const newI18nEntry = [{ key: 'KEY', value: 'Value' }];
+            await server
+                .post(`/resources/test/fe/v2/app${CARD_GENERATOR_DEFAULT.i18nStore}`)
+                .send(newI18nEntry)
+                .expect(201);
+            // bare path must NOT be registered for type:component
+            await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry).expect(404);
         });
     });
 
