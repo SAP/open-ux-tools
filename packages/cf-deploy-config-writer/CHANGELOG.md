@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.99
+
+### Patch Changes
+
+- 45e087a: refactor(cf-deploy-config-writer): consolidate disk-write template rendering into a single module
+
 ## 0.3.98
 
 ### Patch Changes
