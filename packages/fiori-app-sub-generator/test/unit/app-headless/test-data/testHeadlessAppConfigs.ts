@@ -58,7 +58,7 @@ export const appConfigWithValueListMetadata = {
     ...appConfigDest,
     service: {
         ...appConfigDest.service,
-        valueListMetadata: [
+        externalServices: [
             {
                 type: 'value-list' as const,
                 target: 'SomeEntity/SomeProperty',
@@ -81,7 +81,7 @@ export const appConfigWithValueListMetadataPaths = {
     ...appConfigDest,
     service: {
         ...appConfigDest.service,
-        valueListMetadata: [
+        externalServices: [
             {
                 type: 'value-list' as const,
                 target: 'SomeEntity/SomeProperty',

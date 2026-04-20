@@ -1,12 +1,10 @@
 import type { CapService } from '@sap-ux/cap-config-writer';
-import type { ExternalService } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/fiori-elements-writer';
 import { getCapFolderPathsSync, type AppConfig } from '@sap-ux/fiori-generator-shared';
 import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import { promptNames } from '@sap-ux/ui5-application-inquirer';
 import { getDefaultUI5Theme, supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
-import { readFileSync } from 'node:fs';
-import { isAbsolute, resolve, join } from 'node:path';
+import { join } from 'node:path';
 import type { FEAppConfig, FFAppConfig, Project, Service, State } from '../types';
 import { ApiHubType, FloorplanFE, FloorplanFF, capTypeConversion, defaultPromptValues } from '../types';
 import { getODataVersion, t } from '../utils';
@@ -23,18 +21,6 @@ export function transformExtState(appConfig: FEAppConfig | FFAppConfig): State {
         throw Error(t('error.appConfigVersion', { versions: APP_CONFIG_CURRENT_VERSION }));
     }
     const { project: projectConfig, service: serviceConfig, floorplan } = appConfig;
-    if (serviceConfig?.valueListMetadata) {
-        const configDir = appConfig.configDir ?? process.cwd();
-        serviceConfig.valueListMetadata = serviceConfig.valueListMetadata.map((entry: ExternalService) => {
-            if (!entry.metadataPath) {
-                return entry;
-            }
-            const resolvedPath = isAbsolute(entry.metadataPath)
-                ? entry.metadataPath
-                : resolve(configDir, entry.metadataPath);
-            return { ...entry, metadata: readFileSync(resolvedPath, 'utf-8'), metadataPath: undefined };
-        });
-    }
 
     const state: State = {
         project: _setProjectDefaults(projectConfig),
@@ -160,7 +146,7 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
         client: service?.client,
         edmx: service?.edmx,
         version,
-        valueListMetadata: service?.valueListMetadata
+        valueListMetadata: service?.externalServices
     } as Service;
 
     if (service?.destination) {

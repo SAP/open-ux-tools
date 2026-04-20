@@ -1,5 +1,5 @@
 import { Authentication } from '@sap-ux/btp-utils';
-import type { Annotations, ExternalService } from '@sap-ux/axios-extension';
+import type { Annotations, EntitySetData, ExternalService } from '@sap-ux/axios-extension';
 import type { FloorplanKey } from './app-gen';
 import type { CapRuntime } from './cap';
 
@@ -76,6 +76,22 @@ export interface FLPConfig {
     readonly semanticObject?: string;
 }
 
+/*
+ * Headless specific extension of ExternalService.
+ * `metadata` can be either XML content or a file path to a metadata XML file on disk.
+ * `entityData` can be either an inline array or a file path to a JSON file on disk.
+ */
+export type ExternalServiceConfig = ExternalService & {
+    /**
+     * Either the metadata xml or a file path to the metadata file on disk
+     */
+    metadata: string;
+    /**
+     * Either an inline array of entity set data or a file path to a JSON file on disk
+     */
+    entityData?: EntitySetData[] | string;
+};
+
 /**
  * Defines the external interface used to generate in headless mode (no prompts)
  * This is a deliberate re-definition of internal interfaces to avoid consumers having
@@ -85,11 +101,6 @@ export interface FLPConfig {
 export interface AppConfig {
     readonly version: string; // The interface version
     readonly floorplan: FloorplanKey;
-    /**
-     * Directory used to resolve relative paths within this config (e.g. metadataPath entries).
-     * Defaults to process.cwd() if not provided.
-     */
-    configDir?: string;
     project: {
         readonly name: string;
         targetFolder?: string; // Current working directory will be used if not provided
@@ -122,9 +133,9 @@ export interface AppConfig {
         };
         readonly apiHubApiKey?: string; // Non-enterprise support only currently
         /**
-         * Pre-fetched value help and code list metadata to be written into the generated application.
+         * Pre-fetched value help and code list metadata to be written.
          */
-        valueListMetadata?: ExternalService[];
+        externalServices?: ExternalServiceConfig[];
     };
     deployConfig?: DeployConfig;
     flpConfig?: FLPConfig;

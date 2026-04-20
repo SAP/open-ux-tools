@@ -36,5 +36,6 @@ export {
     CodeListService,
     ValueListService,
     ExternalServiceReference,
-    ExternalService
+    ExternalService,
+    EntitySetData
 } from './types';

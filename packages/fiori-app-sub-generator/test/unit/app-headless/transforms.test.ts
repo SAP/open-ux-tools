@@ -1,17 +1,13 @@
 import { t } from '../../../src/utils/i18n';
 import { transformExtState } from '../../../src/app-headless/transforms';
 import type { FFAppConfig } from '../../../src/types';
-import { join } from 'node:path';
 import {
     appConfigInvalidCapServiceName,
     appConfigInvalidEdmx,
     appConfigNotSupportedVersion,
     appConfigDest,
-    appConfigWithValueListMetadata,
-    appConfigWithValueListMetadataPaths
+    appConfigWithValueListMetadata
 } from './test-data/testHeadlessAppConfigs';
-
-const testDataDir = join(__dirname, 'test-data');
 
 /**
  * Most coverage is achieved via the @sap/fiori-elements-generator integration tests currently.
@@ -65,7 +61,7 @@ describe('Test headless', () => {
         });
     });
 
-    test('valueListMetadata entries are transformed correctly', () => {
+    test('externalServices entries are passed through to service state', () => {
         const state = transformExtState(appConfigWithValueListMetadata as unknown as FFAppConfig);
         expect(state.service).toEqual({
             client: undefined,
@@ -90,14 +86,5 @@ describe('Test headless', () => {
                 }
             ]
         });
-    });
-
-    test('valueListMetadata metadataPath entries are resolved based on configDir', () => {
-        const config = { ...appConfigWithValueListMetadataPaths, configDir: testDataDir } as unknown as FFAppConfig;
-        const state = transformExtState(config);
-        expect(state.service.valueListMetadata).toEqual([
-            expect.objectContaining({ metadata: expect.stringContaining('<edmx:Edmx'), metadataPath: undefined }),
-            expect.objectContaining({ metadata: expect.stringContaining('<edmx:Edmx'), metadataPath: undefined })
-        ]);
     });
 });
