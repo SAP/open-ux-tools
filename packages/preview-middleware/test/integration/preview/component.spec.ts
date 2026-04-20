@@ -142,7 +142,18 @@ const checkOPA5 = async (param: { page: Page }) => {
     await expect(page.locator('#qunit-banner.qunit-pass')).toBeVisible({ timeout: 60000 });
 };
 
-const UI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
+const allUI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
+
+// Limit to 3 representative versions instead of the full maintained set (as preview.spec.ts does).
+// Each component test requires a fresh npm install + UI5 CLI v5 server start on Node >=22,
+// making a full version matrix exceed the 60-minute CI timeout.
+// - latest: catches regressions against current UI5
+// - 1.120.x: LTS representative from the middle of the supported range
+// - 1.84.x: kept because we fixed a component-loader race condition specific to this version
+const COMPONENT_TEST_VERSIONS = new Set(['1.84', '1.120', allUI5Versions[0]?.version]);
+const UI5Versions = allUI5Versions.filter(({ version }) =>
+    [...COMPONENT_TEST_VERSIONS].some((v) => version.startsWith(v))
+);
 
 // @ui5/cli@5 (used for type:component) requires Node >=22
 const isNode22Plus = parseInt(process.versions.node.split('.')[0], 10) >= 22;
@@ -152,11 +163,17 @@ for (const { version } of UI5Versions) {
         test.skip(!isNode22Plus, 'Requires Node >=22 for @ui5/cli@5');
 
         test.beforeAll(async () => {
+            if (!isNode22Plus) {
+                return;
+            }
             test.setTimeout(TIMEOUT);
             await prepare(version);
         });
 
         test.afterAll(async () => {
+            if (!isNode22Plus) {
+                return;
+            }
             await teardownServer();
         });
 

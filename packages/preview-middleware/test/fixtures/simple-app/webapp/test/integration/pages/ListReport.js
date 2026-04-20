@@ -14,7 +14,7 @@ sap.ui.define(['sap/ui/test/Opa5', 'sap/ui/test/actions/Press', 'sap/ui/test/mat
                 iSeeAtLeastOneResult: function () {
                     return this.waitFor({
                         controlType: 'sap.m.Text',
-                        matchers: { text: 'Product_0' },
+                        matchers: new Properties({ text: 'Product_0' }),
                         success: function () {
                             Opa5.assert.ok(true, 'Product_0 found');
                         }
