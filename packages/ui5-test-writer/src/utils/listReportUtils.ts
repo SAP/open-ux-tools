@@ -87,12 +87,14 @@ export function safeCheckActionButtonStates(
  * @param listReportPage - the List Report page containing the tree model with feature definitions
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
+ * @param isALP - boolean indicating if the page is an Analytical List Page
  * @returns feature data extracted from the List Report page model
  */
 export function getListReportFeatures(
     listReportPage: PageWithModelV4,
     log?: Logger,
-    metadata?: string
+    metadata?: string,
+    isALP?: boolean
 ): ListReportFeatures {
     const buttonVisibility =
         metadata && listReportPage.entitySet
@@ -109,7 +111,8 @@ export function getListReportFeatures(
         toolBarActions:
             metadata && listReportPage.entitySet
                 ? safeCheckActionButtonStates(metadata, listReportPage.entitySet, toolbarActions, log)
-                : []
+                : [],
+        isALP: !!isALP
     };
 }
 

@@ -127,6 +127,7 @@ export type ListReportFeatures = {
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
+    isALP?: boolean;
 };
 
 export interface ActionButtonState {

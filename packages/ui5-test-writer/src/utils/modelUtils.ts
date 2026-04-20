@@ -73,6 +73,7 @@ export async function getAppFeatures(
     let listReportPage: PageWithModelV4 | null = null;
     let objectPages: PageWithModelV4[] | null = null;
     let fpmPage: PageWithModelV4 | null = null;
+    let isALP = false;
     let projectMetadata = metadata;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
@@ -92,6 +93,11 @@ export async function getAppFeatures(
         listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
         objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
         fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel, log) : fpmPage;
+        isALP = appModel?.applicationModel
+            ? Object.values(appModel.applicationModel.pages).some(
+                  (page) => page.pageType === PageTypeV4.AnalyticalListPage
+              )
+            : false;
     } catch (error) {
         log?.warn(
             'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
@@ -108,7 +114,7 @@ export async function getAppFeatures(
     // attempt to get individual feature data
     try {
         if (listReportPage) {
-            featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata);
+            featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata, isALP);
         }
         if (objectPages) {
             log?.warn('Extracting Object Page features from application model');
