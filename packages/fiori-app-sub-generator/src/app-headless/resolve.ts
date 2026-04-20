@@ -5,6 +5,8 @@ import { isAbsolute, resolve } from 'node:path';
 
 /**
  * Returns inline XML, or reads and returns the contents of the file at the given path.
+ *
+ * @param metadata
  */
 export function resolveMetadata(metadata: string): string {
     if (metadata.trimStart().startsWith('<')) {
@@ -19,6 +21,8 @@ export function resolveMetadata(metadata: string): string {
 
 /**
  * Returns an inline array, or reads and parses the JSON file at the given path.
+ *
+ * @param entityData
  */
 export function resolveEntityData(entityData: EntitySetData[] | string): EntitySetData[] {
     if (Array.isArray(entityData)) {
@@ -31,9 +35,11 @@ export function resolveEntityData(entityData: EntitySetData[] | string): EntityS
     return JSON.parse(readFileSync(filePath, 'utf-8')) as EntitySetData[];
 }
 
-/**                                                                                                                                                                                                                                                                         
- * Resolves metadata and entityData entries based on their content.                                                                                                                                                                       
- */ 
+/**
+ * Resolves metadata and entityData entries based on their content.
+ *
+ * @param services
+ */
 export function resolveExternalServices(services: ExternalServiceConfig[]): ExternalService[] {
     return services.map(
         (entry) =>
