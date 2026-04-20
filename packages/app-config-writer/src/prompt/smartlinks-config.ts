@@ -1,13 +1,15 @@
 import type { AxiosBasicCredentials } from 'axios';
-import { yellow, cyan } from 'chalk';
+import chalk from 'chalk';
 import type { Choice, PromptObject } from 'prompts';
-import { prompt } from 'prompts';
+import prompts from 'prompts';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName } from '@sap-ux/project-access';
 import { t } from '../i18n.js';
 import { getLocalStoredCredentials, getTargetDefinition } from '../smartlinks-config/index.js';
 import type { TargetConfig, DeployTarget } from '../types/index.js';
+
+const { prompt } = prompts;
 import { TargetType } from '../types/index.js';
 
 /**
@@ -111,7 +113,7 @@ const getTargetPromptQuestions = (target?: DeployTarget) => {
 const getTargetPrompt = async (config?: TargetConfig, logger?: ToolsLogger): Promise<DeployTarget> => {
     const cancel = {
         onCancel: () => {
-            logger?.info(yellow(t('info.operationAborted')));
+            logger?.info(chalk.yellow(t('info.operationAborted')));
             return process.exit(1);
         }
     };
@@ -132,7 +134,7 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
             {
                 type: 'text',
                 name: 'username',
-                message: `${cyan(t('info.username'))}`,
+                message: `${chalk.cyan(t('info.username'))}`,
                 validate: (value: string): boolean | string => {
                     if (!value?.trim()) {
                         return `${t('error.emptyUsername')}`;
@@ -144,7 +146,7 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
             {
                 type: 'invisible',
                 name: 'password',
-                message: `${cyan(t('info.password'))}`,
+                message: `${chalk.cyan(t('info.password'))}`,
                 validate: (value: string): boolean | string => {
                     if (!value?.trim()) {
                         return `${t('error.emptyPassword')}`;
@@ -156,7 +158,7 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
         ],
         {
             onCancel: () => {
-                log?.info(yellow(t('info.operationAborted')));
+                log?.info(chalk.yellow(t('info.operationAborted')));
                 return process.exit(1);
             }
         }

@@ -1,4 +1,6 @@
-import { prompt, type PromptObject, type Answers } from 'prompts';
+import prompts, { type PromptObject, type Answers } from 'prompts';
+
+const { prompt } = prompts;
 
 /**
  * Prompt if the conversion should be done in simulation.

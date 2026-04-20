@@ -38,7 +38,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/store": "workspace:*",
-        "chalk": "4.1.2",
+        "chalk": "5.3.0",
         "dotenv": "17.4.2",
         "http-proxy-middleware": "3.0.5",
         "https-proxy-agent": "7.0.6",

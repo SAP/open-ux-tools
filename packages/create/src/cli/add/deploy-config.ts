@@ -8,12 +8,14 @@ import {
     getPrompts as getAbapDeployConfigPrompts,
     reconcileAnswers
 } from '@sap-ux/abap-deploy-config-inquirer';
-import { prompt, type PromptObject } from 'prompts';
+import prompts, { type PromptObject } from 'prompts';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
 import { promptYUIQuestions } from '../../common/index.js';
 import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
+
+const { prompt } = prompts;
 
 /**
  * Add the "add deploy config" command to a passed command.

@@ -1,5 +1,5 @@
 import type { AxiosBasicCredentials, AxiosResponse } from 'axios';
-import { cyan } from 'chalk';
+import chalk from 'chalk';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
@@ -95,11 +95,11 @@ export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): P
     }
     try {
         const provider = createSmartLinksProvider(config);
-        logger?.info(`${cyan(t('info.connectTo'))} ${target}`);
+        logger?.info(`${chalk.cyan(t('info.connectTo'))} ${target}`);
         const response = (await provider.get('/sap/bc/ui2/start_up', { params: UrlParameters })) as AxiosResponse<
             string | undefined
         >;
-        logger?.info(cyan(t('info.connectSuccess')));
+        logger?.info(chalk.cyan(t('info.connectSuccess')));
         if (response.status !== 200 || !response.data) {
             throw new Error(
                 `Invalid response from ${config.target.url ?? config.target.destination}: status: ${
@@ -125,7 +125,7 @@ export async function getTargetDefinition(basePath: string, logger?: ToolsLogger
     logger?.info(t('info.searchTarget', { file: FileName.UI5DeployYaml }));
     try {
         const target = await readUi5DeployConfigTarget(basePath);
-        logger?.info(cyan(t('info.targetFound', { file: FileName.UI5DeployYaml })));
+        logger?.info(chalk.cyan(t('info.targetFound', { file: FileName.UI5DeployYaml })));
         return target;
     } catch (error) {
         logger?.warn(error.message);

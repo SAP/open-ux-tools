@@ -44,9 +44,10 @@ jest.unstable_mockModule('@sap-ux/project-access', () =>
 );
 
 const mockPrompt = jest.fn();
+// prompts default export is a function with 'prompt' as a property
+const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt });
 jest.unstable_mockModule('prompts', () => ({
-    default: mockPrompt,
-    prompt: mockPrompt
+    default: mockPromptsModule
 }));
 
 const mockGetExistingAdpProjectType = jest.fn();

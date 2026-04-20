@@ -48,9 +48,10 @@ jest.unstable_mockModule('node:child_process', () => ({
 }));
 
 const mockPrompt = jest.fn();
+// prompts default export is a function with 'prompt' as a property
+const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt });
 jest.unstable_mockModule('prompts', () => ({
-    default: mockPrompt,
-    prompt: mockPrompt
+    default: mockPromptsModule
 }));
 
 const { addAddMockserverConfigCommand } = await import('../../../../src/cli/add/mockserver-config');
