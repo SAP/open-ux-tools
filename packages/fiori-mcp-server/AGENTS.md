@@ -25,7 +25,7 @@ Key fields:
 - `name` — Plugin identifier shown in the Claude Code registry
 - `description` — Brief explanation of what the plugin does (shown to users in registry)
 - `author` — Organization name and URL
-- `homepage` — URL to the package README (documentation)
+- `homepage` — URL to the package folder (documentation and README)
 - `repository` — URL to the source code repository root
 - `license` — SPDX license identifier
 - `keywords` — Discovery tags used for search in the registry
