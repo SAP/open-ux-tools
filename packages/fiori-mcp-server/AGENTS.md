@@ -15,7 +15,7 @@ Key fields:
 - `version` — Must be kept in sync with `package.json`
 - `packages[].environmentVariables` — Documents environment variables users can configure (e.g., `LOG_LEVEL`, `SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY`)
 
-> **Important:** When bumping the package version, update `version` in both `package.json` and `server.json`.
+> **Important:** Do not manually update `version` in `server.json` or `.claude-plugin/plugin.json`. The `scripts/sync-mcp-server-json.js` script runs automatically in the CI/CD pipeline (`version` job in `pipeline.yml`) after changesets bump `package.json`, and keeps all three files in sync.
 
 ### `.claude-plugin/plugin.json`
 
