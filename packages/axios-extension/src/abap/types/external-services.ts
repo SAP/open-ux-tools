@@ -14,21 +14,21 @@ export interface CodeListReference {
 
 export type ExternalServiceReference = ValueListReference | CodeListReference;
 
-export type ValueListService = {
+export interface ValueListService {
     type: ValueListReference['type'];
     target: string;
     entityData?: EntitySetData[];
     metadata: string;
     path: string;
-};
+}
 
-export type CodeListService = {
+export interface CodeListService {
     type: CodeListReference['type'];
     collectionPath?: string;
     entityData?: EntitySetData[];
     metadata: string;
     path: string;
-};
+}
 
 export interface EntitySetData {
     /**
