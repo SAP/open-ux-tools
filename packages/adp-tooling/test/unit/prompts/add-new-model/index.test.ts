@@ -156,7 +156,7 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.testName')).toBe(
-            'Data Source and SAPUI5 model with the same name was already added to the project. Rename and try again.'
+            'Data Source and SAPUI5 model with the same name were already added to the project. Rename and try again.'
         );
     });
 
