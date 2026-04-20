@@ -134,9 +134,17 @@ const checkOPA5 = async (param: { page: Page }) => {
     await expect(page.locator('#qunit-banner.qunit-pass')).toBeVisible({ timeout: 60000 });
 };
 
-const UI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
+const allUI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
 
-for (const { version } of UI5Versions) {
+// Limit virtual test endpoint tests (QUnit/OPA5) to 3 representative versions instead of
+// the full maintained set — the FLP endpoint test runs for all versions for broad coverage.
+// - latest: catches regressions against current UI5
+// - 1.136.x: LTS version for long-term support validation
+// - 1.71.x: oldest supported version, boundary test
+const VIRTUAL_TEST_VERSIONS = new Set(['1.71', '1.136', allUI5Versions[0]?.version]);
+const isVirtualTestVersion = (version: string) => [...VIRTUAL_TEST_VERSIONS].some((v) => version.startsWith(v));
+
+for (const { version } of allUI5Versions) {
     test.describe(`UI5 version: ${version}`, () => {
         test.beforeAll(async () => {
             test.setTimeout(TIMEOUT);
@@ -146,17 +154,20 @@ for (const { version } of UI5Versions) {
         test.afterAll(async () => {
             await teardownServer();
         });
+
         test('Click on Go button and check an element ', async ({ page }) => {
             await check({ page });
         });
 
-        test('virtual QUnit page is served and boots correctly', async ({ page }) => {
-            await checkQUnit({ page });
-        });
+        if (isVirtualTestVersion(version)) {
+            test('virtual QUnit page is served and boots correctly', async ({ page }) => {
+                await checkQUnit({ page });
+            });
 
-        test('virtual OPA5 page runs a journey and loads app data', async ({ page }) => {
-            test.setTimeout(TIMEOUT);
-            await checkOPA5({ page });
-        });
+            test('virtual OPA5 page runs a journey and loads app data', async ({ page }) => {
+                test.setTimeout(TIMEOUT);
+                await checkOPA5({ page });
+            });
+        }
     });
 }
