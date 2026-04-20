@@ -279,5 +279,4 @@ describe('Headless generation', () => {
 
         cleanTestDir(join(testDir, testProjectName));
     });
-
 });
