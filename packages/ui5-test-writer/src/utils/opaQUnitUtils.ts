@@ -231,8 +231,7 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
         const needsComma = !trimmedEnd.endsWith(',');
         const commaFix = needsComma ? ',' : '';
         const trailingWhitespace = result.slice(trimmedEnd.length, bodyEnd);
-        result =
-            `${trimmedEnd}${commaFix}\n${newEntries}` + `${trailingWhitespace}${result.slice(bodyEnd)}`;
+        result = `${trimmedEnd}${commaFix}\n${newEntries}` + `${trailingWhitespace}${result.slice(bodyEnd)}`;
     }
 
     // 2. Splice into the function parameter list: `function (JourneyRunner, A, B)`.
@@ -267,8 +266,7 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
         const commaFix = needsComma ? ',' : '';
         const trailingWhitespace = result.slice(trimmedPagesEnd.length, pagesBodyEnd);
         result =
-            `${trimmedPagesEnd}${commaFix}\n${newPageEntries}` +
-            `${trailingWhitespace}${result.slice(pagesBodyEnd)}`;
+            `${trimmedPagesEnd}${commaFix}\n${newPageEntries}` + `${trailingWhitespace}${result.slice(pagesBodyEnd)}`;
     }
 
     return result;
