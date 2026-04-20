@@ -20,8 +20,10 @@ import { getAppFeatures } from './utils/modelUtils';
 import {
     addIntegrationOldToGitignore,
     addPathsToQUnitJs,
+    addPagesToJourneyRunner,
     hasVirtualOPA5,
-    readHtmlTargetFromQUnitJs
+    readHtmlTargetFromQUnitJs,
+    type JourneyRunnerPage
 } from './utils/opaQUnitUtils';
 
 /**
@@ -316,6 +318,25 @@ function findLROP(
 }
 
 /**
+ * Writes page object files for each page configuration.
+ *
+ * @param pages - the page configurations to write
+ * @param rootV4TemplateDirPath - template root directory for v4 templates
+ * @param testOutDirPath - output test directory (.../webapp/test)
+ * @param editor - a reference to a mem-fs editor
+ */
+function writePageObjects(
+    pages: FEV4OPAPageConfig[],
+    rootV4TemplateDirPath: string,
+    testOutDirPath: string,
+    editor: Editor
+): void {
+    pages.forEach((page) => {
+        writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor);
+    });
+}
+
+/**
  * Writes common test files, page objects, and the first journey file.
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
@@ -336,10 +357,7 @@ function writeCommonAndPageFiles(writeContext: WriteContext, rootCommonTemplateD
         }
     );
 
-    // Pages files (one for each page in the app)
-    config.pages.forEach((page) => {
-        writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor);
-    });
+    writePageObjects(config.pages, rootV4TemplateDirPath, testOutDirPath, editor);
 
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', 'FirstJourney.js'),
@@ -364,6 +382,37 @@ function writeCommonAndPageFiles(writeContext: WriteContext, rootCommonTemplateD
 }
 
 /**
+ * Checks whether a page object file already exists for the given feature name.
+ * If it doesn't exist, finds the matching page config and writes the file.
+ * Returns the new page's JourneyRunnerPage entry if it was created, or empty array if already present.
+ *
+ * @param featureName - the feature/page name (equals the manifest targetKey)
+ * @param config - the OPA config containing all page configurations
+ * @param rootV4TemplateDirPath - template root directory for v4 templates
+ * @param testOutDirPath - output test directory (.../webapp/test)
+ * @param editor - a reference to a mem-fs editor
+ * @returns array with one JourneyRunnerPage if the page was newly created, otherwise empty
+ */
+function ensurePageExists(
+    featureName: string,
+    config: FEV4OPAConfig,
+    rootV4TemplateDirPath: string,
+    testOutDirPath: string,
+    editor: Editor
+): JourneyRunnerPage[] {
+    const pageFilePath = join(testOutDirPath, 'integration', 'pages', `${featureName}.js`);
+    if (editor.exists(pageFilePath)) {
+        return [];
+    }
+    const pageConfig = config.pages.find((p) => p.targetKey === featureName);
+    if (pageConfig) {
+        writePageObject(pageConfig, rootV4TemplateDirPath, testOutDirPath, editor);
+        return [{ targetKey: featureName, appPath: config.appPath }];
+    }
+    return [];
+}
+
+/**
  * Writes journey files for list report, object pages and FPM pages.
  *
  * @param appFeatures - object containing feature data for list report, object pages, and FPM
@@ -381,6 +430,7 @@ function writeJourneyFiles(
 ): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams } = writeContext;
     const generatedJourneyPages: string[] = [];
+    const newPages: JourneyRunnerPage[] = [];
 
     if (appFeatures.listReport?.name) {
         editor.copyTpl(
@@ -396,6 +446,9 @@ function writeJourneyFiles(
             }
         );
         generatedJourneyPages.push(appFeatures.listReport.name);
+        newPages.push(
+            ...ensurePageExists(appFeatures.listReport.name, config, rootV4TemplateDirPath, testOutDirPath, editor)
+        );
     }
 
     if (appFeatures.objectPages && appFeatures.objectPages.length > 0) {
@@ -415,6 +468,9 @@ function writeJourneyFiles(
                     }
                 );
                 generatedJourneyPages.push(objectPage.name);
+                newPages.push(
+                    ...ensurePageExists(objectPage.name, config, rootV4TemplateDirPath, testOutDirPath, editor)
+                );
             }
         });
     }
@@ -433,6 +489,11 @@ function writeJourneyFiles(
             }
         );
         generatedJourneyPages.push(appFeatures.fpm.name);
+        newPages.push(...ensurePageExists(appFeatures.fpm.name, config, rootV4TemplateDirPath, testOutDirPath, editor));
+    }
+
+    if (newPages.length > 0) {
+        addPagesToJourneyRunner(newPages, testOutDirPath, editor);
     }
 
     if (!virtualOPA5Configured) {

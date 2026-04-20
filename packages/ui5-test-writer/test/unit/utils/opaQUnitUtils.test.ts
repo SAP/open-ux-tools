@@ -1,6 +1,8 @@
 import {
     addPathsToQUnitJs,
+    addPagesToJourneyRunner,
     spliceModulesIntoQUnitContent,
+    splicePageIntoJourneyRunner,
     readHtmlTargetFromQUnitJs,
     addIntegrationOldToGitignore
 } from '../../../src/utils/opaQUnitUtils';
@@ -306,6 +308,174 @@ describe('addIntegrationOldToGitignore()', () => {
         const fs = makeFsMock(`node_modules/\n${ENTRY}`) as unknown as Editor;
         await addIntegrationOldToGitignore(projectBasePath, fs);
 
+        expect(fs.write).not.toHaveBeenCalled();
+    });
+});
+
+/** Realistic JourneyRunner.js with tab indentation (matching the LropVirtualTests template) */
+const JOURNEY_RUNNER_FILE = `sap.ui.define([
+    "sap/fe/test/JourneyRunner",
+\t"myApp/test/integration/pages/TravelList",
+\t"myApp/test/integration/pages/TravelObjectPage"
+], function (JourneyRunner, TravelList, TravelObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('myApp') + '/test/flp.html#app-preview',
+        pages: {
+\t\t\tonTheTravelList: TravelList,
+\t\t\tonTheTravelObjectPage: TravelObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+`;
+
+describe('splicePageIntoJourneyRunner()', () => {
+    test('returns file unchanged when all pages already exist', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [
+            { targetKey: 'TravelList', appPath: 'myApp' },
+            { targetKey: 'TravelObjectPage', appPath: 'myApp' }
+        ]);
+
+        expect(result).toBe(JOURNEY_RUNNER_FILE);
+    });
+
+    test('returns file unchanged when pages array is empty', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, []);
+        expect(result).toBe(JOURNEY_RUNNER_FILE);
+    });
+
+    test('adds a new page to all three locations', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        // 1. define array
+        expect(result).toContain('"myApp/test/integration/pages/NewPage",');
+        // 2. function params
+        expect(result).toContain(', NewPage');
+        // 3. pages object
+        expect(result).toContain('onTheNewPage: NewPage,');
+    });
+
+    test('adds a trailing comma to the last existing define entry when missing', () => {
+        // JOURNEY_RUNNER_FILE has TravelObjectPage without a trailing comma in the define array
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        expect(result).toContain('"myApp/test/integration/pages/TravelObjectPage",');
+    });
+
+    test('adds a trailing comma to the last existing pages entry when missing', () => {
+        // JOURNEY_RUNNER_FILE has onTheTravelObjectPage without a trailing comma
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        expect(result).toContain('onTheTravelObjectPage: TravelObjectPage,');
+    });
+
+    test('skips pages already present when adding new ones', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [
+            { targetKey: 'TravelList', appPath: 'myApp' }, // already present
+            { targetKey: 'NewPage', appPath: 'myApp' } // new
+        ]);
+
+        // New page must appear
+        expect(result).toContain('"myApp/test/integration/pages/NewPage",');
+        // Existing page must not be duplicated
+        const count = (result.match(/"myApp\/test\/integration\/pages\/TravelList"/g) ?? []).length;
+        expect(count).toBe(1);
+    });
+
+    test('adds multiple new pages to all three locations', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [
+            { targetKey: 'PageA', appPath: 'myApp' },
+            { targetKey: 'PageB', appPath: 'myApp' }
+        ]);
+
+        expect(result).toContain('"myApp/test/integration/pages/PageA",');
+        expect(result).toContain('"myApp/test/integration/pages/PageB",');
+        expect(result).toContain('onThePageA: PageA,');
+        expect(result).toContain('onThePageB: PageB,');
+        expect(result).toContain(', PageA');
+        expect(result).toContain(', PageB');
+    });
+
+    test('preserves all content outside the patched locations', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        expect(result).toContain("launchUrl: sap.ui.require.toUrl('myApp') + '/test/flp.html#app-preview'");
+        expect(result).toContain("'use strict';");
+        expect(result).toContain('async: true');
+        expect(result).toContain('return runner;');
+    });
+
+    test('new define entries use same indentation as existing entries', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        const lines = result.split('\n');
+        const newDefineLine = lines.find((l) => l.includes('pages/NewPage'));
+        // The first entry in the define array uses 4-space indentation ("sap/fe/test/JourneyRunner")
+        // so new entries inherit the same 4-space indent
+        expect(newDefineLine).toMatch(/^ {4}"/);
+    });
+
+    test('new page object entries use same indentation as existing entries', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        const lines = result.split('\n');
+        const newPageLine = lines.find((l) => l.includes('onTheNewPage'));
+        expect(newPageLine).toMatch(/^\t\t\t/);
+    });
+});
+
+describe('addPagesToJourneyRunner()', () => {
+    const testOutDirPath = join('/', 'project', 'webapp', 'test');
+    const expectedFilePath = join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js');
+
+    function makeFsMock(content: string): jest.Mocked<Pick<Editor, 'read' | 'write'>> {
+        return {
+            read: jest.fn().mockReturnValue(content),
+            write: jest.fn()
+        };
+    }
+
+    test('reads JourneyRunner.js from the testOutDirPath and writes updated content', () => {
+        const fs = makeFsMock(JOURNEY_RUNNER_FILE) as unknown as Editor;
+        addPagesToJourneyRunner([{ targetKey: 'NewPage', appPath: 'myApp' }], testOutDirPath, fs);
+
+        expect(fs.read).toHaveBeenCalledWith(expectedFilePath);
+        expect(fs.write).toHaveBeenCalledWith(
+            expectedFilePath,
+            expect.stringContaining('"myApp/test/integration/pages/NewPage",')
+        );
+    });
+
+    test('does not write when all pages are already present', () => {
+        const fs = makeFsMock(JOURNEY_RUNNER_FILE) as unknown as Editor;
+        addPagesToJourneyRunner(
+            [
+                { targetKey: 'TravelList', appPath: 'myApp' },
+                { targetKey: 'TravelObjectPage', appPath: 'myApp' }
+            ],
+            testOutDirPath,
+            fs
+        );
+
+        expect(fs.read).toHaveBeenCalledWith(expectedFilePath);
+        expect(fs.write).not.toHaveBeenCalled();
+    });
+
+    test('does not throw when JourneyRunner.js does not exist', () => {
+        const fs = {
+            read: jest.fn().mockImplementation(() => {
+                throw new Error('File not found');
+            }),
+            write: jest.fn()
+        } as unknown as Editor;
+
+        expect(() => {
+            addPagesToJourneyRunner([{ targetKey: 'NewPage', appPath: 'myApp' }], testOutDirPath, fs);
+        }).not.toThrow();
         expect(fs.write).not.toHaveBeenCalled();
     });
 });
