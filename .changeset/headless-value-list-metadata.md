@@ -4,6 +4,6 @@
 "@sap-ux/fiori-app-sub-generator": patch
 ---
 
-feat(axios-extension): add metadataPath support to ValueListService and CodeListService via MetadataSource union type
-feat(fiori-generator-shared): expose valueListMetadata in headless generator AppConfig payload
-feat(fiori-app-sub-generator): pass through valueListMetadata from headless config to internal service state
+fix(axios-extension): export EntitySetData type from package index
+feat(fiori-generator-shared): add ExternalServiceConfig headless type supporting metadata and entityData as inline values or file paths
+feat(fiori-app-sub-generator): resolve external service metadata and entityData file paths in headless generator before passing to writer

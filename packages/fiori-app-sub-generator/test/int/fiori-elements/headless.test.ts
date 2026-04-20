@@ -210,7 +210,7 @@ describe('Headless generation', () => {
         installDepsSpy.mockClear();
         await runHeadlessGen('LROP-v4-0.2', 'travel_v4', undefined, { skipInstall: true });
         expect(installDepsSpy).not.toHaveBeenCalled();
-        // Restore only spiess
+        // Restore only spies
         jest.restoreAllMocks();
     });
 
