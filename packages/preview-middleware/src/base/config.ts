@@ -17,8 +17,10 @@ import {
     createProjectAccess,
     getWebappPath,
     getWebappTestPath,
+    readUi5Yaml,
     type Manifest,
-    type UI5FlexLayer
+    type UI5FlexLayer,
+    FileName
 } from '@sap-ux/project-access';
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
@@ -273,17 +275,11 @@ export function adjustCardGeneratorPath(
     cardGenerator: CardGeneratorConfig | undefined,
     utils?: MiddlewareUtils
 ): { path: string } | undefined {
-    const sandboxPathPrefix = getTestResourcesPathPrefix(utils);
-    const defaultPath = CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
     if (!cardGenerator) {
-        if (!sandboxPathPrefix) {
-            return { path: defaultPath };
-        }
-        const adjustedPath = adjustPathForSandbox(defaultPath, sandboxPathPrefix);
-        return { path: posix.join(sandboxPathPrefix, adjustedPath) };
+        return undefined;
     }
-
-    const basePath = cardGenerator.path ?? defaultPath;
+    const sandboxPathPrefix = getTestResourcesPathPrefix(utils);
+    const basePath = cardGenerator.path ?? CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
 
     return {
         path: sandboxPathPrefix
@@ -602,19 +598,35 @@ const TEMPLATE_PATH = join(__dirname, '../../templates');
  * @param fs mem fs editor instance
  * @param webappTestPath webapp test path
  * @param flpTemplConfig FLP configuration
+ * @param isComponentType indicator for UI5 type component
+ * @param logger logger instance
  */
 function generateTestRunners(
     configs: TestConfig[] | undefined,
     manifest: Manifest,
     fs: Editor,
     webappTestPath: string,
-    flpTemplConfig: TemplateConfig
+    flpTemplConfig: TemplateConfig,
+    isComponentType: boolean,
+    logger?: ToolsLogger
 ): void {
+    if (!configs?.length) {
+        return;
+    }
     // Strip trailing 'test' or '/test' from webappTestPath to avoid duplication
     // since testConfig.path typically starts with '/test/'
     const basePath = webappTestPath.replace(/[/\\]test$/, '');
+    // mergeTestConfigDefaults is called without MiddlewareUtils because generatePreviewFiles is a
+    // design-time function with no access to the runtime middleware context. Default paths are
+    // therefore computed for project type 'application'. For project type 'component', the generated
+    // test runner paths will need to be adjusted manually after generation.
+    if (isComponentType) {
+        logger?.warn(
+            `Test runner generation uses default paths for project type 'application'. For project type 'component', adjust the generated file paths manually.`
+        );
+    }
 
-    for (const test of configs ?? []) {
+    for (const test of configs) {
         const testConfig = mergeTestConfigDefaults(test);
         if (['QUnit', 'OPA5'].includes(test.framework)) {
             const testTemplate = readFileSync(join(TEMPLATE_PATH, 'test/qunit.ejs'), 'utf-8');
@@ -663,6 +675,8 @@ export async function generatePreviewFiles(
 
     const webappPath = await getWebappPath(basePath, fs);
     const webappTestPath = await getWebappTestPath(basePath, fs);
+    const ui5Yaml = await readUi5Yaml(basePath, FileName.Ui5Yaml, fs).catch(() => undefined);
+    const isComponentType = ui5Yaml?.getType() === 'component';
     let manifest: Manifest | undefined;
     if (fs.exists(join(webappPath, 'manifest.json'))) {
         manifest = (await fs.readJSON(join(webappPath, 'manifest.json'))) as unknown as Manifest;
@@ -683,7 +697,7 @@ export async function generatePreviewFiles(
             },
             logger
         );
-        generateTestRunners(config.test, manifest, fs, webappTestPath, flpTemplConfig);
+        generateTestRunners(config.test, manifest, fs, webappTestPath, flpTemplConfig, isComponentType, logger);
     } else {
         flpTemplConfig = createFlpTemplateConfig(flpConfig, {});
         flpPath = join(basePath, flpConfig.path);

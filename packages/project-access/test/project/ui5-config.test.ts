@@ -150,6 +150,25 @@ describe('Test getWebappTestPath()', () => {
             join(samplesRoot, 'app/app1/webapp/test')
         );
     });
+
+    test('Get test path from component type project with default paths', async () => {
+        const memFs = create(createStorage());
+        const appRoot = join(samplesRoot, 'component-default');
+        memFs.write(join(appRoot, 'ui5.yaml'), 'specVersion: "4.0"\ntype: component');
+        memFs.writeJSON(join(appRoot, 'package.json'), {});
+        expect(await getWebappTestPath(appRoot, memFs)).toEqual(join(appRoot, 'test'));
+    });
+
+    test('Get test path from component type project with custom test path', async () => {
+        const memFs = create(createStorage());
+        const appRoot = join(samplesRoot, 'component-custom');
+        memFs.write(
+            join(appRoot, 'ui5.yaml'),
+            'specVersion: "4.0"\ntype: component\nresources:\n  configuration:\n    paths:\n      src: src\n      test: tests'
+        );
+        memFs.writeJSON(join(appRoot, 'package.json'), {});
+        expect(await getWebappTestPath(appRoot, memFs)).toEqual(join(appRoot, 'tests'));
+    });
 });
 
 describe('Test readUi5Yaml()', () => {

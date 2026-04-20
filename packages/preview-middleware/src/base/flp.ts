@@ -1135,15 +1135,6 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreCardManifestRoute(): Promise<void> {
-        // For type:component projects the route is registered under /resources/<ns>/cards/store.
-        // The server side is correct, but the SAP Cards AP generator library (sap/cards/ap/generator,
-        // delivered via UI5 CDN) constructs its POST URL as `${FetchResources.getBaseUrl()}/cards/store`
-        // where getBaseUrl() reads data-open-ux-preview-base-url from #sap-ui-bootstrap.
-        // We cannot safely fold getResourcesPathPrefix() into that attribute because other clients
-        // (WorkspaceConnector, enableFakeConnector) read the same attribute for /preview/api/changes.
-        // Required fix: CardGenerator team should read a separate data-open-ux-preview-api-base-path
-        // attribute and use `${getBaseUrl()}${getApiBasePath()}/cards/store` for the POST.
-        // Until then, the card generator feature does not work for type:component projects.
         const storeCardManifestPath = posix.join(
             getResourcesPathPrefix(this.utils) ?? '/',
             CARD_GENERATOR_DEFAULT.cardsStore

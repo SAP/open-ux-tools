@@ -90,7 +90,13 @@ export async function getWebappTestPath(appRoot: string, memFs?: Editor): Promis
         // For backward compatibility ignore errors and use default
         pathMappings = {} as PathMappings;
     }
-    return 'webapp' in pathMappings ? join(pathMappings?.webapp, 'test') : join(appRoot, DirName.Webapp, 'test');
+    if ('test' in pathMappings) {
+        return pathMappings.test;
+    }
+    if ('webapp' in pathMappings) {
+        return join(pathMappings.webapp, 'test');
+    }
+    return join(appRoot, DirName.Webapp, 'test');
 }
 
 /**
