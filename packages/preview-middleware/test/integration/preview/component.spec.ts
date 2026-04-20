@@ -126,6 +126,15 @@ const prepare = async (ui5Version: string) => {
     });
 };
 
+const checkFlp = async (param: { page: Page }) => {
+    const { page } = param;
+    const client = await page.context().newCDPSession(page);
+    await client.send('Network.clearBrowserCache');
+    await page.goto(`${getUrl()}/test-resources/test/fe/v2/app/my/custom/path/preview.html#app-preview`);
+    await page.getByRole('button', { name: 'Go', exact: true }).click();
+    await expect(page.getByText('Product_0', { exact: true })).toBeVisible();
+};
+
 const checkQUnit = async (param: { page: Page }) => {
     const { page } = param;
     const client = await page.context().newCDPSession(page);
@@ -175,6 +184,10 @@ for (const { version } of UI5Versions) {
                 return;
             }
             await teardownServer();
+        });
+
+        test('FLP page loads app and displays data', async ({ page }) => {
+            await checkFlp({ page });
         });
 
         test('virtual QUnit page is served and boots correctly', async ({ page }) => {
