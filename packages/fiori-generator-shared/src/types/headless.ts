@@ -1,5 +1,5 @@
 import { Authentication } from '@sap-ux/btp-utils';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, ExternalService } from '@sap-ux/axios-extension';
 import type { FloorplanKey } from './app-gen';
 import type { CapRuntime } from './cap';
 
@@ -85,6 +85,11 @@ export interface FLPConfig {
 export interface AppConfig {
     readonly version: string; // The interface version
     readonly floorplan: FloorplanKey;
+    /**
+     * Directory used to resolve relative paths within this config (e.g. metadataPath entries).
+     * Defaults to process.cwd() if not provided.
+     */
+    configDir?: string;
     project: {
         readonly name: string;
         targetFolder?: string; // Current working directory will be used if not provided
@@ -116,6 +121,10 @@ export interface AppConfig {
             readonly appPath?: string; // Alternative app path
         };
         readonly apiHubApiKey?: string; // Non-enterprise support only currently
+        /**
+         * Pre-fetched value help and code list metadata to be written into the generated application.
+         */
+        valueListMetadata?: ExternalService[];
     };
     deployConfig?: DeployConfig;
     flpConfig?: FLPConfig;

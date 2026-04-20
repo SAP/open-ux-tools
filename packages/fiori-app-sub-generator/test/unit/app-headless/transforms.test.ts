@@ -1,12 +1,17 @@
 import { t } from '../../../src/utils/i18n';
 import { transformExtState } from '../../../src/app-headless/transforms';
 import type { FFAppConfig } from '../../../src/types';
+import { join } from 'node:path';
 import {
     appConfigInvalidCapServiceName,
     appConfigInvalidEdmx,
     appConfigNotSupportedVersion,
-    appConfigDest
+    appConfigDest,
+    appConfigWithValueListMetadata,
+    appConfigWithValueListMetadataPaths
 } from './test-data/testHeadlessAppConfigs';
+
+const testDataDir = join(__dirname, 'test-data');
 
 /**
  * Most coverage is achieved via the @sap/fiori-elements-generator integration tests currently.
@@ -58,5 +63,41 @@ describe('Test headless', () => {
             },
             viewName: 'view1'
         });
+    });
+
+    test('valueListMetadata entries are transformed correctly', () => {
+        const state = transformExtState(appConfigWithValueListMetadata as unknown as FFAppConfig);
+        expect(state.service).toEqual({
+            client: undefined,
+            destinationName: 'SomeDestinationName',
+            edmx: expect.stringContaining('<?xml version="1.0" encoding="utf-8" ?>'),
+            host: undefined,
+            servicePath: undefined,
+            source: 'sapSystem',
+            version: '2',
+            valueListMetadata: [
+                {
+                    type: 'value-list',
+                    target: 'SomeEntity/SomeProperty',
+                    metadata: expect.stringContaining('<edmx:Edmx'),
+                    path: '/sap/opu/odata4/sap/some_vh_service/srvd/sap/some_vh_service/0001/'
+                },
+                {
+                    type: 'code-list',
+                    collectionPath: 'Currencies',
+                    metadata: expect.stringContaining('<edmx:Edmx'),
+                    path: '/sap/opu/odata4/sap/common/srvd/sap/common/0001/'
+                }
+            ]
+        });
+    });
+
+    test('valueListMetadata metadataPath entries are resolved based on configDir', () => {
+        const config = { ...appConfigWithValueListMetadataPaths, configDir: testDataDir } as unknown as FFAppConfig;
+        const state = transformExtState(config);
+        expect(state.service.valueListMetadata).toEqual([
+            expect.objectContaining({ metadata: expect.stringContaining('<edmx:Edmx'), metadataPath: undefined }),
+            expect.objectContaining({ metadata: expect.stringContaining('<edmx:Edmx'), metadataPath: undefined })
+        ]);
     });
 });

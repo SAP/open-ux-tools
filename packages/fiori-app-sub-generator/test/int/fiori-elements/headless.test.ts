@@ -2,7 +2,7 @@ import * as projectAccess from '@sap-ux/project-access';
 import '@sap-ux/jest-file-matchers';
 import { copyFileSync, existsSync, promises as fs, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import 'jest-extended';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import yeomanTest from 'yeoman-test';
 import { FioriAppGeneratorHeadless } from '../../../src/app-headless';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
@@ -51,6 +51,9 @@ async function runHeadlessGen(
     const appConfig = JSON.parse(
         existsSync(testFilePath) ? readFileSync(testFilePath, 'utf-8') : testNameOrJson
     ) as FEAppConfig;
+    if (existsSync(testFilePath)) {
+        appConfig.configDir = dirname(testFilePath);
+    }
     appConfig.project.targetFolder = testDir;
 
     // Rather than embedding the edmx and annotations as would usually be done by consumers,
@@ -210,7 +213,137 @@ describe('Headless generation', () => {
         installDepsSpy.mockClear();
         await runHeadlessGen('LROP-v4-0.2', 'travel_v4', undefined, { skipInstall: true });
         expect(installDepsSpy).not.toHaveBeenCalled();
-        // Restore only spies
+        // Restore only spiess
         jest.restoreAllMocks();
+    });
+
+    it('LROP v4 with valueListMetadata - external service files are written', async () => {
+        testProjectName = 'lrop_v4_with_vh';
+        expectedOutputPath = join(
+            __dirname,
+            EXPECTED_OUTPUT_DIR_NAME,
+            'headless',
+            testProjectName,
+            projectAccess.DirName.Webapp,
+            projectAccess.DirName.LocalService
+        );
+        const fixturesHeadlessDir = join(__dirname, './fixtures/headless');
+
+        const appConfigJson = JSON.stringify({
+            version: '0.2',
+            floorplan: 'FE_LROP',
+            configDir: fixturesHeadlessDir,
+            project: {
+                title: 'Project\'s "Title"',
+                description: 'Test \'Project\' "Description"',
+                namespace: 'testNameSpace',
+                ui5Version: '1.84.0',
+                localUI5Version: '1.82.2',
+                targetFolder: testDir,
+                name: testProjectName,
+                sapux: true,
+                enableEslint: false
+            },
+            service: {
+                servicePath: '/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/',
+                host: 'https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com',
+                valueListMetadata: [
+                    {
+                        type: 'value-list',
+                        target: 'Travel/AgencyID',
+                        metadataPath: './agency_vh_metadata.xml',
+                        path: '/sap/opu/odata4/sap/agency_vh_service/srvd/sap/agency_vh_service/0001/'
+                    },
+                    {
+                        type: 'code-list',
+                        collectionPath: 'Currencies',
+                        metadata:
+                            '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Currencies" xmlns="http://docs.oasis-open.org/odata/ns/edm"></Schema></edmx:DataServices></edmx:Edmx>',
+                        path: '/sap/opu/odata4/sap/currencies/srvd/sap/currencies/0001/'
+                    },
+                    {
+                        type: 'code-list',
+                        collectionPath: 'Units',
+                        metadataPath: 'common_metadata.xml',
+                        path: '/sap/opu/odata4/sap/common/srvd/sap/common/0001/'
+                    }
+                ]
+            },
+            entityConfig: {
+                mainEntity: { entityName: 'Travel' },
+                navigationEntity: { EntitySet: 'Booking', Name: '_Booking' }
+            }
+        });
+
+        await runHeadlessGen(appConfigJson, 'travel_v4');
+        expect(
+            join(testDir, testProjectName, projectAccess.DirName.Webapp, projectAccess.DirName.LocalService)
+        ).toMatchFolder(expectedOutputPath);
+
+        cleanTestDir(join(testDir, testProjectName));
+    });
+
+    it('LROP v4 with valueListMetadata - absolute metadataPath is resolved correctly', async () => {
+        testProjectName = 'lrop_v4_with_vh';
+        expectedOutputPath = join(
+            __dirname,
+            EXPECTED_OUTPUT_DIR_NAME,
+            'headless',
+            testProjectName,
+            projectAccess.DirName.Webapp,
+            projectAccess.DirName.LocalService
+        );
+        const fixturesHeadlessDir = join(__dirname, './fixtures/headless');
+        const absoluteMetadataPath = join(fixturesHeadlessDir, 'common_metadata.xml');
+
+        const appConfigJson = JSON.stringify({
+            version: '0.2',
+            floorplan: 'FE_LROP',
+            project: {
+                title: 'Test',
+                namespace: 'testNS',
+                ui5Version: '1.84.0',
+                localUI5Version: '1.82.2',
+                targetFolder: './test-output',
+                name: testProjectName,
+                sapux: true,
+                enableEslint: false
+            },
+            service: {
+                servicePath: '/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/',
+                host: 'https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com',
+                valueListMetadata: [
+                    {
+                        type: 'code-list',
+                        collectionPath: 'Units',
+                        metadataPath: absoluteMetadataPath,
+                        path: '/sap/opu/odata4/sap/common/srvd/sap/common/0001/'
+                    }
+                ]
+            },
+            entityConfig: {
+                mainEntity: { entityName: 'Travel' },
+                navigationEntity: { EntitySet: 'Booking', Name: '_Booking' }
+            }
+        });
+
+        await runHeadlessGen(appConfigJson, 'travel_v4');
+        expect(
+            join(
+                testDir,
+                testProjectName,
+                projectAccess.DirName.Webapp,
+                projectAccess.DirName.LocalService,
+                'mainService',
+                'sap',
+                'common',
+                'srvd',
+                'sap',
+                'common',
+                '0001'
+            )
+        ).toMatchFolder(join(expectedOutputPath, 'mainService', 'sap', 'common', 'srvd', 'sap', 'common', '0001'));
+
+        cleanTestDir(join(testDir, testProjectName));
     });
 });
