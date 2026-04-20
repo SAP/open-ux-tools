@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Syncs the version in packages/fiori-mcp-server/server.json and .claude-plugin/plugin.json with its package.json.
+// Syncs the version in server.json and .claude-plugin/plugin.json with package.json.
 // Called from the version job in pipeline.yml after `changeset version` bumps package.json.
 
 'use strict';
