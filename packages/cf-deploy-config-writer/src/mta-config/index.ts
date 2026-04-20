@@ -1,7 +1,6 @@
-import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { render } from 'ejs';
 import { MtaConfig } from './mta';
+import { renderTemplateToDisk } from './template-renderer';
 import {
     addXSSecurityConfig,
     getTemplatePath,
@@ -84,15 +83,13 @@ export function toMtaModuleName(appId: string): string {
  */
 export function createMTA(config: MTABaseConfig): void {
     const mtaId = `${config.mtaId.slice(0, MAX_MTA_ID_LENGTH)}`;
-    const mtaTemplate = readFileSync(getTemplatePath(`app/${FileName.MtaYaml}`), 'utf-8');
-    const mtaContents = render(mtaTemplate, {
+    config.mtaId = mtaId;
+    // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
+    renderTemplateToDisk(`app/${FileName.MtaYaml}`, join(config.mtaPath, FileName.MtaYaml), {
         id: mtaId,
         mtaDescription: config.mtaDescription ?? MTADescription,
         mtaVersion: config.mtaVersion ?? MTAVersion
     });
-    config.mtaId = mtaId;
-    // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
-    writeFileSync(join(config.mtaPath, FileName.MtaYaml), mtaContents);
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
 }
 
@@ -162,14 +159,12 @@ export function validateMtaConfig(config: CFBaseConfig): void {
  * @deprecated This function is deprecated and will be removed in future releases
  */
 async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<void> {
-    const mtaTemplate = readFileSync(getTemplatePath(`frontend/${FileName.MtaYaml}`), 'utf-8');
-    const mtaContents = render(mtaTemplate, {
+    // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
+    renderTemplateToDisk(`frontend/${FileName.MtaYaml}`, join(config.mtaPath, FileName.MtaYaml), {
         id: `${config.mtaId.slice(0, MAX_MTA_ID_LENGTH)}`,
         mtaDescription: config.mtaDescription ?? MTADescription,
         mtaVersion: config.mtaVersion ?? MTAVersion
     });
-    // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
-    writeFileSync(join(config.mtaPath, FileName.MtaYaml), mtaContents);
     // Add missing configurations
     addXSSecurityConfig(config, fs, false);
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
