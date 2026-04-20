@@ -22,7 +22,7 @@ export function resolveTextPropertyPath(
     service: ParsedService
 ): { entityTypeName: string; propertyName: string } | undefined {
     const segments = textPath.split('/');
-    if (segments.length === 0) {
+    if (segments.length === 0 || segments[0] === '') {
         return undefined;
     }
 

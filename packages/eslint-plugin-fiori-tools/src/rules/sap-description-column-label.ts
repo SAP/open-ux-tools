@@ -31,7 +31,7 @@ function getLabelForProperty(propertyTarget: string, service: ParsedService): st
     if (!labelAnnotations) {
         return undefined;
     }
-    const annotation = Object.values(labelAnnotations)[0];
+    const annotation = labelAnnotations['undefined'] ?? Object.values(labelAnnotations)[0];
     if (!annotation) {
         return undefined;
     }
@@ -194,9 +194,6 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
-        if (!context.sourceCode.projectContext) {
-            return [];
-        }
         const problems: DescriptionColumnLabel[] = [];
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
             const parsedApp = context.sourceCode.projectContext.index.apps[appKey];

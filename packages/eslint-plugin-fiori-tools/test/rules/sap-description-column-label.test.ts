@@ -47,6 +47,15 @@ const COMMON_TEXT_ON_ENTITY_TYPE_NOT_ON_PAGE = `
         <Annotation Term="Common.Label" String="Name"/>
     </Annotations>`;
 
+// Invalid (trivialLabel, direct path): text property is on the same entity type — no navigation hop
+const TEXT_PROPERTY_DIRECT_PATH_TRIVIAL_LABEL = `
+    <Annotations Target="IncidentService.Incidents/category_code">
+        <Annotation Term="Common.Text" Path="title"/>
+    </Annotations>
+    <Annotations Target="IncidentService.Incidents/title">
+        <Annotation Term="Common.Label" String="Name"/>
+    </Annotations>`;
+
 // Invalid (trivialLabel): text property label is "Name"
 const TEXT_PROPERTY_TRIVIAL_LABEL_NAME = `
     <Annotations Target="IncidentService.Incidents/category_code">
@@ -118,6 +127,15 @@ ruleTester.run(TEST_NAME, descriptionColumnLabelRule, {
     invalid: [
         createInvalidTest(
             {
+                name: 'direct path (no navigation hop) - trivial label flagged',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_PROPERTY_DIRECT_PATH_TRIVIAL_LABEL),
+                errors: [{ messageId: 'trivialLabel' }]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
                 name: 'text property label is "Name" - trivial label flagged',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_PROPERTY_TRIVIAL_LABEL_NAME),
@@ -175,7 +193,35 @@ ruleTester.run(`${TEST_NAME} (V2)`, descriptionColumnLabelRule, {
                 name: 'V2 metadata.xml - trivial and duplicate labels from injected sap:text/sap:label are flagged',
                 filename: V2_METADATA_PATH,
                 code: V2_METADATA,
-                errors: [{ messageId: 'trivialLabel' }, { messageId: 'trivialLabel' }, { messageId: 'duplicateLabel' }]
+                errors: [
+                    {
+                        messageId: 'trivialLabel',
+                        data: {
+                            textPropertyTarget: 'TECHED_ALP_SOA_SRV.SEPMRA_C_ALP_ProductType/ProductName',
+                            textPropertyLabel: 'Name',
+                            idPropertyTarget: 'TECHED_ALP_SOA_SRV.SEPMRA_C_ALP_ProductType/Product',
+                            idPropertyLabel: ''
+                        }
+                    },
+                    {
+                        messageId: 'trivialLabel',
+                        data: {
+                            textPropertyTarget: 'TECHED_ALP_SOA_SRV.SEPMRA_C_ALP_ProductType/Currency_T',
+                            textPropertyLabel: 'Description',
+                            idPropertyTarget: 'TECHED_ALP_SOA_SRV.SEPMRA_C_ALP_ProductType/Currency',
+                            idPropertyLabel: ''
+                        }
+                    },
+                    {
+                        messageId: 'duplicateLabel',
+                        data: {
+                            textPropertyTarget: 'TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType/QuantityUnitT',
+                            textPropertyLabel: 'Quantity Unit',
+                            idPropertyTarget: 'TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType/QuantityUnit',
+                            idPropertyLabel: 'Quantity Unit'
+                        }
+                    }
+                ]
             },
             []
         )
