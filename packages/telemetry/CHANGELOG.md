@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 0.6.99
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+
 ## 0.6.98
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/odata-cli
 
+## 0.17.58
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+
 ## 0.17.57
 
 ### Patch Changes

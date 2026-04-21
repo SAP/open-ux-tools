@@ -195,6 +195,7 @@ pnpm audit
 - Leverage TypeScript features: generics, union types, type guards, etc.
 - Avoid `any` type - use `unknown` or proper types
 - **Avoid TypeScript enums** - prefer union types or const objects for better type safety and tree-shaking
+- Avoid using the non-null assertion operator (!). Use optional chaining (?.), nullish coalescing (??), or explicit type guards to handle potentially null/undefined values.
 
 **TypeScript config** (from [tsconfig.json](tsconfig.json)):
 - Strict mode enabled

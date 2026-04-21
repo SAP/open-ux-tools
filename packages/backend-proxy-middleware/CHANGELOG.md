@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.12.4
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+
 ## 0.12.3
 
 ### Patch Changes
