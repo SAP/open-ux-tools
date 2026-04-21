@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.1.9
+
+### Patch Changes
+
+- 37d4ded: fix: SSH tunnel not started in BAS for on-premise connectivity for CF ADP
+
 ## 0.1.8
 
 ### Patch Changes
