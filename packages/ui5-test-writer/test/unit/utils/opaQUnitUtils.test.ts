@@ -568,13 +568,11 @@ describe('hasVirtualOPA5()', () => {
 
     test('skips yaml files that throw and continues checking remaining files', async () => {
         mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5-bad.yaml', 'ui5.yaml']);
-        mockReadUi5Yaml
-            .mockRejectedValueOnce(new Error('Cannot parse'))
-            .mockResolvedValueOnce({
-                findCustomMiddleware: jest.fn().mockReturnValue({
-                    configuration: { test: [{ framework: 'OPA5' }] }
-                })
-            } as any);
+        mockReadUi5Yaml.mockRejectedValueOnce(new Error('Cannot parse')).mockResolvedValueOnce({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: { test: [{ framework: 'OPA5' }] }
+            })
+        } as any);
 
         expect(await hasVirtualOPA5(basePath)).toBe(true);
     });
