@@ -31,7 +31,8 @@ const PATH_MAPPING_DEFAULTS: { [K in Ui5Document['type']]: Required<PathsFor<K>>
     application: { webapp: DirName.Webapp },
     library: { src: 'src', test: 'test' },
     'theme-library': { src: 'src', test: 'test' },
-    module: {}
+    module: {},
+    component: { src: 'src' }
 } as const;
 
 /**
@@ -104,6 +105,12 @@ export async function getPathMappings(
     for (const key in defaults) {
         const value = configPaths[key] ?? defaults[key];
         result[key] = join(baseDir, value);
+    }
+
+    if (type === 'component' && 'src' in result && !('webapp' in result)) {
+        // For component projects, treat 'src' as 'webapp' for compatibility with tooling expecting 'webapp'
+        // Related to UI5 CLI v5 where project type 'application' migrated to 'component'
+        result['webapp'] = result.src;
     }
 
     // Cast the merged result to PathMappings to re-enforce strict union keys for the caller

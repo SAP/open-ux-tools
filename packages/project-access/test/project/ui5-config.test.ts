@@ -308,6 +308,24 @@ describe('Test getPathMappings()', () => {
             );
         });
     });
+
+    describe('Component type projects - ui5 cli v5', () => {
+        test('Get path mappings from default application', async () => {
+            const result = await getPathMappings(join(samplesRoot, 'default-component'));
+            expect(result).toEqual({
+                src: join(samplesRoot, 'default-component', 'src'),
+                webapp: join(samplesRoot, 'default-component', 'src')
+            });
+        });
+
+        test('Get path mappings from application with custom webapp mapping', async () => {
+            const result = await getPathMappings(join(samplesRoot, 'custom-component'));
+            expect(result).toEqual({
+                src: join(samplesRoot, 'custom-component', 'src', 'main', 'dummy'),
+                webapp: join(samplesRoot, 'custom-component', 'src', 'main', 'dummy')
+            });
+        });
+    });
 });
 
 describe('get configuration for sap-fe-mockserver', () => {
