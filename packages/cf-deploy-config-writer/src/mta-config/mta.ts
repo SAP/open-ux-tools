@@ -2,7 +2,6 @@ import { format } from 'node:util';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { render } from 'ejs';
 import { Mta, type mta } from '@sap/mta-lib';
 import { type Destination, isGenericODataDestination, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -47,6 +46,7 @@ import {
     type SupportedResources,
     RouterModuleType
 } from '../types/index.js';
+import { renderTemplateToDisk } from './template-renderer.js';
 
 /**
  * A class representing interactions with the MTA binary, found at https://sap.github.io/cloud-mta-build-tool/.
@@ -907,11 +907,7 @@ export class MtaConfig {
                 destinationServiceName: destinationServiceName,
                 mtaVersion: '1.0.0'
             };
-            const mtaExtTemplate = readFileSync(
-                join(dirname(fileURLToPath(import.meta.url)), `../../templates/app/${FileName.MtaExtYaml}`),
-                'utf-8'
-            );
-            writeFileSync(mtaExtFilePath, render(mtaExtTemplate, mtaExt));
+            renderTemplateToDisk(`app/${FileName.MtaExtYaml}`, mtaExtFilePath, mtaExt);
             this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: FileName.MtaExtYaml }));
         } else {
             // Create an entry in an existing mta extension file
