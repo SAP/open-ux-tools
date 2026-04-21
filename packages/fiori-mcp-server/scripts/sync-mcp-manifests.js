@@ -40,8 +40,8 @@ try {
 
     // Update version in all package entries
     if (Array.isArray(serverJson.packages)) {
-        for (const pkg of serverJson.packages) {
-            pkg.version = version;
+        for (const packageEntry of serverJson.packages) {
+            packageEntry.version = version;
         }
     }
 
