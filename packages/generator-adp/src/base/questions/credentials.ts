@@ -92,9 +92,8 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
 }
 
 /**
- * Helper function which asserts whether a client is authenticated on an ABAP system or throws.
- * Uses {@link LayeredRepositoryService.getCsrfToken} which is available on all ABAP system versions
- * and returns 401 when credentials are invalid.
+ * Since we do not have a dedicated api call to detect if a client is authenticated we use the
+ * {@link LayeredRepositoryService.getCsrfToken} call which is a protected one.
  *
  * @param {ClientCredentials} credentials - Object containing client credentials to a specific ABAP system.
  * @param {ToolsLogger} logger - The logger instance.
