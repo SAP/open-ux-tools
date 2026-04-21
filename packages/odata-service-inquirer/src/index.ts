@@ -15,8 +15,6 @@ import {
     CfAbapEnvServiceChoice,
     NewSystemChoice
 } from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
-import type { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
-
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TemplateType } from '@sap-ux/fiori-elements-writer';
 import { getEntitySelectionQuestions } from './prompts/edmx/questions.js';
@@ -27,7 +25,6 @@ import type {
     OdataServiceAnswers,
     OdataServicePromptOptions,
     OdataServiceQuestion,
-    SapSystemType,
     ConnectedSystem
 } from './types.js';
 import { DatasourceType, promptNames } from './types.js';
@@ -179,10 +176,10 @@ export {
     // @deprecated - temp export to support to support open source migration
     OdataVersion,
     prompt,
-    promptNames,
-    // @deprecated - temp export to support to support open source migration
-    type SystemSelectionAnswerType
+    promptNames
 };
+// @deprecated - temp export to support to support open source migration
+export type { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
 export type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 export type { InquirerAdapter } from '@sap-ux/inquirer-common';
 export type {
@@ -192,4 +189,4 @@ export type {
     // @deprecated - temp export to support to support open source migration
     SapSystemType,
     ConnectedSystem
-};
+} from './types.js';

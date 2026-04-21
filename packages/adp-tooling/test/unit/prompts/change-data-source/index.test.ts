@@ -220,7 +220,7 @@ describe('getPrompts', () => {
             test('should return error message for empty URI', () => {
                 const uri = '';
                 const result = (getPrompts({})[1].validate as Function)(uri);
-                expect(result).toBe('general.inputCannotBeEmpty');
+                expect(result).toMatch(/cannot be empty/i);
             });
 
             test('should return error message for URI with whitespaces', () => {

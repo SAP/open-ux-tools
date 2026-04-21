@@ -29,7 +29,7 @@ export { MultiValue as UICreateSelectMultiValue };
 export { ActionMeta as UICreateSelectActionMeta };
 export { Options as UICreateSelectOptions };
 export { OptionsOrGroups as UICreateSelectOptionsOrGroups };
-export type { SelectInstance as UICreateSelectInstance };
+export type { SelectInstance as UICreateSelectInstance } from 'react-select';
 
 export interface UICreateSelectOptionEntry {
     readonly label: string;

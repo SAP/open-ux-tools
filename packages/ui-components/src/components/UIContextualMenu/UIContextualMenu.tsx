@@ -12,8 +12,8 @@ import type {
 import { ContextualMenu, ContextualMenuItemType } from '@fluentui/react';
 export type { IContextualMenuItem } from '@fluentui/react';
 
-export type { IContextualMenuItem as UIContextualMenuItem };
-export type { IContextualMenuProps as UIContextualMenuProps };
+export type { IContextualMenuItem as UIContextualMenuItem } from '@fluentui/react';
+export type { IContextualMenuProps as UIContextualMenuProps } from '@fluentui/react';
 export { ContextualMenuItemType as UIContextualMenuItemType };
 
 import { UiIcons } from '../Icons.js';

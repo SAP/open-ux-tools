@@ -1039,11 +1039,13 @@ class FpmDocumentationBuilder {
 if (process.argv[1] && import.meta.url === `file://${process.argv[1]}`) {
     const logger = new ToolsLogger();
     const builder = new FpmDocumentationBuilder();
-    builder.build().catch((error) => {
+    try {
+        await builder.build();
+    } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         logger.error(`Build failed: ${errorMessage}`);
         process.exit(1);
-    });
+    }
 }
 
 export { FpmDocumentationBuilder };

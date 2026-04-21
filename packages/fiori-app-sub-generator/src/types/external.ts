@@ -11,8 +11,8 @@ import type { Answers } from 'inquirer';
 import { LEGACY_CAP_TYPE_JAVA, LEGACY_CAP_TYPE_NODE } from './constants.js';
 import { type ALPOptions, type Project, type Service } from './state.js';
 
-export type { Floorplan, AppConfig };
-export { FloorplanFE, FloorplanFF };
+export type { Floorplan, AppConfig } from '@sap-ux/fiori-generator-shared';
+export { FloorplanFE, FloorplanFF } from '@sap-ux/fiori-generator-shared';
 
 type FloorplanAttributesType = {
     [K in Floorplan]: {

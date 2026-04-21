@@ -31,7 +31,7 @@ describe('App Router Prompt Generation Tests', () => {
             expect(mtaPathPrompt?.default()).toBe('defaultMtaPath');
             expect(mtaPathPrompt?.message).toBe(t('prompts.mtaPathMessage'));
             expect(mtaPathPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.mtaPathBreadcrumbMessage'));
-            expect((mtaPathPrompt?.validate as Function)()).toBe(t('errors.folderDoesNotExistError'));
+            expect((mtaPathPrompt?.validate as Function)('')).toMatch(/folder path does not exist/i);
         });
     });
 
@@ -269,7 +269,7 @@ describe('App Router Prompt Generation Tests', () => {
             expect(await ((addServiceProviderPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
                 [
                   {
-                    "name": "errors.abapEnvsUnavailable",
+                    "name": "ABAP environments unavailable.",
                     "value": "NO_ABAP_ENVS",
                   },
                 ]

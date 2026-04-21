@@ -11,4 +11,4 @@ test('Check if loading main index file executes cli, should throw error due to i
         // In ESM mode, the error may be about arguments or about module loading
         expect(msg).toMatch(/arguments|export/);
     }
-});
+}, 10000);

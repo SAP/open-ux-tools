@@ -48,6 +48,8 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18nFioriAppSubGenerator().catch(() => {
-    // Needed for lint
-});
+try {
+    await initI18nFioriAppSubGenerator();
+} catch {
+    // In case of an error during initialization, we catch it to prevent the application from crashing.
+}

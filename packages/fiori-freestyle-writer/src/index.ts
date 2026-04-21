@@ -208,6 +208,5 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
 }
 
 export { generate };
-export type { FreestyleApp };
-export type { WorklistSettings, ListDetailSettings, BasicAppSettings, Template } from './types.js';
+export type { WorklistSettings, ListDetailSettings, BasicAppSettings, Template, FreestyleApp } from './types.js';
 export { TemplateType, OdataVersion } from './types.js';

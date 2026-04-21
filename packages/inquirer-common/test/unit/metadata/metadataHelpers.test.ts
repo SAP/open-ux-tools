@@ -1271,7 +1271,7 @@ describe('metadata entity helpers', () => {
         test('should throw error for invalid EDMX', () => {
             const invalidEdmx = 'invalid xml content';
 
-            expect(() => convertEdmxToConvertedMetadata(invalidEdmx)).toThrow('errors.unparseableMetadata');
+            expect(() => convertEdmxToConvertedMetadata(invalidEdmx)).toThrow(/Unable to parse entities/);
         });
 
         test('should throw error for unparseable OData version', () => {
@@ -1292,7 +1292,7 @@ describe('metadata entity helpers', () => {
                     </edmx:DataServices>
                 </edmx:Edmx>`;
 
-            expect(() => convertEdmxToConvertedMetadata(invalidVersionEdmx)).toThrow('errors.unparseableMetadata');
+            expect(() => convertEdmxToConvertedMetadata(invalidVersionEdmx)).toThrow(/Unable to parse entities/);
         });
 
         test('should throw error for EDMX with no version', () => {
@@ -1313,11 +1313,11 @@ describe('metadata entity helpers', () => {
                     </edmx:DataServices>
                 </edmx:Edmx>`;
 
-            expect(() => convertEdmxToConvertedMetadata(noVersionEdmx)).toThrow('errors.unparseableMetadata');
+            expect(() => convertEdmxToConvertedMetadata(noVersionEdmx)).toThrow(/Unable to parse entities/);
         });
 
         test('should handle empty string input', () => {
-            expect(() => convertEdmxToConvertedMetadata('')).toThrow('errors.unparseableMetadata');
+            expect(() => convertEdmxToConvertedMetadata('')).toThrow(/Unable to parse entities/);
         });
 
         test('should handle malformed XML', () => {
@@ -1331,7 +1331,7 @@ describe('metadata entity helpers', () => {
                         </Schema>
                     </edmx:DataServices>`;
 
-            expect(() => convertEdmxToConvertedMetadata(malformedXml)).toThrow('errors.unparseableMetadata');
+            expect(() => convertEdmxToConvertedMetadata(malformedXml)).toThrow(/Unable to parse entities/);
         });
     });
 });

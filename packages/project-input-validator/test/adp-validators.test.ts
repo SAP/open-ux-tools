@@ -193,7 +193,7 @@ describe('project input validators', () => {
 
         it('returns error if trimmed namespace is too long or ends with component', () => {
             expect(validateNamespaceAdp('customer.' + 'a'.repeat(62), 'project', true)).toBe(
-                'adp.namespaceLengthError'
+                t('adp.namespaceLengthError')
             );
             expect(validateNamespaceAdp('customer.appcomponent', 'project', true)).toBe(t('adp.namespaceLengthError'));
         });

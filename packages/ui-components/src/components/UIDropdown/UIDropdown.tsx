@@ -18,7 +18,7 @@ import { REQUIRED_LABEL_INDICATOR } from '../types.js';
 
 import './UIDropdown.scss';
 
-export type { IDropdownOption as UIDropdownOption };
+export type { IDropdownOption as UIDropdownOption } from '@fluentui/react';
 export { DropdownMenuItemType as UIDropdownMenuItemType };
 
 export interface UIDropdownProps extends IDropdownProps, UIMessagesExtendedProps {

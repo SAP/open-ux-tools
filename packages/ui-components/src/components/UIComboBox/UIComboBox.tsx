@@ -6,9 +6,7 @@ import type {
     IButtonProps,
     ISelectableDroppableTextProps,
     IComboBox,
-    IComboBoxOption,
-    ISelectableOption,
-    IOnRenderComboBoxLabelProps
+    IComboBoxOption
 } from '@fluentui/react';
 import { ComboBox, initializeComponentRef, KeyCodes, SelectableOptionMenuItemType } from '@fluentui/react';
 import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption.js';
@@ -30,7 +28,7 @@ export {
     type IComboBox as UIComboBoxRef,
     type IOnRenderComboBoxLabelProps as UIOnRenderComboBoxLabelProps,
     SelectableOptionMenuItemType as UISelectableOptionMenuItemType
-};
+} from '@fluentui/react';
 
 export enum UIComboBoxLoaderType {
     /**
