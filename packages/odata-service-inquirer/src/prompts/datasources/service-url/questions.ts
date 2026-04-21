@@ -1,5 +1,6 @@
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { Severity } = yeomanUiTypes;
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     extendWithOptions,

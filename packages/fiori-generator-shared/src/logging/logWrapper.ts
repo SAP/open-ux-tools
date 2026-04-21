@@ -5,7 +5,7 @@ import type {
     IVSCodeExtLogger,
     LogLevel
 } from '@vscode-logging/logger';
-import vscodeLogging from '@vscode-logging/logger';
+import * as vscodeLogging from '@vscode-logging/logger';
 import { format } from 'logform';
 import type { Logger } from 'yeoman-environment';
 import { t } from '../i18n.js';

@@ -1,4 +1,6 @@
-import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { MessageType } = yeomanUiTypes;
 import type { AbapServiceProvider, ServiceProvider, UiServiceGenerator } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';

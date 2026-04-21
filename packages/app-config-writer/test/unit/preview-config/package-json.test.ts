@@ -20,9 +20,10 @@ jest.unstable_mockModule('chalk', () => ({
     dim: (s: string) => s
 }));
 
+const mockPrompt = jest.fn();
+const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: jest.fn() });
 jest.unstable_mockModule('prompts', () => ({
-    prompt: jest.fn(),
-    inject: jest.fn()
+    default: mockPromptsModule
 }));
 
 const mockGenerateVariantsConfig = jest.fn();

@@ -1,4 +1,5 @@
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { Severity } = yeomanUiTypes;
 import type { Destination } from '@sap-ux/btp-utils';
 import { isAppStudio, isPartialUrlDestination } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';

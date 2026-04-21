@@ -1,4 +1,6 @@
-import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { MessageType } = yeomanUiTypes;
 import type { AbapServiceProvider, UiServiceGenerator } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
@@ -53,7 +55,7 @@ export default class extends Generator {
         super(args, opts);
         setYeomanEnvConflicterForce(this.env, this.options.force);
 
-        this.appWizard = AppWizard.create(opts);
+        this.appWizard = yeomanUiTypes.AppWizard.create(opts);
         this.vscode = opts.vscode;
         UiServiceGenLogger.configureLogging(
             this.options.logger,
@@ -70,13 +72,13 @@ export default class extends Generator {
             steps.shift();
         }
 
-        this.appWizard = AppWizard.create(opts);
+        this.appWizard = yeomanUiTypes.AppWizard.create(opts);
         if (!(this.appWizard as any)[UI_SERVICE_CACHE]) {
             (this.appWizard as any)[UI_SERVICE_CACHE] = {};
         }
 
         this.appWizard.setHeaderTitle('UI Service Generator');
-        this.prompts = new Prompts(steps);
+        this.prompts = new yeomanUiTypes.Prompts(steps);
         this.setPromptsCallback = (fn): void => {
             if (this.prompts) {
                 this.prompts.setCallback(fn);

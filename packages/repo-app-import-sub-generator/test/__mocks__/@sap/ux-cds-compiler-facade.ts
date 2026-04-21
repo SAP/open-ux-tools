@@ -7,3 +7,14 @@ export const createCdsCompilerFacadeForRootSync = noop;
 export const createMetadataCollector = noop;
 export const getMetadataElementsFromMap = noop;
 export const updateContentBasedOnReference = noop;
+
+// Export as default for ESM compatibility (used by fiori-annotation-api)
+export default {
+    getCdsFiles,
+    createCdsCompilerFacade,
+    createCdsCompilerFacadeForRoot,
+    createCdsCompilerFacadeForRootSync,
+    createMetadataCollector,
+    getMetadataElementsFromMap,
+    updateContentBasedOnReference
+};

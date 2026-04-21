@@ -1,5 +1,6 @@
 import path from 'node:path';
-import { Prompts } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { Prompts } = yeomanUiTypes;
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Manifest } from '@sap-ux/project-access';

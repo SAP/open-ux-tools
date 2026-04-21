@@ -1,4 +1,4 @@
-import { type Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+import type { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
 import type { ConfirmQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { type AttributesAnswers, FlexLayer, validateUI5VersionExists } from '@sap-ux/adp-tooling';

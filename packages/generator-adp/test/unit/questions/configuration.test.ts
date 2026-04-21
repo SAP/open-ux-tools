@@ -4,7 +4,9 @@ import type { AxiosError, AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { Severity } = yeomanUiTypes;
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 const mockIsInternalFeaturesSettingEnabled = jest.fn();
 const mockShowApplicationQuestion = jest.fn().mockResolvedValue(true);

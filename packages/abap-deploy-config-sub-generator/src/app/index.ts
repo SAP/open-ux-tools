@@ -1,4 +1,6 @@
-import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { AppWizard, MessageType } = yeomanUiTypes;
 import {
     DeploymentGenerator,
     ERROR_TYPE,
@@ -52,7 +54,7 @@ import { AdaptationProjectType } from '@sap-ux/axios-extension';
  * ABAP deploy config generator.
  */
 export default class extends DeploymentGenerator {
-    private readonly appWizard: AppWizard;
+    private readonly appWizard: AppWizardType;
     private readonly vscode: unknown;
     private readonly launchDeployConfigAsSubGenerator: boolean;
     private readonly launchStandaloneFromYui?: boolean;

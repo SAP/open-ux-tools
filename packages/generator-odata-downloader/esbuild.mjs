@@ -88,7 +88,7 @@ build({
   target: 'node18',
   platform: 'node',
   logLevel: 'info',
-  external: ['vscode'],
+  external: ['vscode', '@sap-devx/yeoman-ui-types'],
   mainFields: ["module", "main"],
   plugins: [stubNpmModulesPlugin, copyPrebuildsPlugin]
 }).catch(() => process.exit(1));

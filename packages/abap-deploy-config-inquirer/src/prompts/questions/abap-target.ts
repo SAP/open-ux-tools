@@ -13,7 +13,9 @@ import { getClientChoicePromptChoices, getAbapSystemChoices, updatePromptStateUr
 import { defaultTargetSystem, defaultUrl } from '../defaults.js';
 import { getAbapSystems } from '../../utils.js';
 import { PromptState } from '../prompt-state.js';
-import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { Severity } = yeomanUiTypes;
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio, isOnPremiseDestination, type Destinations } from '@sap-ux/btp-utils';
 import {
     promptNames,

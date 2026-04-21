@@ -1,4 +1,5 @@
-import { MessageType, Prompts, type AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
+import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { ExternalService } from '@sap-ux/axios-extension';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
@@ -39,13 +40,13 @@ export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
  */
 export class ODataDownloadGenerator extends Generator {
     private readonly vscode: unknown;
-    private readonly appWizard: AppWizard | undefined;
+    private readonly appWizard: AppWizardType | undefined;
 
     // The logger is static to allow convenient access from everywhere, cross-cutting concern
     private static _logger: ILogWrapper & Logger = DefaultLogger;
     // Generator name for use in telemetry, readmes etc.
     protected generatorVersion = this.rootGeneratorVersion();
-    prompts: Prompts;
+    prompts: PromptsType;
     setPromptsCallback: (fn: object) => void;
 
     private readonly state: {

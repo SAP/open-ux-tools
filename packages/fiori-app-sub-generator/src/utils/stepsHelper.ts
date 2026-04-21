@@ -1,5 +1,6 @@
-import type { IPrompt as YeomanUiStep } from '@sap-devx/yeoman-ui-types';
-import { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+import type { IPrompt as YeomanUiStep, Prompts as YeomanUiStepsType } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { Prompts: YeomanUiSteps } = yeomanUiTypes;
 import { t } from '../utils/i18n.js';
 import type { FioriStep, YeomanUiStepConfig } from '../types/yeomanUiStepConfig.js';
 
@@ -10,7 +11,7 @@ import type { FioriStep, YeomanUiStepConfig } from '../types/yeomanUiStepConfig.
  * @param prompts
  * @returns
  */
-function getStepIndex(stepName: string, prompts: YeomanUiSteps): number {
+function getStepIndex(stepName: string, prompts: YeomanUiStepsType): number {
     const steps = (prompts as unknown as { items: YeomanUiStep[] }).items as { name: string; description: string }[];
     return steps?.findIndex((step: { name: string; description: string }) => {
         return step.name === t(stepName);
@@ -100,7 +101,7 @@ export function updateDependentStep(
  * @param yuiSteps
  * @returns
  */
-export function hasActiveStep(stepName: string, yuiSteps: YeomanUiSteps): boolean {
+export function hasActiveStep(stepName: string, yuiSteps: YeomanUiStepsType): boolean {
     return getStepIndex(stepName, yuiSteps) > -1;
 }
 

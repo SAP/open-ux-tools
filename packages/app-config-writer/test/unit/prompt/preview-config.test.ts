@@ -13,13 +13,11 @@ jest.unstable_mockModule('chalk', () => ({
 }));
 
 let promptReturnObject: object;
-jest.unstable_mockModule('prompts', () => {
-    return {
-        prompt: () => {
-            return promptReturnObject;
-        }
-    };
-});
+const mockPrompt = jest.fn().mockImplementation(() => promptReturnObject);
+const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: jest.fn() });
+jest.unstable_mockModule('prompts', () => ({
+    default: mockPromptsModule
+}));
 
 const { includeTestRunnersPrompt, simulatePrompt } = await import('../../../src');
 

@@ -19,7 +19,9 @@ import {
     generatorTitle,
     promptNames
 } from '../utils/index.js';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { AppWizard, Prompts } = yeomanUiTypes;
+import type { AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
 import { promptDeployConfigQuestions } from './prompting.js';
 import type { Answers } from 'inquirer';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
@@ -37,8 +39,8 @@ const deployConfigSubGenNamespace = '@sap-ux/deploy-config-sub-generator';
  * The main deployment configuration generator.
  */
 export default class extends DeploymentGenerator implements DeployConfigGenerator {
-    readonly appWizard: AppWizard;
-    readonly prompts: Prompts;
+    readonly appWizard: AppWizardType;
+    readonly prompts: PromptsType;
     readonly genNamespace: string;
     readonly launchStandaloneFromYui: boolean;
     readonly apiHubConfig: ApiHubConfig;

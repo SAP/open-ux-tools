@@ -57,7 +57,8 @@ jest.unstable_mockModule('@sap-ux/launch-config', () => ({
 
 jest.unstable_mockModule('../src/utils/download-utils', () => ({
     extractZip: jest.fn(),
-    hasQfaJson: jest.fn()
+    hasQfaJson: jest.fn(),
+    downloadApp: jest.fn().mockResolvedValue(undefined)
 }));
 
 jest.unstable_mockModule('../src/app/app-config', () => ({
@@ -67,7 +68,7 @@ jest.unstable_mockModule('../src/app/app-config', () => ({
 
 jest.unstable_mockModule('../src/utils/validators', () => ({
     isValidPromptState: mockIsValidPromptState,
-    validateAppSelection: jest.fn(),
+    validateAppSelection: jest.fn().mockResolvedValue(true),
     validateQfaJsonFile: jest.fn()
 }));
 

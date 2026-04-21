@@ -4,11 +4,8 @@ import { basename, dirname, join, relative, sep } from 'node:path';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
-import {
-    createCdsCompilerFacadeForRoot,
-    createMetadataCollector,
-    getMetadataElementsFromMap
-} from '@sap/ux-cds-compiler-facade';
+import cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
+const { createCdsCompilerFacadeForRoot, createMetadataCollector, getMetadataElementsFromMap } = cdsCompilerFacade;
 import {
     TEXT_TYPE,
     ELEMENT_TYPE,

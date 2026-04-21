@@ -10,7 +10,7 @@ import type {
     Collection,
     Record
 } from '@sap-ux/cds-annotation-parser';
-import { type CdsCompilerFacade, type MetadataCollector, type PropagatedTargetMap } from '@sap/ux-cds-compiler-facade';
+import type { CdsCompilerFacade, MetadataCollector, PropagatedTargetMap } from '@sap/ux-cds-compiler-facade';
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 

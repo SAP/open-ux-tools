@@ -14,12 +14,10 @@ const actualPrompts = jest.requireActual<typeof promptsMod>('prompts');
 // Mock functions for prompts
 const mockPrompt = jest.fn();
 const mockInject = jest.fn().mockImplementation((...args: any[]) => (actualPrompts as any).inject(...args));
+const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: mockInject });
 
 jest.unstable_mockModule('prompts', () => ({
-    __esModule: true,
-    default: { prompt: mockPrompt, inject: mockInject },
-    prompt: mockPrompt,
-    inject: mockInject
+    default: mockPromptsModule
 }));
 
 // chalk mock

@@ -1,7 +1,9 @@
 import { join, dirname } from 'node:path';
 import { platform } from 'node:os';
 import * as hasbin from 'hasbin';
-import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { AppWizard, MessageType } = yeomanUiTypes;
+import type { AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
 import {
     sendTelemetry,
     TelemetryHelper,
@@ -52,7 +54,7 @@ import type { Answers } from 'inquirer';
  * Cloud Foundry deployment configuration generator.
  */
 export default class extends DeploymentGenerator {
-    private readonly appWizard: AppWizard;
+    private readonly appWizard: AppWizardType;
     private readonly vscode: unknown;
     private readonly launchDeployConfigAsSubGenerator: boolean;
     private readonly launchStandaloneFromYui?: boolean;

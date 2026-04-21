@@ -1,7 +1,9 @@
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import FlpGenLogger from '../utils/logger.js';
-import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { MessageType } = yeomanUiTypes;
 import { handleErrorMessage, getExtensionGenPromptOpts } from '@sap-ux/deploy-config-generator-shared';
 import { getPrompts, promptNames } from '@sap-ux/flp-config-inquirer';
 import { generateInboundNavigationConfig } from '@sap-ux/app-config-writer';
@@ -57,7 +59,7 @@ export default class extends Generator {
     constructor(args: string | string[], opts: FlpConfigOptions) {
         super(args, opts);
 
-        this.appWizard = opts.appWizard ?? AppWizard.create(opts);
+        this.appWizard = opts.appWizard ?? yeomanUiTypes.AppWizard.create(opts);
         this.vscode = opts.vscode;
         this.launchFlpConfigAsSubGenerator = opts.launchFlpConfigAsSubGenerator ?? false;
         this.appRootPath = opts.data?.appRootPath ?? opts?.appRootPath ?? this.destinationRoot();
@@ -76,7 +78,7 @@ export default class extends Generator {
         // If launched standalone, set the header, title and description
         if (!this.launchFlpConfigAsSubGenerator) {
             this.appWizard.setHeaderTitle(generatorTitle);
-            this.prompts = new Prompts(getYUIDetails(this.appRootPath));
+            this.prompts = new yeomanUiTypes.Prompts(getYUIDetails(this.appRootPath));
             this.setPromptsCallback = (fn): void => {
                 if (this.prompts) {
                     this.prompts.setCallback(fn);

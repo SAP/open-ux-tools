@@ -2,7 +2,9 @@ import fs from 'node:fs';
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import { v4 as uuidv4 } from 'uuid';
-import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { AppWizard, MessageType, Prompts: YeomanUiSteps } = yeomanUiTypes;
+import type { IPrompt, AppWizard as AppWizardType, Prompts as YeomanUiStepsType } from '@sap-devx/yeoman-ui-types';
 
 import {
     FlexLayer,
@@ -88,7 +90,7 @@ const generatorTitle = 'Adaptation Project';
  */
 export default class extends Generator {
     setPromptsCallback: (fn: object) => void;
-    private readonly appWizard: AppWizard;
+    private readonly appWizard: AppWizardType;
     private readonly vscode: any;
     private readonly toolsLogger: ToolsLogger;
     private isCli: boolean;
@@ -104,7 +106,7 @@ export default class extends Generator {
     /**
      * Generator prompts.
      */
-    private readonly prompts: YeomanUiSteps;
+    private readonly prompts: YeomanUiStepsType;
     /**
      * Instance of the logger.
      */

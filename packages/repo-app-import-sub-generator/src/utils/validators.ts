@@ -8,7 +8,8 @@ import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import type { AppInfo, QuickDeployedAppConfig, QfaJsonConfig } from '../app/types.js';
 import { downloadApp, hasQfaJson } from '../utils/download-utils.js';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import { MessageType } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { MessageType } = yeomanUiTypes;
 import { qfaJsonFileName } from '../utils/constants.js';
 
 /**

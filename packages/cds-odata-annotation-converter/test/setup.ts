@@ -4,8 +4,10 @@ import { fileURLToPath } from 'node:url';
 import type { Diagnostic, Element } from '@sap-ux/odata-annotation-core';
 import type { AnnotationGroup, Annotation } from '@sap-ux/cds-annotation-parser';
 import { deserialize } from './deserialize-ast';
-import { createCdsCompilerFacadeForRoot, getCdsFiles } from '@sap/ux-cds-compiler-facade';
+import cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
+
+const { createCdsCompilerFacadeForRoot, getCdsFiles } = cdsCompilerFacade;
 
 export type TestCaseName =
     | 'json'

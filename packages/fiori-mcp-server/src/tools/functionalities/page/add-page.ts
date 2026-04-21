@@ -10,7 +10,8 @@ import { convertToSchema, resolveApplication, validateWithSchema } from '../../.
 import { ADD_PAGE } from '../../../constant.js';
 import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api/index.js';
 import { buildPageCreationSchema } from './schema.js';
-import { PageTypeV4 } from '@sap/ux-specification';
+import uxSpec from '@sap/ux-specification';
+const { PageTypeV4 } = uxSpec;
 import { getFioriElementsVersion } from './utils.js';
 
 export const ADD_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {

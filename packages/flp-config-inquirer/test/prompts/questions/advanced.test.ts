@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { Severity } = yeomanUiTypes;
 
 // Pre-import real modules before mocking to avoid missing export errors
 const realAdpTooling = await import('@sap-ux/adp-tooling');

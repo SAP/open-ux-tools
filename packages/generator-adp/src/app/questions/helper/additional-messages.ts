@@ -1,4 +1,5 @@
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { Severity } = yeomanUiTypes;
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 import { AdaptationProjectType } from '@sap-ux/axios-extension';

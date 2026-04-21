@@ -1,6 +1,8 @@
 import Generator from 'yeoman-generator';
 import RepoAppDownloadLogger from '../utils/logger.js';
-import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { MessageType } = yeomanUiTypes;
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { Logger } from '@sap-ux/logger';
 import {
@@ -76,7 +78,7 @@ export default class extends Generator {
         super(args, opts);
 
         // Initialise properties from options
-        this.appWizard = opts.appWizard ?? AppWizard.create(opts);
+        this.appWizard = opts.appWizard ?? yeomanUiTypes.AppWizard.create(opts);
         this.vscode = opts.vscode;
         this.appRootPath = opts?.appRootPath ?? getDefaultTargetFolder(this.vscode) ?? this.destinationRoot();
         this.options = opts;
@@ -93,7 +95,7 @@ export default class extends Generator {
 
         // Initialise prompts and callbacks if not launched as a subgenerator
         this.appWizard.setHeaderTitle(generatorTitle);
-        this.prompts = new Prompts(getYUIDetails());
+        this.prompts = new yeomanUiTypes.Prompts(getYUIDetails());
         this.setPromptsCallback = (fn): void => {
             if (this.prompts) {
                 this.prompts.setCallback(fn);

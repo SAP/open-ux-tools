@@ -1,6 +1,7 @@
 import Generator from 'yeoman-generator';
-import type { Prompts } from '@sap-devx/yeoman-ui-types';
-import { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { Prompts, AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { AppWizard } = yeomanUiTypes;
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
@@ -25,7 +26,7 @@ export default class SubGeneratorBase extends Generator {
     /**
      * Instance of the app wizard.
      */
-    protected readonly appWizard: AppWizard;
+    protected readonly appWizard: AppWizardType;
     /**
      * The type of generator.
      */

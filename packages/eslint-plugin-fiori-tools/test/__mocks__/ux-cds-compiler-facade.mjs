@@ -16,3 +16,14 @@ export function getCdsFiles() { return []; }
 export async function createCdsCompilerFacadeForRoot() { return undefined; }
 export function createCdsCompilerFacadeForRootSync() { return undefined; }
 export function updateContentBasedOnReference() { return ''; }
+
+// Export as default for ESM compatibility (used by fiori-annotation-api)
+export default {
+    getMetadataElementsFromMap,
+    createMetadataCollector,
+    createCdsCompilerFacade,
+    getCdsFiles,
+    createCdsCompilerFacadeForRoot,
+    createCdsCompilerFacadeForRootSync,
+    updateContentBasedOnReference
+};

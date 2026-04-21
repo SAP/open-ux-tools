@@ -1,7 +1,9 @@
 import { join } from 'node:path';
 import * as hasbin from 'hasbin';
 import { platform } from 'node:os';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { AppWizard, Prompts } = yeomanUiTypes;
+import type { AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
 import {
     DeploymentGenerator,
     ERROR_TYPE,
@@ -26,8 +28,8 @@ import type {
  * @extends DeploymentGenerator
  */
 export default class extends DeploymentGenerator {
-    private readonly appWizard: AppWizard;
-    private readonly prompts: Prompts;
+    private readonly appWizard: AppWizardType;
+    private readonly prompts: PromptsType;
     private answers: CfAppRouterDeployConfigAnswers;
     private abort = false;
 

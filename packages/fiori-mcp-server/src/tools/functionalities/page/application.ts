@@ -1,4 +1,5 @@
-import { CustomExtensionType, PageTypeV4, FioriElementsVersion } from '@sap/ux-specification';
+import uxSpec from '@sap/ux-specification';
+const { CustomExtensionType, PageTypeV4, FioriElementsVersion } = uxSpec;
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { SapuxFtfsFileIO, type AppData } from '../../../page-editor-api/index.js';
 import type { ExecuteFunctionalityOutput, GetFunctionalityDetailsInput } from '../../../types/index.js';
@@ -9,7 +10,12 @@ import { generatePageId, getFioriElementsVersion } from './utils.js';
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import { ADD_PAGE, DELETE_PAGE } from '../../../constant.js';
-import type { Application as ApplicationConfig, CustomExtensionData, v4 } from '@sap/ux-specification';
+import type {
+    Application as ApplicationConfig,
+    CustomExtensionData,
+    v4,
+    FioriElementsVersion as FioriElementsVersionType
+} from '@sap/ux-specification';
 import { getDefaultExtensionFolder } from '../../../utils/index.js';
 
 /**
@@ -21,7 +27,7 @@ export class Application {
     private readonly appId: string;
     private readonly applicationAccess: ApplicationAccess;
     private readonly params: GetFunctionalityDetailsInput;
-    private readonly version: FioriElementsVersion;
+    private readonly version: FioriElementsVersionType;
     /**
      * Creates a new instance of the Application class.
      *

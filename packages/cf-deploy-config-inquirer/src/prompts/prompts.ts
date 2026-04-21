@@ -15,7 +15,8 @@ import * as validators from './validators.js';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers.js';
 import type { Logger } from '@sap-ux/logger';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { Severity } = yeomanUiTypes;
 
 /**
  * Retrieves the prompt configuration for selecting a Cloud Foundry destination name.

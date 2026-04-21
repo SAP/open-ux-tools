@@ -1,4 +1,5 @@
-import { Prompts } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { Prompts } = yeomanUiTypes;
 import type { IPrompt } from '@sap-devx/yeoman-ui-types';
 import { GeneratorTypes } from '../../../src/types';
 

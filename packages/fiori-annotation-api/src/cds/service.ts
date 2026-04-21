@@ -1,6 +1,7 @@
 import { pathToFileURL } from 'node:url';
 
-import { getCdsFiles } from '@sap/ux-cds-compiler-facade';
+import cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
+const { getCdsFiles } = cdsCompilerFacade;
 
 import type { CDSService, TextFile } from '../types/index.js';
 

@@ -37,7 +37,9 @@ import {
     tilePromptNames,
     tileActions
 } from '@sap-ux/flp-config-inquirer';
-import { AppWizard, Prompts, MessageType, type IPrompt } from '@sap-devx/yeoman-ui-types';
+import type { IPrompt, AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
+import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+const { AppWizard, Prompts, MessageType } = yeomanUiTypes;
 import {
     DefaultLogger,
     TelemetryHelper,
@@ -66,10 +68,10 @@ import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../ut
  */
 export default class AdpFlpConfigGenerator extends Generator {
     setPromptsCallback: (fn: object) => void;
-    private prompts: Prompts;
+    private prompts: PromptsType;
     // Flag to determine if the generator was launched as a sub-generator or standalone
     private readonly launchAsSubGen: boolean;
-    private readonly appWizard: AppWizard;
+    private readonly appWizard: AppWizardType;
     private readonly vscode: any;
     private readonly toolsLogger: ToolsLogger;
     private readonly projectRootPath: string = '';
@@ -325,7 +327,7 @@ export default class AdpFlpConfigGenerator extends Generator {
             };
             return;
         }
-        this.prompts = this.options.prompts as Prompts;
+        this.prompts = this.options.prompts as PromptsType;
     }
 
     /**

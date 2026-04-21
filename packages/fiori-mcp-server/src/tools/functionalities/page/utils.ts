@@ -1,8 +1,13 @@
 import type { PageDef } from './types.js';
-import { FioriElementsVersion, PageTypeV4 } from '@sap/ux-specification';
-import type { Application } from '@sap/ux-specification';
+import uxSpec from '@sap/ux-specification';
+const { FioriElementsVersion, PageTypeV4 } = uxSpec;
+import type {
+    Application,
+    PageTypeV4 as PageTypeV4Type,
+    FioriElementsVersion as FioriElementsVersionType
+} from '@sap/ux-specification';
 
-const newPagePrefixForType = new Map<PageTypeV4, string>([
+const newPagePrefixForType = new Map<PageTypeV4Type, string>([
     [PageTypeV4.ListReport, 'List'],
     [PageTypeV4.ObjectPage, PageTypeV4.ObjectPage],
     [PageTypeV4.CustomPage, 'Page'],
@@ -38,7 +43,7 @@ function generatePageIdV4(page: PageDef, parentPage: string | undefined, navigat
         parts.push(navigationProperty);
     }
     // Append page type to last part of page id - it places page type at the end of id without separator
-    parts[parts.length - 1] += newPagePrefixForType.get(page.pageType as PageTypeV4);
+    parts[parts.length - 1] += newPagePrefixForType.get(page.pageType as PageTypeV4Type);
     return parts;
 }
 
@@ -71,7 +76,7 @@ export function generatePageId(
     page: PageDef,
     parentPage: string | undefined,
     pages: PageDef[],
-    appVersion: FioriElementsVersion,
+    appVersion: FioriElementsVersionType,
     navigationProperty?: string
 ): string {
     let parts: string[] = [];
