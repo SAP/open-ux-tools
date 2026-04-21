@@ -16,7 +16,11 @@ export function resolveMetadata(metadata: string): string {
     if (!existsSync(filePath)) {
         throw new Error(`Metadata file not found: ${filePath}`);
     }
-    return readFileSync(filePath, 'utf-8');
+    try {
+        return readFileSync(filePath, 'utf-8');
+    } catch (error) {
+        throw new Error(`Failed to read metadata file: ${filePath}. ${error instanceof Error ? error.message : error}`);
+    }
 }
 
 /**
@@ -32,7 +36,13 @@ export function resolveEntityData(entityData: EntitySetData[] | string): EntityS
     if (!existsSync(filePath)) {
         throw new Error(`Entity data file not found: ${filePath}`);
     }
-    return JSON.parse(readFileSync(filePath, 'utf-8')) as EntitySetData[];
+    try {
+        return JSON.parse(readFileSync(filePath, 'utf-8'));
+    } catch (error) {
+        throw new Error(
+            `Failed to read or parse entity data file: ${filePath}. ${error instanceof Error ? error.message : error}`
+        );
+    }
 }
 
 /**

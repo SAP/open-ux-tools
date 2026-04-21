@@ -61,6 +61,17 @@ describe('resolveMetadata', () => {
             `Metadata file not found: ${join(mockCwd, relativeMetadataPath)}`
         );
     });
+
+    test('throws when file cannot be read', () => {
+        existsSyncMock.mockReturnValue(true);
+        readFileSyncMock.mockImplementation(() => {
+            throw new Error('permission denied');
+        });
+
+        expect(() => resolveMetadata(relativeMetadataPath)).toThrow(
+            `Failed to read metadata file: ${join(mockCwd, relativeMetadataPath)}. permission denied`
+        );
+    });
 });
 
 describe('resolveEntityData', () => {
@@ -101,6 +112,15 @@ describe('resolveEntityData', () => {
 
         expect(() => resolveEntityData(relativeEntityDataPath)).toThrow(
             `Entity data file not found: ${join(mockCwd, relativeEntityDataPath)}`
+        );
+    });
+
+    test('throws when file cannot be read or parsed', () => {
+        existsSyncMock.mockReturnValue(true);
+        readFileSyncMock.mockReturnValue('not valid json');
+
+        expect(() => resolveEntityData(relativeEntityDataPath)).toThrow(
+            `Failed to read or parse entity data file: ${join(mockCwd, relativeEntityDataPath)}`
         );
     });
 });
