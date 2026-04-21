@@ -28,11 +28,15 @@ const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
  */
 const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([^\]]*)\]\s*,\s*function/d;
 
+/** ReDoS mitigation: files larger than this are returned unchanged rather than matched with regex. */
 const MAX_FILE_CONTENT_LENGTH = 10000;
 
 /**
  * Splices new module paths into the sap.ui.require array of the content string.
  * Entries that are already present are skipped. All other content is preserved exactly.
+ *
+ * Note: files exceeding MAX_FILE_CONTENT_LENGTH characters are returned unchanged to prevent
+ * ReDoS on crafted inputs. Valid generated files are well within this limit.
  *
  * @param fileContent - the full content of the opaTests.qunit.js file
  * @param moduleNames - module paths to add (e.g. ["myApp/test/integration/SomeJourney"])
@@ -196,6 +200,9 @@ export interface JourneyRunnerPage {
  *
  * Pages already present (detected by their module path in the define array) are skipped.
  * All other content — formatting, comments, whitespace — is preserved exactly.
+ *
+ * Note: files exceeding MAX_FILE_CONTENT_LENGTH characters are returned unchanged to prevent
+ * ReDoS on crafted inputs. Valid generated files are well within this limit.
  *
  * @param fileContent - the full content of the JourneyRunner.js file
  * @param pages - pages to add

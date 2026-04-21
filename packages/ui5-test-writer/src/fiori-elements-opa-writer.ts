@@ -61,7 +61,7 @@ export async function generateOPAFiles(
     const testOutDirPath = join(await getWebappPath(basePath), 'test');
 
     // Access ux-specification to get feature data for OPA test generation
-    const appFeatures = await getAppFeatures(basePath, editor, log, metadata);
+    const appFeatures = await getAppFeatures(basePath, editor, log, metadata, manifest);
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
@@ -318,25 +318,6 @@ function findLROP(
 }
 
 /**
- * Writes page object files for each page configuration.
- *
- * @param pages - the page configurations to write
- * @param rootV4TemplateDirPath - template root directory for v4 templates
- * @param testOutDirPath - output test directory (.../webapp/test)
- * @param editor - a reference to a mem-fs editor
- */
-function writePageObjects(
-    pages: FEV4OPAPageConfig[],
-    rootV4TemplateDirPath: string,
-    testOutDirPath: string,
-    editor: Editor
-): void {
-    pages.forEach((page) => {
-        writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor);
-    });
-}
-
-/**
  * Writes common test files, page objects, and the first journey file.
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
@@ -357,7 +338,9 @@ function writeCommonAndPageFiles(writeContext: WriteContext, rootCommonTemplateD
         }
     );
 
-    writePageObjects(config.pages, rootV4TemplateDirPath, testOutDirPath, editor);
+    config.pages.forEach((page) => {
+        writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor);
+    });
 
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', 'FirstJourney.js'),
@@ -384,14 +367,13 @@ function writeCommonAndPageFiles(writeContext: WriteContext, rootCommonTemplateD
 /**
  * Checks whether a page object file already exists for the given feature name.
  * If it doesn't exist, finds the matching page config and writes the file.
- * Returns the new page's JourneyRunnerPage entry if it was created, or empty array if already present.
  *
  * @param featureName - the feature/page name (equals the manifest targetKey)
  * @param config - the OPA config containing all page configurations
  * @param rootV4TemplateDirPath - template root directory for v4 templates
  * @param testOutDirPath - output test directory (.../webapp/test)
  * @param editor - a reference to a mem-fs editor
- * @returns array with one JourneyRunnerPage if the page was newly created, otherwise empty
+ * @returns JourneyRunnerPage if the page was newly created, undefined otherwise
  */
 function ensurePageExists(
     featureName: string,
@@ -399,17 +381,17 @@ function ensurePageExists(
     rootV4TemplateDirPath: string,
     testOutDirPath: string,
     editor: Editor
-): JourneyRunnerPage[] {
+): JourneyRunnerPage | undefined {
     const pageFilePath = join(testOutDirPath, 'integration', 'pages', `${featureName}.js`);
     if (editor.exists(pageFilePath)) {
-        return [];
+        return undefined;
     }
     const pageConfig = config.pages.find((p) => p.targetKey === featureName);
     if (pageConfig) {
         writePageObject(pageConfig, rootV4TemplateDirPath, testOutDirPath, editor);
-        return [{ targetKey: featureName, appPath: config.appPath }];
+        return { targetKey: featureName, appPath: config.appPath };
     }
-    return [];
+    return undefined;
 }
 
 /**
@@ -446,9 +428,16 @@ function writeJourneyFiles(
             }
         );
         generatedJourneyPages.push(appFeatures.listReport.name);
-        newPages.push(
-            ...ensurePageExists(appFeatures.listReport.name, config, rootV4TemplateDirPath, testOutDirPath, editor)
+        const lrPage = ensurePageExists(
+            appFeatures.listReport.name,
+            config,
+            rootV4TemplateDirPath,
+            testOutDirPath,
+            editor
         );
+        if (lrPage) {
+            newPages.push(lrPage);
+        }
     }
 
     if (appFeatures.objectPages && appFeatures.objectPages.length > 0) {
@@ -468,9 +457,10 @@ function writeJourneyFiles(
                     }
                 );
                 generatedJourneyPages.push(objectPage.name);
-                newPages.push(
-                    ...ensurePageExists(objectPage.name, config, rootV4TemplateDirPath, testOutDirPath, editor)
-                );
+                const opPage = ensurePageExists(objectPage.name, config, rootV4TemplateDirPath, testOutDirPath, editor);
+                if (opPage) {
+                    newPages.push(opPage);
+                }
             }
         });
     }
@@ -489,7 +479,10 @@ function writeJourneyFiles(
             }
         );
         generatedJourneyPages.push(appFeatures.fpm.name);
-        newPages.push(...ensurePageExists(appFeatures.fpm.name, config, rootV4TemplateDirPath, testOutDirPath, editor));
+        const fpmPage = ensurePageExists(appFeatures.fpm.name, config, rootV4TemplateDirPath, testOutDirPath, editor);
+        if (fpmPage) {
+            newPages.push(fpmPage);
+        }
     }
 
     if (newPages.length > 0) {
@@ -560,7 +553,7 @@ export async function generatePageObjectFile(
     pageObjectParameters: { targetKey: string; appID?: string },
     fs?: Editor
 ): Promise<Editor> {
-    const editor = fs || create(createStorage());
+    const editor = fs ?? create(createStorage());
 
     const manifest = readManifest(editor, basePath);
     const { applicationType } = getAppTypeAndHideFilterBarFromManifest(manifest);

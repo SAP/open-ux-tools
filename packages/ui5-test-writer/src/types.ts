@@ -50,6 +50,13 @@ export type FEV4ManifestTarget = {
                     };
                 };
             };
+            views?: {
+                paths?: Array<{
+                    primary?: unknown[];
+                    secondary?: unknown[];
+                    defaultPath?: string;
+                }>;
+            };
         };
     };
 };
