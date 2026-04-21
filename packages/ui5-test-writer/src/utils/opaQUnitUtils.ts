@@ -211,7 +211,7 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
 
     // 1. Splice into the sap.ui.define([...]) array.
     //    Captures everything between the opening `[` and the closing `]` before `, function`.
-    const defineArrayRegex = /sap\.ui\.define\s*\(\s*\[([\s\S]*?)\]\s*,\s*function/d;
+    const defineArrayRegex = /sap\.ui\.define\s*\(\s*\[([^\]]*)\]\s*,\s*function/d;
     const defineMatch = defineArrayRegex.exec(result);
     if (defineMatch?.indices?.[1]) {
         const [bodyStart, bodyEnd] = defineMatch.indices[1];
@@ -236,7 +236,7 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
 
     // 2. Splice into the function parameter list: `function (JourneyRunner, A, B)`.
     //    Captures everything between `(` and `)` of the function signature.
-    const funcParamRegex = /\]\s*,\s*function\s*\(([\s\S]*?)\)\s*\{/d;
+    const funcParamRegex = /\]\s*,\s*function\s*\(([^)]*)\)\s*\{/d;
     const funcMatch = funcParamRegex.exec(result);
     if (funcMatch?.indices?.[1]) {
         const [, paramEnd] = funcMatch.indices[1];
@@ -246,7 +246,7 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
 
     // 3. Splice into the pages object: `pages: { onTheFoo: Foo, ... }`.
     //    Captures everything between `pages: {` and the closing `}`.
-    const pagesObjectRegex = /pages\s*:\s*\{([\s\S]*?)\}/d;
+    const pagesObjectRegex = /pages\s*:\s*\{([^}]*)\}/d;
     const pagesMatch = pagesObjectRegex.exec(result);
     if (pagesMatch?.indices?.[1]) {
         const [, pagesBodyEnd] = pagesMatch.indices[1];
