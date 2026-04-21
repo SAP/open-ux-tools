@@ -42,9 +42,21 @@ const levelColor: { [level: string]: string } = {
 
 const hasColorSupport = (): boolean => process.stdout.isTTY;
 
-const colorFn = (color: string): chalk.Chalk | undefined => {
+const colorFn = (color: string): ((text: string) => string) | undefined => {
     try {
-        return color ? chalk.keyword(color) : undefined;
+        if (!color) {
+            return undefined;
+        }
+        // Map color names to chalk methods (chalk v5 removed chalk.keyword)
+        const colorMap: Record<string, (text: string) => string> = {
+            green: chalk.green,
+            yellow: chalk.yellow,
+            red: chalk.red,
+            blue: chalk.blue,
+            magenta: chalk.magenta,
+            cyan: chalk.cyan
+        };
+        return colorMap[color];
     } catch {
         return undefined;
     }
