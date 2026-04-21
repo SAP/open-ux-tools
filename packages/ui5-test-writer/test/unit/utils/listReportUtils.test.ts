@@ -1686,7 +1686,9 @@ describe('isALPFromManifest()', () => {
     });
 
     test('returns false when manifest has no routing targets', () => {
-        const manifest = { 'sap.app': { id: 'test', type: 'application', applicationVersion: { version: '0.0.1' } } } as unknown as Manifest;
+        const manifest = {
+            'sap.app': { id: 'test', type: 'application', applicationVersion: { version: '0.0.1' } }
+        } as unknown as Manifest;
         expect(isALPFromManifest(manifest)).toBe(false);
     });
 
