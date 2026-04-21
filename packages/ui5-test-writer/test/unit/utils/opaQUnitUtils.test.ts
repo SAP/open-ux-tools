@@ -294,6 +294,17 @@ describe('readHtmlTargetFromQUnitJs()', () => {
         expect(readHtmlTargetFromQUnitJs(testPath, fs)).toBe('test/sandbox.html#app-tile');
         expect(fs.read).toHaveBeenCalledWith(opaPath);
     });
+
+    test('returns undefined when fs.read throws', () => {
+        const fs = {
+            exists: jest.fn().mockReturnValue(true),
+            read: jest.fn().mockImplementation(() => {
+                throw new Error('Permission denied');
+            })
+        } as unknown as Editor;
+
+        expect(readHtmlTargetFromQUnitJs(testPath, fs)).toBeUndefined();
+    });
 });
 
 describe('addIntegrationOldToGitignore()', () => {
