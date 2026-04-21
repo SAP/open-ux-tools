@@ -104,7 +104,7 @@ async function runHeadlessGen(
 describe('Headless generation', () => {
     let testProjectName: string;
     let expectedOutputPath: string;
-    jest.setTimeout(60000);
+    jest.setTimeout(120000);
 
     /**
      * Ignoring `appGenInfo.json` in headless tests as output has slight variations

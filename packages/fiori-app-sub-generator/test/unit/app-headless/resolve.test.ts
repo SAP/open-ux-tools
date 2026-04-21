@@ -1,11 +1,11 @@
-import { join, sep } from 'node:path';
+import { join, resolve } from 'node:path';
 
 const mockXml = '<edmx:Edmx Version="4.0"/>';
-const mockCwd = `${sep}mock${sep}cwd`;
+const mockCwd = resolve('mock', 'cwd');
 const relativeMetadataPath = 'metadata.xml';
-const absoluteMetadataPath = `${sep}absolute${sep}path${sep}metadata.xml`;
+const absoluteMetadataPath = resolve('absolute', 'path', 'metadata.xml');
 const relativeEntityDataPath = 'entityData.json';
-const absoluteEntityDataPath = `${sep}absolute${sep}path${sep}entityData.json`;
+const absoluteEntityDataPath = resolve('absolute', 'path', 'entityData.json');
 const mockEntityData = [{ entitySetName: 'Agencies', items: [{ ID: '1' }] }];
 
 jest.mock('node:fs', () => ({
