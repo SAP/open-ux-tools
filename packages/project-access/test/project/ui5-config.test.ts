@@ -394,7 +394,7 @@ describe('Test getPathMappings()', () => {
     });
 
     describe('Component type projects - ui5 cli v5', () => {
-        test('Get path mappings from default application', async () => {
+        test('Get path mappings from default component', async () => {
             const result = await getPathMappings(join(samplesRoot, 'default-component'));
             expect(result).toEqual({
                 src: join(samplesRoot, 'default-component', 'src'),
@@ -402,7 +402,7 @@ describe('Test getPathMappings()', () => {
             });
         });
 
-        test('Get path mappings from application with custom webapp mapping', async () => {
+        test('Get path mappings from component with custom src mapping', async () => {
             const result = await getPathMappings(join(samplesRoot, 'custom-component'));
             expect(result).toEqual({
                 src: join(samplesRoot, 'custom-component', 'src', 'main', 'dummy'),
