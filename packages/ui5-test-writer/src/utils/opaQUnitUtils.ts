@@ -79,11 +79,14 @@ export function spliceModulesIntoQUnitContent(fileContent: string, moduleNames: 
         return fileContent;
     }
 
-    const before = fileContent.slice(0, insertPosition);
+    // Ensure the last existing entry ends with a comma before inserting after it.
+    const trimmedBefore = fileContent.slice(0, insertPosition).trimEnd();
+    const needsComma = !trimmedBefore.endsWith(',');
+    const commaFix = needsComma ? ',' : '';
+    const trailingWhitespace = fileContent.slice(trimmedBefore.length, insertPosition);
     const after = fileContent.slice(insertPosition);
 
-    const leadingNewline = arrayBody.endsWith('\n') ? '' : '\n';
-    return `${before}${leadingNewline}${newLines}\n${after}`;
+    return `${trimmedBefore}${commaFix}\n${newLines}\n${trailingWhitespace}${after}`;
 }
 
 /**

@@ -139,6 +139,32 @@ describe('spliceModulesIntoQUnitContent()', () => {
         expect(result).toContain('"myApp/test/integration/NewJourney",');
     });
 
+    test('adds a trailing comma to last existing entry when it is missing (real-world file format)', () => {
+        // Matches the actual generated file: last entry has no trailing comma, no trailing newline before `]`
+        const fileWithNoTrailingComma = `sap.ui.require(
+  [
+    "sap/ui/thirdparty/qunit-2",
+    "sap/ui/qunit/qunit-junit",
+    "sap/ui/qunit/qunit-coverage",
+    'myApp/test/integration/FirstJourney'
+  ], function (QUnit) {
+    "use strict";
+    QUnit.start();
+});
+`;
+        const result = spliceModulesIntoQUnitContent(fileWithNoTrailingComma, ['myApp/test/integration/NewJourney']);
+
+        // Last existing entry must now have a trailing comma
+        expect(result).toContain("'myApp/test/integration/FirstJourney',");
+        // New entry must also have a trailing comma
+        expect(result).toContain('"myApp/test/integration/NewJourney",');
+        // No blank line between the two entries
+        const lines = result.split('\n');
+        const firstJourneyIdx = lines.findIndex((l) => l.includes('FirstJourney'));
+        const newJourneyIdx = lines.findIndex((l) => l.includes('NewJourney'));
+        expect(newJourneyIdx).toBe(firstJourneyIdx + 1);
+    });
+
     test('inserts on its own line when array body has no trailing newline (template format)', () => {
         const result = spliceModulesIntoQUnitContent(TEMPLATE_FILE, ['myApp/test/integration/NewJourney']);
 
