@@ -104,7 +104,7 @@ async function runHeadlessGen(
 describe('Headless generation', () => {
     let testProjectName: string;
     let expectedOutputPath: string;
-    jest.setTimeout(120000);
+    jest.setTimeout(60000);
 
     /**
      * Ignoring `appGenInfo.json` in headless tests as output has slight variations
@@ -175,45 +175,6 @@ describe('Headless generation', () => {
         cleanTestDir(join(testDir, testProjectNameNoVers));
     });
 
-    it('LROP v4 CAP', async () => {
-        testProjectName = 'lrop_v4_cap';
-        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
-        const accessSpy = jest.spyOn(fs, 'access').mockResolvedValue();
-        // Copy fake package.json to mimic real CAP project
-        const testCAPProjectRoot = join(testDir, testProjectName);
-        mkdirSync(testCAPProjectRoot, { recursive: true });
-        copyFileSync(
-            join(__dirname, './fixtures/cap-package-cds-dependency.json.test'),
-            join(testCAPProjectRoot, 'package.json')
-        );
-
-        await runHeadlessGen('LROP-v4-CAP-0.2', undefined, testCAPProjectRoot);
-        expect(testCAPProjectRoot).toMatchFolder(expectedOutputPath, matcherOptions);
-
-        //change the cwd, otherwise win32 will not be able to delete the directory
-        process.chdir(testDir);
-        cleanTestDir(join(testDir, testProjectName));
-        accessSpy.mockRestore();
-    });
-
-    it('Check install() is executed', async () => {
-        testProjectName = 'lrop_v4';
-        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
-        // Mock writing, we are not testing that here
-        jest.spyOn(FioriAppGeneratorHeadless.prototype, 'writing').mockImplementation(jest.fn());
-        jest.spyOn(FioriAppGeneratorHeadless.prototype, 'end').mockImplementation(jest.fn());
-        const installDepsSpy = jest.spyOn(install, 'installDependencies').mockResolvedValue();
-
-        await runHeadlessGen('LROP-v4-0.2', 'travel_v4', undefined, { skipInstall: false });
-        expect(installDepsSpy).toHaveBeenCalled();
-
-        installDepsSpy.mockClear();
-        await runHeadlessGen('LROP-v4-0.2', 'travel_v4', undefined, { skipInstall: true });
-        expect(installDepsSpy).not.toHaveBeenCalled();
-        // Restore only spies
-        jest.restoreAllMocks();
-    });
-
     it('LROP v4 with externalServices - external service files are written', async () => {
         testProjectName = 'lrop_v4_with_vh';
         expectedOutputPath = join(
@@ -278,5 +239,44 @@ describe('Headless generation', () => {
         ).toMatchFolder(expectedOutputPath);
 
         cleanTestDir(join(testDir, testProjectName));
+    });
+
+    it('LROP v4 CAP', async () => {
+        testProjectName = 'lrop_v4_cap';
+        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
+        const accessSpy = jest.spyOn(fs, 'access').mockResolvedValue();
+        // Copy fake package.json to mimic real CAP project
+        const testCAPProjectRoot = join(testDir, testProjectName);
+        mkdirSync(testCAPProjectRoot, { recursive: true });
+        copyFileSync(
+            join(__dirname, './fixtures/cap-package-cds-dependency.json.test'),
+            join(testCAPProjectRoot, 'package.json')
+        );
+
+        await runHeadlessGen('LROP-v4-CAP-0.2', undefined, testCAPProjectRoot);
+        expect(testCAPProjectRoot).toMatchFolder(expectedOutputPath, matcherOptions);
+
+        //change the cwd, otherwise win32 will not be able to delete the directory
+        process.chdir(testDir);
+        cleanTestDir(join(testDir, testProjectName));
+        accessSpy.mockRestore();
+    });
+
+    it('Check install() is executed', async () => {
+        testProjectName = 'lrop_v4';
+        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
+        // Mock writing, we are not testing that here
+        jest.spyOn(FioriAppGeneratorHeadless.prototype, 'writing').mockImplementation(jest.fn());
+        jest.spyOn(FioriAppGeneratorHeadless.prototype, 'end').mockImplementation(jest.fn());
+        const installDepsSpy = jest.spyOn(install, 'installDependencies').mockResolvedValue();
+
+        await runHeadlessGen('LROP-v4-0.2', 'travel_v4', undefined, { skipInstall: false });
+        expect(installDepsSpy).toHaveBeenCalled();
+
+        installDepsSpy.mockClear();
+        await runHeadlessGen('LROP-v4-0.2', 'travel_v4', undefined, { skipInstall: true });
+        expect(installDepsSpy).not.toHaveBeenCalled();
+        // Restore only spies
+        jest.restoreAllMocks();
     });
 });
