@@ -47,7 +47,7 @@ export interface FlexConnector {
 type TestTemplateConfig = {
     id: string;
     framework: TestConfig['framework'];
-    basePath: string;
+    appBasePath: string;
     rootBasePath: string;
     initPath: string;
     theme: string;
@@ -56,7 +56,7 @@ type TestTemplateConfig = {
 };
 
 export type TestsuiteTemplateConfig = {
-    basePath: string;
+    appBasePath: string;
     rootBasePath: string;
     initPath: string;
 };
@@ -538,7 +538,7 @@ export function createTestTemplateConfig(
         id,
         framework: config.framework,
         rootBasePath,
-        basePath: getResourcesPathPrefix(utils) ?? rootBasePath,
+        appBasePath: getResourcesPathPrefix(utils) ?? rootBasePath,
         initPath: posix.relative(posix.dirname(config.path), config.init),
         theme,
         testNs: testResourcesPath && ns ? posix.join(ns, 'test') : undefined,

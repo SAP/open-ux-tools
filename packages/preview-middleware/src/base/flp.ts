@@ -35,7 +35,7 @@ import {
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
-import { generateImportList, mergeTestConfigDefaults, isDefaultInitPath } from './test';
+import { generateImportList, mergeTestConfigDefaults } from './test';
 import type {
     RtaEditor,
     FlpConfig,
@@ -851,7 +851,7 @@ export class FlpSandbox {
     ): Promise<void> {
         this.logger.debug(`Serving test route: ${config.path}`);
         const templateConfig = {
-            basePath: this.templateConfig.appBasePath,
+            appBasePath: this.templateConfig.appBasePath,
             rootBasePath: this.templateConfig.rootBasePath,
             initPath: config.init
         } satisfies TestsuiteTemplateConfig;
@@ -917,7 +917,7 @@ export class FlpSandbox {
         );
 
         // Skip generating init route if user provided a custom init script
-        if (!isDefaultInitPath('Testsuite', testsuiteConfig.init, this.utils)) {
+        if (testsuiteConfig.isCustomInit) {
             this.logger.debug(
                 `Skip serving testsuite init script in favor of provided script: ${testsuiteConfig.init}`
             );
@@ -1054,7 +1054,7 @@ export class FlpSandbox {
             );
 
             // Skip generating init route if user provided a custom init script
-            if (!isDefaultInitPath(config.framework, config.init, this.utils)) {
+            if (config.isCustomInit) {
                 this.logger.debug(`Skip serving test init script in favor of provided script: ${config.init}`);
                 continue;
             }

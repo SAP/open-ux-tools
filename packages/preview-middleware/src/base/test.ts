@@ -6,7 +6,7 @@ import type { MiddlewareUtils } from '@ui5/server';
 import { posix } from 'node:path';
 import { getTestResourcesPathPrefix, adjustPathForSandbox } from './utils/project';
 
-const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
+const DEFAULTS: Record<string, Readonly<Required<TestConfig>>> = {
     qunit: {
         path: '/test/unitTests.qunit.html',
         init: '/test/unitTests.qunit.js',
@@ -28,35 +28,6 @@ const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
 } as const satisfies TestConfigDefaults;
 
 /**
- * Check if the init path is a default generated path (not user-provided).
- * Compares the init path against what would be generated as default for the framework.
- *
- * @param framework the test framework
- * @param initPath the init path to check
- * @param utils middleware utils
- * @returns true if the init path matches the default for this framework
- */
-export function isDefaultInitPath(
-    framework: 'OPA5' | 'QUnit' | 'Testsuite',
-    initPath: string,
-    utils?: MiddlewareUtils
-): boolean {
-    const defaultInit = DEFAULTS[framework.toLowerCase()]?.init;
-    if (!defaultInit) {
-        return false;
-    }
-    const testPathPrefix = getTestResourcesPathPrefix(utils);
-    if (testPathPrefix) {
-        // For component projects, compute the adjusted default
-        const adjustedInit = adjustPathForSandbox(defaultInit, testPathPrefix);
-        const expectedPath = posix.join('/', posix.join(testPathPrefix, adjustedInit));
-        return initPath === expectedPath;
-    }
-    // For non-component projects, check against the default
-    return initPath === defaultInit;
-}
-
-/**
  * Merge the given test configuration with the default values.
  *
  * @param config test configuration
@@ -64,8 +35,9 @@ export function isDefaultInitPath(
  * @returns merged test configuration
  */
 export function mergeTestConfigDefaults(config: TestConfig, utils?: MiddlewareUtils): CompleteTestConfig {
+    const isCustomInit = config.init !== undefined;
     const testPathPrefix = getTestResourcesPathPrefix(utils);
-    const defaults: CompleteTestConfig = structuredClone(DEFAULTS[config.framework.toLowerCase()] ?? {});
+    const defaults: Required<TestConfig> = structuredClone(DEFAULTS[config.framework.toLowerCase()] ?? {});
 
     if (testPathPrefix) {
         // remove leading /test from defaults if sandboxPathPrefix is set
@@ -75,7 +47,7 @@ export function mergeTestConfigDefaults(config: TestConfig, utils?: MiddlewareUt
         }
     }
 
-    const merged: CompleteTestConfig = { ...defaults, ...config };
+    const merged: CompleteTestConfig = { ...defaults, ...config, isCustomInit };
 
     if (testPathPrefix) {
         // Prepend testPathPrefix

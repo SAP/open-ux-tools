@@ -19,6 +19,8 @@ import type { Socket } from 'node:net';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 //eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareParameters } from '@ui5/server';
+import micromatch from 'micromatch';
+import isGlob from 'is-glob';
 
 /**
  * Create a combined filter function for the proxy middleware by combining
@@ -39,18 +41,19 @@ function createCombinedProxyFilter(
         return baseFilter;
     }
 
-    if (typeof baseFilter === 'function') {
-        return (pathname: string, req: IncomingMessage): boolean => {
-            return baseFilter(pathname, req) && namespaceFilter(pathname, req);
-        };
-    }
-
     return (pathname: string, req: IncomingMessage): boolean => {
-        const matches = Array.isArray(baseFilter)
-            ? baseFilter.some((pattern) => pathname.startsWith(pattern))
-            : pathname.startsWith(baseFilter);
-
-        return matches && namespaceFilter(pathname, req);
+        let baseMatches: boolean;
+        if (typeof baseFilter === 'function') {
+            baseMatches = baseFilter(pathname, req);
+        } else {
+            const patterns = Array.isArray(baseFilter) ? baseFilter : [baseFilter];
+            if (patterns.every((pattern) => isGlob(pattern))) {
+                baseMatches = micromatch([pathname], patterns).length > 0;
+            } else {
+                baseMatches = patterns.some((pattern) => pathname.indexOf(pattern) === 0);
+            }
+        }
+        return baseMatches && namespaceFilter(pathname, req);
     };
 }
 

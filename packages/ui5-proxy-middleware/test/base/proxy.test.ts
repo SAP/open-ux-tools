@@ -136,6 +136,73 @@ describe('proxy', () => {
         expect(pathFilter('/test-resources/sap/m/Button.js', mockReq)).toBe(true);
     });
 
+    test('ui5Proxy: string customFilter combined with namespace exclusion filter', () => {
+        const config = { path: '/resources', url: 'https://example.example', version: '1.0.0' };
+        const mockMiddlewareUtil = {
+            getProject: jest.fn().mockReturnValue({
+                getType: jest.fn().mockReturnValue('component'),
+                getNamespace: jest.fn().mockReturnValue('my/app/namespace')
+            })
+        };
+
+        ui5Proxy(config, {}, '/resources', undefined, mockMiddlewareUtil as any);
+
+        const pathFilter = mockCreateProxyMiddleware.mock.calls[0][0].pathFilter;
+        const mockReq = { headers: {} } as any;
+
+        // passes baseFilter (/resources prefix) and not in excluded namespace
+        expect(pathFilter('/resources/sap/ui/core/library.js', mockReq)).toBe(true);
+        // excluded by namespace filter
+        expect(pathFilter('/resources/my/app/namespace/Component.js', mockReq)).toBe(false);
+        // blocked by baseFilter (no /resources prefix)
+        expect(pathFilter('/test-resources/sap/m/Button.js', mockReq)).toBe(false);
+    });
+
+    test('ui5Proxy: string[] customFilter combined with namespace exclusion filter', () => {
+        const config = { path: '/resources', url: 'https://example.example', version: '1.0.0' };
+        const mockMiddlewareUtil = {
+            getProject: jest.fn().mockReturnValue({
+                getType: jest.fn().mockReturnValue('component'),
+                getNamespace: jest.fn().mockReturnValue('my/app/namespace')
+            })
+        };
+
+        ui5Proxy(config, {}, ['/resources', '/other'], undefined, mockMiddlewareUtil as any);
+
+        const pathFilter = mockCreateProxyMiddleware.mock.calls[0][0].pathFilter;
+        const mockReq = { headers: {} } as any;
+
+        // passes both patterns, not in excluded namespace
+        expect(pathFilter('/resources/sap/ui/core/library.js', mockReq)).toBe(true);
+        expect(pathFilter('/other/some/file.js', mockReq)).toBe(true);
+        // excluded by namespace filter
+        expect(pathFilter('/resources/my/app/namespace/Component.js', mockReq)).toBe(false);
+        // blocked by baseFilter
+        expect(pathFilter('/test-resources/sap/m/Button.js', mockReq)).toBe(false);
+    });
+
+    test('ui5Proxy: glob customFilter combined with namespace exclusion filter', () => {
+        const config = { path: '/resources', url: 'https://example.example', version: '1.0.0' };
+        const mockMiddlewareUtil = {
+            getProject: jest.fn().mockReturnValue({
+                getType: jest.fn().mockReturnValue('component'),
+                getNamespace: jest.fn().mockReturnValue('my/app/namespace')
+            })
+        };
+
+        ui5Proxy(config, {}, '/resources/**', undefined, mockMiddlewareUtil as any);
+
+        const pathFilter = mockCreateProxyMiddleware.mock.calls[0][0].pathFilter;
+        const mockReq = { headers: {} } as any;
+
+        // passes glob and not in excluded namespace
+        expect(pathFilter('/resources/sap/ui/core/library.js', mockReq)).toBe(true);
+        // excluded by namespace filter
+        expect(pathFilter('/resources/my/app/namespace/Component.js', mockReq)).toBe(false);
+        // blocked by glob (no match)
+        expect(pathFilter('/test-resources/sap/m/Button.js', mockReq)).toBe(false);
+    });
+
     test('ui5Proxy: namespace exclusion filter not applied for non-component projects', () => {
         const config = {
             path: '/mypath',

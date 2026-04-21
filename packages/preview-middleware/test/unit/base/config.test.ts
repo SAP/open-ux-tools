@@ -67,7 +67,7 @@ describe('config', () => {
             const config = mergeTestConfigDefaults({ framework: 'OPA5' }, mockUtils);
             const templateConfig = createTestTemplateConfig(config, manifest['sap.app'].id, 'sap_horizon');
             expect(templateConfig).toMatchObject({
-                basePath: '..',
+                appBasePath: '..',
                 rootBasePath: '..',
                 framework: 'OPA5',
                 id: manifest['sap.app'].id,
@@ -76,7 +76,7 @@ describe('config', () => {
             });
         });
 
-        test('component type uses absolute basePath for resourceroots', () => {
+        test('component type uses absolute appBasePath for resourceroots', () => {
             const mockComponentUtils = {
                 getProject() {
                     return {
@@ -93,7 +93,7 @@ describe('config', () => {
                 mockComponentUtils
             );
             expect(templateConfig).toMatchObject({
-                basePath: '/resources/test/fe/v2/app',
+                appBasePath: '/resources/test/fe/v2/app',
                 rootBasePath: '../../../../..',
                 framework: 'QUnit',
                 id: 'test.fe.v2.app',

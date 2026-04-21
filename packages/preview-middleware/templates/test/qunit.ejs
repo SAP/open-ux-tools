@@ -8,7 +8,7 @@
 		src="<%- rootBasePath %>/resources/sap-ui-core.js"
 		data-sap-ui-theme='<%- theme %>'
 		data-sap-ui-resourceroots='{
-			"<%- id %>": "<%- basePath %>"<% if (testNs && testResourcesPath) { %>,
+			"<%- id %>": "<%- appBasePath %>"<% if (testNs && testResourcesPath) { %>,
 			"<%- testNs %>": "<%- testResourcesPath %>"<% } %>
 		}'
 		data-sap-ui-animation="false"
