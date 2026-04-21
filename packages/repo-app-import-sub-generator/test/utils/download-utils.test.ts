@@ -26,6 +26,7 @@ const { PromptState } = await import('../../src/prompts/prompt-state');
 const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
 const AdmZipModule = await import('adm-zip');
 const AdmZip = AdmZipModule.default;
+const { t } = await import('../../src/utils/i18n');
 
 describe('App Download Utils', () => {
     beforeEach(() => {
@@ -96,7 +97,7 @@ describe('App Download Utils', () => {
             await extractZip('/tmp/project', mockFs as any);
 
             expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
-                expect.stringContaining('zipExtractionError')
+                t('error.appDownloadErrors.zipExtractionError', { error: 'zip failed' })
             );
         });
     });

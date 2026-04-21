@@ -47,7 +47,6 @@ export {
     getMockDataPath,
     getNodeModulesPath,
     getPathMappings,
-    type PathMappings,
     getProject,
     getProjectType,
     getWebappPath,
@@ -67,10 +66,11 @@ export {
     readFlexChanges,
     processServices,
     getMainService,
-    getGlobalCdsHomePath
+    getGlobalCdsHomePath,
+    hasDependency
 } from './project/index.js';
+export type { PathMappings } from './project/index.js';
 export { execNpmCommand } from './command/npm-command.js';
 export * from './types/index.js';
 export * from './library/index.js';
 export { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from './odata/index.js';
-export { hasDependency } from './project/index.js';

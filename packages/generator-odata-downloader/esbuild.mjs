@@ -81,7 +81,7 @@ const copyPrebuildsPlugin = {
 build({
   entryPoints: ['src/app/index.ts'],
   bundle: true,
-  format: 'cjs',
+  format: 'esm',
   outfile: 'generators/app/index.js',
   minify: production,
   sourcemap: !production,

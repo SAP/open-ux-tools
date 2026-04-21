@@ -18,7 +18,6 @@ import {
 import type { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
 
 import type { Annotations } from '@sap-ux/axios-extension';
-import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import type { TemplateType } from '@sap-ux/fiori-elements-writer';
 import { getEntitySelectionQuestions } from './prompts/edmx/questions.js';
 import LoggerHelper from './prompts/logger-helper.js';
@@ -182,14 +181,15 @@ export {
     prompt,
     promptNames,
     // @deprecated - temp export to support to support open source migration
-    SystemSelectionAnswerType,
-    type CapRuntime,
-    type CapService,
-    type EntityRelatedAnswers,
-    type InquirerAdapter,
-    type OdataServiceAnswers,
-    type OdataServicePromptOptions,
+    type SystemSelectionAnswerType
+};
+export type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
+export type { InquirerAdapter } from '@sap-ux/inquirer-common';
+export type {
+    EntityRelatedAnswers,
+    OdataServiceAnswers,
+    OdataServicePromptOptions,
     // @deprecated - temp export to support to support open source migration
-    type SapSystemType,
-    type ConnectedSystem
+    SapSystemType,
+    ConnectedSystem
 };

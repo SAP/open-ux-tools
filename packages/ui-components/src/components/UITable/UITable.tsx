@@ -276,7 +276,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                     {...(cell?.props || {})}
                     data-is-focusable={true}
                     onClick={onClick}
-                    tabIndex="0"
+                    tabIndex={0}
                     role="gridcell">
                     {cell?.props?.children || null}
                     <div className="table-item-warning">
@@ -291,7 +291,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                     {...(cell?.props || {})}
                     data-is-focusable={true}
                     onClick={onClick}
-                    tabIndex="0"
+                    tabIndex={0}
                     role="gridcell">
                     {cell?.props?.children || null}
                 </div>

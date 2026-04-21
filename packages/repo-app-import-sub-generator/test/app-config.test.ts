@@ -295,16 +295,30 @@ describe('getAppConfig', () => {
 
         const errorMsg = 'Metadata fetch failed';
 
+        // Mock service provider with service method that throws
+        const mockSystemWithService = {
+            ...mockSystem,
+            connectedSystem: {
+                ...mockSystem.connectedSystem,
+                serviceProvider: {
+                    ...mockSystem.connectedSystem?.serviceProvider,
+                    service: jest.fn().mockReturnValue({
+                        metadata: jest.fn().mockRejectedValue(new Error(errorMsg))
+                    })
+                }
+            }
+        };
+
         PromptState.systemSelection = {
-            connectedSystem: mockSystem.connectedSystem
+            connectedSystem: mockSystemWithService.connectedSystem
         };
 
         mockReadManifest.mockReturnValue(mockManifest);
         const context = {
             qfaJson: mockQfaJson,
-            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
+            serviceProvider: mockSystemWithService.connectedSystem?.serviceProvider as AbapServiceProvider
         };
-        await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
+        await getAppConfig(mockApp, '/path/to/project', context, mockSystemWithService, mockFs);
         expect(RepoAppDownloadLogger.logger?.error).toHaveBeenCalledWith(
             t('error.metadataFetchError', { error: errorMsg })
         );

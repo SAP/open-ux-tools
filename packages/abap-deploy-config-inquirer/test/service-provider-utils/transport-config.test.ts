@@ -203,7 +203,7 @@ describe('getTransportConfigInstance', () => {
             t('warnings.certificateError', { url: 'https://example.com', error: 'self signed certificate' })
         );
         expect(loggerSpyDebug).toHaveBeenCalledWith(
-            t('errors.debugAbapTargetSystem', { url: 'https://example.com', error: 'self signed certificate' })
+            t('errors.debugAbapTargetSystem', { method: 'init', url: 'https://example.com', error: 'self signed certificate' })
         );
         expect(loggerSpyInfo).toHaveBeenCalledWith(
             expect.stringContaining('https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/53643')

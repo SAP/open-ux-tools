@@ -158,7 +158,7 @@ describe('validateAppSelection', () => {
         expect(mockGetHelpLink).toHaveBeenCalledWith(
             HELP_NODES.ADT_APP_NOT_FOUND_ERROR,
             ERROR_TYPE.INTERNAL_SERVER_ERROR,
-            'error.noAppsDeployed'
+            t('error.noAppsDeployed')
         );
         expect(result).toBe(mockHelpLink);
     });
@@ -172,7 +172,7 @@ describe('validateAppSelection', () => {
         expect(mockGetHelpLink).toHaveBeenCalledWith(
             HELP_NODES.ADT_APP_NOT_FOUND_ERROR,
             ERROR_TYPE.INTERNAL_SERVER_ERROR,
-            'error.noAppsDeployed'
+            t('error.noAppsDeployed')
         );
         expect(result).toBe(mockHelpLink);
     });

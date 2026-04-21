@@ -45,6 +45,7 @@ const { FlexLayer } = await import('@sap-ux/adp-tooling');
 const { attributePromptNames } = await import('../../../src/app/types');
 const { getPrompts } = await import('../../../src/app/questions/attributes');
 const { getWizardPages } = await import('../../../src/utils/steps');
+const { t } = await import('../../../src/utils/i18n');
 
 const mockPath = '/project';
 const mockConfig = {
@@ -69,7 +70,7 @@ describe('Attribute Prompts', () => {
             const prompt = prompts.find((p) => p.name === attributePromptNames.projectName)!;
 
             expect(prompt.type).toBe('input');
-            expect(prompt.message).toBe('prompts.projectNameLabel');
+            expect(prompt.message).toBe(t('prompts.projectNameLabel'));
             expect(prompt.guiOptions).toMatchObject({ mandatory: true, breadcrumb: true, hint: 'tooltip' });
 
             const defaultVal = (prompt as any).default({ targetFolder: '' });
@@ -87,13 +88,13 @@ describe('Attribute Prompts', () => {
             const prompt = prompts.find((p) => p.name === attributePromptNames.title)!;
 
             expect(prompt.type).toBe('input');
-            expect(prompt.message).toBe('prompts.appTitleLabel');
+            expect(prompt.message).toBe(t('prompts.appTitleLabel'));
             expect(prompt.guiOptions).toMatchObject({
                 mandatory: true,
                 breadcrumb: true,
-                hint: 'prompts.appTitleTooltip'
+                hint: t('prompts.appTitleTooltip')
             });
-            expect((prompt as any).default).toBe('prompts.appTitleDefault');
+            expect((prompt as any).default).toBe(t('prompts.appTitleDefault'));
 
             (prompt as any).validate('title');
             expect(mockValidateEmptyString).toHaveBeenCalledWith('title');

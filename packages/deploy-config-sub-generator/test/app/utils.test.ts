@@ -24,6 +24,7 @@ jest.unstable_mockModule('node:fs', () => {
 
 const { getYUIDetails, parseTarget } = await import('../../src/app/utils');
 const { isMTAInstalled, getEnvApiHubConfig } = await import('../../src/utils');
+const { t } = await import('@sap-ux/deploy-config-generator-shared');
 
 describe('Test utils - Deploy', () => {
     beforeEach(() => {});
@@ -44,9 +45,9 @@ describe('Test utils - Deploy', () => {
 
     it('Validate isMTAInstalled with missing mta', () => {
         mockHasbinSync.mockReturnValue(false);
-        expect(isMTAInstalled('cf', '')).toEqual('errors.noBinary');
+        expect(isMTAInstalled('cf', '')).toEqual(t('errors.noBinary', { bin: 'mta', pkg: 'mta' }));
         expect(isMTAInstalled('InvalidParam', '')).toEqual(true);
-        expect(isMTAInstalled('abap', '')).toEqual('errors.noBinary');
+        expect(isMTAInstalled('abap', '')).toEqual(t('errors.noBinary', { bin: 'mta', pkg: 'mta' }));
     });
 
     it('Validate isMTAInstalled with installed mta', () => {
