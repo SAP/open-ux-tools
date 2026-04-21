@@ -149,6 +149,9 @@ jobs:
               run: |
                   echo ::set-output name=changes::$(pnpm ci:version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
                   git status
+            - name: Sync server.json version
+              if: steps.changesetVersion.outputs.changes == 'true'
+              run: node packages/fiori-mcp-server/scripts/sync-mcp-server-json.js
             - name: Commit and push changes
               if: steps.changesetVersion.outputs.changes == 'true'
               run: |
@@ -167,6 +170,9 @@ jobs:
         if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.version.outputs.changes == 'false'
         runs-on: ubuntu-latest
         needs: version
+        outputs:
+            published: ${{ steps.changesetPublish.outputs.published }}
+            publishedPackages: ${{ steps.changesetPublish.outputs.publishedPackages }}
         steps:
             - name: Checkout code repository
               uses: actions/checkout@v6
@@ -291,3 +297,20 @@ jobs:
                       {"text": "${{ env.EXT_RELEASE_MESSAGE }}" }
               env:
                   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    publish-mcp-registry:
+        # Publish to MCP Registry after a successful npm release of fiori-mcp-server
+        if: |
+            github.repository == 'SAP/open-ux-tools' &&
+            github.event_name == 'push' &&
+            github.ref == 'refs/heads/main' &&
+            needs.release.outputs.published == 'true' &&
+            contains(needs.release.outputs.publishedPackages, '@sap-ux/fiori-mcp-server')
+        needs: release
+        uses: ./.github/workflows/publish-mcp-registry.yml
+        with:
+            dry_run: false
+        secrets: inherit
+        permissions:
+            id-token: write
+            contents: read

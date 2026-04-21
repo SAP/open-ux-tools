@@ -1,0 +1,14 @@
+<% if (!config?.hasAggregation) { %><<%- macrosNamespace %>:fields><% } %>
+<<%- config?.aggregationNamespace %>:FormElement 
+	<% if (data.formElementKey) { %> key="<%- data.formElementKey %>"<% } %>
+	label="<%- data.label %>"
+	<% if (data.id) { %> id="<%- data.id %>"<% } %>
+	<% if (data.metaPath) { %> metaPath="<%- data.metaPath %>"<% } %>
+	<% if (data.contextPath) { %> contextPath="<%- data.contextPath %>"<% } %>
+	<% if (data.position?.anchor) { %> anchor="<%- data.position.anchor %>"<% } %>
+	<% if (data.position?.placement) { %> placement="<%- data.position.placement %>"<% } %>>
+	<<%- macrosNamespace %>:fields>
+		<core:Fragment fragmentName="<%- data.embededFragment.ns %>.<%- data.embededFragment.name %>" type="XML" />
+	</<%- macrosNamespace %>:fields>
+</<%- config?.aggregationNamespace %>:FormElement>
+<% if (!config?.hasAggregation) { %></<%- macrosNamespace %>:fields><% } %>

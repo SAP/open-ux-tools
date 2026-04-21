@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import type { ToolsLogger } from '@sap-ux/logger';
+
 import type {
     BuildRouteEntriesOptions,
     PrepareXsappConfigOptions,
@@ -20,6 +22,47 @@ const UI5_SERVER_AUTH_ROUTE: XsappRoute = {
     destination: UI5_SERVER_DESTINATION,
     authenticationType: 'xsuaa'
 };
+
+/**
+ * Inject localDir routes for ADP live-reload so adaptation project changes
+ * and i18n files are served directly from webapp/ without a build.
+ *
+ * Routes are prepended so they take priority over the catch-all approuter routes.
+ *
+ * @param routes - Mutable routes array to prepend ADP routes into.
+ * @param rootPath - Project root used to locate webapp/manifest.appdescr_variant.
+ * @param logger - Logger for info/warn messages.
+ */
+function injectAdpLiveReloadRoutes(routes: XsappRoute[], rootPath: string, logger: ToolsLogger): void {
+    const manifestPath = path.join(rootPath, 'webapp', 'manifest.appdescr_variant');
+    if (!fs.existsSync(manifestPath)) {
+        return;
+    }
+
+    try {
+        const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+        const variantId = (manifest.id as string).replaceAll('.', '_');
+
+        routes.unshift(
+            {
+                source: `^/changes/${variantId}/(.*)$`,
+                target: 'changes/$1',
+                localDir: 'webapp',
+                authenticationType: 'none'
+            },
+            {
+                source: `^/${variantId}/i18n/(.*)$`,
+                target: 'i18n/$1',
+                localDir: 'webapp',
+                authenticationType: 'none'
+            }
+        );
+
+        logger.info(`ADP live-reload: injected localDir routes for /changes/${variantId}/* and /${variantId}/i18n/*`);
+    } catch (e) {
+        logger.warn(`Failed to read manifest.appdescr_variant: ${(e as Error).message}`);
+    }
+}
 
 /**
  * Load xs-app.json and prepare it for the approuter (filter routes, set auth, optionally append auth route).
@@ -47,6 +90,8 @@ export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): X
         }
         return true;
     });
+
+    injectAdpLiveReloadRoutes(xsappConfig.routes, rootPath, logger);
 
     if (effectiveOptions.disableWelcomeFile) {
         delete xsappConfig.welcomeFile;

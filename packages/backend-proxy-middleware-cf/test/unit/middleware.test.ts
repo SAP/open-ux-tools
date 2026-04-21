@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import { createProxy } from '../../src/proxy/proxy';
 import { nextFreePort } from '../../src/utils';
 import { loadExtensions } from '../../src/approuter/extensions';
-import { loadAndApplyEnvOptions } from '../../src/config/env';
+import { loadEnvOptions } from '../../src/config/env';
 import { startApprouter } from '../../src/approuter/approuter';
 import type { BackendProxyMiddlewareCfConfig } from '../../src/types';
 import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../src/proxy/routes';
@@ -34,7 +34,7 @@ jest.mock('../../src/utils', () => ({
 
 jest.mock('../../src/config/env', () => ({
     ...jest.requireActual('../../src/config/env'),
-    loadAndApplyEnvOptions: jest.fn().mockResolvedValue([])
+    loadEnvOptions: jest.fn().mockResolvedValue({})
 }));
 
 jest.mock('../../src/proxy/routes', () => ({
@@ -68,7 +68,7 @@ const existsSyncMock = fs.existsSync as jest.Mock;
 const nextFreePortMock = nextFreePort as jest.Mock;
 const loadExtensionsMock = loadExtensions as jest.Mock;
 const buildRouteEntriesMock = buildRouteEntries as jest.Mock;
-const loadAndApplyEnvOptionsMock = loadAndApplyEnvOptions as jest.Mock;
+const loadEnvOptionsMock = loadEnvOptions as jest.Mock;
 const loadAndPrepareXsappConfigMock = loadAndPrepareXsappConfig as jest.Mock;
 const startApprouterMock = startApprouter as jest.Mock;
 const fetchBasUrlTemplateMock = fetchBasUrlTemplate as jest.Mock;
@@ -91,7 +91,7 @@ describe('middleware', () => {
         jest.clearAllMocks();
         delete process.env.destinations;
         existsSyncMock.mockReturnValue(true);
-        loadAndApplyEnvOptionsMock.mockResolvedValue([]);
+        loadEnvOptionsMock.mockResolvedValue({});
         nextFreePortMock.mockResolvedValue(5000);
         loadAndPrepareXsappConfigMock.mockReturnValue({
             routes: [],
@@ -174,7 +174,7 @@ describe('middleware', () => {
             middlewareUtil: { getProject }
         });
 
-        expect(loadAndApplyEnvOptionsMock).toHaveBeenCalledWith(
+        expect(loadEnvOptionsMock).toHaveBeenCalledWith(
             rootPath,
             expect.objectContaining({ envOptionsPath: './adp/default-env.json', destinations: [] }),
             expect.any(Object)
@@ -231,7 +231,7 @@ describe('middleware', () => {
     });
 
     test('should update ui5-server destination when actual port differs from configured', async () => {
-        // Set up initial destinations in process.env (simulating what loadAndApplyEnvOptions would do)
+        // Set up initial destinations in process.env (simulating what applyEnvOptions would do)
         process.env.destinations = JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8080' }]);
 
         const handler = await middleware({
@@ -255,7 +255,7 @@ describe('middleware', () => {
     });
 
     test('should not update process.env.destinations when actual port matches configured', async () => {
-        // Set up initial destinations in process.env (simulating what loadAndApplyEnvOptions would do)
+        // Set up initial destinations in process.env (simulating what applyEnvOptions would do)
         process.env.destinations = JSON.stringify([{ name: 'ui5-server', url: 'http://localhost:8080' }]);
 
         const handler = await middleware({

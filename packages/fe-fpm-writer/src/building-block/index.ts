@@ -14,7 +14,6 @@ import {
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
-    type RichTextEditor,
     bindingContextAbsolute,
     type TemplateConfig
 } from './types';
@@ -257,9 +256,13 @@ function getTemplateContent<T extends BuildingBlock>(
         // or for equal or below UI5 v1.96.0 contextPath is applied
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
         let targetProperty: string | undefined;
-        if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
-            // Get target property for RichTextEditor building block
-            targetProperty = (buildingBlockData as RichTextEditor).targetProperty;
+        if (
+            (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor ||
+                buildingBlockData.buildingBlockType === BuildingBlockType.CustomFormField) &&
+            'targetProperty' in buildingBlockData &&
+            typeof buildingBlockData.targetProperty === 'string'
+        ) {
+            targetProperty = buildingBlockData.targetProperty;
         }
 
         const applyContextPath =
