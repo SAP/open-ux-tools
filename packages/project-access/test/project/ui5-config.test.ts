@@ -98,6 +98,18 @@ describe('Test getWebappPath()', () => {
         memFs.writeJSON(join(samplesRoot, 'package.json'), {});
         expect(await getWebappPath(join(samplesRoot, 'app/app1'), memFs)).toEqual(join(samplesRoot, 'app/app1/webapp'));
     });
+
+    test('Component type projects - ui5 cli v5.Get webapp from default app', async () => {
+        expect(await getWebappPath(join(samplesRoot, 'default-component-webapp-path'))).toEqual(
+            join(samplesRoot, 'default-component-webapp-path', 'src')
+        );
+    });
+
+    test('Component type projects - ui5 cli v5. Get webapp from app with custom webapp mapping', async () => {
+        expect(await getWebappPath(join(samplesRoot, 'custom-component-webapp-path'))).toEqual(
+            join(samplesRoot, 'custom-component-webapp-path', 'ts-src', 'app')
+        );
+    });
 });
 
 describe('Test getWebappTestPath()', () => {
@@ -378,6 +390,24 @@ describe('Test getPathMappings()', () => {
             await expect(getPathMappings(join(samplesRoot, 'no-ui5-yaml'), memFs)).rejects.toThrow(
                 'Unsupported project type for path mappings: unknown'
             );
+        });
+    });
+
+    describe('Component type projects - ui5 cli v5', () => {
+        test('Get path mappings from default application', async () => {
+            const result = await getPathMappings(join(samplesRoot, 'default-component'));
+            expect(result).toEqual({
+                src: join(samplesRoot, 'default-component', 'src'),
+                test: join(samplesRoot, 'default-component', 'test')
+            });
+        });
+
+        test('Get path mappings from application with custom webapp mapping', async () => {
+            const result = await getPathMappings(join(samplesRoot, 'custom-component'));
+            expect(result).toEqual({
+                src: join(samplesRoot, 'custom-component', 'src', 'main', 'dummy'),
+                test: join(samplesRoot, 'custom-component', 'test')
+            });
         });
     });
 });

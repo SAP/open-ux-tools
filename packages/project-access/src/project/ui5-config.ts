@@ -66,7 +66,14 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
         // For backward compatibility ignore errors and use default
         pathMappings = {} as PathMappings;
     }
-    return 'webapp' in pathMappings ? pathMappings.webapp : join(appRoot, DirName.Webapp);
+    if ('webapp' in pathMappings) {
+        return pathMappings.webapp;
+    } else if ('src' in pathMappings) {
+        // For component projects, treat 'src' as 'webapp' for compatibility with tooling expecting 'webapp'
+        // Related to UI5 CLI v5 where project type 'application' migrated to 'component'
+        return pathMappings.src;
+    }
+    return join(appRoot, DirName.Webapp);
 }
 
 /**
