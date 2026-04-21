@@ -11,9 +11,7 @@ import type {
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { Destination } from '@sap-ux/btp-utils';
 import { listDestinations, isOnPremiseDestination } from '@sap-ux/btp-utils';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { Severity } = yeomanUiTypes;
-import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n.js';
