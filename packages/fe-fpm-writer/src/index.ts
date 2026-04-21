@@ -22,6 +22,7 @@ export { generateCustomView } from './view';
 export { enableFPM, FPMConfig } from './app';
 
 export { validateBasePath, validateVersion } from './common/validate';
+export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file';
 
 export {
     BuildingBlockType,
@@ -35,8 +36,10 @@ export {
     Page,
     CustomColumn,
     CustomFilterField,
+    CustomFormField,
     RichTextEditor,
-    ButtonGroupConfig
+    ButtonGroupConfig,
+    Action
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {

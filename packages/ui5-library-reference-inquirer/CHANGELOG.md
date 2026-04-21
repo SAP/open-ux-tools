@@ -1,5 +1,249 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.146
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.37
+
+## 0.4.145
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.36
+
+## 0.4.144
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/inquirer-common@0.11.35
+    - @sap-ux/project-access@1.35.20
+
+## 0.4.143
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/inquirer-common@0.11.34
+    - @sap-ux/project-access@1.35.19
+
+## 0.4.142
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/inquirer-common@0.11.33
+
+## 0.4.141
+
+### Patch Changes
+
+- c53a4ba: chore(ui5-library-reference-inquirer): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/project-access@1.35.17
+
+## 0.4.140
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.31
+
+## 0.4.139
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.30
+
+## 0.4.138
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/inquirer-common@0.11.29
+
+## 0.4.137
+
+### Patch Changes
+
+- a41533f: chore(ui5-library-reference-inquirer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/project-access@1.35.16
+
+## 0.4.136
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/inquirer-common@0.11.27
+
+## 0.4.135
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.26
+- @sap-ux/project-access@1.35.14
+
+## 0.4.134
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.25
+
+## 0.4.133
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [55417bb]
+    - @sap-ux/inquirer-common@0.11.24
+
+## 0.4.132
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.23
+
+## 0.4.131
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/inquirer-common@0.11.22
+
+## 0.4.130
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/inquirer-common@0.11.21
+    - @sap-ux/project-access@1.35.12
+
+## 0.4.129
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.20
+
+## 0.4.128
+
+### Patch Changes
+
+- f5f9a78: fix(deps): update dependency @sap-devx/yeoman-ui-types to v1.22.0
+- Updated dependencies [f5f9a78]
+    - @sap-ux/inquirer-common@0.11.19
+    - @sap-ux/project-access@1.35.11
+
+## 0.4.127
+
+### Patch Changes
+
+- Updated dependencies [2302698]
+    - @sap-ux/inquirer-common@0.11.18
+
+## 0.4.126
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/inquirer-common@0.11.17
+
+## 0.4.125
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/inquirer-common@0.11.16
+
+## 0.4.124
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/inquirer-common@0.11.15
+
+## 0.4.123
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/inquirer-common@0.11.14
+
+## 0.4.122
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/inquirer-common@0.11.13
+
+## 0.4.121
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/inquirer-common@0.11.12
+
+## 0.4.120
+
+### Patch Changes
+
+- Updated dependencies [ff634b0]
+    - @sap-ux/inquirer-common@0.11.11
+
+## 0.4.119
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/inquirer-common@0.11.10
+
+## 0.4.118
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/project-access@1.35.6
+
+## 0.4.117
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/inquirer-common@0.11.8
+
+## 0.4.116
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.7
+
+## 0.4.115
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/inquirer-common@0.11.6
+
+## 0.4.114
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.5
+
 ## 0.4.113
 
 ### Patch Changes

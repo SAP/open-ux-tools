@@ -1,19 +1,19 @@
-# Ensures Valid `statePreservationMode` Configuration in SAP Fiori Elements (`sap-state-preservation-mode`)
+# Ensures a Valid `statePreservationMode` Configuration in SAP Fiori Elements (`sap-state-preservation-mode`)
 
-Validates that `statePreservationMode` is correctly configured in the `manifest.json` file for SAP Fiori Elements for OData V2 applications to ensure optimal application state handling and user experience.
+Validates that `statePreservationMode` is correctly configured in the `manifest.json` file for SAP Fiori elements for OData V2 applications to ensure optimal state handling and user experience for your application.
 
-**Important**: This rule validates **only SAP Fiori Elements for OData V2** applications.
+**Important**: This rule validates only SAP Fiori elements for OData V2 applications.
 
 ## Rule Details
 
-This rule validates the `statePreservationMode` configuration in SAP Fiori Elements for OData V2 applications. The state preservation mode determines how the object page responds to personalization changes made by the user, such as applying filters on a chart or table, displaying hidden columns, or selecting a specific tab.
+This rule validates the `statePreservationMode` configuration in SAP Fiori elements for OData V2 applications. The state preservation mode determines how an object page responds to personalization changes made by the user, such as applying filters on a chart or table, displaying hidden columns, or selecting a specific tab.
 
 ### Why Was This Rule Introduced?
 
-The `statePreservationMode` property controls how application state is preserved and restored when navigating between objects. Choosing the correct mode is critical for providing the expected user experience:
+The `statePreservationMode` property controls how application state is preserved and restored when navigating between objects. Choosing the correct mode is critical to provide the expected user experience:
 
-- **Applications with Flexible Column Layout (FCL)**: `persistence` mode is the default and recommended mode to properly maintain state across multiple columns and object navigation
-- **Applications without FCL**: `discovery` mode is the default and recommended mode, where personalization changes apply only to the current object
+- **Applications with Flexible Column Layout (FCL)**: `persistence` mode is the default and recommended mode to properly maintain state across multiple columns and object navigation.
+- **Applications without FCL**: `discovery` mode is the default and recommended mode, where personalization changes apply only to the current object.
 
 
 ### State Preservation Modes
@@ -22,11 +22,11 @@ The `statePreservationMode` property accepts the following values:
 
 #### Discovery Mode
 
-This is the **default mode for applications that don't use Flexible Column Layout**. In this mode, personalization changes made to the underlying controls affect only the current object. They don't affect objects at the same level.
+This is the **default mode for applications that don't use the flexible column layout**. In this mode, personalization changes made to the underlying controls affect only the current object. They don't affect objects at the same level.
 
 #### Persistence Mode
 
-This is the **default mode for applications that use Flexible Column Layout**. In this mode, changes made to the underlying controls affect the current object and objects at the same level when you navigate to another object.
+This is the **default mode for applications that use flexible column layout**. In this mode, changes made to the underlying controls affect the current object and objects at the same level when you navigate to another object.
 
 
 ### Configuration Location
@@ -49,7 +49,7 @@ The property is configured at: `sap.ui.generic.app.settings.statePreservationMod
 
 #### Warning Message: Invalid value "abc" for statePreservationMode. "discovery" is recommended.
 
-The following patterns are considered warnings:
+The following pattern is considered a warning:
 
 ```json
 {
@@ -66,7 +66,7 @@ The following patterns are considered warnings:
 
 #### Warning Message: Consider using default. For applications using Flexible Column Layout (FCL), default is "persistence" mode.
 
-The following patterns are considered warnings:
+The following pattern is considered a warning:
 
 ```json
 {
@@ -81,7 +81,7 @@ The following patterns are considered warnings:
 }
 ```
 
-The following patterns are not considered warnings:
+The following pattern is not considered a warning:
 
 ```json
 {
@@ -96,11 +96,11 @@ The following patterns are not considered warnings:
 }
 ```
 
-### Using `persistence` Mode without Flexible Column Layout
+### Using `persistence` Mode Without Flexible Column Layout
 
 #### Warning Message: Consider using default. For applications not using Flexible Column Layout, default is "discovery" mode.
 
-The following patterns are considered warnings:
+The following pattern is considered a warning:
 
 ```json
 {
@@ -112,7 +112,7 @@ The following patterns are considered warnings:
 }
 ```
 
-The following patterns are not considered warnings:
+The following patterns is not considered a warning:
 
 ```json
 {
@@ -128,9 +128,9 @@ The following patterns are not considered warnings:
 
 The rule provides automatic fixes for all warning scenarios:
 
-1. **For invalid values**: The rule will replace the invalid value with the recommended mode based on FCL configuration
-2. **For FCL applications using `discovery`**: The rule will change the mode to `persistence`
-3. **For non-FCL applications using `persistence`**: The rule will change the mode to `discovery`
+1. **For invalid values**: The rule replaces the invalid value with the recommended mode based on the configuration of the flexible column layout.
+2. **For applications using flexible column layout with `discovery`**: The rule changes the mode to `persistence`.
+3. **For applications not using flexible column layout with `persistence`**: The rule changes the mode to `discovery`.
 
 You can apply the fix automatically using your IDE's quick fix feature or by running ESLint with the `--fix` option.
 

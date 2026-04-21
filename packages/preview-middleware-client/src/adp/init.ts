@@ -50,8 +50,15 @@ export default async function (rta: RuntimeAuthoring) {
         extPointService.init();
     }
 
-    const applicationType = getApplicationType(rta.getRootControlInstance().getManifest());
+    const manifest = rta.getRootControlInstance().getManifest();
+    const applicationType = getApplicationType(manifest);
     const quickActionRegistries = await loadDefinitions(applicationType);
+
+    // Initialize OVP bridge functions if the application is an OVP app
+    if (manifest['sap.ovp']) {
+        const { initOvpWindowFunctions } = await import('open/ux/preview/client/adp/ovp-window-functions');
+        initOvpWindowFunctions();
+    }
 
     await init(rta, quickActionRegistries);
 

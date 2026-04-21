@@ -13,7 +13,8 @@ const mockUseSystemMain = useSystemMain as jest.MockedFunction<typeof useSystemM
 describe('<SystemMain />', () => {
     const connectionStatus = {
         message: '',
-        connected: false
+        connected: false,
+        showOutputChannelLink: false
     };
 
     const guidedAnswerLink = {
@@ -56,7 +57,7 @@ describe('<SystemMain />', () => {
         addNewSapSystem: false,
         // Mock functions
         setName: jest.fn(),
-        setType: jest.fn(),
+        setSystemType: jest.fn(),
         setUrl: jest.fn(),
         setClient: jest.fn(),
         setUsername: jest.fn(),

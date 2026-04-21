@@ -53,5 +53,9 @@ export interface TestConnectionStatus {
 
 export interface UpdateSystemStatus {
     type: typeof UPDATE_SYSTEM_STATUS;
-    payload: { message: string; updateSuccess: boolean };
+    payload: {
+        message: string;
+        updateSuccess: boolean;
+        existingSystem?: { name: string; url: string; client?: string };
+    };
 }

@@ -1,5 +1,23 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.7.7
+
+### Patch Changes
+
+- 4f7b796: fix(deps): update dependency ts-jest to v29.4.6
+
+## 0.7.6
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
+## 0.7.5
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+
 ## 0.7.4
 
 ### Patch Changes

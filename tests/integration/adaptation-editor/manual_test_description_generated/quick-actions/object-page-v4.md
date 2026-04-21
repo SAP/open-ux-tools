@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-- [1. Add Custom Table Column.](#1-add-custom-table-column)
+- [1. Add Custom Table Column(manifest change).](#1-add-custom-table-columnmanifest-change)
 - [2. Enable Variant Management in Tables.](#2-enable-variant-management-in-tables)
 - [3. Enable Empty row mode.](#3-enable-empty-row-mode)
 - [4. Change table actions](#4-change-table-actions)
@@ -10,8 +10,8 @@
 - [6. Add Custom Table Action to Object page](#6-add-custom-table-action-to-object-page)
 - [7: Add Custom Page Action to OP page](#7-add-custom-page-action-to-op-page)
 
-<a id="1-add-custom-table-column"></a>
-## 1. Add Custom Table Column.
+<a id="1-add-custom-table-columnmanifest-change"></a>
+## 1. Add Custom Table Column(manifest change).
 
 ### Steps
 
@@ -21,22 +21,19 @@
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Add Custom Table Column` button in the Quick Actions Panel
-7. Fill `Fragment Name` field with `table-column` in the dialog `Add Custom Table Column`
-8. Click `Save and Reload` button in the toolBar
-9. Verify changes:
+7. Fill `Column ID` field with `testColumnId` in the dialog `Add Custom Table Column`
+8. Fill `Fragment Name` field with `TestFragment` in the dialog `Add Custom Table Column`
+9. Click `Save and Reload` button in the toolBar
+10. Verify changes:
 
 **Fragment(s)**
 
-**table-column.fragment.xml**
+**TestFragment.fragment.xml**
 ```xml
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
-    <table:Column
-        id="column-<UNIQUE_ID>"
-        width="10%"
-        header="New Column">
         <Text id="text-<UNIQUE_ID>" text="Sample data"/>
-    </table:Column>
 </core:FragmentDefinition>
+
 ```
 
 **Change(s)**
@@ -44,18 +41,28 @@
 ```json
 {
   "fileType": "change",
-  "changeType": "addXML",
+  "changeType": "appdescr_fe_changePageConfiguration",
   "content": {
-    "targetAggregation": "columns",
-    "index": 3,
-    "fragmentPath": "fragments/table-column.fragment.xml"
+    "page": "RootEntityObjectPage",
+    "entityPropertyChange": {
+      "operation": "UPSERT",
+      "propertyPath": "controlConfiguration/toFirstAssociatedEntity/@com.sap.vocabularies.UI.v1.LineItem#tableSection/columns/testColumnId",
+      "propertyValue": {
+        "header": "New Column",
+        "position": {
+          "anchor": "DataField::DateProperty",
+          "placement": "After"
+        },
+        "template": "adp.fiori.elements.v4.changes.fragments.TestFragment"
+      }
+    }
   }
 }
 ```
 
 
-10. Check Column Name is `New Column`
-11. Check Column Data is `Sample data`
+11. Check Column Name is `New Column`
+12. Check Column Data is `Sample data`
 
 ---
 

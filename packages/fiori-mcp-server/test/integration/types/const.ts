@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 
 export const FOLDER_PATHS = {
     snapshots: join(__dirname, '../snapshots'),

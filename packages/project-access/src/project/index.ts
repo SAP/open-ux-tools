@@ -17,7 +17,8 @@ export {
     getWorkspaceInfo,
     hasMinCdsVersion,
     checkCdsUi5PluginEnabled,
-    processServices
+    processServices,
+    getGlobalCdsHomePath
 } from './cap';
 export { filterDataSourcesByType, getMainService } from './service';
 export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies';

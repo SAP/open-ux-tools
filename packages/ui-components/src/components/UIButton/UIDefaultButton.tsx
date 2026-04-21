@@ -43,7 +43,8 @@ export const BASE_STYLES = {
         checkedBackgroundColor: 'var(--vscode-button-background)',
         checkedColor: 'var(--vscode-button-foreground)',
         checkedBorderStyle: 'solid'
-    }
+    },
+    height: 26
 };
 const ICON_SELECTOR = 'svg > path, svg > rect';
 
@@ -165,7 +166,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
         const dividerStyle: IStyle = {
             position: 'absolute',
             width: 1,
-            right: 21,
+            right: BASE_STYLES.height - 1,
             top: 0,
             bottom: 0,
             backgroundColor: 'var(--vscode-editor-background)'
@@ -177,7 +178,8 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
         return {
             root: {
                 minWidth: 'initial',
-                height: 22,
+                minHeight: BASE_STYLES.height,
+                height: BASE_STYLES.height,
                 fontSize: '13px',
                 fontWeight: 400,
                 borderRadius: COMMON_INPUT_STYLES.borderRadius,
@@ -331,7 +333,8 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
             rootCheckedPressed: interactionStyles.checked,
             splitButtonMenuButton: {
                 padding: 6,
-                height: 22,
+                minHeight: BASE_STYLES.height,
+                height: BASE_STYLES.height,
                 boxSizing: 'border-box',
                 borderRadius: `0 ${COMMON_INPUT_STYLES.borderRadius}px ${COMMON_INPUT_STYLES.borderRadius}px 0 !important`,
                 borderLeft: 'none',
@@ -342,7 +345,8 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 textAlign: 'center',
                 cursor: 'pointer',
                 verticalAlign: 'top',
-                width: 22,
+                // Split button should be square — width matches height
+                width: BASE_STYLES.height,
                 marginLeft: -1,
                 marginTop: 0,
                 marginRight: 0,

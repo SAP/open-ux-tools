@@ -111,6 +111,24 @@ exports[`FE V4 Linker linkTableSettings section level - object page orphan-node 
 
 exports[`FE V4 Linker linkTableSettings section level - object page orphan-table 1`] = `
 Object {
+  "condensedTableLayout": Object {
+    "configurationPath": Array [
+      "sap.ui5",
+      "routing",
+      "targets",
+      "IncidentsList",
+      "options",
+      "settings",
+      "controlConfiguration",
+      "@com.sap.vocabularies.UI.v1.LineItem",
+      "tableSettings",
+      "condensedTableLayout",
+    ],
+    "values": Array [
+      true,
+      false,
+    ],
+  },
   "creationMode": Object {
     "configurationPath": Array [
       "sap.ui5",
@@ -182,6 +200,25 @@ Object {
     "values": Array [
       true,
       false,
+    ],
+  },
+  "personalization": Object {
+    "configurationPath": Array [
+      "sap.ui5",
+      "routing",
+      "targets",
+      "IncidentsList",
+      "options",
+      "settings",
+      "controlConfiguration",
+      "@com.sap.vocabularies.UI.v1.LineItem",
+      "tableSettings",
+      "personalization",
+    ],
+    "values": Array [
+      true,
+      false,
+      Object {},
     ],
   },
   "tableType": Object {

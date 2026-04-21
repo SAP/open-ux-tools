@@ -15,10 +15,10 @@ import type { FreestyleApp, Template as TemplateSettingsFF } from '@sap-ux/fiori
 import { TemplateType as TemplateTypeFF } from '@sap-ux/fiori-freestyle-writer';
 import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types';
 import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
-import { ServiceType } from '@sap-ux/odata-service-writer';
+import { ServiceType, type OdataService } from '@sap-ux/odata-service-writer';
 import { AuthenticationType } from '@sap-ux/store';
 import { latestVersionString } from '@sap-ux/ui5-info';
-import type { Floorplan, State } from '../types';
+import type { Floorplan, State, Service } from '../types';
 import {
     DEFAULT_HOST,
     DEFAULT_SERVICE_PATH,
@@ -40,6 +40,7 @@ import {
 import type { Package } from '@sap-ux/project-access';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 /**
  * Get the writer template type from the Fiori App floorplan.
@@ -184,6 +185,43 @@ function getUI5Uri(): string {
 }
 
 /**
+ * Return the preview settings for the app configuration based on the service configuration.
+ *
+ * @param service - the service config from the state
+ * @returns - preview settings
+ */
+function getPreviewSettings(service: Service): Partial<OdataService['previewSettings']> {
+    let previewSettings: Partial<OdataService['previewSettings']> = {};
+
+    if (
+        service.destinationAuthType === DestinationAuthType.SAML_ASSERTION ||
+        service.connectedSystem?.destination?.Authentication === DestinationAuthType.SAML_ASSERTION ||
+        AuthenticationType.ReentranceTicket === service.connectedSystem?.backendSystem?.authenticationType ||
+        // Apps generated with stored service keys (legacy) will use re-entrance tickets for connectivity
+        // New stored systems will only use re-entrance
+        service.connectedSystem?.backendSystem?.serviceKeys ||
+        // If 'cloud' this will enable preview on VSCode (using re-entrance) for app portability
+        (getHostEnvironment() === hostEnvironment.bas &&
+            service.connectedSystem?.destination &&
+            isAbapEnvironmentOnBtp(service.connectedSystem?.destination))
+    ) {
+        previewSettings = { authenticationType: AuthenticationType.ReentranceTicket };
+    } else if (service.apiHubConfig) {
+        previewSettings = { apiHub: true };
+    }
+
+    if (service.connectedSystem?.backendSystem?.connectionType === 'odata_service') {
+        const url = service.connectedSystem.backendSystem.url;
+        previewSettings = {
+            ...previewSettings,
+            connectPath: url ? new URL(url).pathname : undefined
+        };
+    }
+
+    return previewSettings;
+}
+
+/**
  * Transform Fiori Tools State to the type required by the open source ux-tools module.
  * Process inputs to set correct defaults.
  *
@@ -232,6 +270,10 @@ export async function transformState<T>(
         }
 
         if (service.capService) {
+            const disableCapRootPkgJsonUpdates = isFeatureEnabled(
+                'sap.ux.testBetaFeatures.disableCapRootPkgJsonUpdates'
+            );
+
             const { cdsUi5PluginInfo, ...capServiceInfo } = service.capService;
             appConfig.service.capService = {
                 ...capServiceInfo,
@@ -244,24 +286,16 @@ export async function transformState<T>(
                 appConfig.service.capService.cdsUi5PluginInfo.isWorkspaceEnabled = true;
                 appConfig.service.capService.cdsUi5PluginInfo.hasCdsUi5Plugin = true;
             }
+            appConfig.appOptions = {
+                ...appConfig.appOptions,
+                disableCapRootPkgJsonUpdates
+            };
         }
 
-        if (
-            service.destinationAuthType === DestinationAuthType.SAML_ASSERTION ||
-            service.connectedSystem?.destination?.Authentication === DestinationAuthType.SAML_ASSERTION ||
-            AuthenticationType.ReentranceTicket === service.connectedSystem?.backendSystem?.authenticationType ||
-            // Apps generated with stored service keys (legacy) will use re-entrance tickets for connectivity
-            // New stored systems will only use re-entrance
-            service.connectedSystem?.backendSystem?.serviceKeys ||
-            // If 'cloud' this will enable preview on VSCode (using re-entrance) for app portability
-            (getHostEnvironment() === hostEnvironment.bas &&
-                service.connectedSystem?.destination &&
-                isAbapEnvironmentOnBtp(service.connectedSystem?.destination))
-        ) {
-            appConfig.service.previewSettings = { authenticationType: AuthenticationType.ReentranceTicket };
-        } else if (service.apiHubConfig) {
-            appConfig.service.previewSettings = { apiHub: true };
-        }
+        appConfig.service.previewSettings = {
+            ...appConfig.service.previewSettings,
+            ...getPreviewSettings(service)
+        };
     }
 
     return appConfig as T;

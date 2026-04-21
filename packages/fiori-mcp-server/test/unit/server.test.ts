@@ -50,7 +50,7 @@ describe('FioriFunctionalityServer', () => {
         new FioriFunctionalityServer();
         // Check initialization
         expect(Server).toHaveBeenCalledWith(
-            { name: 'fiori-mcp', version: expect.any(String) },
+            { name: 'fiori-mcp', version: expect.any(String), title: expect.any(String), icons: expect.any(Array) },
             { capabilities: { tools: {} } }
         );
         expect(setRequestHandlerMock).toHaveBeenCalledTimes(3);

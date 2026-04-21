@@ -220,7 +220,6 @@ describe('AddActionFragment', () => {
                     title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                 }
             );
-            //addFragment.model = getTestModel();
             beginBtnSetEnabledMock = jest.fn().mockReturnValue({ rerender: jest.fn() });
             addFragment.dialog = {
                 getBeginButton: jest.fn().mockReturnValue({ setEnabled: beginBtnSetEnabledMock }),
@@ -320,7 +319,7 @@ describe('AddActionFragment', () => {
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
                 1,
-                "An action with the ''testId''  ID is already defined. Please choose a different ID."
+                'An action with the \'\'testId\'\'  ID is already defined. Please choose a different ID.'
             );
         });
 

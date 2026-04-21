@@ -21,27 +21,27 @@ import {
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type AbapSystemChoice,
-    type BackendTarget,
-    type TargetSystemPromptOptions
+    type BackendTarget
 } from '../../types';
 import type { InputQuestion, ListQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Question } from 'inquirer';
 import { TargetSystemType } from '../../types';
+import type { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * Returns the destination prompt.
  *
  * @param choices - abap system choices
  * @param destinations - list of destinations
- * @param options - target system options
  * @param backendTarget - backend target
+ * @param adpProjectType - The adaptation project type.
  * @returns list question for destination
  */
 function getDestinationPrompt(
     choices: AbapSystemChoice[],
     destinations?: Destinations,
-    options?: TargetSystemPromptOptions,
-    backendTarget?: BackendTarget
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
 ): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
         {
@@ -57,7 +57,7 @@ function getDestinationPrompt(
             filter: (input: string): string => input?.trim(),
             choices: (): AbapSystemChoice[] => choices,
             validate: async (destination: string): Promise<boolean | string> =>
-                await validateDestinationQuestion(destination, destinations, options, backendTarget),
+                await validateDestinationQuestion(destination, destinations, backendTarget, adpProjectType),
             additionalMessages: (destination: string): IMessageSeverity | undefined => {
                 let additionalMessage;
                 if (destinations && destination && isOnPremiseDestination(destinations[destination])) {
@@ -73,10 +73,10 @@ function getDestinationPrompt(
 
     if (isAppStudio() && !PromptState.isYUI) {
         prompts.push({
-            when: async (answers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
+            when: (answers: AbapDeployConfigAnswersInternal): boolean => {
                 const destination = answers[promptNames.destination];
                 if (destination) {
-                    await updateDestinationPromptState(destination, destinations, options, backendTarget);
+                    updateDestinationPromptState(destination, destinations);
                 }
                 return false;
             },
@@ -90,12 +90,14 @@ function getDestinationPrompt(
  * Returns the target system prompt.
  *
  * @param choices - abap system choices
- * @param options - target system options
+ * @param backendTarget - The backend target.
+ * @param adpProjectType - The Adaptation project type.
  * @returns list question for target system
  */
 function getTargetSystemPrompt(
     choices: AbapSystemChoice[],
-    options?: TargetSystemPromptOptions
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
 ): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
         {
@@ -109,17 +111,16 @@ function getTargetSystemPrompt(
             },
             choices: (): AbapSystemChoice[] => choices,
             default: (): string | undefined => defaultTargetSystem(choices),
-            validate: async (target: string): Promise<boolean | string> =>
-                await validateTargetSystem(target, choices, options)
+            validate: (target: string) => validateTargetSystem(target, choices, backendTarget, adpProjectType)
         } as ListQuestion<AbapDeployConfigAnswersInternal>
     ];
 
     if (!isAppStudio() && !PromptState.isYUI) {
         prompts.push({
-            when: (answers: AbapDeployConfigAnswersInternal): boolean => {
+            when: async (answers: AbapDeployConfigAnswersInternal) => {
                 const target = answers[promptNames.targetSystem];
                 if (target) {
-                    validateTargetSystemUrlCli(target, choices);
+                    await validateTargetSystemUrlCli(target, choices, backendTarget, adpProjectType);
                 }
                 return false;
             },
@@ -271,8 +272,8 @@ export async function getAbapTargetPrompts(
 
     const abapSystemChoices = await getAbapSystemChoices(destinations, options?.backendTarget, backendSystems);
     return [
-        ...getDestinationPrompt(abapSystemChoices, destinations, options.targetSystem, options.backendTarget),
-        ...getTargetSystemPrompt(abapSystemChoices, options.targetSystem),
+        ...getDestinationPrompt(abapSystemChoices, destinations, options.backendTarget, options.adpProjectType),
+        ...getTargetSystemPrompt(abapSystemChoices, options.backendTarget, options.adpProjectType),
         getUrlPrompt(destinations, options.backendTarget),
         ...getScpPrompt(options.backendTarget),
         ...getClientChoicePrompt(options.backendTarget),

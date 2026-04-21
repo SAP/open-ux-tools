@@ -132,7 +132,7 @@ export function getSystemServiceQuestion(
                         );
                     }
                 } else {
-                    LoggerHelper.logger.error(t('error.noCatalogOrServiceAvailable'));
+                    LoggerHelper.logger.error(t('errors.noCatalogOrServiceAvailable'));
                 }
             }
             return serviceChoices;

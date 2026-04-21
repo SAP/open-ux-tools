@@ -1,5 +1,13 @@
 # test-project
 
+## 0.0.4
+
+### Patch Changes
+
+- 8017bd3: updates for minimatch
+
+    #37169
+
 ## 0.0.3
 
 ### Patch Changes

@@ -1,5 +1,54 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.21
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+
+## 0.2.20
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+
+## 0.2.19
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+
+## 0.2.18
+
+### Patch Changes
+
+- a41533f: chore(nodejs-utils): upgrade fast-glob 3.3.1 → 3.3.3
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+
+## 0.2.17
+
+### Patch Changes
+
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+
+## 0.2.16
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+
+## 0.2.15
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+
 ## 0.2.14
 
 ### Patch Changes

@@ -7,13 +7,16 @@ import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '
 import {
     FlexLayer,
     SourceManifest,
+    SupportedProject,
     SystemLookup,
     fetchPublicVersions,
     generate,
     generateCf,
+    getCfBaseAppInbounds,
     getCfConfig,
     getConfig,
     getConfiguredProvider,
+    getSupportedProject,
     getFormattedVersion,
     getLatestVersion,
     getYamlContent,
@@ -23,7 +26,7 @@ import {
     loadApps,
     loadCfConfig,
     storeCredentials,
-    getServiceInstanceKeys
+    getOrCreateServiceInstanceKeys
 } from '@sap-ux/adp-tooling';
 import {
     getDefaultTargetFolder,
@@ -35,9 +38,8 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
-import { initTelemetrySettings } from '@sap-ux/telemetry';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
 
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
@@ -69,11 +71,13 @@ import {
     type TargetEnvAnswers,
     type AdpGeneratorOptions,
     type AttributePromptOptions,
-    type JsonInput
+    type JsonInput,
+    type OptionalPromptsConfig
 } from './types';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
 import type { AdpTelemetryData } from '../types';
 import { KeyUserImportPrompter } from './questions/key-user';
+import { initTelemetrySettings } from '@sap-ux/telemetry';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -142,6 +146,10 @@ export default class extends Generator {
      * Application manifest.
      */
     private manifest: Manifest;
+    /**
+     * The Adaptation project type.
+     */
+    private projectType?: AdaptationProjectType;
     /**
      * Publicly available UI5 versions.
      */
@@ -278,6 +286,11 @@ export default class extends Generator {
         } else {
             const isExtensibilityExtInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
             const configQuestions = this.prompter.getPrompts({
+                projectType: {
+                    default: AdaptationProjectType.CLOUD_READY
+                },
+                projectTypeCli: { hide: !this.isCli },
+                projectTypeClassicLabel: { hide: this.isCli },
                 appValidationCli: { hide: !this.isCli },
                 systemValidationCli: { hide: !this.isCli },
                 shouldCreateExtProject: { isExtensibilityExtInstalled }
@@ -289,10 +302,11 @@ export default class extends Generator {
             this.logger.info(`Application: ${JSON.stringify(this.configAnswers.application, null, 2)}`);
 
             const { ui5Versions, systemVersion } = this.prompter.ui5;
-            const promptConfig = {
+            const optionalPromptsConfig: OptionalPromptsConfig = {
                 ui5Versions,
                 isVersionDetected: !!systemVersion,
-                isCloudProject: this.prompter.isCloud,
+                projectType: this.prompter.projectType,
+                systemType: this.prompter.systemType,
                 layer: this.layer,
                 prompts: this.prompts
             };
@@ -308,7 +322,7 @@ export default class extends Generator {
                 addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase },
                 importKeyUserChanges: { hide: this.shouldCreateExtProject }
             };
-            const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
+            const attributesQuestions = getPrompts(this.destinationPath(), optionalPromptsConfig, options);
             this.attributeAnswers = await this.prompt(attributesQuestions);
 
             // Steps need to be updated here to be available after back navigation in Yeoman UI.
@@ -336,6 +350,7 @@ export default class extends Generator {
                         projectName: this.attributeAnswers.projectName,
                         projectPath: this.attributeAnswers.targetFolder,
                         connectedSystem: this.configAnswers.system,
+                        projectType: this.prompter.projectType,
                         system
                     },
                     this.composeWith.bind(this),
@@ -396,6 +411,8 @@ export default class extends Generator {
             const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
             const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
             const manifest = this.jsonInput ? this.manifest : this.prompter.manifest;
+            const keyUserChanges = this.jsonInput ? this.jsonInput.keyUserChanges : this.keyUserPrompter?.changes;
+            const projectType = this._getProjectType();
 
             const packageJson = getPackageInfo();
             const config = await getConfig({
@@ -408,8 +425,9 @@ export default class extends Generator {
                 layer: this.layer,
                 packageJson,
                 logger: this.toolsLogger,
+                projectType,
                 toolsId: this.toolsId,
-                keyUserChanges: this.keyUserPrompter?.changes
+                keyUserChanges
             });
 
             if (config.options) {
@@ -503,8 +521,8 @@ export default class extends Generator {
             telemetryData.baseAppTechnicalName = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
             telemetryData.projectType = 'cf';
         } else {
-            const isCloud = this.prompter?.isCloud ?? false;
-            telemetryData.projectType = isCloud ? 'cloudReady' : 'onPremise';
+            telemetryData.projectType =
+                this._getProjectType() === AdaptationProjectType.CLOUD_READY ? 'cloudReady' : 'onPremise';
             telemetryData.baseAppTechnicalName = this.configAnswers?.application?.id ?? '';
         }
         if (this.jsonInput) {
@@ -563,7 +581,9 @@ export default class extends Generator {
             ui5Version: { hide: true },
             ui5ValidationCli: { hide: true },
             enableTypeScript: { hide: true },
-            addFlpConfig: { hide: true },
+            // In CF flow, inbounds are fetched after base app selection (CF services page), which comes after attributes.
+            // We assume true here so the wizard prepares the tile settings page; actual inbounds availability is handled by the FLP sub-gen.
+            addFlpConfig: { hasBaseAppInbounds: true },
             addDeployConfig: { hide: true },
             importKeyUserChanges: { hide: true }
         };
@@ -574,7 +594,6 @@ export default class extends Generator {
             {
                 ui5Versions: [],
                 isVersionDetected: false,
-                isCloudProject: false,
                 layer: this.layer,
                 prompts: this.prompts,
                 isCfEnv: true
@@ -588,6 +607,39 @@ export default class extends Generator {
         const cfServicesQuestions = await this.cfPrompter.getPrompts(projectPath, this.cfConfig);
         this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(cfServicesQuestions);
         this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
+
+        const selectedApp = this.cfServicesAnswers.baseApp;
+        if (!selectedApp || !this.attributeAnswers?.addFlpConfig) {
+            return;
+        }
+
+        try {
+            const cfInbounds = await getCfBaseAppInbounds(
+                selectedApp.appId,
+                selectedApp.appHostId,
+                this.cfConfig,
+                this.logger
+            );
+            // Register FLP wizard pages now that we know if inbounds are available
+            updateFlpWizardSteps(!!cfInbounds, this.prompts, this.attributeAnswers.projectName, true);
+            if (cfInbounds) {
+                await addFlpGen(
+                    {
+                        vscode: this.vscode,
+                        projectRootPath: this._getProjectPath(),
+                        inbounds: cfInbounds,
+                        layer: this.layer,
+                        prompts: this.prompts,
+                        isCfProject: true
+                    },
+                    this.composeWith.bind(this),
+                    this.logger,
+                    this.appWizard
+                );
+            }
+        } catch (e) {
+            this.logger.warn(`Could not fetch CF inbounds for FLP configuration: ${e.message}`);
+        }
     }
 
     /**
@@ -624,7 +676,7 @@ export default class extends Generator {
         const backendUrls = this.cfPrompter.backendUrls;
         const oauthPaths = this.cfPrompter.oauthPaths;
 
-        const serviceInfo = await getServiceInstanceKeys(
+        const serviceInfo = await getOrCreateServiceInstanceKeys(
             {
                 names: [this.cfServicesAnswers.businessService ?? '']
             },
@@ -645,7 +697,8 @@ export default class extends Generator {
             publicVersions,
             packageJson: getPackageInfo(),
             toolsId: this.toolsId,
-            serviceInfo
+            serviceInfo,
+            spaceGuid: this.cfConfig.space.GUID
         });
 
         if (config.options) {
@@ -668,6 +721,16 @@ export default class extends Generator {
             return join(process.cwd(), this.attributeAnswers.projectName);
         }
         return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
+    }
+
+    /**
+     * Use this method to get the correct Adaptation project type, no matter how we start
+     * the generator - from Yeoman UI or the CLI.
+     *
+     * @returns {AdaptationProjectType | undefined} The Adaptation project type.
+     */
+    private _getProjectType(): AdaptationProjectType | undefined {
+        return this.jsonInput ? this.projectType : this.prompter.projectType;
     }
 
     /**
@@ -698,6 +761,7 @@ export default class extends Generator {
             client,
             username = '',
             password = '',
+            projectType,
             application: baseApplicationName,
             applicationTitle,
             targetFolder = '/home/user/projects',
@@ -721,8 +785,19 @@ export default class extends Generator {
             password
         };
         this.abapProvider = await getConfiguredProvider(providerOptions, this.logger);
+        const supportedProject = await getSupportedProject(this.abapProvider);
+        let selectedProjectType = AdaptationProjectType.ON_PREMISE;
+        if (supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM) {
+            const isInternalUsage = isInternalFeaturesSettingEnabled();
+            selectedProjectType = isInternalUsage
+                ? AdaptationProjectType.ON_PREMISE
+                : (projectType ?? AdaptationProjectType.CLOUD_READY);
+        } else if (supportedProject === SupportedProject.CLOUD_READY) {
+            selectedProjectType = AdaptationProjectType.CLOUD_READY;
+        }
+        this.projectType = selectedProjectType;
 
-        const applications = await loadApps(this.abapProvider, this.isCustomerBase);
+        const applications = await loadApps(this.abapProvider, this.isCustomerBase, supportedProject);
         this.telemetryCollector.setBatch({ numberOfApplications: applications.length });
         const application = applications.find((application) => application.id === baseApplicationName);
         if (!application) {

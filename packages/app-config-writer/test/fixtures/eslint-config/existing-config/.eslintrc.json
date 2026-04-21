@@ -1,0 +1,13 @@
+{
+    "env": {
+        "browser": true,
+        "es2022": true
+    },
+    "extends": ["plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS"],
+    "parserOptions": {
+        "project": ["./tsconfig.json"]
+    },
+    "rules": {
+        "linebreak-style": 0
+    }
+}

@@ -52,22 +52,19 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Add Custom Table Column` button in the Quick Actions Panel
-3. Fill `Fragment Name` field with `table-column` in the dialog `Add Custom Table Column`
-4. Click `Save and Reload` button in the toolBar
-5. Verify changes:
+3. Fill `Column ID` field with `testColumnId` in the dialog `Add Custom Table Column`
+4. Fill `Fragment Name` field with `TestFragment` in the dialog `Add Custom Table Column`
+5. Click `Save and Reload` button in the toolBar
+6. Verify changes:
 
 **Fragment(s)**
 
-**table-column.fragment.xml**
+**TestFragment.fragment.xml**
 ```xml
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
-    <table:Column
-        id="column-<UNIQUE_ID>"
-        width="10%"
-        header="New Column">
         <Text id="text-<UNIQUE_ID>" text="Sample data"/>
-    </table:Column>
 </core:FragmentDefinition>
+
 ```
 
 **Change(s)**
@@ -75,19 +72,30 @@
 ```json
 {
   "fileType": "change",
-  "changeType": "addXML",
+  "changeType": "appdescr_fe_changePageConfiguration",
   "content": {
-    "targetAggregation": "columns",
-    "fragmentPath": "fragments/table-column.fragment.xml"
+    "page": "RootEntityList",
+    "entityPropertyChange": {
+      "operation": "UPSERT",
+      "propertyPath": "controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/columns/testColumnId",
+      "propertyValue": {
+        "header": "New Column",
+        "position": {
+          "anchor": "DataField::DateProperty",
+          "placement": "After"
+        },
+        "template": "adp.fiori.elements.v4.changes.fragments.TestFragment"
+      }
+    }
   }
 }
 ```
 
 
-6. Click `Navigation` button in the toolBar
-7. Click `Go` button in the Running Application Preview
-8. Check Column Name is `New Column`
-9. Check Column Data is `Sample data`
+7. Click `Navigation` button in the toolBar
+8. Click `Go` button in the Running Application Preview
+9. Check Column Name is `New Column`
+10. Check Column Data is `Sample data`
 
 ---
 

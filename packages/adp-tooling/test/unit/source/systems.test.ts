@@ -3,8 +3,19 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { BackendSystem } from '@sap-ux/store';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import { type Destination, isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import type { AbapServiceProvider, LayeredRepositoryService } from '@sap-ux/axios-extension';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import { type Endpoint, getEndpointNames, SystemLookup, transformBackendSystem } from '../../../src';
+import {
+    type Endpoint,
+    getEndpointNames,
+    getSupportedProject,
+    SupportedProject,
+    SystemLookup,
+    transformBackendSystem
+} from '../../../src';
+import { type AxiosResponseHeaders, AxiosError } from 'axios';
+import { t } from '../../../src/i18n';
 
 jest.mock('@sap-ux/system-access', () => ({
     ...jest.requireActual('@sap-ux/system-access'),
@@ -77,6 +88,113 @@ const destinations: { [name: string]: Destination } = {
 };
 
 const endpoints = Object.values(destinations);
+
+// Helper functions
+
+function getAxiosError(status: number, message?: string): AxiosError {
+    return new AxiosError(message, status.toString(10), undefined, undefined, {
+        status,
+        statusText: message ?? 'error',
+        headers: {},
+        config: { headers: {} as unknown as AxiosResponseHeaders },
+        data: {}
+    });
+}
+
+describe('getSupportedProject', () => {
+    let mockProvider: AbapServiceProvider;
+    let mockLrepService: LayeredRepositoryService;
+    let getSystemInfoSpy: jest.Mock;
+
+    beforeEach(() => {
+        getSystemInfoSpy = jest.fn();
+        mockLrepService = {
+            getSystemInfo: getSystemInfoSpy
+        } as unknown as LayeredRepositoryService;
+
+        mockProvider = {
+            getLayeredRepository: jest.fn().mockReturnValue(mockLrepService)
+        } as unknown as AbapServiceProvider;
+    });
+
+    it('should return CLOUD_READY_AND_ON_PREM when both types are supported', async () => {
+        getSystemInfoSpy.mockResolvedValue({
+            adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY, AdaptationProjectType.ON_PREMISE]
+        });
+
+        const result = await getSupportedProject(mockProvider);
+
+        expect(result).toBe(SupportedProject.CLOUD_READY_AND_ON_PREM);
+        expect(mockProvider.getLayeredRepository).toHaveBeenCalled();
+        expect(getSystemInfoSpy).toHaveBeenCalled();
+    });
+
+    it('should return CLOUD_READY when only cloud ready is supported', async () => {
+        getSystemInfoSpy.mockResolvedValue({
+            adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY]
+        });
+
+        const result = await getSupportedProject(mockProvider);
+
+        expect(result).toBe(SupportedProject.CLOUD_READY);
+    });
+
+    it('should return ON_PREM when only on-premise is supported', async () => {
+        getSystemInfoSpy.mockResolvedValue({
+            adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE]
+        });
+
+        const result = await getSupportedProject(mockProvider);
+
+        expect(result).toBe(SupportedProject.ON_PREM);
+    });
+
+    it('should return ON_PREM when API returns 404 error', async () => {
+        const error = getAxiosError(404);
+        getSystemInfoSpy.mockRejectedValue(error);
+
+        const result = await getSupportedProject(mockProvider);
+
+        expect(result).toBe(SupportedProject.ON_PREM);
+    });
+
+    it('should return ON_PREM when API returns 405 error', async () => {
+        const error = getAxiosError(405);
+        getSystemInfoSpy.mockRejectedValue(error);
+
+        const result = await getSupportedProject(mockProvider);
+
+        expect(result).toBe(SupportedProject.ON_PREM);
+    });
+
+    it('should throw error when API returns other errors', async () => {
+        const error = getAxiosError(500, 'Internal Server Error');
+        getSystemInfoSpy.mockRejectedValue(error);
+
+        await expect(getSupportedProject(mockProvider)).rejects.toThrow(error);
+    });
+
+    it('should throw error when adaptationProjectTypes is empty', async () => {
+        getSystemInfoSpy.mockResolvedValue({
+            adaptationProjectTypes: []
+        });
+
+        await expect(getSupportedProject(mockProvider)).rejects.toThrow(t('error.projectTypeNotProvided'));
+    });
+
+    it('should throw error when adaptationProjectTypes is undefined', async () => {
+        getSystemInfoSpy.mockResolvedValue({});
+
+        await expect(getSupportedProject(mockProvider)).rejects.toThrow(t('error.projectTypeNotProvided'));
+    });
+
+    it('should throw error for non-axios errors', async () => {
+        const error = new Error('Generic error');
+        getSystemInfoSpy.mockRejectedValue(error);
+
+        await expect(getSupportedProject(mockProvider)).rejects.toThrow(error);
+    });
+});
 
 describe('getEndpointNames', () => {
     test('should return endpoint names sorted alphabetically (case-insensitive)', () => {

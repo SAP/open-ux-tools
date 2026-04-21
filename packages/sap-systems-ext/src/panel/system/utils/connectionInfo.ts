@@ -1,6 +1,6 @@
 import type { CatalogServicesCounts, RequestCount } from '@sap-ux/sap-systems-ext-types';
 import type { BackendSystem, SystemType } from '@sap-ux/store';
-import type { AbapServiceProvider, AxiosRequestConfig } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, AxiosRequestConfig, ODataService } from '@sap-ux/axios-extension';
 import { AbapCloudEnvironment, createForAbap, createForAbapOnCloud, ODataVersion } from '@sap-ux/axios-extension';
 import SystemsLogger from '../../../utils/logger';
 import { t } from '../../../utils';
@@ -48,7 +48,7 @@ function getAbapServiceProvider(system: BackendSystem): AbapServiceProvider {
     if ((system.systemType as SystemType) === 'AbapCloud' && system.url) {
         return createForAbapOnCloud({
             environment: AbapCloudEnvironment.EmbeddedSteampunk,
-            url: new URL(system.url).toString()
+            url: new URL(system.url).origin
         });
     }
 
@@ -83,6 +83,33 @@ export async function getCatalogServiceCount(system: BackendSystem): Promise<Cat
     const v4Request = await fetchCount(ODataVersion.v4);
 
     return { v2Request, v4Request };
+}
+
+/**
+ * Tests the connection to the specified service by attempting to retrieve the metadata.
+ * The service path can be provided explicitly via `servicePath`, or derived from the pathname of `system.url`.
+ *
+ * @param system - the backend system instance
+ * @param servicePath - optional explicit service path; when omitted the pathname of system.url is used
+ * @returns - true if the service metadata was successfully retrieved, false otherwise
+ */
+export async function hasServiceMetadata(system: BackendSystem, servicePath?: string): Promise<boolean> {
+    const abapServiceProvider = getAbapServiceProvider(system);
+    const url = new URL(system.url);
+
+    const path = servicePath ?? url.pathname;
+    // ensure trailing '/' on service path
+    const normalizedPath = path.endsWith('/') ? path : `${path}/`;
+
+    const service = abapServiceProvider.service<ODataService>(normalizedPath);
+    const metadata = await service.metadata();
+
+    if (metadata) {
+        SystemsLogger.logger.info(t('info.serviceRequestCheckLogs', { url: url.toString() }));
+        SystemsLogger.logger.debug(metadata);
+    }
+
+    return !!metadata;
 }
 
 /**

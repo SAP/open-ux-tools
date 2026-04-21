@@ -24,6 +24,7 @@ export const enum Edm {
     Cast = 'Cast',
     Collection = 'Collection',
     ComplexType = 'ComplexType',
+    ContainsTarget = 'ContainsTarget',
     Date = 'Date',
     DateTimeOffset = 'DateTimeOffset',
     Decimal = 'Decimal',
@@ -80,6 +81,7 @@ export const enum Edm {
     Nullable = 'Nullable',
     OnDelete = 'OnDelete',
     Parameter = 'Parameter',
+    Partner = 'Partner',
     Path = 'Path',
     /**
      * as attribute name only

@@ -57,6 +57,7 @@ Object {
   "connectionStatus": Object {
     "connected": true,
     "message": "",
+    "showOutputChannelLink": false,
   },
   "guidedAnswerLink": undefined,
   "systemInfo": Object {

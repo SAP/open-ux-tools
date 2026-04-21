@@ -1,6 +1,7 @@
 import type { FioriRuleDefinition } from '../types';
 import type { FioriXMLRuleDefinition } from '../language/xml/types';
 import {
+    ANCHOR_BAR_VISIBLE,
     FLEX_ENABLED,
     WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     COPY_TO_CLIPBOARD,
@@ -8,7 +9,12 @@ import {
     ENABLE_EXPORT,
     ENABLE_PASTE,
     STATE_PRESERVATION_MODE,
-    TABLE_COLUMN_VERTICAL_ALIGNMENT
+    NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
+    CONDENSED_TABLE_LAYOUT,
+    TABLE_COLUMN_VERTICAL_ALIGNMENT,
+    TABLE_PERSONALIZATION,
+    TEXT_ARRANGEMENT_HIDDEN,
+    STRICT_UOM_FILTERING
 } from '../language/diagnostics';
 
 // Import all rules
@@ -61,14 +67,20 @@ import sapUi5LegacyJquerysapUsage from './sap-ui5-legacy-jquerysap-usage';
 import sapUi5NoPrivateProp from './sap-ui5-no-private-prop';
 import sapUsageBasemastercontroller from './sap-usage-basemastercontroller';
 
+import anchorBarVisibleRule from './sap-anchor-bar-visible';
 import flexEnabledRule from './sap-flex-enabled';
 import requireWidthIncludingColumnHeader from './sap-width-including-column-header';
 import creationModeForTable from './sap-creation-mode-for-table';
 import statePreservationMode from './sap-state-preservation-mode';
+import strictUomFilteringRule from './sap-strict-uom-filtering';
 import copyToClipboard from './sap-copy-to-clipboard';
 import enableExport from './sap-enable-export';
 import enablePaste from './sap-enable-paste';
+import tablePersonalization from './sap-table-personalization';
 import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment';
+import noDataFieldIntentBasedNavigation from './sap-no-data-field-intent-based-navigation';
+import condensedTableLayout from './sap-condensed-table-layout';
+import textArrangementHidden from './sap-text-arrangement-hidden';
 
 import type { Rule } from 'eslint';
 
@@ -121,6 +133,7 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-ui5-legacy-jquerysap-usage': sapUi5LegacyJquerysapUsage,
     'sap-ui5-no-private-prop': sapUi5NoPrivateProp,
     'sap-usage-basemastercontroller': sapUsageBasemastercontroller,
+    [ANCHOR_BAR_VISIBLE]: anchorBarVisibleRule,
     [FLEX_ENABLED]: flexEnabledRule,
     [WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
     [COPY_TO_CLIPBOARD]: copyToClipboard,
@@ -128,5 +141,10 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [ENABLE_PASTE]: enablePaste,
     [CREATION_MODE_FOR_TABLE]: creationModeForTable,
     [STATE_PRESERVATION_MODE]: statePreservationMode,
-    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment
+    [NO_DATA_FIELD_INTENT_BASED_NAVIGATION]: noDataFieldIntentBasedNavigation,
+    [CONDENSED_TABLE_LAYOUT]: condensedTableLayout,
+    [STRICT_UOM_FILTERING]: strictUomFilteringRule,
+    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
+    [TABLE_PERSONALIZATION]: tablePersonalization,
+    [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden
 };

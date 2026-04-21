@@ -2,17 +2,17 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { AdtCatalogService, UI5RtVersionService } from '@sap-ux/axios-extension';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import { getBaseAppInbounds, getFlexUISupportedSystem, getSystemUI5Version } from '../../../src';
+import { getBaseAppInbounds, getFlexUICapability, getSystemUI5Version } from '../../../src';
 
-describe('getFlexUISupportedSystem', () => {
+describe('getFlexUICapability', () => {
     it('should return immediately when isCustomerBase is false', async () => {
         const provider = {
             get: jest.fn()
         } as unknown as AbapServiceProvider;
 
-        const result = await getFlexUISupportedSystem(provider, false);
+        const result = await getFlexUICapability(provider, false);
 
-        expect(result).toEqual({ isOnPremise: true, isUIFlex: true });
+        expect(result).toEqual({ isDtaFolderDeploymentSupported: true, isUIFlexSupported: true });
     });
 
     it('should call provider.get and return correct flags based on response data when isCustomerBase is true', async () => {
@@ -24,14 +24,14 @@ describe('getFlexUISupportedSystem', () => {
             get: jest.fn().mockResolvedValue(response)
         } as unknown as AbapServiceProvider;
 
-        const result = await getFlexUISupportedSystem(provider, true);
+        const result = await getFlexUICapability(provider, true);
 
         expect(provider.get).toHaveBeenCalledWith(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, {
             headers: { Accept: 'application/*' }
         });
         expect(result).toEqual({
-            isOnPremise: true,
-            isUIFlex: true
+            isDtaFolderDeploymentSupported: true,
+            isUIFlexSupported: true
         });
     });
 });

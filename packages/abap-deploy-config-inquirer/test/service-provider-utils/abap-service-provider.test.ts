@@ -6,7 +6,7 @@ import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import LoggerHelper from '../../src/logger-helper';
 import { AuthenticationType } from '@sap-ux/store';
 import { t } from '../../src/i18n';
-import exp from 'constants';
+import exp from 'node:constants';
 
 jest.mock('@sap-ux/system-access', () => ({
     ...jest.requireActual('@sap-ux/system-access'),

@@ -26,7 +26,7 @@ import {
 } from '@sap-ux/project-access';
 import type { CustomTask } from '@sap-ux/ui5-config';
 import { ToolingTelemetrySettings } from './config-state';
-import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } from './types';
+import type { CommonFioriProjectProperties, IdeType, InternalFeature, SourceTemplate } from './types';
 import { CommonProperties, DeployTarget, ODataSource, ToolsId } from './types';
 
 /**
@@ -63,6 +63,8 @@ export async function getCommonProperties(): Promise<CommonFioriProjectPropertie
         commonProperties[CommonProperties.InternlVsExternal];
 
     commonProperties[CommonProperties.NodeVersion] = await getOSNodeVersion();
+    commonProperties[CommonProperties.IdeType] = getIdeType();
+
     return commonProperties;
 }
 
@@ -337,4 +339,97 @@ async function getOSNodeVersion(): Promise<string> {
     } catch {
         return 'unknown';
     }
+}
+
+/**
+ * Detect the IDE/editor hosting the extension.
+ * Identifies VSCode, VSCode Insiders, Cursor, Windsurf, Antigravity, Trae, Kiro,
+ * VSCodium, code-server, SAP Business Application Studio, and standalone Node.js processes (CLI, MCP servers).
+ *
+ * Note: AppStudio is checked first because it is a VS Code fork that sets VSCODE_PID.
+ * Without the early return, it would fall through to 'vscode'.
+ *
+ * Detection priority: VSCODE_APPNAME is checked as an opportunistic hint — it is set by some
+ * VS Code forks (e.g. Cursor, Windsurf) that expose their Electron productName via this variable,
+ * but it is not a standard VS Code environment variable and may be absent in plain VS Code or CLI
+ * contexts. Fork-specific env vars (e.g. CURSOR_TRACE_ID) and VSCODE_CWD path matching are used
+ * as complementary fallbacks.
+ *
+ * @returns The detected IDE type
+ */
+export function getIdeType(): IdeType {
+    // AppStudio is a VS Code fork that sets VSCODE_PID — check first to avoid misdetection as 'vscode'
+    if (isAppStudio()) {
+        return 'appstudio';
+    }
+
+    const vscodeCwd = process.env.VSCODE_CWD?.toLowerCase() ?? '';
+    const vscodePid = process.env.VSCODE_PID;
+    const termProgram = process.env.TERM_PROGRAM ?? '';
+    const appName = process.env.VSCODE_APPNAME?.toLowerCase() ?? '';
+
+    // No VS Code environment detected — none of VSCODE_PID, VSCODE_CWD, or a vscode-related
+    // TERM_PROGRAM are set. This is likely a standalone Node.js process (CLI, MCP server, etc.)
+    if (!vscodePid && !vscodeCwd && termProgram !== 'vscode' && termProgram !== 'vscode-insiders') {
+        return 'unknown';
+    }
+
+    // Cursor detection — dedicated env var or VSCODE_APPNAME / CWD fallback
+    if (process.env.CURSOR_TRACE_ID || appName.includes('cursor') || vscodeCwd.includes('cursor')) {
+        return 'cursor';
+    }
+
+    // Windsurf detection (Codeium's IDE)
+    if (appName.includes('windsurf') || vscodeCwd.includes('windsurf') || vscodeCwd.includes('codeium')) {
+        return 'windsurf';
+    }
+
+    // Antigravity detection (Google's IDE)
+    if (appName.includes('antigravity') || vscodeCwd.includes('antigravity')) {
+        return 'antigravity';
+    }
+
+    // Trae detection (ByteDance's IDE)
+    if (appName.includes('trae') || vscodeCwd.includes('trae')) {
+        return 'trae';
+    }
+
+    // Kiro detection (AWS's IDE)
+    if (appName.includes('kiro') || vscodeCwd.includes('kiro')) {
+        return 'kiro';
+    }
+
+    // VSCodium detection (open-source VS Code without MS telemetry)
+    if (
+        appName.includes('vscodium') ||
+        appName.includes('codium') ||
+        vscodeCwd.includes('vscodium') ||
+        vscodeCwd.includes('codium')
+    ) {
+        return 'vscodium';
+    }
+
+    // code-server detection (browser-based VS Code)
+    if (appName.includes('code-server') || vscodeCwd.includes('code-server') || process.env.CODE_SERVER_SESSION) {
+        return 'code-server';
+    }
+
+    // VSCode Insiders detection — match specific product names to avoid false positives
+    // from paths that merely contain the substring "insiders"
+    if (
+        appName.includes('insiders') ||
+        vscodeCwd.includes('code - insiders') ||
+        vscodeCwd.includes('code insiders') ||
+        vscodeCwd.includes('vscode-insiders') ||
+        termProgram === 'vscode-insiders'
+    ) {
+        return 'vscode-insiders';
+    }
+
+    // Standard VSCode detection
+    if (vscodePid || termProgram === 'vscode') {
+        return 'vscode';
+    }
+
+    return 'unknown';
 }

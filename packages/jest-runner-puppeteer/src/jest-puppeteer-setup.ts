@@ -49,7 +49,7 @@ export default async function () {
     const browser = await puppeteer.launch({
         defaultViewport: null,
         headless: process.env.PUPPETEER_HEADLESS !== 'false',
-        ignoreHTTPSErrors: true,
+        acceptInsecureCerts: true,
         executablePath: getBrowserPath(process.env.E2E_BROWSER) as string,
         args: [
             '--window-size=1600,1200',

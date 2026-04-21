@@ -5,6 +5,7 @@
 .project
 .DS_Store
 .pnpm-store
+.worktrees
 
 ## Original Source: https://github.com/github/gitignore/blob/master/Node.gitignore
 
@@ -167,6 +168,7 @@ generators
 
 # Output of 'npm pack'
 *.tgz
+**/prebuilds/**
 
 # tsc delta build
 *.tsbuildinfo

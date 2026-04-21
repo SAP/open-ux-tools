@@ -21,7 +21,8 @@ export async function initI18n(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         defaultNS: SMART_LINKS_NS, // Default since first to add translations
-        ns: [SMART_LINKS_NS, NAV_CONFIG_NS]
+        ns: [SMART_LINKS_NS, NAV_CONFIG_NS],
+        showSupportNotice: false
     });
 }
 
@@ -33,7 +34,7 @@ export async function initI18n(): Promise<void> {
  * @returns {string} localized string stored for the given key
  */
 export function t(key: string, options?: TOptions): string {
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 initI18n().catch(() => {

@@ -1,3 +1,4 @@
+import type { IdGeneratorFunction } from './file';
 import type { CustomElement, FragmentContentData, InternalCustomElement, Manifest } from './types';
 import { join, dirname } from 'node:path';
 
@@ -30,6 +31,7 @@ export function setCommonDefaults<T extends CustomElement & Partial<InternalCust
  * Method to generate default content data for xml fragment.
  *
  * @param {string} text - text of button or label
+ * @param {(baseId: string) => string} generateId - Function to generate unique IDs for the building block elements.
  * @param {string} [eventHandler] - event handler path
  *      if value is passed then "Button" control with 'press' event would be generated
  *      if value is not passed then "Text" control would be generated
@@ -40,6 +42,7 @@ export function setCommonDefaults<T extends CustomElement & Partial<InternalCust
  */
 export function getDefaultFragmentContentData(
     text: string,
+    generateId: IdGeneratorFunction,
     eventHandler?: string,
     isController = false,
     prefferInput = false,
@@ -59,16 +62,20 @@ export function getDefaultFragmentContentData(
         if (prefferInput) {
             attributes.push(`value="${text}"`);
             attributes.push(`change="handler.${method}"`);
-            content = `<Input ${attributes.join(' ')} />`;
+            const id = generateId('Input');
+            content = `<Input id="${id}" ${attributes.join(' ')} />`;
         } else {
             attributes.push(`text="${text}"`);
             attributes.push(`press="handler.${method}"`);
-            content = `<Button ${attributes.join(' ')} />`;
+            const id = generateId('Button');
+            content = `<Button id="${id}" ${attributes.join(' ')} />`;
         }
     } else if (prefferInput) {
-        content = `<Input value="${text}" />`;
+        const id = generateId('Input');
+        content = `<Input id="${id}" value="${text}" />`;
     } else {
-        content = `<Text text="${text}" />`;
+        const id = generateId('Text');
+        content = `<Text id="${id}" text="${text}" />`;
     }
     return {
         content,
@@ -80,6 +87,7 @@ export function getDefaultFragmentContentData(
  * Method to generate default content for xml fragment.
  *
  * @param {string} text - text of button or label
+ * @param {(baseId: string) => string} generateId - Function to generate unique IDs for the building block elements.
  * @param {string} [eventHandler] - event handler path
  *      if value is passed then "Button" control with 'press' event would be generated
  *      if value is not passed then "Text" control would be generated
@@ -89,10 +97,11 @@ export function getDefaultFragmentContentData(
  */
 export function getDefaultFragmentContent(
     text: string,
+    generateId: IdGeneratorFunction,
     eventHandler?: string,
     isController = false,
     prefferInput = false
 ): string {
-    const contentData = getDefaultFragmentContentData(text, eventHandler, isController, prefferInput);
+    const contentData = getDefaultFragmentContentData(text, generateId, eventHandler, isController, prefferInput);
     return contentData.content;
 }

@@ -8,7 +8,9 @@ import {
     getAdpConfig,
     getVariant,
     ManifestService,
-    SystemLookup
+    ManifestServiceCF,
+    SystemLookup,
+    isCFEnvironment
 } from '@sap-ux/adp-tooling';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';
@@ -22,7 +24,9 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     generateChange: jest.fn(),
     getVariant: jest.fn(),
     getAdpConfig: jest.fn(),
-    getAdpProjectData: jest.fn()
+    getAdpProjectData: jest.fn(),
+    isCFEnvironment: jest.fn().mockResolvedValue(false),
+    ManifestServiceCF: { init: jest.fn() }
 }));
 
 jest.mock('@sap-ux/system-access', () => ({
@@ -32,11 +36,22 @@ jest.mock('@sap-ux/system-access', () => ({
 const generateChangeMock = generateChange as jest.MockedFunction<typeof generateChange>;
 const getVariantMock = getVariant as jest.MockedFunction<typeof getVariant>;
 const getAdpConfigMock = getAdpConfig as jest.MockedFunction<typeof getAdpConfig>;
+const isCFEnvironmentMock = isCFEnvironment as jest.MockedFunction<typeof isCFEnvironment>;
+const manifestServiceCFInitMock = ManifestServiceCF.init as jest.MockedFunction<typeof ManifestServiceCF.init>;
 
 const manifest = {
     'sap.app': {
         dataSources: {
-            Z_SRV: { uri: '/sap/opu/odata', type: 'OData', settings: {} }
+            Z_SRV: {
+                uri: '/sap/opu/odata',
+                type: 'OData',
+                settings: { annotations: ['Z_SRV_ANNO'] }
+            },
+            Z_SRV_ANNO: {
+                uri: '/sap/opu/odata/annotation',
+                type: 'ODataAnnotation',
+                settings: {}
+            }
         }
     }
 } as unknown as Manifest;
@@ -173,5 +188,38 @@ describe('ChangeDataSourceGenerator', () => {
 
         writingSpy.mockRestore();
         handleCrashSpy.mockRestore();
+    });
+
+    it('generates change for CF project using ManifestServiceCF', async () => {
+        isCFEnvironmentMock.mockResolvedValueOnce(true);
+
+        manifestServiceCFInitMock.mockResolvedValue({
+            getManifest: jest.fn().mockReturnValue(manifest),
+            getManifestDataSources: jest.fn().mockReturnValue(manifest['sap.app']?.dataSources),
+            getDataSourceMetadata: jest.fn().mockRejectedValue(new Error('not supported'))
+        } as any);
+
+        getVariantMock.mockResolvedValue(variant);
+
+        const runContext = yeomanTest
+            .create(changeDataSourceGen, { resolved: generatorPath }, { cwd: tmpDir })
+            .withOptions({ data: { path: tmpDir } })
+            .withPrompts(answers);
+
+        await expect(runContext.run()).resolves.not.toThrow();
+
+        expect(manifestServiceCFInitMock).toHaveBeenCalledWith(tmpDir, expect.anything());
+        expect(generateChangeMock).toHaveBeenCalledWith(
+            tmpDir,
+            ChangeType.CHANGE_DATA_SOURCE,
+            expect.objectContaining({
+                service: expect.objectContaining({
+                    id: answers.id,
+                    uri: answers.uri
+                }),
+                dataSources: manifest['sap.app']?.dataSources
+            }),
+            expect.anything()
+        );
     });
 });

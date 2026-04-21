@@ -3,11 +3,21 @@ import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { UI5Config } from '@sap-ux/ui5-config';
-import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
-import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace, type Manifest } from '@sap-ux/project-access';
+import { type InboundContent, type Inbound, AdaptationProjectType } from '@sap-ux/axios-extension';
+import {
+    getWebappPath,
+    FileName,
+    readUi5Yaml,
+    type ManifestNamespace,
+    type Manifest,
+    getAppType
+} from '@sap-ux/project-access';
 
 import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
+
+const ADP_CLOUD_PROJECT_BUILD_TASK_NAME = 'app-variant-bundler-build';
 
 /**
  * Get the app descriptor variant.
@@ -105,6 +115,24 @@ export function extractCfBuildTask(ui5Conf: UI5Config): UI5YamlCustomTaskConfigu
 }
 
 /**
+ * Read space GUID from ui5.yaml customTasks app-variant-bundler-build.space.
+ *
+ * @param {string} rootPath - Project root (where ui5.yaml lives).
+ * @param {ToolsLogger} logger - Optional logger.
+ * @returns {Promise<string | undefined>} Space GUID or undefined if not found.
+ */
+export async function getSpaceGuidFromUi5Yaml(rootPath: string, logger?: ToolsLogger): Promise<string | undefined> {
+    try {
+        const ui5Config = await readUi5Config(rootPath, 'ui5.yaml');
+        const buildTask = extractCfBuildTask(ui5Config);
+        return buildTask?.space;
+    } catch {
+        logger?.warn('Could not read space from ui5.yaml (app-variant-bundler-build).');
+        return undefined;
+    }
+}
+
+/**
  * Read the manifest from the build output folder.
  *
  * @param {string} cfBuildPath - The path to the build output folder.
@@ -157,6 +185,32 @@ export async function getAdpConfig<T = AdpPreviewConfig>(basePath: string, yamlP
     } catch (error) {
         const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
         throw new Error(`No system configuration found in ${basename(ui5ConfigPath)}`);
+    }
+}
+
+/**
+ * Returns the project type for an existing Adaptation project based on the information
+ * inside the ui5.yaml. If the builder key is presented inside the yaml then we are
+ * in a cloudReady project otherwise - onPremise.
+ *
+ * @param {string} basePath - The path to the adaptation project root folder.
+ * @returns {Promise<AdaptationProjectType | undefined>} The project type or undefined in casde the project is
+ * NOT an Adaptation project or an error is thrown from reading the configuration file.
+ */
+export async function getExistingAdpProjectType(basePath: string): Promise<AdaptationProjectType | undefined> {
+    try {
+        const appType = await getAppType(basePath);
+        if (appType !== 'Fiori Adaptation') {
+            return undefined;
+        }
+        const yamlPath = join(basePath, FileName.Ui5Yaml);
+        const ui5Config = await readUi5Config(basePath, yamlPath);
+        const cloudProjectBuildTask = ui5Config.findCustomTask(ADP_CLOUD_PROJECT_BUILD_TASK_NAME);
+        return cloudProjectBuildTask ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
+    } catch {
+        // Expected: Project may not be an ADP project or configuration files may be missing/invalid
+        // Returning undefined allows callers to handle non-ADP projects gracefully
+        return undefined;
     }
 }
 

@@ -2,7 +2,6 @@ import { AppIndexService, createForAbap } from '../../src';
 import nock from 'nock';
 import appIndexMock from './mockResponses/appIndex.json';
 import type { AxiosError } from '../../src';
-nock.disableNetConnect();
 import appInfoJsonMock from './mockResponses/ui5AppInfo.json';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
@@ -34,28 +33,30 @@ describe('AppIndexService', () => {
         const provider = createForAbap(config);
         const service: AppIndexService = provider.getAppIndex();
 
-        nock(server)
-            .get((path) => path.startsWith(AppIndexService.PATH))
-            .reply(200, (path) => {
-                let results: any[];
-                if (!path.includes('?')) {
-                    results = appIndexMock.results;
-                } else if (path.includes('type=application')) {
-                    results = appIndexMock.results.filter((item) => item['sap.app/type'] === 'application');
-                } else {
-                    results = [];
-                }
-                if (path.includes('fields=url')) {
-                    return { results };
-                } else {
-                    return {
-                        results: results.map((app) => {
-                            return { 'sap.app/id': app['sap.app/id'] };
-                        })
-                    };
-                }
-            })
-            .persist();
+        beforeAll(() => {
+            nock(server)
+                .get((path) => path.startsWith(AppIndexService.PATH))
+                .reply(200, (path) => {
+                    let results: any[];
+                    if (!path.includes('?')) {
+                        results = appIndexMock.results;
+                    } else if (path.includes('type=application')) {
+                        results = appIndexMock.results.filter((item) => item['sap.app/type'] === 'application');
+                    } else {
+                        results = [];
+                    }
+                    if (path.includes('fields=url')) {
+                        return { results };
+                    } else {
+                        return {
+                            results: results.map((app) => {
+                                return { 'sap.app/id': app['sap.app/id'] };
+                            })
+                        };
+                    }
+                })
+                .persist();
+        });
 
         test('no filter', async () => {
             const appIndex = await service.search();
@@ -98,17 +99,10 @@ describe('AppIndexService', () => {
         });
 
         test('request fails and throw error', async () => {
-            const mockAxiosError = {
-                response: {
-                    status: 404,
-                    data: 'Not found'
-                },
-                message: 'Request failed with status code 404'
-            } as AxiosError;
             nock.cleanAll();
             nock(server)
                 .get((path) => path.startsWith(`${AppIndexService.PATH}/ui5_app_mani_first_supported`))
-                .replyWithError(mockAxiosError)
+                .reply(404, 'Not found')
                 .persist();
 
             try {

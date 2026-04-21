@@ -14,7 +14,7 @@ import { isA } from '../../../utils/core';
 import Table from 'sap/ui/mdc/Table';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import ActionToolbarAction from 'sap/ui/mdc/actiontoolbar/ActionToolbarAction';
-import { getActionsPropertyPath } from './utils';
+import { getPropertyPath } from './utils';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 
@@ -46,7 +46,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
 
     async execute(path: string): Promise<FlexCommand[]> {
         const { table } = this.tableMap[path];
-        const propertyPath = `${getActionsPropertyPath(table)}`;
+        const propertyPath = `${getPropertyPath(table)}`;
         if (!table || !propertyPath) {
             return [];
         }
@@ -82,15 +82,13 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                         }
                         if (
                             isA(MDC_TABLE_TYPE, table) &&
-                            (table as Table)
-                                .getActions()
-                                .every(
-                                    (action) =>
-                                        !(action as ActionToolbarAction)
-                                            .getAction()
-                                            .getId()
-                                            .endsWith(`CustomAction::${actionId}`)
-                                )
+                            (table as Table).getActions().every(
+                                (action) =>
+                                    !(action as ActionToolbarAction)
+                                        .getAction()
+                                        .getId()
+                                        .endsWith(`CustomAction::${actionId}`)
+                            )
                         ) {
                             return true;
                         }

@@ -71,7 +71,8 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
             },
             rootHovered: {
                 backgroundColor: this.getButtonInteractionBackgroundColor('--vscode-toolbar-hoverBackground'),
-                outline: '1px dashed var(--vscode-contrastActiveBorder)'
+                outline: '1px dashed var(--vscode-contrastActiveBorder)',
+                borderRadius: 5
             },
             rootPressed: {
                 backgroundColor: this.getButtonInteractionBackgroundColor('--vscode-toolbar-activeBackground')

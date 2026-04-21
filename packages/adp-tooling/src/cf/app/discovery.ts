@@ -1,13 +1,11 @@
 import type AdmZip from 'adm-zip';
-import { readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n';
 import { extractXSApp } from '../utils';
 import { getFDCApps } from '../services/api';
-import type { CfConfig, CFApp, ServiceKeys, XsApp, XsAppRoute } from '../../types';
+import type { CfConfig, CFApp, ServiceKeys, XsApp } from '../../types';
 
 /**
  * Get the app host ids from service keys.
@@ -57,30 +55,6 @@ export function getBackendUrlsFromServiceKeys(serviceKeys: ServiceKeys[]): strin
 }
 
 /**
- * Extract destination to URL mapping from service key endpoints.
- *
- * @param {ServiceKeys[]} serviceKeys - The service keys containing endpoints.
- * @returns {Map<string, string>} Map of destination names to URLs.
- */
-function extractDestinationToUrlMap(serviceKeys: ServiceKeys[]): Map<string, string> {
-    const destinationToUrl = new Map<string, string>();
-    const endpoints = serviceKeys[0]?.credentials?.endpoints as
-        | Record<string, { url?: string; destination?: string }>
-        | undefined;
-
-    if (endpoints && typeof endpoints === 'object') {
-        for (const key in endpoints) {
-            const endpoint = endpoints[key];
-            if (endpoint?.url && endpoint.destination) {
-                destinationToUrl.set(endpoint.destination, endpoint.url);
-            }
-        }
-    }
-
-    return destinationToUrl;
-}
-
-/**
  * Clean regex pattern from route source.
  *
  * @param {string} source - The route source pattern.
@@ -100,98 +74,9 @@ function cleanRoutePath(source: string): string {
     while (path.includes('//')) {
         path = path.replaceAll('//', '/');
     }
+    // Remove trailing slash to ensure proper path matching
+    path = path.replace(/\/$/, '');
     return path;
-}
-
-/**
- * Process a route and add its cleaned path to the destination mapping.
- *
- * @param {XsApp['routes'][number]} route - The route object from xs-app.json.
- * @param {Map<string, Set<string>>} destinationToPaths - Map to store destination to paths mapping.
- */
-function processRouteForDestination(route: XsAppRoute, destinationToPaths: Map<string, Set<string>>): void {
-    const destination = route.destination as string | undefined;
-    const service = route.service;
-
-    if (!destination || service === 'html5-apps-repo-rt' || !route.source) {
-        return;
-    }
-
-    const path = cleanRoutePath(route.source);
-    if (path) {
-        if (!destinationToPaths.has(destination)) {
-            destinationToPaths.set(destination, new Set<string>());
-        }
-        destinationToPaths.get(destination)!.add(path);
-    }
-}
-
-/**
- * Extract destination to paths mapping from xs-app.json routes.
- *
- * @param {string} xsAppPath - Path to xs-app.json file.
- * @returns {Map<string, Set<string>>} Map of destination names to path sets.
- */
-function extractDestinationToPathsMap(xsAppPath: string): Map<string, Set<string>> {
-    const destinationToPaths = new Map<string, Set<string>>();
-
-    try {
-        const xsAppContent = readFileSync(xsAppPath, 'utf8');
-        const xsApp = JSON.parse(xsAppContent) as XsApp;
-
-        if (xsApp?.routes) {
-            for (const route of xsApp.routes) {
-                processRouteForDestination(route, destinationToPaths);
-            }
-        }
-    } catch (e) {
-        throw new Error(t('error.invalidXsAppJson', { error: (e as Error).message }));
-    }
-
-    return destinationToPaths;
-}
-
-/**
- * Maps backend URLs to their corresponding OAuth paths based on destination matching
- * between xs-app.json routes and credentials.json endpoints.
- *
- * @param {ServiceKeys[]} serviceKeys - The service keys containing endpoints with destinations.
- * @param {string} basePath - Path to the .adp/reuse folder containing xs-app.json files.
- * @returns {Array<{ url: string; paths: string[] }>} Array of URL-to-paths mappings.
- */
-export function getBackendUrlsWithPaths(
-    serviceKeys: ServiceKeys[],
-    basePath: string
-): Array<{ url: string; paths: string[] }> {
-    const destinationToUrl = extractDestinationToUrlMap(serviceKeys);
-
-    const reuseXsAppPath = join(basePath, '.adp', 'reuse', 'xs-app.json');
-    const distXsAppPath = join(basePath, 'dist', 'xs-app.json');
-
-    let xsAppPath: string;
-    if (existsSync(reuseXsAppPath)) {
-        xsAppPath = reuseXsAppPath;
-    } else if (existsSync(distXsAppPath)) {
-        xsAppPath = distXsAppPath;
-    } else {
-        throw new Error(t('error.xsAppJsonNotFound', { paths: `${reuseXsAppPath}, ${distXsAppPath}` }));
-    }
-
-    const destinationToPaths = extractDestinationToPathsMap(xsAppPath);
-
-    const result = [];
-
-    for (const [destination, paths] of destinationToPaths.entries()) {
-        const url = destinationToUrl.get(destination);
-        if (url) {
-            result.push({
-                url,
-                paths: Array.from(paths)
-            });
-        }
-    }
-
-    return result;
 }
 
 /**

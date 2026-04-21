@@ -10,6 +10,12 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getOverlay } from '../cpe/utils';
 import UI5Element from 'sap/ui/core/Element';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import TableAPI from 'sap/fe/macros/table/TableAPI';
+
+export type MacroTable = TableAPI & {
+    metaPath: string;
+    contextPath: string;
+};
 
 /**
  * Gets app component of a v4 project.
@@ -166,4 +172,15 @@ export function getV4ApplicationPages(manifest: Manifest): { id: string; entityS
         }
     }
     return result;
+}
+/** * Checks if the given control is inside a table and returns the table instance.
+ * For UI5 version greater than 1.144 the table is 'sap.fe.macros.Table' and for lower versions it is 'sap.fe.macros.table.TableAPI'
+ * @param control - UI5 control instance.
+ * @returns Table instance if the control is inside a table, otherwise undefined.
+ */
+export function isMacroTable(table: ManagedObject | null): table is MacroTable {
+    if (table && (isA<MacroTable>('sap.fe.macros.Table', table) || isA<MacroTable>('sap.fe.macros.table.TableAPI', table))) {
+        return true;
+    }
+    return false;
 }

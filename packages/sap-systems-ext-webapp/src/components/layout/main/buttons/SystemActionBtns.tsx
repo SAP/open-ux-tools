@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { ReactElement } from 'react';
 import type { ConnectionStatus } from '@sap-ux/sap-systems-ext-types';
 import type { BackendSystem } from '@sap-ux/store';
+import type { SystemInfo } from '../../../../types';
 import { UIDefaultButton, UIDialog } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
 import { actions } from '../../../../state';
@@ -9,7 +10,7 @@ import { actions } from '../../../../state';
 import '../../../../styles/Buttons.scss';
 
 interface SystemActionBtnsProps {
-    systemInfo?: BackendSystem;
+    systemInfo?: SystemInfo;
     testConnectionBtnDisabled?: boolean;
     saveButtonDisabled?: boolean;
     isDetailsUpdated: boolean;
@@ -50,7 +51,7 @@ export function SystemActionBtns({
         setShowDialog(false);
     };
 
-    const saveSystem = (system: BackendSystem, isDetailsUpdated: boolean): void => {
+    const saveSystem = (system: SystemInfo, isDetailsUpdated: boolean): void => {
         setSapSystemDetails(system);
         if (connectionStatus?.connected && !isDetailsUpdated) {
             actions.updateSystem(system);
@@ -90,7 +91,7 @@ export function SystemActionBtns({
                             onClick={(): void => {
                                 resetStatus();
                                 if (systemInfo) {
-                                    actions.testConnection(systemInfo);
+                                    actions.testConnection(systemInfo, systemInfo.servicePath);
                                 }
                             }}>
                             {t('buttons.testConnection')}

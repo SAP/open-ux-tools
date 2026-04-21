@@ -17,7 +17,7 @@ const { execSync } = require('child_process');
 
 const CONFIG = {
     PACKAGE_JSON_PATH: 'packages/ui5-application-writer/package.json',
-    TEST_PACKAGES: ['@sap-ux/ui5-application-writer', '@sap-ux/fiori-app-sub-generator']
+    TEST_PACKAGES: ['@sap-ux/ui5-application-writer', '@sap-ux/fiori-app-sub-generator', '@sap-ux/ui5-info'],
 };
 
 /** Gets @ui5/manifest version from package.json */
@@ -48,6 +48,10 @@ function updateTestSnapshots() {
 async function updateUI5VersionFallback() {
     try {
         execSync('pnpm --filter @sap-ux/ui5-info update-fallbacks', { stdio: 'inherit' });
+        // Rebuild @sap-ux/ui5-info so dependent packages get the updated version data
+        // This is necessary because the fallback source was modified after the initial build
+        console.log('  Rebuilding @sap-ux/ui5-info with updated fallbacks...');
+        execSync('pnpm --filter @sap-ux/ui5-info build', { stdio: 'inherit' });
         return true;
     } catch (e) {
         console.error(`  Error updating UI5 version fallbacks: ${e.message}`);
@@ -72,11 +76,12 @@ async function main() {
 
     let success = true;
 
-    console.log('Updating test snapshots...');
-    if (!updateTestSnapshots()) success = false;
 
     console.log('\nUpdating UI5 version fallbacks...');
     if (!(await updateUI5VersionFallback())) success = false;
+
+    console.log('Updating test snapshots...');
+    if (!updateTestSnapshots()) success = false;
 
     console.log('\nRunning pnpm install...');
     try {

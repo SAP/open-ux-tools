@@ -4,6 +4,46 @@ import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 
 import type { Endpoint } from '../types';
+import { type AbapServiceProvider, AdaptationProjectType, isAxiosError } from '@sap-ux/axios-extension';
+import { t } from '../i18n';
+
+export enum SupportedProject {
+    ON_PREM = 'onPremise',
+    CLOUD_READY = 'cloudReady',
+    CLOUD_READY_AND_ON_PREM = 'cloudReadyAndOnPrem'
+}
+
+/**
+ * Gets the supported project types for the system. A system can support cloudReady, onPremise or both types of project.
+ *
+ * @param provider - The ABAP service provider.
+ * @returns {Promise<SupportedProject>} The supported project types.
+ */
+export async function getSupportedProject(provider: AbapServiceProvider): Promise<SupportedProject> {
+    try {
+        const layerdRepositoryService = provider.getLayeredRepository();
+        const { adaptationProjectTypes } = await layerdRepositoryService.getSystemInfo();
+
+        const hasCloudReady = adaptationProjectTypes?.includes(AdaptationProjectType.CLOUD_READY);
+        const hasOnPrem = adaptationProjectTypes?.includes(AdaptationProjectType.ON_PREMISE);
+
+        if (hasCloudReady && hasOnPrem) {
+            return SupportedProject.CLOUD_READY_AND_ON_PREM;
+        } else if (hasCloudReady) {
+            return SupportedProject.CLOUD_READY;
+        } else if (hasOnPrem) {
+            return SupportedProject.ON_PREM;
+        }
+    } catch (error) {
+        // Handle the case where the API is not available and continue to standard onPremise flow.
+        if (isAxiosError(error) && [404, 405].includes(error.response?.status ?? 0)) {
+            return SupportedProject.ON_PREM;
+        }
+        throw error;
+    }
+
+    throw new Error(t('error.projectTypeNotProvided'));
+}
 
 /**
  * Retrieves the names of all stored systems, sorted alphabetically.

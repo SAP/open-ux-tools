@@ -6,6 +6,7 @@ import { getWebappPath } from '@sap-ux/project-access';
 import { getTemplatePath } from '../templates';
 import type { FileContentPosition, Manifest, ManifestData } from './types';
 import { copyTpl } from './file';
+import { DOMParser } from '@xmldom/xmldom';
 
 /**
  * Method inserts passed text into content by char index position.
@@ -99,4 +100,18 @@ export async function getManifest(basePath: string, fs: Editor, validate = true)
         path,
         content: fs.readJSON(path) as Manifest
     };
+}
+
+/**
+ * Method validates if passed id is available.
+ *
+ * @param fs  - the file system object for reading files
+ * @param viewOrFragmentPath - path to fragment or view file
+ * @param id - id to check/validate
+ * @returns true if passed id is available.
+ */
+export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id: string): boolean {
+    const xmlContent = fs.read(viewOrFragmentPath).toString();
+    const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent);
+    return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
 }
