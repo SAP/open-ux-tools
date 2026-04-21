@@ -6,7 +6,7 @@ import { isAbsolute, resolve } from 'node:path';
 /**
  * Returns inline XML, or reads and returns the contents of the file at the given path.
  *
- * @param metadata
+ * @param metadata The metadata XML string or the path to the metadata file.
  */
 export function resolveMetadata(metadata: string): string {
     if (metadata.trimStart().startsWith('<')) {
@@ -22,7 +22,7 @@ export function resolveMetadata(metadata: string): string {
 /**
  * Returns an inline array, or reads and parses the JSON file at the given path.
  *
- * @param entityData
+ * @param entityData The entity data array or the path to the JSON file.
  */
 export function resolveEntityData(entityData: EntitySetData[] | string): EntitySetData[] {
     if (Array.isArray(entityData)) {
@@ -38,7 +38,7 @@ export function resolveEntityData(entityData: EntitySetData[] | string): EntityS
 /**
  * Resolves metadata and entityData entries based on their content.
  *
- * @param services
+ * @param services External service configurations.
  */
 export function resolveExternalServices(services: ExternalServiceConfig[]): ExternalService[] {
     return services.map(

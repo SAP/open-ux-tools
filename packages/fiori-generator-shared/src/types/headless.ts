@@ -78,8 +78,6 @@ export interface FLPConfig {
 
 /*
  * Headless specific extension of ExternalService.
- * `metadata` can be either XML content or a file path to a metadata XML file on disk.
- * `entityData` can be either an inline array or a file path to a JSON file on disk.
  */
 export type ExternalServiceConfig = ExternalService & {
     /**
