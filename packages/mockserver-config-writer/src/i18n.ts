@@ -35,6 +35,8 @@ export function t(key: string, options?: TOptions): string {
     return (i18nInstance.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18n().catch(() => {
-    // Ignore any errors since the write will still work
-});
+try {
+    await initI18n();
+} catch {
+    // Ignore - module will work with fallback strings
+}

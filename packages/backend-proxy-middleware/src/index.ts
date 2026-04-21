@@ -8,6 +8,8 @@ export type {
     BackendMiddlewareConfig
 } from './base/types.js';
 
-initI18n().catch(() => {
-    // Ignore any errors since the middleware will still work
-});
+try {
+    await initI18n();
+} catch {
+    // Ignore - module will work with fallback strings
+}
