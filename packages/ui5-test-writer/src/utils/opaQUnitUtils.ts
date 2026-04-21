@@ -26,7 +26,7 @@ const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
  * The `d` flag enables `match.indices` so we can read the capture group's
  * exact start/end positions without fragile string searching.
  */
-const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([\s\S]*?)\]\s*,\s*function/d;
+const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([^\]]*)\]\s*,\s*function/d;
 
 /**
  * Splices new module paths into the sap.ui.require array of the content string.
@@ -36,7 +36,12 @@ const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([\s\S]*?)\]\s*,\s
  * @param moduleNames - module paths to add (e.g. ["myApp/test/integration/SomeJourney"])
  * @returns the updated file content, or the original content unchanged if nothing was added
  */
+const MAX_FILE_CONTENT_LENGTH = 100_000;
+
 export function spliceModulesIntoQUnitContent(fileContent: string, moduleNames: string[]): string {
+    if (fileContent.length > MAX_FILE_CONTENT_LENGTH) {
+        return fileContent;
+    }
     const match = SAP_UI_REQUIRE_ARRAY_REGEX.exec(fileContent);
     if (!match) {
         return fileContent;
@@ -197,6 +202,9 @@ export interface JourneyRunnerPage {
  * @returns the updated file content, or the original content unchanged if nothing was added
  */
 export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyRunnerPage[]): string {
+    if (fileContent.length > MAX_FILE_CONTENT_LENGTH) {
+        return fileContent;
+    }
     // Determine which pages are not yet present by checking the define array
     const toAdd = pages.filter((page) => {
         const modulePath = `${page.appPath}/test/integration/pages/${page.targetKey}`;
