@@ -20,8 +20,12 @@ jest.unstable_mockModule('node:fs', () => ({
     readdirSync: mockReaddirSync
 }));
 
+// Import actual os BEFORE mocking to get the real functions
+const actualOs = await import('node:os');
+
 jest.unstable_mockModule('node:os', () => ({
-    default: { homedir: () => 'test_dir' },
+    ...actualOs,
+    default: { ...actualOs.default, homedir: () => 'test_dir' },
     homedir: () => 'test_dir'
 }));
 
