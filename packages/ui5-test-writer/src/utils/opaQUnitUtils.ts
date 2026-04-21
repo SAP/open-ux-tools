@@ -28,6 +28,8 @@ const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
  */
 const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([^\]]*)\]\s*,\s*function/d;
 
+const MAX_FILE_CONTENT_LENGTH = 10000;
+
 /**
  * Splices new module paths into the sap.ui.require array of the content string.
  * Entries that are already present are skipped. All other content is preserved exactly.
@@ -36,8 +38,6 @@ const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([^\]]*)\]\s*,\s*f
  * @param moduleNames - module paths to add (e.g. ["myApp/test/integration/SomeJourney"])
  * @returns the updated file content, or the original content unchanged if nothing was added
  */
-const MAX_FILE_CONTENT_LENGTH = 100_000;
-
 export function spliceModulesIntoQUnitContent(fileContent: string, moduleNames: string[]): string {
     if (fileContent.length > MAX_FILE_CONTENT_LENGTH) {
         return fileContent;
