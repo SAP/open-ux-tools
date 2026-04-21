@@ -4,10 +4,17 @@ import {
     spliceModulesIntoQUnitContent,
     splicePageIntoJourneyRunner,
     readHtmlTargetFromQUnitJs,
-    addIntegrationOldToGitignore
+    addIntegrationOldToGitignore,
+    hasVirtualOPA5
 } from '../../../src/utils/opaQUnitUtils';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
+import { getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
+
+jest.mock('@sap-ux/project-access', () => ({
+    getAllUi5YamlFileNames: jest.fn(),
+    readUi5Yaml: jest.fn()
+}));
 
 /**
  * Matches the actual template output: the last entry has no trailing newline
@@ -477,5 +484,123 @@ describe('addPagesToJourneyRunner()', () => {
             addPagesToJourneyRunner([{ targetKey: 'NewPage', appPath: 'myApp' }], testOutDirPath, fs);
         }).not.toThrow();
         expect(fs.write).not.toHaveBeenCalled();
+    });
+});
+
+describe('MAX_FILE_CONTENT_LENGTH guard', () => {
+    test('spliceModulesIntoQUnitContent returns content unchanged when it exceeds the limit', () => {
+        const oversized = BASE_FILE + ' '.repeat(10_001);
+        const result = spliceModulesIntoQUnitContent(oversized, ['myApp/test/integration/NewJourney']);
+        expect(result).toBe(oversized);
+    });
+
+    test('splicePageIntoJourneyRunner returns content unchanged when it exceeds the limit', () => {
+        const oversized = JOURNEY_RUNNER_FILE + ' '.repeat(10_001);
+        const result = splicePageIntoJourneyRunner(oversized, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+        expect(result).toBe(oversized);
+    });
+
+    test('addPathsToQUnitJs does not write when file content exceeds the limit', () => {
+        const oversized = BASE_FILE + ' '.repeat(10_001);
+        const fs = {
+            read: jest.fn().mockReturnValue(oversized),
+            write: jest.fn()
+        } as unknown as Editor;
+        addPathsToQUnitJs(['myApp/test/integration/NewJourney'], join('/', 'project', 'webapp', 'test'), fs);
+        expect(fs.write).not.toHaveBeenCalled();
+    });
+});
+
+describe('hasVirtualOPA5()', () => {
+    const mockGetAllUi5YamlFileNames = getAllUi5YamlFileNames as jest.MockedFunction<typeof getAllUi5YamlFileNames>;
+    const mockReadUi5Yaml = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
+    const basePath = join('/', 'project');
+
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    test('returns true when a yaml file has a fiori-tools-preview middleware with OPA5 framework', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: { test: [{ framework: 'OPA5', path: '/test/opaTests.qunit.html' }] }
+            })
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(true);
+    });
+
+    test('returns false when no yaml file has OPA5 configured', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: { test: [{ framework: 'KARMA', path: '/test/karma.html' }] }
+            })
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(false);
+    });
+
+    test('returns false when fiori-tools-preview middleware has no test array', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({ configuration: {} })
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(false);
+    });
+
+    test('returns false when fiori-tools-preview middleware is not present', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue(undefined)
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(false);
+    });
+
+    test('returns false when no yaml files are found', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue([]);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(false);
+    });
+
+    test('skips yaml files that throw and continues checking remaining files', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5-bad.yaml', 'ui5.yaml']);
+        mockReadUi5Yaml
+            .mockRejectedValueOnce(new Error('Cannot parse'))
+            .mockResolvedValueOnce({
+                findCustomMiddleware: jest.fn().mockReturnValue({
+                    configuration: { test: [{ framework: 'OPA5' }] }
+                })
+            } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(true);
+    });
+
+    test('returns true when OPA5 is in a test array alongside other frameworks', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: {
+                    test: [{ framework: 'KARMA' }, { framework: 'OPA5' }, { framework: 'QUnit' }]
+                }
+            })
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(true);
+    });
+
+    test('returns true on the first yaml that has OPA5 without reading further files', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml', 'ui5-mock.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: { test: [{ framework: 'OPA5' }] }
+            })
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(true);
+        expect(mockReadUi5Yaml).toHaveBeenCalledTimes(1);
     });
 });
