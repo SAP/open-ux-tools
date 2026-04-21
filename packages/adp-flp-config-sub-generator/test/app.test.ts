@@ -44,6 +44,7 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getBaseAppInbounds: jest.fn(),
     getCfBaseAppInbounds: jest.fn(),
     loadCfConfig: jest.fn().mockReturnValue({}),
+    isLoggedInCf: jest.fn().mockResolvedValue(false),
     getAppParamsFromUI5Yaml: jest.fn().mockReturnValue({ appHostId: '', appName: '', appVersion: '', spaceGuid: '' }),
     SystemLookup: jest.fn().mockImplementation(() => ({
         getSystemByName: jest.fn().mockResolvedValue({
@@ -1271,6 +1272,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         };
         const mockInbounds = { 'inbound-1': { semanticObject: 'SO', action: 'display' } };
         jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
+        jest.spyOn(adpTooling, 'isLoggedInCf').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAppParamsFromUI5Yaml').mockReturnValueOnce({
             appHostId: 'test-host',
             appName: 'test-app',
@@ -1318,6 +1320,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             token: 'test-token'
         };
         jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
+        jest.spyOn(adpTooling, 'isLoggedInCf').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAppParamsFromUI5Yaml').mockReturnValueOnce({
             appHostId: 'test-host',
             appName: 'test-app',
@@ -1359,6 +1362,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             token: 'test-token'
         };
         jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
+        jest.spyOn(adpTooling, 'isLoggedInCf').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAppParamsFromUI5Yaml').mockReturnValueOnce({
             appHostId: 'auto-detected-host',
             appName: 'test-app',

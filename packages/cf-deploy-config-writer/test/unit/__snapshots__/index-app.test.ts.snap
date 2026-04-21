@@ -1790,7 +1790,7 @@ exports[`CF Writer App Generate deployment configs - standalone approuter cleanu
         \\"start-local\\": \\"node node_modules/@sap/html5-repo-mock/index.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^19\\"
+        \\"@sap/approuter\\": \\"^21.0.0\\"
     },
     \\"devDependencies\\": {
         \\"@sap/html5-repo-mock\\": \\"^2.1.0\\"

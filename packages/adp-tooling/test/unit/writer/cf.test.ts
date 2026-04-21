@@ -2,33 +2,31 @@ import { join } from 'node:path';
 import { rimraf } from 'rimraf';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
+import { writeFileSync, mkdirSync } from 'node:fs';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import { generateCf, writeUi5AppInfo, setupCfPreview } from '../../../src/writer/cf';
 import { AppRouterType, FlexLayer, type CfAdpWriterConfig, type CfUi5AppInfo, type CfConfig } from '../../../src/types';
-import {
-    getAppHostIds,
-    getOrCreateServiceInstanceKeys,
-    getCfUi5AppInfo,
-    getProjectNameForXsSecurity
-} from '../../../src/cf';
-import { getBaseAppId } from '../../../src/base/helper';
+import { getOrCreateServiceInstanceKeys, getCfUi5AppInfo, getProjectNameForXsSecurity } from '../../../src/cf';
 import { runBuild } from '../../../src/base/project-builder';
 import { readUi5Yaml } from '@sap-ux/project-access';
+import { getBaseAppId } from '../../../src/base/helper';
+import { getAppHostIds } from '../../../src/cf/app/discovery';
+
 jest.mock('../../../src/cf');
-jest.mock('../../../src/base/helper');
 jest.mock('../../../src/base/project-builder');
 jest.mock('@sap-ux/project-access');
+jest.mock('../../../src/base/helper');
+jest.mock('../../../src/cf/app/discovery');
 
-const mockGetAppHostIds = getAppHostIds as jest.MockedFunction<typeof getAppHostIds>;
 const mockGetOrCreateServiceInstanceKeys = getOrCreateServiceInstanceKeys as jest.MockedFunction<
     typeof getOrCreateServiceInstanceKeys
 >;
 const mockGetCfUi5AppInfo = getCfUi5AppInfo as jest.MockedFunction<typeof getCfUi5AppInfo>;
 const mockGetBaseAppId = getBaseAppId as jest.MockedFunction<typeof getBaseAppId>;
+const mockGetAppHostIds = getAppHostIds as jest.MockedFunction<typeof getAppHostIds>;
 const mockRunBuild = runBuild as jest.MockedFunction<typeof runBuild>;
 const mockReadUi5Yaml = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
 const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
@@ -215,6 +213,7 @@ describe('CF Writer', () => {
             await writeUi5AppInfo(projectDir, mockUi5AppInfo, mockLogger);
 
             const filePath = join(projectDir, 'ui5AppInfo.json');
+            const { existsSync, readFileSync } = await import('node:fs');
             expect(existsSync(filePath)).toBe(true);
 
             const content = JSON.parse(readFileSync(filePath, 'utf-8'));

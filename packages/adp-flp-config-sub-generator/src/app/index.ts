@@ -18,6 +18,7 @@ import {
     getBaseAppInbounds,
     getCfBaseAppInbounds,
     loadCfConfig,
+    isLoggedInCf,
     getAppParamsFromUI5Yaml,
     type InternalInboundNavigation,
     type AdpPreviewConfigWithTarget,
@@ -527,7 +528,7 @@ export default class AdpFlpConfigGenerator extends Generator {
      */
     private async _initializeCfGenerator(): Promise<void> {
         const cfConfig = loadCfConfig(this.toolsLogger);
-        if (!cfConfig?.token) {
+        if (!(await isLoggedInCf(cfConfig, this.toolsLogger))) {
             this._abortExecution(t('error.cfLoginRequired'));
             return;
         }
