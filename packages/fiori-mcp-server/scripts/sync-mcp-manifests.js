@@ -38,9 +38,11 @@ try {
     // Update top-level version
     serverJson.version = version;
 
-    // Update version inside packages[0] (npm package entry)
-    if (Array.isArray(serverJson.packages) && serverJson.packages.length > 0) {
-        serverJson.packages[0].version = version;
+    // Update version in all package entries
+    if (Array.isArray(serverJson.packages)) {
+        for (const pkg of serverJson.packages) {
+            pkg.version = version;
+        }
     }
 
     // Update version in Claude Code plugin manifest
