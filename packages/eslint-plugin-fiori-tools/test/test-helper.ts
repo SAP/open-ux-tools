@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import type { RuleTester } from 'eslint';
 
 import type { Manifest } from '@sap-ux/project-access';
-import { loadModuleFromProject, normalizePath } from '@sap-ux/project-access';
+import { getNodeModulesPath, normalizePath } from '@sap-ux/project-access';
 
 import { ProjectContext } from '../src/project-context/project-context';
 import { platform } from 'node:os';
@@ -109,20 +109,24 @@ export const V2_ANNOTATIONS_PATH = join(
 );
 export const V2_ANNOTATIONS = readFileSync(V2_ANNOTATIONS_PATH, 'utf-8');
 
-const cdsModuleInstalled = async (root: string): Promise<boolean> => {
+const cdsModuleInstalled = (root: string): boolean => {
     const modulePath = join(root, 'node_modules');
     const result = existsSync(modulePath);
     if (result) {
-        const cdsModule = await loadModuleFromProject(root, '@sap/cds');
-        if (cdsModule) {
+        const cdsModulePath = getNodeModulesPath(root, '@sap/cds');
+        if (!cdsModulePath) {
+            return false;
+        }
+        if (existsSync(cdsModulePath)) {
             return true;
         }
+        return false;
     }
     return false;
 };
 
-export async function npmInstall(projectPath: string, checkCds = true): Promise<void> {
-    if (checkCds && (await cdsModuleInstalled(projectPath))) {
+export function npmInstall(projectPath: string, checkCds = true): void {
+    if (checkCds && cdsModuleInstalled(projectPath)) {
         console.log(`@sap/cds module found. Skipping package install in ${projectPath}.`);
         return;
     }
