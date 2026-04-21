@@ -62,7 +62,14 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
         // For backward compatibility ignore errors and use default
         pathMappings = {} as PathMappings;
     }
-    return 'webapp' in pathMappings ? pathMappings.webapp : join(appRoot, DirName.Webapp);
+    if ('webapp' in pathMappings) {
+        return pathMappings.webapp;
+    } else if ('src' in pathMappings) {
+        // For component projects, treat 'src' as 'webapp' for compatibility with tooling expecting 'webapp'
+        // Related to UI5 CLI v5 where project type 'application' migrated to 'component'
+        return pathMappings.src;
+    }
+    return join(appRoot, DirName.Webapp);
 }
 
 /**
@@ -105,12 +112,6 @@ export async function getPathMappings(
     for (const key in defaults) {
         const value = configPaths[key] ?? defaults[key];
         result[key] = join(baseDir, value);
-    }
-
-    if (type === 'component' && 'src' in result && !('webapp' in result)) {
-        // For component projects, treat 'src' as 'webapp' for compatibility with tooling expecting 'webapp'
-        // Related to UI5 CLI v5 where project type 'application' migrated to 'component'
-        result['webapp'] = result.src;
     }
 
     // Cast the merged result to PathMappings to re-enforce strict union keys for the caller

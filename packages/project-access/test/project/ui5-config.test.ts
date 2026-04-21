@@ -97,6 +97,18 @@ describe('Test getWebappPath()', () => {
         memFs.writeJSON(join(samplesRoot, 'package.json'), {});
         expect(await getWebappPath(join(samplesRoot, 'app/app1'), memFs)).toEqual(join(samplesRoot, 'app/app1/webapp'));
     });
+
+    test('Component type projects - ui5 cli v5.Get webapp from default app', async () => {
+        expect(await getWebappPath(join(samplesRoot, 'default-component-webapp-path'))).toEqual(
+            join(samplesRoot, 'default-component-webapp-path', 'src')
+        );
+    });
+
+    test('Component type projects - ui5 cli v5. Get webapp from app with custom webapp mapping', async () => {
+        expect(await getWebappPath(join(samplesRoot, 'custom-component-webapp-path'))).toEqual(
+            join(samplesRoot, 'custom-component-webapp-path', 'ts-src', 'app')
+        );
+    });
 });
 
 describe('Test readUi5Yaml()', () => {
@@ -313,16 +325,14 @@ describe('Test getPathMappings()', () => {
         test('Get path mappings from default application', async () => {
             const result = await getPathMappings(join(samplesRoot, 'default-component'));
             expect(result).toEqual({
-                src: join(samplesRoot, 'default-component', 'src'),
-                webapp: join(samplesRoot, 'default-component', 'src')
+                src: join(samplesRoot, 'default-component', 'src')
             });
         });
 
         test('Get path mappings from application with custom webapp mapping', async () => {
             const result = await getPathMappings(join(samplesRoot, 'custom-component'));
             expect(result).toEqual({
-                src: join(samplesRoot, 'custom-component', 'src', 'main', 'dummy'),
-                webapp: join(samplesRoot, 'custom-component', 'src', 'main', 'dummy')
+                src: join(samplesRoot, 'custom-component', 'src', 'main', 'dummy')
             });
         });
     });
