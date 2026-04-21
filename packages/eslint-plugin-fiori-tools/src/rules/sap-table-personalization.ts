@@ -80,7 +80,8 @@ const rule: FioriRuleDefinition = createFioriRule({
             let undefinedPropertiesString = '';
             let messageId = MessageIdByProperty[diagnostic.property ?? ''];
             if (diagnostic.undefinedProperties?.length) {
-                undefinedPropertiesString = `Currently ${diagnostic.undefinedProperties.join(', ')} ${diagnostic.undefinedProperties.length === 1 ? 'is disabled' : 'are disabled'} in the${diagnostic.pageSectionName ? ` ${diagnostic.pageSectionName} table` : ' table'}`;
+                const tableReference = diagnostic.pageSectionName ? ` ${diagnostic.pageSectionName} table` : ' table';
+                undefinedPropertiesString = `Currently ${diagnostic.undefinedProperties.join(', ')} ${diagnostic.undefinedProperties.length === 1 ? 'is disabled' : 'are disabled'} in the${tableReference}`;
                 messageId = MISSING_PERSONALIZATION_PROPERTIES;
             }
             return context.report({

@@ -15,6 +15,19 @@ import { buildAnnotationIndexKey } from '../parser';
 import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants';
 
 /**
+ * index - Index of annotation
+ * referencedEntityType - Entity type
+ * qualifier - FieldGroup annotation qualifier
+ * sectionLabel - Object page section label
+ */
+type SectionConfig = {
+    index: number;
+    referencedEntityType: string;
+    qualifier: string | undefined;
+    sectionLabel?: string;
+};
+
+/**
  * Creates a configuration key from an annotation path
  *
  * @param annotationPath
@@ -196,26 +209,20 @@ function processReferenceFacetRecord(
     if (term === UI_LINE_ITEM) {
         return createTableSection(
             facets,
-            index,
-            referencedEntityType,
-            qualifier,
+            { index, referencedEntityType, qualifier, sectionLabel },
             annotationPath,
             aliasInfo,
-            service,
-            sectionLabel
+            service
         );
     }
 
     if (term === UI_FIELD_GROUP) {
         return addHeaderSection(
             facets,
-            index,
-            referencedEntityType,
-            qualifier,
+            { index, referencedEntityType, qualifier, sectionLabel },
             annotationPath,
             aliasInfo,
-            service,
-            sectionLabel
+            service
         );
     }
 
@@ -253,39 +260,34 @@ function getReferencedEntityType(
  * Create a table section node with its child table node.
  *
  * @param facets
- * @param index
- * @param referencedEntityType
- * @param qualifier
+ * @param config
  * @param annotationPath
  * @param aliasInfo
  * @param service
- * @param sectionLabel
+ * @returns
  */
 function createTableSection(
     facets: IndexedAnnotation,
-    index: number,
-    referencedEntityType: string,
-    qualifier: string | undefined,
+    config: SectionConfig,
     annotationPath: string,
     aliasInfo: AliasInformation,
-    service: ParsedService,
-    sectionLabel?: string
+    service: ParsedService
 ): TableSectionNode | undefined {
     const section: TableSectionNode = {
         type: 'table-section',
-        annotationPath: `@com.sap.vocabularies.UI.v1.Facets/${index}`,
-        label: sectionLabel,
+        annotationPath: `@com.sap.vocabularies.UI.v1.Facets/${config.index}`,
+        label: config.sectionLabel,
         annotation: facets,
         children: []
     };
 
-    const lineItemKey = buildAnnotationIndexKey(referencedEntityType, UI_LINE_ITEM);
+    const lineItemKey = buildAnnotationIndexKey(config.referencedEntityType, UI_LINE_ITEM);
     const tableAnnotations = service.index.annotations[lineItemKey];
     if (!tableAnnotations) {
         return undefined;
     }
 
-    const annotation = tableAnnotations[qualifier ?? 'undefined'];
+    const annotation = tableAnnotations[config.qualifier ?? 'undefined'];
     if (!annotation) {
         return undefined;
     }
@@ -308,40 +310,34 @@ function createTableSection(
  * Creates a header facet section node with field group child annotation.
  *
  * @param headerFacets - Header facet annotation
- * @param index - Index of annotation
- * @param referencedEntityType - Entity type
- * @param qualifier - FieldGroup annotation qualifier
+ * @param config - Section configuration
  * @param annotationPath - Header facet annotation path
  * @param aliasInfo - Alias information for resolving namespaces
  * @param service - The parsed OData service
- * @param sectionLabel
  * @returns Header section annotation node
  */
 function addHeaderSection(
     headerFacets: IndexedAnnotation,
-    index: number,
-    referencedEntityType: string,
-    qualifier: string | undefined,
+    config: SectionConfig,
     annotationPath: string,
     aliasInfo: AliasInformation,
-    service: ParsedService,
-    sectionLabel?: string
+    service: ParsedService
 ): HeaderSectionNode | undefined {
     const section: HeaderSectionNode = {
         type: 'header-section',
-        annotationPath: `@com.sap.vocabularies.UI.v1.HeaderFacet/${index}`,
+        annotationPath: `@com.sap.vocabularies.UI.v1.HeaderFacet/${config.index}`,
         annotation: headerFacets,
-        label: sectionLabel,
+        label: config.sectionLabel,
         children: []
     };
 
-    const fieldGroupKey = buildAnnotationIndexKey(referencedEntityType, UI_FIELD_GROUP);
+    const fieldGroupKey = buildAnnotationIndexKey(config.referencedEntityType, UI_FIELD_GROUP);
     const fieldGroupAnnotations = service.index.annotations[fieldGroupKey];
     if (!fieldGroupAnnotations) {
         return undefined;
     }
 
-    const annotation = fieldGroupAnnotations[qualifier ?? 'undefined'];
+    const annotation = fieldGroupAnnotations[config.qualifier ?? 'undefined'];
     if (!annotation) {
         return undefined;
     }

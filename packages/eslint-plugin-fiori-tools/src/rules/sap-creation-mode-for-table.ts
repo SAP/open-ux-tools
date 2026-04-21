@@ -292,24 +292,24 @@ function getRecommendedValueV4(tableType: string): string {
  * Checks if the value is valid and recommends a value based on best practices and the table type.
  *
  * @param creationMode - Creation mode configuration to validate
- * @param pageName - Name of the page
+ * @param page - page information
+ * @param page.name - Name of the page
+ * @param page.sectionName - Name of the object page section
  * @param parsedApp - Parsed application context
  * @param tableType - Type of the table
  * @param recommendedValue - The recommended value for this table type
  * @param problems - Array to collect diagnostic problems
  * @param shouldSuggestAppLevel - Whether to report on page level or not based on app level suggestion
- * @param pageSectionName - Name of the object page section where the issue occurs
  * @returns True, if a configuration was found and issue was reported. False, if no configuration exists
  */
 function validateCreationModeV4(
     creationMode: CreateModeConfig,
-    pageName: string,
+    page: { name: string; sectionName?: string },
     parsedApp: ParsedApp,
     tableType: string,
     recommendedValue: string,
     problems: CreationModeForTable[],
-    shouldSuggestAppLevel: boolean,
-    pageSectionName?: string
+    shouldSuggestAppLevel: boolean
 ): boolean {
     const value = creationMode.valueInFile;
     if (value === undefined && shouldSuggestAppLevel === true) {
@@ -320,13 +320,13 @@ function validateCreationModeV4(
     if (!value) {
         reportDiagnostic(problems, {
             messageId: 'invalidCreateModeV4',
-            pageName,
+            pageName: page.name,
             parsedApp,
             configurationPath: creationMode.configurationPath,
             tableType,
             validValues,
             recommendedValue,
-            pageSectionName
+            pageSectionName: page.sectionName
         });
         return true;
     }
@@ -334,13 +334,13 @@ function validateCreationModeV4(
     if (!validValues.includes(value)) {
         reportDiagnostic(problems, {
             messageId: 'invalidCreateModeV4',
-            pageName,
+            pageName: page.name,
             parsedApp,
             configurationPath: creationMode.configurationPath,
             tableType,
             validValues,
             recommendedValue,
-            pageSectionName
+            pageSectionName: page.sectionName
         });
         return true;
     }
@@ -348,13 +348,13 @@ function validateCreationModeV4(
     if (value !== recommendedValue) {
         reportDiagnostic(problems, {
             messageId: 'recommendInlineCreationRowsV4',
-            pageName,
+            pageName: page.name,
             parsedApp,
             configurationPath: creationMode.configurationPath,
             tableType,
             validValues,
             recommendedValue,
-            pageSectionName
+            pageSectionName: page.sectionName
         });
     }
     return true;
@@ -396,13 +396,12 @@ function processTableV4(
     if (
         validateCreationModeV4(
             tableCreationMode,
-            page.targetName,
+            { name: page.targetName, sectionName: pageSectionName },
             parsedApp,
             tableType,
             recommendedValue,
             problems,
-            shouldSuggestAppLevel,
-            pageSectionName
+            shouldSuggestAppLevel
         )
     ) {
         return;
