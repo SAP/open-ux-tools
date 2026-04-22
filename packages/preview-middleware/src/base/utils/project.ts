@@ -17,9 +17,8 @@ function getComponentPathPrefix(
     if (typeof utils !== 'object') {
         return undefined;
     }
-    return utils.getProject?.()?.getType?.() === 'component'
-        ? posix.join(`/${prefixType}`, utils.getProject().getNamespace())
-        : undefined;
+    const project = utils.getProject?.();
+    return project?.getType?.() === 'component' ? posix.join(`/${prefixType}`, project.getNamespace()) : undefined;
 }
 
 /**
@@ -53,5 +52,5 @@ export function getResourcesPathPrefix(utils?: MiddlewareUtils): string | undefi
  * @returns the adjusted path
  */
 export function adjustPathForSandbox(path: string, sandboxPathPrefix?: string): string {
-    return sandboxPathPrefix ? path.replace(/^\/test/, '') : path;
+    return sandboxPathPrefix ? path.replace(/^\/test(?=\/|$)/, '') : path;
 }
