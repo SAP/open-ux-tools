@@ -8,10 +8,10 @@ import {
     expect
 } from '@sap-ux-private/playwright';
 import type { Page } from '@sap-ux-private/playwright';
-import { readFile, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import { SERVER_TIMEOUT, TIMEOUT } from '../utils/constant';
+import { TIMEOUT } from '../utils/constant';
 
 const buildUrl =
     (port = 3000) =>
@@ -95,22 +95,11 @@ const adaptUi5Yaml = async (ui5Version: string) => {
     await writeFile(yamlPath, getYamlContent(ui5Version));
 };
 
-const adaptPackageJson = async () => {
-    const packageJsonPath = join(testCwd, 'package.json');
-    const content = JSON.parse(await readFile(packageJsonPath, 'utf-8')) as Record<string, unknown>;
-    const devDependencies = content.devDependencies as Record<string, string>;
-    devDependencies['@ui5/cli'] = '5.0.0-alpha.4';
-    // Remove ui5-proxy-middleware from node_modules; it is registered via yaml extension pointing to local dist
-    delete devDependencies['@sap-ux/ui5-proxy-middleware'];
-    await writeFile(packageJsonPath, JSON.stringify(content, null, 4));
-};
-
 const prepare = async (ui5Version: string) => {
     await copyProject({
         projectRoot: cwd,
         cb: async () => {
             await adaptUi5Yaml(ui5Version);
-            await adaptPackageJson();
         }
     });
     const port = await getPort();

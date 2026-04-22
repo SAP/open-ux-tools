@@ -4,8 +4,7 @@
     "private": true,
     "devDependencies": {
         "@sap-ux/ui5-middleware-fe-mockserver": "2.3.19",
-        "@sap-ux/ui5-proxy-middleware": "1.6.4",
-        "@ui5/cli": "4"
+        "@ui5/cli": "^5.0.0-alpha.4"
     },
     "scripts": {
         "build": "cd ../../.. && pnpm build",

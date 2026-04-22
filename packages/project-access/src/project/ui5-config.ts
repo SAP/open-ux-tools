@@ -83,7 +83,7 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
  * @param [memFs] - optional mem-fs editor instance
  * @returns - path to test folder
  * @throws {Error} if ui5.yaml or 'type' cannot be read
- * @throws {Error} if project type is not 'application', 'library', 'theme-library' or 'module'
+ * @throws {Error} if project type is not 'application', 'component', 'library', 'theme-library' or 'module'
  */
 export async function getWebappTestPath(appRoot: string, memFs?: Editor): Promise<string> {
     //Shortcut: if webapp/manifest.json exists, return webapp/test path w/o reading the YAML content
