@@ -30,7 +30,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap/approuter": "^21.0.0",
+        "@sap/approuter": "^20.8.0",
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
