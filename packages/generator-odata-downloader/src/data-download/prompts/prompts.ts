@@ -55,10 +55,10 @@ async function validateKeysAndFetchData(
     // Query will only execute if we have at least one input value and no invalid inputs
     let hasOneValidKeyValue = false;
     const validKeyInputs = appConfig.referencedEntities?.listEntity.semanticKeys.every((key, index) => {
-        if (!hasOneValidKeyValue) {
+        if (key.name !== 'IsActiveEntity' && !hasOneValidKeyValue) {
             hasOneValidKeyValue = !!key.value;
         }
-        // if we have a value, if we dont have a value but have an answer the input was invalid
+        // if we have a value but not an answer the value was invalid
         return (key.value !== undefined && key.value !== '') || !answers[`entityKeyIdx:${index}`];
     });
 
@@ -420,8 +420,8 @@ function getKeyPrompts(
     const getEntityKeyInputPrompt = (keypart: number): InputQuestion =>
         ({
             when: async () => {
-                /* !answers?.[promptNames.skipDataDownload]?.[0] && */
-                const showPrompt = !!appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name;
+                const key = appConfig.referencedEntities?.listEntity.semanticKeys[keypart];
+                const showPrompt = !!key?.name && key.name !== 'IsActiveEntity'; // `IsActiveEntity` is hardcoded to true, dont show
                 // Store the index of the last shown prompt so we can run the query on this one only
                 if (showPrompt && keypart > lastKeyPart) {
                     lastKeyPart = keypart;
@@ -434,13 +434,6 @@ function getKeyPrompts(
                     keyName: `${appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name} (${appConfig.referencedEntities?.listEntity.entitySetName})`
                 }),
             type: 'input',
-            default: () => {
-                const keyRef = appConfig.referencedEntities?.listEntity.semanticKeys[keypart];
-                if (keyRef?.name === 'IsActiveEntity') {
-                    return 'true';
-                }
-                return undefined;
-            },
             guiOptions: {
                 hint: t('prompts.entityKey.hint')
             },

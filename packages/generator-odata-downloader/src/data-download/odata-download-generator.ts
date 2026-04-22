@@ -20,9 +20,10 @@ import type { GeneratorOptions } from 'yeoman-generator';
 import Generator from 'yeoman-generator';
 import { initI18nODataDownloadGenerator, t } from '../utils/i18n';
 import type { EntitySetsFlat } from './odata-query';
-import { getODataDownloaderPrompts, promptNames } from './prompts/prompts';
-import { type ReferencedEntities } from './types';
-import { buildReferentialConstraintFileContent, createEntitySetData } from './utils';
+import { getODataDownloaderPrompts, promptNames, type SelectedEntityAnswer } from './prompts/prompts';
+import { getMissingReferentialConstraintsPrompts } from './prompts/ref-constrainsts';
+import { YeomanUiStepConfig, type AppConfig, type ReferencedEntities } from './types';
+import { buildReferentialConstraintFileContent, createEntitySetData, updateReferentialConstraintFileContent } from './utils';
 import { getValueHelpSelectionPrompt } from './prompts/value-help-prompts';
 import type { MockserverConfig, MockserverService } from '@sap-ux/ui5-config';
 import {
@@ -45,7 +46,7 @@ export class ODataDownloadGenerator extends Generator {
     private static _logger: ILogWrapper & Logger = DefaultLogger;
     // Generator name for use in telemetry, readmes etc.
     protected generatorVersion = this.rootGeneratorVersion();
-    prompts: Prompts;
+    private prompts: Prompts;
     setPromptsCallback: (fn: object) => void;
 
     private readonly state: {
@@ -116,7 +117,6 @@ export class ODataDownloadGenerator extends Generator {
         setYeomanEnvConflicterForce(this.env, true);
         this.options.force = true;
 
-        // Generator steps
         this.prompts = new Prompts([
             {
                 description: t('steps.odataDownloader.description'),
@@ -200,6 +200,8 @@ export class ODataDownloadGenerator extends Generator {
             this.state.updateMainServiceMetadata = promptAnswers[promptNames.updateMainServiceMetadata] as boolean;
             this.state.mainServiceMetadata = odataServiceAnswers.metadata;
 
+            await this._promptMissingReferentialConstraints(application, promptAnswers);
+
             if (
                 odataServiceAnswers.servicePath &&
                 odataServiceAnswers.metadata &&
@@ -247,9 +249,9 @@ export class ODataDownloadGenerator extends Generator {
                         this.writeDestinationJSON(join(this.state.mockDataRootPath!, `${entityName}.json`), entityData);
                     });
 
-                    // Write mock server .js constraint files for hierarchy entities whose parent nav prop
-                    // has no referentialConstraint in metadata — only for entity sets actually written,
-                    // and only if the .js file does not already exist
+                    // Write or update mock server .js constraint files for hierarchy entities whose parent nav prop
+                    // has no referentialConstraint in metadata — only for entity sets actually written.
+                    // Creates a new file if none exists, or injects the new constraint into an existing file.
                     this.state.appEntities.hierarchyEntities
                         ?.filter(
                             (h) =>
@@ -257,17 +259,27 @@ export class ODataDownloadGenerator extends Generator {
                         )
                         ?.forEach((h) => {
                             const jsFilePath = join(this.state.mockDataRootPath!, `${h.entitySetName}.js`);
-                            if (!this.fs.exists(jsFilePath)) {
-                                const { navPropName, constraints } = h.missingReferentialConstraints!;
+                            const jsFileAbsPath = this.destinationPath(jsFilePath);
+                            const { navPropName, constraints } = h.missingReferentialConstraints!;
+                            if (!this.fs.exists(jsFileAbsPath)) {
                                 const content = buildReferentialConstraintFileContent(navPropName, constraints);
                                 this.writeDestination(jsFilePath, content);
                                 ODataDownloadGenerator.logger.info(
                                     `Written referential constraint file: ${h.entitySetName}.js`
                                 );
                             } else {
-                                ODataDownloadGenerator.logger.debug(
-                                    `Skipping referential constraint file for '${h.entitySetName}' — already exists`
-                                );
+                                const existing = this.fs.read(jsFileAbsPath);
+                                const updated = updateReferentialConstraintFileContent(existing, navPropName, constraints);
+                                if (updated !== existing) {
+                                    this.writeDestination(jsFilePath, updated);
+                                    ODataDownloadGenerator.logger.info(
+                                        `Updated referential constraint file: ${h.entitySetName}.js`
+                                    );
+                                } else {
+                                    ODataDownloadGenerator.logger.debug(
+                                        `Referential constraint for '${navPropName}' already present in ${h.entitySetName}.js — skipping`
+                                    );
+                                }
                             }
                         });
 
@@ -353,6 +365,39 @@ export class ODataDownloadGenerator extends Generator {
                     prettifyXml(this.state.mainServiceMetadata, { indent: 4 })
                 );
             }
+        }
+    }
+
+    private async _promptMissingReferentialConstraints(
+        application: AppConfig,
+        promptAnswers: Record<string, unknown>
+    ): Promise<void> {
+        const listEntityName = application.referencedEntities?.listEntity.entitySetName;
+        const selectedEntityNames = new Set([
+            ...(listEntityName ? [listEntityName] : []),
+            ...((promptAnswers[promptNames.relatedEntitySelection] as SelectedEntityAnswer[]) ?? []).map(
+                (s) => s.entity.entitySetName
+            )
+        ]);
+        const entitiesWithMissingConstraints =
+            application.referencedEntities?.hierarchyEntities?.filter(
+                (h) => !h.parentProperty && h.missingReferentialConstraints && selectedEntityNames.has(h.entitySetName)
+            ) ?? [];
+        if (entitiesWithMissingConstraints.length > 0) {
+            // Update the steps to include a new step for missing contraints
+            this.prompts.splice(1, 0, [
+                { name: t('steps.addConstraints.name'), description: t('steps.addConstraints.description') }
+            ]);
+
+            const refConsPrompts = getMissingReferentialConstraintsPrompts(entitiesWithMissingConstraints);
+            const refConsAnswers = (await this.prompt(refConsPrompts)) as Record<string, string>;
+            entitiesWithMissingConstraints.forEach((h) => {
+                const source = refConsAnswers[`${h.entitySetName}/${h.nodeProperty}/source`];
+                const target = refConsAnswers[`${h.entitySetName}/${h.nodeProperty}/target`];
+                if (source && target) {
+                    h.missingReferentialConstraints!.constraints = [{ sourceProperty: source, targetProperty: target }];
+                }
+            });
         }
     }
 

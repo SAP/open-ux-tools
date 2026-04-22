@@ -257,7 +257,8 @@ describe('Test utils', () => {
                 parentProperty: 'Parent',
                 parentPropertyType: 'Edm.String',
                 isDraft: false,
-                entityTypeKeys: ['ID']
+                entityTypeKeys: ['ID'],
+                entityProperties: ['Parent']
             });
         });
 
@@ -340,7 +341,8 @@ describe('Test utils', () => {
                     parentProperty: 'OwnerCompany',
                     parentPropertyType: 'Edm.Guid',
                     isDraft: true,
-                    entityTypeKeys: []
+                    entityTypeKeys: [],
+                    entityProperties: []
                 }
             ];
 
@@ -378,7 +380,8 @@ describe('Test utils', () => {
                     parentProperty: 'OwnerCompany',
                     parentPropertyType: 'Edm.Guid',
                     isDraft: true,
-                    entityTypeKeys: []
+                    entityTypeKeys: [],
+                    entityProperties: []
                 }
             ];
 
@@ -392,7 +395,39 @@ describe('Test utils', () => {
             ).toBe('cb565aac-b20e-1fe1-8ba0-be99f8d2cefd');
         });
 
-        test('should skip normalization when parent property is not Edm.Guid or Edm.UUID', () => {
+        test('should strip leading zeros from padded numeric NodeId and parent property', () => {
+            const entityFileData: { [key: string]: object[] } = {
+                Employees: [
+                    { HierarchyNode: '0000000001', HierarchyParentNode: '' },
+                    { HierarchyNode: '0000000042', HierarchyParentNode: '0000000001' },
+                    { HierarchyNode: '0000000099', HierarchyParentNode: '0000000042' }
+                ]
+            };
+            const hierarchies: HierarchyEntity[] = [
+                {
+                    entitySetName: 'Employees',
+                    entityTypeName: 'EmployeeType',
+                    qualifier: 'EmployeeHierarchy',
+                    nodeProperty: 'HierarchyNode',
+                    parentProperty: 'HierarchyParentNode',
+                    parentPropertyType: 'Edm.String',
+                    isDraft: false,
+                    entityTypeKeys: ['HierarchyNode'],
+                    entityProperties: []
+                }
+            ];
+
+            normalizeHierarchyNodeIds(entityFileData, hierarchies);
+
+            expect((entityFileData.Employees[0] as Record<string, unknown>).HierarchyNode).toBe('1');
+            expect((entityFileData.Employees[0] as Record<string, unknown>).HierarchyParentNode).toBe('');
+            expect((entityFileData.Employees[1] as Record<string, unknown>).HierarchyNode).toBe('42');
+            expect((entityFileData.Employees[1] as Record<string, unknown>).HierarchyParentNode).toBe('1');
+            expect((entityFileData.Employees[2] as Record<string, unknown>).HierarchyNode).toBe('99');
+            expect((entityFileData.Employees[2] as Record<string, unknown>).HierarchyParentNode).toBe('42');
+        });
+
+        test('should not strip NodeId values that are not padded numbers', () => {
             const entityFileData: { [key: string]: object[] } = {
                 SalesOrgs: [{ ID: 'ABC123', Parent: 'XYZ', NodeId: 'ABC123' }]
             };
@@ -405,7 +440,8 @@ describe('Test utils', () => {
                     parentProperty: 'Parent',
                     parentPropertyType: 'Edm.String',
                     isDraft: false,
-                    entityTypeKeys: []
+                    entityTypeKeys: [],
+                    entityProperties: []
                 }
             ];
 
@@ -433,7 +469,8 @@ describe('Test utils', () => {
                     parentProperty: 'OwnerCompany',
                     parentPropertyType: 'Edm.Guid',
                     isDraft: false,
-                    entityTypeKeys: []
+                    entityTypeKeys: [],
+                    entityProperties: []
                 }
             ];
 
@@ -464,7 +501,8 @@ describe('Test utils', () => {
                     parentProperty: 'ParentID',
                     parentPropertyType: 'Edm.UUID',
                     isDraft: false,
-                    entityTypeKeys: []
+                    entityTypeKeys: [],
+                    entityProperties: []
                 }
             ];
 
@@ -494,7 +532,8 @@ describe('Test utils', () => {
                     parentProperty: 'Parent',
                     parentPropertyType: 'Edm.String',
                     isDraft: false,
-                    entityTypeKeys: []
+                    entityTypeKeys: [],
+                    entityProperties: []
                 }
             ];
 
@@ -521,7 +560,8 @@ describe('Test utils', () => {
                     parentProperty: 'OwnerCompany',
                     parentPropertyType: 'Edm.Guid',
                     isDraft: true,
-                    entityTypeKeys: []
+                    entityTypeKeys: [],
+                    entityProperties: []
                 }
             ];
 
@@ -545,7 +585,8 @@ describe('Test utils', () => {
                     parentProperty: 'Parent',
                     parentPropertyType: 'Edm.String',
                     isDraft: false,
-                    entityTypeKeys: []
+                    entityTypeKeys: [],
+                    entityProperties: []
                 }
             ];
 
@@ -565,8 +606,9 @@ describe('Test utils', () => {
             const { convert } = await import('@sap-ux/annotation-converter');
             const { parse } = await import('@sap-ux/edmx-parser');
             const convertedMetadata = convert(parse(metadataXml));
+            const mockDataPath = join(__dirname, 'test-data/test-apps/purchaseorder/webapp/localService/mockdata');
 
-            const result = getHierarchyEntities(convertedMetadata);
+            const result = getHierarchyEntities(convertedMetadata, mockDataPath);
 
             // Real metadata has 8 entity sets with SAP__aggregation.RecursiveHierarchy annotations
             expect(result.length).toBeGreaterThanOrEqual(7);

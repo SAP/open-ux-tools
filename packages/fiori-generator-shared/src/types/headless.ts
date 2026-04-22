@@ -1,5 +1,5 @@
 import { Authentication } from '@sap-ux/btp-utils';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, ExternalService } from '@sap-ux/axios-extension';
 import type { FloorplanKey } from './app-gen';
 import type { CapRuntime } from './cap';
 
@@ -76,6 +76,20 @@ export interface FLPConfig {
     readonly semanticObject?: string;
 }
 
+type ExternalServiceConfig = ExternalService & {
+    /**
+     * Either the metadata xml or a file path to the metadata file on disk
+     */
+    metadata: string;
+}
+
+const A : ExternalServiceConfig = {
+    path: '123',
+    type: 'value-list',
+    target: 'asd',
+    metadata: ''
+
+}
 /**
  * Defines the external interface used to generate in headless mode (no prompts)
  * This is a deliberate re-definition of internal interfaces to avoid consumers having
@@ -116,6 +130,7 @@ export interface AppConfig {
             readonly appPath?: string; // Alternative app path
         };
         readonly apiHubApiKey?: string; // Non-enterprise support only currently
+        externalServiceConfigs: ExternalServiceConfig[]
     };
     deployConfig?: DeployConfig;
     flpConfig?: FLPConfig;

@@ -8,9 +8,6 @@ import type { ReferencedEntities, HierarchyEntity } from './types';
 export type EntitySetsFlat = { [entityPath: string]: string };
 type ExpandTree = { expand?: Record<string, ExpandTree> };
 
-/** Default number of hierarchy levels to fetch in a descendants query. */
-const defaultHierarchyLevels = 3;
-
 /**
  * Builds the expands object used to create an odata query.
  *
@@ -104,7 +101,8 @@ export function createQueryFromEntities(
         const filterParam = filterParts.length > 0 ? `,filter(${filterParts.join(' and ')})` : '';
 
         const hierarchyArgs = `$root/${mainEntity.entitySetName},${hierarchyEntity.qualifier},${hierarchyEntity.nodeProperty}`;
-        const topLevelsPart = `com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/${mainEntity.entitySetName},HierarchyQualifier='${hierarchyEntity.qualifier}',NodeProperty='${hierarchyEntity.nodeProperty}',Levels=${defaultHierarchyLevels})`;
+        // Note that Levels is omit so all levels are fetched
+        const topLevelsPart = `com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/${mainEntity.entitySetName},HierarchyQualifier='${hierarchyEntity.qualifier}',NodeProperty='${hierarchyEntity.nodeProperty}')`;
 
         // Draft-enabled hierarchies require an ancestors() wrapper to scope to active entities
         const applyPart = hierarchyEntity.isDraft
@@ -245,7 +243,7 @@ export function buildNavPropHierarchyQuery(
     const navPath = `${keySegment}/${navPropName}`;
     const hierarchyNodesRef = `$root/${navPath}`;
 
-    const topLevelsPart = `com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=${hierarchyNodesRef},HierarchyQualifier='${hierarchyEntity.qualifier}',NodeProperty='${hierarchyEntity.nodeProperty}',Levels=${defaultHierarchyLevels})`;
+    const topLevelsPart = `com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=${hierarchyNodesRef},HierarchyQualifier='${hierarchyEntity.qualifier}',NodeProperty='${hierarchyEntity.nodeProperty}')`;
     const query = `${navPath}?$apply=${topLevelsPart}`;
     ODataDownloadGenerator.logger.debug(`Nav-prop hierarchy query: ${query}`);
     return query;

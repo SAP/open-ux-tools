@@ -1,6 +1,9 @@
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import type { ApplicationAccess } from '@sap-ux/project-access';
+import { DirName, getMockServerConfig } from '@sap-ux/project-access';
 import type { BackendSystem } from '@sap-ux/store';
 import { BackendSystemKey, getService } from '@sap-ux/store';
 import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabularies-types';
@@ -116,6 +119,9 @@ export function createEntitySetData(
 /** Regex matching a 32-character uppercase hex string (ABAP RAW16 GUID without dashes). */
 const upperHexGuidPattern = /^[0-9A-F]{32}$/;
 
+/** Regex matching a string of digits with leading zeros (e.g. "0000000042"). */
+const paddedNumberPattern = /^0\d+$/;
+
 /**
  * Converts a 32-character uppercase hex string to standard GUID format (lowercase, 8-4-4-4-12 dashes).
  *
@@ -128,11 +134,12 @@ function hexToGuid(hex: string): string {
 }
 
 /**
- * Normalizes hierarchy NodeId values to match the parent property GUID format.
- * ABAP exposes the same underlying GUID in different formats depending on the EDM type:
- * Edm.Guid properties use lowercase with dashes, while Edm.String NodeId values use uppercase
- * hex without dashes. The mock data server uses strict equality to match parent-child relationships,
- * so the formats must be aligned.
+ * Normalizes hierarchy NodeId values to match the parent property format.
+ * Handles two cases:
+ * - ABAP GUID mismatch: Edm.Guid parent properties use lowercase with dashes, while Edm.String
+ *   NodeId values use uppercase hex without dashes. Converts NodeId to GUID format.
+ * - Padded numeric strings: NodeId values that are all-digit strings with leading zeros
+ *   (e.g. "0000000042") have the leading zeros stripped to match the unpadded parent reference.
  *
  * @param entityFileData - The entity set data map keyed by entity set name
  * @param hierarchyEntities - The detected hierarchy entity descriptors
@@ -142,9 +149,6 @@ export function normalizeHierarchyNodeIds(
     hierarchyEntities: HierarchyEntity[]
 ): void {
     for (const hierarchy of hierarchyEntities) {
-        if (!['Edm.Guid', 'Edm.UUID'].includes(hierarchy.parentPropertyType)) {
-            continue;
-        }
         const pathParts = hierarchy.nodeProperty.split('/');
         for (const entityData of Object.values(entityFileData)) {
             for (const entity of entityData) {
@@ -156,12 +160,30 @@ export function normalizeHierarchyNodeIds(
                 } else {
                     nodeValue = record[pathParts[0]] as string | undefined;
                 }
-                if (typeof nodeValue === 'string' && upperHexGuidPattern.test(nodeValue)) {
+                if (typeof nodeValue !== 'string') {
+                    continue;
+                }
+                if (
+                    /* hierarchy.parentPropertyType &&
+                    ['Edm.Guid', 'Edm.UUID'].includes(hierarchy.parentPropertyType) && */
+                    upperHexGuidPattern.test(nodeValue)
+                ) {
                     const guidValue = hexToGuid(nodeValue);
                     if (pathParts.length > 1) {
                         (record[pathParts[0]] as Record<string, unknown>)[pathParts[1]] = guidValue;
                     } else {
                         record[pathParts[0]] = guidValue;
+                    }
+                } else if (hierarchy.parentProperty && paddedNumberPattern.test(nodeValue)) {
+                    const stripped = parseInt(nodeValue, 10).toString();
+                    if (pathParts.length > 1) {
+                        (record[pathParts[0]] as Record<string, unknown>)[pathParts[1]] = stripped;
+                    } else {
+                        record[pathParts[0]] = stripped;
+                    }
+                    const parentValue = record[hierarchy.parentProperty];
+                    if (typeof parentValue === 'string' && paddedNumberPattern.test(parentValue)) {
+                        record[hierarchy.parentProperty] = parseInt(parentValue, 10).toString();
                     }
                 }
             }
@@ -185,13 +207,15 @@ export function clearRootHierarchyParentProperty(
         for (const entityData of Object.values(entityFileData)) {
             for (const entity of entityData) {
                 const record = entity as Record<string, unknown>;
-                if (!(hierarchy.parentProperty in record)) {
+                // Is the parent property a direct property
+                if (!hierarchy.parentProperty || !(hierarchy.parentProperty in record)) {
                     continue;
                 }
                 const distanceFromRoot =
                     pathParts.length > 1
                         ? (record[pathParts[0]] as Record<string, unknown>)?.DistanceFromRoot
                         : record.DistanceFromRoot;
+                // Mock server requires an empty string to indicate root
                 if (distanceFromRoot === 0) {
                     record[hierarchy.parentProperty] = '';
                 }
@@ -255,7 +279,7 @@ function getSemanticKeyProperties(entityType: EntityType): SemanticKeyFilter[] {
             keyNames.push({
                 name: keyProperty.name,
                 type: keyProperty.type,
-                value: undefined
+                value: keyProperty.name === 'IsActiveEntity' ? 'true' : undefined // Hardcode to alway only get active entities
             });
         });
     }
@@ -327,17 +351,21 @@ function getNavPropsForExpansion(
  * @param convertedMetadata - The converted metadata object
  * @returns Array of hierarchy entity descriptors
  */
-export function getHierarchyEntities(convertedMetadata: ConvertedMetadata): HierarchyEntity[] {
+export function getHierarchyEntities(convertedMetadata: ConvertedMetadata, mockDataPath?: string): HierarchyEntity[] {
     const hierarchyEntities: HierarchyEntity[] = [];
     for (const entitySet of convertedMetadata.entitySets) {
         const aggregationAnnotations = entitySet.entityType?.annotations?.Aggregation;
         if (!aggregationAnnotations) {
             continue;
         }
-        const hierarchyKey = Object.keys(aggregationAnnotations).find((key) => key.startsWith('RecursiveHierarchy'));
-        if (!hierarchyKey) {
+        const hierarchyAnnotations = Object.keys(aggregationAnnotations).filter((key) => key.startsWith('RecursiveHierarchy'));
+        if (!hierarchyAnnotations[0]) {
             continue;
         }
+        ODataDownloadGenerator.logger.debug(`Number of hierarchy annotations entity type: ${entitySet.entityType.name} - ${hierarchyAnnotations.length}`);
+
+        // Only one hierarchy annotation per entity is supported.
+        const hierarchyKey = hierarchyAnnotations[0];
         const qualifier = hierarchyKey.split('#')[1] ?? '';
         const aggregationAnnotation = aggregationAnnotations[hierarchyKey as keyof typeof aggregationAnnotations];
         if (!aggregationAnnotation) {
@@ -361,8 +389,9 @@ export function getHierarchyEntities(convertedMetadata: ConvertedMetadata): Hier
         // matches a business key (e.g. PurchasingParentItem for PurchaseOrderItem).
         let parentProperty: string | undefined;
         if (hasReferentialConstraint) {
+            // Only one ref constraint per property is supported
             parentProperty = parentNavPropAnnotation?.$target?.referentialConstraint?.[0]?.sourceProperty;
-        } else if (parentNavPropName) {
+        } /* else if (parentNavPropName) {
             const businessKeys = entitySet.entityType.keys
                 .map((k) => k.name)
                 .filter((k) => !['DraftUUID', 'IsActiveEntity'].includes(k));
@@ -376,36 +405,38 @@ export function getHierarchyEntities(convertedMetadata: ConvertedMetadata): Hier
                         p.name.toLowerCase().includes('parent') &&
                         keyTypes.has(p.type)
                 )?.name ?? parentNavPropName;
-        }
+        } */
 
-        if (nodeProperty && parentProperty) {
+        if (nodeProperty) {
             const isDraft = !!(entitySet.annotations?.Common?.DraftRoot ?? entitySet.annotations?.Common?.DraftNode);
-            const parentPropertyType =
-                entitySet.entityType.entityProperties.find((prop) => prop.name === parentProperty)?.type ??
-                'Edm.String';
-            const entityTypeKeys = entitySet.entityType.keys.map((k) => k.name);
-            const draftKeyNames = new Set(['DraftUUID', 'IsActiveEntity']);
-            const businessKeys = entityTypeKeys.filter((k) => !draftKeyNames.has(k));
+            // If we have the parent property assign it
 
-            // When the parent nav prop has no referential constraint in metadata, derive it from hierarchy data
-            // so the generator can write a mock server .js file to compensate
+            const parentPropertyType = parentProperty ?
+                entitySet.entityType.entityProperties.find((prop) => prop.name === parentProperty)?.type ??
+                'Edm.String' : undefined;
+            const entityTypeKeys = entitySet.entityType.keys.map((k) => k.name);
+
+            // When the parent nav prop has no referential constraint in metadata, check for an existing .js file
             let missingReferentialConstraints: HierarchyEntity['missingReferentialConstraints'];
             if (!hasReferentialConstraint && parentNavPropName) {
-                const constraints: { sourceProperty: string; targetProperty: string }[] = [];
-                // node key → parent property (e.g. PurchaseOrderItem → PurchasingParentItem)
-                const nodeKey = businessKeys.find((k) => k !== parentProperty);
-                if (nodeKey) {
-                    constraints.push({ sourceProperty: nodeKey, targetProperty: parentProperty });
+                const jsFile = mockDataPath ? join(mockDataPath, `${entitySet.name}.js`) : undefined;
+                if (jsFile && existsSync(jsFile)) {
+                    // eslint-disable-next-line @typescript-eslint/no-var-requires
+                    const existing = require(jsFile) as { getReferentialConstraints?: (nav: { name: string; referentialConstraint: [] }) => { sourceProperty: string; targetProperty: string }[] };
+                    const constraints = existing.getReferentialConstraints?.({ name: parentNavPropName, referentialConstraint: [] }) ?? [];
+                    ODataDownloadGenerator.logger.debug(
+                        `getHierarchyEntities: '${entitySet.name}' loaded constraints from existing file: ${JSON.stringify(constraints)}`
+                    );
+                    if (constraints[0]) {
+                        parentProperty = constraints[0].targetProperty;
+                    }
+                } 
+                if (!parentProperty) {
+                    missingReferentialConstraints = { navPropName: parentNavPropName, constraints: [] };
+                    ODataDownloadGenerator.logger.debug(
+                        `getHierarchyEntities: '${entitySet.name}' nav prop '${parentNavPropName}' has no referentialConstraint in metadata — will prompt user`
+                    );
                 }
-                // shared key properties (same name on both sides, e.g. PurchaseOrder → PurchaseOrder)
-                businessKeys
-                    .filter((k) => k !== nodeKey)
-                    .forEach((k) => constraints.push({ sourceProperty: k, targetProperty: k }));
-
-                missingReferentialConstraints = { navPropName: parentNavPropName, constraints };
-                ODataDownloadGenerator.logger.debug(
-                    `getHierarchyEntities: '${entitySet.name}' nav prop '${parentNavPropName}' has no referentialConstraint in metadata — derived: ${JSON.stringify(constraints)}`
-                );
             }
 
             hierarchyEntities.push({
@@ -417,6 +448,7 @@ export function getHierarchyEntities(convertedMetadata: ConvertedMetadata): Hier
                 parentPropertyType,
                 isDraft,
                 entityTypeKeys,
+                entityProperties: entitySet.entityType.entityProperties.map((p) => p.name),
                 missingReferentialConstraints
             });
         }
@@ -507,7 +539,16 @@ export async function getEntityModel(
                     return t('info.noListEntityDefined');
                 }
                 entities.pageObjectEntities = pageObjectEntities;
-                entities.hierarchyEntities = getHierarchyEntities(convertedMetadata);
+                const appRoot = appAccess.getAppRoot();
+                const mockServerConfig = await getMockServerConfig(appRoot);
+                const serviceConfig = mockServerConfig?.services?.find(
+                    (s) => s.urlPath.replaceAll(/(^\/)|(\/$)/g, '') === mainService.uri?.replaceAll(/(^\/)|(\/$)/g, '')
+                );
+                const mockDataPath = join(
+                    appRoot,
+                    serviceConfig?.mockdataPath ?? join(DirName.Webapp, DirName.LocalService, DirName.Mockdata)
+                );
+                entities.hierarchyEntities = getHierarchyEntities(convertedMetadata, mockDataPath);
             }
         }
         return entities;
@@ -530,19 +571,66 @@ export function buildReferentialConstraintFileContent(
     navPropName: string,
     constraints: { sourceProperty: string; targetProperty: string }[]
 ): string {
-    const constraintsJson = JSON.stringify(constraints, null, 12).replaceAll('\n', '\n            ');
+    const constraintsJson = JSON.stringify(constraints, null, 4).replaceAll('\n', '\n            ');
     return [
         `module.exports = {`,
         `    // See: https://github.com/SAP/open-ux-odata/blob/main/docs/MockserverAPI.md#getreferentialconstraints`,
-        `    getReferentialConstraints(navigationProperty) {`,
-        `        switch (navigationProperty.name) {`,
-        `            case "${navPropName}":`,
-        `                return ${constraintsJson};`,
-        `            default:`,
-        `                return navigationProperty.referentialConstraint;`,
+        `    getReferentialConstraints: function (navigationProperty) {`,
+        `        if (navigationProperty.name === "${navPropName}") {`,
+        `            return ${constraintsJson};`,
         `        }`,
+        `        return undefined;`,
         `    }`,
         `};`,
         ``
     ].join('\n');
 }
+
+/**
+ * Updates an existing referential constraint `.js` file to include a new nav property condition.
+ * - If the nav property is already handled, returns content unchanged.
+ * - If `getReferentialConstraints` exists, injects the new `if` block at the start of the function body.
+ * - If `getReferentialConstraints` is absent, appends the function to `module.exports`.
+ *
+ * @param content - The existing file content
+ * @param navPropName - The navigation property name
+ * @param constraints - The referential constraints to add
+ * @returns The updated file content
+ */
+export function updateReferentialConstraintFileContent(
+    content: string,
+    navPropName: string,
+    constraints: { sourceProperty: string; targetProperty: string }[]
+): string {
+    if (content.includes(`"${navPropName}"`) || content.includes(`'${navPropName}'`)) {
+        return content;
+    }
+    const constraintsJson = JSON.stringify(constraints, null, 4).replaceAll('\n', '\n            ');
+    const ifBlock = [
+        `        if (navigationProperty.name === "${navPropName}") {`,
+        `            return ${constraintsJson};`,
+        `        }`
+    ].join('\n');
+
+    if (content.includes('getReferentialConstraints')) {
+        // Inject at the start of the function body, after the opening {
+        return content.replace(
+            /(getReferentialConstraints[\s\S]*?{)/,
+            `$1\n${ifBlock}`
+        );
+    }
+
+    // Append getReferentialConstraints to module.exports before its closing };
+    const newFn = [
+        `    getReferentialConstraints: function (navigationProperty) {`,
+        `${ifBlock}`,
+        `        return undefined;`,
+        `    }`
+    ].join('\n');
+    const closeIdx = content.lastIndexOf('\n};');
+    if (closeIdx !== -1) {
+        return `${content.slice(0, closeIdx)},\n${newFn}${content.slice(closeIdx)}`;
+    }
+    return content;
+}
+

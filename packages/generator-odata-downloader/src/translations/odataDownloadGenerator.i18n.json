@@ -77,6 +77,10 @@
         "valueHelpSelection": {
             "name": "Value Help selection",
             "description": "Value Help selection"
+        },
+        "addConstraints": {
+            "name": "Add Missing Constraints",
+            "description": "Add Missing Constraints"
         }
     },
     "telemetry": {

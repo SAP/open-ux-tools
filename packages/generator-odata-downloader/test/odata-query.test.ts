@@ -327,7 +327,8 @@ describe('Test odata query builder', () => {
             parentProperty: 'Parent',
             parentPropertyType: 'Edm.String',
             isDraft: false,
-            entityTypeKeys: []
+            entityTypeKeys: [],
+                    entityProperties: []
         };
         query = createQueryFromEntities(
             {
@@ -339,7 +340,7 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            "ListEntity1?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/ListEntity1,HierarchyQualifier='MyHierarchy',NodeProperty='ID',Levels=3)"
+            "ListEntity1?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/ListEntity1,HierarchyQualifier='MyHierarchy',NodeProperty='ID')"
         );
     });
 
@@ -359,13 +360,14 @@ describe('Test odata query builder', () => {
             parentProperty: 'Parent',
             parentPropertyType: 'Edm.String',
             isDraft: false,
-            entityTypeKeys: []
+            entityTypeKeys: [],
+                    entityProperties: []
         };
 
         // No filter - no semantic key values (filter param omitted entirely)
         let query = createQueryFromEntities(listEntity, [], 1, hierarchy);
         expect(query.query).toEqual(
-            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID',Levels=3)"
+            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID')"
         );
 
         // With string filter (non-draft: filter ignored in TopLevels, same output)
@@ -376,7 +378,7 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID',Levels=3)"
+            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID')"
         );
 
         // With GUID filter (non-draft: filter ignored in TopLevels)
@@ -390,7 +392,7 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID',Levels=3)"
+            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID')"
         );
 
         // With comma-separated filter values (non-draft: filter ignored in TopLevels)
@@ -401,7 +403,7 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID',Levels=3)"
+            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID')"
         );
 
         // With expands
@@ -415,7 +417,7 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID',Levels=3)&$expand=Children"
+            "SalesOrganizations?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/SalesOrganizations,HierarchyQualifier='SalesOrgHierarchy',NodeProperty='ID')&$expand=Children"
         );
     });
 
@@ -435,13 +437,14 @@ describe('Test odata query builder', () => {
             parentProperty: 'OwnerCompany',
             parentPropertyType: 'Edm.Guid',
             isDraft: true,
-            entityTypeKeys: []
+            entityTypeKeys: [],
+                    entityProperties: []
         };
 
         // No user filter — no filter on ancestors
         let query = createQueryFromEntities(listEntity, [], 1, hierarchy);
         expect(query.query).toEqual(
-            "P_SADL_HIER_UUID_D_COMPNY_ROOT?$apply=ancestors($root/P_SADL_HIER_UUID_D_COMPNY_ROOT,I_SADL_HIER_UUID_COMPANY_NODE,__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId,keep start)/com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/P_SADL_HIER_UUID_D_COMPNY_ROOT,HierarchyQualifier='I_SADL_HIER_UUID_COMPANY_NODE',NodeProperty='__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId',Levels=3)"
+            "P_SADL_HIER_UUID_D_COMPNY_ROOT?$apply=ancestors($root/P_SADL_HIER_UUID_D_COMPNY_ROOT,I_SADL_HIER_UUID_COMPANY_NODE,__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId,keep start)/com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/P_SADL_HIER_UUID_D_COMPNY_ROOT,HierarchyQualifier='I_SADL_HIER_UUID_COMPANY_NODE',NodeProperty='__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId')"
         );
 
         // With GUID and boolean filters — filter applied to ancestors wrapper, TopLevels unaffected
@@ -458,7 +461,7 @@ describe('Test odata query builder', () => {
             hierarchy
         );
         expect(query.query).toEqual(
-            "P_SADL_HIER_UUID_D_COMPNY_ROOT?$apply=ancestors($root/P_SADL_HIER_UUID_D_COMPNY_ROOT,I_SADL_HIER_UUID_COMPANY_NODE,__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId,filter(Company eq cb565aac-b20e-1fe1-8b88-3dca3ae3111a and IsActiveEntity eq true),keep start)/com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/P_SADL_HIER_UUID_D_COMPNY_ROOT,HierarchyQualifier='I_SADL_HIER_UUID_COMPANY_NODE',NodeProperty='__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId',Levels=3)"
+            "P_SADL_HIER_UUID_D_COMPNY_ROOT?$apply=ancestors($root/P_SADL_HIER_UUID_D_COMPNY_ROOT,I_SADL_HIER_UUID_COMPANY_NODE,__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId,filter(Company eq cb565aac-b20e-1fe1-8b88-3dca3ae3111a and IsActiveEntity eq true),keep start)/com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/P_SADL_HIER_UUID_D_COMPNY_ROOT,HierarchyQualifier='I_SADL_HIER_UUID_COMPANY_NODE',NodeProperty='__HierarchyPropertiesForI_SADL_HIER_UUID_COMPANY_NODE/NodeId')"
         );
     });
 });
@@ -472,7 +475,8 @@ describe('buildNavPropHierarchyQuery', () => {
         parentProperty: 'PurchasingParentItem',
         parentPropertyType: 'Edm.String',
         isDraft: false,
-        entityTypeKeys: ['PurchaseOrder', 'PurchaseOrderItem']
+        entityTypeKeys: ['PurchaseOrder', 'PurchaseOrderItem'],
+        entityProperties: []
     };
 
     test('should build a nav-key-rooted TopLevels query for a non-draft list entity', () => {
@@ -485,7 +489,7 @@ describe('buildNavPropHierarchyQuery', () => {
         };
         const result = buildNavPropHierarchyQuery(listEntity, '_PurchaseOrderItem', hierarchy);
         expect(result).toEqual(
-            "PPS_PurchaseOrder(PurchaseOrder='4500003676')/_PurchaseOrderItem?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/PPS_PurchaseOrder(PurchaseOrder='4500003676')/_PurchaseOrderItem,HierarchyQualifier='I_PPS_PurchaseOrderItemHNRltn',NodeProperty='__HierarchyPropertiesForI_PPS_PurchaseOrderItemHNRltn/NodeId',Levels=3)"
+            "PPS_PurchaseOrder(PurchaseOrder='4500003676')/_PurchaseOrderItem?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/PPS_PurchaseOrder(PurchaseOrder='4500003676')/_PurchaseOrderItem,HierarchyQualifier='I_PPS_PurchaseOrderItemHNRltn',NodeProperty='__HierarchyPropertiesForI_PPS_PurchaseOrderItemHNRltn/NodeId')"
         );
     });
 
@@ -499,7 +503,7 @@ describe('buildNavPropHierarchyQuery', () => {
             entityType: { keys: [{ name: 'DraftUUID' }, { name: 'IsActiveEntity' }] } as unknown as EntityType
         };
         expect(buildNavPropHierarchyQuery(listEntityBoth, '_PurchaseOrderItem', hierarchy)).toEqual(
-            "PPS_PurchaseOrder(PurchaseOrder='4500003676',DraftUUID=00000000-0000-0000-0000-000000000000,IsActiveEntity=true)/_PurchaseOrderItem?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/PPS_PurchaseOrder(PurchaseOrder='4500003676',DraftUUID=00000000-0000-0000-0000-000000000000,IsActiveEntity=true)/_PurchaseOrderItem,HierarchyQualifier='I_PPS_PurchaseOrderItemHNRltn',NodeProperty='__HierarchyPropertiesForI_PPS_PurchaseOrderItemHNRltn/NodeId',Levels=3)"
+            "PPS_PurchaseOrder(PurchaseOrder='4500003676',DraftUUID=00000000-0000-0000-0000-000000000000,IsActiveEntity=true)/_PurchaseOrderItem?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/PPS_PurchaseOrder(PurchaseOrder='4500003676',DraftUUID=00000000-0000-0000-0000-000000000000,IsActiveEntity=true)/_PurchaseOrderItem,HierarchyQualifier='I_PPS_PurchaseOrderItemHNRltn',NodeProperty='__HierarchyPropertiesForI_PPS_PurchaseOrderItemHNRltn/NodeId')"
         );
 
         // Only IsActiveEntity present → only IsActiveEntity appended
@@ -508,7 +512,7 @@ describe('buildNavPropHierarchyQuery', () => {
             entityType: { keys: [{ name: 'IsActiveEntity' }] } as unknown as EntityType
         };
         expect(buildNavPropHierarchyQuery(listEntityActiveOnly, '_PurchaseOrderItem', hierarchy)).toEqual(
-            "PPS_PurchaseOrder(PurchaseOrder='4500003676',IsActiveEntity=true)/_PurchaseOrderItem?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/PPS_PurchaseOrder(PurchaseOrder='4500003676',IsActiveEntity=true)/_PurchaseOrderItem,HierarchyQualifier='I_PPS_PurchaseOrderItemHNRltn',NodeProperty='__HierarchyPropertiesForI_PPS_PurchaseOrderItemHNRltn/NodeId',Levels=3)"
+            "PPS_PurchaseOrder(PurchaseOrder='4500003676',IsActiveEntity=true)/_PurchaseOrderItem?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/PPS_PurchaseOrder(PurchaseOrder='4500003676',IsActiveEntity=true)/_PurchaseOrderItem,HierarchyQualifier='I_PPS_PurchaseOrderItemHNRltn',NodeProperty='__HierarchyPropertiesForI_PPS_PurchaseOrderItemHNRltn/NodeId')"
         );
     });
 
@@ -619,7 +623,8 @@ describe('fetchData', () => {
         parentProperty: 'ParentItem',
         parentPropertyType: 'Edm.String',
         isDraft: false,
-        entityTypeKeys: ['OrderID', 'ItemID']
+        entityTypeKeys: ['OrderID', 'ItemID'],
+        entityProperties: []
     };
 
     beforeEach(() => {
