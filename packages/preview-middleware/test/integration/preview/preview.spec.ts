@@ -120,7 +120,7 @@ const check = async (param: { page: Page }) => {
     const response = await page.goto(url, { waitUntil: 'networkidle' });
 
     // Log the response status for debugging
-    if (!response || !response.ok()) {
+    if (!response?.ok()) {
         throw new Error(`Failed to load page: ${url}, status: ${response?.status()}`);
     }
 
