@@ -81,22 +81,22 @@ describe('config', () => {
                 getProject() {
                     return {
                         getType: () => 'component',
-                        getNamespace: () => 'test/fe/v2/app'
+                        getNamespace: () => 'my/fe/v2/app'
                     };
                 }
             } as unknown as MiddlewareUtils;
             const config = mergeTestConfigDefaults({ framework: 'QUnit' }, mockComponentUtils);
             const templateConfig = createTestTemplateConfig(
                 config,
-                'test.fe.v2.app',
+                'my.fe.v2.app',
                 'sap_horizon',
                 mockComponentUtils
             );
             expect(templateConfig).toMatchObject({
-                appBasePath: '/resources/test/fe/v2/app',
+                appBasePath: '/resources/my/fe/v2/app',
                 rootBasePath: '../../../../..',
                 framework: 'QUnit',
-                id: 'test.fe.v2.app',
+                id: 'my.fe.v2.app',
                 theme: 'sap_horizon'
             });
         });

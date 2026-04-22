@@ -82,7 +82,7 @@ export function generateImportList(ns: string, resourceList: Resource[], utils?:
                   const strippedPath = filePath.replace(`${testPathPrefix}/`, '');
                   const parts = strippedPath.split('.');
                   parts.pop();
-                  return `${ns}/${parts.join('.')}`;
+                  return `${ns}/test/${parts.join('.')}`;
               }
               const path = filePath.split('.');
               path.pop();

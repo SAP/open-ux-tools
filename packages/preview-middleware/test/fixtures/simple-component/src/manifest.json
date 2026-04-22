@@ -1,7 +1,7 @@
 {
     "_version": "1.37.0",
     "sap.app": {
-        "id": "test.fe.v2.app",
+        "id": "my.fe.v2.app",
         "type": "application",
         "i18n": "i18n/i18n.properties",
         "applicationVersion": {
@@ -71,7 +71,7 @@
             "i18n": {
                 "type": "sap.ui.model.resource.ResourceModel",
                 "settings": {
-                    "bundleName": "test.fe.v2.app.i18n.i18n"
+                    "bundleName": "my.fe.v2.app.i18n.i18n"
                 }
             },
             "": {

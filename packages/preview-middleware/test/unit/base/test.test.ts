@@ -89,20 +89,20 @@ describe('test', () => {
                 getProject() {
                     return {
                         getType: () => 'component',
-                        getNamespace: () => 'test/fe/v2/app'
+                        getNamespace: () => 'my/fe/v2/app'
                     };
                 }
             } as unknown as MiddlewareUtils;
             const result = generateImportList(
-                'test/fe/v2/app',
+                'my/fe/v2/app',
                 [
                     {
-                        getPath: () => '/test-resources/test/fe/v2/app/test/unit/SomeTest.js'
+                        getPath: () => '/test-resources/my/fe/v2/app/unit/SomeTest.js'
                     } as Resource
                 ],
                 mockComponentUtils
             );
-            expect(result).toEqual(['test/fe/v2/app/test/unit/SomeTest']);
+            expect(result).toEqual(['my/fe/v2/app/test/unit/SomeTest']);
         });
     });
 });

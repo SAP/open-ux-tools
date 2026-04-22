@@ -542,7 +542,7 @@ export function createTestTemplateConfig(
         initPath: posix.relative(posix.dirname(config.path), config.init),
         theme,
         testNs: testResourcesPath && ns ? posix.join(ns, 'test') : undefined,
-        testResourcesPath: testResourcesPath && ns ? posix.join(testResourcesPath, 'test') : undefined
+        testResourcesPath: testResourcesPath && ns ? testResourcesPath : undefined
     } satisfies TestTemplateConfig;
 }
 

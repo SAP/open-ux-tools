@@ -130,7 +130,7 @@ const checkFlp = async (param: { page: Page }) => {
     const { page } = param;
     const client = await page.context().newCDPSession(page);
     await client.send('Network.clearBrowserCache');
-    await page.goto(`${getUrl()}/test-resources/test/fe/v2/app/my/custom/path/preview.html#app-preview`);
+    await page.goto(`${getUrl()}/test-resources/my/fe/v2/app/my/custom/path/preview.html#app-preview`);
     await page.getByRole('button', { name: 'Go', exact: true }).click();
     await expect(page.getByText('Product_0', { exact: true })).toBeVisible();
 };
@@ -139,7 +139,7 @@ const checkQUnit = async (param: { page: Page }) => {
     const { page } = param;
     const client = await page.context().newCDPSession(page);
     await client.send('Network.clearBrowserCache');
-    await page.goto(`${getUrl()}/test-resources/test/fe/v2/app/unitTests.qunit.html`);
+    await page.goto(`${getUrl()}/test-resources/my/fe/v2/app/unitTests.qunit.html`);
     await expect(page.locator('#qunit')).toBeVisible();
 };
 
@@ -147,7 +147,7 @@ const checkOPA5 = async (param: { page: Page }) => {
     const { page } = param;
     const client = await page.context().newCDPSession(page);
     await client.send('Network.clearBrowserCache');
-    await page.goto(`${getUrl()}/test-resources/test/fe/v2/app/opaTests.qunit.html`);
+    await page.goto(`${getUrl()}/test-resources/my/fe/v2/app/opaTests.qunit.html`);
     await expect(page.locator('#qunit-banner.qunit-pass')).toBeVisible({ timeout: 60000 });
 };
 

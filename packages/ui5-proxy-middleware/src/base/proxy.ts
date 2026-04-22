@@ -50,7 +50,7 @@ function createCombinedProxyFilter(
             if (patterns.every((pattern) => isGlob(pattern))) {
                 baseMatches = micromatch([pathname], patterns).length > 0;
             } else {
-                baseMatches = patterns.some((pattern) => pathname.indexOf(pattern) === 0);
+                baseMatches = patterns.some((pattern) => pathname.startsWith(pattern));
             }
         }
         return baseMatches && namespaceFilter(pathname, req);

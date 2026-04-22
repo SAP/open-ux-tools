@@ -155,6 +155,37 @@ server:
         - framework: OPA5
 ```
 
+#### [Test Suites for UI5 project type `component`](#test-suites-component)
+UI5 project type `component` is supported by `@ui5/cli` starting with major version 5. For `type: component` projects, source files are served at `/resources/<namespace>/` and test files at `/test-resources/<namespace>/`. Because both share the same namespace, the middleware uses a `<namespace>/test` resourceroot key to route test module IDs to `/test-resources/` without conflicting with the component's own resourceroot.
+
+For an app with `sap.app.id: my.app`, the generated resourceroots look like this:
+```
+"my.app": "/resources/my/app"        // component — unchanged
+"my/app/test": "/test-resources/my/app"  // test files
+```
+
+Test files in the `test/` source folder must use the `<namespace>/test/` prefix in their `sap.ui.define` calls:
+```js
+// test/integration/ListReportJourney.js
+sap.ui.define([
+    'sap/ui/test/opaQunit',
+    'my/app/test/integration/pages/ListReport'  // /test-resources/my/app/integration/pages/ListReport.js
+], function (opaTest) {
+    //...
+});
+```
+
+The `/test` in the module ID is consumed by the resourceroot key, so the actual file lives at `test/integration/pages/ListReport.js` on disk — no extra subfolder nesting required.
+
+Alternatively, absolute URL paths bypass resourceroot resolution entirely and also work at runtime:
+```js
+sap.ui.define([
+    '/test-resources/my/app/integration/pages/ListReport'
+], function (ListReport) {
+    //...
+});
+```
+
 ### [Adaptation Project](#adaptation-project)
 If you want to use the middleware in an adaption project, the additional `adp` object needs to be configured. This example would preview a local adaptation project merged with its reference application from the target system at `http://sap.example` and it will ignore certification validation errors. For adaptation projects, it is also recommended to add the `rta` configuration allowing to edit the project.
 ```Yaml
