@@ -86,12 +86,7 @@ describe('config', () => {
                 }
             } as unknown as MiddlewareUtils;
             const config = mergeTestConfigDefaults({ framework: 'QUnit' }, mockComponentUtils);
-            const templateConfig = createTestTemplateConfig(
-                config,
-                'my.fe.v2.app',
-                'sap_horizon',
-                mockComponentUtils
-            );
+            const templateConfig = createTestTemplateConfig(config, 'my.fe.v2.app', 'sap_horizon', mockComponentUtils);
             expect(templateConfig).toMatchObject({
                 appBasePath: '/resources/my/fe/v2/app',
                 rootBasePath: '../../../../..',
