@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.13.20
+
+### Patch Changes
+
+- 9a48e63: fix(ui5-info): bump fallback versions
+
 ## 0.13.19
 
 ### Patch Changes
