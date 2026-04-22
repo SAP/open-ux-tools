@@ -1054,8 +1054,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@sap/approuter':
-        specifier: ^20.8.0
-        version: 20.10.0(undici@6.24.1)
+        specifier: ^21.0.0
+        version: 21.3.0(undici@6.24.1)
       content-type:
         specifier: ^1.0.5
         version: 1.0.5
@@ -8794,9 +8794,9 @@ packages:
     resolution: {integrity: sha512-RSQ8bC0kFplhAqWQoQKp8VL+R89xxl+rxT5OH+5AIob1m0xGfaMWkB4SYIujIlWbZOBlSaGJwy99NOH+HvFyYA==}
     engines: {node: '>=20.x'}
 
-  '@sap/approuter@20.10.0':
-    resolution: {integrity: sha512-YnZWC2Z7+FhcuxuiAf1HIuoHFlgvjszojiFHQ62YPmdiwqyETjKWNrqFZ2U7oC854Py3CbnyNhGaciP8RCaNSg==}
-    engines: {node: ^20.0.0 || ^22.0.0}
+  '@sap/approuter@21.3.0':
+    resolution: {integrity: sha512-pF2pY63gjIKNs5hW4ug6hDk1CBp6MucJ+hpciXyOD9Opa77Dg8erP9396H3kLSp5jbNwBnvVW2lnbr2NVWHGgQ==}
+    engines: {node: ^22.0.0 || ^24.0.0}
 
   '@sap/audit-logging@7.0.0':
     resolution: {integrity: sha512-0wbXJlAOenEal6nMspDKJev8fWDYA+MuRbi6iTHNdusRT2fisM9v+IWllT4fzeut6+Sd3l+5qKtA/AlbM5zGfA==}
@@ -8814,16 +8814,16 @@ packages:
   '@sap/cf-tools@3.3.0':
     resolution: {integrity: sha512-MEdOQhfl5t4eVZI95yB0o02fmL4k2SEnMcIPju4PnyZvFPEmXGqQXviF8EzRAEIacGtm8/ROJHdm7+COYSwLmA==}
 
-  '@sap/e2e-trace@5.4.0':
-    resolution: {integrity: sha512-NwrrCg4ThaEJYRLgAB1L312+EcIK5z8VVhshS3QaAyj3duLOezDg1CEgDjXzXkJUTWFQ8LdruIMNaddG+WN42A==}
-    engines: {node: ^18.0.0 || ^20.0.0 || ^22.0.0}
-
-  '@sap/e2e-trace@6.1.0':
-    resolution: {integrity: sha512-jxBIaLUGmZAjkp9Nu6b4J7fkAgRWaeXg7Ij1f+G7qRxP6gz0b0RcyPF7o2jXe6En1Bg0hkfZwrBmdVlypOl1Tg==}
+  '@sap/e2e-trace@6.0.0':
+    resolution: {integrity: sha512-SveaAgYUpZ6h05sCjBK+wEySHE5gyWQhehWABPDVlCAWJmESqmivfQp7DitBXNwnyIhgyI5yrNHUBD7eOt29zw==}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@sap/logging@9.1.1':
-    resolution: {integrity: sha512-OBh1BkvpKFwZdufOMzNtF11fHv8tjndivOjjCHZedBHlnIkpkXwy5UeZVmGoZXFf8EUYIvevg5PQHHgiSGrGpA==}
+  '@sap/e2e-trace@6.2.1':
+    resolution: {integrity: sha512-MS6dCg0fkfU+BPGzUYiFkepIN+aqE50ZKKRYnZSb5Pts6JgccagaJiNs90eKtNzFZQzSxtBdIGyWEI8UG4w1og==}
+    engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
+
+  '@sap/logging@9.2.0':
+    resolution: {integrity: sha512-qy9ADRZdJGMx5HwVvJQAwAWd2JWzO3aTxOaqkodfZB6xa4taMaPJXKgp5l50kguoj/FSh85LxlhS7msJkBoY5Q==}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
   '@sap/mta-lib@1.7.4':
@@ -8848,9 +8848,9 @@ packages:
     resolution: {integrity: sha512-NixT1rrKKfNaGfLH8GzkWmPai+UJU3f/DePIMl0r5QxVrD6uBwZXULFReSEZLsGbv/xoVfQuZzZHWhl5+BVwhA==}
     engines: {node: '>=20.0.0 <21.0.0 || >=22.0.0 <23.0.0 || >=24.0.0 <25.0.0 || >=26.0.0', yarn: '>=1.22.19 < 2'}
 
-  '@sap/xsenv@5.6.1':
-    resolution: {integrity: sha512-4pDpsYLNJsLUBWtTSG+TJ8ul5iY0dWDyJgTy2H/WZGZww9CSPLP/39x+syDDTjkggsmZAlo9t7y9TiXMmtAunw==}
-    engines: {node: ^18.0.0 || ^20.0.0  || ^22.0.0}
+  '@sap/xsenv@6.0.0':
+    resolution: {integrity: sha512-9bNpJXmxndWn5JbRCPPtbeMqldXOn2Od17ybS92PHd1rNkZ80IMmOURHNct5YSVQ1MKBIDAyC+ck6VL7cVAfUA==}
+    engines: {node: ^20.0.0  || ^22.0.0 || ^24.0.0}
 
   '@sap/xsenv@6.1.0':
     resolution: {integrity: sha512-vlW4Zad3uiDqHtnYdQ0TsEIH8VIO4HmPGDowfBL5dIcHPmeKDISEQ9ibeHL5FkceqvYcXJEQAVZ5/hsHDqlXZg==}
@@ -11093,8 +11093,8 @@ packages:
     resolution: {integrity: sha512-prMTQVpcns/tzFgFVkVp6ak6RykZyWb3gu8ckUpd6YkTlacOd3DXGJjIpD4Q6zJirizvaiAjSSHlOsA+6sNh2A==}
     engines: {node: '>= 10'}
 
-  cf-nodejs-logging-support@7.4.4:
-    resolution: {integrity: sha512-sKoEbWvAU+KonLehBs4EBsd76DLuESpoeLUfO/0aFp+W/zRFGR8Nc2GJXHM4dyL7ckH/c/A9Tgq+0tBr3B/etA==}
+  cf-nodejs-logging-support@7.4.5:
+    resolution: {integrity: sha512-o9nw9RMcCl/BHE1YZZ0ivWlp1OwR+K8RLFYusbR3Q13jWZ8q9/Os2/SCAwoa7ei8OcEwJuAGuC8hKplK85MKmg==}
     engines: {node: '>=14.14'}
 
   chainsaw@0.1.0:
@@ -11710,6 +11710,15 @@ packages:
 
   debug@4.4.0:
     resolution: {integrity: sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+
+  debug@4.4.1:
+    resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
     engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
@@ -23436,21 +23445,21 @@ snapshots:
       lodash: 4.18.1
       yaml: 2.8.3
 
-  '@sap/approuter@20.10.0(undici@6.24.1)':
+  '@sap/approuter@21.3.0(undici@6.24.1)':
     dependencies:
       '@sap/audit-logging': 7.0.0
-      '@sap/e2e-trace': 5.4.0
-      '@sap/logging': 9.1.1
-      '@sap/xsenv': 5.6.1
+      '@sap/e2e-trace': 6.0.0
+      '@sap/logging': 9.2.0
+      '@sap/xsenv': 6.0.0
       '@sap/xssec': 4.12.2
       agentkeepalive: 4.6.0
       axios: 1.15.0(debug@4.4.3)
-      axios-cookiejar-support: 5.0.5(axios@1.15.0)(tough-cookie@4.1.4)(undici@6.24.1)
-      axios-retry: 4.5.0(axios@1.15.0)
+      axios-cookiejar-support: 5.0.5(axios@1.15.0(debug@4.4.3))(tough-cookie@4.1.4)(undici@6.24.1)
+      axios-retry: 4.5.0(axios@1.15.0(debug@4.4.3))
       base64-url: 2.3.3
       basic-auth: 1.1.0
       body-parser: 2.2.2
-      cf-nodejs-logging-support: 7.4.4
+      cf-nodejs-logging-support: 7.4.5
       commander: 2.20.3
       compressible: 2.0.18
       compression: 1.8.1
@@ -23463,7 +23472,7 @@ snapshots:
       encodeurl: 1.0.2
       express-session: 1.18.2
       http-proxy-agent: 7.0.2
-      https-proxy-agent: 5.0.1
+      https-proxy-agent: 7.0.6
       ioredis: 5.6.1
       jwt-decode: 2.2.0
       lodash: 4.18.1
@@ -23526,17 +23535,17 @@ snapshots:
       properties-reader: 2.3.0
       url: 0.11.4
 
-  '@sap/e2e-trace@5.4.0':
+  '@sap/e2e-trace@6.0.0':
     dependencies:
       request-stats: 3.0.0
 
-  '@sap/e2e-trace@6.1.0':
+  '@sap/e2e-trace@6.2.1':
     dependencies:
       request-stats: 3.0.0
 
-  '@sap/logging@9.1.1':
+  '@sap/logging@9.2.0':
     dependencies:
-      '@sap/e2e-trace': 6.1.0
+      '@sap/e2e-trace': 6.2.1
       lodash: 4.18.1
       moment: 2.30.1
 
@@ -23592,9 +23601,9 @@ snapshots:
       - debug
       - typescript
 
-  '@sap/xsenv@5.6.1':
+  '@sap/xsenv@6.0.0':
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.1
       node-cache: 5.1.2
       verror: 1.10.1
     transitivePeerDependencies:
@@ -26202,7 +26211,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios-cookiejar-support@5.0.5(axios@1.15.0)(tough-cookie@4.1.4)(undici@6.24.1):
+  axios-cookiejar-support@5.0.5(axios@1.15.0(debug@4.4.3))(tough-cookie@4.1.4)(undici@6.24.1):
     dependencies:
       axios: 1.15.0(debug@4.4.3)
       http-cookie-agent: 6.0.8(tough-cookie@4.1.4)(undici@6.24.1)
@@ -26215,7 +26224,7 @@ snapshots:
       chalk: 4.1.2
       dateformat: 3.0.3
 
-  axios-retry@4.5.0(axios@1.15.0):
+  axios-retry@4.5.0(axios@1.15.0(debug@4.4.3)):
     dependencies:
       axios: 1.15.0(debug@4.4.3)
       is-retry-allowed: 2.2.0
@@ -26700,7 +26709,7 @@ snapshots:
     dependencies:
       lodash: 4.18.1
 
-  cf-nodejs-logging-support@7.4.4:
+  cf-nodejs-logging-support@7.4.5:
     dependencies:
       ajv: 8.18.0
       json-stringify-safe: 5.0.1
@@ -27369,6 +27378,10 @@ snapshots:
       ms: 2.1.3
 
   debug@4.4.0:
+    dependencies:
+      ms: 2.1.3
+
+  debug@4.4.1:
     dependencies:
       ms: 2.1.3
 
