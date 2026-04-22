@@ -1,5 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 import { createApplicationAccess } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
 import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
@@ -60,13 +61,15 @@ export interface PageWithModelV4WithProperties extends PageWithModelV4 {
  * @param fs - optional mem-fs editor instance
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
+ * @param manifest - optional application manifest, used to detect ALP configuration
  * @returns feature data extracted from the application model
  */
 export async function getAppFeatures(
     basePath: string,
     fs?: Editor,
     log?: Logger,
-    metadata?: string
+    metadata?: string,
+    manifest?: Manifest
 ): Promise<AppFeatures> {
     const featureData: AppFeatures = {};
 
@@ -108,7 +111,7 @@ export async function getAppFeatures(
     // attempt to get individual feature data
     try {
         if (listReportPage) {
-            featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata);
+            featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata, manifest);
         }
         if (objectPages) {
             log?.warn('Extracting Object Page features from application model');
