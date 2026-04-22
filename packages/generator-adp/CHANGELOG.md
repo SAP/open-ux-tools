@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.58
+
+### Patch Changes
+
+- e333607: fix(generator-adp): Change endpoint used for checking user authentication
+    - @sap-ux/adp-tooling@0.18.119
+    - @sap-ux/inquirer-common@0.11.38
+
 ## 0.9.57
 
 ### Patch Changes
