@@ -613,7 +613,7 @@ describe('convertEslintConfig', () => {
             expect(packageJson.devDependencies?.eslint).toBe('^10.0.0');
         });
 
-        test('should update @sap-ux/eslint-plugin-fiori-tools version to ^9.0.0', async () => {
+        test('should update @sap-ux/eslint-plugin-fiori-tools version to ^10.0.0', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
