@@ -156,109 +156,136 @@ describe('validateId', () => {
     </f:SimpleForm>
 </mvc:View>`;
 
-    test('should return true when id does not exist in any files', async () => {
-        const result = await validateId('newButton', undefined, {
-            files: [sampleView, sampleFragment]
+    describe('synchronous overload (with files)', () => {
+        test('should return true when id does not exist in any files', () => {
+            const result = validateId('newButton', undefined, {
+                files: [sampleView, sampleFragment]
+            });
+            // Assert it's a plain boolean, not a Promise
+            expect(result).toBe(true);
+            expect(result).not.toBeInstanceOf(Promise);
         });
-        expect(result).toBe(true);
-    });
 
-    test('should return false when id exists in view', async () => {
-        const result = await validateId('submitButton', undefined, {
-            files: [sampleView, sampleFragment]
+        test('should return false when id exists in view', () => {
+            const result = validateId('submitButton', undefined, {
+                files: [sampleView, sampleFragment]
+            });
+            expect(result).toBe(false);
+            expect(result).not.toBeInstanceOf(Promise);
         });
-        expect(result).toBe(false);
-    });
 
-    test('should return false when id exists in fragment', async () => {
-        const result = await validateId('confirmDialog', undefined, {
-            files: [sampleView, sampleFragment]
+        test('should return false when id exists in fragment', () => {
+            const result = validateId('confirmDialog', undefined, {
+                files: [sampleView, sampleFragment]
+            });
+            expect(result).toBe(false);
+            expect(result).not.toBeInstanceOf(Promise);
         });
-        expect(result).toBe(false);
-    });
 
-    test('should return false when id is in validatedIds array', async () => {
-        const result = await validateId('newButton', ['newButton', 'anotherButton'], {
-            files: [sampleView, sampleFragment]
+        test('should return false when id is in validatedIds array', () => {
+            const result = validateId('newButton', ['newButton', 'anotherButton'], {
+                files: [sampleView, sampleFragment]
+            });
+            expect(result).toBe(false);
+            expect(result).not.toBeInstanceOf(Promise);
         });
-        expect(result).toBe(false);
-    });
 
-    test('should return true when id is unique across multiple files', async () => {
-        const result = await validateId('uniqueId', undefined, {
-            files: [sampleView, sampleFragment, sampleViewWithNamespace]
+        test('should return true when id is unique across multiple files', () => {
+            const result = validateId('uniqueId', undefined, {
+                files: [sampleView, sampleFragment, sampleViewWithNamespace]
+            });
+            expect(result).toBe(true);
+            expect(result).not.toBeInstanceOf(Promise);
         });
-        expect(result).toBe(true);
-    });
 
-    test('should return false when id exists in nested elements', async () => {
-        const result = await validateId('dataTable', undefined, {
-            files: [sampleView]
+        test('should return false when id exists in nested elements', () => {
+            const result = validateId('dataTable', undefined, {
+                files: [sampleView]
+            });
+            expect(result).toBe(false);
+            expect(result).not.toBeInstanceOf(Promise);
         });
-        expect(result).toBe(false);
-    });
 
-    test('should return false when id exists in fragment dialog content', async () => {
-        const result = await validateId('dialogText', undefined, {
-            files: [sampleFragment]
+        test('should return false when id exists in fragment dialog content', () => {
+            const result = validateId('dialogText', undefined, {
+                files: [sampleFragment]
+            });
+            expect(result).toBe(false);
+            expect(result).not.toBeInstanceOf(Promise);
         });
-        expect(result).toBe(false);
-    });
 
-    test('should return true for empty files array', async () => {
-        const result = await validateId('anyId', undefined, {
-            files: []
+        test('should return true for empty files array', () => {
+            const result = validateId('anyId', undefined, {
+                files: []
+            });
+            expect(result).toBe(true);
+            expect(result).not.toBeInstanceOf(Promise);
         });
-        expect(result).toBe(true);
-    });
 
-    test('should return true when XML parsing fails', async () => {
-        // fast-xml-parser is lenient, but completely invalid content should fail
-        const invalidXml = '<<<>>><invalid';
-        const result = await validateId('test', undefined, {
-            files: [invalidXml]
+        test('should return true when XML parsing fails', () => {
+            // fast-xml-parser is lenient, but completely invalid content should fail
+            const invalidXml = '<<<>>><invalid';
+            const result = validateId('test', undefined, {
+                files: [invalidXml]
+            });
+            expect(result).toBe(true);
+            expect(result).not.toBeInstanceOf(Promise);
         });
-        expect(result).toBe(true);
-    });
 
-    test('should return true when files contain empty strings', async () => {
-        const result = await validateId('testId', undefined, {
-            files: ['', '', sampleView]
+        test('should return true when files contain empty strings', () => {
+            const result = validateId('testId', undefined, {
+                files: ['', '', sampleView]
+            });
+            expect(result).toBe(true);
+            expect(result).not.toBeInstanceOf(Promise);
         });
-        expect(result).toBe(true);
-    });
 
-    test('should handle ids with special characters', async () => {
-        const xmlWithSpecialId = `<?xml version="1.0" encoding="UTF-8"?>
+        test('should handle ids with special characters', () => {
+            const xmlWithSpecialId = `<?xml version="1.0" encoding="UTF-8"?>
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
     <Button id="button-with-dash" text="Test" />
     <Button id="button_with_underscore" text="Test" />
     <Button id="button.with.dot" text="Test" />
 </mvc:View>`;
 
-        const result1 = await validateId('button-with-dash', undefined, {
-            files: [xmlWithSpecialId]
-        });
-        expect(result1).toBe(false);
+            const result1 = validateId('button-with-dash', undefined, {
+                files: [xmlWithSpecialId]
+            });
+            expect(result1).toBe(false);
+            expect(result1).not.toBeInstanceOf(Promise);
 
-        const result2 = await validateId('button_with_underscore', undefined, {
-            files: [xmlWithSpecialId]
-        });
-        expect(result2).toBe(false);
+            const result2 = validateId('button_with_underscore', undefined, {
+                files: [xmlWithSpecialId]
+            });
+            expect(result2).toBe(false);
+            expect(result2).not.toBeInstanceOf(Promise);
 
-        const result3 = await validateId('button.with.dot', undefined, {
-            files: [xmlWithSpecialId]
-        });
-        expect(result3).toBe(false);
+            const result3 = validateId('button.with.dot', undefined, {
+                files: [xmlWithSpecialId]
+            });
+            expect(result3).toBe(false);
+            expect(result3).not.toBeInstanceOf(Promise);
 
-        const result4 = await validateId('button-not-exists', undefined, {
-            files: [xmlWithSpecialId]
+            const result4 = validateId('button-not-exists', undefined, {
+                files: [xmlWithSpecialId]
+            });
+            expect(result4).toBe(true);
+            expect(result4).not.toBeInstanceOf(Promise);
         });
-        expect(result4).toBe(true);
     });
 
-    test('should return true when no options provided', async () => {
-        const result = await validateId('anyId');
-        expect(result).toBe(true);
+    describe('asynchronous overload (no files)', () => {
+        test('should return Promise when no options provided', async () => {
+            const result = validateId('anyId');
+            // Assert it's a Promise
+            expect(result).toBeInstanceOf(Promise);
+            expect(await result).toBe(true);
+        });
+
+        test('should return Promise when only validatedIds provided', async () => {
+            const result = validateId('anyId', ['otherId']);
+            expect(result).toBeInstanceOf(Promise);
+            expect(await result).toBe(true);
+        });
     });
 });

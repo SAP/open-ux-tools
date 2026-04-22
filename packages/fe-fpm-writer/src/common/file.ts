@@ -168,32 +168,14 @@ export const CONFIG = {
 function generateUniqueElementId(baseId: string, filteredFilesContent: string[], validatedIds: string[] = []): string {
     const maxAttempts = 1000;
 
-    /**
-     * Checks if an element with the specified id is available (does not exist) in the XML content.
-     *
-     * @param id - id to check for availability
-     * @param xmlContent - XML content as string
-     * @returns true if the id is available (not found), false if it exists
-     */
-    function checkElementIdAvailable(id: string, xmlContent: string): boolean {
-        // Use validateId from @sap-ux/project-access (synchronous overload)
-        return validateId(id, undefined, { files: [xmlContent] });
-    }
-
-    if (
-        filteredFilesContent.every((content) => content === '' || checkElementIdAvailable(baseId, content)) &&
-        !validatedIds.includes(baseId)
-    ) {
+    if (validateId(baseId, validatedIds, { files: filteredFilesContent })) {
         return baseId;
     }
 
     for (let counter = 1; counter < maxAttempts; counter++) {
         const candidateId = `${baseId}${counter}`;
 
-        if (
-            filteredFilesContent.every((content) => content === '' || checkElementIdAvailable(candidateId, content)) &&
-            !validatedIds.includes(candidateId)
-        ) {
+        if (validateId(candidateId, validatedIds, { files: filteredFilesContent })) {
             return candidateId;
         }
     }

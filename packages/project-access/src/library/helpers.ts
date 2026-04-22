@@ -15,6 +15,8 @@ import { XMLParser } from 'fast-xml-parser';
 import { getI18nPropertiesPaths } from '../project/i18n';
 import { getPropertiesI18nBundle } from '@sap-ux/i18n';
 import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 /**
  * Reads the manifest file and returns the reuse library.
@@ -459,18 +461,24 @@ export function validateId(
 
     // Asynchronous path: when appPath is provided or no options
     return (async (): Promise<boolean> => {
-        let files: string[] | undefined = fileContents;
-        if (!files && appPath) {
-            const xmlFiles = await findFilesByExtension(
+        let files: string[] | undefined;
+        if (appPath) {
+            // Ensure we have a memFs instance
+            const fsEditor = memFs ?? create(createStorage());
+
+            const xmlFilePaths = await findFilesByExtension(
                 '.xml',
                 appPath,
                 ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
-                memFs
+                fsEditor
             );
             const lookupFiles = ['.fragment.xml', '.view.xml'];
-            files = xmlFiles.filter((fileName: string) =>
+            const filteredPaths = xmlFilePaths.filter((fileName: string) =>
                 lookupFiles.some((lookupFile) => fileName.endsWith(lookupFile))
             );
+
+            // Read file contents from paths using memFs
+            files = filteredPaths.map((path: string) => fsEditor.read(path));
         }
 
         if (files) {
