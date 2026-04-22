@@ -12,7 +12,7 @@ import { writeFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import { SERVER_TIMEOUT, TIMEOUT } from '../utils/constant';
+import { SERVER_TIMEOUT } from '../utils/constant';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -114,8 +114,21 @@ const check = async (param: { page: Page }) => {
     const { page } = param;
     const client = await page.context().newCDPSession(page);
     await client.send('Network.clearBrowserCache');
-    await page.goto(`${getUrl()}/my/custom/path/preview.html#app-preview`);
-    await page.getByRole('button', { name: 'Go', exact: true }).click();
+
+    // Navigate and wait for the page to be fully loaded
+    const url = `${getUrl()}/my/custom/path/preview.html#app-preview`;
+    const response = await page.goto(url, { waitUntil: 'networkidle' });
+
+    // Log the response status for debugging
+    if (!response || !response.ok()) {
+        throw new Error(`Failed to load page: ${url}, status: ${response?.status()}`);
+    }
+
+    // Wait for the Go button to appear with a longer timeout
+    const goButton = page.getByRole('button', { name: 'Go', exact: true });
+    await goButton.waitFor({ state: 'visible', timeout: 60000 });
+    await goButton.click();
+
     await expect(page.getByText('Product_0', { exact: true })).toBeVisible();
 };
 
@@ -124,7 +137,6 @@ const UI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
 for (const { version } of UI5Versions) {
     test.describe(`UI5 version: ${version}`, () => {
         test.beforeAll(async () => {
-            test.setTimeout(TIMEOUT);
             await prepare(version);
         });
 
