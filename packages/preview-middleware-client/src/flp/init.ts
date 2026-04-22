@@ -408,7 +408,7 @@ export async function init({
 // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access,@sap-ux/fiori-tools/sap-browser-api-warning, @sap-ux/fiori-tools/sap-no-global-variable
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
-    void init({
+    init({
         appUrls: bootstrapConfig.dataset.openUxPreviewLibsManifests,
         flex: bootstrapConfig.dataset.openUxPreviewFlexSettings,
         customInit: bootstrapConfig.dataset.openUxPreviewCustomInit,

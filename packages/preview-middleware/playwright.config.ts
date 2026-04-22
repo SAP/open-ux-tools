@@ -24,16 +24,10 @@ const config: PlaywrightTestConfig = {
     retries: process.env.CI ? 1 : 0,
     /* Opt out of parallel tests on CI. */
     workers: 1,
-    /* Global test timeout - 5 minutes to allow for npm install and UI5 loading */
-    timeout: 5 * 60000,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [['html', { open: 'never' }]],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
-        /* Action timeout - 2 minutes for slow page loads and UI5 initialization */
-        actionTimeout: 2 * 60000,
-        /* Navigation timeout - 2 minutes for UI5 app loading */
-        navigationTimeout: 2 * 60000,
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         trace: 'on-first-retry',
         screenshot: 'only-on-failure'
