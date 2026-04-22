@@ -92,9 +92,8 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
 }
 
 /**
- * Helper function which asserts whether a client is authenticated on an ABAP system or throws.
  * Since we do not have a dedicated api call to detect if a client is authenticated we use the
- * {@link LayeredRepositoryService.getSystemInfo} call which is a protected one.
+ * {@link LayeredRepositoryService.getCsrfToken} call which is a protected one.
  *
  * @param {ClientCredentials} credentials - Object containing client credentials to a specific ABAP system.
  * @param {ToolsLogger} logger - The logger instance.
@@ -104,5 +103,5 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
 async function assertAuthenticated(credentials: ClientCredentials, logger: ToolsLogger): Promise<void> {
     const abapProvider = await getConfiguredProvider(credentials, logger);
     const layeredRepositoryService = abapProvider.getLayeredRepository();
-    await layeredRepositoryService.getSystemInfo();
+    await layeredRepositoryService.getCsrfToken();
 }
