@@ -29,29 +29,29 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.10.21",
+        "@sap-ux/annotation-converter": "^0.10.21",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.15.0",
-        "@xmldom/xmldom": "0.8.12",
-        "ejs": "3.1.10",
-        "i18next": "25.10.10",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
-        "semver": "7.7.4",
-        "xml-formatter": "3.7.0",
-        "xpath": "0.0.34"
+        "@sap-ux/vocabularies-types": "^0.15.0",
+        "@xmldom/xmldom": "^0.8.12",
+        "ejs": "^3.1.10",
+        "i18next": "^25.10.10",
+        "mem-fs": "^2.1.0",
+        "mem-fs-editor": "^9.4.0",
+        "semver": "^7.7.4",
+        "xml-formatter": "^3.7.0",
+        "xpath": "^0.0.34"
     },
     "devDependencies": {
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "^8.2.6",
         "@sap-ux/ui-prompting": "workspace:*",
-        "@types/ejs": "3.1.5",
-        "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1",
-        "@types/semver": "7.7.1",
-        "@types/vinyl": "2.0.12"
+        "@types/ejs": "^3.1.5",
+        "@types/mem-fs": "^1.1.2",
+        "@types/mem-fs-editor": "^7.0.1",
+        "@types/semver": "^7.7.1",
+        "@types/vinyl": "^2.0.12"
     },
     "engines": {
         "node": ">=20.x"

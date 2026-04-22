@@ -35,13 +35,13 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "i18next": "25.10.10",
-        "inquirer-autocomplete-prompt": "2.0.1"
+        "i18next": "^25.10.10",
+        "inquirer-autocomplete-prompt": "^2.0.1"
     },
     "devDependencies": {
-        "inquirer": "8.2.7",
-        "@types/inquirer-autocomplete-prompt": "2.0.2",
-        "@types/inquirer": "8.2.6"
+        "inquirer": "^8.2.7",
+        "@types/inquirer-autocomplete-prompt": "^2.0.2",
+        "@types/inquirer": "^8.2.6"
     },
     "engines": {
         "node": ">=20.x"

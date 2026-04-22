@@ -33,16 +33,16 @@
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
-        "applicationinsights": "2.9.8",
-        "axios": "1.15.0",
-        "performance-now": "2.1.0",
-        "yaml": "2.8.3"
+        "applicationinsights": "^2.9.8",
+        "axios": "^1.15.0",
+        "performance-now": "^2.1.0",
+        "yaml": "^2.8.3"
     },
     "devDependencies": {
-        "jest-extended": "7.0.0",
-        "memfs": "3.4.13",
-        "unionfs": "4.6.0",
-        "dotenv": "17.4.2"
+        "jest-extended": "^7.0.0",
+        "memfs": "^3.4.13",
+        "unionfs": "^4.6.0",
+        "dotenv": "^17.4.2"
     },
     "files": [
         "dist",

@@ -28,11 +28,11 @@
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
-        "chevrotain": "7.1.1",
+        "chevrotain": "^7.1.1",
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
-        "npm-run-all2": "8.0.4"
+        "npm-run-all2": "^8.0.4"
     },
     "engines": {
         "node": ">=20.x"

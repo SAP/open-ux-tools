@@ -93,6 +93,30 @@ This uses `check-dependency-version-consistency` to validate that all packages u
 }
 ```
 
+**Runtime dependencies (`dependencies`) must use caret ranges:**
+
+Runtime `dependencies` are resolved by the consumer's package manager and installed alongside the consumer's own dependencies. Exact pins here force a specific version on every downstream user, increasing the risk of version conflicts and duplicate installs.
+
+```jsonc
+// ✅ Correct — allow compatible patch and minor updates
+"dependencies": {
+  "@typescript-eslint/parser": "^8.57.2"
+}
+
+// ❌ Wrong — unnecessarily strict, can cause conflicts for consumers
+"dependencies": {
+  "@typescript-eslint/parser": "8.57.2"
+}
+```
+
+**Summary of version range rules by section:**
+
+| Section | Range style | Rationale |
+|---|---|---|
+| `dependencies` | `^major.minor.patch` | Allow compatible updates; avoid forcing exact version on consumers |
+| `devDependencies` | Exact pin OK | Reproducible local/CI builds; never shipped to consumers |
+| `peerDependencies` | `^major` or `^major.minor` | Consumer must be free to choose any compatible release |
+
 ### 2. Dependency Version Freshness
 
 Dependencies should **not be older than 6 months** to ensure security, bug fixes, and compatibility with the ecosystem.
@@ -726,6 +750,7 @@ pnpm outdated
 13. ❌ **Don't run all tests when working on a single package** - Use `pnpm --filter @sap-ux/[package-name] test` instead of `pnpm test` at root
 14. ❌ **Don't hardcode version numbers in documentation** - Reference source files (like package.json) instead, as versions change frequently
 15. ❌ **Don't pin peerDependencies to exact versions** - Use open semver ranges (e.g., `^9` not `9.39.1`) so consumers can use any compatible release
+16. ❌ **Don't pin runtime `dependencies` to exact versions** - Use caret ranges (e.g., `^8.57.2` not `8.57.2`); exact pins cause version conflicts for consumers. Exact pinning is only acceptable in `devDependencies`.
 
 ## Summary Checklist
 

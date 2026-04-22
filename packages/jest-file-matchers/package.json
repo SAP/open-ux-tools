@@ -28,11 +28,11 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "chalk": "4.1.2",
-        "dir-compare": "5.0.0",
-        "filenamify": "4.3.0",
-        "jest-diff": "30.2.0",
-        "minimatch": "3.1.5"
+        "chalk": "^4.1.2",
+        "dir-compare": "^5.0.0",
+        "filenamify": "^4.3.0",
+        "jest-diff": "^30.2.0",
+        "minimatch": "^3.1.5"
     },
     "engines": {
         "node": ">=20.x"

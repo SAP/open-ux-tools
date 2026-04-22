@@ -26,12 +26,12 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "@sap/cf-tools": "3.3.0",
-        "axios": "1.15.0",
-        "@sap/bas-sdk": "3.13.6"
+        "@sap/cf-tools": "^3.3.0",
+        "axios": "^1.15.0",
+        "@sap/bas-sdk": "^3.13.6"
     },
     "devDependencies": {
-        "nock": "14.0.11",
+        "nock": "^14.0.11",
         "@sap-ux/logger": "workspace:*"
     },
     "files": [

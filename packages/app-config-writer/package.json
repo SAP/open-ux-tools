@@ -36,25 +36,25 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "chalk": "4.1.2",
-        "ejs": "3.1.10",
-        "i18next": "25.10.10",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
-        "prompts": "2.4.2",
-        "semver": "7.7.4",
-        "cross-spawn": "7.0.6"
+        "chalk": "^4.1.2",
+        "ejs": "^3.1.10",
+        "i18next": "^25.10.10",
+        "mem-fs": "^2.1.0",
+        "mem-fs-editor": "^9.4.0",
+        "prompts": "^2.4.2",
+        "semver": "^7.7.4",
+        "cross-spawn": "^7.0.6"
     },
     "devDependencies": {
         "@sap-ux/preview-middleware": "workspace:*",
-        "@types/ejs": "3.1.5",
-        "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1",
-        "@types/prompts": "2.4.9",
-        "@types/semver": "7.7.1",
-        "@types/cross-spawn": "6.0.6",
-        "axios": "1.15.0",
-        "nock": "14.0.11"
+        "@types/ejs": "^3.1.5",
+        "@types/mem-fs": "^1.1.2",
+        "@types/mem-fs-editor": "^7.0.1",
+        "@types/prompts": "^2.4.9",
+        "@types/semver": "^7.7.1",
+        "@types/cross-spawn": "^6.0.6",
+        "axios": "^1.15.0",
+        "nock": "^14.0.11"
     },
     "engines": {
         "node": ">=20.x"

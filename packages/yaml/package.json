@@ -30,11 +30,11 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "lodash": "4.18.1",
-        "yaml": "2.8.3"
+        "lodash": "^4.18.1",
+        "yaml": "^2.8.3"
     },
     "devDependencies": {
-        "@types/lodash": "4.17.24"
+        "@types/lodash": "^4.17.24"
     },
     "engines": {
         "node": ">=20.x"

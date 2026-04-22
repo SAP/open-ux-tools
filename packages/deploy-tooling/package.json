@@ -45,17 +45,17 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
-        "axios": "1.15.0",
-        "commander": "14.0.3",
-        "dotenv": "17.4.2",
-        "prompts": "2.4.2",
-        "adm-zip": "0.5.16",
-        "chalk": "4.1.2"
+        "axios": "^1.15.0",
+        "commander": "^14.0.3",
+        "dotenv": "^17.4.2",
+        "prompts": "^2.4.2",
+        "adm-zip": "^0.5.16",
+        "chalk": "^4.1.2"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
-        "@types/prompts": "2.4.9",
-        "@types/adm-zip": "0.5.8"
+        "@types/prompts": "^2.4.9",
+        "@types/adm-zip": "^0.5.8"
     },
     "engines": {
         "node": ">=20.x"
