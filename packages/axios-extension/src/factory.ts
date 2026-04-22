@@ -72,16 +72,6 @@ function createInstance<T extends ServiceProvider>(
     const agentOptions = {
         rejectUnauthorized: !providerConfig.ignoreCertErrors
     };
-    const localProxy = getProxyForUrl(config.baseURL);
-    if (localProxy && !isAppStudio()) {
-        // axios doesn't handle proxies correctly, instead use a custom agent with axios proxy disabled
-        providerConfig.httpsAgent = new PatchedHttpsProxyAgent(
-            localProxy,
-            agentOptions as HttpsProxyAgentOptions<string>
-        );
-        providerConfig.httpAgent = new HttpProxyAgent(localProxy);
-        providerConfig.proxy = false;
-    }
     // Default httpsAgent with optional parameters passed to the agent
     if (!providerConfig.httpsAgent) {
         providerConfig.httpsAgent = new HttpsAgent(agentOptions as AgentOptions);
@@ -97,6 +87,20 @@ function createInstance<T extends ServiceProvider>(
      */
     providerConfig.validateStatus = (status) => status < 400;
     const instance = new ProviderType(providerConfig);
+
+    // Resolve proxy per-request using the full URL (baseURL + path + params) so that
+    // NO_PROXY hostname matching works correctly against the actual target URL.
+    instance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+        const fullUrl = instance.getUri(request);
+        const localProxy = getProxyForUrl(fullUrl);
+        if (localProxy && !isAppStudio()) {
+            // axios doesn't handle proxies correctly, instead use a custom agent with axios proxy disabled
+            request.httpsAgent = new PatchedHttpsProxyAgent(localProxy, agentOptions as HttpsProxyAgentOptions<string>);
+            request.httpAgent = new HttpProxyAgent(localProxy);
+            request.proxy = false;
+        }
+        return request;
+    });
 
     instance.defaults.headers = instance.defaults.headers ?? {
         common: {},

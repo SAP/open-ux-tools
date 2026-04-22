@@ -1,5 +1,18 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.12.2
+
+### Patch Changes
+
+- 291351f: Update sap-no-data-field-intent-based-navigation rule documentation with information on semantic link navigation.
+
+## 9.12.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/fiori-annotation-api@0.9.42
+
 ## 9.12.0
 
 ### Minor Changes

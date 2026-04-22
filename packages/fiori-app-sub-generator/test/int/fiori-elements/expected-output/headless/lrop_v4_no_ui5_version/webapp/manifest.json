@@ -1,5 +1,5 @@
 {
-  "_version": "1.83.1",
+  "_version": "1.84.0",
   "sap.app": {
     "id": "testnamepsace.lropv4noui5version",
     "type": "application",
@@ -55,7 +55,7 @@
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {
-      "minUI5Version": "1.145.0",
+      "minUI5Version": "1.147.0",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},

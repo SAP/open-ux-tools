@@ -1,5 +1,22 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.5.25
+
+### Patch Changes
+
+- f77f003: fix(deps): update dependency sanitize-html to v2.17.3 [security]
+- Updated dependencies [f77f003]
+    - @sap-ux/ui-components@2.1.11
+    - @sap-ux/ui-prompting@0.6.24
+
+## 0.5.24
+
+### Patch Changes
+
+- Updated dependencies [4357b0b]
+    - @sap-ux/ui-components@2.1.10
+    - @sap-ux/ui-prompting@0.6.23
+
 ## 0.5.23
 
 ### Patch Changes
