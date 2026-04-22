@@ -149,7 +149,7 @@ export class FioriFunctionalityServer {
                     mcpClientName: this.mcpClientName,
                     mcpClientVersion: this.mcpClientVersion
                 };
-                if ('functionalityId' in args) {
+                if (args && 'functionalityId' in args) {
                     const { functionalityId } = args;
                     const shouldPrefixWithPropertyChange =
                         Array.isArray(functionalityId) && functionalityId.length >= 1;

@@ -26,19 +26,13 @@ export async function resolveEmbeddingsPath(): Promise<{
 }> {
     // Try to resolve @sap-ux/fiori-docs-embeddings package
     try {
-        // Try to require the embeddings package dynamically
         let embeddingsPackage: any;
         try {
-            // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-require-imports
-            embeddingsPackage = require('@sap-ux/fiori-docs-embeddings');
+            const moduleName = '@sap-ux/fiori-docs-embeddings';
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            embeddingsPackage = await import(moduleName);
         } catch {
-            // Try dynamic import as fallback with proper error handling
-            try {
-                const moduleName = '@sap-ux/fiori-docs-embeddings';
-                embeddingsPackage = await import(moduleName);
-            } catch {
-                embeddingsPackage = null;
-            }
+            embeddingsPackage = null;
         }
 
         if (!embeddingsPackage || typeof embeddingsPackage.getDataPath !== 'function') {
