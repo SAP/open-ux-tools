@@ -434,10 +434,7 @@ describe('ui5-test-writer', () => {
             afterEach(() => {
                 hasVirtualOPA5Mock.mockReset();
                 existsSyncMock.mockImplementation(realExistsSync);
-                const { addPathsToQUnitJs: realAddPaths } = jest.requireActual<{
-                    addPathsToQUnitJs: typeof addPathsToQUnitJsMock;
-                }>('../../src/utils/opaQUnitUtils');
-                addPathsToQUnitJsMock.mockImplementation(realAddPaths);
+                addPathsToQUnitJsMock.mockImplementation(actualOpaQUnitUtils.addPathsToQUnitJs);
             });
 
             it('moves integration folder and writes common/page/journey files when no JourneyRunner and OPA5 not virtual', async () => {

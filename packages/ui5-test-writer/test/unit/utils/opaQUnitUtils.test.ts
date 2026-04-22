@@ -1,4 +1,15 @@
-import {
+import { jest } from '@jest/globals';
+import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
+
+const getAllUi5YamlFileNamesMock = jest.fn();
+const readUi5YamlMock = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    getAllUi5YamlFileNames: (...args: unknown[]) => getAllUi5YamlFileNamesMock(...args),
+    readUi5Yaml: (...args: unknown[]) => readUi5YamlMock(...args)
+}));
+
+const {
     addPathsToQUnitJs,
     addPagesToJourneyRunner,
     spliceModulesIntoQUnitContent,
@@ -6,15 +17,7 @@ import {
     readHtmlTargetFromQUnitJs,
     addIntegrationOldToGitignore,
     hasVirtualOPA5
-} from '../../../src/utils/opaQUnitUtils';
-import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
-import { getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
-
-jest.mock('@sap-ux/project-access', () => ({
-    getAllUi5YamlFileNames: jest.fn(),
-    readUi5Yaml: jest.fn()
-}));
+} = await import('../../../src/utils/opaQUnitUtils.js');
 
 /**
  * Matches the actual template output: the last entry has no trailing newline
@@ -549,8 +552,8 @@ describe('MAX_FILE_CONTENT_LENGTH guard', () => {
 });
 
 describe('hasVirtualOPA5()', () => {
-    const mockGetAllUi5YamlFileNames = getAllUi5YamlFileNames as jest.MockedFunction<typeof getAllUi5YamlFileNames>;
-    const mockReadUi5Yaml = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
+    const mockGetAllUi5YamlFileNames = getAllUi5YamlFileNamesMock;
+    const mockReadUi5Yaml = readUi5YamlMock;
     const basePath = join('/', 'project');
 
     beforeEach(() => {
