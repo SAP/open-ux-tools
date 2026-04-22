@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.11
+
+### Patch Changes
+
+- f77f003: fix(deps): update dependency sanitize-html to v2.17.3 [security]
+
 ## 2.1.10
 
 ### Patch Changes
