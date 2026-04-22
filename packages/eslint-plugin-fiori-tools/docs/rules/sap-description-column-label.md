@@ -33,14 +33,12 @@ The "{{textPropertyTarget}}" text property has a "{{textPropertyLabel}}" generic
 The "{{textPropertyTarget}}" text property has the same "{{textPropertyLabel}}" label as the "{{idPropertyTarget}}" ID property. The description column label must be different from the ID label.
 ```
 
-## Examples
-
 ### Incorrect Annotations
 
 `trivialLabel`: The `Common.Label` annotation on the text property is too generic:
 
 ```xml
-<!-- ProductBaseUnit uses UnitOfMeasure_Text as its description column via Common.Text annotation -->
+<!-- ProductBaseUnit uses UnitOfMeasure_Text as its description column using the Common.Text annotation -->
 <Annotations Target="MyService.MyEntity/ProductBaseUnit">
     <Annotation Term="Common.Text" Path="to_BaseUnit/UnitOfMeasure_Text"/>
 </Annotations>
