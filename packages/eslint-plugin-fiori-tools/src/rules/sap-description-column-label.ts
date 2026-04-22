@@ -3,15 +3,15 @@ import { Edm, getElementAttributeValue } from '@sap-ux/odata-annotation-core';
 
 import { createFioriRule } from '../language/rule-factory';
 import type { FioriRuleDefinition } from '../types';
-import {
-    DESCRIPTION_COLUMN_LABEL,
-    type DescriptionColumnLabel,
-    type DescriptionColumnLabelMessageId
-} from '../language/diagnostics';
+import { DESCRIPTION_COLUMN_LABEL, type DescriptionColumnLabel } from '../language/diagnostics';
 import { buildAnnotationIndexKey } from '../project-context/parser';
 import type { IndexedAnnotation, ParsedService } from '../project-context/parser';
-import { COMMON_TEXT, COMMON_LABEL } from '../constants';
-import { resolveTextPropertyPath, collectRelevantEntityTypes } from './utils/common-text-helpers';
+import { COMMON_LABEL } from '../constants';
+import {
+    resolveTextPropertyPath,
+    collectRelevantEntityTypes,
+    parseCommonTextAnnotationKey
+} from './utils/common-text-helpers';
 
 /**
  * Labels that are considered trivially non-descriptive regardless of context.
@@ -128,26 +128,11 @@ function processAnnotationEntry(
     parsedService: ParsedService,
     relevantEntityTypes: Map<string, string[]>
 ): DescriptionColumnLabel[] {
-    const atIdx = annotationKey.indexOf('/@');
-    if (atIdx === -1) {
+    const parsed = parseCommonTextAnnotationKey(annotationKey, relevantEntityTypes);
+    if (!parsed) {
         return [];
     }
-    const targetPath = annotationKey.substring(0, atIdx);
-    const term = annotationKey.substring(atIdx + 2);
-
-    if (term !== COMMON_TEXT) {
-        return [];
-    }
-    const slashIdx = targetPath.indexOf('/');
-    if (slashIdx === -1) {
-        return [];
-    }
-    const entityTypeName = targetPath.substring(0, slashIdx);
-    const pageNames = relevantEntityTypes.get(entityTypeName);
-    if (!pageNames) {
-        return [];
-    }
-
+    const { targetPath, entityTypeName, pageNames } = parsed;
     const problems: DescriptionColumnLabel[] = [];
     for (const textAnnotation of Object.values(qualifiedAnnotations)) {
         problems.push(...processTextAnnotation(textAnnotation, entityTypeName, targetPath, pageNames, parsedService));
@@ -223,7 +208,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                 }
                 context.report({
                     node,
-                    messageId: diagnostic.messageId as DescriptionColumnLabelMessageId,
+                    messageId: diagnostic.messageId,
                     data: {
                         textPropertyTarget: diagnostic.annotation.textPropertyTarget,
                         textPropertyLabel: diagnostic.annotation.textPropertyLabel,

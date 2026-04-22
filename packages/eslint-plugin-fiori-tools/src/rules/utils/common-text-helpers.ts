@@ -1,6 +1,7 @@
 import type { IndexedAnnotation, ParsedService } from '../../project-context/parser';
 import type { FeV4ObjectPage, FeV4ListReport } from '../../project-context/linker/fe-v4';
 import type { FeV2ListReport, FeV2ObjectPage } from '../../project-context/linker/fe-v2';
+import { COMMON_TEXT } from '../../constants';
 
 export type AnyPage = FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage;
 
@@ -108,4 +109,44 @@ export function collectRelevantEntityTypes(pages: AnyPage[], parsedService: Pars
         }
     }
     return entityTypePages;
+}
+
+/**
+ * Parses an annotation index key and validates it is a property-level Common.Text
+ * annotation targeting a known entity type.
+ *
+ * Returns the parsed `targetPath`, `entityTypeName`, and `pageNames` when the key
+ * matches — or `undefined` for any of these conditions:
+ * - the key has no `/@` separator
+ * - the term is not `Common.Text`
+ * - the target path has no `/` (entity-type-level, not property-level)
+ * - the entity type is not present in `relevantEntityTypes`
+ *
+ * @param annotationKey - Annotation index key (e.g. "Service.Entity/prop/@Common.Text")
+ * @param relevantEntityTypes - Entity types used in the app, mapped to page names
+ * @returns Parsed values, or undefined if the key does not qualify
+ */
+export function parseCommonTextAnnotationKey(
+    annotationKey: string,
+    relevantEntityTypes: Map<string, string[]>
+): { targetPath: string; entityTypeName: string; pageNames: string[] } | undefined {
+    const atIdx = annotationKey.indexOf('/@');
+    if (atIdx === -1) {
+        return undefined;
+    }
+    const targetPath = annotationKey.substring(0, atIdx);
+    const term = annotationKey.substring(atIdx + 2);
+    if (term !== COMMON_TEXT) {
+        return undefined;
+    }
+    const slashIdx = targetPath.indexOf('/');
+    if (slashIdx === -1) {
+        return undefined;
+    }
+    const entityTypeName = targetPath.substring(0, slashIdx);
+    const pageNames = relevantEntityTypes.get(entityTypeName);
+    if (!pageNames) {
+        return undefined;
+    }
+    return { targetPath, entityTypeName, pageNames };
 }

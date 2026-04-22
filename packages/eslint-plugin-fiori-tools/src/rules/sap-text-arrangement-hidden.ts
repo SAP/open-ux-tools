@@ -12,8 +12,13 @@ import type { FioriRuleDefinition } from '../types';
 import { TEXT_ARRANGEMENT_HIDDEN, type TextArrangementHidden } from '../language/diagnostics';
 import { buildAnnotationIndexKey } from '../project-context/parser';
 import type { IndexedAnnotation, ParsedService } from '../project-context/parser';
-import { COMMON_TEXT, UI_HIDDEN, UI_TEXT_ARRANGEMENT } from '../constants';
-import { type AnyPage, resolveTextPropertyPath, collectRelevantEntityTypes } from './utils/common-text-helpers';
+import { UI_HIDDEN, UI_TEXT_ARRANGEMENT } from '../constants';
+import {
+    type AnyPage,
+    resolveTextPropertyPath,
+    collectRelevantEntityTypes,
+    parseCommonTextAnnotationKey
+} from './utils/common-text-helpers';
 
 /**
  * Checks whether a Common.Text annotation element has a nested UI.TextArrangement inline annotation.
@@ -172,27 +177,11 @@ function processAnnotationEntry(
     parsedService: ParsedService,
     relevantEntityTypes: Map<string, string[]>
 ): TextArrangementHidden[] {
-    const atIdx = annotationKey.indexOf('/@');
-    if (atIdx === -1) {
+    const parsed = parseCommonTextAnnotationKey(annotationKey, relevantEntityTypes);
+    if (!parsed) {
         return [];
     }
-    const targetPath = annotationKey.substring(0, atIdx);
-    const term = annotationKey.substring(atIdx + 2);
-    // Only process Common.Text annotations
-    if (term !== COMMON_TEXT) {
-        return [];
-    }
-    // Only handle property-level annotations (path must contain '/')
-    const slashIdx = targetPath.indexOf('/');
-    if (slashIdx === -1) {
-        return [];
-    }
-    const entityTypeName = targetPath.substring(0, slashIdx);
-    // Only check entity types that are actually used on pages
-    const pageNames = relevantEntityTypes.get(entityTypeName);
-    if (!pageNames) {
-        return [];
-    }
+    const { targetPath, entityTypeName, pageNames } = parsed;
     const problems: TextArrangementHidden[] = [];
     for (const textAnnotation of Object.values(qualifiedAnnotations)) {
         problems.push(
