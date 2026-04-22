@@ -2,7 +2,7 @@ import type { CopyOptions, Editor } from 'mem-fs-editor';
 import type { TabInfo } from '../common/types';
 import { sep, normalize } from 'node:path';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
-import { DOMParser } from '@xmldom/xmldom';
+import { validateId } from '@sap-ux/project-access';
 
 /**
  * Options for creating an ID generator with cached file contents.
@@ -168,9 +168,16 @@ export const CONFIG = {
 function generateUniqueElementId(baseId: string, filteredFilesContent: string[], validatedIds: string[] = []): string {
     const maxAttempts = 1000;
 
+    /**
+     * Checks if an element with the specified id is available (does not exist) in the XML content.
+     *
+     * @param id - id to check for availability
+     * @param xmlContent - XML content as string
+     * @returns true if the id is available (not found), false if it exists
+     */
     function checkElementIdAvailable(id: string, xmlContent: string): boolean {
-        const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent);
-        return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
+        // Use validateId from @sap-ux/project-access (synchronous overload)
+        return validateId(id, undefined, { files: [xmlContent] });
     }
 
     if (

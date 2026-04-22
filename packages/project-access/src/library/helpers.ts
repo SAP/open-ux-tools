@@ -8,12 +8,13 @@ import {
     type ReuseLib,
     type LibraryXml
 } from '../types';
-import { findFiles, readJSON } from '../file';
+import { findFiles, findFilesByExtension, readJSON } from '../file';
 import { FileName } from '../constants';
 import { existsSync, promises as fs } from 'node:fs';
 import { XMLParser } from 'fast-xml-parser';
 import { getI18nPropertiesPaths } from '../project/i18n';
 import { getPropertiesI18nBundle } from '@sap-ux/i18n';
+import type { Editor } from 'mem-fs-editor';
 
 /**
  * Reads the manifest file and returns the reuse library.
@@ -306,4 +307,175 @@ export function getManifestDependencies(manifest: Manifest): string[] {
     });
 
     return result;
+}
+
+/**
+ * Validates if an id is unique across XML files (fragments and views) in the project.
+ * Synchronous overload - when files are provided directly.
+ *
+ * @param baseId - id to validate
+ * @param validatedIds - array of ids that are already validated/used
+ * @param options - validation options with files array
+ * @param options.files - array of XML file contents to check
+ * @param options.appPath - must be undefined for synchronous overload
+ * @param options.memFs - must be undefined for synchronous overload
+ * @returns true if the id is unique (available), false if it already exists
+ */
+export function validateId(
+    baseId: string,
+    validatedIds: string[] | undefined,
+    options: { files: string[]; appPath?: never; memFs?: never }
+): boolean;
+
+/**
+ * Validates if an id is unique across XML files (fragments and views) in the project.
+ * Asynchronous overload - when appPath is provided (requires file system access).
+ *
+ * @param baseId - id to validate
+ * @param validatedIds - array of ids that are already validated/used
+ * @param options - validation options with appPath
+ * @param options.files - must be undefined for asynchronous overload
+ * @param options.appPath - path to search for XML files
+ * @param options.memFs - optional mem-fs-editor instance for reading files
+ * @returns Promise that resolves to true if the id is unique (available), false if it already exists
+ */
+export function validateId(
+    baseId: string,
+    validatedIds: string[] | undefined,
+    options: { files?: never; appPath: string; memFs?: Editor }
+): Promise<boolean>;
+
+/**
+ * Validates if an id is unique across XML files (fragments and views) in the project.
+ * Asynchronous overload - when no options are provided.
+ *
+ * @param baseId - id to validate
+ * @param validatedIds - array of ids that are already validated/used
+ * @param options - undefined (no validation options)
+ * @returns Promise that resolves to true (always valid when no files to check)
+ */
+export function validateId(baseId: string, validatedIds?: string[], options?: undefined): Promise<boolean>;
+
+// Implementation
+export function validateId(
+    baseId: string,
+    validatedIds?: string[],
+    options?: { files?: string[]; appPath?: string; memFs?: Editor }
+): boolean | Promise<boolean> {
+    const { memFs, appPath, files: fileContents } = options ?? {};
+
+    /**
+     * Checks if an element with the specified id is available (does not exist) in the XML content.
+     *
+     * @param id - id to check for availability
+     * @param xmlContent - XML content as string
+     * @returns true if the id is available (not found), false if it exists
+     */
+    function checkElementIdAvailable(id: string, xmlContent: string): boolean {
+        const parser = new XMLParser({
+            ignoreAttributes: false,
+            attributeNamePrefix: '@_',
+            parseAttributeValue: false
+        });
+
+        try {
+            const xmlDocument: unknown = parser.parse(xmlContent);
+            return xmlDocument ? !hasElementWithId(xmlDocument, id) : true;
+        } catch {
+            // Parse error = no valid document = no element with id
+            return true;
+        }
+    }
+
+    /**
+     * Checks if a value (object or array) contains an element with the specified id.
+     *
+     * @param value - value to check (can be array or object)
+     * @param id - id to search for
+     * @param attrPrefix - attribute prefix used by the parser
+     * @returns true if id is found in the value
+     */
+    function checkIdInValue(value: unknown, id: string, attrPrefix: string): boolean {
+        if (Array.isArray(value)) {
+            return value.some((item) => hasElementWithId(item, id, attrPrefix));
+        }
+        if (typeof value === 'object' && value !== null) {
+            return hasElementWithId(value, id, attrPrefix);
+        }
+        return false;
+    }
+
+    /**
+     * Recursively searches for an element with the specified id attribute in a parsed XML object.
+     *
+     * @param obj - parsed XML object to search in
+     * @param id - id attribute value to search for
+     * @param attrPrefix - attribute prefix used by the parser (default: '@_')
+     * @returns true if an element with the specified id is found
+     */
+    function hasElementWithId(obj: unknown, id: string, attrPrefix: string = '@_'): boolean {
+        if (!obj || typeof obj !== 'object') {
+            return false;
+        }
+
+        const objRecord = obj as Record<string, unknown>;
+
+        // Check if current object has the id attribute
+        if (objRecord[`${attrPrefix}id`] === id) {
+            return true;
+        }
+
+        // Recursively search in all properties
+        for (const key in objRecord) {
+            if (key.startsWith(attrPrefix)) {
+                continue; // Skip attributes
+            }
+
+            if (checkIdInValue(objRecord[key], id, attrPrefix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Validates the ID against the provided files.
+     *
+     * @param files - array of XML file contents to validate against
+     * @returns true if the id is unique (available), false if it already exists
+     */
+    function validateAgainstFiles(files: string[]): boolean {
+        return (
+            files.every((content) => content === '' || checkElementIdAvailable(baseId, content)) &&
+            !validatedIds?.includes(baseId)
+        );
+    }
+
+    // Synchronous path: when files are provided directly
+    if (fileContents !== undefined) {
+        return validateAgainstFiles(fileContents);
+    }
+
+    // Asynchronous path: when appPath is provided or no options
+    return (async (): Promise<boolean> => {
+        let files: string[] | undefined = fileContents;
+        if (!files && appPath) {
+            const xmlFiles = await findFilesByExtension(
+                '.xml',
+                appPath,
+                ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
+                memFs
+            );
+            const lookupFiles = ['.fragment.xml', '.view.xml'];
+            files = xmlFiles.filter((fileName: string) =>
+                lookupFiles.some((lookupFile) => fileName.endsWith(lookupFile))
+            );
+        }
+
+        if (files) {
+            return validateAgainstFiles(files);
+        }
+        return true;
+    })();
 }
