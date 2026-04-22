@@ -102,14 +102,14 @@ describe('Credentials Prompts', () => {
 
     describe('Password Prompt', () => {
         let passwordPrompt: any;
-        let mockGetSystemInfo: jest.Mock;
+        let mockGetCsrfToken: jest.Mock;
 
         beforeEach(() => {
             const result = getCredentialsPrompts(mockAbapTarget, mockLogger);
             passwordPrompt = result[1];
-            mockGetSystemInfo = jest.fn();
+            mockGetCsrfToken = jest.fn();
             mockGetConfiguredProvider.mockResolvedValue({
-                getLayeredRepository: () => ({ getSystemInfo: mockGetSystemInfo })
+                getLayeredRepository: () => ({ getCsrfToken: mockGetCsrfToken })
             } as unknown as AbapServiceProvider);
         });
 
@@ -131,7 +131,7 @@ describe('Credentials Prompts', () => {
             mockIsAppStudio.mockReturnValue(false);
             mockAbapTarget.url = 'some-system';
             mockValidateEmptyString.mockReturnValue(true);
-            mockGetSystemInfo.mockResolvedValue({});
+            mockGetCsrfToken.mockResolvedValue({});
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const passwordPrompt = prompts[1];
@@ -151,7 +151,7 @@ describe('Credentials Prompts', () => {
                 },
                 mockLogger
             );
-            expect(mockGetSystemInfo).toHaveBeenCalled();
+            expect(mockGetCsrfToken).toHaveBeenCalled();
             expect(result).toBe(true);
         });
 
@@ -159,7 +159,7 @@ describe('Credentials Prompts', () => {
             mockIsAppStudio.mockReturnValue(true);
             mockAbapTarget.destination = 'SYS_010';
             mockValidateEmptyString.mockReturnValue(true);
-            mockGetSystemInfo.mockResolvedValue({});
+            mockGetCsrfToken.mockResolvedValue({});
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const passwordPrompt = prompts[1];
@@ -179,7 +179,7 @@ describe('Credentials Prompts', () => {
                 },
                 mockLogger
             );
-            expect(mockGetSystemInfo).toHaveBeenCalled();
+            expect(mockGetCsrfToken).toHaveBeenCalled();
             expect(result).toBe(true);
         });
 
@@ -222,7 +222,7 @@ describe('Credentials Prompts', () => {
                     statusText: 'Unauthorized'
                 }
             };
-            mockGetSystemInfo.mockRejectedValue(mockError);
+            mockGetCsrfToken.mockRejectedValue(mockError);
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const passwordPrompt = prompts[1];
