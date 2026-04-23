@@ -4,10 +4,10 @@ import { Severity, UrlServiceType } from '../../src/types';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 
 const mockIsAppStudio = jest.fn();
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    isAppStudio: mockIsAppStudio,
-    getAppStudioProxyURL: jest.fn(),
-    listDestinations: jest.fn()
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
 const mockCreateForDestination = jest.fn();

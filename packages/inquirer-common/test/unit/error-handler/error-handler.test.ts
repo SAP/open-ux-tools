@@ -7,7 +7,9 @@ import type { Destination } from '@sap-ux/btp-utils';
 
 let mockIsAppStudio = false;
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: jest.fn<() => boolean>().mockImplementation(() => mockIsAppStudio),
     isHTML5DynamicConfigured: jest
         .fn()

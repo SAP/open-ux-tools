@@ -27,8 +27,10 @@ class MockBackendSystemKey {
         return this.url + `${this.client ? '/' + this.client : ''}`;
     }
 }
+const realStore = await import('@sap-ux/store');
 
 jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     AuthenticationType: {
         Basic: 'basic',
         ReentranceTicket: 'reentranceTicket',
@@ -58,7 +60,9 @@ function getDestinationUrlForAppStudioImpl(name: string, path?: string): string 
     return path && path.length > 1 ? new URL(path, origin).toString() : origin;
 }
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     BAS_DEST_INSTANCE_CRED_HEADER: 'bas-destination-instance-cred',
     getDestinationUrlForAppStudio: getDestinationUrlForAppStudioImpl,
     getCredentialsForDestinationService: mockGetCredentialsForDestinationService,

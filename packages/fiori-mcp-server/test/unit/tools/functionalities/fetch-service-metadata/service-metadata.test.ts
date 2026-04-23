@@ -5,7 +5,9 @@ import { ODataVersion } from '@sap-ux/axios-extension';
 
 // Mock dependencies
 const mockGetService = jest.fn<any>();
+const realStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     getService: mockGetService
 }));
 

@@ -7,7 +7,9 @@ jest.unstable_mockModule('@vscode-logging/logger', () => ({
     getExtensionLogger: jest.fn()
 }));
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio,
     listDestinations: mockListDestinations,
     Destination: {}

@@ -38,14 +38,10 @@ const mockSendTelemetry = jest.fn().mockResolvedValue({});
 
 // ── Module mocks (BEFORE dynamic imports) ─────────────────────────────────
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    isAppStudio: () => mockIsAppStudio(),
-    listDestinations: jest.fn(),
-    getDisplayName: jest.fn(),
-    WebIDEUsage: {},
-    WebIDEAdditionalData: {}
+    ...realBtpUtils
 }));
-
 jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn().mockResolvedValue({
         get: jest.fn(),

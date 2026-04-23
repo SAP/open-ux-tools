@@ -7,7 +7,9 @@ import type { ConnectivityProxyInfo, EffectiveOptions } from '../../../src/types
 
 const mockIsAppStudio = jest.fn().mockReturnValue(false);
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 

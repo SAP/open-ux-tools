@@ -11,9 +11,7 @@ const __dirname = join(fileURLToPath(import.meta.url), '..');
 
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    ...realBtpUtils,
-    isAppStudio: jest.fn(),
-    listDestinations: jest.fn()
+    ...realBtpUtils
 }));
 
 const realHasbin = await import('hasbin');

@@ -2,7 +2,9 @@ import { jest } from '@jest/globals';
 import type { Extension } from 'vscode';
 
 const mockIsAppStudio = jest.fn();
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 

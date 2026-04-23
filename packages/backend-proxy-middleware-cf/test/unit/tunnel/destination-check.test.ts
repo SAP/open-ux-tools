@@ -20,8 +20,9 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getBtpDestinationConfig: mockGetBtpDestinationConfig
 }));
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    DestinationProxyType: { ON_PREMISE: 'OnPremise' }
+    ...realBtpUtils
 }));
 
 const { hasOnPremiseDestination } = await import('../../../src/tunnel/destination-check');

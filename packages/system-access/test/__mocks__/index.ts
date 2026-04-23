@@ -13,7 +13,9 @@ export const mockedStoreService = {
 const mockGetService = jest.fn().mockResolvedValue(mockedStoreService);
 
 // Mock @sap-ux/btp-utils
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio,
     isAbapSystem: mockIsAbapSystem,
     listDestinations: mockListDestinations
@@ -74,9 +76,11 @@ const Entity = {
     TelemetrySetting: 'telemetrySetting',
     ApiHub: 'api-hub'
 } as const;
+const realStore = await import('@sap-ux/store');
 
 jest.unstable_mockModule('@sap-ux/store', () => ({
-    getService: mockGetService,
+
+    ...realStore,    getService: mockGetService,
     AuthenticationType,
     SystemType,
     ConnectionType,

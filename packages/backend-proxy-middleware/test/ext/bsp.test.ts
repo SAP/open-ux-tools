@@ -3,7 +3,9 @@ import type { Options } from 'http-proxy-middleware';
 
 // mock required btp-utils functions
 const mockIsAppStudio = jest.fn();
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 

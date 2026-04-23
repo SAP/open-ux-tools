@@ -3,7 +3,9 @@ import { jest } from '@jest/globals';
 const mockIsAppStudio = jest.fn().mockReturnValue(false);
 const mockExposePort = jest.fn().mockResolvedValue('');
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio,
     exposePort: mockExposePort
 }));

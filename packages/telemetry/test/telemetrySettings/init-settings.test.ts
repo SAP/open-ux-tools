@@ -18,7 +18,9 @@ jest.unstable_mockModule('applicationinsights', () => {
 });
 
 const isAppStudioMock = jest.fn();
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: (): boolean => isAppStudioMock()
 }));
 
@@ -51,7 +53,9 @@ jest.unstable_mockModule('../../src/base/utils/reporting', () => ({
 
 const mockGetService = jest.fn();
 const mockGetFilesystemWatcherFor = jest.fn();
+const realStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     getService: mockGetService,
     getFilesystemWatcherFor: mockGetFilesystemWatcherFor,
     Entity: { TelemetrySetting: 'telemetrySetting' },

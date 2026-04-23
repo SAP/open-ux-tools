@@ -82,7 +82,9 @@ const mockReadPkgUp = jest.fn(async ({ cwd }: { cwd: string }) => {
 });
 
 // Mock modules before importing
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 

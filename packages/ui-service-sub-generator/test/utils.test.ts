@@ -12,14 +12,11 @@ const __testdirname = dirname(fileURLToPath(import.meta.url));
 const mockIsAppStudio = jest.fn();
 const mockCreateAbapServiceProvider = jest.fn().mockResolvedValue({ get: {} });
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    isAppStudio: () => mockIsAppStudio(),
-    listDestinations: jest.fn(),
-    getDisplayName: jest.fn(),
-    WebIDEUsage: {},
-    WebIDEAdditionalData: {}
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
-
 jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: mockCreateAbapServiceProvider,
     isUrlTarget: jest.fn(),

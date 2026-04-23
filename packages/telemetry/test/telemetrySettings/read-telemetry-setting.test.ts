@@ -18,11 +18,13 @@ jest.unstable_mockModule('applicationinsights', () => {
     return { TelemetryClient };
 });
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn().mockReturnValue(false)
+    ...realBtpUtils
 }));
-
+const realStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     getService: mockGetService,
     getFilesystemWatcherFor: jest.fn(),
     Entity: { TelemetrySetting: 'telemetrySetting' },

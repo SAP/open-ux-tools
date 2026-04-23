@@ -60,9 +60,11 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     Ui5AbapRepositoryService: class {},
     LayeredRepositoryService: class {}
 }));
+const realStore = await import('@sap-ux/store');
 
 jest.unstable_mockModule('@sap-ux/store', () => ({
-    getService: jest.fn().mockResolvedValue(mockedStoreService),
+
+    ...realStore,    getService: jest.fn().mockResolvedValue(mockedStoreService),
     SystemService: class {},
     BackendSystem: class {},
     BackendSystemKey: class {

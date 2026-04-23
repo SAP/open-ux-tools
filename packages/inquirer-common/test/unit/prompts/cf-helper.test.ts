@@ -15,7 +15,9 @@ jest.unstable_mockModule('@sap/cf-tools', () => ({
     cfGetTarget: jest.fn()
 }));
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: jest.fn().mockReturnValue(false),
     isHTML5DynamicConfigured: jest.fn().mockReturnValue(false),
     isOnPremiseDestination: jest.fn().mockReturnValue(false),

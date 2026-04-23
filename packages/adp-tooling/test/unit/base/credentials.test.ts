@@ -4,7 +4,9 @@ import type { SystemLookup } from '../../../src/source/systems';
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
 const mockGetService = jest.fn();
+const realStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     getService: mockGetService,
     BackendSystem: class BackendSystem {
         constructor(public data: any) {

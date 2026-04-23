@@ -3,7 +3,9 @@ import type { CatalogServiceResult } from '../../src/types';
 import { Severity } from '../../src/types';
 
 const mockGetService = jest.fn();
+const realStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     getService: mockGetService,
     BackendSystemKey: class BackendSystemKey {
         url: string;

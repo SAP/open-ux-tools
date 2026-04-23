@@ -27,14 +27,18 @@ jest.unstable_mockModule('axios', () => ({
     __esModule: true
 }));
 
+const realCfTools = await import('@sap/cf-tools');
 jest.unstable_mockModule('@sap/cf-tools', () => ({
+    ...realCfTools,
     cfGetServiceKeys: mockCfGetServiceKeys,
     cfCreateServiceKey: mockCfCreateServiceKey,
     cfGetAvailableOrgs: mockCfGetAvailableOrgs,
     Cli: { execute: mockCFToolsCliExecute }
 }));
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 

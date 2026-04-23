@@ -15,12 +15,17 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapCloudEnvironment: { Standalone: 'Standalone', EmbeddedSteampunk: 'EmbeddedSteampunk' }
 }));
 
-jest.unstable_mockModule('@sap/bas-sdk', () => ({}));
+const realBasSdk = await import('@sap/bas-sdk');
+jest.unstable_mockModule('@sap/bas-sdk', () => ({
+    ...realBasSdk
+}));
 
 const mockIsAppStudio = jest.fn();
 const mockGetAppStudioProxyURL = jest.fn();
 const mockListDestinations = jest.fn();
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio,
     getAppStudioProxyURL: mockGetAppStudioProxyURL,
     listDestinations: mockListDestinations

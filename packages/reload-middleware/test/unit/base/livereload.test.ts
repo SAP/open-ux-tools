@@ -16,7 +16,9 @@ jest.unstable_mockModule('connect-livereload', () => ({
     default: mockConnectLivereload
 }));
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio,
     exposePort: mockExposePort
 }));

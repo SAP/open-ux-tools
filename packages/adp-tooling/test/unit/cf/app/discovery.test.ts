@@ -11,7 +11,9 @@ jest.unstable_mockModule('mem-fs-editor', () => ({
     create: mockCreate
 }));
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 

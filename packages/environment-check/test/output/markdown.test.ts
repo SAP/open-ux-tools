@@ -3,7 +3,9 @@ import type { EnvironmentCheckResult } from '../../src';
 import { Check, Severity, UrlServiceType } from '../../src/types';
 
 const mockIsAppStudio = jest.fn();
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 

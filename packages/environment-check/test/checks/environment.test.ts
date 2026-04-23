@@ -14,9 +14,10 @@ jest.unstable_mockModule('axios', () => ({
 }));
 
 const mockIsAppStudio = jest.fn();
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    isAppStudio: mockIsAppStudio,
-    getAppStudioProxyURL: jest.fn()
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
 const mockCheckBASDestinations = jest.fn();

@@ -4,16 +4,13 @@ import type { Options } from 'http-proxy-middleware';
 
 const mockGenerateProxyMiddlewareOptions = jest.fn<any>();
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn().mockReturnValue(false),
-    BAS_DEST_INSTANCE_CRED_HEADER: 'bas-destination-instance-cred',
-    getDestinationUrlForAppStudio: jest.fn(),
-    getCredentialsForDestinationService: jest.fn(),
-    isFullUrlDestination: jest.fn(),
-    listDestinations: jest.fn()
+    ...realBtpUtils
 }));
-
+const realStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
     AuthenticationType: {
         Basic: 'basic',
         ReentranceTicket: 'reentranceTicket',

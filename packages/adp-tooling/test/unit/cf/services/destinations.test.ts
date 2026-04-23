@@ -6,7 +6,10 @@ const mockGetOrCreateServiceInstanceKeys = jest.fn();
 const mockListBtpDestinations = jest.fn();
 const mockGetYamlContent = jest.fn();
 
-jest.unstable_mockModule('@sap-ux/btp-utils', () => ({}));
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils
+}));
 
 jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
     getOrCreateServiceInstanceKeys: mockGetOrCreateServiceInstanceKeys

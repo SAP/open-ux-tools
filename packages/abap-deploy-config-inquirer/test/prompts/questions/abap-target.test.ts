@@ -11,37 +11,11 @@ const mockIsOnPremiseDestination = jest.fn();
 const mockIsAppStudio = jest.fn();
 const mockGetAbapSystems = jest.fn();
 
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio,
-    isOnPremiseDestination: mockIsOnPremiseDestination,
-    listDestinations: jest.fn(),
-    isAbapEnvironmentOnBtp: jest.fn().mockReturnValue(false),
-    isS4HC: jest.fn(),
-    getDisplayName: jest.fn().mockImplementation((dest: any) => dest?.Name),
-    isAbapSystem: jest.fn(),
-    isAbapODataDestination: jest.fn(),
-    isFullUrlDestination: jest.fn(),
-    isPartialUrlDestination: jest.fn(),
-    isGenericODataDestination: jest.fn(),
-    isHTML5DynamicConfigured: jest.fn(),
-    getDestinationUrlForAppStudio: jest.fn(),
-    getAppStudioProxyURL: jest.fn(),
-    getAppStudioBaseURL: jest.fn(),
-    getCredentialsForDestinationService: jest.fn(),
-    exposePort: jest.fn(),
-    generateABAPCloudDestinationName: jest.fn(),
-    createOAuth2UserTokenExchangeDest: jest.fn(),
-    BAS_DEST_INSTANCE_CRED_HEADER: 'bas-destination-instance-cred',
-    DestinationType: {},
-    Authentication: {},
-    Suffix: {},
-    ProxyType: {},
-    WebIDEUsage: {},
-    WebIDEAdditionalData: {},
-    AbapEnvType: {},
-    DestinationProxyType: {},
-    OAuthUrlType: {},
-    ENV: {}
+    isOnPremiseDestination: mockIsOnPremiseDestination
 }));
 
 jest.unstable_mockModule('../../../src/utils', () => ({

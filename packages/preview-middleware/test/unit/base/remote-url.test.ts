@@ -10,7 +10,9 @@ const mockGetDevspaceInfo = jest.fn<() => Promise<{ url: string }>>();
 const mockGetAppExternalUri = jest.fn<() => string>();
 
 // Mock modules
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 

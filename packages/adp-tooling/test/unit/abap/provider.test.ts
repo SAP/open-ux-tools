@@ -4,36 +4,10 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
 const mockIsAppStudio = jest.fn();
+const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    isAppStudio: mockIsAppStudio,
-    listDestinations: jest.fn(),
-    getAppStudioProxyURL: jest.fn(),
-    getAppStudioBaseURL: jest.fn(),
-    getCredentialsForDestinationService: jest.fn(),
-    getDestinationUrlForAppStudio: jest.fn(),
-    exposePort: jest.fn(),
-    generateABAPCloudDestinationName: jest.fn(),
-    createOAuth2UserTokenExchangeDest: jest.fn(),
-    BAS_DEST_INSTANCE_CRED_HEADER: 'bas-destination-instance-cred',
-    isAbapSystem: jest.fn(),
-    isAbapEnvironmentOnBtp: jest.fn(),
-    isGenericODataDestination: jest.fn(),
-    isPartialUrlDestination: jest.fn(),
-    isFullUrlDestination: jest.fn(),
-    isOnPremiseDestination: jest.fn(),
-    isHTML5DynamicConfigured: jest.fn(),
-    getDisplayName: jest.fn(),
-    isS4HC: jest.fn(),
-    isAbapODataDestination: jest.fn(),
-    AbapEnvType: {},
-    DestinationType: {},
-    OAuthUrlType: {},
-    Authentication: {},
-    Suffix: {},
-    ProxyType: {},
-    WebIDEUsage: {},
-    WebIDEAdditionalData: {},
-    DestinationProxyType: {}
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
 const mockCreateAbapServiceProvider = jest.fn();
