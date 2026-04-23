@@ -20,10 +20,9 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "c8 --reporter=text --reporter=lcov --merge-async --exclude='test/**' --exclude='**/*.test.ts'  --include='src/**/*.ts' cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=2"
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=50%"
     },
     "devDependencies": {
-        "c8": "^11.0.0",
         "cross-env": "10.1.0",
         "eslint": "9.39.1",
         "@typescript-eslint/rule-tester": "8.57.2",
