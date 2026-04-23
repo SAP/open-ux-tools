@@ -22,7 +22,7 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build-esbuild-base": "esbuild --bundle --platform=node --format=esm --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings  --external:@sap-ux/store --main-fields=module,main --banner:js=\"import{createRequire}from'node:module';import{fileURLToPath}from'node:url';import{dirname}from'node:path';const require=createRequire(import.meta.url);const __filename=fileURLToPath(import.meta.url);const __dirname=dirname(__filename);\" src/index.ts",
+        "build-esbuild-base": "esbuild --bundle --platform=node --format=esm --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings --external:@sap-ux/store --external:@sap-ux/odata-annotation-core-types --external:@sap-ux/odata-annotation-core --external:@sap-ux/text-document-utils --main-fields=module,main --banner:js=\"import{createRequire}from'node:module';import{fileURLToPath}from'node:url';import{dirname}from'node:path';const require=createRequire(import.meta.url);const __filename=fileURLToPath(import.meta.url);const __dirname=dirname(__filename);\" src/index.ts",
         "build-dev": "pnpm run build-esbuild-base --sourcemap=inline",
         "build-compile": "tsc --noEmit",
         "build-bundle": "pnpm run build-esbuild-base --minify && pnpm run copy-icons",
