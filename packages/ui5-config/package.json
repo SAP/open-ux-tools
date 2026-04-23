@@ -46,6 +46,6 @@
         "@types/js-yaml": "4.0.9"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

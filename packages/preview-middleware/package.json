@@ -82,6 +82,6 @@
         "express": "4"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

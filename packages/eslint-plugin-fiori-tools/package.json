@@ -62,7 +62,7 @@
         "typescript-eslint": "^8.57.2"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "license": "Apache-2.0",
     "files": [

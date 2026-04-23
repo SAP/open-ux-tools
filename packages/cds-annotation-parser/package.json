@@ -36,7 +36,7 @@
         "npm-run-all2": "8.0.4"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "files": [
         "dist/"

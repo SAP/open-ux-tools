@@ -27,7 +27,7 @@
         "dist"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "dependencies": {
         "@sap-ux/axios-extension": "workspace:*",

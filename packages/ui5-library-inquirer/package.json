@@ -46,6 +46,6 @@
         "@types/inquirer": "8.2.6"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }
