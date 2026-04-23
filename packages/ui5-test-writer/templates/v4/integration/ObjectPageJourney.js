@@ -81,8 +81,8 @@ sap.ui.define([
             Then.onThe<%- name%>.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>" });
 <% }) -%>
 <% } -%>
-<% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0) { -%>
-            Then.onThe<%- name%>.onTable({ property: "<%- subSection.navigationProperty || subSection.id %>" }).iCheckColumns(<%- JSON.stringify(subSection.tableColumns) %>);
+<% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
+            Then.onThe<%- name%>.onTable({ property: "<%- subSection.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(subSection.tableColumns) %>);
 <% } -%>
 <% }) -%>
 <% } else { -%>
@@ -91,7 +91,7 @@ sap.ui.define([
             Then.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>" });
 <% }) -%>
 <% } -%>
-<% if (section.tableColumns && Object.keys(section.tableColumns).length > 0) { -%>
+<% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>
             Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(section.tableColumns) %>);
 <% } -%>
 <% } -%>
