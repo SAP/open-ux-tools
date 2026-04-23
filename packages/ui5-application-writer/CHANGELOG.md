@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.8.6
+
+### Patch Changes
+
+- 03d3ea1: fix(deps): Update dependency @ui5/manifest to v1.85.0
+
 ## 1.8.5
 
 ### Patch Changes

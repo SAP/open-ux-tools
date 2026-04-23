@@ -1,5 +1,18 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.3.24
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/abap-deploy-config-writer@0.3.12
+    - @sap-ux/adp-tooling@0.18.121
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.101
+    - @sap-ux/abap-deploy-config-inquirer@1.8.15
+    - @sap-ux/deploy-config-generator-shared@0.1.120
+
 ## 0.3.23
 
 ### Patch Changes

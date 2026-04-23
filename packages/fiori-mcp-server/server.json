@@ -7,13 +7,13 @@
         "source": "github",
         "subfolder": "packages/fiori-mcp-server"
     },
-    "version": "0.6.50",
+    "version": "0.6.51",
     "packages": [
         {
             "registryType": "npm",
             "registryBaseUrl": "https://registry.npmjs.org",
             "identifier": "@sap-ux/fiori-mcp-server",
-            "version": "0.6.50",
+            "version": "0.6.51",
             "transport": {
                 "type": "stdio"
             },
