@@ -9,6 +9,9 @@ import {
 import * as manifestJson from '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice/manifest.json';
 import type { LibraryXml, Manifest, ReuseLib } from '../../src';
 import * as fileUtils from '../../src/file';
+import { create as createStorage } from 'mem-fs';
+import { create as createEditor } from 'mem-fs-editor';
+import { promises as fs } from 'node:fs';
 
 describe('library utils', () => {
     test('should return library choices', async () => {
@@ -274,18 +277,153 @@ describe('validateId', () => {
         });
     });
 
-    describe('asynchronous overload (no files)', () => {
-        test('should return Promise when no options provided', async () => {
-            const result = validateId('anyId');
-            // Assert it's a Promise
-            expect(result).toBeInstanceOf(Promise);
-            expect(await result).toBe(true);
+    describe('asynchronous overload (with appPath)', () => {
+        const tmpDir = join(__dirname, '../test-data/validateId-test');
+
+        beforeAll(async () => {
+            // Create temporary test directory structure
+            await fs.mkdir(tmpDir, { recursive: true });
+            await fs.mkdir(join(tmpDir, 'webapp'), { recursive: true });
+            await fs.mkdir(join(tmpDir, 'webapp', 'view'), { recursive: true });
+            await fs.mkdir(join(tmpDir, 'webapp', 'fragment'), { recursive: true });
+            await fs.mkdir(join(tmpDir, 'annotations'), { recursive: true });
+            await fs.mkdir(join(tmpDir, 'node_modules'), { recursive: true });
+
+            // Create test view files
+            await fs.writeFile(
+                join(tmpDir, 'webapp', 'view', 'Main.view.xml'),
+                `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+    <Page id="mainPage">
+        <Button id="mainButton" text="Main" />
+    </Page>
+</mvc:View>`
+            );
+
+            await fs.writeFile(
+                join(tmpDir, 'webapp', 'view', 'Detail.view.xml'),
+                `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+    <Page id="detailPage">
+        <Input id="detailInput" />
+    </Page>
+</mvc:View>`
+            );
+
+            // Create test fragment files
+            await fs.writeFile(
+                join(tmpDir, 'webapp', 'fragment', 'Dialog.fragment.xml'),
+                `<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <Dialog id="testDialog">
+        <Button id="dialogButton" text="OK" />
+    </Dialog>
+</core:FragmentDefinition>`
+            );
+
+            // Create files that should be ignored (in excluded directories)
+            await fs.writeFile(
+                join(tmpDir, 'annotations', 'annotation.xml'),
+                `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices/></edmx:Edmx>`
+            );
+
+            await fs.writeFile(
+                join(tmpDir, 'node_modules', 'test.view.xml'),
+                `<mvc:View xmlns:mvc="sap.ui.core.mvc"><Button id="shouldBeIgnored" /></mvc:View>`
+            );
         });
 
-        test('should return Promise when only validatedIds provided', async () => {
-            const result = validateId('anyId', ['otherId']);
-            expect(result).toBeInstanceOf(Promise);
-            expect(await result).toBe(true);
+        afterAll(async () => {
+            // Clean up test directory
+            await fs.rm(tmpDir, { recursive: true, force: true });
+        });
+
+        test('should return Promise that resolves to true for unique id', async () => {
+            const result = await validateId('uniqueButton', undefined, { appPath: tmpDir });
+            expect(result).toBe(true);
+        });
+
+        test('should return Promise that resolves to false when id exists in view', async () => {
+            const result = await validateId('mainButton', undefined, { appPath: tmpDir });
+            expect(result).toBe(false);
+        });
+
+        test('should return Promise that resolves to false when id exists in fragment', async () => {
+            const result = await validateId('testDialog', undefined, { appPath: tmpDir });
+            expect(result).toBe(false);
+        });
+
+        test('should find ids across multiple view files', async () => {
+            expect(await validateId('mainPage', undefined, { appPath: tmpDir })).toBe(false);
+            expect(await validateId('detailPage', undefined, { appPath: tmpDir })).toBe(false);
+            expect(await validateId('detailInput', undefined, { appPath: tmpDir })).toBe(false);
+        });
+
+        test('should return false when id is in validatedIds array', async () => {
+            const result = await validateId('newButton', ['newButton', 'anotherButton'], { appPath: tmpDir });
+            expect(result).toBe(false);
+        });
+
+        test('should ignore files in excluded directories', async () => {
+            const result = await validateId('shouldBeIgnored', undefined, { appPath: tmpDir });
+            expect(result).toBe(true);
+        });
+
+        test('should throw error for non-existent directory', async () => {
+            const nonExistentPath = join(__dirname, '../test-data/non-existent-dir');
+            const result = validateId('anyId', undefined, { appPath: nonExistentPath });
+            await expect(result).rejects.toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        code: 'ENOENT'
+                    })
+                ])
+            );
+        });
+
+        test('should work with custom memFs instance', async () => {
+            const store = createStorage();
+            const customMemFs = createEditor(store);
+
+            const customDir = join(tmpDir, 'custom-memfs');
+            await fs.mkdir(join(customDir, 'webapp', 'view'), { recursive: true });
+
+            const viewPath = join(customDir, 'webapp', 'view', 'Custom.view.xml');
+            await fs.writeFile(
+                viewPath,
+                `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+    <Button id="customButton" />
+</mvc:View>`
+            );
+
+            const result = await validateId('customButton', undefined, { appPath: customDir, memFs: customMemFs });
+            expect(result).toBe(false);
+        });
+
+        test('should return true for empty project directory', async () => {
+            const emptyDir = join(tmpDir, 'empty-project');
+            await fs.mkdir(emptyDir, { recursive: true });
+
+            const result = await validateId('anyId', undefined, { appPath: emptyDir });
+            expect(result).toBe(true);
+        });
+
+        test('should handle special characters in file paths', async () => {
+            const specialDir = join(tmpDir, 'special-chars');
+            await fs.mkdir(join(specialDir, 'webapp', 'view'), { recursive: true });
+
+            await fs.writeFile(
+                join(specialDir, 'webapp', 'view', 'Test-View.view.xml'),
+                `<mvc:View xmlns:mvc="sap.ui.core.mvc">
+    <Button id="button-with-special-chars" />
+</mvc:View>`
+            );
+
+            const result = await validateId('button-with-special-chars', undefined, { appPath: specialDir });
+            expect(result).toBe(false);
+        });
+
+        test('should validate across both views and fragments simultaneously', async () => {
+            expect(await validateId('mainButton', undefined, { appPath: tmpDir })).toBe(false);
+            expect(await validateId('dialogButton', undefined, { appPath: tmpDir })).toBe(false);
+            expect(await validateId('nonExistentId', undefined, { appPath: tmpDir })).toBe(true);
         });
     });
 });

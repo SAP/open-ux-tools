@@ -312,6 +312,81 @@ export function getManifestDependencies(manifest: Manifest): string[] {
 }
 
 /**
+ * Recursively searches for an element with the specified id attribute in a parsed XML object.
+ *
+ * @param obj - parsed XML object to search in
+ * @param id - id attribute value to search for
+ * @param attrPrefix - attribute prefix used by the parser (default: '@_')
+ * @returns true if an element with the specified id is found
+ */
+function hasElementWithId(obj: unknown, id: string, attrPrefix: string = '@_'): boolean {
+    if (!obj || typeof obj !== 'object') {
+        return false;
+    }
+
+    const objRecord = obj as Record<string, unknown>;
+
+    // Check if current object has the id attribute
+    if (objRecord[`${attrPrefix}id`] === id) {
+        return true;
+    }
+
+    // Recursively search in all properties
+    for (const key in objRecord) {
+        if (key.startsWith(attrPrefix)) {
+            continue; // Skip attributes
+        }
+
+        if (checkIdInValue(objRecord[key], id, attrPrefix)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Checks if a value (object or array) contains an element with the specified id.
+ *
+ * @param value - value to check (can be array or object)
+ * @param id - id to search for
+ * @param attrPrefix - attribute prefix used by the parser
+ * @returns true if id is found in the value
+ */
+function checkIdInValue(value: unknown, id: string, attrPrefix: string): boolean {
+    if (Array.isArray(value)) {
+        return value.some((item) => hasElementWithId(item, id, attrPrefix));
+    }
+    if (typeof value === 'object' && value !== null) {
+        return hasElementWithId(value, id, attrPrefix);
+    }
+    return false;
+}
+
+/**
+ * Checks if an element with the specified id is available (does not exist) in the XML content.
+ *
+ * @param id - id to check for availability
+ * @param xmlContent - XML content as string
+ * @returns true if the id is available (not found), false if it exists
+ */
+function checkElementIdAvailable(id: string, xmlContent: string): boolean {
+    const parser = new XMLParser({
+        ignoreAttributes: false,
+        attributeNamePrefix: '@_',
+        parseAttributeValue: false
+    });
+
+    try {
+        const xmlDocument: unknown = parser.parse(xmlContent);
+        return xmlDocument ? !hasElementWithId(xmlDocument, id) : true;
+    } catch {
+        // Parse error = no valid document = no element with id
+        return true;
+    }
+}
+
+/**
  * Validates if an id is unique across XML files (fragments and views) in the project.
  * Synchronous overload - when files are provided directly.
  *
@@ -347,99 +422,13 @@ export function validateId(
     options: { files?: never; appPath: string; memFs?: Editor }
 ): Promise<boolean>;
 
-/**
- * Validates if an id is unique across XML files (fragments and views) in the project.
- * Asynchronous overload - when no options are provided.
- *
- * @param baseId - id to validate
- * @param validatedIds - array of ids that are already validated/used
- * @param options - undefined (no validation options)
- * @returns Promise that resolves to true (always valid when no files to check)
- */
-export function validateId(baseId: string, validatedIds?: string[], options?: undefined): Promise<boolean>;
-
 // Implementation
 export function validateId(
     baseId: string,
-    validatedIds?: string[],
-    options?: { files?: string[]; appPath?: string; memFs?: Editor }
+    validatedIds: string[] | undefined,
+    options: { files?: string[]; appPath?: string; memFs?: Editor }
 ): boolean | Promise<boolean> {
-    const { memFs, appPath, files: fileContents } = options ?? {};
-
-    /**
-     * Checks if an element with the specified id is available (does not exist) in the XML content.
-     *
-     * @param id - id to check for availability
-     * @param xmlContent - XML content as string
-     * @returns true if the id is available (not found), false if it exists
-     */
-    function checkElementIdAvailable(id: string, xmlContent: string): boolean {
-        const parser = new XMLParser({
-            ignoreAttributes: false,
-            attributeNamePrefix: '@_',
-            parseAttributeValue: false
-        });
-
-        try {
-            const xmlDocument: unknown = parser.parse(xmlContent);
-            return xmlDocument ? !hasElementWithId(xmlDocument, id) : true;
-        } catch {
-            // Parse error = no valid document = no element with id
-            return true;
-        }
-    }
-
-    /**
-     * Checks if a value (object or array) contains an element with the specified id.
-     *
-     * @param value - value to check (can be array or object)
-     * @param id - id to search for
-     * @param attrPrefix - attribute prefix used by the parser
-     * @returns true if id is found in the value
-     */
-    function checkIdInValue(value: unknown, id: string, attrPrefix: string): boolean {
-        if (Array.isArray(value)) {
-            return value.some((item) => hasElementWithId(item, id, attrPrefix));
-        }
-        if (typeof value === 'object' && value !== null) {
-            return hasElementWithId(value, id, attrPrefix);
-        }
-        return false;
-    }
-
-    /**
-     * Recursively searches for an element with the specified id attribute in a parsed XML object.
-     *
-     * @param obj - parsed XML object to search in
-     * @param id - id attribute value to search for
-     * @param attrPrefix - attribute prefix used by the parser (default: '@_')
-     * @returns true if an element with the specified id is found
-     */
-    function hasElementWithId(obj: unknown, id: string, attrPrefix: string = '@_'): boolean {
-        if (!obj || typeof obj !== 'object') {
-            return false;
-        }
-
-        const objRecord = obj as Record<string, unknown>;
-
-        // Check if current object has the id attribute
-        if (objRecord[`${attrPrefix}id`] === id) {
-            return true;
-        }
-
-        // Recursively search in all properties
-        for (const key in objRecord) {
-            if (key.startsWith(attrPrefix)) {
-                continue; // Skip attributes
-            }
-
-            if (checkIdInValue(objRecord[key], id, attrPrefix)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    const { memFs, appPath, files: fileContents } = options;
 
     /**
      * Validates the ID against the provided files.
@@ -448,10 +437,13 @@ export function validateId(
      * @returns true if the id is unique (available), false if it already exists
      */
     function validateAgainstFiles(files: string[]): boolean {
-        return (
-            files.every((content) => content === '' || checkElementIdAvailable(baseId, content)) &&
-            !validatedIds?.includes(baseId)
-        );
+        // Check validatedIds first - fast O(n) check avoids expensive XML parsing
+        if (validatedIds?.includes(baseId)) {
+            return false;
+        }
+
+        // Only parse XML files if validatedIds check passed
+        return files.every((content) => content === '' || checkElementIdAvailable(baseId, content));
     }
 
     // Synchronous path: when files are provided directly
@@ -459,31 +451,28 @@ export function validateId(
         return validateAgainstFiles(fileContents);
     }
 
-    // Asynchronous path: when appPath is provided or no options
+    // Asynchronous path: when appPath is provided
+    if (!appPath) {
+        throw new Error('validateId requires either files or appPath to be provided in options');
+    }
+
     return (async (): Promise<boolean> => {
-        let files: string[] | undefined;
-        if (appPath) {
-            // Ensure we have a memFs instance
-            const fsEditor = memFs ?? create(createStorage());
+        // Ensure we have a memFs instance
+        const fsEditor = memFs ?? create(createStorage());
 
-            const xmlFilePaths = await findFilesByExtension(
-                '.xml',
-                appPath,
-                ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
-                fsEditor
-            );
-            const lookupFiles = ['.fragment.xml', '.view.xml'];
-            const filteredPaths = xmlFilePaths.filter((fileName: string) =>
-                lookupFiles.some((lookupFile) => fileName.endsWith(lookupFile))
-            );
+        const xmlFilePaths = await findFilesByExtension(
+            '.xml',
+            appPath,
+            ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
+            fsEditor
+        );
+        const lookupFiles = ['.fragment.xml', '.view.xml'];
+        const filteredPaths = xmlFilePaths.filter((fileName: string) =>
+            lookupFiles.some((lookupFile) => fileName.endsWith(lookupFile))
+        );
 
-            // Read file contents from paths using memFs
-            files = filteredPaths.map((path: string) => fsEditor.read(path));
-        }
-
-        if (files) {
-            return validateAgainstFiles(files);
-        }
-        return true;
+        // Read file contents from paths using memFs
+        const files = filteredPaths.map((path: string) => fsEditor.read(path));
+        return validateAgainstFiles(files);
     })();
 }

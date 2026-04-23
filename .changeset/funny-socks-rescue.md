@@ -1,5 +1,5 @@
 ---
-'@sap-ux/project-access': patch
+'@sap-ux/project-access': minor
 '@sap-ux/fe-fpm-writer': patch
 ---
 
