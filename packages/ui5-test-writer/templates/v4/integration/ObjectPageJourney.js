@@ -76,7 +76,24 @@ sap.ui.define([
 <% section.subSections.forEach(function(subSection) { -%>
             //When.onThe<%- name%>.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
             Then.onThe<%- name%>.iCheckSubSection({ section: "<%- subSection.id %>" });
+<% if (subSection.fields && subSection.fields.length > 0) { -%>
+<% subSection.fields.forEach(function(field) { -%>
+            Then.onThe<%- name%>.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>" });
 <% }) -%>
+<% } -%>
+<% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0) { -%>
+            Then.onThe<%- name%>.onTable({ property: "<%- subSection.navigationProperty || subSection.id %>" }).iCheckColumns(<%- JSON.stringify(subSection.tableColumns) %>);
+<% } -%>
+<% }) -%>
+<% } else { -%>
+<% if (section.fields && section.fields.length > 0) { -%>
+<% section.fields.forEach(function(field) { -%>
+            Then.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>" });
+<% }) -%>
+<% } -%>
+<% if (section.tableColumns && Object.keys(section.tableColumns).length > 0) { -%>
+            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(section.tableColumns) %>);
+<% } -%>
 <% } -%>
 <% }) -%>
        });

@@ -2,6 +2,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
 import type {
     FormField,
+    SectionFormField,
     BodySectionFeatureData,
     BodySubSectionFeatureData,
     HeaderSectionFeatureData,
@@ -17,6 +18,7 @@ import {
     type SectionItem,
     getAggregations
 } from './modelUtils';
+import { extractTableColumnsFromNode } from './tableUtils';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
 
 /**
@@ -158,9 +160,12 @@ function extractObjectPageBodySectionsData(objectPage: PageWithModelV4): BodySec
             const subSections = extractBodySubSectionsData(section, sectionId);
             bodySections.push({
                 id: sectionId,
+                navigationProperty: getNavigationPropertyFromKey(sectionKey),
                 isTable: !!section.isTable,
                 custom: !!section.custom,
                 order: section?.order ?? -1, // put a negative order number to signal that order was not in spec
+                fields: section.custom ? [] : extractFormFields(section),
+                tableColumns: section.custom ? {} : extractTableColumnsFromNode(section),
                 subSections
             });
         });
@@ -184,12 +189,51 @@ function extractBodySubSectionsData(section: SectionItem, parentSectionId: strin
         const subSectionId = getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`;
         subSections.push({
             id: subSectionId,
+            navigationProperty: getNavigationPropertyFromKey(subSectionKey),
             isTable: !!subSection.isTable,
             custom: !!subSection.custom,
-            order: subSection?.order ?? -1 // put a negative order number to signal that order was not in spec
+            order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
+            fields: subSection.custom ? [] : extractFormFields(subSection),
+            tableColumns: subSection.custom ? {} : extractTableColumnsFromNode(subSection)
         });
     });
     return subSections;
+}
+
+/**
+ * Extracts form field property paths from a body sub-section's form aggregation.
+ *
+ * @param subSection - body sub-section entry from the application model
+ * @returns array of form field property paths for use with iCheckField({ property })
+ */
+function extractFormFields(subSection: BodySectionItem): SectionFormField[] {
+    const fields: SectionFormField[] = [];
+    const formAggregation = getAggregations(subSection)['form'] as AggregationItem;
+    if (!formAggregation) {
+        return fields;
+    }
+    const fieldsAggregation = getAggregations(formAggregation)['fields'] as AggregationItem;
+    const fieldItems = getAggregations(fieldsAggregation) as Record<string, FieldItem>;
+    Object.values(fieldItems).forEach((field) => {
+        const property = field.schema?.keys?.find((key) => key.name === 'Value')?.value;
+        if (property) {
+            fields.push({ property });
+        }
+    });
+    return fields;
+}
+
+/**
+ * Extracts the OData navigation property from a spec model section key.
+ * Section keys for table sections follow the pattern `_NavProperty::@annotation`, so the
+ * navigation property is the part before `::` when it starts with an underscore.
+ *
+ * @param sectionKey - the key of the section in the spec model aggregations
+ * @returns navigation property (e.g. '_Booking'), or undefined for non-navigation sections
+ */
+function getNavigationPropertyFromKey(sectionKey: string): string | undefined {
+    const prefix = sectionKey.split('::')[0];
+    return prefix.startsWith('_') ? prefix : undefined;
 }
 
 /**

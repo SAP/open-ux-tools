@@ -88,18 +88,28 @@ export type ObjectPageNavigationParents = {
     parentOPTableSection?: string;
 };
 
+export type SectionFormField = {
+    property: string;
+};
+
 export type BodySubSectionFeatureData = {
     id: string;
+    navigationProperty?: string;
     isTable: boolean;
     custom: boolean;
     order: number;
+    fields: SectionFormField[];
+    tableColumns: Record<string, Record<string, string | number | boolean>>;
 };
 
 export type BodySectionFeatureData = {
     id: string;
+    navigationProperty?: string;
     isTable: boolean;
     custom: boolean;
     order: number;
+    fields: SectionFormField[];
+    tableColumns: Record<string, Record<string, string | number | boolean>>;
     subSections: BodySubSectionFeatureData[];
 };
 
