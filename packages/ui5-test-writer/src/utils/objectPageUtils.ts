@@ -164,8 +164,8 @@ function extractObjectPageBodySectionsData(objectPage: PageWithModelV4): BodySec
                 isTable: !!section.isTable,
                 custom: !!section.custom,
                 order: section?.order ?? -1, // put a negative order number to signal that order was not in spec
-                fields: section.custom ? [] : extractFormFields(section),
-                tableColumns: section.custom ? {} : extractTableColumnsFromNode(section),
+                fields: section.custom || section.isTable ? [] : extractFormFields(section),
+                tableColumns: section.custom || !section.isTable ? {} : extractTableColumnsFromNode(section),
                 subSections
             });
         });
@@ -193,8 +193,8 @@ function extractBodySubSectionsData(section: SectionItem, parentSectionId: strin
             isTable: !!subSection.isTable,
             custom: !!subSection.custom,
             order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
-            fields: subSection.custom ? [] : extractFormFields(subSection),
-            tableColumns: subSection.custom ? {} : extractTableColumnsFromNode(subSection)
+            fields: subSection.custom || subSection.isTable ? [] : extractFormFields(subSection),
+            tableColumns: subSection.custom || !subSection.isTable ? {} : extractTableColumnsFromNode(subSection)
         });
     });
     return subSections;

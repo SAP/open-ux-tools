@@ -435,9 +435,7 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain(
                 'onForm({ section: "BookingData" }).iCheckField({ property: "FlightDate" })'
             );
-            expect(bookingObjPageJourneyContent).toContain(
-                'onTable({ property: "AdministrativeData" }).iCheckColumns('
-            );
+            expect(bookingObjPageJourneyContent).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
             expect(bookingObjPageJourneyContent).toContain('"ConnectionId":{"header":"Connection"}');
             expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
         });

@@ -57,6 +57,9 @@ export function extractTableColumnsFromNode(
         return {};
     }
     const columnsAggregation = getAggregations(tableAggregation)['columns'];
+    if (!columnsAggregation) {
+        return {};
+    }
     const columnItems = getAggregations(columnsAggregation);
     return transformTableColumns(columnItems as unknown as Record<string, ColumnSpec>);
 }
