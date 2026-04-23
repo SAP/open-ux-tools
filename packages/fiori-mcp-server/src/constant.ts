@@ -1,4 +1,5 @@
 export const LATEST_UI5_VERSION = '1.136.7';
+export const LIST_SYSTEMS_ID = 'list-systems';
 export const GENERATE_FIORI_UI_APPLICATION_CAP_ID = 'generate-fiori-ui-application-cap';
 export const ADD_PAGE = 'add-page';
 export const DELETE_PAGE = 'delete-page';

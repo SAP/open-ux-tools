@@ -2547,6 +2547,9 @@ importers:
       '@sap-ai-sdk/langchain':
         specifier: 2.9.0
         version: 2.9.0(@langchain/core@1.1.36(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/annotation-converter':
         specifier: 0.10.21
         version: 0.10.21

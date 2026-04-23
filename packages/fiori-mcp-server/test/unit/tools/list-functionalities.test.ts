@@ -70,7 +70,8 @@ describe('listFunctionalities', () => {
             'delete-page',
             'create-controller-extension',
             'generate-fiori-ui-application',
-            'fetch-service-metadata'
+            'fetch-service-metadata',
+            'list-systems'
         ]);
     });
 
@@ -97,7 +98,8 @@ describe('listFunctionalities', () => {
             'delete-page',
             'create-controller-extension',
             'generate-fiori-ui-application',
-            'fetch-service-metadata'
+            'fetch-service-metadata',
+            'list-systems'
         ]);
     });
 
@@ -106,7 +108,7 @@ describe('listFunctionalities', () => {
         const result = (await listFunctionalities({
             appPath
         })) as ListFunctionalitiesOutput;
-        expect(result.functionalities.length).toEqual(104);
+        expect(result.functionalities.length).toEqual(105);
         expect(result.functionalities).toMatchSnapshot();
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
@@ -130,7 +132,7 @@ describe('listFunctionalities', () => {
             appPath
         })) as ListFunctionalitiesOutput;
         // Check
-        expect(result.functionalities.length).toEqual(104);
+        expect(result.functionalities.length).toEqual(105);
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationModuleFromCacheSpy).toHaveBeenCalledTimes(1);
