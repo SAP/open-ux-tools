@@ -340,17 +340,19 @@ describe('validateId', () => {
                     // Get all files from memFs that match the criteria
 
                     const allFiles = (currentStore as any).all().map((file: { path: string }) => file.path);
+                    const normalizedRootPath = rootPath.replace(/\\/g, '/');
                     return allFiles.filter((filePath: string) => {
+                        const normalizedFilePath = filePath.replace(/\\/g, '/');
                         // Must be under rootPath
-                        if (!filePath.startsWith(rootPath)) {
+                        if (!normalizedFilePath.startsWith(normalizedRootPath)) {
                             return false;
                         }
                         // Must have the extension
-                        if (!filePath.endsWith(extension)) {
+                        if (!normalizedFilePath.endsWith(extension)) {
                             return false;
                         }
                         // Must not be in excluded folders
-                        const relativePath = filePath.substring(rootPath.length);
+                        const relativePath = normalizedFilePath.substring(normalizedRootPath.length);
                         return !excludeFolders.some((excluded) => relativePath.includes(`/${excluded}/`));
                     });
                 });
