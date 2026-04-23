@@ -4,6 +4,7 @@ const config = { ...baseConfig };
 
 // Map @vscode-logging/logger CJS module to a manual mock for ESM compatibility
 config.moduleNameMapper = {
+    '@sap-devx/yeoman-ui-types': '<rootDir>/node_modules/@sap-devx/yeoman-ui-types/dist/cjs/src/index.js',
     ...config.moduleNameMapper,
     '^@vscode-logging/logger$': '<rootDir>/test/__mocks__/vscode-logging-logger.mjs'
 };

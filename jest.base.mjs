@@ -1,13 +1,15 @@
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 export default {
     extensionsToTreatAsEsm: ['.ts'],
     testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
     testEnvironment: 'node',
-    setupFiles: ['<rootDir>/../../jest.setup.mjs'],
+    setupFiles: [resolve(__dirname, 'jest.setup.mjs')],
     moduleNameMapper: {
-        '^(\\.{1,2}/.*)\\.js$': '$1',
-        // TODO: Replace with proper ESM mock or request upstream to add ESM exports
-        // This deep import path is fragile and may break if the package reorganizes internals
-        '^@sap-devx/yeoman-ui-types$': '<rootDir>/node_modules/@sap-devx/yeoman-ui-types/dist/cjs/src/index.js'
+        '^(\\.{1,2}/.*)\\.js$': '$1'
     },
     moduleDirectories: ['node_modules', '<rootDir>/node_modules'],
     transform: {

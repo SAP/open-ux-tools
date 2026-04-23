@@ -186,8 +186,13 @@ If you encounter issues during migration:
 ## Breaking Change Details
 
 This is marked as a **major version** because:
-- Projects using older TypeScript configurations may need updates
-- CJS-only projects will need to use dynamic imports
-- Build tooling may require configuration changes
 
-Most modern projects with up-to-date tooling should require minimal changes.
+1. **Deep imports are broken**: NodeNext requires explicit `.js` extensions on all relative imports, including internal package imports. If your code uses deep imports like `@sap-ux/package-name/dist/submodule`, you must now use `@sap-ux/package-name/dist/submodule.js`. This affects any consumer doing submodule imports rather than using the main package entry point.
+
+2. **TypeScript configuration changes**: Projects using older TypeScript configurations (`module: "CommonJS"`, etc.) may need updates to `NodeNext` or `Bundler` resolution.
+
+3. **CJS-only projects**: Projects that cannot adopt ESM will need to use dynamic `import()` to load these packages.
+
+4. **Build tooling**: Some bundlers may require configuration changes to properly handle ESM modules.
+
+Most modern projects with up-to-date tooling should require minimal changes if using the main package exports. Deep import users will need to add `.js` extensions.

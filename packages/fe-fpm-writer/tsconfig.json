@@ -9,7 +9,8 @@
     "rootDir": "src",
     "outDir": "dist",
     "module": "ESNext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "isolatedModules": false
   },
   "references": [
     {

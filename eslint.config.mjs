@@ -52,8 +52,8 @@ export default [
             'test/int/test-output',
             'esbuild.js',
             'esbuild.mjs',
-            ' esbuild*.js',
-            ' esbuild*.mjs',
+            'esbuild*.js',
+            'esbuild*.mjs',
             '__mocks__',
             'test/tools-suite-telemetry/fixtures',
             'lint-staged.config.js',
@@ -87,21 +87,20 @@ export default [
             'jsdoc/require-returns-description': 'warn',
             'jsdoc/require-returns-type': 'error',
 
-            'jsdoc/require-jsdoc': [
-                'warn',
-                {
-                    require: {
-                        ClassDeclaration: true,
-                        MethodDefinition: true
-                    },
+            'jsdoc/require-jsdoc': isFixMode
+                ? 'off' // disable in fix mode to avoid generating incorrect JSDoc
+                : [
+                      'warn',
+                      {
+                          require: {
+                              ClassDeclaration: true,
+                              MethodDefinition: true
+                          },
 
-                    exemptEmptyFunctions: true,
-                    contexts: ['TSMethodSignature']
-                }
-            ],
-            ...(isFixMode && { // disable in fix mode to avoid generating incorrect JSDoc
-                'jsdoc/require-jsdoc': 'off'
-            }),
+                          exemptEmptyFunctions: true,
+                          contexts: ['TSMethodSignature']
+                      }
+                  ],
             'jsdoc/valid-types': 'error',
             'jsdoc/check-types': 'error',
             'jsdoc/check-param-names': 'error',
@@ -352,19 +351,7 @@ export default [
             'jsdoc/require-returns-check': 'off',
             'jsdoc/require-returns-description': 'off',
             'jsdoc/require-returns-type': 'off',
-            'jsdoc/require-jsdoc': [
-                'off',
-                {
-                    'require': {
-                        'ClassDeclaration': true,
-                        'MethodDefinition': true
-                    },
-                    'exemptEmptyFunctions': true
-                }
-            ],
-            ...(isFixMode && { // disable in fix mode to avoid generating incorrect JSDoc
-                'jsdoc/require-jsdoc': 'off'
-            }),
+            'jsdoc/require-jsdoc': 'off', // already off, no need for conditional
             'jsdoc/valid-types': 'off',
             'jsdoc/check-types': 'off',
             'jsdoc/check-tag-names': 'off',

@@ -12,6 +12,7 @@ export default {
     ...baseConfig,
     moduleNameMapper: {
         ...baseConfig.moduleNameMapper,
+        '@sap-devx/yeoman-ui-types': '<rootDir>/node_modules/@sap-devx/yeoman-ui-types/dist/cjs/src/index.js',
         // Map workspace packages to their TypeScript source so they go through ts-jest
         // and jest.unstable_mockModule() can intercept them
         [`^@sap-ux/(?!${externalSapUx})([^/]+)$`]: resolve(__dirname, '../$1/src/index.ts'),
