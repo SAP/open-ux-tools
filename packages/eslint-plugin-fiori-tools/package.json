@@ -21,11 +21,10 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "cross-env \"NODE_OPTIONS=--experimental-vm-modules --max-old-space-size=4096\" c8 --reporter=text --merge-async --reporter=lcov --exclude='test/**' --exclude='**/*.test.ts' --include='src/**/*.ts' jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=2"
+        "test": "cross-env \"NODE_OPTIONS=--experimental-vm-modules\" jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=50%"
     },
     "devDependencies": {
         "@jest/globals": "30.3.0",
-        "c8": "^11.0.0",
         "cross-env": "10.1.0",
         "eslint": "9.39.1",
         "@typescript-eslint/rule-tester": "8.57.2",

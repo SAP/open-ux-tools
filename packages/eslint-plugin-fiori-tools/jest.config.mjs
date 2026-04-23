@@ -1,8 +1,8 @@
 import baseConfig from '../../jest.base.mjs';
 export default {
     ...baseConfig,
-    // Coverage is handled by c8 wrapper for worker thread support
-    collectCoverage: false,
+    // coverageProvider: 'v8' overrides jest.base default ('babel'); collectCoverage: true is inherited from jest.base
+    coverageProvider: 'v8',
     setupFiles: ['<rootDir>/test/global-setup.js'],
     moduleNameMapper: {
         ...baseConfig.moduleNameMapper,
@@ -14,4 +14,4 @@ export default {
         // (odata-annotation-core-types, odata-annotation-core, project-access)
         '^@sap/ux-cds-compiler-facade$': '<rootDir>/test/__mocks__/ux-cds-compiler-facade.mjs'
     }
-}
+};
