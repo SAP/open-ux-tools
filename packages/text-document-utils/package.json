@@ -14,13 +14,14 @@
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
-            "default": "./dist/index.js"
+            "import": "./dist/index.js",
+            "require": "./dist-cjs/index.js",
+            "types": "./dist/index.d.ts"
         }
     },
     "scripts": {
-        "build": "tsc --build",
-        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "build": "tsc --build && tsc --build tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist-cjs/package.json",
+        "clean": "rimraf --glob dist dist-cjs coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
@@ -29,9 +30,12 @@
     },
     "files": [
         "dist",
+        "dist-cjs",
         "LICENSE",
         "!dist/*.map",
-        "!dist/**/*.map"
+        "!dist/**/*.map",
+        "!dist-cjs/*.map",
+        "!dist-cjs/**/*.map"
     ],
     "engines": {
         "node": ">=20.x"

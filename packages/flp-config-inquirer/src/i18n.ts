@@ -45,6 +45,6 @@ export function t(key: string, options?: TOptions): string {
 
 try {
     await initI18n();
-} catch {
-    // Ignore - module will work with fallback strings
+} catch (error) {
+    console.error('Failed to initialize i18n:', error);
 }

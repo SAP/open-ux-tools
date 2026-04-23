@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig-esm.json",
+    "compilerOptions": {
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "outDir": "dist-cjs",
+        "rootDir": "src",
+        "lib": ["ES2023", "ESNext.BigInt"]
+    },
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../odata-annotation-core-types"
+        },
+        {
+            "path": "../odata-entity-model"
+        },
+        {
+            "path": "../text-document-utils"
+        }
+    ]
+}

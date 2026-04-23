@@ -195,3 +195,4 @@ CLAUDE.local.md
 # Local Model/Agent Caches
 .anthropic/
 .claude/cache/
+dist-cjs/
