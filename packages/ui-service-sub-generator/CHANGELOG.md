@@ -1,5 +1,16 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.226
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.100
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/ui-service-inquirer@0.2.163
+    - @sap-ux/inquirer-common@0.11.39
+
 ## 0.1.225
 
 ### Patch Changes
