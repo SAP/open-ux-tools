@@ -49,6 +49,9 @@ jest.unstable_mockModule('fs', () => ({
     }
 }));
 
+// Import the mocked fs for test assertions
+const { promises: fsPromises } = await import('node:fs');
+
 // Mock utils
 const mockCheckIfGeneratorInstalled = jest.fn<any>();
 const mockRunCmd = jest.fn<any>();
