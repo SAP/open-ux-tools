@@ -3628,8 +3628,8 @@ importers:
         specifier: 4.0.50
         version: 4.0.50
       '@ui5/manifest':
-        specifier: 1.84.0
-        version: 1.84.0
+        specifier: 1.85.0
+        version: 1.85.0
       eslint-plugin-jsdoc:
         specifier: 62.8.1
         version: 62.8.1(eslint@9.39.1)
@@ -3689,8 +3689,8 @@ importers:
         specifier: 7.7.1
         version: 7.7.1
       '@ui5/manifest':
-        specifier: 1.84.0
-        version: 1.84.0
+        specifier: 1.85.0
+        version: 1.85.0
       vscode-uri:
         specifier: 3.1.0
         version: 3.1.0
@@ -4653,8 +4653,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.84.0
-        version: 1.84.0
+        specifier: 1.85.0
+        version: 1.85.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -10040,8 +10040,8 @@ packages:
     resolution: {integrity: sha512-uscDCQyHFeenh4r2RbYuffTMn6IQdcNC1tXrQ4BF+apAFjmDGP11IHdAwVCKwxgyPrIC17HT2gub3ZugGM8kpQ==}
     engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
 
-  '@ui5/manifest@1.84.0':
-    resolution: {integrity: sha512-FCynh7DTjw69y2eM9+tTxJ8HmbhRUrgX8ysnMdemtB28NSJ4/PiDvtzfEvPEZFwgTLQN1/siAFNnqqLkasgefw==}
+  '@ui5/manifest@1.85.0':
+    resolution: {integrity: sha512-ememf3Jw/ZMjDmjj7j7hoTqNeazZJbC9ud20HNX8dfAoWjyItegwxIN8QrozJjiDQzTByibWdDQC4Gej/TkmXA==}
 
   '@ui5/project@4.0.15':
     resolution: {integrity: sha512-Fo1g1t15NCLb9xKxVVJ4jD7BTGimk2CoE+4nMTg0NEA9DGv0UUWkfVygnNnmur1NJg4HV4sqK/mKO1yszFpCAQ==}
@@ -25405,7 +25405,7 @@ snapshots:
       cli-progress: 3.12.0
       figures: 6.1.0
 
-  '@ui5/manifest@1.84.0': {}
+  '@ui5/manifest@1.85.0': {}
 
   '@ui5/project@4.0.15(@ui5/builder@4.1.4)':
     dependencies:
