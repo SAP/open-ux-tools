@@ -8,7 +8,7 @@ type ColumnModelItem = {
     schema: { keys: { name: string; value: string }[] };
 };
 
-type ColumnAggregations = TreeAggregations & {
+export type ColumnAggregations = TreeAggregations & {
     [key: string]: ColumnModelItem;
 };
 

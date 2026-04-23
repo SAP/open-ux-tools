@@ -1,4 +1,5 @@
 import { getColumnIdentifier, transformTableColumns, extractTableColumnsFromNode } from '../../../src/utils/tableUtils';
+import type { ColumnAggregations } from '../../../src/utils/tableUtils';
 import type { TreeAggregation } from '@sap/ux-specification/dist/types/src/parser';
 
 describe('getColumnIdentifier()', () => {
@@ -35,12 +36,16 @@ describe('getColumnIdentifier()', () => {
 
 describe('transformTableColumns()', () => {
     test('maps standard columns using Value key with header from description', () => {
-        const columnAggregations = {
+        const columnAggregations: ColumnAggregations = {
             'ProductID::col': {
+                path: [],
+                aggregations: {},
                 description: 'Product ID',
                 schema: { keys: [{ name: 'Value', value: 'ProductID' }] }
             },
             'Name::col': {
+                path: [],
+                aggregations: {},
                 description: 'Name',
                 schema: { keys: [{ name: 'Value', value: 'Name' }] }
             }
@@ -52,8 +57,10 @@ describe('transformTableColumns()', () => {
     });
 
     test('maps custom column using Key entry', () => {
-        const columnAggregations = {
+        const columnAggregations: ColumnAggregations = {
             myCustomCol: {
+                path: [],
+                aggregations: {},
                 custom: true,
                 description: 'Custom Col',
                 schema: { keys: [{ name: 'Key', value: 'customColumn1' }] }
@@ -65,8 +72,10 @@ describe('transformTableColumns()', () => {
     });
 
     test('omits header when description is absent', () => {
-        const columnAggregations = {
+        const columnAggregations: ColumnAggregations = {
             'ProductID::col': {
+                path: [],
+                aggregations: {},
                 schema: { keys: [{ name: 'Value', value: 'ProductID' }] }
             }
         };
@@ -76,8 +85,10 @@ describe('transformTableColumns()', () => {
     });
 
     test('falls back to index as key when identifier cannot be determined', () => {
-        const columnAggregations = {
+        const columnAggregations: ColumnAggregations = {
             unknownCol: {
+                path: [],
+                aggregations: {},
                 description: 'Unknown',
                 schema: { keys: [{ name: 'Label', value: 'something' }] }
             }
