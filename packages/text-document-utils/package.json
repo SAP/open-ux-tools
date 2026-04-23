@@ -20,7 +20,7 @@
         }
     },
     "scripts": {
-        "build": "tsc --build && tsc --build tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist-cjs/package.json",
+        "build": "tsc --build && tsc --build tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist-cjs/package.json', '{\\\"type\\\":\\\"commonjs\\\"}')\"",
         "clean": "rimraf --glob dist dist-cjs coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",

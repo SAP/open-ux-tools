@@ -24,7 +24,7 @@
     "license": "Apache-2.0",
     "scripts": {
         "compile": "tsc --build",
-        "compile:cjs": "tsc --build tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist-cjs/package.json",
+        "compile:cjs": "tsc --build tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist-cjs/package.json', '{\\\"type\\\":\\\"commonjs\\\"}')\"",
         "build": "npm-run-all clean compile compile:cjs",
         "clean": "rimraf --glob coverage dist dist-cjs *.tsbuildinfo",
         "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
