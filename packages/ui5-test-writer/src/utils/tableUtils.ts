@@ -1,10 +1,15 @@
-import type { TreeAggregation } from '@sap/ux-specification/dist/types/src/parser';
+import type { TreeAggregation, TreeAggregations } from '@sap/ux-specification/dist/types/src/parser';
 import { getAggregations } from './modelUtils';
+import type { TableColumn, TableColumnFeatureData } from '../types';
 
-type ColumnSpec = {
+type ColumnModelItem = {
     custom?: boolean;
     description?: string;
     schema: { keys: { name: string; value: string }[] };
+};
+
+type ColumnAggregations = TreeAggregations & {
+    [key: string]: ColumnModelItem;
 };
 
 /**
@@ -14,7 +19,7 @@ type ColumnSpec = {
  * @param column - column item from ux specification
  * @returns identifier of the column for OPA5 tests; undefined if no matching key entry is found
  */
-export function getColumnIdentifier(column: ColumnSpec): string | undefined {
+export function getColumnIdentifier(column: ColumnModelItem): string | undefined {
     const key = column.custom ? 'Key' : 'Value';
     return column.schema.keys.find((k) => k.name === key)?.value;
 }
@@ -26,15 +31,13 @@ export function getColumnIdentifier(column: ColumnSpec): string | undefined {
  * @param columnAggregations - column aggregations from the ux specification model
  * @returns a map of column identifiers to column state objects for use with iCheckColumns()
  */
-export function transformTableColumns(
-    columnAggregations: Record<string, ColumnSpec>
-): Record<string, Record<string, string | number | boolean>> {
-    const columns: Record<string, Record<string, string | number | boolean>> = {};
-    Object.values(columnAggregations).forEach((col, index) => {
-        const id = getColumnIdentifier(col) ?? String(index);
-        const state: Record<string, string | number | boolean> = {};
-        if (col.description) {
-            state['header'] = col.description;
+export function transformTableColumns(columnAggregations: ColumnAggregations): TableColumnFeatureData {
+    const columns: TableColumnFeatureData = {};
+    Object.values(columnAggregations).forEach((column, index) => {
+        const id = getColumnIdentifier(column) ?? String(index);
+        const state: TableColumn = {};
+        if (column.description) {
+            state['header'] = column.description;
         }
         columns[id] = state;
     });
@@ -49,9 +52,7 @@ export function transformTableColumns(
  * @param node - tree aggregation node that exposes a 'table' aggregation
  * @returns a map of column identifiers to column state objects for use with iCheckColumns()
  */
-export function extractTableColumnsFromNode(
-    node: TreeAggregation
-): Record<string, Record<string, string | number | boolean>> {
+export function extractTableColumnsFromNode(node: TreeAggregation): TableColumnFeatureData {
     const tableAggregation = getAggregations(node)['table'];
     if (!tableAggregation) {
         return {};
@@ -61,5 +62,5 @@ export function extractTableColumnsFromNode(
         return {};
     }
     const columnItems = getAggregations(columnsAggregation);
-    return transformTableColumns(columnItems as unknown as Record<string, ColumnSpec>);
+    return transformTableColumns(columnItems as ColumnAggregations);
 }

@@ -92,6 +92,12 @@ export type SectionFormField = {
     property: string;
 };
 
+export type TableColumn = {
+    header?: string;
+};
+
+export type TableColumnFeatureData = Record<string, TableColumn>;
+
 export type BodySubSectionFeatureData = {
     id: string;
     navigationProperty?: string;
@@ -99,7 +105,7 @@ export type BodySubSectionFeatureData = {
     custom: boolean;
     order: number;
     fields: SectionFormField[];
-    tableColumns: Record<string, Record<string, string | number | boolean>>;
+    tableColumns: TableColumnFeatureData;
 };
 
 export type BodySectionFeatureData = {
@@ -109,7 +115,7 @@ export type BodySectionFeatureData = {
     custom: boolean;
     order: number;
     fields: SectionFormField[];
-    tableColumns: Record<string, Record<string, string | number | boolean>>;
+    tableColumns: TableColumnFeatureData;
     subSections: BodySubSectionFeatureData[];
 };
 
