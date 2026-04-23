@@ -338,7 +338,7 @@ describe('validateId', () => {
                     // Get the store for the memFs instance passed in
                     const currentStore = (fsEditor && memFsToStore.get(fsEditor)) ?? store;
                     // Get all files from memFs that match the criteria
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
                     const allFiles = (currentStore as any).all().map((file: { path: string }) => file.path);
                     return allFiles.filter((filePath: string) => {
                         // Must be under rootPath
