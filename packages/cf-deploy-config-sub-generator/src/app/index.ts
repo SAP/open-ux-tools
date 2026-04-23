@@ -44,7 +44,6 @@ import type { CfDeployConfigOptions } from './types.js';
 import {
     type CfAppRouterDeployConfigAnswers,
     type CfDeployConfigQuestions,
-    type CfDeployConfigPromptOptions,
     type CfDeployConfigAnswers,
     RouterModuleType
 } from '@sap-ux/cf-deploy-config-inquirer';
