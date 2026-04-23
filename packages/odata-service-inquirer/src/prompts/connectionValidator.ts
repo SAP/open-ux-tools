@@ -1132,9 +1132,6 @@ export class ConnectionValidator {
             // from a server error (e.g. 503) incorrectly enabling navigation on re-selection
             if (valResult === true) {
                 this._validatedUrl = url;
-            }
-
-            if (valResult === true) {
                 if (this.validity.authenticated === true) {
                     this._connectedUserName = username;
                     return { valResult: true };
