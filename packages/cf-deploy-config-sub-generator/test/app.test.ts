@@ -125,6 +125,9 @@ const mockAppWizard = {
     showError: mockShowError
 };
 
+// Increase timeout for heavy generator lifecycle execution in ESM mode
+jest.setTimeout(60000);
+
 describe('Cloud foundry generator tests', () => {
     let cwd: string;
     const cfGenPath = join(__testdirname, '../src/app');

@@ -90,6 +90,9 @@ const mockedFs = memfs.fs;
 
 const sapUxTest = 'sap-ux-test';
 
+// Increase timeout for heavy generator lifecycle execution in ESM mode
+jest.setTimeout(60000);
+
 describe('App router generator tests', () => {
     let cwd: string;
     const OUTPUT_DIR_PREFIX = join(`/output`);

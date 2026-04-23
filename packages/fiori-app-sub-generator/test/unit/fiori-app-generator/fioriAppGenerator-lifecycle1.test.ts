@@ -58,6 +58,9 @@ const mockEntityRelatedQuestions = [
         type: 'list'
     }
 ];
+
+// Increase timeout for heavy generator lifecycle execution in ESM mode
+jest.setTimeout(60000);
 const mockGetEntityRelatedPrompts = jest.fn().mockImplementation(() => mockEntityRelatedQuestions);
 const mockInitTelemetrySettings = jest.fn().mockResolvedValue(() => Promise.resolve());
 

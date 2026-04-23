@@ -155,6 +155,9 @@ const { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorN
     await import('../../../src/types');
 const { deleteCache, getYeomanUiStepConfig, t } = await import('../../../src/utils');
 
+// Increase timeout for heavy generator lifecycle execution in ESM mode
+jest.setTimeout(60000);
+
 /**
  * Test the FioriAppGenerator internal lifecycle code only, hence the extensive mocking.
  */

@@ -284,7 +284,8 @@ function verifyGeneratedFiles(testOutputDir: string, appId: string, testFixtureD
     );
 }
 
-jest.setTimeout(30000);
+// Increase timeout for heavy generator lifecycle execution in ESM mode
+jest.setTimeout(60000);
 
 describe('Repo App Download', () => {
     const testFixture = new TestFixture();
