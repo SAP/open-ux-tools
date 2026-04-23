@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.104
+
+### Patch Changes
+
+- d36d5d7: app info generation fixes
+
 ## 0.7.103
 
 ### Patch Changes
