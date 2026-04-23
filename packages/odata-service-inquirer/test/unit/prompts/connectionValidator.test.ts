@@ -456,6 +456,26 @@ describe('ConnectionValidator', () => {
         expect(getODataServiceSpy).toHaveBeenCalledTimes(1);
     });
 
+    test('should re-validate same url after a 503 server error and not return cached true result', async () => {
+        // First selection: 503 error - next button should be disabled
+        const serviceUrl = 'https://example.com';
+        const listServicesMock = jest
+            .spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
+            .mockRejectedValue(newAxiosErrorWithStatus(503));
+
+        const validator = new ConnectionValidator();
+        const firstResult = await validator.validateUrl(serviceUrl, { isSystem: true });
+        expect(firstResult).not.toBe(true);
+        // validatedUrl must NOT be cached after a failed validation
+        expect(validator.validatedUrl).toBeUndefined();
+
+        // Second selection of the same system - must re-validate, not return a cached true
+        const secondResult = await validator.validateUrl(serviceUrl, { isSystem: true });
+        expect(secondResult).not.toBe(true);
+        // Both selections should have triggered a real request
+        expect(listServicesMock).toHaveBeenCalledTimes(2);
+    });
+
     test('should re-validate the same url if `forceValidation` is true', async () => {
         const getODataServiceSpy = jest
             .spyOn(ODataService.prototype, 'get')
@@ -478,6 +498,20 @@ describe('ConnectionValidator', () => {
             urlFormat: true
         });
         expect(getODataServiceSpy).toHaveBeenCalledTimes(2);
+    });
+
+    test('should not cache validatedUrl in validateAuth after a 503 server error', async () => {
+        const serviceUrl = 'https://example.com:1234/system';
+        jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices').mockRejectedValueOnce(
+            newAxiosErrorWithStatus(503)
+        );
+
+        const connectValidator = new ConnectionValidator();
+        const result = await connectValidator.validateAuth(serviceUrl, 'user1', 'pword1', { isSystem: true });
+
+        expect(result.valResult).not.toBe(true);
+        // validatedUrl must NOT be cached after a server error response
+        expect(connectValidator.validatedUrl).toBeUndefined();
     });
 
     test('should update axios-config with sap-client with calling validateAuth when connecting to sap system', async () => {

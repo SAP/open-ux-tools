@@ -919,9 +919,13 @@ export class ConnectionValidator {
             });
             LoggerHelper.logger.debug(`ConnectionValidator.validateUrl() - status: ${status}; url: ${serviceUrl}`);
             this.validity.urlFormat = true;
-            this._validatedUrl = serviceUrl;
-
-            return this.getValidationResultFromStatusCode(status);
+            const validationResult = this.getValidationResultFromStatusCode(status);
+            // Only cache the validated URL on a successful result to prevent stale cache
+            // from a server error (e.g. 503) incorrectly enabling navigation on re-selection
+            if (validationResult === true) {
+                this._validatedUrl = serviceUrl;
+            }
+            return validationResult;
         } catch (error) {
             this.resetValidity();
             // More helpful context specific error
@@ -1123,9 +1127,12 @@ export class ConnectionValidator {
             LoggerHelper.logger.debug(`ConnectionValidator.validateAuth() - status: ${status}; url: ${url}`);
             // Since an exception was not thrown, this is a valid url
             this.validity.urlFormat = true;
-            this._validatedUrl = url;
-
             const valResult = this.getValidationResultFromStatusCode(status);
+            // Only cache the validated URL on a successful result to prevent stale cache
+            // from a server error (e.g. 503) incorrectly enabling navigation on re-selection
+            if (valResult === true) {
+                this._validatedUrl = url;
+            }
 
             if (valResult === true) {
                 if (this.validity.authenticated === true) {
