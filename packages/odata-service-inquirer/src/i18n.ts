@@ -55,4 +55,5 @@ try {
     await initI18nOdataServiceInquirer();
 } catch (error) {
     // In case of an error during initialization, we catch it to prevent the application from crashing.
+    console.error('Failed to initialize i18n:', error);
 }

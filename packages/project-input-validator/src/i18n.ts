@@ -44,4 +44,5 @@ try {
     await initI18nProjectValidators();
 } catch (error) {
     // In case of an error during initialization, we catch it to prevent the application from crashing.
+    console.error('Failed to initialize i18n for project-input-validator:', error);
 }
