@@ -291,9 +291,12 @@ describe('validateId', () => {
             memFs = createEditor(store);
             memFsToStore.set(memFs, store);
 
+            // Helper to normalize paths for cross-platform consistency
+            const normalizePath = (...parts: string[]) => join(...parts).replace(/\\/g, '/');
+
             // Create test view files in memory
             memFs.write(
-                join(testDir, 'webapp', 'view', 'Main.view.xml'),
+                normalizePath(testDir, 'webapp', 'view', 'Main.view.xml'),
                 `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
     <Page id="mainPage">
         <Button id="mainButton" text="Main" />
@@ -302,7 +305,7 @@ describe('validateId', () => {
             );
 
             memFs.write(
-                join(testDir, 'webapp', 'view', 'Detail.view.xml'),
+                normalizePath(testDir, 'webapp', 'view', 'Detail.view.xml'),
                 `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
     <Page id="detailPage">
         <Input id="detailInput" />
@@ -312,7 +315,7 @@ describe('validateId', () => {
 
             // Create test fragment files
             memFs.write(
-                join(testDir, 'webapp', 'fragment', 'Dialog.fragment.xml'),
+                normalizePath(testDir, 'webapp', 'fragment', 'Dialog.fragment.xml'),
                 `<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
     <Dialog id="testDialog">
         <Button id="dialogButton" text="OK" />
@@ -322,12 +325,12 @@ describe('validateId', () => {
 
             // Create files that should be ignored (in excluded directories)
             memFs.write(
-                join(testDir, 'annotations', 'annotation.xml'),
+                normalizePath(testDir, 'annotations', 'annotation.xml'),
                 `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices/></edmx:Edmx>`
             );
 
             memFs.write(
-                join(testDir, 'node_modules', 'test.view.xml'),
+                normalizePath(testDir, 'node_modules', 'test.view.xml'),
                 `<mvc:View xmlns:mvc="sap.ui.core.mvc"><Button id="shouldBeIgnored" /></mvc:View>`
             );
 
@@ -409,8 +412,9 @@ describe('validateId', () => {
             memFsToStore.set(customMemFs, customStore);
 
             const customDir = '/custom-project';
+            const normalizePath = (...parts: string[]) => join(...parts).replace(/\\/g, '/');
             customMemFs.write(
-                join(customDir, 'webapp', 'view', 'Custom.view.xml'),
+                normalizePath(customDir, 'webapp', 'view', 'Custom.view.xml'),
                 `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
     <Button id="customButton" />
 </mvc:View>`
