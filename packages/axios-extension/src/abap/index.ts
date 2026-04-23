@@ -31,6 +31,7 @@ export type {
     ValueListService,
     ExternalServiceReference,
     ExternalService,
-    TransportRequest
+    TransportRequest,
+    EntitySetData
 } from './types/index.js';
 export { TenantType } from './types/index.js';
