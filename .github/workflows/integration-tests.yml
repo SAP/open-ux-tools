@@ -48,13 +48,13 @@ jobs:
                   cache-name: cache-pnpm-modules
               with:
                   path: ~/.pnpm-store
-                  key: ubuntu-latest-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  key: ubuntu-latest-build-${{ env.cache-name }}-22.x-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
-                      ubuntu-latest-build-build-${{ env.cache-name }}-20.x-
-            - name: Use Node.js 20.x
+                      ubuntu-latest-build-build-${{ env.cache-name }}-22.x-
+            - name: Use Node.js 22.x
               uses: actions/setup-node@v6
               with:
-                  node-version: 20.x
+                  node-version: 22.x
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build
@@ -67,7 +67,7 @@ jobs:
               with:
                 path: |
                     ~/.cache/ms-playwright
-                key: playwright-browsers-os-ubuntu-latest-node-version-20.x
+                key: playwright-browsers-os-ubuntu-latest-node-version-22.x
             - name: Install playwright chrome browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chrome
@@ -110,13 +110,13 @@ jobs:
                   cache-name: cache-pnpm-modules
               with:
                   path: ~/.pnpm-store
-                  key: ubuntu-latest-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  key: ubuntu-latest-build-${{ env.cache-name }}-22.x-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
-                      ubuntu-latest-build-build-${{ env.cache-name }}-20.x-
-            - name: Use Node.js 20.x
+                      ubuntu-latest-build-build-${{ env.cache-name }}-22.x-
+            - name: Use Node.js 22.x
               uses: actions/setup-node@v6
               with:
-                  node-version: 20.x
+                  node-version: 22.x
             - name: Install pnpm modules
               run: pnpm install
             - name: Download blob reports from GitHub Actions Artifacts

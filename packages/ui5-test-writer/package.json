@@ -55,6 +55,6 @@
         "@sap-ux/vocabularies-types": "0.15.0"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }
