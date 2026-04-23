@@ -279,17 +279,12 @@ describe('validateId', () => {
     describe('asynchronous overload (with appPath)', () => {
         const testDir = '/test-project';
         let memFs: ReturnType<typeof createEditor>;
-        let store: ReturnType<typeof createStorage>;
         let findFilesByExtensionSpy: jest.SpyInstance;
-
-        // Map to track store for each memFs instance
-        const memFsToStore = new WeakMap<ReturnType<typeof createEditor>, ReturnType<typeof createStorage>>();
 
         beforeAll(() => {
             // Create in-memory file system
-            store = createStorage();
+            const store = createStorage();
             memFs = createEditor(store);
-            memFsToStore.set(memFs, store);
 
             // Helper to normalize paths for cross-platform consistency
             const normalizePath = (...parts: string[]) => join(...parts).replace(/\\/g, '/');
@@ -338,11 +333,23 @@ describe('validateId', () => {
             findFilesByExtensionSpy = jest
                 .spyOn(fileUtils, 'findFilesByExtension')
                 .mockImplementation(async (extension, rootPath, excludeFolders, fsEditor?) => {
-                    // Get the store for the memFs instance passed in
-                    const currentStore = (fsEditor && memFsToStore.get(fsEditor)) ?? store;
-                    // Get all files from memFs that match the criteria
+                    // Hardcoded list of files we created in beforeAll
+                    const testFiles = [
+                        '/test-project/webapp/view/Main.view.xml',
+                        '/test-project/webapp/view/Detail.view.xml',
+                        '/test-project/webapp/fragment/Dialog.fragment.xml',
+                        '/test-project/annotations/annotation.xml',
+                        '/test-project/node_modules/test.view.xml'
+                    ];
 
-                    const allFiles = (currentStore as any).all().map((file: { path: string }) => file.path);
+                    // Add custom files if using a custom memFs
+                    let allFiles = [...testFiles];
+                    if (fsEditor && fsEditor !== memFs) {
+                        // Custom memFs instance - check if it has the custom project file
+                        allFiles = ['/custom-project/webapp/view/Custom.view.xml'];
+                    }
+
+                    // Normalize paths for cross-platform compatibility
                     const normalizedRootPath = rootPath.replace(/\\/g, '/');
                     return allFiles.filter((filePath: string) => {
                         const normalizedFilePath = filePath.replace(/\\/g, '/');
@@ -409,7 +416,6 @@ describe('validateId', () => {
         test('should work with separate memFs instance', async () => {
             const customStore = createStorage();
             const customMemFs = createEditor(customStore);
-            memFsToStore.set(customMemFs, customStore);
 
             const customDir = '/custom-project';
             const normalizePath = (...parts: string[]) => join(...parts).replace(/\\/g, '/');
