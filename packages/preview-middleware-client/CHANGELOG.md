@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.29
+
+### Patch Changes
+
+- 03d3ea1: fix(deps): Update dependency @ui5/manifest to v1.85.0
+
 ## 0.25.28
 
 ## 0.25.27
