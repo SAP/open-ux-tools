@@ -148,6 +148,7 @@ export interface DescriptionColumnLabel {
     messageId: DescriptionColumnLabelMessageId;
     pageNames: string[];
     annotation: {
+        /** Reference to the Common.Label annotation of the text property (the reported node) */
         reference: AnnotationReference;
         idPropertyTarget: string;
         textPropertyTarget: string;

@@ -162,9 +162,9 @@ function createSyntheticElement(attrName: string, attrValue: string, sourceRange
  * Injects synthetic Common.Text and Common.Label annotation entries derived from OData V2
  * inline `sap:text` and `sap:label` attributes on Property elements.
  *
- * For Common.Text: injects into both the annotation index AND the annotation file AST so
- * that ESLint's `createAnnotations()` traversal can fire and report diagnostics.
- * For Common.Label: injects into the annotation index only (read by getLabelForProperty).
+ * Both Common.Text and Common.Label are injected into the annotation index AND the annotation
+ * file AST so that ESLint's `createAnnotations()` traversal can fire and report diagnostics
+ * on either annotation type.
  *
  * Only adds entries when no explicit vocabulary annotation already exists for that key.
  *
@@ -223,6 +223,13 @@ function injectV2InlineAnnotations(artifacts: ServiceArtifacts, metadataUri: str
                         layers: [{ uri: metadataUri, value: syntheticElement }]
                     }
                 };
+                // Also inject into the annotation file AST so the traversal selector fires on the label node
+                const syntheticTarget: Target = {
+                    type: 'target',
+                    name: propertyTarget,
+                    terms: [syntheticElement]
+                };
+                annotationFile.targets.push(syntheticTarget);
             }
         }
     });

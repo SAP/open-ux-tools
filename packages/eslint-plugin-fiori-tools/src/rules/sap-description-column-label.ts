@@ -19,13 +19,16 @@ import {
 const TRIVIAL_LABELS = new Set(['name', 'description']);
 
 /**
- * Reads a Common.Label String value from the annotation index.
+ * Reads a Common.Label String value and the corresponding annotation from the annotation index.
  *
  * @param propertyTarget - Fully-qualified target path (e.g. "Service.Entity/prop")
  * @param service - The parsed OData service
- * @returns The label string, or undefined if not found
+ * @returns The label string and annotation, or undefined if not found
  */
-function getLabelForProperty(propertyTarget: string, service: ParsedService): string | undefined {
+function getLabelForProperty(
+    propertyTarget: string,
+    service: ParsedService
+): { label: string; annotation: IndexedAnnotation } | undefined {
     const labelKey = buildAnnotationIndexKey(propertyTarget, COMMON_LABEL);
     const labelAnnotations = service.index.annotations[labelKey];
     if (!labelAnnotations) {
@@ -35,11 +38,19 @@ function getLabelForProperty(propertyTarget: string, service: ParsedService): st
     if (!annotation) {
         return undefined;
     }
-    return getElementAttributeValue(annotation.top.value, Edm.String) || undefined;
+    const label = getElementAttributeValue(annotation.top.value, Edm.String) || undefined;
+    if (!label) {
+        return undefined;
+    }
+    return { label, annotation };
 }
 
 /**
  * Checks a single Common.Text annotation for a non-descriptive text property label.
+ *
+ * The issue is reported on the Common.Label annotation of the text property (the referenced
+ * annotation), because that is the annotation the developer needs to fix. The idPropertyTarget
+ * (which has the Common.Text annotation) is included in the message for context.
  *
  * @param textAnnotation - The indexed Common.Text annotation
  * @param entityTypeName - Entity type that owns the annotated property
@@ -67,14 +78,16 @@ function processTextAnnotation(
     }
 
     const textPropertyTarget = `${resolved.entityTypeName}/${resolved.propertyName}`;
-    const textPropertyLabel = getLabelForProperty(textPropertyTarget, parsedService);
-    if (!textPropertyLabel) {
+    const textPropertyLabelResult = getLabelForProperty(textPropertyTarget, parsedService);
+    if (!textPropertyLabelResult) {
         return [];
     }
 
+    const { label: textPropertyLabel, annotation: labelAnnotation } = textPropertyLabelResult;
     const labelLower = textPropertyLabel.trim().toLowerCase();
 
     // Check 1: trivial generic labels
+    // Issue reported on the Common.Label annotation (labelAnnotation.top) — that is what needs fixing.
     if (TRIVIAL_LABELS.has(labelLower)) {
         return [
             {
@@ -82,7 +95,7 @@ function processTextAnnotation(
                 messageId: 'trivialLabel',
                 pageNames,
                 annotation: {
-                    reference: textAnnotation.top,
+                    reference: labelAnnotation.top,
                     idPropertyTarget: targetPath,
                     textPropertyTarget,
                     textPropertyLabel
@@ -92,19 +105,20 @@ function processTextAnnotation(
     }
 
     // Check 2: label of text property identical to label of ID property
-    const idPropertyLabel = getLabelForProperty(targetPath, parsedService);
-    if (idPropertyLabel?.trim().toLowerCase() === labelLower) {
+    // Issue reported on the Common.Label annotation of the text property — that is what needs fixing.
+    const idPropertyLabelResult = getLabelForProperty(targetPath, parsedService);
+    if (idPropertyLabelResult?.label.trim().toLowerCase() === labelLower) {
         return [
             {
                 type: DESCRIPTION_COLUMN_LABEL,
                 messageId: 'duplicateLabel',
                 pageNames,
                 annotation: {
-                    reference: textAnnotation.top,
+                    reference: labelAnnotation.top,
                     idPropertyTarget: targetPath,
                     textPropertyTarget,
                     textPropertyLabel,
-                    idPropertyLabel
+                    idPropertyLabel: idPropertyLabelResult.label
                 }
             }
         ];
@@ -172,9 +186,9 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             trivialLabel:
-                'The "{{textPropertyTarget}}" text property has a "{{textPropertyLabel}}" generic label. Use a more descriptive label that distinguishes it from other properties.',
+                'The "{{textPropertyTarget}}" text property has a "{{textPropertyLabel}}" generic label. Use a more descriptive label that distinguishes it from other properties',
             duplicateLabel:
-                'The "{{textPropertyTarget}}" text property has the same "{{textPropertyLabel}}" label as the "{{idPropertyTarget}}" ID property. The description column label must be different from the ID label.'
+                'The "{{textPropertyTarget}}" text property has the same "{{textPropertyLabel}}" label as the "{{idPropertyTarget}}" ID property. The description column label must be different from the ID label'
         }
     },
 
