@@ -27,7 +27,7 @@ import type {
     OdataServiceQuestion,
     ConnectedSystem
 } from './types.js';
-import { DatasourceType, promptNames } from './types.js';
+import { DatasourceType } from './types.js';
 import { getPromptHostEnvironment, PromptState } from './utils/index.js';
 
 /**
@@ -175,9 +175,9 @@ export {
     NewSystemChoice,
     // @deprecated - temp export to support to support open source migration
     OdataVersion,
-    prompt,
-    promptNames
+    prompt
 };
+export { promptNames } from './types.js';
 // @deprecated - temp export to support to support open source migration
 export type { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
 export type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';

@@ -409,6 +409,11 @@ export default class extends DeploymentGenerator {
 
 export { getCFQuestions, loadManifest };
 export { API_BUSINESS_HUB_ENTERPRISE_PREFIX, DESTINATION_AUTHTYPE_NOTFOUND };
-export type { CfDeployConfigOptions, CfDeployConfigAnswers, CfDeployConfigQuestions, CfDeployConfigPromptOptions };
+export type {
+    CfDeployConfigAnswers,
+    CfDeployConfigQuestions,
+    CfDeployConfigPromptOptions
+} from '@sap-ux/cf-deploy-config-inquirer';
+export type { CfDeployConfigOptions } from './types.js';
 export type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 export { ApiHubType } from '@sap-ux/cf-deploy-config-writer';
