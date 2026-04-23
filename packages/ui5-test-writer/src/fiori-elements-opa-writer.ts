@@ -20,9 +20,84 @@ import { getAppFeatures } from './utils/modelUtils';
 import {
     addIntegrationOldToGitignore,
     addPathsToQUnitJs,
+    addPagesToJourneyRunner,
     hasVirtualOPA5,
-    readHtmlTargetFromQUnitJs
+    readHtmlTargetFromQUnitJs,
+    type JourneyRunnerPage
 } from './utils/opaQUnitUtils';
+
+/**
+ * Generate OPA test files for a Fiori elements for OData V4 application.
+ * Note: this can potentially overwrite existing files in the webapp/test folder.
+ *
+ * @param basePath - the absolute target path where the application will be generated
+ * @param opaConfig - parameters for the generation
+ * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
+ * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
+ * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
+ * @param metadata - optional metadata for the OPA test generation
+ * @param fs - an optional reference to a mem-fs editor
+ * @param log - optional logger instance
+ * @param standalone - opa test generation run standalone, not during app generation
+ * @returns Reference to a mem-fs-editor
+ */
+export async function generateOPAFiles(
+    basePath: string,
+    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
+    metadata?: string,
+    fs?: Editor,
+    log?: Logger,
+    standalone = false
+): Promise<Editor> {
+    const editor = fs ?? create(createStorage());
+
+    const manifest = readManifest(editor, basePath);
+    const { applicationType, hideFilterBar } = getAppTypeAndHideFilterBarFromManifest(manifest);
+
+    const config = createConfig(manifest, opaConfig, hideFilterBar);
+
+    const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
+    const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
+    const testOutDirPath = join(await getWebappPath(basePath), 'test');
+
+    // Access ux-specification to get feature data for OPA test generation
+    const appFeatures = await getAppFeatures(basePath, editor, log, metadata, manifest);
+    // OPA Journey file
+    const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
+    const LROP = findLROP(config.pages, manifest);
+    const journeyParams: JourneyParams = {
+        startPages,
+        startLR: LROP.pageLR?.targetKey,
+        navigatedOP: LROP.pageOP?.targetKey,
+        hideFilterBar: config.hideFilterBar
+    };
+
+    const writeContext: WriteContext = { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams };
+
+    if (standalone) {
+        const hasJourneyRunner = existsSync(join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js'));
+        const virtualOPA5Configured = await hasVirtualOPA5(basePath);
+        if (hasJourneyRunner) {
+            writeJourneyFiles(appFeatures, writeContext, true, true, virtualOPA5Configured);
+        } else {
+            editor.move(join(testOutDirPath, 'integration', '**'), join(testOutDirPath, 'integration_old'));
+
+            await addIntegrationOldToGitignore(basePath, editor);
+            const htmlTarget = readHtmlTargetFromQUnitJs(testOutDirPath, editor) ?? config.htmlTarget;
+            const standaloneConfig = { ...config, htmlTarget };
+            const standaloneWriteContext: WriteContext = { ...writeContext, config: standaloneConfig };
+            if (!virtualOPA5Configured) {
+                writeCommonAndPageFiles(standaloneWriteContext, rootCommonTemplateDirPath);
+            }
+            writeJourneyFiles(appFeatures, standaloneWriteContext, true, hasJourneyRunner, virtualOPA5Configured);
+        }
+    } else {
+        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath);
+        writeJourneyFiles(appFeatures, writeContext, false);
+    }
+
+    return editor;
+}
 
 /**
  * Reads the manifest for an app.
@@ -263,7 +338,6 @@ function writeCommonAndPageFiles(writeContext: WriteContext, rootCommonTemplateD
         }
     );
 
-    // Pages files (one for each page in the app)
     config.pages.forEach((page) => {
         writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor);
     });
@@ -291,6 +365,36 @@ function writeCommonAndPageFiles(writeContext: WriteContext, rootCommonTemplateD
 }
 
 /**
+ * Checks whether a page object file already exists for the given feature name.
+ * If it doesn't exist, finds the matching page config and writes the file.
+ *
+ * @param featureName - the feature/page name (equals the manifest targetKey)
+ * @param config - the OPA config containing all page configurations
+ * @param rootV4TemplateDirPath - template root directory for v4 templates
+ * @param testOutDirPath - output test directory (.../webapp/test)
+ * @param editor - a reference to a mem-fs editor
+ * @returns JourneyRunnerPage if the page was newly created, undefined otherwise
+ */
+function ensurePageExists(
+    featureName: string,
+    config: FEV4OPAConfig,
+    rootV4TemplateDirPath: string,
+    testOutDirPath: string,
+    editor: Editor
+): JourneyRunnerPage | undefined {
+    const pageFilePath = join(testOutDirPath, 'integration', 'pages', `${featureName}.js`);
+    if (editor.exists(pageFilePath)) {
+        return undefined;
+    }
+    const pageConfig = config.pages.find((p) => p.targetKey === featureName);
+    if (pageConfig) {
+        writePageObject(pageConfig, rootV4TemplateDirPath, testOutDirPath, editor);
+        return { targetKey: featureName, appPath: config.appPath };
+    }
+    return undefined;
+}
+
+/**
  * Writes journey files for list report, object pages and FPM pages.
  *
  * @param appFeatures - object containing feature data for list report, object pages, and FPM
@@ -308,6 +412,7 @@ function writeJourneyFiles(
 ): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams } = writeContext;
     const generatedJourneyPages: string[] = [];
+    const newPages: JourneyRunnerPage[] = [];
 
     if (appFeatures.listReport?.name) {
         editor.copyTpl(
@@ -323,6 +428,16 @@ function writeJourneyFiles(
             }
         );
         generatedJourneyPages.push(appFeatures.listReport.name);
+        const lrPage = ensurePageExists(
+            appFeatures.listReport.name,
+            config,
+            rootV4TemplateDirPath,
+            testOutDirPath,
+            editor
+        );
+        if (lrPage) {
+            newPages.push(lrPage);
+        }
     }
 
     if (appFeatures.objectPages && appFeatures.objectPages.length > 0) {
@@ -342,6 +457,10 @@ function writeJourneyFiles(
                     }
                 );
                 generatedJourneyPages.push(objectPage.name);
+                const opPage = ensurePageExists(objectPage.name, config, rootV4TemplateDirPath, testOutDirPath, editor);
+                if (opPage) {
+                    newPages.push(opPage);
+                }
             }
         });
     }
@@ -360,6 +479,14 @@ function writeJourneyFiles(
             }
         );
         generatedJourneyPages.push(appFeatures.fpm.name);
+        const fpmPage = ensurePageExists(appFeatures.fpm.name, config, rootV4TemplateDirPath, testOutDirPath, editor);
+        if (fpmPage) {
+            newPages.push(fpmPage);
+        }
+    }
+
+    if (newPages.length > 0) {
+        addPagesToJourneyRunner(newPages, testOutDirPath, editor);
     }
 
     if (!virtualOPA5Configured) {
@@ -411,79 +538,6 @@ function writePageObject(
 }
 
 /**
- * Generate OPA test files for a Fiori elements for OData V4 application.
- * Note: this can potentially overwrite existing files in the webapp/test folder.
- *
- * @param basePath - the absolute target path where the application will be generated
- * @param opaConfig - parameters for the generation
- * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
- * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
- * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
- * @param metadata - optional metadata for the OPA test generation
- * @param fs - an optional reference to a mem-fs editor
- * @param log - optional logger instance
- * @param standalone - opa test generation run standalone, not during app generation
- * @returns Reference to a mem-fs-editor
- */
-export async function generateOPAFiles(
-    basePath: string,
-    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
-    metadata?: string,
-    fs?: Editor,
-    log?: Logger,
-    standalone = false
-): Promise<Editor> {
-    const editor = fs ?? create(createStorage());
-
-    const manifest = readManifest(editor, basePath);
-    const { applicationType, hideFilterBar } = getAppTypeAndHideFilterBarFromManifest(manifest);
-
-    const config = createConfig(manifest, opaConfig, hideFilterBar);
-
-    const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
-    const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
-    const testOutDirPath = join(await getWebappPath(basePath), 'test');
-
-    // Access ux-specification to get feature data for OPA test generation
-    const appFeatures = await getAppFeatures(basePath, editor, log, metadata);
-    // OPA Journey file
-    const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
-    const LROP = findLROP(config.pages, manifest);
-    const journeyParams: JourneyParams = {
-        startPages,
-        startLR: LROP.pageLR?.targetKey,
-        navigatedOP: LROP.pageOP?.targetKey,
-        hideFilterBar: config.hideFilterBar
-    };
-
-    const writeContext: WriteContext = { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams };
-
-    if (standalone) {
-        const hasJourneyRunner = existsSync(join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js'));
-        const virtualOPA5Configured = await hasVirtualOPA5(basePath);
-        if (hasJourneyRunner) {
-            writeJourneyFiles(appFeatures, writeContext, true, true, virtualOPA5Configured);
-        } else {
-            editor.move(join(testOutDirPath, 'integration', '**'), join(testOutDirPath, 'integration_old'));
-
-            await addIntegrationOldToGitignore(basePath, editor);
-            const htmlTarget = readHtmlTargetFromQUnitJs(testOutDirPath, editor) ?? config.htmlTarget;
-            const standaloneConfig = { ...config, htmlTarget };
-            const standaloneWriteContext: WriteContext = { ...writeContext, config: standaloneConfig };
-            if (!virtualOPA5Configured) {
-                writeCommonAndPageFiles(standaloneWriteContext, rootCommonTemplateDirPath);
-            }
-            writeJourneyFiles(appFeatures, standaloneWriteContext, true, true, virtualOPA5Configured);
-        }
-    } else {
-        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath);
-        writeJourneyFiles(appFeatures, writeContext, false);
-    }
-
-    return editor;
-}
-
-/**
  * Generate a page object file for a Fiori elements for OData V4 application.
  * Note: this doesn't modify other existing files in the webapp/test folder.
  *
@@ -499,7 +553,7 @@ export async function generatePageObjectFile(
     pageObjectParameters: { targetKey: string; appID?: string },
     fs?: Editor
 ): Promise<Editor> {
-    const editor = fs || create(createStorage());
+    const editor = fs ?? create(createStorage());
 
     const manifest = readManifest(editor, basePath);
     const { applicationType } = getAppTypeAndHideFilterBarFromManifest(manifest);
