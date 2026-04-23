@@ -83,7 +83,7 @@ async function main() {
 
     console.log('\nRunning pnpm install...');
     try {
-        execSync('pnpm install --lockfile-only', { stdio: 'inherit' });
+        execSync('pnpm install', { stdio: 'inherit' });
     } catch (e) {
         console.error(`  pnpm install failed: ${e.message}`);
         success = false;

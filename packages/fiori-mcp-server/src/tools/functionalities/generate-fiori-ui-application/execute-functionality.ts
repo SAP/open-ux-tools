@@ -38,11 +38,13 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
 
     await checkIfGeneratorInstalled();
 
-    const metadataPath = generatorConfig.service.metadataFilePath ?? join(targetDir, 'metadata.xml');
+    const metadataPath = generatorConfig.service?.metadataFilePath ?? join(targetDir, 'metadata.xml');
 
     try {
-        const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
-        generatorConfig.service.edmx = metadata;
+        if (generatorConfig.service) {
+            const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
+            generatorConfig.service.edmx = metadata;
+        }
 
         const content = JSON.stringify(generatorConfig, null, 4);
 
@@ -71,7 +73,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         if (existsSync(configPath)) {
             await FSpromises.unlink(configPath);
         }
-        if (existsSync(metadataPath)) {
+        if (generatorConfig.service && existsSync(metadataPath)) {
             await FSpromises.unlink(metadataPath);
         }
     }
