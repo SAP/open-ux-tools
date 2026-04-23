@@ -1,0 +1,55 @@
+name: Publish to MCP Registry
+
+env:
+    # Releases: https://github.com/modelcontextprotocol/registry/releases
+    DEFAULT_MCP_PUBLISHER_VERSION: 'v1.5.0'
+on:
+    # Allow this workflow to be called from other workflows
+    workflow_call:
+        inputs:
+            dry_run:
+                description: 'Run in dry-run mode (install and login only, no publishing)'
+                required: false
+                type: boolean
+                default: false
+    # Allow manual triggering
+    workflow_dispatch:
+        inputs:
+            mcp_publisher_version:
+                description: 'MCP Publisher version to use'
+                required: false
+                type: string
+            dry_run:
+                description: 'Run in dry-run mode (install and login only, no publishing)'
+                required: false
+                type: boolean
+                default: true
+    # Trigger dry-run on changes to this workflow file
+    pull_request:
+        paths:
+            - '.github/workflows/publish-mcp-registry.yml'
+        branches:
+            - main
+
+permissions:
+    id-token: write # Required for login via github-oidc
+    contents: read
+
+jobs:
+    publish-mcp-registry:
+        runs-on: ubuntu-24.04
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Install MCP Publisher
+              run: |
+                  MCP_PUBLISHER_VERSION="${{ inputs.mcp_publisher_version || env.DEFAULT_MCP_PUBLISHER_VERSION }}"
+                  MCP_PUBLISHER_OS_ARCH="$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')"
+                  MCP_PUBLISHER_DOWNLOAD_URL="https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_${MCP_PUBLISHER_OS_ARCH}.tar.gz"
+                  curl -L "${MCP_PUBLISHER_DOWNLOAD_URL}" | tar xz mcp-publisher
+            - name: Login to MCP Registry
+              run: ./mcp-publisher login github-oidc
+            - name: Publish to MCP Registry
+              if: ${{ inputs.dry_run != true && github.event_name != 'pull_request' }}
+              working-directory: packages/fiori-mcp-server
+              run: ../../mcp-publisher publish

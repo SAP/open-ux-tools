@@ -10,11 +10,12 @@ import { detectTabSpacing } from '../../../src/common/file';
 import { tabSizingTestCases } from '../../common';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../../../src/i18n';
+import * as fileAccess from '@sap-ux/project-access/dist/file';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
     let fs: Editor;
-
+    jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
     const testAppManifest = JSON.stringify(
         {
             'sap.app': {

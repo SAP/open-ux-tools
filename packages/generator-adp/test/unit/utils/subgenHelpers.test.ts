@@ -86,6 +86,26 @@ describe('Sub-generator helpers', () => {
 
             expect(logger.error).toHaveBeenCalledWith(error);
         });
+
+        it('should compose FLP generator with isCfProject flag when provided', async () => {
+            const flpOptions = {
+                projectRootPath: '/test/path',
+                inbounds: {} as unknown as ManifestNamespace.Inbound,
+                layer: FlexLayer.CUSTOMER_BASE,
+                vscode: {},
+                prompts: { items: [] } as unknown as Prompts,
+                isCfProject: true
+            };
+
+            await addFlpGen(flpOptions, composeWith, logger, wizard);
+
+            expect(composeWith).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.objectContaining({
+                    isCfProject: true
+                })
+            );
+        });
     });
 
     describe('addDeployGen', () => {

@@ -25,5 +25,8 @@ export async function initI18n(): Promise<void> {
 
 type StringMap = { [key: string]: unknown };
 export function text(key: string, options?: string | TOptions<StringMap & TOptionsBase>): string {
-    return i18nInstance.t(key, typeof options === 'string' ? { defaultValue: options } : options);
+    return (i18nInstance.t as (key: string, opts?: TOptions<StringMap & TOptionsBase>) => string)(
+        key,
+        typeof options === 'string' ? { defaultValue: options } : options
+    );
 }

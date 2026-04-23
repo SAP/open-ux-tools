@@ -20,6 +20,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": [Function],
     "guiOptions": {
       "breadcrumb": true,

@@ -31,7 +31,7 @@ export const getSystemAdditionalMessages = (
 
     if (projectType === AdaptationProjectType.CLOUD_READY) {
         return {
-            message: `${t('prompts.projectTypeLabel')}: ${AdaptationProjectType.CLOUD_READY}`,
+            message: t('prompts.projectTypeCloudReadyLabel'),
             severity: Severity.information
         };
     }
@@ -41,7 +41,7 @@ export const getSystemAdditionalMessages = (
     if (isUIFlexSupported) {
         return isDtaFolderDeploymentSupported
             ? {
-                  message: `${t('prompts.projectTypeLabel')}: ${AdaptationProjectType.ON_PREMISE}`,
+                  message: t('prompts.projectTypeClassicLabel'),
                   severity: Severity.information
               }
             : {

@@ -675,7 +675,7 @@ describe('AddCustomFragment', () => {
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
                 1,
-                "Column with ID ''test'' is already defined."
+                'Column with ID \'\'test\'\' is already defined.'
             );
         });
 
@@ -697,7 +697,7 @@ describe('AddCustomFragment', () => {
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
                 1,
-                "Column ID is required."
+                'Column ID is required.'
             );
         });
 
@@ -719,7 +719,7 @@ describe('AddCustomFragment', () => {
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
                 1,
-                "Column ID must start with a letter or _ and may contain letters, digits, _, ., :, and -."
+                'Column ID must start with a letter or _ and may contain letters, digits, _, ., :, and -.'
             );
         });
     });

@@ -1,5 +1,17 @@
 # @sap-ux/jest-file-matchers
 
+## 0.2.11
+
+### Patch Changes
+
+- ce6ed1d: fix(deps): update dependency filenamify to v4.3.0
+
+## 0.2.10
+
+### Patch Changes
+
+- b82db06: Direct minimatch version upgrade
+
 ## 0.2.9
 
 ### Patch Changes

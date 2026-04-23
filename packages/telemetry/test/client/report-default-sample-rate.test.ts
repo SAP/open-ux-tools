@@ -49,7 +49,8 @@ describe('ClientFactory Send Report Default Sample Rate', () => {
                 'cmn.appstudio': false,
                 'cmn.internalFeatures': 'external',
                 'cmn.devspace': '',
-                'cmn.nodeVersion': expect.any(String)
+                'cmn.nodeVersion': expect.any(String),
+                'cmn.ideType': expect.any(String)
             }
         });
         delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
@@ -72,7 +73,8 @@ describe('ClientFactory Send Report Default Sample Rate', () => {
                 'cmn.appstudio': false,
                 'cmn.internalFeatures': 'external',
                 'cmn.devspace': '',
-                'cmn.nodeVersion': expect.any(String)
+                'cmn.nodeVersion': expect.any(String),
+                'cmn.ideType': expect.any(String)
             }
         });
 

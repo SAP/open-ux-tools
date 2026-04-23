@@ -115,19 +115,19 @@ export class YamlDocument {
      * @param options.comments - optional comments for no in value being added
      * @returns the node create from the value with any added comments
      */
-    createNode({ value, comments }: { value: unknown; comments?: NodeComment<unknown>[] }): yaml.YAMLSeq<Node> {
-        const newNode = this.documents[0].createNode(value) as YAMLSeq<yaml.Node>;
+    createNode({ value, comments }: { value: unknown; comments?: NodeComment<unknown>[] }): YAMLMap<Node, Node> {
+        const newNode = this.documents[0].createNode(value) as YAMLMap<yaml.Scalar, yaml.Scalar>;
         if (comments?.length) {
             for (const c of comments) {
                 const nodeIndex = newNode.items.findIndex((item) => {
-                    const keyValue = ((item as yaml.Pair).key as yaml.Scalar).value;
+                    const keyValue = item.key.value;
                     return keyValue === c.key;
                 });
-                ((newNode.items[nodeIndex] as yaml.Pair).value as yaml.Scalar).comment = c.comment;
+                (newNode.items[nodeIndex].value as yaml.Scalar).comment = c.comment;
             }
         }
 
-        return newNode;
+        return newNode as YAMLMap<Node, Node>;
     }
 
     /**

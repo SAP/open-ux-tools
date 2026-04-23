@@ -168,6 +168,12 @@ Object {
         "uri": "",
       },
       Object {
+        "alias": "Auditing",
+        "name": "com.sap.vocabularies.Auditing.v1",
+        "type": "reference",
+        "uri": "",
+      },
+      Object {
         "alias": "CDS",
         "name": "com.sap.vocabularies.CDS.v1",
         "type": "reference",
@@ -1421,6 +1427,11 @@ Object {
       Object {
         "alias": "Analytics",
         "name": "com.sap.vocabularies.Analytics.v1",
+        "type": "reference",
+      },
+      Object {
+        "alias": "Auditing",
+        "name": "com.sap.vocabularies.Auditing.v1",
         "type": "reference",
       },
       Object {

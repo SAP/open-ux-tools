@@ -21,7 +21,7 @@ import { PromptConfig, type PromptConfigResponseFormat } from './util/prompt';
 import { validate } from './util/validate';
 import { callTool, getTools } from './mcp-server';
 import { existsSync } from 'node:fs';
-import { join } from 'path';
+import { join } from 'node:path';
 
 const MESSAGES_LOG_FOLDER = join(__dirname, '../logs');
 

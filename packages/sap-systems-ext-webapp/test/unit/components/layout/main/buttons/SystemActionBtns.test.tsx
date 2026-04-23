@@ -46,7 +46,7 @@ describe('<Buttons />', () => {
         expect(testConBtn).not.toHaveClass('ms-Button--primary');
         fireEvent.click(testConBtn);
 
-        expect(testConnectionSpy).toHaveBeenCalledWith(systemInfoOnPrem);
+        expect(testConnectionSpy).toHaveBeenCalledWith(systemInfoOnPrem, undefined);
     });
 
     it('Test Connection button (BTP)', () => {
@@ -65,7 +65,7 @@ describe('<Buttons />', () => {
         const testConBtn = screen.getByRole('button', { name: 'Test Connection' });
         fireEvent.click(testConBtn);
 
-        expect(testConnectionSpy).toHaveBeenCalledWith(systemInfoBTP);
+        expect(testConnectionSpy).toHaveBeenCalledWith(systemInfoBTP, undefined);
     });
 
     it('Test Save system button (on-prem)', () => {
@@ -74,7 +74,7 @@ describe('<Buttons />', () => {
                 systemInfo={systemInfoOnPrem}
                 testConnectionBtnDisabled={false}
                 saveButtonDisabled={false}
-                connectionStatus={{ connected: true, message: 'Connected' }}
+                connectionStatus={{ connected: true, message: 'Connected', showOutputChannelLink: false }}
                 isDetailsUpdated={false}
                 resetStatus={jest.fn()}
             />
@@ -97,7 +97,7 @@ describe('<Buttons />', () => {
             <SystemActionBtns
                 systemInfo={systemInfoOnPrem}
                 saveButtonDisabled={false}
-                connectionStatus={{ connected: false, message: 'Not connected' }}
+                connectionStatus={{ connected: false, message: 'Not connected', showOutputChannelLink: true }}
                 isDetailsUpdated={false}
                 resetStatus={jest.fn()}
             />
@@ -119,7 +119,7 @@ describe('<Buttons />', () => {
             <SystemActionBtns
                 systemInfo={systemInfoOnPrem}
                 saveButtonDisabled={false}
-                connectionStatus={{ connected: false, message: 'Not connected' }}
+                connectionStatus={{ connected: false, message: 'Not connected', showOutputChannelLink: true }}
                 isDetailsUpdated={false}
                 resetStatus={jest.fn()}
             />
@@ -141,7 +141,7 @@ describe('<Buttons />', () => {
             <SystemActionBtns
                 systemInfo={systemInfoBTP}
                 saveButtonDisabled={false}
-                connectionStatus={{ connected: true, message: 'Connected' }}
+                connectionStatus={{ connected: true, message: 'Connected', showOutputChannelLink: false }}
                 isDetailsUpdated={false}
                 resetStatus={jest.fn()}
             />

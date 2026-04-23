@@ -1,7 +1,7 @@
 import type { WebAppActions } from '@sap-ux/sap-systems-ext-types';
 import type { BackendSystem } from '@sap-ux/store';
 import { initI18n } from '../../../../src/utils';
-import { SystemPanel } from '../../../../src/panel/system/sytemPanel';
+import { SystemPanel } from '../../../../src/panel/system/systemPanel';
 import { SystemPanelViewType } from '../../../../src/utils/constants';
 import * as vscodeMod from 'vscode';
 import * as actions from '../../../../src/panel/system/actions';

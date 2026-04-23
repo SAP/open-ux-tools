@@ -273,7 +273,7 @@ describe('QuickActionList', () => {
             quickAction2.click();
             quickAction2 = screen.getByRole('button', { name: /quick action 2/i });
             expect(quickAction2).toBeEnabled();
-            quickAction2 = screen.getByRole('menuitem', { name: /Disabled child 2/i });
+            quickAction2 = screen.getByRole('menuitem', { name: /submenu2/i });
             expect(quickAction2.getAttribute('aria-disabled')).toBe('true');
 
             // nested quick action - single child

@@ -1,0 +1,79 @@
+{
+    "entitySetName": "Travel",
+    "semanticKeys": [
+        {}
+    ],
+    "navPropEntities": [
+        {
+            "entitySetName": "TravelAgency",
+            "entityPath": "_Agency",
+            "navPropEntities": [
+                {
+                    "entitySetName": "Country",
+                    "entityPath": "_Country",
+                    "navPropEntities": []
+                }
+            ]
+        },
+        {
+            "entitySetName": "Booking",
+            "entityPath": "_Booking",
+            "navPropEntities": [
+                {
+                    "entitySetName": "BookingSupplement",
+                    "entityPath": "_BookSupplement",
+                    "navPropEntities": [
+                        {
+                            "entitySetName": "Supplement",
+                            "entityPath": "_Product",
+                            "navPropEntities": []
+                        },
+                        {
+                            "entitySetName": "SupplementText",
+                            "entityPath": "_SupplementText",
+                            "navPropEntities": []
+                        }
+                    ]
+                },
+                {
+                    "entitySetName": "Airline",
+                    "entityPath": "_Carrier",
+                    "navPropEntities": [
+                        {
+                            "entitySetName": "Currency",
+                            "entityPath": "_Currency",
+                            "navPropEntities": []
+                        }
+                    ]
+                },
+                {
+                    "entitySetName": "Passenger",
+                    "entityPath": "_Customer",
+                    "navPropEntities": [
+                        {
+                            "entitySetName": "Country",
+                            "entityPath": "_Country",
+                            "navPropEntities": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "entitySetName": "Currency",
+            "entityPath": "_Currency",
+            "navPropEntities": []
+        },
+        {
+            "entitySetName": "Passenger",
+            "entityPath": "_Customer",
+            "navPropEntities": [
+                {
+                    "entitySetName": "Country",
+                    "entityPath": "_Country",
+                    "navPropEntities": []
+                }
+            ]
+        }
+    ]
+}

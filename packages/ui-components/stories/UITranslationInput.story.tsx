@@ -49,6 +49,7 @@ export const translationInput = () => {
     const [value, setValue] = React.useState('Content');
     const [disabled, setDisabled] = React.useState(false);
     const [busy, setBusy] = React.useState(false);
+    const [invertedCalloutTheme, setInvertedCalloutTheme] = React.useState(false);
     const [i18nBundle, setI18nBundle] = React.useState(getI18nBundle());
     const onChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         setValue(newValue || '');
@@ -107,6 +108,13 @@ export const translationInput = () => {
                         setBusy(value);
                     }}
                 />
+                <UICheckbox
+                    label="Inverted theme"
+                    checked={invertedCalloutTheme}
+                    onChange={(event: any, value: any) => {
+                        setInvertedCalloutTheme(value);
+                    }}
+                />
             </Stack>
             <Stack style={{ width: '300px' }}>
                 <UITranslationInput
@@ -132,6 +140,7 @@ export const translationInput = () => {
                               }
                             : undefined
                     }
+                    invertedCalloutTheme={invertedCalloutTheme}
                 />{' '}
             </Stack>
             <I18nTable tableData={tableData} onDelete={onDeleteEntry} />

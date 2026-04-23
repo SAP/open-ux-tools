@@ -1,5 +1,23 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.2.1
+
+### Patch Changes
+
+- c53a4ba: chore(sap-systems-ext-webapp): upgrade shared devDependencies (jest 30, i18next 25)
+
+## 0.2.0
+
+### Minor Changes
+
+- 2d20f19: adds support for the generic host connection type
+
+## 0.1.5
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
 ## 0.1.4
 
 ### Patch Changes

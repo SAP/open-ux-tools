@@ -9,7 +9,8 @@
     "localUI5Version": "1.82.2",
     "targetFolder": "./test-output",
     "name": "lrop_v2_no_url",
-    "sapux": true
+    "sapux": true,
+    "enableEslint": false
   },
   "service": {
     "edmx": "<Set in tests to avoid replication: add from ../sepmra_prod_man_v2/metadata.xml>"

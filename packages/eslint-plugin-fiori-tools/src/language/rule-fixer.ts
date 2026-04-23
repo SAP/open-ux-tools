@@ -1,6 +1,6 @@
 import type { JSONRuleContext } from './rule-factory';
 import type { AnyNode, MemberNode, ObjectNode } from '@humanwhocodes/momoa';
-import type { DeepestExistingPathResult } from '../utils/helpers';
+import { type DeepestExistingPathResult } from '../utils/helpers';
 import type { RuleTextEdit, RuleTextEditor } from '@eslint/core';
 
 /**
@@ -38,6 +38,13 @@ export interface JsonFixerConfig<MessageIds extends string, RuleOptions extends 
      * If not specified, it will be inferred based on the context.
      */
     operation?: 'insert' | 'update' | 'delete';
+
+    /**
+     * Whether the operation has to be performed on the parent node.
+     * Example: if personalization.filter is disabled, set personalization to true,
+     * instead of updating the value of filter property only.
+     */
+    fixParent?: boolean;
 }
 
 /**
@@ -104,21 +111,32 @@ export function createJsonFixer<MessageIds extends string, RuleOptions extends u
         }
     }
 
+    const fixParent = config.fixParent;
+    let fixNode = node;
+    if (fixParent) {
+        // Parent object node (contains member nodes)
+        const parentObjectNode: AnyNode | undefined = context.sourceCode.getParent(node);
+        // Parent member node (contains value)
+        const parentMemberNode: AnyNode | undefined =
+            parentObjectNode && context.sourceCode.getParent(parentObjectNode);
+        fixNode = parentMemberNode?.type === 'Member' ? parentMemberNode : node;
+    }
+
     return (fixer: RuleTextEditor) => {
         try {
             switch (fixOperation) {
                 case 'update': {
-                    const result = handleUpdate(fixer, node, value);
+                    const result = handleUpdate(fixer, fixNode, value);
                     return result ? [result] : [];
                 }
 
                 case 'insert': {
-                    const result = handleInsert(fixer, node, missingSegments, value);
+                    const result = handleInsert(fixer, fixNode, missingSegments, value);
                     return result ? [result] : [];
                 }
 
                 case 'delete': {
-                    const result = handleDelete(fixer, node, context);
+                    const result = handleDelete(fixer, fixNode, context);
                     if (!result) {
                         return [];
                     }

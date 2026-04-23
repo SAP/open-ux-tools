@@ -1,4 +1,4 @@
-# Ensure the Correct Copy ToClipboard Configuration for Tables in SAP Fiori Elements for OData V2 and V4 Applications (`sap-copy-to-clipboard`)
+# Ensure the Correct Copy To Clipboard Configuration for Tables in SAP Fiori Elements for OData V2 and OData V4 Applications (`sap-copy-to-clipboard`)
 
 ## Rule Details
 
@@ -16,7 +16,7 @@ The copy functionality should not be hidden from the preview.
 
 ### Warning Message
 
-#### Incorrect Manifest File in OData V2
+#### Incorrect `manifest.json` File in OData V2
 
 ```json
 {
@@ -28,7 +28,7 @@ The copy functionality should not be hidden from the preview.
 
 The `copy` property is set to `false` which hides the "Copy" button.
 
-#### Incorrect Manifest File in OData V4
+#### Incorrect `manifest.json` File in OData V4
 
 ```json
 {
@@ -40,7 +40,7 @@ The `copy` property is set to `false` which hides the "Copy" button.
 
 The `disableCopyToClipboard` property is set to `true` which hides the "Copy" button.
 
-#### Correct Manifest File in OData V2
+#### Correct `manifest.json` File in OData V2
 
 ```json
 {
@@ -52,7 +52,7 @@ The `disableCopyToClipboard` property is set to `true` which hides the "Copy" bu
 
 The `copy` property is correctly set to `true` or omitted from  `tableSettings`.
 
-#### Correct Manifest File in OData V4
+#### Correct `manifest.json` File in OData V4
 
 ```json
 {

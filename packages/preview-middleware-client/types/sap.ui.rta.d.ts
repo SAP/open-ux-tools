@@ -274,6 +274,10 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
          * Key representing whether this is a cloud scenario
          */
         isCloud: boolean;
+        /**
+         * Whether this is a Cloud Foundry ADP scenario.
+         */
+        isCloudFoundry?: boolean;
     }
 
     export interface RTAOptions {
@@ -291,8 +295,13 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getDomRef(): Element | null;
     }
 
+    export interface ManifestObject {
+        resolveUri(uri: string): string;
+    }
+
     export interface AppComponent {
         getManifest(): Manifest;
+        getManifestObject(): ManifestObject;
         getRootControl(): {
             getPages(): FEAppPage[];
         };

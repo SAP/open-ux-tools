@@ -1,1 +1,1 @@
-export type { CfOAuthMiddlewareConfig } from './types';
+export type { BackendProxyMiddlewareCfConfig, ApprouterDestination, ApprouterExtension } from './types';

@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises';
 import { CdsAnnotationProvider, getXmlServiceArtifacts } from '../../src';
-import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { adaptedUrl, normalizeAnnotationNode, normalizeUriInKey } from './raw-metadata-serializer';
 import { PROJECTS } from './projects';

@@ -1,2 +1,2 @@
-export * from './system/sytemPanel';
+export * from './system/systemPanel';
 export * from './panelManager';

@@ -94,7 +94,8 @@ describe('prompting.ts', () => {
                   },
                   "enableEslint": {
                     "advancedOption": true,
-                    "default": false,
+                    "default": true,
+                    "hide": true,
                   },
                   "enableTypeScript": {
                     "default": false,
@@ -468,7 +469,7 @@ describe('prompting.ts', () => {
                 {
                     addDeployConfig: { validatorCallback: expect.toBeFunction() },
                     addFlpConfig: { validatorCallback: expect.toBeFunction() },
-                    enableEslint: { advancedOption: true, default: false },
+                    enableEslint: { advancedOption: true, default: true, hide: true },
                     enableTypeScript: { default: false },
                     enableVirtualEndpoints: { hide: false },
                     name: { defaultValue: undefined },

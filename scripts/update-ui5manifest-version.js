@@ -17,7 +17,7 @@ const { execSync } = require('child_process');
 
 const CONFIG = {
     PACKAGE_JSON_PATH: 'packages/ui5-application-writer/package.json',
-    TEST_PACKAGES: ['@sap-ux/ui5-application-writer', '@sap-ux/fiori-app-sub-generator', '@sap-ux/ui5-info'],
+    TEST_PACKAGES: ['@sap-ux/ui5-application-writer', '@sap-ux/fiori-app-sub-generator', '@sap-ux/ui5-info']
 };
 
 /** Gets @ui5/manifest version from package.json */
@@ -59,7 +59,6 @@ async function updateUI5VersionFallback() {
     }
 }
 
-
 /**
  * Updates @ui5/manifest test fixtures, UI5 version fallbacks, and updates lockfile.
  * Note: Changeset creation is handled by dependency-changesets-action in the workflow.
@@ -76,7 +75,6 @@ async function main() {
 
     let success = true;
 
-
     console.log('\nUpdating UI5 version fallbacks...');
     if (!(await updateUI5VersionFallback())) success = false;
 
@@ -85,7 +83,7 @@ async function main() {
 
     console.log('\nRunning pnpm install...');
     try {
-        execSync('pnpm install --lockfile-only', { stdio: 'inherit' });
+        execSync('pnpm install', { stdio: 'inherit' });
     } catch (e) {
         console.error(`  pnpm install failed: ${e.message}`);
         success = false;

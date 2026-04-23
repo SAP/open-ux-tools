@@ -60,7 +60,7 @@ async function sapSystemDropdownPicker(
 ): Promise<BackendSystemKey> {
     const allBackendSystems = await systemService.getAll({
         includeSensitiveData: false,
-        backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+        backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service', 'generic_host'] }
     });
     const quickPickItems = allBackendSystems.map((system) => ({
         label: system.name,

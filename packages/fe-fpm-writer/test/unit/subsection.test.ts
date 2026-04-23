@@ -8,6 +8,7 @@ import type { Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifestSections from './sample/section/webapp/manifest.json';
 import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
+import * as fileAccess from '@sap-ux/project-access/dist/file';
 
 const testDir = join(__dirname, 'sample/subsection');
 
@@ -15,6 +16,7 @@ describe('SubCustomSection generateCustomSubSection', () => {
     let fs: Editor;
     // Prepare manifest for sub sections scenario by reusing manifest from sections
     const manifest = JSON.parse(JSON.stringify(manifestSections));
+
     manifest['sap.ui5'].routing.targets.sample.options.settings.content.body.sections = {};
     // Basic custom sub section object
     const customSubSection: CustomSubSection = {
@@ -37,6 +39,7 @@ describe('SubCustomSection generateCustomSubSection', () => {
         fs = create(createStorage());
         fs.delete(testDir);
         fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
+        jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
     });
 
     const testVersions = ['1.85', '1.86', '1.98'];

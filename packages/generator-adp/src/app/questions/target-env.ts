@@ -40,7 +40,7 @@ export function getTargetEnvPrompt(
             hint: t('prompts.targetEnvTooltip'),
             breadcrumb: t('prompts.targetEnvBreadcrumb')
         },
-        validate: (value: string) => validateEnvironment(value, isCFLoggedIn),
+        validate: (value: string) => validateEnvironment(value, isCFLoggedIn, cfConfig),
         additionalMessages: (value: string) => getTargetEnvAdditionalMessages(value, isCFLoggedIn, cfConfig)
     } as ListQuestion<TargetEnvAnswers>;
 }
@@ -56,7 +56,7 @@ export function getEnvironments(appWizard: AppWizard, isCfInstalled: boolean): E
     const choices: EnvironmentChoice[] = [{ name: 'ABAP', value: TargetEnv.ABAP }];
 
     if (isCfInstalled) {
-        choices.push({ name: 'Cloud Foundry', value: TargetEnv.CF });
+        choices.push({ name: 'SAP BTP, Cloud Foundry environment', value: TargetEnv.CF });
     } else {
         appWizard.showInformation(t('error.cfNotInstalled'), MessageType.prompt);
     }

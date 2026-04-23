@@ -6,6 +6,7 @@ import { Cli } from '@sap/cf-tools';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 import type {
     CfConfig,
@@ -19,7 +20,8 @@ import type {
     CfServiceInstance,
     MtaYaml,
     ServiceInfo,
-    CfUi5AppInfo
+    CfUi5AppInfo,
+    ServiceKeyCredentialsWithTags
 } from '../../types';
 import { t } from '../../i18n';
 import { getProjectNameForXsSecurity } from '../project';
@@ -27,6 +29,10 @@ import { createServiceKey, getServiceKeys, requestCfApi } from './cli';
 
 interface FDCResponse {
     results: CFApp[];
+}
+
+interface FDCInboundsResponse {
+    inbounds: ManifestNamespace.Inbound;
 }
 
 interface CreateServiceOptions {
@@ -54,7 +60,7 @@ export async function getBusinessServiceInfo(
     config: CfConfig,
     logger: ToolsLogger
 ): Promise<ServiceInfo | null> {
-    const serviceKeys = await getServiceInstanceKeys(
+    const serviceKeys = await getOrCreateServiceInstanceKeys(
         {
             spaceGuids: [config.space.GUID],
             names: [businessService]
@@ -183,6 +189,47 @@ export async function getCfUi5AppInfo(
 }
 
 /**
+ * Get inbounds for a base application from the FDC service.
+ *
+ * @param {string} appId - The application ID.
+ * @param {string} appHostId - The app host ID.
+ * @param {CfConfig} cfConfig - The CF config.
+ * @param {ToolsLogger} logger - The logger.
+ * @param {string} lang - The language parameter (defaults to 'en').
+ * @returns {Promise<ManifestNamespace.Inbound | undefined>} The inbounds or undefined if empty.
+ */
+export async function getCfBaseAppInbounds(
+    appId: string,
+    appHostId: string,
+    cfConfig: CfConfig,
+    logger?: ToolsLogger,
+    lang: string = 'en'
+): Promise<ManifestNamespace.Inbound | undefined> {
+    const requestArguments = getFDCRequestArguments(cfConfig);
+
+    const params = new URLSearchParams({ appId, appHostId, 'sap-language': lang });
+    const url = `${requestArguments.url}/api/business-service/inbounds?${params}`;
+
+    logger?.log(`Fetching inbounds from FDC: ${url}`);
+
+    try {
+        const response = await axios.get<FDCInboundsResponse>(url, requestArguments.options);
+
+        if (response.status !== 200) {
+            throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
+        }
+
+        logger?.log('Successfully retrieved inbounds from FDC');
+
+        const inbounds = response.data.inbounds;
+        return inbounds && Object.keys(inbounds).length > 0 ? inbounds : undefined;
+    } catch (e) {
+        logger?.debug(e);
+        throw new Error(t('error.failedToGetFDCInbounds', { error: e.message }));
+    }
+}
+
+/**
  * Creates a service instance.
  *
  * @param {string} plan - The service plan.
@@ -204,7 +251,7 @@ export async function createServiceInstance(
             `Creating service instance '${serviceInstanceName}' of service '${serviceName}' with '${plan}' plan`
         );
 
-        const commandParameters: string[] = ['create-service', serviceName, plan, serviceInstanceName];
+        const commandParameters: string[] = ['create-service', serviceName, plan, serviceInstanceName, '--wait'];
 
         if (xsSecurityProjectName) {
             let xsSecurity = null;
@@ -223,7 +270,11 @@ export async function createServiceInstance(
             commandParameters.push('-c', JSON.stringify(xsSecurity));
         }
 
-        await Cli.execute(commandParameters);
+        const result = await Cli.execute(commandParameters);
+        if (result && result.exitCode !== 0) {
+            logger?.error(`Service creation failed: ${result.stderr || 'Unknown error'}`);
+            throw new Error(`Service creation failed with code ${result.exitCode}: ${result.stderr || ''}`);
+        }
         logger?.log(`Service instance '${serviceInstanceName}' created successfully`);
     } catch (e) {
         logger?.error(e);
@@ -254,6 +305,7 @@ export async function getServiceNameByTags(spaceGuid: string, tags: string[]): P
  * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string[]} initialServices - The initial services.
  * @param {string} timestamp - The timestamp.
+ * @param {string} spaceGuid - The space GUID.
  * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>} The promise.
@@ -262,6 +314,7 @@ export async function createServices(
     yamlContent: MtaYaml,
     initialServices: string[],
     timestamp: string,
+    spaceGuid: string,
     templatePathOverwrite?: string,
     logger?: ToolsLogger
 ): Promise<void> {
@@ -291,6 +344,13 @@ export async function createServices(
                     }
                 );
             }
+            await getOrCreateServiceInstanceKeys(
+                {
+                    spaceGuids: [spaceGuid],
+                    names: [resource.parameters?.['service-name'] ?? '']
+                },
+                logger
+            );
         }
     }
 }
@@ -302,7 +362,7 @@ export async function createServices(
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<ServiceInfo | null>} The service instance keys.
  */
-export async function getServiceInstanceKeys(
+export async function getOrCreateServiceInstanceKeys(
     serviceInstanceQuery: GetServiceInstanceParams,
     logger?: ToolsLogger
 ): Promise<ServiceInfo | null> {
@@ -365,16 +425,78 @@ export async function getOrCreateServiceKeys(
 ): Promise<ServiceKeys[]> {
     const serviceInstanceName = serviceInstance.name;
     try {
-        const credentials = await getServiceKeys(serviceInstance.guid);
+        const credentials = await getServiceKeys(serviceInstance.guid, 'updated_at', logger);
         if (credentials?.length > 0) {
             return credentials;
         } else {
             const serviceKeyName = serviceInstanceName + '_key';
             logger?.log(`Creating service key '${serviceKeyName}' for service instance '${serviceInstanceName}'`);
             await createServiceKey(serviceInstanceName, serviceKeyName);
-            return getServiceKeys(serviceInstance.guid);
+            return getServiceKeys(serviceInstance.guid, 'updated_at', logger);
         }
     } catch (e) {
         throw new Error(t('error.failedToGetOrCreateServiceKeys', { serviceInstanceName, error: e.message }));
+    }
+}
+
+/**
+ * Gets service tags for a given service name.
+ *
+ * @param {string} spaceGuid - The space GUID.
+ * @param {string} serviceName - The service name (e.g., 'xsuaa', 'hana').
+ * @returns {Promise<string[]>} The service tags.
+ */
+export async function getServiceTags(spaceGuid: string, serviceName: string): Promise<string[]> {
+    const json: CfAPIResponse<CfServiceOffering> = await requestCfApi<CfAPIResponse<CfServiceOffering>>(
+        `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}&names=${serviceName}`
+    );
+    const serviceOffering = json?.resources?.find((resource: CfServiceOffering) => resource.name === serviceName);
+    return serviceOffering?.tags ?? [];
+}
+
+/**
+ * Fetches service tags and credentials for a single app-router resource (xsuaa/destination).
+ *
+ * @param {string} spaceGuid - The space GUID.
+ * @param {string} serviceName - The service name (e.g. 'xsuaa', 'destination').
+ * @param {string} serviceInstanceName - The service instance name.
+ * @param {string} plan - The service plan.
+ * @param {ToolsLogger} logger - Optional logger.
+ * @returns {Promise<ServiceKeyCredentialsWithTags | null>} Service key credentials with tags returned by the CF API.
+ */
+export async function getServiceKeyCredentialsWithTags(
+    spaceGuid: string,
+    serviceName: string,
+    serviceInstanceName: string,
+    plan: string,
+    logger?: ToolsLogger
+): Promise<ServiceKeyCredentialsWithTags | null> {
+    try {
+        const tags = await getServiceTags(spaceGuid, serviceName);
+
+        const serviceInstances = await getServiceInstance({
+            names: [serviceInstanceName],
+            spaceGuids: [spaceGuid]
+        });
+
+        if (serviceInstances.length === 0) {
+            logger?.error(`Service instance '${serviceInstanceName}' not found, skipping`);
+            return null;
+        }
+
+        const credentials = await getOrCreateServiceKeys(serviceInstances[0], logger);
+
+        return {
+            label: serviceName,
+            name: serviceInstanceName,
+            tags,
+            plan,
+            credentials: credentials?.[0].credentials
+        };
+    } catch (e) {
+        logger?.error(
+            `Failed to get credentials and tags for service '${serviceName}' (instance: '${serviceInstanceName}'): ${e.message}`
+        );
+        return null;
     }
 }

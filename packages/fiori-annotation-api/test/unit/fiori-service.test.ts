@@ -219,7 +219,7 @@ function applyChanges(service: FioriAnnotationService, changes: Change[]): Set<s
     return uris;
 }
 
-async function testRead(
+export async function testRead(
     root: string,
     initialChanges: Change[],
     serviceName = 'mainService',

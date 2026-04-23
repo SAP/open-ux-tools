@@ -1,4 +1,4 @@
-// Last content update: Mon Feb 16 2026 12:18:31 GMT+0100 (Central European Standard Time)
+// Last content update: Fri Mar 06 2026 12:24:45 GMT+0100 (Central European Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -1700,7 +1700,6 @@ export default {
             '$Kind': 'Term',
             '$Nullable': true,
             '$AppliesTo': ['Property', 'Parameter'],
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 'The temporal value represented by the annotated property or parameter shall be shown on the UI in the given style',
             '@Org.OData.Core.V1.LongDescription':

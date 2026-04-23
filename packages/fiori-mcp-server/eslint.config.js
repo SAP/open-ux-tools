@@ -1,5 +1,5 @@
 const base = require('../../eslint.config.js');
-const tsParser = require('@typescript-eslint/parser');
+const { tsParser } = require('typescript-eslint');
 
 module.exports = [
     ...base,
@@ -12,4 +12,11 @@ module.exports = [
             },
         },
     },
+    {
+        rules: {
+            // @modelcontextprotocol/sdk uses package exports (no physical files at subpaths);
+            // TypeScript + esbuild resolve it correctly at build time.
+            'import/no-unresolved': ['error', { ignore: ['^@modelcontextprotocol/sdk/'] }]
+        }
+    }
 ];

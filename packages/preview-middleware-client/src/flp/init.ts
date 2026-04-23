@@ -8,7 +8,6 @@ import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import type AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
-import initCdm from './initCdm';
 import initConnectors from './initConnectors';
 import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import type Component from 'sap/ui/core/Component';
@@ -168,7 +167,7 @@ function registerModules(dataFromAppIndex: AppIndexData) {
  * @param container the UShell container
  */
 export async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
-    const urlParams = new URLSearchParams(window.location.hash);
+    const urlParams = new URLSearchParams(globalThis.location.hash);
     const appStateValue = urlParams.get('sap-iapp-state') ?? urlParams.get('/?sap-iapp-state');
     if (appStateValue) {
         const appStateService = await container.getServiceAsync<AppState>('AppState');
@@ -302,13 +301,7 @@ export async function init({
     enhancedHomePage?: boolean | null;
     enableCardGenerator?: boolean;
 }): Promise<void> {
-    // Set CDM configuration before importing ushell container
-    // to ensure proper configuration pickup during bootstrap
-    if (enhancedHomePage) {
-        initCdm();
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(globalThis.location.search);
     const container =
         sap?.ushell?.Container ??
         ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
@@ -321,6 +314,10 @@ export async function init({
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
+                // Prevent starting RTA when the FLP home component (#Shell-home) fires attachAppLoaded before the user navigates to the actual app.
+                if (!globalThis.location.hash || globalThis.location.hash.startsWith('#Shell-home')) {
+                    return;
+                }
                 const view = event.getParameter('componentInstance');
                 const pluginScript = flexSettings.pluginScript ?? '';
 
@@ -408,7 +405,7 @@ export async function init({
     renderer.placeAt('content');
 }
 
-// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access,@sap-ux/fiori-tools/sap-browser-api-warning
+// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access,@sap-ux/fiori-tools/sap-browser-api-warning, @sap-ux/fiori-tools/sap-no-global-variable
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
@@ -442,7 +439,6 @@ export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: U
             });
         }
 
-        // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-location-reload
-        window.location.reload();
+        globalThis.location.reload();
     }
 }

@@ -9,7 +9,8 @@
     "localUI5Version": "1.82.2",
     "targetFolder": "./test-output",
     "name": "alp_v2",
-    "sapux": true
+    "sapux": true,
+    "enableEslint": false
   },
   "service": {
     "servicePath": "/sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV",

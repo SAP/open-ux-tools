@@ -76,12 +76,62 @@ describe('getPrompts', () => {
                 guiOptions: {
                     hint: i18n.t('prompts.oDataAnnotationSourceURITooltip')
                 },
-                validate: expect.any(Function)
+                validate: expect.any(Function),
+                when: expect.any(Function)
             }
         ]);
         const maxAgeCondition = (prompts[2] as any).when;
         expect(maxAgeCondition({ uri: 'uri' })).toBeTruthy();
+
+        const annotationWhen = (prompts[3] as any).when;
+        expect(annotationWhen({ id: 'mainService' })).toBeTruthy();
     });
+
+    test('annotationUri prompt hidden when service has no server-side annotations', () => {
+        const noAnnotationDataSources = {
+            'mainService': {
+                'uri': '/sap/opu/odata/main/service',
+                'type': 'OData',
+                'settings': {
+                    'annotations': [],
+                    'localUri': 'localService/mockdata/metadata.xml'
+                }
+            }
+        } as Record<string, ManifestNamespace.DataSource>;
+        jest.spyOn(projectAccess, 'filterDataSourcesByType').mockReturnValueOnce(noAnnotationDataSources);
+
+        const prompts = getPrompts(noAnnotationDataSources);
+        const annotationWhen = (prompts[3] as any).when;
+        expect(annotationWhen({ id: 'mainService' })).toBeFalsy();
+    });
+
+    test('annotationUri prompt hidden when annotation URI does not start with /', () => {
+        const relativeAnnotationDataSources = {
+            'mainService': {
+                'uri': '/sap/opu/odata/main/service',
+                'type': 'OData',
+                'settings': {
+                    'annotations': ['annotation'],
+                    'localUri': 'localService/mockdata/metadata.xml'
+                }
+            },
+            'annotation': {
+                'uri': 'annotations/annotation.xml',
+                'type': 'ODataAnnotation',
+                'settings': {
+                    'localUri': 'localService/annotation.xml'
+                }
+            }
+        } as Record<string, ManifestNamespace.DataSource>;
+        jest.spyOn(projectAccess, 'filterDataSourcesByType').mockReturnValueOnce({
+            'mainService': relativeAnnotationDataSources['mainService']
+        });
+
+        const prompts = getPrompts(relativeAnnotationDataSources);
+        const annotationWhen = (prompts[3] as any).when;
+        expect(annotationWhen({ id: 'mainService' })).toBeFalsy();
+    });
+
     test('return prompts - no data sources', () => {
         jest.spyOn(projectAccess, 'filterDataSourcesByType').mockReturnValueOnce({});
 
@@ -128,7 +178,8 @@ describe('getPrompts', () => {
                 guiOptions: {
                     hint: i18n.t('prompts.oDataAnnotationSourceURITooltip')
                 },
-                validate: expect.any(Function)
+                validate: expect.any(Function),
+                when: expect.any(Function)
             }
         ]);
         const maxAgeCondition = (prompts[2] as any).when;

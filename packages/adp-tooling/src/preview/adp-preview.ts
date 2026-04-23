@@ -16,6 +16,7 @@ import type {
 } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
+import OvpRoutesHandler from './ovp-routes-handler';
 import type {
     AdpPreviewConfig,
     CommonChangeProperties,
@@ -48,7 +49,9 @@ export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
     CODE_EXT = '/adp/api/code_ext',
-    ANNOTATION = '/adp/api/annotation'
+    ANNOTATION = '/adp/api/annotation',
+    OVP_DATA_SOURCES = '/adp/api/ovp/datasources',
+    OVP_METAMODEL = '/adp/api/ovp/metamodel'
 }
 
 /**
@@ -67,6 +70,11 @@ export class AdpPreview {
      * Routes handler class to handle API requests
      */
     private routesHandler: RoutesHandler;
+
+    /**
+     * Routes handler for OVP bridge functions
+     */
+    private ovpRoutesHandler: OvpRoutesHandler | undefined;
 
     private lrep: LayeredRepositoryService | undefined;
     private descriptorVariantId: string | undefined;
@@ -150,6 +158,7 @@ export class AdpPreview {
             this.logger
         );
         this.routesHandler = new RoutesHandler(this.project, this.util, this.provider, this.logger);
+        this.ovpRoutesHandler = new OvpRoutesHandler(this.provider, this.logger);
 
         this.lrep = this.provider.getLayeredRepository();
         // fetch a merged descriptor from the backend
@@ -262,6 +271,11 @@ export class AdpPreview {
             ApiRoutes.ANNOTATION,
             this.routesHandler.handleGetAllAnnotationFilesMappedByDataSource as RequestHandler
         );
+
+        if (this.ovpRoutesHandler) {
+            router.get(ApiRoutes.OVP_DATA_SOURCES, this.ovpRoutesHandler.handleGetDataSources as RequestHandler);
+            router.post(ApiRoutes.OVP_METAMODEL, this.ovpRoutesHandler.handleGetMetaModel as RequestHandler);
+        }
     }
 
     /**

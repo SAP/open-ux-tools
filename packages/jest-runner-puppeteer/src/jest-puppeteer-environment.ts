@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import os from 'node:os';
 import { join } from 'node:path';
-import type { Context } from 'vm';
+import type { Context } from 'node:vm';
 
 const DIR = join(os.tmpdir(), 'jest_puppeteer_global_setup');
 

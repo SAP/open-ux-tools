@@ -668,4 +668,5 @@
     --vscode-gitDecoration-stageDeletedResourceForeground: #ad0707;
     --vscode-gitDecoration-conflictingResourceForeground: #ad0707;
     --vscode-gitDecoration-submoduleResourceForeground: #1258a7;
+    --vscode-cornerRadius-small: 4px;
 }

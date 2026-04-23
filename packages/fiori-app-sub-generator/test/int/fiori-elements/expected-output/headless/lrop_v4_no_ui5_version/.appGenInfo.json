@@ -12,7 +12,6 @@
     "ui5Theme": "sap_horizon",
     "ui5Version": "1.135.0",
     "enableCodeAssist": false,
-    "enableEslint": false,
     "enableTypeScript": false,
     "showMockDataInfo": true,
     "generatorVersion": "0.0.0",

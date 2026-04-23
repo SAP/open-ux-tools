@@ -1,16 +1,18 @@
 import React from 'react';
 import type { ReactElement } from 'react';
-import type { BackendSystem } from '@sap-ux/store';
+import type { SystemInfo } from '../../../../types';
+import { useTranslation } from 'react-i18next';
 import { UITextInput, UITooltip, UITooltipUtils } from '@sap-ux/ui-components';
 import { BasicAuthCreds } from './BasicAuthCreds';
-import { useTranslation } from 'react-i18next';
-
-import '../../../../styles/SystemMain.scss';
+import { ServicePath } from './ServicePath';
 import { getUrlErrorMessage, useTextInputOverflow } from './utils';
 
+import '../../../../styles/SystemMain.scss';
+
 interface OnPremSystemProps {
-    systemInfo?: BackendSystem;
+    systemInfo?: SystemInfo;
     setUrl: (url: string | undefined) => void;
+    setServicePath: (servicePath: string | undefined) => void;
     setClient: (client: string | undefined) => void;
     setUsername: (username: string) => void;
     setPassword: (password: string) => void;
@@ -24,6 +26,7 @@ interface OnPremSystemProps {
  * @param props - on-premise system props
  * @param props.systemInfo - the system information
  * @param props.setUrl - function to set the URL
+ * @param props.setServicePath - function to set the service path
  * @param props.setClient - function to set the client
  * @param props.setUsername - function to set the username
  * @param props.setPassword - function to set the password
@@ -34,6 +37,7 @@ interface OnPremSystemProps {
 export function OnPremSystem({
     systemInfo,
     setUrl,
+    setServicePath,
     setClient,
     setUsername,
     setPassword,
@@ -74,6 +78,9 @@ export function OnPremSystem({
                     />
                 </UITooltip>
             </div>
+            {systemInfo?.connectionType === 'generic_host' && (
+                <ServicePath setServicePath={setServicePath} setIsDetailsUpdated={setIsDetailsUpdated} />
+            )}
             <div className="store-text-field">
                 <label className="store-detail-label">{t('labels.client')}</label>
                 <UITextInput

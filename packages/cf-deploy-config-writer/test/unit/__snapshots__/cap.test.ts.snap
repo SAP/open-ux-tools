@@ -306,7 +306,7 @@ builder:
 `;
 
 exports[`CF Writer Generate deployment config for CAP project Add destination instance to a HTML5 app inside a CAP project 2`] = `
-"_schema-version: '3.1'
+"_schema-version: \\"3.1\\"
 ID: cappapp
 version: 1.0.0
 description: A simple CAP project.
@@ -330,7 +330,7 @@ modules:
     provides:
       - name: srv-api
         properties:
-          srv-url: '\${default-url}'
+          srv-url: \${default-url}
     requires:
       - name: cappapp-uaa
   - name: cappapp-db-deployer
@@ -392,7 +392,7 @@ modules:
       build-result: dist
       commands:
         - npm install
-        - 'npm run build:cf'
+        - npm run build:cf
       supported-platforms: []
 resources:
   - name: cappapp-db
@@ -401,7 +401,7 @@ resources:
       service: hana
       service-plan: hdi-shared
     properties:
-      hdi-service-name: '\${service-name}'
+      hdi-service-name: \${service-name}
   - name: cappapp-destination-service
     type: org.cloudfoundry.managed-service
     parameters:
@@ -417,12 +417,12 @@ resources:
             destinations:
               - Name: ui5
                 Type: HTTP
-                URL: 'https://ui5.sap.com'
+                URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
               - Name: srv-api
                 Type: HTTP
-                URL: '~{srv-api/srv-url}'
+                URL: ~{srv-api/srv-url}
                 ProxyType: Internet
                 Authentication: NoAuthentication
                 HTML5.DynamicDestination: true
@@ -1118,7 +1118,7 @@ modules:
     provides:
       - name: srv-api
         properties:
-          srv-url: '\${default-url}'
+          srv-url: \${default-url}
     requires:
       - name: captestproject-connectivity
       - name: captestproject-destination
@@ -1157,7 +1157,7 @@ modules:
       builder: custom
       commands:
         - npm install
-        - 'npm run build:cf'
+        - npm run build:cf
       supported-platforms: []
   - name: captestprojectproject2
     type: html5
@@ -1167,7 +1167,7 @@ modules:
       builder: custom
       commands:
         - npm install
-        - 'npm run build:cf'
+        - npm run build:cf
       supported-platforms: []
   - name: captestproject-destination-content
     type: com.sap.application.content
@@ -1217,20 +1217,20 @@ resources:
             existing_destinations_policy: update
             destinations:
               - Name: captestproject-srv-api
-                URL: '~{srv-api/srv-url}'
+                URL: ~{srv-api/srv-url}
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
                 HTML5.ForwardAuthToken: true
                 HTML5.DynamicDestination: true
               - Name: ui5
-                URL: 'https://ui5.sap.com'
+                URL: https://ui5.sap.com
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
               - Name: srv-api
                 Type: HTTP
-                URL: '~{srv-api/srv-url}'
+                URL: ~{srv-api/srv-url}
                 ProxyType: Internet
                 Authentication: NoAuthentication
                 HTML5.DynamicDestination: true
@@ -1255,7 +1255,7 @@ resources:
       service-plan: application
       path: ./xs-security.json
       config:
-        xsappname: 'captestproject-\${org}-\${space}'
+        xsappname: captestproject-\${org}-\${space}
         tenant-mode: dedicated
       service-name: captestproject-xsuaa-service
 "

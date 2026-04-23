@@ -33,7 +33,8 @@ export function getInitialState(): SystemState {
                     count: 0
                 }
             },
-            connected: false
+            connected: false,
+            showOutputChannelLink: false
         },
         updateSystemStatus: {
             message: '',

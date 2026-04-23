@@ -159,9 +159,7 @@ describe('flp/WorkspaceConnector', () => {
     });
     describe('loadFeatures', () => {
         beforeAll(() => {
-            ObjectStorageConnector.loadFeatures.mockResolvedValue({
-                isVariantAdaptationEnabled: false
-            });
+            ObjectStorageConnector.loadFeatures.mockResolvedValue({});
         });
 
         test('version >= 1.90, no developerMode', async () => {
@@ -196,6 +194,24 @@ describe('flp/WorkspaceConnector', () => {
             expect(features.isVariantAdaptationEnabled).toBe(false);
         });
 
+        test('version >= 1.108, condensing enabled', async () => {
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
+            const features = await connector.loadFeatures();
+            expect(features.isCondensingEnabled).toBe(true);
+        });
+
+        test('version < 1.108, condensing disabled', async () => {
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.107.0' }]
+            });
+            const features = await connector.loadFeatures();
+            expect(features.isCondensingEnabled).toBe(false);
+        });
+
         test('scenario=ADAPTATION_PROJECT', async () => {
             VersionInfo.load.mockResolvedValueOnce({
                 name: 'SAPUI5 Distribution',
@@ -208,6 +224,19 @@ describe('flp/WorkspaceConnector', () => {
             });
             const features = await connector.loadFeatures();
             expect(features.isVariantAdaptationEnabled).toBe(true);
+        });
+
+        test('isAnnotationChangeEnabled is always false', async () => {
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.132.0' }]
+            });
+            ObjectStorageConnector.loadFeatures.mockResolvedValueOnce({
+                isVariantAdaptationEnabled: false,
+                isAnnotationChangeEnabled: true
+            });
+            const features = await connector.loadFeatures();
+            expect(features.isAnnotationChangeEnabled).toBe(false);
         });
     });
 });

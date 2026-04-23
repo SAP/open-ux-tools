@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { basename, join, dirname } from 'path';
+import { basename, join, dirname } from 'node:path';
 import type { AssertionValueFunctionContext, AssertionValueFunctionResult } from 'promptfoo';
 import { FOLDER_PATHS } from '../types';
 import assert from 'node:assert';

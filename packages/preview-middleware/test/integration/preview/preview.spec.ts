@@ -108,6 +108,8 @@ const prepare = async (ui5Version: string) => {
 
 const check = async (param: { page: Page }) => {
     const { page } = param;
+    const client = await page.context().newCDPSession(page);
+    await client.send('Network.clearBrowserCache');
     await page.goto(`${getUrl()}/my/custom/path/preview.html#app-preview`);
     await page.getByRole('button', { name: 'Go', exact: true }).click();
     await expect(page.getByText('Product_0', { exact: true })).toBeVisible();

@@ -12,4 +12,5 @@ export interface ConnectionStatus {
     message?: string;
     catalogResults?: CatalogServicesCounts;
     connected: boolean;
+    showOutputChannelLink: boolean;
 }

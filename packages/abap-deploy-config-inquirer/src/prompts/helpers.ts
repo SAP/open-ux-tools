@@ -1,4 +1,4 @@
-import type { UrlAbapTarget } from '@sap-ux/system-access';
+import type { AbapTarget } from '@sap-ux/ui5-config';
 import { t } from '../i18n';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS } from '../constants';
 import { queryPackages } from '../utils';
@@ -20,6 +20,30 @@ import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
 import type { ChoiceOptions, ListChoiceOptions } from 'inquirer';
 import { getBackendSystemDisplayName, getSystemDisplayName } from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+
+/**
+ * Normalizes a URL by trimming whitespace and removing any trailing slash.
+ *
+ * @param url - the URL to normalize
+ * @returns the normalized URL
+ */
+function normalizeUrl(url: string): string {
+    return url.trim().replace(/\/$/, '');
+}
+
+/**
+ * Resolve the effective URL from an ABAP target, accounting for an optional connect path.
+ *
+ * @param target - the ABAP target containing the base URL and optional connect path
+ * @returns the resolved URL to be used for system matching, or undefined if no base URL is provided
+ */
+function resolveTargetUrl(target: AbapTarget): string | undefined {
+    try {
+        return target.connectPath ? new URL(target.connectPath, target.url).href : target.url;
+    } catch {
+        return target.url;
+    }
+}
 
 /**
  * Returns a list of destination choices.
@@ -52,9 +76,6 @@ async function getBackendTargetChoices(
     backendTarget?: BackendTarget,
     backendSystems: BackendSystem[] = []
 ): Promise<AbapSystemChoice[]> {
-    let target: UrlAbapTarget | undefined;
-    let targetExistsInStore = false;
-
     const choices: AbapSystemChoice[] = [
         {
             name: t('choices.targetSystemUrl'),
@@ -62,53 +83,57 @@ async function getBackendTargetChoices(
         }
     ];
 
-    if (backendTarget?.abapTarget) {
-        target = (backendTarget.abapTarget as UrlAbapTarget) ?? {};
-    }
+    const target = backendTarget?.abapTarget;
+    const targetUrl = target ? resolveTargetUrl(target) : undefined;
 
-    const systemChoices: AbapSystemChoice[] = Object.values(backendSystems)
-        .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, caseFirst: 'lower' }))
-        .map((system) => {
-            let isDefault = false;
-            if (!targetExistsInStore && target?.url) {
-                isDefault = targetExistsInStore =
-                    system.url.trim().replace(/\/$/, '') === target.url.trim().replace(/\/$/, '') &&
-                    (system.client ?? '') === (target?.client ?? '');
-            }
-            return {
-                name: isDefault
-                    ? `${getBackendSystemDisplayName(system)} (Source system)`
-                    : (getBackendSystemDisplayName(system) ?? ''),
-                value: system.url,
-                isDefault,
-                scp: !!system.serviceKeys, // legacy service key store entries
-                isAbapCloud: system.authenticationType === AuthenticationType.ReentranceTicket,
-                client: system.client
-            };
-        });
+    const sorted = [...backendSystems].sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { numeric: true, caseFirst: 'lower' })
+    );
+
+    // Identify the stored system that matches the current target (by normalized URL + client)
+    const matchedSystem = targetUrl
+        ? sorted.find(
+              (system) =>
+                  normalizeUrl(system.url) === normalizeUrl(targetUrl) &&
+                  (system.client ?? '') === (target?.client ?? '')
+          )
+        : undefined;
+
+    const systemChoices: AbapSystemChoice[] = sorted.map((system) => {
+        const isDefault = system === matchedSystem;
+        return {
+            name: isDefault
+                ? `${getBackendSystemDisplayName(system)} (Source system)`
+                : (getBackendSystemDisplayName(system) ?? ''),
+            value: system.url,
+            isDefault,
+            scp: !!system.serviceKeys, // legacy service key store entries
+            isAbapCloud: system.authenticationType === AuthenticationType.ReentranceTicket,
+            client: system.client
+        };
+    });
 
     choices.push(...systemChoices);
 
-    // the backend system may have been added during generation but not yet saved in the store
-    // in this case we need to add it to the choices
-    if (!targetExistsInStore && target?.url && backendTarget?.systemName) {
-        const systemName = backendTarget.systemName;
+    // The backend system may have been added during generation but not yet saved in the store.
+    // Insert it as the first real choice (after the "Enter URL" option).
+    if (!matchedSystem && targetUrl && target && backendTarget?.systemName) {
         const user = await (backendTarget.serviceProvider as AbapServiceProvider)?.user();
+        const isAbapCloud = target.scp || target.authenticationType === AuthenticationType.ReentranceTicket;
         choices.splice(1, 0, {
             name: `${getSystemDisplayName(
-                systemName,
+                backendTarget.systemName,
                 user,
-                target.scp || target.authenticationType === AuthenticationType.ReentranceTicket
-                    ? 'ABAPCloud'
-                    : undefined // scp is retained for legacy apps yamls that contain this value
+                isAbapCloud ? 'ABAPCloud' : undefined // scp is retained for legacy app yaml entries
             )} (Source system)`,
-            value: target.url,
+            value: targetUrl,
             isDefault: true,
             scp: target.scp,
             isAbapCloud: target.authenticationType === AuthenticationType.ReentranceTicket,
             client: target.client
         });
     }
+
     return choices;
 }
 
@@ -133,7 +158,7 @@ export async function getAbapSystemChoices(
             choices = await getBackendTargetChoices(backendTarget, backendSystems);
         }
     } catch {
-        LoggerHelper.logger.error('errors.abapSystemChoices');
+        LoggerHelper.logger.error(t('errors.abapSystemChoices'));
     }
     return choices;
 }
@@ -218,10 +243,14 @@ export function updatePromptStateUrl(
         destinationUrl = destinations[previousAnswers.destination]?.Host;
     }
 
-    const targetSystemChoice =
-        previousAnswers?.targetSystem && previousAnswers.targetSystem !== TargetSystemType.Url
-            ? previousAnswers.targetSystem
-            : undefined;
+    let targetSystemChoice: string | undefined;
+    if (previousAnswers?.targetSystem && previousAnswers.targetSystem !== TargetSystemType.Url) {
+        try {
+            targetSystemChoice = new URL(previousAnswers.targetSystem).origin;
+        } catch {
+            targetSystemChoice = previousAnswers.targetSystem; // if it's not a valid URL, use the raw value
+        }
+    }
 
     PromptState.abapDeployConfig.url = destinationUrl ?? targetSystemChoice ?? backendTarget?.abapTarget.url ?? '';
 }

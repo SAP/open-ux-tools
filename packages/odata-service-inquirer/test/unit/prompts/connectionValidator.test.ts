@@ -136,6 +136,42 @@ describe('ConnectionValidator', () => {
         expect(validatorReentrance.validity).toEqual({});
     });
 
+    test('should allow non-origin urls for isSystem when connectType is odata_path', async () => {
+        jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        const serviceUrl = 'https://example.com/sap/opu/odata/sap/TEST_SERVICE';
+        const validator = new ConnectionValidator();
+
+        // With connectType: 'odata_path', non-origin paths should be allowed for system URLs
+        const result = await validator.validateUrl(serviceUrl, {
+            isSystem: true,
+            connectType: 'odata_path'
+        });
+        expect(result).toBe(true);
+        expect(validator.validity).toEqual({
+            urlFormat: true,
+            reachable: true,
+            authenticated: true
+        });
+    });
+
+    test('should allow non-origin urls for reentranceTicket when connectType is odata_path', async () => {
+        jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        const serviceUrl = 'https://example.com/sap/opu/odata/sap/TEST_SERVICE';
+        const validator = new ConnectionValidator();
+        validator.systemAuthType = 'reentranceTicket';
+
+        // With connectType: 'odata_path', non-origin paths should be allowed
+        const result = await validator.validateUrl(serviceUrl, {
+            connectType: 'odata_path'
+        });
+        expect(result).toBe(true);
+        expect(validator.validity).toEqual({
+            urlFormat: true,
+            reachable: true,
+            authenticated: true
+        });
+    });
+
     test('should handle url not found error', async () => {
         const axiosError = new AxiosError('', 'ENOTFOUND');
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(axiosError);
@@ -472,6 +508,96 @@ describe('ConnectionValidator', () => {
             reachable: true,
             urlFormat: true
         });
+    });
+
+    test('should validate auth with connectType odata_path using service endpoint instead of catalog', async () => {
+        const createProviderSpy = jest.spyOn(axiosExtension, 'createForAbap');
+        const listServicesV2Mock = jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices');
+        const listServicesV4Mock = jest.spyOn(axiosExtension.V4CatalogService.prototype, 'listServices');
+        // Mock the service method on ServiceProvider to verify it's called with the right path
+        // and the get method to ensure the service request is made
+        const getMock = jest.fn().mockResolvedValue({});
+        const serviceMock = jest.fn().mockReturnValue({ get: getMock } as unknown as ODataService);
+        jest.spyOn(ServiceProvider.prototype, 'service').mockImplementation(serviceMock);
+
+        const connectValidator = new ConnectionValidator();
+        const serviceUrl = 'https://example.com:1234/sap/opu/odata/sap/TEST_SERVICE';
+        const result = await connectValidator.validateAuth(serviceUrl, 'user1', 'pword1', {
+            isSystem: true,
+            sapClient: '999',
+            connectType: 'odata_path'
+        });
+
+        expect(result).toEqual({ valResult: true });
+        expect(createProviderSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                auth: {
+                    password: 'pword1',
+                    username: 'user1'
+                },
+                baseURL: 'https://example.com:1234',
+                params: {
+                    'sap-client': '999'
+                }
+            })
+        );
+        // When connectType is 'odata_path', catalog listServices should NOT be called
+        expect(listServicesV2Mock).not.toHaveBeenCalled();
+        expect(listServicesV4Mock).not.toHaveBeenCalled();
+        // Instead, the service method should be called with the URL path (trailing slash added by the implementation)
+        expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/TEST_SERVICE/');
+        // Verify the service request is made by calling get('')
+        expect(getMock).toHaveBeenCalledWith('');
+        expect(connectValidator.validity).toEqual({
+            authenticated: true,
+            reachable: true,
+            urlFormat: true
+        });
+    });
+
+    test('should retain connectType from createSystemConnection for subsequent validateAuth calls after 401', async () => {
+        const listServicesV2Mock = jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices');
+        const listServicesV4Mock = jest.spyOn(axiosExtension.V4CatalogService.prototype, 'listServices');
+        // Mock the service method to track calls - first returns 401, second succeeds
+        const getMock = jest.fn().mockRejectedValueOnce(newAxiosErrorWithStatus(401)).mockResolvedValueOnce({});
+        const serviceMock = jest.fn().mockReturnValue({ get: getMock } as unknown as ODataService);
+        jest.spyOn(ServiceProvider.prototype, 'service').mockImplementation(serviceMock);
+
+        const connectValidator = new ConnectionValidator();
+        const serviceUrl = 'https://example.com:1234/sap/opu/odata/sap/TEST_SERVICE';
+
+        // First call with connectType: 'odata_path' - returns 401 (auth required)
+        const firstResult = await connectValidator.validateAuth(serviceUrl, 'user1', 'wrongpword', {
+            isSystem: true,
+            sapClient: '999',
+            connectType: 'odata_path'
+        });
+
+        // First call should indicate auth failure
+        expect(firstResult.valResult).toContain('Authentication');
+        expect(firstResult.errorType).toBe('AUTH');
+        expect(listServicesV2Mock).not.toHaveBeenCalled();
+        expect(listServicesV4Mock).not.toHaveBeenCalled();
+        expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/TEST_SERVICE/');
+
+        // Reset mocks for second call
+        listServicesV2Mock.mockClear();
+        listServicesV4Mock.mockClear();
+        serviceMock.mockClear();
+
+        // Second call WITHOUT explicitly passing connectType - should use the retained 'odata_path' connectType
+        const secondResult = await connectValidator.validateAuth(serviceUrl, 'user2', 'correctpword', {
+            isSystem: true,
+            sapClient: '999'
+            // Note: connectType is NOT specified here - should use retained value
+        });
+
+        expect(secondResult).toEqual({ valResult: true });
+        // Should still use odata_path approach (service endpoint) instead of catalog
+        expect(listServicesV2Mock).not.toHaveBeenCalled();
+        expect(listServicesV4Mock).not.toHaveBeenCalled();
+        // Service method should be called again with the path
+        expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/TEST_SERVICE/');
     });
 
     test('should validate connectivity with `listServices` when connecting to sap systems', async () => {
@@ -910,6 +1036,49 @@ describe('ConnectionValidator', () => {
             errorType: ERROR_TYPE.AUTH,
             valResult: 'Authentication incorrect. Please check the SAP BTP destination authentication configuration.'
         });
+    });
+
+    test('should use specified servicePath to create system connection with AbapServiceProvider and ODataService', async () => {
+        const servicePath = '/sap/opu/odata/sap/TEST_SERVICE';
+        const mockOdataServiceGet = jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        const createForDestinationSpy = jest.spyOn(axiosExtension, 'createForDestination');
+
+        const connectValidator = new ConnectionValidator();
+        const result = await connectValidator.validateDestination(
+            {
+                Name: 'TEST_DEST',
+                Host: 'https://test-system:443',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'Test destination',
+                WebIDEUsage: 'odata_abap'
+            },
+            undefined,
+            servicePath
+        );
+
+        expect(result).toEqual({ valResult: true });
+
+        // Verify createForDestination was called to create the AbapServiceProvider
+        expect(createForDestinationSpy).toHaveBeenCalledWith(
+            {},
+            expect.objectContaining({
+                Name: 'TEST_DEST',
+                Host: 'https://test-system:443'
+            })
+        );
+
+        // Verify the AbapServiceProvider was created and stored
+        expect(connectValidator.serviceProvider).toBeDefined();
+
+        // Verify the ODataService was created using the servicePath
+        expect(connectValidator.odataService).toBeDefined();
+        expect(mockOdataServiceGet).toHaveBeenCalledWith('');
+
+        // Verify the validated URL includes the servicePath
+        expect(connectValidator.validatedUrl).toEqual('https://test_dest.dest/sap/opu/odata/sap/TEST_SERVICE');
+        expect(connectValidator.destinationUrl).toEqual('https://test-system:443/sap/opu/odata/sap/TEST_SERVICE');
     });
 
     test('should re-use `connectedSystem` when provided rather than re-authentication', async () => {

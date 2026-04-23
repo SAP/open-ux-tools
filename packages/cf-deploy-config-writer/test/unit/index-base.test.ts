@@ -27,6 +27,13 @@ jest.mock('@sap/cf-tools', () => ({
     apiGetInstanceCredentials: jest.fn()
 }));
 
+jest.mock('@sap/mta-lib', () => {
+    return {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        Mta: require('./mockMta').MockMta
+    };
+});
+
 let hasSyncMock: jest.SpyInstance;
 
 describe('CF Writer Base', () => {
@@ -177,7 +184,7 @@ describe('CF Writer Base', () => {
             } as Partial<CFBaseConfig>;
             jest.spyOn(unitTestFs, 'exists').mockReturnValueOnce(true);
             await expect(generateBaseConfig(config as CFBaseConfig, unitTestFs)).rejects.toThrow(
-                'A folder with same name already exists in the target directory'
+                'An `mta.yaml` file already exists in the target directory.'
             );
             delete config.abapServiceProvider?.abapService;
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrow(

@@ -234,6 +234,7 @@ export interface TransportAnswers {
 
 export interface AbapDeployConfigAnswers {
     url: string;
+    connectPath?: string;
     destination?: string;
     targetSystem?: string;
     client?: string;

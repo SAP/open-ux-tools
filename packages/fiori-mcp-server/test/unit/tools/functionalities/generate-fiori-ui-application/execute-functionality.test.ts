@@ -274,6 +274,53 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         expect(configContent.project.sapux).toBe(false);
     });
 
+    test('should succeed for FF_SIMPLE without service (no data source)', async () => {
+        const params: ExecuteFunctionalityInput = {
+            appPath: mockAppPath,
+            functionalityId: 'generate-fiori-ui-application',
+            parameters: {
+                appGenConfig: {
+                    floorplan: 'FF_SIMPLE',
+                    project: {
+                        name: 'testapp',
+                        targetFolder: mockAppPath
+                    }
+                }
+            }
+        };
+
+        const result = await executeFunctionality(params);
+
+        expect(result.status).toBe('Success');
+        expect(fsPromises.readFile as jest.Mock).not.toHaveBeenCalled();
+        const writeCallArgs = (fsPromises.writeFile as jest.Mock).mock.calls[0] as string[];
+        const configContent = JSON.parse(writeCallArgs[1] as string);
+        expect(configContent.project.sapux).toBe(false);
+        expect(configContent.service).toBeUndefined();
+    });
+
+    test('should only clean up metadata file when service is provided', async () => {
+        const params: ExecuteFunctionalityInput = {
+            appPath: mockAppPath,
+            functionalityId: 'generate-fiori-ui-application',
+            parameters: {
+                appGenConfig: {
+                    floorplan: 'FF_SIMPLE',
+                    project: {
+                        name: 'testapp',
+                        targetFolder: mockAppPath
+                    }
+                }
+            }
+        };
+
+        await executeFunctionality(params);
+
+        // Only config file should be cleaned up, not metadata (no service)
+        expect(fsPromises.unlink as jest.Mock).toHaveBeenCalledTimes(1);
+        expect(fsPromises.unlink as jest.Mock).toHaveBeenCalledWith(expect.stringContaining('-generator-config.json'));
+    });
+
     test('should set sapux to true for non-FF_SIMPLE floorplan', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,

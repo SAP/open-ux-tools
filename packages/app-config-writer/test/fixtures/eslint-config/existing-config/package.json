@@ -4,6 +4,7 @@
     "sapuxLayer": "VENDOR",
     "devDependencies": {
         "@sap/ux-ui5-tooling": "1.15.1",
+        "@sap-ux/eslint-plugin-fiori-tools": "^0.6.2",
         "eslint": "^8.0.0"
     },
     "scripts": {

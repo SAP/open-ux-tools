@@ -1,5 +1,176 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.101
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/telemetry@0.6.100
+
+## 0.13.100
+
+### Patch Changes
+
+- 237371b: fix(axios-extension): export EntitySetData type
+  feat(fiori-generator-shared): add ExternalServiceConfig headless type supporting metadata and entityData as inline values or file paths
+  feat(fiori-app-sub-generator): resolve external service metadata and entityData file paths in headless generator before passing to writer
+
+## 0.13.99
+
+### Patch Changes
+
+- Updated dependencies [67d1f8b]
+    - @sap-ux/telemetry@0.6.99
+
+## 0.13.98
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/telemetry@0.6.98
+
+## 0.13.97
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/telemetry@0.6.97
+    - @sap-ux/project-access@1.35.20
+
+## 0.13.96
+
+### Patch Changes
+
+- @sap-ux/btp-utils@1.1.12
+- @sap-ux/project-access@1.35.19
+- @sap-ux/telemetry@0.6.96
+
+## 0.13.95
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/telemetry@0.6.95
+
+## 0.13.94
+
+### Patch Changes
+
+- c53a4ba: chore(fiori-generator-shared): upgrade shared devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/telemetry@0.6.94
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+
+## 0.13.93
+
+### Patch Changes
+
+- Updated dependencies [e92850e]
+    - @sap-ux/telemetry@0.6.93
+
+## 0.13.92
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/telemetry@0.6.92
+
+## 0.13.91
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/telemetry@0.6.91
+
+## 0.13.90
+
+### Patch Changes
+
+- a41533f: chore(fiori-generator-shared): upgrade runtime dependencies (i18next 25.8.20, logform 2.7.0)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/telemetry@0.6.90
+
+## 0.13.89
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/telemetry@0.6.89
+
+## 0.13.88
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/telemetry@0.6.88
+
+## 0.13.87
+
+### Patch Changes
+
+- ae6758f: fix: update ESLint plugin URL in README template to @sap-ux/eslint-plugin-fiori-tools
+
+## 0.13.86
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+- Updated dependencies [5d452e5]
+    - @sap-ux/btp-utils@1.1.10
+    - @sap-ux/telemetry@0.6.87
+
+## 0.13.85
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/telemetry@0.6.86
+
+## 0.13.84
+
+### Patch Changes
+
+- Updated dependencies [2917c4c]
+- Updated dependencies [7c06ef0]
+- Updated dependencies [fdd57de]
+    - @sap-ux/telemetry@0.6.85
+    - @sap-ux/project-access@1.35.12
+
+## 0.13.83
+
+### Patch Changes
+
+- @sap-ux/btp-utils@1.1.9
+- @sap-ux/project-access@1.35.11
+- @sap-ux/telemetry@0.6.84
+
+## 0.13.82
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/telemetry@0.6.83
+
+## 0.13.81
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/telemetry@0.6.82
+
 ## 0.13.80
 
 ### Patch Changes

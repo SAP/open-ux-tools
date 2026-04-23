@@ -4,9 +4,16 @@ import { Prompts } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Manifest } from '@sap-ux/project-access';
 import { createAbapServiceProvider, type AbapTarget } from '@sap-ux/system-access';
-import type { DescriptorVariant, AdpPreviewConfigWithTarget } from '@sap-ux/adp-tooling';
+import type { DescriptorVariant, AdpPreviewConfigWithTarget, IManifestService } from '@sap-ux/adp-tooling';
 import type { AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
-import { getVariant, getAdpConfig, ManifestService, SystemLookup } from '@sap-ux/adp-tooling';
+import {
+    getVariant,
+    getAdpConfig,
+    ManifestService,
+    ManifestServiceCF,
+    SystemLookup,
+    isCFEnvironment
+} from '@sap-ux/adp-tooling';
 
 import { initI18n } from '../utils/i18n';
 import SubGeneratorBase from './sub-gen-base';
@@ -37,9 +44,9 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
      */
     protected readonly generatorType: GeneratorTypes;
     /**
-     * The manifest service.
+     * The manifest service (ABAP or CF).
      */
-    public manifestService: ManifestService;
+    public manifestService: IManifestService;
     /**
      * Whether the generator requires authentication.
      */
@@ -52,6 +59,10 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
      * The system lookup instance.
      */
     protected systemLookup: SystemLookup;
+    /**
+     * Whether this is a CF project.
+     */
+    protected isCFProject = false;
     /**
      * The VSCode instance.
      */
@@ -82,6 +93,16 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         await initI18n();
 
         this.systemLookup = new SystemLookup(this.logger);
+        this.isCFProject = await isCFEnvironment(this.projectPath);
+
+        if (this.isCFProject) {
+            this.system = '';
+            this.logger.log('CF project detected, will use build output for manifest');
+            this._registerPrompts(new Prompts(getSubGenAuthPages(this.generatorType, this.system)));
+            this.prompts.splice(0, 1, []);
+            return;
+        }
+
         const adpConfig = await getAdpConfig<AdpPreviewConfigWithTarget>(
             this.projectPath,
             path.join(this.projectPath, 'ui5.yaml')
@@ -107,34 +128,43 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
 
     /**
      * Retrieves and parses the manifest (app descriptor) of the current project.
-     * Requests credentials when required by the destination system.
+     * For CF projects, builds the project and reads the manifest from the dist folder.
+     * For ABAP projects, fetches the merged manifest via the ABAP service provider.
      *
      * @returns {Promise<Manifest>} The manifest.
      */
     protected async getManifest(): Promise<Manifest> {
-        let requestOptions: (AxiosRequestConfig & Partial<ProviderConfiguration>) | undefined;
-        if (this.requiresAuth) {
-            const credentials = (await this.prompt(getCredentialsPrompts(this.abapTarget, this.logger))) as Credentials;
-            requestOptions = { auth: { username: credentials.username, password: credentials.password } };
-        }
         this.variant = await getVariant(this.projectPath);
-        const yamlPath = path.join(this.projectPath, 'ui5.yaml');
-        const { target, ignoreCertErrors = false } = await getAdpConfig<AdpPreviewConfigWithTarget>(
-            this.projectPath,
-            yamlPath
-        );
-        const provider = await createAbapServiceProvider(
-            target,
-            { ...requestOptions, ignoreCertErrors },
-            true,
-            this.logger
-        );
-        this.manifestService = await ManifestService.initMergedManifest(
-            provider,
-            this.projectPath,
-            this.variant,
-            this.logger
-        );
+
+        if (this.isCFProject) {
+            this.manifestService = await ManifestServiceCF.init(this.projectPath, this.logger);
+        } else {
+            let requestOptions: (AxiosRequestConfig & Partial<ProviderConfiguration>) | undefined;
+            if (this.requiresAuth) {
+                const credentials = (await this.prompt(
+                    getCredentialsPrompts(this.abapTarget, this.logger)
+                )) as Credentials;
+                requestOptions = { auth: { username: credentials.username, password: credentials.password } };
+            }
+            const yamlPath = path.join(this.projectPath, 'ui5.yaml');
+            const { target, ignoreCertErrors = false } = await getAdpConfig<AdpPreviewConfigWithTarget>(
+                this.projectPath,
+                yamlPath
+            );
+            const provider = await createAbapServiceProvider(
+                target,
+                { ...requestOptions, ignoreCertErrors },
+                true,
+                this.logger
+            );
+            this.manifestService = await ManifestService.initMergedManifest(
+                provider,
+                this.projectPath,
+                this.variant,
+                this.logger
+            );
+        }
+
         const manifest = this.manifestService.getManifest();
         const oDataSources = this.manifestService.getManifestDataSources();
         this.logger.log(`OData sources from manifest\n${JSON.stringify(oDataSources, null, 2)}`);

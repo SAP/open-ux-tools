@@ -66,8 +66,10 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
         };
 
         if (!this.answers.filePath) {
-            const metadata = await this.manifestService.getDataSourceMetadata(this.answers.id);
-            changeData.annotation.namespaces = getAnnotationNamespaces({ metadata });
+            if (!this.isCFProject) {
+                const metadata = await this.manifestService.getDataSourceMetadata(this.answers.id);
+                changeData.annotation.namespaces = getAnnotationNamespaces({ metadata });
+            }
         }
 
         await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(

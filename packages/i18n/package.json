@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/i18n",
-    "version": "0.3.9",
+    "version": "0.3.10",
     "description": "Library for i18n",
     "repository": {
         "type": "git",
@@ -36,7 +36,7 @@
     },
     "dependencies": {
         "jsonc-parser": "3.3.1",
-        "vscode-languageserver-textdocument": "1.0.11",
+        "vscode-languageserver-textdocument": "1.0.12",
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {

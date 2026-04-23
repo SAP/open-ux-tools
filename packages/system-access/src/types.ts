@@ -3,6 +3,7 @@ import type { AuthenticationType } from '@sap-ux/store';
 
 export interface UrlAbapTarget {
     url: string;
+    connectPath?: string;
     client?: string;
     scp?: boolean;
     authenticationType?: AuthenticationType;

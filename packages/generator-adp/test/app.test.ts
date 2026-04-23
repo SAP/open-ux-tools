@@ -21,12 +21,12 @@ import {
     SourceManifest,
     SupportedProject,
     SystemLookup,
-    createServices,
     fetchPublicVersions,
     getApprouterType,
     getConfiguredProvider,
     getModuleNames,
     getMtaServices,
+    getOrCreateServiceInstanceKeys as packageGetOrCreateServiceInstanceKeys,
     getProviderConfig,
     getSupportedProject,
     hasApprouter,
@@ -36,8 +36,13 @@ import {
     loadCfConfig,
     storeCredentials,
     validateUI5VersionExists,
-    getServiceInstanceKeys
+    getCfBaseAppInbounds
 } from '@sap-ux/adp-tooling';
+import {
+    getOrCreateServiceInstanceKeys,
+    createServiceInstance,
+    createServices
+} from '@sap-ux/adp-tooling/dist/cf/services/api';
 import {
     type AbapServiceProvider,
     AdaptationProjectType,
@@ -69,7 +74,6 @@ import {
     workspaceChoices
 } from '../src/utils/workspace';
 import { CFServicesPrompter } from '../src/app/questions/cf-services';
-import { get } from 'node:http';
 
 jest.mock('@sap-ux/feature-toggle', () => ({
     ...jest.requireActual('@sap-ux/feature-toggle'),
@@ -125,6 +129,15 @@ jest.mock('child_process', () => ({
     exec: jest.fn()
 }));
 
+// This type of mocking is needed as getOrCreateServiceInstanceKeys is called directly in the adp-tooling,
+// so we need to mock it at the module level to avoid issues with the jest.mock hoisting.
+jest.mock('@sap-ux/adp-tooling/dist/cf/services/api', () => ({
+    ...jest.requireActual('@sap-ux/adp-tooling/dist/cf/services/api'),
+    getOrCreateServiceInstanceKeys: jest.fn(),
+    createServiceInstance: jest.fn(),
+    createServices: jest.fn()
+}));
+
 jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
     getConfiguredProvider: jest.fn(),
@@ -141,9 +154,11 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getApprouterType: jest.fn(),
     hasApprouter: jest.fn(),
     createServices: jest.fn(),
+    createServiceInstance: jest.fn(),
+    getOrCreateServiceInstanceKeys: jest.fn(),
     storeCredentials: jest.fn(),
-    getServiceInstanceKeys: jest.fn(),
-    getSupportedProject: jest.fn()
+    getSupportedProject: jest.fn(),
+    getCfBaseAppInbounds: jest.fn()
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
@@ -357,7 +372,14 @@ const mockSystemService = {
     read: jest.fn(),
     write: jest.fn()
 };
-const getServiceInstanceKeysMock = getServiceInstanceKeys as jest.MockedFunction<typeof getServiceInstanceKeys>;
+const getOrCreateServiceInstanceKeysMock = getOrCreateServiceInstanceKeys as jest.MockedFunction<
+    typeof getOrCreateServiceInstanceKeys
+>;
+const packageGetOrCreateServiceInstanceKeysMock = packageGetOrCreateServiceInstanceKeys as jest.MockedFunction<
+    typeof packageGetOrCreateServiceInstanceKeys
+>;
+const createServiceInstanceMock = createServiceInstance as jest.MockedFunction<typeof createServiceInstance>;
+const getCfBaseAppInboundsMock = getCfBaseAppInbounds as jest.MockedFunction<typeof getCfBaseAppInbounds>;
 const getSupportedProjectMock = getSupportedProject as jest.MockedFunction<typeof getSupportedProject>;
 
 describe('Adaptation Project Generator Integration Test', () => {
@@ -755,7 +777,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             const mtaYamlTarget = join(cfTestOutputDir, 'mta.yaml');
             fs.copyFileSync(mtaYamlSource, mtaYamlTarget);
 
-            getServiceInstanceKeysMock.mockResolvedValue({
+            const mockServiceInfo = {
                 serviceKeys: [
                     {
                         credentials: {
@@ -778,7 +800,12 @@ describe('Adaptation Project Generator Integration Test', () => {
                     name: 'test-service-instance',
                     guid: 'test-service-instance-guid'
                 }
-            });
+            };
+            // Configure both package and dist mocks
+            getOrCreateServiceInstanceKeysMock.mockResolvedValue(mockServiceInfo);
+            packageGetOrCreateServiceInstanceKeysMock.mockResolvedValue(mockServiceInfo);
+
+            createServiceInstanceMock.mockResolvedValue(undefined);
 
             mockIsAppStudio.mockReturnValue(true);
             jest.spyOn(Date, 'now').mockReturnValue(1234567890);
@@ -798,7 +825,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             loadCfConfigMock.mockReturnValue(cfConfig);
             mockGetModuleNames.mockReturnValue(['module1', 'module2']);
             mockGetMtaServices.mockResolvedValue(['service1', 'service2']);
-            mockGetApprouterType.mockReturnValue(AppRouterType.STANDALONE);
+            mockGetApprouterType.mockReturnValue(AppRouterType.MANAGED);
             mockHasApprouter.mockReturnValue(false);
 
             fetchPublicVersionsMock.mockResolvedValue(publicVersions);
@@ -865,6 +892,58 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect(ui5Content).toMatchSnapshot();
             expect(mtaContent).toMatchSnapshot();
             expect(packageJsonContent).toMatchSnapshot();
+        });
+
+        it('should call composeWith for FLP sub-generator when CF inbounds are available', async () => {
+            getCfBaseAppInboundsMock.mockResolvedValue(inbounds);
+            jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
+            const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockResolvedValue();
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                .withOptions({
+                    shouldInstallDeps: false,
+                    vscode: vscodeMock
+                } as AdpGeneratorOptions)
+                .withPrompts({ ...answersCf, addFlpConfig: true, projectLocation: cfTestOutputDir });
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(getCfBaseAppInboundsMock).toHaveBeenCalledWith(
+                baseApp.appId,
+                baseApp.appHostId,
+                cfConfig,
+                expect.any(Object)
+            );
+            expect(addFlpGenSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    inbounds,
+                    layer: FlexLayer.CUSTOMER_BASE,
+                    isCfProject: true,
+                    projectRootPath: join(cfTestOutputDir, answersCf.projectName)
+                }),
+                expect.any(Function),
+                expect.any(Object),
+                expect.any(Object)
+            );
+        });
+
+        it('should not call FLP sub-generator when CF inbounds are empty', async () => {
+            getCfBaseAppInboundsMock.mockResolvedValue(undefined);
+            const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockResolvedValue();
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                .withOptions({
+                    shouldInstallDeps: false,
+                    vscode: vscodeMock
+                } as AdpGeneratorOptions)
+                .withPrompts({ ...answersCf, addFlpConfig: true, projectLocation: cfTestOutputDir });
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(getCfBaseAppInboundsMock).toHaveBeenCalled();
+            expect(addFlpGenSpy).not.toHaveBeenCalled();
         });
     });
 });

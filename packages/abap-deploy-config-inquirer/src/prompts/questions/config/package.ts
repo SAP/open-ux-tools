@@ -17,7 +17,9 @@ import {
 } from '../../../types';
 import type { InputQuestion, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
-import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
+import type { IValidationLink, IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+import { DEFAULT_PACKAGE_ABAP } from '../../../constants';
 
 /**
  * Returns the package prompts.
@@ -106,6 +108,15 @@ export function getPackagePrompts(
                 }
                 prevAnswers = answers;
                 return prevValidationResult;
+            },
+            additionalMessages: (input: string): IMessageSeverity | undefined => {
+                if (input === DEFAULT_PACKAGE_ABAP.toLowerCase()) {
+                    return {
+                        message: t('warnings.packageTmpLowercase'),
+                        severity: Severity.warning
+                    };
+                }
+                return undefined;
             }
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {

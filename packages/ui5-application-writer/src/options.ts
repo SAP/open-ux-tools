@@ -46,12 +46,14 @@ async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: F
                 globOptions: { dot: true },
                 processDestinationPath: processDestinationPath
             });
-        } else {
+        } else if (outPath.endsWith('.json')) {
+            // Only merge JSON files (e.g., package.json)
             const add = JSON.parse(render(fs.read(optTmplFilePath), ui5App, {}));
             const existingFile = JSON.parse(fs.read(outPath));
             const merged = mergeObjects(existingFile, add);
             fs.writeJSON(outPath, merged);
         }
+        // For non-JSON files (like .mjs), skip if file already exists
     });
 }
 
@@ -127,6 +129,27 @@ export async function applyOptionalFeatures(
             }
         }
     }
+}
+
+/**
+ * Adds eslint configuration to a project.
+ *
+ * @param basePath - base path to be used for adding the config
+ * @param fs - file system reference
+ */
+export async function addEslintFeature(basePath: string, fs: Editor): Promise<void> {
+    const input = {
+        tmplPath: join(__dirname, '../templates'),
+        basePath: basePath,
+        fs: fs,
+        ui5Configs: [] as UI5Config[], // the ui5Configs is not used for eslint configuration
+        ui5App: {
+            app: {
+                id: 'dummy' // the app config is not used for eslint configuration
+            }
+        }
+    } satisfies FeatureInput;
+    await copyTemplates('eslint', input);
 }
 
 /**

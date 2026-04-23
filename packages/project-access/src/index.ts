@@ -66,7 +66,8 @@ export {
     checkCdsUi5PluginEnabled,
     readFlexChanges,
     processServices,
-    getMainService
+    getMainService,
+    getGlobalCdsHomePath
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';

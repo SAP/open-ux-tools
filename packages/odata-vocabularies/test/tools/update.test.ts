@@ -232,7 +232,7 @@ describe('vocabularies', () => {
             const mockContent = getMockContent(namespace);
 
             axiosSpy.mockImplementationOnce(async () => Promise.resolve({ data: mockContent }));
-            jest.spyOn(prettier, 'format').mockReturnValueOnce(`prettifiedJson_${namespace}`);
+            jest.spyOn(prettier, 'format').mockResolvedValueOnce(`prettifiedJson_${namespace}`);
         }
         jest.spyOn(prettier, 'resolveConfig').mockResolvedValue({});
         jest.spyOn(console, 'log').mockImplementation(() => undefined);

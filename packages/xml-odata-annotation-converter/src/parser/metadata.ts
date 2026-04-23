@@ -344,6 +344,14 @@ function createMetadataElementNodeForType(
                 };
             }
         );
+        const metadataElementPartner = getAttributeValue(Edm.Partner, element);
+        if (metadataElementPartner) {
+            metadataElementProperties.partner = metadataElementPartner;
+        }
+        const metadataElementContainsTarget = getAttributeValue(Edm.ContainsTarget, element);
+        if (metadataElementContainsTarget) {
+            metadataElementProperties.containsTarget = stringToBoolean(metadataElementContainsTarget);
+        }
     }
 
     if (element.name === Edm.EntityType) {

@@ -1,24 +1,30 @@
+import { type AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 
+import { isAppSupported, loadApps, SupportedProject } from '../../../src';
 import { initI18n, t } from '../../../src/i18n';
-import { isAppSupported, loadApps } from '../../../src';
 
 describe('Target Applications', () => {
-    const APP_FIELDS =
-        'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName,sap.fiori/cloudDevAdaptationStatus';
+    const ONPREM_APP_FIELDS_STR =
+        'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName';
+    const CLOUD_APP_FIELDS_STR = `${ONPREM_APP_FIELDS_STR},sap.fiori/cloudDevAdaptationStatus`;
     const APPS_WITH_DESCR_FILTER = {
-        fields: APP_FIELDS,
+        fields: ONPREM_APP_FIELDS_STR,
         'sap.ui/technology': 'UI5',
         'sap.app/type': 'application',
         'fileType': 'appdescr'
     };
     const APPS_WITH_VARIANT_DESCR_FILTER = {
-        fields: APP_FIELDS,
+        fields: ONPREM_APP_FIELDS_STR,
         'sap.ui/technology': 'UI5',
         'sap.app/type': 'application',
         'fileType': 'appdescr_variant',
         'originLayer': 'VENDOR'
+    };
+    const CLOUD_ONLY_APPS_FILTER = {
+        fields: CLOUD_APP_FIELDS_STR,
+        'sap.app/type': 'application',
+        'sap.fiori/cloudDevAdaptationStatus': 'released'
     };
     const searchMock = jest.fn();
 
@@ -41,10 +47,12 @@ describe('Target Applications', () => {
         it('should load applications correctly for cloud project', async () => {
             searchMock.mockResolvedValue(cloudApps);
 
-            const apps = await loadApps(mockAbapProvider, true, AdaptationProjectType.CLOUD_READY);
+            const apps = await loadApps(mockAbapProvider, true, SupportedProject.CLOUD_READY);
             expect(apps.length).toBe(2);
             expect(apps[0].title).toEqual('App One');
             expect(apps[0].cloudDevAdaptationStatus).toEqual('released');
+            expect(searchMock).toHaveBeenCalledTimes(1);
+            expect(searchMock).toHaveBeenCalledWith(CLOUD_ONLY_APPS_FILTER);
         });
 
         it('should load and merge applications correctly for on-premise project', async () => {
@@ -55,7 +63,7 @@ describe('Target Applications', () => {
 
             searchMock.mockResolvedValueOnce(mockCloudApps).mockResolvedValueOnce(mockVariantApps);
 
-            const apps = await loadApps(mockAbapProvider, true, AdaptationProjectType.ON_PREMISE);
+            const apps = await loadApps(mockAbapProvider, true, SupportedProject.ON_PREM);
 
             expect(apps.length).toBe(2);
             expect(apps).toEqual(
@@ -91,7 +99,7 @@ describe('Target Applications', () => {
             const errorMsg = 'Could not load applications: Failed to fetch';
             searchMock.mockRejectedValue(new Error('Failed to fetch'));
 
-            await expect(loadApps(mockAbapProvider, true, AdaptationProjectType.ON_PREMISE)).rejects.toThrow(errorMsg);
+            await expect(loadApps(mockAbapProvider, true, SupportedProject.ON_PREM)).rejects.toThrow(errorMsg);
         });
 
         it('should return an empty array if no ADP project type is provided', async () => {
@@ -107,7 +115,7 @@ describe('Target Applications', () => {
 
             searchMock.mockResolvedValue([appA, appB]);
 
-            let apps = await loadApps(mockAbapProvider, false, AdaptationProjectType.ON_PREMISE);
+            let apps = await loadApps(mockAbapProvider, false, SupportedProject.ON_PREM);
 
             expect(apps.length).toBe(2);
             expect(apps[0].title).toBe('Application A');
@@ -116,7 +124,7 @@ describe('Target Applications', () => {
             expect(apps[1].id).toBe('2');
 
             searchMock.mockResolvedValue([appB, appA]);
-            apps = await loadApps(mockAbapProvider, false, AdaptationProjectType.ON_PREMISE);
+            apps = await loadApps(mockAbapProvider, false, SupportedProject.ON_PREM);
 
             expect(apps.length).toBe(2);
             expect(apps[0].title).toBe('Application A');
@@ -131,18 +139,59 @@ describe('Target Applications', () => {
 
             searchMock.mockResolvedValue([appA, appB]);
 
-            let apps = await loadApps(mockAbapProvider, false, AdaptationProjectType.ON_PREMISE);
+            let apps = await loadApps(mockAbapProvider, false, SupportedProject.ON_PREM);
 
             expect(apps.length).toBe(2);
             expect(apps[0].id).toBe('1');
             expect(apps[1].id).toBe('2');
 
             searchMock.mockResolvedValue([appB, appA]);
-            apps = await loadApps(mockAbapProvider, false, AdaptationProjectType.ON_PREMISE);
+            apps = await loadApps(mockAbapProvider, false, SupportedProject.ON_PREM);
 
             expect(apps.length).toBe(2);
             expect(apps[0].id).toBe('1');
             expect(apps[1].id).toBe('2');
+        });
+
+        it('should include the cloudDevAdaptationStatus property in the filter, in case of a mixed system', async () => {
+            const mockCloudApps = [
+                { 'sap.app/id': '1', 'sap.app/title': 'App One', 'sap.fiori/cloudDevAdaptationStatus': 'released' }
+            ];
+            const mockVariantApps = [{ 'sap.app/id': '2', 'sap.app/title': 'App Two' }];
+
+            searchMock.mockResolvedValueOnce(mockCloudApps).mockResolvedValueOnce(mockVariantApps);
+
+            const apps = await loadApps(mockAbapProvider, true, SupportedProject.CLOUD_READY_AND_ON_PREM);
+
+            expect(apps.length).toBe(2);
+            expect(apps).toEqual([
+                {
+                    ach: '',
+                    bspName: '',
+                    bspUrl: '',
+                    fileType: '',
+                    id: '1',
+                    registrationIds: [],
+                    title: 'App One',
+                    cloudDevAdaptationStatus: 'released'
+                },
+                {
+                    ach: '',
+                    bspName: '',
+                    bspUrl: '',
+                    fileType: '',
+                    id: '2',
+                    registrationIds: [],
+                    title: 'App Two',
+                    cloudDevAdaptationStatus: ''
+                }
+            ]);
+            expect(searchMock).toHaveBeenCalledTimes(2);
+            expect(searchMock).toHaveBeenCalledWith({ ...APPS_WITH_DESCR_FILTER, fields: CLOUD_APP_FIELDS_STR });
+            expect(searchMock).toHaveBeenCalledWith({
+                ...APPS_WITH_VARIANT_DESCR_FILTER,
+                fields: CLOUD_APP_FIELDS_STR
+            });
         });
     });
 

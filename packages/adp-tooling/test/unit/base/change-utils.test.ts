@@ -592,7 +592,7 @@ describe('Change Utils', () => {
                         fileName: 'id_123_page.change',
                         changeType: 'page'
                     },
-                    texts: { variantName: { value: 'Test Variant', type: 'XFLD' } }
+                    texts: { variantName: { values: { '': 'Test Variant' }, type: 'XFLD' } }
                 }
             ];
 

@@ -114,32 +114,32 @@ describe('generate', () => {
                 fs
             );
             expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
-            "resources:
-              configuration: {}
-            server:
-              customMiddleware:
-                - name: fiori-tools-proxy
-                  afterMiddleware: compression
-                  configuration:
-                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-                    backend:
-                      - path: /sap
-                        url: https://localhost/updated
-                - name: sap-fe-mockserver
-                  beforeMiddleware: csp
-                  configuration:
-                    mountPath: /
-                    services:
-                      - urlPath: /sap
-                        metadataPath: ./webapp/localService/mainService/metadata.xml
-                        mockdataPath: ./webapp/localService/mainService/data
-                        generateMockData: true
-                        resolveExternalServiceReferences: true
-                    annotations:
-                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
-                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-            "
-        `);
+                            "resources:
+                              configuration: {}
+                            server:
+                              customMiddleware:
+                                - name: fiori-tools-proxy
+                                  afterMiddleware: compression
+                                  configuration:
+                                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                                    backend:
+                                      - path: /sap
+                                        url: https://localhost/updated
+                                - name: sap-fe-mockserver
+                                  beforeMiddleware: csp
+                                  configuration:
+                                    mountPath: /
+                                    services:
+                                      - urlPath: /sap
+                                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                                        mockdataPath: ./webapp/localService/mainService/data
+                                        generateMockData: true
+                                        resolveExternalServiceReferences: true
+                                    annotations:
+                                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
+                                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+                            "
+                    `);
             // Value List references are saved
             expect(
                 fs.read(
@@ -552,13 +552,13 @@ describe('generate', () => {
                             - /test-resources
                           url: https://ui5.sap.com
                         backend:
-                          - apiHub: true
-                            scp: false
-                            pathPrefix: /~prefix
-                            path: /sap
+                          - path: /sap
                             url: http://localhost
                             client: '013'
                             destination: test
+                            apiHub: true
+                            scp: false
+                            pathPrefix: /~prefix
                 "
             `);
             // verify the updated package.json
@@ -874,6 +874,77 @@ describe('remove', () => {
         expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(false);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(false);
+    });
+
+    describe('Preview settings with client and destination', () => {
+        beforeEach(async () => {
+            fs = create(createStorage());
+            fs.writeJSON(join(testDir, 'webapp/manifest.json'), {
+                'sap.app': { id: 'testappid' }
+            });
+            fs.writeJSON(join(testDir, 'package.json'), {});
+            const ui5Yaml = (await UI5Config.newInstance(''))
+                .addFioriToolsProxyMiddleware({ ui5: {}, backend: [] })
+                .toString();
+            fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
+        });
+
+        it('should copy client to previewSettings when service has client', async () => {
+            const config: OdataService = {
+                url: 'https://localhost',
+                path: '/sap/odata/test',
+                version: OdataVersion.v2,
+                client: '100',
+                metadata: '<edmx:Edmx/>'
+            };
+
+            await generate(testDir, config, fs);
+
+            // Verify client is copied to both backend and previewSettings would have it
+            const yaml = fs.read(join(testDir, 'ui5.yaml'));
+            expect(yaml).toContain("client: '100'");
+        });
+
+        it('should copy destination with instance to previewSettings', async () => {
+            const config: OdataService = {
+                url: 'https://localhost',
+                path: '/sap/odata/test',
+                version: OdataVersion.v2,
+                destination: {
+                    name: 'myDestination',
+                    instance: 'myInstance'
+                },
+                metadata: '<edmx:Edmx/>'
+            };
+
+            await generate(testDir, config, fs);
+
+            // Verify destination and instance are in the yaml
+            const yaml = fs.read(join(testDir, 'ui5.yaml'));
+            expect(yaml).toContain('destination: myDestination');
+            expect(yaml).toContain('destinationInstance: myInstance');
+        });
+
+        it('should handle service with both client and destination instance', async () => {
+            const config: OdataService = {
+                url: 'https://localhost',
+                path: '/sap/odata/test',
+                version: OdataVersion.v2,
+                client: '200',
+                destination: {
+                    name: 'testDest',
+                    instance: 'testInstance'
+                },
+                metadata: '<edmx:Edmx/>'
+            };
+
+            await generate(testDir, config, fs);
+
+            const yaml = fs.read(join(testDir, 'ui5.yaml'));
+            expect(yaml).toContain("client: '200'");
+            expect(yaml).toContain('destination: testDest');
+            expect(yaml).toContain('destinationInstance: testInstance');
+        });
     });
 });
 
@@ -1735,6 +1806,93 @@ describe('update', () => {
         // Remote annotation files should be updated
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
+    });
+
+    describe('preview path preservation during sync', () => {
+        it('should preserve custom preview path when updating service', async () => {
+            // Create a proper mock with custom preview path using getSingleServiceMock pattern
+            const customFs = await getSingleServiceMock();
+            const customPreviewPath = '/my-custom-preview';
+
+            // Modify ui5.yaml to use custom preview path
+            const ui5Config = await UI5Config.newInstance(customFs.read(join(testDir, 'ui5.yaml')));
+            ui5Config.updateBackendToFioriToolsProxyMiddleware({
+                path: '/sap',
+                url: 'https://localhost',
+                pathPrefix: customPreviewPath
+            });
+            customFs.write(join(testDir, 'ui5.yaml'), ui5Config.toString());
+
+            // Update the service hostname
+            await update(
+                testDir,
+                {
+                    name: 'mainService',
+                    url: 'https://localhost/updated',
+                    path: '/sap',
+                    type: ServiceType.EDMX,
+                    annotations: [
+                        {
+                            technicalName: 'SEPMRA_PROD_MAN',
+                            xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                        }
+                    ] as EdmxAnnotationsInfo[],
+                    metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                    version: OdataVersion.v4,
+                    localAnnotationsName: 'annotation'
+                },
+                customFs
+            );
+
+            // Verify custom preview path is preserved after hostname change
+            const updatedYaml = customFs.read(join(testDir, 'ui5.yaml'));
+            expect(updatedYaml).toContain('pathPrefix: /my-custom-preview');
+            expect(updatedYaml).toContain('url: https://localhost/updated');
+        });
+
+        it('should preserve different custom preview path when changing both URL and client', async () => {
+            // Start with mock having different custom preview path
+            const customFs = await getSingleServiceMock();
+            const customPath = '/api/preview/custom';
+
+            // Set up custom preview path
+            const ui5Config = await UI5Config.newInstance(customFs.read(join(testDir, 'ui5.yaml')));
+            ui5Config.updateBackendToFioriToolsProxyMiddleware({
+                path: '/sap',
+                url: 'https://localhost',
+                pathPrefix: customPath,
+                client: '100'
+            });
+            customFs.write(join(testDir, 'ui5.yaml'), ui5Config.toString());
+
+            // Update service with new URL and client
+            await update(
+                testDir,
+                {
+                    name: 'mainService',
+                    url: 'https://new-backend.example.com',
+                    path: '/sap',
+                    client: '200',
+                    type: ServiceType.EDMX,
+                    annotations: [
+                        {
+                            technicalName: 'SEPMRA_PROD_MAN',
+                            xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                        }
+                    ] as EdmxAnnotationsInfo[],
+                    metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                    version: OdataVersion.v4,
+                    localAnnotationsName: 'annotation'
+                },
+                customFs
+            );
+
+            // Verify custom preview path is preserved while URL and client are updated
+            const updatedYaml = customFs.read(join(testDir, 'ui5.yaml'));
+            expect(updatedYaml).toContain('pathPrefix: /api/preview/custom');
+            expect(updatedYaml).toContain('url: https://new-backend.example.com');
+            expect(updatedYaml).toContain("client: '200'"); // YAML uses single quotes
+        });
     });
 });
 

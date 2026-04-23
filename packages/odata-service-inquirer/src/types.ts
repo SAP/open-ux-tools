@@ -322,12 +322,15 @@ export type SystemSelectionPromptOptions = {
     includeCloudFoundryAbapEnvChoice?: boolean;
     /**
      * Provide a default choice for the system selection prompt, this is used to pre-select a system based on the system name.
-     * Set as string literal types `NewSystemChoice` or `CfAbapEnvServiceChoice` to specify the default choice to create a new system connection config in VSCode
-     * or to select the Cloud Foundry Abap environments service discovery choice in BAS respectively.
-     * Supported as object reference `{ value: }` to allow binding to runtime variables of other prompts or as string
-     *
+     * Set as string literal types `NewSystemChoice` or `CfAbapEnvServiceChoice` to specify the default choice to create a new system connection config in VSCode or to select the     Cloud Foundry Abap environments service discovery choice in BAS respectively.
+     * Supported as object reference `{ value: }` to allow binding to runtime variables of other prompts or as string.
      */
     defaultChoice?: string | { value?: string };
+    /**
+     * Provide an alternative connection path that will be used to authenticate the users access to the system.
+     * This may be used to bypass the default catalog requests that usually are used.Supported as object reference `{ value: }` to allow binding to runtime variables of other prompts.
+     */
+    connectPath?: { value?: string };
     /**
      * Only show the default choice in the system selection prompt, this is used to skip the system selection prompt if the default choice is already known.
      * If the `defaultChoice` value is not found in the systems choices, or the `defaultChoice` option is not specified,

@@ -7,7 +7,8 @@
     "namespace": "testNameSpace",
     "ui5Version": "1.98.0",
     "name": "lrop_v4_cap",
-    "sapux": true
+    "sapux": true,
+    "enableEslint": false
   },
   "service": {
     "host": "http://ims.saplabs.com:50017",

@@ -70,6 +70,22 @@ describe('Readme file generation tests', () => {
         expect(editor.readJSON(path.join(__dirname, '/.appGenInfo.json'))).toMatchSnapshot();
     });
 
+    it('should generate README.md with enableEslint set to true', () => {
+        const readMePath = path.join(__dirname, '/README.md');
+        const readMe: AppGenInfo = {
+            generatorName: '@sap/generator-fiori-elements',
+            template: 'List Report Page V4',
+            generatorVersion: '2.0.1',
+            appName: 'appName',
+            appTitle: 'appTitle',
+            appDescription: 'Fiori project description',
+            appNamespace: 'appNamespace',
+            enableEslint: true
+        };
+        generateAppGenInfo(__dirname, readMe, editor);
+        expect(editor.read(readMePath)).toMatchSnapshot();
+    });
+
     it('should generate README.md with core properties', () => {
         const readMePath = path.join(__dirname, '/README.md');
         const readMe: AppGenInfo = {

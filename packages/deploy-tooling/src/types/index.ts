@@ -74,7 +74,8 @@ export interface AbapDeployConfig extends CommonOptions {
 }
 
 export interface CliOptions
-    extends Partial<BspConfig>,
+    extends
+        Partial<BspConfig>,
         Partial<DestinationAbapTarget>,
         Pick<Partial<UrlAbapTarget>, Exclude<keyof UrlAbapTarget, 'serviceKey' | 'scp'>>,
         Partial<CommonOptions> {

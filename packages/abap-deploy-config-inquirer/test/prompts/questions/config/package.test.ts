@@ -7,6 +7,7 @@ import { promptNames, PackageInputChoices } from '../../../../src/types';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { PromptState } from '../../../../src/prompts/prompt-state';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 describe('getPackagePrompts', () => {
     beforeAll(async () => {
@@ -34,6 +35,7 @@ describe('getPackagePrompts', () => {
                 "when": [Function],
               },
               Object {
+                "additionalMessages": [Function],
                 "default": [Function],
                 "guiOptions": Object {
                   "breadcrumb": true,
@@ -176,5 +178,50 @@ describe('getPackagePrompts', () => {
             expect(((packageAutocompletePrompt as any).additionalInfo as Function)()).toBe('Test additional msg');
             expect(await (packageAutocompletePrompt.validate as Function)({ name: '$TMP', value: '$TMP' })).toBe(true);
         }
+    });
+
+    describe('additionalMessages for packageManual', () => {
+        test('should return warning when package is lowercase $tmp', () => {
+            const packagePrompts = getPackagePrompts({});
+            const packageManualPrompt = packagePrompts.find((prompt) => prompt.name === promptNames.packageManual);
+
+            if (packageManualPrompt && (packageManualPrompt as any).additionalMessages) {
+                const result = ((packageManualPrompt as any).additionalMessages as Function)('$tmp');
+                expect(result).toEqual({
+                    message: t('warnings.packageTmpLowercase'),
+                    severity: Severity.warning
+                });
+            }
+        });
+
+        test('should return undefined when package is uppercase $TMP', () => {
+            const packagePrompts = getPackagePrompts({});
+            const packageManualPrompt = packagePrompts.find((prompt) => prompt.name === promptNames.packageManual);
+
+            if (packageManualPrompt && (packageManualPrompt as any).additionalMessages) {
+                const result = ((packageManualPrompt as any).additionalMessages as Function)('$TMP');
+                expect(result).toBeUndefined();
+            }
+        });
+
+        test('should return undefined when package is ZPACKAGE', () => {
+            const packagePrompts = getPackagePrompts({});
+            const packageManualPrompt = packagePrompts.find((prompt) => prompt.name === promptNames.packageManual);
+
+            if (packageManualPrompt && (packageManualPrompt as any).additionalMessages) {
+                const result = ((packageManualPrompt as any).additionalMessages as Function)('ZPACKAGE');
+                expect(result).toBeUndefined();
+            }
+        });
+
+        test('should return undefined when package is empty', () => {
+            const packagePrompts = getPackagePrompts({});
+            const packageManualPrompt = packagePrompts.find((prompt) => prompt.name === promptNames.packageManual);
+
+            if (packageManualPrompt && (packageManualPrompt as any).additionalMessages) {
+                const result = ((packageManualPrompt as any).additionalMessages as Function)('');
+                expect(result).toBeUndefined();
+            }
+        });
     });
 });

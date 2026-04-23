@@ -54,6 +54,7 @@ const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
     'Org.OData.Validation.V1',
     'Org.OData.JSON.V1',
     'com.sap.vocabularies.Analytics.v1',
+    'com.sap.vocabularies.Auditing.v1',
     'com.sap.vocabularies.CDS.v1',
     'com.sap.vocabularies.CodeList.v1',
     'com.sap.vocabularies.Common.v1',

@@ -52,6 +52,12 @@ describe('base/config', () => {
             } as UrlAbapTarget
         };
 
+        const mockLogger = { warn: jest.fn() } as any;
+
+        beforeEach(() => {
+            mockLogger.warn.mockClear();
+        });
+
         test('valid config', () => {
             mockIsAppStudio.mockReturnValueOnce(false);
             expect(() => validateConfig(validConfig)).not.toThrow();
@@ -85,6 +91,45 @@ describe('base/config', () => {
             config.target.client = '1';
             validateConfig(config);
             expect(config.target.client).toBe('001');
+        });
+
+        test('lowercase package is normalized to uppercase and warning is logged', () => {
+            const config = {
+                app: { ...validConfig.app, package: '$tmp' },
+                target: { ...validConfig.target }
+            };
+            validateConfig(config, mockLogger);
+            expect(config.app.package).toBe('$TMP');
+            expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining("'$tmp' was normalized to '$TMP'"));
+        });
+
+        test('mixed-case package is normalized to uppercase and warning is logged', () => {
+            const config = {
+                app: { ...validConfig.app, package: 'MyPackage' },
+                target: { ...validConfig.target }
+            };
+            validateConfig(config, mockLogger);
+            expect(config.app.package).toBe('MYPACKAGE');
+            expect(mockLogger.warn).toHaveBeenCalledTimes(1);
+        });
+
+        test('already-uppercase package is left unchanged and no warning is logged', () => {
+            const config = {
+                app: { ...validConfig.app, package: '$TMP' },
+                target: { ...validConfig.target }
+            };
+            validateConfig(config, mockLogger);
+            expect(config.app.package).toBe('$TMP');
+            expect(mockLogger.warn).not.toHaveBeenCalled();
+        });
+
+        test('normalization works without a logger (no crash)', () => {
+            const config = {
+                app: { ...validConfig.app, package: '$tmp' },
+                target: { ...validConfig.target }
+            };
+            expect(() => validateConfig(config)).not.toThrow();
+            expect(config.app.package).toBe('$TMP');
         });
     });
 });

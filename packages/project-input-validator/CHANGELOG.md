@@ -1,5 +1,99 @@
 # @sap-ux/project-input-validator
 
+## 0.6.77
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+
+## 0.6.76
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+
+## 0.6.75
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.19
+
+## 0.6.74
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+
+## 0.6.73
+
+### Patch Changes
+
+- c53a4ba: chore(project-input-validator): upgrade shared devDependencies (jest 30, i18next 25)
+    - @sap-ux/project-access@1.35.17
+
+## 0.6.72
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.6.71
+
+### Patch Changes
+
+- a41533f: chore(project-input-validator): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+
+## 0.6.70
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.6.69
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+
+## 0.6.68
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
+## 0.6.67
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+
+## 0.6.66
+
+### Patch Changes
+
+- Updated dependencies [7c06ef0]
+    - @sap-ux/project-access@1.35.12
+
+## 0.6.65
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+
+## 0.6.64
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+
 ## 0.6.63
 
 ### Patch Changes

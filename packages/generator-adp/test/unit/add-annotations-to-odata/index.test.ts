@@ -8,8 +8,10 @@ import {
     getAdpConfig,
     getVariant,
     ManifestService,
+    ManifestServiceCF,
     SystemLookup,
-    AnnotationFileSelectType
+    AnnotationFileSelectType,
+    isCFEnvironment
 } from '@sap-ux/adp-tooling';
 import { getTemplatesOverwritePath } from '../../../src/utils/templates';
 import type { Manifest } from '@sap-ux/project-access';
@@ -17,13 +19,14 @@ import type { AbapTarget } from '@sap-ux/system-access';
 import type { DescriptorVariant } from '@sap-ux/adp-tooling';
 
 import annotationGen from '../../../src/add-annotations-to-odata';
-
 jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
     generateChange: jest.fn(),
     getVariant: jest.fn(),
     getAdpConfig: jest.fn(),
-    getAdpProjectData: jest.fn()
+    getAdpProjectData: jest.fn(),
+    isCFEnvironment: jest.fn().mockResolvedValue(false),
+    ManifestServiceCF: { init: jest.fn() }
 }));
 
 jest.mock('../../../src/utils/templates', () => ({
@@ -41,6 +44,8 @@ jest.mock('@sap-ux/system-access', () => ({
 const generateChangeMock = generateChange as jest.MockedFunction<typeof generateChange>;
 const getVariantMock = getVariant as jest.MockedFunction<typeof getVariant>;
 const getAdpConfigMock = getAdpConfig as jest.MockedFunction<typeof getAdpConfig>;
+const isCFEnvironmentMock = isCFEnvironment as jest.MockedFunction<typeof isCFEnvironment>;
+const manifestServiceCFInitMock = ManifestServiceCF.init as jest.MockedFunction<typeof ManifestServiceCF.init>;
 
 const manifest = {
     'sap.app': {
@@ -182,5 +187,39 @@ describe('AddAnnotationsToDataGenerator', () => {
 
         writingSpy.mockRestore();
         handleCrashSpy.mockRestore();
+    });
+
+    it('generates change for CF project using ManifestServiceCF', async () => {
+        isCFEnvironmentMock.mockResolvedValueOnce(true);
+
+        manifestServiceCFInitMock.mockResolvedValue({
+            getManifest: jest.fn().mockReturnValue(manifest),
+            getManifestDataSources: jest.fn().mockReturnValue(manifest['sap.app']?.dataSources),
+            getDataSourceMetadata: jest.fn().mockRejectedValue(new Error('not supported'))
+        } as any);
+
+        getVariantMock.mockResolvedValue(variant);
+
+        const runContext = yeomanTest
+            .create(annotationGen, { resolved: generatorPath }, { cwd: tmpDir })
+            .withOptions({ data: { path: tmpDir } })
+            .withPrompts(answers);
+
+        await expect(runContext.run()).resolves.not.toThrow();
+
+        expect(manifestServiceCFInitMock).toHaveBeenCalledWith(tmpDir, expect.anything());
+        expect(generateChangeMock).toHaveBeenCalledWith(
+            tmpDir,
+            ChangeType.ADD_ANNOTATIONS_TO_ODATA,
+            expect.objectContaining({
+                annotation: expect.objectContaining({
+                    dataSource: answers.id,
+                    filePath: undefined
+                }),
+                isCommand: true
+            }),
+            expect.anything(),
+            expect.stringContaining(join(__dirname, '../../../src/add-annotations-to-odata', 'templates'))
+        );
     });
 });

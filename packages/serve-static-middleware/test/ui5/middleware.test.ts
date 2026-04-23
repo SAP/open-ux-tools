@@ -45,7 +45,7 @@ describe('Start server with serve-static-middleware', () => {
         expect(await server.get(SANDBOX)).toMatchObject({ status: 200 });
         expect(await server.get(USERAPI)).toMatchObject({ status: 200 });
         expect(await server.get(CACHEBUSTER_CORE)).toMatchObject({ status: 200 });
-    });
+    }, 15000);
 
     test('fallthrough: false', async () => {
         const server = await getTestServer({

@@ -17,6 +17,7 @@ export {
     AdaptationDescriptor,
     KeyUserDataResponse,
     KeyUserChangeContent,
+    KeyUserTextTranslations,
     FlexVersion
 } from './lrep-service';
 export { AbapServiceProvider } from './abap-service-provider';
@@ -35,5 +36,6 @@ export {
     CodeListService,
     ValueListService,
     ExternalServiceReference,
-    ExternalService
+    ExternalService,
+    EntitySetData
 } from './types';

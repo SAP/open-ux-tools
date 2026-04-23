@@ -122,7 +122,7 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
             const systemService = await getBackendSystemService();
             systems = await systemService.getAll({
                 includeSensitiveData: false,
-                backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+                backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service', 'generic_host'] }
             });
             return systems;
         } catch (error) {

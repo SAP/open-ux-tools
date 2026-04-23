@@ -123,7 +123,7 @@ function findAnchor(table: UI5Element): string {
                     'com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation',
                     'com.sap.vocabularies.UI.v1.DataFieldForAnnotation'
                 ].includes(col.$Type) ||
-                ('com.sap.vocabularies.UI.v1.DataFieldForAction' === col.$Type && col.Inline)
+                (col.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAction' && col.Inline)
         ) as {
             $Type: string;
             Inline?: boolean;

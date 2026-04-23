@@ -33,7 +33,7 @@ describe('cli/config', () => {
             app: {
                 name: '~name',
                 description: '~description',
-                package: '~package',
+                package: '~PACKAGE',
                 transport: '~transport'
             },
             target: {
@@ -131,6 +131,28 @@ describe('cli/config', () => {
                 username: 'env:DotEnvMyUsername',
                 password: 'env:DotEnvMyPassword'
             });
+        });
+    });
+
+    describe('mergeConfig package name normalization', () => {
+        const baseConfig: AbapDeployConfig = {
+            app: { name: 'ZAPP', description: '', package: '', transport: '' },
+            target: { url: 'http://target.example' }
+        };
+
+        test('lowercase package is preserved as-is after merge (normalization happens in validateConfig)', async () => {
+            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: '$tmp' } }, {});
+            expect(merged.app.package).toBe('$tmp');
+        });
+
+        test('uppercase package is preserved as-is after merge', async () => {
+            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: '$TMP' } }, {});
+            expect(merged.app.package).toBe('$TMP');
+        });
+
+        test('package from CLI option is used as-is after merge', async () => {
+            const merged = await mergeConfig(baseConfig, { package: '$tmp' } as CliOptions);
+            expect(merged.app.package).toBe('$tmp');
         });
     });
 });

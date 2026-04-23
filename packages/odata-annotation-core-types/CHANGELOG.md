@@ -1,5 +1,17 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.5.7
+
+### Patch Changes
+
+- dfa433e: feat: Enabled support of referenced external metadata
+
+## 0.5.6
+
+### Patch Changes
+
+- a2cbf4e: Include `Partner` and `ContainsTarget` attributes from `NavigationProperty` to converted object of `MetadataElementProperties`
+
 ## 0.5.5
 
 ### Patch Changes

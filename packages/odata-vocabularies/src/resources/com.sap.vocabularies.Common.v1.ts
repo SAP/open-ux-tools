@@ -1,4 +1,4 @@
-// Last content update: Mon Feb 16 2026 12:18:31 GMT+0100 (Central European Standard Time)
+// Last content update: Fri Mar 06 2026 12:24:45 GMT+0100 (Central European Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -1420,18 +1420,6 @@ export default {
                 '$Nullable': true,
                 '@Org.OData.Core.V1.Description':
                     'These entities will be affected if the value of one of the sources changes. All affected entities need to be explicitly listed. A null value means the annotation target.'
-            },
-            'EffectTypes': {
-                '$Type': 'com.sap.vocabularies.Common.v1.EffectType',
-                '$Nullable': true,
-                '@Org.OData.Core.V1.Revisions': [
-                    {
-                        'Kind': 'Deprecated',
-                        'Description': 'All side effects are essentially value changes, differentiation not needed.'
-                    }
-                ],
-                '@Org.OData.Core.V1.Description':
-                    'One or more of the targets may show these effects. If not specified, any effect is possible.'
             },
             'TriggerAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',

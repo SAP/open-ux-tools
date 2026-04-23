@@ -107,16 +107,16 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
         expect(retrievedUI5Versions).toMatchInlineSnapshot(`
             [
               {
+                "version": "1.147.0",
+              },
+              {
+                "version": "1.146.0",
+              },
+              {
                 "version": "1.145.0",
               },
               {
-                "version": "1.144.0",
-              },
-              {
                 "version": "1.142.0",
-              },
-              {
-                "version": "1.139.0",
               },
               {
                 "version": "1.136.0",

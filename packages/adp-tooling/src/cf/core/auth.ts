@@ -1,4 +1,4 @@
-import { cfGetAvailableOrgs } from '@sap/cf-tools';
+import { cfGetAuthToken } from '@sap/cf-tools';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -29,8 +29,8 @@ export async function isLoggedInCf(cfConfig: CfConfig, logger: ToolsLogger): Pro
     }
 
     try {
-        const orgs = await cfGetAvailableOrgs();
-        logger?.log(`Available organizations: ${JSON.stringify(orgs)}`);
+        const token = await cfGetAuthToken();
+        logger?.log(`Retrieved CF auth token: ${token}`);
         return true;
     } catch (e) {
         logger?.error(`Error occurred while trying to check if it is logged in: ${e?.message}`);

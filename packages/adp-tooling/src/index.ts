@@ -6,6 +6,7 @@ export * from './source';
 export * from './ui5';
 export * from './base/cf';
 export * from './cf';
+export * from './btp';
 export * from './base/helper';
 export * from './base/credentials';
 export * from './base/constants';

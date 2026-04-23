@@ -37,8 +37,14 @@ describe('base/credentials', () => {
     describe('getCredentialsFromStore', () => {
         test('read credentials from store', async () => {
             mockedStoreService.read.mockResolvedValueOnce({ username, password });
-            const credentials = await getCredentialsFromStore({ url: target.url }, logger);
+            const credentials = await getCredentialsFromStore(
+                { url: target.url, connectPath: 'mock/connect/path' },
+                logger
+            );
             expect(credentials).toBeDefined();
+            expect(mockedStoreService.read).toHaveBeenCalledWith(
+                expect.objectContaining({ url: 'http://target.example/mock/connect/path', client: undefined })
+            );
         });
 
         test('fallback read without client parameter', async () => {

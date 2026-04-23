@@ -1,3 +1,4 @@
+export * from './deploy';
 export * from './project';
 export * from './app';
 export * from './core';

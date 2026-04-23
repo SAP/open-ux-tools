@@ -3,20 +3,6 @@ import type { Editor } from 'mem-fs-editor';
 import * as xpath from 'xpath';
 
 /**
- * Method validates if passed id is available.
- *
- * @param fs  - the file system object for reading files
- * @param viewOrFragmentPath - path to fragment or view file
- * @param id - id to check/validate
- * @returns true if passed id is available.
- */
-export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id: string): boolean {
-    const xmlContent = fs.read(viewOrFragmentPath).toString();
-    const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent);
-    return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
-}
-
-/**
  * Converts the provided xpath string from `/mvc:View/Page/content` to
  * `/mvc:View/*[local-name()='Page']/*[local-name()='content']`.
  *

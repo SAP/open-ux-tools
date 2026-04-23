@@ -7,11 +7,15 @@ import { SystemPanelViewType } from '../../../utils/constants';
  * Currently only checks that a URL is provided.
  *
  * @param input - system information to validate
+ * @param servicePath - optional service path to validate (used for generic host connection type)
  * @returns true if valid, otherwise a string with the validation error message
  */
-export function validateSystemInfo(input: BackendSystem): boolean | string {
+export function validateSystemInfo(input: BackendSystem, servicePath?: string): boolean | string {
     if (!input.url) {
         return t('validation.provideUrl');
+    }
+    if (input.connectionType === 'generic_host' && !servicePath) {
+        return t('validation.provideServicePath');
     }
     return true;
 }
@@ -33,10 +37,10 @@ export async function validateSystemName(
     const systemService = await getBackendSystemService();
     const allSystems = await systemService.getAll({
         includeSensitiveData: false,
-        backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+        backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service', 'generic_host'] }
     });
-    const newSystemName = newName.trim();
-    const nameExists = allSystems.some((sys) => sys.name.toLowerCase() === newSystemName.toLowerCase());
+    const newSystemName = newName.trim().toLowerCase();
+    const nameExists = allSystems.some((sys) => sys.name.toLowerCase() === newSystemName);
 
     if (nameExists) {
         if (panelViewType === SystemPanelViewType.Create || panelViewType === SystemPanelViewType.Import) {
