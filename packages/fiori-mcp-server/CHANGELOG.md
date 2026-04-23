@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.50
+
+### Patch Changes
+
+- c88661f: fix(deps): update dependency @langchain/core to v1.1.40
+
 ## 0.6.49
 
 ### Patch Changes
