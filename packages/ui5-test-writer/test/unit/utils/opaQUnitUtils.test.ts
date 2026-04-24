@@ -1,11 +1,20 @@
 import {
     addPathsToQUnitJs,
+    addPagesToJourneyRunner,
     spliceModulesIntoQUnitContent,
+    splicePageIntoJourneyRunner,
     readHtmlTargetFromQUnitJs,
-    addIntegrationOldToGitignore
+    addIntegrationOldToGitignore,
+    hasVirtualOPA5
 } from '../../../src/utils/opaQUnitUtils';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
+import { getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
+
+jest.mock('@sap-ux/project-access', () => ({
+    getAllUi5YamlFileNames: jest.fn(),
+    readUi5Yaml: jest.fn()
+}));
 
 /**
  * Matches the actual template output: the last entry has no trailing newline
@@ -128,6 +137,32 @@ describe('spliceModulesIntoQUnitContent()', () => {
         const result = spliceModulesIntoQUnitContent(BASE_FILE, ['myApp/test/integration/NewJourney']);
 
         expect(result).toContain('"myApp/test/integration/NewJourney",');
+    });
+
+    test('adds a trailing comma to last existing entry when it is missing (real-world file format)', () => {
+        // Matches the actual generated file: last entry has no trailing comma, no trailing newline before `]`
+        const fileWithNoTrailingComma = `sap.ui.require(
+  [
+    "sap/ui/thirdparty/qunit-2",
+    "sap/ui/qunit/qunit-junit",
+    "sap/ui/qunit/qunit-coverage",
+    'myApp/test/integration/FirstJourney'
+  ], function (QUnit) {
+    "use strict";
+    QUnit.start();
+});
+`;
+        const result = spliceModulesIntoQUnitContent(fileWithNoTrailingComma, ['myApp/test/integration/NewJourney']);
+
+        // Last existing entry must now have a trailing comma
+        expect(result).toContain("'myApp/test/integration/FirstJourney',");
+        // New entry must also have a trailing comma
+        expect(result).toContain('"myApp/test/integration/NewJourney",');
+        // No blank line between the two entries
+        const lines = result.split('\n');
+        const firstJourneyIdx = lines.findIndex((l) => l.includes('FirstJourney'));
+        const newJourneyIdx = lines.findIndex((l) => l.includes('NewJourney'));
+        expect(newJourneyIdx).toBe(firstJourneyIdx + 1);
     });
 
     test('inserts on its own line when array body has no trailing newline (template format)', () => {
@@ -259,6 +294,17 @@ describe('readHtmlTargetFromQUnitJs()', () => {
         expect(readHtmlTargetFromQUnitJs(testPath, fs)).toBe('test/sandbox.html#app-tile');
         expect(fs.read).toHaveBeenCalledWith(opaPath);
     });
+
+    test('returns undefined when fs.read throws', () => {
+        const fs = {
+            exists: jest.fn().mockReturnValue(true),
+            read: jest.fn().mockImplementation(() => {
+                throw new Error('Permission denied');
+            })
+        } as unknown as Editor;
+
+        expect(readHtmlTargetFromQUnitJs(testPath, fs)).toBeUndefined();
+    });
 });
 
 describe('addIntegrationOldToGitignore()', () => {
@@ -307,5 +353,289 @@ describe('addIntegrationOldToGitignore()', () => {
         await addIntegrationOldToGitignore(projectBasePath, fs);
 
         expect(fs.write).not.toHaveBeenCalled();
+    });
+});
+
+/** Realistic JourneyRunner.js with tab indentation (matching the LropVirtualTests template) */
+const JOURNEY_RUNNER_FILE = `sap.ui.define([
+    "sap/fe/test/JourneyRunner",
+\t"myApp/test/integration/pages/TravelList",
+\t"myApp/test/integration/pages/TravelObjectPage"
+], function (JourneyRunner, TravelList, TravelObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('myApp') + '/test/flp.html#app-preview',
+        pages: {
+\t\t\tonTheTravelList: TravelList,
+\t\t\tonTheTravelObjectPage: TravelObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+`;
+
+describe('splicePageIntoJourneyRunner()', () => {
+    test('returns file unchanged when all pages already exist', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [
+            { targetKey: 'TravelList', appPath: 'myApp' },
+            { targetKey: 'TravelObjectPage', appPath: 'myApp' }
+        ]);
+
+        expect(result).toBe(JOURNEY_RUNNER_FILE);
+    });
+
+    test('returns file unchanged when pages array is empty', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, []);
+        expect(result).toBe(JOURNEY_RUNNER_FILE);
+    });
+
+    test('adds a new page to all three locations', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        // 1. define array
+        expect(result).toContain('"myApp/test/integration/pages/NewPage",');
+        // 2. function params
+        expect(result).toContain(', NewPage');
+        // 3. pages object
+        expect(result).toContain('onTheNewPage: NewPage,');
+    });
+
+    test('adds a trailing comma to the last existing define entry when missing', () => {
+        // JOURNEY_RUNNER_FILE has TravelObjectPage without a trailing comma in the define array
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        expect(result).toContain('"myApp/test/integration/pages/TravelObjectPage",');
+    });
+
+    test('adds a trailing comma to the last existing pages entry when missing', () => {
+        // JOURNEY_RUNNER_FILE has onTheTravelObjectPage without a trailing comma
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        expect(result).toContain('onTheTravelObjectPage: TravelObjectPage,');
+    });
+
+    test('skips pages already present when adding new ones', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [
+            { targetKey: 'TravelList', appPath: 'myApp' }, // already present
+            { targetKey: 'NewPage', appPath: 'myApp' } // new
+        ]);
+
+        // New page must appear
+        expect(result).toContain('"myApp/test/integration/pages/NewPage",');
+        // Existing page must not be duplicated
+        const count = (result.match(/"myApp\/test\/integration\/pages\/TravelList"/g) ?? []).length;
+        expect(count).toBe(1);
+    });
+
+    test('adds multiple new pages to all three locations', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [
+            { targetKey: 'PageA', appPath: 'myApp' },
+            { targetKey: 'PageB', appPath: 'myApp' }
+        ]);
+
+        expect(result).toContain('"myApp/test/integration/pages/PageA",');
+        expect(result).toContain('"myApp/test/integration/pages/PageB",');
+        expect(result).toContain('onThePageA: PageA,');
+        expect(result).toContain('onThePageB: PageB,');
+        expect(result).toContain(', PageA');
+        expect(result).toContain(', PageB');
+    });
+
+    test('preserves all content outside the patched locations', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        expect(result).toContain("launchUrl: sap.ui.require.toUrl('myApp') + '/test/flp.html#app-preview'");
+        expect(result).toContain("'use strict';");
+        expect(result).toContain('async: true');
+        expect(result).toContain('return runner;');
+    });
+
+    test('new define entries use same indentation as existing entries', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        const lines = result.split('\n');
+        const newDefineLine = lines.find((l) => l.includes('pages/NewPage'));
+        // The first entry in the define array uses 4-space indentation ("sap/fe/test/JourneyRunner")
+        // so new entries inherit the same 4-space indent
+        expect(newDefineLine).toMatch(/^ {4}"/);
+    });
+
+    test('new page object entries use same indentation as existing entries', () => {
+        const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        const lines = result.split('\n');
+        const newPageLine = lines.find((l) => l.includes('onTheNewPage'));
+        expect(newPageLine).toMatch(/^\t\t\t/);
+    });
+});
+
+describe('addPagesToJourneyRunner()', () => {
+    const testOutDirPath = join('/', 'project', 'webapp', 'test');
+    const expectedFilePath = join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js');
+
+    function makeFsMock(content: string): jest.Mocked<Pick<Editor, 'read' | 'write'>> {
+        return {
+            read: jest.fn().mockReturnValue(content),
+            write: jest.fn()
+        };
+    }
+
+    test('reads JourneyRunner.js from the testOutDirPath and writes updated content', () => {
+        const fs = makeFsMock(JOURNEY_RUNNER_FILE) as unknown as Editor;
+        addPagesToJourneyRunner([{ targetKey: 'NewPage', appPath: 'myApp' }], testOutDirPath, fs);
+
+        expect(fs.read).toHaveBeenCalledWith(expectedFilePath);
+        expect(fs.write).toHaveBeenCalledWith(
+            expectedFilePath,
+            expect.stringContaining('"myApp/test/integration/pages/NewPage",')
+        );
+    });
+
+    test('does not write when all pages are already present', () => {
+        const fs = makeFsMock(JOURNEY_RUNNER_FILE) as unknown as Editor;
+        addPagesToJourneyRunner(
+            [
+                { targetKey: 'TravelList', appPath: 'myApp' },
+                { targetKey: 'TravelObjectPage', appPath: 'myApp' }
+            ],
+            testOutDirPath,
+            fs
+        );
+
+        expect(fs.read).toHaveBeenCalledWith(expectedFilePath);
+        expect(fs.write).not.toHaveBeenCalled();
+    });
+
+    test('does not throw when JourneyRunner.js does not exist', () => {
+        const fs = {
+            read: jest.fn().mockImplementation(() => {
+                throw new Error('File not found');
+            }),
+            write: jest.fn()
+        } as unknown as Editor;
+
+        expect(() => {
+            addPagesToJourneyRunner([{ targetKey: 'NewPage', appPath: 'myApp' }], testOutDirPath, fs);
+        }).not.toThrow();
+        expect(fs.write).not.toHaveBeenCalled();
+    });
+});
+
+describe('MAX_FILE_CONTENT_LENGTH guard', () => {
+    test('spliceModulesIntoQUnitContent returns content unchanged when it exceeds the limit', () => {
+        const oversized = BASE_FILE + ' '.repeat(10_001);
+        const result = spliceModulesIntoQUnitContent(oversized, ['myApp/test/integration/NewJourney']);
+        expect(result).toBe(oversized);
+    });
+
+    test('splicePageIntoJourneyRunner returns content unchanged when it exceeds the limit', () => {
+        const oversized = JOURNEY_RUNNER_FILE + ' '.repeat(10_001);
+        const result = splicePageIntoJourneyRunner(oversized, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+        expect(result).toBe(oversized);
+    });
+
+    test('addPathsToQUnitJs does not write when file content exceeds the limit', () => {
+        const oversized = BASE_FILE + ' '.repeat(10_001);
+        const fs = {
+            read: jest.fn().mockReturnValue(oversized),
+            write: jest.fn()
+        } as unknown as Editor;
+        addPathsToQUnitJs(['myApp/test/integration/NewJourney'], join('/', 'project', 'webapp', 'test'), fs);
+        expect(fs.write).not.toHaveBeenCalled();
+    });
+});
+
+describe('hasVirtualOPA5()', () => {
+    const mockGetAllUi5YamlFileNames = getAllUi5YamlFileNames as jest.MockedFunction<typeof getAllUi5YamlFileNames>;
+    const mockReadUi5Yaml = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
+    const basePath = join('/', 'project');
+
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    test('returns true when a yaml file has a fiori-tools-preview middleware with OPA5 framework', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: { test: [{ framework: 'OPA5', path: '/test/opaTests.qunit.html' }] }
+            })
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(true);
+    });
+
+    test('returns false when no yaml file has OPA5 configured', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: { test: [{ framework: 'KARMA', path: '/test/karma.html' }] }
+            })
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(false);
+    });
+
+    test('returns false when fiori-tools-preview middleware has no test array', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({ configuration: {} })
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(false);
+    });
+
+    test('returns false when fiori-tools-preview middleware is not present', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue(undefined)
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(false);
+    });
+
+    test('returns false when no yaml files are found', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue([]);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(false);
+    });
+
+    test('skips yaml files that throw and continues checking remaining files', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5-bad.yaml', 'ui5.yaml']);
+        mockReadUi5Yaml.mockRejectedValueOnce(new Error('Cannot parse')).mockResolvedValueOnce({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: { test: [{ framework: 'OPA5' }] }
+            })
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(true);
+    });
+
+    test('returns true when OPA5 is in a test array alongside other frameworks', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: {
+                    test: [{ framework: 'KARMA' }, { framework: 'OPA5' }, { framework: 'QUnit' }]
+                }
+            })
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(true);
+    });
+
+    test('returns true on the first yaml that has OPA5 without reading further files', async () => {
+        mockGetAllUi5YamlFileNames.mockResolvedValue(['ui5.yaml', 'ui5-mock.yaml']);
+        mockReadUi5Yaml.mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: { test: [{ framework: 'OPA5' }] }
+            })
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(true);
+        expect(mockReadUi5Yaml).toHaveBeenCalledTimes(1);
     });
 });
