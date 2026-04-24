@@ -10,6 +10,7 @@ export enum BuildingBlockType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
     CustomFilterField = 'custom-filter-field',
+    CustomFormField = 'custom-form-field',
     Field = 'field',
     Form = 'form',
     Page = 'page',
@@ -440,6 +441,49 @@ export interface CustomFilterField extends BuildingBlock {
      * The fragment that contains the template for the custom filter.
      */
     embededFragment?: EmbededFragment;
+}
+
+/**
+ * Represents a custom form field building block.
+ * Custom form fields can be added to Form building blocks using the FormElement control.
+ *
+ * @see https://sapui5.hana.ondemand.com/#/api/sap.fe.macros.FormElement
+ * @example
+ * <macros:Form id="MyForm" metaPath="@com.sap.vocabularies.UI.v1.FieldGroup#General">
+ *   <macros:fields>
+ *     <macros:FormElement
+ *       label="Custom Field"
+ *       placement="After"
+ *       anchor="DataField::ExistingProperty">
+ *       <macros:fields>
+ *         <core:Fragment fragmentName="myApp.ext.CustomField" type="XML" />
+ *       </macros:fields>
+ *     </macros:FormElement>
+ *   </macros:fields>
+ * </macros:Form>
+ * @extends {BuildingBlock}
+ */
+export interface CustomFormField extends BuildingBlock {
+    /**
+     * Optional key for the FormElement.
+     */
+    formElementKey?: string;
+    /**
+     * The text that will be displayed as label for this FormElement.
+     */
+    label: string;
+    /**
+     * Position of the custom form field relative to an anchor element.
+     */
+    position?: Position;
+    /**
+     * The fragment that contains the template for the custom form field.
+     */
+    embededFragment: EmbededFragment;
+    /**
+     * Property used to construct the metaPath for the custom form field, e.g. "EntitySet/targetProperty".
+     */
+    targetProperty?: string;
 }
 
 export interface CustomColumn extends BuildingBlock {

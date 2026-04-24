@@ -1,5 +1,44 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.3.12
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/system-access@0.7.8
+
+## 0.3.11
+
+### Patch Changes
+
+- @sap-ux/system-access@0.7.8
+
+## 0.3.10
+
+### Patch Changes
+
+- @sap-ux/system-access@0.7.7
+
+## 0.3.9
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-access@1.35.20
+
+## 0.3.8
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- Updated dependencies [f1e4481]
+    - @sap-ux/ui5-config@0.30.2
+    - @sap-ux/system-access@0.7.5
+    - @sap-ux/project-access@1.35.19
+
 ## 0.3.7
 
 ### Patch Changes

@@ -1,5 +1,136 @@
 # @sap-ux/generator-adp
 
+## 0.9.60
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/adp-tooling@0.18.121
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.101
+    - @sap-ux/inquirer-common@0.11.40
+    - @sap-ux/odata-service-writer@0.31.8
+    - @sap-ux/project-input-validator@0.6.77
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/telemetry@0.6.100
+
+## 0.9.59
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.100
+    - @sap-ux/adp-tooling@0.18.120
+    - @sap-ux/odata-service-writer@0.31.7
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/inquirer-common@0.11.39
+
+## 0.9.58
+
+### Patch Changes
+
+- e333607: fix(generator-adp): Change endpoint used for checking user authentication
+    - @sap-ux/adp-tooling@0.18.119
+    - @sap-ux/inquirer-common@0.11.38
+
+## 0.9.57
+
+### Patch Changes
+
+- Updated dependencies [67d1f8b]
+    - @sap-ux/adp-tooling@0.18.118
+    - @sap-ux/telemetry@0.6.99
+    - @sap-ux/fiori-generator-shared@0.13.99
+    - @sap-ux/inquirer-common@0.11.37
+
+## 0.9.56
+
+### Patch Changes
+
+- 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
+- Updated dependencies [8fb08a2]
+    - @sap-ux/adp-tooling@0.18.117
+
+## 0.9.55
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/adp-tooling@0.18.116
+    - @sap-ux/axios-extension@1.25.31
+    - @sap-ux/fiori-generator-shared@0.13.98
+    - @sap-ux/inquirer-common@0.11.36
+    - @sap-ux/system-access@0.7.7
+    - @sap-ux/telemetry@0.6.98
+    - @sap-ux/odata-service-writer@0.31.7
+
+## 0.9.54
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/adp-tooling@0.18.115
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/inquirer-common@0.11.35
+    - @sap-ux/telemetry@0.6.97
+    - @sap-ux/fiori-generator-shared@0.13.97
+    - @sap-ux/odata-service-writer@0.31.7
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-access@1.35.20
+    - @sap-ux/project-input-validator@0.6.76
+
+## 0.9.53
+
+### Patch Changes
+
+- Updated dependencies [497317c]
+    - @sap-ux/adp-tooling@0.18.114
+
+## 0.9.52
+
+### Patch Changes
+
+- fa016e6: Error message when user is not logged in Cloud Foundry when starting FLP Config generator
+  Change current label for environment prompt from "Cloud Foundry" to "SAP BTP, Cloud Foundry environment".
+
+## 0.9.51
+
+### Patch Changes
+
+- Updated dependencies [7a8613b]
+    - @sap-ux/adp-tooling@0.18.113
+
+## 0.9.50
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+- Updated dependencies [f1e4481]
+    - @sap-ux/axios-extension@1.25.29
+    - @sap-ux/inquirer-common@0.11.34
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/adp-tooling@0.18.112
+    - @sap-ux/fiori-generator-shared@0.13.96
+    - @sap-ux/odata-service-writer@0.31.6
+    - @sap-ux/system-access@0.7.5
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/store@1.5.13
+    - @sap-ux/telemetry@0.6.96
+    - @sap-ux/project-input-validator@0.6.75
+
+## 0.9.49
+
+### Patch Changes
+
+- 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
+- Updated dependencies [1b10e9f]
+    - @sap-ux/adp-tooling@0.18.111
+
 ## 0.9.48
 
 ### Patch Changes

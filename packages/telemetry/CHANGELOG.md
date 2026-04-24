@@ -1,5 +1,49 @@
 # @sap-ux/telemetry
 
+## 0.6.100
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+
+## 0.6.99
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+
+## 0.6.98
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/nodejs-utils@0.2.21
+
+## 0.6.97
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/nodejs-utils@0.2.20
+    - @sap-ux/project-access@1.35.20
+
+## 0.6.96
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/ui5-config@0.30.2
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/store@1.5.13
+
 ## 0.6.95
 
 ### Patch Changes

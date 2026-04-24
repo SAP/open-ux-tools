@@ -118,8 +118,6 @@ describe('config', () => {
         });
 
         test('paths missing a leading slash are sanitized with a leading slash', async () => {
-            const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
-            const consoleSpyWarning = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
             const config = {
                 flp: {
                     path: 'test/flpSandbox.html',
@@ -149,6 +147,69 @@ describe('config', () => {
             previews.forEach(({ path }) => {
                 expect(path.startsWith('/')).toBe(true);
             });
+        });
+    });
+
+    describe('sanitizeConfig', () => {
+        test('developerMode is preserved and no warning logged for CPE scenario (FE_FROM_SCRATCH)', () => {
+            const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
+            const consoleSpyWarning = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
+            const config = {
+                editors: {
+                    rta: {
+                        layer: 'CUSTOMER_BASE',
+                        options: { scenario: 'FE_FROM_SCRATCH' },
+                        endpoints: [{ path: '/editor.html', developerMode: true }]
+                    }
+                }
+            } as unknown as MiddlewareConfig;
+            getPreviewPaths(config);
+            expect(consoleSpyError).not.toHaveBeenCalled();
+            expect(consoleSpyWarning).not.toHaveBeenCalledWith('developerMode for /editor.html disabled');
+            expect(config.editors!.rta!.endpoints[0].developerMode).toBe(true);
+            consoleSpyError.mockRestore();
+            consoleSpyWarning.mockRestore();
+        });
+
+        test('developerMode is preserved and no warning logged for ADAPTATION_PROJECT scenario', () => {
+            const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
+            const consoleSpyWarning = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
+            const config = {
+                editors: {
+                    rta: {
+                        layer: 'CUSTOMER_BASE',
+                        options: { scenario: 'ADAPTATION_PROJECT' },
+                        endpoints: [{ path: '/test/adaptation-editor.html', developerMode: true }]
+                    }
+                }
+            } as unknown as MiddlewareConfig;
+            getPreviewPaths(config);
+            expect(consoleSpyError).not.toHaveBeenCalled();
+            expect(consoleSpyWarning).not.toHaveBeenCalledWith(
+                'developerMode for /test/adaptation-editor.html disabled'
+            );
+            expect(config.editors!.rta!.endpoints[0].developerMode).toBe(true);
+            consoleSpyError.mockRestore();
+            consoleSpyWarning.mockRestore();
+        });
+
+        test('developerMode is stripped and warning logged when no recognized scenario', () => {
+            const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
+            const consoleSpyWarning = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
+            const config = {
+                editors: {
+                    rta: {
+                        layer: 'CUSTOMER_BASE',
+                        endpoints: [{ path: '/editor.html', developerMode: true }]
+                    }
+                }
+            } as unknown as MiddlewareConfig;
+            getPreviewPaths(config);
+            expect(consoleSpyError).toHaveBeenCalledWith(
+                'developerMode is ONLY supported for SAP UI5 adaptation projects.'
+            );
+            expect(consoleSpyWarning).toHaveBeenCalledWith('developerMode for /editor.html disabled');
+            expect(config.editors!.rta!.endpoints[0].developerMode).toBe(false);
             consoleSpyError.mockRestore();
             consoleSpyWarning.mockRestore();
         });

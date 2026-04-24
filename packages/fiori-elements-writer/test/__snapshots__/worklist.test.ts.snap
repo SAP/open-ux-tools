@@ -14534,11 +14534,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -14599,11 +14606,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 

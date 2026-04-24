@@ -1,5 +1,58 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.12.3
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/fiori-annotation-api@0.9.43
+
+## 9.12.2
+
+### Patch Changes
+
+- 291351f: Update sap-no-data-field-intent-based-navigation rule documentation with information on semantic link navigation.
+
+## 9.12.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/fiori-annotation-api@0.9.42
+
+## 9.12.0
+
+### Minor Changes
+
+- 524690a: [rule] Add rule to check that a text property for a field with UI.TextArrangement is not hidden.
+
+## 9.11.7
+
+### Patch Changes
+
+- 9696e29: Add legacy fiori_tools_configure.eslintrc for `recommended` and `recommended-for-s4hana`
+
+## 9.11.6
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+    - @sap-ux/fiori-annotation-api@0.9.41
+    - @sap-ux/project-access@1.35.19
+
+## 9.11.5
+
+### Patch Changes
+
+- 0f7f5f3: Fix: Check minUI5 version for the sap-width-including-column-header rule
+
+## 9.11.4
+
+### Patch Changes
+
+- f65d718: fix: revert eslint peerDependency to ^9 instead of exact version
+
 ## 9.11.3
 
 ### Patch Changes

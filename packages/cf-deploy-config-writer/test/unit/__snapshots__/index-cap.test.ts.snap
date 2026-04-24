@@ -313,8 +313,10 @@ resources:
   - name: captestproject-uaa
     type: org.cloudfoundry.managed-service
     parameters:
-      service-plan: application
       service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      service-name: captestproject-xsuaa-service
       config:
         xsappname: captestproject-\${space-guid}
         tenant-mode: dedicated
@@ -372,7 +374,7 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations standard 3`
         \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^20.0.0\\"
+        \\"@sap/approuter\\": \\"^21.0.0\\"
     }
 }"
 `;

@@ -1,5 +1,47 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.105
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/ui5-application-writer@1.8.6
+    - @sap-ux/project-access@1.35.21
+
+## 0.7.104
+
+### Patch Changes
+
+- d36d5d7: app info generation fixes
+
+## 0.7.103
+
+### Patch Changes
+
+- 4357b0b: generate opa5 tests from app info
+
+## 0.7.102
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/ui5-application-writer@1.8.5
+
+## 0.7.101
+
+### Patch Changes
+
+- 17d8e42: fixes for object page opa test failures
+
+## 0.7.100
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/ui5-application-writer@1.8.4
+    - @sap-ux/project-access@1.35.19
+
 ## 0.7.99
 
 ### Patch Changes

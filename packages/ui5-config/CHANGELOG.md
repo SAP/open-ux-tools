@@ -1,5 +1,19 @@
 # @sap-ux/ui5-config
 
+## 0.30.3
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+
+## 0.30.2
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- Updated dependencies [f1e4481]
+    - @sap-ux/yaml@0.17.7
+
 ## 0.30.1
 
 ### Patch Changes

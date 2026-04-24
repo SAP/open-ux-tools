@@ -1,5 +1,36 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.22
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/fiori-annotation-api@0.9.43
+
+## 0.43.21
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/fiori-annotation-api@0.9.42
+
+## 0.43.20
+
+### Patch Changes
+
+- 9700a95: feat(fpm-writer): Support custom fields for form building block
+
+## 0.43.19
+
+### Patch Changes
+
+- f1e4481: chore(fe-fpm-writer): upgrade @xmldom/xmldom 0.8.11 → 0.8.12 (security fix)
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/fiori-annotation-api@0.9.41
+    - @sap-ux/project-access@1.35.19
+
 ## 0.43.18
 
 ### Patch Changes

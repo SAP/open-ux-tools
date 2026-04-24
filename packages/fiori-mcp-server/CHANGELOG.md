@@ -1,5 +1,31 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.51
+
+### Patch Changes
+
+- d9ae55c: fix: improve floorplan descriptions and make service/entityConfig optional for FF_SIMPLE (Basic template)
+
+## 0.6.50
+
+### Patch Changes
+
+- c88661f: fix(deps): update dependency @langchain/core to v1.1.40
+
+## 0.6.49
+
+### Patch Changes
+
+- 7746b58: feat: add MCP registry manifest for registry.modelcontextprotocol.io
+
+## 0.6.48
+
+### Patch Changes
+
+- f1e4481: chore(fiori-mcp-server): upgrade @modelcontextprotocol/sdk 1.28.0 → 1.29.0 (hono/express-rate-limit/path-to-regexp security fixes)
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+    - @sap-ux/store@1.5.13
+
 ## 0.6.47
 
 ### Patch Changes

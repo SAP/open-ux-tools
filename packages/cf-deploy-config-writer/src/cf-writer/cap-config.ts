@@ -2,12 +2,12 @@ import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { updateRootPackage } from '../utils';
 import { validateMtaConfig, isMTAFound, addRoutingConfig, generateCAPMTA } from '../mta-config';
+import { waitForMtaFile } from '../mta-config/wait-for-mta';
 import LoggerHelper from '../logger-helper';
 import type { Logger } from '@sap-ux/logger';
 import { type CAPConfig, type CFBaseConfig } from '../types';
 import { t } from '../i18n';
 import { getCapProjectType } from '@sap-ux/project-access';
-import { MTA_FILE_OPERATION_DELAY_MS } from '../constants';
 
 /**
  * Add a standalone | managed approuter to a CAP project.
@@ -27,8 +27,8 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
     logger?.debug(`Generate CAP configuration using: \n ${JSON.stringify(config)}`);
     await validateConfig(config);
     await generateCAPMTA(config, fs);
-    // Delay to ensure MTA file write completes before subsequent read operations
-    await new Promise((resolve) => setTimeout(resolve, MTA_FILE_OPERATION_DELAY_MS));
+    // Wait until mta.yaml is readable by mta-lib before proceeding
+    await waitForMtaFile(config.mtaPath);
     await addRoutingConfig(config, fs);
     await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
     LoggerHelper.logger?.debug(t('debug.capGenerationCompleted'));

@@ -1,5 +1,43 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.29
+
+### Patch Changes
+
+- 03d3ea1: fix(deps): Update dependency @ui5/manifest to v1.85.0
+
+## 0.25.28
+
+## 0.25.27
+
+## 0.25.26
+
+## 0.25.25
+
+## 0.25.24
+
+## 0.25.23
+
+## 0.25.22
+
+## 0.25.21
+
+### Patch Changes
+
+- 9696e29: Linting auto fix
+
+## 0.25.20
+
+## 0.25.19
+
+### Patch Changes
+
+- @sap-ux-private/control-property-editor-common@0.7.7
+
+## 0.25.18
+
+## 0.25.17
+
 ## 0.25.16
 
 ## 0.25.15

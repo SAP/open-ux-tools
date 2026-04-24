@@ -1,5 +1,91 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.1.12
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.121
+
+## 0.1.11
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.120
+
+## 0.1.10
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.119
+
+## 0.1.9
+
+### Patch Changes
+
+- 37d4ded: fix: SSH tunnel not started in BAS for on-premise connectivity for CF ADP
+
+## 0.1.8
+
+### Patch Changes
+
+- Updated dependencies [67d1f8b]
+    - @sap-ux/adp-tooling@0.18.118
+
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies [8fb08a2]
+    - @sap-ux/adp-tooling@0.18.117
+
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/adp-tooling@0.18.116
+
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/adp-tooling@0.18.115
+    - @sap-ux/btp-utils@1.1.13
+
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [497317c]
+    - @sap-ux/adp-tooling@0.18.114
+
+## 0.1.3
+
+### Patch Changes
+
+- 7a8613b: feat: Enable SSH tunnel in CF backend middleware for OnPremise destinations
+- Updated dependencies [7a8613b]
+    - @sap-ux/adp-tooling@0.18.113
+
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/adp-tooling@0.18.112
+    - @sap-ux/btp-utils@1.1.12
+
+## 0.1.1
+
+### Patch Changes
+
+- 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
+- Updated dependencies [1b10e9f]
+    - @sap-ux/adp-tooling@0.18.111
+
 ## 0.1.0
 
 ### Minor Changes

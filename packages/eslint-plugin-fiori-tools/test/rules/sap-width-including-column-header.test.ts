@@ -116,6 +116,14 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                 code: JSON.stringify(V4_MANIFEST)
             },
             [_6_COLUMNS_ANNOTATIONS]
+        ),
+        createValidTest(
+            {
+                name: 'ui5 version lower than 1.120 - no warning for small table',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [])
+            },
+            [ORIGINAL_ANNOTATIONS]
         )
     ],
 
@@ -124,7 +132,12 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
             {
                 name: 'widthIncludingColumnHeader missing for small table',
                 filename: V4_MANIFEST_PATH,
-                code: getManifestAsCode(V4_MANIFEST, []),
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.120.0'
+                    }
+                ]),
                 errors: [
                     {
                         messageId: 'width-including-column-header-manifest',
@@ -133,6 +146,10 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.120.0'
+                    },
                     {
                         path: [
                             'sap.ui5',
@@ -170,7 +187,12 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
             [
                 {
                     filename: V4_MANIFEST_PATH,
-                    code: JSON.stringify(V4_MANIFEST, undefined, 2)
+                    code: getManifestAsCode(V4_MANIFEST, [
+                        {
+                            path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                            value: '1.120.0'
+                        }
+                    ])
                 }
             ]
         ),
@@ -179,6 +201,10 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                 name: 'small object page table',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.120.0'
+                    },
                     {
                         path: [
                             'sap.ui5',
@@ -203,6 +229,10 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.120.0'
+                    },
                     {
                         path: [
                             'sap.ui5',

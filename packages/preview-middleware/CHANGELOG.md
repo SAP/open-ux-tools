@@ -1,5 +1,102 @@
 # @sap-ux/preview-middleware
 
+## 0.25.29
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/adp-tooling@0.18.121
+    - @sap-ux/system-access@0.7.8
+
+## 0.25.28
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.120
+- @sap-ux/system-access@0.7.8
+
+## 0.25.27
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.119
+
+## 0.25.26
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+- Updated dependencies [67d1f8b]
+    - @sap-ux/adp-tooling@0.18.118
+
+## 0.25.25
+
+### Patch Changes
+
+- Updated dependencies [8fb08a2]
+    - @sap-ux/adp-tooling@0.18.117
+
+## 0.25.24
+
+### Patch Changes
+
+- ee68603: Axios upgrade from bas-sdk
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/adp-tooling@0.18.116
+    - @sap-ux/system-access@0.7.7
+
+## 0.25.23
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/adp-tooling@0.18.115
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-access@1.35.20
+
+## 0.25.22
+
+### Patch Changes
+
+- Updated dependencies [497317c]
+    - @sap-ux/adp-tooling@0.18.114
+
+## 0.25.21
+
+## 0.25.20
+
+### Patch Changes
+
+- Updated dependencies [7a8613b]
+    - @sap-ux/adp-tooling@0.18.113
+
+## 0.25.19
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/adp-tooling@0.18.112
+    - @sap-ux/system-access@0.7.5
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.19
+
+## 0.25.18
+
+### Patch Changes
+
+- Updated dependencies [1b10e9f]
+    - @sap-ux/adp-tooling@0.18.111
+
+## 0.25.17
+
+### Patch Changes
+
+- 4237e59: fix(preview-middleware): preserve developerMode for CPE and ADP scenarios in sanitizeConfig
+
 ## 0.25.16
 
 ### Patch Changes

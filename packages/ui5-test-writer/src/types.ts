@@ -1,3 +1,5 @@
+import type { Editor } from 'mem-fs-editor';
+
 export const SupportedPageTypes: { [id: string]: string } = {
     'sap.fe.templates.ListReport': 'ListReport',
     'sap.fe.templates.ObjectPage': 'ObjectPage',
@@ -25,6 +27,13 @@ export type FEV4OPAConfig = {
     filterBarItems?: string[];
 };
 
+export type JourneyParams = {
+    startPages: string[];
+    startLR: string | undefined;
+    navigatedOP: string | undefined;
+    hideFilterBar: boolean;
+};
+
 export type FEV4ManifestTarget = {
     type?: string;
     name?: string;
@@ -40,6 +49,13 @@ export type FEV4ManifestTarget = {
                         route?: string;
                     };
                 };
+            };
+            views?: {
+                paths?: Array<{
+                    primary?: unknown[];
+                    secondary?: unknown[];
+                    defaultPath?: string;
+                }>;
             };
         };
     };
@@ -118,6 +134,7 @@ export type ListReportFeatures = {
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
+    isALP?: boolean;
 };
 
 export interface ActionButtonState {
@@ -152,6 +169,14 @@ export type AppFeatures = {
     listReport?: ListReportFeatures;
     objectPages?: ObjectPageFeatures[];
     fpm?: FPMFeatures;
+};
+
+export type WriteContext = {
+    config: FEV4OPAConfig;
+    rootV4TemplateDirPath: string;
+    testOutDirPath: string;
+    editor: Editor;
+    journeyParams: JourneyParams;
 };
 
 export type FormField = {

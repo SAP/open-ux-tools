@@ -143,6 +143,110 @@ describe('routes', () => {
             expect(result.routes).toHaveLength(0);
         });
 
+        describe('ADP live-reload routes', () => {
+            const manifestContent = JSON.stringify({ id: 'customer.variant.id' });
+            const variantId = 'customer_variant_id';
+
+            beforeEach(() => {
+                jest.restoreAllMocks();
+                (mockLogger.info as jest.Mock).mockClear();
+                (mockLogger.warn as jest.Mock).mockClear();
+            });
+
+            test('injects changes and i18n routes when manifest.appdescr_variant exists', () => {
+                jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+                jest.spyOn(fs, 'readFileSync').mockImplementation((filePath: fs.PathOrFileDescriptor) => {
+                    const p = String(filePath);
+                    if (p.endsWith('manifest.appdescr_variant')) {
+                        return manifestContent;
+                    }
+                    return JSON.stringify({ routes: [{ source: '^/api/(.*)$', destination: 'api' }] });
+                });
+
+                const result = loadAndPrepareXsappConfig({
+                    rootPath,
+                    xsappJsonPath: path.join(rootPath, 'xs-app.json'),
+                    effectiveOptions: mergeEffectiveOptions({
+                        xsappJsonPath: './xs-app.json',
+                        disableUi5ServerRoutes: true,
+                        allowLocalDir: false,
+                        allowServices: false
+                    }),
+                    sourcePath: rootPath,
+                    logger: mockLogger
+                });
+
+                // ADP routes prepended before existing route
+                expect(result.routes).toHaveLength(3);
+                expect(result.routes![0]).toMatchObject({
+                    source: `^/changes/${variantId}/(.*)$`,
+                    target: 'changes/$1',
+                    localDir: 'webapp',
+                    authenticationType: 'none'
+                });
+                expect(result.routes![1]).toMatchObject({
+                    source: `^/${variantId}/i18n/(.*)$`,
+                    target: 'i18n/$1',
+                    localDir: 'webapp',
+                    authenticationType: 'none'
+                });
+                expect(result.routes![2].destination).toBe('api');
+                expect(mockLogger.info).toHaveBeenCalledWith(
+                    `ADP live-reload: injected localDir routes for /changes/${variantId}/* and /${variantId}/i18n/*`
+                );
+            });
+
+            test('does not inject routes when manifest.appdescr_variant does not exist', () => {
+                jest.spyOn(fs, 'existsSync').mockReturnValue(false);
+                jest.spyOn(fs, 'readFileSync').mockReturnValue(JSON.stringify({ routes: [] }));
+
+                const result = loadAndPrepareXsappConfig({
+                    rootPath,
+                    xsappJsonPath: path.join(rootPath, 'xs-app.json'),
+                    effectiveOptions: mergeEffectiveOptions({
+                        xsappJsonPath: './xs-app.json',
+                        disableUi5ServerRoutes: true,
+                        allowLocalDir: false,
+                        allowServices: false
+                    }),
+                    sourcePath: rootPath,
+                    logger: mockLogger
+                });
+
+                expect(result.routes).toHaveLength(0);
+                expect(mockLogger.info).not.toHaveBeenCalled();
+            });
+
+            test('logs warning when manifest.appdescr_variant is invalid JSON', () => {
+                jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+                jest.spyOn(fs, 'readFileSync').mockImplementation((filePath: fs.PathOrFileDescriptor) => {
+                    const p = String(filePath);
+                    if (p.endsWith('manifest.appdescr_variant')) {
+                        return '{ invalid json';
+                    }
+                    return JSON.stringify({ routes: [] });
+                });
+
+                const result = loadAndPrepareXsappConfig({
+                    rootPath,
+                    xsappJsonPath: path.join(rootPath, 'xs-app.json'),
+                    effectiveOptions: mergeEffectiveOptions({
+                        xsappJsonPath: './xs-app.json',
+                        disableUi5ServerRoutes: true,
+                        allowLocalDir: false,
+                        allowServices: false
+                    }),
+                    sourcePath: rootPath,
+                    logger: mockLogger
+                });
+
+                expect(result.routes).toHaveLength(0);
+                expect(mockLogger.warn).toHaveBeenCalledWith(
+                    expect.stringContaining('Failed to read manifest.appdescr_variant:')
+                );
+            });
+        });
+
         test('appends ui5-server auth route after existing routes', () => {
             const xsappContent = {
                 routes: [{ source: '^/backend/(.*)$', destination: 'backend' }]
