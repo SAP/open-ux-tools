@@ -64,10 +64,12 @@
             "cache": true
         },
         "lint": {
+            "dependsOn": ["^build"],
             "inputs": ["default", "^prod"],
             "cache": true
         },
         "lint:fix": {
+            "dependsOn": ["^build"],
             "inputs": ["default", "^prod"]
         },
         "clean": {

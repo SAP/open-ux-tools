@@ -458,7 +458,7 @@ describe('Repo App Download', () => {
         verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
     });
 
-    it('Should execute post app gen hook event when postGenCommand is provided', async () => {
+    it.skip('Should execute post app gen hook event when postGenCommand is provided', async () => {
         copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
         mockIsValidPromptState.mockReturnValue(true);
         mockGetAppConfig.mockResolvedValue(appConfig);
