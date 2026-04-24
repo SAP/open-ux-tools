@@ -1,8 +1,7 @@
 import type { CopyOptions, Editor } from 'mem-fs-editor';
 import type { TabInfo } from '../common/types';
 import { sep, normalize } from 'node:path';
-import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
-import { validateId } from '@sap-ux/project-access';
+import { findFilesByExtension, validateId } from '@sap-ux/project-access';
 
 /**
  * Options for creating an ID generator with cached file contents.

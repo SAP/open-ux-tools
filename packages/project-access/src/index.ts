@@ -6,7 +6,7 @@ export {
     MinCdsVersion,
     fioriToolsDirectory
 } from './constants';
-export { getFilePaths } from './file';
+export { getFilePaths, findFilesByExtension } from './file';
 export { normalizePath } from './path';
 export {
     addPackageDevDependency,
