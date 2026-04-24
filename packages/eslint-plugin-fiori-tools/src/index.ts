@@ -8,7 +8,7 @@ import { rules } from './rules';
 import { FioriLanguage } from './language/fiori-language';
 import { createSyncFn } from 'synckit';
 import type { getPathMappings } from '@sap-ux/project-access';
-import { uniformUrl } from './project-context/utils';
+import { uniformUrl } from '@sap-ux/fiori-annotation-api';
 export { DiagnosticCache } from './language/diagnostic-cache';
 
 // Use CommonJS require for modules with resolution issues
