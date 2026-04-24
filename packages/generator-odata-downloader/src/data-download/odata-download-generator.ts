@@ -22,8 +22,12 @@ import { initI18nODataDownloadGenerator, t } from '../utils/i18n';
 import type { EntitySetsFlat } from './odata-query';
 import { getODataDownloaderPrompts, promptNames, type SelectedEntityAnswer } from './prompts/prompts';
 import { getMissingReferentialConstraintsPrompts } from './prompts/ref-constrainsts';
-import { YeomanUiStepConfig, type AppConfig, type ReferencedEntities } from './types';
-import { buildReferentialConstraintFileContent, createEntitySetData, updateReferentialConstraintFileContent } from './utils';
+import { type AppConfig, type ReferencedEntities } from './types';
+import {
+    buildReferentialConstraintFileContent,
+    createEntitySetData,
+    updateReferentialConstraintFileContent
+} from './utils';
 import { getValueHelpSelectionPrompt } from './prompts/value-help-prompts';
 import type { MockserverConfig, MockserverService } from '@sap-ux/ui5-config';
 import {
@@ -269,7 +273,11 @@ export class ODataDownloadGenerator extends Generator {
                                 );
                             } else {
                                 const existing = this.fs.read(jsFileAbsPath);
-                                const updated = updateReferentialConstraintFileContent(existing, navPropName, constraints);
+                                const updated = updateReferentialConstraintFileContent(
+                                    existing,
+                                    navPropName,
+                                    constraints
+                                );
                                 if (updated !== existing) {
                                     this.writeDestination(jsFilePath, updated);
                                     ODataDownloadGenerator.logger.info(

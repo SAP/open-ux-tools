@@ -328,7 +328,7 @@ describe('Test odata query builder', () => {
             parentPropertyType: 'Edm.String',
             isDraft: false,
             entityTypeKeys: [],
-                    entityProperties: []
+            entityProperties: []
         };
         query = createQueryFromEntities(
             {
@@ -361,7 +361,7 @@ describe('Test odata query builder', () => {
             parentPropertyType: 'Edm.String',
             isDraft: false,
             entityTypeKeys: [],
-                    entityProperties: []
+            entityProperties: []
         };
 
         // No filter - no semantic key values (filter param omitted entirely)
@@ -438,7 +438,7 @@ describe('Test odata query builder', () => {
             parentPropertyType: 'Edm.Guid',
             isDraft: true,
             entityTypeKeys: [],
-                    entityProperties: []
+            entityProperties: []
         };
 
         // No user filter — no filter on ancestors

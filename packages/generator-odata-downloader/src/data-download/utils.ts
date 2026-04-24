@@ -1,6 +1,8 @@
 import { convert } from '@sap-ux/annotation-converter';
-import { parse } from '@sap-ux/edmx-parser';
+import { merge, parse } from '@sap-ux/edmx-parser';
 import { existsSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { DirName, getMockServerConfig } from '@sap-ux/project-access';
@@ -349,6 +351,7 @@ function getNavPropsForExpansion(
  * Extracts the node identifier property and parent reference property for each.
  *
  * @param convertedMetadata - The converted metadata object
+ * @param mockDataPath
  * @returns Array of hierarchy entity descriptors
  */
 export function getHierarchyEntities(convertedMetadata: ConvertedMetadata, mockDataPath?: string): HierarchyEntity[] {
@@ -358,11 +361,15 @@ export function getHierarchyEntities(convertedMetadata: ConvertedMetadata, mockD
         if (!aggregationAnnotations) {
             continue;
         }
-        const hierarchyAnnotations = Object.keys(aggregationAnnotations).filter((key) => key.startsWith('RecursiveHierarchy'));
+        const hierarchyAnnotations = Object.keys(aggregationAnnotations).filter((key) =>
+            key.startsWith('RecursiveHierarchy')
+        );
         if (!hierarchyAnnotations[0]) {
             continue;
         }
-        ODataDownloadGenerator.logger.debug(`Number of hierarchy annotations entity type: ${entitySet.entityType.name} - ${hierarchyAnnotations.length}`);
+        ODataDownloadGenerator.logger.debug(
+            `Number of hierarchy annotations entity type: ${entitySet.entityType.name} - ${hierarchyAnnotations.length}`
+        );
 
         // Only one hierarchy annotation per entity is supported.
         const hierarchyKey = hierarchyAnnotations[0];
@@ -411,9 +418,10 @@ export function getHierarchyEntities(convertedMetadata: ConvertedMetadata, mockD
             const isDraft = !!(entitySet.annotations?.Common?.DraftRoot ?? entitySet.annotations?.Common?.DraftNode);
             // If we have the parent property assign it
 
-            const parentPropertyType = parentProperty ?
-                entitySet.entityType.entityProperties.find((prop) => prop.name === parentProperty)?.type ??
-                'Edm.String' : undefined;
+            const parentPropertyType = parentProperty
+                ? (entitySet.entityType.entityProperties.find((prop) => prop.name === parentProperty)?.type ??
+                  'Edm.String')
+                : undefined;
             const entityTypeKeys = entitySet.entityType.keys.map((k) => k.name);
 
             // When the parent nav prop has no referential constraint in metadata, check for an existing .js file
@@ -421,16 +429,22 @@ export function getHierarchyEntities(convertedMetadata: ConvertedMetadata, mockD
             if (!hasReferentialConstraint && parentNavPropName) {
                 const jsFile = mockDataPath ? join(mockDataPath, `${entitySet.name}.js`) : undefined;
                 if (jsFile && existsSync(jsFile)) {
-                    // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    const existing = require(jsFile) as { getReferentialConstraints?: (nav: { name: string; referentialConstraint: [] }) => { sourceProperty: string; targetProperty: string }[] };
-                    const constraints = existing.getReferentialConstraints?.({ name: parentNavPropName, referentialConstraint: [] }) ?? [];
+                    const existing = createRequire(__filename)(jsFile) as {
+                        getReferentialConstraints?: (nav: {
+                            name: string;
+                            referentialConstraint: [];
+                        }) => { sourceProperty: string; targetProperty: string }[];
+                    };
+                    const constraints =
+                        existing.getReferentialConstraints?.({ name: parentNavPropName, referentialConstraint: [] }) ??
+                        [];
                     ODataDownloadGenerator.logger.debug(
                         `getHierarchyEntities: '${entitySet.name}' loaded constraints from existing file: ${JSON.stringify(constraints)}`
                     );
                     if (constraints[0]) {
                         parentProperty = constraints[0].targetProperty;
                     }
-                } 
+                }
                 if (!parentProperty) {
                     missingReferentialConstraints = { navPropName: parentNavPropName, constraints: [] };
                     ODataDownloadGenerator.logger.debug(
@@ -476,10 +490,18 @@ export async function getEntityModel(
 ): Promise<ReferencedEntities | undefined | string> {
     let entities: ReferencedEntities | undefined;
     const mainService = appAccess.app.services['mainService'];
-
     try {
         if (mainService.local) {
-            const convertedMetadata = convert(parse(remoteMetadata));
+            const annotationFiles = (mainService.annotations ?? [])
+                .map((a) => a.local)
+                .filter((p): p is string => !!p && existsSync(p));
+            const annotationContents = await Promise.all(annotationFiles.map((f) => readFile(f, 'utf-8')));
+            const parsedAnnotations = annotationContents.map((xml, i) => parse(xml, annotationFiles[i]));
+            const rawMetadata =
+                parsedAnnotations.length > 0
+                    ? merge(parse(remoteMetadata), ...parsedAnnotations)
+                    : parse(remoteMetadata);
+            const convertedMetadata = convert(rawMetadata);
             const appConfig = await specification.readApp({ app: appAccess });
 
             if (
@@ -614,10 +636,7 @@ export function updateReferentialConstraintFileContent(
 
     if (content.includes('getReferentialConstraints')) {
         // Inject at the start of the function body, after the opening {
-        return content.replace(
-            /(getReferentialConstraints[\s\S]*?{)/,
-            `$1\n${ifBlock}`
-        );
+        return content.replace(/(getReferentialConstraints[\s\S]*?{)/, `$1\n${ifBlock}`);
     }
 
     // Append getReferentialConstraints to module.exports before its closing };
@@ -633,4 +652,3 @@ export function updateReferentialConstraintFileContent(
     }
     return content;
 }
-
