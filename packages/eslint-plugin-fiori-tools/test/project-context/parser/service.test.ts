@@ -173,8 +173,8 @@ describe('buildServiceIndex', () => {
             expect(index.annotations[nameTextKey]).toBeUndefined();
         });
 
-        test('injects a synthetic target into the annotation file AST for Common.Text', () => {
-            // Given a V2 metadata service with a property having sap:text
+        test('injects synthetic targets into the annotation file AST for Common.Text and Common.Label', () => {
+            // Given a V2 metadata service with properties having sap:text and sap:label
             const annotationFile = createAnnotationFile(METADATA_URI);
             const artifacts: ServiceArtifacts = {
                 path: '/test/service',
@@ -188,10 +188,27 @@ describe('buildServiceIndex', () => {
             // When building the service index
             buildServiceIndex(artifacts, documents);
 
-            // Then the annotation file has a synthetic target for the ID property
-            expect(annotationFile.targets).toHaveLength(1);
-            expect(annotationFile.targets[0].name).toBe(ID_PROP_PATH);
-            expect(annotationFile.targets[0].terms).toHaveLength(1);
+            // Then the annotation file has synthetic targets for:
+            //   1. OrderID Common.Text  (sap:text="OrderName")
+            //   2. OrderID Common.Label (sap:label="Order ID")
+            //   3. OrderName Common.Label (sap:label="Order Name")
+            expect(annotationFile.targets).toHaveLength(3);
+
+            const textTarget = annotationFile.targets.find(
+                (t) => t.name === ID_PROP_PATH && t.terms[0]?.attributes?.['Path'] !== undefined
+            );
+            expect(textTarget).toBeDefined();
+            expect(textTarget!.name).toBe(ID_PROP_PATH);
+
+            const idLabelTarget = annotationFile.targets.find(
+                (t) => t.name === ID_PROP_PATH && t.terms[0]?.attributes?.['String'] !== undefined
+            );
+            expect(idLabelTarget).toBeDefined();
+            expect(idLabelTarget!.name).toBe(ID_PROP_PATH);
+
+            const nameLabelTarget = annotationFile.targets.find((t) => t.name === NAME_PROP_PATH);
+            expect(nameLabelTarget).toBeDefined();
+            expect(nameLabelTarget!.name).toBe(NAME_PROP_PATH);
         });
 
         test('does NOT overwrite an explicit Common.Text annotation already in the index', () => {
