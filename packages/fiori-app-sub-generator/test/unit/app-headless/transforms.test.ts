@@ -5,7 +5,8 @@ import {
     appConfigInvalidCapServiceName,
     appConfigInvalidEdmx,
     appConfigNotSupportedVersion,
-    appConfigDest
+    appConfigDest,
+    appConfigWithValueListMetadata
 } from './test-data/testHeadlessAppConfigs';
 
 /**
@@ -57,6 +58,33 @@ describe('Test headless', () => {
                 version: '2'
             },
             viewName: 'view1'
+        });
+    });
+
+    test('externalServices entries are passed through to service state', () => {
+        const state = transformExtState(appConfigWithValueListMetadata as unknown as FFAppConfig);
+        expect(state.service).toEqual({
+            client: undefined,
+            destinationName: 'SomeDestinationName',
+            edmx: expect.stringContaining('<?xml version="1.0" encoding="utf-8" ?>'),
+            host: undefined,
+            servicePath: undefined,
+            source: 'sapSystem',
+            version: '2',
+            valueListMetadata: [
+                {
+                    type: 'value-list',
+                    target: 'SomeEntity/SomeProperty',
+                    metadata: expect.stringContaining('<edmx:Edmx'),
+                    path: '/sap/opu/odata4/sap/some_vh_service/srvd/sap/some_vh_service/0001/'
+                },
+                {
+                    type: 'code-list',
+                    collectionPath: 'Currencies',
+                    metadata: expect.stringContaining('<edmx:Edmx'),
+                    path: '/sap/opu/odata4/sap/common/srvd/sap/common/0001/'
+                }
+            ]
         });
     });
 });
