@@ -664,7 +664,11 @@ describe('Test utils', () => {
             const mergeSpy = jest.spyOn(edmxParser, 'merge');
             const metadata = await readFile(metadataPath, 'utf8');
 
-            await getEntityModel(makeAppAccess([{ local: annotationPath }]), mockSpecification as unknown as Specification, metadata);
+            await getEntityModel(
+                makeAppAccess([{ local: annotationPath }]),
+                mockSpecification as unknown as Specification,
+                metadata
+            );
 
             expect(mergeSpy).toHaveBeenCalled();
             const [, ...annotationArgs] = mergeSpy.mock.calls[0];
