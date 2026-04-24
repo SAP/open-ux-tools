@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { ODataDownloadGenerator } from '../src/data-download/odata-download-generator';
 import { getODataDownloaderPrompts, promptNames } from '../src/data-download/prompts/prompts';
 import { getValueHelpSelectionPrompt } from '../src/data-download/prompts/value-help-prompts';
-import { createEntitySetData } from '../src/data-download/utils';
+import { createEntitySetData, buildReferentialConstraintFileContent, updateReferentialConstraintFileContent } from '../src/data-download/utils';
 import { wrap } from 'node:module';
 
 // Create a mock AbapServiceProvider class for instanceof checks
@@ -71,8 +71,9 @@ const mockPrompt = jest.fn();
 const mockWriteDestinationJSON = jest.fn();
 const mockWriteDestination = jest.fn();
 const mockDestinationRoot = jest.fn();
+const mockDestinationPath = jest.fn((p: string) => `/abs/${p}`);
 const mockLog = jest.fn();
-const mockFs = { write: jest.fn() };
+const mockFs = { write: jest.fn(), exists: jest.fn(), read: jest.fn() };
 
 jest.mock('yeoman-generator', () => {
     return class MockGenerator {
@@ -83,6 +84,7 @@ jest.mock('yeoman-generator', () => {
         writeDestinationJSON = mockWriteDestinationJSON;
         writeDestination = mockWriteDestination;
         destinationRoot = mockDestinationRoot;
+        destinationPath = mockDestinationPath;
         log = mockLog;
         rootGeneratorVersion() {
             return '1.0.0';
@@ -435,6 +437,105 @@ describe('ODataDownloadGenerator', () => {
                 join('/test/app', 'webapp', 'localService', 'mainService', 'metadata.xml'),
                 expect.stringContaining('edmx:Edmx')
             );
+        });
+
+        describe('ref-cons file writing', () => {
+            const hierarchyEntity = {
+                entitySetName: 'Items',
+                entityTypeName: 'ItemType',
+                qualifier: 'ItemHierarchy',
+                nodeProperty: 'NodeId',
+                parentProperty: undefined,
+                parentPropertyType: undefined,
+                isDraft: false,
+                entityTypeKeys: ['ItemId'],
+                entityProperties: ['ItemId', 'Name'],
+                missingReferentialConstraints: {
+                    navPropName: '_Parent',
+                    constraints: [{ sourceProperty: 'ItemId', targetProperty: 'ParentId' }]
+                }
+            };
+
+            function setupPromptingMock(hierarchyEntities: typeof hierarchyEntity[]) {
+                (createEntitySetData as jest.Mock).mockReturnValue({ Items: [{ ItemId: '1' }] });
+                (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
+                    answers: {
+                        application: {
+                            appAccess: {
+                                getAppRoot: () => '/test/app',
+                                app: { mainService: 'mainService' }
+                            },
+                            referencedEntities: {
+                                listEntity: { entitySetName: 'Items', semanticKeys: [], entityPath: 'Items' },
+                                hierarchyEntities
+                            },
+                            relatedEntityChoices: { entitySetsFlat: {} }
+                        },
+                        odataQueryResult: { odata: [{ ItemId: '1' }] },
+                        odataServiceAnswers: { servicePath: '/sap/items', metadata: '<metadata/>' }
+                    },
+                    questions: []
+                });
+                (getValueHelpSelectionPrompt as jest.Mock).mockReturnValue({ questions: [], valueHelpData: undefined });
+                (getMockServerConfig as jest.Mock).mockResolvedValue(null);
+                mockPrompt.mockResolvedValue({});
+            }
+
+            it('should write a new ref-cons file when none exists', async () => {
+                setupPromptingMock([hierarchyEntity]);
+                mockFs.exists.mockReturnValue(false);
+                (buildReferentialConstraintFileContent as jest.Mock).mockReturnValue('new content');
+
+                const generator = new ODataDownloadGenerator([], {});
+                await generator.prompting();
+                await generator.writing();
+
+                expect(buildReferentialConstraintFileContent).toHaveBeenCalledWith(
+                    '_Parent',
+                    [{ sourceProperty: 'ItemId', targetProperty: 'ParentId' }]
+                );
+                expect(mockWriteDestination).toHaveBeenCalledWith(
+                    expect.stringContaining('Items.js'),
+                    'new content'
+                );
+            });
+
+            it('should update an existing ref-cons file when the constraint is not yet present', async () => {
+                setupPromptingMock([hierarchyEntity]);
+                mockFs.exists.mockReturnValue(true);
+                mockFs.read.mockReturnValue('existing content');
+                (updateReferentialConstraintFileContent as jest.Mock).mockReturnValue('updated content');
+
+                const generator = new ODataDownloadGenerator([], {});
+                await generator.prompting();
+                await generator.writing();
+
+                expect(updateReferentialConstraintFileContent).toHaveBeenCalledWith(
+                    'existing content',
+                    '_Parent',
+                    [{ sourceProperty: 'ItemId', targetProperty: 'ParentId' }]
+                );
+                expect(mockWriteDestination).toHaveBeenCalledWith(
+                    expect.stringContaining('Items.js'),
+                    'updated content'
+                );
+            });
+
+            it('should skip writing when the existing file already contains the constraint', async () => {
+                setupPromptingMock([hierarchyEntity]);
+                mockFs.exists.mockReturnValue(true);
+                mockFs.read.mockReturnValue('existing content');
+                (updateReferentialConstraintFileContent as jest.Mock).mockReturnValue('existing content');
+
+                const generator = new ODataDownloadGenerator([], {});
+                await generator.prompting();
+                await generator.writing();
+
+                expect(mockWriteDestination).not.toHaveBeenCalledWith(
+                    expect.stringContaining('Items.js'),
+                    expect.anything()
+                );
+            });
         });
     });
 
