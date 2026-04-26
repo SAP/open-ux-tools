@@ -22,13 +22,12 @@ import GenericTile from 'sap/m/GenericTile';
 import App from 'sap/cux/home/App';
 import Event from 'sap/ui/base/Event';
 import Control from 'sap/ui/core/Control';
-import Dialog from 'sap/m/Dialog';
-import Bar from 'sap/m/Bar';
-import Button from 'sap/m/Button';
+import Popover from 'sap/m/Popover';
 import List from 'sap/m/List';
 import StandardListItem from 'sap/m/StandardListItem';
 import HBox from 'sap/m/HBox';
 import Icon from 'sap/ui/core/Icon';
+import { Button$PressEvent } from 'sap/m/Button';
 
 
 const CARDS_GAP = 16;
@@ -95,7 +94,7 @@ export default class MyHomeController extends Controller {
         LargeDesktop: 1440
     };
 
-    private terminalWarningsDialog: Dialog | undefined;
+    private terminalWarningsPopover: Popover | undefined;
 
     private static calculateDeviceType(width: number): string {
         const { DeviceWidth } = MyHomeController;
@@ -339,15 +338,15 @@ export default class MyHomeController extends Controller {
         });
     }
 
-    onTerminalWarningsButtonPress(): void {
-        if (!this.terminalWarningsDialog) {
-            this.terminalWarningsDialog = this.createTerminalWarningsDialog();
+    onTerminalWarningsButtonPress(event: Button$PressEvent): void {
+        if (!this.terminalWarningsPopover) {
+            this.terminalWarningsPopover = this.createTerminalWarningsPopover();
         }
-        void this.fetchWarnings();
-        this.terminalWarningsDialog.open();
+        const button = event.getSource();
+        this.terminalWarningsPopover.openBy(button);
     }
 
-    private createTerminalWarningsDialog(): Dialog {
+    private createTerminalWarningsPopover(): Popover {
         const warningsList = new List({
             items: {
                 path: 'view>/warnings',
@@ -357,45 +356,24 @@ export default class MyHomeController extends Controller {
             }
         });
 
-        const dialog = new Dialog({
-            contentWidth: '32rem',
-            customHeader: new Bar({
-                contentLeft: [
-                    new HBox({
-                        alignItems: 'Center',
-                        items: [
-                            new Icon({ src: 'sap-icon://alert', color: '#e76500' }).addStyleClass('sapUiTinyMarginEnd'),
-                            new Title({ text: this.getText('terminalMessagesDialogTitle'), level: 'H5' })
-                        ]
-                    })
-                ],
-                contentRight: [
-                    new Button({
-                        icon: 'sap-icon://refresh',
-                        tooltip: this.getText('refreshWarnings'),
-                        type: 'Transparent',
-                        press: () => {
-                            void this.fetchWarnings();
-                        }
-                    })
+        const popover = new Popover({
+            customHeader: new HBox({
+                alignItems: 'Center',
+                items: [
+                    new Icon({ src: 'sap-icon://alert', color: '#e76500' }).addStyleClass('sapUiTinyMarginEnd'),
+                    new Title({ text: this.getText('terminalMessagesDialogTitle'), level: 'H5' })
                 ]
-            }),
+            }).addStyleClass('sapUiTinyMargin'),
             content: [warningsList],
-            endButton: new Button({
-                text: this.getText('closeDialog'),
-                type: 'Transparent',
-                press: () => {
-                    dialog.close();
-                }
-            })
-        });
+            placement: 'VerticalPreferredBottom'
+        }).addStyleClass('terminalWarningsPopover');
 
         const view = this.getView();
         if (view) {
-            dialog.setModel(view.getModel('view'), 'view');
+            popover.setModel(view.getModel('view'), 'view');
         }
 
-        return dialog;
+        return popover;
     }
 
     private async initializeWarnings(): Promise<void> {

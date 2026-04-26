@@ -49,6 +49,10 @@
     display: none;
 }
 
+.terminalWarningsPopover .sapMPopoverHeader {
+    border-bottom: 1px solid var(--sapList_BorderColor);
+}
+
 /* Mobile */
 @media (min-width: 320px) and (max-width: 599px) {
     :root {
