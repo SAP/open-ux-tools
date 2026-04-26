@@ -1,6 +1,8 @@
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import type { ProjectType } from '@sap-ux/project-access';
+import { platform } from 'node:os';
+import { spawnSync } from 'node:child_process';
 
 // import type { ProjectInfo } from '@sap/ux-test-utils';
 // import { ODataVersion, ProjectName, ProjectType, getProjectRoot, getProjectSourceRoot } from '@sap/ux-test-utils';
@@ -43,6 +45,7 @@ const DATA_ROOT = join(__dirname, '..', 'data');
 const V4_XML_START_ROOT = join(DATA_ROOT, 'v4-xml-start');
 const V2_XML_START_ROOT = join(DATA_ROOT, 'v2-xml-start');
 const V4_CAP_START_ROOT = join(DATA_ROOT, 'cds', 'cap-start');
+const V4_CAP_LATEST = join(DATA_ROOT, 'cds', 'cap-latest');
 const V4_CAP_NO_APPS_ROOT = join(DATA_ROOT, 'cds', 'cap-no-apps');
 const CDS_LAYERING_ROOT = join(DATA_ROOT, 'cds', 'layering');
 
@@ -101,3 +104,34 @@ export const PROJECTS = {
         }
     }
 };
+
+export const V4_CDS_LATEST = {
+    root: V4_CAP_LATEST,
+    serviceName: 'IncidentService',
+    files: {
+        annotations: pathToFileURL(join(V4_CAP_LATEST, 'app', 'incidents', 'annotations.cds')).toString(),
+        metadata: pathToFileURL(join(V4_CAP_LATEST, 'srv', 'common.cds')).toString(),
+        services: pathToFileURL(join(V4_CAP_LATEST, 'app', 'services.cds')).toString(),
+        schema: pathToFileURL(join(V4_CAP_LATEST, 'db', 'schema.cds')).toString()
+    }
+};
+
+export function npmInstall(projectPath: string, timeout = 5 * 60000) {
+    console.log(`Installing packages in ${projectPath}.`);
+    const cmd = platform() === 'win32' ? `npm.cmd` : 'npm';
+    const npm = spawnSync(cmd, ['install', '--ignore-engines'], {
+        cwd: projectPath,
+        env: process.env,
+        shell: true,
+        stdio: 'inherit',
+        timeout
+    });
+
+    if (npm.error) {
+        console.log(`Error: ${npm.error.message}`);
+    } else if (npm.status !== 0) {
+        console.log(`npm process exited with code ${npm.status}`);
+    } else {
+        console.log(`Package installed successfully in ${projectPath}`);
+    }
+}

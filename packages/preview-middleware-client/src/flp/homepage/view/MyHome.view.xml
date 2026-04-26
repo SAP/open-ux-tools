@@ -41,13 +41,6 @@
                         press=".onTerminalWarningsButtonPress"
                         visible="{view>/hasWarnings}"
                     />
-                    <m:Button
-                        id="showVersionsBtn"
-                        type="Ghost"
-                        text="{i18n>showVersions}"
-                        tooltip="{i18n>showVersions}"
-                        press=".onShowVersionsButtonPress"
-                    />
                 </m:HBox>
             </m:OverflowToolbar>
         </m:customHeader>
