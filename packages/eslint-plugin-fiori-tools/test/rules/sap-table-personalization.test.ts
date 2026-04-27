@@ -445,7 +445,8 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-table-personalization',
+                        message:
+                            'Table personalization should be enabled. Currently every table personalization setting is disabled.',
                         line: 127,
                         column: 21
                     }
@@ -493,7 +494,8 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-table-missing-personalization-properties',
+                        message:
+                            'In case of using an object, omitting a setting is treated as false. Currently column, filter, sort are disabled in the Products table.',
                         line: 145,
                         column: 21
                     }
@@ -565,22 +567,23 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-table-personalization-column',
+                        message: 'Adding or removing table columns should be enabled in the table.',
                         line: 128,
                         column: 23
                     },
                     {
-                        messageId: 'sap-table-personalization-filter',
+                        message: 'Data filtering should be enabled in the table.',
                         line: 129,
                         column: 23
                     },
                     {
-                        messageId: 'sap-table-personalization-group',
+                        message:
+                            'Data grouping should be enabled in the table. Grouping is available for analytical and responsive type tables.',
                         line: 130,
                         column: 23
                     },
                     {
-                        messageId: 'sap-table-personalization-sort',
+                        message: 'Data sorting should be enabled in the table.',
                         line: 131,
                         column: 23
                     }
@@ -671,7 +674,8 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-table-personalization-group',
+                        message:
+                            'Data grouping should be enabled in the table. Grouping is available for analytical and responsive type tables.',
                         line: 130,
                         column: 23
                     }
