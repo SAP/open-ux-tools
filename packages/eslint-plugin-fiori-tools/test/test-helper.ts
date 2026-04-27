@@ -1,13 +1,15 @@
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 import type { RuleTester } from 'eslint';
 
 import type { Manifest } from '@sap-ux/project-access';
-import { normalizePath } from '@sap-ux/project-access';
+import { getNodeModulesPath, normalizePath } from '@sap-ux/project-access';
 
 import { ProjectContext } from '../src/project-context/project-context';
+import { platform } from 'node:os';
+import { spawnSync } from 'node:child_process';
 
 export interface FileChange {
     filename: string;
@@ -16,6 +18,8 @@ export interface FileChange {
 
 const ROOT = join(__dirname, '..');
 
+// XML V4
+export const V4_PROJECT_PATH = join(ROOT, 'test', 'data', 'v4-xml-start');
 export const V4_MANIFEST_PATH = join(ROOT, 'test', 'data', 'v4-xml-start', 'webapp', 'manifest.json');
 export const V4_MANIFEST = Object.freeze(JSON.parse(readFileSync(V4_MANIFEST_PATH, 'utf-8'))) as Manifest;
 export const V4_ANNOTATIONS_PATH = join(
@@ -58,6 +62,40 @@ export const V4_FACETS_ANNOTATIONS = `
             `;
 export const V4_METADATA = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
 
+// CAP
+export const CAP_PROJECT_PATH = join(ROOT, 'test', 'data', 'cap-start');
+export const CAP_APP_PATH = join(CAP_PROJECT_PATH, 'app', 'incidents');
+export const CAP_MANIFEST_PATH = join(CAP_APP_PATH, 'webapp', 'manifest.json');
+export const CAP_MANIFEST = Object.freeze(JSON.parse(readFileSync(CAP_MANIFEST_PATH, 'utf-8'))) as Manifest;
+export const CAP_ANNOTATIONS_PATH = join(CAP_APP_PATH, 'annotations.cds');
+export const CAP_METADATA_PATH = join(CAP_PROJECT_PATH, 'srv', 'incidentservice.cds');
+export const CAP_ANNOTATIONS = readFileSync(CAP_ANNOTATIONS_PATH, 'utf-8');
+export const CAP_FACETS_ANNOTATIONS = `
+annotate service.Incidents with @(
+    UI.Facets         : [{
+        $Type : 'UI.ReferenceFacet',
+        Target: 'incidentFlow/@UI.LineItem#table_section',
+        Label : 'table_section',
+        ID    : 'table_section',
+    }, ],
+);
+
+annotate service.IncidentFlow with @(UI.LineItem #table_section: [
+    {
+        $Type : 'UI.DataField',
+        Value : id,
+        Label : 'id',
+    },
+    {
+        $Type : 'UI.DataField',
+        Value : criticality,
+        Label : 'criticality',
+    }
+]);
+`;
+
+// XML V2
+export const V2_PROJECT_PATH = join(ROOT, 'test', 'data', 'v2-xml-start');
 export const V2_MANIFEST_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'manifest.json');
 export const V2_MANIFEST = Object.freeze(JSON.parse(readFileSync(V2_MANIFEST_PATH, 'utf-8'))) as Manifest;
 export const V2_ANNOTATIONS_PATH = join(
@@ -71,13 +109,57 @@ export const V2_ANNOTATIONS_PATH = join(
 );
 export const V2_ANNOTATIONS = readFileSync(V2_ANNOTATIONS_PATH, 'utf-8');
 
-export function setup(name: string) {
-    const lookup: Record<string, FileChange[]> = {};
+const cdsModuleInstalled = (root: string): boolean => {
+    const modulePath = join(root, 'node_modules');
+    const result = existsSync(modulePath);
+    if (result) {
+        const cdsModulePath = getNodeModulesPath(root, '@sap/cds');
+        if (!cdsModulePath) {
+            return false;
+        }
+        if (existsSync(cdsModulePath)) {
+            return true;
+        }
+        return false;
+    }
+    return false;
+};
 
-    function createTestFunction<T extends { name: string }>(prefix: string) {
+export function npmInstall(projectPath: string, checkCds = true): void {
+    if (checkCds && cdsModuleInstalled(projectPath)) {
+        console.log(`@sap/cds module found. Skipping package install in ${projectPath}.`);
+        return;
+    }
+    console.log(`Installing packages in ${projectPath}.`);
+    const cmd = platform() === 'win32' ? `npm.cmd` : 'npm';
+    const npm = spawnSync(cmd, ['install', '--ignore-engines'], {
+        cwd: projectPath,
+        env: process.env,
+        shell: true,
+        stdio: 'inherit',
+        timeout: 5 * 60000
+    });
+
+    if (npm.error) {
+        fail(`Error: ${npm.error.message}`);
+    } else if (npm.status !== 0) {
+        console.log(`npm process exited with code ${npm.status}`);
+    } else {
+        console.log(`Package installed successfully in ${projectPath}`);
+    }
+}
+
+export function setup(name: string, capAppPath?: string) {
+    const lookup: Record<string, { changes: FileChange[]; filename: string }> = {};
+    if (capAppPath) {
+        // install relevant cds-dk for cds compilation
+        npmInstall(CAP_PROJECT_PATH);
+    }
+
+    function createTestFunction<T extends { name: string; filename: string }>(prefix: string) {
         return function (testCode: T, changes: FileChange[]): T {
             const key = [name, prefix, testCode.name].join(' ');
-            lookup[key] = changes;
+            lookup[key] = { changes, filename: testCode.filename };
             return {
                 ...testCode
             };
@@ -89,7 +171,11 @@ export function setup(name: string) {
         if (!key) {
             return;
         }
-        const changes = lookup[key] ?? [];
+        const { changes = [], filename } = lookup[key] ?? [];
+        const projectCwdCap = capAppPath && CAP_PROJECT_PATH;
+        const projectCwdXml = filename?.includes(V4_PROJECT_PATH) ? V4_PROJECT_PATH : V2_PROJECT_PATH;
+        const cwd = projectCwdCap ?? projectCwdXml;
+        jest.spyOn(process, 'cwd').mockReturnValue(cwd);
         for (const change of changes) {
             const path = normalizePath(change.filename);
             const uri = pathToFileURL(path).toString();
@@ -97,9 +183,15 @@ export function setup(name: string) {
         }
     });
 
+    afterAll(() => {
+        jest.restoreAllMocks();
+    });
+
     return {
-        createValidTest: createTestFunction<RuleTester.ValidTestCase & { name: string }>('valid'),
-        createInvalidTest: createTestFunction<RuleTester.InvalidTestCase & { name: string }>('invalid')
+        createValidTest: createTestFunction<RuleTester.ValidTestCase & { name: string; filename: string }>('valid'),
+        createInvalidTest: createTestFunction<RuleTester.InvalidTestCase & { name: string; filename: string }>(
+            'invalid'
+        )
     };
 }
 
