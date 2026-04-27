@@ -1,10 +1,13 @@
-import { join } from 'node:path';
-
 import { RuleTester } from 'eslint';
-import flexEnabledRule from '../../src/rules/sap-width-including-column-header';
+import widthIncludingColumnHeaderRule from '../../src/rules/sap-width-including-column-header';
 import { meta, languages } from '../../src/index';
-import type { FileChange } from '../test-helper';
 import {
+    CAP_ANNOTATIONS,
+    CAP_ANNOTATIONS_PATH,
+    CAP_APP_PATH,
+    CAP_FACETS_ANNOTATIONS,
+    CAP_MANIFEST,
+    CAP_MANIFEST_PATH,
     getAnnotationsAsXmlCode,
     getManifestAsCode,
     setup,
@@ -58,15 +61,33 @@ const FACETS = {
     code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FACETS_ANNOTATIONS)
 };
 
+const _3_COLUMS_CDS = `
+annotate service.Incidents with @(UI.LineItem: [
+    {
+        $Type: 'UI.DataField',
+        Value: title,
+    },
+    {
+        $Type: 'UI.DataField',
+        Value: category_code,
+        Label: 'CatCode',
+    },
+    {
+        $Type : 'UI.DataField',
+        Value : createdAt,
+    }
+]);
+`;
+
 const ORIGINAL_ANNOTATIONS = {
     filename: V4_ANNOTATIONS_PATH,
     code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, '')
 };
 
 const TEST_NAME = 'sap-width-including-column-header';
-const { createValidTest, createInvalidTest } = setup(TEST_NAME);
+const { createValidTest, createInvalidTest } = setup(`${TEST_NAME} - XML`);
 
-ruleTester.run(TEST_NAME, flexEnabledRule, {
+ruleTester.run(`${TEST_NAME} - XML`, widthIncludingColumnHeaderRule, {
     valid: [
         // Non-manifest files should be ignored
         createValidTest(
@@ -266,6 +287,227 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                 ])
             },
             [FACETS]
+        )
+    ]
+});
+
+const { createValidTest: createValidTestCAP, createInvalidTest: createInvalidTestCAP } = setup(
+    `${TEST_NAME} - CAP`,
+    CAP_APP_PATH
+);
+
+ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
+    valid: [
+        // Non-manifest files should be ignored
+        createValidTestCAP(
+            {
+                name: 'non manifest file - json',
+                filename: 'some-other-file.json',
+                code: JSON.stringify(V4_MANIFEST)
+            },
+            []
+        ),
+        createValidTestCAP(
+            {
+                name: 'non manifest file - cds',
+                filename: 'some-other-file.cds',
+                code: ''
+            },
+            []
+        ),
+        createValidTestCAP(
+            {
+                name: 'widthIncludingColumnHeader set to true for small table',
+                filename: CAP_MANIFEST_PATH,
+                code: getManifestAsCode(CAP_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'widthIncludingColumnHeader'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            []
+        ),
+        createValidTestCAP(
+            {
+                name: 'table with 6 columns',
+                filename: CAP_MANIFEST_PATH,
+                code: JSON.stringify(CAP_MANIFEST)
+            },
+            []
+        ),
+        createValidTestCAP(
+            {
+                name: 'ui5 version lower than 1.120 - no warning for small table',
+                filename: CAP_MANIFEST_PATH,
+                code: getManifestAsCode(CAP_MANIFEST, [])
+            },
+            []
+        )
+    ],
+
+    invalid: [
+        createInvalidTestCAP(
+            {
+                name: 'widthIncludingColumnHeader missing for small table',
+                filename: CAP_MANIFEST_PATH,
+                code: getManifestAsCode(CAP_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.120.0'
+                    }
+                ]),
+                errors: [
+                    {
+                        messageId: 'width-including-column-header-manifest',
+                        line: 114,
+                        column: 17
+                    }
+                ],
+                output: getManifestAsCode(CAP_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.120.0'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'widthIncludingColumnHeader'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [
+                {
+                    filename: CAP_ANNOTATIONS_PATH,
+                    code: CAP_ANNOTATIONS + _3_COLUMS_CDS
+                }
+            ]
+        ),
+        createInvalidTestCAP(
+            {
+                name: 'small object page table (annotation file)',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CAP_FACETS_ANNOTATIONS,
+                errors: [
+                    {
+                        messageId: 'width-including-column-header',
+                        line: 53,
+                        column: 38
+                    }
+                ]
+                // no fix in .cds file
+            },
+            [
+                {
+                    filename: CAP_MANIFEST_PATH,
+                    code: getManifestAsCode(CAP_MANIFEST, [
+                        {
+                            path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                            value: '1.120.0'
+                        }
+                    ])
+                },
+                {
+                    filename: CAP_ANNOTATIONS_PATH,
+                    code: CAP_ANNOTATIONS + CAP_FACETS_ANNOTATIONS
+                }
+            ]
+        ),
+        createInvalidTestCAP(
+            {
+                name: 'small object page table',
+                filename: CAP_MANIFEST_PATH,
+                code: getManifestAsCode(CAP_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.120.0'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'widthIncludingColumnHeader'
+                        ],
+                        value: true
+                    }
+                ]),
+                errors: [
+                    {
+                        messageId: 'width-including-column-header-manifest',
+                        line: 128,
+                        column: 13
+                    }
+                ],
+                output: getManifestAsCode(CAP_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.120.0'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'widthIncludingColumnHeader'
+                        ],
+                        value: true
+                    },
+                    {
+                        path: ['sap.ui5', 'routing', 'targets', 'IncidentsObjectPage', 'options', 'settings'],
+                        value: {
+                            controlConfiguration: {
+                                'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem#table_section': {
+                                    tableSettings: {
+                                        widthIncludingColumnHeader: true
+                                    }
+                                }
+                            },
+                            editableHeaderContent: false,
+                            contextPath: '/Incidents'
+                        }
+                    }
+                ])
+            },
+            [
+                {
+                    filename: CAP_ANNOTATIONS_PATH,
+                    code: CAP_ANNOTATIONS + CAP_FACETS_ANNOTATIONS
+                }
+            ]
         )
     ]
 });
