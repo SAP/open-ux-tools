@@ -120,9 +120,7 @@ function checkConfiguration(
                 propertyPath: config.configurationPath
             }
         };
-        if (copyIssue) {
-            problems.push(copyIssue);
-        }
+        problems.push(copyIssue);
     }
 }
 

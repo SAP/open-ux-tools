@@ -54,7 +54,7 @@ function shouldTableHaveWidthIncludingColumnHeader(table: Table, aliasInfo: Alia
  * @param parsedApp - Parsed application containing manifest.json file data
  * @param parsedService - Parsed service containing metadata and annotations
  * @param problems - Array to collect diagnostic problems
- * @param tableSectionName - Label of the oject page section
+ * @param tableSectionName - Label of the object page section
  */
 function checkTable(
     page: FeV4ListReport | FeV4ObjectPage,

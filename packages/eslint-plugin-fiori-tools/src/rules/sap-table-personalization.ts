@@ -42,7 +42,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [TABLE_PERSONALIZATION]:
-                'Table personalization should be enabled. Currently every{{sectionText}} table personalization settingis disabled.',
+                'Table personalization should be enabled. Currently every{{sectionText}} table personalization setting is disabled.',
             [TABLE_PERSONALIZATION_COLUMN]:
                 'Adding or removing table columns should be enabled in the{{sectionText}} table.',
             [TABLE_PERSONALIZATION_FILTER]: 'Data filtering should be enabled in the{{sectionText}} table.',
