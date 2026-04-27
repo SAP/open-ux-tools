@@ -177,7 +177,7 @@ export function normalizeHierarchyNodeIds(
                         record[pathParts[0]] = guidValue;
                     }
                 } else if (hierarchy.parentProperty && paddedNumberPattern.test(nodeValue)) {
-                    const stripped = parseInt(nodeValue, 10).toString();
+                    const stripped = Number.parseInt(nodeValue, 10).toString();
                     if (pathParts.length > 1) {
                         (record[pathParts[0]] as Record<string, unknown>)[pathParts[1]] = stripped;
                     } else {
@@ -185,7 +185,7 @@ export function normalizeHierarchyNodeIds(
                     }
                     const parentValue = record[hierarchy.parentProperty];
                     if (typeof parentValue === 'string' && paddedNumberPattern.test(parentValue)) {
-                        record[hierarchy.parentProperty] = parseInt(parentValue, 10).toString();
+                        record[hierarchy.parentProperty] = Number.parseInt(parentValue, 10).toString();
                     }
                 }
             }
@@ -354,119 +354,113 @@ function getNavPropsForExpansion(
  * @param mockDataPath
  * @returns Array of hierarchy entity descriptors
  */
+type ParentNavPropAnnotation = {
+    value?: string;
+    $target?: { referentialConstraint?: { sourceProperty: string }[] };
+};
+
+type HierarchyAnnotation = {
+    NodeProperty?: { value?: string };
+    ParentNavigationProperty?: ParentNavPropAnnotation;
+};
+
+function resolveParentPropertyFromFile(
+    entitySetName: string,
+    navPropName: string,
+    mockDataPath?: string
+): string | undefined {
+    const jsFile = mockDataPath ? join(mockDataPath, `${entitySetName}.js`) : undefined;
+    if (!jsFile || !existsSync(jsFile)) {
+        return undefined;
+    }
+    const existing = createRequire(__filename)(jsFile) as {
+        getReferentialConstraints?: (nav: {
+            name: string;
+            referentialConstraint: [];
+        }) => { sourceProperty: string; targetProperty: string }[];
+    };
+    const constraints = existing.getReferentialConstraints?.({ name: navPropName, referentialConstraint: [] }) ?? [];
+    ODataDownloadGenerator.logger.debug(
+        `getHierarchyEntities: '${entitySetName}' loaded constraints from existing file: ${JSON.stringify(constraints)}`
+    );
+    return constraints[0]?.targetProperty;
+}
+
+function resolveParentProperty(
+    entitySetName: string,
+    parentNavProp: ParentNavPropAnnotation | undefined,
+    hasReferentialConstraint: boolean,
+    mockDataPath?: string
+): {
+    parentProperty: string | undefined;
+    missingReferentialConstraints: HierarchyEntity['missingReferentialConstraints'];
+} {
+    if (hasReferentialConstraint) {
+        return {
+            parentProperty: parentNavProp?.$target?.referentialConstraint?.[0]?.sourceProperty,
+            missingReferentialConstraints: undefined
+        };
+    }
+    const navPropName = parentNavProp?.value;
+    if (!navPropName) {
+        return { parentProperty: undefined, missingReferentialConstraints: undefined };
+    }
+    const parentProperty = resolveParentPropertyFromFile(entitySetName, navPropName, mockDataPath);
+    if (parentProperty) {
+        return { parentProperty, missingReferentialConstraints: undefined };
+    }
+    ODataDownloadGenerator.logger.debug(
+        `getHierarchyEntities: '${entitySetName}' nav prop '${navPropName}' has no referentialConstraint in metadata — will prompt user`
+    );
+    return { parentProperty: undefined, missingReferentialConstraints: { navPropName, constraints: [] } };
+}
+
 export function getHierarchyEntities(convertedMetadata: ConvertedMetadata, mockDataPath?: string): HierarchyEntity[] {
     const hierarchyEntities: HierarchyEntity[] = [];
+
     for (const entitySet of convertedMetadata.entitySets) {
         const aggregationAnnotations = entitySet.entityType?.annotations?.Aggregation;
-        if (!aggregationAnnotations) {
+        const hierarchyKey = Object.keys(aggregationAnnotations ?? {}).find((k) => k.startsWith('RecursiveHierarchy'));
+        if (!hierarchyKey) {
             continue;
         }
-        const hierarchyAnnotations = Object.keys(aggregationAnnotations).filter((key) =>
-            key.startsWith('RecursiveHierarchy')
-        );
-        if (!hierarchyAnnotations[0]) {
+        const annotation = aggregationAnnotations![
+            hierarchyKey as keyof typeof aggregationAnnotations
+        ] as unknown as HierarchyAnnotation;
+        const nodeProperty = annotation.NodeProperty?.value;
+        if (!nodeProperty) {
             continue;
         }
         ODataDownloadGenerator.logger.debug(
-            `Number of hierarchy annotations entity type: ${entitySet.entityType.name} - ${hierarchyAnnotations.length}`
+            `Number of hierarchy annotations entity type: ${entitySet.entityType.name} - ${Object.keys(aggregationAnnotations!).filter((k) => k.startsWith('RecursiveHierarchy')).length}`
         );
 
-        // Only one hierarchy annotation per entity is supported.
-        const hierarchyKey = hierarchyAnnotations[0];
         const qualifier = hierarchyKey.split('#')[1] ?? '';
-        const aggregationAnnotation = aggregationAnnotations[hierarchyKey as keyof typeof aggregationAnnotations];
-        if (!aggregationAnnotation) {
-            continue;
-        }
-        const nodeProperty = (aggregationAnnotation as { NodeProperty?: { value?: string } }).NodeProperty?.value;
-        const parentNavPropAnnotation = (
-            aggregationAnnotation as {
-                ParentNavigationProperty?: {
-                    value?: string;
-                    $target?: {
-                        referentialConstraint?: { sourceProperty: string }[];
-                    };
-                };
-            }
-        ).ParentNavigationProperty;
-        const parentNavPropName = parentNavPropAnnotation?.value;
-        const hasReferentialConstraint = (parentNavPropAnnotation?.$target?.referentialConstraint?.length ?? 0) > 0;
-        // When a referential constraint exists, use the source property directly.
-        // Otherwise, look for a non-key property whose name contains 'Parent' and whose type
-        // matches a business key (e.g. PurchasingParentItem for PurchaseOrderItem).
-        let parentProperty: string | undefined;
-        if (hasReferentialConstraint) {
-            // Only one ref constraint per property is supported
-            parentProperty = parentNavPropAnnotation?.$target?.referentialConstraint?.[0]?.sourceProperty;
-        } /* else if (parentNavPropName) {
-            const businessKeys = entitySet.entityType.keys
-                .map((k) => k.name)
-                .filter((k) => !['DraftUUID', 'IsActiveEntity'].includes(k));
-            const keyTypes = new Set(
-                businessKeys.map((k) => entitySet.entityType.entityProperties.find((p) => p.name === k)?.type)
-            );
-            parentProperty =
-                entitySet.entityType.entityProperties.find(
-                    (p) =>
-                        !businessKeys.includes(p.name) &&
-                        p.name.toLowerCase().includes('parent') &&
-                        keyTypes.has(p.type)
-                )?.name ?? parentNavPropName;
-        } */
+        const parentNavProp = annotation.ParentNavigationProperty;
+        const hasReferentialConstraint = (parentNavProp?.$target?.referentialConstraint?.length ?? 0) > 0;
+        const { parentProperty, missingReferentialConstraints } = resolveParentProperty(
+            entitySet.name,
+            parentNavProp,
+            hasReferentialConstraint,
+            mockDataPath
+        );
 
-        if (nodeProperty) {
-            const isDraft = !!(entitySet.annotations?.Common?.DraftRoot ?? entitySet.annotations?.Common?.DraftNode);
-            // If we have the parent property assign it
-
-            const parentPropertyType = parentProperty
-                ? (entitySet.entityType.entityProperties.find((prop) => prop.name === parentProperty)?.type ??
-                  'Edm.String')
-                : undefined;
-            const entityTypeKeys = entitySet.entityType.keys.map((k) => k.name);
-
-            // When the parent nav prop has no referential constraint in metadata, check for an existing .js file
-            let missingReferentialConstraints: HierarchyEntity['missingReferentialConstraints'];
-            if (!hasReferentialConstraint && parentNavPropName) {
-                const jsFile = mockDataPath ? join(mockDataPath, `${entitySet.name}.js`) : undefined;
-                if (jsFile && existsSync(jsFile)) {
-                    const existing = createRequire(__filename)(jsFile) as {
-                        getReferentialConstraints?: (nav: {
-                            name: string;
-                            referentialConstraint: [];
-                        }) => { sourceProperty: string; targetProperty: string }[];
-                    };
-                    const constraints =
-                        existing.getReferentialConstraints?.({ name: parentNavPropName, referentialConstraint: [] }) ??
-                        [];
-                    ODataDownloadGenerator.logger.debug(
-                        `getHierarchyEntities: '${entitySet.name}' loaded constraints from existing file: ${JSON.stringify(constraints)}`
-                    );
-                    if (constraints[0]) {
-                        parentProperty = constraints[0].targetProperty;
-                    }
-                }
-                if (!parentProperty) {
-                    missingReferentialConstraints = { navPropName: parentNavPropName, constraints: [] };
-                    ODataDownloadGenerator.logger.debug(
-                        `getHierarchyEntities: '${entitySet.name}' nav prop '${parentNavPropName}' has no referentialConstraint in metadata — will prompt user`
-                    );
-                }
-            }
-
-            hierarchyEntities.push({
-                entitySetName: entitySet.name,
-                entityTypeName: entitySet.entityType.fullyQualifiedName,
-                qualifier,
-                nodeProperty,
-                parentProperty,
-                parentPropertyType,
-                isDraft,
-                entityTypeKeys,
-                entityProperties: entitySet.entityType.entityProperties.map((p) => p.name),
-                missingReferentialConstraints
-            });
-        }
+        hierarchyEntities.push({
+            entitySetName: entitySet.name,
+            entityTypeName: entitySet.entityType.fullyQualifiedName,
+            qualifier,
+            nodeProperty,
+            parentProperty,
+            parentPropertyType: parentProperty
+                ? (entitySet.entityType.entityProperties.find((p) => p.name === parentProperty)?.type ?? 'Edm.String')
+                : undefined,
+            isDraft: !!(entitySet.annotations?.Common?.DraftRoot ?? entitySet.annotations?.Common?.DraftNode),
+            entityTypeKeys: entitySet.entityType.keys.map((k) => k.name),
+            entityProperties: entitySet.entityType.entityProperties.map((p) => p.name),
+            missingReferentialConstraints
+        });
     }
+
     if (hierarchyEntities.length) {
         ODataDownloadGenerator.logger.debug(
             `Hierarchy entities found: ${hierarchyEntities.map((h) => h.entitySetName).join(', ')}`

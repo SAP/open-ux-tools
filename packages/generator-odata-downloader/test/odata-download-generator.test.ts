@@ -8,7 +8,11 @@ import { join } from 'node:path';
 import { ODataDownloadGenerator } from '../src/data-download/odata-download-generator';
 import { getODataDownloaderPrompts, promptNames } from '../src/data-download/prompts/prompts';
 import { getValueHelpSelectionPrompt } from '../src/data-download/prompts/value-help-prompts';
-import { createEntitySetData, buildReferentialConstraintFileContent, updateReferentialConstraintFileContent } from '../src/data-download/utils';
+import {
+    createEntitySetData,
+    buildReferentialConstraintFileContent,
+    updateReferentialConstraintFileContent
+} from '../src/data-download/utils';
 import { wrap } from 'node:module';
 
 // Create a mock AbapServiceProvider class for instanceof checks
@@ -456,7 +460,7 @@ describe('ODataDownloadGenerator', () => {
                 }
             };
 
-            function setupPromptingMock(hierarchyEntities: typeof hierarchyEntity[]) {
+            function setupPromptingMock(hierarchyEntities: (typeof hierarchyEntity)[]) {
                 (createEntitySetData as jest.Mock).mockReturnValue({ Items: [{ ItemId: '1' }] });
                 (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
                     answers: {
@@ -490,14 +494,10 @@ describe('ODataDownloadGenerator', () => {
                 await generator.prompting();
                 await generator.writing();
 
-                expect(buildReferentialConstraintFileContent).toHaveBeenCalledWith(
-                    '_Parent',
-                    [{ sourceProperty: 'ItemId', targetProperty: 'ParentId' }]
-                );
-                expect(mockWriteDestination).toHaveBeenCalledWith(
-                    expect.stringContaining('Items.js'),
-                    'new content'
-                );
+                expect(buildReferentialConstraintFileContent).toHaveBeenCalledWith('_Parent', [
+                    { sourceProperty: 'ItemId', targetProperty: 'ParentId' }
+                ]);
+                expect(mockWriteDestination).toHaveBeenCalledWith(expect.stringContaining('Items.js'), 'new content');
             });
 
             it('should update an existing ref-cons file when the constraint is not yet present', async () => {
@@ -510,11 +510,9 @@ describe('ODataDownloadGenerator', () => {
                 await generator.prompting();
                 await generator.writing();
 
-                expect(updateReferentialConstraintFileContent).toHaveBeenCalledWith(
-                    'existing content',
-                    '_Parent',
-                    [{ sourceProperty: 'ItemId', targetProperty: 'ParentId' }]
-                );
+                expect(updateReferentialConstraintFileContent).toHaveBeenCalledWith('existing content', '_Parent', [
+                    { sourceProperty: 'ItemId', targetProperty: 'ParentId' }
+                ]);
                 expect(mockWriteDestination).toHaveBeenCalledWith(
                     expect.stringContaining('Items.js'),
                     'updated content'

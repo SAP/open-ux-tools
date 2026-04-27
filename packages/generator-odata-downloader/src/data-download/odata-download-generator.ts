@@ -50,7 +50,7 @@ export class ODataDownloadGenerator extends Generator {
     private static _logger: ILogWrapper & Logger = DefaultLogger;
     // Generator name for use in telemetry, readmes etc.
     protected generatorVersion = this.rootGeneratorVersion();
-    private prompts: Prompts;
+    private readonly prompts: Prompts;
     setPromptsCallback: (fn: object) => void;
 
     private readonly state: {
@@ -204,8 +204,9 @@ export class ODataDownloadGenerator extends Generator {
             this.state.updateMainServiceMetadata = promptAnswers[promptNames.updateMainServiceMetadata] as boolean;
             this.state.mainServiceMetadata = odataServiceAnswers.metadata;
 
-            await this._promptMissingReferentialConstraints(application, promptAnswers);
-
+            if (!(promptAnswers[promptNames.skipDataDownload] as unknown[])?.[0]) {
+                await this._promptMissingReferentialConstraints(application, promptAnswers);
+            }
             if (
                 odataServiceAnswers.servicePath &&
                 odataServiceAnswers.metadata &&
