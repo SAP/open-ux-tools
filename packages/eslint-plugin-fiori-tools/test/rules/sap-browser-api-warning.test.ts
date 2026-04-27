@@ -49,8 +49,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: "document.getElementById('test');",
             errors: [
                 {
-                    message: 'Direct DOM access, use jQuery selector instead',
-                    type: 'MemberExpression'
+                    message: 'Direct DOM access, use jQuery selector instead'
                 }
             ]
         },
@@ -58,8 +57,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: "var mydocument = window.document;mydocument.getElementById('test');",
             errors: [
                 {
-                    message: 'Direct DOM access, use jQuery selector instead',
-                    type: 'MemberExpression'
+                    message: 'Direct DOM access, use jQuery selector instead'
                 }
             ]
         },
@@ -67,12 +65,10 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: "document.body.appendChild(x);document.body.style.backgroundColor = 'yellow';",
             errors: [
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 },
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 }
             ]
         },
@@ -80,12 +76,10 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: "var mydocument = window.document;mydocument.body.appendChild(x);mydocument.body.style.backgroundColor = 'yellow';",
             errors: [
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 },
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 }
             ]
         },
@@ -93,12 +87,10 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: "var mydocument = document;mydocument.body.appendChild(x);mydocument.body.style.backgroundColor = 'yellow';",
             errors: [
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 },
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 }
             ]
         },
@@ -106,16 +98,13 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: "var abcss = window.document.body;abcss.appendChild(x);abcss.style.backgroundColor = 'yellow';",
             errors: [
                 {
-                    message: errorMessage1,
-                    type: 'VariableDeclarator'
+                    message: errorMessage1
                 },
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 },
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 }
             ]
         },
@@ -124,8 +113,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'var variab1 = window.innerWidth;',
             errors: [
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 }
             ]
         },
@@ -134,8 +122,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'var myscreen = screen;var variab5 = myscreen.something;',
             errors: [
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 }
             ]
         },
@@ -143,8 +130,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'var myscreen = window.screen;var variab5 = myscreen.something;',
             errors: [
                 {
-                    message: errorMessage1,
-                    type: 'MemberExpression'
+                    message: errorMessage1
                 }
             ]
         },
@@ -153,8 +139,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'history.go();',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'CallExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -162,8 +147,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'history.back();',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'CallExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -171,8 +155,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'window.history.forward();',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'CallExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -181,8 +164,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'var x = history; x.back();',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'CallExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -190,8 +172,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'var x = window.history; x.back();',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'CallExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -200,8 +181,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'history.go(-1);',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'CallExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -209,8 +189,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'if(true) history.go(-2);',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'CallExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -218,8 +197,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'if(true){history.go(-2);}',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'CallExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -227,8 +205,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'if(true){}else{history.go(-2);}',
             errors: [
                 {
-                    message: errorMessage2,
-                    type: 'CallExpression'
+                    message: errorMessage2
                 }
             ]
         },
@@ -237,8 +214,7 @@ ruleTester.run('sap-browser-api-warning', rule, {
             code: 'window.getSelection().rangeCount = 9;',
             errors: [
                 {
-                    message: 'Global selection modification, only modify local selections',
-                    type: 'MemberExpression'
+                    message: 'Global selection modification, only modify local selections'
                 }
             ]
         }
