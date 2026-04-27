@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.61
+
+### Patch Changes
+
+- 10847a1: fix: Translation texts for Add Data Source and SAPUI5 Model title and subtitle
+- Updated dependencies [10847a1]
+    - @sap-ux/adp-tooling@0.18.122
+
 ## 0.9.60
 
 ### Patch Changes
