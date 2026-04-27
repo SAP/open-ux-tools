@@ -219,8 +219,7 @@ function defaultOrShowTransportQuestion(): boolean {
         return false;
     }
     return (
-        !PromptState.transportAnswers.transportConfigError &&
-        !PromptState.transportAnswers.transportConfigNeedsCreds
+        !PromptState.transportAnswers.transportConfigError && !PromptState.transportAnswers.transportConfigNeedsCreds
     );
 }
 

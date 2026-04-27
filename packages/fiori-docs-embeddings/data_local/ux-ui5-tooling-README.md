@@ -77,6 +77,27 @@ Executing `npx fiori run` in your project with the configuration below in the `u
       url: https://my.backend.com:1234
 ```
 
+#### [Using connectPath for credential retrieval](#using-connectpath-for-credential-retrieval)
+
+When credentials are saved against a full service URL (for example, `https://my.backend.com:1234/sap/opu/odata/example/service`) rather than just the base URL, you need to specify the `connectPath` parameter to ensure the correct credentials are retrieved. The `connectPath` should match the path portion of the URL against which the credentials were saved.
+
+```yaml
+- name: fiori-tools-proxy
+  afterMiddleware: compression
+  configuration:
+    backend:
+    - path: /sap
+      url: https://my.backend.com:1234
+      connectPath: /sap/opu/odata/UI5/ABAP_REPOSITORY_SRV
+```
+
+**When to use `connectPath`:**
+- Your credentials are stored in the SAP System configuration with a full service URL including the path
+- You need to connect to a specific service endpoint for authentication
+- The stored system URL differs from the base server URL
+
+**Note:** If credentials are saved against the base URL only (e.g., `https://my.backend.com:1234`), the `connectPath` parameter is not needed.
+
 #### [Connecting to a back-end system with destination](#connecting-to-a-back-end-system-with-destination)
 
 If the back-end is hidden behind a destination then you can also provide the `destination` in the configuration.
@@ -170,6 +191,21 @@ Let's that you want to configure the proxy to send requests from a certain path 
       destination: my_backend
 ```
 
+#### [Add Query Parameters](#add-query-parameters)
+Add query parameters to the proxied request by using the `params` configuration option, e.g.
+
+```
+- name: fiori-tools-proxy
+  afterMiddleware: compression
+  configuration:
+    backend:
+    - path: /sap
+      url: https://my.backend.com:1234
+      params:
+        saml2: 'disabled'
+```
+
+
 #### [Providing Proxy Configuration](#providing-proxy-configuration)
 By the default the `fiori-tools-proxy` will read the proxy configuration from the Node.js environment variables `proxy`, `https-proxy` and `noproxy`. If those variables are not set, then you can also provide the proxy configuration in the `ui5.yaml` file. **Please note: if you want to exclude any domains from the proxy then you will need to set the `noproxy` variable, e.g. `npm config set noproxy "sap.com"`**.
 
@@ -220,6 +256,7 @@ Here is the full list of the available configuration options for the backend pro
 - `ignorePath` (available with version 1.8.5): true/false, Default: false - specify whether you want to ignore the proxy path of the incoming request (note: you will have to append / manually if required)
 - `localAddress` (available with version 1.8.5): Local interface string to bind for outgoing connections
 - `changeOrigin` (available with version 1.8.5): true/false, Default: true - changes the origin of the host header to the target URL
+- `params` (available with version 1.23.0): object, adds query parameters to the proxied request
 - `preserveHeaderKeyCase` (available with version 1.8.5): true/false, Default: false - specify whether you want to keep letter case of response header key
 - `auth` (available with version 1.8.5): Basic authentication i.e. 'user:password' to compute an Authorization header
 - `hostRewrite` (available with version 1.8.5): rewrites the location hostname on (301/302/307/308) redirects
