@@ -1,5 +1,18 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.12.5
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+
+## 0.12.4
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+
 ## 0.12.3
 
 ### Patch Changes

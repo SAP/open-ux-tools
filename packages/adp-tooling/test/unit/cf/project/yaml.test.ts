@@ -9,11 +9,12 @@ import {
     getSAPCloudService,
     getRouterType,
     getAppParamsFromUI5Yaml,
-    adjustMtaYaml
+    adjustMtaYaml,
+    addConnectivityServiceToMta
 } from '../../../../src/cf/project/yaml';
 import { AppRouterType } from '../../../../src/types';
 import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types';
-import { createServices } from '../../../../src/cf/services/api';
+import { createServices, createServiceInstance, getOrCreateServiceInstanceKeys } from '../../../../src/cf/services/api';
 import { getProjectNameForXsSecurity, getYamlContent } from '../../../../src/cf/project/yaml-loader';
 
 jest.mock('fs', () => ({
@@ -23,7 +24,9 @@ jest.mock('fs', () => ({
 const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
 
 jest.mock('../../../../src/cf/services/api', () => ({
-    createServices: jest.fn()
+    createServices: jest.fn(),
+    createServiceInstance: jest.fn(),
+    getOrCreateServiceInstanceKeys: jest.fn()
 }));
 
 jest.mock('../../../../src/cf/project/yaml-loader', () => ({
@@ -32,6 +35,10 @@ jest.mock('../../../../src/cf/project/yaml-loader', () => ({
 }));
 
 const mockCreateServices = createServices as jest.MockedFunction<typeof createServices>;
+const mockCreateServiceInstance = createServiceInstance as jest.MockedFunction<typeof createServiceInstance>;
+const mockGetOrCreateServiceInstanceKeys = getOrCreateServiceInstanceKeys as jest.MockedFunction<
+    typeof getOrCreateServiceInstanceKeys
+>;
 const mockGetYamlContent = getYamlContent as jest.MockedFunction<typeof getYamlContent>;
 const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
     typeof getProjectNameForXsSecurity
@@ -871,6 +878,105 @@ describe('YAML Project Functions', () => {
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
             expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+        });
+    });
+
+    describe('addConnectivityServiceToMta', () => {
+        const projectPath = '/test/project';
+        const mtaYamlPath = join(projectPath, 'mta.yaml');
+        const mockMtaYaml: MtaYaml = {
+            '_schema-version': '3.2.0',
+            ID: 'MyProject',
+            version: '1.0.0',
+            modules: [],
+            resources: []
+        };
+
+        let mockMemFs: { write: jest.Mock };
+
+        beforeEach(() => {
+            mockMemFs = { write: jest.fn() };
+        });
+
+        test('should add connectivity resource when mta.yaml exists and resource is not yet present', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue({ ...mockMtaYaml, resources: [] });
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).toHaveBeenCalledWith(
+                mtaYamlPath,
+                expect.stringContaining('myproject-connectivity')
+            );
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.stringContaining('connectivity'));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.stringContaining('lite'));
+            expect(mockMemFs.write).toHaveBeenCalledWith(
+                mtaYamlPath,
+                expect.stringContaining('service-name: myproject-connectivity')
+            );
+            expect(mockCreateServiceInstance).toHaveBeenCalledWith(
+                'lite',
+                'myproject-connectivity',
+                'connectivity',
+                expect.any(Object)
+            );
+            expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
+                { names: ['myproject-connectivity'] },
+                undefined
+            );
+        });
+
+        test('should not create service when project has no mta.yaml', async () => {
+            mockExistsSync.mockReturnValue(false);
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should not create service when yaml content cannot be read', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue(null);
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should not create service when connectivity resource already exists (idempotent)', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue({
+                ...mockMtaYaml,
+                resources: [
+                    {
+                        name: 'myproject-connectivity',
+                        type: 'org.cloudfoundry.managed-service',
+                        parameters: { service: 'connectivity', 'service-plan': 'lite' }
+                    }
+                ]
+            });
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should not modify mta.yaml when createServiceInstance fails', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue({ ...mockMtaYaml, resources: [] });
+            mockCreateServiceInstance.mockRejectedValueOnce(new Error('CF error'));
+
+            await expect(addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor)).rejects.toThrow(
+                'CF error'
+            );
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
         });
     });
 });

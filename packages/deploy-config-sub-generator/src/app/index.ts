@@ -83,7 +83,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                 basename(this.options.data.destinationRoot)
             );
             this.options.projectRoot = this.options.data.destinationRoot;
-            dotenv.config({ path: join(this.options.data.destinationRoot, '.env') });
+            dotenv.config({ path: join(this.options.data.destinationRoot, '.env'), quiet: true });
         } else {
             if (this.options.projectPath && this.options.projectName) {
                 this.options.appRootPath = join(this.options.projectPath, this.options.projectName);
@@ -91,7 +91,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                 this.options.appRootPath = this.destinationRoot(); // probably in a CLI context
             }
             // Load .env file for api hub config
-            dotenv.config();
+            dotenv.config({ quiet: true });
             this.apiHubConfig = this.options.apiHubConfig ?? getEnvApiHubConfig();
             this.launchStandaloneFromYui = false;
         }

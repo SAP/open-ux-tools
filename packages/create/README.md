@@ -168,9 +168,6 @@ Options:
 
 Add a new OData service and SAPUI5 model to an existing adaptation project.
 
-
-This command is not supported for Cloud Foundry projects.
-
 Example:
 
 `npx --yes @sap-ux/create@latest add model`

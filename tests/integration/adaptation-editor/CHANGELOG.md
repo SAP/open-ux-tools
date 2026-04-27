@@ -1,5 +1,25 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.77
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+
+## 0.0.76
+
+### Patch Changes
+
+- Updated dependencies [9a48e63]
+    - @sap-ux/ui5-info@0.13.20
+
+## 0.0.75
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+
 ## 0.0.74
 
 ### Patch Changes
