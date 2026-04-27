@@ -15,7 +15,6 @@ import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
 import { runBuild } from '../base/project-builder';
 import { getBaseAppId } from '../base/helper';
 import { getAppHostIds } from '../cf/app/discovery';
-import { log } from 'node:console';
 
 /**
  * Writes the CF adp-project template to the mem-fs-editor instance.
