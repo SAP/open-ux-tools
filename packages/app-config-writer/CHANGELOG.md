@@ -1,5 +1,13 @@
 # @sap-ux/app-config-writer
 
+## 0.6.139
+
+### Patch Changes
+
+- 165a6c2: feat: support ESLint 10
+- Updated dependencies [165a6c2]
+    - @sap-ux/ui5-application-writer@1.8.7
+
 ## 0.6.138
 
 ### Patch Changes
