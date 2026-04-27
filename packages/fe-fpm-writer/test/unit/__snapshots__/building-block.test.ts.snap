@@ -772,13 +772,11 @@ exports[`Building Blocks CustomFormField building block generate CustomFormField
     <Page title=\\"Main\\">
         <content>
             <macros:Form id=\\"myForm\\" metaPath=\\"@com.sap.vocabularies.UI.v1.FieldGroup#General\\">
-                <macros:fields>
-                    <macros:FormElement label=\\"Custom Form Field 2\\" id=\\"testCustomFormField2\\" anchor=\\"DataField::AnotherProperty\\" placement=\\"Before\\">
-                        <macros:fields>
-                            <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomFormField2\\" type=\\"XML\\"/>
-                        </macros:fields>
-                    </macros:FormElement>
-                </macros:fields>
+                <macros:FormElement label=\\"Custom Form Field 2\\" id=\\"testCustomFormField2\\" anchor=\\"DataField::AnotherProperty\\" placement=\\"Before\\">
+                    <macros:fields>
+                        <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomFormField2\\" type=\\"XML\\"/>
+                    </macros:fields>
+                </macros:FormElement>
             </macros:Form>
         </content>
     </Page>

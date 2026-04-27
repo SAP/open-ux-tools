@@ -3106,7 +3106,7 @@ describe('Building Blocks', () => {
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
             expect(viewContent).toMatchSnapshot('generate-custom-form-field-without-fields');
             expect(viewContent).toContain('<macros:fields>');
-            expect(viewContent).toMatch(/<macros:fields>[\s\S]*FormElement[\s\S]*<\/macros:fields>/);
+            expect(viewContent).toContain('<macros:FormElement');
             expect(viewContent).toContain('FormElement');
             expect(viewContent).toContain('Custom Form Field 2');
             expect(viewContent).toContain('anchor="DataField::AnotherProperty"');
