@@ -34,7 +34,7 @@ function buildModuleNameMap(changes: Record<string, Change>): Map<string, Orphan
     const map = new Map<string, OrphanedChangeEntry>();
 
     for (const change of Object.values(changes)) {
-        const prefix = change.reference?.replace(/\./g, '/');
+        const prefix = change.reference?.replaceAll('.', '/');
         if (!prefix) {
             continue;
         }
