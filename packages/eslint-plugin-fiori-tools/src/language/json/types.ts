@@ -1,4 +1,5 @@
-import type { CustomRuleDefinitionType, CustomRuleTypeDefinitions, RuleVisitor } from '@eslint/core';
+import type { RuleVisitor } from '@eslint/core';
+import type { CustomRuleDefinitionType, CustomRuleTypeDefinitions } from '@eslint/plugin-kit';
 import type { JSONLanguageOptions } from '@eslint/json';
 import type { AnyNode } from '@humanwhocodes/momoa';
 

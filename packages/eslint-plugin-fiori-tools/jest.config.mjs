@@ -11,5 +11,11 @@ export default {
         // createSyncFn spawns worker threads that use SharedArrayBuffer + Atomics.wait()
         // which deadlocks under Jest's --experimental-vm-modules.
         '^synckit$': '<rootDir>/test/__mocks__/synckit.cjs'
-    }
+    },
+    coveragePathIgnorePatterns: [
+        'src/types.ts',
+        'src/language/annotations/types.ts',
+        'src/language/json/types.ts',
+        'src/language/xml/types.ts'
+    ]
 };

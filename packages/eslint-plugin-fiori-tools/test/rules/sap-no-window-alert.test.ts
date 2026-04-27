@@ -22,8 +22,7 @@ ruleTester.run('sap-no-window-alert', rule, {
             errors: [
                 {
                     message:
-                        'A window.alert statement should not be part of the code that is committed to GIT! Use sap.m.MessageBox instead.',
-                    type: 'CallExpression'
+                        'A window.alert statement should not be part of the code that is committed to GIT! Use sap.m.MessageBox instead.'
                 }
             ]
         }

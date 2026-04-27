@@ -46,6 +46,8 @@ export const languages = {
     fiori: new FioriLanguage()
 };
 
+const fioriRules = rules as Plugin['rules'];
+
 /**
  * Default export following ESLint 9 plugin structure.
  * This is the recommended way to export plugins in ESLint 9.
@@ -58,7 +60,7 @@ const plugin: Plugin = {
         namespace: '@sap-ux/fiori-tools'
     },
     languages,
-    rules: rules as Plugin['rules'],
+    rules: fioriRules,
     processors: {}
 };
 
@@ -499,7 +501,7 @@ export const configs: Record<string, Linter.Config[]> = {
             plugins: {
                 '@sap-ux/fiori-tools': {
                     meta,
-                    rules: rules as Plugin['rules']
+                    rules: fioriRules
                 }
             }
         },
@@ -513,7 +515,7 @@ export const configs: Record<string, Linter.Config[]> = {
                 '@sap-ux/fiori-tools': {
                     meta,
                     languages,
-                    rules: rules as Plugin['rules']
+                    rules: fioriRules
                 }
             }
         },

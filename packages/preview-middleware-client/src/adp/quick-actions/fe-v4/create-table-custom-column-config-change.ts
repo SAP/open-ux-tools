@@ -103,15 +103,14 @@ function findAnchor(table: UI5Element): string {
     const macroTable = table.getParent();
     let anchor: string = '';
     if (isMacroTable(macroTable)) {
-        let metaPath = '';
-        if (macroTable.metaPath.includes('LineItem')) {
-            metaPath = macroTable.metaPath;
-        } else {
+        const metaPath = macroTable.metaPath.includes('LineItem')
+            ? macroTable.metaPath
+            : (() => {
             const segments = macroTable.metaPath.split('/');
             segments.pop();
             const path = segments.join('/');
-            metaPath = `${path}/${getLineItemAnnotation(macroTable)}`;
-        }
+                return `${path}/${getLineItemAnnotation(macroTable)}`;
+            })();
         if (!metaPath) {
             return '';
         }
