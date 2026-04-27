@@ -13,6 +13,7 @@ import {
     buildReferentialConstraintFileContent,
     updateReferentialConstraintFileContent
 } from '../src/data-download/utils';
+import type { HierarchyEntity } from '../src/data-download/types';
 import { wrap } from 'node:module';
 
 // Create a mock AbapServiceProvider class for instanceof checks
@@ -460,7 +461,7 @@ describe('ODataDownloadGenerator', () => {
                 }
             };
 
-            function setupPromptingMock(hierarchyEntities: (typeof hierarchyEntity)[]) {
+            function setupPromptingMock(hierarchyEntities: HierarchyEntity[]) {
                 (createEntitySetData as jest.Mock).mockReturnValue({ Items: [{ ItemId: '1' }] });
                 (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
                     answers: {
@@ -533,6 +534,70 @@ describe('ODataDownloadGenerator', () => {
                     expect.stringContaining('Items.js'),
                     expect.anything()
                 );
+            });
+
+            it('should update parentProperty and parentPropertyType on the hierarchy entity when constraints are answered', async () => {
+                const entity: HierarchyEntity = {
+                    ...hierarchyEntity,
+                    parentProperty: undefined,
+                    parentPropertyType: undefined,
+                    missingReferentialConstraints: { navPropName: '_Parent', constraints: [] }
+                };
+                setupPromptingMock([entity]);
+                // Override the listEntity to include a real entityType with property types
+                (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
+                    answers: {
+                        application: {
+                            appAccess: { getAppRoot: () => '/test/app', app: { mainService: 'mainService' } },
+                            referencedEntities: {
+                                listEntity: {
+                                    entitySetName: 'Items',
+                                    semanticKeys: [],
+                                    entityPath: 'Items',
+                                    entityType: {
+                                        entityProperties: [
+                                            { name: 'ItemId', type: 'Edm.Int32' },
+                                            { name: 'Name', type: 'Edm.String' }
+                                        ]
+                                    }
+                                },
+                                hierarchyEntities: [entity]
+                            },
+                            relatedEntityChoices: { entitySetsFlat: {} }
+                        },
+                        odataQueryResult: { odata: [{ ItemId: '1' }] },
+                        odataServiceAnswers: { servicePath: '/sap/items', metadata: '<metadata/>' }
+                    },
+                    questions: []
+                });
+                mockPrompt
+                    .mockResolvedValueOnce({})
+                    .mockResolvedValueOnce({ 'Items/NodeId/source': 'ItemId', 'Items/NodeId/target': 'ParentId' });
+
+                const generator = new ODataDownloadGenerator([], {});
+                await generator.prompting();
+
+                expect(entity.parentProperty).toBe('ItemId');
+                expect(entity.parentPropertyType).toBe('Edm.Int32');
+            });
+
+            it('should fall back to Edm.String when the source property is not found in the entity type', async () => {
+                const entity: HierarchyEntity = {
+                    ...hierarchyEntity,
+                    parentProperty: undefined,
+                    parentPropertyType: undefined,
+                    missingReferentialConstraints: { navPropName: '_Parent', constraints: [] }
+                };
+                setupPromptingMock([entity]);
+                mockPrompt
+                    .mockResolvedValueOnce({})
+                    .mockResolvedValueOnce({ 'Items/NodeId/source': 'UnknownProp', 'Items/NodeId/target': 'ParentId' });
+
+                const generator = new ODataDownloadGenerator([], {});
+                await generator.prompting();
+
+                expect(entity.parentProperty).toBe('UnknownProp');
+                expect(entity.parentPropertyType).toBe('Edm.String');
             });
         });
     });

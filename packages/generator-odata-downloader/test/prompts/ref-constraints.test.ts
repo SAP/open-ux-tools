@@ -1,4 +1,4 @@
-import { getMissingReferentialConstraintsPrompts } from '../../src/data-download/prompts/ref-constrainsts';
+import { getMissingReferentialConstraintsPrompts } from '../../src/data-download/prompts/ref-constraints';
 import type { HierarchyEntity } from '../../src/data-download/types';
 
 function makeEntity(overrides: Partial<HierarchyEntity> = {}): HierarchyEntity {

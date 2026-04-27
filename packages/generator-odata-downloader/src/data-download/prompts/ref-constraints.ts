@@ -14,21 +14,21 @@ export function getMissingReferentialConstraintsPrompts(hierarchyEntities: Hiera
         {
             name: `${entity.entitySetName}/${entity.nodeProperty}/source`,
             type: 'list',
-            message: `Source: ${entity.entitySetName} > ${entity.missingReferentialConstraints!.navPropName}`,
+            message: `Source: ${entity.entitySetName} > ${entity.missingReferentialConstraints?.navPropName}`,
             default: false,
             choices: entity.entityProperties.map((key) => ({ name: key, value: key }))
         },
         {
             name: `${entity.entitySetName}/${entity.nodeProperty}/target`,
             type: 'list',
-            message: `Target: ${entity.entitySetName} > ${entity.missingReferentialConstraints!.navPropName}`,
+            message: `Target: ${entity.entitySetName} > ${entity.missingReferentialConstraints?.navPropName}`,
             default: false,
             choices: entity.entityProperties.map((key) => ({ name: key, value: key }))
         }
     ];
 
     hierarchyEntities.forEach((entity) => {
-        if (!entity.parentProperty) {
+        if (!entity.parentProperty && entity.missingReferentialConstraints?.navPropName) {
             missingRefConsPrompts.push(...getRefConsPrompts(entity));
         }
     });

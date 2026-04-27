@@ -77,7 +77,6 @@ export function createQueryFromEntities(
 
     const mainEntity = listEntity;
 
-    // Hierarchy entities use a descendants query instead of top/filter
     if (hierarchyEntity) {
         // Build filter from semantic key values
         const filterParts: string[] = [];

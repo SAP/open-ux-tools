@@ -4,6 +4,7 @@ import {
     createEntitySetData,
     getEntityModel,
     getHierarchyEntities,
+    getSemanticKeyProperties,
     normalizeHierarchyNodeIds
 } from '../src/data-download/utils';
 import * as edmxParser from '@sap-ux/edmx-parser';
@@ -695,6 +696,89 @@ describe('Test utils', () => {
             );
 
             expect(mergeSpy).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('getSemanticKeyProperties', () => {
+        test('should include draft keys alongside semantic key annotations', () => {
+            const entityType = {
+                keys: [
+                    { name: 'TravelID', type: 'Edm.String' },
+                    { name: 'IsActiveEntity', type: 'Edm.Boolean' }
+                ],
+                annotations: {
+                    Common: {
+                        SemanticKey: [{ value: 'TravelID', $target: { type: 'Edm.String' } }]
+                    }
+                }
+            } as unknown as EntityType;
+
+            const result = getSemanticKeyProperties(entityType);
+
+            expect(result).toEqual([
+                { name: 'TravelID', keyName: undefined, type: 'Edm.String', value: undefined },
+                { name: 'IsActiveEntity', type: 'Edm.Boolean', value: 'true' }
+            ]);
+        });
+
+        test('should include DraftUUID with no value alongside semantic key annotations', () => {
+            const entityType = {
+                keys: [
+                    { name: 'TravelID', type: 'Edm.String' },
+                    { name: 'DraftUUID', type: 'Edm.Guid' },
+                    { name: 'IsActiveEntity', type: 'Edm.Boolean' }
+                ],
+                annotations: {
+                    Common: {
+                        SemanticKey: [{ value: 'TravelID', $target: { type: 'Edm.String' } }]
+                    }
+                }
+            } as unknown as EntityType;
+
+            const result = getSemanticKeyProperties(entityType);
+
+            expect(result).toHaveLength(3);
+            expect(result.find((k) => k.name === 'DraftUUID')).toMatchObject({ name: 'DraftUUID', value: undefined });
+            expect(result.find((k) => k.name === 'IsActiveEntity')).toMatchObject({ value: 'true' });
+        });
+
+        test('should not duplicate draft key when it also appears in semantic key annotation', () => {
+            const entityType = {
+                keys: [
+                    { name: 'TravelID', type: 'Edm.String' },
+                    { name: 'IsActiveEntity', type: 'Edm.Boolean' }
+                ],
+                annotations: {
+                    Common: {
+                        SemanticKey: [
+                            { value: 'TravelID', $target: { type: 'Edm.String' } },
+                            { value: 'IsActiveEntity', $target: { type: 'Edm.Boolean' } }
+                        ]
+                    }
+                }
+            } as unknown as EntityType;
+
+            const result = getSemanticKeyProperties(entityType);
+
+            const isActiveOccurrences = result.filter((k) => k.name === 'IsActiveEntity');
+            expect(isActiveOccurrences).toHaveLength(1);
+        });
+
+        test('should return only entity keys when no semantic key annotations', () => {
+            const entityType = {
+                keys: [
+                    { name: 'TravelID', type: 'Edm.String' },
+                    { name: 'IsActiveEntity', type: 'Edm.Boolean' }
+                ],
+                annotations: { Common: {} }
+            } as unknown as EntityType;
+
+            const result = getSemanticKeyProperties(entityType);
+
+            expect(result).toEqual([
+                { name: 'TravelID', type: 'Edm.String', value: undefined },
+                { name: 'IsActiveEntity', type: 'Edm.Boolean', value: 'true' }
+            ]);
         });
     });
 });

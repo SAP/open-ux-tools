@@ -30,8 +30,7 @@
             }
         },
         "relatedEntitySelection": {
-            "message": "Select entities for data download (pre-selected entities are referenced by the application)",
-            "hierarchyAutoQueried": "auto-queried via descendants"
+            "message": "Select entities for data download (pre-selected entities are referenced by the application)"
         },
         "toggleSelection": {
             "message": "Reset selection",

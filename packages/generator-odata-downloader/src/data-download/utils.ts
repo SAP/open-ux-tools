@@ -166,8 +166,8 @@ export function normalizeHierarchyNodeIds(
                     continue;
                 }
                 if (
-                    /* hierarchy.parentPropertyType &&
-                    ['Edm.Guid', 'Edm.UUID'].includes(hierarchy.parentPropertyType) && */
+                    hierarchy.parentPropertyType &&
+                    ['Edm.Guid', 'Edm.UUID'].includes(hierarchy.parentPropertyType) &&
                     upperHexGuidPattern.test(nodeValue)
                 ) {
                     const guidValue = hexToGuid(nodeValue);
@@ -251,7 +251,7 @@ export async function getSystemNameFromStore(systemUrl: string, client?: string 
  * @param entityType - The entity type to get semantic keys from
  * @returns Array of semantic key filters
  */
-function getSemanticKeyProperties(entityType: EntityType): SemanticKeyFilter[] {
+export function getSemanticKeyProperties(entityType: EntityType): SemanticKeyFilter[] {
     const keyNames: SemanticKeyFilter[] = [];
     const draftKeyNames = new Set(['DraftUUID', 'IsActiveEntity']);
     const entityBusinessKeys = entityType.keys.filter((k) => !draftKeyNames.has(k.name));
@@ -274,6 +274,17 @@ function getSemanticKeyProperties(entityType: EntityType): SemanticKeyFilter[] {
                 value: undefined
             });
         });
+        // Include draft keys present in entity keys alongside semantic keys, unless already covered by annotation
+        const existingNames = new Set(keyNames.map((k) => k.name));
+        entityType.keys
+            .filter((k) => draftKeyNames.has(k.name) && !existingNames.has(k.name))
+            .forEach((k) => {
+                keyNames.push({
+                    name: k.name,
+                    type: k.type,
+                    value: k.name === 'IsActiveEntity' ? 'true' : undefined
+                });
+            });
     }
     // If no semantic key annotations defined use the key properties
     if (keyNames.length === 0) {

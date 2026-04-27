@@ -21,7 +21,7 @@ import Generator from 'yeoman-generator';
 import { initI18nODataDownloadGenerator, t } from '../utils/i18n';
 import type { EntitySetsFlat } from './odata-query';
 import { getODataDownloaderPrompts, promptNames, type SelectedEntityAnswer } from './prompts/prompts';
-import { getMissingReferentialConstraintsPrompts } from './prompts/ref-constrainsts';
+import { getMissingReferentialConstraintsPrompts } from './prompts/ref-constraints';
 import { type AppConfig, type ReferencedEntities } from './types';
 import {
     buildReferentialConstraintFileContent,
@@ -400,11 +400,19 @@ export class ODataDownloadGenerator extends Generator {
 
             const refConsPrompts = getMissingReferentialConstraintsPrompts(entitiesWithMissingConstraints);
             const refConsAnswers = (await this.prompt(refConsPrompts)) as Record<string, string>;
+            const allEntities = [
+                application.referencedEntities?.listEntity,
+                ...(application.referencedEntities?.pageObjectEntities ?? [])
+            ];
             entitiesWithMissingConstraints.forEach((h) => {
                 const source = refConsAnswers[`${h.entitySetName}/${h.nodeProperty}/source`];
                 const target = refConsAnswers[`${h.entitySetName}/${h.nodeProperty}/target`];
                 if (source && target) {
                     h.missingReferentialConstraints!.constraints = [{ sourceProperty: source, targetProperty: target }];
+                    h.parentProperty = source;
+                    const entityType = allEntities.find((e) => e?.entitySetName === h.entitySetName)?.entityType;
+                    h.parentPropertyType =
+                        entityType?.entityProperties.find((p) => p.name === source)?.type ?? 'Edm.String';
                 }
             });
         }
