@@ -9,7 +9,7 @@ import type { HierarchyEntity } from '../types';
  */
 export function getMissingReferentialConstraintsPrompts(hierarchyEntities: HierarchyEntity[]): ListQuestion[] {
     const missingRefConsPrompts: ListQuestion[] = [];
-    // Create 2 list propmts per entity, source and target, listing the non-nav props
+    // Create 2 list prompts per entity, source and target, listing the non-nav props
     const getRefConsPrompts = (entity: HierarchyEntity): ListQuestion[] => [
         {
             name: `${entity.entitySetName}/${entity.nodeProperty}/source`,
