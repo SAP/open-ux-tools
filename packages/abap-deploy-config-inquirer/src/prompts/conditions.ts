@@ -213,15 +213,15 @@ function defaultOrShowTransportQuestion(): boolean {
     if (PromptState.transportAnswers.transportRequired === false) {
         return false;
     }
-    if (PromptState.transportAnswers.transportConfig?.getDefaultTransport() === undefined) {
-        return (
-            !PromptState.transportAnswers.transportConfigError &&
-            !PromptState.transportAnswers.transportConfigNeedsCreds
-        );
-    } else {
-        PromptState.abapDeployConfig.transport = PromptState.transportAnswers.transportConfig.getDefaultTransport();
+    const defaultTransport = PromptState.transportAnswers.transportConfig?.getDefaultTransport();
+    if (defaultTransport !== undefined) {
+        PromptState.abapDeployConfig.transport = defaultTransport;
         return false;
     }
+    return (
+        !PromptState.transportAnswers.transportConfigError &&
+        !PromptState.transportAnswers.transportConfigNeedsCreds
+    );
 }
 
 /**
