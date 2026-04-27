@@ -1,6 +1,7 @@
 import { join, dirname } from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL, fileURLToPath } from 'node:url';
+import { jest } from '@jest/globals';
 import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
 import type {
@@ -1140,11 +1141,11 @@ describe('FE V4 Linker - CAP', () => {
         const context = await setup({});
         const mainService = getParsedServiceByName(context.app);
         if (!mainService) {
-            fail('Service not found');
+            throw new Error('Service not found');
         }
         const entity = mainService.index.entitySets['Incidents'];
         if (!entity?.structuredType) {
-            fail('Entity not found');
+            throw new Error('Entity not found');
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(1);
@@ -1159,11 +1160,11 @@ describe('FE V4 Linker - CAP', () => {
         const context = await setup({});
         const mainService = getParsedServiceByName(context.app);
         if (!mainService) {
-            fail('Service not found');
+            throw new Error('Service not found');
         }
         const entity = mainService.index.entitySets['Priority'];
         if (!entity?.structuredType) {
-            fail('Entity not found');
+            throw new Error('Entity not found');
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(0);
@@ -1173,11 +1174,11 @@ describe('FE V4 Linker - CAP', () => {
         const context = await setup({});
         const mainService = getParsedServiceByName(context.app);
         if (!mainService) {
-            fail('Service not found');
+            throw new Error('Service not found');
         }
         const entity = mainService.index.entitySets['Category'];
         if (!entity?.structuredType) {
-            fail('Entity not found');
+            throw new Error('Entity not found');
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(0);

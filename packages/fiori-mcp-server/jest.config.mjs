@@ -4,7 +4,11 @@ export default {
     ...baseConfig,
     setupFilesAfterEnv: ['<rootDir>/test/jest.setup.ts'],
     modulePathIgnorePatterns: [...baseConfig.modulePathIgnorePatterns, '<rootDir>/test/data/'],
-    transformIgnorePatterns: ['node_modules/(?!(@xenova|@sap-ux|@sap-ux-private|@sap/ux-specification|@sap/ux-cds-compiler-facade)/)'],
+    transformIgnorePatterns: [
+        'node_modules/(?!(@xenova|@sap-ux|@sap-ux-private|@sap/ux-specification|@sap/ux-cds-compiler-facade)/)'
+    ],
+    // Routes @sap/ux-cds-compiler-facade to .mjs ESM mock
+    resolver: '<rootDir>/jest.resolver.cjs',
     moduleNameMapper: {
         // External @sap-ux packages not in workspace — resolve before generic mapper
         '^@sap-ux/edmx-parser$': '<rootDir>/node_modules/@sap-ux/edmx-parser/dist/index.js',
@@ -19,8 +23,9 @@ export default {
             '<rootDir>/../../node_modules/.pnpm/@sap-ux+odata-entity-model@0.3.6/node_modules/@sap-ux/odata-entity-model/dist/index.js',
         // Workspace package without src/index.ts
         '^@sap-ux/fiori-docs-embeddings$': '<rootDir>/../fiori-docs-embeddings/index.js',
-        // CJS packages — use .cjs wrappers so Jest ESM mode can extract named exports
-        '^@sap/ux-cds-compiler-facade$': '<rootDir>/test/__mocks__/@sap/ux-cds-compiler-facade.cjs',
+        // Stub fe-fpm-writer to prevent the CJS require chain: ux-specification → fe-fpm-writer →
+        // fiori-annotation-api → @sap/ux-cds-compiler-facade which conflicts with the ESM mock
+        '^@sap-ux/fe-fpm-writer$': '<rootDir>/test/__mocks__/@sap-ux/fe-fpm-writer.cjs',
         '^@sap/ux-specification$': '<rootDir>/test/__mocks__/@sap/ux-specification.mjs',
         ...baseConfig.moduleNameMapper,
         '^@lancedb/lancedb$': '<rootDir>/test/__mocks__/@lancedb/lancedb.cjs',

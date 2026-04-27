@@ -1,6 +1,7 @@
 import { join, dirname } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { existsSync, readFileSync } from 'node:fs';
+import { jest } from '@jest/globals';
 
 import type { RuleTester } from 'eslint';
 

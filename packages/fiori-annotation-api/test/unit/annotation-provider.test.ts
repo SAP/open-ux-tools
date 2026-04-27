@@ -1,9 +1,21 @@
+import { jest } from '@jest/globals';
 import { readFile } from 'node:fs/promises';
-import { CdsAnnotationProvider, getXmlServiceArtifacts } from '../../src';
 import { fileURLToPath } from 'node:url';
 import { adaptedUrl, normalizeAnnotationNode, normalizeUriInKey } from './raw-metadata-serializer';
 import { npmInstall, PROJECTS, V4_CDS_LATEST } from './projects';
-import * as cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
+
+// Mock @sap/ux-cds-compiler-facade so the spy intercepts calls inside annotation-provider.ts
+const realCdsModule = await import('@sap/ux-cds-compiler-facade');
+const createCdsCompilerFacadeForRootSyncMock = jest
+    .fn<typeof realCdsModule.createCdsCompilerFacadeForRootSync>()
+    .mockImplementation(realCdsModule.createCdsCompilerFacadeForRootSync.bind(realCdsModule));
+jest.unstable_mockModule('@sap/ux-cds-compiler-facade', () => ({
+    ...realCdsModule,
+    createCdsCompilerFacadeForRootSync: createCdsCompilerFacadeForRootSyncMock
+}));
+
+// Import AFTER mock is registered so annotation-provider.ts picks up the mocked module
+const { CdsAnnotationProvider, getXmlServiceArtifacts } = await import('../../src');
 
 describe('annotation provider', () => {
     describe('xml', () => {
@@ -85,16 +97,12 @@ describe('annotation provider', () => {
         });
 
         test('with cdsCache', async () => {
-            const createCdsCompilerFacadeForRootSyncSpy = jest.spyOn(
-                cdsCompilerFacade,
-                'createCdsCompilerFacadeForRootSync'
-            );
             const artifacts = CdsAnnotationProvider.getCdsServiceArtifacts(
                 V4_CDS_LATEST.root,
                 'odata/v4/incident/',
                 fileCache
             );
-            expect(createCdsCompilerFacadeForRootSyncSpy).not.toHaveBeenCalled();
+            expect(createCdsCompilerFacadeForRootSyncMock).not.toHaveBeenCalled();
             expect(artifacts).toBeDefined();
             if (!artifacts) {
                 return;
@@ -114,12 +122,8 @@ describe('annotation provider', () => {
         });
 
         test('resetCache', async () => {
-            const createCdsCompilerFacadeForRootSyncSpy = jest.spyOn(
-                cdsCompilerFacade,
-                'createCdsCompilerFacadeForRootSync'
-            );
             CdsAnnotationProvider.resetCache(V4_CDS_LATEST.root, fileCache);
-            expect(createCdsCompilerFacadeForRootSyncSpy).toHaveBeenCalled();
+            expect(createCdsCompilerFacadeForRootSyncMock).toHaveBeenCalled();
         });
     });
 });
