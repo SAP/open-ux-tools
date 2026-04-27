@@ -1,5 +1,11 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.80
+
+### Patch Changes
+
+- 165a6c2: feat: support ESLint 10
+
 ## 0.6.79
 
 ### Patch Changes

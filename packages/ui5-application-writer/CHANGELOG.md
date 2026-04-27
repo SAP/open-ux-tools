@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.8.7
+
+### Patch Changes
+
+- 165a6c2: feat: support ESLint 10
+
 ## 1.8.6
 
 ### Patch Changes

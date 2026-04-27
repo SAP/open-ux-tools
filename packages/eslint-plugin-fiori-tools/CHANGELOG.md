@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.0.0
+
+### Major Changes
+
+- 165a6c2: feat: support ESLint 10
+
 ## 9.13.0
 
 ### Minor Changes
