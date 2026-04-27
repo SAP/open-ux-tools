@@ -27,6 +27,7 @@
             "inputs": ["default", "^prod", "sharedGlobals"],
             "outputs": [
                 "{projectRoot}/dist",
+                "{projectRoot}/dist-cjs",
                 "{projectRoot}/generators",
                 "{projectRoot}/lib",
                 "{projectRoot}/storybook"
