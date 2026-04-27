@@ -1,4 +1,4 @@
-import type { AliasInformation, Element, MetadataElement } from '@sap-ux/odata-annotation-core';
+import type { AliasInformation, Element, ElementChild, MetadataElement } from '@sap-ux/odata-annotation-core';
 import {
     Edm,
     elementsWithName,
@@ -161,15 +161,13 @@ function processReferenceFacetRecord(
         return undefined;
     }
 
-    const properties = getRecordPropertyValue(record);
-    const id = properties['ID']?.value;
-    const target = properties['Target'];
+    const id = getId(record);
+    const annotationPath = getTargetAnnotationPath(record);
 
-    if (!id || target?.kind !== Edm.AnnotationPath) {
+    if (!id || !annotationPath) {
         return undefined;
     }
 
-    const annotationPath = target.value;
     if (annotationPath.startsWith('/')) {
         // absolute path is not supported
         return undefined;
@@ -350,45 +348,66 @@ export function getRecordType(aliasInfo: AliasInformation, element: Element): st
     }
 }
 
-interface RecordProperty {
-    name: string;
-    value: string;
-    kind: Edm.String | Edm.AnnotationPath;
-}
+const findContentByName = (content: ElementChild[], name: string): ElementChild | undefined =>
+    content.find((c) => (c as Element).name === name);
+
+const getElementText = (element: ElementChild): string | undefined =>
+    (element as Element).content.find((c) => c.type === 'text')?.text;
 
 /**
- * Extracts property values from a record element.
+ * Returns AnnotationPath property value.
  *
- * @param record - The record element to extract properties from
+ * @param record -The record element
+ * @returns - Annotation path string
  */
-function getRecordPropertyValue(record: Element): Record<string, RecordProperty> {
-    const properties: Record<string, RecordProperty> = {};
-    for (const child of record.content) {
-        if (child.type !== ELEMENT_TYPE) {
-            continue;
-        }
-        if (child.name === Edm.PropertyValue) {
+function getTargetAnnotationPath(record: Element): string | undefined {
+    const target = record.content.find((child) => {
+        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
             const name = getElementAttributeValue(child, Edm.Property);
-            const annotationPathAttribute = getElementAttribute(child, Edm.AnnotationPath);
-            if (annotationPathAttribute) {
-                properties[name] = {
-                    name,
-                    value: annotationPathAttribute.value,
-                    kind: Edm.AnnotationPath
-                };
-                continue;
-            }
-            const stringAttribute = getElementAttribute(child, Edm.String);
-            if (stringAttribute) {
-                properties[name] = {
-                    name,
-                    value: stringAttribute.value,
-                    kind: Edm.String
-                };
+            return name === 'Target';
+        }
+        return false;
+    });
+    if (target?.type === ELEMENT_TYPE) {
+        const stringAttribute = getElementAttribute(target, Edm.AnnotationPath);
+        if (stringAttribute) {
+            return stringAttribute.value;
+        } else {
+            const annotationPathContent = findContentByName(target.content, Edm.AnnotationPath);
+            if (annotationPathContent) {
+                return getElementText(annotationPathContent);
             }
         }
     }
-    return properties;
+    return undefined;
+}
+
+/**
+ * Returns ID property value.
+ *
+ * @param record - The record element
+ * @returns - String ID value
+ */
+function getId(record: Element): string | undefined {
+    const id = record.content.find((child) => {
+        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
+            const name = getElementAttributeValue(child, Edm.Property);
+            return name === 'ID';
+        }
+        return false;
+    });
+    if (id?.type === ELEMENT_TYPE) {
+        const stringAttribute = getElementAttribute(id, Edm.String);
+        if (stringAttribute) {
+            return stringAttribute.value;
+        } else {
+            const idContent = findContentByName(id.content, Edm.String);
+            if (idContent) {
+                return getElementText(idContent);
+            }
+        }
+    }
+    return undefined;
 }
 
 /**
