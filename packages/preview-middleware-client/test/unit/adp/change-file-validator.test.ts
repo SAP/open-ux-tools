@@ -380,6 +380,30 @@ describe('change-file-validator', () => {
         expect(matchingCalls).toHaveLength(0);
     });
 
+    test('restores original console.error after safety timeout', async () => {
+        jest.useFakeTimers();
+
+        mockChangesResponse({
+            'sap.ui.fl.id_addXML_1': {
+                changeType: 'addXML',
+                fileName: 'id_addXML_1',
+                fileType: 'change',
+                reference: 'com.sap.app',
+                content: { fragmentPath: 'fragments/Timeout.fragment.xml' }
+            }
+        });
+
+        await initOrphanedChangeDetection();
+
+        expect(console.error).not.toBe(originalConsoleError);
+
+        jest.advanceTimersByTime(60_000);
+
+        expect(console.error).toBe(originalConsoleError);
+
+        jest.useRealTimers();
+    });
+
     test('matches module name across multiple console.error string arguments', async () => {
         mockChangesResponse({
             'sap.ui.fl.id_addXML_1': {

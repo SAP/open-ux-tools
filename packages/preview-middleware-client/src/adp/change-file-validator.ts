@@ -71,7 +71,6 @@ function createErrorHandler(
     return (message: string) => {
         for (const [moduleName, entry] of moduleNameMap) {
             if (message.includes(moduleName)) {
-                moduleNameMap.delete(moduleName);
                 sendInfoCenterMessage({
                     title: { key: 'ADP_ORPHANED_CHANGE_ERROR_TITLE' },
                     description: {
@@ -82,6 +81,7 @@ function createErrorHandler(
                 }).catch((error) => {
                     log.error('Failed to send orphaned change InfoCenter message', error);
                 });
+                moduleNameMap.delete(moduleName);
                 if (moduleNameMap.size === 0) {
                     restoreConsole();
                 }
@@ -121,13 +121,20 @@ export async function initOrphanedChangeDetection(): Promise<void> {
     const consoleRef = globalThis.console;
     const originalConsoleError = consoleRef.error;
 
-    const handler = createErrorHandler(moduleNameMap, () => {
+    const restore = (): void => {
         consoleRef.error = originalConsoleError;
-    });
+    };
+
+    const handler = createErrorHandler(moduleNameMap, restore);
+
+    const safetyTimeout = setTimeout(restore, 60_000);
 
     consoleRef.error = (...args: unknown[]) => {
         originalConsoleError.apply(consoleRef, args);
-        const message = args.map((arg) => (typeof arg === 'string' ? arg : '')).join(' ');
+        const message = args.filter((arg): arg is string => typeof arg === 'string').join('');
         handler(message);
+        if (moduleNameMap.size === 0) {
+            clearTimeout(safetyTimeout);
+        }
     };
 }
