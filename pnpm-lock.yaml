@@ -1967,9 +1967,6 @@ importers:
       '@typescript-eslint/rule-tester':
         specifier: 8.57.2
         version: 8.57.2(eslint@9.39.1)(typescript@5.9.3)
-      c8:
-        specifier: ^11.0.0
-        version: 11.0.0
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -3634,8 +3631,8 @@ importers:
         specifier: 4.0.50
         version: 4.0.50
       '@ui5/manifest':
-        specifier: 1.84.0
-        version: 1.84.0
+        specifier: 1.85.0
+        version: 1.85.0
       eslint-plugin-jsdoc:
         specifier: 62.8.1
         version: 62.8.1(eslint@10.0.3)
@@ -3695,8 +3692,8 @@ importers:
         specifier: 7.7.1
         version: 7.7.1
       '@ui5/manifest':
-        specifier: 1.84.0
-        version: 1.84.0
+        specifier: 1.85.0
+        version: 1.85.0
       vscode-uri:
         specifier: 3.1.0
         version: 3.1.0
@@ -4659,8 +4656,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.84.0
-        version: 1.84.0
+        specifier: 1.85.0
+        version: 1.85.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -6266,10 +6263,6 @@ packages:
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
-
-  '@bcoe/v8-coverage@1.0.2':
-    resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
-    engines: {node: '>=18'}
 
   '@borewit/text-codec@0.2.2':
     resolution: {integrity: sha512-DDaRehssg1aNrH4+2hnj1B7vnUGEjU6OIlyRdkMd0aUdIUvKXrJfXsy8LVtXAy7DRvYVluWbMspsRhz2lcW0mQ==}
@@ -10062,8 +10055,8 @@ packages:
     resolution: {integrity: sha512-uscDCQyHFeenh4r2RbYuffTMn6IQdcNC1tXrQ4BF+apAFjmDGP11IHdAwVCKwxgyPrIC17HT2gub3ZugGM8kpQ==}
     engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
 
-  '@ui5/manifest@1.84.0':
-    resolution: {integrity: sha512-FCynh7DTjw69y2eM9+tTxJ8HmbhRUrgX8ysnMdemtB28NSJ4/PiDvtzfEvPEZFwgTLQN1/siAFNnqqLkasgefw==}
+  '@ui5/manifest@1.85.0':
+    resolution: {integrity: sha512-ememf3Jw/ZMjDmjj7j7hoTqNeazZJbC9ud20HNX8dfAoWjyItegwxIN8QrozJjiDQzTByibWdDQC4Gej/TkmXA==}
 
   '@ui5/project@4.0.15':
     resolution: {integrity: sha512-Fo1g1t15NCLb9xKxVVJ4jD7BTGimk2CoE+4nMTg0NEA9DGv0UUWkfVygnNnmur1NJg4HV4sqK/mKO1yszFpCAQ==}
@@ -11047,16 +11040,6 @@ packages:
   bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
-
-  c8@11.0.0:
-    resolution: {integrity: sha512-e/uRViGHSVIJv7zsaDKM7VRn2390TgHXqUSvYwPHBQaU6L7E9L0n9JbdkwdYPvshDT0KymBmmlwSpms3yBaMNg==}
-    engines: {node: 20 || >=22}
-    hasBin: true
-    peerDependencies:
-      monocart-coverage-reports: ^2
-    peerDependenciesMeta:
-      monocart-coverage-reports:
-        optional: true
 
   cacache@15.3.0:
     resolution: {integrity: sha512-VVdYzXEn+cnbXpFgWs5hTT7OScegHVmLhJIR8Ufqk3iFD6A6j5iSX1KuBTfNEv4tdJWE2PzA6IVFtcLC7fN9wQ==}
@@ -17699,10 +17682,6 @@ packages:
     resolution: {integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==}
     engines: {node: '>=8'}
 
-  test-exclude@8.0.0:
-    resolution: {integrity: sha512-ZOffsNrXYggvU1mDGHk54I96r26P8SyMjO5slMKSc7+IWmtB/MQKnEC2fP51imB3/pT6YK5cT5E8f+Dd9KdyOQ==}
-    engines: {node: 20 || >=22}
-
   text-decoder@1.2.3:
     resolution: {integrity: sha512-3/o9z3X0X0fTupwsYvR03pJ/DjWuqqrfwBgTQzdWDiQSm9KitAyz/9WqsT2JQW7KV2m+bC2ol/zqpW37NHxLaA==}
 
@@ -20673,8 +20652,6 @@ snapshots:
       '@babel/helper-validator-identifier': 7.28.5
 
   '@bcoe/v8-coverage@0.2.3': {}
-
-  '@bcoe/v8-coverage@1.0.2': {}
 
   '@borewit/text-codec@0.2.2':
     optional: true
@@ -25515,7 +25492,7 @@ snapshots:
       cli-progress: 3.12.0
       figures: 6.1.0
 
-  '@ui5/manifest@1.84.0': {}
+  '@ui5/manifest@1.85.0': {}
 
   '@ui5/project@4.0.15(@ui5/builder@4.1.4)':
     dependencies:
@@ -26699,20 +26676,6 @@ snapshots:
       run-applescript: 7.1.0
 
   bytes@3.1.2: {}
-
-  c8@11.0.0:
-    dependencies:
-      '@bcoe/v8-coverage': 1.0.2
-      '@istanbuljs/schema': 0.1.3
-      find-up: 5.0.0
-      foreground-child: 3.3.1
-      istanbul-lib-coverage: 3.2.2
-      istanbul-lib-report: 3.0.1
-      istanbul-reports: 3.2.0
-      test-exclude: 8.0.0
-      v8-to-istanbul: 9.3.0
-      yargs: 17.7.2
-      yargs-parser: 21.1.1
 
   cacache@15.3.0:
     dependencies:
@@ -35206,12 +35169,6 @@ snapshots:
       '@istanbuljs/schema': 0.1.3
       glob: 7.2.3
       minimatch: 3.1.5
-
-  test-exclude@8.0.0:
-    dependencies:
-      '@istanbuljs/schema': 0.1.3
-      glob: 13.0.6
-      minimatch: 10.2.4
 
   text-decoder@1.2.3:
     dependencies:
