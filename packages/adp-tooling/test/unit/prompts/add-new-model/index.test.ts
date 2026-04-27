@@ -118,12 +118,8 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(
-            validation?.('customer.testName', {
-                dataSourceName: 'otherName'
-            } as NewModelAnswers)
-        ).toBe(
-            'An OData annotation or service with the same name was already added to the project. Rename and try again.'
+        expect(validation?.('customer.testName')).toBe(
+            'A data source and SAPUI5 model with the same name were already added to the project. Rename and try again.'
         );
     });
 

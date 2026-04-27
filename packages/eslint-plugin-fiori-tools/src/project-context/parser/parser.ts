@@ -8,7 +8,6 @@ import { getMainService } from '@sap-ux/project-access';
 import { CdsAnnotationProvider, getXmlServiceArtifacts, type ServiceArtifacts } from '@sap-ux/fiori-annotation-api';
 
 import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types.js';
-import { uniformUrl } from '../utils.js';
 import type { Diagnostic } from '../../language/diagnostics.js';
 import { buildServiceIndex } from './service.js';
 import type {
@@ -19,6 +18,7 @@ import type {
     CustomViews,
     MinUI5Version
 } from './types.js';
+import { uniformUrl } from '@sap-ux/fiori-annotation-api';
 
 export interface ParseResult {
     index: ParsedProject;
@@ -265,7 +265,7 @@ export class ApplicationParser {
                     type: 'cap',
                     name: dataSourceName,
                     path: uniformUrl(dataSource.uri),
-                    version: (dataSource.settings?.odataVersion ?? '2.0') as ODataVersionType
+                    version: (dataSource.settings?.odataVersion ?? '4.0') as ODataVersionType
                 });
                 continue;
             }

@@ -10,7 +10,7 @@ import { rules } from './rules/index.js';
 import { FioriLanguage } from './language/fiori-language.js';
 import { createSyncFn } from 'synckit';
 import type { getPathMappings } from '@sap-ux/project-access';
-import { uniformUrl } from './project-context/utils.js';
+import { uniformUrl } from '@sap-ux/fiori-annotation-api';
 export { DiagnosticCache } from './language/diagnostic-cache.js';
 
 const __filename = fileURLToPath(import.meta.url);

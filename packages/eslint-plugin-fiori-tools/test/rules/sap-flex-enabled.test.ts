@@ -38,23 +38,7 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                     2
                 )
             },
-            [
-                {
-                    filename: V4_MANIFEST_PATH,
-                    code: JSON.stringify(
-                        {
-                            'sap.ui5': {
-                                flexEnabled: true,
-                                dependencies: {
-                                    minUI5Version: '1.56.0'
-                                }
-                            }
-                        },
-                        null,
-                        2
-                    )
-                }
-            ]
+            []
         ),
         createValidTest(
             {

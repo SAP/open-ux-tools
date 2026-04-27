@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.122
+
+### Patch Changes
+
+- 10847a1: fix: Translation texts for Add Data Source and SAPUI5 Model title and subtitle
+
 ## 0.18.121
 
 ### Patch Changes
