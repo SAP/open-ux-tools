@@ -67,10 +67,11 @@ export {
     readFlexChanges,
     processServices,
     getMainService,
-    getGlobalCdsHomePath
+    getGlobalCdsHomePath,
+    isUI5IdUnique
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';
-export { checkDependencies, getReuseLibs, validateId } from './library';
+export { checkDependencies, getReuseLibs } from './library';
 export { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from './odata';
 export { hasDependency } from './project';

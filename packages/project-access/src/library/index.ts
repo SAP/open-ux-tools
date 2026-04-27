@@ -1,1 +1,1 @@
-export { getReuseLibs, checkDependencies, validateId } from './helpers';
+export { getReuseLibs, checkDependencies } from './helpers';
