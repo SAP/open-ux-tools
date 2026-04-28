@@ -33,7 +33,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                 continue;
             }
             for (const page of app.pages) {
-                problems.push(...handleCopyInTable(app.type, page, parsedApp));
+                problems.push(...handleCopyInTable(page, parsedApp));
             }
         }
         return problems;
@@ -58,26 +58,21 @@ const rule: FioriRuleDefinition = createFioriRule({
 
 /**
  *
- * @param appType
  * @param page
  * @param parsedApp
  * @returns
  */
-function handleCopyInTable(
-    appType: 'fe-v4' | 'fe-v2',
-    page: FeV4PageType | FeV2PageType,
-    parsedApp: ParsedApp
-): CopyToClipboard[] {
+function handleCopyInTable(page: FeV4PageType | FeV2PageType, parsedApp: ParsedApp): CopyToClipboard[] {
     const problems: CopyToClipboard[] = [];
     if (page.type === 'list-report-page') {
         for (const table of page.lookup['table'] ?? []) {
-            checkConfiguration(appType, page, table, parsedApp, problems);
+            checkConfiguration(page, table, parsedApp, problems);
         }
     } else if (page.type === 'object-page') {
         for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
             const table = tableSection.children.find((element) => element.type === 'table');
             if (table) {
-                checkConfiguration(appType, page, table, parsedApp, problems, tableSection.annotation?.label);
+                checkConfiguration(page, table, parsedApp, problems, tableSection.annotation?.label);
             }
         }
     }
@@ -86,7 +81,15 @@ function handleCopyInTable(
 
 /**
  *
- * @param appType
+ * @param table
+ * @returns
+ */
+function isV2Table(table: TableV2 | TableV4): table is TableV2 {
+    return 'copy' in (table as TableV2).configuration;
+}
+
+/**
+ *
  * @param page
  * @param table
  * @param parsedApp
@@ -94,7 +97,6 @@ function handleCopyInTable(
  * @param pageSectionName
  */
 function checkConfiguration(
-    appType: 'fe-v4' | 'fe-v2',
     page: FeV4PageType | FeV2PageType,
     table: TableV4 | TableV2,
     parsedApp: ParsedApp,
@@ -103,10 +105,10 @@ function checkConfiguration(
 ): void {
     let config;
     let wrongValue = false;
-    if (appType === 'fe-v2') {
-        config = (table as TableV2).configuration.copy;
-    } else if (appType === 'fe-v4') {
-        config = (table as TableV4).configuration.disableCopyToClipboard;
+    if (isV2Table(table)) {
+        config = table.configuration.copy;
+    } else {
+        config = table.configuration.disableCopyToClipboard;
         wrongValue = true;
     }
     if (config?.valueInFile === wrongValue) {
