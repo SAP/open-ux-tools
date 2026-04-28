@@ -3065,7 +3065,7 @@ describe('Building Blocks', () => {
             await writeFilesForDebugging(fs);
         });
 
-        test('generate CustomFormField without macros:fields - creates aggregation', async () => {
+        test('generate CustomFormField without macros:fields - inserts FormElement directly into Form', async () => {
             const basePath = join(testAppPath, 'generate-custom-form-field-without-fields');
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Form`;
             const customFormFieldData: CustomFormField = {
