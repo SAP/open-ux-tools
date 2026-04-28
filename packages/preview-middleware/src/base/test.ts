@@ -67,12 +67,12 @@ export function mergeTestConfigDefaults(config: TestConfig, utils?: MiddlewareUt
 /**
  * Generate a list of imports from a list of resources.
  *
- * @param ns namespace of the test files
+ * @param namespace application namespace
  * @param resourceList list of resources representing test files
  * @param utils middleware utils
  * @returns array of strings representing the tests
  */
-export function generateImportList(ns: string, resourceList: Resource[], utils?: MiddlewareUtils): string[] {
+export function generateImportList(namespace: string, resourceList: Resource[], utils?: MiddlewareUtils): string[] {
     const testPathPrefix = getTestResourcesPathPrefix(utils);
     return resourceList
         ? resourceList.map((file) => {
@@ -82,11 +82,11 @@ export function generateImportList(ns: string, resourceList: Resource[], utils?:
                   const strippedPath = filePath.replace(`${testPathPrefix}/`, '');
                   const parts = strippedPath.split('.');
                   parts.pop();
-                  return `${ns}/test/${parts.join('.')}`;
+                  return `${namespace}/test/${parts.join('.')}`;
               }
               const path = filePath.split('.');
               path.pop();
-              return `${ns}${path.join('.')}`;
+              return `${namespace}${path.join('.')}`;
           })
         : [];
 }

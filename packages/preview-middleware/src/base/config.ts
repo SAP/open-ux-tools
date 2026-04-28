@@ -51,7 +51,7 @@ type TestTemplateConfig = {
     rootBasePath: string;
     initPath: string;
     theme: string;
-    testNs?: string;
+    testNamespace?: string;
     testResourcesPath?: string;
 };
 
@@ -522,7 +522,7 @@ export function createFlpTemplateConfig(
  * @param id application id
  * @param theme theme to be used
  * @param utils middleware utils
- * @param ns namespace for the test files (required for component type projects)
+ * @param namespace application namespace (required for component type projects)
  * @returns configuration object for the test template
  */
 export function createTestTemplateConfig(
@@ -530,7 +530,7 @@ export function createTestTemplateConfig(
     id: string,
     theme: string,
     utils?: MiddlewareUtils,
-    ns?: string
+    namespace?: string
 ): TestTemplateConfig {
     const rootBasePath = posix.relative(posix.dirname(config.path), '/') || '.';
     const testResourcesPath = getTestResourcesPathPrefix(utils);
@@ -541,8 +541,8 @@ export function createTestTemplateConfig(
         appBasePath: getResourcesPathPrefix(utils) ?? rootBasePath,
         initPath: posix.relative(posix.dirname(config.path), config.init),
         theme,
-        testNs: testResourcesPath && ns ? posix.join(ns, 'test') : undefined,
-        testResourcesPath: testResourcesPath && ns ? testResourcesPath : undefined
+        testNamespace: testResourcesPath && namespace ? posix.join(namespace, 'test') : undefined,
+        testResourcesPath: testResourcesPath && namespace ? testResourcesPath : undefined
     } satisfies TestTemplateConfig;
 }
 

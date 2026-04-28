@@ -973,7 +973,7 @@ export class FlpSandbox {
      * @param config test configuration
      * @param htmlTemplate the test runner template
      * @param id application id from manifest
-     * @param ns namespace for the test files
+     * @param namespace application namespace
      */
     private async testRunnerHtmlGetHandler(
         res: Response | http.ServerResponse,
@@ -981,7 +981,7 @@ export class FlpSandbox {
         config: CompleteTestConfig,
         htmlTemplate: string,
         id: string,
-        ns: string
+        namespace: string
     ): Promise<void> {
         this.logger.debug(`Serving test route: ${config.path}`);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -990,7 +990,13 @@ export class FlpSandbox {
             this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
             next();
         } else {
-            const templateConfig = createTestTemplateConfig(config, id, this.templateConfig.ui5.theme, this.utils, ns);
+            const templateConfig = createTestTemplateConfig(
+                config,
+                id,
+                this.templateConfig.ui5.theme,
+                this.utils,
+                namespace
+            );
             const html = render(htmlTemplate, templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
@@ -1003,7 +1009,7 @@ export class FlpSandbox {
      * @param next the next function
      * @param config test configuration
      * @param initTemplate the test runner template
-     * @param ns namespace for the test files
+     * @param namespace application namespace
      * @private
      */
     private async testRunnerJsGetHandler(
@@ -1011,7 +1017,7 @@ export class FlpSandbox {
         next: NextFunction,
         config: CompleteTestConfig,
         initTemplate: string,
-        ns: string
+        namespace: string
     ): Promise<void> {
         this.logger.debug(`Serving test init script: ${config.init}`);
 
@@ -1022,7 +1028,7 @@ export class FlpSandbox {
         } else {
             const testFiles = await this.project.byGlob(config.pattern);
             const templateConfig = {
-                tests: generateImportList(ns, testFiles, this.utils)
+                tests: generateImportList(namespace, testFiles, this.utils)
             };
             const js = render(initTemplate, templateConfig);
             this.sendResponse(res, 'application/javascript', 200, js);
@@ -1036,7 +1042,7 @@ export class FlpSandbox {
      * @param id application id from manifest
      */
     private addTestRoutes(configs: CompleteTestConfig[], id: string): void {
-        const ns = this.utils.getProject().getNamespace() ?? id.replaceAll('.', '/');
+        const namespace = this.utils.getProject().getNamespace() ?? id.replaceAll('.', '/');
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
         for (const config of configs) {
             // Config is already merged with defaults in constructor
@@ -1049,7 +1055,7 @@ export class FlpSandbox {
                     res: Response | http.ServerResponse,
                     next: NextFunction
                 ) => {
-                    await this.testRunnerHtmlGetHandler(res, next, config, htmlTemplate, id, ns);
+                    await this.testRunnerHtmlGetHandler(res, next, config, htmlTemplate, id, namespace);
                 }
             );
 
@@ -1069,7 +1075,7 @@ export class FlpSandbox {
                     res: Response | http.ServerResponse,
                     next: NextFunction
                 ) => {
-                    await this.testRunnerJsGetHandler(res, next, config, initTemplate, ns);
+                    await this.testRunnerJsGetHandler(res, next, config, initTemplate, namespace);
                 }
             );
         }

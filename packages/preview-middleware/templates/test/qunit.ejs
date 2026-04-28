@@ -8,8 +8,8 @@
 		src="<%- rootBasePath %>/resources/sap-ui-core.js"
 		data-sap-ui-theme='<%- theme %>'
 		data-sap-ui-resourceroots='{
-			"<%- id %>": "<%- appBasePath %>"<% if (testNs && testResourcesPath) { %>,
-			"<%- testNs %>": "<%- testResourcesPath %>"<% } %>
+			"<%- id %>": "<%- appBasePath %>"<% if (testNamespace && testResourcesPath) { %>,
+			"<%- testNamespace %>": "<%- testResourcesPath %>"<% } %>
 		}'
 		data-sap-ui-animation="false"
 		data-sap-ui-compatVersion="edge"
