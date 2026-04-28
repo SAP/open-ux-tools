@@ -26,8 +26,7 @@ ruleTester.run('sap-no-global-variable', rule, {
             errors: [
                 {
                     messageId: 'globalVariableNotAllowed',
-                    data: { name: 'global' },
-                    type: 'Identifier'
+                    data: { name: 'global' }
                 }
             ]
         }

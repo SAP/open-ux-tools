@@ -19,7 +19,12 @@ ruleTester.run('sap-no-override-rendering', rule, {
     valid: [
         "var issueModel = new sap.ui.model.json.JSONModel();issueModel.setProperty('/SalesOrder',salesOrderFulfillmentIssueQuery.oData.SalesOrder);",
         'var issueModel = new sap.ui.model.json.JSONModel();issueModel.something.onAfterRendering = function render(){foo.bar = 1;};',
-        'var oButton5 = new sap.mX.Button(); oButton5.setMe = function render(){foo.bar = 1;}'
+        'var oButton5 = new sap.mX.Button(); oButton5.setMe = function render(){foo.bar = 1;}',
+        // Custom namespace declared via options - object in custom ns should be allowed when not overriding
+        {
+            code: 'var oFoo = new my.custom.ns.Widget(); oFoo.doSomething = function(){};',
+            options: [{ ns: ['my.custom.ns'] }]
+        }
     ],
 
     invalid: [
@@ -30,8 +35,7 @@ ruleTester.run('sap-no-override-rendering', rule, {
             options: [],
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'AssignmentExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -39,10 +43,15 @@ ruleTester.run('sap-no-override-rendering', rule, {
             code: 'var oButton = new sap.m.Button();' + 'oButton.getMe = function render(){foo.bar = 1;};',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'AssignmentExpression'
+                    message: errorMessage
                 }
             ]
+        },
+        // Custom namespace declared via options - override should be detected
+        {
+            code: 'var oFoo = new my.custom.ns.Widget(); oFoo.onBeforeRendering = function(){};',
+            options: [{ ns: ['my.custom.ns'] }],
+            errors: [{ message: errorMessage }]
         }
     ]
 });
