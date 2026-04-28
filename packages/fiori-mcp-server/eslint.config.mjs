@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 export default [
     {
-        ignores: ['test/json-esm-transform.mjs']
+        ignores: ['test/json-esm-transform.mjs', 'jest.resolver.cjs']
     },
     ...base,
     {

@@ -13,12 +13,9 @@ export default [
             }
         }
     },
-    // Register @typescript-eslint plugin + typed linting for src/ files (recommended only covers webapp/)
+    // Typed linting for src/ files
     {
         files: ['src/**/*.ts'],
-        plugins: {
-            '@typescript-eslint': tseslint.plugin
-        },
         languageOptions: {
             parser: tseslint.parser,
             parserOptions: {
@@ -26,12 +23,9 @@ export default [
             }
         }
     },
-    // Register @typescript-eslint plugin for test/ files without type-checked linting
+    // Parser for test/ files without type-checked linting
     {
         files: ['test/**/*.ts'],
-        plugins: {
-            '@typescript-eslint': tseslint.plugin
-        },
         languageOptions: {
             parser: tseslint.parser,
             parserOptions: {

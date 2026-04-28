@@ -581,7 +581,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -597,7 +597,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -631,7 +631,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -647,7 +647,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -663,7 +663,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: true,
                                             children: []
                                         }
@@ -677,7 +677,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: true,
                                             children: []
                                         }
@@ -734,7 +734,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -750,7 +750,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -766,7 +766,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: true,
                                             children: []
                                         }
@@ -780,7 +780,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: true,
                                             children: []
                                         }
@@ -1608,7 +1608,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1624,7 +1624,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1670,7 +1670,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1686,7 +1686,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1702,7 +1702,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: true,
                                             children: []
                                         }
@@ -1716,7 +1716,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: true,
                                             children: []
                                         }
@@ -1782,7 +1782,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1798,7 +1798,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1814,7 +1814,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: true,
                                             children: []
                                         }
@@ -1828,7 +1828,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: true,
                                             children: []
                                         }
@@ -1894,7 +1894,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1910,7 +1910,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1926,7 +1926,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: true,
                                             children: []
                                         }
@@ -1940,7 +1940,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: true,
                                             children: []
                                         }
@@ -2542,7 +2542,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyFirstTab' table",
+                                            label: '\'MyFirstTab\' table',
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -2550,7 +2550,7 @@ describe('FE V4 quick actions', () => {
                                         },
                                         {
                                             path: '1',
-                                            label: "'MySecondTab' table",
+                                            label: '\'MySecondTab\' table',
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -2567,7 +2567,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -2575,7 +2575,7 @@ describe('FE V4 quick actions', () => {
                                         },
                                         {
                                             path: '1',
-                                            label: "'MyTable' table",
+                                            label: '\'MyTable\' table',
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -2592,11 +2592,11 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyFirstTab' table",
+                                            label: '\'MyFirstTab\' table',
                                             enabled: true,
                                             children: []
                                         },
-                                        { path: '1', label: "'MySecondTab' table", enabled: true, children: [] }
+                                        { path: '1', label: '\'MySecondTab\' table', enabled: true, children: [] }
                                     ]
                                 },
                                 {
@@ -2607,13 +2607,13 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: "'MyFirstTab' table",
+                                            label: '\'MyFirstTab\' table',
                                             enabled: false,
                                             children: [],
                                             tooltip:
                                                 'Custom columns defined in the manifest.json file are not supported when using the Table building block.'
                                         },
-                                        { path: '1', label: "'MySecondTab' table", enabled: true, children: [] }
+                                        { path: '1', label: '\'MySecondTab\' table', enabled: true, children: [] }
                                     ]
                                 }
                             ]
