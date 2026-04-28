@@ -1,5 +1,12 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.78
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+
 ## 0.0.77
 
 ### Patch Changes
