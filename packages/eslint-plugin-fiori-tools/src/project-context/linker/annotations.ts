@@ -23,7 +23,7 @@ import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants';
 type SectionConfig = {
     index: number;
     referencedEntityType: string;
-    qualifier: string | undefined;
+    qualifier?: string;
     sectionLabel?: string;
 };
 
