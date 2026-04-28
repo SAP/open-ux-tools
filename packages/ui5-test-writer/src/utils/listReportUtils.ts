@@ -5,6 +5,7 @@ import type {
     ActionButtonState,
     ButtonState,
     ButtonVisibilityResult,
+    FEV4ManifestTarget,
     ListReportFeatures
 } from '../types';
 import {
@@ -18,6 +19,7 @@ import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
+import type { Manifest } from '@sap-ux/project-access';
 
 /**
  * Builds a button state object from button visibility result.
@@ -82,17 +84,54 @@ export function safeCheckActionButtonStates(
 }
 
 /**
+ * Returns true when a ListReport manifest target is configured as an Analytical List Page.
+ * ALP targets have a `views.paths` array where at least one entry contains a `primary` array,
+ * indicating the dual-view (chart + table) layout used by ALP.
+ *
+ * @param target - the manifest routing target to inspect
+ * @returns true if the target represents an ALP configuration
+ */
+export function isALPManifestTarget(target: FEV4ManifestTarget): boolean {
+    return (
+        target.options?.settings?.views?.paths?.some(
+            (path) => Array.isArray(path.primary) && path.primary.length > 0
+        ) ?? false
+    );
+}
+
+/**
+ * Returns true if any ListReport target in the manifest is configured as an Analytical List Page.
+ *
+ * @param manifest - the application manifest
+ * @param targetKey - optional specific target key to check; if omitted all ListReport targets are checked
+ * @returns true if the target (or any ListReport target) is an ALP
+ */
+export function isALPFromManifest(manifest: Manifest, targetKey?: string): boolean {
+    const targets = manifest['sap.ui5']?.routing?.targets;
+    if (!targets) {
+        return false;
+    }
+    const keysToCheck = targetKey ? [targetKey] : Object.keys(targets);
+    return keysToCheck.some((key) => {
+        const target = targets[key] as FEV4ManifestTarget;
+        return target?.name === 'sap.fe.templates.ListReport' && isALPManifestTarget(target);
+    });
+}
+
+/**
  * Gets List Report features from the page model using ux-specification.
  *
  * @param listReportPage - the List Report page containing the tree model with feature definitions
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
+ * @param manifest - optional application manifest, used to detect ALP configuration
  * @returns feature data extracted from the List Report page model
  */
 export function getListReportFeatures(
     listReportPage: PageWithModelV4,
     log?: Logger,
-    metadata?: string
+    metadata?: string,
+    manifest?: Manifest
 ): ListReportFeatures {
     const buttonVisibility =
         metadata && listReportPage.entitySet
@@ -109,7 +148,8 @@ export function getListReportFeatures(
         toolBarActions:
             metadata && listReportPage.entitySet
                 ? safeCheckActionButtonStates(metadata, listReportPage.entitySet, toolbarActions, log)
-                : []
+                : [],
+        isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false
     };
 }
 

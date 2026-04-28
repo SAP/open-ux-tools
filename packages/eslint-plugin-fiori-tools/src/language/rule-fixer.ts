@@ -230,6 +230,9 @@ function handleInsert(
     if (isEmpty) {
         // Empty object - insert without trailing comma
         textToInsert = `\n${newContent}`;
+        if (newContent.endsWith('}')) {
+            textToInsert += '\n'.padEnd(node.loc.start.column);
+        }
     } else {
         // Has existing properties - insert with trailing comma
         textToInsert = `\n${newContent},`;
