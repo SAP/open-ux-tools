@@ -23,8 +23,7 @@ ruleTester.run('sap-ui5-global-eval', rule, {
             code: `jQuery.globalEval( "var newVar = true;" );`,
             errors: [
                 {
-                    message: 'Usage of globalEval() / eval() is not allowed due to strict Content Security Policy.',
-                    type: 'CallExpression'
+                    message: 'Usage of globalEval() / eval() is not allowed due to strict Content Security Policy.'
                 }
             ]
         },
@@ -32,8 +31,7 @@ ruleTester.run('sap-ui5-global-eval', rule, {
             code: `jQuery.sap.globalEval( "var newVar = true;" );`,
             errors: [
                 {
-                    message: 'Usage of globalEval() / eval() is not allowed due to strict Content Security Policy.',
-                    type: 'CallExpression'
+                    message: 'Usage of globalEval() / eval() is not allowed due to strict Content Security Policy.'
                 }
             ]
         },
@@ -41,8 +39,7 @@ ruleTester.run('sap-ui5-global-eval', rule, {
             code: `$.globalEval( "var newVar = true;" );`,
             errors: [
                 {
-                    message: 'Usage of globalEval() / eval() is not allowed due to strict Content Security Policy.',
-                    type: 'CallExpression'
+                    message: 'Usage of globalEval() / eval() is not allowed due to strict Content Security Policy.'
                 }
             ]
         },
@@ -50,8 +47,7 @@ ruleTester.run('sap-ui5-global-eval', rule, {
             code: `$.sap.globalEval( "var newVar = true;" );`,
             errors: [
                 {
-                    message: 'Usage of globalEval() / eval() is not allowed due to strict Content Security Policy.',
-                    type: 'CallExpression'
+                    message: 'Usage of globalEval() / eval() is not allowed due to strict Content Security Policy.'
                 }
             ]
         },
@@ -60,8 +56,7 @@ ruleTester.run('sap-ui5-global-eval', rule, {
                                  a.globalEval( "var newVar = true;" );`,
             errors: [
                 {
-                    message: 'Usage of globalEval() / eval() is not allowed due to strict Content Security Policy.',
-                    type: 'CallExpression'
+                    message: 'Usage of globalEval() / eval() is not allowed due to strict Content Security Policy.'
                 }
             ]
         }
