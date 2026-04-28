@@ -767,7 +767,7 @@ exports[`Building Blocks CustomFormField building block generate CustomFormField
 </mvc:View>"
 `;
 
-exports[`Building Blocks CustomFormField building block generate CustomFormField without macros:fields - creates aggregation: generate-custom-form-field-without-fields 1`] = `
+exports[`Building Blocks CustomFormField building block generate CustomFormField without macros:fields - inserts FormElement directly into Form: generate-custom-form-field-without-fields 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
