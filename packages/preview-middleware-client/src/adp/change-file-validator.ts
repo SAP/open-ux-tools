@@ -3,6 +3,13 @@ import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 import { sendInfoCenterMessage } from '../utils/info-center-message';
 
+const CHANGE_TYPE = {
+    addXML: 'addXML',
+    codeExt: 'codeExt'
+};
+
+type FlexChangeType = (typeof CHANGE_TYPE)[keyof typeof CHANGE_TYPE];
+
 interface ChangeContent {
     fragmentPath?: string;
     codeRef?: string;
@@ -20,7 +27,26 @@ interface Change {
 interface OrphanedChangeEntry {
     changeFileName: string;
     filePath: string;
-    changeType: 'addXML' | 'codeExt';
+    changeType: FlexChangeType;
+}
+
+interface RelevantChange extends Change {
+    changeType: FlexChangeType;
+    reference: string;
+}
+
+/**
+ * Type guard for changes that reference a fragment or controller extension file.
+ *
+ * @param change flex change object
+ * @returns true if the change is an addXML with fragmentPath or a codeExt with codeRef
+ */
+function isFragmentOrCodeExtChange(change: Change): change is RelevantChange {
+    return (
+        !!change.reference &&
+        ((change.changeType === CHANGE_TYPE.addXML && !!change.content?.fragmentPath) ||
+            (change.changeType === CHANGE_TYPE.codeExt && !!change.content?.codeRef))
+    );
 }
 
 /**
@@ -31,30 +57,18 @@ interface OrphanedChangeEntry {
  * @returns map from module name substring to orphaned change entry
  */
 function buildModuleNameMap(changes: Record<string, Change>): Map<string, OrphanedChangeEntry> {
-    const map = new Map<string, OrphanedChangeEntry>();
-
-    for (const change of Object.values(changes)) {
-        const prefix = change.reference?.replaceAll('.', '/');
-        if (!prefix) {
-            continue;
-        }
-
-        if (change.changeType === 'addXML' && change.content?.fragmentPath) {
-            const fragmentPath = change.content.fragmentPath;
-            const moduleName = change.moduleName ?? `${prefix}/changes/${fragmentPath}`;
+    return Object.values(changes)
+        .filter(isFragmentOrCodeExtChange)
+        .reduce((map, change) => {
+            const prefix = change.reference.replaceAll('.', '/');
+            const path = change.changeType === CHANGE_TYPE.addXML ? change.content?.fragmentPath ?? '' : change.content?.codeRef ?? '';
             const changeFileName = `${change.fileName}.${change.fileType ?? 'change'}`;
-            map.set(moduleName, { changeFileName, filePath: fragmentPath, changeType: 'addXML' });
-        }
+            const key = change.moduleName ?? `${prefix}/changes/${path}`;
 
-        if (change.changeType === 'codeExt' && change.content?.codeRef) {
-            const codeRef = change.content.codeRef;
-            const moduleName = change.moduleName ?? `${prefix}/changes/${codeRef}`;
-            const changeFileName = `${change.fileName}.${change.fileType ?? 'change'}`;
-            map.set(moduleName, { changeFileName, filePath: codeRef, changeType: 'codeExt' });
-        }
-    }
+            map.set(key, { changeFileName, filePath: path, changeType: change.changeType });
 
-    return map;
+            return map;
+        }, new Map<string, OrphanedChangeEntry>());
 }
 
 /**
