@@ -6,7 +6,7 @@ export {
     MinCdsVersion,
     fioriToolsDirectory
 } from './constants.js';
-export { getFilePaths } from './file/index.js';
+export { getFilePaths, findFilesByExtension } from './file/index.js';
 export { normalizePath } from './path/index.js';
 export {
     addPackageDevDependency,
@@ -67,10 +67,10 @@ export {
     processServices,
     getMainService,
     getGlobalCdsHomePath,
-    hasDependency
+    isUI5IdUnique
 } from './project/index.js';
-export type { PathMappings } from './project/index.js';
 export { execNpmCommand } from './command/npm-command.js';
 export * from './types/index.js';
-export * from './library/index.js';
+export { checkDependencies, getReuseLibs } from './library/index.js';
 export { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from './odata/index.js';
+export { hasDependency } from './project/index.js';
