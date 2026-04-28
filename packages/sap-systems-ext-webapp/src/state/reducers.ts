@@ -52,6 +52,8 @@ export const reducer: Reducer<SystemState, ExtensionActions> = (
     switch (action.type) {
         case SYSTEM_INFO:
             return {
+                ...state,
+                loadingState: LoadingState.Idle,
                 systemInfo: action.payload.systemInfo,
                 unSaved: action.payload.unSaved
             };
