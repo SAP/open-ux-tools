@@ -57,18 +57,22 @@ function isFragmentOrCodeExtChange(change: Change): change is RelevantChange {
  * @returns map from module name substring to orphaned change entry
  */
 function buildModuleNameMap(changes: Record<string, Change>): Map<string, OrphanedChangeEntry> {
-    return Object.values(changes)
-        .filter(isFragmentOrCodeExtChange)
-        .reduce((map, change) => {
-            const prefix = change.reference.replaceAll('.', '/');
-            const path = change.changeType === CHANGE_TYPE.addXML ? change.content?.fragmentPath ?? '' : change.content?.codeRef ?? '';
-            const changeFileName = `${change.fileName}.${change.fileType ?? 'change'}`;
-            const key = change.moduleName ?? `${prefix}/changes/${path}`;
+    const map = new Map<string, OrphanedChangeEntry>();
 
-            map.set(key, { changeFileName, filePath: path, changeType: change.changeType });
+    for (const change of Object.values(changes)) {
+        if (!isFragmentOrCodeExtChange(change)) {
+            continue;
+        }
 
-            return map;
-        }, new Map<string, OrphanedChangeEntry>());
+        const prefix = change.reference.replaceAll('.', '/');
+        const path = change.changeType === CHANGE_TYPE.addXML ? change.content?.fragmentPath ?? '' : change.content?.codeRef ?? '';
+        const changeFileName = `${change.fileName}.${change.fileType ?? 'change'}`;
+        const key = change.moduleName ?? `${prefix}/changes/${path}`;
+
+        map.set(key, { changeFileName, filePath: path, changeType: change.changeType });
+    }
+
+    return map;
 }
 
 /**
