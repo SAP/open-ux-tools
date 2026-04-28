@@ -27,8 +27,7 @@ ruleTester.run('sap-no-dynamic-style-insertion', rule, {
             code: 'var sheet = document.styleSheets[i];',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -36,8 +35,7 @@ ruleTester.run('sap-no-dynamic-style-insertion', rule, {
             code: "var w= window, x = w.document, mydocument = w.document;var sheet = mydocument['styleSheets'][i];",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -45,8 +43,7 @@ ruleTester.run('sap-no-dynamic-style-insertion', rule, {
             code: 'var mydocument = document;var sheet = mydocument.styleSheets[i];',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -54,8 +51,7 @@ ruleTester.run('sap-no-dynamic-style-insertion', rule, {
             code: 'var abc = document.styleSheets.length;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -63,8 +59,7 @@ ruleTester.run('sap-no-dynamic-style-insertion', rule, {
             code: 'var abcdocumnt = window.document; var sheet = abcdocumnt.styleSheets.length;',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         }
