@@ -8,7 +8,7 @@ import {
     expect
 } from '@sap-ux-private/playwright';
 import type { Page } from '@sap-ux-private/playwright';
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { TIMEOUT } from '../utils/constant';
@@ -22,77 +22,10 @@ let getUrl: () => string;
 const cwd = join(__dirname, '..', '..', 'fixtures', 'simple-component');
 const testCwd = getDestinationProjectRoot(cwd);
 
-/**
- * This content will overwrite the existing `ui5.yaml` file content in the copied project.
- *
- * @param ui5Version UI5 version
- * @returns YAML content
- */
-const getYamlContent = (ui5Version: string): string => {
-    return `
-specVersion: '5.0'
-metadata:
-    name: test-project
-type: component
-server:
-    customMiddleware:
-        - name: preview-middleware
-          afterMiddleware: compression
-          configuration:
-              flp:
-                path: /my/custom/path/preview.html
-                libs: true
-              test:
-                - framework: QUnit
-                - framework: OPA5
-              debug: true
-        - name: ui5-proxy-middleware
-          afterMiddleware: preview-middleware
-          configuration:
-              ui5:
-                  - path: /resources
-                    url: https://ui5.sap.com
-                  - path: /test-resources
-                    url: https://ui5.sap.com
-              version: ${ui5Version}
-        - name: sap-fe-mockserver
-          beforeMiddleware: csp
-          configuration:
-              mountPath: /
-              annotations:
-                  - localPath: ./src/localService/annotations.xml
-                    urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*
-              services:
-                  - urlPath: /sap/opu/odata/myservice
-                    metadataPath: ./src/localService/metadata.xml
-                    mockdataPath: ./src/localService/data
-                    generateMockData: true
----
-specVersion: "3.0"
-metadata:
-  name: preview-middleware
-kind: extension
-type: server-middleware
-middleware:
-  path: ../../../dist/ui5/middleware.js
----
-specVersion: "3.0"
-metadata:
-  name: ui5-proxy-middleware
-kind: extension
-type: server-middleware
-middleware:
-  path: ../../../../ui5-proxy-middleware/dist/ui5/middleware.js
-`;
-};
-
-const getYamlPath = (cwd: string): string => {
-    return join(cwd, 'ui5.yaml');
-};
-
 const adaptUi5Yaml = async (ui5Version: string) => {
-    const yamlPath = getYamlPath(testCwd);
-    await writeFile(yamlPath, getYamlContent(ui5Version));
+    const yamlPath = join(testCwd, 'ui5.yaml');
+    const content = await readFile(yamlPath, 'utf-8');
+    await writeFile(yamlPath, content.replace(/^(\s+version:\s*)[\w.]+$/m, `$1${ui5Version}`));
 };
 
 const prepare = async (ui5Version: string) => {

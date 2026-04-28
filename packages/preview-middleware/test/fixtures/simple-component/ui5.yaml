@@ -10,8 +10,9 @@ server:
               flp:
                 path: /my/custom/path/preview.html
                 libs: true
-                rta:
-                  layer: CUSTOMER_BASE
+              test:
+                - framework: QUnit
+                - framework: OPA5
               debug: true
         - name: ui5-proxy-middleware
           afterMiddleware: preview-middleware
@@ -21,17 +22,18 @@ server:
                     url: https://ui5.sap.com
                   - path: /test-resources
                     url: https://ui5.sap.com
+              version: 1.136 # default for local dev; replaced per-version by component.spec.ts
         - name: sap-fe-mockserver
           beforeMiddleware: csp
           configuration:
               mountPath: /
               annotations:
-                  - localPath: ./webapp/localService/annotations.xml
+                  - localPath: ./src/localService/annotations.xml
                     urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*
               services:
                   - urlPath: /sap/opu/odata/myservice
-                    metadataPath: ./webapp/localService/metadata.xml
-                    mockdataPath: ./webapp/localService/data
+                    metadataPath: ./src/localService/metadata.xml
+                    mockdataPath: ./src/localService/data
                     generateMockData: true
 ---
 specVersion: '3.0'
@@ -41,3 +43,11 @@ kind: extension
 type: server-middleware
 middleware:
     path: ../../../dist/ui5/middleware.js
+---
+specVersion: '3.0'
+metadata:
+    name: ui5-proxy-middleware
+kind: extension
+type: server-middleware
+middleware:
+    path: ../../../../ui5-proxy-middleware/dist/ui5/middleware.js
