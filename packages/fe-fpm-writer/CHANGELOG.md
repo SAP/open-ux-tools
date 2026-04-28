@@ -1,5 +1,15 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.24
+
+### Patch Changes
+
+- 1d60871: Added isUI5IdUnique function to check UI5 control ID uniqueness in XML views/fragments.
+  Exported findFilesByExtension from @sap-ux/project-access and removed deep imports.
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/fiori-annotation-api@0.9.45
+
 ## 0.43.23
 
 ### Patch Changes
