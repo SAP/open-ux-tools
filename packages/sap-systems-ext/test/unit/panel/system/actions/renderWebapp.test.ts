@@ -52,11 +52,11 @@ describe('Test the render webapp action', () => {
         await renderWebApp(panelContext);
 
         expect(postMessageSpy).toHaveBeenCalledWith({ type: 'SYSTEM_INFO_LOADING' });
-        expect(postMessageSpy).toHaveBeenCalledWith({ type: 'CREATE_NEW_SYSTEM' });
         expect(postMessageSpy).toHaveBeenCalledWith({
-            type: 'SYSTEM_INFO',
-            payload: { systemInfo: backendSystem, unSaved: true }
+            type: 'CREATE_NEW_SYSTEM',
+            payload: { systemInfo: backendSystem }
         });
+        expect(postMessageSpy).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'SYSTEM_INFO' }));
     });
 
     it('should call post message for creating a new system without pre-populated data', async () => {

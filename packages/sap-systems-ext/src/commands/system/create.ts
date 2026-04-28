@@ -5,17 +5,16 @@ import type { BackendSystem } from '@sap-ux/store';
 
 /**
  * Returns a command handler function that creates or reveals the system panel.
- * An optional pre-populated BackendSystem can be passed to pre-fill the panel fields
- * (e.g. when launched from ADT with known system URL and client).
+ * An optional BackendSystem can be passed to pre-fill the panel fields.
  *
  * @param context - the system command context
  * @returns - a command handler function
  */
 export const createSystemCommandHandler =
     (context: SystemCommandContext) =>
-    async (prePopulatedSystem?: BackendSystem): Promise<void> => {
+    async (system?: BackendSystem): Promise<void> => {
         const panel = context.panelManager.getOrCreateNewPanel(NEW_SYSTEM_PANEL_KEY, () =>
-            createNewPanel(context, prePopulatedSystem)
+            createNewPanel(context, system)
         );
         await panel.reveal();
     };

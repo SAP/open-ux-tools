@@ -6,13 +6,15 @@ import type {
     TestConnectionLoading,
     TestConnectionStatus
 } from '@sap-ux/sap-systems-ext-types';
+import type { BackendSystem } from '@sap-ux/store';
 
 export const systemInfoLoading = (): SystemInfoLoading => ({
     type: 'SYSTEM_INFO_LOADING'
 });
 
-export const createNewSystem = (): CreateNewSystem => ({
-    type: 'CREATE_NEW_SYSTEM'
+export const createNewSystem = (systemInfo?: BackendSystem): CreateNewSystem => ({
+    type: 'CREATE_NEW_SYSTEM',
+    ...(systemInfo && { payload: { systemInfo } })
 });
 
 export const updateSystemInfo = (payload: SystemInfo['payload']): SystemInfo => ({

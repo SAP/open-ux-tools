@@ -52,8 +52,6 @@ export const reducer: Reducer<SystemState, ExtensionActions> = (
     switch (action.type) {
         case SYSTEM_INFO:
             return {
-                ...state,
-                loadingState: LoadingState.Idle,
                 systemInfo: action.payload.systemInfo,
                 unSaved: action.payload.unSaved
             };
@@ -87,7 +85,9 @@ export const reducer: Reducer<SystemState, ExtensionActions> = (
         case CREATE_NEW_SYSTEM:
             return {
                 ...state,
-                addNewSapSystem: true
+                addNewSapSystem: true,
+                systemInfo: action.payload?.systemInfo,
+                unSaved: true
             };
         default:
             return state;
