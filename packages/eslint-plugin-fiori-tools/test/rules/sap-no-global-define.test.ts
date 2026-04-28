@@ -21,8 +21,7 @@ ruleTester.run('sap-no-global-define', rule, {
             code: 'var w = window, f = window; f.myObject = {};',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'AssignmentExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -30,8 +29,7 @@ ruleTester.run('sap-no-global-define', rule, {
             code: "var w = window; w['myObject'] = {};",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'AssignmentExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -39,8 +37,7 @@ ruleTester.run('sap-no-global-define', rule, {
             code: "var w = window; var key = 'myObject'; w[key] = {};",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'AssignmentExpression'
+                    message: errorMessage
                 }
             ]
         }

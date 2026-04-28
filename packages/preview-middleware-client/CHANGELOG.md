@@ -1,5 +1,13 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.32
+
+## 0.25.31
+
+### Patch Changes
+
+- 165a6c2: feat: support ESLint 10
+
 ## 0.25.30
 
 ## 0.25.29
