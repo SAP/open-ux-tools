@@ -118,8 +118,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -130,8 +129,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -142,8 +140,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -154,8 +151,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -164,8 +160,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -178,8 +173,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -190,8 +184,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -202,8 +195,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -214,8 +206,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -228,8 +219,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -238,8 +228,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -250,8 +239,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         },
@@ -262,8 +250,7 @@ ruleTester.run('sap-ui5-legacy-factories', rule, {
             errors: [
                 {
                     message:
-                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.',
-                    type: 'CallExpression'
+                        'Make use of sap.ui.define([...], function(...) {...} to load required dependencies. Legacy UI5 factories leading to synchronous loading.'
                 }
             ]
         }

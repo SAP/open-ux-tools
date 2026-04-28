@@ -59,7 +59,6 @@ const rule: Rule.RuleModule = {
         docs: {
             description:
                 'Check "sap-ui5-no-private-prop" should detect the usage of private properties and functions of UI5 elements',
-            category: 'Best Practices',
             recommended: false
         },
         messages: {
@@ -83,7 +82,7 @@ const rule: Rule.RuleModule = {
         defaultOptions: [{}]
     },
     create(context: Rule.RuleContext) {
-        const sourceCode = context.sourceCode ?? context.getSourceCode();
+        const sourceCode = context.sourceCode;
         const customNS = (context.options[0]?.ns as string[] | undefined) ?? [];
         const configuration = {
             'ns': uniquifyArray(
