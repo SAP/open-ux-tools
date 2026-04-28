@@ -149,6 +149,13 @@ describe('Test abap deploy configuration generator', () => {
         );
     });
 
+    beforeAll(() => {
+        // Clean up stale test-output dirs from any previous interrupted runs
+        for (const stale of fs.readdirSync(__dirname).filter((d) => d.startsWith('test-output-'))) {
+            rimraf.sync(join(__dirname, stale));
+        }
+    });
+
     afterEach(() => {
         jest.resetAllMocks();
     });

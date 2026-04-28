@@ -13,7 +13,7 @@
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
+        "clean": "rimraf --glob generators 'test/test-output*' coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",

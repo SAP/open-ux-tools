@@ -143,7 +143,6 @@ describe('FE V4 quick actions', () => {
     });
 
     afterEach(() => {
-         
         const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
         if (typeof closeDialogFunction === 'function') {
             // make sure that dialog factory is in clean state after each test
@@ -561,9 +560,7 @@ describe('FE V4 quick actions', () => {
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
                 });
-                getPropertyPathMock.mockReturnValue(
-                    '@com.sap.vocabularies.UI.v1.LineItem/actions/'
-                );
+                getPropertyPathMock.mockReturnValue('@com.sap.vocabularies.UI.v1.LineItem/actions/');
             }
             test('not available on UI5 version prior 1.120', async () => {
                 VersionInfo.load.mockResolvedValue({
@@ -584,7 +581,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -600,7 +597,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -634,7 +631,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -650,7 +647,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -666,7 +663,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -680,7 +677,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -737,7 +734,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -753,7 +750,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -769,7 +766,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -783,7 +780,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1578,9 +1575,7 @@ describe('FE V4 quick actions', () => {
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
                 });
-                getPropertyPathMock.mockReturnValue(
-                    '@com.sap.vocabularies.UI.v1.LineItem/columns/'
-                );
+                getPropertyPathMock.mockReturnValue('@com.sap.vocabularies.UI.v1.LineItem/columns/');
             }
             test('not available on UI5 version prior 1.120', async () => {
                 VersionInfo.load.mockResolvedValue({
@@ -1613,7 +1608,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1629,7 +1624,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1675,7 +1670,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1691,7 +1686,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1707,7 +1702,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1721,7 +1716,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1787,7 +1782,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1803,7 +1798,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1819,7 +1814,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1833,7 +1828,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1899,7 +1894,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1915,7 +1910,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1931,7 +1926,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1945,7 +1940,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -2039,7 +2034,7 @@ describe('FE V4 quick actions', () => {
                 // pendingPath does NOT match the regex (it lacks the controlConfiguration prefix)
                 // so idInPendingChanges will be false → exercise the MDC column check path instead
                 expect(originalFn('existingColId')).toBe(false); // exists as CustomColumn → false
-                expect(originalFn('brandNewId')).toBe(true);     // no matching column → true
+                expect(originalFn('brandNewId')).toBe(true); // no matching column → true
                 // Verify the regex itself works for the idInPendingChanges branch coverage
                 const matchingPendingPath =
                     'controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/columns/pendingColumnId';
@@ -2212,9 +2207,7 @@ describe('FE V4 quick actions', () => {
                     'sap.ui.mdc.Table': [{ controlId: 'Table' } as any],
                     'sap.m.NavContainer': [{ controlId: 'NavContainer' } as any]
                 });
-                jest.spyOn(fev4QAUtils, 'getPropertyPath').mockReturnValue(
-                    '@com.sap.vocabularies.UI.v1.LineItem/columns/'
-                );
+                getPropertyPathMock.mockReturnValue('@com.sap.vocabularies.UI.v1.LineItem/columns/');
 
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
@@ -2514,9 +2507,7 @@ describe('FE V4 quick actions', () => {
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
                 });
-                getPropertyPathMock.mockReturnValue(
-                    '@com.sap.vocabularies.UI.v1.LineItem/columns/'
-                );
+                getPropertyPathMock.mockReturnValue('@com.sap.vocabularies.UI.v1.LineItem/columns/');
             }
             test('create column disabled for table with same metapath as BuildingBlocktable', async () => {
                 sapMock.ui.require.mockImplementation(() => MacroTableHelper);
@@ -2551,7 +2542,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyFirstTab\' table',
+                                            label: "'MyFirstTab' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -2559,7 +2550,7 @@ describe('FE V4 quick actions', () => {
                                         },
                                         {
                                             path: '1',
-                                            label: '\'MySecondTab\' table',
+                                            label: "'MySecondTab' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -2576,7 +2567,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -2584,7 +2575,7 @@ describe('FE V4 quick actions', () => {
                                         },
                                         {
                                             path: '1',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -2601,11 +2592,11 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyFirstTab\' table',
+                                            label: "'MyFirstTab' table",
                                             enabled: true,
                                             children: []
                                         },
-                                        { path: '1', label: '\'MySecondTab\' table', enabled: true, children: [] }
+                                        { path: '1', label: "'MySecondTab' table", enabled: true, children: [] }
                                     ]
                                 },
                                 {
@@ -2616,13 +2607,13 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyFirstTab\' table',
+                                            label: "'MyFirstTab' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
                                                 'Custom columns defined in the manifest.json file are not supported when using the Table building block.'
                                         },
-                                        { path: '1', label: '\'MySecondTab\' table', enabled: true, children: [] }
+                                        { path: '1', label: "'MySecondTab' table", enabled: true, children: [] }
                                     ]
                                 }
                             ]
@@ -2656,9 +2647,7 @@ describe('FE V4 quick actions', () => {
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
-                getUi5VersionMock.mockResolvedValue(
-                    testCase.ui5version ?? { major: 1, minor: 131 }
-                );
+                getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
                 jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
                 const scrollIntoView = jest.fn();
                 const appComponent = new AppComponentMock();
@@ -3033,9 +3022,7 @@ describe('FE V4 quick actions', () => {
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 checkForExistingChangeMock.mockReturnValue(false);
                 const pageView = new XMLView();
-                getUi5VersionMock.mockResolvedValue(
-                    testCase.ui5version ?? { major: 1, minor: 131 }
-                );
+                getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
                 fetchMock.mockResolvedValue({
                     json: jest
                         .fn()
@@ -3164,7 +3151,6 @@ describe('FE V4 quick actions', () => {
                 let tooltip;
                 let enabled = true;
                 if (testCase.varianManagmentValue === 'Control') {
-                     
                     ((tooltip =
                         'This option has been disabled because variant management is already enabled for tables and charts'),
                         (enabled = false));
@@ -3442,9 +3428,7 @@ describe('FE V4 quick actions', () => {
                 test.each(testCases)(
                     'initialize and execute action (%s)',
                     async (testCase) => {
-                        getUi5VersionMock.mockResolvedValue(
-                            testCase.ui5version ?? { major: 1, minor: 131 }
-                        );
+                        getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
 
                         const pageView = new XMLView();
                         const scrollIntoView = jest.fn();
@@ -3711,9 +3695,7 @@ describe('FE V4 quick actions', () => {
                 ];
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                     const pageView = new XMLView();
-                    getUi5VersionMock.mockResolvedValue(
-                        testCase.ui5version ?? { major: 1, minor: 131 }
-                    );
+                    getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
                     fetchMock.mockResolvedValue({
                         json: jest
                             .fn()
@@ -3845,7 +3827,6 @@ describe('FE V4 quick actions', () => {
                     let tooltip;
                     let enabled = true;
                     if (testCase.varianManagmentValue === 'Control') {
-                         
                         ((tooltip =
                             'This option has been disabled because variant management is already enabled for tables and charts'),
                             (enabled = false));
@@ -4520,9 +4501,7 @@ describe('FE V4 quick actions', () => {
         });
         test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
             mockTelemetryEventIdentifier();
-            getUi5VersionMock.mockResolvedValue(
-                testCase.ui5version ?? { major: 1, minor: 135 }
-            );
+            getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 135 });
             jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(!testCase.isBetaFeatureDisabled);
 
             const pageView = new XMLView();
