@@ -4,7 +4,9 @@ import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 const { removeSync } = fsExtra;
 
-// Mock annotation-generator to prevent ESM transitive import chain
+// Mock annotation-generator to prevent ESM transitive import chain.
+// importActual cannot be used here as it would trigger the same chain.
+// The package only has one runtime export (generateAnnotations), so this mock covers its full API.
 jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
     generateAnnotations: jest.fn()
 }));

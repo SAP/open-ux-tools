@@ -30,12 +30,13 @@ jest.unstable_mockModule('read-pkg-up', () => ({
     })
 }));
 
-// Mock @sap-ux/cap-config-writer
+// Mock @sap-ux/cap-config-writer — only mocking applyCAPUpdates; jest.importActual is unavailable
+// in this ESM jest.unstable_mockModule context (jest imported from @jest/globals)
 jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
     applyCAPUpdates: mockApplyCAPUpdates
 }));
 
-// Mock @sap-ux/annotation-generator
+// Mock @sap-ux/annotation-generator — only runtime export is generateAnnotations, so this covers the full API
 jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
     generateAnnotations: mockGenerateAnnotations
 }));

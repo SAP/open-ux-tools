@@ -31,7 +31,7 @@
         "storybook": "storybook dev",
         "build:storybook": "storybook build -o ./storybook",
         "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --colors --silent",
-        "test-u": "jest --ci --forceExit --colors  --silent -u"
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --colors  --silent -u"
     },
     "dependencies": {
         "@fluentui/react": "8.125.5",

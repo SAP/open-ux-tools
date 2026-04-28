@@ -22,7 +22,7 @@
         "lint": "eslint",
         "lint:fix": "eslint --fix",
         "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "test:abap": "jest --ci --forceExit --detectOpenHandles --colors test/app.test.ts --testNamePattern=\"ABAP Environment\"",
         "test:cf": "jest --ci --forceExit --detectOpenHandles --colors test/app.test.ts --testNamePattern=\"CF Environment\"",
         "link": "pnpm link --global",

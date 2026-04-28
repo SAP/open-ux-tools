@@ -25,7 +25,7 @@
         "lint": "eslint",
         "lint:fix": "eslint --fix",
         "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "test:integration:clean": "rimraf --glob playwright-report",
         "test:integration:run": "playwright test",
         "test:integration": "npm-run-all -l -s test:integration:clean test:integration:run",
