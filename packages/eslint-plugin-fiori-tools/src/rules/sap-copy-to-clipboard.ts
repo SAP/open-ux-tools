@@ -6,6 +6,7 @@ import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/f
 import type { ParsedApp } from '../project-context/parser';
 import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4';
 import { createJsonFixer } from '../language/rule-fixer';
+import { checkAppTablesConfiguration } from '../utils/helpers';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: COPY_TO_CLIPBOARD,
@@ -33,7 +34,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                 continue;
             }
             for (const page of app.pages) {
-                problems.push(...handleCopyInTable(page, parsedApp));
+                problems.push(...(<CopyToClipboard[]>checkAppTablesConfiguration(page, parsedApp, checkConfiguration)));
             }
         }
         return problems;
@@ -55,29 +56,6 @@ const rule: FioriRuleDefinition = createFioriRule({
             });
         }
 });
-
-/**
- *
- * @param page
- * @param parsedApp
- * @returns
- */
-function handleCopyInTable(page: FeV4PageType | FeV2PageType, parsedApp: ParsedApp): CopyToClipboard[] {
-    const problems: CopyToClipboard[] = [];
-    if (page.type === 'list-report-page') {
-        for (const table of page.lookup['table'] ?? []) {
-            checkConfiguration(page, table, parsedApp, problems);
-        }
-    } else if (page.type === 'object-page') {
-        for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
-            const table = tableSection.children.find((element) => element.type === 'table');
-            if (table) {
-                checkConfiguration(page, table, parsedApp, problems, tableSection.annotation?.label);
-            }
-        }
-    }
-    return problems;
-}
 
 /**
  *

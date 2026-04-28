@@ -3,6 +3,9 @@
  */
 
 import type { Rule } from 'eslint';
+import type { FeV4PageType } from '../project-context/linker/fe-v4';
+import type { FeV2PageType } from '../project-context/linker/fe-v2';
+import type { ParsedApp } from '../project-context/parser';
 
 // Type aliases for better readability
 export type ASTNode = Rule.Node;
@@ -796,4 +799,32 @@ export function findDeepestExistingPath(
         validatedPath: pathSegments,
         missingSegments: []
     };
+}
+
+/**
+ *
+ * @param page
+ * @param parsedApp
+ * @param checkConfiguration
+ * @returns
+ */
+export function checkAppTablesConfiguration<DiagnosticType>(
+    page: FeV4PageType | FeV2PageType,
+    parsedApp: ParsedApp,
+    checkConfiguration: (...args: any[]) => void
+): DiagnosticType[] {
+    const problems: DiagnosticType[] = [];
+    if (page.type === 'list-report-page') {
+        for (const table of page.lookup['table'] ?? []) {
+            checkConfiguration(page, table, parsedApp, problems);
+        }
+    } else if (page.type === 'object-page') {
+        for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
+            const table = tableSection.children.find((element) => element.type === 'table');
+            if (table) {
+                checkConfiguration(page, table, parsedApp, problems, tableSection.annotation?.label);
+            }
+        }
+    }
+    return problems;
 }

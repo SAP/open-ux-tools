@@ -5,6 +5,7 @@ import type { MemberNode } from '@humanwhocodes/momoa';
 import type { ParsedApp } from '../project-context/parser';
 import type { FeV4PageType, Table } from '../project-context/linker/fe-v4';
 import { createJsonFixer } from '../language/rule-fixer';
+import { checkAppTablesConfiguration } from '../utils/helpers';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ENABLE_PASTE,
@@ -35,7 +36,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                     if (page.type !== 'object-page') {
                         continue;
                     }
-                    problems.push(...handlePasteInTableV4(page, parsedApp));
+                    problems.push(...(<EnablePaste[]>checkAppTablesConfiguration(page, parsedApp, checkConfiguration)));
                 }
             }
         }
@@ -84,30 +85,6 @@ function checkConfiguration(
             }
         });
     }
-}
-
-/**
- * Looks through V4 app page tables and returns problems if enablePaste is set to false.
- *
- * @param page - V4 app page
- * @param parsedApp - parsed V4 app
- * @returns - EnablePaste issues
- */
-function handlePasteInTableV4(page: FeV4PageType, parsedApp: ParsedApp): EnablePaste[] {
-    const problems: EnablePaste[] = [];
-    if (page.type === 'list-report-page') {
-        for (const table of page.lookup['table'] ?? []) {
-            checkConfiguration(page, table, parsedApp, problems);
-        }
-    } else if (page.type === 'object-page') {
-        for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
-            const table = tableSection.children.find((element) => element.type === 'table');
-            if (table) {
-                checkConfiguration(page, table, parsedApp, problems, tableSection.annotation?.label);
-            }
-        }
-    }
-    return problems;
 }
 
 export default rule;
