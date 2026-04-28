@@ -478,6 +478,58 @@ describe('ui5-test-writer', () => {
                     expect.anything()
                 );
             });
+
+            it('resolves htmlTarget from flpSandbox.html when no integration folder exists', async () => {
+                // LropNoTests has no integration/ folder, no test script, and a flpSandbox.html
+                const projectDir = prepareTestFiles('LropNoTests');
+                existsSyncMock.mockImplementation((p: string) => {
+                    // No JourneyRunner.js → goes into resolveStandaloneWriteContext
+                    if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
+                        return false;
+                    }
+                    // No existing integration/ folder → falls into the else branch
+                    if (p.includes('test-output') && p.endsWith('integration')) {
+                        return false;
+                    }
+                    // flpSandbox.html exists in the project (only in mem-fs, not on real disk)
+                    if (p.includes('test-output') && p.endsWith('flpSandbox.html')) {
+                        return true;
+                    }
+                    return realExistsSync(p);
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped = fs.dump(projectDir);
+                const journeyRunnerPath = Object.keys(dumped).find((p) => p.includes('JourneyRunner.js'));
+                expect(journeyRunnerPath).toBeDefined();
+                // htmlTarget resolved from flpSandbox.html should appear in JourneyRunner.js launchUrl
+                expect(dumped[journeyRunnerPath!].contents).toContain('C_Arbankstatement-display');
+            });
+
+            it('moves existing integration folder to integration_old when no JourneyRunner exists', async () => {
+                // LropVirtualTests has an integration/ folder on disk
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                const moveSpy = jest.spyOn(fs!, 'move');
+                existsSyncMock.mockImplementation((p: string) => {
+                    if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
+                        return false;
+                    }
+                    // Simulate existing integration/ folder in the output dir
+                    if (p.includes('test-output') && p.endsWith('integration')) {
+                        return true;
+                    }
+                    return realExistsSync(p);
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                expect(moveSpy).toHaveBeenCalledWith(
+                    expect.stringContaining(join('integration', '**')),
+                    expect.stringContaining('integration_old')
+                );
+                moveSpy.mockRestore();
+            });
         });
 
         it('generates tests for v4 application with sub object page', async () => {
