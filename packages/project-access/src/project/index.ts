@@ -62,3 +62,4 @@ export {
     refreshSpecificationDistTags
 } from './specification';
 export { readFlexChanges } from './flex-changes';
+export { isUI5IdUnique } from './ui5-xml-id-validator';

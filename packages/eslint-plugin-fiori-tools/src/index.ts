@@ -8,7 +8,7 @@ import { rules } from './rules';
 import { FioriLanguage } from './language/fiori-language';
 import { createSyncFn } from 'synckit';
 import type { getPathMappings } from '@sap-ux/project-access';
-import { uniformUrl } from './project-context/utils';
+import { uniformUrl } from '@sap-ux/fiori-annotation-api';
 export { DiagnosticCache } from './language/diagnostic-cache';
 
 // Use CommonJS require for modules with resolution issues
@@ -40,6 +40,8 @@ export const languages = {
     fiori: new FioriLanguage()
 };
 
+const fioriRules = rules as Plugin['rules'];
+
 /**
  * Default export following ESLint 9 plugin structure.
  * This is the recommended way to export plugins in ESLint 9.
@@ -52,7 +54,7 @@ const plugin: Plugin = {
         namespace: '@sap-ux/fiori-tools'
     },
     languages,
-    rules: rules as Plugin['rules'],
+    rules: fioriRules,
     processors: {}
 };
 
@@ -493,7 +495,7 @@ export const configs: Record<string, Linter.Config[]> = {
             plugins: {
                 '@sap-ux/fiori-tools': {
                     meta,
-                    rules: rules as Plugin['rules']
+                    rules: fioriRules
                 }
             }
         },
@@ -507,7 +509,7 @@ export const configs: Record<string, Linter.Config[]> = {
                 '@sap-ux/fiori-tools': {
                     meta,
                     languages,
-                    rules: rules as Plugin['rules']
+                    rules: fioriRules
                 }
             }
         },
