@@ -25,7 +25,7 @@ const testCwd = getDestinationProjectRoot(cwd);
 const adaptUi5Yaml = async (ui5Version: string) => {
     const yamlPath = join(testCwd, 'ui5.yaml');
     const content = await readFile(yamlPath, 'utf-8');
-    await writeFile(yamlPath, content.replace(/^(\s+version:\s*)[\w.]+$/m, `$1${ui5Version}`));
+    await writeFile(yamlPath, content.replace(/^(\s+version:\s*)[\w.]+/m, `$1${ui5Version}`));
 };
 
 const prepare = async (ui5Version: string) => {
