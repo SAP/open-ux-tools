@@ -51,7 +51,8 @@ function mergeEntitySetData(
  * @param entitySetsFlat - Map of entity paths to entity set names
  * @param entitySetName - The name of the entity set
  * @param hierarchyEntities - Optional hierarchy descriptors; when provided, root node parent properties are cleared
- * @param parentPath
+ * @param hierarchyEntities - Optional hierarchy descriptors; when provided, root node parent properties are cleared
+ * @param parentPath - The path of the parent entity set used to build contextual keys for nested expansion
  * @returns Object keyed on entity set name containing entity data arrays
  */
 export function createEntitySetData(
