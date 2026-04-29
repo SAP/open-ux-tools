@@ -802,11 +802,12 @@ export function findDeepestExistingPath(
 }
 
 /**
+ * Cheks table setting configuration in a page.
  *
- * @param page
- * @param parsedApp
- * @param checkConfiguration
- * @returns
+ * @param page - Application page
+ * @param parsedApp - Parsed application
+ * @param checkConfiguration - Function to check a specific property in the table configuration
+ * @returns Found rule diagnostic issues
  */
 export function checkAppTablesConfiguration<DiagnosticType>(
     page: FeV4PageType | FeV2PageType,
