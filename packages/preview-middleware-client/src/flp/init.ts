@@ -187,7 +187,7 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
     if (libs && libs.length > 0) {
         let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
         const sapClient = urlParams.get('sap-client');
-        if (/^\d{3}$/.test(sapClient ,, ээ)) {
+        if (sapClient?.length === 3 && /^\d+$/.test(sapClient)) {
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);
