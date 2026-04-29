@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.36.1
+
+### Patch Changes
+
+- 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
+
 ## 1.36.0
 
 ### Minor Changes
