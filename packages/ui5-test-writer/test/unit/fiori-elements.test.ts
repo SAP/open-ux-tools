@@ -506,6 +506,15 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })'
+            );
+            expect(bookingObjPageJourneyContent).toContain(
+                'onForm({ section: "BookingData" }).iCheckField({ property: "FlightDate" })'
+            );
+            expect(bookingObjPageJourneyContent).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
+            expect(bookingObjPageJourneyContent).toContain('"ConnectionId":{"header":"Connection"}');
+            expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
         });
     });
 });
