@@ -670,7 +670,7 @@ describe('ConnectionValidator', () => {
         getOdataServiceSpy.mockClear();
         connectValidator.resetConnectionState(true);
 
-        getOdataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(200)); // Auth not required
+        getOdataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockResolvedValue    (newAxiosErrorWithStatus(200)); // Auth not required
         await connectValidator.validateAuth('https://example.com/serviceA', 'user1', 'password1', { sapClient: '999' });
         expect(connectValidator.validity).toEqual({
             authenticated: true,

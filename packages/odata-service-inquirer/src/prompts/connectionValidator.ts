@@ -1029,7 +1029,7 @@ export class ConnectionValidator {
         if (!this._validatedUrl) {
             return false;
         }
-        // Authenticated so auth is not required
+        // Authenticated so auth credentials are not needed (even if authRequired flag is true from a prior unauthenticated probe)
         if (this.validity.authenticated) {
             return false;
         }
