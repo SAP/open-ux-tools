@@ -125,8 +125,8 @@ async function resolveStandaloneWriteContext(
         editor.move(join(testOutDirPath, 'integration', '**'), join(testOutDirPath, 'integration_old'));
         await addIntegrationOldToGitignore(basePath, editor);
     } else {
-        const hasTestScript = checkScriptInPackageJson(editor, basePath, 'test');
-        if (!hasTestScript) {
+        const hasIntTestScript = checkScriptInPackageJson(editor, basePath, 'int-test');
+        if (!hasIntTestScript) {
             const script = getPackageScripts({ localOnly: false, addTest: true })['int-test'];
             if (script) {
                 await updatePackageScript(basePath, 'int-test', script, editor);
@@ -160,7 +160,7 @@ function checkScriptInPackageJson(editor: Editor, basePath: string, scriptName: 
     if (!editor.exists(packageJsonPath)) {
         return false;
     }
-    const packageJson = editor.readJSON(packageJsonPath) as any;
+    const packageJson = editor.readJSON(packageJsonPath) as { scripts?: Record<string, string> };
     return !!packageJson.scripts?.[scriptName];
 }
 

@@ -572,9 +572,9 @@ describe('ui5-test-writer', () => {
                 existsSpy.mockRestore();
             });
 
-            it('skips adding int-test script when a test script already exists in package.json', async () => {
-                // LropNoTests has no integration/ folder; give it a "test" script so the int-test
-                // addition is skipped, covering the hasTestScript = true branch (line 128-133)
+            it('skips adding int-test script when it already exists in package.json', async () => {
+                // LropNoTests has no integration/ folder; pre-populate int-test so the
+                // addition is skipped, covering the hasTestScript = true branch
                 const projectDir = prepareTestFiles('LropNoTests');
                 existsSyncMock.mockImplementation((p: string) => {
                     if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
@@ -589,21 +589,22 @@ describe('ui5-test-writer', () => {
                     return realExistsSync(p);
                 });
 
-                // Inject a "test" script so checkScriptInPackageJson returns true
+                // Pre-inject int-test so checkScriptInPackageJson returns true and skips re-adding it
                 const pkgPath = join(projectDir, 'package.json');
                 const pkg = JSON.parse(fs!.read(pkgPath));
-                pkg.scripts.test = 'jest';
+                const existingScript = 'fiori run --existing';
+                pkg.scripts['int-test'] = existingScript;
                 fs!.write(pkgPath, JSON.stringify(pkg));
 
                 fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
 
                 const dumped = fs.dump(projectDir);
-                // int-test script should NOT have been added (test script already existed)
+                // int-test script should remain unchanged (not overwritten)
                 const packageJsonPath = Object.keys(dumped).find((p) => p.endsWith('package.json'));
                 expect(packageJsonPath).toBeDefined();
                 const packageJson = JSON.parse(dumped[packageJsonPath!].contents as string);
-                expect(packageJson.scripts['int-test']).toBeUndefined();
-                // But generation still completes
+                expect(packageJson.scripts['int-test']).toBe(existingScript);
+                // Generation still completes
                 expect(Object.keys(dumped).some((p) => p.includes('FirstJourney.js'))).toBe(true);
             });
         });
