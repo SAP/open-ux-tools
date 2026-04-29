@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.52
+
+### Patch Changes
+
+- cf59d8e: feat: add Claude Code plugin support
+
 ## 0.6.51
 
 ### Patch Changes
