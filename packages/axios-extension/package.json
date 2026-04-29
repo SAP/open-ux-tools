@@ -31,7 +31,7 @@
         "@sap-ux/feature-toggle": "workspace:*",
         "axios": "1.15.0",
         "detect-content-type": "1.2.0",
-        "fast-xml-parser": "5.5.9",
+        "fast-xml-parser": "5.7.0",
         "lodash": "4.18.1",
         "open": "8.4.2",
         "qs": "6.15.0",
