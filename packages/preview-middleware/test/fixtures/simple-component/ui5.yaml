@@ -13,6 +13,7 @@ server:
               test:
                 - framework: QUnit
                 - framework: OPA5
+                - framework: Testsuite
               debug: true
         - name: ui5-proxy-middleware
           afterMiddleware: preview-middleware
