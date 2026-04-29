@@ -3,6 +3,6 @@
 "@sap-ux/sap-systems-ext-webapp": minor
 ---
 
-feat(sap-systems-ext): pre-populate connection manager panel when creating system from ADT (#37892)
+feat(sap-systems-ext): pre-populate connection manager panel when creating a new system (#37892)
 
-When the Fiori generator is launched from ADT and the system is not already saved, the connection manager now opens with the URL, client and system type (ABAP On-Premise) pre-populated from the ADT request.
+When opening the connection manager to create a new system, the panel can now be pre-populated with system details such as URL, client and system type.
