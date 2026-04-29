@@ -170,7 +170,7 @@ Test files in the `test/` source folder must use the `<namespace>/test/` prefix 
 sap.ui.define([
     'sap/ui/test/opaQunit',
     'my/app/test/integration/pages/ListReport'
-], function (opaTest) {
+], function (opaTest, ListReport) {
     //...
 });
 ```
@@ -180,8 +180,9 @@ The `/test` in the module ID is consumed by the resourceroot key, so the actual 
 Alternatively, relative URL paths bypass resourceroot resolution entirely and also work at runtime:
 ```js
 sap.ui.define([
+    'sap/ui/test/opaQunit',
     './pages/ListReport'
-], function (ListReport) {
+], function (opaTest, ListReport) {
     //...
 });
 ```
@@ -189,8 +190,9 @@ sap.ui.define([
 The same applies for absolute paths:
 ```js
 sap.ui.define([
+    'sap/ui/test/opaQunit',
     '/test-resources/my/app/integration/pages/ListReport'
-], function (ListReport) {
+], function (opaTest, ListReport) {
     //...
 });
 ```

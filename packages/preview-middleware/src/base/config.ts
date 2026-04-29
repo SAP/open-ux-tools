@@ -55,11 +55,7 @@ type TestTemplateConfig = {
     testResourcesPath?: string;
 };
 
-export type TestsuiteTemplateConfig = {
-    appBasePath: string;
-    rootBasePath: string;
-    initPath: string;
-};
+export type TestsuiteTemplateConfig = Pick<TestTemplateConfig, 'appBasePath' | 'rootBasePath' | 'initPath'>;
 
 export type PreviewUrls = {
     path: string;
@@ -486,7 +482,7 @@ export function createFlpTemplateConfig(
     config: FlpConfig,
     manifest: Partial<Manifest>,
     resources: Record<string, string> = {},
-    utils?: MiddlewareUtils | undefined
+    utils?: MiddlewareUtils
 ): TemplateConfig {
     const flex = getFlexSettings();
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
