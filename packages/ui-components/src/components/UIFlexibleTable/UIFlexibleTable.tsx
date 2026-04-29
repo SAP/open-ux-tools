@@ -256,6 +256,7 @@ export function UIFlexibleTable<T>(props: Readonly<UIFlexibleTableProps<T>>): Re
             ref={tableRootElementRef}
             id={props.id}
             style={tableRootElementStyle}
+            role="table"
             onBlur={() => {
                 onFocusRowAction();
             }}>
