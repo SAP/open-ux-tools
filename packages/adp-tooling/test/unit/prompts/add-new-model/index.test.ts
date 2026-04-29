@@ -116,9 +116,7 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('testName')).toBe(
-            "Model and Data Source Name must start with 'customer.'."
-        );
+        expect(validation?.('testName')).toBe("Model and Data Source Name must start with 'customer.'.");
     });
 
     it('should return error message when validating service name prompt and name is only "customer."', async () => {
@@ -127,9 +125,7 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.')).toBe(
-            'The input must end with an alphanumeric character.'
-        );
+        expect(validation?.('customer.')).toBe('The input must end with an alphanumeric character.');
     });
 
     it('should return error message when validating service name prompt and has special characters', async () => {
