@@ -332,3 +332,26 @@ Object {
   },
 }
 `;
+
+exports[`config generateSandboxAppConfig matches snapshot 1`] = `
+Object {
+  "beforeFlpStart": "module:open/ux/preview/client/flp/init2",
+  "restricted": Object {
+    "flexibilityServices": Array [
+      Object {
+        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+      },
+    ],
+  },
+  "rootIntent": "app-preview",
+  "tiles": Array [
+    Object {
+      "action": "preview",
+      "rootPath": "..",
+      "semanticObject": "app",
+    },
+  ],
+}
+`;

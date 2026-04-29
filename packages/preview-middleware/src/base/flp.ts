@@ -58,7 +58,8 @@ import {
     getAppName,
     sanitizeRtaConfig,
     CARD_GENERATOR_DEFAULT,
-    remapResourcesForPath
+    remapResourcesForPath,
+    generateSandboxAppConfig
 } from './config';
 import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
@@ -128,6 +129,7 @@ export class FlpSandbox {
     private readonly project: ReaderCollection;
     private readonly cardGenerator?: CardGeneratorConfig;
     private projectType: ProjectType;
+    private warnedLegacyConfig = false;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -521,6 +523,18 @@ export class FlpSandbox {
             if (ui5Version.major === 1 && ui5Version.minor < 120) {
                 this.removeFlexExtensionPointEnabled();
             }
+            if ((ui5Version.major > 1 || ui5Version.label?.includes('legacy-free')) && !this.warnedLegacyConfig) {
+                this.warnedLegacyConfig = true;
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const legacyFile = await this.project.byPath('/appconfig/fioriSandboxConfig.json');
+                if (legacyFile) {
+                    this.logger.warn(
+                        'Found legacy appconfig/fioriSandboxConfig.json. This file is not used by the new FLP Sandbox 2.0. ' +
+                        'Please migrate your application configuration: ' +
+                        'https://pages.github.tools.sap/UI5/sandbox-2.0/#/consumer/migration-guide?id=step-2-convert-application-configuration'
+                    );
+                }
+            }
             //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
             const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
@@ -543,6 +557,38 @@ export class FlpSandbox {
                 next: NextFunction
             ) => {
                 await this.flpGetHandler(req, res, next);
+            }
+        );
+
+        // add route for fioriSandboxAppConfig.json (Sandbox 2.0) when no real file exists at the FLP path
+        const configJsonPath = `${dirname(this.flpConfig.path)}/fioriSandboxAppConfig.json`;
+        this.router.get(
+            configJsonPath,
+            async (
+                _req: EnhancedRequest | connect.IncomingMessage,
+                res: Response | http.ServerResponse
+            ) => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const file = await this.project.byPath(this.flpConfig.path);
+                if (file) {
+                    // real HTML file exists — user manages their own config
+                    (res as Response).status(404).end();
+                    return;
+                }
+                // check for user-provided fioriSandboxAppConfig.json and merge if present
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const userConfigFile = await this.project.byPath(configJsonPath);
+                let config = generateSandboxAppConfig(this.templateConfig, this.flpConfig);
+                if (userConfigFile) {
+                    const userConfig = JSON.parse(await userConfigFile.getString()) as Record<string, unknown>;
+                    config = {
+                        ...userConfig,
+                        ...config,
+                        // beforeFlpStart must always point to our init2
+                        beforeFlpStart: config.beforeFlpStart
+                    } as typeof config;
+                }
+                this.sendResponse(res, 'application/json', 200, JSON.stringify(config));
             }
         );
     }

@@ -179,6 +179,8 @@ exports[`FlpSandbox cds-plugin-ui5 test/flp.html 1`] = `
 </html>"
 `;
 
+exports[`FlpSandbox fioriSandboxAppConfig.json route returns generated fioriSandboxAppConfig.json when no real file exists 1`] = `"{\\"tiles\\":[{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"rootPath\\":\\"..\\"}],\\"rootIntent\\":\\"app-preview\\",\\"beforeFlpStart\\":\\"module:open/ux/preview/client/flp/init2\\",\\"restricted\\":{\\"flexibilityServices\\":[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]}}"`;
+
 exports[`FlpSandbox init Card generator is enabled for the application 1`] = `
 Object {
   "apps": Object {
@@ -1204,52 +1206,16 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 2.x 1`] 
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <title>Local FLP Sandbox</title>
 
-    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
-
-         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
-
-         The fiori2 renderer will render the shell header allowing, for instance,
-         testing of additional application setting buttons.
-
-         The navigation target resolution service is configured in a way that the empty URL hash is
-         resolved to our own application.
-
-         This example uses relative path references for the SAPUI5 resources and test-resources;
-         it might be necessary to adapt them depending on the target runtime platform.
-         The sandbox platform is restricted to development or demo use cases and must NOT be used
-         for productive scenarios.
-    -->
-    <script type=\\"text/javascript\\">
-        window[\\"sap-ushell-config\\"] = {
-            defaultRenderer: \\"fiori2\\",
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: \\"hidden\\",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
-        };
-    </script>
-
-    <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
+    <script src=\\"../resources/sap/ushell/sandbox/SandboxBootTask.js\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compat-version=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
-        data-sap-ui-flexibility-services='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
-        data-sap-ui-xx-component-preload=\\"off\\"
-        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\"
+        data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
         data-open-ux-preview-base-url=''>
     </script>
 
@@ -1257,10 +1223,11 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 2.x 1`] 
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\" id=\\"content\\">
+<body class=\\"sapUiBody\\" id=\\"canvas\\">
 </body>
 
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 legacy-free 1`] = `
@@ -1274,52 +1241,16 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 legacy-f
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <title>Local FLP Sandbox</title>
 
-    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
-
-         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
-
-         The fiori2 renderer will render the shell header allowing, for instance,
-         testing of additional application setting buttons.
-
-         The navigation target resolution service is configured in a way that the empty URL hash is
-         resolved to our own application.
-
-         This example uses relative path references for the SAPUI5 resources and test-resources;
-         it might be necessary to adapt them depending on the target runtime platform.
-         The sandbox platform is restricted to development or demo use cases and must NOT be used
-         for productive scenarios.
-    -->
-    <script type=\\"text/javascript\\">
-        window[\\"sap-ushell-config\\"] = {
-            defaultRenderer: \\"fiori2\\",
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: \\"hidden\\",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
-        };
-    </script>
-
-    <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
+    <script src=\\"../resources/sap/ushell/sandbox/SandboxBootTask.js\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compat-version=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
-        data-sap-ui-flexibility-services='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
-        data-sap-ui-xx-component-preload=\\"off\\"
-        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\"
+        data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
         data-open-ux-preview-base-url=''>
     </script>
 
@@ -1327,10 +1258,11 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 legacy-f
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\" id=\\"content\\">
+<body class=\\"sapUiBody\\" id=\\"canvas\\">
 </body>
 
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 snapshot 1`] = `
@@ -1682,52 +1614,16 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 2.x 1`] =
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <title>Local FLP Sandbox</title>
 
-    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
-
-         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
-
-         The fiori2 renderer will render the shell header allowing, for instance,
-         testing of additional application setting buttons.
-
-         The navigation target resolution service is configured in a way that the empty URL hash is
-         resolved to our own application.
-
-         This example uses relative path references for the SAPUI5 resources and test-resources;
-         it might be necessary to adapt them depending on the target runtime platform.
-         The sandbox platform is restricted to development or demo use cases and must NOT be used
-         for productive scenarios.
-    -->
-    <script type=\\"text/javascript\\">
-        window[\\"sap-ushell-config\\"] = {
-            defaultRenderer: \\"fiori2\\",
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: \\"hidden\\",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
-        };
-    </script>
-
-    <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
+    <script src=\\"../resources/sap/ushell/sandbox/SandboxBootTask.js\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compat-version=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
-        data-sap-ui-flexibility-services='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
-        data-sap-ui-xx-component-preload=\\"off\\"
-        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\"
+        data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
         data-open-ux-preview-base-url=''>
     </script>
 
@@ -1735,10 +1631,11 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 2.x 1`] =
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\" id=\\"content\\">
+<body class=\\"sapUiBody\\" id=\\"canvas\\">
 </body>
 
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 legacy-free 1`] = `
@@ -1752,52 +1649,16 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 legacy-fr
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <title>Local FLP Sandbox</title>
 
-    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
-
-         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
-
-         The fiori2 renderer will render the shell header allowing, for instance,
-         testing of additional application setting buttons.
-
-         The navigation target resolution service is configured in a way that the empty URL hash is
-         resolved to our own application.
-
-         This example uses relative path references for the SAPUI5 resources and test-resources;
-         it might be necessary to adapt them depending on the target runtime platform.
-         The sandbox platform is restricted to development or demo use cases and must NOT be used
-         for productive scenarios.
-    -->
-    <script type=\\"text/javascript\\">
-        window[\\"sap-ushell-config\\"] = {
-            defaultRenderer: \\"fiori2\\",
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: \\"hidden\\",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
-        };
-    </script>
-
-    <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
+    <script src=\\"../resources/sap/ushell/sandbox/SandboxBootTask.js\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compat-version=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
-        data-sap-ui-flexibility-services='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
-        data-sap-ui-xx-component-preload=\\"off\\"
-        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\"
+        data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
         data-open-ux-preview-base-url=''>
     </script>
 
@@ -1805,10 +1666,11 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 legacy-fr
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\" id=\\"content\\">
+<body class=\\"sapUiBody\\" id=\\"canvas\\">
 </body>
 
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 1`] = `
@@ -2347,55 +2209,19 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <title>Local FLP Sandbox</title>
 
-    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
-
-         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
-
-         The fiori2 renderer will render the shell header allowing, for instance,
-         testing of additional application setting buttons.
-
-         The navigation target resolution service is configured in a way that the empty URL hash is
-         resolved to our own application.
-
-         This example uses relative path references for the SAPUI5 resources and test-resources;
-         it might be necessary to adapt them depending on the target runtime platform.
-         The sandbox platform is restricted to development or demo use cases and must NOT be used
-         for productive scenarios.
-    -->
-    <script type=\\"text/javascript\\">
-        window[\\"sap-ushell-config\\"] = {
-            defaultRenderer: \\"fiori2\\",
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: \\"hidden\\",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
-        };
-    </script>
-
-    <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
+    <script src=\\"../resources/sap/ushell/sandbox/SandboxBootTask.js\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ui.rta\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compat-version=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
-        data-sap-ui-flexibility-services='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
-        data-sap-ui-xx-component-preload=\\"off\\"
+        data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
         data-sap-ui-xx-design-mode=\\"true\\"
         data-sap-ui-xx-suppress-deactivation-of-controller-code=\\"true\\"
         data-sap-ui-xx-view-cache=\\"false\\"
-        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'
         data-open-ux-preview-base-url=''>
@@ -2418,11 +2244,12 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\" id=\\"content\\">
+<body class=\\"sapUiBody\\" id=\\"canvas\\">
 </body>
 <!-- livereload disabled for editor </body>-->
 
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `

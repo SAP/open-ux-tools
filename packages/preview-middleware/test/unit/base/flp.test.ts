@@ -1988,3 +1988,84 @@ describe('initAdp', () => {
         expect(flp.rta?.options?.isCloudFoundry).toBe(true);
     });
 });
+
+describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
+    const mockProject = {
+        byPath: jest.fn().mockResolvedValue(undefined),
+        byGlob: jest.fn().mockResolvedValue([])
+    } as unknown as { byPath: jest.Mock; byGlob: jest.Mock };
+    const mockUtils = {
+        getProject() {
+            return { getSourcePath: () => require('node:os').tmpdir() };
+        }
+    } as unknown as import('@ui5/server').MiddlewareUtils;
+    const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as import('@sap-ux/logger').Logger & { warn: jest.Mock };
+    const fixtures = join(__dirname, '../../fixtures');
+
+    let server: ReturnType<typeof supertest>;
+
+    const setupServer = async (projectByPath: jest.Mock = jest.fn().mockResolvedValue(undefined)) => {
+        (mockProject as unknown as { byPath: jest.Mock }).byPath = projectByPath;
+        const flp = new FlpSandbox({}, mockProject as unknown as import('@ui5/fs').ReaderCollection, mockUtils, logger);
+        const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+        await flp.init(manifest);
+        const app = express();
+        app.use(flp.router);
+        server = supertest(app);
+    };
+
+    afterEach(() => {
+        jest.clearAllMocks();
+        fetchMock.mockRestore();
+    });
+
+    test('returns generated fioriSandboxAppConfig.json when no real file exists', async () => {
+        await setupServer();
+        const response = await server.get('/test/fioriSandboxAppConfig.json').expect(200);
+        const body = JSON.parse(response.text) as Record<string, unknown>;
+        expect(body.beforeFlpStart).toBe('module:open/ux/preview/client/flp/init2');
+        expect((body.restricted as Record<string, unknown>)?.flexibilityServices).toHaveLength(1);
+        expect(response.text).toMatchSnapshot();
+    });
+
+    test('merges user-provided fioriSandboxAppConfig.json but keeps our beforeFlpStart', async () => {
+        const userConfig = { customProp: 'userValue', beforeFlpStart: 'module:user/init' };
+        const userFileMock = {
+            getString: () => Promise.resolve(JSON.stringify(userConfig))
+        };
+        // byPath called with flpConfig.path (no HTML) then configJsonPath (user JSON found)
+        const byPathMock = jest.fn().mockImplementation((p: string) => {
+            if (p.endsWith('fioriSandboxAppConfig.json')) {
+                return Promise.resolve(userFileMock);
+            }
+            return Promise.resolve(undefined);
+        });
+        await setupServer(byPathMock);
+        const response = await server.get('/test/fioriSandboxAppConfig.json').expect(200);
+        const body = JSON.parse(response.text) as Record<string, unknown>;
+        expect(body.beforeFlpStart).toBe('module:open/ux/preview/client/flp/init2');
+        expect(body.customProp).toBe('userValue');
+    });
+
+    test('emits legacy warning once when appconfig/fioriSandboxConfig.json exists with UI5 2.x', async () => {
+        const legacyFile = { getString: () => Promise.resolve('{}') };
+        const byPathMock = jest.fn().mockImplementation((p: string) => {
+            if (p === '/appconfig/fioriSandboxConfig.json') {
+                return Promise.resolve(legacyFile);
+            }
+            return Promise.resolve(undefined);
+        });
+        await setupServer(byPathMock);
+        fetchMock.mockResolvedValue({
+            json: () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+                }),
+            text: jest.fn(),
+            ok: true
+        });
+        await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+        expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('fioriSandboxConfig.json'));
+    });
+});

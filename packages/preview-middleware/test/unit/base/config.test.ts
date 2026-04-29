@@ -5,6 +5,7 @@ import {
     createFlpTemplateConfig,
     createTestTemplateConfig,
     generatePreviewFiles,
+    generateSandboxAppConfig,
     getFlpConfigWithDefaults,
     getPreviewPaths,
     remapResourcesForPath
@@ -357,6 +358,72 @@ describe('config', () => {
             expect(config.basePath).toBe('.');
             // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
             expect(config.ui5.resources['open.ux.preview.client']).toBe('preview/client');
+        });
+    });
+
+    describe('generateSandboxAppConfig', () => {
+        const workspaceConnector = 'open/ux/preview/client/flp/WorkspaceConnector';
+
+        test('generates config with single app', () => {
+            const flpConfig = getFlpConfigWithDefaults({ intent: { object: 'app', action: 'preview' } });
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            templateConfig.apps['app-preview'] = {
+                title: 'My App',
+                description: '',
+                additionalInformation: 'SAPUI5.Component=my.app',
+                applicationType: 'URL',
+                url: '..'
+            };
+            const result = generateSandboxAppConfig(templateConfig, flpConfig);
+            expect(result.rootIntent).toBe('app-preview');
+            expect(result.beforeFlpStart).toBe('module:open/ux/preview/client/flp/init2');
+            expect(result.restricted.flexibilityServices).toHaveLength(1);
+            expect(result.restricted.flexibilityServices[0]).toEqual({
+                applyConnector: workspaceConnector,
+                writeConnector: workspaceConnector,
+                custom: true
+            });
+            expect(result.tiles).toHaveLength(1);
+            expect(result.tiles[0].rootPath).toBe('..');
+        });
+
+        test('generates config with multiple apps', () => {
+            const flpConfig = getFlpConfigWithDefaults({ intent: { object: 'myApp', action: 'start' } });
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            templateConfig.apps['myApp-start'] = {
+                title: 'App One',
+                description: '',
+                additionalInformation: '',
+                applicationType: 'URL',
+                url: '/app1'
+            };
+            templateConfig.apps['otherApp-display'] = {
+                title: 'App Two',
+                description: '',
+                additionalInformation: '',
+                applicationType: 'URL',
+                url: '/app2'
+            };
+            const result = generateSandboxAppConfig(templateConfig, flpConfig);
+            expect(result.rootIntent).toBe('myApp-start');
+            expect(result.tiles).toHaveLength(2);
+            const tile1 = result.tiles.find((t) => t.rootPath === '/app1');
+            const tile2 = result.tiles.find((t) => t.rootPath === '/app2');
+            expect(tile1).toEqual({ semanticObject: 'myApp', action: 'start', rootPath: '/app1' });
+            expect(tile2).toEqual({ semanticObject: 'otherApp', action: 'display', rootPath: '/app2' });
+        });
+
+        test('matches snapshot', () => {
+            const flpConfig = getFlpConfigWithDefaults({ intent: { object: 'app', action: 'preview' } });
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            templateConfig.apps['app-preview'] = {
+                title: 'My App',
+                description: '',
+                additionalInformation: 'SAPUI5.Component=my.app',
+                applicationType: 'URL',
+                url: '..'
+            };
+            expect(generateSandboxAppConfig(templateConfig, flpConfig)).toMatchSnapshot();
         });
     });
 });

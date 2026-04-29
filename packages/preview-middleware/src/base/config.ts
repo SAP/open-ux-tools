@@ -26,6 +26,15 @@ export interface CustomConnector {
     custom: boolean;
 }
 
+export interface SandboxAppConfig {
+    tiles: { semanticObject: string; action: string; rootPath: string }[];
+    rootIntent: string;
+    beforeFlpStart: string;
+    restricted: {
+        flexibilityServices: CustomConnector[];
+    };
+}
+
 export interface FlexConnector {
     connector: string;
     layers: string[];
@@ -63,8 +72,16 @@ export interface TemplateConfig {
         }
     >;
     ui5: {
+        /**
+         * Comma-separated list of UI5 libraries to preload.
+         * @remarks Not rendered in sandbox2.ejs — the Sandbox 2.0 bootstrap manages its own library loading.
+         */
         libs: string;
         theme: string;
+        /**
+         * Flexibility service connector configuration.
+         * @remarks Not rendered in sandbox2.ejs — WorkspaceConnector is wired via the fioriSandboxAppConfig.json `restricted.flexibilityServices` instead.
+         */
         flex: (CustomConnector | FlexConnector)[];
         bootstrapOptions: string;
         resources: Record<string, string>;
@@ -447,6 +464,41 @@ export function createTestTemplateConfig(config: CompleteTestConfig, id: string,
         initPath: posix.relative(posix.dirname(config.path), config.init),
         theme
     } satisfies TestTemplateConfig;
+}
+
+/**
+ * Generates the fioriSandboxAppConfig.json content for Sandbox 2.0.
+ *
+ * @param templateConfig the current template configuration containing apps
+ * @param flpConfig the FLP configuration containing the intent
+ * @returns the sandbox app config object
+ */
+export function generateSandboxAppConfig(templateConfig: TemplateConfig, flpConfig: FlpConfig): SandboxAppConfig {
+    const workspaceConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
+    const tiles = Object.entries(templateConfig.apps).map(([appName, app]) => {
+        const dashIndex = appName.indexOf('-');
+        const semanticObject = dashIndex !== -1 ? appName.substring(0, dashIndex) : appName;
+        const action = dashIndex !== -1 ? appName.substring(dashIndex + 1) : '';
+        return {
+            semanticObject,
+            action,
+            rootPath: app.url
+        };
+    });
+    return {
+        tiles,
+        rootIntent: `${flpConfig.intent.object}-${flpConfig.intent.action}`,
+        beforeFlpStart: 'module:open/ux/preview/client/flp/init2',
+        restricted: {
+            flexibilityServices: [
+                {
+                    applyConnector: workspaceConnectorPath,
+                    writeConnector: workspaceConnectorPath,
+                    custom: true
+                }
+            ]
+        }
+    };
 }
 
 /**

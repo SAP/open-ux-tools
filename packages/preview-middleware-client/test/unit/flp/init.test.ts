@@ -12,13 +12,15 @@ import { Window } from 'types/global';
 import * as apiHandler from '../../../src/adp/api-handler';
 import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller';
 import {
-    init,
+    init
+} from '../../../src/flp/init';
+import {
     loadI18nResourceBundle,
     registerComponentDependencyPaths,
     registerSAPFonts,
     resetAppState,
     setI18nTitle
-} from '../../../src/flp/init';
+} from '../../../src/flp/common';
 
 describe('flp/init', () => {
     afterEach(() => {
