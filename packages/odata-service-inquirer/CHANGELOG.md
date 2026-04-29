@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.20.18
+
+### Patch Changes
+
+- 8b2c55b: Fix for system selection change incorrectly validated as true
+
 ## 2.20.17
 
 ### Patch Changes
