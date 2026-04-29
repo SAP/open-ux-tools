@@ -80,13 +80,10 @@ export function generateImportList(namespace: string, resourceList: Resource[], 
               if (testPathPrefix) {
                   // For component type: strip /test-resources/<namespace>/ prefix, then prepend namespace
                   const strippedPath = filePath.replace(`${testPathPrefix}/`, '');
-                  const parts = strippedPath.split('.');
-                  parts.pop();
-                  return `${namespace}/test/${parts.join('.')}`;
+                  const strippedPathNoExt = strippedPath.substring(0, strippedPath.lastIndexOf('.'));
+                  return `${namespace}/test/${strippedPathNoExt}`;
               }
-              const path = filePath.split('.');
-              path.pop();
-              return `${namespace}${path.join('.')}`;
+              return `${namespace}${filePath.substring(0, filePath.lastIndexOf('.'))}`;
           })
         : [];
 }
