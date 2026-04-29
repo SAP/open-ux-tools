@@ -168,6 +168,9 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     storeCredentials: mockStoreCredentials,
     getSupportedProject: mockGetSupportedProject,
     getCfBaseAppInbounds: mockGetCfBaseAppInbounds,
+    // generateCf calls adjustMtaYaml which internally requires '../services/api.js' via CJS.
+    // jest.unstable_mockModule cannot intercept relative CJS requires inside compiled dist packages,
+    // so the real generateCf would invoke live CF APIs. The mock avoids that.
     generateCf: mockGenerateCf
 }));
 
@@ -878,7 +881,9 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             await expect(runContext.run()).resolves.not.toThrow();
 
-            // Verify generateCf was called with correct arguments
+            // generateCf is mocked: adjustMtaYaml internally requires '../services/api.js' via relative
+            // CJS require, which jest.unstable_mockModule cannot intercept. The real call would hit live
+            // CF APIs. Verify via mock that generateCf was invoked with the right arguments instead.
             expect(mockGenerateCf).toHaveBeenCalledWith(
                 cfTestOutputDir,
                 expect.objectContaining({

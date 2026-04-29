@@ -103,6 +103,38 @@ describe('AddNewModelGenerator', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
+        expect(mockCreateNewModelData).toHaveBeenCalledWith(
+            tmpDir,
+            variant,
+            expect.objectContaining({
+                modelAndDatasourceName: answers.modelAndDatasourceName,
+                uri: answers.uri,
+                serviceType: answers.serviceType,
+                modelSettings: answers.modelSettings,
+                addAnnotationMode: answers.addAnnotationMode
+            }),
+            expect.anything()
+        );
+        expect(mockGenerateChange).toHaveBeenCalledWith(
+            tmpDir,
+            realAdpTooling.ChangeType.ADD_NEW_MODEL,
+            mockNewModelData,
+            expect.anything()
+        );
+    });
+
+    it('passes isCloudFoundry: true and destinationName for CF projects', async () => {
+        mockGetVariant.mockResolvedValue(variant);
+        mockIsCFEnvironment.mockResolvedValue(true);
+
+        const runContext = yeomanTest
+            .create(newModelGen, { resolved: generatorPath }, { cwd: tmpDir })
+            .withOptions({ data: { path: tmpDir } })
+            .withPrompts(answers);
+
+        await expect(runContext.run()).resolves.not.toThrow();
+
+        expect(mockCreateNewModelData).toHaveBeenCalledWith(tmpDir, variant, expect.anything(), expect.anything());
         expect(mockGenerateChange).toHaveBeenCalledWith(
             tmpDir,
             realAdpTooling.ChangeType.ADD_NEW_MODEL,
@@ -133,5 +165,95 @@ describe('AddNewModelGenerator', () => {
 
         writingSpy.mockRestore();
         handleCrashSpy.mockRestore();
+    });
+
+    describe('_checkCfTargetMismatch', () => {
+        beforeEach(() => {
+            mockIsCFEnvironment.mockResolvedValue(true);
+            mockGetVariant.mockResolvedValue(variant);
+        });
+
+        it('continues without error when org and space match', async () => {
+            const runContext = yeomanTest
+                .create(newModelGen, { resolved: generatorPath }, { cwd: tmpDir })
+                .withOptions({ data: { path: tmpDir } })
+                .withPrompts(answers);
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(mockGenerateChange).toHaveBeenCalled();
+        });
+
+        it('stops the generator when org does not match', async () => {
+            mockExtractCfBuildTask.mockReturnValue({ ...mockBuildTask, org: 'different-org' });
+
+            const handleCrashSpy = jest
+                .spyOn((newModelGen as any).prototype, 'handleRuntimeCrash')
+                .mockResolvedValueOnce(undefined);
+            const writingSpy = jest
+                .spyOn((newModelGen as any).prototype, 'writing')
+                .mockImplementation(async () => undefined);
+
+            const runContext = yeomanTest
+                .create(newModelGen, { resolved: generatorPath }, { cwd: tmpDir })
+                .withOptions({ data: { path: tmpDir } })
+                .withPrompts(answers);
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(handleCrashSpy).toHaveBeenCalled();
+            expect(mockGenerateChange).not.toHaveBeenCalled();
+
+            writingSpy.mockRestore();
+            handleCrashSpy.mockRestore();
+        });
+
+        it('stops the generator when space does not match', async () => {
+            mockExtractCfBuildTask.mockReturnValue({ ...mockBuildTask, space: 'different-space-guid' });
+
+            const handleCrashSpy = jest
+                .spyOn((newModelGen as any).prototype, 'handleRuntimeCrash')
+                .mockResolvedValueOnce(undefined);
+            const writingSpy = jest
+                .spyOn((newModelGen as any).prototype, 'writing')
+                .mockImplementation(async () => undefined);
+
+            const runContext = yeomanTest
+                .create(newModelGen, { resolved: generatorPath }, { cwd: tmpDir })
+                .withOptions({ data: { path: tmpDir } })
+                .withPrompts(answers);
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(handleCrashSpy).toHaveBeenCalled();
+            expect(mockGenerateChange).not.toHaveBeenCalled();
+
+            writingSpy.mockRestore();
+            handleCrashSpy.mockRestore();
+        });
+
+        it('stops the generator when reading ui5.yaml fails', async () => {
+            mockReadUi5Config.mockRejectedValueOnce(new Error('cannot read ui5.yaml'));
+
+            const handleCrashSpy = jest
+                .spyOn((newModelGen as any).prototype, 'handleRuntimeCrash')
+                .mockResolvedValueOnce(undefined);
+            const writingSpy = jest
+                .spyOn((newModelGen as any).prototype, 'writing')
+                .mockImplementation(async () => undefined);
+
+            const runContext = yeomanTest
+                .create(newModelGen, { resolved: generatorPath }, { cwd: tmpDir })
+                .withOptions({ data: { path: tmpDir } })
+                .withPrompts(answers);
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(handleCrashSpy).toHaveBeenCalledWith('CF target mismatch check failed. Check the logs for details.');
+            expect(mockGenerateChange).not.toHaveBeenCalled();
+
+            writingSpy.mockRestore();
+            handleCrashSpy.mockRestore();
+        });
     });
 });

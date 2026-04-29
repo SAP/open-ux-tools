@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
 const mockWriteAnnotationChange = jest.fn();
@@ -6,6 +7,7 @@ const mockWriteChangeToFolder = jest.fn();
 const mockFindChangeWithInboundId = jest.fn();
 const mockWriteChangeToFile = jest.fn();
 const mockGetChange = jest.fn().mockReturnValue({});
+const mockAddConnectivityServiceToMta = jest.fn();
 
 const realChangeUtils = await import('../../../../../src/base/change-utils');
 
@@ -18,20 +20,33 @@ jest.unstable_mockModule('../../../../../src/base/change-utils', () => ({
     writeChangeToFile: mockWriteChangeToFile
 }));
 
+const realYaml = await import('../../../../../src/cf/project/yaml');
+
+jest.unstable_mockModule('../../../../../src/cf/project/yaml', () => ({
+    ...realYaml,
+    addConnectivityServiceToMta: mockAddConnectivityServiceToMta
+}));
+
+jest.unstable_mockModule('../../../../../src/cf/services/ssh', () => ({
+    ensureTunnelAppExists: jest.fn().mockResolvedValue(undefined),
+    DEFAULT_TUNNEL_APP_NAME: 'adp-ssh-tunnel-app'
+}));
+
 const { AnnotationsWriter, ComponentUsagesWriter, DataSourceWriter, InboundWriter, NewModelWriter } =
     await import('../../../../../src/writer/changes/writers');
-const { ChangeType } = await import('../../../../../src');
+const { ChangeType, ServiceType } = await import('../../../../../src');
 import type {
     AnnotationsData,
     ComponentUsagesDataBase,
     ComponentUsagesDataWithLibrary,
     DataSourceData,
     NewModelData,
+    NewModelDataWithAnnotations,
     InboundData,
     DescriptorVariant
 } from '../../../../../src/index.js';
 
-const mockProjectPath = '/mock/project/path';
+const mockProjectPath = join('mock', 'project', 'path');
 const mockTemplatePath = '/mock/template/path';
 
 describe('AnnotationsWriter', () => {
@@ -207,19 +222,27 @@ describe('ComponentUsagesWriter', () => {
 
 describe('NewModelWriter', () => {
     let writer: NewModelWriter;
+    const readJSONMock = jest.fn();
+    const writeJSONMock = jest.fn();
 
     beforeEach(() => {
-        writer = new NewModelWriter({} as Editor, mockProjectPath);
         jest.clearAllMocks();
+        readJSONMock.mockReturnValue({ routes: [] });
+        mockAddConnectivityServiceToMta.mockResolvedValue(undefined);
+        writer = new NewModelWriter(
+            { readJSON: readJSONMock, writeJSON: writeJSONMock } as unknown as Editor,
+            mockProjectPath
+        );
     });
 
     it('should correctly construct content and write new model change', async () => {
-        const mockData: NewModelData = {
+        const mockData: NewModelDataWithAnnotations = {
             variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
             service: {
                 name: 'ODataService',
                 uri: '/sap/opu/odata/custom',
-                modelName: 'ODataModel',
+                modelName: 'ODataService',
                 version: '4.0',
                 modelSettings: '"someSetting": "someValue"'
             },
@@ -254,7 +277,7 @@ describe('NewModelWriter', () => {
                     }
                 },
                 'model': {
-                    'ODataModel': {
+                    'ODataService': {
                         'dataSource': mockData.service.name,
                         'settings': {
                             'someSetting': 'someValue'
@@ -266,6 +289,243 @@ describe('NewModelWriter', () => {
         );
 
         expect(mockWriteChangeToFolder).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
+    });
+
+    it('should omit the model block in HTTP service type scenario', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.HTTP,
+            service: {
+                name: 'HttpService',
+                uri: '/api/http/service/',
+                modelName: undefined,
+                version: undefined
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockGetChange).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.anything(),
+            {
+                'dataSource': {
+                    'HttpService': {
+                        'uri': mockData.service.uri,
+                        'type': 'http',
+                        'settings': {}
+                    }
+                }
+            },
+            ChangeType.ADD_NEW_DATA_SOURCE
+        );
+    });
+
+    it('should construct CF change content with derived URI', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
+            isCloudFoundry: true,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.MyService',
+                uri: '/sap/opu/odata/v4/',
+                modelName: 'customer.MyService',
+                version: '4.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockGetChange).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.anything(),
+            {
+                'dataSource': {
+                    'customer.MyService': {
+                        'uri': 'customer/MyService/sap/opu/odata/v4/',
+                        'type': 'OData',
+                        'settings': {
+                            'odataVersion': '4.0'
+                        }
+                    }
+                },
+                'model': {
+                    'customer.MyService': {
+                        'dataSource': 'customer.MyService'
+                    }
+                }
+            },
+            ChangeType.ADD_NEW_MODEL
+        );
+    });
+
+    it('should apply user modelSettings for CF project', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
+            isCloudFoundry: true,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.MyService',
+                uri: '/sap/opu/odata/v4/',
+                modelName: 'customer.MyService',
+                version: '4.0',
+                modelSettings: '"operationMode": "Server"'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockGetChange).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.anything(),
+            expect.objectContaining({
+                'model': {
+                    'customer.MyService': {
+                        'dataSource': 'customer.MyService',
+                        'settings': { 'operationMode': 'Server' }
+                    }
+                }
+            }),
+            ChangeType.ADD_NEW_MODEL
+        );
+    });
+
+    it('should create xs-app.json with a new route for a CF project when xs-app.json does not exist', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
+            isCloudFoundry: true,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.MyService',
+                uri: '/sap/opu/odata/v4/',
+                modelName: 'customer.MyService',
+                version: '4.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(readJSONMock).toHaveBeenCalledWith(join(mockProjectPath, 'webapp', 'xs-app.json'), { routes: [] });
+        expect(writeJSONMock).toHaveBeenCalledWith(join(mockProjectPath, 'webapp', 'xs-app.json'), {
+            routes: [
+                {
+                    source: '^/customer/MyService/sap/opu/odata/v4/(.*)',
+                    target: '/sap/opu/odata/v4/$1',
+                    destination: 'MY_CF_DEST'
+                }
+            ]
+        });
+    });
+
+    it('should append a route to existing xs-app.json routes for a CF project', async () => {
+        readJSONMock.mockReturnValue({
+            routes: [{ source: '^existing/route/(.*)', target: '/existing/$1', destination: 'OTHER_DEST' }]
+        });
+
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
+            isCloudFoundry: true,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.NewService',
+                uri: '/sap/opu/odata/v2/',
+                modelName: 'customer.NewService',
+                version: '2.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(writeJSONMock).toHaveBeenCalledWith(join(mockProjectPath, 'webapp', 'xs-app.json'), {
+            routes: [
+                { source: '^existing/route/(.*)', target: '/existing/$1', destination: 'OTHER_DEST' },
+                {
+                    source: '^/customer/NewService/sap/opu/odata/v2/(.*)',
+                    target: '/sap/opu/odata/v2/$1',
+                    destination: 'MY_CF_DEST'
+                }
+            ]
+        });
+    });
+
+    it('should not write xs-app.json for a non-CF project', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
+            service: {
+                name: 'ODataService',
+                uri: '/sap/opu/odata/custom/',
+                modelName: 'ODataService',
+                version: '2.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(readJSONMock).not.toHaveBeenCalled();
+        expect(writeJSONMock).not.toHaveBeenCalled();
+    });
+
+    it('should call addConnectivityServiceToMta when isCloudFoundry and isOnPremiseDestination', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
+            isCloudFoundry: true,
+            isOnPremiseDestination: true,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.MyService',
+                uri: '/sap/opu/odata/v2/',
+                modelName: 'customer.MyService',
+                version: '2.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockAddConnectivityServiceToMta).toHaveBeenCalledWith(join('mock', 'project'), expect.any(Object));
+    });
+
+    it('should not call addConnectivityServiceToMta when not in CF', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
+            isCloudFoundry: false,
+            service: {
+                name: 'ODataService',
+                uri: '/sap/opu/odata/v2/',
+                modelName: 'ODataService',
+                version: '2.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockAddConnectivityServiceToMta).not.toHaveBeenCalled();
+    });
+
+    it('should not call addConnectivityServiceToMta when isOnPremiseDestination is false', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
+            isCloudFoundry: true,
+            isOnPremiseDestination: false,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.MyService',
+                uri: '/sap/opu/odata/v2/',
+                modelName: 'customer.MyService',
+                version: '2.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockAddConnectivityServiceToMta).not.toHaveBeenCalled();
     });
 });
 
