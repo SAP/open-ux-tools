@@ -16,6 +16,7 @@ export const TEXT_ARRANGEMENT_HIDDEN = 'sap-text-arrangement-hidden';
 export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-based-navigation';
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
+export const NO_COMMAS_IN_SECTION_TITLES = 'sap-no-commas-in-section-titles';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -138,6 +139,17 @@ export interface StrictUomFiltering {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export interface NoCommasInSectionTitles {
+    type: typeof NO_COMMAS_IN_SECTION_TITLES;
+    pageNames: string[];
+    annotation: {
+        file: string;
+        annotationPath: string;
+        reference: AnnotationReference;
+        labelValue: string;
+    };
+}
+
 export interface TextArrangementHidden {
     type: typeof TEXT_ARRANGEMENT_HIDDEN;
     pageNames: string[];
@@ -162,4 +174,5 @@ export type Diagnostic =
     | CondensedTableLayout
     | TablePersonalization
     | TextArrangementHidden
-    | StrictUomFiltering;
+    | StrictUomFiltering
+    | NoCommasInSectionTitles;

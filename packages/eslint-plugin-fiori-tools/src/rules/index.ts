@@ -14,7 +14,8 @@ import {
     TABLE_COLUMN_VERTICAL_ALIGNMENT,
     TABLE_PERSONALIZATION,
     TEXT_ARRANGEMENT_HIDDEN,
-    STRICT_UOM_FILTERING
+    STRICT_UOM_FILTERING,
+    NO_COMMAS_IN_SECTION_TITLES
 } from '../language/diagnostics';
 
 // Import all rules
@@ -81,6 +82,7 @@ import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment'
 import noDataFieldIntentBasedNavigation from './sap-no-data-field-intent-based-navigation';
 import condensedTableLayout from './sap-condensed-table-layout';
 import textArrangementHidden from './sap-text-arrangement-hidden';
+import noCommasInSectionTitles from './sap-no-commas-in-section-titles';
 
 import type { Rule } from 'eslint';
 
@@ -146,5 +148,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [STRICT_UOM_FILTERING]: strictUomFilteringRule,
     [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
     [TABLE_PERSONALIZATION]: tablePersonalization,
-    [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden
+    [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden,
+    [NO_COMMAS_IN_SECTION_TITLES]: noCommasInSectionTitles
 };
