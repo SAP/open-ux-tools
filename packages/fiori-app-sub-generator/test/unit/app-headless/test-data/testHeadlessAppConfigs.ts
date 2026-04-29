@@ -54,6 +54,50 @@ export const appConfigDest = {
     }
 };
 
+export const appConfigWithValueListMetadata = {
+    ...appConfigDest,
+    service: {
+        ...appConfigDest.service,
+        externalServices: [
+            {
+                type: 'value-list' as const,
+                target: 'SomeEntity/SomeProperty',
+                metadata:
+                    '<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"></edmx:Edmx>',
+                path: '/sap/opu/odata4/sap/some_vh_service/srvd/sap/some_vh_service/0001/'
+            },
+            {
+                type: 'code-list' as const,
+                collectionPath: 'Currencies',
+                metadata:
+                    '<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"></edmx:Edmx>',
+                path: '/sap/opu/odata4/sap/common/srvd/sap/common/0001/'
+            }
+        ]
+    }
+};
+
+export const appConfigWithValueListMetadataPaths = {
+    ...appConfigDest,
+    service: {
+        ...appConfigDest.service,
+        externalServices: [
+            {
+                type: 'value-list' as const,
+                target: 'SomeEntity/SomeProperty',
+                metadataPath: 'vh-metadata.xml',
+                path: '/sap/opu/odata4/sap/some_vh_service/srvd/sap/some_vh_service/0001/'
+            },
+            {
+                type: 'code-list' as const,
+                collectionPath: 'Currencies',
+                metadataPath: 'vh-metadata.xml',
+                path: '/sap/opu/odata4/sap/common/srvd/sap/common/0001/'
+            }
+        ]
+    }
+};
+
 export const appConfigNotSupportedVersion = {
     version: '0.1',
     floorplan: 'FF_SIMPLE',

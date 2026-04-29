@@ -1,5 +1,34 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.12.5
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+
+## 0.12.4
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+
+## 0.12.3
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/axios-extension@1.25.31
+
+## 0.12.2
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+
 ## 0.12.1
 
 ### Patch Changes

@@ -1,5 +1,28 @@
 # @sap-ux/axios-extension
 
+## 1.25.32
+
+### Patch Changes
+
+- 237371b: fix(axios-extension): export EntitySetData type
+  feat(fiori-generator-shared): add ExternalServiceConfig headless type supporting metadata and entityData as inline values or file paths
+  feat(fiori-app-sub-generator): resolve external service metadata and entityData file paths in headless generator before passing to writer
+
+## 1.25.31
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+
+## 1.25.30
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+
 ## 1.25.29
 
 ### Patch Changes

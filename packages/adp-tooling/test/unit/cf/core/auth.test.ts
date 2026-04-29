@@ -1,4 +1,4 @@
-import { cfGetAvailableOrgs, type Organization } from '@sap/cf-tools';
+import { cfGetAuthToken } from '@sap/cf-tools';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -7,10 +7,10 @@ import { isExternalLoginEnabled, isLoggedInCf } from '../../../../src/cf/core/au
 
 jest.mock('@sap/cf-tools', () => ({
     ...jest.requireActual('@sap/cf-tools'),
-    cfGetAvailableOrgs: jest.fn()
+    cfGetAuthToken: jest.fn()
 }));
 
-const mockCfGetAvailableOrgs = cfGetAvailableOrgs as jest.MockedFunction<typeof cfGetAvailableOrgs>;
+const mockCfGetAuthToken = cfGetAuthToken as jest.MockedFunction<typeof cfGetAuthToken>;
 
 const mockCfConfig: CfConfig = {
     org: {
@@ -24,17 +24,6 @@ const mockCfConfig: CfConfig = {
     token: 'test-token',
     url: 'https://test.cf.com'
 };
-
-const mockOrganizations: Organization[] = [
-    {
-        guid: 'org-1-guid',
-        label: 'org-1'
-    },
-    {
-        guid: 'org-2-guid',
-        label: 'org-2'
-    }
-];
 
 describe('CF Core Auth', () => {
     const mockLogger = {
@@ -75,26 +64,25 @@ describe('CF Core Auth', () => {
     });
 
     describe('isLoggedInCf', () => {
-        test('should return true when user is logged in and has organizations', async () => {
-            mockCfGetAvailableOrgs.mockResolvedValue(mockOrganizations);
+        test('should return true when user is logged in and has a valid token', async () => {
+            const mockToken = 'bearer mock-auth-token';
+            mockCfGetAuthToken.mockResolvedValue(mockToken);
 
             const result = await isLoggedInCf(mockCfConfig, mockLogger);
 
             expect(result).toBe(true);
-            expect(mockCfGetAvailableOrgs).toHaveBeenCalledTimes(1);
-            expect(mockLogger.log).toHaveBeenCalledWith(
-                `Available organizations: ${JSON.stringify(mockOrganizations)}`
-            );
+            expect(mockCfGetAuthToken).toHaveBeenCalledTimes(1);
+            expect(mockLogger.log).toHaveBeenCalledWith(`Retrieved CF auth token: ${mockToken}`);
         });
 
-        test('should return false when cfGetAvailableOrgs throws an error', async () => {
+        test('should return false when cfGetAuthToken throws an error', async () => {
             const error = new Error('CF API error');
-            mockCfGetAvailableOrgs.mockRejectedValue(error);
+            mockCfGetAuthToken.mockRejectedValue(error);
 
             const result = await isLoggedInCf(mockCfConfig, mockLogger);
 
             expect(result).toBe(false);
-            expect(mockCfGetAvailableOrgs).toHaveBeenCalledTimes(1);
+            expect(mockCfGetAuthToken).toHaveBeenCalledTimes(1);
             expect(mockLogger.error).toHaveBeenCalledWith(
                 `Error occurred while trying to check if it is logged in: ${error.message}`
             );
@@ -104,7 +92,7 @@ describe('CF Core Auth', () => {
             const result = await isLoggedInCf(undefined as any, mockLogger);
 
             expect(result).toBe(false);
-            expect(mockCfGetAvailableOrgs).not.toHaveBeenCalled();
+            expect(mockCfGetAuthToken).not.toHaveBeenCalled();
             expect(mockLogger.error).toHaveBeenCalledWith('CF config is not provided');
         });
     });

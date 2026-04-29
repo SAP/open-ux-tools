@@ -1,5 +1,23 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.52
+
+### Patch Changes
+
+- cf59d8e: feat: add Claude Code plugin support
+
+## 0.6.51
+
+### Patch Changes
+
+- d9ae55c: fix: improve floorplan descriptions and make service/entityConfig optional for FF_SIMPLE (Basic template)
+
+## 0.6.50
+
+### Patch Changes
+
+- c88661f: fix(deps): update dependency @langchain/core to v1.1.40
+
 ## 0.6.49
 
 ### Patch Changes

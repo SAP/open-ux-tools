@@ -1,5 +1,57 @@
 # @sap-ux/app-config-writer
 
+## 0.6.140
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/ui5-application-writer@1.8.7
+
+## 0.6.139
+
+### Patch Changes
+
+- 165a6c2: feat: support ESLint 10
+- Updated dependencies [165a6c2]
+    - @sap-ux/ui5-application-writer@1.8.7
+
+## 0.6.138
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/ui5-application-writer@1.8.6
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/axios-extension@1.25.32
+
+## 0.6.137
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+
+## 0.6.136
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/axios-extension@1.25.31
+
+## 0.6.135
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/project-access@1.35.20
+    - @sap-ux/ui5-application-writer@1.8.5
+
 ## 0.6.134
 
 ### Patch Changes

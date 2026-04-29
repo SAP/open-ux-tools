@@ -1,5 +1,25 @@
 # @sap-ux/project-access
 
+## 1.36.0
+
+### Minor Changes
+
+- 1d60871: Added isUI5IdUnique function to check UI5 control ID uniqueness in XML views/fragments.
+  Exported findFilesByExtension from @sap-ux/project-access and removed deep imports.
+
+## 1.35.21
+
+### Patch Changes
+
+- 03d3ea1: fix(deps): Update dependency @ui5/manifest to v1.85.0
+
+## 1.35.20
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/ui5-config@0.30.3
+
 ## 1.35.19
 
 ### Patch Changes
