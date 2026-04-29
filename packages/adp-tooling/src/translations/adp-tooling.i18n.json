@@ -70,7 +70,7 @@
         "missingIconOrTitleOrSubtitle": "At least one of the Title, Subtitle, or Icon fields must have a value.",
         "fileDoesNotExist": "This file does not exist.",
         "annotationFileAlreadyExists": "There is already an annotation file with the same name. Please choose another file or rename the file and select it again.",
-        "errorDuplicatedValueOData": "An OData annotation or service with the same name was already added to the project. Rename and try again.",
+        "errorDuplicatedValueOData": "A data source and SAPUI5 model with the same name were already added to the project. Rename and try again.",
         "errorDuplicatedValueSapui5Model": "An SAPUI5 model with the same name was already added to the project. Rename and try again.",
         "errorDuplicateValueComponentId": "A component usage with the same name was already added to the project. Rename and try again.",
         "errorDuplicateValueLibrary": "A library with the same name was already added to the project. Rename and try again.",

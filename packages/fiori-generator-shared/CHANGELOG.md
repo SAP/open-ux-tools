@@ -1,5 +1,29 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.102
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/telemetry@0.6.101
+
+## 0.13.101
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/telemetry@0.6.100
+
+## 0.13.100
+
+### Patch Changes
+
+- 237371b: fix(axios-extension): export EntitySetData type
+  feat(fiori-generator-shared): add ExternalServiceConfig headless type supporting metadata and entityData as inline values or file paths
+  feat(fiori-app-sub-generator): resolve external service metadata and entityData file paths in headless generator before passing to writer
+
 ## 0.13.99
 
 ### Patch Changes

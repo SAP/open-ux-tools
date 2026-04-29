@@ -2,7 +2,6 @@ import net from 'node:net';
 import { EventEmitter } from 'node:events';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import { ensureTunnelAppExists, enableSshAndRestart } from '@sap-ux/adp-tooling';
 import { spawn } from 'node:child_process';
 
@@ -12,10 +11,6 @@ import { hasOnPremiseDestination } from '../../../src/tunnel/destination-check';
 
 jest.mock('node:child_process', () => ({
     spawn: jest.fn()
-}));
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
 }));
 
 jest.mock('@sap-ux/adp-tooling', () => ({
@@ -29,7 +24,6 @@ jest.mock('../../../src/tunnel/destination-check', () => ({
 }));
 
 const mockSpawn = spawn as jest.Mock;
-const mockIsAppStudio = isAppStudio as jest.Mock;
 const mockEnsureTunnel = ensureTunnelAppExists as jest.Mock;
 const mockEnableSsh = enableSshAndRestart as jest.Mock;
 const mockHasOnPremise = hasOnPremiseDestination as jest.Mock;
@@ -100,7 +94,6 @@ describe('tunnel', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockIsAppStudio.mockReturnValue(false);
         processOnSpy = jest.spyOn(process, 'on');
         processOnceSpy = jest.spyOn(process, 'once');
     });
@@ -125,15 +118,6 @@ describe('tunnel', () => {
     }
 
     describe('startSshTunnelIfNeeded', () => {
-        test('should return undefined when running in BAS', async () => {
-            mockIsAppStudio.mockReturnValue(true);
-
-            const result = await startSshTunnelIfNeeded(connectivityInfo, 'tunnel-app', logger);
-
-            expect(result).toBeUndefined();
-            expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('BAS'));
-        });
-
         test('should return undefined when port is already in use', async () => {
             createServerSpy = jest
                 .spyOn(net, 'createServer')
@@ -254,7 +238,6 @@ describe('tunnel', () => {
         test('should deploy tunnel app and start tunnel when OnPremise found', async () => {
             mockHasOnPremise.mockResolvedValue(true);
             mockEnsureTunnel.mockResolvedValue(undefined);
-            mockIsAppStudio.mockReturnValue(true);
 
             await setupSshTunnel('/root', connectivityInfo, effectiveOptions, logger);
 
@@ -264,7 +247,6 @@ describe('tunnel', () => {
         test('should use custom tunnelAppName from options', async () => {
             mockHasOnPremise.mockResolvedValue(true);
             mockEnsureTunnel.mockResolvedValue(undefined);
-            mockIsAppStudio.mockReturnValue(true);
 
             const opts = { ...effectiveOptions, tunnelAppName: 'custom-app' } as unknown as EffectiveOptions;
             await setupSshTunnel('/root', connectivityInfo, opts, logger);

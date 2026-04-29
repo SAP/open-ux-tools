@@ -13,7 +13,9 @@ Object {
   "parameters": Object {
     "additionalProperties": false,
     "description": "The configuration that will be used for the Application UI generation.
-            The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the functionality.",
+            The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the functionality.
+            For floorplan FF_SIMPLE (Basic/SAPUI5 Freestyle template), service and entityConfig are optional (data source may be \\"None\\").
+            For all other floorplans, service and entityConfig are required.",
     "properties": Object {
       "entityConfig": Object {
         "additionalProperties": false,
@@ -32,7 +34,7 @@ Object {
             "additionalProperties": false,
             "properties": Object {
               "entityName": Object {
-                "description": "The name of the main entity. EntitySet Name attribute in OData Metadata.",
+                "description": "The name of the main entity. EntitySet Name attribute in OData Metadata. Required for all floorplans except FF_SIMPLE.",
                 "examples": Array [
                   "'SalesOrder'",
                   "'PurchaseOrderHeader'",
@@ -55,17 +57,43 @@ Object {
         "type": "object",
       },
       "floorplan": Object {
-        "description": "SAP Fiori Elements floor plan type.",
-        "enum": Array [
-          "FE_FPM",
-          "FE_LROP",
-          "FE_OVP",
-          "FE_ALP",
-          "FE_FEOP",
-          "FE_WORKLIST",
-          "FF_SIMPLE",
+        "anyOf": Array [
+          Object {
+            "const": "FE_LROP",
+            "description": "List Report Object Page (OData V2/V4).",
+            "type": "string",
+          },
+          Object {
+            "const": "FE_ALP",
+            "description": "Analytical List Page (OData V2/V4).",
+            "type": "string",
+          },
+          Object {
+            "const": "FE_OVP",
+            "description": "Overview Page (OData V2/V4).",
+            "type": "string",
+          },
+          Object {
+            "const": "FE_WORKLIST",
+            "description": "Worklist (OData V2/V4).",
+            "type": "string",
+          },
+          Object {
+            "const": "FE_FEOP",
+            "description": "Form Entry Object Page (OData V4 only).",
+            "type": "string",
+          },
+          Object {
+            "const": "FE_FPM",
+            "description": "Flexible Programming Model / Custom Page (OData V4 only).",
+            "type": "string",
+          },
+          Object {
+            "const": "FF_SIMPLE",
+            "description": "Basic (SAPUI5 Freestyle template) — data source is optional for this template, supports \\"None\\".",
+            "type": "string",
+          },
         ],
-        "type": "string",
       },
       "project": Object {
         "additionalProperties": false,
@@ -157,10 +185,8 @@ Object {
       },
     },
     "required": Array [
-      "entityConfig",
       "floorplan",
       "project",
-      "service",
     ],
     "type": "object",
   },

@@ -50,6 +50,13 @@ export type FEV4ManifestTarget = {
                     };
                 };
             };
+            views?: {
+                paths?: Array<{
+                    primary?: unknown[];
+                    secondary?: unknown[];
+                    defaultPath?: string;
+                }>;
+            };
         };
     };
 };
@@ -143,6 +150,7 @@ export type ListReportFeatures = {
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
+    isALP?: boolean;
 };
 
 export interface ActionButtonState {

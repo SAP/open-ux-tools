@@ -10,12 +10,15 @@ import {
     getFilterFieldNames,
     checkActionButtonStates,
     getToolBarActionNames,
-    getToolBarActionItems
+    getToolBarActionItems,
+    isALPManifestTarget,
+    isALPFromManifest
 } from '../../../src/utils/listReportUtils';
-import type { ButtonState } from '../../../src/types';
+import type { ButtonState, FEV4ManifestTarget } from '../../../src/types';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
+import type { Manifest } from '@sap-ux/project-access';
 
 describe('Test buildButtonState()', () => {
     test('should return visible false when buttonState is undefined', () => {
@@ -1546,5 +1549,180 @@ describe('Test getListReportFeatures()', () => {
         expect(result.deleteButton?.visible).toBeDefined();
 
         expect(Array.isArray(result.toolBarActions)).toBe(true);
+    });
+});
+
+/** ALP manifest target with views.paths containing a primary array */
+const ALP_TARGET: FEV4ManifestTarget = {
+    type: 'Component',
+    name: 'sap.fe.templates.ListReport',
+    options: {
+        settings: {
+            contextPath: '/SalesOrderManage',
+            views: {
+                paths: [
+                    {
+                        primary: [{ annotationPath: 'com.sap.vocabularies.UI.v1.PresentationVariant' }],
+                        secondary: [{ annotationPath: 'com.sap.vocabularies.UI.v1.LineItem' }],
+                        defaultPath: 'both'
+                    }
+                ]
+            }
+        }
+    }
+};
+
+/** Non-ALP ListReport target (no views.paths) */
+const LR_TARGET: FEV4ManifestTarget = {
+    type: 'Component',
+    name: 'sap.fe.templates.ListReport',
+    options: { settings: { contextPath: '/Orders' } }
+};
+
+/** Minimal ALP manifest matching the real alpv4 structure */
+const ALP_MANIFEST: Manifest = {
+    'sap.app': { id: 'alpv4test', type: 'application', applicationVersion: { version: '0.0.1' } },
+    'sap.ui5': {
+        routing: {
+            targets: {
+                SalesOrderManageList: ALP_TARGET as any,
+                SalesOrderManageObjectPage: {
+                    type: 'Component',
+                    name: 'sap.fe.templates.ObjectPage'
+                } as any
+            }
+        }
+    }
+} as unknown as Manifest;
+
+/** Manifest with a standard (non-ALP) ListReport */
+const LR_MANIFEST: Manifest = {
+    'sap.app': { id: 'lrtest', type: 'application', applicationVersion: { version: '0.0.1' } },
+    'sap.ui5': {
+        routing: {
+            targets: {
+                OrdersList: LR_TARGET as any
+            }
+        }
+    }
+} as unknown as Manifest;
+
+describe('isALPManifestTarget()', () => {
+    test('returns true when views.paths contains an entry with a non-empty primary array', () => {
+        expect(isALPManifestTarget(ALP_TARGET)).toBe(true);
+    });
+
+    test('returns false when target has no views configuration', () => {
+        expect(isALPManifestTarget(LR_TARGET)).toBe(false);
+    });
+
+    test('returns false when views.paths is an empty array', () => {
+        const target: FEV4ManifestTarget = {
+            name: 'sap.fe.templates.ListReport',
+            options: { settings: { views: { paths: [] } } }
+        };
+        expect(isALPManifestTarget(target)).toBe(false);
+    });
+
+    test('returns false when views.paths entries have no primary array', () => {
+        const target: FEV4ManifestTarget = {
+            name: 'sap.fe.templates.ListReport',
+            options: {
+                settings: {
+                    views: {
+                        paths: [{ secondary: [{ annotationPath: 'com.sap.vocabularies.UI.v1.LineItem' }] }]
+                    }
+                }
+            }
+        };
+        expect(isALPManifestTarget(target)).toBe(false);
+    });
+
+    test('returns false when primary array is empty', () => {
+        const target: FEV4ManifestTarget = {
+            name: 'sap.fe.templates.ListReport',
+            options: { settings: { views: { paths: [{ primary: [] }] } } }
+        };
+        expect(isALPManifestTarget(target)).toBe(false);
+    });
+
+    test('returns true when one of multiple paths entries has a primary array', () => {
+        const target: FEV4ManifestTarget = {
+            name: 'sap.fe.templates.ListReport',
+            options: {
+                settings: {
+                    views: {
+                        paths: [
+                            { secondary: [{ annotationPath: 'com.sap.vocabularies.UI.v1.LineItem' }] },
+                            { primary: [{ annotationPath: 'com.sap.vocabularies.UI.v1.Chart' }] }
+                        ]
+                    }
+                }
+            }
+        };
+        expect(isALPManifestTarget(target)).toBe(true);
+    });
+});
+
+describe('isALPFromManifest()', () => {
+    test('returns true when the specified target is an ALP ListReport', () => {
+        expect(isALPFromManifest(ALP_MANIFEST, 'SalesOrderManageList')).toBe(true);
+    });
+
+    test('returns false when the specified target is an ObjectPage (not ListReport)', () => {
+        expect(isALPFromManifest(ALP_MANIFEST, 'SalesOrderManageObjectPage')).toBe(false);
+    });
+
+    test('returns true when no targetKey given and at least one ListReport target is ALP', () => {
+        expect(isALPFromManifest(ALP_MANIFEST)).toBe(true);
+    });
+
+    test('returns false when the specified target is a non-ALP ListReport', () => {
+        expect(isALPFromManifest(LR_MANIFEST, 'OrdersList')).toBe(false);
+    });
+
+    test('returns false when no targetKey given and no ListReport targets are ALP', () => {
+        expect(isALPFromManifest(LR_MANIFEST)).toBe(false);
+    });
+
+    test('returns false when manifest has no routing targets', () => {
+        const manifest = {
+            'sap.app': { id: 'test', type: 'application', applicationVersion: { version: '0.0.1' } }
+        } as unknown as Manifest;
+        expect(isALPFromManifest(manifest)).toBe(false);
+    });
+
+    test('returns false when specified target key does not exist in manifest', () => {
+        expect(isALPFromManifest(ALP_MANIFEST, 'NonExistentTarget')).toBe(false);
+    });
+});
+
+describe('getListReportFeatures() isALP integration', () => {
+    const minimalPage: PageWithModelV4 = {
+        name: 'SalesOrderManageList',
+        model: {
+            root: {
+                aggregations: {
+                    filterBar: { aggregations: {} } as unknown as TreeAggregation,
+                    table: { aggregations: {} } as unknown as TreeAggregation
+                }
+            } as unknown as TreeAggregation
+        } as unknown as TreeModel
+    };
+
+    test('sets isALP true when manifest identifies the page as ALP', () => {
+        const result = getListReportFeatures(minimalPage, undefined, undefined, ALP_MANIFEST);
+        expect(result.isALP).toBe(true);
+    });
+
+    test('sets isALP false when manifest has no ALP configuration for the page', () => {
+        const page: PageWithModelV4 = { ...minimalPage, name: 'OrdersList' };
+        const result = getListReportFeatures(page, undefined, undefined, LR_MANIFEST);
+        expect(result.isALP).toBe(false);
+    });
+
+    test('sets isALP false when no manifest is provided', () => {
+        const result = getListReportFeatures(minimalPage);
+        expect(result.isALP).toBe(false);
     });
 });
