@@ -1,5 +1,44 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.0.1
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/fiori-annotation-api@0.9.45
+
+## 10.0.0
+
+### Major Changes
+
+- 165a6c2: feat: support ESLint 10
+
+## 9.13.0
+
+### Minor Changes
+
+- 52f6549: Add .cds annotations support to enable linting of CAP apps with the eslint-plugin-fiori-tools.
+
+### Patch Changes
+
+- Updated dependencies [52f6549]
+    - @sap-ux/fiori-annotation-api@0.9.44
+
+## 9.12.3
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/fiori-annotation-api@0.9.43
+
+## 9.12.2
+
+### Patch Changes
+
+- 291351f: Update sap-no-data-field-intent-based-navigation rule documentation with information on semantic link navigation.
+
 ## 9.12.1
 
 ### Patch Changes

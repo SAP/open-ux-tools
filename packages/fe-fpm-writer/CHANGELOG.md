@@ -1,5 +1,36 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.25
+
+### Patch Changes
+
+- d45b5a4: fix(fpm-writer): custom form field view.xml update
+
+## 0.43.24
+
+### Patch Changes
+
+- 1d60871: Added isUI5IdUnique function to check UI5 control ID uniqueness in XML views/fragments.
+  Exported findFilesByExtension from @sap-ux/project-access and removed deep imports.
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/fiori-annotation-api@0.9.45
+
+## 0.43.23
+
+### Patch Changes
+
+- Updated dependencies [52f6549]
+    - @sap-ux/fiori-annotation-api@0.9.44
+
+## 0.43.22
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/fiori-annotation-api@0.9.43
+
 ## 0.43.21
 
 ### Patch Changes

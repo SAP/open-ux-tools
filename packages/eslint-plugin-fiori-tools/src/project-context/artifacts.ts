@@ -10,7 +10,7 @@ import type { WorkerResult } from './types';
  */
 export async function getProjectArtifacts(filePath: string): Promise<WorkerResult> {
     try {
-        const projectRoot = await findProjectRoot(filePath, false);
+        const projectRoot = await findProjectRoot(filePath, true); // sapuxRequired for CAP apps to locate the project root
         const projectType = await getProjectType(projectRoot);
         const artifacts = await findFioriArtifacts({
             wsFolders: [projectRoot],

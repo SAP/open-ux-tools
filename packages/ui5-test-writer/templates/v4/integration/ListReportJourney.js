@@ -41,7 +41,7 @@ sap.ui.define([
 
         opaTest("Check table columns and actions", function (Given, When, Then) {
             <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
-            <%_ if (createButton.visible) { _%>
+            <%_ if (createButton.visible && !isALP) { _%>
             Then.onThe<%- startLR%>.onTable().iCheckCreate({ visible: true });
             // Then.onthe<%- startLR%>.onTable().iPressCreate();
             <%_ } _%>
