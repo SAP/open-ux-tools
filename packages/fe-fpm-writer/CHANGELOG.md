@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.25
+
+### Patch Changes
+
+- d45b5a4: fix(fpm-writer): custom form field view.xml update
+
 ## 0.43.24
 
 ### Patch Changes
