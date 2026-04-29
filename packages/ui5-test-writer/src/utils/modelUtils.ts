@@ -14,6 +14,7 @@ import type {
 import type { AppFeatures, FPMFeatures } from '../types.js';
 import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
 import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
+import { extractTableColumnsFromNode } from './tableUtils.js';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
@@ -129,44 +130,6 @@ export async function getAppFeatures(
 }
 
 /**
- * Gets identifier of a column for OPA5 tests.
- * If the column is custom, the identifier is taken from the 'Key' entry in the schema keys.
- * If the column is not custom, the identifier is taken from the 'Value' entry in the schema keys.
- * If no such entry is found, undefined is returned.
- *
- * @param column - column module from ux specification
- * @param column.custom boolean indicating whether the column is custom
- * @param column.schema schema of the column
- * @param column.schema.keys keys of the column; expected to have an entry with the name 'Key' or 'Value'
- * @returns identifier of the column for OPA5 tests; can be the name or index
- */
-function getColumnIdentifier(column: {
-    custom: boolean;
-    schema: { keys: { name: string; value: string }[] };
-}): string | undefined {
-    const key = column.custom ? 'Key' : 'Value';
-    const keyEntry = column.schema.keys.find((entry: { name: string; value: string }) => entry.name === key);
-    return keyEntry?.value;
-}
-
-/**
- * Transforms column aggregations from the ux specification model into a map of columns for OPA5 tests.
- *
- * @param columnAggregations column aggregations from the ux specification model
- * @returns a map of columns for OPA5 tests
- */
-function transformTableColumns(columnAggregations: Record<string, any>): Record<string, any> {
-    const columns: Record<string, any> = {};
-    Object.values(columnAggregations).forEach((columnAggregation, index) => {
-        columns[getColumnIdentifier(columnAggregation) ?? index] = {
-            header: columnAggregation.description
-            // TODO possibly more reliable properties could be used?
-        };
-    });
-    return columns;
-}
-
-/**
  * Retrieves table column data from the page model using ux-specification.
  *
  * @param pageModel - the tree model containing table column definitions
@@ -180,8 +143,7 @@ export function getTableColumnData(
     let tableColumns: Record<string, Record<string, string | number | boolean>> = {};
 
     try {
-        const columnAggregations = getTableColumns(pageModel);
-        tableColumns = transformTableColumns(columnAggregations);
+        tableColumns = extractTableColumnsFromNode(pageModel.root);
     } catch (error) {
         log?.debug(error);
     }
@@ -291,18 +253,4 @@ export function getFilterFields(pageModel: TreeModel): TreeAggregations {
     const selectionFields = filterBarAggregations['selectionFields'];
     const selectionFieldsAggregations = getAggregations(selectionFields);
     return selectionFieldsAggregations;
-}
-
-/**
- * Retrieves the table columns aggregation from the given tree model.
- *
- * @param pageModel - The tree model containing table column definitions.
- * @returns The table columns aggregation object.
- */
-export function getTableColumns(pageModel: TreeModel): TreeAggregations {
-    const table = getAggregations(pageModel.root)['table'];
-    const tableAggregations = getAggregations(table);
-    const columns = tableAggregations['columns'];
-    const columnAggregations = getAggregations(columns);
-    return columnAggregations;
 }

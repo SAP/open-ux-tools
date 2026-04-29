@@ -1177,7 +1177,7 @@ describe('Building Blocks', () => {
             // Since the test above may fail due to aggregation path issues, let's test the detection separately
             // by mocking or using the internal functions directly
             const { DOMParser } = await import('@xmldom/xmldom');
-            const xmlDocument = new DOMParser().parseFromString(xmlViewWithColumns);
+            const xmlDocument = new DOMParser().parseFromString(xmlViewWithColumns, 'text/xml');
 
             // Test the getElementsByTagName functionality directly - this is what the code checks
             const hasTableColumn = xmlDocument.getElementsByTagName('macros:columns').length > 0;
@@ -1970,7 +1970,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlFragmentFilePath), xmlFragmentWithButtonGroups);
 
             const { DOMParser } = await import('@xmldom/xmldom');
-            const xmlDocument = new DOMParser().parseFromString(xmlFragmentWithButtonGroups);
+            const xmlDocument = new DOMParser().parseFromString(xmlFragmentWithButtonGroups, 'text/xml');
 
             const hasButtonGroups = xmlDocument.getElementsByTagName('macros:buttonGroups').length > 0;
             expect(hasButtonGroups).toBe(true);
@@ -2487,7 +2487,7 @@ describe('Building Blocks', () => {
 
             // Test the getElementsByTagName functionality directly - this is what the code checks
             const { DOMParser } = await import('@xmldom/xmldom');
-            const xmlDocument = new DOMParser().parseFromString(xmlViewWithFilterFields);
+            const xmlDocument = new DOMParser().parseFromString(xmlViewWithFilterFields, 'text/xml');
 
             // Test the getElementsByTagName functionality directly - this is what the code checks
             const hasFilterFields = xmlDocument.getElementsByTagName('macros:filterFields').length > 0;
