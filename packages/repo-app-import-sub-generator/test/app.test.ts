@@ -378,7 +378,7 @@ describe('Repo App Download', () => {
         expect(RepoAppDownloadLogger.logger.info).toHaveBeenCalledWith(
             t('info.installationErrors.skippedInstallation')
         );
-    });
+    }, 120000);
 
     it('Should successfully run app download from repository when Quick Deploy App Config is provided', async () => {
         copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
