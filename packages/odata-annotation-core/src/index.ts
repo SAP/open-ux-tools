@@ -25,7 +25,8 @@ export type { FindPathResult } from './search/index.js';
 export { findPathToPosition, getPositionData } from './search/index.js';
 
 export {
-    indent,
+    indentWithTabs,
+    indentWithSpaces,
     getIndentLevel,
     positionAt,
     positionContained,

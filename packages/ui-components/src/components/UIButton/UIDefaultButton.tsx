@@ -156,6 +156,114 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
     }
 
     /**
+     * Returns rootDisabled style overrides based on button variant.
+     *
+     * @param primary - primary button variant
+     * @param alert - alert button variant
+     * @param transparent - transparent button variant
+     * @returns IStyle
+     */
+    private getRootDisabledStyles(primary?: boolean, alert?: boolean, transparent?: boolean): IStyle {
+        return {
+            opacity: '0.5 !important',
+            // Add to use hard coded value here as Theia doesn't support these values correctly
+            backgroundColor: BASE_STYLES.secondary.backgroundColor,
+            borderColor: BASE_STYLES.secondary.disabledBorderColor,
+            color: BASE_STYLES.secondary.color,
+            ...(primary && {
+                opacity: '0.5 !important',
+                color: BASE_STYLES.color,
+                backgroundColor: BASE_STYLES.primary.backgroundColor,
+                borderColor: BASE_STYLES.primary.disabledBorderColor
+            }),
+            ...(alert && {
+                opacity: '0.5 !important',
+                color: BASE_STYLES.color,
+                backgroundColor: BASE_STYLES.alert.backgroundColor,
+                borderColor: BASE_STYLES.alert.disabledBorderColor
+            }),
+            ...(transparent && {
+                color: BASE_STYLES.transparent.color,
+                backgroundColor: BASE_STYLES.transparent.backgroundColor,
+                borderColor: BASE_STYLES.transparent.disabledBorderColor
+            })
+        };
+    }
+
+    /**
+     * Returns icon style overrides based on button variant.
+     *
+     * @param primary - primary button variant
+     * @param alert - alert button variant
+     * @param transparent - transparent button variant
+     * @returns IStyle
+     */
+    private getIconStyleOverrides(primary?: boolean, alert?: boolean, transparent?: boolean): IStyle {
+        return {
+            height: 16,
+            lineHeight: 16,
+            marginLeft: -3,
+            color: BASE_STYLES.secondary.color,
+            selectors: {
+                [ICON_SELECTOR]: {
+                    fill: BASE_STYLES.secondary.color
+                }
+            },
+            ...(primary && {
+                color: BASE_STYLES.color,
+                selectors: {
+                    [ICON_SELECTOR]: {
+                        fill: BASE_STYLES.color
+                    }
+                }
+            }),
+            ...(alert && {
+                color: BASE_STYLES.color,
+                selectors: {
+                    [ICON_SELECTOR]: {
+                        fill: BASE_STYLES.color
+                    }
+                }
+            }),
+            ...(transparent && {
+                color: BASE_STYLES.transparent.color,
+                selectors: {
+                    [ICON_SELECTOR]: {
+                        fill: BASE_STYLES.transparent.color
+                    }
+                }
+            })
+        };
+    }
+
+    /**
+     * Returns menuIcon style overrides based on button variant.
+     *
+     * @param primary - primary button variant
+     * @param alert - alert button variant
+     * @returns IStyle
+     */
+    private getMenuIconStyleOverrides(primary?: boolean, alert?: boolean): IStyle {
+        return {
+            selectors: {
+                'svg > path': {
+                    fill: BASE_STYLES.secondary.color
+                },
+                ...(primary && {
+                    'svg > path': {
+                        fill: BASE_STYLES.color
+                    }
+                }),
+                ...(alert && {
+                    'svg > path': {
+                        fill: BASE_STYLES.color
+                    }
+                })
+            }
+        };
+    }
+
+    /**
      * Method returns styles of root button element.
      *
      * @param props Button props.
@@ -233,84 +341,11 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 lineHeight: 20,
                 whiteSpace: 'nowrap'
             },
-            rootDisabled: {
-                opacity: '0.5 !important',
-                // Add to use hard coded value here as Theia doesn't support these values correctly
-                backgroundColor: BASE_STYLES.secondary.backgroundColor,
-                borderColor: BASE_STYLES.secondary.disabledBorderColor,
-                color: BASE_STYLES.secondary.color,
-                ...(primary && {
-                    opacity: '0.5 !important',
-                    color: BASE_STYLES.color,
-                    backgroundColor: BASE_STYLES.primary.backgroundColor,
-                    borderColor: BASE_STYLES.primary.disabledBorderColor
-                }),
-                ...(alert && {
-                    opacity: '0.5 !important',
-                    color: BASE_STYLES.color,
-                    backgroundColor: BASE_STYLES.alert.backgroundColor,
-                    borderColor: BASE_STYLES.alert.disabledBorderColor
-                }),
-                ...(transparent && {
-                    color: BASE_STYLES.transparent.color,
-                    backgroundColor: BASE_STYLES.transparent.backgroundColor,
-                    borderColor: BASE_STYLES.transparent.disabledBorderColor
-                })
-            },
+            rootDisabled: this.getRootDisabledStyles(primary, alert, transparent),
             rootPressed: interactionStyles.root,
             rootHovered: interactionStyles.root,
-            icon: {
-                height: 16,
-                lineHeight: 16,
-                marginLeft: -3,
-                color: BASE_STYLES.secondary.color,
-                selectors: {
-                    [ICON_SELECTOR]: {
-                        fill: BASE_STYLES.secondary.color
-                    }
-                },
-                ...(primary && {
-                    color: BASE_STYLES.color,
-                    selectors: {
-                        [ICON_SELECTOR]: {
-                            fill: BASE_STYLES.color
-                        }
-                    }
-                }),
-                ...(alert && {
-                    color: BASE_STYLES.color,
-                    selectors: {
-                        [ICON_SELECTOR]: {
-                            fill: BASE_STYLES.color
-                        }
-                    }
-                }),
-                ...(transparent && {
-                    color: BASE_STYLES.transparent.color,
-                    selectors: {
-                        [ICON_SELECTOR]: {
-                            fill: BASE_STYLES.transparent.color
-                        }
-                    }
-                })
-            },
-            menuIcon: {
-                selectors: {
-                    'svg > path': {
-                        fill: BASE_STYLES.secondary.color
-                    },
-                    ...(primary && {
-                        'svg > path': {
-                            fill: BASE_STYLES.color
-                        }
-                    }),
-                    ...(alert && {
-                        'svg > path': {
-                            fill: BASE_STYLES.color
-                        }
-                    })
-                }
-            },
+            icon: this.getIconStyleOverrides(primary, alert, transparent),
+            menuIcon: this.getMenuIconStyleOverrides(primary, alert),
             rootChecked: {
                 backgroundColor: BASE_STYLES.secondary.backgroundColor,
                 color: BASE_STYLES.secondary.color,
