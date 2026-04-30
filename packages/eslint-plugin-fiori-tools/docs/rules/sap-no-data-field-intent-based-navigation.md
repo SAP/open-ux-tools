@@ -63,12 +63,6 @@ annotate service.Incidents with @(UI.LineItem: [
 
 ```cds
 annotate service.Incidents with @(
-    UI.HeaderFacets    : [{
-        $Type : 'UI.ReferenceFacet',
-        Label : 'Test Header Facet',
-        ID    : 'test',
-        Target: '@UI.FieldGroup#test',
-    }, ],
     UI.FieldGroup #test: {
         $Type: 'UI.FieldGroupType',
         Data : [
@@ -122,7 +116,7 @@ For a table column using the `UI.LineItem` annotation:
 </Annotation>
 ```
 
-```cds 
+```cds
 annotate service.Incidents with @(
     UI.LineItem                  : [
             {

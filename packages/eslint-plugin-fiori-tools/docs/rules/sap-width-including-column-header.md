@@ -106,7 +106,7 @@ annotate service.Incidents with @(
 
 To fix the warning, ensure that the `widthIncludingColumnHeader` property is added to the `tableSettings` section in the `manifest.json` file and set to `true`. For example:
 
-- `manifes.json`:
+- `manifest.json`:
 
 ```json
 {
