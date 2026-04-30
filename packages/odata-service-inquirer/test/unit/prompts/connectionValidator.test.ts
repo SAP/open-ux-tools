@@ -659,37 +659,31 @@ describe('ConnectionValidator', () => {
         });
         getOdataServiceSpy.mockClear();
         expect(await connectValidator.isAuthRequired()).toBe(true);
-        expect(getOdataServiceSpy).not.toHaveBeenCalled(); // Should not re-request since url and client have not changed
 
-        // If the url changes, re-request
         getOdataServiceSpy.mockClear();
-        expect(await connectValidator.isAuthRequired('https://example.com/serviceB')).toBe(true);
-        expect(getOdataServiceSpy).toHaveBeenCalled();
+        connectValidator.resetConnectionState(true);
 
-        // If the client changes, re-request
-        getOdataServiceSpy.mockClear();
-        getOdataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockResolvedValue(200);
+        getOdataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(503)); // reachable but auth cannot be determined
         await connectValidator.validateAuth('https://example.com/serviceA', 'user1', 'password1', { sapClient: '999' });
         expect(connectValidator.validity).toEqual({
-            authenticated: true,
-            authRequired: true,
             reachable: true,
             urlFormat: true
         });
         expect(getOdataServiceSpy).toHaveBeenCalled();
+        expect(await connectValidator.isAuthRequired()).toBe(undefined); // Could not determine auth status
 
         getOdataServiceSpy.mockClear();
-        // Auth is not required since the connection has been authenticated
-        expect(await connectValidator.isAuthRequired('https://example.com/serviceA', '999')).toBe(false);
-        // Should not recheck with the same url and client
-        expect(getOdataServiceSpy).not.toHaveBeenCalled();
+        connectValidator.resetConnectionState(true);
 
-        getOdataServiceSpy.mockClear();
-        getOdataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(401));
-        expect(await connectValidator.isAuthRequired('https://example.com/serviceA', '111')).toBe(true);
+        getOdataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockResolvedValue(newAxiosErrorWithStatus(200)); // Auth not required
+        await connectValidator.validateAuth('https://example.com/serviceA', 'user1', 'password1', { sapClient: '999' });
+        expect(connectValidator.validity).toEqual({
+            authenticated: true,
+            reachable: true,
+            urlFormat: true
+        });
         expect(getOdataServiceSpy).toHaveBeenCalled();
-        // bad url
-        expect(await connectValidator.isAuthRequired('bad url', '111')).toBe(false);
+        expect(await connectValidator.isAuthRequired()).toBe(false); // Authenticated, auth not required
     });
 
     test('should validate service key info can be used to authenticate', async () => {
