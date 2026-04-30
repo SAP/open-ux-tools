@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { platform } from 'node:process';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { PromptNames } from '../src/app/types';
@@ -285,8 +284,8 @@ function verifyGeneratedFiles(testOutputDir: string, appId: string, testFixtureD
     );
 }
 
-// Increase timeout for heavy generator lifecycle execution in ESM mode
-jest.setTimeout(60000);
+// Increase timeout for heavy generator lifecycle execution in ESM mode (Windows + NTFS + ESM resolution is ~3-5x slower)
+jest.setTimeout(150000);
 
 describe('Repo App Download', () => {
     const testFixture = new TestFixture();
@@ -331,8 +330,7 @@ describe('Repo App Download', () => {
         mockGetUI5Versions.mockResolvedValue([{ version: '1.134.1' }]);
     });
 
-    // skipping the test on windows since it's timing out in CI with ESM, needs further investigation to identify root cause of the issue
-    (platform === 'win32' ? it.skip : it)('Should successfully run app download from repository', async () => {
+    it('Should successfully run app download from repository', async () => {
         copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
         mockIsValidPromptState.mockReturnValue(true);
         mockGetAppConfig.mockResolvedValue(appConfig);
@@ -386,6 +384,12 @@ describe('Repo App Download', () => {
         copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
         mockIsValidPromptState.mockReturnValue(true);
         mockGetAppConfig.mockResolvedValue(appConfig);
+        mockHandleWorkspaceConfig.mockResolvedValue({
+            launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
+            cwd: testOutputDir,
+            workspaceFolderUri: 'testUri',
+            appNotInWorkspace: true
+        });
         await expect(
             yeomanTest
                 .run(RepoAppDownloadGenerator, {
@@ -432,6 +436,12 @@ describe('Repo App Download', () => {
         mockSendTelemetry.mockRejectedValue(new Error(errorMsg));
         mockIsValidPromptState.mockReturnValue(true);
         mockGetAppConfig.mockResolvedValue(appConfig);
+        mockHandleWorkspaceConfig.mockResolvedValue({
+            launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
+            cwd: testOutputDir,
+            workspaceFolderUri: 'testUri',
+            appNotInWorkspace: true
+        });
 
         await expect(
             yeomanTest
@@ -442,7 +452,8 @@ describe('Repo App Download', () => {
                 .withOptions({
                     appRootPath: testOutputDir,
                     appWizard: mockAppWizard,
-                    vscode: mockVSCode
+                    vscode: mockVSCode,
+                    skipInstall: true
                 })
                 .withPrompts({
                     systemSelection: 'system3',
