@@ -701,6 +701,8 @@ export class FlpSandbox {
 
     /**
      * Resolves a manifest for an additional app from either its local folder or componentId.
+     *
+     * @param app
      */
     private async resolveAppManifest(app: FlpConfig['apps'][number]): Promise<Manifest | undefined> {
         if (app.local) {
