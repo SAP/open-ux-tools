@@ -85,7 +85,9 @@ export const reducer: Reducer<SystemState, ExtensionActions> = (
         case CREATE_NEW_SYSTEM:
             return {
                 ...state,
-                addNewSapSystem: true
+                addNewSapSystem: true,
+                systemInfo: action.payload?.systemInfo,
+                unSaved: true
             };
         default:
             return state;
