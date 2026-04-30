@@ -123,11 +123,7 @@ describe('config', () => {
             } as MiddlewareConfig;
             const previews = getPreviewPaths(config);
             expect(previews).toHaveLength(5);
-            expect(
-                previews.find(
-                    ({ path }) => path === `${config?.flp?.path}#myapp-myaction`
-                )
-            ).toBeDefined();
+            expect(previews.find(({ path }) => path === `${config?.flp?.path}#myapp-myaction`)).toBeDefined();
             expect(previews.find(({ path }) => path === config?.editors?.rta?.endpoints[0]?.path)).toBeDefined();
             expect(previews.find(({ path }) => path === config?.editors?.rta?.endpoints[1]?.path)).toBeDefined();
             expect(consoleSpyError).toHaveBeenCalledWith(
@@ -179,9 +175,7 @@ describe('config', () => {
                 }
             } as unknown as MiddlewareConfig;
             const paths = getPreviewPaths(config);
-            expect(paths[0].path).toBe(
-                '/test/flp.html#SupplierInvoice-displayFactSheet?FiscalYear=2017&/display'
-            );
+            expect(paths[0].path).toBe('/test/flp.html#SupplierInvoice-displayFactSheet?FiscalYear=2017&/display');
         });
     });
 
@@ -405,9 +399,7 @@ describe('config', () => {
 
         test('intent with params', () => {
             expect(
-                parseIntentString(
-                    'SupplierInvoice-displayFactSheet?FiscalYear=2017&SupplierInvoice=5100000001'
-                )
+                parseIntentString('SupplierInvoice-displayFactSheet?FiscalYear=2017&SupplierInvoice=5100000001')
             ).toEqual({
                 object: 'SupplierInvoice',
                 action: 'displayFactSheet',
