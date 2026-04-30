@@ -6,7 +6,12 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 
-import { readChanges, writeChange } from '../../../src/base/flex';
+import {
+    readChanges,
+    writeChange,
+    readLocalModulePaths,
+    stripLocalModulesFromLrepResponse
+} from '../../../src/base/flex';
 import { deleteChange } from '../../../dist/base/flex';
 
 describe('flex', () => {
@@ -117,6 +122,103 @@ describe('flex', () => {
             expect(result.success).toBe(true);
             expect(result.message).toBeDefined();
             expect(existsSync(fullPath)).toBe(false);
+        });
+    });
+
+    describe('readLocalModulePaths', () => {
+        const byGlobMock = jest.fn();
+        const project = {
+            byGlob: byGlobMock
+        } as unknown as ReaderCollection;
+
+        afterEach(() => {
+            byGlobMock.mockReset();
+        });
+
+        test('no local modules', async () => {
+            byGlobMock.mockResolvedValue([]);
+            const result = await readLocalModulePaths(project, logger);
+            expect(result.size).toBe(0);
+        });
+
+        test('local fragments and controllers', async () => {
+            byGlobMock.mockResolvedValueOnce([
+                { getPath: () => '/webapp/changes/fragments/MyFragment.fragment.xml' },
+                { getPath: () => '/webapp/changes/coding/MyController.js' }
+            ]);
+
+            const result = await readLocalModulePaths(project, logger);
+            expect(result).toEqual(new Set(['fragments/MyFragment.fragment.xml', 'coding/MyController.js']));
+        });
+
+        test('paths without /changes/ prefix are ignored', async () => {
+            byGlobMock.mockResolvedValueOnce([{ getPath: () => '/webapp/other/MyFile.xml' }]);
+
+            const result = await readLocalModulePaths(project, logger);
+            expect(result.size).toBe(0);
+        });
+    });
+
+    describe('stripLocalModulesFromLrepResponse', () => {
+        const localModulePaths = new Set(['fragments/MyFragment.fragment.xml', 'coding/MyController.js']);
+
+        test('no local modules - returns response unchanged', () => {
+            const emptyPaths = new Set<string>();
+            const responseData = {
+                changes: [{ fileName: 'id_addXML_1' }],
+                modules: { 'ns/app/changes/fragments/MyFragment.fragment.xml': '<xml/>' }
+            };
+
+            const result = stripLocalModulesFromLrepResponse(responseData, emptyPaths, logger);
+            expect(result).toBe(responseData);
+        });
+
+        test('changes are preserved (UI5 deduplicates by fileName)', () => {
+            const responseData = {
+                changes: [
+                    { fileName: 'id_addXML_1', changeType: 'addXML' },
+                    { fileName: 'id_baseApp_1', changeType: 'propertyChange' }
+                ]
+            };
+
+            const result = stripLocalModulesFromLrepResponse(responseData, localModulePaths, logger);
+            expect(result.changes).toEqual(responseData.changes);
+        });
+
+        test('strips inlined modules that exist locally', () => {
+            const responseData = {
+                changes: [],
+                modules: {
+                    'my/app/changes/fragments/MyFragment.fragment.xml': '<deployed-xml/>',
+                    'my/app/changes/coding/MyController.js': 'deployed-code',
+                    'my/app/changes/fragments/OtherFragment.fragment.xml': '<other-xml/>'
+                }
+            };
+
+            const result = stripLocalModulesFromLrepResponse(responseData, localModulePaths, logger);
+            expect(result.modules).toEqual({
+                'my/app/changes/fragments/OtherFragment.fragment.xml': '<other-xml/>'
+            });
+        });
+
+        test('preserves non-local modules', () => {
+            const responseData = {
+                changes: [{ fileName: 'id_baseApp_1', changeType: 'propertyChange' }],
+                modules: {
+                    'base/app/Component.js': 'component-code'
+                },
+                otherProperty: 'preserved'
+            };
+
+            const result = stripLocalModulesFromLrepResponse(responseData, localModulePaths, logger);
+            expect(result.modules).toEqual({ 'base/app/Component.js': 'component-code' });
+            expect(result.otherProperty).toBe('preserved');
+        });
+
+        test('handles response without modules property', () => {
+            const responseData = { changes: [], settings: {} };
+            const result = stripLocalModulesFromLrepResponse(responseData, localModulePaths, logger);
+            expect(result).toBe(responseData);
         });
     });
 });

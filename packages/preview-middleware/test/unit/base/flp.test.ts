@@ -1987,4 +1987,77 @@ describe('initAdp', () => {
         expect(flp.rta?.options?.isCloud).toBe(false);
         expect(flp.rta?.options?.isCloudFoundry).toBe(true);
     });
+
+    test('initAdp registers lrep flex data filter when serviceProvider is available', async () => {
+        const mockProvider = {
+            get: jest.fn().mockResolvedValue(
+                JSON.stringify({
+                    changes: [
+                        { fileName: 'localChange', changeType: 'addXML' },
+                        { fileName: 'deployedOnly', changeType: 'propertyChange' }
+                    ],
+                    modules: {
+                        'ns/app/changes/fragments/Local.fragment.xml': '<deployed/>',
+                        'ns/app/Component.js': 'base-component'
+                    }
+                })
+            )
+        };
+        jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+            return {
+                init: () => 'CUSTOMER_BASE',
+                descriptor: {
+                    manifest: {},
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: { requests: [] }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                serviceProvider: mockProvider
+            } as unknown as adpTooling.AdpPreview;
+        });
+
+        const mockProjectWithLocalChanges = {
+            byPath: () => ({
+                getString: () =>
+                    Promise.resolve(
+                        readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
+                    )
+            }),
+            byGlob: jest.fn().mockImplementation((glob: string) => {
+                if (glob.includes('fragments/**')) {
+                    return [{ getPath: () => '/webapp/changes/fragments/Local.fragment.xml' }];
+                }
+                return [];
+            })
+        } as unknown as ReaderCollection;
+
+        const flp = new FlpSandbox(
+            { adp: { target: { url } } },
+            mockProjectWithLocalChanges,
+            {} as MiddlewareUtils,
+            logger
+        );
+        jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+
+        await flp.initAdp({ target: { url } });
+
+        const app = express();
+        app.use(flp.router);
+
+        const response = await supertest(app).get('/sap/bc/lrep/flex/data/my.app.Component');
+        expect(response.status).toBe(200);
+        expect(response.body.changes).toEqual([
+            { fileName: 'localChange', changeType: 'addXML' },
+            { fileName: 'deployedOnly', changeType: 'propertyChange' }
+        ]);
+        expect(response.body.modules).toEqual({ 'ns/app/Component.js': 'base-component' });
+        expect(mockProvider.get).toHaveBeenCalled();
+    });
 });
