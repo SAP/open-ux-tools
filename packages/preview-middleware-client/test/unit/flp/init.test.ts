@@ -4,7 +4,6 @@ import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { fetchMock, sapMock } from 'mock/window';
 import NewsContainer from 'sap/cux/home/NewsContainer';
-import NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import type Component from 'sap/ui/core/Component';
 import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
@@ -16,6 +15,10 @@ jest.unstable_mockModule('open/ux/preview/client/adp/api-handler', () => ({
     ..._apiHandler,
     getManifestAppdescr: getManifestAppdescrMock
 }));
+
+jest.unstable_mockModule('sap/cux/home/NewsContainer', () => {
+    return { default: NewsContainer, __esModule: true };
+});
 
 import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller';
 const {
@@ -487,37 +490,6 @@ describe('flp/init', () => {
                 // Verify it's an instance of NewsContainer (when available)
                 expect(insertedContainer).toBeInstanceOf(NewsContainer);
                 expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
-                done();
-            });
-        });
-
-        // Skipped: jest.doMock does not work with ESM modules - cannot dynamically
-        // override already-loaded module imports at runtime
-        test.skip('enhancedHomePage view - fallback to NewsAndPagesContainer control when NewsContainer is not available', (done) => {
-            jest.doMock('sap/cux/home/NewsContainer', () => {
-                throw new Error('NewsContainer not found');
-            });
-
-            const mockPage = {
-                insertContent: jest.fn()
-            };
-
-            const controller = new MyHomeController('testController');
-            controller.getView = jest.fn().mockReturnValue({
-                getId: jest.fn().mockReturnValue('testView'),
-                byId: jest.fn().mockReturnValue(mockPage)
-            });
-
-            controller.onInit();
-            setTimeout(() => {
-                expect(mockPage.insertContent).toHaveBeenCalled();
-                const insertedContainer = mockPage.insertContent.mock.calls[0][0];
-
-                // Verify it's an instance of NewsAndPagesContainer (fallback when NewsContainer unavailable)
-                expect(insertedContainer).toBeInstanceOf(NewsAndPagesContainer);
-                expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
-
-                jest.dontMock('sap/cux/home/NewsContainer');
                 done();
             });
         });

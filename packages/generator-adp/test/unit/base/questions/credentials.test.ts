@@ -90,6 +90,13 @@ describe('Credentials Prompts', () => {
             });
         });
 
+        it('should use validateEmptyString for validation', () => {
+            const result = getCredentialsPrompts(mockAbapTarget, mockLogger);
+            const usernamePrompt = result[0];
+
+            expect(usernamePrompt.validate).toBe(mockValidateEmptyString);
+        });
+
         it('should have mandatory guiOptions', () => {
             const result = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const usernamePrompt = result[0];

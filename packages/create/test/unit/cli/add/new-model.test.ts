@@ -92,6 +92,15 @@ const mockAnswersWithAnnotation = {
     annotationSettings: '"key2":"value2"'
 };
 
+const mockCFAnswers = {
+    destination: { Host: 'https://cf.dest.example.com', Name: 'CF_DEST' },
+    name: 'OData_ServiceName',
+    uri: '/sap/opu/odata/some-name',
+    version: '4.0',
+    modelName: 'OData_ServiceModelName',
+    modelSettings: '"key": "value"'
+};
+
 const mockService = {
     name: 'OData_ServiceName',
     uri: '/sap/opu/odata/some-name',
@@ -164,6 +173,25 @@ describe('add/model', () => {
         expect(mockGenerateChange).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
             service: mockService,
             annotation: mockAnnotation,
+            variant: descriptorVariant
+        });
+    });
+
+    test('should pass CF answers to createNewModelData', async () => {
+        mockPromptYUIQuestions.mockResolvedValue(mockCFAnswers);
+        mockCreateNewModelData.mockResolvedValue({
+            service: mockCFAnswers,
+            variant: descriptorVariant
+        });
+
+        const command = new Command('model');
+        addNewModelCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+
+        expect(loggerMock.debug).not.toHaveBeenCalled();
+        expect(mockTraceChanges).not.toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
+            service: mockCFAnswers,
             variant: descriptorVariant
         });
     });

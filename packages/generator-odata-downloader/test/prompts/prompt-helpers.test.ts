@@ -1,11 +1,9 @@
 import { jest } from '@jest/globals';
-import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
-import { readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { initI18nODataDownloadGenerator } from '../../src/utils/i18n';
-import type { AppConfig, Entity, ReferencedEntities } from '../../src/data-download/types';
+import type { AppConfig, Entity } from '../../src/data-download/types';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { EntityType } from '@sap-ux/vocabularies-types';
 import { PromptState } from '../../src/data-download/prompt-state';
@@ -162,10 +160,6 @@ jest.unstable_mockModule('../../src/telemetry', () => ({
 
 const { createEntityChoices, getData, getServiceDetails, getSpecification } =
     await import('../../src/data-download/prompts/prompt-helpers');
-
-// Import FileName from the mocked module (contains the real constant values we defined in the mock)
-const { FileName, createApplicationAccess, getSpecificationModuleFromCache } = await import('@sap-ux/project-access');
-const { getEntityModel } = await import('../../src/data-download/utils');
 
 const __testdir = dirname(fileURLToPath(import.meta.url));
 
@@ -551,51 +545,6 @@ describe('Test createEntityChoices', () => {
         expect(result).toBeDefined();
         expect(result!.choices.find((c) => c.name === '_Booking')?.checked).toBe(false);
     });
-
-    // Skipped: This integration test requires real implementations of createApplicationAccess,
-    // getSpecificationModuleFromCache, and getEntityModel. In ESM mode, jest.unstable_mockModule
-    // intercepts all imports of the mocked modules, and jest.importActual is not available in
-    // Jest 30. The other unit tests in this file need module-level mocks for @sap-ux/project-access
-    // and ../../src/data-download/utils, which conflicts with this test's need for real functions.
-    it.skip('should create entity set choices based on app model (from specification)', async () => {
-        // Prevent spec from fetching versions and writing on test jobs
-        mockExecNpmCommand.mockResolvedValueOnce('{"latest": "1.142.1"}');
-        mockWriteFile.mockResolvedValueOnce();
-
-        mockReadJSON.mockImplementation(async (path) => {
-            if ((path as string).endsWith(FileName.SpecificationDistTags)) {
-                return {
-                    latest: '1.142.1'
-                };
-            }
-            return JSON.parse(await readFile(path as string, 'utf8'));
-        });
-        // Load the test app
-        const appPath = join(__testdir, '../test-data/test-apps/travel');
-
-        const appAccess = await createApplicationAccess(appPath);
-
-        // Usually loaded from backend, use local copy for testing
-        const metadata = await readFile(join(appPath, '/webapp/localService/mainService/metadata.xml'), 'utf8');
-
-        const logger = new ToolsLogger({ logLevel: LogLevel.Debug, transports: [new ConsoleTransport()] });
-        // Use non-mocked spec to ensure integration
-        const specResult = await getSpecificationModuleFromCache(appAccess.app.appRoot, { logger });
-
-        if (typeof specResult === 'string') {
-            throw new Error(specResult);
-        }
-        // Load the full entity model
-        const entityModel = await getEntityModel(appAccess, specResult as Specification, metadata);
-        expect(entityModel).not.toBe(String);
-        expect(entityModel).not.toBe(undefined);
-
-        const entityChoices = createEntityChoices(
-            (entityModel! as ReferencedEntities).listEntity,
-            (entityModel! as ReferencedEntities)?.pageObjectEntities
-        );
-        expect(entityChoices).toMatchSnapshot();
-    }, 900000); // Very long spec load time on Windows
 });
 
 describe('Test getData', () => {

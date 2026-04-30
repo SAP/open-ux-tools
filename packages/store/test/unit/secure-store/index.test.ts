@@ -29,15 +29,17 @@ jest.unstable_mockModule('node:os', () => ({
     homedir: () => 'test_dir'
 }));
 
-// Mock createRequire so the source module's require() throws for '@zowe/secrets-for-zowe-sdk'
+// Configurable mock for createRequire — allows per-test control over zowe SDK loading
+const mockRequireForZowe = jest.fn();
+
 const actualModule = await import('node:module');
 jest.unstable_mockModule('node:module', () => ({
     ...actualModule,
     createRequire: (url: string) => {
         const realRequire = actualModule.createRequire(url);
         return (id: string) => {
-            if (id === '@zowe/secrets-for-zowe-sdk') {
-                throw new Error('Cannot find module @zowe/secrets-for-zowe-sdk');
+            if (id === '@zowe/secrets-for-zowe-sdk' || id.includes('@zowe/secrets-for-zowe-sdk')) {
+                return mockRequireForZowe(id);
             }
             return realRequire(id);
         };
@@ -46,11 +48,15 @@ jest.unstable_mockModule('node:module', () => ({
 
 const { getSecureStore } = await import('../../../src/secure-store');
 const { DummyStore } = await import('../../../src/secure-store/dummy-store');
+const { KeyStoreManager } = await import('../../../src/secure-store/key-store');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('getSecureStore', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockRequireForZowe.mockImplementation(() => {
+            throw new Error('Cannot find module @zowe/secrets-for-zowe-sdk');
+        });
     });
 
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -71,11 +77,77 @@ describe('getSecureStore', () => {
         beforeEach(() => {
             jest.clearAllMocks();
             mockIsAppStudio.mockReturnValue(false);
+            mockRequireForZowe.mockImplementation(() => {
+                throw new Error('Cannot find module @zowe/secrets-for-zowe-sdk');
+            });
         });
 
-        it('returns DummyStore when zowe sdk cannot be loaded and no fallback exists', () => {
+        it('returns KeyStoreManager if zowe sdk is loaded successfully', () => {
+            const mockKeyring = { setPassword: jest.fn(), getPassword: jest.fn(), deletePassword: jest.fn() };
+            mockRequireForZowe.mockReturnValue({ keyring: mockKeyring });
+            expect(getSecureStore(nullLogger)).toBeInstanceOf(KeyStoreManager);
+        });
+
+        it('returns DummyStore if zowe sdk loads but keyring is undefined', () => {
+            mockRequireForZowe.mockReturnValue({ keyring: undefined });
+            mockExistsSync.mockReturnValue(false);
+            expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
+        });
+
+        it('returns KeyStoreManager from application modeler extension fallback', () => {
+            const mockKeyring = { setPassword: jest.fn(), getPassword: jest.fn(), deletePassword: jest.fn() };
+            // Direct load fails
+            mockRequireForZowe.mockImplementationOnce(() => {
+                throw new Error('Cannot find module @zowe/secrets-for-zowe-sdk');
+            });
+            // Fallback load succeeds
+            mockRequireForZowe.mockReturnValueOnce({ keyring: mockKeyring });
+
+            // Extensions directory exists and contains app modeler extension
+            mockExistsSync.mockImplementation((p: string) => {
+                if (typeof p === 'string' && p.includes('extensions')) {
+                    return true;
+                }
+                if (typeof p === 'string' && p.includes('package.json')) {
+                    return true;
+                }
+                return false;
+            });
+            mockReaddirSync.mockReturnValue(['sapse.sap-ux-application-modeler-extension-1.14.1']);
+
+            expect(getSecureStore(nullLogger)).toBeInstanceOf(KeyStoreManager);
+        });
+
+        it('returns DummyStore if zowe sdk cannot be loaded and no fallback paths exist', () => {
             mockExistsSync.mockReturnValue(false);
             mockReaddirSync.mockReturnValue([]);
+            expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
+        });
+
+        it('returns DummyStore if zowe sdk fails and fallback extensions directory does not exist', () => {
+            mockExistsSync.mockReturnValue(false);
+            expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
+        });
+
+        it('returns DummyStore when zowe sdk fails and all fallback paths also fail', () => {
+            // Extensions directory exists with app modeler extension
+            mockExistsSync.mockImplementation((p: string) => {
+                if (typeof p === 'string' && p.includes('extensions')) {
+                    return true;
+                }
+                // package.json exists
+                if (typeof p === 'string' && p.includes('package.json')) {
+                    return true;
+                }
+                return false;
+            });
+            mockReaddirSync.mockReturnValue(['sapse.sap-ux-application-modeler-extension-1.14.1']);
+
+            // Both direct and fallback loads fail
+            mockRequireForZowe.mockImplementation(() => {
+                throw new Error('Cannot find module @zowe/secrets-for-zowe-sdk');
+            });
+
             expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
         });
     });
