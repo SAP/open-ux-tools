@@ -8,7 +8,7 @@ import {
     parseIdentifier,
     toFullyQualifiedName
 } from '@sap-ux/odata-annotation-core';
-import type { ServiceArtifacts } from '@sap-ux/fiori-annotation-api/src/types';
+import type { ServiceArtifacts } from '@sap-ux/fiori-annotation-api';
 
 import type { DocumentType } from '../types';
 

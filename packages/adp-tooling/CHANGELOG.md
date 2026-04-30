@@ -1,5 +1,73 @@
 # @sap-ux/adp-tooling
 
+## 0.18.125
+
+### Patch Changes
+
+- Updated dependencies [a4b90ca]
+    - @sap-ux/project-input-validator@0.6.80
+
+## 0.18.124
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/odata-service-writer@0.31.10
+    - @sap-ux/system-access@0.7.9
+    - @sap-ux/inquirer-common@0.11.42
+    - @sap-ux/project-input-validator@0.6.79
+
+## 0.18.123
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/inquirer-common@0.11.41
+    - @sap-ux/odata-service-writer@0.31.9
+    - @sap-ux/project-input-validator@0.6.78
+    - @sap-ux/system-access@0.7.8
+
+## 0.18.122
+
+### Patch Changes
+
+- 10847a1: fix: Translation texts for Add Data Source and SAPUI5 Model title and subtitle
+
+## 0.18.121
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/inquirer-common@0.11.40
+    - @sap-ux/odata-service-writer@0.31.8
+    - @sap-ux/project-input-validator@0.6.77
+    - @sap-ux/system-access@0.7.8
+
+## 0.18.120
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/odata-service-writer@0.31.7
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/inquirer-common@0.11.39
+
+## 0.18.119
+
+### Patch Changes
+
+- Updated dependencies [9a48e63]
+    - @sap-ux/ui5-info@0.13.20
+    - @sap-ux/inquirer-common@0.11.38
+
 ## 0.18.118
 
 ### Patch Changes

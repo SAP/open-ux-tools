@@ -60,23 +60,38 @@ sap.ui.define([
         });
 <% } -%>
 
-<% if (bodySections?.length > 0) { -%>
+<% if (bodySections?.length > 0 && !isStandalone) { -%>
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
 <% if (bodySections?.length > 1) { -%>
             Then.onThe<%- name%>.iCheckNumberOfSections(<%- bodySections.length %>);
 <% } -%>
 <% bodySections.forEach(function(section) { -%>
-<% if (!isStandalone) { -%>
 <% if (bodySections.length > 1) { -%>
             When.onThe<%- name%>.iPressSectionIconTabFilterButton("<%- section.id %>");
 <% } -%>
             Then.onThe<%- name%>.iCheckSection({ section: "<%- section.id %>" });
-<% } -%>
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
             //When.onThe<%- name%>.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
             Then.onThe<%- name%>.iCheckSubSection({ section: "<%- subSection.id %>" });
+<% if (subSection.fields && subSection.fields.length > 0) { -%>
+<% subSection.fields.forEach(function(field) { -%>
+            Then.onThe<%- name%>.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>" });
 <% }) -%>
+<% } -%>
+<% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
+            Then.onThe<%- name%>.onTable({ property: "<%- subSection.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(subSection.tableColumns) %>);
+<% } -%>
+<% }) -%>
+<% } else { -%>
+<% if (section.fields && section.fields.length > 0) { -%>
+<% section.fields.forEach(function(field) { -%>
+            Then.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>" });
+<% }) -%>
+<% } -%>
+<% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>
+            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(section.tableColumns) %>);
+<% } -%>
 <% } -%>
 <% }) -%>
        });

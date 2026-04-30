@@ -1,5 +1,13 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.3.0
+
+### Minor Changes
+
+- 16d6382: feat(sap-systems-ext): pre-populate connection manager panel when creating a new system (#37892)
+
+    When opening the connection manager to create a new system, the panel can now be pre-populated with system details such as URL, client and system type.
+
 ## 0.2.1
 
 ### Patch Changes

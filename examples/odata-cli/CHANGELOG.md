@@ -1,5 +1,21 @@
 # @sap-ux/odata-cli
 
+## 0.17.60
+
+### Patch Changes
+
+- 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+
+## 0.17.59
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+
 ## 0.17.58
 
 ### Patch Changes

@@ -1,5 +1,87 @@
 # @sap-ux/generator-adp
 
+## 0.9.64
+
+### Patch Changes
+
+- Updated dependencies [a4b90ca]
+    - @sap-ux/project-input-validator@0.6.80
+    - @sap-ux/adp-tooling@0.18.125
+
+## 0.9.63
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/odata-service-writer@0.31.10
+    - @sap-ux/adp-tooling@0.18.124
+    - @sap-ux/fiori-generator-shared@0.13.103
+    - @sap-ux/system-access@0.7.9
+    - @sap-ux/inquirer-common@0.11.42
+    - @sap-ux/project-input-validator@0.6.79
+    - @sap-ux/telemetry@0.6.102
+
+## 0.9.62
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/adp-tooling@0.18.123
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.102
+    - @sap-ux/inquirer-common@0.11.41
+    - @sap-ux/odata-service-writer@0.31.9
+    - @sap-ux/project-input-validator@0.6.78
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/telemetry@0.6.101
+
+## 0.9.61
+
+### Patch Changes
+
+- 10847a1: fix: Translation texts for Add Data Source and SAPUI5 Model title and subtitle
+- Updated dependencies [10847a1]
+    - @sap-ux/adp-tooling@0.18.122
+
+## 0.9.60
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/adp-tooling@0.18.121
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.101
+    - @sap-ux/inquirer-common@0.11.40
+    - @sap-ux/odata-service-writer@0.31.8
+    - @sap-ux/project-input-validator@0.6.77
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/telemetry@0.6.100
+
+## 0.9.59
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.100
+    - @sap-ux/adp-tooling@0.18.120
+    - @sap-ux/odata-service-writer@0.31.7
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/inquirer-common@0.11.39
+
+## 0.9.58
+
+### Patch Changes
+
+- e333607: fix(generator-adp): Change endpoint used for checking user authentication
+    - @sap-ux/adp-tooling@0.18.119
+    - @sap-ux/inquirer-common@0.11.38
+
 ## 0.9.57
 
 ### Patch Changes

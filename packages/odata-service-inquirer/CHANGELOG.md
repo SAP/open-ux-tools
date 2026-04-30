@@ -1,5 +1,71 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.20.19
+
+### Patch Changes
+
+- Updated dependencies [a4b90ca]
+    - @sap-ux/project-input-validator@0.6.80
+
+## 2.20.18
+
+### Patch Changes
+
+- 8b2c55b: Fix for system selection change incorrectly validated as true
+
+## 2.20.17
+
+### Patch Changes
+
+- 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/fiori-generator-shared@0.13.103
+    - @sap-ux/inquirer-common@0.11.42
+    - @sap-ux/project-input-validator@0.6.79
+    - @sap-ux/telemetry@0.6.102
+
+## 2.20.16
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.102
+    - @sap-ux/inquirer-common@0.11.41
+    - @sap-ux/project-input-validator@0.6.78
+    - @sap-ux/telemetry@0.6.101
+
+## 2.20.15
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.101
+    - @sap-ux/inquirer-common@0.11.40
+    - @sap-ux/project-input-validator@0.6.77
+    - @sap-ux/telemetry@0.6.100
+
+## 2.20.14
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.100
+    - @sap-ux/inquirer-common@0.11.39
+
+## 2.20.13
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.38
+
 ## 2.20.12
 
 ### Patch Changes

@@ -27,8 +27,7 @@ ruleTester.run('sap-bookmark-performance', rule, {
             errors: [
                 {
                     message:
-                        'A value of more than 0 and less than 300 for the property serviceRefreshIntervall may result in performance limitations.',
-                    type: 'CallExpression'
+                        'A value of more than 0 and less than 300 for the property serviceRefreshIntervall may result in performance limitations.'
                 }
             ]
         },
@@ -37,8 +36,7 @@ ruleTester.run('sap-bookmark-performance', rule, {
             errors: [
                 {
                     message:
-                        'A value of more than 0 and less than 300 for the property serviceRefreshIntervall may result in performance limitations.',
-                    type: 'CallExpression'
+                        'A value of more than 0 and less than 300 for the property serviceRefreshIntervall may result in performance limitations.'
                 }
             ]
         }

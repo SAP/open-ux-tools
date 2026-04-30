@@ -50,6 +50,13 @@ export type FEV4ManifestTarget = {
                     };
                 };
             };
+            views?: {
+                paths?: Array<{
+                    primary?: unknown[];
+                    secondary?: unknown[];
+                    defaultPath?: string;
+                }>;
+            };
         };
     };
 };
@@ -88,18 +95,34 @@ export type ObjectPageNavigationParents = {
     parentOPTableSection?: string;
 };
 
+export type SectionFormField = {
+    property: string;
+};
+
+export type TableColumn = {
+    header?: string;
+};
+
+export type TableColumnFeatureData = Record<string, TableColumn>;
+
 export type BodySubSectionFeatureData = {
     id: string;
+    navigationProperty?: string;
     isTable: boolean;
     custom: boolean;
     order: number;
+    fields: SectionFormField[];
+    tableColumns: TableColumnFeatureData;
 };
 
 export type BodySectionFeatureData = {
     id: string;
+    navigationProperty?: string;
     isTable: boolean;
     custom: boolean;
     order: number;
+    fields: SectionFormField[];
+    tableColumns: TableColumnFeatureData;
     subSections: BodySubSectionFeatureData[];
 };
 
@@ -127,6 +150,7 @@ export type ListReportFeatures = {
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
+    isALP?: boolean;
 };
 
 export interface ActionButtonState {
