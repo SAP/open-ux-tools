@@ -121,6 +121,35 @@ export const DEFAULT_INTENT = {
 } as Readonly<DefaultIntent>;
 
 /**
+ * Parses a query string into a key-value record, splitting only on the first `=` per pair.
+ */
+function parseParams(queryString: string): Record<string, string> {
+    const params: Record<string, string> = {};
+    for (const pair of queryString.split('&')) {
+        const eqIdx = pair.indexOf('=');
+        const key = eqIdx >= 0 ? pair.slice(0, eqIdx) : pair;
+        const value = eqIdx >= 0 ? pair.slice(eqIdx + 1) : '';
+        if (key) {
+            params[decodeURIComponent(key)] = decodeURIComponent(value);
+        }
+    }
+    return params;
+}
+
+/**
+ * Extracts the route and params from the remainder of an intent string (everything after "Object-action").
+ */
+function parseIntentRemainder(remainder: string): { params?: Record<string, string>; route?: string } {
+    const route = /&(\/.*)/.exec(remainder)?.[1];
+    const paramsMatch = /\?([^&]*(?:&(?!\/)[^&]*)*)/.exec(remainder);
+    const params = paramsMatch ? parseParams(paramsMatch[1]) : undefined;
+    return {
+        ...(params && Object.keys(params).length > 0 ? { params } : {}),
+        ...(route ? { route } : {})
+    };
+}
+
+/**
  * Parses an intent string into a structured Intent object.
  *
  * Supported formats:
@@ -135,45 +164,16 @@ export const DEFAULT_INTENT = {
 export function parseIntentString(intentString: string): Intent {
     const raw = intentString.startsWith('#') ? intentString.slice(1) : intentString;
 
-    const intentPattern = /^([^-?&]+)-([^?&]+)/;
-    const match = raw.match(intentPattern);
+    const match = /^([^-?&]+)-([^?&]+)/.exec(raw);
     if (!match) {
         throw new Error(`Invalid intent format: "${intentString}". Expected "Object-action[?params][&/route]".`);
     }
 
-    const object = match[1];
-    const action = match[2];
     const remainder = raw.slice(match[0].length);
-
-    let params: Record<string, string> | undefined;
-    let route: string | undefined;
-
-    if (remainder) {
-        const routeMatch = remainder.match(/&(\/.*)/);
-        if (routeMatch) {
-            route = routeMatch[1];
-        }
-
-        const paramsMatch = remainder.match(/\?([^&]*(?:&(?!\/)[^&]*)*)/);
-        if (paramsMatch) {
-            params = {};
-            const paramPairs = paramsMatch[1].split('&');
-            for (const pair of paramPairs) {
-                const eqIdx = pair.indexOf('=');
-                const key = eqIdx >= 0 ? pair.slice(0, eqIdx) : pair;
-                const value = eqIdx >= 0 ? pair.slice(eqIdx + 1) : '';
-                if (key) {
-                    params[decodeURIComponent(key)] = decodeURIComponent(value);
-                }
-            }
-        }
-    }
-
     return {
-        object,
-        action,
-        ...(params && Object.keys(params).length > 0 ? { params } : {}),
-        ...(route ? { route } : {})
+        object: match[1],
+        action: match[2],
+        ...(remainder ? parseIntentRemainder(remainder) : {})
     };
 }
 

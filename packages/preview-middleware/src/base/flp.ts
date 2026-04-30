@@ -687,21 +687,7 @@ export class FlpSandbox {
      */
     private async addRoutesForAdditionalApps(): Promise<void> {
         for (const app of this.flpConfig.apps) {
-            let manifest: Manifest | undefined;
-            if (app.local) {
-                const webappPath = await getWebappPath(app.local, this.fs);
-                manifest = JSON.parse(readFileSync(join(webappPath, 'manifest.json'), 'utf-8')) as Manifest | undefined;
-                this.router.use(app.target, serveStatic(webappPath));
-                this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
-            } else if (app.componentId) {
-                const resolved = app.intent ? resolveIntent(app.intent) : undefined;
-                manifest = {
-                    'sap.app': {
-                        id: app.componentId,
-                        title: resolved ? `${resolved.object}-${resolved.action}` : app.componentId
-                    }
-                } as Manifest;
-            }
+            const manifest = await this.resolveAppManifest(app);
             if (manifest) {
                 await addApp(this.templateConfig, manifest, app, this.logger);
                 this.logger.info(`Adding additional intent: ${app.intent ? buildIntentHash(app.intent) : 'none'}`);
@@ -711,6 +697,28 @@ export class FlpSandbox {
                 );
             }
         }
+    }
+
+    /**
+     * Resolves a manifest for an additional app from either its local folder or componentId.
+     */
+    private async resolveAppManifest(app: FlpConfig['apps'][number]): Promise<Manifest | undefined> {
+        if (app.local) {
+            const webappPath = await getWebappPath(app.local, this.fs);
+            this.router.use(app.target, serveStatic(webappPath));
+            this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
+            return JSON.parse(readFileSync(join(webappPath, 'manifest.json'), 'utf-8')) as Manifest;
+        }
+        if (app.componentId) {
+            const resolved = app.intent ? resolveIntent(app.intent) : undefined;
+            return {
+                'sap.app': {
+                    id: app.componentId,
+                    title: resolved ? `${resolved.object}-${resolved.action}` : app.componentId
+                }
+            } as Manifest;
+        }
+        return undefined;
     }
 
     /**
