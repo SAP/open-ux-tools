@@ -156,18 +156,6 @@ export const CONFIG = {
 };
 
 /**
- * Checks whether an element ID is available (not already used) in the given XML content.
- *
- * @param id - The element ID to check for availability.
- * @param xmlContent - The XML content to search for existing element IDs.
- * @returns `true` if the ID is not found in the XML content, `false` otherwise.
- */
-function checkElementIdAvailable(id: string, xmlContent: string): boolean {
-    const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent);
-    return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
-}
-
-/**
  * Generates a unique element ID that is not already used in any view or fragment file.
  * Uses an incremental counter for predictable, readable IDs.
  *
