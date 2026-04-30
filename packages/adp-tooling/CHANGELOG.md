@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.127
+
+### Patch Changes
+
+- fcaa70c: fix(adp-tooling): Improve logging for Cloud Foundry setup
+
 ## 0.18.126
 
 ### Patch Changes
