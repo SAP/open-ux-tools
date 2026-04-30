@@ -16,7 +16,8 @@ import {
     Edmx,
     printOptions,
     getIndentLevel,
-    indent
+    indentWithTabs,
+    indentWithSpaces
 } from '@sap-ux/odata-annotation-core';
 
 import type { NamespaceAliasMap } from './csdl-to-xml';
@@ -166,10 +167,10 @@ export function getNewAnnotationFile(
         content: [
             createTextNode(
                 '\n' +
-                    indent(printOptions.tabWidth, printOptions.useTabs, 3) +
+                    (printOptions.useTabs ? indentWithTabs(3) : indentWithSpaces(printOptions.tabWidth, 3)) +
                     'INSERT_TOKEN' +
                     '\n' +
-                    indent(printOptions.tabWidth, printOptions.useTabs, 2)
+                    (printOptions.useTabs ? indentWithTabs(2) : indentWithSpaces(printOptions.tabWidth, 2))
             )
         ]
     });
