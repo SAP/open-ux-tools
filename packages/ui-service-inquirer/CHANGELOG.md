@@ -1,5 +1,11 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.168
+
+### Patch Changes
+
+- @sap-ux/odata-service-inquirer@2.20.19
+
 ## 0.2.167
 
 ### Patch Changes
