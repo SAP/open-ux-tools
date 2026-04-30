@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.36.2
+
+### Patch Changes
+
+- @sap-ux/i18n@0.3.11
+
 ## 1.36.1
 
 ### Patch Changes

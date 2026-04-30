@@ -1,5 +1,12 @@
 # @sap-ux/ui-prompting
 
+## 0.6.25
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/ui-components@2.1.12
+
 ## 0.6.24
 
 ### Patch Changes
