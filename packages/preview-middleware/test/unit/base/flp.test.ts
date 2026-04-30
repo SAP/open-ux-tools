@@ -2058,6 +2058,6 @@ describe('initAdp', () => {
             { fileName: 'deployedOnly', changeType: 'propertyChange' }
         ]);
         expect(response.body.modules).toEqual({ 'ns/app/Component.js': 'base-component' });
-        expect(mockProvider.get).toHaveBeenCalled();
+        expect(mockProvider.get).toHaveBeenCalledWith('/sap/bc/lrep/flex/data/my.app.Component');
     });
 });
