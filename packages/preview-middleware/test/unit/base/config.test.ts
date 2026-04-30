@@ -497,9 +497,9 @@ describe('config', () => {
         });
 
         test('encodes special characters in param values', () => {
-            expect(
-                buildIntentHash({ object: 'App', action: 'view', params: { filter: 'a&b=c' } })
-            ).toBe('App-view?filter=a%26b%3Dc');
+            expect(buildIntentHash({ object: 'App', action: 'view', params: { filter: 'a&b=c' } })).toBe(
+                'App-view?filter=a%26b%3Dc'
+            );
         });
 
         test('string passthrough without leading hash', () => {
