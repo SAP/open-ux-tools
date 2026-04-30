@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.36.1
+
+### Patch Changes
+
+- 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
+
+## 1.36.0
+
+### Minor Changes
+
+- 1d60871: Added isUI5IdUnique function to check UI5 control ID uniqueness in XML views/fragments.
+  Exported findFilesByExtension from @sap-ux/project-access and removed deep imports.
+
 ## 1.35.21
 
 ### Patch Changes

@@ -1,8 +1,7 @@
 import type { CopyOptions, Editor } from 'mem-fs-editor';
 import type { TabInfo } from '../common/types';
 import { sep, normalize } from 'node:path';
-import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
-import { DOMParser } from '@xmldom/xmldom';
+import { findFilesByExtension, isUI5IdUnique } from '@sap-ux/project-access';
 
 /**
  * Options for creating an ID generator with cached file contents.
@@ -180,20 +179,16 @@ function checkElementIdAvailable(id: string, xmlContent: string): boolean {
 function generateUniqueElementId(baseId: string, filteredFilesContent: string[], validatedIds: string[] = []): string {
     const maxAttempts = 1000;
 
-    if (
-        filteredFilesContent.every((content) => content === '' || checkElementIdAvailable(baseId, content)) &&
-        !validatedIds.includes(baseId)
-    ) {
+    // Check both in-memory validatedIds and filesystem files
+    if (!validatedIds.includes(baseId) && isUI5IdUnique(baseId, filteredFilesContent)) {
         return baseId;
     }
 
     for (let counter = 1; counter < maxAttempts; counter++) {
         const candidateId = `${baseId}${counter}`;
 
-        if (
-            filteredFilesContent.every((content) => content === '' || checkElementIdAvailable(candidateId, content)) &&
-            !validatedIds.includes(candidateId)
-        ) {
+        // Check both in-memory validatedIds and filesystem files
+        if (!validatedIds.includes(candidateId) && isUI5IdUnique(candidateId, filteredFilesContent)) {
             return candidateId;
         }
     }
