@@ -19,7 +19,8 @@ import { type FLPConfigPromptOptions, type FLPConfigAnswers, type TileSettingsAn
 export function getAdpFlpConfigPromptOptions(
     tileSettingsAnswers: TileSettingsAnswers,
     inbounds?: ManifestNamespace.Inbound,
-    variant?: DescriptorVariant
+    variant?: DescriptorVariant,
+    isCfProject?: boolean
 ): FLPConfigPromptOptions {
     const { tileHandlingAction, copyFromExisting } = tileSettingsAnswers ?? {};
 
@@ -45,7 +46,8 @@ export function getAdpFlpConfigPromptOptions(
             inboundId: { hide: true },
             title: { hide: true },
             subTitle: { hide: true },
-            icon: { hide: true }
+            icon: { hide: true },
+            confirmReplace: { isCF: isCfProject }
         };
     }
 
