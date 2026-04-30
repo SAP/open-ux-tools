@@ -1,5 +1,21 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.109
+
+### Patch Changes
+
+- @sap-ux/ui5-application-writer@1.8.7
+- @sap-ux/project-access@1.36.2
+
+## 0.7.108
+
+### Patch Changes
+
+- 287e3a4: Generate tests for Form and Table content in Object Page Sections
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/ui5-application-writer@1.8.7
+
 ## 0.7.107
 
 ### Patch Changes

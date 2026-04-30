@@ -1,5 +1,15 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.35
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
+## 0.25.34
+
+## 0.25.33
+
 ## 0.25.32
 
 ## 0.25.31
