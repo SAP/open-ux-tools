@@ -1,5 +1,14 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.26
+
+### Patch Changes
+
+- 3945459: chore: upgrade @xmldom/xmldom 0.8.12 to 0.8.13 (security fix for XML injection vulnerabilities)
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/fiori-annotation-api@0.9.46
+
 ## 0.43.25
 
 ### Patch Changes
