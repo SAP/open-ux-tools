@@ -7,6 +7,13 @@ import { join, parse, sep } from 'node:path';
 import type { CommonChangeProperties } from '@sap-ux/adp-tooling';
 
 /**
+ * Set of local module paths (fragments, controllers) used to strip
+ * inlined modules from the LrepConnector response so that UI5 loads
+ * local workspace versions via HTTP instead.
+ */
+export type LocalModulePaths = Set<string>;
+
+/**
  * Read changes from the file system and return them.
  *
  * @param project reference to the UI5 project
@@ -32,6 +39,82 @@ export async function readChanges(
         }
     }
     return changes;
+}
+
+/**
+ * Read local module paths (fragments, controllers) from the workspace.
+ * Used to strip inlined modules from the LrepConnector response so that
+ * UI5 falls back to HTTP requests, which the existing ADP proxy serves
+ * from the local workspace.
+ *
+ * @param project reference to the UI5 project
+ * @param logger logger instance
+ * @returns set of relative module paths under /changes/
+ */
+export async function readLocalModulePaths(project: ReaderCollection, logger: Logger): Promise<LocalModulePaths> {
+    const modulePaths: LocalModulePaths = new Set();
+
+    const moduleFiles = await project.byGlob('/**/changes/{fragments/**,coding/**}');
+    for (const file of moduleFiles) {
+        const filePath = file.getPath();
+        const changesIdx = filePath.lastIndexOf('/changes/');
+        if (changesIdx !== -1) {
+            modulePaths.add(filePath.substring(changesIdx + '/changes/'.length));
+        }
+    }
+
+    logger.debug(`Found ${modulePaths.size} local module(s) for LREP filtering`);
+    return modulePaths;
+}
+
+/**
+ * Strips inlined modules from an LREP flex data response when the
+ * corresponding files exist locally in the workspace.  Removing the
+ * inline content forces UI5 to request the module via HTTP, which the
+ * existing ADP proxy handler resolves to the local file.
+ *
+ * Changes are intentionally left untouched — UI5 deduplicates them by
+ * fileName when both LrepConnector and WorkspaceConnector return the
+ * same change.
+ *
+ * @param responseData the parsed LREP flex data response
+ * @param localModulePaths set of relative module paths that exist locally
+ * @param logger logger instance
+ * @returns the response data with local modules stripped from the inlined modules
+ */
+export function stripLocalModulesFromLrepResponse(
+    responseData: Record<string, unknown>,
+    localModulePaths: LocalModulePaths,
+    logger: Logger
+): Record<string, unknown> {
+    if (localModulePaths.size === 0) {
+        return responseData;
+    }
+
+    if (!responseData.modules || typeof responseData.modules !== 'object') {
+        return responseData;
+    }
+
+    const originalModules = responseData.modules as Record<string, unknown>;
+    const filteredEntries = Object.entries(originalModules).filter(([key]) => {
+        const changesIdx = key.lastIndexOf('/changes/');
+        if (changesIdx !== -1) {
+            const relativePath = key.substring(changesIdx + '/changes/'.length);
+            if (localModulePaths.has(relativePath)) {
+                logger.debug(`Stripping inlined module '${key}' — local version will be served instead`);
+                return false;
+            }
+        }
+        return true;
+    });
+
+    const removedCount = Object.keys(originalModules).length - filteredEntries.length;
+    if (removedCount > 0) {
+        logger.info(`Stripped ${removedCount} inlined module(s) from LREP response in favor of local versions`);
+        return { ...responseData, modules: Object.fromEntries(filteredEntries) };
+    }
+
+    return responseData;
 }
 
 /**

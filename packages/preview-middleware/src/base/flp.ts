@@ -34,7 +34,13 @@ import {
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
-import { deleteChange, readChanges, writeChange } from './flex';
+import {
+    deleteChange,
+    readChanges,
+    readLocalModulePaths,
+    stripLocalModulesFromLrepResponse,
+    writeChange
+} from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
 import type {
     RtaEditor,
@@ -1234,6 +1240,7 @@ export class FlpSandbox {
         const descriptor = adp.descriptor;
         const { name, manifest } = descriptor;
         await this.init(manifest, name, adp.resources, adp);
+        this.registerLrepFlexDataFilter(adp);
         this.router.use(adp.descriptor.url, adp.proxy.bind(adp));
         await this.setupAdpCommonHandlers(adp);
     }
@@ -1249,6 +1256,51 @@ export class FlpSandbox {
         adp.addApis(this.router);
         // Register i18n store route for ADP projects (used by OVP bridge functions)
         await this.addStoreI18nKeysRoute();
+    }
+
+    /**
+     * Registers a middleware that intercepts LREP flex data responses to strip
+     * inlined modules (fragments, controllers) that exist locally in the workspace.
+     * Removing inlined content forces UI5 to request the module via HTTP, which
+     * the existing ADP proxy handler serves from the local workspace.
+     *
+     * Changes are left untouched — UI5 deduplicates them by fileName when both
+     * LrepConnector and WorkspaceConnector return the same change.
+     *
+     * @param adp AdpPreview instance with access to the ABAP service provider
+     */
+    private registerLrepFlexDataFilter(adp: AdpPreview): void {
+        const provider = adp.serviceProvider;
+        if (!provider) {
+            return;
+        }
+
+        const lrepFlexDataPath = '/sap/bc/lrep/flex/data/';
+        this.router.get(`${lrepFlexDataPath}*`, async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const localModulePaths = await readLocalModulePaths(this.project, this.logger);
+                if (localModulePaths.size === 0) {
+                    next();
+                    return;
+                }
+
+                const backendPath = req.originalUrl;
+                const response = await provider.get(backendPath);
+                const responseData = typeof response === 'string' ? JSON.parse(response) : response;
+
+                const filtered = stripLocalModulesFromLrepResponse(
+                    responseData as Record<string, unknown>,
+                    localModulePaths,
+                    this.logger
+                );
+
+                res.status(200).json(filtered);
+            } catch (error) {
+                this.logger.warn(`Failed to filter LREP flex data, falling back to unfiltered response: ${error}`);
+                next();
+            }
+        });
+        this.logger.debug('Registered LREP flex data filter for local workspace priority');
     }
 
     /**

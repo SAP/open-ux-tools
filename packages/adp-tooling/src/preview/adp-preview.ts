@@ -125,6 +125,13 @@ export class AdpPreview {
     }
 
     /**
+     * @returns the ABAP service provider used to connect to the backend, or undefined if not initialized or in CF build mode.
+     */
+    get serviceProvider(): AbapServiceProvider | undefined {
+        return this.provider;
+    }
+
+    /**
      * Constructor taking the config and a logger as input.
      *
      * @param config adp config
