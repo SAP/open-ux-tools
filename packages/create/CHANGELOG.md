@@ -1,5 +1,24 @@
 # @sap-ux/create
 
+## 0.15.84
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/odata-service-writer@0.31.10
+    - @sap-ux/abap-deploy-config-inquirer@1.8.17
+    - @sap-ux/adp-tooling@0.18.124
+    - @sap-ux/app-config-writer@0.6.141
+    - @sap-ux/flp-config-inquirer@0.4.183
+    - @sap-ux/preview-middleware@0.25.33
+    - @sap-ux/system-access@0.7.9
+    - @sap-ux/abap-deploy-config-writer@0.3.14
+    - @sap-ux/cap-config-writer@0.12.95
+    - @sap-ux/mockserver-config-writer@0.9.74
+
 ## 0.15.83
 
 ### Patch Changes
