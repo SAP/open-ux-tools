@@ -1,5 +1,12 @@
 # @sap-ux/axios-extension
 
+## 1.25.33
+
+### Patch Changes
+
+- 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
+- 3945459: chore: upgrade @xmldom/xmldom 0.8.12 to 0.8.13 (security fix for XML injection vulnerabilities)
+
 ## 1.25.32
 
 ### Patch Changes
