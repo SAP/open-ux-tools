@@ -123,7 +123,7 @@ export const DEFAULT_INTENT = {
 /**
  * Parses a query string into a key-value record, splitting only on the first `=` per pair.
  *
- * @param queryString
+ * @param queryString the raw query string without leading `?` (e.g. "key1=val1&key2=val2")
  */
 function parseParams(queryString: string): Record<string, string> {
     const params: Record<string, string> = {};
@@ -141,7 +141,8 @@ function parseParams(queryString: string): Record<string, string> {
 /**
  * Extracts the route and params from the remainder of an intent string (everything after "Object-action").
  *
- * @param remainder
+ * @param remainder the portion of the intent string after the "Object-action" prefix
+ * @returns object with optional params and route
  */
 function parseIntentRemainder(remainder: string): { params?: Record<string, string>; route?: string } {
     const route = /&(\/.*)/.exec(remainder)?.[1];
