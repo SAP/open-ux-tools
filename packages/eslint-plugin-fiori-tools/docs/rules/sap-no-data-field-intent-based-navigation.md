@@ -24,6 +24,22 @@ Using `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavi
 </Annotation>
 ```
 
+```cds
+annotate service.Incidents with @(UI.LineItem: [
+    {
+        $Type         : 'UI.DataFieldForIntentBasedNavigation',
+        SemanticObject: 'EPMProduct',
+        Action        : 'manage_st',
+        Inline        : true,
+    },
+    {
+        $Type         : 'UI.DataFieldWithIntentBasedNavigation',
+        Value         : category,
+        SemanticObject: 'test',
+    },
+]);
+```
+
 #### Incorrect `UI.FieldGroup` Annotation Using `UI.DataFieldForIntentBasedNavigation` and `UI.DataFieldWithIntentBasedNavigation`
 
 ```xml
@@ -45,6 +61,31 @@ Using `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavi
 </Annotation>
 ```
 
+```cds
+annotate service.Incidents with @(
+    UI.HeaderFacets    : [{
+        $Type : 'UI.ReferenceFacet',
+        Label : 'Test Header Facet',
+        ID    : 'test',
+        Target: '@UI.FieldGroup#test',
+    }, ],
+    UI.FieldGroup #test: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type         : 'UI.DataFieldForIntentBasedNavigation',
+                SemanticObject: 'test',
+            },
+            {
+                $Type         : 'UI.DataFieldWithIntentBasedNavigation',
+                Value         : test,
+                SemanticObject: 'testSO',
+            },
+        ],
+    },
+);
+```
+
 ### Correct: Semantic Link or Smart Link Navigation Is Used Using `Common.SemanticObject` on the Entity Property
 
 Annotate the entity property, for example,`CustomerId`, with the `Common.SemanticObject` annotation before using it in a `UI.LineItem` or `UI.FieldGroup`. SAP Fiori elements automatically detects this and renders the field as a semantic link.
@@ -56,6 +97,12 @@ Annotate the entity property, for example,`CustomerId`, with the `Common.Semanti
 <Annotations Target="YourEntityType/CustomerId">
     <Annotation Term="Common.SemanticObject" String="Customer"/>
 </Annotations>
+```
+
+```cds
+annotate service.Incidents with {
+    incidentFlow @Common.SemanticObject : 'qwerty'
+}
 ```
 
 #### Step 2: Reference the Property in Your UI Annotations:
@@ -75,6 +122,18 @@ For a table column using the `UI.LineItem` annotation:
 </Annotation>
 ```
 
+```cds 
+annotate service.Incidents with @(
+    UI.LineItem                  : [
+            {
+                $Type: 'UI.DataField',
+                Value: identifier,
+                Label : 'ID',
+            },
+        ]
+    )
+```
+
 For a form field using the `UI.FieldGroup` annotation:
 
 ```xml
@@ -91,6 +150,21 @@ For a form field using the `UI.FieldGroup` annotation:
         </PropertyValue>
     </Record>
 </Annotation>
+```
+
+```cds
+annotate service.Incidents with @(
+    UI.FieldGroup #test: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : category,
+                Label : 'Category',
+            },
+        ],
+    },
+);
 ```
 
 ## Bug Report

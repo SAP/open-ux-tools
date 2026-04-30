@@ -40,23 +40,6 @@ The following patterns are considered warnings:
 }
 ```
 
-#### Missing `widthIncludingColumnHeader` in Annotations
-
-```xml
-<Annotations Target="IncidentService.IncidentFlow">
-    <Annotation Term="UI.LineItem">
-        <Collection>
-            <Record Type="UI.DataField">
-                <PropertyValue Property="Value" Path="identifier" />
-            </Record>
-            <Record Type="UI.DataField">
-                <PropertyValue Property="Value" Path="title" />
-            </Record>
-        </Collection>
-    </Annotation>
-</Annotations>
-```
-
 The following patterns are not considered warnings:
 
 #### Correct Manifest File
@@ -97,14 +80,31 @@ The following patterns are not considered warnings:
             <Record Type="UI.DataField">
                 <PropertyValue Property="Value" Path="title" />
             </Record>
+            <!-- Include at least 6 data fields -->
         </Collection>
     </Annotation>
 </Annotations>
 ```
 
+```cds
+annotate service.Incidents with @(
+  UI.LineItem : [
+    {
+        $Type: 'UI.DataField',
+        Value: identifier,
+    },
+    {
+        $Type: 'UI.DataField',
+        Value: title,
+    },
+    // Include at least 6 data fields
+  ]
+)
+```
+
 ## How to Fix
 
-To fix the warning, ensure that the `widthIncludingColumnHeader` property is added to the `tableSettings` section in the `manifest.json` file or annotations and set to `true`. For example:
+To fix the warning, ensure that the `widthIncludingColumnHeader` property is added to the `tableSettings` section in the `manifest.json` file and set to `true`. For example:
 
 - `manifes.json`:
 
@@ -130,23 +130,6 @@ To fix the warning, ensure that the `widthIncludingColumnHeader` property is add
     }
   }
 }
-```
-
-- Annotations:
-
-```xml
-<Annotations Target="IncidentService.Incidents">
-    <Annotation Term="UI.LineItem">
-        <Collection>
-            <Record Type="UI.DataField">
-                <PropertyValue Property="Value" Path="identifier" />
-            </Record>
-            <Record Type="UI.DataField">
-                <PropertyValue Property="Value" Path="title" />
-            </Record>
-        </Collection>
-    </Annotation>
-</Annotations>
 ```
 
 ## Bug Report
