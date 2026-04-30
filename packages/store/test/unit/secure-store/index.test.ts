@@ -38,7 +38,7 @@ jest.unstable_mockModule('node:module', () => ({
     createRequire: (url: string) => {
         const realRequire = actualModule.createRequire(url);
         return (id: string) => {
-            if (id === '@zowe/secrets-for-zowe-sdk' || id.includes('@zowe/secrets-for-zowe-sdk')) {
+            if (id === '@zowe/secrets-for-zowe-sdk' || id.replace(/\\/g, '/').includes('@zowe/secrets-for-zowe-sdk')) {
                 return mockRequireForZowe(id);
             }
             return realRequire(id);
@@ -53,7 +53,7 @@ const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('getSecureStore', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        jest.resetAllMocks();
         mockRequireForZowe.mockImplementation(() => {
             throw new Error('Cannot find module @zowe/secrets-for-zowe-sdk');
         });
@@ -75,7 +75,7 @@ describe('getSecureStore', () => {
 
     describe('non App Studio', () => {
         beforeEach(() => {
-            jest.clearAllMocks();
+            jest.resetAllMocks();
             mockIsAppStudio.mockReturnValue(false);
             mockRequireForZowe.mockImplementation(() => {
                 throw new Error('Cannot find module @zowe/secrets-for-zowe-sdk');
