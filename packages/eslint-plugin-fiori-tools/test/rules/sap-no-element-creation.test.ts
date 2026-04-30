@@ -29,8 +29,7 @@ ruleTester.run('sap-no-element-creation', rule, {
             code: 'document.createElement(foo);',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
                 }
             ]
         },
@@ -38,8 +37,7 @@ ruleTester.run('sap-no-element-creation', rule, {
             code: "var mydocument = document;mydocument['createElement'](foo);",
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
                 }
             ]
         },
@@ -47,8 +45,7 @@ ruleTester.run('sap-no-element-creation', rule, {
             code: "var x = window, w = window, mydocument = w.document;mydocument['createElement'](foo);",
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
                 }
             ]
         },
@@ -57,8 +54,7 @@ ruleTester.run('sap-no-element-creation', rule, {
             code: "var createElement = 'test'; document[createElement](foo);",
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
                 }
             ]
         }

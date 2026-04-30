@@ -1,5 +1,38 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.151
+
+### Patch Changes
+
+- Updated dependencies [8b2c55b]
+    - @sap-ux/odata-service-inquirer@2.20.18
+
+## 0.5.150
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/odata-service-inquirer@2.20.17
+    - @sap-ux/abap-deploy-config-sub-generator@0.3.27
+    - @sap-ux/deploy-config-generator-shared@0.1.122
+    - @sap-ux/fiori-generator-shared@0.13.103
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.176
+    - @sap-ux/inquirer-common@0.11.42
+
+## 0.5.149
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/abap-deploy-config-sub-generator@0.3.26
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.175
+    - @sap-ux/fiori-generator-shared@0.13.102
+    - @sap-ux/inquirer-common@0.11.41
+    - @sap-ux/odata-service-inquirer@2.20.16
+    - @sap-ux/deploy-config-generator-shared@0.1.121
+
 ## 0.5.148
 
 ### Patch Changes

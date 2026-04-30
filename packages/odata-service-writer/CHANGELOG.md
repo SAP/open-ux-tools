@@ -1,5 +1,22 @@
 # @sap-ux/odata-service-writer
 
+## 0.31.10
+
+### Patch Changes
+
+- 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/mockserver-config-writer@0.9.74
+
+## 0.31.9
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/mockserver-config-writer@0.9.73
+
 ## 0.31.8
 
 ### Patch Changes
