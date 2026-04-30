@@ -57,7 +57,13 @@ export function getIntentFromPreviewConfig(
         return undefined;
     }
     const intent = previewMiddlewareConfig?.flp?.intent;
-    return intent ? `#${intent.object}-${intent.action}` : undefined;
+    if (!intent) {
+        return undefined;
+    }
+    if (typeof intent === 'string') {
+        return intent.startsWith('#') ? intent : `#${intent}`;
+    }
+    return `#${intent.object}-${intent.action}`;
 }
 
 /**

@@ -58,7 +58,8 @@ import {
     getAppName,
     sanitizeRtaConfig,
     CARD_GENERATOR_DEFAULT,
-    remapResourcesForPath
+    remapResourcesForPath,
+    buildIntentHash
 } from './config';
 import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
@@ -378,7 +379,7 @@ export class FlpSandbox {
         previewUrl: string
     ): Promise<void> {
         const scenario = rta.options?.scenario;
-        let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.flpConfig.intent.object}-${this.flpConfig.intent.action}`;
+        let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${buildIntentHash(this.flpConfig.intent)}`;
         if (scenario === 'ADAPTATION_PROJECT') {
             templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
         }
@@ -695,13 +696,13 @@ export class FlpSandbox {
                 manifest = {
                     'sap.app': {
                         id: app.componentId,
-                        title: app.intent ? `${app.intent.object}-${app.intent.action}` : app.componentId
+                        title: app.intent ? buildIntentHash(app.intent) : app.componentId
                     }
                 } as Manifest;
             }
             if (manifest) {
                 await addApp(this.templateConfig, manifest, app, this.logger);
-                this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
+                this.logger.info(`Adding additional intent: ${app.intent ? buildIntentHash(app.intent) : 'none'}`);
             } else {
                 this.logger.info(
                     `Invalid application config for route ${app.target} because neither componentId nor local folder provided.`

@@ -1,4 +1,4 @@
-import type { FlpConfig, MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
+import type { Intent, MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { type Package, FileName } from '@sap-ux/project-access';
@@ -39,7 +39,7 @@ export function getScriptsFromPackageJson(fs: Editor, basePath: string): Map<str
  */
 export function extractUrlDetails(script: string): {
     path: string | undefined;
-    intent: FlpConfig['intent'] | undefined;
+    intent: Intent | undefined;
 } {
     //extract the URL from the 'open' command of the script
     let url = / (?:--open|-o|--o) (\S*)/.exec(script)?.[1] ?? undefined;

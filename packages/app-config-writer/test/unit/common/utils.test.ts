@@ -39,4 +39,34 @@ describe('utils', () => {
             expect(await utils.getCLIForPreview(fioriToolsConfig, 'ui5.yaml', fs)).toStrictEqual('fiori run');
         });
     });
+
+    describe('getIntentFromPreviewConfig', () => {
+        test('returns undefined for deprecated fiori-tools config', () => {
+            const config = { component: 'my.component', libs: true };
+            expect(utils.getIntentFromPreviewConfig(config)).toBeUndefined();
+        });
+
+        test('returns undefined when no flp config', () => {
+            expect(utils.getIntentFromPreviewConfig({})).toBeUndefined();
+        });
+
+        test('returns undefined when no intent', () => {
+            expect(utils.getIntentFromPreviewConfig({ flp: {} })).toBeUndefined();
+        });
+
+        test('returns hash from structured intent object', () => {
+            const config = { flp: { intent: { object: 'Order', action: 'manage' } } };
+            expect(utils.getIntentFromPreviewConfig(config)).toBe('#Order-manage');
+        });
+
+        test('returns hash from string intent without leading hash', () => {
+            const config = { flp: { intent: 'Order-manage?year=2024&/display' } };
+            expect(utils.getIntentFromPreviewConfig(config as any)).toBe('#Order-manage?year=2024&/display');
+        });
+
+        test('returns string intent as-is when it already has leading hash', () => {
+            const config = { flp: { intent: '#Order-manage' } };
+            expect(utils.getIntentFromPreviewConfig(config as any)).toBe('#Order-manage');
+        });
+    });
 });

@@ -2,12 +2,21 @@ import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 
 /**
- * Intent object consisting of an object and an action.
+ * Intent object consisting of an object, action, and optional parameters/route.
  */
 export interface Intent {
     object: string;
     action: string;
+    params?: Record<string, string>;
+    route?: string;
 }
+
+/**
+ * Intent configuration as provided in ui5.yaml.
+ * Either a full intent string (e.g. "Object-action?p1=v1&/route")
+ * or a structured Intent object.
+ */
+export type IntentConfig = string | Intent;
 
 /**
  * Configuration for additional applications
@@ -22,7 +31,7 @@ export interface App {
      * Optional component id if it differs from the manifest (e.g. for adaptation projects)
      */
     componentId?: string;
-    intent?: Intent;
+    intent?: IntentConfig;
 }
 
 export interface RtaEditor {
@@ -51,7 +60,7 @@ interface InternalRtaConfig {
  */
 export interface FlpConfig {
     path: string;
-    intent: Intent;
+    intent: IntentConfig;
     /**
      * Optional: if set to true then a locate-reuse-libs script will be attached to the html
      */

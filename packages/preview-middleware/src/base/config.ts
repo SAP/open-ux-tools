@@ -5,6 +5,7 @@ import type {
     DefaultIntent,
     FlpConfig,
     Intent,
+    IntentConfig,
     CompleteTestConfig,
     MiddlewareConfig,
     RtaConfig,
@@ -120,6 +121,105 @@ export const DEFAULT_INTENT = {
 } as Readonly<DefaultIntent>;
 
 /**
+ * Parses an intent string into a structured Intent object.
+ *
+ * Supported formats:
+ *   "Object-action"
+ *   "Object-action?param1=value1&param2=value2"
+ *   "Object-action?param1=value1&param2=value2&/innerRoute"
+ *   "Object-action&/innerRoute"
+ *
+ * @param intentString the raw intent string (with or without leading #)
+ * @returns parsed Intent object
+ */
+export function parseIntentString(intentString: string): Intent {
+    const raw = intentString.startsWith('#') ? intentString.slice(1) : intentString;
+
+    const intentPattern = /^([^-?&]+)-([^?&]+)/;
+    const match = raw.match(intentPattern);
+    if (!match) {
+        throw new Error(`Invalid intent format: "${intentString}". Expected "Object-action[?params][&/route]".`);
+    }
+
+    const object = match[1];
+    const action = match[2];
+    const remainder = raw.slice(match[0].length);
+
+    let params: Record<string, string> | undefined;
+    let route: string | undefined;
+
+    if (remainder) {
+        const routeMatch = remainder.match(/&(\/.*)/);
+        if (routeMatch) {
+            route = routeMatch[1];
+        }
+
+        const paramsMatch = remainder.match(/\?([^&]*(?:&(?!\/)[^&]*)*)/);
+        if (paramsMatch) {
+            params = {};
+            const paramPairs = paramsMatch[1].split('&');
+            for (const pair of paramPairs) {
+                const [key, value] = pair.split('=');
+                if (key) {
+                    params[decodeURIComponent(key)] = decodeURIComponent(value ?? '');
+                }
+            }
+        }
+    }
+
+    return {
+        object,
+        action,
+        ...(params && Object.keys(params).length > 0 ? { params } : {}),
+        ...(route ? { route } : {})
+    };
+}
+
+/**
+ * Builds the intent hash fragment from an IntentConfig.
+ *
+ * @param intentConfig the intent configuration (string or object)
+ * @returns hash fragment string (without leading #)
+ */
+export function buildIntentHash(intentConfig: IntentConfig): string {
+    if (typeof intentConfig === 'string') {
+        return intentConfig.startsWith('#') ? intentConfig.slice(1) : intentConfig;
+    }
+
+    let hash = `${intentConfig.object}-${intentConfig.action}`;
+
+    const params = intentConfig.params;
+    const route = intentConfig.route;
+
+    if (params && Object.keys(params).length > 0) {
+        const paramString = Object.entries(params)
+            .map(([key, value]) => `${key}=${value}`)
+            .join('&');
+        hash += `?${paramString}`;
+    }
+
+    if (route) {
+        const normalizedRoute = route.startsWith('/') ? route : `/${route}`;
+        hash += `&${normalizedRoute}`;
+    }
+
+    return hash;
+}
+
+/**
+ * Resolves an IntentConfig (string or object from ui5.yaml) into a normalized Intent object.
+ *
+ * @param input the intent configuration from ui5.yaml
+ * @returns normalized Intent object
+ */
+export function resolveIntent(input: IntentConfig): Intent {
+    if (typeof input === 'string') {
+        return parseIntentString(input);
+    }
+    return input;
+}
+
+/**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
 const UI5_LIBS = [
@@ -188,7 +288,7 @@ function getUI5Libs(manifest: Partial<Manifest>): string {
 export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpConfig {
     const flpConfig = {
         path: config.path ?? DEFAULT_PATH,
-        intent: config.intent ?? DEFAULT_INTENT,
+        intent: config.intent ? resolveIntent(config.intent) : DEFAULT_INTENT,
         apps: config.apps ?? [],
         libs: config.libs,
         theme: config.theme,
@@ -310,18 +410,20 @@ export async function addApp(
  * Get the application name based on the manifest and app configuration.
  *
  * @param manifest - The application manifest.
- * @param intent - The app configuration.
+ * @param intentConfig - The app intent configuration (string or object).
  * @returns The application name.
  */
-export function getAppName(manifest: Partial<Manifest>, intent?: Intent): string {
+export function getAppName(manifest: Partial<Manifest>, intentConfig?: IntentConfig): string {
     const id = manifest['sap.app']?.id ?? '';
 
-    intent ??= {
-        object: id.replace(/\./g, ''),
-        action: 'preview'
-    };
+    const intent: Intent = intentConfig
+        ? resolveIntent(intentConfig)
+        : {
+              object: id.replace(/\./g, ''),
+              action: 'preview'
+          };
 
-    return `${intent?.object}-${intent?.action}`;
+    return `${intent.object}-${intent.action}`;
 }
 
 /**
@@ -462,7 +564,7 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
     sanitizeConfig(config, logger);
     // add flp preview url
     const flpConfig = getFlpConfigWithDefaults(config.flp);
-    urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
+    urls.push({ path: `${flpConfig.path}#${buildIntentHash(flpConfig.intent)}`, type: 'preview' });
     // add editor urls
     if (config.editors) {
         config.editors.rta?.endpoints.forEach((endpoint) => {
