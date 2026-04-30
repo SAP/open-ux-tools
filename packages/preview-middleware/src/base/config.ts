@@ -159,9 +159,11 @@ export function parseIntentString(intentString: string): Intent {
             params = {};
             const paramPairs = paramsMatch[1].split('&');
             for (const pair of paramPairs) {
-                const [key, value] = pair.split('=');
+                const eqIdx = pair.indexOf('=');
+                const key = eqIdx >= 0 ? pair.slice(0, eqIdx) : pair;
+                const value = eqIdx >= 0 ? pair.slice(eqIdx + 1) : '';
                 if (key) {
-                    params[decodeURIComponent(key)] = decodeURIComponent(value ?? '');
+                    params[decodeURIComponent(key)] = decodeURIComponent(value);
                 }
             }
         }
@@ -193,7 +195,7 @@ export function buildIntentHash(intentConfig: IntentConfig): string {
 
     if (params && Object.keys(params).length > 0) {
         const paramString = Object.entries(params)
-            .map(([key, value]) => `${key}=${value}`)
+            .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
             .join('&');
         hash += `?${paramString}`;
     }

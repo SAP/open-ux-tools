@@ -59,7 +59,8 @@ import {
     sanitizeRtaConfig,
     CARD_GENERATOR_DEFAULT,
     remapResourcesForPath,
-    buildIntentHash
+    buildIntentHash,
+    resolveIntent
 } from './config';
 import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
@@ -693,10 +694,11 @@ export class FlpSandbox {
                 this.router.use(app.target, serveStatic(webappPath));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
             } else if (app.componentId) {
+                const resolved = app.intent ? resolveIntent(app.intent) : undefined;
                 manifest = {
                     'sap.app': {
                         id: app.componentId,
-                        title: app.intent ? buildIntentHash(app.intent) : app.componentId
+                        title: resolved ? `${resolved.object}-${resolved.action}` : app.componentId
                     }
                 } as Manifest;
             }

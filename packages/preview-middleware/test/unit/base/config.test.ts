@@ -407,6 +407,14 @@ describe('config', () => {
             });
         });
 
+        test('param value containing equals sign is preserved', () => {
+            expect(parseIntentString('App-action?filter=price=100')).toEqual({
+                object: 'App',
+                action: 'action',
+                params: { filter: 'price=100' }
+            });
+        });
+
         test('intent with route only', () => {
             expect(parseIntentString('SupplierInvoice-create&/create/isSharedDraft=false')).toEqual({
                 object: 'SupplierInvoice',
@@ -486,6 +494,12 @@ describe('config', () => {
 
         test('empty params object is ignored', () => {
             expect(buildIntentHash({ object: 'app', action: 'preview', params: {} })).toBe('app-preview');
+        });
+
+        test('encodes special characters in param values', () => {
+            expect(
+                buildIntentHash({ object: 'App', action: 'view', params: { filter: 'a&b=c' } })
+            ).toBe('App-view?filter=a%26b%3Dc');
         });
 
         test('string passthrough without leading hash', () => {
