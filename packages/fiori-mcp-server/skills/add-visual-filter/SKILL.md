@@ -2,6 +2,9 @@
 name: add-visual-filter
 description: 'Add visual filters with charts to SAP Fiori Elements value help dialogs. Use for: displaying aggregated data in filter fields, adding bar/column/line/donut charts to value help, configuring Analytics.AggregatedProperty with sum/average/min/max, setting up @Aggregation.ApplySupported, configuring manifest.json for visual filters, implementing OData V4 aggregation in CAP projects, enhancing List Report filter bars with visual analytics.'
 argument-hint: 'field name to add visual filter to (e.g., "Category", "Status", "Region")'
+metadata:
+  author: fiori-tools
+  version: "0.0.1"
 ---
 
 # Add Visual Filter Bar to SAP Fiori Elements Application
@@ -28,22 +31,25 @@ Add `@Aggregation.ApplySupported` annotation to the entity in your service file 
 
 ```cds
 service YourService {
-  @Aggregation.ApplySupported: {
-    Transformations: ['aggregate', 'groupby'],
-    AggregatableProperties: [
-      { Property: MeasureField }  // e.g., Amount, Price, Quantity, Revenue
-    ],
-    GroupableProperties: [
-      DimensionField1,  // e.g., Status, Category, Region, Department
-      DimensionField2,
-      // ... other fields that can be grouped
-    ]
-  }
   entity YourEntity as projection on schema.YourEntity;
 }
+
+annotate YourService.YourEntity with @Aggregation.ApplySupported: {
+  Transformations: ['aggregate', 'groupby'],
+  AggregatableProperties: [
+    { Property: MeasureField }  // e.g., Amount, Price, Quantity, Revenue
+  ],
+  GroupableProperties: [
+    DimensionField1,  // e.g., Status, Category, Region, Department
+    DimensionField2,
+    // ... other fields that can be grouped
+  ]
+};
 ```
 
 **Key Points:**
+- The annotation must be applied directly to the entity, not the service block
+- Use `annotate ServiceName.EntityName with @Aggregation.ApplySupported` after the service definition
 - `AggregatableProperties`: Numeric fields that can be summed, averaged, etc. (measures)
 - `GroupableProperties`: Fields to group by (dimensions)
 - Both properties are required for visual filters to work
@@ -199,20 +205,21 @@ Generic implementation template:
 **Service Definition (srv/service.cds):**
 ```cds
 service MyService {
-  @Aggregation.ApplySupported: {
-    Transformations: ['aggregate', 'groupby'],
-    AggregatableProperties: [
-      { Property: Amount }  // Your numeric/measure field
-    ],
-    GroupableProperties: [
-      Category,      // Your dimension field
-      Status,
-      CreatedDate
-      // Add other fields users can group by
-    ]
-  }
   entity Products as projection on db.Products;
 }
+
+annotate MyService.Products with @Aggregation.ApplySupported: {
+  Transformations: ['aggregate', 'groupby'],
+  AggregatableProperties: [
+    { Property: Amount }  // Your numeric/measure field
+  ],
+  GroupableProperties: [
+    Category,      // Your dimension field
+    Status,
+    CreatedDate
+    // Add other fields users can group by
+  ]
+};
 ```
 
 **Annotations (app/yourapp/annotations.cds):**
