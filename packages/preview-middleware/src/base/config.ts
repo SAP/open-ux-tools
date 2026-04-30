@@ -193,6 +193,7 @@ export function buildIntentHash(intentConfig: IntentConfig): string {
     const params = intentConfig.params;
     const route = intentConfig.route;
 
+    // URLSearchParams encodes spaces as '+' (form-urlencoded), but FLP hash fragments require '%20' (percent-encoding).
     if (params && Object.keys(params).length > 0) {
         const paramString = Object.entries(params)
             .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
