@@ -14589,9 +14589,10 @@ sap.ui.define([
             Then.onTheTravelList.onTable().iCheckAction(\\"Set To Booked\\", { enabled: false });
             // Then.onTheTravelList.onTable().iPressAction(\\"Set Cancel Date to Tomorrow\\");
             Then.onTheTravelList.onTable().iCheckAction(\\"Set Cancel Date to Tomorrow\\", { enabled: false });
-            Then.onTheTravelList.onTable().iCheckColumns(10, {\\"TravelID\\":{\\"header\\":\\"Travel ID\\"},\\"AgencyID\\":{\\"header\\":\\"Agency ID\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"BeginDate\\":{\\"header\\":\\"Starting Date\\"},\\"EndDate\\":{\\"header\\":\\"End Date\\"},\\"BookingFee\\":{\\"header\\":\\"Booking Fee\\"},\\"TotalPrice\\":{\\"header\\":\\"Total Price\\"},\\"LatestCancellationDate\\":{\\"header\\":\\"Latest Cancellation Date\\"},\\"Memo\\":{\\"header\\":\\"Description\\"},\\"Status\\":{\\"header\\":\\"Travel Status\\"}});
+            Then.onTheTravelList.onTable().iCheckColumns(undefined, {\\"TravelID\\":{\\"header\\":\\"Travel ID\\"},\\"AgencyID\\":{\\"header\\":\\"Agency ID\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"BeginDate\\":{\\"header\\":\\"Starting Date\\"},\\"EndDate\\":{\\"header\\":\\"End Date\\"},\\"BookingFee\\":{\\"header\\":\\"Booking Fee\\"},\\"TotalPrice\\":{\\"header\\":\\"Total Price\\"},\\"LatestCancellationDate\\":{\\"header\\":\\"Latest Cancellation Date\\"},\\"Memo\\":{\\"header\\":\\"Description\\"},\\"Status\\":{\\"header\\":\\"Travel Status\\"}});
 
         });
+
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {

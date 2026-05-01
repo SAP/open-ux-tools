@@ -45,8 +45,7 @@ describe('ui5-test-writer', () => {
 
     beforeAll(async () => {
         // Pass existsSync and addPathsToQUnitJs through to real implementations by default
-        const realFs = await import('node:fs');
-        existsSyncMock.mockImplementation(realFs.existsSync);
+        existsSyncMock.mockImplementation(actualFs.existsSync);
 
         const realOpaQUnitUtils = await import('../../src/utils/opaQUnitUtils.js');
         addPathsToQUnitJsMock.mockImplementation(realOpaQUnitUtils.addPathsToQUnitJs);
@@ -376,8 +375,7 @@ describe('ui5-test-writer', () => {
             let realExistsSync: (path: string) => boolean;
 
             beforeAll(async () => {
-                const realFs = await import('node:fs');
-                realExistsSync = realFs.existsSync;
+                realExistsSync = actualFs.existsSync;
             });
 
             beforeEach(() => {
@@ -424,7 +422,7 @@ describe('ui5-test-writer', () => {
             let realExistsSync: (path: string) => boolean;
 
             beforeAll(() => {
-                realExistsSync = jest.requireActual<{ existsSync: (path: string) => boolean }>('node:fs').existsSync;
+                realExistsSync = actualFs.existsSync;
             });
 
             beforeEach(() => {
@@ -473,6 +471,135 @@ describe('ui5-test-writer', () => {
                     expect.any(String),
                     expect.anything()
                 );
+            });
+
+            it('adds int-test script and resolves htmlTarget from flpSandbox.html when no integration folder exists', async () => {
+                // LropNoTests has no integration/ folder, no test script, and a flpSandbox.html
+                const projectDir = prepareTestFiles('LropNoTests');
+                existsSyncMock.mockImplementation((p: string) => {
+                    // No JourneyRunner.js → goes into resolveStandaloneWriteContext
+                    if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
+                        return false;
+                    }
+                    // No existing integration/ folder → falls into the else branch
+                    if (p.includes('test-output') && p.endsWith('integration')) {
+                        return false;
+                    }
+                    // flpSandbox.html exists in the project (only in mem-fs, not on real disk)
+                    if (p.includes('test-output') && p.endsWith('flpSandbox.html')) {
+                        return true;
+                    }
+                    return realExistsSync(p);
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped = fs.dump(projectDir);
+
+                // int-test script should have been added to package.json
+                const packageJsonPath = Object.keys(dumped).find((p) => p.endsWith('package.json'));
+                expect(packageJsonPath).toBeDefined();
+                const packageJson = JSON.parse(dumped[packageJsonPath!].contents as string);
+                expect(packageJson.scripts['int-test']).toContain('opaTests.qunit.html');
+
+                // htmlTarget resolved from flpSandbox.html should appear in JourneyRunner.js launchUrl
+                const journeyRunnerPath = Object.keys(dumped).find((p) => p.includes('JourneyRunner.js'));
+                expect(journeyRunnerPath).toBeDefined();
+                expect(dumped[journeyRunnerPath!].contents).toContain('C_Arbankstatement-display');
+            });
+
+            it('moves existing integration folder to integration_old when no JourneyRunner exists', async () => {
+                // LropVirtualTests has an integration/ folder on disk
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                const moveSpy = jest.spyOn(fs!, 'move');
+                existsSyncMock.mockImplementation((p: string) => {
+                    if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
+                        return false;
+                    }
+                    // Simulate existing integration/ folder in the output dir
+                    if (p.includes('test-output') && p.endsWith('integration')) {
+                        return true;
+                    }
+                    return realExistsSync(p);
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                expect(moveSpy).toHaveBeenCalledWith(
+                    expect.stringContaining(join('integration', '**')),
+                    expect.stringContaining('integration_old')
+                );
+                moveSpy.mockRestore();
+            });
+
+            it('writes missing page objects and calls addPagesToJourneyRunner when JourneyRunner exists but pages are absent', async () => {
+                // LropVirtualTests has JourneyRunner.js — simulate page files not yet existing in mem-fs
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                existsSyncMock.mockImplementation((p: string) =>
+                    p.includes('test-output') && p.includes('JourneyRunner.js') ? true : realExistsSync(p)
+                );
+
+                // Make editor.exists return false for page files so ensurePageExists writes them
+                const origExists = fs!.exists.bind(fs!);
+                const existsSpy = jest.spyOn(fs!, 'exists').mockImplementation((p) => {
+                    if (
+                        typeof p === 'string' &&
+                        p.includes('test-output') &&
+                        p.includes('pages') &&
+                        p.endsWith('.js')
+                    ) {
+                        return false;
+                    }
+                    return origExists(p);
+                });
+
+                addPathsToQUnitJsMock.mockImplementation(jest.fn());
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped = fs.dump(projectDir);
+                // Page object files should have been written by ensurePageExists
+                expect(Object.keys(dumped).some((p) => p.includes('pages') && p.includes('TravelList.js'))).toBe(true);
+                // addPathsToQUnitJs should have been called (hasJourneyRunner path)
+                expect(addPathsToQUnitJsMock).toHaveBeenCalled();
+
+                existsSpy.mockRestore();
+            });
+
+            it('skips adding int-test script when it already exists in package.json', async () => {
+                // LropNoTests has no integration/ folder; pre-populate int-test so the
+                // addition is skipped, covering the hasTestScript = true branch
+                const projectDir = prepareTestFiles('LropNoTests');
+                existsSyncMock.mockImplementation((p: string) => {
+                    if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
+                        return false;
+                    }
+                    if (p.includes('test-output') && p.endsWith('integration')) {
+                        return false;
+                    }
+                    if (p.includes('test-output') && p.endsWith('flpSandbox.html')) {
+                        return false;
+                    }
+                    return realExistsSync(p);
+                });
+
+                // Pre-inject int-test so checkScriptInPackageJson returns true and skips re-adding it
+                const pkgPath = join(projectDir, 'package.json');
+                const pkg = JSON.parse(fs!.read(pkgPath));
+                const existingScript = 'fiori run --existing';
+                pkg.scripts['int-test'] = existingScript;
+                fs!.write(pkgPath, JSON.stringify(pkg));
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped = fs.dump(projectDir);
+                // int-test script should remain unchanged (not overwritten)
+                const packageJsonPath = Object.keys(dumped).find((p) => p.endsWith('package.json'));
+                expect(packageJsonPath).toBeDefined();
+                const packageJson = JSON.parse(dumped[packageJsonPath!].contents as string);
+                expect(packageJson.scripts['int-test']).toBe(existingScript);
+                // Generation still completes
+                expect(Object.keys(dumped).some((p) => p.includes('FirstJourney.js'))).toBe(true);
             });
         });
 

@@ -5267,6 +5267,9 @@ importers:
       '@sap-ux/edmx-parser':
         specifier: 0.10.0
         version: 0.10.0
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger

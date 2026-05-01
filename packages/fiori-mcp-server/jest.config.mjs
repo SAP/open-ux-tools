@@ -16,11 +16,9 @@ export default {
         '^@sap-ux/vocabularies-types(.*)$': '<rootDir>/node_modules/@sap-ux/vocabularies-types$1',
         // Workspace ESM packages — map to published CJS dist to avoid "Must use import to load ES Module" errors
         '^@sap-ux/odata-annotation-core-types$':
-            '<rootDir>/../../node_modules/.pnpm/@sap-ux+odata-annotation-core-types@0.5.6/node_modules/@sap-ux/odata-annotation-core-types/dist/index.js',
-        '^@sap-ux/text-document-utils$':
-            '<rootDir>/../../node_modules/.pnpm/@sap-ux+text-document-utils@0.3.3/node_modules/@sap-ux/text-document-utils/dist/index.js',
-        '^@sap-ux/odata-entity-model$':
-            '<rootDir>/../../node_modules/.pnpm/@sap-ux+odata-entity-model@0.3.6/node_modules/@sap-ux/odata-entity-model/dist/index.js',
+            '<rootDir>/../odata-annotation-core-types/dist/index.js',
+        '^@sap-ux/text-document-utils$': '<rootDir>/../text-document-utils/dist/index.js',
+        '^@sap-ux/odata-entity-model$': '<rootDir>/../odata-entity-model/dist/index.js',
         // Workspace package without src/index.ts
         '^@sap-ux/fiori-docs-embeddings$': '<rootDir>/../fiori-docs-embeddings/index.js',
         // Stub fe-fpm-writer to prevent the CJS require chain: ux-specification → fe-fpm-writer →
