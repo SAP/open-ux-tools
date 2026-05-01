@@ -2,7 +2,7 @@ import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { HierarchyEntity } from '../types';
 
 /**
- * Get propmts used to create referential constraints files where they are missiing in hierarchy related entities.
+ * Get prompts used to create referential constraints files where they are missing in hierarchy related entities.
  * Missing constraints would otherwise lead to errors using mock data server.
  *
  * @param hierarchyEntities
