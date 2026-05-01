@@ -21,8 +21,7 @@ ruleTester.run('sap-no-location-reload', rule, {
             code: 'location.reload();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -30,8 +29,7 @@ ruleTester.run('sap-no-location-reload', rule, {
             code: 'var mylocation = location;mylocation.reload();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -39,8 +37,7 @@ ruleTester.run('sap-no-location-reload', rule, {
             code: 'var f = window, w = window; w.location.reload();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -48,8 +45,7 @@ ruleTester.run('sap-no-location-reload', rule, {
             code: 'var mylocation = window.location;mylocation.reload();',
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'CallExpression'
+                    message: errorMessage
                 }
             ]
         }

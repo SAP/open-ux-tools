@@ -1,5 +1,16 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.17
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/text-document-utils@0.3.4
+    - @sap-ux/odata-annotation-core@0.2.18
+    - @sap-ux/cds-annotation-parser@0.2.36
+    - @sap-ux/odata-vocabularies@0.4.31
+
 ## 0.7.16
 
 ### Patch Changes

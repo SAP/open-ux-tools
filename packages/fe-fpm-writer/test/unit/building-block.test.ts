@@ -1172,7 +1172,7 @@ describe('Building Blocks', () => {
             // Since the test above may fail due to aggregation path issues, let's test the detection separately
             // by mocking or using the internal functions directly
             const { DOMParser } = await import('@xmldom/xmldom');
-            const xmlDocument = new DOMParser().parseFromString(xmlViewWithColumns);
+            const xmlDocument = new DOMParser().parseFromString(xmlViewWithColumns, 'text/xml');
 
             // Test the getElementsByTagName functionality directly - this is what the code checks
             const hasTableColumn = xmlDocument.getElementsByTagName('macros:columns').length > 0;
@@ -1965,7 +1965,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlFragmentFilePath), xmlFragmentWithButtonGroups);
 
             const { DOMParser } = await import('@xmldom/xmldom');
-            const xmlDocument = new DOMParser().parseFromString(xmlFragmentWithButtonGroups);
+            const xmlDocument = new DOMParser().parseFromString(xmlFragmentWithButtonGroups, 'text/xml');
 
             const hasButtonGroups = xmlDocument.getElementsByTagName('macros:buttonGroups').length > 0;
             expect(hasButtonGroups).toBe(true);
@@ -2482,7 +2482,7 @@ describe('Building Blocks', () => {
 
             // Test the getElementsByTagName functionality directly - this is what the code checks
             const { DOMParser } = await import('@xmldom/xmldom');
-            const xmlDocument = new DOMParser().parseFromString(xmlViewWithFilterFields);
+            const xmlDocument = new DOMParser().parseFromString(xmlViewWithFilterFields, 'text/xml');
 
             // Test the getElementsByTagName functionality directly - this is what the code checks
             const hasFilterFields = xmlDocument.getElementsByTagName('macros:filterFields').length > 0;
@@ -3065,7 +3065,7 @@ describe('Building Blocks', () => {
             await writeFilesForDebugging(fs);
         });
 
-        test('generate CustomFormField without macros:fields - creates aggregation', async () => {
+        test('generate CustomFormField without macros:fields - inserts FormElement directly into Form', async () => {
             const basePath = join(testAppPath, 'generate-custom-form-field-without-fields');
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Form`;
             const customFormFieldData: CustomFormField = {
@@ -3105,9 +3105,8 @@ describe('Building Blocks', () => {
 
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
             expect(viewContent).toMatchSnapshot('generate-custom-form-field-without-fields');
-            expect(viewContent).toContain('<macros:fields>');
-            expect(viewContent).toMatch(/<macros:fields>[\s\S]*FormElement[\s\S]*<\/macros:fields>/);
-            expect(viewContent).toContain('FormElement');
+            expect(viewContent).not.toMatch(/<macros:fields>[\s\S]*<macros:FormElement/);
+            expect(viewContent).toContain('<macros:FormElement');
             expect(viewContent).toContain('Custom Form Field 2');
             expect(viewContent).toContain('anchor="DataField::AnotherProperty"');
             expect(viewContent).toContain('placement="Before"');

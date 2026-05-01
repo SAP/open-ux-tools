@@ -67,15 +67,16 @@ export function validateProjectName(
         return t('adp.projectNameUppercaseError');
     }
 
+    const nameResult = isCustomerBase ? validateProjectNameExternal(value) : validateProjectNameInternal(value);
+    if (typeof nameResult === 'string') {
+        return nameResult;
+    }
+
     if (isCfEnv) {
         return validateDuplicateProjectName(value, destinationPath);
     }
 
-    if (isCustomerBase) {
-        return validateProjectNameExternal(value);
-    } else {
-        return validateProjectNameInternal(value);
-    }
+    return true;
 }
 
 /**

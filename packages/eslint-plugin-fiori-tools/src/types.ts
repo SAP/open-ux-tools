@@ -1,4 +1,5 @@
-import type { CustomRuleDefinitionType, CustomRuleTypeDefinitions, RuleVisitor } from '@eslint/core';
+import type { RuleDefinition, RuleVisitor } from '@eslint/core';
+import type { CustomRuleDefinitionType, CustomRuleTypeDefinitions } from '@eslint/plugin-kit';
 import type { AnyNode } from '@humanwhocodes/momoa';
 import type { JSONLanguageOptions, JSONSourceCode } from '@eslint/json';
 import type { XMLToken, XMLAstNode } from '@xml-tools/ast';
@@ -23,18 +24,30 @@ export type ManifestRuleDefinition<Options extends Partial<CustomRuleTypeDefinit
     >;
 
 /**
- * Type definition for Fiori-specific ESLint rules.
+ * Internal type definition for Fiori-specific ESLint rules.
  * Supports both JSON and XML source code with annotation nodes.
  * Used for rules that work across manifest and annotation files.
  *
  * @template Options - Optional rule configuration type definitions
+ * @internal
  */
-export type FioriRuleDefinition<Options extends Partial<CustomRuleTypeDefinitions> = object> = CustomRuleDefinitionType<
-    {
-        LangOptions: FioriLanguageOptions;
-        Code: FioriSourceCode;
-        Visitor: RuleVisitor;
-        Node: AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode;
-    },
-    Options
->;
+export type FioriRuleDefinitionInternal<Options extends Partial<CustomRuleTypeDefinitions> = object> =
+    CustomRuleDefinitionType<
+        {
+            LangOptions: FioriLanguageOptions;
+            Code: FioriSourceCode;
+            Visitor: RuleVisitor;
+            Node: AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode;
+        },
+        Options
+    >;
+
+/**
+ * Type definition for Fiori-specific ESLint rules that is compatible with ESLint's RuleDefinition.
+ * This type uses the base SourceCode type for compatibility while maintaining runtime type safety
+ * through instanceof checks in the rule factory.
+ *
+ * @template Options - Optional rule configuration type definitions
+ */
+export type FioriRuleDefinition<Options extends Partial<CustomRuleTypeDefinitions> = object> =
+    FioriRuleDefinitionInternal<Options> & RuleDefinition;

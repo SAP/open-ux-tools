@@ -1,5 +1,21 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.12.7
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/axios-extension@1.25.34
+
+## 0.12.6
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+
 ## 0.12.5
 
 ### Patch Changes

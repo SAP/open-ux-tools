@@ -1,5 +1,11 @@
 # @sap-ux/text-document-utils
 
+## 0.3.4
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
 ## 0.3.3
 
 ### Patch Changes

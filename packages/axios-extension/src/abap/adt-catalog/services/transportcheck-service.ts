@@ -77,7 +77,7 @@ export class TransportChecksService extends AdtService {
             this.log.warn(`Invalid XML: ${xml}`);
             return [];
         }
-        const doc = new DOMParser().parseFromString(xml);
+        const doc = new DOMParser().parseFromString(xml, 'text/xml') as unknown as Document;
 
         const status = xpath.select1('//RESULT/text()', doc)?.toString() as AdtTransportStatus;
         switch (status) {
