@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { platform } from 'node:os';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { PromptNames } from '../src/app/types';
@@ -470,52 +471,55 @@ describe('Repo App Download', () => {
         expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.telemetry', { error: errorMsg }));
         verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
     });
+    // If this test is not skipped on Windows, it will fail first 3 tests in this describe block. Should be looked into in the future, out of scope in ESM migration.
+    (platform() === 'win32' ? it : it.skip)(
+        'Should execute post app gen hook event when postGenCommand is provided',
+        async () => {
+            copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
+            mockIsValidPromptState.mockReturnValue(true);
+            mockGetAppConfig.mockResolvedValue(appConfig);
+            mockHandleWorkspaceConfig.mockResolvedValue({
+                launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
+                cwd: testOutputDir,
+                workspaceFolderUri: undefined,
+                appNotInWorkspace: false
+            });
 
-    it.skip('Should execute post app gen hook event when postGenCommand is provided', async () => {
-        copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
-        mockIsValidPromptState.mockReturnValue(true);
-        mockGetAppConfig.mockResolvedValue(appConfig);
-        mockHandleWorkspaceConfig.mockResolvedValue({
-            launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
-            cwd: testOutputDir,
-            workspaceFolderUri: undefined,
-            appNotInWorkspace: false
-        });
-
-        await expect(
-            yeomanTest
-                .run(RepoAppDownloadGenerator, {
-                    resolved: repoAppDownloadGenPath
+            await expect(
+                yeomanTest
+                    .run(RepoAppDownloadGenerator, {
+                        resolved: repoAppDownloadGenPath
+                    })
+                    .cd('.')
+                    .withOptions({
+                        appRootPath: testOutputDir,
+                        vscode: mockVSCode,
+                        data: {
+                            postGenCommand: 'test-post-gen-command'
+                        }
+                    })
+                    .withPrompts({
+                        systemSelection: 'system3',
+                        selectedApp: {
+                            appId: appConfig.app.id,
+                            title: appConfig.app.title,
+                            description: appConfig.app.description,
+                            repoName: 'app-1-repo',
+                            url: 'url-1'
+                        },
+                        targetFolder: testOutputDir
+                    })
+            ).resolves.not.toThrow();
+            expect(mockSendTelemetry).toHaveBeenCalledWith(
+                EventName.GENERATION_SUCCESS,
+                TelemetryHelper.createTelemetryData({
+                    appType: 'repo-app-import-sub-generator'
                 })
-                .cd('.')
-                .withOptions({
-                    appRootPath: testOutputDir,
-                    vscode: mockVSCode,
-                    data: {
-                        postGenCommand: 'test-post-gen-command'
-                    }
-                })
-                .withPrompts({
-                    systemSelection: 'system3',
-                    selectedApp: {
-                        appId: appConfig.app.id,
-                        title: appConfig.app.title,
-                        description: appConfig.app.description,
-                        repoName: 'app-1-repo',
-                        url: 'url-1'
-                    },
-                    targetFolder: testOutputDir
-                })
-        ).resolves.not.toThrow();
-        expect(mockSendTelemetry).toHaveBeenCalledWith(
-            EventName.GENERATION_SUCCESS,
-            TelemetryHelper.createTelemetryData({
-                appType: 'repo-app-import-sub-generator'
-            })
-        );
-        expect(handleWorkspaceConfig).toHaveBeenCalled();
-        verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
-    });
+            );
+            expect(handleWorkspaceConfig).toHaveBeenCalled();
+            verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
+        }
+    );
 
     it('should successfully download a quick deployed app from repository', async () => {
         copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
