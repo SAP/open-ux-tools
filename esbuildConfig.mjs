@@ -87,22 +87,18 @@ const build = async (options, args) => {
         await contextObj.watch();
         console.log('[watch] build started');
     } else {
-        esbuild
-            .build(finalConfig)
-            .then((result) => {
-                if (finalConfig.metafile) {
-                    const statsFile = 'esbuild-stats.json';
-                    writeFileSync(statsFile, JSON.stringify(result.metafile));
-                    console.log(`Wrote esbuild stats file ${statsFile}. Analyse at https://bundle-buddy.com/esbuild/`);
-                }
-            })
-            .then(() => {
-                console.log('[build] build finished');
-            })
-            .catch((error) => {
-                console.log(error.message);
-                process.exit(1);
-            });
+        try {
+            const result = await esbuild.build(finalConfig);
+            if (finalConfig.metafile) {
+                const statsFile = 'esbuild-stats.json';
+                writeFileSync(statsFile, JSON.stringify(result.metafile));
+                console.log(`Wrote esbuild stats file ${statsFile}. Analyse at https://bundle-buddy.com/esbuild/`);
+            }
+            console.log('[build] build finished');
+        } catch (error) {
+            console.log(error.message);
+            process.exit(1);
+        }
     }
 };
 
