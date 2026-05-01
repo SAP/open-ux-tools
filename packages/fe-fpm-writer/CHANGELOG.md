@@ -1,5 +1,15 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.27
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/fiori-annotation-api@0.9.47
+    - @sap-ux/i18n@0.3.11
+    - @sap-ux/project-access@1.36.2
+
 ## 0.43.26
 
 ### Patch Changes

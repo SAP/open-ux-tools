@@ -1,5 +1,18 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.110
+
+### Patch Changes
+
+- 865fb96: fixes for app info generation
+
+## 0.7.109
+
+### Patch Changes
+
+- @sap-ux/ui5-application-writer@1.8.7
+- @sap-ux/project-access@1.36.2
+
 ## 0.7.108
 
 ### Patch Changes

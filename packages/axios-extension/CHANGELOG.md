@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.25.34
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
 ## 1.25.33
 
 ### Patch Changes

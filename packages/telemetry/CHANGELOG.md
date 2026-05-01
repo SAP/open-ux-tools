@@ -1,5 +1,12 @@
 # @sap-ux/telemetry
 
+## 0.6.103
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+    - @sap-ux/project-access@1.36.2
+
 ## 0.6.102
 
 ### Patch Changes
