@@ -117,4 +117,20 @@ describe('Test the reducer', () => {
         };
         expect(reducer(systemState, oAction)).toMatchSnapshot();
     });
+
+    test('Action CREATE_NEW_SYSTEM with pre-populated system info', () => {
+        const oAction: types.CreateNewSystem = {
+            type: types.CREATE_NEW_SYSTEM,
+            payload: {
+                systemInfo: {
+                    name: 'mock.url.sap',
+                    url: 'http://mock.url.sap:50000',
+                    client: '100',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                } as BackendSystem
+            }
+        };
+        expect(reducer(systemState, oAction)).toMatchSnapshot();
+    });
 });

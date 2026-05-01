@@ -39,6 +39,7 @@ sap.ui.define([
         });
 <%_ } -%>
 
+<%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
         opaTest("Check table columns and actions", function (Given, When, Then) {
             <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
             <%_ if (createButton.visible && !isALP) { _%>
@@ -57,9 +58,10 @@ sap.ui.define([
             <%_ }); -%>
             <%_ } -%>
             <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-            Then.onThe<%- startLR %>.onTable().iCheckColumns(<%- Object.keys(tableColumns).length %>, <%- JSON.stringify(tableColumns) %>);
+            Then.onThe<%- startLR %>.onTable().iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
             <%_ } %>
         });
+<%_ } %>
 
 <% if (startLR) { %>
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {

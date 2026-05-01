@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.12
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
 ## 2.1.11
 
 ### Patch Changes

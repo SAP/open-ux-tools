@@ -1,5 +1,13 @@
 # @sap-ux/system-access
 
+## 0.7.10
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/axios-extension@1.25.34
+
 ## 0.7.9
 
 ### Patch Changes
