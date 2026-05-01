@@ -76,7 +76,6 @@ describe('CF Core Auth', () => {
 
             expect(result).toBe(true);
             expect(mockCfGetAuthToken).toHaveBeenCalledTimes(1);
-            expect(mockLogger.log).toHaveBeenCalledWith(`Retrieved CF auth token: ${mockToken}`);
         });
 
         test('should return false when cfGetAuthToken throws an error', async () => {

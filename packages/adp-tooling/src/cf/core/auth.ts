@@ -29,8 +29,7 @@ export async function isLoggedInCf(cfConfig: CfConfig, logger: ToolsLogger): Pro
     }
 
     try {
-        const token = await cfGetAuthToken();
-        logger?.log(`Retrieved CF auth token: ${token}`);
+        await cfGetAuthToken();
         return true;
     } catch (e) {
         logger?.error(`Error occurred while trying to check if it is logged in: ${e?.message}`);

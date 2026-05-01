@@ -272,9 +272,7 @@ describe('CF Services API', () => {
                     } as Record<string, string>)
                 } as Record<string, unknown>)
             );
-            expect(mockLogger.log).toHaveBeenCalledWith(
-                'Fetching ui5AppInfo.json from FDC: https://ui5-flexibility-design-and-configuration.sapui5flex.cfapps.test.cf.com/api/business-service/ui5appinfo?appId=test-app-id&appHostId=host-1&appHostId=host-2'
-            );
+            expect(mockLogger.log).toHaveBeenCalledWith('Fetching ui5AppInfo.json');
             expect(mockLogger.log).toHaveBeenCalledWith('Successfully retrieved ui5AppInfo.json from FDC');
         });
 
