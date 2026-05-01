@@ -27,7 +27,7 @@ export type HierarchyEntity = {
     missingReferentialConstraints?: {
         // Set when the parent nav prop has no referentialConstraint in metadata
         navPropName: string;
-        // Array of constaints, only the first one is supported as this is a mock server restriction
+        // Array of constraints, only the first one is supported as this is a mock server restriction
         constraints: { sourceProperty: string; targetProperty: string }[];
     };
 };
