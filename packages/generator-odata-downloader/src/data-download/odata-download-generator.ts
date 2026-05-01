@@ -377,6 +377,14 @@ export class ODataDownloadGenerator extends Generator {
         }
     }
 
+    /**
+     * Prompts the user to supply missing referential constraints for hierarchy entities that were selected
+     * but lack a `parentProperty` association. Injects a transient wizard step, collects answers, and
+     * patches the resolved constraint values back onto each affected entity in `application.referencedEntities`.
+     *
+     * @param application - the resolved app configuration containing referenced entity metadata
+     * @param promptAnswers - answers already collected from prior prompt steps, used to determine which entities were selected
+     */
     private async _promptMissingReferentialConstraints(
         application: AppConfig,
         promptAnswers: Record<string, unknown>

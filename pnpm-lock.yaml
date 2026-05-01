@@ -2876,8 +2876,8 @@ importers:
   packages/generator-odata-downloader:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.22.0
-        version: 1.22.0
+        specifier: 1.23.0
+        version: 1.23.0
       '@sap-ux/annotation-converter':
         specifier: 0.10.21
         version: 0.10.21
@@ -2930,8 +2930,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       '@vscode-logging/logger':
         specifier: 2.0.8
         version: 2.0.8
@@ -2939,8 +2939,8 @@ importers:
         specifier: 4.3.1
         version: 4.3.1
       i18next:
-        specifier: 25.8.18
-        version: 25.8.18(typescript@5.9.3)
+        specifier: 25.10.10
+        version: 25.10.10(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.19.10)
@@ -8720,9 +8720,6 @@ packages:
     resolution: {integrity: sha512-MXjbREcdN4+ghj9LF0lkPLLDyb0vxxoC59CCkpz9uNUnpjSN/OWL1g/LNR1lkJ0+7MjaAhK95afo9Jhr02yQjQ==}
     engines: {node: '>=14.21.2'}
 
-  '@sap-devx/yeoman-ui-types@1.22.0':
-    resolution: {integrity: sha512-t2BgSyRL700OSVlVW/6OC3pAED9V7nlp8PcZOijwAVn7sAPM0oNTKrDhz0yg+F79/AhmhzUkuIBiWHN6/An6cQ==}
-
   '@sap-devx/yeoman-ui-types@1.23.0':
     resolution: {integrity: sha512-dtJF8TsUimKV/lt0i6oipftbfseA6Ie9E7emBoGBS+hvOFVdj4Dusa/W6bQYJk2JgCRIm9ZExxcOP2OFw3HWOg==}
 
@@ -13482,14 +13479,6 @@ packages:
 
   i18next@25.8.12:
     resolution: {integrity: sha512-hw59RF5QaH9i3l47hTXjeLLtzgVO8OtznlTJZbulmaLbz+itA1hIKWHTEiajY9W2SNPzvL8U5nTBVt7SsOGNRA==}
-    peerDependencies:
-      typescript: ^5
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
-  i18next@25.8.18:
-    resolution: {integrity: sha512-lzY5X83BiL5AP77+9DydbrqkQHFN9hUzWGjqjLpPcp5ZOzuu1aSoKaU3xbBLSjWx9dAzW431y+d+aogxOZaKRA==}
     peerDependencies:
       typescript: ^5
     peerDependenciesMeta:
@@ -23299,8 +23288,6 @@ snapshots:
     dependencies:
       node-cache: 5.1.2
 
-  '@sap-devx/yeoman-ui-types@1.22.0': {}
-
   '@sap-devx/yeoman-ui-types@1.23.0': {}
 
   '@sap-ux/annotation-converter@0.10.21':
@@ -29682,12 +29669,6 @@ snapshots:
       typescript: 5.9.3
 
   i18next@25.8.12(typescript@5.9.3):
-    dependencies:
-      '@babel/runtime': 7.29.2
-    optionalDependencies:
-      typescript: 5.9.3
-
-  i18next@25.8.18(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.29.2
     optionalDependencies:
