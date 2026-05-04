@@ -57,10 +57,7 @@ export async function readLocalModulePaths(project: ReaderCollection, logger: Lo
     const moduleFiles = await project.byGlob('/**/changes/{fragments/**,coding/**}');
     for (const file of moduleFiles) {
         const filePath = file.getPath();
-        const changesIdx = filePath.lastIndexOf('/changes/');
-        if (changesIdx !== -1) {
-            modulePaths.add(filePath.substring(changesIdx + '/changes/'.length));
-        }
+        modulePaths.add(filePath.substring(filePath.lastIndexOf('/changes/') + '/changes/'.length));
     }
 
     logger.debug(`Found ${modulePaths.size} local module(s) for LREP filtering`);

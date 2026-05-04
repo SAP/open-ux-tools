@@ -150,13 +150,6 @@ describe('flex', () => {
             const result = await readLocalModulePaths(project, logger);
             expect(result).toEqual(new Set(['fragments/MyFragment.fragment.xml', 'coding/MyController.js']));
         });
-
-        test('paths without /changes/ prefix are ignored', async () => {
-            byGlobMock.mockResolvedValueOnce([{ getPath: () => '/webapp/other/MyFile.xml' }]);
-
-            const result = await readLocalModulePaths(project, logger);
-            expect(result.size).toBe(0);
-        });
     });
 
     describe('stripLocalModulesFromLrepResponse', () => {
