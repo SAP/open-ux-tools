@@ -14,7 +14,7 @@ import { type FLPConfigPromptOptions, type FLPConfigAnswers, type TileSettingsAn
  * @param {TileSettingsAnswers} tileSettingsAnswers - The answers for tile settings.
  * @param {ManifestNamespace.Inbound} inbounds - The inbounds from the manifest.
  * @param {DescriptorVariant} variant - The descriptor variant object.
- * @param isCfProject
+ * @param {boolean} isCfProject - Indicates if the project is a Cloud Foundry project.
  * @returns {FLPConfigPromptOptions} The FLP configuration prompt options.
  */
 export function getAdpFlpConfigPromptOptions(

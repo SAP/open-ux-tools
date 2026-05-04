@@ -11,7 +11,6 @@ import {
 } from '../../../src/prompts/questions';
 import { t } from '../../../src/i18n';
 import { promptNames } from '../../../src';
-import { add } from 'lodash';
 
 const parseParametersMock = parseParameters as jest.Mock;
 
