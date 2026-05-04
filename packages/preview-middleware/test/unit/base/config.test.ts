@@ -99,7 +99,7 @@ describe('config', () => {
 
     describe('getPreviewPaths', () => {
         test('minimum settings', async () => {
-            const paths = getPreviewPaths({}, mockUtils);
+            const paths = getPreviewPaths({}, undefined, mockUtils);
             expect(paths).toHaveLength(1);
             expect(paths[0]).toMatchObject({
                 path: `${DEFAULT_PATH}#${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`,
@@ -129,7 +129,7 @@ describe('config', () => {
                 },
                 test: [{ framework: 'OPA5' }]
             } as MiddlewareConfig;
-            const previews = getPreviewPaths(config, mockUtils);
+            const previews = getPreviewPaths(config, undefined, mockUtils);
             expect(previews).toHaveLength(5);
             expect(
                 previews.find(
@@ -166,7 +166,7 @@ describe('config', () => {
                 },
                 test: [{ framework: 'OPA5', path: 'test/opaTests.qunit.html' }]
             } as MiddlewareConfig;
-            const previews = getPreviewPaths(config, mockUtils);
+            const previews = getPreviewPaths(config, undefined, mockUtils);
             // FLP path is normalized by getFlpConfigWithDefaults
             expect(previews.find(({ path }) => path === '/test/flpSandbox.html#myapp-myaction')).toBeDefined();
             // editor endpoint path gets a leading slash added
@@ -195,7 +195,7 @@ describe('config', () => {
                     }
                 }
             } as unknown as MiddlewareConfig;
-            getPreviewPaths(config, mockUtils);
+            getPreviewPaths(config, undefined, mockUtils);
             expect(consoleSpyError).not.toHaveBeenCalled();
             expect(consoleSpyWarning).not.toHaveBeenCalledWith('developerMode for /editor.html disabled');
             expect(config.editors!.rta!.endpoints[0].developerMode).toBe(true);
@@ -215,7 +215,7 @@ describe('config', () => {
                     }
                 }
             } as unknown as MiddlewareConfig;
-            getPreviewPaths(config, mockUtils);
+            getPreviewPaths(config, undefined, mockUtils);
             expect(consoleSpyError).not.toHaveBeenCalled();
             expect(consoleSpyWarning).not.toHaveBeenCalledWith(
                 'developerMode for /test/adaptation-editor.html disabled'
@@ -236,7 +236,7 @@ describe('config', () => {
                     }
                 }
             } as unknown as MiddlewareConfig;
-            getPreviewPaths(config, mockUtils);
+            getPreviewPaths(config, undefined, mockUtils);
             expect(consoleSpyError).toHaveBeenCalledWith(
                 'developerMode is ONLY supported for SAP UI5 adaptation projects.'
             );

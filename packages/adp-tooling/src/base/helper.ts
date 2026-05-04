@@ -150,16 +150,16 @@ export function readManifestFromBuildPath(cfBuildPath: string): Manifest {
  * Load and parse the app variant descriptor.
  *
  * @param {ReaderCollection} rootProject - The root project.
- * @param {MiddlewareUtils} utils - The middleware utils.
+ * @param {MiddlewareUtils} [utils] - The optional middleware utils.
  * @returns {Promise<DescriptorVariant>} The parsed descriptor variant.
  */
 export async function loadAppVariant(
     rootProject: ReaderCollection,
-    utils: MiddlewareUtils
+    utils?: MiddlewareUtils
 ): Promise<DescriptorVariant> {
-    const namespace = utils.getProject().getNamespace();
+    const namespace = utils?.getProject?.()?.getNamespace?.();
     const pathPrefix =
-        utils.getProject?.()?.getType?.() === 'component' && namespace ? posix.join('/resources', namespace) : '';
+        utils?.getProject?.()?.getType?.() === 'component' && namespace ? posix.join('/resources', namespace) : '';
     const appVariant = await rootProject.byPath(`${pathPrefix}/manifest.appdescr_variant`);
     if (!appVariant) {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');

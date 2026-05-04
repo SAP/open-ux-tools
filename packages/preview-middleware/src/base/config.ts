@@ -290,7 +290,7 @@ export function adjustCardGeneratorPath(
  * @param config configurations from the ui5.yaml
  * @param logger logger instance
  */
-export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): void {
+export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger = new ToolsLogger()): void {
     //prettier-ignore
     if (config.rta) { //NOSONAR
         config.editors ??= {};
@@ -546,14 +546,14 @@ export function createTestTemplateConfig(
  * Returns the preview paths.
  *
  * @param config configuration from the ui5.yaml
- * @param utils middleware utils
  * @param logger logger instance
+ * @param utils middleware utils
  * @returns an array of preview paths
  */
 export function getPreviewPaths(
     config: MiddlewareConfig,
-    utils: MiddlewareUtils,
-    logger: ToolsLogger = new ToolsLogger()
+    logger?: ToolsLogger,
+    utils?: MiddlewareUtils
 ): PreviewUrls[] {
     const urls: PreviewUrls[] = [];
     // remove incorrect configurations
