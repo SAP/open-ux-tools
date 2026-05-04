@@ -315,10 +315,14 @@ export function filterExcludeComponentNamespace(
     if (typeof utils !== 'object' || utils.getProject?.()?.getType?.() !== 'component') {
         return undefined;
     }
+    const namespace = utils.getProject().getNamespace();
+    if (!namespace) {
+        return undefined;
+    }
     const prefixTypes = ['/test-resources', '/resources'] as const;
     const excludedPaths: string[] = [];
     for (const prefixType of prefixTypes) {
-        excludedPaths.push(posix.join(`${prefixType}`, utils.getProject().getNamespace()));
+        excludedPaths.push(posix.join(`${prefixType}`, namespace));
     }
 
     return (pathname: string, _req: IncomingMessage): boolean => {

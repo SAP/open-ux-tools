@@ -157,10 +157,9 @@ export async function loadAppVariant(
     rootProject: ReaderCollection,
     utils: MiddlewareUtils
 ): Promise<DescriptorVariant> {
+    const namespace = utils.getProject().getNamespace();
     const pathPrefix =
-        utils.getProject?.()?.getType?.() === 'component'
-            ? posix.join('/resources', utils.getProject().getNamespace())
-            : '';
+        utils.getProject?.()?.getType?.() === 'component' && namespace ? posix.join('/resources', namespace) : '';
     const appVariant = await rootProject.byPath(`${pathPrefix}/manifest.appdescr_variant`);
     if (!appVariant) {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');

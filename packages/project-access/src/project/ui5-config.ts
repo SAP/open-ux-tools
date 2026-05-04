@@ -55,8 +55,8 @@ async function getBaseDir(appRoot: string, memFs?: Editor): Promise<string> {
  * @returns - path to webapp folder
  */
 export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<string> {
-    //Shortcut: if webapp/manifest.json exists, return webapp path w/o reading the YAML content
-    if (await fileExists(join(appRoot, DirName.Webapp, FileName.Manifest), memFs)) {
+    // Shortcut: if no ui5.yaml exists, skip YAML parsing and use the default webapp path
+    if (!(await fileExists(join(appRoot, FileName.Ui5Yaml), memFs))) {
         return join(appRoot, DirName.Webapp);
     }
     let pathMappings;
@@ -86,8 +86,8 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
  * @throws {Error} if project type is not 'application', 'component', 'library', 'theme-library' or 'module'
  */
 export async function getWebappTestPath(appRoot: string, memFs?: Editor): Promise<string> {
-    //Shortcut: if webapp/manifest.json exists, return webapp/test path w/o reading the YAML content
-    if (await fileExists(join(appRoot, DirName.Webapp, FileName.Manifest), memFs)) {
+    // Shortcut: if no ui5.yaml exists, skip YAML parsing and use the default test path
+    if (!(await fileExists(join(appRoot, FileName.Ui5Yaml), memFs))) {
         return join(appRoot, DirName.Webapp, 'test');
     }
     let pathMappings;

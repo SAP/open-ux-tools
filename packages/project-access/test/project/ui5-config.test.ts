@@ -110,6 +110,17 @@ describe('Test getWebappPath()', () => {
             join(samplesRoot, 'custom-component-webapp-path', 'ts-src', 'app')
         );
     });
+
+    test('YAML is authoritative even if stale webapp/manifest.json exists on disk', async () => {
+        const memFs = create(createStorage());
+        const appRoot = join(samplesRoot, 'custom-webapp-path');
+        memFs.write(
+            join(appRoot, 'ui5.yaml'),
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: src/webapp'
+        );
+        memFs.write(join(appRoot, 'webapp', 'manifest.json'), '{}');
+        expect(await getWebappPath(appRoot, memFs)).toEqual(join(appRoot, 'src', 'webapp'));
+    });
 });
 
 describe('Test getWebappTestPath()', () => {
@@ -180,6 +191,17 @@ describe('Test getWebappTestPath()', () => {
         );
         memFs.writeJSON(join(appRoot, 'package.json'), {});
         expect(await getWebappTestPath(appRoot, memFs)).toEqual(join(appRoot, 'tests'));
+    });
+
+    test('YAML is authoritative even if stale webapp/manifest.json exists on disk', async () => {
+        const memFs = create(createStorage());
+        const appRoot = join(samplesRoot, 'custom-webapp-path');
+        memFs.write(
+            join(appRoot, 'ui5.yaml'),
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: src/webapp'
+        );
+        memFs.write(join(appRoot, 'webapp', 'manifest.json'), '{}');
+        expect(await getWebappTestPath(appRoot, memFs)).toEqual(join(appRoot, 'src', 'webapp', 'test'));
     });
 });
 
