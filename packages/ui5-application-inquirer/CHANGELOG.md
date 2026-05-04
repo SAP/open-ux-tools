@@ -1,5 +1,20 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.17.20
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.43
+- @sap-ux/project-access@1.36.2
+- @sap-ux/project-input-validator@0.6.81
+
+## 0.17.19
+
+### Patch Changes
+
+- Updated dependencies [a4b90ca]
+    - @sap-ux/project-input-validator@0.6.80
+
 ## 0.17.18
 
 ### Patch Changes
