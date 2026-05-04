@@ -14,6 +14,7 @@ import { type FLPConfigPromptOptions, type FLPConfigAnswers, type TileSettingsAn
  * @param {TileSettingsAnswers} tileSettingsAnswers - The answers for tile settings.
  * @param {ManifestNamespace.Inbound} inbounds - The inbounds from the manifest.
  * @param {DescriptorVariant} variant - The descriptor variant object.
+ * @param isCfProject
  * @returns {FLPConfigPromptOptions} The FLP configuration prompt options.
  */
 export function getAdpFlpConfigPromptOptions(
