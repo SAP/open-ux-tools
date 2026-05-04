@@ -1,4 +1,4 @@
-import { join, basename } from 'node:path';
+import { join } from 'node:path';
 import { getWebappTestPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -23,8 +23,8 @@ const renameMessage = (filePath: string): string =>
  */
 export async function renameSandbox(fs: Editor, basePath: string, path: string, logger?: ToolsLogger): Promise<void> {
     const webappTestPath = await getWebappTestPath(basePath);
-    const fileName = basename(path);
-    const filePath = join(webappTestPath, fileName);
+    const relativePath = path.replace(/^\/?test\//, '');
+    const filePath = join(webappTestPath, relativePath);
     if (fs.exists(filePath)) {
         fs.move(filePath, filePath.replace('.html', '_old.html'));
         logger?.info(renameMessage(path));
@@ -53,7 +53,7 @@ export async function renameSandbox(fs: Editor, basePath: string, path: string, 
  * @param logger logger to report info to the user
  */
 export async function renameDefaultSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const defaultSandboxPaths = [join('test', 'flpSandbox.html'), join('test', 'flpSandboxMockserver.html')];
+    const defaultSandboxPaths = ['test/flpSandbox.html', 'test/flpSandboxMockserver.html'];
     for (const path of defaultSandboxPaths) {
         await renameSandbox(fs, basePath, path, logger);
     }
