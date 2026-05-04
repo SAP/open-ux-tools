@@ -1,5 +1,15 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.38
+
+### Patch Changes
+
+- 600f1b1: feat: Missing fragment or controller extension files errors to be shown in InfoCenter
+
+## 0.25.37
+
+## 0.25.36
+
 ## 0.25.35
 
 ### Patch Changes

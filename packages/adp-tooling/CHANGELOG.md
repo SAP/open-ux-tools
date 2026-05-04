@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 0.18.128
+
+### Patch Changes
+
+- b2ffc7e: fix(mbt): bump mbt to ^1.2.49 to avoid suspicious 1.2.48 release (#4616)
+
+## 0.18.127
+
+### Patch Changes
+
+- fcaa70c: fix(adp-tooling): Improve logging for Cloud Foundry setup
+
 ## 0.18.126
 
 ### Patch Changes
