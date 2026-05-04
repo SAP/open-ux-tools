@@ -1284,7 +1284,7 @@ export class FlpSandbox {
                     return;
                 }
 
-                const backendPath = req.url;;
+                const backendPath = req.url;
                 const response = await provider.get(backendPath);
                 const responseData = typeof response === 'string' ? JSON.parse(response) : response;
 
