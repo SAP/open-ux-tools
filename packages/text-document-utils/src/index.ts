@@ -24,7 +24,8 @@ export { getLineOffsets } from './line-offsets';
 export {
     positionAt,
     getIndentLevel,
-    indent,
+    indentWithTabs,
+    indentWithSpaces,
     isBefore,
     positionContainedStrict,
     rangeContained,
