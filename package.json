@@ -150,7 +150,7 @@
             "protobufjs@>=8.0.0 <8.0.1": ">=8.0.1",
             "onnx-proto>protobufjs": ">=8.0.1",
             "follow-redirects": ">=1.16.0",
-            "@tootallnate/once": ">=3.0.1",
+            "jsdom>http-proxy-agent": ">=7.0.2",
             "css-loader>postcss": ">=8.5.10",
             "sanitize-html>postcss": ">=8.5.10",
             "promptfoo>simple-git": ">=3.36.0",
