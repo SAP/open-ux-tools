@@ -5,4 +5,4 @@
 "@sap-ux/ui-components": patch
 ---
 
-chore: upgrade uuid 11.1.0 → 14.0.0 (CVE-2025 buffer bounds check fix)
+chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
