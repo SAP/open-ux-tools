@@ -132,7 +132,7 @@ export class ODataService extends Axios implements ODataServiceExtension {
         }
         const response = await super.get<T, ODataResponse<T>>(url, config);
         const contentType = response.headers['content-type'] ?? response.headers['Content-Type'];
-        if (response.data && (typeof contentType === 'string' && contentType.includes('application/json') || config.params?.['$format'] === 'json')) {
+        if (response.data && ((typeof contentType === 'string' && contentType.includes('application/json')) || config.params?.['$format'] === 'json')) {
             response.odata = parseODataResponse.bind(response, includeV4ControlData);
         }
         return response as any;
