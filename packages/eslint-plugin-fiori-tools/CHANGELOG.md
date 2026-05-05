@@ -1,5 +1,116 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.0.3
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/fiori-annotation-api@0.9.47
+    - @sap-ux/odata-annotation-core@0.2.18
+    - @sap-ux/project-access@1.36.2
+    - @sap-ux/odata-entity-model@0.3.7
+    - @sap-ux/odata-vocabularies@0.4.31
+
+## 10.0.2
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/fiori-annotation-api@0.9.46
+
+## 10.0.1
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/fiori-annotation-api@0.9.45
+
+## 10.0.0
+
+### Major Changes
+
+- 165a6c2: feat: support ESLint 10
+
+## 9.13.0
+
+### Minor Changes
+
+- 52f6549: Add .cds annotations support to enable linting of CAP apps with the eslint-plugin-fiori-tools.
+
+### Patch Changes
+
+- Updated dependencies [52f6549]
+    - @sap-ux/fiori-annotation-api@0.9.44
+
+## 9.12.3
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/fiori-annotation-api@0.9.43
+
+## 9.12.2
+
+### Patch Changes
+
+- 291351f: Update sap-no-data-field-intent-based-navigation rule documentation with information on semantic link navigation.
+
+## 9.12.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/fiori-annotation-api@0.9.42
+
+## 9.12.0
+
+### Minor Changes
+
+- 524690a: [rule] Add rule to check that a text property for a field with UI.TextArrangement is not hidden.
+
+## 9.11.7
+
+### Patch Changes
+
+- 9696e29: Add legacy fiori_tools_configure.eslintrc for `recommended` and `recommended-for-s4hana`
+
+## 9.11.6
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+    - @sap-ux/fiori-annotation-api@0.9.41
+    - @sap-ux/project-access@1.35.19
+
+## 9.11.5
+
+### Patch Changes
+
+- 0f7f5f3: Fix: Check minUI5 version for the sap-width-including-column-header rule
+
+## 9.11.4
+
+### Patch Changes
+
+- f65d718: fix: revert eslint peerDependency to ^9 instead of exact version
+
+## 9.11.3
+
+### Patch Changes
+
+- 0153757: add es2020 globals
+
+## 9.11.2
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/fiori-annotation-api@0.9.40
+
 ## 9.11.1
 
 ### Patch Changes

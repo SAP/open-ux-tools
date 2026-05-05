@@ -176,9 +176,7 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
         enhanceUI5YamlWithCustomConfig(ui5Config, data.customConfig);
         /** Builder task */
         enhanceUI5YamlWithCfCustomTask(ui5Config, data);
-
         /** Middlewares */
-        // Add fiori-tools-proxy and fiori-tools-preview for local development
         enhanceUI5YamlWithFioriToolsMiddleware(ui5Config);
 
         fs.write(ui5ConfigPath, ui5Config.toString());

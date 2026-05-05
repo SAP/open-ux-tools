@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 2.1.12
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
+## 2.1.11
+
+### Patch Changes
+
+- f77f003: fix(deps): update dependency sanitize-html to v2.17.3 [security]
+
+## 2.1.10
+
+### Patch Changes
+
+- 4357b0b: generate opa5 tests from app info
+
+## 2.1.9
+
+### Patch Changes
+
+- 9357457: fix(ui-components): add inline code block styling for VS Code webviews
+
 ## 2.1.8
 
 ### Patch Changes

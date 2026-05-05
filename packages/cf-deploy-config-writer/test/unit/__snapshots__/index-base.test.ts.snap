@@ -27,7 +27,7 @@ archive.zip
     \\"undeploy\\": \\"cf undeploy appfrontend --delete-services --delete-service-keys --delete-service-brokers\\"
   },
   \\"devDependencies\\": {
-    \\"mbt\\": \\"^1.2.29\\",
+    \\"mbt\\": \\"^1.2.49\\",
     \\"rimraf\\": \\"^6.0.1\\"
   }
 }
@@ -114,7 +114,7 @@ archive.zip
     \\"undeploy\\": \\"cf undeploy managed --delete-services --delete-service-keys --delete-service-brokers\\"
   },
   \\"devDependencies\\": {
-    \\"mbt\\": \\"^1.2.29\\",
+    \\"mbt\\": \\"^1.2.49\\",
     \\"rimraf\\": \\"^6.0.1\\"
   }
 }
@@ -236,7 +236,7 @@ archive.zip
     \\"undeploy\\": \\"cf undeploy standalonewithabapserviceprovider --delete-services --delete-service-keys --delete-service-brokers\\"
   },
   \\"devDependencies\\": {
-    \\"mbt\\": \\"^1.2.29\\",
+    \\"mbt\\": \\"^1.2.49\\",
     \\"rimraf\\": \\"^6.0.1\\"
   }
 }
@@ -251,7 +251,7 @@ archive.zip
         \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^20.0.0\\"
+        \\"@sap/approuter\\": \\"^21.0.0\\"
     }
 }",
     "state": "modified",
@@ -328,8 +328,10 @@ resources:
   - name: standalonewithabapserviceprovider-uaa
     type: org.cloudfoundry.managed-service
     parameters:
-      service-plan: application
       service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      service-name: standalonewithabapserviceprovider-xsuaa-service
       config:
         xsappname: standalonewithabapserviceprovider-\${space-guid}
         tenant-mode: dedicated
@@ -394,7 +396,7 @@ archive.zip
     \\"undeploy\\": \\"cf undeploy standalone-with-connectivity-service --delete-services --delete-service-keys --delete-service-brokers\\"
   },
   \\"devDependencies\\": {
-    \\"mbt\\": \\"^1.2.29\\",
+    \\"mbt\\": \\"^1.2.49\\",
     \\"rimraf\\": \\"^6.0.1\\"
   }
 }
@@ -409,7 +411,7 @@ archive.zip
         \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^20.0.0\\"
+        \\"@sap/approuter\\": \\"^21.0.0\\"
     }
 }",
     "state": "modified",
@@ -478,8 +480,10 @@ resources:
   - name: standalone-with-connectivity-service-uaa
     type: org.cloudfoundry.managed-service
     parameters:
-      service-plan: application
       service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      service-name: standalone-with-connectivity-service-xsuaa-service
       config:
         xsappname: standalone-with-connectivity-service-\${space-guid}
         tenant-mode: dedicated

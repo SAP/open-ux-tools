@@ -1,5 +1,113 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.104
+
+### Patch Changes
+
+- b2ffc7e: fix(mbt): bump mbt to ^1.2.49 to avoid suspicious 1.2.48 release (#4616)
+
+## 0.3.103
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.2
+
+## 0.3.102
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+
+## 0.3.101
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+
+## 0.3.100
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+
+## 0.3.99
+
+### Patch Changes
+
+- 45e087a: refactor(cf-deploy-config-writer): consolidate disk-write template rendering into a single module
+
+## 0.3.98
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/nodejs-utils@0.2.21
+
+## 0.3.97
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/nodejs-utils@0.2.20
+    - @sap-ux/project-access@1.35.20
+
+## 0.3.96
+
+### Patch Changes
+
+- 5f3b63b: fix(cf-deploy-config-writer): update standalone router @sap/approuter to ^21.0.0
+
+## 0.3.95
+
+### Patch Changes
+
+- 6231731: refactor: scope BTP destinations cache to call site instead of module level
+
+    `getBTPDestinations` and `getDestinationProperties` now accept an optional
+    `cache` parameter (`{ list?: Destinations }`). Each generator run passes its own
+    cache object for deduplication within a single invocation; independent calls use
+    independent caches by default. This removes the module-level mutable variable
+    that caused cross-test contamination and prevented stale-cache detection.
+
+## 0.3.94
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/ui5-config@0.30.2
+    - @sap-ux/yaml@0.17.7
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/project-access@1.35.19
+
+## 0.3.93
+
+### Patch Changes
+
+- 9858ad4: refactor: replace hardcoded MTA file operation delays with predicate-based polling
+
+    Introduces `waitForMtaFile()` in `src/mta-config/wait-for-mta.ts` that polls `fs.existsSync` + `Mta.getMtaID()` with a configurable timeout instead of sleeping for a fixed duration. Both `getMtaConfig()` and `generateCAPConfig()` now use this mechanism, eliminating up to 5 × 1000ms silent delays on slow file systems while still handling the mta-lib file-readiness requirement correctly.
+
+## 0.3.92
+
+### Patch Changes
+
+- 551ae9a: Align mta.yaml for standalone and ensure external package.json changes are refected
+
+## 0.3.91
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+
 ## 0.3.90
 
 ### Patch Changes

@@ -9,7 +9,6 @@ import {
     getAggregations,
     getSelectionFieldItems,
     getFilterFields,
-    getTableColumns,
     getAppFeatures
 } from '../../../src/utils/modelUtils';
 import type { Editor } from 'mem-fs-editor';
@@ -232,117 +231,6 @@ describe('Test getFilterFields()', () => {
     });
 });
 
-describe('Test getTableColumns()', () => {
-    test('should return table columns aggregation from page model', () => {
-        const expectedColumns = {
-            column1: { name: 'Column 1' } as unknown as TreeAggregation,
-            column2: { name: 'Column 2' } as unknown as TreeAggregation
-        };
-        const mockPageModel = {
-            root: {
-                aggregations: {
-                    table: {
-                        aggregations: {
-                            columns: {
-                                aggregations: expectedColumns
-                            } as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation
-                }
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
-        const result = getTableColumns(mockPageModel);
-        expect(result).toEqual(expectedColumns);
-    });
-
-    test('should return empty object when table is missing', () => {
-        const mockPageModel = {
-            root: {
-                aggregations: {}
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
-        const result = getTableColumns(mockPageModel);
-        expect(result).toEqual({});
-    });
-
-    test('should return empty object when columns is missing', () => {
-        const mockPageModel = {
-            root: {
-                aggregations: {
-                    table: {
-                        aggregations: {}
-                    } as unknown as TreeAggregation
-                }
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
-        const result = getTableColumns(mockPageModel);
-        expect(result).toEqual({});
-    });
-
-    test('should return empty object when root has no aggregations', () => {
-        const mockPageModel = {
-            root: {} as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
-        const result = getTableColumns(mockPageModel);
-        expect(result).toEqual({});
-    });
-
-    test('should return empty object when column aggregations is empty', () => {
-        const mockPageModel = {
-            root: {
-                aggregations: {
-                    table: {
-                        aggregations: {
-                            columns: {
-                                aggregations: {}
-                            } as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation
-                }
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
-        const result = getTableColumns(mockPageModel);
-        expect(result).toEqual({});
-    });
-
-    test('should handle multiple columns correctly', () => {
-        const expectedColumns = {
-            id: { name: 'ID' } as unknown as TreeAggregation,
-            name: { name: 'Name' } as unknown as TreeAggregation,
-            email: { name: 'Email' } as unknown as TreeAggregation,
-            status: { name: 'Status' } as unknown as TreeAggregation
-        };
-        const mockPageModel = {
-            root: {
-                aggregations: {
-                    table: {
-                        aggregations: {
-                            columns: {
-                                aggregations: expectedColumns
-                            } as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation
-                }
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
-        const result = getTableColumns(mockPageModel);
-        expect(result).toEqual(expectedColumns);
-        expect(Object.keys(result)).toHaveLength(4);
-    });
-});
-
 describe('Test getFeatureData()', () => {
     test('should return empty feature data when project access fails', async () => {
         const mockLogger: Logger = {
@@ -413,24 +301,6 @@ describe('Test edge cases for better branch coverage', () => {
         expect(result).toEqual({});
     });
 
-    test('getTableColumns should handle missing table aggregations', () => {
-        const mockPageModel = {
-            root: {
-                aggregations: {
-                    table: {
-                        aggregations: {
-                            columns: {} as unknown as TreeAggregation
-                        }
-                    } as unknown as TreeAggregation
-                }
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
-        const result = getTableColumns(mockPageModel);
-        expect(result).toEqual({});
-    });
-
     test('getListReportPage should iterate through all pages', () => {
         const applicationModel = {
             pages: {
@@ -455,20 +325,6 @@ describe('Test edge cases for better branch coverage', () => {
             schema: {}
         } as unknown as TreeModel;
         const result = getFilterFields(mockPageModel);
-        expect(result).toEqual({});
-    });
-
-    test('getTableColumns should handle table without columns aggregation', () => {
-        const mockPageModel = {
-            root: {
-                aggregations: {
-                    table: {} as unknown as TreeAggregation
-                }
-            } as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
-        const result = getTableColumns(mockPageModel);
         expect(result).toEqual({});
     });
 
@@ -510,16 +366,6 @@ describe('Test edge cases for better branch coverage', () => {
             schema: {}
         } as unknown as TreeModel;
         const result = getFilterFields(mockPageModel);
-        expect(result).toEqual({});
-    });
-
-    test('getTableColumns should handle null root aggregations', () => {
-        const mockPageModel = {
-            root: null as unknown as TreeAggregation,
-            name: 'test',
-            schema: {}
-        } as unknown as TreeModel;
-        const result = getTableColumns(mockPageModel);
         expect(result).toEqual({});
     });
 });

@@ -113,7 +113,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
 }
 
 /**
- * Prepare the run of the task based on on the configured command i.e. read and validate configuration and create logger.
+ * Prepare the run of the task based on the configured command i.e. read and validate configuration and create logger.
  *
  * @param cmd - CLI command configuration to be executed
  * @returns a set of objects required for the command execution
@@ -133,7 +133,7 @@ async function prepareRun(cmd: Command) {
 
     // Handle empty config when not passed in
     const taskConfig = options.config ? await getDeploymentConfig(options.config) : ({} as AbapDeployConfig);
-    const config = await mergeConfig(taskConfig, options, logger);
+    const config = await mergeConfig(taskConfig, options);
     if (logLevel >= LogLevel.Debug) {
         logger.debug(getConfigForLogging(config));
     }

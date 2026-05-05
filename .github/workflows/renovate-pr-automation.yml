@@ -27,7 +27,7 @@ jobs:
                   token: ${{ secrets.ACCESS_PAT }}
 
             - name: Create changeset
-              uses: mscharley/dependency-changesets-action@v1.2.3
+              uses: mscharley/dependency-changesets-action@v1.2.4
               with:
                   token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'
@@ -58,7 +58,7 @@ jobs:
                   cache: 'pnpm'
 
             - name: Install pnpm modules
-              run: pnpm install --frozen-lockfile
+              run: pnpm install
 
             - name: Build project
               run: pnpm build
@@ -85,7 +85,7 @@ jobs:
                   git push --no-verify
 
             - name: Create changeset
-              uses: mscharley/dependency-changesets-action@v1.2.3
+              uses: mscharley/dependency-changesets-action@v1.2.4
               with:
                   token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'

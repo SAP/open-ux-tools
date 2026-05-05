@@ -145,7 +145,8 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
         servicePath: service?.servicePath,
         client: service?.client,
         edmx: service?.edmx,
-        version
+        version,
+        valueListMetadata: service?.externalServices
     } as Service;
 
     if (service?.destination) {

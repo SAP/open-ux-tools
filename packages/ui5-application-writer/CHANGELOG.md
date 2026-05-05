@@ -1,5 +1,32 @@
 # @sap-ux/ui5-application-writer
 
+## 1.8.7
+
+### Patch Changes
+
+- 165a6c2: feat: support ESLint 10
+
+## 1.8.6
+
+### Patch Changes
+
+- 03d3ea1: fix(deps): Update dependency @ui5/manifest to v1.85.0
+
+## 1.8.5
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/ui5-config@0.30.3
+
+## 1.8.4
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- Updated dependencies [f1e4481]
+    - @sap-ux/ui5-config@0.30.2
+
 ## 1.8.3
 
 ### Patch Changes

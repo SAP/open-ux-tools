@@ -1,5 +1,98 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.110
+
+### Patch Changes
+
+- 865fb96: fixes for app info generation
+
+## 0.7.109
+
+### Patch Changes
+
+- @sap-ux/ui5-application-writer@1.8.7
+- @sap-ux/project-access@1.36.2
+
+## 0.7.108
+
+### Patch Changes
+
+- 287e3a4: Generate tests for Form and Table content in Object Page Sections
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/ui5-application-writer@1.8.7
+
+## 0.7.107
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/ui5-application-writer@1.8.7
+
+## 0.7.106
+
+### Patch Changes
+
+- Updated dependencies [165a6c2]
+    - @sap-ux/ui5-application-writer@1.8.7
+
+## 0.7.105
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/ui5-application-writer@1.8.6
+    - @sap-ux/project-access@1.35.21
+
+## 0.7.104
+
+### Patch Changes
+
+- d36d5d7: app info generation fixes
+
+## 0.7.103
+
+### Patch Changes
+
+- 4357b0b: generate opa5 tests from app info
+
+## 0.7.102
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/ui5-application-writer@1.8.5
+
+## 0.7.101
+
+### Patch Changes
+
+- 17d8e42: fixes for object page opa test failures
+
+## 0.7.100
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/ui5-application-writer@1.8.4
+    - @sap-ux/project-access@1.35.19
+
+## 0.7.99
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/ui5-application-writer@1.8.3
+
+## 0.7.98
+
+### Patch Changes
+
+- 9d272d7: Fix header form field identifier values
+
 ## 0.7.97
 
 ### Patch Changes

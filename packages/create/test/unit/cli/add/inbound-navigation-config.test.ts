@@ -7,7 +7,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as appConfigWriter from '@sap-ux/app-config-writer';
 import * as flpConfigInquirer from '@sap-ux/flp-config-inquirer';
-import { getAppType, type Manifest } from '@sap-ux/project-access';
+import { getAppType, type Manifest, type ManifestNamespace } from '@sap-ux/project-access';
 
 import * as common from '../../../../src/common';
 import * as tracer from '../../../../src/tracing/trace';
@@ -36,7 +36,11 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getAdpConfig: jest.fn(),
     getVariant: jest.fn(),
     generateInboundConfig: jest.fn(),
-    getBaseAppInbounds: jest.fn()
+    getBaseAppInbounds: jest.fn(),
+    isCFEnvironment: jest.fn().mockResolvedValue(false),
+    getCfBaseAppInbounds: jest.fn(),
+    loadCfConfig: jest.fn().mockReturnValue({}),
+    getAppParamsFromUI5Yaml: jest.fn().mockReturnValue({ appHostId: '', appName: '', appVersion: '', spaceGuid: '' })
 }));
 
 jest.mock('@sap-ux/system-access', () => ({
@@ -321,5 +325,64 @@ describe('Test command add navigation-config with ADP scenario', () => {
                 /^Error while executing add inbound navigation configuration 'Failed to get ADP config'/
             )
         );
+    });
+
+    test('Test add inbound-navigation with CF ADP project fetches inbounds via FDC', async () => {
+        getAppTypeMock.mockResolvedValue('Fiori Adaptation');
+        flpConfigurationExistsMock.mockReturnValue(false);
+        const mockCfConfig = {
+            org: { GUID: 'org-guid', Name: 'org' },
+            space: { GUID: 'space-guid', Name: 'space' },
+            url: '/test.cf',
+            token: 'test-token'
+        };
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
+        jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
+        jest.spyOn(adpTooling, 'getAppParamsFromUI5Yaml').mockReturnValueOnce({
+            appHostId: 'test-host-id',
+            appName: 'test-app',
+            appVersion: '1.0.0',
+            spaceGuid: 'space-guid'
+        });
+        const getCfInboundsSpy = jest.spyOn(adpTooling, 'getCfBaseAppInbounds').mockResolvedValueOnce({
+            'semObject-action': {
+                semanticObject: 'so1',
+                action: 'act1',
+                title: 'CF Title'
+            }
+        } as unknown as ManifestNamespace.Inbound);
+
+        getVariantMock.mockReturnValue({
+            id: 'variantId',
+            reference: 'base.app.id',
+            content: []
+        });
+
+        const command = new Command('add');
+        addInboundNavigationConfigCommand(command);
+        await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
+
+        expect(getCfInboundsSpy).toHaveBeenCalledWith('base.app.id', 'test-host-id', mockCfConfig, expect.anything());
+        expect(getAdpConfigMock).not.toHaveBeenCalled();
+        expect(commitMock).toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+    });
+
+    test('Test add inbound-navigation with CF ADP project fails when not logged in', async () => {
+        getAppTypeMock.mockResolvedValue('Fiori Adaptation');
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
+        jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce({} as adpTooling.CfConfig);
+
+        getVariantMock.mockReturnValue({
+            id: 'variantId',
+            reference: 'base.app.id',
+            content: []
+        });
+
+        const command = new Command('add');
+        addInboundNavigationConfigCommand(command);
+        await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
+
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('CF login required'));
     });
 });

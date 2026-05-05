@@ -1,5 +1,111 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.165
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.104
+- @sap-ux/ui5-library-writer@0.6.83
+- @sap-ux/ui5-library-inquirer@0.6.103
+
+## 0.1.164
+
+### Patch Changes
+
+- @sap-ux/ui5-library-inquirer@0.6.102
+
+## 0.1.163
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.103
+- @sap-ux/ui5-library-writer@0.6.82
+- @sap-ux/ui5-library-inquirer@0.6.101
+
+## 0.1.162
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.102
+- @sap-ux/ui5-library-writer@0.6.81
+- @sap-ux/ui5-library-inquirer@0.6.100
+
+## 0.1.161
+
+### Patch Changes
+
+- Updated dependencies [165a6c2]
+    - @sap-ux/ui5-library-writer@0.6.80
+
+## 0.1.160
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.101
+- @sap-ux/ui5-library-writer@0.6.79
+- @sap-ux/ui5-library-inquirer@0.6.99
+
+## 0.1.159
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/fiori-generator-shared@0.13.100
+    - @sap-ux/ui5-library-inquirer@0.6.98
+
+## 0.1.158
+
+### Patch Changes
+
+- Updated dependencies [9a48e63]
+    - @sap-ux/ui5-info@0.13.20
+    - @sap-ux/ui5-library-inquirer@0.6.97
+
+## 0.1.157
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.99
+- @sap-ux/ui5-library-inquirer@0.6.96
+
+## 0.1.156
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.98
+- @sap-ux/nodejs-utils@0.2.21
+- @sap-ux/ui5-library-inquirer@0.6.95
+
+## 0.1.155
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/ui5-info@0.13.19
+    - @sap-ux/fiori-generator-shared@0.13.97
+    - @sap-ux/nodejs-utils@0.2.20
+    - @sap-ux/ui5-library-inquirer@0.6.94
+    - @sap-ux/ui5-library-writer@0.6.78
+
+## 0.1.154
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/ui5-library-writer@0.6.77
+    - @sap-ux/fiori-generator-shared@0.13.96
+    - @sap-ux/ui5-library-inquirer@0.6.93
+    - @sap-ux/nodejs-utils@0.2.19
+    - @sap-ux/ui5-info@0.13.18
+
+## 0.1.153
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.95
+- @sap-ux/ui5-library-writer@0.6.76
+- @sap-ux/ui5-library-inquirer@0.6.92
+
 ## 0.1.152
 
 ### Patch Changes

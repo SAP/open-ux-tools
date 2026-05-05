@@ -3,16 +3,16 @@ const fioriTools = require('@sap-ux/eslint-plugin-fiori-tools');
 
 module.exports = [
     {
-        ignores: [
-            'test/fixtures/**',
-            'dist/**',
-            'node_modules/**',
-            '**/*.config.js',
-            'coverage/**',
-            '**/*.d.ts'
-        ]
+        ignores: ['test/fixtures/**', 'dist/**', 'node_modules/**', '**/*.config.js', 'coverage/**', '**/*.d.ts']
     },
     ...fioriTools.configs['recommended'],
+    {
+        languageOptions: {
+            globals: {
+                globalThis: 'readonly'
+            }
+        }
+    },
     // Register @typescript-eslint plugin + typed linting for test/ files (recommended only covers src/)
     {
         files: ['test/**/*.ts'],
