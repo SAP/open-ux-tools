@@ -8,14 +8,14 @@ import type { Logger } from '@sap-ux/logger/src/types';
 import * as appModels from '../test-input/constants';
 
 const readAppMock = jest.fn();
-/*jest.mock('@sap-ux/project-access', () => ({
+jest.mock('@sap-ux/project-access', () => ({
     ...(jest.requireActual('@sap-ux/project-access') as any),
     createApplicationAccess: jest.fn().mockResolvedValue({
         getSpecification: jest.fn().mockResolvedValue({
             readApp: () => readAppMock()
         })
     })
-}));*/
+}));
 
 const existsSyncMock = jest.fn();
 jest.mock('node:fs', () => {
@@ -655,15 +655,6 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
             expect(bookingObjPageJourneyContent).toContain('"ConnectionId":{"header":"Connection"}');
             expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
-        });
-
-        it.only('debug', async () => {
-            //readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
-            const projectDir = prepareTestFiles('test.sample.mdsk.v4');
-            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
-
-            const files = fs.dump();
-            expect(files).toBeTruthy();
         });
     });
 });
