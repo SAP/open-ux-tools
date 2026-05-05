@@ -8,14 +8,14 @@ import type { Logger } from '@sap-ux/logger/src/types';
 import * as appModels from '../test-input/constants';
 
 const readAppMock = jest.fn();
-jest.mock('@sap-ux/project-access', () => ({
+/*jest.mock('@sap-ux/project-access', () => ({
     ...(jest.requireActual('@sap-ux/project-access') as any),
     createApplicationAccess: jest.fn().mockResolvedValue({
         getSpecification: jest.fn().mockResolvedValue({
             readApp: () => readAppMock()
         })
     })
-}));
+}));*/
 
 const existsSyncMock = jest.fn();
 jest.mock('node:fs', () => {
@@ -483,7 +483,9 @@ describe('ui5-test-writer', () => {
         it('generates tests for v4 application with sub object page', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
             const projectDir = prepareTestFiles('LROPv4');
-            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, {}, subOPMetadata, fs);
 
             const bookingObjPageJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.js'].contents;
@@ -497,6 +499,9 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
             expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "Activate", unbound: false }, { enabled: false })'
+            );
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
@@ -504,8 +509,14 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onForm({ section: "FlightData" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "deductDiscount", unbound: false }, { enabled: false })'
+            );
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: true }, { enabled: true })'
+            );
             expect(bookingObjPageJourneyContent).toContain(
                 'onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })'
             );
@@ -515,6 +526,15 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
             expect(bookingObjPageJourneyContent).toContain('"ConnectionId":{"header":"Connection"}');
             expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
+        });
+
+        it.only('debug', async () => {
+            //readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
+            const projectDir = prepareTestFiles('test.sample.mdsk.v4');
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+            const files = fs.dump();
+            expect(files).toBeTruthy();
         });
     });
 });

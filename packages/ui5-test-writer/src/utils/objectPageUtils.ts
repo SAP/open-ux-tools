@@ -1,6 +1,7 @@
 import type { Logger } from '@sap-ux/logger';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
 import type {
+    ActionButtonState,
     FormField,
     SectionFormField,
     BodySectionFeatureData,
@@ -20,19 +21,25 @@ import {
 } from './modelUtils';
 import { extractTableColumnsFromNode } from './tableUtils';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
+import { parse } from '@sap-ux/edmx-parser';
+import { convert } from '@sap-ux/annotation-converter';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import { buildActionStateFromSpecModelKey } from './actionUtils';
 
 /**
  * Extracts feature data for object pages from the application model.
  *
  * @param objectPages - the array of object pages extracted from the application model
  * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
- * @param log - optional logger instance
+ * @param log - optional logger instance¨
+ * @param metadata - optional metadata for the OPA test generation
  * @returns a record of object page feature data
  */
 export async function getObjectPageFeatures(
     objectPages: PageWithModelV4[],
     listReportPageKey?: string,
-    log?: Logger
+    log?: Logger,
+    metadata?: string
 ): Promise<ObjectPageFeatures[]> {
     const objectPageFeatures: ObjectPageFeatures[] = [];
     if (!objectPages || objectPages.length === 0) {
@@ -41,6 +48,9 @@ export async function getObjectPageFeatures(
     }
 
     // attempt to get individual feature data for each object page
+    const convertedMetadata = metadata ? convert(parse(metadata)) : undefined;
+    const schemaNamespace = convertedMetadata?.namespace ?? '';
+
     for (const objectPage of objectPages) {
         const pageFeatureData: ObjectPageFeatures = {} as ObjectPageFeatures;
 
@@ -52,8 +62,16 @@ export async function getObjectPageFeatures(
         );
         // extract header sections (facets)
         pageFeatureData.headerSections = extractObjectPageHeaderSectionsData(objectPage);
-        // extract body sections
-        pageFeatureData.bodySections = extractObjectPageBodySectionsData(objectPage);
+        // extract body sections (includes section-level actions)
+        pageFeatureData.bodySections = extractObjectPageBodySectionsData(
+            objectPage,
+            convertedMetadata,
+            schemaNamespace
+        );
+        // extract header-level actions
+        pageFeatureData.headerActions = convertedMetadata
+            ? extractHeaderActions(objectPage, convertedMetadata, schemaNamespace)
+            : [];
         objectPageFeatures.push(pageFeatureData);
     }
 
@@ -148,9 +166,15 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
  * Extracts body sections data from an object page model.
  *
  * @param objectPage - object page from the application model
+ * @param convertedMetadata - optional converted OData metadata for action extraction
+ * @param schemaNamespace - optional OData schema namespace used as service identifier in action assertions
  * @returns body sections data including sub-sections
  */
-function extractObjectPageBodySectionsData(objectPage: PageWithModelV4): BodySectionFeatureData[] {
+function extractObjectPageBodySectionsData(
+    objectPage: PageWithModelV4,
+    convertedMetadata?: ConvertedMetadata,
+    schemaNamespace?: string
+): BodySectionFeatureData[] {
     const bodySections: BodySectionFeatureData[] = [];
     if (objectPage.model) {
         const sectionsAggregation = getAggregations(objectPage.model.root)['sections'];
@@ -166,12 +190,78 @@ function extractObjectPageBodySectionsData(objectPage: PageWithModelV4): BodySec
                 order: section?.order ?? -1, // put a negative order number to signal that order was not in spec
                 fields: section.custom || section.isTable ? [] : extractFormFields(section),
                 tableColumns: section.custom || !section.isTable ? {} : extractTableColumnsFromNode(section),
-                subSections
+                subSections,
+                actions:
+                    !section.custom && convertedMetadata && schemaNamespace
+                        ? extractSectionActions(section, convertedMetadata, schemaNamespace)
+                        : []
             });
         });
     }
 
     return bodySections;
+}
+
+/**
+ * Extracts header-level action button states from an object page model.
+ *
+ * @param objectPage - object page from the application model
+ * @param convertedMetadata - converted OData metadata for resolving action availability
+ * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
+ * @returns array of action button states for the header toolbar
+ */
+function extractHeaderActions(
+    objectPage: PageWithModelV4,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string
+): ActionButtonState[] {
+    if (!objectPage.model) {
+        return [];
+    }
+    const headerAgg = getAggregations(objectPage.model.root)['header'];
+    const actionsAgg = getAggregations(headerAgg)['actions'];
+    const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
+    return Object.entries(actionEntries)
+        .map(([key, item]) =>
+            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace)
+        )
+        .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
+}
+
+/**
+ * Extracts section-level action button states from a body section.
+ * For table sections, actions are extracted from the table toolbar; for form sections from the form actions aggregation.
+ *
+ * @param section - body section entry from the application model
+ * @param convertedMetadata - converted OData metadata for resolving action availability
+ * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
+ * @returns array of action button states for the section toolbar
+ */
+function extractSectionActions(
+    section: BodySectionItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string
+): ActionButtonState[] {
+    let actionsAgg: AggregationItem | undefined;
+
+    if (section.isTable) {
+        const tableAgg = getAggregations(section)['table'];
+        const toolBarAgg = getAggregations(tableAgg)['toolBar'];
+        actionsAgg = getAggregations(toolBarAgg)['actions'] as AggregationItem;
+    } else {
+        const formAgg = getAggregations(section)['form'] as AggregationItem;
+        actionsAgg = getAggregations(formAgg)['actions'] as AggregationItem;
+    }
+
+    if (!actionsAgg) {
+        return [];
+    }
+    const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
+    return Object.entries(actionEntries)
+        .map(([key, item]) =>
+            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace)
+        )
+        .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
 }
 
 /**

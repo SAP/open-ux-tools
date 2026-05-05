@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { TreeAggregation, TreeAggregations, TreeModel } from '@sap/ux-specification/dist/types/src/parser';
+import type { TreeAggregations, TreeModel } from '@sap/ux-specification/dist/types/src/parser';
 import type {
     ActionButtonsResult,
     ActionButtonState,
@@ -18,8 +18,14 @@ import {
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
+import { extractActionMethodName, buildActionButtonState } from './actionUtils';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Manifest } from '@sap-ux/project-access';
+import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
+import type {
+    DeleteRestrictionsType,
+    InsertRestrictionsType
+} from '@sap-ux/vocabularies-types/vocabularies/Capabilities';
 
 /**
  * Builds a button state object from button visibility result.
@@ -188,15 +194,15 @@ export function checkButtonVisibility(metadataXml: string, entitySetName: string
         }
 
         const insertRestrictions = entitySet.annotations?.Capabilities?.InsertRestrictions as
-            | Record<string, any>
+            | InsertRestrictionsType
             | undefined;
         const deleteRestrictions = entitySet.annotations?.Capabilities?.DeleteRestrictions as
-            | Record<string, any>
+            | DeleteRestrictionsType
             | undefined;
 
         return {
-            create: analyzeRestriction(insertRestrictions, 'Insertable'),
-            delete: analyzeRestriction(deleteRestrictions, 'Deletable')
+            create: analyzeInsertRestrictions(insertRestrictions),
+            delete: analyzeDeleteRestrictions(deleteRestrictions)
         };
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
@@ -231,25 +237,50 @@ export function getFilterFieldNames(pageModel: TreeModel, log?: Logger): string[
 }
 
 /**
- * Analyzes a capability restriction annotation to determine button state.
+ * Finds the Core.OperationAvailable annotation value for a given action method name in the metadata.
  *
- * @param restriction The restriction annotation object (InsertRestrictions or DeleteRestrictions)
- * @param propertyName The property name to check ('Insertable' or 'Deletable')
- * @returns ButtonState for the button
+ * @param restriction The InsertRestrictions or DeleteRestrictions annotation for the entity set
+ * @returns ButtonState indicating visibility and enabled state based on the annotation value
  */
-function analyzeRestriction(
-    restriction: Record<string, any> | undefined,
-    propertyName: 'Insertable' | 'Deletable'
+function analyzeInsertRestrictions(restriction: InsertRestrictionsType | undefined): ButtonState {
+    const value = restriction
+        ? (restriction['Insertable'] as (typeof restriction)['Insertable'] & { $Path?: string; path?: string })
+        : undefined;
+
+    return analyzeRestrictionValue(value);
+}
+
+/**
+ * Analyzes DeleteRestrictions annotation to determine delete button visibility and enabled state.
+ *
+ * @param restriction The DeleteRestrictions annotation for the entity set
+ * @returns ButtonState indicating visibility and enabled state based on the annotation value
+ */
+function analyzeDeleteRestrictions(restriction: DeleteRestrictionsType | undefined): ButtonState {
+    const value = restriction
+        ? (restriction['Deletable'] as (typeof restriction)['Deletable'] & { $Path?: string; path?: string })
+        : undefined;
+
+    return analyzeRestrictionValue(value);
+}
+
+/**
+ * Analyzes a restriction value (Insertable or Deletable) to determine button visibility and enabled state.
+ *
+ * @param value The value of the Insertable or Deletable annotation, which can be a boolean or an object with a dynamic path
+ * @returns ButtonState indicating visibility and enabled state based on the annotation value
+ */
+function analyzeRestrictionValue(
+    value:
+        | ((InsertRestrictionsType['Insertable'] | DeleteRestrictionsType['Deletable']) & {
+              $Path?: string;
+              path?: string;
+          })
+        | undefined
 ): ButtonState {
     const defaultState: ButtonState = { visible: true, enabled: true };
 
-    if (!restriction) {
-        return defaultState;
-    }
-
-    const value = restriction[propertyName];
-
-    if (value === undefined || value === null) {
+    if (!value) {
         return defaultState;
     }
 
@@ -258,7 +289,7 @@ function analyzeRestriction(
     }
 
     if (typeof value === 'object' && value !== null) {
-        const path: string = value.$Path ?? value.path;
+        const path = value.$Path ?? value.path;
         if (path) {
             return { visible: true, enabled: 'dynamic', dynamicPath: path };
         }
@@ -305,8 +336,8 @@ export function checkActionButtonStates(
         );
 
         const actions: ActionButtonState[] = actionNames
-            ? findActionStates(dataFieldForActions, actionNames, convertedMetadata, entityType.name)
-            : extractAllActionStates(dataFieldForActions, convertedMetadata, entityType.name);
+            ? findActionStates(dataFieldForActions, actionNames, convertedMetadata)
+            : extractAllActionStates(dataFieldForActions, convertedMetadata);
 
         return { actions, entityType: entityType.name };
     } catch (error) {
@@ -321,25 +352,23 @@ export function checkActionButtonStates(
  * @param dataFieldForActions List of DataFieldForAction items from UI.LineItem
  * @param actionNames List of action names to find
  * @param metadata The converted metadata
- * @param entityTypeName The entity type name
  * @returns List of action button states for the specified actions
  */
 function findActionStates(
-    dataFieldForActions: any[],
+    dataFieldForActions: DataFieldForAction[],
     actionNames: string[],
-    metadata: ConvertedMetadata,
-    entityTypeName: string
+    metadata: ConvertedMetadata
 ): ActionButtonState[] {
     const actionStates: ActionButtonState[] = [];
 
     for (const actionName of actionNames) {
         const item = dataFieldForActions.find((dfa) => {
-            const actionMethod = extractActionMethodName(dfa.Action || '');
+            const actionMethod = extractActionMethodName((dfa.Action as string) || '');
             return actionMethod === actionName || dfa.Label === actionName;
         });
 
         if (item) {
-            actionStates.push(buildActionButtonState(item, metadata, entityTypeName));
+            actionStates.push(buildActionButtonState(item, metadata));
         }
     }
 
@@ -351,147 +380,13 @@ function findActionStates(
  *
  * @param dataFieldForActions List of DataFieldForAction items from UI.LineItem
  * @param metadata The converted metadata
- * @param entityTypeName The entity type name
  * @returns List of all action button states
  */
 function extractAllActionStates(
-    dataFieldForActions: any[],
-    metadata: ConvertedMetadata,
-    entityTypeName: string
+    dataFieldForActions: DataFieldForAction[],
+    metadata: ConvertedMetadata
 ): ActionButtonState[] {
-    return dataFieldForActions.map((item) => buildActionButtonState(item, metadata, entityTypeName));
-}
-
-/**
- * Builds an ActionButtonState object from a DataFieldForAction item.
- *
- * @param item The DataFieldForAction item
- * @param metadata The converted metadata
- * @param entityTypeName The entity type name
- * @returns ActionButtonState for the action
- */
-function buildActionButtonState(item: any, metadata: ConvertedMetadata, entityTypeName: string): ActionButtonState {
-    const actionMethod = extractActionMethodName(item.Action || '');
-    const operationAvailable = findOperationAvailableAnnotation(metadata, entityTypeName, actionMethod);
-    // Bound actions whose binding parameter is a single entity (not a collection) require
-    // row selection to be invoked, so they are disabled by default (no row selected).
-    // Collection-bound actions operate on the entity set and are always enabled.
-    const isEntityBound =
-        item.ActionTarget?.isBound === true && item.ActionTarget?.parameters?.[0]?.isCollection !== true;
-    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isEntityBound);
-
-    return {
-        label: item.Label || '',
-        action: item.Action || '',
-        visible: true,
-        enabled,
-        dynamicPath,
-        invocationGrouping: item.InvocationGrouping ? extractEnumMemberValue(item.InvocationGrouping) : undefined
-    };
-}
-
-/**
- * Analyzes Core.OperationAvailable annotation to determine action availability.
- * Single-entity bound actions (requiring row selection) are disabled by default when no annotation is present.
- *
- * @param operationAvailable The OperationAvailable annotation value
- * @param isEntityBound Whether the action is bound to a single entity (requires row selection to enable)
- * @returns Object containing enabled state and optional dynamic path
- */
-function analyzeOperationAvailability(
-    operationAvailable: any,
-    isEntityBound?: boolean
-): {
-    enabled: boolean | 'dynamic';
-    dynamicPath?: string;
-} {
-    if (operationAvailable === undefined) {
-        return { enabled: !isEntityBound };
-    }
-
-    if (typeof operationAvailable === 'boolean') {
-        return { enabled: operationAvailable };
-    }
-
-    if (typeof operationAvailable === 'object' && operationAvailable !== null) {
-        const path: string = operationAvailable.$Path ?? operationAvailable.path;
-        if (path) {
-            return { enabled: 'dynamic', dynamicPath: path };
-        }
-    }
-
-    return { enabled: true };
-}
-
-/**
- * Extracts the action method name from a fully qualified action string.
- *
- * @param actionName The fully qualified action name
- * @returns The action method name
- */
-function extractActionMethodName(actionName: string): string {
-    const match = /\.([^.()]+)\(/.exec(actionName);
-    if (match?.[1]) {
-        return match[1];
-    }
-
-    const lastDotIndex = actionName.lastIndexOf('.');
-    const parenIndex = actionName.indexOf('(');
-    if (lastDotIndex !== -1 && parenIndex !== -1) {
-        return actionName.substring(lastDotIndex + 1, parenIndex);
-    }
-
-    return actionName;
-}
-
-/**
- * Finds the Core.OperationAvailable annotation for a specific action.
- *
- * @param metadata The converted metadata
- * @param entityTypeName The entity type name
- * @param actionMethodName The action method name
- * @returns The OperationAvailable annotation value or undefined if not found
- */
-function findOperationAvailableAnnotation(
-    metadata: ConvertedMetadata,
-    entityTypeName: string,
-    actionMethodName: string
-): any {
-    if (metadata.actions) {
-        const action = metadata.actions.find(
-            (a) => a.name === actionMethodName || a.fullyQualifiedName?.includes(`.${actionMethodName}(`)
-        );
-        if (action?.annotations?.Core?.OperationAvailable !== undefined) {
-            return action.annotations.Core.OperationAvailable;
-        }
-    }
-
-    if (metadata.entityContainer?.annotations) {
-        const annotations = metadata.entityContainer.annotations as any;
-        const matchingKey = Object.keys(annotations).find((key) => key.includes(actionMethodName));
-        if (matchingKey && annotations[matchingKey]?.Core?.OperationAvailable !== undefined) {
-            return annotations[matchingKey].Core.OperationAvailable;
-        }
-    }
-
-    return undefined;
-}
-
-/**
- * Extracts the enum member value from an annotation.
- *
- * @param enumValue The enum value object
- * @returns The extracted enum value string
- */
-function extractEnumMemberValue(enumValue: any): string | undefined {
-    if (typeof enumValue === 'string') {
-        return enumValue;
-    }
-    if (enumValue?.$EnumMember) {
-        const parts = enumValue.$EnumMember.split('/');
-        return parts[1] ?? enumValue.$EnumMember;
-    }
-    return undefined;
+    return dataFieldForActions.map((item) => buildActionButtonState(item, metadata));
 }
 
 /**
@@ -539,7 +434,7 @@ export function getToolBarActionItems(toolBarActionsAgg: TreeAggregations): stri
 function extractItemDescriptions(aggregations: TreeAggregations): string[] {
     if (aggregations && typeof aggregations === 'object') {
         return Object.keys(aggregations).map(
-            (key) => (aggregations[key as keyof TreeAggregation] as unknown as AggregationItem).description
+            (key: keyof TreeAggregations) => (aggregations[key] as AggregationItem).description
         );
     }
     return [];

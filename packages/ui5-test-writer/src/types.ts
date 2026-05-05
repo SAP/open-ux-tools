@@ -124,6 +124,7 @@ export type BodySectionFeatureData = {
     fields: SectionFormField[];
     tableColumns: TableColumnFeatureData;
     subSections: BodySubSectionFeatureData[];
+    actions?: ActionButtonState[];
 };
 
 export type ObjectPageFeatures = {
@@ -133,6 +134,7 @@ export type ObjectPageFeatures = {
     headerDescription?: string;
     headerSections?: HeaderSectionFeatureData[];
     bodySections?: BodySectionFeatureData[];
+    headerActions?: ActionButtonState[];
 };
 
 export type ListReportFeatures = {
@@ -155,6 +157,10 @@ export type ListReportFeatures = {
 
 export interface ActionButtonState {
     label: string;
+    /**
+     * For List Report actions: the full OData binding path (e.g. "namespace.ActionName(entityType=@odata.context)").
+     * For Object Page actions extracted from the spec model: the method name only (e.g. "Copy").
+     */
     action: string;
     visible: boolean;
     /**
@@ -173,6 +179,16 @@ export interface ActionButtonState {
      * The invocation grouping type if specified (e.g., "Isolated", "ChangeSet").
      */
     invocationGrouping?: string;
+    /**
+     * OData schema namespace used as the `service` parameter in iCheckAction({ service, action, unbound }).
+     * Populated for Object Page actions extracted via the spec model + metadata.
+     */
+    service?: string;
+    /**
+     * Whether the action is unbound (not bound to a specific entity instance).
+     * Populated for Object Page actions extracted via the spec model + metadata.
+     */
+    unbound?: boolean;
 }
 
 export type FPMFeatures = {

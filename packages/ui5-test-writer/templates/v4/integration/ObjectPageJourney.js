@@ -39,6 +39,16 @@ sap.ui.define([
             Then.onThe<%- name%>.iSeeThisPage();
         });
 
+<% if (headerActions?.length > 0 && !isStandalone) { -%>
+        opaTest("Check header actions of the Object Page", function (Given, When, Then) {
+<%     headerActions.forEach(function(action) { -%>
+<%     if (action.visible) { -%>
+            Then.onThe<%- name%>.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound ?? false %> }, { enabled: <%- action.enabled === true %> });
+<%     } -%>
+<%     }); -%>
+        });
+<% } -%>
+
 <% if (headerSections?.length > 0) { -%>
         opaTest("Check header facets of the Object Page", function (Given, When, Then) {
 <% headerSections.forEach(function(section) { -%>
@@ -70,6 +80,17 @@ sap.ui.define([
             When.onThe<%- name%>.iPressSectionIconTabFilterButton("<%- section.id %>");
 <% } -%>
             Then.onThe<%- name%>.iCheckSection({ section: "<%- section.id %>" });
+<%  if (section.actions && section.actions.length > 0) { -%>
+<%      section.actions.forEach(function(action) { -%>
+<%      if (action.visible) { -%>
+<%          if (section.isTable && section.navigationProperty) { -%>
+            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound ?? false %> }, { enabled: <%- action.enabled === true %> });
+<%          } else { -%>
+            Then.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound ?? false %> }, { enabled: <%- action.enabled === true %> });
+<%          } -%>
+<%      } -%>
+<%      }); -%>
+<%  } -%>
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
             //When.onThe<%- name%>.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
