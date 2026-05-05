@@ -90,6 +90,46 @@ async function createAbapCloudServiceProvider(
 }
 
 /**
+ * Resolve and apply credentials for an on-premise ABAP target.
+ * Reads from store, env variables, or prompts the user as needed.
+ *
+ * @param options - predefined axios options (mutated if credentials are found)
+ * @param target - url target configuration (authenticationType may be set)
+ * @param prompt - prompt the user for missing information
+ * @param logger - reference to the logger instance
+ */
+async function resolveOnPremCredentials(
+    options: AxiosRequestConfig,
+    target: UrlAbapTarget,
+    prompt: boolean,
+    logger: Logger
+): Promise<void> {
+    const storedOpts = await getCredentialsFromStore(target, logger);
+    if (isBasicAuth(storedOpts)) {
+        options.auth = {
+            username: storedOpts.username,
+            password: storedOpts.password
+        };
+        return;
+    }
+    if (isServiceAuth(storedOpts)) {
+        throw new Error('This is an ABAP Cloud system, please correct your configuration.');
+    }
+    options.auth ??= getCredentialsFromEnvVariables();
+    if (!options.auth && prompt) {
+        const { authType } = await prompts([questions.authType]);
+        if (authType === AuthenticationType.ReentranceTicket) {
+            target.authenticationType = AuthenticationType.ReentranceTicket;
+        } else {
+            const credentials = await getCredentialsWithPrompts(storedOpts?.username);
+            options.auth = credentials;
+            process.env.FIORI_TOOLS_USER = credentials.username;
+            process.env.FIORI_TOOLS_PASSWORD = credentials.password;
+        }
+    }
+}
+
+/**
  * Enhance axios options and create a service provider instance for an on-premise ABAP system.
  *
  * @param options predefined axios options
@@ -105,29 +145,7 @@ async function createAbapOnPremServiceProvider(
     logger: Logger
 ): Promise<AbapServiceProvider> {
     if (!options.auth) {
-        const storedOpts = await getCredentialsFromStore(target, logger);
-        if (isBasicAuth(storedOpts)) {
-            options.auth = {
-                username: storedOpts.username,
-                password: storedOpts.password
-            };
-        } else {
-            if (isServiceAuth(storedOpts)) {
-                throw new Error('This is an ABAP Cloud system, please correct your configuration.');
-            }
-            options.auth ??= getCredentialsFromEnvVariables();
-            if (!options.auth && prompt) {
-                const { authType } = await prompts([questions.authType]);
-                if (authType === AuthenticationType.ReentranceTicket) {
-                    target.authenticationType = AuthenticationType.ReentranceTicket;
-                } else {
-                    const credentials = await getCredentialsWithPrompts(storedOpts?.username);
-                    options.auth = credentials;
-                    process.env.FIORI_TOOLS_USER = credentials.username;
-                    process.env.FIORI_TOOLS_PASSWORD = credentials.password;
-                }
-            }
-        }
+        await resolveOnPremCredentials(options, target, prompt, logger);
     }
     return target.authenticationType === AuthenticationType.ReentranceTicket
         ? createForAbapOnCloud({
