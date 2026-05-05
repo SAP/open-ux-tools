@@ -270,7 +270,9 @@ describe('buildActionStateFromSpecModelKey()', () => {
     } as unknown as ConvertedMetadata;
 
     test('returns undefined for non-DataFieldForAction keys', () => {
-        expect(buildActionStateFromSpecModelKey('DataFieldForAnnotation::Test', 'Test', minimalMetadata, 'ns')).toBeUndefined();
+        expect(
+            buildActionStateFromSpecModelKey('DataFieldForAnnotation::Test', 'Test', minimalMetadata, 'ns')
+        ).toBeUndefined();
     });
 
     test('returns undefined when key has no action part', () => {
