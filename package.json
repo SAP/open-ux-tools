@@ -162,7 +162,10 @@
             "@sap-ai-sdk/langchain>uuid": ">=14.0.0",
             "natural>uuid": ">=14.0.0",
             "css-loader>postcss": ">=8.5.10",
-            "sanitize-html>postcss": ">=8.5.10"
+            "sanitize-html>postcss": ">=8.5.10",
+            "promptfoo>simple-git": ">=3.36.0",
+            "socks>ip-address": ">=10.1.1",
+            "express-rate-limit>ip-address": ">=10.1.1"
         },
         "onlyBuiltDependencies": [
             "sharp",
