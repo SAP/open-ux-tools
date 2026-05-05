@@ -8,7 +8,8 @@ sap.ui.define(
         'use strict';
 
         var runner = new JourneyRunner({
-            launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4cap') + '/test/flp.html#app-preview',
+            launchUrl:
+                sap.ui.require.toUrl('testNameSpace/lropv4cap') + '/test/flpSandbox.html#testNameSpacelropv4cap-tile',
             pages: {
                 onTheBooksList: BooksList,
                 onTheBooksObjectPage: BooksObjectPage

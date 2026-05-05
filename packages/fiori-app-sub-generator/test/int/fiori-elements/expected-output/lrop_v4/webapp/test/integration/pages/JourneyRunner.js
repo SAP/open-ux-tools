@@ -9,7 +9,7 @@ sap.ui.define(
         'use strict';
 
         var runner = new JourneyRunner({
-            launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4') + '/test/flp.html#app-preview',
+            launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4') + '/test/flpSandbox.html#testNameSpacelropv4-tile',
             pages: {
                 onTheTravelList: TravelList,
                 onTheTravelObjectPage: TravelObjectPage,
