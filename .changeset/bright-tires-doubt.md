@@ -1,102 +1,102 @@
 ---
-'@sap-ux/ui5-library-reference-sub-generator': major
-'@sap-ux/abap-deploy-config-sub-generator': major
-'@sap-ux/cds-odata-annotation-converter': major
-'@sap-ux/cf-deploy-config-sub-generator': major
-'@sap-ux-private/control-property-editor-common': major
-'@sap-ux/deploy-config-generator-shared': major
-'@sap-ux/ui5-library-reference-inquirer': major
-'@sap-ux/xml-odata-annotation-converter': major
-'@sap-ux/repo-app-import-sub-generator': major
-'@sap-ux/adp-flp-config-sub-generator': major
-'@sap-ux/ui5-library-reference-writer': major
-'@sap-ux/abap-deploy-config-inquirer': major
+'@sap-ux/ui5-library-reference-sub-generator': minor
+'@sap-ux/abap-deploy-config-sub-generator': minor
+'@sap-ux/cds-odata-annotation-converter': minor
+'@sap-ux/cf-deploy-config-sub-generator': minor
+'@sap-ux-private/control-property-editor-common': minor
+'@sap-ux/deploy-config-generator-shared': minor
+'@sap-ux/ui5-library-reference-inquirer': minor
+'@sap-ux/xml-odata-annotation-converter': minor
+'@sap-ux/repo-app-import-sub-generator': minor
+'@sap-ux/adp-flp-config-sub-generator': minor
+'@sap-ux/ui5-library-reference-writer': minor
+'@sap-ux/abap-deploy-config-inquirer': minor
 '@sap-ux/backend-proxy-middleware-cf': minor
-'@sap-ux/deploy-config-sub-generator': major
-'@sap-ux/odata-annotation-core-types': major
-'@sap-ux/generator-odata-downloader': major
-'@sap-ux-private/adaptation-editor-tests': major
-'@sap-ux/abap-deploy-config-writer': major
-'@sap-ux/cf-deploy-config-inquirer': major
-'@sap-ux-private/preview-middleware-client': major
-'@sap-ux/ui5-library-sub-generator': major
-'@sap-ux/backend-proxy-middleware': major
-'@sap-ux/flp-config-sub-generator': major
-'@sap-ux/mockserver-config-writer': major
-'@sap-ux/ui-service-sub-generator': major
-'@sap-ux/ui5-application-inquirer': major
-'@sap-ux/cf-deploy-config-writer': major
-'@sap-ux/control-property-editor': major
-'@sap-ux/fiori-app-sub-generator': major
-'@sap-ux/project-input-validator': major
-'@sap-ux/serve-static-middleware': major
-'@sap-ux/fiori-freestyle-writer': major
-'@sap-ux/fiori-generator-shared': major
-'@sap-ux/odata-service-inquirer': major
-'@sap-ux/sap-systems-ext-webapp': major
-'@sap-ux/ui5-application-writer': major
-'@sap-ux-private/ui-prompting-examples': major
-'@sap-ux/cds-annotation-parser': major
-'@sap-ux/fiori-docs-embeddings': major
-'@sap-ux/fiori-elements-writer': major
-'@sap-ux/guided-answers-helper': major
-'@sap-ux/jest-runner-puppeteer': major
-'@sap-ux/odata-annotation-core': major
-'@sap-ux/sap-systems-ext-types': major
-'@sap-ux/annotation-generator': major
-'@sap-ux/fiori-annotation-api': major
-'@sap-ux/fiori-tools-settings': major
-'@sap-ux/jest-environment-ui5': major
-'@sap-ux/odata-service-writer': major
-'@sap-ux/ui5-library-inquirer': major
-'@sap-ux/ui5-proxy-middleware': major
-'@sap-ux/flp-config-inquirer': major
-'@sap-ux/text-document-utils': major
-'@sap-ux/ui-service-inquirer': major
-'@sap-ux/jest-file-matchers': major
-'@sap-ux/odata-entity-model': major
-'@sap-ux/odata-vocabularies': major
-'@sap-ux/preview-middleware': major
-'@sap-ux/ui5-library-writer': major
-'@sap-ux/app-config-writer': major
-'@sap-ux/cap-config-writer': major
-'@sap-ux/environment-check': major
-'@sap-ux/project-integrity': major
-'@sap-ux/reload-middleware': major
-'@sap-ux/generator-simple-fe': major
-'@sap-ux/fiori-mcp-server': major
-'@sap-ux/axios-extension': major
-'@sap-ux/inquirer-common': major
-'@sap-ux/ui5-test-writer': major
-'@sap-ux/deploy-tooling': major
-'@sap-ux/feature-toggle': major
-'@sap-ux/project-access': major
-'@sap-ux/fe-fpm-writer': major
-'@sap-ux/generator-adp': major
-'@sap-ux/launch-config': major
-'@sap-ux/system-access': major
-'@sap-ux/ui-components': major
-'@sap-ux/nodejs-utils': major
-'@sap-ux/ui-prompting': major
-'@sap-ux/adp-tooling': major
-'@sap-ux/fe-fpm-cli': major
-'@sap-ux-private/playwright': major
-'@sap-ux/ui5-config': major
-'@sap-ux/odata-cli': major
-'@sap-ux/btp-utils': major
-'@sap-ux/telemetry': major
-'@sap-ux/ui5-info': major
-'@sap-ux/create': major
-'@sap-ux/logger': major
-'@sap-ux/store': major
-'@sap-ux/i18n': major
-'@sap-ux/yaml': major
-'@sap-ux/types': major
+'@sap-ux/deploy-config-sub-generator': minor
+'@sap-ux/odata-annotation-core-types': minor
+'@sap-ux/generator-odata-downloader': minor
+'@sap-ux-private/adaptation-editor-tests': minor
+'@sap-ux/abap-deploy-config-writer': minor
+'@sap-ux/cf-deploy-config-inquirer': minor
+'@sap-ux-private/preview-middleware-client': minor
+'@sap-ux/ui5-library-sub-generator': minor
+'@sap-ux/backend-proxy-middleware': minor
+'@sap-ux/flp-config-sub-generator': minor
+'@sap-ux/mockserver-config-writer': minor
+'@sap-ux/ui-service-sub-generator': minor
+'@sap-ux/ui5-application-inquirer': minor
+'@sap-ux/cf-deploy-config-writer': minor
+'@sap-ux/control-property-editor': minor
+'@sap-ux/fiori-app-sub-generator': minor
+'@sap-ux/project-input-validator': minor
+'@sap-ux/serve-static-middleware': minor
+'@sap-ux/fiori-freestyle-writer': minor
+'@sap-ux/fiori-generator-shared': minor
+'@sap-ux/odata-service-inquirer': minor
+'@sap-ux/sap-systems-ext-webapp': minor
+'@sap-ux/ui5-application-writer': minor
+'@sap-ux-private/ui-prompting-examples': minor
+'@sap-ux/cds-annotation-parser': minor
+'@sap-ux/fiori-docs-embeddings': minor
+'@sap-ux/fiori-elements-writer': minor
+'@sap-ux/guided-answers-helper': minor
+'@sap-ux/jest-runner-puppeteer': minor
+'@sap-ux/odata-annotation-core': minor
+'@sap-ux/sap-systems-ext-types': minor
+'@sap-ux/annotation-generator': minor
+'@sap-ux/fiori-annotation-api': minor
+'@sap-ux/fiori-tools-settings': minor
+'@sap-ux/jest-environment-ui5': minor
+'@sap-ux/odata-service-writer': minor
+'@sap-ux/ui5-library-inquirer': minor
+'@sap-ux/ui5-proxy-middleware': minor
+'@sap-ux/flp-config-inquirer': minor
+'@sap-ux/text-document-utils': minor
+'@sap-ux/ui-service-inquirer': minor
+'@sap-ux/jest-file-matchers': minor
+'@sap-ux/odata-entity-model': minor
+'@sap-ux/odata-vocabularies': minor
+'@sap-ux/preview-middleware': minor
+'@sap-ux/ui5-library-writer': minor
+'@sap-ux/app-config-writer': minor
+'@sap-ux/cap-config-writer': minor
+'@sap-ux/environment-check': minor
+'@sap-ux/project-integrity': minor
+'@sap-ux/reload-middleware': minor
+'@sap-ux/generator-simple-fe': minor
+'@sap-ux/fiori-mcp-server': minor
+'@sap-ux/axios-extension': minor
+'@sap-ux/inquirer-common': minor
+'@sap-ux/ui5-test-writer': minor
+'@sap-ux/deploy-tooling': minor
+'@sap-ux/feature-toggle': minor
+'@sap-ux/project-access': minor
+'@sap-ux/fe-fpm-writer': minor
+'@sap-ux/generator-adp': minor
+'@sap-ux/launch-config': minor
+'@sap-ux/system-access': minor
+'@sap-ux/ui-components': minor
+'@sap-ux/nodejs-utils': minor
+'@sap-ux/ui-prompting': minor
+'@sap-ux/adp-tooling': minor
+'@sap-ux/fe-fpm-cli': minor
+'@sap-ux-private/playwright': minor
+'@sap-ux/ui5-config': minor
+'@sap-ux/odata-cli': minor
+'@sap-ux/btp-utils': minor
+'@sap-ux/telemetry': minor
+'@sap-ux/ui5-info': minor
+'@sap-ux/create': minor
+'@sap-ux/logger': minor
+'@sap-ux/store': minor
+'@sap-ux/i18n': minor
+'@sap-ux/yaml': minor
+'@sap-ux/types': minor
 ---
 
 # BREAKING CHANGE: Migration to ECMAScript Modules (ESM)
 
-All packages in the SAP UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+All packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
 
 ## What Changed
 
@@ -106,33 +106,8 @@ All packages in the SAP UX Tools monorepo have been migrated from CommonJS (CJS)
 - **Build Output**: Generated JavaScript files are now ESM modules
 - **Node.js Requirement**: Minimum Node.js version remains >=20.x (ESM is stable in Node 20+)
 
-## Action Required for Consuming Projects
 
-### 1. TypeScript Projects
-
-If your project imports these packages and uses TypeScript, update your `tsconfig.json`:
-
-```json
-{
-  "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext"
-  }
-}
-```
-
-Or use `"module": "ESNext"` with `"moduleResolution": "Bundler"` if using a modern bundler.
-
-### 2. Bundler Configuration
-
-Ensure your bundler (webpack, rollup, esbuild, vite, etc.) is configured to handle ESM modules:
-
-- **webpack 5+**: ESM is supported by default
-- **rollup**: Use `format: 'es'` in output config
-- **esbuild**: Use `format: 'esm'`
-- **vite**: ESM is the default
-
-### 3. Jest Configuration (for Testing)
+### Jest Configuration (for Testing)
 
 If your project tests code that imports these packages, update your Jest configuration:
 
@@ -147,52 +122,4 @@ export default {
 
 And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
 
-### 4. Runtime Imports
 
-- **ESM projects**: No changes needed - imports work as before
-- **CJS projects**: You may need to use dynamic `import()` to load these packages:
-
-```javascript
-// CJS project importing ESM package
-const { someFunction } = await import('@sap-ux/package-name');
-```
-
-### 5. Package.json Type
-
-If your project is ESM (`"type": "module"`), ensure you're using `.js` extensions in your own relative imports.
-
-## Why This Change?
-
-- **Modern JavaScript Standard**: ESM is the official JavaScript module standard
-- **Better Tree-shaking**: ESM enables better dead code elimination in bundlers
-- **Native Node.js Support**: Node.js has stabilized ESM support since version 12
-- **Future-proof**: The JavaScript ecosystem is moving to ESM
-
-## Migration Guide
-
-For detailed migration guidance, common issues, and troubleshooting, see:
-- [TypeScript ESM Documentation](https://www.typescriptlang.org/docs/handbook/modules/theory.html#the-esm-syntax-of-typescript-source-does-not-always-match-the-esm-syntax-of-the-emitted-javascript)
-- [Node.js ESM Documentation](https://nodejs.org/api/esm.html)
-- [Jest ESM Support](https://jestjs.io/docs/ecmascript-modules)
-
-## Need Help?
-
-If you encounter issues during migration:
-1. Check that your TypeScript version is >= 5.0
-2. Verify your bundler supports ESM
-3. Review the documentation links above
-4. Open an issue at https://github.com/SAP/open-ux-tools/issues
-
-## Breaking Change Details
-
-This is marked as a **major version** because:
-
-1. **Deep imports are broken**: NodeNext requires explicit `.js` extensions on all relative imports, including internal package imports. If your code uses deep imports like `@sap-ux/package-name/dist/submodule`, you must now use `@sap-ux/package-name/dist/submodule.js`. This affects any consumer doing submodule imports rather than using the main package entry point.
-
-2. **TypeScript configuration changes**: Projects using older TypeScript configurations (`module: "CommonJS"`, etc.) may need updates to `NodeNext` or `Bundler` resolution.
-
-3. **CJS-only projects**: Projects that cannot adopt ESM will need to use dynamic `import()` to load these packages.
-
-4. **Build tooling**: Some bundlers may require configuration changes to properly handle ESM modules.
-
-Most modern projects with up-to-date tooling should require minimal changes if using the main package exports. Deep import users will need to add `.js` extensions.
