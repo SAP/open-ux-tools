@@ -23,6 +23,7 @@ import { loadDefinitions } from './quick-actions/load.js';
 import { initDialogs } from './init-dialogs.js';
 import { sendInfoCenterMessage } from '../utils/info-center-message.js';
 import { CommunicationService } from '../cpe/communication-service.js';
+import { initOrphanedChangeDetection } from './change-file-validator.js';
 
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
@@ -87,6 +88,10 @@ export default async function (rta: RuntimeAuthoring) {
         CommunicationService.sendAction(toggleAppPreviewVisibility(false));
         return;
     }
+
+    initOrphanedChangeDetection().catch((error) => {
+        log.error('Failed to run orphaned change detection', error);
+    });
 
     log.debug('ADP init executed.');
 }

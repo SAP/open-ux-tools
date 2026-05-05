@@ -11,7 +11,7 @@
 '@sap-ux/adp-flp-config-sub-generator': major
 '@sap-ux/ui5-library-reference-writer': major
 '@sap-ux/abap-deploy-config-inquirer': major
-'@sap-ux/backend-proxy-middleware-cf': major
+'@sap-ux/backend-proxy-middleware-cf': minor
 '@sap-ux/deploy-config-sub-generator': major
 '@sap-ux/odata-annotation-core-types': major
 '@sap-ux/generator-odata-downloader': major

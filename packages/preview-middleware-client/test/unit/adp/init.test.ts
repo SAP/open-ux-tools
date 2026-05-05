@@ -33,6 +33,10 @@ jest.unstable_mockModule('open/ux/preview/client/adp/extend-controller', () => (
     initExtendControllerPlugin: extendControllerServiceMock
 }));
 
+jest.unstable_mockModule('open/ux/preview/client/adp/change-file-validator', () => ({
+    initOrphanedChangeDetection: jest.fn().mockResolvedValue(undefined)
+}));
+
 const common = await import('@sap-ux-private/control-property-editor-common');
 const { default: init } = await import('open/ux/preview/client/adp/init');
 const { OutlineService } = await import('open/ux/preview/client/cpe/outline/service');
