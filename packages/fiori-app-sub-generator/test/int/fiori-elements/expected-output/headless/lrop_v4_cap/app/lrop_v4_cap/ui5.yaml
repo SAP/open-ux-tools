@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testnamepsace.lropv4noui5version
+  name: testNameSpace.lropv4cap
 type: application
 server:
   customMiddleware:
@@ -14,10 +14,7 @@ server:
           path:
             - /resources
             - /test-resources
-          url: https://ui5.sap.com
-        backend:
-          - path: /sap
-            url: https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com
+          url: https://sapui5.hana.ondemand.com
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -28,14 +25,4 @@ server:
       afterMiddleware: fiori-tools-appreload
       configuration:
         flp:
-          theme: sap_horizon
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/mainService/metadata.xml
-            mockdataPath: ./webapp/localService/mainService/data
-            generateMockData: true
-        annotations: []
+          theme: sap_fiori_3

@@ -2,17 +2,20 @@
 
 specVersion: "4.0"
 metadata:
-  name: testnamepsace.lropv4noui5version
+  name: testNameSpace.alpv2
 type: application
 framework:
   name: SAPUI5
-  version: 1.147.0
+  version: 1.82.2
   libraries:
     - name: sap.m
     - name: sap.ui.core
-    - name: sap.fe.templates
     - name: sap.ushell
-    - name: themelib_sap_horizon
+    - name: sap.f
+    - name: sap.ui.comp
+    - name: sap.ui.generic.app
+    - name: sap.suite.ui.generic.template
+    - name: themelib_sap_fiori_3
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -25,21 +28,23 @@ server:
       afterMiddleware: fiori-tools-appreload
       configuration:
         flp:
-          theme: sap_horizon
+          theme: sap_fiori_3
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - path: /sap
-            url: https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com
+            url: https://sap-ux-mock-services-v2-alp.cfapps.us10.hana.ondemand.com
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
         mountPath: /
         services:
-          - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
+          - urlPath: /sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_ALP_SO_ANA_SRV.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_ALP_SO_ANA_SRV',Version='0001')/$value/
