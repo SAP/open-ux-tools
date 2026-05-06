@@ -1,5 +1,6 @@
 ---
 "@sap-ux/adp-tooling": patch
+"@sap-ux/control-property-editor": patch
 "@sap-ux/fiori-app-sub-generator": patch
 "@sap-ux/generator-adp": patch
 "@sap-ux/ui-components": patch
