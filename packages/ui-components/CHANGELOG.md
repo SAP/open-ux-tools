@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.14
+
+### Patch Changes
+
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+
 ## 2.1.13
 
 ### Patch Changes
