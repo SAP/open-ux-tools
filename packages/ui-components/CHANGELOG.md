@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.13
+
+### Patch Changes
+
+- 7f8a712: Adjust toolbar border and separator color variables
+
 ## 2.1.12
 
 ### Patch Changes
