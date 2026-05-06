@@ -68,7 +68,7 @@ exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 ap
         \\"@cap-js/sqlite\\": \\"^1\\",
         \\"@sap/cds-dk\\": \\"^8\\",
         \\"rimraf\\": \\"^5.0.5\\",
-        \\"mbt\\": \\"^1.2.29\\"
+        \\"mbt\\": \\"^1.2.49\\"
     },
     \\"cds\\": {},
     \\"scripts\\": {
@@ -179,7 +179,7 @@ exports[`CF Writer with CAP App Frontend Generate deployment config Generate CAP
     \\"@cap-js/sqlite\\": \\"^1\\",
     \\"@sap/cds-dk\\": \\"^8\\",
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"cds-serve\\",
