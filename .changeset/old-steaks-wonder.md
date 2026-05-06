@@ -6,6 +6,7 @@
 '@sap-ux/adp-tooling': minor
 '@sap-ux/ui5-config': minor
 '@sap-ux/types': minor
+'@sap-ux/create': minor
 ---
 
 Add support for ui5 project type 'component' (UI5 cli v5)
