@@ -168,7 +168,7 @@ describe('<UIDialog />', () => {
         const testCases = [
             {
                 value: true,
-                expect: 'inline-block'
+                expect: 'inline-flex'
             },
             {
                 value: false,

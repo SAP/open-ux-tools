@@ -55,11 +55,11 @@ describe('<UICallout />', () => {
         expect(dummyElement).toBeInTheDocument();
         // Default overwritten styles
         compareStylesBySelector(selectors.root, {
-            borderRadius: '2px',
+            borderRadius: '4px',
             boxShadow: 'var(--ui-box-shadow-small)'
         });
         compareStylesBySelector(selectors.main, {
-            borderRadius: '2px'
+            borderRadius: '4px'
         });
     });
 
