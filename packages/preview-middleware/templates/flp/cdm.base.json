@@ -7,10 +7,7 @@
                 "title": "Homepage Apps"
             },
             "payload": {
-                "viz": [
-                    "VIZ:product_display",
-                    "VIZ:masterDetail-display"
-                ]
+                "viz": []
             }
         }
     },
@@ -20,83 +17,8 @@
         }
     },
     "groups": {},
-    "visualizations": {
-        "VIZ:product_display": {
-            "vizType": "sap.ushell.StaticAppLauncher",
-            "businessApp": "product_display",
-            "vizConfig": {
-                "sap.app": { "title": "Display Product Catalog", "subTitle": "Fiori Elements v4" },
-                "sap.flp": { "target": { "type": "URL", "url": "#product-display" } }
-            }
-        },
-        "VIZ:masterDetail-display": {
-            "vizType": "sap.ushell.StaticAppLauncher",
-            "businessApp": "masterDetail-display",
-            "vizConfig": {
-                "sap.app": { "title": "Manage Products", "subTitle": "UI Adaptation at Runtime for SAP Fiori Elements" },
-                "sap.flp": { "target": { "type": "URL", "url": "#masterDetail-display" } }
-            }
-        }
-    },
-    "applications": {
-        "manage.news": {
-            "sap.app": {
-                "id": "manage.news",
-                "title": "Manage News",
-                "crossNavigation": {
-                    "inbounds": {
-                        "NewsArticle-display": {
-                            "semanticObject": "NewsArticle",
-                            "action": "display",
-                            "title": "Manage News"
-                        }
-                    }
-                }
-            }
-        },
-        "product_display": {
-            "sap.app": {
-                "id": "sap.ui.demoapps.rta.fev4",
-                "title": "Display Product Catalog",
-                "subTitle": "Fiori Elements v4",
-                "crossNavigation": {
-                    "inbounds": {
-                        "product-display": {
-                            "semanticObject": "product",
-                            "action": "display",
-                            "title": "Display Product Catalog"
-                        }
-                    }
-                }
-            },
-            "sap.ui5": { "componentName": "sap.ui.demoapps.rta.fev4" },
-            "sap.ui": { "technology": "UI5" },
-            "sap.platform.runtime": {
-                "componentProperties": { "url": "/test-resources/sap/ui/demoapps/demokit/rta/fev4" }
-            }
-        },
-        "masterDetail-display": {
-            "sap.app": {
-                "id": "sap.ui.demoapps.rta.fe",
-                "title": "Products Manage",
-                "subTitle": "UI Adaptation at Runtime for SAP Fiori Elements",
-                "crossNavigation": {
-                    "inbounds": {
-                        "masterDetail-display": {
-                            "semanticObject": "masterDetail",
-                            "action": "display",
-                            "title": "Products Manage"
-                        }
-                    }
-                }
-            },
-            "sap.ui5": { "componentName": "sap.ui.demoapps.rta.fe" },
-            "sap.ui": { "technology": "UI5" },
-            "sap.platform.runtime": {
-                "componentProperties": { "url": "/test-resources/sap/ui/demoapps/demokit/rta/fe" }
-            }
-        }
-    },
+    "visualizations": {},
+    "applications": {},
     "pages": {
         "SAP_BASIS_PG_UI_MYHOME": {
             "identification": {
@@ -105,31 +27,10 @@
             "payload": {
                 "layout": {
                     "sectionOrder": [
-                        "sampleAppsSection",
                         "homeAppsSection"
                     ]
                 },
                 "sections": {
-                    "sampleAppsSection": {
-                        "id": "sampleAppsSection",
-                        "title": "Sample Applications",
-                        "layout": {
-                            "vizOrder": [
-                                "product_display",
-                                "masterDetail-display"
-                            ]
-                        },
-                        "viz": {
-                            "product_display": {
-                                "id": "product_display",
-                                "vizId": "VIZ:product_display"
-                            },
-                            "masterDetail-display": {
-                                "id": "masterDetail-display",
-                                "vizId": "VIZ:masterDetail-display"
-                            }
-                        }
-                    },
                     "homeAppsSection": {
                         "id": "homeAppsSection",
                         "title": "Recently Added Apps",

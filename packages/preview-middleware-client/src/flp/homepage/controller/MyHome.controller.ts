@@ -17,7 +17,7 @@ import Title from 'sap/m/Title';
 import GridContainer from 'sap/f/GridContainer';
 import UI5Element from 'sap/ui/core/Element';
 import SysInfoBar from 'sap/ushell/ui/shell/SysInfoBar';
-import { GenericTileScope } from 'sap/m/library';
+import { GenericTileScope, PlacementType } from 'sap/m/library';
 import GenericTile from 'sap/m/GenericTile';
 import App from 'sap/cux/home/App';
 import Event from 'sap/ui/base/Event';
@@ -153,7 +153,7 @@ export default class MyHomeController extends Controller {
             icon: 'sap-icon://source-code',
             text: this.getText('infoBarText'),
             subText: this.getText('infoBarSubText', [sap.ui.version]),
-            color: 'blue'
+            color: 'orange'
         }).placeAt('systemInfo-shellArea');
     }
 
@@ -357,6 +357,7 @@ export default class MyHomeController extends Controller {
         });
 
         const popover = new Popover({
+            contentWidth: '528px',
             customHeader: new HBox({
                 alignItems: 'Center',
                 items: [
@@ -365,7 +366,7 @@ export default class MyHomeController extends Controller {
                 ]
             }).addStyleClass('sapUiTinyMargin'),
             content: [warningsList],
-            placement: 'VerticalPreferredBottom'
+            placement: PlacementType.HorizontalPreferredLeft
         }).addStyleClass('terminalWarningsPopover');
 
         const view = this.getView();

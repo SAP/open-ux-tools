@@ -50,7 +50,7 @@
 }
 
 .terminalWarningsPopover .sapMPopoverHeader {
-    border-bottom: 1px solid var(--sapList_BorderColor);
+    border-bottom: 1px solid #e76500;
 }
 
 /* Mobile */

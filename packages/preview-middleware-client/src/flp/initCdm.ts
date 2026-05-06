@@ -48,11 +48,11 @@ import type { Window } from 'types/global';
                                 editablePropterties: ['accessibility', 'contentDensity', 'theme']
                             },
                             defaults: {
-                                email: 'user.name@example.com',
-                                firstName: 'User',
-                                lastName: 'Name',
-                                fullName: 'User Name',
-                                id: 'USERNAME'
+                                email: 'john.doe@sap.com',
+                                firstName: 'John',
+                                lastName: 'Doe',
+                                fullName: 'John Doe',
+                                id: 'DOEJ'
                             }
                         }
                     }

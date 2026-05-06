@@ -26,8 +26,7 @@ ruleTester.run('sap-no-inner-html-access', rule, {
             code: "oControl.$().find('.sapMLabe')[0].innerHTML = 'reallybad';",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -35,8 +34,7 @@ ruleTester.run('sap-no-inner-html-access', rule, {
             code: "test['innerHTML'] = 'reallybad';",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         },
@@ -44,8 +42,7 @@ ruleTester.run('sap-no-inner-html-access', rule, {
             code: "if('test' === test['innerHTML']){;}",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'MemberExpression'
+                    message: errorMessage
                 }
             ]
         }

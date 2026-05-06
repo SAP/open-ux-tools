@@ -200,14 +200,217 @@ interface NewControlData {
     newValue: unknown;
 }
 
+type PropertyDocumentation = {
+    defaultValue: string;
+    description: string;
+    propertyName: string;
+    type?: string;
+    propertyType?: string;
+};
+
+interface ProcessedProperty {
+    analyzedType: AnalyzedType;
+    isEnabled: boolean;
+    value: unknown;
+    propertyType: PropertyType;
+    docu?: PropertyDocumentation;
+}
+
+/**
+ * Build the documentation object for a configuration (manifest) property.
+ *
+ * @param property - manifest property
+ * @returns PropertyDocumentation
+ */
+function buildConfigPropertyDocumentation(property: MergedSetting): PropertyDocumentation {
+    const defValue = ['undefined', 'null'].includes(String(property.defaultValue))
+        ? '-'
+        : String(property.defaultValue);
+    return {
+        description: property.description,
+        propertyName: property.id,
+        type: property.type,
+        defaultValue: defValue || '-'
+    };
+}
+
+/**
+ * Process a manifest configuration property.
+ *
+ * @param property - manifest property
+ * @param control - ui5 control
+ * @returns ProcessedProperty or undefined if the property should be skipped
+ */
+function processConfigProperty(property: MergedSetting, control: ManagedObject): ProcessedProperty | undefined {
+    const analyzedType = analyzeManifestProperty(property);
+    if (
+        !analyzedType ||
+        (property?.restrictedTo?.length &&
+            !property?.restrictedTo?.includes(getV4PageType(control) as TemplateType))
+    ) {
+        return undefined;
+    }
+    return {
+        analyzedType,
+        isEnabled: true,
+        value: property.value,
+        propertyType: PropertyType.Configuration,
+        docu: buildConfigPropertyDocumentation(property)
+    };
+}
+
+/**
+ * Process a UI5 control property.
+ *
+ * @param property - control metadata property
+ * @param control - ui5 control
+ * @param hasStableId - whether the control has a stable ID
+ * @param controlProperties - overlay design-time property config
+ * @param controlOverlay - element overlay
+ * @returns ProcessedProperty or undefined if the property should be skipped
+ */
+function processControlProperty(
+    property: ManagedObjectMetadataProperties,
+    control: ManagedObject,
+    hasStableId: boolean,
+    controlProperties: Record<string, { ignore: boolean }> | undefined,
+    controlOverlay: ElementOverlay | undefined
+): ProcessedProperty | undefined {
+    const analyzedType = analyzePropertyType(property);
+    if (!analyzedType) {
+        return undefined;
+    }
+    const ignore = controlProperties?.[property.name]?.ignore ?? false;
+
+    //updating i18n text for the control if bindingInfo has bindingString
+    const controlNewData: NewControlData = {
+        id: control.getId(),
+        name: property.name,
+        newValue: control.getProperty(property.name)
+    };
+    const bindingInfo: { bindingString?: string } = control.getBindingInfo(controlNewData.name) as {
+        bindingString?: string;
+    };
+    if (bindingInfo?.bindingString !== undefined) {
+        controlNewData.newValue = bindingInfo.bindingString;
+    }
+
+    // A property is enabled if:
+    // 1. The property supports changes
+    // 2. The control has stable ID
+    // 3. It is not configured to be ignored in design time
+    // 4. And control overlay is selectable
+    return {
+        analyzedType,
+        isEnabled: isControlEnabled(analyzedType, hasStableId, ignore, controlOverlay),
+        value: normalizeObjectPropertyValue(controlNewData.newValue),
+        propertyType: PropertyType.ControlProperty
+    };
+}
+
+/**
+ * Build a ControlProperty entry from an analyzed property.
+ *
+ * @param property - the raw property (manifest or control metadata)
+ * @param processed - the processed property data
+ * @param selectedControlName - name of the UI5 control class
+ * @returns ControlProperty or undefined if the type is not supported
+ */
+function buildPropertyEntry(
+    property: ManagedObjectMetadataProperties | MergedSetting,
+    processed: ProcessedProperty,
+    selectedControlName: string
+): ControlProperty | undefined {
+    const { analyzedType, isEnabled, value, propertyType, docu } = processed;
+    const isIcon =
+        testIconPattern(property.name) &&
+        selectedControlName !== 'sap.m.Image' &&
+        analyzedType.ui5Type === 'sap.ui.core.URI';
+    const ui5Type = analyzedType.ui5Type || undefined;
+    const readableName = convertCamelCaseToPascalCase(property.name);
+    const docuSpread = docu ? { documentation: docu } : {};
+
+    switch (analyzedType.primitiveType) {
+        case 'enum': {
+            const values = analyzedType.enumValues ?? {};
+            const options: { key: string; text: string }[] = Object.keys(values).map((key) => ({
+                key,
+                text: values[key]
+            }));
+            return {
+                type: STRING_VALUE_TYPE,
+                editor: DROPDOWN_EDITOR_TYPE,
+                propertyType,
+                name: property.name,
+                readableName,
+                value: value as string,
+                isEnabled,
+                ui5Type,
+                options,
+                ...docuSpread
+            };
+        }
+        case 'string':
+            return {
+                type: STRING_VALUE_TYPE,
+                editor: INPUT_EDITOR_TYPE,
+                propertyType,
+                name: property.name,
+                readableName,
+                value: value as string,
+                isEnabled,
+                isIcon,
+                ui5Type,
+                ...docuSpread
+            };
+        case 'int':
+            return {
+                type: INTEGER_VALUE_TYPE,
+                editor: INPUT_EDITOR_TYPE,
+                propertyType,
+                name: property.name,
+                readableName,
+                value: value as number,
+                isEnabled,
+                ui5Type,
+                ...docuSpread
+            };
+        case 'float':
+            return {
+                type: FLOAT_VALUE_TYPE,
+                editor: INPUT_EDITOR_TYPE,
+                propertyType,
+                name: property.name,
+                readableName,
+                value: value as number,
+                isEnabled,
+                ui5Type,
+                ...docuSpread
+            };
+        case 'boolean':
+            return {
+                type: BOOLEAN_VALUE_TYPE,
+                editor: CHECKBOX_EDITOR_TYPE,
+                propertyType,
+                name: property.name,
+                readableName,
+                value: value as boolean,
+                isEnabled,
+                ui5Type,
+                ...docuSpread
+            };
+        default:
+            return undefined;
+    }
+}
+
 /**
  * Build control data.
  *
  * @param control - ui5 control
  * @param changeService - Changeservice for change stack event handling.
  * @param controlOverlay - element overlay
- * @param includeDocumentation - include documentation flag
- * @returns Promise<Control>
+ * @returns Control
  */
 export function buildControlData(
     control: ManagedObject,
@@ -218,182 +421,37 @@ export function buildControlData(
     const selectedControlName = controlMetadata.getName();
     const hasStableId = Utils.checkControlId(control);
     const overlayData = controlOverlay?.getDesignTimeMetadata().getData();
-
     const controlProperties = controlOverlay ? overlayData?.properties : undefined;
+
     const manifestProperties = getManifestProperties(control, changeService, controlOverlay);
-    // Add the control's properties/manifest properties
     const allProperties = {
         ...(controlMetadata.getAllProperties() as unknown as {
             [name: string]: ManagedObjectMetadataProperties;
         }),
         ...manifestProperties
     };
-    let propertyType;
-    const propertyNames = Object.keys(allProperties);
+
     const properties: ControlProperty[] = [];
-    for (const propertyName of propertyNames) {
+    for (const propertyName of Object.keys(allProperties)) {
         const property = allProperties[propertyName];
-        let analyzedType;
-        let isEnabled = false;
-        let value: unknown;
-        if (property && 'configuration' in property) {
-            propertyType = PropertyType.Configuration;
-            analyzedType = analyzeManifestProperty(property);
-            if (
-                !analyzedType ||
-                (property?.restrictedTo?.length &&
-                    !property?.restrictedTo?.includes(getV4PageType(control) as TemplateType))
-            ) {
-                continue;
-            }
-            isEnabled = true;
-            value = property.value;
-        } else {
-            propertyType = PropertyType.ControlProperty;
-            // the default behavior is that the property is enabled
-            // meaning it's not ignored during design time
-            analyzedType = analyzePropertyType(property);
-            if (!analyzedType) {
-                continue;
-            }
-            let ignore = false;
-            if (controlProperties?.[property.name]) {
-                // check whether the property should be ignored in design time or not
-                // if it's 'undefined' then it's not considered when building isEnabled because it's 'true'
-                ignore = controlProperties[property.name].ignore;
-            }
+        const processed =
+            property && 'configuration' in property
+                ? processConfigProperty(property, control)
+                : processControlProperty(property, control, hasStableId, controlProperties, controlOverlay);
 
-            //updating i18n text for the control if bindingInfo has bindingString
-            const controlNewData: NewControlData = {
-                id: control.getId(),
-                name: property.name,
-                newValue: control.getProperty(property.name)
-            };
-            const bindingInfo: { bindingString?: string } = control.getBindingInfo(controlNewData.name) as {
-                bindingString?: string;
-            };
-            if (bindingInfo?.bindingString !== undefined) {
-                controlNewData.newValue = bindingInfo.bindingString;
-            }
-
-            // A property is enabled if:
-            // 1. The property supports changes
-            // 2. The control has stable ID
-            // 3. It is not configured to be ignored in design time
-            // 4. And control overlay is selectable
-            isEnabled = isControlEnabled(analyzedType, hasStableId, ignore, controlOverlay);
-
-            value = normalizeObjectPropertyValue(controlNewData.newValue);
+        if (!processed) {
+            continue;
         }
-        const isIcon =
-            testIconPattern(property.name) &&
-            selectedControlName !== 'sap.m.Image' &&
-            analyzedType.ui5Type === 'sap.ui.core.URI';
-        const ui5Type = analyzedType.ui5Type || undefined;
-        const readableName = convertCamelCaseToPascalCase(property.name);
-        let docu:
-            | {
-                  defaultValue: string;
-                  description: string;
-                  propertyName: string;
-                  type?: string;
-                  propertyType?: string;
-              }
-            | undefined;
-        if ('configuration' in property) {
-            const defValue = ['undefined', 'null'].includes(String(property.defaultValue))
-                ? '-'
-                : String(property.defaultValue);
-            docu = {
-                description: property.description,
-                propertyName: property.id,
-                type: property.type,
-                defaultValue: defValue || '-'
-            };
-        }
-        switch (analyzedType.primitiveType) {
-            case 'enum': {
-                const values = analyzedType.enumValues ?? {};
-                const options: { key: string; text: string }[] = Object.keys(values).map((key) => ({
-                    key,
-                    text: values[key]
-                }));
-                properties.push({
-                    type: STRING_VALUE_TYPE,
-                    editor: DROPDOWN_EDITOR_TYPE,
-                    propertyType,
-                    name: property.name,
-                    readableName,
-                    value: value as string,
-                    isEnabled,
-                    ui5Type,
-                    options,
-                    ...(docu && { documentation: docu })
-                });
-                break;
-            }
-            case 'string': {
-                properties.push({
-                    type: STRING_VALUE_TYPE,
-                    editor: INPUT_EDITOR_TYPE,
-                    propertyType,
-                    name: property.name,
-                    readableName,
-                    value: value as string,
-                    isEnabled,
-                    isIcon,
-                    ui5Type,
-                    ...(docu && { documentation: docu })
-                });
-                break;
-            }
-            case 'int': {
-                properties.push({
-                    type: INTEGER_VALUE_TYPE,
-                    editor: INPUT_EDITOR_TYPE,
-                    propertyType,
-                    name: property.name,
-                    readableName,
-                    value: value as number,
-                    isEnabled,
-                    ui5Type,
-                    ...(docu && { documentation: docu })
-                });
-                break;
-            }
-            case 'float': {
-                properties.push({
-                    type: FLOAT_VALUE_TYPE,
-                    editor: INPUT_EDITOR_TYPE,
-                    propertyType,
-                    name: property.name,
-                    readableName,
-                    value: value as number,
-                    isEnabled,
-                    ui5Type,
-                    ...(docu && { documentation: docu })
-                });
-                break;
-            }
-            case 'boolean': {
-                properties.push({
-                    type: BOOLEAN_VALUE_TYPE,
-                    editor: CHECKBOX_EDITOR_TYPE,
-                    propertyType,
-                    name: property.name,
-                    readableName,
-                    value: value as boolean,
-                    isEnabled,
-                    ui5Type,
-                    ...(docu && { documentation: docu })
-                });
-                break;
-            }
+
+        const entry = buildPropertyEntry(property, processed, selectedControlName);
+        if (entry) {
+            properties.push(entry);
         }
     }
+
     return {
-        id: control.getId(), //the id of the underlying control/aggregation
-        type: selectedControlName, //the name of the ui5 class of the control/aggregation
+        id: control.getId(),
+        type: selectedControlName,
         properties: [...properties].sort((a, b) => (a.name > b.name ? 1 : -1)),
         name: selectedControlName
     };
