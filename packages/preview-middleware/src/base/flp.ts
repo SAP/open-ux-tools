@@ -323,7 +323,7 @@ export class FlpSandbox {
         await this.setApplicationDependencies();
         const patchedRouterBaseUrl = req['ui5-patched-router']?.baseUrl ?? '';
         const resourcesPrefix = getResourcesPathPrefix(this.utils);
-        this.templateConfig.baseUrl = resourcesPrefix
+        const baseUrl = resourcesPrefix
             ? posix.join(patchedRouterBaseUrl, resourcesPrefix)
             : patchedRouterBaseUrl;
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, patchedRouterBaseUrl);
@@ -335,7 +335,7 @@ export class FlpSandbox {
             this.removeFlexExtensionPointEnabled();
         }
 
-        const config = structuredClone(this.templateConfig);
+        const config = { ...structuredClone(this.templateConfig), baseUrl };
         if (!config.ui5.libs.includes('sap.ui.rta')) {
             // sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects
             config.ui5.libs += ',sap.ui.rta';
@@ -529,7 +529,7 @@ export class FlpSandbox {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             const patchedRouterBaseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
             const resourcesPrefix = getResourcesPathPrefix(this.utils);
-            this.templateConfig.baseUrl = resourcesPrefix
+            const baseUrl = resourcesPrefix
                 ? posix.join(patchedRouterBaseUrl, resourcesPrefix)
                 : patchedRouterBaseUrl;
             const ui5Version = await this.getUi5Version(
@@ -545,7 +545,7 @@ export class FlpSandbox {
                 this.removeFlexExtensionPointEnabled();
             }
             //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
-            const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
+            const html = render(this.getSandboxTemplate(ui5Version), { ...this.templateConfig, baseUrl });
             this.sendResponse(res, 'text/html', 200, html);
         }
     }

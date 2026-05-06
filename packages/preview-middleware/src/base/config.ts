@@ -86,6 +86,8 @@ export interface TemplateConfig {
     /**
      * Base URL provided by `ui5-patched-router` (e.g. from `cds-plugin-ui5`).
      * Rendered into `data-open-ux-preview-base-url` in the FLP templates so the preview client can construct correct URLs.
+     * This is a per-request value derived from the incoming request — initialized to `''` and must be
+     * computed locally in each request handler rather than stored on the shared template config.
      */
     baseUrl: string;
     apps: Record<
