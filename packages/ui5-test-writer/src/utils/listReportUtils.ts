@@ -237,9 +237,9 @@ export function getFilterFieldNames(pageModel: TreeModel, log?: Logger): string[
 }
 
 /**
- * Finds the Core.OperationAvailable annotation value for a given action method name in the metadata.
+ * Analyzes InsertRestrictions annotation to determine create button visibility and enabled state.
  *
- * @param restriction The InsertRestrictions or DeleteRestrictions annotation for the entity set
+ * @param restriction The InsertRestrictions annotation for the entity set
  * @returns ButtonState indicating visibility and enabled state based on the annotation value
  */
 function analyzeInsertRestrictions(restriction: InsertRestrictionsType | undefined): ButtonState {

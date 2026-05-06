@@ -31,7 +31,7 @@ import { buildActionStateFromSpecModelKey } from './actionUtils';
  *
  * @param objectPages - the array of object pages extracted from the application model
  * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
- * @param log - optional logger instance¨
+ * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
  * @returns a record of object page feature data
  */

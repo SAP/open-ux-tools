@@ -57,7 +57,9 @@ export function findOperationAvailableAnnotation(
     if (metadata.entityContainer?.annotations) {
         const annotations = metadata.entityContainer.annotations as EntityContainerAnnotations &
             Record<string, ActionAnnotations>;
-        const matchingKey = Object.keys(annotations).find((key) => key.includes(actionMethodName));
+        const matchingKey = Object.keys(annotations).find(
+            (key) => key === actionMethodName || key.endsWith(`.${actionMethodName}`)
+        );
         if (matchingKey && annotations[matchingKey]?.Core?.OperationAvailable !== undefined) {
             return annotations[matchingKey].Core.OperationAvailable;
         }
