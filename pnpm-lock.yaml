@@ -1104,8 +1104,8 @@ importers:
         specifier: 3.13.6
         version: 3.13.6
       '@sap/cf-tools':
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.3.1
+        version: 3.3.1
       axios:
         specifier: 1.15.2
         version: 1.15.2(debug@4.4.3)
@@ -1235,8 +1235,8 @@ importers:
         specifier: workspace:*
         version: link:../project-input-validator
       '@sap/cf-tools':
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.3.1
+        version: 3.3.1
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -1347,8 +1347,8 @@ importers:
         specifier: workspace:*
         version: link:../yaml
       '@sap/cf-tools':
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.3.1
+        version: 3.3.1
       '@sap/mta-lib':
         specifier: 1.7.4
         version: 1.7.4
@@ -1649,8 +1649,8 @@ importers:
         specifier: workspace:*
         version: link:../nodejs-utils
       '@vscode-logging/logger':
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: 2.0.9
+        version: 2.0.9
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -2475,8 +2475,8 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       '@vscode-logging/logger':
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: 2.0.9
+        version: 2.0.9
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -2765,8 +2765,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: 2.0.9
+        version: 2.0.9
       lodash:
         specifier: '>=4.17.24'
         version: 4.18.1
@@ -2943,8 +2943,8 @@ importers:
         specifier: 5.2.14
         version: 5.2.14
       '@vscode-logging/logger':
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: 2.0.9
+        version: 2.0.9
       deepmerge:
         specifier: 4.3.1
         version: 4.3.1
@@ -3039,8 +3039,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       '@sap/cf-tools':
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.3.1
+        version: 3.3.1
       axios:
         specifier: 1.15.2
         version: 1.15.2(debug@4.4.3)
@@ -3351,8 +3351,8 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       '@sap/cf-tools':
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.3.1
+        version: 3.3.1
       axios:
         specifier: 1.15.2
         version: 1.15.2(debug@4.4.3)
@@ -3885,8 +3885,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: 2.0.9
+        version: 2.0.9
       fs-extra:
         specifier: 11.3.4
         version: 11.3.4
@@ -4590,8 +4590,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: 2.0.9
+        version: 2.0.9
       jest-extended:
         specifier: 7.0.0
         version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
@@ -4873,8 +4873,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: 2.0.9
+        version: 2.0.9
       fs-extra:
         specifier: 11.3.4
         version: 11.3.4
@@ -4965,8 +4965,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: 2.0.9
+        version: 2.0.9
       jest-extended:
         specifier: 7.0.0
         version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
@@ -8812,6 +8812,9 @@ packages:
   '@sap/cf-tools@3.3.0':
     resolution: {integrity: sha512-MEdOQhfl5t4eVZI95yB0o02fmL4k2SEnMcIPju4PnyZvFPEmXGqQXviF8EzRAEIacGtm8/ROJHdm7+COYSwLmA==}
 
+  '@sap/cf-tools@3.3.1':
+    resolution: {integrity: sha512-hGrpVEoTxUC3IdfwCE30Pm4JV+hNXrJDfYzu7VspZglEZSPnut+MzCnzodRacFzRJ8qAP0MPvrr5PCFMmuBckA==}
+
   '@sap/e2e-trace@5.4.0':
     resolution: {integrity: sha512-NwrrCg4ThaEJYRLgAB1L312+EcIK5z8VVhshS3QaAyj3duLOezDg1CEgDjXzXkJUTWFQ8LdruIMNaddG+WN42A==}
     engines: {node: ^18.0.0 || ^20.0.0 || ^22.0.0}
@@ -10172,6 +10175,9 @@ packages:
 
   '@vscode-logging/logger@2.0.8':
     resolution: {integrity: sha512-R0I+vypChbxUQLzDJZYEpOpwR5qc1F/5GJ3WVgTP34206ixG6BCn5bz3mNYY9v58yt0Nd8X4deR0GVMWrYCuUg==}
+
+  '@vscode-logging/logger@2.0.9':
+    resolution: {integrity: sha512-Kq7dmziSHej+6yADxoHCZU8Tspf7ucJeNjH+QPMAQlRfT0uaXlh1q5DpWnzSgznWIBrMc7lX82meThDKBxL+oA==}
 
   '@vscode-logging/types@2.0.8':
     resolution: {integrity: sha512-9mc5+Iob1BqJ00QExLwdz4+w0A1odSYjvzpKYfP0lVzr7Tdf4iWGspLADyTSC7DtJVQQ+tu411cBju+cYJxE/g==}
@@ -23519,6 +23525,13 @@ snapshots:
       properties-reader: 2.3.0
       url: 0.11.4
 
+  '@sap/cf-tools@3.3.1':
+    dependencies:
+      comment-json: 4.2.5
+      lodash: 4.18.1
+      properties-reader: 2.3.0
+      url: 0.11.4
+
   '@sap/e2e-trace@5.4.0':
     dependencies:
       request-stats: 3.0.0
@@ -25623,6 +25636,20 @@ snapshots:
   '@vercel/oidc@3.1.0': {}
 
   '@vscode-logging/logger@2.0.8':
+    dependencies:
+      '@vscode-logging/types': 2.0.8
+      fast-safe-stringify: 2.1.1
+      fs-extra: 11.2.0
+      lodash: 4.18.1
+      stacktrace-js: 2.0.2
+      streamroller: 3.1.5
+      triple-beam: 1.4.1
+      winston: 3.11.0
+      winston-transport: 4.6.0
+    transitivePeerDependencies:
+      - supports-color
+
+  '@vscode-logging/logger@2.0.9':
     dependencies:
       '@vscode-logging/types': 2.0.8
       fast-safe-stringify: 2.1.1
