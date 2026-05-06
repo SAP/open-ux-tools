@@ -28,6 +28,7 @@ describe('LayeredRepositoryService', () => {
     });
 
     afterAll(() => {
+        nock.abortPendingRequests();
         nock.cleanAll();
         nock.enableNetConnect();
     });
@@ -38,6 +39,7 @@ describe('LayeredRepositoryService', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
+        nock.cleanAll();
     });
 
     describe('deploy', () => {
@@ -132,13 +134,7 @@ describe('LayeredRepositoryService', () => {
             expect(response.status).toBe(200);
         });
         test('logError is called when request fails', async () => {
-            const mockAxiosError = {
-                response: {
-                    status: 404,
-                    data: 'Not found'
-                },
-                message: 'Request failed with status code 404'
-            } as AxiosError;
+            const mockErrorMessage = 'Request failed with status code 404';
 
             nock(server)
                 .get((url) => {
@@ -157,16 +153,14 @@ describe('LayeredRepositoryService', () => {
                         config.namespace as string
                     )}&layer=CUSTOMER_BASE&package=${config.package}&changelist=${config.transport}`
                 )
-                .replyWithError(mockAxiosError);
+                .reply(404, 'Not found');
 
             try {
                 await service.deploy(archivePath, config);
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
-                expect(loggerMock.error).toHaveBeenCalledWith(
-                    expect.stringContaining(mockAxiosError.response?.data as string)
-                );
+                expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(mockErrorMessage));
             }
         });
     });
@@ -357,6 +351,136 @@ describe('LayeredRepositoryService', () => {
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
+            }
+        });
+    });
+
+    describe('listAdaptations', () => {
+        const appId = 'my.app.id';
+        const adaptationsResponse = {
+            adaptations: [
+                { id: 'CTX1', contexts: { role: ['/UI2/ADMIN'] } },
+                { id: 'DEFAULT', type: 'DEFAULT' }
+            ]
+        };
+
+        test('should fetch adaptations for an app', async () => {
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/apps/${encodeURIComponent(appId)}/adaptations/`)
+                .query({ version: '0' })
+                .reply(200, JSON.stringify(adaptationsResponse));
+
+            const result = await service.listAdaptations(appId, '0');
+            expect(result).toEqual(adaptationsResponse);
+        });
+
+        test('should log response when AxiosError is thrown', async () => {
+            const mockErrorMessage = 'Request failed with status code 500';
+
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/apps/${encodeURIComponent(appId)}/adaptations/`)
+                .query({ version: '0' })
+                .reply(500, 'Internal Server Error');
+
+            try {
+                await service.listAdaptations(appId, '0');
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe(mockErrorMessage);
+            }
+        });
+    });
+
+    describe('getKeyUserData', () => {
+        const componentId = 'my.app.id';
+        const adaptationId = 'DEFAULT';
+        const keyUserResponse = {
+            contents: [
+                {
+                    content: {
+                        changeType: 'page',
+                        fileName: 'id_1_page',
+                        namespace: 'apps/my.app.id/changes/',
+                        reference: 'my.app.id'
+                    }
+                }
+            ]
+        };
+
+        test('should fetch key user data for adaptation', async () => {
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/keyuserdata/${componentId}?adaptationId=${adaptationId}`)
+                .reply(200, JSON.stringify(keyUserResponse));
+
+            const result = await service.getKeyUserData(componentId, adaptationId);
+            expect(result).toEqual(keyUserResponse);
+        });
+
+        test('should log response when AxiosError is thrown', async () => {
+            const mockErrorMessage = 'Request failed with status code 404';
+
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/keyuserdata/${componentId}?adaptationId=${adaptationId}`)
+                .reply(404, 'Not found');
+
+            try {
+                await service.getKeyUserData(componentId, adaptationId);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe(mockErrorMessage);
+            }
+        });
+    });
+
+    describe('getFlexVersions', () => {
+        const componentId = 'my.app.id';
+        const flexVersionsResponse = {
+            versions: [
+                {
+                    versionId: '1.0.0',
+                    isPublished: true,
+                    title: 'Version 1.0.0',
+                    activatedAt: '2025-01-01T00:00:00Z',
+                    activatedBy: 'USER1',
+                    appdescrChangesHash: 'hash1'
+                },
+                {
+                    versionId: '2.0.0',
+                    isPublished: false,
+                    title: 'Version 2.0.0',
+                    activatedAt: '2025-02-01T00:00:00Z',
+                    activatedBy: 'USER2',
+                    appdescrChangesHash: 'hash2'
+                }
+            ]
+        };
+
+        test('should fetch flex versions for component with default parameters', async () => {
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/versions/${encodeURIComponent(componentId)}`)
+                .query({ 'sap-language': 'EN', limit: '2' })
+                .reply(200, JSON.stringify(flexVersionsResponse));
+
+            const result = await service.getFlexVersions(componentId);
+            expect(result).toEqual(flexVersionsResponse);
+        });
+
+        test('should log response when AxiosError is thrown', async () => {
+            const mockErrorMessage = 'Request failed with status code 500';
+
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/versions/${encodeURIComponent(componentId)}`)
+                .query({ 'sap-language': 'EN', limit: '2' })
+                .reply(500, 'Internal Server Error');
+
+            try {
+                await service.getFlexVersions(componentId);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe(mockErrorMessage);
             }
         });
     });

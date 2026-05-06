@@ -1,0 +1,9 @@
+{
+    "systems": [
+        {
+            "name": "OData Service System",
+            "url": "https://odata.service.test.url.com/sap/opu/odata/sap/SERVICE_NAME",
+            "connectionType": "odata_service"
+        }
+    ]
+}

@@ -16,9 +16,11 @@ export {
     toReferenceUri,
     getWorkspaceInfo,
     hasMinCdsVersion,
-    checkCdsUi5PluginEnabled
+    checkCdsUi5PluginEnabled,
+    processServices,
+    getGlobalCdsHomePath
 } from './cap';
-export { filterDataSourcesByType } from './service';
+export { filterDataSourcesByType, getMainService } from './service';
 export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies';
 export { getCapI18nFolderNames, getI18nPropertiesPaths, getI18nBundles } from './i18n';
 export {
@@ -46,7 +48,8 @@ export {
     getAllUi5YamlFileNames,
     getMockServerConfig,
     getMockDataPath,
-    getPathMappings
+    getPathMappings,
+    type PathMappings
 } from './ui5-config';
 export { getMtaPath } from './mta';
 export { createApplicationAccess, createProjectAccess } from './access';
@@ -58,3 +61,4 @@ export {
     refreshSpecificationDistTags
 } from './specification';
 export { readFlexChanges } from './flex-changes';
+export { isUI5IdUnique } from './ui5-xml-id-validator';

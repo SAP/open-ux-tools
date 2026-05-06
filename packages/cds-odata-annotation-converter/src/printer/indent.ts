@@ -49,6 +49,7 @@ function indentLine(string: string, level: number): string {
 }
 
 /**
+ * Calculates the net change in indentation level for a line of code.
  *
  * @param line - The line of code or text.
  * @returns The change in indentation level, positive for each opening character,

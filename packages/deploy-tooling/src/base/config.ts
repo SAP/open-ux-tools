@@ -2,6 +2,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { AbapTarget, AbapDeployConfig } from '../types';
 import { isUrlTarget } from '@sap-ux/system-access';
 import type { BspConfig } from '@sap-ux/axios-extension';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Clones the given config and removes secrets so that it can be printed to a log file.
@@ -62,11 +63,20 @@ export function isBspConfig(config: Partial<BspConfig>): config is BspConfig {
  * Validate the given config. If anything mandatory is missing throw an error.
  *
  * @param config - the config to be validated
+ * @param logger Logger used by deploy tooling
  * @returns reference to the given config
  */
-export function validateConfig(config: AbapDeployConfig | undefined): AbapDeployConfig {
+export function validateConfig(config: AbapDeployConfig | undefined, logger?: Logger): AbapDeployConfig {
     if (!config) {
         throw new Error('The deployment configuration is missing.');
+    }
+
+    if (config.app.package && config.app.package !== config.app.package.toUpperCase()) {
+        const normalized = config.app.package.toUpperCase();
+        logger?.warn(
+            `Package name '${config.app.package}' was normalized to '${normalized}'. Lowercase package names may cause deployment failures.`
+        );
+        config.app.package = normalized;
     }
 
     if (config.target) {

@@ -7,6 +7,7 @@ import { OnPremSystem } from '../../../../../../src/components/layout/main/syste
 describe('<OnPremSystem />', () => {
     it('Test inputs', () => {
         const setUrl = jest.fn();
+        const setServicePath = jest.fn();
         const setClient = jest.fn();
         const setUsername = jest.fn();
         const setPassword = jest.fn();
@@ -35,6 +36,7 @@ describe('<OnPremSystem />', () => {
             <OnPremSystem
                 systemInfo={systemInfo}
                 setUrl={setUrl}
+                setServicePath={setServicePath}
                 setClient={setClient}
                 setUsername={setUsername}
                 setPassword={setPassword}

@@ -1,5 +1,5 @@
 import type { Question } from 'inquirer';
-import type { ServiceSelectionPromptOptions } from '../../../../types';
+import type { OdataServicePromptOptions } from '../../../../types';
 import { ConnectionValidator } from '../../../connectionValidator';
 import { getCFDiscoverPrompts } from '../abap-on-btp/questions';
 import { getSystemServiceQuestion } from '../service-selection/questions';
@@ -10,15 +10,24 @@ import type { ServiceAnswer } from '../service-selection/types';
  * These will call out to cf tools to discover the available abap systems and services, and create a new destination if necessary,
  * to allow apps to access these cf hosted services.
  *
- * @param promptOptions prompt options to control some prompt behavior see {@link ServiceSelectionPromptOptions}
+ * @param promptOptions prompt options to control some prompt behavior see {@link OdataServicePromptOptions}
  * @returns the prompt questions
  */
-export function getCfAbapBASQuestions(promptOptions?: ServiceSelectionPromptOptions): Question<ServiceAnswer>[] {
+export function getCfAbapBASQuestions(promptOptions?: OdataServicePromptOptions): Question<ServiceAnswer>[] {
     // Using a prompt namespace allows re-use of system service (catalog based) selection prompt
     const cfAbapBasPromptNamespace = 'cfAbapBas';
     const connectionValidator = new ConnectionValidator();
     return [
-        ...getCFDiscoverPrompts(connectionValidator, cfAbapBasPromptNamespace, promptOptions?.requiredOdataVersion),
-        ...getSystemServiceQuestion(connectionValidator, cfAbapBasPromptNamespace, promptOptions)
+        ...getCFDiscoverPrompts(
+            connectionValidator,
+            cfAbapBasPromptNamespace,
+            promptOptions?.serviceSelection?.requiredOdataVersion
+        ),
+        ...getSystemServiceQuestion(
+            connectionValidator,
+            cfAbapBasPromptNamespace,
+            promptOptions?.serviceSelection,
+            promptOptions?.valueHelpDownload?.hide
+        )
     ];
 }

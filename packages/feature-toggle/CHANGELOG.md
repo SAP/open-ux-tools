@@ -1,5 +1,23 @@
 # @sap-ux/feature-toggle
 
+## 0.3.8
+
+### Patch Changes
+
+- c53a4ba: chore(feature-toggle): upgrade jest-when 3.x → 4.x; upgrade shared devDependencies (jest 30)
+
+## 0.3.7
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+
+## 0.3.6
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+
 ## 0.3.5
 
 ### Patch Changes

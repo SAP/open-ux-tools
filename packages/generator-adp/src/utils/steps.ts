@@ -100,6 +100,15 @@ export function getDeployPage(): IPrompt {
 }
 
 /**
+ * Returns the key user import page step.
+ *
+ * @returns {IPrompt} The key user import wizard page.
+ */
+export function getKeyUserImportPage(): IPrompt {
+    return { name: t('yuiNavSteps.keyUserImportName'), description: t('yuiNavSteps.keyUserImportDescr') };
+}
+
+/**
  * Dynamically adds or removes a step in the Yeoman UI wizard.
  *
  * If `shouldAdd` is true and the step is not already in the list, it is inserted

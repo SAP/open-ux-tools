@@ -23,6 +23,7 @@ interface EdmJsonOptions extends FormatterOptions {
 }
 
 /**
+ * Serializes an internal representation node to EDM JSON format string.
  *
  * @param node - The node to be serialized.
  * @param options - The options for EDM JSON serialization.

@@ -1,5 +1,23 @@
 # @sap-ux/odata-entity-model
 
+## 0.3.7
+
+### Patch Changes
+
+- dfa433e: feat: Enabled support of referenced external metadata
+
+## 0.3.6
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
+## 0.3.5
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
 ## 0.3.4
 
 ### Patch Changes

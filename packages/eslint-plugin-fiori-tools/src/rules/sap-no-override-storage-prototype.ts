@@ -30,7 +30,7 @@ function isType(node: any, type: any): boolean {
  * @param obj The object to search for
  * @returns True if the array contains the object
  */
-function contains(a, obj): boolean {
+function contains(a: unknown[], obj: unknown) {
     return a.includes(obj);
 }
 
@@ -39,7 +39,6 @@ const rule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'fiori tools (fiori custom) ESLint rule',
-            category: 'Best Practices',
             recommended: false
         },
         messages: {

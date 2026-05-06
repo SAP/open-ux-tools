@@ -360,6 +360,56 @@ Object {
           "type": "object",
           "value": undefined,
         },
+        Object {
+          "artifactType": undefined,
+          "description": "Settings for all tables.",
+          "displayName": "globalTableSettings",
+          "name": "globalTableSettings",
+          "properties": Array [
+            Object {
+              "artifactType": undefined,
+              "description": "This property acts as a global default for all pages and tables in the application. Page-level or table-level definitions override this setting.
+You can set the following values for this property:
+- creationRows: Used to enable empty rows mode. In create and edit mode, an empty row is added to the table.
+- creationRowsHiddenInEditMode: Similar to \\"creationRows\\", but in edit mode, the empty row is only displayed when the user clicks the \\"Create\\" button. This option is available starting with SAPUI5 version 1.110.
+- inline: In create and edit mode, users can use the \\"Create\\" button to add new entries to the table. We recommend to use \\"creationRows\\" instead.
+By default, an empty row is not provided and the \\"Create\\" button automatically navigates to the item's object page for the newly created entry.",
+              "displayName": "Create Mode",
+              "name": "createMode",
+              "options": Array [
+                Object {
+                  "key": "",
+                  "text": "",
+                },
+                Object {
+                  "key": "creationRows",
+                  "text": "creationRows",
+                },
+                Object {
+                  "key": "creationRowsHiddenInEditMode",
+                  "text": "creationRowsHiddenInEditMode",
+                },
+                Object {
+                  "key": "inline",
+                  "text": "inline",
+                },
+              ],
+              "schemaPath": Array [
+                "settings",
+                "globalTableSettings",
+                "createMode",
+              ],
+              "type": "string",
+              "value": undefined,
+            },
+          ],
+          "schemaPath": Array [
+            "settings",
+            "globalTableSettings",
+          ],
+          "type": "object",
+          "value": undefined,
+        },
       ],
       "schemaPath": Array [
         "settings",
@@ -1011,6 +1061,62 @@ Object {
             "defaultCreationMode",
           ],
           "type": "string",
+          "value": undefined,
+        },
+        Object {
+          "artifactType": undefined,
+          "description": "Defines the default layout options of the table popins. A separate layout options of the table popins can be set for each responsive table in the application.",
+          "displayName": "Default Popin Layout",
+          "name": "defaultPopinLayout",
+          "options": Array [
+            Object {
+              "key": "",
+              "text": "",
+            },
+            Object {
+              "key": "Block",
+              "text": "Block",
+            },
+            Object {
+              "key": "GridLarge",
+              "text": "GridLarge",
+            },
+            Object {
+              "key": "GridSmall",
+              "text": "GridSmall",
+            },
+          ],
+          "schemaPath": Array [
+            "settings",
+            "defaultPopinLayout",
+          ],
+          "type": "string",
+          "value": undefined,
+        },
+        Object {
+          "artifactType": undefined,
+          "description": "Enables lazy loading for sections in object pages. If a specific object page defines its own \`enableLazyLoading\` property, that page-level setting overrides this application-level setting.",
+          "displayName": "Enable Lazy Loading",
+          "name": "enableLazyLoading",
+          "options": Array [
+            Object {
+              "key": undefined,
+              "text": "",
+            },
+            Object {
+              "key": true,
+              "text": "True",
+            },
+            Object {
+              "key": false,
+              "text": "False",
+            },
+          ],
+          "schemaPath": Array [
+            "settings",
+            "enableLazyLoading",
+          ],
+          "type": "boolean",
           "value": undefined,
         },
         Object {
@@ -4048,9 +4154,9 @@ If selectAll is true, the selection limit is not evaluated.",
         },
         Object {
           "artifactType": "FlexChange",
-          "description": "useExportToExcel must be set to true if you want to export data to a spreadsheet application, for example Microsoft Excel.",
-          "displayName": "Use Export To Excel",
-          "name": "useExportToExcel",
+          "description": "Enables the export of data from the SmartTable control to another file, for example, a spreadsheet. If exportType is GW, any $expand parameters are removed when sending the request to generate the file.",
+          "displayName": "Enable Export",
+          "name": "enableExport",
           "options": Array [
             Object {
               "key": undefined,
@@ -4067,14 +4173,14 @@ If selectAll is true, the selection limit is not evaluated.",
           ],
           "schemaPath": Array [
             "table",
-            "useExportToExcel",
+            "enableExport",
           ],
           "type": "boolean",
           "value": undefined,
         },
         Object {
           "artifactType": "FlexChange",
-          "description": "Specifies the type of export to be used in the SmartTable control. UI5Client is the default option.",
+          "description": "Specifies the type of export to be used in the SmartTable control.",
           "displayName": "Export Type",
           "name": "exportType",
           "options": Array [
@@ -4996,15 +5102,52 @@ Object {
                     },
                     Object {
                       "artifactType": "Manifest",
-                      "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                      "displayName": "Group",
-                      "name": "group",
+                      "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+                      "displayName": "Overflow Group",
+                      "name": "overflowGroup",
                       "schemaPath": Array [
                         "table",
                         "toolBar",
                         "actions",
                         "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
-                        "group",
+                        "overflowGroup",
+                      ],
+                      "type": "string",
+                      "value": undefined,
+                    },
+                    Object {
+                      "artifactType": "Manifest",
+                      "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+                      "displayName": "Priority",
+                      "name": "priority",
+                      "options": Array [
+                        Object {
+                          "key": "",
+                          "text": "",
+                        },
+                        Object {
+                          "key": "AlwaysOverflow",
+                          "text": "AlwaysOverflow",
+                        },
+                        Object {
+                          "key": "High",
+                          "text": "High",
+                        },
+                        Object {
+                          "key": "Low",
+                          "text": "Low",
+                        },
+                        Object {
+                          "key": "NeverOverflow",
+                          "text": "NeverOverflow",
+                        },
+                      ],
+                      "schemaPath": Array [
+                        "table",
+                        "toolBar",
+                        "actions",
+                        "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+                        "priority",
                       ],
                       "type": "string",
                       "value": undefined,
@@ -5140,15 +5283,52 @@ Object {
                     },
                     Object {
                       "artifactType": "Manifest",
-                      "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                      "displayName": "Group",
-                      "name": "group",
+                      "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+                      "displayName": "Overflow Group",
+                      "name": "overflowGroup",
                       "schemaPath": Array [
                         "table",
                         "toolBar",
                         "actions",
                         "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
-                        "group",
+                        "overflowGroup",
+                      ],
+                      "type": "string",
+                      "value": undefined,
+                    },
+                    Object {
+                      "artifactType": "Manifest",
+                      "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+                      "displayName": "Priority",
+                      "name": "priority",
+                      "options": Array [
+                        Object {
+                          "key": "",
+                          "text": "",
+                        },
+                        Object {
+                          "key": "AlwaysOverflow",
+                          "text": "AlwaysOverflow",
+                        },
+                        Object {
+                          "key": "High",
+                          "text": "High",
+                        },
+                        Object {
+                          "key": "Low",
+                          "text": "Low",
+                        },
+                        Object {
+                          "key": "NeverOverflow",
+                          "text": "NeverOverflow",
+                        },
+                      ],
+                      "schemaPath": Array [
+                        "table",
+                        "toolBar",
+                        "actions",
+                        "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+                        "priority",
                       ],
                       "type": "string",
                       "value": undefined,
@@ -5284,15 +5464,52 @@ Object {
                     },
                     Object {
                       "artifactType": "Manifest",
-                      "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                      "displayName": "Group",
-                      "name": "group",
+                      "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+                      "displayName": "Overflow Group",
+                      "name": "overflowGroup",
                       "schemaPath": Array [
                         "table",
                         "toolBar",
                         "actions",
                         "DataFieldForAction::",
-                        "group",
+                        "overflowGroup",
+                      ],
+                      "type": "string",
+                      "value": undefined,
+                    },
+                    Object {
+                      "artifactType": "Manifest",
+                      "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+                      "displayName": "Priority",
+                      "name": "priority",
+                      "options": Array [
+                        Object {
+                          "key": "",
+                          "text": "",
+                        },
+                        Object {
+                          "key": "AlwaysOverflow",
+                          "text": "AlwaysOverflow",
+                        },
+                        Object {
+                          "key": "High",
+                          "text": "High",
+                        },
+                        Object {
+                          "key": "Low",
+                          "text": "Low",
+                        },
+                        Object {
+                          "key": "NeverOverflow",
+                          "text": "NeverOverflow",
+                        },
+                      ],
+                      "schemaPath": Array [
+                        "table",
+                        "toolBar",
+                        "actions",
+                        "DataFieldForAction::",
+                        "priority",
                       ],
                       "type": "string",
                       "value": undefined,
@@ -6185,6 +6402,64 @@ Hidden: the column is neither available in the table nor in adaptation.",
           "value": undefined,
         },
         Object {
+          "artifactType": undefined,
+          "description": "Defines the personalization mode, currently only effective if variant management on page is either set to Page or Control.
+By default all table settings are enabled. You can change this for the different parts of the table by setting the properties \\"Column\\", \\"Sort\\" and \\"Filter\\" accordingly.
+Omitting a property is treated as false, this allows apps to avoid getting new features like grouping in upcoming releases.",
+          "displayName": "Personalization",
+          "name": "personalization",
+          "options": Array [
+            Object {
+              "key": undefined,
+              "text": "",
+            },
+            Object {
+              "key": true,
+              "text": "True",
+            },
+            Object {
+              "key": false,
+              "text": "False",
+            },
+          ],
+          "schemaPath": Array [
+            "table",
+            "personalization",
+          ],
+          "type": "boolean",
+          "value": undefined,
+        },
+        Object {
+          "artifactType": "Manifest",
+          "description": "Defines the layout options of the table popins. A popin layout defined at the table level takes precedence over a popin layout defined at the application level.",
+          "displayName": "Popin Layout",
+          "name": "popinLayout",
+          "options": Array [
+            Object {
+              "key": "",
+              "text": "",
+            },
+            Object {
+              "key": "Block",
+              "text": "Block",
+            },
+            Object {
+              "key": "GridLarge",
+              "text": "GridLarge",
+            },
+            Object {
+              "key": "GridSmall",
+              "text": "GridSmall",
+            },
+          ],
+          "schemaPath": Array [
+            "table",
+            "popinLayout",
+          ],
+          "type": "string",
+          "value": undefined,
+        },
+        Object {
           "artifactType": "Manifest",
           "description": "Defines the table type. Note: Grid tables, analytical tables, and tree tables aren't rendered on small-screen devices. Responsive tables are shown instead.",
           "displayName": "Type",
@@ -6437,10 +6712,8 @@ Hidden: the column is neither available in the table nor in adaptation.",
           "value": undefined,
         },
         Object {
-          "artifactType": "Manifest",
-          "description": "Defines the personalization mode, currently only effective if variant management on page is either set to Page or Control.
-By default all table settings are enabled. You can change this for the different parts of the table by setting the properties \\"Column\\", \\"Sort\\" and \\"Filter\\" accordingly.
-Omitting a property is treated as false, this allows apps to avoid getting new features like grouping in upcoming releases.",
+          "artifactType": undefined,
+          "description": "",
           "displayName": "personalization",
           "name": "personalization",
           "properties": Array [
@@ -8476,10 +8749,10 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                 Object {
                   "artifactType": "Manifest",
                   "description": "You can set the following values for this property:
-- creationRows: Used to enable empty rows mode. In create or edit mode an empty row is added to the table.
-- creationRowsHiddenInEditMode: Like \\"creationRows\\", but in edit mode the empty row will only be shown when the user clicks the Create button. This option is available starting with SAPUI5 version 1.110.
-- inline: In create or edit mode, the users can use the Create button to add new entries to the table. We recommend to use \\"creationRows\\" instead.
-By default no empty row is provided and the Create button automatically navigates to the item's object page for the newly created entry.",
+- creationRows: Used to enable empty rows mode. In create and edit mode, an empty row is added to the table.
+- creationRowsHiddenInEditMode: Similar to \\"creationRows\\", but in edit mode, the empty row is only displayed when the user clicks the \\"Create\\" button. This option is available starting with SAPUI5 version 1.110.
+- inline: In create and edit mode, users can use the \\"Create\\" button to add new entries to the table. We recommend to use \\"creationRows\\" instead.
+By default, an empty row is not provided and the \\"Create\\" button automatically navigates to the item's object page for the newly created entry.",
                   "displayName": "Create Mode",
                   "name": "createMode",
                   "options": Array [
@@ -8554,9 +8827,9 @@ If selectAll is true, the selection limit is not evaluated.",
                 },
                 Object {
                   "artifactType": "FlexChange",
-                  "description": "useExportToExcel must be set to true if you want to export data to a spreadsheet application, for example Microsoft Excel.",
-                  "displayName": "Use Export To Excel",
-                  "name": "useExportToExcel",
+                  "description": "Enables the export of data from the SmartTable control to another file, for example, a spreadsheet. If exportType is GW, any $expand parameters are removed when sending the request to generate the file.",
+                  "displayName": "Enable Export",
+                  "name": "enableExport",
                   "options": Array [
                     Object {
                       "key": undefined,
@@ -8575,14 +8848,14 @@ If selectAll is true, the selection limit is not evaluated.",
                     "sections",
                     "ProductReviewFacetID",
                     "table",
-                    "useExportToExcel",
+                    "enableExport",
                   ],
                   "type": "boolean",
                   "value": undefined,
                 },
                 Object {
                   "artifactType": "FlexChange",
-                  "description": "Specifies the type of export to be used in the SmartTable control. UI5Client is the default option.",
+                  "description": "Specifies the type of export to be used in the SmartTable control.",
                   "displayName": "Export Type",
                   "name": "exportType",
                   "options": Array [
@@ -9222,6 +9495,40 @@ By default, the Copy to Clipboard button is displayed in the table toolbar if th
     },
     Object {
       "artifactType": "Manifest",
+      "description": "This property applies to all tables within the page. Individual tables can override this setting by defining the property explicitly at table level.
+You can set the following values for this property:
+- creationRows: Used to enable empty rows mode. In create and edit mode, an empty row is added to the table.
+- creationRowsHiddenInEditMode: Similar to \\"creationRows\\", but in edit mode, the empty row is only displayed when the user clicks the \\"Create\\" button. This option is available starting with SAPUI5 version 1.110.
+- inline: In create and edit mode, users can use the \\"Create\\" button to add new entries to the table. We recommend to use \\"creationRows\\" instead.
+By default, an empty row is not provided and the \\"Create\\" button automatically navigates to the item's object page for the newly created entry.",
+      "displayName": "Create Mode",
+      "name": "createMode",
+      "options": Array [
+        Object {
+          "key": "",
+          "text": "",
+        },
+        Object {
+          "key": "creationRows",
+          "text": "creationRows",
+        },
+        Object {
+          "key": "creationRowsHiddenInEditMode",
+          "text": "creationRowsHiddenInEditMode",
+        },
+        Object {
+          "key": "inline",
+          "text": "inline",
+        },
+      ],
+      "schemaPath": Array [
+        "createMode",
+      ],
+      "type": "string",
+      "value": undefined,
+    },
+    Object {
+      "artifactType": "Manifest",
       "description": "Settings for all tables of the object page.",
       "displayName": "globalTableSettings",
       "name": "globalTableSettings",
@@ -9502,14 +9809,50 @@ Object {
               "properties": Array [
                 Object {
                   "artifactType": "Manifest",
-                  "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                  "displayName": "Group",
-                  "name": "group",
+                  "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+                  "displayName": "Overflow Group",
+                  "name": "overflowGroup",
                   "schemaPath": Array [
                     "header",
                     "actions",
                     "EditAction",
-                    "group",
+                    "overflowGroup",
+                  ],
+                  "type": "string",
+                  "value": undefined,
+                },
+                Object {
+                  "artifactType": "Manifest",
+                  "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+                  "displayName": "Priority",
+                  "name": "priority",
+                  "options": Array [
+                    Object {
+                      "key": "",
+                      "text": "",
+                    },
+                    Object {
+                      "key": "AlwaysOverflow",
+                      "text": "AlwaysOverflow",
+                    },
+                    Object {
+                      "key": "High",
+                      "text": "High",
+                    },
+                    Object {
+                      "key": "Low",
+                      "text": "Low",
+                    },
+                    Object {
+                      "key": "NeverOverflow",
+                      "text": "NeverOverflow",
+                    },
+                  ],
+                  "schemaPath": Array [
+                    "header",
+                    "actions",
+                    "EditAction",
+                    "priority",
                   ],
                   "type": "string",
                   "value": undefined,
@@ -9538,14 +9881,50 @@ Object {
               "properties": Array [
                 Object {
                   "artifactType": "Manifest",
-                  "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                  "displayName": "Group",
-                  "name": "group",
+                  "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+                  "displayName": "Overflow Group",
+                  "name": "overflowGroup",
                   "schemaPath": Array [
                     "header",
                     "actions",
                     "DeleteAction",
-                    "group",
+                    "overflowGroup",
+                  ],
+                  "type": "string",
+                  "value": undefined,
+                },
+                Object {
+                  "artifactType": "Manifest",
+                  "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+                  "displayName": "Priority",
+                  "name": "priority",
+                  "options": Array [
+                    Object {
+                      "key": "",
+                      "text": "",
+                    },
+                    Object {
+                      "key": "AlwaysOverflow",
+                      "text": "AlwaysOverflow",
+                    },
+                    Object {
+                      "key": "High",
+                      "text": "High",
+                    },
+                    Object {
+                      "key": "Low",
+                      "text": "Low",
+                    },
+                    Object {
+                      "key": "NeverOverflow",
+                      "text": "NeverOverflow",
+                    },
+                  ],
+                  "schemaPath": Array [
+                    "header",
+                    "actions",
+                    "DeleteAction",
+                    "priority",
                   ],
                   "type": "string",
                   "value": undefined,
@@ -9577,7 +9956,7 @@ Object {
                     "additionalSemanticObjects",
                   ],
                   "properties": Array [],
-                  "text": "Additional Semantic Objects.",
+                  "text": "Additional Semantic Objects",
                   "title": undefined,
                   "value": undefined,
                 },
@@ -9931,6 +10310,31 @@ Object {
         "variantManagement",
       ],
       "type": "string",
+      "value": undefined,
+    },
+    Object {
+      "artifactType": "Manifest",
+      "description": "Enable lazy loading for sections in an object page.",
+      "displayName": "Enable Lazy Loading",
+      "name": "enableLazyLoading",
+      "options": Array [
+        Object {
+          "key": undefined,
+          "text": "",
+        },
+        Object {
+          "key": true,
+          "text": "True",
+        },
+        Object {
+          "key": false,
+          "text": "False",
+        },
+      ],
+      "schemaPath": Array [
+        "enableLazyLoading",
+      ],
+      "type": "boolean",
       "value": undefined,
     },
   ],

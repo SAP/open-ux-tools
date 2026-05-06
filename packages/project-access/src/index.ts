@@ -6,7 +6,8 @@ export {
     MinCdsVersion,
     fioriToolsDirectory
 } from './constants';
-export { getFilePaths } from './file';
+export { getFilePaths, findFilesByExtension } from './file';
+export { normalizePath } from './path';
 export {
     addPackageDevDependency,
     clearCdsModuleCache,
@@ -46,6 +47,7 @@ export {
     getMockDataPath,
     getNodeModulesPath,
     getPathMappings,
+    type PathMappings,
     getProject,
     getProjectType,
     getWebappPath,
@@ -62,9 +64,14 @@ export {
     getWorkspaceInfo,
     hasMinCdsVersion,
     checkCdsUi5PluginEnabled,
-    readFlexChanges
+    readFlexChanges,
+    processServices,
+    getMainService,
+    getGlobalCdsHomePath,
+    isUI5IdUnique
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';
-export * from './library';
+export { checkDependencies, getReuseLibs } from './library';
+export { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from './odata';
 export { hasDependency } from './project';

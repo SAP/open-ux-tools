@@ -21,7 +21,7 @@ export async function createWebviewPanel(
     onMessage?: (action: WebAppActions) => Promise<void>
 ): Promise<WebviewPanel> {
     const viewRootUri: Uri = Uri.file(webappDirPath);
-    const webviewPanel = window.createWebviewPanel('sap.ux.tools.sapSystems.show', `SAP Systems`, ViewColumn.One, {
+    const webviewPanel = window.createWebviewPanel('sap.ux.tools.sapSystems.show', `SAP System`, ViewColumn.One, {
         enableCommandUris: true,
         enableScripts: true,
         retainContextWhenHidden: true,
@@ -37,7 +37,7 @@ export async function createWebviewPanel(
     if (onMessage) {
         webviewPanel.webview.onDidReceiveMessage((action) => {
             onMessage(action).catch((e) => {
-                SystemsLogger.logger.error(t('error.systemInfo', { error: e }));
+                SystemsLogger.logger.error(t('error.connectionInfo', { error: e }));
             });
         });
     }
@@ -83,7 +83,7 @@ async function getSystemPanelHtmlForWebview({
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <title>SAP Systems</title>
+            <title>SAP System</title>
             <base href="./">
             <link rel="stylesheet" type="text/css" href="${viewRootUri}/${storeCss}">
         </head>

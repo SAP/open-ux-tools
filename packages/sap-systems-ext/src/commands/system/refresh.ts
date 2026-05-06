@@ -9,6 +9,6 @@ import SystemsLogger from '../../utils/logger';
  * @returns - a command handler function
  */
 export const refreshSystemsCommandHandler = (commandContext: SystemCommandContext) => async (): Promise<void> => {
-    SystemsLogger.logger.info(t('info.refreshingSystems'));
+    SystemsLogger.logger.info(t('info.refreshingConnections'));
     commandContext.extContext.systemsTreeDataProvider?.refresh();
 };

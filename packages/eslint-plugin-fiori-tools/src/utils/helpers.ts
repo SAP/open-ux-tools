@@ -19,12 +19,10 @@ interface BaseNode {
 }
 
 export type IdentifierNode = BaseNode & {
-    type: 'Identifier';
     name: string;
 };
 
 export type MemberExpressionNode = BaseNode & {
-    type: 'MemberExpression';
     object: unknown;
     property: unknown;
     computed: boolean;
@@ -32,7 +30,6 @@ export type MemberExpressionNode = BaseNode & {
 };
 
 export type LiteralNode = BaseNode & {
-    type: 'Literal';
     value: string | number | boolean | null | RegExp;
     raw: string;
 };
@@ -764,5 +761,39 @@ export function createDocumentBasedRuleVisitors(config: {
                 }
             }
         };
+    };
+}
+
+export interface DeepestExistingPathResult {
+    validatedPath: string[];
+    missingSegments: string[];
+}
+
+/**
+ * Validates that a path exists and returns the deepest existing level.
+ *
+ * @param startObject - The object to start validation from (e.g., settings object)
+ * @param pathSegments - Array of path segments
+ * @returns Object with validatedPath (deepest existing) and missingSegments
+ */
+export function findDeepestExistingPath(
+    startObject: any,
+    pathSegments: string[]
+): DeepestExistingPathResult | undefined {
+    let current: any = startObject;
+    for (let i = 0; i < pathSegments.length; i++) {
+        const segment = pathSegments[i];
+        if (!current || typeof current !== 'object' || !(segment in current)) {
+            return {
+                validatedPath: pathSegments.slice(0, i),
+                missingSegments: pathSegments.slice(i)
+            };
+        }
+        current = current[segment];
+    }
+
+    return {
+        validatedPath: pathSegments,
+        missingSegments: []
     };
 }

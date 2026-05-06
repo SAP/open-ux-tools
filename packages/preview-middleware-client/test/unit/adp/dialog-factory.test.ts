@@ -6,13 +6,14 @@ import Fragment, { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
-import { DialogFactory, DialogNames } from 'open/ux/preview/client/adp/dialog-factory';
+import { DialogFactory, DialogNames } from '../../../src/adp/dialog-factory';
 import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
 import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
 import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
-import AddTableColumnFragments from 'open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller';
+import AddTableColumnFragments from '../../../src/adp/controllers/AddTableColumnFragments.controller';
 import FileExistsDialog from '../../../src/adp/controllers/FileExistsDialog.controller';
-import AddCustomFragment from 'open/ux/preview/client/adp/controllers/AddCustomFragment.controller';
+import AddCustomFragment from '../../../src/adp/controllers/AddCustomFragment.controller';
+import AddActionFragment from '../../../src/adp/controllers/AddActionFragment.controller';
 
 describe('DialogFactory', () => {
     afterEach(() => {
@@ -181,6 +182,27 @@ describe('DialogFactory', () => {
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(AddCustomFragment);
+
+        expect(DialogFactory.canOpenDialog).toBe(false);
+    });
+
+    test('create Add Action Fragment dialog', async () => {
+        const controller = { overlays: {}, rta: { 'yes': 'no' } };
+        Controller.create.mockResolvedValue(controller);
+        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+
+        AddActionFragment.prototype.setup = jest.fn();
+        await DialogFactory.createDialog(
+            {} as unknown as UI5Element,
+            rtaMock as unknown as RuntimeAuthoring,
+            DialogNames.ADD_ACTION
+        );
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.AddAction');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(AddActionFragment);
 
         expect(DialogFactory.canOpenDialog).toBe(false);
     });

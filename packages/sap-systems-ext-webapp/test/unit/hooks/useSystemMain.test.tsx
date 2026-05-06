@@ -263,7 +263,7 @@ describe('useSystemMain hook tests', () => {
             );
 
             act(() => {
-                hookResult?.setType('AbapCloud');
+                hookResult?.setSystemType('AbapCloud');
             });
 
             expect(hookResult?.systemInfo?.systemType).toBe('AbapCloud');

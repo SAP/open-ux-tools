@@ -1,4 +1,12 @@
-import type { CompilerMessage, Target, WorkspaceEdit } from '@sap-ux/odata-annotation-core-types';
+import type {
+    Element,
+    Location,
+    AliasInformation,
+    AnnotationFile,
+    CompilerMessage,
+    Target,
+    WorkspaceEdit
+} from '@sap-ux/odata-annotation-core-types';
 import type { MetadataService } from '@sap-ux/odata-entity-model';
 
 import type { AnnotationFileChange } from './internal-change';
@@ -6,6 +14,13 @@ import type { Service, CompiledService } from './service';
 import type { TextFile } from './text-file';
 
 type ValidationResultType = Map<string, CompilerMessage> | void;
+export interface ValueListReference {
+    location: Location;
+    annotation: Element;
+    uris: string[];
+    namespace: string;
+    alias?: string;
+}
 
 /**
  * Defines a set of functions that needs to be implemented to provide
@@ -30,6 +45,20 @@ export interface AnnotationServiceAdapter {
     /**
      *
      */
+    syncExternalService(uri: string, data: string, localFilePath: string): void;
+    getExternalServices(): {
+        uri: string;
+        metadataService: MetadataService;
+        compiledService: CompiledService;
+        localFileUri: string;
+    }[];
+    /**
+     *
+     */
+    getDocuments(): Record<string, AnnotationFile>;
+    /**
+     *
+     */
     getWorkspaceEdit(changes: AnnotationFileChange[]): Promise<WorkspaceEdit>;
     /**
      *
@@ -45,8 +74,21 @@ export interface AnnotationServiceAdapter {
      * @param target - Content of an 'Annotations' element
      */
     serializeTarget(target: Target): string;
+
+    /**
+     * Get mapping from targets to value list references
+     */
+    getValueListReferences(): Map<string, ValueListReference[]>;
 }
 
 export interface AnnotationServiceConstructor<T extends Service> {
     new (service: T): AnnotationServiceAdapter;
+}
+
+export interface ServiceArtifacts {
+    path: string;
+    metadataService: MetadataService;
+    aliasInfo: Record<string, AliasInformation>;
+    annotationFiles: Record<string, AnnotationFile>;
+    fileSequence: string[];
 }

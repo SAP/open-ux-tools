@@ -8,7 +8,7 @@ const base = require('../../eslint.config.js').filter(
         ].includes(config.name)
 );
 
-const tsParser = require('@typescript-eslint/parser');
+const { tsParser } = require('typescript-eslint');
 
 module.exports = [
     { ignores: ['src/env/ui5loader.js', 'index.d.ts'] },

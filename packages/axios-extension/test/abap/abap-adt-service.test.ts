@@ -1031,18 +1031,11 @@ describe('UI5 RT Version service', () => {
     });
 
     test('Throws error when request fails', async () => {
-        const mockAxiosError = {
-            response: {
-                status: 404,
-                data: 'Not found'
-            },
-            message: 'Request failed with status code 404'
-        } as AxiosError;
         nock(server)
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
             .get(AdtServices.UI5_RT_VERSION)
-            .replyWithError(mockAxiosError);
+            .reply(404, 'Not found');
 
         const ui5RtVersionService = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
 

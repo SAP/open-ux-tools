@@ -8,16 +8,13 @@ The server helps AI models create or modify SAP Fiori applications based on prom
 
 - _Please add a SAP Fiori elements list report app to my CAP project_
 - _Generate a new CAP project and SAP Fiori app based on my_picture.png_
+- _Generate a new SAP Fiori elements list report app for odata service `https://hostname:port/sap/opu/odata4/sap/my_v4_service?sap-client=000`_.
+
+  ℹ️This prompt requires a saved SAP system connection by using the [Connection Manager for SAP Systems](https://marketplace.visualstudio.com/items?itemName=SAPOSS.sap-ux-sap-systems-ext) extension.
 - _Add the FCL to the SAP Fiori elements app_
 - _Enable initial load for the fiori app_
 
 For the best experience we recommend using this server alongside [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
-
-> ⚠️ Caution
->
-> This is an experimental feature and may change at any time without notice.
-> It is not intended for productive use.
-> Please back up your data before using it.
 
 ## [Usage](#usage)
 
@@ -91,16 +88,109 @@ Gets the list of supported functionalities to create a new or modify an existing
 
 The main functionalities are:
 
-- Generating a Fiori elements app within an [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/) project
+- Generating an SAP Fiori elements app within an [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/) project
+- Generating an SAP Fiori elements app for an existing OData service, for example, an [ABAP RESTful Application Programming Model](https://pages.community.sap.com/topics/abap/rap)-based OData service
 - Adding and deleting pages from an app
 - Adding and modifying controller extensions
-- Modifying `manifest.json` properties depending on the app (e.g. adding Flexible Column Layout, enabling initial load)
+- Modifying `manifest.json` properties depending on the app, for example, adding a layout based on the flexibility of the programming model or enabling initial load
 
 #### `get_functionality_details` (Step 2 of 3)
 Gets the required parameters and detailed information for a specific functionality to create a new or modify an existing SAP Fiori application.
 
 #### `execute_functionality` (Step 3 of 3)
 Executes a specific functionality to create a new or modify an existing SAP Fiori application with provided parameters.
+
+## [Logging](#logging)
+
+By default, logging is enabled at the `error` level. To adjust the log level or disable logging completely, you can use the `env` property in your configuration.
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
+      "command": "npx",
+      "args": ["--yes","@sap-ux/fiori-mcp-server@latest", "fiori-mcp"],
+      "env": {
+        "LOG_LEVEL": "debug"
+      }
+    }
+  }
+}
+```
+The following log levels are supported: `off`, `error`, `warn`, `info`, `debug`, and `verbose`.
+
+The logs are stored in the file system at `~/.fioritools/fiori-mcp-server.log`
+
+
+## [Handling Self-Signed SSL Certificates](#handling-self-signed-ssl-certificates)
+
+If you need the MCP server to connect to an OData server using a self-signed SSL certificate, you can use one of the following methods.
+
+This is useful when encountering errors such as: `unable to get local issuer certificate`
+
+### Option 1: Add Custom CA Certificate (Recommended)
+
+Set the `NODE_EXTRA_CA_CERTS` environment variable to the path of your CA certificate file. Node.js supports multiple file extensions (`.pem`, `.crt`, `.cer`, `.cert`).
+
+**Example Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
+      "command": "npx",
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"],
+      "env": {
+        "NODE_EXTRA_CA_CERTS": "/path/to/your/certificate.crt"
+      }
+    }
+  }
+}
+```
+
+**Windows Example:**
+```json
+"env": {
+  "NODE_EXTRA_CA_CERTS": "C:\\temp\\certs\\CustomCA.crt"
+}
+```
+
+**macOS/Linux Example:**
+```json
+"env": {
+  "NODE_EXTRA_CA_CERTS": "/Users/username/certs/Custom_CA.crt"
+}
+```
+
+### Option 2: Bypass SSL Validation (Not Recommended)
+
+> ⚠️ **Security Warning**: Setting `NODE_TLS_REJECT_UNAUTHORIZED=0` disables all SSL certificate validation and poses a significant security risk. Only use this in non-production environments.
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
+      "command": "npx",
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"],
+      "env": {
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
+```
+
+### Additional Resources
+
+- [Node.js Documentation - NODE_EXTRA_CA_CERTS](https://nodejs.org/api/cli.html#node_extra_ca_certsfile)
+- [SAP Fiori tools - SSL Certificate Handling](https://github.com/SAP-samples/fiori-tools-samples/tree/main/misc/sslcerts)
+
 
 
 ## [Telemetry](#telemetry)

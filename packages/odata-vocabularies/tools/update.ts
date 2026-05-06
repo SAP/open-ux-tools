@@ -20,6 +20,9 @@ export const SUPPORTED_VOCABULARIES: SupportedVocabularies = {
     'com.sap.vocabularies.Analytics.v1': {
         uri: 'https://sap.github.io/odata-vocabularies/vocabularies/Analytics.json'
     },
+    'com.sap.vocabularies.Auditing.v1': {
+        uri: 'https://sap.github.io/odata-vocabularies/vocabularies/Auditing.json'
+    },
     'Org.OData.Authorization.V1': {
         uri: 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Authorization.V1.json'
     },
@@ -130,7 +133,7 @@ const updateVocabulary = async (namespace: string, config: VocabularyConfig, dat
         return;
     }
     options.parser = 'typescript';
-    const filePrettified = prettier.format(contentFile, options);
+    const filePrettified = await prettier.format(contentFile, options);
 
     await fs.writeFile(file, filePrettified, 'utf8');
 

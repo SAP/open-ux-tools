@@ -22,8 +22,8 @@ import {
     ignoreMatcherOpts
 } from './fixtures/constants';
 import { runHeadlessGen } from './utils';
-import Generator from 'yeoman-generator';
 import { generatorNamespace, initI18n } from '../../src/utils';
+import HeadlessGenerator from '../../src/headless';
 
 expect.extend({ toMatchFolder });
 
@@ -65,6 +65,7 @@ describe('Test headless generator', () => {
     jest.setTimeout(1200000);
 
     beforeAll(async () => {
+        jest.restoreAllMocks();
         jest.spyOn(hasbin, 'sync').mockReturnValue(true);
         rimraf.rimrafSync(OUTPUT_DIR);
         await copy(INPUT_APP_DIR_CF, OUTPUT_DIR);
@@ -90,6 +91,7 @@ describe('Test headless generator', () => {
         } catch {
             // do nothing
         }
+        jest.resetAllMocks();
     });
 
     it('Test: Headless deploy-config', async () => {
@@ -284,7 +286,9 @@ describe('Test headless generator', () => {
         // Dont run the expensive phases that are not under test, prompting is run but doesnt prompt since `launchDeployConfigAsSubGenerator` is true
         jest.spyOn(CFGen.prototype, 'writing').mockImplementation(jest.fn());
         jest.spyOn(CFGen.prototype, 'initializing').mockImplementation(jest.fn());
-        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
+        const composeWithSpy = jest
+            .spyOn(HeadlessGenerator.prototype as any, 'composeWith')
+            .mockResolvedValue(undefined);
         await runHeadlessGen(testAppName, DeployTarget.CF, OUTPUT_DIR);
 
         expect(composeWithSpy).toHaveBeenCalledWith(

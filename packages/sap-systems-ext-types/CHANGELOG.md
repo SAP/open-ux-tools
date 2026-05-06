@@ -1,5 +1,17 @@
 # @sap-ux/sap-systems-ext-types
 
+## 0.1.0
+
+### Minor Changes
+
+- 2d20f19: adds support for the generic host connection type
+
+## 0.0.4
+
+### Patch Changes
+
+- c9fd939: update backend systems with system info from adt api
+
 ## 0.0.3
 
 ### Patch Changes

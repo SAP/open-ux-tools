@@ -101,6 +101,7 @@ export function convertCollectionToInternal(aliasInfo: AliasInformation, collect
 }
 
 /**
+ * Converts a collection element from external to internal representation.
  *
  * @param aliasInfo - Alias Information.
  * @param entry - Collection entry.
@@ -157,6 +158,7 @@ export function convertRecordToInternal(aliasInfo: AliasInformation, record: Ann
 }
 
 /**
+ * Converts a property value from external to internal representation.
  *
  * @param aliasInfo - Alias Information.
  * @param propertyValue - Property value.
@@ -244,6 +246,7 @@ export function convertExpressionToInternal(
 }
 
 /**
+ * Converts a dynamic expression (Apply) to internal representation.
  *
  * @param aliasInfo - Alias Information.
  * @param expression - Apply expression.
@@ -256,6 +259,7 @@ export function convertDynamicExpressionToInternal(aliasInfo: AliasInformation, 
 }
 
 /**
+ * Converts a primitive value to its internal string representation with alias resolution.
  *
  * @param type - Type of primitive value.
  * @param value - Primitive value.

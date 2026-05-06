@@ -4,7 +4,7 @@
  *               namespaces
  */
 
-import type { Rule } from 'eslint';
+import type { Rule, SourceCode } from 'eslint';
 import { contains } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ function calculateObjectName(memberExpressionObject: any): string {
  * @param ancestors The array of ancestor nodes to check
  * @returns The position of the NewExpression or -1 if not found
  */
-function checkIfAncestorsContainsNewExpression(ancestors): number {
+function checkIfAncestorsContainsNewExpression(ancestors: ReturnType<SourceCode['getAncestors']>): number {
     const ancestorsLength = ancestors.length;
     for (let i = 0; i < ancestorsLength; i++) {
         if (ancestors[i].type === 'NewExpression') {
@@ -72,7 +72,6 @@ const rule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'fiori tools (fiori custom) ESLint rule',
-            category: 'Best Practices',
             recommended: false
         },
         messages: {
@@ -96,7 +95,7 @@ const rule: Rule.RuleModule = {
         defaultOptions: [{}]
     },
     create(context: Rule.RuleContext) {
-        const sourceCode = context.sourceCode ?? context.getSourceCode();
+        const sourceCode = context.sourceCode;
         const customNS = context.options[0]?.ns ? context.options[0].ns : [];
         const configuration = {
             'ns': uniquifyArray(
@@ -172,7 +171,7 @@ const rule: Rule.RuleModule = {
          * @param namespace The namespace string to check
          * @returns True if the namespace should be reported for violations
          */
-        function checkIfReportedNamespace(namespace): boolean {
+        function checkIfReportedNamespace(namespace: string): boolean {
             for (const ns of configuration.ns) {
                 if (namespace.startsWith(ns + '.')) {
                     return true;

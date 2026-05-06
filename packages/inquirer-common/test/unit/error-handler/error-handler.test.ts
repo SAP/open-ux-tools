@@ -71,6 +71,12 @@ describe('Test ErrorHandler', () => {
         expect(errorHandler.getErrorMsg()).toEqual(undefined);
         expect(errorHandler.getErrorMsg({ response: { status: '404' } }, true)).toEqual(t('errors.urlNotFound'));
         expect(errorHandler.getErrorMsg()).toEqual(undefined);
+
+        errorHandler.setCurrentError(ERROR_TYPE.CONNECTION);
+        expect(errorHandler.hasError()).toBe(true);
+        errorHandler.resetErrorState();
+        expect(errorHandler.getErrorMsg()).toBeUndefined();
+        expect(errorHandler.hasError()).toBeFalse();
     });
 
     test('Get current error type', () => {

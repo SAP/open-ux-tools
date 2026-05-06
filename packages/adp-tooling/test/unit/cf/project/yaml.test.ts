@@ -9,19 +9,24 @@ import {
     getSAPCloudService,
     getRouterType,
     getAppParamsFromUI5Yaml,
-    adjustMtaYaml
+    adjustMtaYaml,
+    addConnectivityServiceToMta
 } from '../../../../src/cf/project/yaml';
 import { AppRouterType } from '../../../../src/types';
-import type { MtaYaml, CfUI5Yaml } from '../../../../src/types';
-import { createServices } from '../../../../src/cf/services/api';
+import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types';
+import { createServices, createServiceInstance, getOrCreateServiceInstanceKeys } from '../../../../src/cf/services/api';
 import { getProjectNameForXsSecurity, getYamlContent } from '../../../../src/cf/project/yaml-loader';
 
 jest.mock('fs', () => ({
     existsSync: jest.fn()
 }));
 
+const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
+
 jest.mock('../../../../src/cf/services/api', () => ({
-    createServices: jest.fn()
+    createServices: jest.fn(),
+    createServiceInstance: jest.fn(),
+    getOrCreateServiceInstanceKeys: jest.fn()
 }));
 
 jest.mock('../../../../src/cf/project/yaml-loader', () => ({
@@ -29,8 +34,11 @@ jest.mock('../../../../src/cf/project/yaml-loader', () => ({
     getYamlContent: jest.fn()
 }));
 
-const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
 const mockCreateServices = createServices as jest.MockedFunction<typeof createServices>;
+const mockCreateServiceInstance = createServiceInstance as jest.MockedFunction<typeof createServiceInstance>;
+const mockGetOrCreateServiceInstanceKeys = getOrCreateServiceInstanceKeys as jest.MockedFunction<
+    typeof getOrCreateServiceInstanceKeys
+>;
 const mockGetYamlContent = getYamlContent as jest.MockedFunction<typeof getYamlContent>;
 const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
     typeof getProjectNameForXsSecurity
@@ -233,7 +241,7 @@ describe('YAML Project Functions', () => {
             expect(mockGetYamlContent).toHaveBeenCalledWith(ui5YamlPath);
             expect(result).toEqual({
                 appHostId: 'test-app-host-id',
-                appName: '1.0.0',
+                appName: 'test-app',
                 appVersion: '1.0.0',
                 spaceGuid: 'test-space-guid'
             });
@@ -303,12 +311,14 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.STANDALONE,
+                    spaceGuid,
                     businessSolutionName,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -335,12 +345,14 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -372,12 +384,14 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: null as unknown as AppRouterType,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -407,12 +421,14 @@ describe('YAML Project Functions', () => {
                 adjustMtaYaml(
                     {
                         projectPath,
-                        moduleName,
+                        adpProjectName: 'test-adp-project',
                         appRouterType: AppRouterType.STANDALONE,
                         businessSolutionName,
+                        spaceGuid,
                         businessService
                     },
                     mockMemFs,
+                    '1234567890',
                     undefined,
                     mockLogger
                 )
@@ -455,12 +471,14 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -468,6 +486,205 @@ describe('YAML Project Functions', () => {
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
             expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+        });
+
+        test('should adjust MTA YAML with service keys for managed approuter', async () => {
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
+            const mockYamlContent: MtaYaml = {
+                '_schema-version': '3.2.0',
+                ID: 'test-project',
+                version: '1.0.0',
+                modules: [],
+                resources: []
+            };
+            const mockServiceKeys = [
+                {
+                    credentials: {
+                        uaa: { url: 'https://uaa.example.com' },
+                        uri: 'https://service.example.com',
+                        endpoints: {
+                            endpoint1: {
+                                url: 'https://endpoint1.example.com',
+                                destination: 'endpoint1-dest'
+                            },
+                            endpoint2: {
+                                url: 'https://endpoint2.example.com',
+                                destination: 'endpoint2-dest'
+                            }
+                        }
+                    }
+                }
+            ];
+
+            mockGetYamlContent.mockReturnValue(mockYamlContent);
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
+            mockCreateServices.mockResolvedValue(undefined);
+
+            await adjustMtaYaml(
+                {
+                    projectPath,
+                    adpProjectName: 'test-adp-project',
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    spaceGuid,
+                    serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
+                },
+                mockMemFs,
+                '1234567890',
+                undefined,
+                mockLogger
+            );
+
+            expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
+            expect(mockCreateServices).toHaveBeenCalled();
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+            const writtenContent = mockMemFs.write.mock.calls[0][1] as string;
+            expect(writtenContent).toContain('endpoint1-dest');
+            expect(writtenContent).toContain('https://endpoint1.example.com');
+            expect(writtenContent).toContain('endpoint2-dest');
+            expect(writtenContent).toContain('https://endpoint2.example.com');
+        });
+
+        test('should handle service keys with no endpoints', async () => {
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
+            const mockYamlContent: MtaYaml = {
+                '_schema-version': '3.2.0',
+                ID: 'test-project',
+                version: '1.0.0',
+                modules: [],
+                resources: []
+            };
+            const mockServiceKeys = [
+                {
+                    credentials: {
+                        uaa: { url: 'https://uaa.example.com' },
+                        uri: 'https://service.example.com',
+                        endpoints: {}
+                    }
+                }
+            ];
+
+            mockGetYamlContent.mockReturnValue(mockYamlContent);
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
+            mockCreateServices.mockResolvedValue(undefined);
+
+            await adjustMtaYaml(
+                {
+                    projectPath,
+                    adpProjectName: 'test-adp-project',
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    spaceGuid,
+                    serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
+                },
+                mockMemFs,
+                '1234567890',
+                undefined,
+                mockLogger
+            );
+
+            expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
+            expect(mockCreateServices).toHaveBeenCalled();
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+            const writtenContent = mockMemFs.write.mock.calls[0][1] as string;
+            expect(writtenContent).toContain('test-service-service_instance_name');
+            expect(writtenContent).not.toContain('endpoint');
+        });
+
+        test('should handle service keys with endpoints missing destination', async () => {
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
+            const mockYamlContent: MtaYaml = {
+                '_schema-version': '3.2.0',
+                ID: 'test-project',
+                version: '1.0.0',
+                modules: [],
+                resources: []
+            };
+            const mockServiceKeys = [
+                {
+                    credentials: {
+                        uaa: { url: 'https://uaa.example.com' },
+                        uri: 'https://service.example.com',
+                        endpoints: {
+                            endpoint1: {
+                                url: 'https://endpoint1.example.com'
+                            }
+                        }
+                    }
+                }
+            ];
+
+            mockGetYamlContent.mockReturnValue(mockYamlContent);
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
+            mockCreateServices.mockResolvedValue(undefined);
+
+            await adjustMtaYaml(
+                {
+                    projectPath,
+                    adpProjectName: 'test-adp-project',
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    spaceGuid,
+                    serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
+                },
+                mockMemFs,
+                '1234567890',
+                undefined,
+                mockLogger
+            );
+
+            expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
+            expect(mockCreateServices).toHaveBeenCalled();
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+            const writtenContent = mockMemFs.write.mock.calls[0][1] as string;
+            expect(writtenContent).toContain('test-service-service_instance_name');
+            expect(writtenContent).not.toContain('https://endpoint1.example.com');
+        });
+
+        test('should handle service keys without credentials', async () => {
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
+            const mockYamlContent: MtaYaml = {
+                '_schema-version': '3.2.0',
+                ID: 'test-project',
+                version: '1.0.0',
+                modules: [],
+                resources: []
+            };
+            const mockServiceKeys = [
+                {
+                    credentials: null as any
+                }
+            ];
+
+            mockGetYamlContent.mockReturnValue(mockYamlContent);
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
+            mockCreateServices.mockResolvedValue(undefined);
+
+            await adjustMtaYaml(
+                {
+                    projectPath,
+                    adpProjectName: 'test-adp-project',
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    spaceGuid,
+                    serviceKeys: mockServiceKeys
+                },
+                mockMemFs,
+                '1234567890',
+                undefined,
+                mockLogger
+            );
+
+            expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
+            expect(mockCreateServices).toHaveBeenCalled();
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+            const writtenContent = mockMemFs.write.mock.calls[0][1] as string;
+            expect(writtenContent).toContain('test-service-service_instance_name');
+            expect(writtenContent).not.toContain('endpoint');
         });
 
         test('should add required modules and move FLP module to last position', async () => {
@@ -510,12 +727,14 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -569,12 +788,14 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -628,12 +849,14 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
+                    spaceGuid,
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -655,6 +878,105 @@ describe('YAML Project Functions', () => {
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
             expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+        });
+    });
+
+    describe('addConnectivityServiceToMta', () => {
+        const projectPath = '/test/project';
+        const mtaYamlPath = join(projectPath, 'mta.yaml');
+        const mockMtaYaml: MtaYaml = {
+            '_schema-version': '3.2.0',
+            ID: 'MyProject',
+            version: '1.0.0',
+            modules: [],
+            resources: []
+        };
+
+        let mockMemFs: { write: jest.Mock };
+
+        beforeEach(() => {
+            mockMemFs = { write: jest.fn() };
+        });
+
+        test('should add connectivity resource when mta.yaml exists and resource is not yet present', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue({ ...mockMtaYaml, resources: [] });
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).toHaveBeenCalledWith(
+                mtaYamlPath,
+                expect.stringContaining('myproject-connectivity')
+            );
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.stringContaining('connectivity'));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.stringContaining('lite'));
+            expect(mockMemFs.write).toHaveBeenCalledWith(
+                mtaYamlPath,
+                expect.stringContaining('service-name: myproject-connectivity')
+            );
+            expect(mockCreateServiceInstance).toHaveBeenCalledWith(
+                'lite',
+                'myproject-connectivity',
+                'connectivity',
+                expect.any(Object)
+            );
+            expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
+                { names: ['myproject-connectivity'] },
+                undefined
+            );
+        });
+
+        test('should not create service when project has no mta.yaml', async () => {
+            mockExistsSync.mockReturnValue(false);
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should not create service when yaml content cannot be read', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue(null);
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should not create service when connectivity resource already exists (idempotent)', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue({
+                ...mockMtaYaml,
+                resources: [
+                    {
+                        name: 'myproject-connectivity',
+                        type: 'org.cloudfoundry.managed-service',
+                        parameters: { service: 'connectivity', 'service-plan': 'lite' }
+                    }
+                ]
+            });
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should not modify mta.yaml when createServiceInstance fails', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue({ ...mockMtaYaml, resources: [] });
+            mockCreateServiceInstance.mockRejectedValueOnce(new Error('CF error'));
+
+            await expect(addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor)).rejects.toThrow(
+                'CF error'
+            );
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
         });
     });
 });

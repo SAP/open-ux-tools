@@ -4993,11 +4993,19 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 [
   {
     "maintained": true,
-    "version": "1.142.0",
+    "version": "1.147.0",
   },
   {
     "maintained": true,
-    "version": "1.139.0",
+    "version": "1.146.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.145.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.142.0",
   },
   {
     "maintained": true,
@@ -5014,10 +5022,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
   {
     "maintained": true,
     "version": "1.96.0",
-  },
-  {
-    "maintained": true,
-    "version": "1.84.0",
   },
   {
     "maintained": true,
@@ -5029,10 +5033,16 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 versions fallback for specified min UI5 version, if request fails 1`] = `
 [
   {
-    "version": "1.142.0",
+    "version": "1.147.0",
   },
   {
-    "version": "1.139.0",
+    "version": "1.146.0",
+  },
+  {
+    "version": "1.145.0",
+  },
+  {
+    "version": "1.142.0",
   },
   {
     "version": "1.136.0",
@@ -5045,9 +5055,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
   },
   {
     "version": "1.96.0",
-  },
-  {
-    "version": "1.84.0",
   },
   {
     "version": "1.71.0",
@@ -5058,10 +5065,16 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 versions fallback if official is not available  1`] = `
 [
   {
-    "version": "1.142.0",
+    "version": "1.147.0",
   },
   {
-    "version": "1.139.0",
+    "version": "1.146.0",
+  },
+  {
+    "version": "1.145.0",
+  },
+  {
+    "version": "1.142.0",
   },
   {
     "version": "1.136.0",
@@ -5074,9 +5087,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
   },
   {
     "version": "1.96.0",
-  },
-  {
-    "version": "1.84.0",
   },
   {
     "version": "1.71.0",
@@ -5087,10 +5097,16 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 versions fallback if snapshot is not available  1`] = `
 [
   {
-    "version": "1.142.0",
+    "version": "1.147.0",
   },
   {
-    "version": "1.139.0",
+    "version": "1.146.0",
+  },
+  {
+    "version": "1.145.0",
+  },
+  {
+    "version": "1.142.0",
   },
   {
     "version": "1.136.0",
@@ -5103,9 +5119,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
   },
   {
     "version": "1.96.0",
-  },
-  {
-    "version": "1.84.0",
   },
   {
     "version": "1.71.0",
@@ -5116,10 +5129,16 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 versions fallback if official is not available  1`] = `
 [
   {
-    "version": "1.142.0",
+    "version": "1.147.0",
   },
   {
-    "version": "1.139.0",
+    "version": "1.146.0",
+  },
+  {
+    "version": "1.145.0",
+  },
+  {
+    "version": "1.142.0",
   },
   {
     "version": "1.136.0",
@@ -5132,9 +5151,6 @@ exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 ver
   },
   {
     "version": "1.96.0",
-  },
-  {
-    "version": "1.84.0",
   },
   {
     "version": "1.71.0",
@@ -5145,10 +5161,16 @@ exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 versions fallback if snapshot is not available  1`] = `
 [
   {
-    "version": "1.142.0",
+    "version": "1.147.0",
   },
   {
-    "version": "1.139.0",
+    "version": "1.146.0",
+  },
+  {
+    "version": "1.145.0",
+  },
+  {
+    "version": "1.142.0",
   },
   {
     "version": "1.136.0",
@@ -5161,9 +5183,6 @@ exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 ver
   },
   {
     "version": "1.96.0",
-  },
-  {
-    "version": "1.84.0",
   },
   {
     "version": "1.71.0",

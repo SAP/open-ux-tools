@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { readdir } from 'node:fs/promises';
+import { mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
@@ -110,6 +110,10 @@ export async function refreshSpecificationDistTags(options?: { logger?: Logger }
         if ('error' in distTags) {
             // Abort writing cache: received error in dist-tags response
             throw new Error(distTagsString);
+        }
+        // Make sure fiori tools directory exists
+        if (!existsSync(fioriToolsDirectory)) {
+            await mkdir(fioriToolsDirectory, { recursive: true });
         }
         await writeFile(specificationDistTagPath, JSON.stringify(distTags, null, 4));
         const uniqueVersions = new Set(Object.values(distTags));

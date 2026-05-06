@@ -69,6 +69,7 @@ export interface SearchResult {
 }
 
 /**
+ * Finds an annotation by its reference within the annotation file.
  *
  * @param aliasInfo - Alias information.
  * @param file - Internal representation.

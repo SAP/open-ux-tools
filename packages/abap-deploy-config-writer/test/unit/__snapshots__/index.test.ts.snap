@@ -301,6 +301,7 @@ builder:
       configuration:
         target:
           url: https://example.com
+          connectPath: /sap/bc/test
           client: '000'
           authenticationType: reentranceTicket # SAML support for vscode
         app:

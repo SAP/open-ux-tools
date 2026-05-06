@@ -1,0 +1,18 @@
+<<%- config.aggregationNamespace %>:buttonGroups>
+<% (data.buttonGroups || []).forEach(function(buttonGroup, idKey) { %>
+    <richtexteditor:ButtonGroup 
+        id="<%- buttonGroup.id || ids[idKey] %>"
+        name="<%- buttonGroup.name %>" 
+        visible="<%- buttonGroup.visible !== undefined ? buttonGroup.visible : true %>" 
+        buttons="<%- buttonGroup.buttons %>"<% 
+        if (buttonGroup.priority !== undefined) { %>
+        priority="<%- buttonGroup.priority %>"<% 
+        } %><% 
+        if (buttonGroup.customToolbarPriority !== undefined) { %>
+        customToolbarPriority="<%- buttonGroup.customToolbarPriority %>"<% 
+        } %><% 
+        if (buttonGroup.row !== undefined) { %>
+        row="<%- buttonGroup.row %>"<% 
+        } %>/>
+<% }); %>
+</<%- config.aggregationNamespace %>:buttonGroups>

@@ -260,7 +260,7 @@ describe('CFServicesPrompter', () => {
             const whenFn = prompt.when as () => boolean;
             whenFn();
 
-            expect(mockGetApprouterType).toHaveBeenCalledWith('/test/path');
+            expect(mockHasApprouter).toHaveBeenCalledWith(['module1', 'module2']);
         });
 
         test('should show prompt when not logged in and no router', () => {
@@ -460,6 +460,16 @@ describe('CFServicesPrompter', () => {
 
             expect(result).toBe('Service error');
             expect(mockLogger.error).toHaveBeenCalledWith('Failed to get available applications: Service error');
+        });
+
+        test('should return error when no apps found for business service', async () => {
+            mockGetBusinessServiceKeys.mockResolvedValue(mockServiceKeys);
+            mockGetCfApps.mockResolvedValue([]);
+
+            const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
+            const result = await prompt.validate!('test-service');
+
+            expect(result).toBe(t('error.noAppsFoundForBusinessService'));
         });
 
         test('should show prompt when logged in and approuter selected', () => {

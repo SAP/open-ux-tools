@@ -38,6 +38,7 @@ export interface QuestionsProps<T extends TranslationEntry = TranslationEntry> {
     groups?: Array<PromptsGroup>;
     showDescriptions?: boolean;
     translationProps?: TranslationProps<T>;
+    calloutCollisionTransformation?: boolean;
 }
 
 /**
@@ -66,7 +67,8 @@ export const Questions = (props: QuestionsProps) => {
         layoutType,
         showDescriptions,
         validation = {},
-        translationProps = { bundle: {} }
+        translationProps = { bundle: {} },
+        calloutCollisionTransformation = false
     } = props;
     const componentId = useId(id);
     const [localAnswers, setLocalAnswers] = useAnswers(questions, answers, (answers: Answers) => {
@@ -138,6 +140,7 @@ export const Questions = (props: QuestionsProps) => {
                     choices={externalChoices}
                     pending={pendingRequests[name]}
                     isI18nInputSupported={!!props.translationProps}
+                    calloutCollisionTransformation={calloutCollisionTransformation}
                 />
             );
         });

@@ -24,7 +24,6 @@ export enum ExtensionCommands {
 export enum SystemPanelViewType {
     Create,
     View,
-    Update,
     Import
 }
 
@@ -46,3 +45,4 @@ export const confirmationPromptMap = new Map<ConfirmationPromptType, string>([
 
 export const fioriToolsAppModAppGenLaunchCmd = 'sap.ux.appGenerator.launch';
 export const launchAppGenCmdType = 'SAP_SYSTEMS_DATA';
+export const NEW_SYSTEM_PANEL_KEY = '__NEW_SYSTEM_PANEL__';

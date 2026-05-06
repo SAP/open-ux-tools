@@ -51,8 +51,7 @@ export interface ExistingInboundRef {
  * The question type specific to FLP configuration prompts.
  */
 export interface FLPConfigQuestion
-    extends YUIQuestion<FLPConfigAnswers>,
-        Partial<Pick<ListQuestionOptions, 'choices'>> {
+    extends YUIQuestion<FLPConfigAnswers>, Partial<Pick<ListQuestionOptions, 'choices'>> {
     name: promptNames;
     guiOptions?: GuiOptions;
     additionalMessages?: PromptSeverityMessage;

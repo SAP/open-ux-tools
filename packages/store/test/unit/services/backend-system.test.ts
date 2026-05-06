@@ -39,7 +39,10 @@ describe('BackendSystem service', () => {
             jest.spyOn(nodeFs, 'readFileSync').mockReturnValueOnce(
                 '{"systems":{"https://mock.system1.com": {"name": "Mock System","url": "https://mock.system1.com","systemType": "OnPrem"}}}'
             );
-            const existsSyncSpy = jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(false); // migration file does not exist
+            const existsSyncSpy = jest
+                .spyOn(nodeFs, 'existsSync')
+                .mockReturnValueOnce(true) // legacy file exists
+                .mockReturnValueOnce(false); // migration file does not exist
             const writeFileSyncSpy = jest.spyOn(nodeFs, 'writeFileSync');
 
             const service = getInstance(logger);
@@ -85,7 +88,9 @@ describe('BackendSystem service', () => {
                     '{"systems":{"https://mock.system1.com": {"name": "Mock System","url": "https://mock.system1.com","systemType": "OnPrem"}}}'
                 );
 
-            jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(true); // migration file exists
+            jest.spyOn(nodeFs, 'existsSync')
+                .mockReturnValueOnce(true) // legacy file exists
+                .mockReturnValueOnce(true); // migration file exists
 
             const writeFileSyncSpy = jest.spyOn(nodeFs, 'writeFileSync');
             const service = getInstance(logger);
@@ -119,7 +124,9 @@ describe('BackendSystem service', () => {
             jest.spyOn(nodeFs, 'readFileSync').mockReturnValueOnce(
                 '{"systems":{"https://mock.system1.com": {"name": "Mock System","url": "https://mock.system1.com","systemType": "OnPrem"}}}'
             );
-            jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(false); // migration file does not exist
+            jest.spyOn(nodeFs, 'existsSync')
+                .mockReturnValueOnce(true) // legacy file exists
+                .mockReturnValueOnce(false); // migration file does not exist
             jest.spyOn(nodeFs, 'mkdirSync').mockImplementationOnce(() => {
                 throw new Error('Mock error during mkdirSync');
             });
@@ -129,6 +136,14 @@ describe('BackendSystem service', () => {
             expect(loggerErrorSpy).toHaveBeenCalledWith(
                 'The migration of the systems.json file from .fioritools to .saptools failed: Mock error during mkdirSync'
             );
+        });
+
+        it('should not attempt migration if legacy file does not exist', () => {
+            jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(false); // legacy file does not exist
+            const readFileSyncSpy = jest.spyOn(nodeFs, 'readFileSync');
+            const service = getInstance(logger);
+            expect(service).toBeInstanceOf(SystemService);
+            expect(readFileSyncSpy).not.toHaveBeenCalled();
         });
     });
 

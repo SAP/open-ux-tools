@@ -1,6 +1,6 @@
 import React from 'react';
 import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
-import { useValue, getLabelRenderer, useOptions } from '../../../utilities';
+import { useValue, getLabelRenderer, useOptions, useMultiSelectKeys } from '../../../utilities';
 import type { AnswerValue, CheckboxPromptQuestion, PromptListChoices } from '../../../types';
 
 export interface MultiSelectProps extends CheckboxPromptQuestion {
@@ -10,13 +10,29 @@ export interface MultiSelectProps extends CheckboxPromptQuestion {
     dynamicChoices?: PromptListChoices;
     pending?: boolean;
     errorMessage?: string;
+    calloutCollisionTransformation?: boolean;
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {
-    const { name, message, onChange, guiOptions = {}, pending, errorMessage, dynamicChoices, id } = props;
+    const {
+        name,
+        message,
+        onChange,
+        guiOptions = {},
+        pending,
+        errorMessage,
+        dynamicChoices,
+        id,
+        calloutCollisionTransformation
+    } = props;
     const { mandatory, hint, placeholder } = guiOptions;
     const [value, setValue] = useValue('', props.value?.toString() ?? '');
     const options = useOptions(props, dynamicChoices);
+    const { checkedOptions, selectedKeys } = useMultiSelectKeys(options, value ?? '');
+
+    const handleSubmitValue = (userSelections: string[]): string => {
+        return [...checkedOptions, ...userSelections].join(',');
+    };
 
     return (
         <UIComboBox
@@ -28,20 +44,21 @@ export const MultiSelect = (props: MultiSelectProps) => {
             autoComplete="on"
             required={mandatory}
             isLoading={pending ? [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List] : undefined}
-            selectedKey={value?.split(',').map((v) => v.trim())}
+            selectedKey={selectedKeys}
             multiSelect
             disabled={false}
+            calloutCollisionTransformation={calloutCollisionTransformation}
             onChange={(_, changedOption) => {
-                let updatedValue: string | undefined = '';
+                let updatedValue: string[];
                 if (changedOption?.selected) {
-                    updatedValue = [...(value?.split(',').filter((option) => option) ?? []), changedOption.key].join();
+                    updatedValue = [...selectedKeys, changedOption.key as string];
                 } else {
-                    updatedValue = (value?.split(',') ?? [])
-                        .filter((option) => option && option !== changedOption?.key)
-                        .join();
+                    updatedValue = selectedKeys.filter((key) => key !== changedOption?.key);
                 }
-                setValue(updatedValue);
-                onChange(name, updatedValue);
+
+                const updatedValueString = handleSubmitValue(updatedValue);
+                setValue(updatedValueString);
+                onChange(name, updatedValueString);
             }}
             onRenderLabel={getLabelRenderer(hint)}
             errorMessage={errorMessage}

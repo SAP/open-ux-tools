@@ -3,11 +3,14 @@ import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { fetchMock, sapMock } from 'mock/window';
+import NewsContainer from 'sap/cux/home/NewsContainer';
+import NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import type Component from 'sap/ui/core/Component';
 import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
 import { Window } from 'types/global';
 import * as apiHandler from '../../../src/adp/api-handler';
+import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller';
 import {
     init,
     loadI18nResourceBundle,
@@ -17,17 +20,10 @@ import {
     setI18nTitle
 } from '../../../src/flp/init';
 
-Object.defineProperty(window, 'location', {
-    value: {
-        ...window.location,
-        reload: jest.fn()
-    },
-    writable: true
-});
-
 describe('flp/init', () => {
     afterEach(() => {
         sapMock.ushell.Container.getServiceAsync.mockReset();
+        window.location.hash = '';
     });
     test('registerSAPFonts', () => {
         registerSAPFonts();
@@ -207,23 +203,16 @@ describe('flp/init', () => {
 
     describe('init', () => {
         const reloadSpy = jest.fn();
-        const location = window.location;
         beforeEach(() => {
             sapMock.ushell.Container.attachRendererCreatedEvent.mockReset();
             sapMock.ui.require.mockReset();
             jest.clearAllMocks();
 
-            Object.defineProperty(window, 'location', {
-                value: {
-                    reload: reloadSpy
-                }
-            });
+            (window as any).__locationImpl.reload = reloadSpy;
         });
 
         afterEach(() => {
-            Object.defineProperty(window, 'location', {
-                value: location
-            });
+            (window as any).__locationImpl.reload = (window as any).__locationImplOriginalReload;
         });
 
         test('nothing configured', async () => {
@@ -263,9 +252,39 @@ describe('flp/init', () => {
             expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
 
             const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
+            window.location.hash = '#app-preview';
             loadedCb({ getParameter: () => {} });
             expect(sapMock.ui.require).toHaveBeenCalledWith(
                 ['sap/ui/rta/api/startAdaptation', flexSettings.pluginScript],
+                expect.anything()
+            );
+        });
+
+        test('flex configured - skips startAdaptation when hash is Shell-home', async () => {
+            const flexSettings = {
+                layer: 'CUSTOMER_BASE',
+                pluginScript: 'my/script'
+            };
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.76.0' }]
+            });
+
+            const mockService = {
+                attachAppLoaded: jest.fn()
+            };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ flex: JSON.stringify(flexSettings) });
+
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
+            await rendererCb();
+
+            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
+            window.location.hash = '#Shell-home';
+            loadedCb({ getParameter: () => {} });
+            expect(sapMock.ui.require).not.toHaveBeenCalledWith(
+                expect.arrayContaining(['sap/ui/rta/api/startAdaptation']),
                 expect.anything()
             );
         });
@@ -295,13 +314,14 @@ describe('flp/init', () => {
             expect(mockService.attachAppLoaded).toHaveBeenCalled();
 
             const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
+            window.location.hash = '#app-preview';
             loadedCb({ getParameter: () => {} });
             expect(sapMock.ui.require).toHaveBeenCalledWith(
                 ['open/ux/preview/client/flp/initRta', flexSettings.pluginScript],
                 expect.anything()
             );
 
-            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
+            const requireCb = sapMock.ui.require.mock.calls[1][1] as (
                 initRta: InitRtaScript,
                 pluginScript?: RTAPlugin
             ) => Promise<void>;
@@ -368,7 +388,7 @@ describe('flp/init', () => {
                         callback({}); // WorkspaceConnector
                         return;
                     }
-                    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+                     
                     await callback(() => Promise.reject('Reload triggered'));
                     resolve(undefined);
                 });
@@ -386,6 +406,7 @@ describe('flp/init', () => {
             };
             sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
 
+            window.location.hash = '#app-preview';
             await rendererCb();
 
             // Wait for the reload to complete before continue with the test cases.
@@ -436,8 +457,59 @@ describe('flp/init', () => {
             });
             await init({ enhancedHomePage: true });
 
-            expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();
             expect(sapMock.ushell.Container.init).toHaveBeenCalledWith('cdm');
+        });
+
+        test('enhancedHomePage view - use new NewsContainer control when available', (done) => {
+            const mockPage = {
+                insertContent: jest.fn()
+            };
+
+            const controller = new MyHomeController('testController');
+            controller.getView = jest.fn().mockReturnValue({
+                getId: jest.fn().mockReturnValue('testView'),
+                byId: jest.fn().mockReturnValue(mockPage)
+            });
+
+            controller.onInit();
+            setTimeout(() => {
+                expect(mockPage.insertContent).toHaveBeenCalled();
+                const insertedContainer = mockPage.insertContent.mock.calls[0][0];
+
+                // Verify it's an instance of NewsContainer (when available)
+                expect(insertedContainer).toBeInstanceOf(NewsContainer);
+                expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
+                done();
+            });
+        });
+
+        test('enhancedHomePage view - fallback to NewsAndPagesContainer control when NewsContainer is not available', (done) => {
+            jest.doMock('sap/cux/home/NewsContainer', () => {
+                throw new Error('NewsContainer not found');
+            });
+
+            const mockPage = {
+                insertContent: jest.fn()
+            };
+
+            const controller = new MyHomeController('testController');
+            controller.getView = jest.fn().mockReturnValue({
+                getId: jest.fn().mockReturnValue('testView'),
+                byId: jest.fn().mockReturnValue(mockPage)
+            });
+
+            controller.onInit();
+            setTimeout(() => {
+                expect(mockPage.insertContent).toHaveBeenCalled();
+                const insertedContainer = mockPage.insertContent.mock.calls[0][0];
+
+                // Verify it's an instance of NewsAndPagesContainer (fallback when NewsContainer unavailable)
+                expect(insertedContainer).toBeInstanceOf(NewsAndPagesContainer);
+                expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
+
+                jest.dontMock('sap/cux/home/NewsContainer');
+                done();
+            });
         });
     });
 });

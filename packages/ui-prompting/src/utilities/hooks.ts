@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import type { UIComboBoxOption, UISelectableOption } from '@sap-ux/ui-components';
 import { convertChoicesToOptions, getAnswer, getDynamicQuestions, isDeepEqual, setAnswer } from './utils';
 import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
@@ -66,6 +66,38 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
         setOptions(options);
     }, [question, choices]);
     return options;
+}
+
+/**
+ * Custom hook to manage checked and selected keys for multi-select.
+ * Separates pre checked options from current selected options.
+ *
+ * @param options - Array of selectable options that may contain pre-checked items
+ * @param value - Comma-separated string of selected option keys
+ */
+export function useMultiSelectKeys(
+    options: UISelectableOption<ChoiceOptions & { checked?: boolean }>[],
+    value: string
+): { checkedOptions: string[]; selectedKeys: string[] } {
+    return useMemo(() => {
+        // Extract pre-checked options from data
+        const checkedOptions = options
+            .filter((opt) => opt.data?.checked === true)
+            .map((opt) => opt.data?.value ?? opt.key.toString());
+
+        // If no value, return empty selectedKeys
+        if (!value) {
+            return { checkedOptions, selectedKeys: [] };
+        }
+
+        // Filter out pre-checked options
+        const selectedKeys = value
+            .split(',')
+            .map((v) => v.trim())
+            .filter((v) => v && !checkedOptions.includes(v));
+
+        return { checkedOptions, selectedKeys };
+    }, [options, value]);
 }
 
 /**

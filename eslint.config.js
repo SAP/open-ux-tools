@@ -1,11 +1,12 @@
 const { FlatCompat } = require('@eslint/eslintrc');
-const tsParser = require('@typescript-eslint/parser');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 const pluginPromise = require('eslint-plugin-promise');
 const pluginJsdoc = require('eslint-plugin-jsdoc');
 const tseslint = require('typescript-eslint');
 const importPlugin = require('eslint-plugin-import');
 const sonarjs = require('eslint-plugin-sonarjs');
+const isFixMode = process.argv.includes('--fix');
+const tsParser = tseslint.parser;
 
 const compat = new FlatCompat({
     baseDirectory: __dirname, // optional; default: process.cwd()
@@ -87,7 +88,9 @@ module.exports = [
                     contexts: ['TSMethodSignature']
                 }
             ],
-
+            ...(isFixMode && { // disable in fix mode to avoid generating incorrect JSDoc
+                'jsdoc/require-jsdoc': 'off'
+            }),
             'jsdoc/valid-types': 'error',
             'jsdoc/check-types': 'error',
             'jsdoc/check-param-names': 'error',
@@ -298,6 +301,7 @@ module.exports = [
                     'allowAsImport': true
                 }
             ],
+            'import/enforce-node-protocol-usage': ['error', 'always'],
             'jsdoc/require-param-type': 'off',
             'jsdoc/require-returns-type': 'off',
             'prefer-const': [
@@ -347,6 +351,9 @@ module.exports = [
                     'exemptEmptyFunctions': true
                 }
             ],
+            ...(isFixMode && { // disable in fix mode to avoid generating incorrect JSDoc
+                'jsdoc/require-jsdoc': 'off'
+            }),
             'jsdoc/valid-types': 'off',
             'jsdoc/check-types': 'off',
             'jsdoc/check-tag-names': 'off',

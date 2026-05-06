@@ -21,7 +21,8 @@ export function addi18nResourceBundle(): void {
 export async function initI18n(): Promise<void> {
     await i18n.init({
         lng: 'en',
-        fallbackLng: 'en'
+        fallbackLng: 'en',
+        showSupportNotice: false
     });
     addi18nResourceBundle();
     // add the project-input-validator i18n resource bundle to ensure all translations are available
@@ -39,7 +40,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: FLP_CONFIG_NAMESPACE });
     }
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 initI18n().catch(() => {

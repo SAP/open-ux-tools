@@ -17,6 +17,7 @@ export interface CDSService {
  */
 export interface LocalEDMXService {
     type: 'local-edmx';
+    servicePath?: string;
     odataVersion: ODataVersionType;
     metadataFile: TextFile;
     annotationFiles: TextFile[];

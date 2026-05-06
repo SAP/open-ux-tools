@@ -70,3 +70,12 @@
     line-height: 15px;
     color: var(--vscode-settings-textInputForeground);
 }
+
+code {                                                                                       
+      font-family: var(--vscode-editor-font-family);                                         
+      font-size: 85%;                                                                          
+      padding: 2px 4px;                                                                        
+      border-radius: 3px;                                                                      
+      color: var(--vscode-textPreformat-foreground);                                           
+      background-color: var(--vscode-textPreformat-background);                                
+    }

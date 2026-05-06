@@ -1547,8 +1547,8 @@ exports[`UI5 templates option: \`typescript and eslint\` to check for conflicts 
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\"
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
@@ -1593,9 +1593,9 @@ exports[`UI5 templates option: \`typescript and eslint\` to check for conflicts 
 `;
 
 exports[`UI5 templates option: \`typescript and eslint\` to check for conflicts 3`] = `
-"const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+"import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 "
@@ -1616,10 +1616,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -1644,8 +1644,8 @@ module.exports = [
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
     \\"ui5-tooling-modules\\": \\"^0.6.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\"
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",

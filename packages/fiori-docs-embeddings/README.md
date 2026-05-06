@@ -19,8 +19,11 @@ https://github.com/SAP-samples/fiori-elements-feature-showcase (Feature examples
 
 https://ui5.sap.com/test-resources/sap/fe/macros/designtime/apiref/api.json (Design Time API Reference)
 
-https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/overview/introduction SAP Fiori Development Portal
+https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/overview/introduction (SAP Fiori Development Portal)
 
+https://github.com/SAP/open-ux-tools/blob/main/packages/create/README.md (Fiori Tools create documentation)
+
+https://www.npmjs.com/package/@sap/ux-ui5-tooling (@sap/ux-ui5-tooling documentation)
 
 - Parses markdown, JSON, TypeScript, and other file types
 - Generates AI-powered vector embeddings using transformers

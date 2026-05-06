@@ -1,3 +1,4 @@
+import type { IdGeneratorFunction } from '../common/file';
 import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types';
 
 /**
@@ -9,11 +10,15 @@ export enum BuildingBlockType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
     CustomFilterField = 'custom-filter-field',
+    CustomFormField = 'custom-form-field',
     Field = 'field',
+    Form = 'form',
     Page = 'page',
     Table = 'table',
     CustomColumn = 'custom-column',
-    RichTextEditor = 'rich-text-editor'
+    RichTextEditor = 'rich-text-editor',
+    RichTextEditorButtonGroups = 'rich-text-editor-button-groups',
+    Action = 'action'
 }
 
 /**
@@ -69,6 +74,14 @@ export interface BuildingBlock {
      * Defines the relative path of the property in the metamodel, based on the current contextPath.
      */
     metaPath?: string | BuildingBlockMetaPath;
+
+    /**
+     * Generates a unique ID for the building block based on the provided base ID.
+     *
+     * @param baseId - The base ID to generate from, usually related to the building block type.
+     * @returns A unique ID string.
+     */
+    generateId: IdGeneratorFunction;
 }
 
 /**
@@ -430,6 +443,49 @@ export interface CustomFilterField extends BuildingBlock {
     embededFragment?: EmbededFragment;
 }
 
+/**
+ * Represents a custom form field building block.
+ * Custom form fields can be added to Form building blocks using the FormElement control.
+ *
+ * @see https://sapui5.hana.ondemand.com/#/api/sap.fe.macros.FormElement
+ * @example
+ * <macros:Form id="MyForm" metaPath="@com.sap.vocabularies.UI.v1.FieldGroup#General">
+ *   <macros:fields>
+ *     <macros:FormElement
+ *       label="Custom Field"
+ *       placement="After"
+ *       anchor="DataField::ExistingProperty">
+ *       <macros:fields>
+ *         <core:Fragment fragmentName="myApp.ext.CustomField" type="XML" />
+ *       </macros:fields>
+ *     </macros:FormElement>
+ *   </macros:fields>
+ * </macros:Form>
+ * @extends {BuildingBlock}
+ */
+export interface CustomFormField extends BuildingBlock {
+    /**
+     * Optional key for the FormElement.
+     */
+    formElementKey?: string;
+    /**
+     * The text that will be displayed as label for this FormElement.
+     */
+    label: string;
+    /**
+     * Position of the custom form field relative to an anchor element.
+     */
+    position?: Position;
+    /**
+     * The fragment that contains the template for the custom form field.
+     */
+    embededFragment: EmbededFragment;
+    /**
+     * Property used to construct the metaPath for the custom form field, e.g. "EntitySet/targetProperty".
+     */
+    targetProperty?: string;
+}
+
 export interface CustomColumn extends BuildingBlock {
     title: string;
     width?: string;
@@ -437,6 +493,58 @@ export interface CustomColumn extends BuildingBlock {
     position?: Position;
     embededFragment?: EmbededFragment;
 }
+
+/**
+ * Building block for adding custom actions to tables.
+ * Custom actions can be added to table toolbars and can trigger controller methods or fragments.
+ *
+ * @see https://sapui5.hana.ondemand.com/#/api/sap.fe.macros.table.Action
+ * @example
+ * // Simple action with event handler
+ * <macros:Table id="MyTable" metaPath="@com.sap.vocabularies.UI.v1.LineItem">
+ *   <macros:actions>
+ *     <macrosTable:Action
+ *       key="approveAction"
+ *       text="Approve"
+ *       press=".onApprove"
+ *       requiresSelection="true"
+ *       placement="After"
+ *     />
+ *   </macros:actions>
+ * </macros:Table>
+ * @extends {BuildingBlock}
+ */
+export interface Action extends BuildingBlock {
+    /**
+     * Unique identifier of the action.
+     */
+    actionKey: string;
+    /**
+     * The text that will be displayed for this action.
+     */
+    text: string;
+    /**
+     * Reference to the key of another action already displayed in the toolbar to properly place this one.
+     */
+    anchor?: string;
+    /**
+     * Defines where this action should be placed relative to the defined anchor.
+     * Allowed values are 'Before' and 'After'.
+     */
+    placement?: 'Before' | 'After';
+    /**
+     * Defines if the action requires a selection.
+     *
+     * @default false
+     */
+    requiresSelection?: boolean;
+    /**
+     * This allows you to define event handlers, or custom XML elements for the action.
+     */
+    embeddedAction: EmbeddedAction;
+}
+
+export type EmbeddedAction = EventHandler & CustomFragment & CustomElement;
 
 export type EmbededFragment = EventHandler & CustomFragment & CustomElement & FragmentContentData;
 
@@ -457,6 +565,74 @@ export interface RichTextEditor extends BuildingBlock {
      * Property used to construct the metaPath for Rich Text Editor, e.g. "/EntitySet/targetProperty".
      */
     targetProperty?: string;
+    /**
+     * Button groups to include in the editor toolbar.
+     */
+    buttonGroups?: ButtonGroupConfig[];
+}
+/**
+ * Configuration for a button group in the rich text editor.
+ */
+export interface ButtonGroupConfig {
+    /**
+     * Unique identifier for the button group (e.g., 'font-style', 'clipboard', 'undo').
+     */
+    readonly name: string;
+
+    /**
+     * Comma-separated list of buttons to include in this group.
+     *
+     * @example "bold,italic,underline" or "cut,copy,paste"
+     */
+    buttons: string;
+
+    /**
+     * Display priority for ordering button groups (higher = more prominent position).
+     *
+     * @default 10
+     */
+    priority?: number;
+
+    /**
+     * Whether this button group is visible in the editor toolbar.
+     *
+     * @default true
+     */
+    visible?: boolean;
+    /**
+     * Custom toolbar priority to override default positioning.
+     */
+    customToolbarPriority?: number;
+    /**
+     * Row number in the toolbar where this button group should appear.
+     */
+    row?: number;
+    /**
+     * Optional ID for the button group.
+     */
+    id?: string;
+}
+
+/**
+ * Building block for configuring Rich Text Editor button groups.
+ *
+ * @example
+ * {
+ *   buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+ *   id: "rteButtonGroups1",
+ *   buttonGroups: [
+ *     { name: "font-style", buttons: "bold,italic,underline", priority: 10 },
+ *     { name: "clipboard", visible: false, buttons: "cut,copy,paste" },
+ *     { name: "undo", priority: 20, buttons: "undo,redo" }
+ *   ]
+ * }
+ * @extends {BuildingBlock}
+ */
+export interface RichTextEditorButtonGroups extends BuildingBlock {
+    /**
+     * Button groups to include in the editor toolbar.
+     */
+    buttonGroups: ButtonGroupConfig[];
 }
 
 /**

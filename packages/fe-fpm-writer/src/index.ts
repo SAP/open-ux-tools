@@ -22,10 +22,12 @@ export { generateCustomView } from './view';
 export { enableFPM, FPMConfig } from './app';
 
 export { validateBasePath, validateVersion } from './common/validate';
+export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file';
 
 export {
     BuildingBlockType,
     FilterBar,
+    Form,
     Chart,
     Field,
     FieldFormatOptions,
@@ -34,15 +36,20 @@ export {
     Page,
     CustomColumn,
     CustomFilterField,
-    RichTextEditor
+    CustomFormField,
+    RichTextEditor,
+    ButtonGroupConfig,
+    Action
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
+    FormPromptsAnswer,
     TablePromptsAnswer,
     PagePromptsAnswer,
     RichTextEditorPromptsAnswer,
+    RichTextEditorButtonGroupsPromptsAnswer,
     BuildingBlockTypePromptsAnswer
 } from './building-block/prompts/questions';
 export {

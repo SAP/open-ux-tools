@@ -7,7 +7,6 @@ import supertest from 'supertest';
 import type { Editor } from 'mem-fs-editor';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
-import type { SuperTest, Test } from 'supertest';
 
 import { type Logger, ToolsLogger } from '@sap-ux/logger';
 import * as systemAccess from '@sap-ux/system-access/dist/base/connect';
@@ -19,7 +18,8 @@ import { AdpPreview } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
 import type { AddXMLChange, AdpPreviewConfig, CommonChangeProperties } from '../../../src';
 import { addXmlFragment, tryFixChange, addControllerExtension } from '../../../src/preview/change-handler';
-import { addCustomSectionFragment } from '../../../src/preview/descriptor-change-handler';
+import { addCustomFragment } from '../../../src/preview/descriptor-change-handler';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -51,7 +51,7 @@ jest.mock('../../../src/preview/change-handler', () => ({
 
 jest.mock('../../../src/preview/descriptor-change-handler', () => ({
     ...jest.requireActual('../../../src/preview/descriptor-change-handler'),
-    addCustomSectionFragment: jest.fn()
+    addCustomFragment: jest.fn()
 }));
 
 jest.mock('@sap-ux/store', () => {
@@ -71,11 +71,10 @@ jest.mock('ejs', () => ({
 }));
 
 const renderFileMock = renderFile as jest.Mock;
-
 const tryFixChangeMock = tryFixChange as jest.Mock;
 const addXmlFragmentMock = addXmlFragment as jest.Mock;
 const addControllerExtensionMock = addControllerExtension as jest.Mock;
-const addCustomFragmentMock = addCustomSectionFragment as jest.Mock;
+const addCustomFragmentMock = addCustomFragment as jest.Mock;
 
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
@@ -165,6 +164,7 @@ describe('AdaptationProject', () => {
             nock.cleanAll();
         });
         test('default (no) config', async () => {
+            jest.spyOn(helper, 'getExistingAdpProjectType').mockResolvedValue(AdaptationProjectType.ON_PREMISE);
             const adp = new AdpPreview(
                 {
                     target: {
@@ -189,13 +189,11 @@ describe('AdaptationProject', () => {
                 'the.original.app': mockMergedDescriptor.url,
                 'app.variant1': '/webapp'
             });
-            expect(adp.isCloudProject).toBeFalsy();
+            expect(adp.projectType).toBe(AdaptationProjectType.ON_PREMISE);
         });
 
         test('cloud project', async () => {
-            nock(backend)
-                .get('/sap/bc/adt/ato/settings')
-                .replyWithFile(200, join(__dirname, '..', '..', 'mockResponses/atoSettingsS4C.xml'));
+            jest.spyOn(helper, 'getExistingAdpProjectType').mockResolvedValue(AdaptationProjectType.CLOUD_READY);
             nock(backend)
                 .get('/sap/bc/adt/discovery')
                 .replyWithFile(200, join(__dirname, '..', '..', 'mockResponses/discovery.xml'));
@@ -223,7 +221,7 @@ describe('AdaptationProject', () => {
                 'the.original.app': mockMergedDescriptor.url,
                 'app.variant1': '/webapp'
             });
-            expect(adp.isCloudProject).toEqual(true);
+            expect(adp.projectType).toEqual(AdaptationProjectType.CLOUD_READY);
         });
 
         test('error on property access before init', async () => {
@@ -240,7 +238,6 @@ describe('AdaptationProject', () => {
 
             expect(() => adp.descriptor).toThrow();
             expect(() => adp.resources).toThrow();
-            expect(() => adp.isCloudProject).toThrow();
             await expect(() => adp.sync()).rejects.toEqual(Error('Not initialized'));
         });
 
@@ -261,11 +258,10 @@ describe('AdaptationProject', () => {
             const layer = await adp.init(parsedVariant);
 
             expect(layer).toBe(parsedVariant.layer);
-            expect(adp.isCloudProject).toBe(false);
+            expect(adp.projectType).toBeUndefined();
             expect(adp['descriptorVariantId']).toBe(parsedVariant.id);
             expect(adp['routesHandler']).toBeDefined();
             expect(adp['provider']).toBeUndefined();
-            expect(nock.isDone()).toBe(true);
         });
     });
 
@@ -320,9 +316,6 @@ describe('AdaptationProject', () => {
             // sync should return immediately without making any backend calls
             // Since cfBuildPath is set, sync should return early
             await adp.sync();
-
-            // Verify that sync completed without errors
-            expect(adp.isCloudProject).toBe(false);
         });
 
         test('updates merged descriptor', async () => {
@@ -432,7 +425,7 @@ describe('AdaptationProject', () => {
         });
     });
     describe('proxy', () => {
-        let server: SuperTest<Test>;
+        let server: supertest.Agent;
         const next = jest.fn().mockImplementation((_req, res) => res.status(200).send());
         beforeAll(async () => {
             nock(backend)
@@ -589,11 +582,12 @@ describe('AdaptationProject', () => {
                 'write',
                 {
                     changeType: 'appdescr_fe_changePageConfiguration',
+                    projectId: 'adp.v1',
                     content: {
                         entityPropertyChange: {
                             propertyPath: 'content/body/sections/test',
                             propertyValue: {
-                                template: 'adp.v1.changes.fragment.test'
+                                template: 'adp.v1.changes.fragments.test'
                             }
                         }
                     }
@@ -606,11 +600,12 @@ describe('AdaptationProject', () => {
                 '/adp.project/webapp',
                 {
                     changeType: 'appdescr_fe_changePageConfiguration',
+                    projectId: 'adp.v1',
                     content: {
                         entityPropertyChange: {
                             propertyPath: 'content/body/sections/test',
                             propertyValue: {
-                                template: 'adp.v1.changes.fragment.test'
+                                template: 'adp.v1.changes.fragments.test'
                             }
                         }
                     }
@@ -622,7 +617,7 @@ describe('AdaptationProject', () => {
     });
 
     describe('addApis', () => {
-        let server: SuperTest<Test>;
+        let server: supertest.Agent;
         beforeAll(async () => {
             nock(backend)
                 .get((path) => path.startsWith('/sap/bc/lrep/actions/getcsrftoken/'))
@@ -985,7 +980,7 @@ describe('AdaptationProject', () => {
     });
 
     describe('addApis - cfBuildPath mode', () => {
-        let cfBuildPathServer: SuperTest<Test>;
+        let cfBuildPathServer: supertest.Agent;
         beforeAll(async () => {
             const adp = new AdpPreview(
                 {

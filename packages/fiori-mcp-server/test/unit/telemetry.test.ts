@@ -24,7 +24,8 @@ describe('TelemetryHelper', () => {
             const telemetryData = TelemetryHelper.createTelemetryData();
             expect(telemetryData).toStrictEqual({
                 Platform: 'VSCode',
-                OperatingSystem: expect.any(String)
+                OperatingSystem: expect.any(String),
+                SessionId: expect.any(String)
             });
         });
 
@@ -40,6 +41,7 @@ describe('TelemetryHelper', () => {
             expect(TelemetryHelper.telemetryData).toEqual({
                 Platform: 'VSCode',
                 OperatingSystem: expect.any(String),
+                SessionId: expect.any(String),
                 test: 'test2'
             });
         });
@@ -61,7 +63,8 @@ describe('TelemetryHelper', () => {
                 properties: {
                     test: 'test',
                     Platform: 'VSCode',
-                    OperatingSystem: expect.any(String)
+                    OperatingSystem: expect.any(String),
+                    SessionId: expect.any(String)
                 }
             },
             2,
@@ -84,7 +87,8 @@ describe('TelemetryHelper', () => {
                 properties: {
                     test: 'test',
                     Platform: 'VSCode',
-                    OperatingSystem: expect.any(String)
+                    OperatingSystem: expect.any(String),
+                    SessionId: expect.any(String)
                 }
             },
             2,

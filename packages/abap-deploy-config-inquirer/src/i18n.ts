@@ -12,7 +12,8 @@ export const i18n: i18nNext = i18next.createInstance();
 export async function initI18n(): Promise<void> {
     await i18n.init({
         lng: 'en',
-        fallbackLng: 'en'
+        fallbackLng: 'en',
+        showSupportNotice: false
     });
     i18n.addResourceBundle('en', abapDeployConfigInquirerNs, translations);
 }
@@ -28,7 +29,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: abapDeployConfigInquirerNs });
     }
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 initI18n().catch(() => {

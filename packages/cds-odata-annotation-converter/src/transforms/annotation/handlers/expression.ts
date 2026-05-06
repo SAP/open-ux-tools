@@ -67,6 +67,7 @@ export const unknownOperatorExpressionHandler: NodeHandler<UnsupportedOperatorEx
 };
 
 /**
+ * Builds an element or subtree for an operator expression with proper EDM naming.
  *
  * @param expression correct expression.
  * @param contentRange element content range.

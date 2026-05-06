@@ -1,9 +1,9 @@
-import { Cli, cfGetInstanceCredentials, eFilters } from '@sap/cf-tools';
+import { type CFResource, Cli, cfGetServiceKeys, eFilters } from '@sap/cf-tools';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n';
-import type { ServiceKeys } from '../../types';
+import type { ServiceKeys, ServiceKeySortField } from '../../types';
 
 const ENV = { env: { 'CF_COLOR': 'false' } };
 
@@ -27,14 +27,20 @@ export async function isCfInstalled(logger: ToolsLogger): Promise<boolean> {
 }
 
 /**
- * Gets the service instance credentials.
+ * Gets the service instance credentials, sorted by the specified metadata field.
  *
- * @param {string} serviceInstanceGuid - The service instance GUID.
- * @returns {Promise<ServiceKeys[]>} The service instance credentials.
+ * @param serviceInstanceGuid - The service instance GUID.
+ * @param sortBy - The metadata field to sort by, defaults to 'updated_at'.
+ * @param logger - Optional logger.
+ * @returns The service instance credentials sorted by the specified field (newest first).
  */
-export async function getServiceKeys(serviceInstanceGuid: string): Promise<ServiceKeys[]> {
+export async function getServiceKeys(
+    serviceInstanceGuid: string,
+    sortBy: ServiceKeySortField = 'updated_at',
+    logger?: ToolsLogger
+): Promise<ServiceKeys[]> {
     try {
-        return await cfGetInstanceCredentials({
+        const resources = await cfGetServiceKeys({
             filters: [
                 {
                     value: serviceInstanceGuid,
@@ -42,6 +48,42 @@ export async function getServiceKeys(serviceInstanceGuid: string): Promise<Servi
                 }
             ]
         });
+
+        logger?.info(`Found ${resources.length} service key(s) for instance '${serviceInstanceGuid}'`);
+
+        const sorted = [...resources].sort((a, b) => {
+            const dateA = a[sortBy as keyof CFResource];
+            const dateB = b[sortBy as keyof CFResource];
+            if (!dateA && !dateB) {
+                return 0;
+            }
+            if (!dateA) {
+                return 1;
+            }
+            if (!dateB) {
+                return -1;
+            }
+            return new Date(dateB).getTime() - new Date(dateA).getTime();
+        });
+
+        if (sorted.length > 0) {
+            logger?.debug(`Service keys sorted by '${sortBy}', using key '${sorted[0].name}' as primary`);
+        }
+
+        const results = await Promise.all(
+            sorted.map(async (resource) => {
+                try {
+                    return await requestCfApi<ServiceKeys>(`/v3/service_credential_bindings/${resource.guid}/details`);
+                } catch (e) {
+                    logger?.warn(`Failed to fetch credentials for service key '${resource.name}': ${e.message}`);
+                    return undefined;
+                }
+            })
+        );
+
+        const filtered = results.filter((r): r is ServiceKeys => r !== undefined);
+        logger?.debug(`Retrieved credentials for ${filtered.length} of ${sorted.length} service key(s)`);
+        return filtered;
     } catch (e) {
         throw new Error(t('error.cfGetInstanceCredentialsFailed', { serviceInstanceGuid, error: e.message }));
     }
@@ -55,12 +97,32 @@ export async function getServiceKeys(serviceInstanceGuid: string): Promise<Servi
  */
 export async function createServiceKey(serviceInstanceName: string, serviceKeyName: string): Promise<void> {
     try {
-        const cliResult = await Cli.execute(['create-service-key', serviceInstanceName, serviceKeyName], ENV);
+        const cliResult = await Cli.execute(['create-service-key', serviceInstanceName, serviceKeyName, '--wait'], ENV);
         if (cliResult.exitCode !== 0) {
             throw new Error(cliResult.stderr);
         }
     } catch (e) {
         throw new Error(t('error.createServiceKeyFailed', { serviceInstanceName, error: e.message }));
+    }
+}
+
+/**
+ * Updates a Cloud Foundry service instance with the given parameters.
+ *
+ * @param {string} serviceInstanceName - The service instance name.
+ * @param {object} parameters - The configuration parameters to update.
+ */
+export async function updateServiceInstance(serviceInstanceName: string, parameters: object): Promise<void> {
+    try {
+        const cliResult = await Cli.execute(
+            ['update-service', serviceInstanceName, '-c', JSON.stringify(parameters), '--wait'],
+            ENV
+        );
+        if (cliResult.exitCode !== 0) {
+            throw new Error(cliResult.stderr);
+        }
+    } catch (e) {
+        throw new Error(t('error.failedToUpdateServiceInstance', { serviceInstanceName, error: e.message }));
     }
 }
 
@@ -74,6 +136,10 @@ export async function requestCfApi<T = unknown>(url: string): Promise<T> {
     try {
         const response = await Cli.execute(['curl', url], ENV);
         if (response.exitCode === 0) {
+            // Check for empty response which typically indicates authentication issues
+            if (!response.stdout || response.stdout.trim() === '') {
+                throw new Error(t('error.emptyCFAPIResponse'));
+            }
             try {
                 return JSON.parse(response.stdout);
             } catch (e) {
@@ -83,5 +149,54 @@ export async function requestCfApi<T = unknown>(url: string): Promise<T> {
         throw new Error(response.stderr);
     } catch (e) {
         throw new Error(t('error.failedToRequestCFAPI', { error: e.message }));
+    }
+}
+
+/**
+ * Check whether a CF app exists.
+ *
+ * @param appName - CF app name.
+ * @returns True if the app exists.
+ */
+export async function checkAppExists(appName: string): Promise<boolean> {
+    const result = await Cli.execute(['app', appName], ENV);
+    return result.exitCode === 0;
+}
+
+/**
+ * Push a minimal no-route CF app from a given directory.
+ *
+ * @param appName - CF app name.
+ * @param appPath - Local path to push.
+ * @param args - Additional cf push arguments.
+ */
+export async function pushApp(appName: string, appPath: string, args: string[] = []): Promise<void> {
+    const result = await Cli.execute(['push', appName, '-p', appPath, ...args], ENV);
+    if (result.exitCode !== 0) {
+        throw new Error(t('error.cfPushFailed', { appName, error: result.stderr }));
+    }
+}
+
+/**
+ * Enable SSH access on a CF app.
+ *
+ * @param appName - CF app name.
+ */
+export async function enableSsh(appName: string): Promise<void> {
+    const result = await Cli.execute(['enable-ssh', appName], ENV);
+    if (result.exitCode !== 0) {
+        throw new Error(t('error.cfEnableSshFailed', { appName, error: result.stderr }));
+    }
+}
+
+/**
+ * Restart a CF app using rolling strategy.
+ *
+ * @param appName - CF app name.
+ */
+export async function restartApp(appName: string): Promise<void> {
+    const result = await Cli.execute(['restart', appName, '--strategy', 'rolling', '--no-wait'], ENV);
+    if (result.exitCode !== 0) {
+        throw new Error(t('error.cfRestartFailed', { appName, error: result.stderr }));
     }
 }

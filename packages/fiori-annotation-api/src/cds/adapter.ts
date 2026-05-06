@@ -33,7 +33,7 @@ import type {
 
 import { MetadataService } from '@sap-ux/odata-entity-model';
 import type { Project } from '@sap-ux/project-access';
-import type { Record } from '@sap-ux/cds-annotation-parser';
+import type { Record as RecordNode } from '@sap-ux/cds-annotation-parser';
 import {
     ANNOTATION_GROUP_ITEMS_TYPE,
     ANNOTATION_GROUP_TYPE,
@@ -118,6 +118,7 @@ import {
     REPLACE_TEXT,
     UPDATE_ELEMENT_NAME
 } from '../types/internal-change';
+import type { ValueListReference } from '../types/adapter';
 
 type ChangeHandlerFunction<T extends AnnotationFileChange> = (writer: CDSWriter, document: Document, change: T) => void;
 type ChangeHandler = {
@@ -247,6 +248,18 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         this.metadataService.import(metadataElements, 'DummyMetadataFileUri');
         return new Map();
     }
+    /**
+     * Get annotation documents.
+     *
+     * @returns Annotation documents.
+     */
+    public getDocuments(): Record<string, AnnotationFile> {
+        const annotationFiles: Record<string, AnnotationFile> = {};
+        for (const [uri, document] of this.documents.entries()) {
+            annotationFiles[uri] = document.annotationFile;
+        }
+        return annotationFiles;
+    }
 
     /**
      * Returns all relevant service files.
@@ -323,6 +336,38 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         return {
             changes: workspaceChanges
         };
+    }
+
+    /**
+     * Returns a map of value list references.
+     *
+     * @returns Map of value list references.
+     */
+    public getValueListReferences(): Map<string, ValueListReference[]> {
+        return new Map();
+    }
+
+    /**
+     * Refreshes internal data structures from the provided external service file.
+     *
+     * @param _uri - URI of the external service metadata file.
+     * @param _data - Metadata file content.
+     */
+    public syncExternalService(_uri: string, _data: string): void {
+        // not supported in cds
+    }
+
+    /**
+     *
+     * @returns
+     */
+    getExternalServices(): {
+        uri: string;
+        metadataService: MetadataService;
+        compiledService: CompiledService;
+        localFileUri: string;
+    }[] {
+        return [];
     }
 
     private handleSapAnnotations(writers: Map<string, CDSWriter>, changes: AnnotationFileChange[]): void {
@@ -721,7 +766,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     }
 
-    private insertRecord(writer: CDSWriter, change: InsertElement, pointer: string, record: Record): void {
+    private insertRecord(writer: CDSWriter, change: InsertElement, pointer: string, record: RecordNode): void {
         if (change.element.name === Edm.PropertyValue) {
             const index = adaptRecordPropertyIndex(record, change.index);
             const modifiedPointer = [...pointer.split('/'), 'properties'].join('/'); // pointer is record
@@ -1005,7 +1050,7 @@ function buildElement(node: Element): Element {
     return result;
 }
 
-function adaptRecordPropertyIndex(record: Record, currentIndex?: number): number | undefined {
+function adaptRecordPropertyIndex(record: RecordNode, currentIndex?: number): number | undefined {
     if (currentIndex === undefined) {
         return currentIndex;
     }

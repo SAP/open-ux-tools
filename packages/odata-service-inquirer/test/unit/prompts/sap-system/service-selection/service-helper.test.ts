@@ -169,9 +169,9 @@ describe('Test service-helper function `getSelectedServiceMessage`', () => {
         });
     });
 
-    test('should return info if some catalog requets failed', async () => {
+    test('should return info if some catalog requests failed', async () => {
         jest.spyOn(errorHandler, 'getErrorMsg').mockReturnValue('A catalog error occurred.');
-        const serviceMsgResult = await getSelectedServiceMessage(
+        let serviceMsgResult = await getSelectedServiceMessage(
             [
                 {
                     name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V2'
@@ -184,6 +184,101 @@ describe('Test service-helper function `getSelectedServiceMessage`', () => {
         expect(serviceMsgResult).toEqual({
             message: `A catalog error occurred. ${t('texts.seeLogForDetails')}`,
             severity: Severity.information
+        });
+
+        // Ensure a message is not output if a service is selected
+        serviceMsgResult = await getSelectedServiceMessage(
+            [
+                {
+                    name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V2'
+                }
+            ],
+            {
+                serviceODataVersion: ODataVersion.v4,
+                servicePath: 'some/path'
+            },
+            connectionValidatorMock as ConnectionValidator,
+            {}
+        );
+        expect(serviceMsgResult).toBeUndefined();
+
+        // No errors
+        jest.spyOn(errorHandler, 'getErrorMsg').mockReturnValue(undefined);
+        serviceMsgResult = await getSelectedServiceMessage(
+            [
+                {
+                    name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V2'
+                }
+            ],
+            undefined,
+            connectionValidatorMock as ConnectionValidator,
+            {}
+        );
+        expect(serviceMsgResult).toBeUndefined();
+    });
+
+    test('should return warning if a service filter was specified and the service is not found', async () => {
+        let serviceMsgResult = await getSelectedServiceMessage(
+            [],
+            undefined!,
+            connectionValidatorMock as ConnectionValidator,
+            {
+                serviceFilter: ['/sap/odata4/service/sales']
+            }
+        );
+        expect(serviceMsgResult).toEqual({
+            message: t('warnings.specifiedServicesNotAvailable_one', { service: '/sap/odata4/service/sales' }),
+            severity: Severity.warning
+        });
+
+        // Service filter and required odata version specified
+        serviceMsgResult = await getSelectedServiceMessage(
+            [],
+            undefined!,
+            connectionValidatorMock as ConnectionValidator,
+            {
+                serviceFilter: ['/sap/odata4/service/sales'],
+                requiredOdataVersion: OdataVersion.v4
+            }
+        );
+        expect(serviceMsgResult).toEqual({
+            message: t('warnings.specifiedServicesNotAvailable_one', {
+                service: '/sap/odata4/service/sales',
+                odataVersion: 'V4 '
+            }),
+            severity: Severity.warning
+        });
+
+        // Multiple services specified
+        serviceMsgResult = await getSelectedServiceMessage(
+            [],
+            undefined!,
+            connectionValidatorMock as ConnectionValidator,
+            {
+                serviceFilter: ['/sap/odata4/service/sales', '/sap/odata4/service/purchases']
+            }
+        );
+        expect(serviceMsgResult).toEqual({
+            message: t('warnings.specifiedServicesNotAvailable_other', { service: '/sap/odata4/service/sales' }),
+            severity: Severity.warning
+        });
+
+        // Service filter and required odata version specified
+        serviceMsgResult = await getSelectedServiceMessage(
+            [],
+            undefined!,
+            connectionValidatorMock as ConnectionValidator,
+            {
+                serviceFilter: ['/sap/odata4/service/sales', '/sap/odata4/service/purchases'],
+                requiredOdataVersion: OdataVersion.v4
+            }
+        );
+        expect(serviceMsgResult).toEqual({
+            message: t('warnings.specifiedServicesNotAvailable_other', {
+                service: '/sap/odata4/service/sales',
+                odataVersion: 'V4 '
+            }),
+            severity: Severity.warning
         });
     });
 });

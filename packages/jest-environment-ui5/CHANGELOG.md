@@ -1,5 +1,37 @@
 # Change Log
 
+## 5.3.20
+
+### Patch Changes
+
+- c53a4ba: chore(jest-environment-ui5): upgrade tsconfig-paths 3.x → 4.x; pin jest-environment-jsdom to ^29.7.0 for UI5 Core compatibility
+
+## 5.3.19
+
+### Patch Changes
+
+- 83ca0e9: fix(deps): update dependency cross-env to v10
+
+## 5.3.18
+
+### Patch Changes
+
+- 8017bd3: updates for minimatch
+
+    #37169
+
+## 5.3.17
+
+### Patch Changes
+
+- 88c68c9: fix(deps): update dependency @ui5/cli to v4.0.44
+
+## 5.3.16
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
 ## 5.3.15
 
 ### Patch Changes

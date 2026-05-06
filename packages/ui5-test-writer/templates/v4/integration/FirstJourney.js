@@ -9,9 +9,7 @@ sap.ui.define([
 
         opaTest("Start application", function (Given, When, Then) {
             Given.iStartMyApp();
-<% startPages.forEach(function(pageName) { %>
-            Then.onThe<%- pageName%>.iSeeThisPage();
-<% });%>
+            <% if (startLR) { %>Then.onThe<%- startLR %>.iSeeThisPage();<%} %>
         });
 
 <% if (startLR) { %>

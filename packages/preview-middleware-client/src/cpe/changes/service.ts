@@ -80,6 +80,7 @@ export class ChangeService extends EventTarget {
     private readonly eventStack: object[] = [];
     private pendingConfigChangeMap: Map<string, PendingGenericChange[]> = new Map();
     private configPropertyControlIdMap: Map<string, string[]> = new Map();
+    private readonly configPropertyPath: Set<string> = new Set();
     /**
      *
      * @param options ui5 adaptation options.
@@ -381,6 +382,15 @@ export class ChangeService extends EventTarget {
     }
 
     /**
+     * Get all pending configuration changes.
+     *
+     * @returns array of pending generic changes
+     */
+    public getAllPendingConfigPropertyPath(): Set<string> {
+        return this.configPropertyPath ?? new Set();
+    }
+
+    /**
      * Update config changes with associated controls.
      *
      * @param {Map<string, string[]>} configPropertyControlIdMap - config property path control id map.
@@ -406,7 +416,7 @@ export class ChangeService extends EventTarget {
         index: number,
         pendingChanges: PendingChange[]
     ): Promise<void> {
-        setAdditionalChangeInfo(command?.getPreparedChange?.());
+        setAdditionalChangeInfo(command?.getPreparedChange?.(), this.options.rta.getRootControlInstance());
         const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, index);
         if (pendingChange) {
             pendingChanges.push(pendingChange);
@@ -421,6 +431,94 @@ export class ChangeService extends EventTarget {
             const pendingChanges = this.pendingConfigChangeMap.get(id);
             pendingChanges?.push(result);
         }
+    }
+
+    /**
+     * Build a PendingGenericChange and track config change path if applicable.
+     *
+     * @param changeDefinition - change definition object
+     * @param changeType - the change type string
+     * @param handler - the generic change handler
+     * @param isActive - whether the change is currently active
+     * @param fileName - file name of the change
+     * @param textBundle - i18n text bundle
+     * @returns Promise resolving to PendingGenericChange
+     */
+    private async buildGenericChange(
+        changeDefinition: ChangeDefinition,
+        changeType: string,
+        handler: ChangeHandler<GenericChange>,
+        isActive: boolean,
+        fileName: string,
+        textBundle: Awaited<ReturnType<typeof getTextBundle>>
+    ): Promise<PendingGenericChange> {
+        const {
+            properties,
+            changeTitle,
+            controlId,
+            changeType: type,
+            subtitle
+        } = await handler(changeDefinition as unknown as GenericChange, {
+            textBundle,
+            appComponent: this.options.rta.getRootControlInstance(),
+            configPropertyControlIdMap: this.configPropertyControlIdMap
+        });
+        const genericChange: PendingGenericChange = {
+            kind: GENERIC_CHANGE_KIND,
+            type: 'pending',
+            changeType: type ?? changeType,
+            ...(subtitle && { subtitle }),
+            isActive,
+            title: textBundle.getText(changeTitle),
+            fileName,
+            ...(controlId && { controlId }),
+            properties
+        };
+        if (changeType === 'appdescr_fe_changePageConfiguration') {
+            const configChangePath = (changeDefinition as ConfigChange).content.entityPropertyChange.propertyPath;
+            if (genericChange.isActive) {
+                this.configPropertyPath.add(configChangePath);
+            } else {
+                // remove value from set if change is undone
+                this.configPropertyPath.delete(configChangePath);
+            }
+            this.trackPendingConfigChanges(genericChange);
+        }
+        return genericChange;
+    }
+
+    /**
+     * Build a fallback PendingChange for changes without a registered handler.
+     *
+     * @param changeType - the change type string
+     * @param selectorId - optional selector/control ID
+     * @param isActive - whether the change is currently active
+     * @param fileName - file name of the change
+     * @returns PendingChange
+     */
+    private buildFallbackChange(
+        changeType: string,
+        selectorId: string | undefined,
+        isActive: boolean,
+        fileName: string
+    ): PendingChange {
+        const title = TITLE_MAP[changeType] ?? '';
+        let result: PendingChange = {
+            type: PENDING_CHANGE_TYPE,
+            kind: UNKNOWN_CHANGE_KIND,
+            ...(title && { title }),
+            changeType,
+            isActive,
+            fileName
+        };
+        if (selectorId) {
+            result = {
+                ...result,
+                kind: 'control',
+                controlId: selectorId
+            };
+        }
+        return result;
     }
 
     /**
@@ -452,53 +550,11 @@ export class ChangeService extends EventTarget {
         const changeDefinition = change.getDefinition ? change.getDefinition() : (change.getJson() as ChangeDefinition);
         const { fileName } = changeDefinition;
         const handler = GENERIC_CHANGE_HANDLER[changeType as ChangeType] as unknown as ChangeHandler<GenericChange>;
+        const isActive = index >= inactiveCommandCount;
         if (handler) {
-            const {
-                properties,
-                changeTitle,
-                controlId,
-                changeType: type,
-                subtitle
-            } = await handler(changeDefinition as unknown as GenericChange, {
-                textBundle,
-                appComponent: this.options.rta.getRootControlInstance(),
-                configPropertyControlIdMap: this.configPropertyControlIdMap
-            });
-            const genericChange: PendingGenericChange = {
-                kind: GENERIC_CHANGE_KIND,
-                type: 'pending',
-                changeType: type ?? changeType,
-                ...(subtitle && { subtitle }),
-                isActive: index >= inactiveCommandCount,
-                title: textBundle.getText(changeTitle),
-                fileName,
-                ...(controlId && { controlId }),
-                properties
-            };
-            if (changeType === 'appdescr_fe_changePageConfiguration') {
-                this.trackPendingConfigChanges(genericChange);
-            }
-            return genericChange;
-        } else {
-            const title = TITLE_MAP[changeType] ?? '';
-            let result: PendingChange = {
-                type: PENDING_CHANGE_TYPE,
-                kind: UNKNOWN_CHANGE_KIND,
-                ...(title && { title }),
-                changeType,
-                isActive: index >= inactiveCommandCount,
-                fileName
-            };
-
-            if (selectorId) {
-                result = {
-                    ...result,
-                    kind: 'control',
-                    controlId: selectorId
-                };
-            }
-            return result;
+            return this.buildGenericChange(changeDefinition, changeType, handler, isActive, fileName, textBundle);
         }
+        return this.buildFallbackChange(changeType, selectorId, isActive, fileName);
     }
 
     /**
@@ -515,7 +571,7 @@ export class ChangeService extends EventTarget {
                     continue;
                 }
                 return result;
-            } catch (error) {
+            } catch {
                 continue;
             }
         }

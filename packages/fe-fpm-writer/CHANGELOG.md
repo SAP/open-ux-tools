@@ -1,5 +1,479 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.27
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/fiori-annotation-api@0.9.47
+    - @sap-ux/i18n@0.3.11
+    - @sap-ux/project-access@1.36.2
+
+## 0.43.26
+
+### Patch Changes
+
+- 3945459: chore: upgrade @xmldom/xmldom 0.8.12 to 0.8.13 (security fix for XML injection vulnerabilities)
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/fiori-annotation-api@0.9.46
+
+## 0.43.25
+
+### Patch Changes
+
+- d45b5a4: fix(fpm-writer): custom form field view.xml update
+
+## 0.43.24
+
+### Patch Changes
+
+- 1d60871: Added isUI5IdUnique function to check UI5 control ID uniqueness in XML views/fragments.
+  Exported findFilesByExtension from @sap-ux/project-access and removed deep imports.
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/fiori-annotation-api@0.9.45
+
+## 0.43.23
+
+### Patch Changes
+
+- Updated dependencies [52f6549]
+    - @sap-ux/fiori-annotation-api@0.9.44
+
+## 0.43.22
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/fiori-annotation-api@0.9.43
+
+## 0.43.21
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/fiori-annotation-api@0.9.42
+
+## 0.43.20
+
+### Patch Changes
+
+- 9700a95: feat(fpm-writer): Support custom fields for form building block
+
+## 0.43.19
+
+### Patch Changes
+
+- f1e4481: chore(fe-fpm-writer): upgrade @xmldom/xmldom 0.8.11 → 0.8.12 (security fix)
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/fiori-annotation-api@0.9.41
+    - @sap-ux/project-access@1.35.19
+
+## 0.43.18
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/fiori-annotation-api@0.9.40
+
+## 0.43.17
+
+### Patch Changes
+
+- c53a4ba: chore(fe-fpm-writer): upgrade xml-formatter 2.x → 3.x; upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/fiori-annotation-api@0.9.39
+    - @sap-ux/project-access@1.35.17
+
+## 0.43.16
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/fiori-annotation-api@0.9.38
+
+## 0.43.15
+
+### Patch Changes
+
+- a41533f: chore(fe-fpm-writer): reformat interface extends clauses (Prettier upgrade autofix)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/fiori-annotation-api@0.9.37
+    - @sap-ux/i18n@0.3.10
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+
+## 0.43.14
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/fiori-annotation-api@0.9.36
+
+## 0.43.13
+
+### Patch Changes
+
+- 08f3a5c: Refactored createIdGenerator to use object parameters for reusing for v2 scenarios.
+
+## 0.43.12
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/fiori-annotation-api@0.9.35
+
+## 0.43.11
+
+### Patch Changes
+
+- Updated dependencies [436cad8]
+    - @sap-ux/fiori-annotation-api@0.9.34
+
+## 0.43.10
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+    - @sap-ux/fiori-annotation-api@0.9.33
+
+## 0.43.9
+
+### Patch Changes
+
+- Updated dependencies [dfa433e]
+    - @sap-ux/fiori-annotation-api@0.9.32
+
+## 0.43.8
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.31
+
+## 0.43.7
+
+### Patch Changes
+
+- d45d105: Move `@sap-ux/i18n` from `devDependencies` to `dependencies`
+
+## 0.43.6
+
+### Patch Changes
+
+- 620ca53: fix: add control id for sap.fe.macros.table column
+
+## 0.43.5
+
+### Patch Changes
+
+- Updated dependencies [e1ef0ba]
+    - @sap-ux/fiori-annotation-api@0.9.30
+
+## 0.43.4
+
+### Patch Changes
+
+- Updated dependencies [d834713]
+    - @sap-ux/project-access@1.35.13
+    - @sap-ux/fiori-annotation-api@0.9.29
+
+## 0.43.3
+
+### Patch Changes
+
+- 7c06ef0: fix(deps): update dependencies [open-ux-odata]
+- Updated dependencies [7c06ef0]
+    - @sap-ux/fiori-annotation-api@0.9.28
+    - @sap-ux/project-access@1.35.12
+
+## 0.43.2
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+    - @sap-ux/fiori-annotation-api@0.9.27
+    - @sap-ux/project-access@1.35.11
+
+## 0.43.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.11
+- @sap-ux/fiori-annotation-api@0.9.26
+
+## 0.43.0
+
+### Minor Changes
+
+- b1c3f49: Support Custom Action Building Blocks
+
+### Patch Changes
+
+- 2b276ec: chore: address minor post-merge comments for generateControlIdsForGeneratedSnippets
+
+## 0.42.21
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.25
+
+## 0.42.20
+
+### Patch Changes
+
+- efc4ec1: Ensure generated fragments and views use stable control IDs in their initial snippets.
+
+## 0.42.19
+
+### Patch Changes
+
+- 4af92b5: add node: proto prefix to imports
+
+## 0.42.18
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/fiori-annotation-api@0.9.24
+
+## 0.42.17
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/fiori-annotation-api@0.9.23
+
+## 0.42.16
+
+### Patch Changes
+
+- 18c6932: fix: generate custom page files in ext/view folder
+
+    When creating a custom page application via app-gen in CAP projects, the Main.controller.js and Main.view.xml files are now correctly generated in the webapp/ext/view/ folder instead of webapp/ext/[pageName]/ (e.g., ext/main). This aligns the behavior with Page Map and follows Fiori extension folder structure conventions.
+
+## 0.42.15
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/fiori-annotation-api@0.9.22
+
+## 0.42.14
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/fiori-annotation-api@0.9.21
+
+## 0.42.13
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/fiori-annotation-api@0.9.20
+
+## 0.42.12
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+    - @sap-ux/fiori-annotation-api@0.9.19
+
+## 0.42.11
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/fiori-annotation-api@0.9.18
+
+## 0.42.10
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/fiori-annotation-api@0.9.17
+
+## 0.42.9
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.16
+
+## 0.42.8
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/fiori-annotation-api@0.9.15
+
+## 0.42.7
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/fiori-annotation-api@0.9.14
+
+## 0.42.6
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/fiori-annotation-api@0.9.13
+
+## 0.42.5
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.12
+- @sap-ux/project-access@1.35.1
+
+## 0.42.4
+
+### Patch Changes
+
+- Updated dependencies [3795bb2]
+    - @sap-ux/fiori-annotation-api@0.9.11
+
+## 0.42.3
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/fiori-annotation-api@0.9.10
+
+## 0.42.2
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/fiori-annotation-api@0.9.9
+
+## 0.42.1
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/fiori-annotation-api@0.9.8
+
+## 0.42.0
+
+### Minor Changes
+
+- 8064811: feat(fpm-writer): Form building block
+
+## 0.41.6
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-annotation-api@0.9.7
+
+## 0.41.5
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/fiori-annotation-api@0.9.6
+    - @sap-ux/project-access@1.34.4
+
+## 0.41.4
+
+### Patch Changes
+
+- 1c6288d: Edit i18n text titles for RTE Button Groups
+
+## 0.41.3
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/fiori-annotation-api@0.9.5
+    - @sap-ux/project-access@1.34.3
+
+## 0.41.2
+
+### Patch Changes
+
+- 22fbaef: Add titles to RTE button groups options
+
+## 0.41.1
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+    - @sap-ux/fiori-annotation-api@0.9.4
+
+## 0.41.0
+
+### Minor Changes
+
+- 68b0e54: Add Rich Text Editor Button Groups support
+
+## 0.40.12
+
+### Patch Changes
+
+- cc8871a: fix(fpm-writer): fix width issue with custom filter field in filter bar
+
+## 0.40.11
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/fiori-annotation-api@0.9.3
+
+## 0.40.10
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/fiori-annotation-api@0.9.2
+
+## 0.40.9
+
+### Patch Changes
+
+- Updated dependencies [4d6695f]
+    - @sap-ux/fiori-annotation-api@0.9.1
+
+## 0.40.8
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/fiori-annotation-api@0.9.0
+
 ## 0.40.7
 
 ### Patch Changes

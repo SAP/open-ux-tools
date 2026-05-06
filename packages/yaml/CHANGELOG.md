@@ -1,5 +1,29 @@
 # @sap-ux/yaml
 
+## 0.17.7
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+
+## 0.17.6
+
+### Patch Changes
+
+- a41533f: chore(yaml): upgrade yaml 2.8.2 → 2.8.3
+
+## 0.17.5
+
+### Patch Changes
+
+- 2917c4c: fix(deps): update dependency yaml to v2.8.2
+
+## 0.17.4
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+
 ## 0.17.3
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 import type { AssertionValueFunctionContext, AssertionValueFunctionResult } from 'promptfoo';
 import { statSync, readdirSync, existsSync } from 'node:fs';
-import { join } from 'path';
+import { join } from 'node:path';
 
 /**
  * Validates the project structure after app generation to ensure proper file creation.

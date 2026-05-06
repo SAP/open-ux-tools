@@ -1,5 +1,89 @@
 # @sap-ux/ui5-info
 
+## 0.13.20
+
+### Patch Changes
+
+- 9a48e63: fix(ui5-info): bump fallback versions
+
+## 0.13.19
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+
+## 0.13.18
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+
+## 0.13.17
+
+### Patch Changes
+
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+
+## 0.13.16
+
+### Patch Changes
+
+- a41533f: chore(ui5-info): upgrade axios 1.13.5 → 1.13.6
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+
+## 0.13.15
+
+### Patch Changes
+
+- 5d452e5: fix(deps): update dependency nock to v14
+
+## 0.13.14
+
+### Patch Changes
+
+- Updated dependencies [45d4797]
+    - @sap-ux/logger@0.8.2
+
+## 0.13.13
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+
+## 0.13.12
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+
+## 0.13.11
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+
+## 0.13.10
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+
+## 0.13.9
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
+## 0.13.8
+
+### Patch Changes
+
+- 9aad34c: Adds min supported spec version constant
+
 ## 0.13.7
 
 ### Patch Changes

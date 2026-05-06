@@ -141,9 +141,25 @@ describe('getTransportRequestPrompts', () => {
                   },
                 ]
             `);
-
+            const validateTransportChoiceInputSpy = jest.spyOn(validators, 'validateTransportChoiceInput');
             expect((transportInputChoicePrompt.default as Function)({})).toBe(TransportChoices.EnterManualChoice);
-            expect(await (transportInputChoicePrompt.validate as Function)()).toBe(true);
+            expect(
+                await (transportInputChoicePrompt.validate as Function)(TransportChoices.EnterManualChoice, {
+                    url: 'http://example.com',
+                    client: '100',
+                    ui5AbapRepo: 'zabap_repo',
+                    description: 'Test description 1'
+                })
+            ).toBe(true);
+            expect(
+                await (transportInputChoicePrompt.validate as Function)(TransportChoices.EnterManualChoice, {
+                    url: 'http://example.com',
+                    client: '100',
+                    ui5AbapRepo: 'zabap_repo',
+                    description: 'Test description 2'
+                })
+            ).toBe(true);
+            expect(validateTransportChoiceInputSpy).toHaveBeenCalledTimes(1);
         }
     });
 

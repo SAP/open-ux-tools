@@ -20,7 +20,8 @@ export async function initI18n(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         defaultNS: adpI18nNamespace,
-        ns: [adpI18nNamespace]
+        ns: [adpI18nNamespace],
+        showSupportNotice: false
     });
 }
 
@@ -35,7 +36,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: adpI18nNamespace });
     }
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 initI18n().catch(() => {

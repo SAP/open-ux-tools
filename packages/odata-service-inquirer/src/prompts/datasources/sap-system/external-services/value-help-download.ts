@@ -2,16 +2,17 @@ import type { ConfirmQuestion } from '@sap-ux/inquirer-common';
 import { sendTelemetryEvent, getTelemetryClient } from '@sap-ux/inquirer-common';
 import { promptNames } from '../../../../types';
 import type { ConnectionValidator } from '../../../connectionValidator';
-import type { ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
+import type { ExternalServiceReference } from '@sap-ux/axios-extension';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
 import type { ServiceAnswer } from '../service-selection/types';
 import LoggerHelper from '../../../logger-helper';
 import { t } from '../../../../i18n';
-import { PromptState } from '../../../../utils';
-import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
+import { getPromptHostEnvironment, PromptState } from '../../../../utils';
+import { hostEnvironment, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import { SampleRate } from '@sap-ux/telemetry';
+import type { Question } from 'inquirer';
 
 // Telemetry event names
 const telemEventValueHelpDownloadPrompted = 'VALUE_HELP_DOWNLOAD_PROMPTED';
@@ -53,13 +54,75 @@ async function sendValueHelpTelemetry(
 }
 
 /**
- * Get the value help download confirmation prompt.
+ * Performs the actual value help download when user confirms.
+ * Extracted as a separate function to be reused in both YUI (via validate) and CLI (via hidden prompt).
+ *
+ * @param downloadMetadata - whether user chose to download
+ * @param connectionValidator - connection validator instance
+ * @param externalServiceRefs - external service references to download
+ */
+async function performValueHelpDownload(
+    downloadMetadata: boolean,
+    connectionValidator: ConnectionValidator,
+    externalServiceRefs: ExternalServiceReference[]
+): Promise<void> {
+    delete PromptState.odataService.valueListMetadata;
+
+    // Send telemetry when prompt is answered
+    await sendValueHelpTelemetry(telemEventValueHelpDownloadPrompted, {
+        userChoseToDownload: downloadMetadata
+    });
+
+    if (downloadMetadata && connectionValidator.serviceProvider instanceof AbapServiceProvider) {
+        const startTime = Date.now();
+        try {
+            const externalServiceMetadata = await (
+                connectionValidator.serviceProvider as AbapServiceProvider
+            ).fetchExternalServices(externalServiceRefs);
+            const downloadTimeMs = Date.now() - startTime;
+
+            if (externalServiceMetadata.length > 0) {
+                PromptState.odataService.valueListMetadata = externalServiceMetadata;
+            } else {
+                LoggerHelper.logger.info(t('warnings.noExternalServiceMetdataFetched'));
+            }
+
+            // Send success telemetry with measurements
+            await sendValueHelpTelemetry(
+                telemEventValueHelpDownloadSuccess,
+                {
+                    userChoseToDownload: true,
+                    valueHelpCount: externalServiceMetadata.length
+                },
+                { downloadTimeMs }
+            );
+        } catch (error) {
+            const downloadTimeMs = Date.now() - startTime;
+            LoggerHelper.logger.error(`Failed to fetch external service metadata: ${error}`);
+
+            // Send failure telemetry with measurements
+            await sendValueHelpTelemetry(
+                telemEventValueHelpDownloadFailed,
+                {
+                    userChoseToDownload: true,
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                },
+                { downloadTimeMs }
+            );
+        }
+    }
+}
+
+/**
+ * Get the value help download confirmation prompts.
+ * Returns an array that may include both the confirm prompt and a CLI-specific hidden prompt
+ * to handle the download since validate functions don't execute for confirm prompts in CLI mode.
  *
  * @param connectionValidator - connection validator instance
  * @param promptNamespace - prompt namespace
  * @param convertedMetadataRef - converted metadata reference
  * @param convertedMetadataRef.convertedMetadata - converted metadata
- * @returns value help download prompt
+ * @returns value help download prompts (may be 1 or 2 prompts depending on environment)
  */
 export function getValueHelpDownloadPrompt(
     connectionValidator: ConnectionValidator,
@@ -67,15 +130,15 @@ export function getValueHelpDownloadPrompt(
     convertedMetadataRef?: {
         convertedMetadata: ConvertedMetadata | undefined;
     }
-): ConfirmQuestion {
+): Question[] {
     const promptNamespacePart = `${promptNamespace ? promptNamespace + ':' : ''}`;
     const promptName = `${promptNamespacePart}${promptNames.valueHelpDownload}`;
     const servicePromptName = `${promptNamespacePart}${promptNames.serviceSelection}`;
+    const cliDownloadPromptName = `${promptNamespacePart}cliValueHelpDownload`;
 
     let externalServiceRefs: ExternalServiceReference[];
-    let externalServiceMetadata: ExternalService[];
 
-    const question: ConfirmQuestion = {
+    const valueHelpPrompt: ConfirmQuestion = {
         when: (answers: Record<string, any> | undefined) => {
             const service = answers?.[servicePromptName] as ServiceAnswer | undefined;
             const servicePath = service?.servicePath;
@@ -92,54 +155,31 @@ export function getValueHelpDownloadPrompt(
         type: 'confirm',
         message: t('prompts.valueHelpDownload.message'),
         validate: async (downloadMetadata: boolean) => {
-            delete PromptState.odataService.valueListMetadata;
-
-            // Send telemetry when prompt is answered
-            await sendValueHelpTelemetry(telemEventValueHelpDownloadPrompted, {
-                userChoseToDownload: downloadMetadata
-            });
-
-            if (downloadMetadata && connectionValidator.serviceProvider instanceof AbapServiceProvider) {
-                const startTime = Date.now();
-                try {
-                    externalServiceMetadata = await (
-                        connectionValidator.serviceProvider as AbapServiceProvider
-                    ).fetchExternalServices(externalServiceRefs);
-                    const downloadTimeMs = Date.now() - startTime;
-
-                    if (externalServiceMetadata.length > 0) {
-                        PromptState.odataService.valueListMetadata = externalServiceMetadata;
-                    } else {
-                        LoggerHelper.logger.info(t('warnings.noExternalServiceMetdataFetched'));
-                    }
-
-                    // Send success telemetry with measurements
-                    await sendValueHelpTelemetry(
-                        telemEventValueHelpDownloadSuccess,
-                        {
-                            userChoseToDownload: true,
-                            valueHelpCount: externalServiceMetadata.length
-                        },
-                        { downloadTimeMs }
-                    );
-                } catch (error) {
-                    const downloadTimeMs = Date.now() - startTime;
-                    LoggerHelper.logger.error(`Failed to fetch external service metadata: ${error}`);
-
-                    // Send failure telemetry with measurements
-                    await sendValueHelpTelemetry(
-                        telemEventValueHelpDownloadFailed,
-                        {
-                            userChoseToDownload: true,
-                            error: error instanceof Error ? error.message : 'Unknown error'
-                        },
-                        { downloadTimeMs }
-                    );
-                }
+            // Only run download in YUI mode - CLI mode will use the hidden prompt below
+            if (getPromptHostEnvironment() !== hostEnvironment.cli) {
+                await performValueHelpDownload(downloadMetadata, connectionValidator, externalServiceRefs);
             }
-
             return true;
         }
     };
-    return question;
+
+    const questions: Question[] = [valueHelpPrompt];
+
+    // Add CLI-specific hidden prompt to handle the download
+    // This is necessary because validate functions don't execute for confirm prompts in CLI mode
+    if (getPromptHostEnvironment() === hostEnvironment.cli) {
+        questions.push({
+            when: async (answers: Record<string, any>) => {
+                const downloadMetadata = answers?.[promptName] as boolean | undefined;
+                if (downloadMetadata !== undefined && externalServiceRefs) {
+                    await performValueHelpDownload(downloadMetadata, connectionValidator, externalServiceRefs);
+                }
+                return false; // Hidden prompt - never actually shown
+            },
+            name: cliDownloadPromptName,
+            type: 'input'
+        } as Question);
+    }
+
+    return questions;
 }

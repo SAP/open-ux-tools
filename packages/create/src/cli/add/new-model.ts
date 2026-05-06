@@ -1,11 +1,10 @@
 import type { Command } from 'commander';
 
-import type { DescriptorVariant, NewModelAnswers, NewModelData } from '@sap-ux/adp-tooling';
-import { generateChange, ChangeType, getPromptsForNewModel, getVariant } from '@sap-ux/adp-tooling';
+import { generateChange, ChangeType, getPromptsForNewModel, getVariant, createNewModelData } from '@sap-ux/adp-tooling';
 
 import { promptYUIQuestions } from '../../common';
 import { getLogger, traceChanges } from '../../tracing';
-import { validateAdpProject } from '../../validation/validation';
+import { validateAdpAppType } from '../../validation/validation';
 
 /**
  * Add a new sub-command to add new odata service and new sapui5 model of an adaptation project to the given command.
@@ -38,16 +37,16 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
             basePath = process.cwd();
         }
 
-        await validateAdpProject(basePath);
+        await validateAdpAppType(basePath);
 
         const variant = await getVariant(basePath);
 
-        const answers = await promptYUIQuestions(getPromptsForNewModel(basePath, variant.layer), false);
+        const answers = await promptYUIQuestions(await getPromptsForNewModel(basePath, variant.layer, logger), false);
 
         const fs = await generateChange<ChangeType.ADD_NEW_MODEL>(
             basePath,
             ChangeType.ADD_NEW_MODEL,
-            createNewModelData(variant, answers)
+            await createNewModelData(basePath, variant, answers, logger)
         );
 
         if (!simulate) {
@@ -59,32 +58,4 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
         logger.error(error.message);
         logger.debug(error);
     }
-}
-
-/**
- * Returns the writer data for the new model change.
- *
- * @param {DescriptorVariant} variant - The variant of the adaptation project.
- * @param {NewModelAnswers} answers - The answers to the prompts.
- * @returns {NewModelData} The writer data for the new model change.
- */
-function createNewModelData(variant: DescriptorVariant, answers: NewModelAnswers): NewModelData {
-    const { name, uri, modelName, version, modelSettings, addAnnotationMode } = answers;
-    return {
-        variant,
-        service: {
-            name,
-            uri,
-            modelName,
-            version,
-            modelSettings
-        },
-        ...(addAnnotationMode && {
-            annotation: {
-                dataSourceName: answers.dataSourceName,
-                dataSourceURI: answers.dataSourceURI,
-                settings: answers.annotationSettings
-            }
-        })
-    };
 }

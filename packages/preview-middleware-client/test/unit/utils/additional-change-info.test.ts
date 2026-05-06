@@ -35,7 +35,7 @@ describe('additional-change-info.ts', () => {
 
             setAdditionalChangeInfo(mockChange);
 
-            expect(getAddXMLAdditionalInfoSpy).toHaveBeenCalledWith(mockChange);
+            expect(getAddXMLAdditionalInfoSpy).toHaveBeenCalledWith(mockChange, undefined);
             const result = getAdditionalChangeInfo(mockChange as unknown as Change);
             expect(result).toEqual(mockAdditionalInfo);
         });

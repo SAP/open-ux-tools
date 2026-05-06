@@ -9,7 +9,7 @@ import { isA } from '../../../utils/core';
 import FEObjectPageComponent from 'sap/fe/templates/ObjectPage/Component';
 import FEListReportComponent from 'sap/fe/templates/ListReport/Component';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import { PageDescriptorV4 } from '../../controllers/AddSubpage.controller';
+import { PageDescriptorV4 } from '../../controllers/types';
 
 export const OBJECT_PAGE_COMPONENT_NAME_V4 = 'sap.fe.templates.ObjectPage.ObjectPage';
 

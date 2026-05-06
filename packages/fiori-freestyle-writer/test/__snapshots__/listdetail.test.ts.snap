@@ -15,10 +15,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -42,8 +42,8 @@ module.exports = [
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -2740,10 +2740,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -2767,8 +2767,8 @@ module.exports = [
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -5465,10 +5465,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -5492,8 +5492,8 @@ module.exports = [
     \\"@sapui5/types\\": \\"~1.113.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -8190,10 +8190,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -8214,8 +8214,8 @@ module.exports = [
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -10752,10 +10752,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "eslint.config.js": Object {
-    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
-module.exports = [
+export default [
     ...fioriTools.configs.recommended
 ];
 ",
@@ -10779,8 +10779,8 @@ module.exports = [
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {

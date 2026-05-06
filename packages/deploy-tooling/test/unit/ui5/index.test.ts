@@ -43,4 +43,38 @@ describe('ui5', () => {
     test('verify correct export', () => {
         expect(ui5Task).toBe(task);
     });
+
+    test('lowercase package in configuration is normalized to uppercase', async () => {
+        mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+        const configWithLowercase: AbapDeployConfig = {
+            ...configuration,
+            app: { ...configuration.app, package: '$tmp' }
+        };
+        await task({ workspace, options: { projectName, configuration: configWithLowercase } } as any);
+        expect(configWithLowercase.app.package).toBe('$TMP');
+    });
+
+    test('string log level "verbose" in configuration does not throw', async () => {
+        mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+        const configWithStringLog = { ...configuration, log: 'verbose' as unknown as LogLevel };
+        await expect(
+            task({ workspace, options: { projectName, configuration: configWithStringLog } } as any)
+        ).resolves.not.toThrow();
+    });
+
+    test('string log level "debug" in configuration does not throw', async () => {
+        mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+        const configWithStringLog = { ...configuration, log: 'debug' as unknown as LogLevel };
+        await expect(
+            task({ workspace, options: { projectName, configuration: configWithStringLog } } as any)
+        ).resolves.not.toThrow();
+    });
+
+    test('unrecognised string log level falls back to Info without throwing', async () => {
+        mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+        const configWithStringLog = { ...configuration, log: 'unknown' as unknown as LogLevel };
+        await expect(
+            task({ workspace, options: { projectName, configuration: configWithStringLog } } as any)
+        ).resolves.not.toThrow();
+    });
 });

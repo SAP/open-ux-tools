@@ -7,7 +7,13 @@ jest.doMock('../../src/constants', () => ({
 }));
 import * as fsMock from 'node:fs';
 import type { Logger } from '@sap-ux/logger';
-import { FileName, getSpecification, getSpecificationPath, refreshSpecificationDistTags } from '../../src';
+import {
+    FileName,
+    fioriToolsDirectory,
+    getSpecification,
+    getSpecificationPath,
+    refreshSpecificationDistTags
+} from '../../src';
 import * as commandMock from '../../src/command';
 import * as moduleMock from '../../src/project/module-loader';
 import * as fileMock from '../../src/file';
@@ -141,6 +147,20 @@ describe('Test refreshSpecificationDistTags()', () => {
         const moduleSpy = jest.spyOn(moduleMock, 'deleteModule').mockResolvedValueOnce();
         const logger = getMockLogger();
         await refreshSpecificationDistTags({ logger });
+        expect(moduleSpy).toHaveBeenCalledWith('@sap/ux-specification', '0.1.2');
+        expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('0.1.2'));
+    });
+
+    test('Refresh specification dist tags - missing ".fioritools" folder', async () => {
+        jest.spyOn(fsMock, 'existsSync').mockReturnValueOnce(false);
+        const mkdirSpy = jest.spyOn(fsMock.promises, 'mkdir').mockResolvedValueOnce(undefined);
+        jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"UI5-1.2": "0.1.3"}');
+        jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
+        const moduleSpy = jest.spyOn(moduleMock, 'deleteModule').mockResolvedValueOnce();
+        const logger = getMockLogger();
+        await refreshSpecificationDistTags({ logger });
+        expect(mkdirSpy).toHaveBeenCalledTimes(1);
+        expect(mkdirSpy).toHaveBeenCalledWith(fioriToolsDirectory, { recursive: true });
         expect(moduleSpy).toHaveBeenCalledWith('@sap/ux-specification', '0.1.2');
         expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('0.1.2'));
     });

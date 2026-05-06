@@ -2,7 +2,7 @@ import { MultiServerMCPClient } from '@langchain/mcp-adapters';
 import type { DynamicStructuredTool } from '@langchain/core/tools';
 import type { ToolCall } from '@langchain/core/messages/tool';
 import type { MessageContent } from '@langchain/core/messages';
-import { join } from 'path';
+import { join } from 'node:path';
 
 // Create client and connect to server
 const client = new MultiServerMCPClient({

@@ -1,0 +1,1 @@
+export const getLineItemAnnotation = jest.fn().mockReturnValue('@com.sap.vocabularies.UI.v1.LineItem');

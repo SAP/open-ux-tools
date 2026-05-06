@@ -1,23 +1,20 @@
-import type {
-    ConfigAnswers,
-    FlexUISupportedSystem,
-    SourceApplication,
-    SystemLookup,
-    UI5Version
-} from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, FlexUICapability, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
 import {
     FlexLayer,
     SourceManifest,
+    SupportedProject,
     getBaseAppInbounds,
     getConfiguredProvider,
+    getFlexUICapability,
+    getSupportedProject,
     getSystemUI5Version,
     isAppSupported,
     loadApps
 } from '@sap-ux/adp-tooling';
 import type { AxiosError, AbapServiceProvider } from '@sap-ux/axios-extension';
-import { isAxiosError } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, isAxiosError } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
@@ -25,9 +22,18 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { ConfigPrompter } from '../../../src/app/questions/configuration';
 import { configPromptNames } from '../../../src/app/types';
 import { initI18n, t } from '../../../src/utils/i18n';
-import { getSystemAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
+import {
+    getAppAdditionalMessages,
+    getSystemAdditionalMessages
+} from '../../../src/app/questions/helper/additional-messages';
 import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
 import { TelemetryCollector } from '../../../src/telemetry/collector';
+import { getProjectTypeChoices } from '../../../src/app/questions/helper/choices';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+
+jest.mock('@sap-ux/feature-toggle', () => ({
+    isInternalFeaturesSettingEnabled: jest.fn()
+}));
 
 jest.mock('../../../src/app/questions/helper/conditions', () => ({
     showApplicationQuestion: jest.fn().mockResolvedValue(true),
@@ -35,7 +41,7 @@ jest.mock('../../../src/app/questions/helper/conditions', () => ({
 }));
 
 jest.mock('../../../src/app/questions/helper/additional-messages.ts', () => ({
-    getAppAdditionalMessages: jest.fn().mockResolvedValue(undefined),
+    getAppAdditionalMessages: jest.fn(),
     getSystemAdditionalMessages: jest.fn()
 }));
 
@@ -59,7 +65,9 @@ jest.mock('@sap-ux/adp-tooling', () => ({
         '1.133.0': { version: '1.133.0', support: 'Maintained', lts: false }
     } as UI5Version),
     isAppSupported: jest.fn(),
-    getBaseAppInbounds: jest.fn()
+    getBaseAppInbounds: jest.fn(),
+    getSupportedProject: jest.fn(),
+    getFlexUICapability: jest.fn()
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -109,6 +117,7 @@ const dummyAnswers: ConfigAnswers = {
     application: { id: 'app1', title: 'Some Title' } as unknown as SourceApplication
 };
 
+const isInternalFeaturesSettingEnabledMock = isInternalFeaturesSettingEnabled as jest.Mock;
 const loadAppsMock = loadApps as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 const isAppSupportedMock = isAppSupported as jest.Mock;
@@ -118,6 +127,12 @@ const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 const getBaseAppInboundsMock = getBaseAppInbounds as jest.Mock;
 const getSystemAdditionalMessagesMock = getSystemAdditionalMessages as jest.Mock;
 const getSystemUI5VersionMock = getSystemUI5Version as jest.Mock;
+const getSupportedProjectMock = getSupportedProject as jest.Mock;
+const getFlexUICapabilityMock = getFlexUICapability as jest.Mock<
+    Promise<FlexUICapability>,
+    [AbapServiceProvider, boolean]
+>;
+const getAppAdditionalMessagesMock = getAppAdditionalMessages as jest.Mock;
 
 describe('ConfigPrompter Integration Tests', () => {
     let configPrompter: ConfigPrompter;
@@ -127,6 +142,8 @@ describe('ConfigPrompter Integration Tests', () => {
         message: 'System additional message',
         severity: Severity.information
     };
+    let getManifestSpy: jest.SpyInstance;
+    const mockManifest = { 'sap.ui5': { flexEnabled: true } } as Manifest;
 
     beforeAll(async () => {
         await initI18n();
@@ -137,18 +154,22 @@ describe('ConfigPrompter Integration Tests', () => {
         getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
         loadAppsMock.mockResolvedValue(dummyApps);
         getConfiguredProviderMock.mockResolvedValue(provider);
+        getAppAdditionalMessagesMock.mockResolvedValue(undefined);
+        isInternalFeaturesSettingEnabledMock.mockReturnValue(false);
         configPrompter = new ConfigPrompter(sourceSystems, layer, logger, telemetryCollector);
+        getManifestSpy = jest.spyOn(SourceManifest.prototype, 'getManifest').mockResolvedValue(mockManifest);
     });
 
     afterEach(() => {
         jest.clearAllMocks();
+        getManifestSpy.mockClear();
     });
 
     describe('General', () => {
-        it('should return four prompts with correct names', () => {
+        it('should return prompts with correct names', () => {
             const prompts = configPrompter.getPrompts();
 
-            expect(prompts).toHaveLength(9);
+            expect(prompts).toHaveLength(13);
             const names = prompts.map((p) => p.name);
 
             names.map((name) => {
@@ -189,7 +210,7 @@ describe('ConfigPrompter Integration Tests', () => {
             });
         });
 
-        it('system prompt validate should set ui5 proerties when system ui5 version is NOT detected', async () => {
+        it('system prompt validate should set ui5 properties when system ui5 version is NOT detected', async () => {
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
             expect(systemPrompt).toBeDefined();
@@ -221,20 +242,25 @@ describe('ConfigPrompter Integration Tests', () => {
                 getSystemRequiresAuth: jest.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true)
             } as unknown as SystemLookup;
             isAbapCloudMock.mockResolvedValue(true);
+            getSupportedProjectMock.mockResolvedValue(SupportedProject.CLOUD_READY);
+            getFlexUICapabilityMock.mockResolvedValue({
+                isDtaFolderDeploymentSupported: true,
+                isUIFlexSupported: true
+            });
             configPrompter = new ConfigPrompter(systemLookup, layer, logger, telemetryCollector);
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
             expect(systemPrompt).toBeDefined();
 
             const result1 = await systemPrompt?.validate?.('SYS010', dummyAnswers);
-            expect(configPrompter['isCloudProject']).toBe(true);
+            expect(configPrompter.projectType).toBe(AdaptationProjectType.CLOUD_READY);
             const result2 = await systemPrompt?.validate?.('SYS010_NOAUTH', dummyAnswers);
 
             expect(result1).toEqual(true);
             expect(result2).toEqual(true);
-            expect(configPrompter['flexUISystem']).toEqual(undefined);
+            expect(configPrompter['flexUICapability']).toEqual(undefined);
             expect(configPrompter['isAuthRequired']).toEqual(true);
-            expect(configPrompter['isCloudProject']).toBeUndefined();
+            expect(configPrompter['selectedProjectType']).toBeUndefined();
         });
 
         it('system prompt validate should throw error', async () => {
@@ -298,18 +324,260 @@ describe('ConfigPrompter Integration Tests', () => {
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
             getSystemAdditionalMessagesMock.mockReturnValue(systemAdditionalMessage);
-            const flexUISystem: FlexUISupportedSystem = {
-                isUIFlex: true,
-                isOnPremise: false
+            const flexUICapability: FlexUICapability = {
+                isUIFlexSupported: true,
+                isDtaFolderDeploymentSupported: false
             };
-            configPrompter['flexUISystem'] = flexUISystem;
-            configPrompter['isCloudProject'] = true;
+            configPrompter['flexUICapability'] = flexUICapability;
+            configPrompter['selectedProjectType'] = AdaptationProjectType.CLOUD_READY;
 
             const result = await systemPrompt?.additionalMessages?.();
 
             expect(result).toEqual(systemAdditionalMessage);
-            expect(getSystemAdditionalMessagesMock).toHaveBeenCalledWith(flexUISystem, true);
+            expect(getSystemAdditionalMessagesMock).toHaveBeenCalledWith(
+                flexUICapability,
+                AdaptationProjectType.CLOUD_READY
+            );
             expect(configPrompter['systemAdditionalMessage']).toEqual(systemAdditionalMessage);
+        });
+
+        it('should set the project type to cloud in case the system is cloud only', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+            isAbapCloudMock.mockResolvedValue(true);
+            getSupportedProjectMock.mockResolvedValue(SupportedProject.CLOUD_READY);
+            getSystemUI5VersionMock.mockResolvedValue('1.135.0');
+
+            expect(configPrompter.projectType).toBeUndefined();
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter.projectType).toEqual(AdaptationProjectType.CLOUD_READY);
+        });
+
+        it('should set the project type to onPrem in case the system is onPrem only', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+            isAbapCloudMock.mockResolvedValue(false);
+            getSupportedProjectMock.mockResolvedValue(SupportedProject.ON_PREM);
+            getSystemUI5VersionMock.mockResolvedValue('1.135.0');
+
+            expect(configPrompter.projectType).toBeUndefined();
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter.projectType).toEqual(AdaptationProjectType.ON_PREMISE);
+        });
+
+        it('should NOT set the project type in case the system is mixed', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+            isAbapCloudMock.mockResolvedValue(false);
+            getSupportedProjectMock.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            getSystemUI5VersionMock.mockResolvedValue('1.135.0');
+
+            expect(configPrompter.projectType).toBeUndefined();
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter.projectType).toBeUndefined();
+        });
+
+        it('should set the project type to onPrem in case the system is mixed, but the user is internal', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+            isAbapCloudMock.mockResolvedValue(false);
+            isInternalFeaturesSettingEnabledMock.mockReturnValue(true);
+            getSupportedProjectMock.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            getSystemUI5VersionMock.mockResolvedValue('1.135.0');
+
+            expect(configPrompter.projectType).toBeUndefined();
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter.projectType).toEqual(AdaptationProjectType.ON_PREMISE);
+        });
+    });
+
+    describe('Project type prompt', () => {
+        let projectTypePrompt: ListQuestion<ConfigAnswers>;
+        const answers: ConfigAnswers = {
+            application: {
+                id: 'id'
+            }
+        } as ConfigAnswers;
+
+        beforeEach(() => {
+            projectTypePrompt = getPrompt(configPromptNames.projectType) as ListQuestion<ConfigAnswers>;
+        });
+
+        it('should init the prompt', () => {
+            expect(projectTypePrompt).toBeDefined();
+        });
+
+        it('should list the proper choices for the project type', () => {
+            const choicesFn = projectTypePrompt.choices as Function;
+            expect(choicesFn()).toEqual(getProjectTypeChoices());
+        });
+
+        it('should be visible when the system is mixed and the selected application is released', () => {
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            const whenFn = projectTypePrompt.when as Function;
+            expect(whenFn({ application: { cloudDevAdaptationStatus: 'released' } })).toBe(true);
+        });
+
+        it('should NOT be visible when the system is mixed, the selected application is released and the user is internal', () => {
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            isInternalFeaturesSettingEnabledMock.mockReturnValue(true);
+            const whenFn = projectTypePrompt.when as Function;
+            expect(whenFn({ application: { cloudDevAdaptationStatus: 'released' } })).toBe(false);
+        });
+
+        it('should NOT be visible when the system supports only one project type', () => {
+            configPrompter['supportedProject'] = SupportedProject.ON_PREM;
+            let whenFn = projectTypePrompt.when as Function;
+            expect(whenFn({ application: { cloudDevAdaptationStatus: '' } })).toBe(false);
+
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY;
+            whenFn = projectTypePrompt.when as Function;
+            expect(whenFn({ application: { cloudDevAdaptationStatus: 'released' } })).toBe(false);
+        });
+
+        it('should store the selected project type in the prompter when the validation is done', async () => {
+            expect(configPrompter.projectType).toBeUndefined();
+
+            await projectTypePrompt.validate?.(AdaptationProjectType.CLOUD_READY, answers);
+            expect(configPrompter.projectType).toBe(AdaptationProjectType.CLOUD_READY);
+            await projectTypePrompt.validate?.(AdaptationProjectType.ON_PREMISE, answers);
+            expect(configPrompter.projectType).toBe(AdaptationProjectType.ON_PREMISE);
+        });
+
+        it('should validation return true when the selected project type is onPrem and the user is internal', async () => {
+            isInternalFeaturesSettingEnabledMock.mockReturnValue(true);
+            const result = await projectTypePrompt.validate?.(AdaptationProjectType.ON_PREMISE, answers);
+            expect(result).toBe(true);
+        });
+
+        it('should validation return true when the user is external', async () => {
+            isInternalFeaturesSettingEnabledMock.mockReturnValue(false);
+            let result = await projectTypePrompt.validate?.(AdaptationProjectType.CLOUD_READY, answers);
+            expect(result).toBe(true);
+
+            result = await projectTypePrompt.validate?.(AdaptationProjectType.ON_PREMISE, answers);
+
+            expect(result).toBe(true);
+        });
+
+        it('should validation return error message when the app validation fails', async () => {
+            isInternalFeaturesSettingEnabledMock.mockReturnValue(false);
+            const invalidAppError = new Error('Invalid app error');
+            isAppSupportedMock.mockResolvedValue(true);
+            getManifestSpy.mockRejectedValue(invalidAppError);
+
+            const result = await projectTypePrompt.validate?.(AdaptationProjectType.ON_PREMISE, answers);
+
+            expect(result).toEqual(invalidAppError.message);
+        });
+
+        it('should display additional messages if any', () => {
+            const projectTypeAdditionalMessage: IMessageSeverity = {
+                message: 'message',
+                severity: Severity.warning
+            };
+            getAppAdditionalMessagesMock.mockReturnValue(projectTypeAdditionalMessage);
+
+            expect(
+                projectTypePrompt.additionalMessages?.(AdaptationProjectType.ON_PREMISE, {
+                    application: { id: 'id' }
+                } as ConfigAnswers)
+            ).toEqual(projectTypeAdditionalMessage);
+        });
+    });
+
+    describe('Project type classic label', () => {
+        let projectTypeClassicLabel: InputQuestion<ConfigAnswers>;
+
+        beforeEach(() => {
+            projectTypeClassicLabel = getPrompt(
+                configPromptNames.projectTypeClassicLabel
+            ) as InputQuestion<ConfigAnswers>;
+        });
+
+        it('should create the prompt', () => {
+            expect(projectTypeClassicLabel).toBeDefined();
+        });
+
+        it('should be visible when the project type is classic, the system is mixed and the user is NOT internal', () => {
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            const whenFn = projectTypeClassicLabel.when as Function;
+            expect(whenFn({ application: { id: 'id', cloudDevAdaptationStatus: 'released' } })).toBe(false);
+            expect(whenFn({ application: { id: 'id', cloudDevAdaptationStatus: '' } })).toBe(true);
+            configPrompter['supportedProject'] = SupportedProject.ON_PREM;
+            expect(whenFn({ application: { id: 'id', cloudDevAdaptationStatus: '' } })).toBe(false);
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY;
+            expect(whenFn({ application: { id: 'id', cloudDevAdaptationStatus: 'released' } })).toBe(false);
+
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            isInternalFeaturesSettingEnabledMock.mockReturnValue(true);
+            expect(whenFn({ application: { id: 'id', cloudDevAdaptationStatus: '' } })).toBe(false);
+        });
+
+        it('should display as additional message `classic`', () => {
+            expect(projectTypeClassicLabel.additionalMessages?.()).toEqual({
+                message: t('prompts.projectTypeClassicLabel'),
+                severity: Severity.information
+            });
+        });
+    });
+
+    describe('Project type CLI prompt', () => {
+        let projectTypePrompt: YUIQuestion;
+
+        beforeEach(() => {
+            projectTypePrompt = getPrompt(configPromptNames.projectTypeCli) as YUIQuestion;
+        });
+
+        it('should create the prompt', () => {
+            expect(projectTypePrompt).toBeDefined();
+        });
+
+        it('the `when` hook should return false in case the selected application is valid', async () => {
+            const whenFn = projectTypePrompt.when as Function;
+            isAppSupportedMock.mockResolvedValue(true);
+            getManifestSpy.mockResolvedValue(mockManifest);
+            await expect(
+                whenFn({ application: { id: 'id' }, projectType: AdaptationProjectType.ON_PREMISE })
+            ).resolves.toBe(false);
+        });
+
+        it('the `when` hook should return false when an apllication is not selected', async () => {
+            const whenFn = projectTypePrompt.when as Function;
+            await expect(whenFn({})).resolves.toBe(false);
+            await expect(whenFn({ projectType: AdaptationProjectType.ON_PREMISE })).resolves.toBe(false);
+        });
+
+        it('the `when` hook should return false when a project type is not selected', async () => {
+            const whenFn = projectTypePrompt.when as Function;
+            await expect(whenFn({})).resolves.toBe(false);
+            await expect(whenFn({ application: { id: 'id' } })).resolves.toBe(false);
+        });
+
+        it('the `when` hook should throw an error when the project type validation fails', async () => {
+            const whenFn = projectTypePrompt.when as Function;
+            isAppSupportedMock.mockResolvedValue(true);
+            const errorLoadingManifest = new Error('Error loading manifest');
+            getManifestSpy.mockRejectedValue(errorLoadingManifest);
+            await expect(
+                whenFn({ application: { id: 'id' }, projectType: AdaptationProjectType.ON_PREMISE })
+            ).rejects.toEqual(errorLoadingManifest);
         });
     });
 
@@ -444,14 +712,35 @@ describe('ConfigPrompter Integration Tests', () => {
         });
     });
 
-    describe('Application Prompt', () => {
-        let getManifestSpy: jest.SpyInstance;
-        const mockManifest = { 'sap.ui5': { flexEnabled: true } } as Manifest;
+    describe('Store Credentials Prompt', () => {
+        it('storeCredentials prompt additionalMessages should return warning when input is true', () => {
+            const prompts = configPrompter.getPrompts();
+            const storeCredentialsPrompt = prompts.find((p) => p.name === configPromptNames.storeCredentials);
+            expect(storeCredentialsPrompt).toBeDefined();
 
+            const additionalMessages = storeCredentialsPrompt?.additionalMessages?.(true);
+
+            expect(additionalMessages).toEqual({
+                message: t('warnings.passwordStoreWarning'),
+                severity: Severity.warning
+            });
+        });
+
+        it('storeCredentials prompt additionalMessages should return undefined when input is false', () => {
+            const prompts = configPrompter.getPrompts();
+            const storeCredentialsPrompt = prompts.find((p) => p.name === configPromptNames.storeCredentials);
+            expect(storeCredentialsPrompt).toBeDefined();
+
+            const additionalMessages = storeCredentialsPrompt?.additionalMessages?.(false);
+
+            expect(additionalMessages).toBeUndefined();
+        });
+    });
+
+    describe('Application Prompt', () => {
         beforeEach(() => {
             mockIsAppStudio.mockReturnValue(false);
             isAppSupportedMock.mockResolvedValue(true);
-            getManifestSpy = jest.spyOn(SourceManifest.prototype, 'getManifest').mockResolvedValue(mockManifest);
         });
 
         it('application prompt validate should return true if value is passed', async () => {
@@ -477,10 +766,10 @@ describe('ConfigPrompter Integration Tests', () => {
                     action: 'action-b'
                 }
             };
-            configPrompter['isCloudProject'] = true;
             const provider = {} as unknown as AbapServiceProvider;
             configPrompter['abapProvider'] = provider;
             getBaseAppInboundsMock.mockResolvedValue(baseAppInbounds);
+            configPrompter['selectedProjectType'] = AdaptationProjectType.CLOUD_READY;
 
             const prompts = configPrompter.getPrompts();
             const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
@@ -488,7 +777,7 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await appPrompt?.validate?.(app, dummyAnswers);
 
             expect(result).toEqual(true);
-            expect(configPrompter.isCloud).toBe(true);
+            expect(configPrompter.projectType).toBe(AdaptationProjectType.CLOUD_READY);
             expect(configPrompter.baseAppInbounds).toEqual(baseAppInbounds);
 
             expect(getBaseAppInboundsMock).toHaveBeenCalledWith(app.id, provider);
@@ -496,7 +785,7 @@ describe('ConfigPrompter Integration Tests', () => {
 
         it('cloud application prompt validate should return error message if base app inbounds api call fails', async () => {
             const baseAppInboundsError = new Error('Failed to load app inbounds.');
-            configPrompter['isCloudProject'] = true;
+            configPrompter['selectedProjectType'] = AdaptationProjectType.CLOUD_READY;
             const provider = {} as unknown as AbapServiceProvider;
             configPrompter['abapProvider'] = provider;
             getBaseAppInboundsMock.mockRejectedValue(baseAppInboundsError);
@@ -507,7 +796,7 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await appPrompt?.validate?.(app, dummyAnswers);
 
             expect(result).toEqual(t('error.fetchBaseInboundsFailed', { error: baseAppInboundsError.message }));
-            expect(configPrompter.isCloud).toBe(true);
+            expect(configPrompter.projectType).toBe(AdaptationProjectType.CLOUD_READY);
             expect(configPrompter.baseAppInbounds).toBeUndefined();
 
             expect(getBaseAppInboundsMock).toHaveBeenCalledWith(app.id, provider);
@@ -570,7 +859,7 @@ describe('ConfigPrompter Integration Tests', () => {
             const error = new Error(t('error.appDoesNotSupportManifest'));
             getManifestSpy.mockRejectedValue(error);
             mockIsAppStudio.mockReturnValue(true);
-            configPrompter['isCloudProject'] = true;
+            configPrompter['selectedProjectType'] = AdaptationProjectType.CLOUD_READY;
             const prompts = configPrompter.getPrompts();
             const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
             expect(appPrompt).toBeDefined();
@@ -611,6 +900,132 @@ describe('ConfigPrompter Integration Tests', () => {
 
             expect(result).toEqual(undefined);
         });
+
+        it('application prompt additionalMessages should return undefined if the selected application is from a mixed system and released', async () => {
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const releasedAppInfo: SourceApplication = {
+                id: 'app1',
+                title: 'App One',
+                ach: '',
+                bspName: '',
+                bspUrl: '',
+                fileType: '',
+                registrationIds: [],
+                cloudDevAdaptationStatus: 'released'
+            };
+
+            const result = await appPrompt?.additionalMessages?.(releasedAppInfo);
+
+            expect(result).toEqual(undefined);
+            expect(getAppAdditionalMessagesMock).not.toHaveBeenCalled();
+        });
+
+        it('application prompt additionalMessages should return actual message if the selected application is from a mixed system and released but the user is internal', async () => {
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            configPrompter['selectedProjectType'] = AdaptationProjectType.ON_PREMISE;
+            isInternalFeaturesSettingEnabledMock.mockReturnValue(true);
+            const additionalMessage: IMessageSeverity = {
+                message: 'message',
+                severity: Severity.warning
+            };
+            getAppAdditionalMessagesMock.mockReturnValue(additionalMessage);
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const releasedAppInfo: SourceApplication = {
+                id: 'app1',
+                title: 'App One',
+                ach: '',
+                bspName: '',
+                bspUrl: '',
+                fileType: '',
+                registrationIds: [],
+                cloudDevAdaptationStatus: 'released'
+            };
+
+            const result = await appPrompt?.additionalMessages?.(releasedAppInfo);
+
+            expect(result).toEqual(additionalMessage);
+            expect(getAppAdditionalMessagesMock).toHaveBeenCalled();
+        });
+
+        it('application prompt validate should return true in case of a released application in mixed system', async () => {
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+
+            const releasedAppInfo: SourceApplication = {
+                id: 'app1',
+                title: 'App One',
+                ach: '',
+                bspName: '',
+                bspUrl: '',
+                fileType: '',
+                registrationIds: [],
+                cloudDevAdaptationStatus: 'released'
+            };
+
+            const result = await appPrompt?.validate?.(releasedAppInfo);
+
+            expect(result).toBe(true);
+        });
+
+        it('application prompt validate should set the project type to onPremise in case the application is NOT released and the system is mixed', async () => {
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+
+            const classicAppInfo: SourceApplication = {
+                id: 'app1',
+                title: 'App One',
+                ach: '',
+                bspName: '',
+                bspUrl: '',
+                fileType: '',
+                registrationIds: [],
+                cloudDevAdaptationStatus: ''
+            };
+
+            expect(configPrompter.projectType).toBeUndefined();
+
+            const result = await appPrompt?.validate?.(classicAppInfo);
+
+            expect(configPrompter.projectType).toEqual(AdaptationProjectType.ON_PREMISE);
+            expect(result).toEqual(true);
+        });
+
+        it('application prompt validate should validate application in case the system is mixed and the user is internal', async () => {
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            configPrompter['selectedProjectType'] = AdaptationProjectType.ON_PREMISE;
+            isInternalFeaturesSettingEnabledMock.mockReturnValue(true);
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+
+            const cloudAppInfo: SourceApplication = {
+                id: 'uniqueId',
+                title: 'App One',
+                ach: '',
+                bspName: '',
+                bspUrl: '',
+                fileType: '',
+                registrationIds: [],
+                cloudDevAdaptationStatus: 'released'
+            };
+
+            expect(configPrompter.manifest).toBeUndefined();
+
+            const result = await appPrompt?.validate?.(cloudAppInfo);
+
+            expect(configPrompter.projectType).toEqual(AdaptationProjectType.ON_PREMISE);
+            expect(result).toEqual(true);
+            expect(getManifestSpy).toHaveBeenCalled();
+            expect(configPrompter.manifest).toBeDefined();
+        });
     });
 
     describe('Application CLI Validation Prompt', () => {
@@ -619,6 +1034,7 @@ describe('ConfigPrompter Integration Tests', () => {
         });
 
         it('application validation cli prompt when should return false if all validations pass', async () => {
+            getManifestSpy.mockResolvedValue(mockManifest);
             const prompts = configPrompter.getPrompts();
             const appPrompt = prompts.find((p) => p.name === configPromptNames.appValidationCli);
             expect(appPrompt).toBeDefined();
@@ -650,7 +1066,7 @@ describe('ConfigPrompter Integration Tests', () => {
         it('application validation cli prompt when should return false if manifest fetching fails', async () => {
             isAppSupportedMock.mockResolvedValue(true);
             const error = new Error('Test error');
-            jest.spyOn(SourceManifest.prototype, 'getManifest').mockRejectedValue(error);
+            getManifestSpy.mockRejectedValue(error);
 
             const prompts = configPrompter.getPrompts();
             const appPrompt = prompts.find((p) => p.name === configPromptNames.appValidationCli);
@@ -662,6 +1078,94 @@ describe('ConfigPrompter Integration Tests', () => {
             await expect((whenFn as (answers: ConfigAnswers) => Promise<boolean>)(dummyAnswers)).rejects.toThrow(
                 error.message
             );
+        });
+
+        it('application validation cli prompt when should return false if the selected application is released and the system is mixed', async () => {
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.appValidationCli);
+            expect(appPrompt).toBeDefined();
+
+            const whenFn = appPrompt?.when;
+            expect(typeof whenFn).toBe('function');
+
+            const releasedAppInfo: SourceApplication = {
+                id: 'app1',
+                title: 'App One',
+                ach: '',
+                bspName: '',
+                bspUrl: '',
+                fileType: '',
+                registrationIds: [],
+                cloudDevAdaptationStatus: 'released'
+            };
+            const result = await (whenFn as (answers: ConfigAnswers) => Promise<boolean>)({
+                application: releasedAppInfo
+            } as ConfigAnswers);
+
+            expect(result).toEqual(false);
+        });
+
+        it('application validation cli prompt when should continue with applicatio validation if the selected application is released and the system is mixed, but the user is internal', async () => {
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            configPrompter['selectedProjectType'] = AdaptationProjectType.ON_PREMISE;
+            isAppSupportedMock.mockResolvedValue(true);
+            isInternalFeaturesSettingEnabledMock.mockReturnValue(true);
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.appValidationCli);
+            expect(appPrompt).toBeDefined();
+
+            const whenFn = appPrompt?.when;
+            expect(typeof whenFn).toBe('function');
+
+            const releasedAppInfo: SourceApplication = {
+                id: 'app1',
+                title: 'App One',
+                ach: '',
+                bspName: '',
+                bspUrl: '',
+                fileType: '',
+                registrationIds: [],
+                cloudDevAdaptationStatus: 'released'
+            };
+
+            expect(configPrompter.manifest).toBeUndefined();
+
+            const result = await (whenFn as (answers: ConfigAnswers) => Promise<boolean>)({
+                application: releasedAppInfo
+            } as ConfigAnswers);
+
+            expect(configPrompter.manifest).toBeDefined();
+            expect(getManifestSpy).toHaveBeenCalled();
+            expect(result).toEqual(false);
+        });
+
+        it('application validation cli prompt when should set the project type to onPremise in case of a valid NOT released application from a mixed system', async () => {
+            configPrompter['supportedProject'] = SupportedProject.CLOUD_READY_AND_ON_PREM;
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.appValidationCli);
+            expect(appPrompt).toBeDefined();
+
+            const whenFn = appPrompt?.when;
+            expect(typeof whenFn).toBe('function');
+            expect(configPrompter.projectType).toBeUndefined();
+
+            const classicAppInfo: SourceApplication = {
+                id: 'app1',
+                title: 'App One',
+                ach: '',
+                bspName: '',
+                bspUrl: '',
+                fileType: '',
+                registrationIds: [],
+                cloudDevAdaptationStatus: ''
+            };
+            const result = await (whenFn as (answers: ConfigAnswers) => Promise<boolean>)({
+                application: classicAppInfo
+            } as ConfigAnswers);
+
+            expect(result).toEqual(false);
+            expect(configPrompter.projectType).toEqual(AdaptationProjectType.ON_PREMISE);
         });
     });
 
@@ -678,4 +1182,9 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(result).toEqual(true);
         });
     });
+
+    function getPrompt(promptName: configPromptNames) {
+        const prompts = configPrompter.getPrompts();
+        return prompts.find((prompt) => prompt.name === promptName);
+    }
 });

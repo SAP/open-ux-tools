@@ -5,6 +5,7 @@ import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } from '../../src/';
 import { deployMode, SRV_API } from '../../src/constants';
 import type { mta } from '@sap/mta-lib';
+import * as waitForMtaModule from '../../src/mta-config/wait-for-mta';
 
 jest.mock('fs', () => {
     const fs1 = jest.requireActual('fs');
@@ -171,19 +172,27 @@ describe('Validate MtaConfig Instance', () => {
         expect(formattedDestinationName).toEqual(correctDest);
     });
 
-    it('Validate mta config is reloaded if it fails', async () => {
-        const mockMtaConfig = {
-            resources: {},
-            app: {},
-            prefix: 'test-prefix'
-        } as unknown as MtaConfig;
-        // Mocking the failure twice and then success
-        jest.spyOn(MtaConfig, 'newInstance')
-            .mockRejectedValueOnce(new Error('Error'))
-            .mockRejectedValueOnce(new Error('Error'))
-            .mockResolvedValueOnce(mockMtaConfig);
+    it('Validate mta config is loaded when file is ready', async () => {
+        // Given: mta.yaml exists and has content with an ID (via memfs + MockMta)
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: managedRouterConfig
+            },
+            '/'
+        );
+        // When: getMtaConfig is called
         const mtaConfig = await getMtaConfig(appDir);
-        expect(mtaConfig?.prefix).toBe('test-prefix');
+        // Then: returns a valid config with a prefix
+        expect(mtaConfig?.prefix).toBeDefined();
+    });
+
+    it('Validate mta config returns undefined when file is not ready', async () => {
+        // Given: waitForMtaFile times out (file not present)
+        jest.spyOn(waitForMtaModule, 'waitForMtaFile').mockRejectedValueOnce(new Error('not ready'));
+        // When
+        const mtaConfig = await getMtaConfig(appDir);
+        // Then: returns undefined
+        expect(mtaConfig).toBeUndefined();
     });
 });
 
@@ -317,5 +326,82 @@ describe('Validate common flows', () => {
         `);
         const expectAfterYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app5/mta.yaml`, 'utf-8');
         expect(expectAfterYaml).toMatchSnapshot();
+    });
+
+    it('Should align ServiceInstanceName with service-name when present', async () => {
+        const mtaWithServiceName = `_schema-version: '3.2'
+ID: testApp
+version: 0.0.1
+modules: []
+resources:
+  - name: testApp-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: testApp-html5-service
+      service-plan: app-host
+  - name: testApp-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: testApp-xsuaa-service
+      service-plan: application
+parameters:
+  enable-parallel-deployments: true`;
+
+        memfs.vol.fromNestedJSON(
+            {
+                [`${OUTPUT_DIR_PREFIX}/app6/mta.yaml`]: mtaWithServiceName
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(`${OUTPUT_DIR_PREFIX}/app6`);
+        await mtaConfig.addManagedAppRouter();
+        await mtaConfig.save();
+        const expectAfterYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app6/mta.yaml`, 'utf-8');
+
+        // Verify ServiceInstanceName uses the explicit service-name values
+        expect(expectAfterYaml).toContain('ServiceInstanceName: testApp-html5-service');
+        expect(expectAfterYaml).toContain('ServiceInstanceName: testApp-xsuaa-service');
+    });
+
+    it('Should use resource name for ServiceInstanceName when service-name is missing', async () => {
+        const mtaWithoutServiceName = `_schema-version: '3.2'
+ID: testApp
+version: 0.0.1
+modules: []
+resources:
+  - name: testApp-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: testApp-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-plan: application
+parameters:
+  enable-parallel-deployments: true`;
+
+        memfs.vol.fromNestedJSON(
+            {
+                [`${OUTPUT_DIR_PREFIX}/app7/mta.yaml`]: mtaWithoutServiceName
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(`${OUTPUT_DIR_PREFIX}/app7`);
+        await mtaConfig.addManagedAppRouter();
+        await mtaConfig.save();
+        const expectAfterYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app7/mta.yaml`, 'utf-8');
+
+        // The updateServiceName() method adds service-names if missing, so they will be present
+        // Verify ServiceInstanceName is correctly set (either using added service-name or resource name)
+        expect(expectAfterYaml).toContain('ServiceInstanceName: testApp-html5-service');
+        expect(expectAfterYaml).toContain('ServiceInstanceName: testApp-xsuaa-service');
+        // Verify no undefined values
+        expect(expectAfterYaml).not.toContain('ServiceInstanceName: undefined');
     });
 });

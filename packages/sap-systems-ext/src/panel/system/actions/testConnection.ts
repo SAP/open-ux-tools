@@ -2,6 +2,7 @@ import type { AxiosError } from '@sap-ux/axios-extension';
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
 import type { TestConnection, CatalogServicesCounts } from '@sap-ux/sap-systems-ext-types';
 import type { PanelContext } from '../../../types';
+import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import {
     createGALink,
@@ -10,31 +11,71 @@ import {
     getErrorType,
     getErrorMessage,
     loadingTestConnectionInfo,
-    validateSystemInfo
+    validateSystemInfo,
+    getSystemInfo,
+    hasServiceMetadata
 } from '../utils';
-import { TelemetryHelper, t } from '../../../utils';
-import { GuidedAnswersLinkAction, SystemAction, SYSTEMS_EVENT, TestConnectionStatus } from '../../../utils/constants';
+import { TelemetryHelper, compareSystems, getBackendSystemService, shouldStoreSystemInfo, t } from '../../../utils';
+import {
+    GuidedAnswersLinkAction,
+    SystemAction,
+    SystemPanelViewType,
+    SYSTEMS_EVENT,
+    TestConnectionStatus
+} from '../../../utils/constants';
 import SystemsLogger from '../../../utils/logger';
 
 /**
  * Tests the connection to a specified backend system and retrieves the count of available OData services.
+ * Also makes an API call for other system information e.g. system ID and client.
  *
  * @param context - panel context
  * @param action - test connection action containing the system to test
  */
 export async function testSystemConnection(context: PanelContext, action: TestConnection): Promise<void> {
     const { postMessage, isGuidedAnswersEnabled } = context;
-    const { system } = action.payload;
+    const { system, servicePath } = action.payload;
 
     await postMessage(loadingTestConnectionInfo());
     logTestTelemetry(TestConnectionStatus.STARTED, system.systemType);
 
-    const validationResult = validateSystemInfo(system);
+    const validationResult = validateSystemInfo(system, servicePath);
     if (typeof validationResult === 'string') {
-        await postMessage(connectionStatusMsg({ connectionStatus: { connected: false, message: validationResult } }));
+        await postMessage(
+            connectionStatusMsg({
+                connectionStatus: { connected: false, message: validationResult, showOutputChannelLink: false }
+            })
+        );
         return;
     }
 
+    if (system.connectionType === 'abap_catalog') {
+        await testCatalog(system, isGuidedAnswersEnabled, postMessage);
+    } else if (system.connectionType === 'odata_service' || system.connectionType === 'generic_host') {
+        await testODataService(system, postMessage, servicePath);
+    }
+
+    try {
+        if (shouldStoreSystemInfo(system)) {
+            await storeSystemInfo(context, system);
+        }
+    } catch (e) {
+        SystemsLogger.logger.error(t('error.systemInfoUpdate', { error: (e as Error).message }));
+    }
+}
+
+/**
+ * Tests the connection to an ABAP system by retrieving the count of available OData services from the catalog.
+ *
+ * @param system - the backend system
+ * @param isGuidedAnswersEnabled - isGuidedAnswersEnabled
+ * @param postMessage - function to post message to the webview
+ */
+async function testCatalog(
+    system: BackendSystem,
+    isGuidedAnswersEnabled: boolean,
+    postMessage: (msg: unknown) => void
+): Promise<void> {
     let serviceCount: CatalogServicesCounts = { v2Request: {}, v4Request: {} };
     try {
         serviceCount = await getCatalogServiceCount(system);
@@ -42,7 +83,7 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
         const { v2Request, v4Request } = serviceCount;
 
         if ((v2Request.count ?? 0) > 0 || (v4Request.count ?? 0) > 0) {
-            postConnectionStatus(postMessage, true, serviceCount);
+            postConnectionStatus({ connected: true, catalogResults: serviceCount, postMessage });
             logServiceSummary(system.name, serviceCount);
             logTestTelemetry(TestConnectionStatus.SUCCEED, system.systemType);
         } else {
@@ -55,22 +96,61 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
 }
 
 /**
+ * Tests the connection to a generic host system.
+ *
+ * @param system - the backend system
+ * @param postMessage - function to post message to the webview
+ * @param servicePath - optional explicit service path
+ */
+async function testODataService(
+    system: BackendSystem,
+    postMessage: (msg: unknown) => void,
+    servicePath?: string
+): Promise<void> {
+    try {
+        await hasServiceMetadata(system, servicePath);
+        postConnectionStatus({ connected: true, message: t('info.serviceMetadata'), postMessage });
+        logTestTelemetry(TestConnectionStatus.SUCCEED, system.systemType);
+    } catch (e) {
+        postConnectionStatus({
+            connected: false,
+            message: t('info.noServiceMetadata'),
+            postMessage
+        });
+        logServiceRequestError(e as AxiosError);
+        logTestTelemetry(TestConnectionStatus.FAILED, system.systemType);
+    }
+}
+
+/**
  * Posts the connection status message to the webview.
  *
- * @param postMessage - function to post message to the webview
- * @param connected - if the connection was successful
- * @param catalogResults - optional catalog results containing service counts
- * @param message - optional message to include
- * @param guidedAnswerLink - optional guided answer link details
+ * @param params - parameters for posting the connection status
+ * @param params.postMessage - function to post message to the webview
+ * @param params.connected - if the connection was successful
+ * @param params.catalogResults - optional catalog results containing service counts
+ * @param params.message - optional message to include
+ * @param params.guidedAnswerLink - optional guided answer link details
  */
-function postConnectionStatus(
-    postMessage: (msg: unknown) => void,
-    connected: boolean,
-    catalogResults?: CatalogServicesCounts,
-    message?: string,
-    guidedAnswerLink?: IActionCalloutDetail
-): void {
-    postMessage(connectionStatusMsg({ connectionStatus: { connected, catalogResults, message }, guidedAnswerLink }));
+function postConnectionStatus({
+    postMessage,
+    connected,
+    catalogResults,
+    message,
+    guidedAnswerLink
+}: {
+    postMessage: (msg: unknown) => void;
+    connected: boolean;
+    catalogResults?: CatalogServicesCounts;
+    message?: string;
+    guidedAnswerLink?: IActionCalloutDetail;
+}): void {
+    postMessage(
+        connectionStatusMsg({
+            connectionStatus: { connected, catalogResults, message, showOutputChannelLink: true },
+            guidedAnswerLink
+        })
+    );
 }
 
 /**
@@ -92,7 +172,7 @@ function handleCatalogError(
 
     const catalogResultError = catalog.v2Request.error ?? catalog.v4Request.error;
     if (!catalogResultError) {
-        return postConnectionStatus(postMessage, false, undefined, error?.message);
+        return postConnectionStatus({ connected: false, message: error?.message, postMessage });
     }
 
     const errorType = getErrorType(catalogResultError);
@@ -102,13 +182,22 @@ function handleCatalogError(
         logGATelemetry(GuidedAnswersLinkAction.LINK_CREATED, errorType, isGuidedAnswersEnabled);
     }
 
-    return postConnectionStatus(
-        postMessage,
-        false,
-        undefined,
-        getErrorMessage(errorType, catalogResultError),
-        guidedAnswerLink
-    );
+    return postConnectionStatus({
+        connected: false,
+        message: getErrorMessage(errorType, catalogResultError),
+        guidedAnswerLink,
+        postMessage
+    });
+}
+
+/**
+ * Logs the error that occurred during the service request.
+ *
+ * @param error - the axios error
+ */
+function logServiceRequestError(error: AxiosError): void {
+    SystemsLogger.logger.error(t('error.serviceRequest', { error: error.message }));
+    logAxiosError(error);
 }
 
 /**
@@ -118,27 +207,43 @@ function handleCatalogError(
  */
 function logCatalogErrors(catalogResult: CatalogServicesCounts): void {
     if (catalogResult.v2Request.error) {
-        logAxiosError(ODataVersion.v2, catalogResult.v2Request.error as AxiosError);
+        logCatalogError(ODataVersion.v2, catalogResult.v2Request.error as AxiosError);
     }
     if (catalogResult.v4Request.error) {
-        logAxiosError(ODataVersion.v4, catalogResult.v4Request.error as AxiosError);
+        logCatalogError(ODataVersion.v4, catalogResult.v4Request.error as AxiosError);
     }
+}
+
+/**
+ * Logs the catalog error details.
+ *
+ * @param version - OData version
+ * @param error - Axios error
+ */
+function logCatalogError(version: ODataVersion, error: AxiosError): void {
+    SystemsLogger.logger.error(t('error.catalogRequest', { version, error: error.message }));
+    logAxiosError(error);
 }
 
 /**
  * Logs the error details.
  *
- * @param version - OData version
  * @param error - Axios error
  */
-function logAxiosError(version: ODataVersion, error: AxiosError): void {
-    SystemsLogger.logger.error(t('error.catalogRequest', { version, error: error.message }));
+function logAxiosError(error: AxiosError): void {
+    const safeStringify = (obj: unknown): string => {
+        try {
+            return JSON.stringify(obj, null, 2);
+        } catch {
+            return String(obj);
+        }
+    };
 
     if (error.response?.data) {
-        SystemsLogger.logger.debug(JSON.stringify(error.response.data, null, 2));
+        SystemsLogger.logger.debug(safeStringify(error.response.data));
     }
     if (error.cause) {
-        SystemsLogger.logger.debug(JSON.stringify(error.cause, null, 2));
+        SystemsLogger.logger.debug(safeStringify(error.cause));
     }
 }
 
@@ -190,4 +295,48 @@ function logGATelemetry(status: GuidedAnswersLinkAction, errorType = '', isGuide
         errorType,
         isGuidedAnswersEnabled: isGuidedAnswersEnabled ? 'true' : 'false'
     });
+}
+
+/**
+ * Attempts a partial update to store the system ID for existing (unchanged) saved systems.
+ *
+ * @param context - panel context
+ * @param backendSystemPayload - backend system passed in the payload
+ */
+async function storeSystemInfo(context: PanelContext, backendSystemPayload: BackendSystem): Promise<void> {
+    // determines if this is a simple view (viewing an existing system without any backend key changes)
+    const isSimpleView =
+        context.panelViewType === SystemPanelViewType.View &&
+        context.backendSystem &&
+        compareSystems(context.backendSystem, backendSystemPayload);
+
+    // not suitable for a partial update if the system has been modified or it is a new system
+    if (!isSimpleView) {
+        return;
+    }
+
+    // no action needed if system id is already present
+    if (isSimpleView && context.backendSystem?.systemInfo?.systemId) {
+        return;
+    }
+
+    const systemInfo = await getSystemInfo(backendSystemPayload);
+    if (systemInfo) {
+        SystemsLogger.logger.debug(
+            t('debug.systemInfoRetrieved', {
+                systemId: systemInfo.systemId,
+                client: systemInfo.client
+            })
+        );
+        const systemService = await getBackendSystemService();
+        await systemService.partialUpdate(
+            new BackendSystemKey({
+                url: backendSystemPayload.url,
+                client: backendSystemPayload.client
+            }),
+            {
+                systemInfo: { systemId: systemInfo.systemId, client: systemInfo.client }
+            }
+        );
+    }
 }

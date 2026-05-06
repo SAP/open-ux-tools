@@ -1,3 +1,4 @@
+import * as projectAccess from '@sap-ux/project-access';
 import { TemplateTypeAttributes } from '@sap-ux/fiori-elements-writer';
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
@@ -16,6 +17,9 @@ import {
     runWritingPhaseGen
 } from '../test-utils';
 import { baseTestProject, getExpectedOutputPath, v4EntityConfig, v4Service } from './test-utils';
+
+const appAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess');
+appAccessMock.mockResolvedValue({} as any);
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');

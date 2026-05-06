@@ -2,13 +2,7 @@ import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 
-import {
-    type CloudApp,
-    type AdpWriterConfig,
-    type TypesConfig,
-    type CfAdpWriterConfig,
-    type DescriptorVariant
-} from '../types';
+import type { CloudApp, AdpWriterConfig, TypesConfig, CfAdpWriterConfig, DescriptorVariant } from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -17,7 +11,7 @@ import {
     enhanceUI5YamlWithCustomTask,
     enhanceUI5YamlWithTranspileMiddleware,
     enhanceUI5YamlWithCfCustomTask,
-    enhanceUI5YamlWithCfCustomMiddleware
+    enhanceUI5YamlWithFioriToolsMiddleware
 } from './options';
 
 import type { Package } from '@sap-ux/project-access';
@@ -183,7 +177,7 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
         /** Builder task */
         enhanceUI5YamlWithCfCustomTask(ui5Config, data);
         /** Middlewares */
-        enhanceUI5YamlWithCfCustomMiddleware(ui5Config, data);
+        enhanceUI5YamlWithFioriToolsMiddleware(ui5Config);
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {
@@ -273,7 +267,7 @@ export async function writeCfTemplates(
 
     if (!fs.exists(join(basePath, 'xs-security.json'))) {
         fs.copyTpl(join(templatePath, 'cf/xs-security.json'), join(basePath, 'xs-security.json'), {
-            projectName: project.name
+            projectName: project.xsSecurityAppName
         });
     }
 }

@@ -72,6 +72,7 @@ function getPropertyTypeFromBaseType(
 }
 
 /**
+ * Resolves a type string to its fully qualified name using the vocabulary service.
  *
  * @param service - The vocabulary service.
  * @param type - The type string to be qualified.

@@ -144,6 +144,37 @@ const ns1 = {
             'valuesDependentOnEntityTypeInfo': 'Values are dependent on entity set',
             'bindingContextType': 'Binding Context Path Type'
         },
+        'form': {
+            'aggregation': 'Aggregation Path',
+            'bindingContextType': 'Binding Context',
+            'entity': 'Entity',
+            'formBuildingBlockPropertiesTitle': 'Properties of the Form Building Block',
+            'formBuildingBlockPropertiesDescription': [
+                'Select the `View or Fragment File` where you want to insert the Form building block and provide a `Building Block ID` to identify the form.',
+                'Select an `Entity Set`, and a `Field Group Annotation` you want to use for the Form building block.',
+                'Select an `Aggregation Path` to determine where you want the form to appear on the page.',
+                'Provide a `Form Title` to be displayed.'
+            ],
+            'formVisualizationPropertiesTitle': 'Form Visualization Properties',
+            'formVisualizationPropertiesDescription': ['Configure your form using the properties below.'],
+            'id': {
+                'message': 'Building Block ID',
+                'validation': 'An ID is required to generate the Form building block.'
+            },
+            'qualifier': 'FieldGroup Annotation Path',
+            'qualifierPlaceholder': 'Select a FieldGroup annotation path',
+            'viewOrFragmentPath': {
+                'message': 'View or Fragment File',
+                'validate': 'A View or Fragment is required to generate the Form building block.'
+            },
+            'service': 'Service',
+            'title': {
+                'message': 'Form Title',
+                'validation': 'Enter a Form Title',
+                'translationAnnotation': 'Title of the Form'
+            },
+            'valuesDependentOnEntityTypeInfo': 'Values are dependent on entity set'
+        },
         'table': {
             'tableBuildingBlockPropertiesTitle': 'Table Building Block Properties',
             'tableBuildingBlockPropertiesDescription': [
@@ -223,15 +254,30 @@ const ns1 = {
             'valueSource': 'Value Source',
             'entitySet': 'Entity',
             'targetProperty': 'Target Property',
+            'aggregation': 'Aggregation Path'
+        },
+        'richTextEditorButtonGroups': {
+            'message': 'Buttons',
+            'choices': {
+                'font-style': 'Font Style (Bold, Italic, Underline, and Strikethrough)',
+                'font': 'Font Settings (Family, Size, and Colors)',
+                'clipboard': 'Clipboard (Cut, Copy, and Paste)',
+                'structure': 'List Structure (Bullets, Numbers, and Indentation)',
+                'undo': 'Undo/Redo',
+                'insert': 'Insert (Image, and Emoticons)',
+                'link': 'Link (Add, and Remove Links)',
+                'text-align': 'Text Alignment (Left, Center, Right, and Justify)',
+                'table': 'Table',
+                'styleselect': 'Style Select'
+            },
+            'viewOrFragmentPath': {
+                'message': 'View or Fragment File',
+                'validation':
+                    'A view or fragment is required to generate the Rich Text Editor Button Groups building block.'
+            },
             'aggregation': 'Aggregation Path',
-            'buttonGroup': {
-                'name': 'Button Group Name',
-                'buttons': 'Buttons',
-                'visible': 'Visible',
-                'priority': 'Priority',
-                'customToolbarPriority': 'Custom Toolbar Priority',
-                'row': 'Row'
-            }
+            'replaceDefaultButtonGroupsHint':
+                'Adding button groups replaces the default button groups in the Rich Text Editor with your chosen configuration.'
         },
         'page': {
             'id': {

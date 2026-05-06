@@ -1,5 +1,5 @@
 import { type AxiosRequestConfig, type ProviderConfiguration, type AbapServiceProvider } from '@sap-ux/axios-extension';
-import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import { type AdpPreviewConfigWithTarget } from '@sap-ux/adp-tooling';
 import { type CredentialsAnswers } from '@sap-ux/inquirer-common';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
@@ -13,7 +13,7 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
  * @returns {Promise<AbapServiceProvider>} The ABAP service provider instance.
  */
 export async function getAbapServiceProvider(
-    ui5Yaml: AdpPreviewConfig,
+    ui5Yaml: AdpPreviewConfigWithTarget,
     logger: ToolsLogger,
     credentials?: CredentialsAnswers
 ): Promise<AbapServiceProvider> {

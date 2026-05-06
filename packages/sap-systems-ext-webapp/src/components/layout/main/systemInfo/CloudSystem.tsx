@@ -1,16 +1,20 @@
 import React from 'react';
-import type { BackendSystem } from '@sap-ux/store';
+import type { SystemInfo } from '../../../../types';
 import type { ReactElement } from 'react';
-import { UITextInput } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
+import { UITextInput, UITooltip, UITooltipUtils } from '@sap-ux/ui-components';
+import { ServicePath } from './ServicePath';
+import { ServiceKey } from './ServiceKey';
+import { getUrlErrorMessage, useTextInputOverflow } from './utils';
 
 import '../../../../styles/SystemMain.scss';
-import { ServiceKey } from './ServiceKey';
 
 interface CloudSystemProps {
-    systemInfo?: BackendSystem;
+    systemInfo?: SystemInfo;
     setUrl: (url: string | undefined) => void;
+    setServicePath: (servicePath: string | undefined) => void;
     setIsDetailsUpdated: (isUpdated: boolean) => void;
+    setIsDetailsValid: (isValid: boolean) => void;
 }
 
 /**
@@ -19,11 +23,22 @@ interface CloudSystemProps {
  * @param props - cloud system props
  * @param props.systemInfo - the system information
  * @param props.setUrl - function to set the URL
+ * @param props.setServicePath - function to set the service path (only for generic host connection type)
  * @param props.setIsDetailsUpdated - function to set the details updated flag
+ * @param props.setIsDetailsValid - function to set the details valid flag
  * @returns - the cloud system JSX element
  */
-export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: Readonly<CloudSystemProps>): ReactElement {
+export function CloudSystem({
+    systemInfo,
+    setUrl,
+    setServicePath,
+    setIsDetailsUpdated,
+    setIsDetailsValid
+}: Readonly<CloudSystemProps>): ReactElement {
     const { t } = useTranslation();
+    const reentranceUrlId = 'reentranceUrl';
+    const { isEditing, isOverflowing, onEditStart, onEditEnd } = useTextInputOverflow(reentranceUrlId, systemInfo?.url);
+    const tooltipContent = <div className="url-tooltip">{systemInfo?.url}</div>;
 
     let cloudComponent = <div></div>;
 
@@ -34,18 +49,32 @@ export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: Readonl
                     <label className="store-detail-label">
                         {t('labels.url')} <span className="mandatory-asterisk">*</span>
                     </label>
-                    <UITextInput
-                        name="reentranceTicketUrl"
-                        id="reentranceUrl"
-                        defaultValue={systemInfo?.url}
-                        onChange={(e) => {
-                            if (setUrl) {
+                    <UITooltip
+                        tooltipProps={UITooltipUtils.renderContent(tooltipContent)}
+                        delay={0}
+                        calloutProps={{ hidden: isEditing || !systemInfo?.url || !isOverflowing }}>
+                        <UITextInput
+                            name="reentranceTicketUrl"
+                            id={reentranceUrlId}
+                            key={`reentranceTicketUrl-${systemInfo?.connectionType}`}
+                            value={systemInfo?.url}
+                            onChange={(e) => {
+                                onEditStart();
                                 setUrl((e.target as HTMLInputElement).value);
-                            }
-                            setIsDetailsUpdated(true);
-                        }}
-                    />
+                                setIsDetailsUpdated(true);
+                            }}
+                            onBlur={() => onEditEnd()}
+                            onGetErrorMessage={(value) => {
+                                const errorMsg = getUrlErrorMessage(value, t, systemInfo?.connectionType);
+                                setIsDetailsValid(!errorMsg);
+                                return errorMsg;
+                            }}
+                        />
+                    </UITooltip>
                 </div>
+                {systemInfo?.connectionType === 'generic_host' && (
+                    <ServicePath setServicePath={setServicePath} setIsDetailsUpdated={setIsDetailsUpdated} />
+                )}
             </div>
         );
     } else if (systemInfo?.serviceKeys) {
