@@ -11,4 +11,4 @@
 "@sap-ux/ui5-info": patch
 ---
 
-chore: upgrade axios 1.15.0 → 1.15.2 (CVE-2025-62718, CVE prototype pollution fixes)
+chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
