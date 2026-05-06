@@ -10,7 +10,7 @@ import {
     createAttributeNode,
     createElementNode
 } from '@sap-ux/odata-annotation-core';
-import type { ServiceArtifacts } from '@sap-ux/fiori-annotation-api';
+import type { ServiceArtifacts, V2Annotation } from '@sap-ux/fiori-annotation-api';
 
 import type { DocumentType } from '../types';
 import { COMMON_LABEL, COMMON_TEXT } from '../../constants';
@@ -160,7 +160,7 @@ function createSyntheticElement(attrName: string, attrValue: string, sourceRange
 
 /**
  * Injects synthetic Common.Text and Common.Label annotation entries derived from OData V2
- * inline `sap:text` and `sap:label` attributes on Property elements.
+ * inline `sap:text` and `sap:label` attributes, using pre-parsed V2Annotation objects.
  *
  * Both Common.Text and Common.Label are injected into the annotation index AND the annotation
  * file AST so that ESLint's `createAnnotations()` traversal can fire and report diagnostics
@@ -168,12 +168,18 @@ function createSyntheticElement(attrName: string, attrValue: string, sourceRange
  *
  * Only adds entries when no explicit vocabulary annotation already exists for that key.
  *
- * @param artifacts - Service artifacts whose metadata properties are to be inspected
+ * @param artifacts - Service artifacts (used to access annotation file AST)
  * @param metadataUri - URI of the metadata file (used as the annotation source)
+ * @param v2Annotations - Pre-parsed V2 annotations from convertMetadataDocumentV2
  * @param index - The annotation index to inject into
  */
-function injectV2InlineAnnotations(artifacts: ServiceArtifacts, metadataUri: string, index: AnnotationIndex): void {
-    if (artifacts.metadataService.ODataVersion !== '2.0') {
+function injectV2Annotations(
+    artifacts: ServiceArtifacts,
+    metadataUri: string,
+    v2Annotations: V2Annotation[],
+    index: AnnotationIndex
+): void {
+    if (!v2Annotations.length) {
         return;
     }
     const annotationFile = artifacts.annotationFiles[metadataUri];
@@ -181,16 +187,16 @@ function injectV2InlineAnnotations(artifacts: ServiceArtifacts, metadataUri: str
         return;
     }
 
-    artifacts.metadataService.visitMetadataElements((element) => {
-        if (element.kind !== Edm.Property) {
-            return;
+    for (const v2Ann of v2Annotations) {
+        if (v2Ann.target.kind !== Edm.Property) {
+            continue;
         }
-        const propertyTarget = element.path; // e.g. "Namespace.EntityType/PropertyName"
+        const propertyTarget = v2Ann.target.path;
 
-        if (element.sapText) {
+        if (v2Ann.name === 'sap:text') {
             const textKey = buildAnnotationIndexKey(propertyTarget, COMMON_TEXT);
             if (!index[textKey]) {
-                const syntheticElement = createSyntheticElement(Edm.Path, element.sapText, element.sapTextRange);
+                const syntheticElement = createSyntheticElement(Edm.Path, v2Ann.value, v2Ann.valueRange);
                 index[textKey] = {
                     undefined: {
                         source: metadataUri,
@@ -200,7 +206,6 @@ function injectV2InlineAnnotations(artifacts: ServiceArtifacts, metadataUri: str
                         layers: [{ uri: metadataUri, value: syntheticElement }]
                     }
                 };
-                // Also inject into the annotation file AST so the traversal selector fires
                 const syntheticTarget: Target = {
                     type: 'target',
                     name: propertyTarget,
@@ -208,12 +213,10 @@ function injectV2InlineAnnotations(artifacts: ServiceArtifacts, metadataUri: str
                 };
                 annotationFile.targets.push(syntheticTarget);
             }
-        }
-
-        if (element.sapLabel) {
+        } else if (v2Ann.name === 'sap:label') {
             const labelKey = buildAnnotationIndexKey(propertyTarget, COMMON_LABEL);
             if (!index[labelKey]) {
-                const syntheticElement = createSyntheticElement(Edm.String, element.sapLabel, element.sapLabelRange);
+                const syntheticElement = createSyntheticElement(Edm.String, v2Ann.value, v2Ann.valueRange);
                 index[labelKey] = {
                     undefined: {
                         source: metadataUri,
@@ -223,7 +226,6 @@ function injectV2InlineAnnotations(artifacts: ServiceArtifacts, metadataUri: str
                         layers: [{ uri: metadataUri, value: syntheticElement }]
                     }
                 };
-                // Also inject into the annotation file AST so the traversal selector fires on the label node
                 const syntheticTarget: Target = {
                     type: 'target',
                     name: propertyTarget,
@@ -232,7 +234,7 @@ function injectV2InlineAnnotations(artifacts: ServiceArtifacts, metadataUri: str
                 annotationFile.targets.push(syntheticTarget);
             }
         }
-    });
+    }
 }
 
 /**
@@ -243,11 +245,13 @@ function injectV2InlineAnnotations(artifacts: ServiceArtifacts, metadataUri: str
  *
  * @param artifacts - Service artifacts to index
  * @param documents - Document map to populate with annotation files
+ * @param v2Annotations - Pre-parsed V2 annotations from convertMetadataDocumentV2
  * @returns Complete service index with entity sets and annotations
  */
 export function buildServiceIndex(
     artifacts: ServiceArtifacts,
-    documents: { [key: string]: DocumentType }
+    documents: { [key: string]: DocumentType },
+    v2Annotations: V2Annotation[] = []
 ): ServiceIndex {
     const entitySets: Record<string, MetadataElement> = {};
     for (const document of Object.values(artifacts.annotationFiles)) {
@@ -269,7 +273,7 @@ export function buildServiceIndex(
         }
     });
 
-    injectV2InlineAnnotations(artifacts, metadataUri, annotationIndex);
+    injectV2Annotations(artifacts, metadataUri, v2Annotations, annotationIndex);
 
     return {
         entitySets: entitySets,

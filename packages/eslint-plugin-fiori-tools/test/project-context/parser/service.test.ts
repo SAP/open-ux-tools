@@ -1,6 +1,7 @@
 import { MetadataService } from '@sap-ux/odata-entity-model';
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core';
 import type { ServiceArtifacts } from '@sap-ux/fiori-annotation-api/src/types';
+import type { V2Annotation } from '@sap-ux/fiori-annotation-api';
 
 import { buildAnnotationIndexKey, buildServiceIndex } from '../../../src/project-context/parser/service';
 import { COMMON_LABEL, COMMON_TEXT } from '../../../src/constants';
@@ -100,6 +101,57 @@ function createArtifacts(metadataService: MetadataService): ServiceArtifacts {
     };
 }
 
+const ID_PROP_ELEMENT = {
+    path: ID_PROP_PATH,
+    name: 'OrderID',
+    kind: 'Property',
+    isAnnotatable: true,
+    isCollectionValued: false,
+    isComplexType: false,
+    isEntityType: false,
+    targetKinds: ['Property'] as ['Property'],
+    edmPrimitiveType: 'Edm.String',
+    facets: {},
+    content: []
+};
+
+const NAME_PROP_ELEMENT = {
+    path: NAME_PROP_PATH,
+    name: 'OrderName',
+    kind: 'Property',
+    isAnnotatable: true,
+    isCollectionValued: false,
+    isComplexType: false,
+    isEntityType: false,
+    targetKinds: ['Property'] as ['Property'],
+    edmPrimitiveType: 'Edm.String',
+    facets: {},
+    content: []
+};
+
+function createV2Annotations(): V2Annotation[] {
+    return [
+        {
+            name: 'sap:text',
+            value: 'OrderName',
+            target: ID_PROP_ELEMENT,
+            valueRange: { start: { line: 2, character: 10 }, end: { line: 2, character: 35 } }
+        },
+        {
+            name: 'sap:label',
+            value: 'Order ID',
+            target: ID_PROP_ELEMENT,
+            valueRange: { start: { line: 2, character: 36 }, end: { line: 2, character: 55 } }
+        },
+        {
+            name: 'sap:label',
+            value: 'Order Name',
+            target: NAME_PROP_ELEMENT,
+            valueRange: { start: { line: 3, character: 10 }, end: { line: 3, character: 35 } }
+        }
+    ];
+}
+
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
 describe('buildAnnotationIndexKey', () => {
@@ -121,8 +173,8 @@ describe('buildServiceIndex', () => {
             const artifacts = createArtifacts(createV2MetadataService());
             const documents: { [key: string]: DocumentType } = {};
 
-            // When building the service index
-            const index = buildServiceIndex(artifacts, documents);
+            // When building the service index with pre-parsed V2 annotations
+            const index = buildServiceIndex(artifacts, documents, createV2Annotations());
 
             // Then the Common.Text annotation is injected for the ID property
             const textKey = buildAnnotationIndexKey(ID_PROP_PATH, COMMON_TEXT);
@@ -139,8 +191,8 @@ describe('buildServiceIndex', () => {
             const artifacts = createArtifacts(createV2MetadataService());
             const documents: { [key: string]: DocumentType } = {};
 
-            // When building the service index
-            const index = buildServiceIndex(artifacts, documents);
+            // When building the service index with pre-parsed V2 annotations
+            const index = buildServiceIndex(artifacts, documents, createV2Annotations());
 
             // Then Common.Label entries are injected for both properties
             const idLabelKey = buildAnnotationIndexKey(ID_PROP_PATH, COMMON_LABEL);
@@ -185,8 +237,8 @@ describe('buildServiceIndex', () => {
             };
             const documents: { [key: string]: DocumentType } = {};
 
-            // When building the service index
-            buildServiceIndex(artifacts, documents);
+            // When building the service index with pre-parsed V2 annotations
+            buildServiceIndex(artifacts, documents, createV2Annotations());
 
             // Then the annotation file has synthetic targets for:
             //   1. OrderID Common.Text  (sap:text="OrderName")
@@ -222,7 +274,7 @@ describe('buildServiceIndex', () => {
             artifacts.fileSequence = [explicitAnnotationUri];
             // Provide a minimal annotation file so the index sees a real entry
             // (we simulate this by pre-building and then injecting)
-            const preIndex = buildServiceIndex(artifacts, documents);
+            const preIndex = buildServiceIndex(artifacts, documents, createV2Annotations());
             const textKey = buildAnnotationIndexKey(ID_PROP_PATH, COMMON_TEXT);
             const injectedSource = preIndex.annotations[textKey]?.['undefined']?.source;
 
