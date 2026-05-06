@@ -9,6 +9,7 @@ overrides:
   '@storybook/manager-api>store2': 2.14.4
   '@sap-ux/ui5-config>axios': ^1.16.0
   '@sap/service-provider-apis>axios': ^1.16.0
+  axios-logger>axios: ^1.16.0
   '@sap/subaccount-destination-service-provider>@sap/bas-sdk': ^3.13.6
   esbuild@<=0.24.2: '>=0.25.0'
   fast-xml-parser: '>=5.7.0'
@@ -289,8 +290,8 @@ importers:
         specifier: 5.2.11
         version: 5.2.11
       axios:
-        specifier: 1.15.2
-        version: 1.15.2
+        specifier: 1.16.0
+        version: 1.16.0(debug@4.4.3)
 
   examples/ui-prompting-examples:
     dependencies:
@@ -10715,9 +10716,6 @@ packages:
     resolution: {integrity: sha512-aR99oXhpEDGo0UuAlYcn2iGRds30k366Zfa05XWScR9QaQD4JYiP3/1Qt1u7YlefUOK+cn0CcwoL1oefavQUlQ==}
     peerDependencies:
       axios: 0.x || 1.x
-
-  axios@1.15.2:
-    resolution: {integrity: sha512-wLrXxPtcrPTsNlJmKjkPnNPK2Ihe0hn0wGSaTEiHRPxwjvJwT3hKmXF4dpqxmPO9SoNb2FsYXj/xEo0gHN+D5A==}
 
   axios@1.16.0:
     resolution: {integrity: sha512-6hp5CwvTPlN2A31g5dxnwAX0orzM7pmCRDLnZSX772mv8WDqICwFjowHuPs04Mc8deIld1+ejhtaMn5vp6b+1w==}
@@ -26297,14 +26295,6 @@ snapshots:
     dependencies:
       axios: 1.16.0(debug@4.4.3)
       is-retry-allowed: 2.2.0
-
-  axios@1.15.2:
-    dependencies:
-      follow-redirects: 1.16.0(debug@4.4.3)
-      form-data: 4.0.5
-      proxy-from-env: 2.1.0
-    transitivePeerDependencies:
-      - debug
 
   axios@1.16.0(debug@4.4.3):
     dependencies:
