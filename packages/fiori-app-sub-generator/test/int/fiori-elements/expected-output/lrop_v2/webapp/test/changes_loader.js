@@ -8,10 +8,10 @@ const connectorPath =
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
-sap.ui.define(['sap/base/util/merge', connectorPath], function (merge, FileListBaseConnector) {
+sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBaseConnector) {
     return merge({}, FileListBaseConnector, {
-        getFileList: function () {
-            return new Promise(function (resolve, reject) {
+        getFileList: function() {
+            return new Promise(function(resolve, reject) {
                 // If no changes found, maybe because the app was executed without doing a build.
                 // Check for changes folder and load the changes, if any.
                 $.ajax({
@@ -19,7 +19,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function (merge, FileListB
                     type: 'GET',
                     cache: false
                 })
-                    .then(function (sChangesFolderContent) {
+                    .then(function(sChangesFolderContent) {
                         var regex = /(\/changes\/[^"]*\.[a-zA-Z]*)/g;
                         var result = regex.exec(sChangesFolderContent);
                         var aChanges = [];
@@ -29,7 +29,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function (merge, FileListB
                         }
                         resolve(aChanges);
                     })
-                    .fail(function (obj) {
+                    .fail(function(obj) {
                         // No changes folder, then just resolve
                         resolve();
                     });

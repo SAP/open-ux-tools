@@ -1,24 +1,24 @@
 //Load the fake lrep connector only if ui5 version < 1.78
-var version = sap.ui.version.split('.');
+var version = sap.ui.version.split(".");
 if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
-    sap.ui.getCore().loadLibraries(['sap/ui/fl']);
-    sap.ui.require(['sap/ui/fl/FakeLrepConnector'], function (FakeLrepConnector) {
+    sap.ui.getCore().loadLibraries(["sap/ui/fl"]);
+    sap.ui.require(["sap/ui/fl/FakeLrepConnector"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
             create: function (oChange) {
                 return Promise.resolve();
             },
             stringToAscii: function (sCodeAsString) {
                 if (!sCodeAsString || sCodeAsString.length === 0) {
-                    return '';
+                    return "";
                 }
-                var sAsciiString = '';
+                var sAsciiString = "";
                 for (var i = 0; i < sCodeAsString.length; i++) {
-                    sAsciiString += sCodeAsString.charCodeAt(i) + ',';
+                    sAsciiString += sCodeAsString.charCodeAt(i) + ",";
                 }
                 if (
                     sAsciiString !== null &&
                     sAsciiString.length > 0 &&
-                    sAsciiString.charAt(sAsciiString.length - 1) === ','
+                    sAsciiString.charAt(sAsciiString.length - 1) === ","
                 ) {
                     sAsciiString = sAsciiString.substring(0, sAsciiString.length - 1);
                 }
@@ -41,17 +41,17 @@ if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78
 
                 //Get the content of the changes folder.
                 var aPromises = [];
-                var sCacheBusterFilePath = '/sap-ui-cachebuster-info.json';
+                var sCacheBusterFilePath = "/sap-ui-cachebuster-info.json";
                 return new Promise(function (resolve, reject) {
                     $.ajax({
                         url: sCacheBusterFilePath,
-                        type: 'GET',
+                        type: "GET",
                         cache: false
                     })
                         .then(function (oCachebusterContent) {
                             //we are looking for only change files
                             var aChangeFilesPaths = Object.keys(oCachebusterContent).filter(function (sPath) {
-                                return sPath.endsWith('.change');
+                                return sPath.endsWith(".change");
                             });
                             $.each(aChangeFilesPaths, function (index, sFilePath) {
                                 //now as we support MTA projects we need to take only changes which are relevant for
@@ -60,12 +60,12 @@ if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78
                                 //possible change file path patterns
                                 //webapp/changes/<change-file>
                                 //<MTA-HTML5-MODULE-NAME>/webapp/changes/<change-file>
-                                if (sFilePath.indexOf('changes') === 0) {
+                                if (sFilePath.indexOf("changes") === 0) {
                                     /*eslint-disable no-param-reassign*/
                                     aPromises.push(
                                         $.ajax({
-                                            url: '/' + sFilePath,
-                                            type: 'GET',
+                                            url: "/" + sFilePath,
+                                            type: "GET",
                                             cache: false
                                         }).then(function (sChangeContent) {
                                             return JSON.parse(sChangeContent);
@@ -81,8 +81,8 @@ if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78
                                     // Check for changes folder and load the changes, if any.
                                     if (aChanges.length === 0) {
                                         $.ajax({
-                                            url: '/changes/',
-                                            type: 'GET',
+                                            url: "/changes/",
+                                            type: "GET",
                                             cache: false
                                         })
                                             .then(function (sChangesFolderContent) {
@@ -93,7 +93,7 @@ if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78
                                                     aPromises.push(
                                                         $.ajax({
                                                             url: result[1],
-                                                            type: 'GET',
+                                                            type: "GET",
                                                             cache: false
                                                         }).then(function (sChangeContent) {
                                                             return JSON.parse(sChangeContent);
@@ -115,32 +115,32 @@ if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78
                                         aProcessedChanges = [];
                                     aCheckChanges.forEach(function (oChange) {
                                         var sChangeType = oChange.changeType;
-                                        if (sChangeType === 'addXML' || sChangeType === 'codeExt') {
+                                        if (sChangeType === "addXML" || sChangeType === "codeExt") {
                                             /*eslint-disable no-nested-ternary*/
                                             var sPath =
-                                                sChangeType === 'addXML'
+                                                sChangeType === "addXML"
                                                     ? oChange.content.fragmentPath
-                                                    : sChangeType === 'codeExt'
-                                                      ? oChange.content.codeRef
-                                                      : '';
+                                                    : sChangeType === "codeExt"
+                                                        ? oChange.content.codeRef
+                                                        : "";
                                             var sWebappPath = sPath.match(/webapp(.*)/);
-                                            var sUrl = '/' + sWebappPath[0];
+                                            var sUrl = "/" + sWebappPath[0];
                                             aChangePromises.push(
                                                 $.ajax({
                                                     url: sUrl,
-                                                    type: 'GET',
+                                                    type: "GET",
                                                     cache: false
                                                 }).then(function (oFileDocument) {
-                                                    if (sChangeType === 'addXML') {
-                                                        oChange.content.fragment =
-                                                            FakeLrepConnector.prototype.stringToAscii(
-                                                                oFileDocument.documentElement.outerHTML
-                                                            );
+                                                    if (sChangeType === "addXML") {
+                                                        oChange.content.fragment = FakeLrepConnector.prototype.stringToAscii(
+                                                            oFileDocument.documentElement.outerHTML
+                                                        );
                                                         oChange.content.selectedFragmentContent =
                                                             oFileDocument.documentElement.outerHTML;
-                                                    } else if (sChangeType === 'codeExt') {
-                                                        oChange.content.code =
-                                                            FakeLrepConnector.prototype.stringToAscii(oFileDocument);
+                                                    } else if (sChangeType === "codeExt") {
+                                                        oChange.content.code = FakeLrepConnector.prototype.stringToAscii(
+                                                            oFileDocument
+                                                        );
                                                         oChange.content.extensionControllerContent = oFileDocument;
                                                     }
                                                     return oChange;
@@ -163,7 +163,7 @@ if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78
                                             oResult.changes = aProcessedChanges;
                                             var oLrepChange = {
                                                 changes: oResult,
-                                                componentClassName: 'testNameSpace.lropv2'
+                                                componentClassName: "testNameSpace.lropv2"
                                             };
                                             resolve(oLrepChange);
                                         });
@@ -174,7 +174,7 @@ if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78
                                         oResult.changes = aProcessedChanges;
                                         var oLrepChange = {
                                             changes: oResult,
-                                            componentClassName: 'testNameSpace.lropv2'
+                                            componentClassName: "testNameSpace.lropv2"
                                         };
                                         resolve(oLrepChange);
                                     }
