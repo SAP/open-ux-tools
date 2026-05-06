@@ -806,12 +806,8 @@ describe('parse', () => {
             );
 
             // Property with both sap:text and sap:label
-            const productText = v2Annotations.find(
-                (a) => a.target.name === 'Product' && a.name === 'sap:text'
-            );
-            const productLabel = v2Annotations.find(
-                (a) => a.target.name === 'Product' && a.name === 'sap:label'
-            );
+            const productText = v2Annotations.find((a) => a.target.name === 'Product' && a.name === 'sap:text');
+            const productLabel = v2Annotations.find((a) => a.target.name === 'Product' && a.name === 'sap:label');
             expect(productText?.value).toBe('ProductName');
             expect(productText?.valueRange).toBeDefined();
             expect(productLabel?.value).toBe('Product ID');
@@ -821,9 +817,7 @@ describe('parse', () => {
             const productNameLabel = v2Annotations.find(
                 (a) => a.target.name === 'ProductName' && a.name === 'sap:label'
             );
-            const productNameText = v2Annotations.find(
-                (a) => a.target.name === 'ProductName' && a.name === 'sap:text'
-            );
+            const productNameText = v2Annotations.find((a) => a.target.name === 'ProductName' && a.name === 'sap:text');
             expect(productNameText).toBeUndefined();
             expect(productNameLabel?.value).toBe('Name');
             expect(productNameLabel?.valueRange).toBeDefined();
