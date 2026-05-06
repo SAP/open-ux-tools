@@ -70,8 +70,8 @@ export type Ui5Document =
           type: 'component';
           configuration?: {
               paths?: {
-                  src: string;
-                  test: string;
+                  src?: string;
+                  test?: string;
               };
           };
       })
@@ -79,8 +79,8 @@ export type Ui5Document =
           type: 'library';
           configuration?: {
               paths?: {
-                  src: string;
-                  test: string;
+                  src?: string;
+                  test?: string;
               };
           };
       })
@@ -88,8 +88,8 @@ export type Ui5Document =
           type: 'theme-library';
           configuration?: {
               paths?: {
-                  src: string;
-                  test: string;
+                  src?: string;
+                  test?: string;
               };
           };
       })

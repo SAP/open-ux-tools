@@ -50,9 +50,14 @@ async function getBaseDir(appRoot: string, memFs?: Editor): Promise<string> {
 /**
  * Get path to webapp.
  *
+ * For UI5 project type 'application', returns the configured `webapp` path (default: `webapp/`).
+ * For UI5 project type 'component', returns the configured `src` path (default: `src/`), treating it
+ * as the source root for compatibility with tooling that expects a webapp-like path.
+ * Callers that need the test path for component projects should use {@link getWebappTestPath} instead.
+ *
  * @param appRoot - root to the application
  * @param [memFs] - optional mem-fs editor instance
- * @returns - path to webapp folder
+ * @returns - path to webapp folder (or src folder for component projects)
  */
 export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<string> {
     // Shortcut: if no ui5.yaml exists, skip YAML parsing and use the default webapp path
@@ -79,11 +84,13 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
 /**
  * Get path to test.
  *
+ * For UI5 project type 'application', returns `<webapp>/test/` (default: `webapp/test/`).
+ * For UI5 project type 'component', returns the configured `test` path (default: `test/`) directly,
+ * as component projects keep test files in a top-level `test/` folder separate from `src/`.
+ *
  * @param appRoot - root to the application
  * @param [memFs] - optional mem-fs editor instance
  * @returns - path to test folder
- * @throws {Error} if ui5.yaml or 'type' cannot be read
- * @throws {Error} if project type is not 'application', 'component', 'library', 'theme-library' or 'module'
  */
 export async function getWebappTestPath(appRoot: string, memFs?: Editor): Promise<string> {
     // Shortcut: if no ui5.yaml exists, skip YAML parsing and use the default test path

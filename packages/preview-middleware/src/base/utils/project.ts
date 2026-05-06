@@ -14,7 +14,7 @@ function getComponentPathPrefix(
     utils: MiddlewareUtils | undefined,
     prefixType: 'test-resources' | 'resources'
 ): string | undefined {
-    if (typeof utils !== 'object') {
+    if (!utils) {
         return undefined;
     }
     const project = utils.getProject?.();

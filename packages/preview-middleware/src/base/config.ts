@@ -487,7 +487,7 @@ export function createFlpTemplateConfig(
     const flex = getFlexSettings();
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
-    const rootBasePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
+    const rootBasePath = posix.relative(posix.dirname(config.path), '/') || '.';
     const appBasePath = getResourcesPathPrefix(utils) ?? rootBasePath;
     return {
         appBasePath: appBasePath,
