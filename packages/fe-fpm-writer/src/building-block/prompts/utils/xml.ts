@@ -35,7 +35,7 @@ export function getXPathStringsForXmlFile(
         const errorHandler = (level: string, message: string) => {
             throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
         };
-        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
+        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
         const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
 
         // check macros namespace and page macro definition
@@ -100,7 +100,7 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
     const errorHandler = (level: string, message: string): void => {
         throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
     };
-    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
+    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
     const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
     for (const element of elements) {
         const id = element.getAttributeNode('id')?.value;

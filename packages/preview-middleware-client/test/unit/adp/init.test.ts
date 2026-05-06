@@ -23,6 +23,10 @@ jest.mock('open/ux/preview/client/adp/extend-controller', () => ({
     initExtendControllerPlugin: extendControllerServiceMock
 }));
 
+jest.mock('open/ux/preview/client/adp/change-file-validator', () => ({
+    initOrphanedChangeDetection: jest.fn().mockResolvedValue(undefined)
+}));
+
 describe('adp', () => {
     const addMenuItemSpy = jest.fn();
     let initOutlineSpy: jest.SpyInstance;
