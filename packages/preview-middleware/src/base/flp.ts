@@ -323,9 +323,7 @@ export class FlpSandbox {
         await this.setApplicationDependencies();
         const patchedRouterBaseUrl = req['ui5-patched-router']?.baseUrl ?? '';
         const resourcesPrefix = getResourcesPathPrefix(this.utils);
-        const baseUrl = resourcesPrefix
-            ? posix.join(patchedRouterBaseUrl, resourcesPrefix)
-            : patchedRouterBaseUrl;
+        const baseUrl = resourcesPrefix ? posix.join(patchedRouterBaseUrl, resourcesPrefix) : patchedRouterBaseUrl;
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, patchedRouterBaseUrl);
         this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
@@ -529,9 +527,7 @@ export class FlpSandbox {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             const patchedRouterBaseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
             const resourcesPrefix = getResourcesPathPrefix(this.utils);
-            const baseUrl = resourcesPrefix
-                ? posix.join(patchedRouterBaseUrl, resourcesPrefix)
-                : patchedRouterBaseUrl;
+            const baseUrl = resourcesPrefix ? posix.join(patchedRouterBaseUrl, resourcesPrefix) : patchedRouterBaseUrl;
             const ui5Version = await this.getUi5Version(
                 //use protocol from request header referer as fallback for connect API (karma test runner)
                 'protocol' in req
