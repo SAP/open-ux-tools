@@ -37,7 +37,7 @@
     "@sap-ux/ui5-config": "workspace:*",
     "@sap-ux/nodejs-utils": "workspace:*",
     "@sap/mta-lib": "1.7.4",
-    "@sap/cf-tools": "3.3.0",
+    "@sap/cf-tools": "3.3.1",
     "semver": "7.7.4",
     "ejs": "3.1.10",
     "i18next": "25.10.10",

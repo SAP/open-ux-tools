@@ -26,8 +26,8 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "@sap/cf-tools": "3.3.0",
-        "axios": "1.15.0",
+        "@sap/cf-tools": "3.3.1",
+        "axios": "1.16.0",
         "@sap/bas-sdk": "3.13.6"
     },
     "devDependencies": {
