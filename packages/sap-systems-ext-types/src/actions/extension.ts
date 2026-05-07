@@ -24,6 +24,7 @@ export const UPDATE_SYSTEM_STATUS = 'UPDATE_SYSTEM_STATUS' as const;
 
 export interface CreateNewSystem {
     type: typeof CREATE_NEW_SYSTEM;
+    payload?: { systemInfo: BackendSystem };
 }
 
 export interface SystemInfo {

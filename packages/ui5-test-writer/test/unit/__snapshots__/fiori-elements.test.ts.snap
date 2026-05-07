@@ -12945,9 +12945,7 @@ sap.ui.define([
             Then.onTheTravelList.onFilterBar().iCheckFilterField(\\"Kunden ID\\");
         });
 
-        opaTest(\\"Check table columns and actions\\", function (Given, When, Then) {
 
-        });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
@@ -14807,9 +14805,7 @@ sap.ui.define([
         });
 
 
-        opaTest(\\"Check table columns and actions\\", function (Given, When, Then) {
 
-        });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {

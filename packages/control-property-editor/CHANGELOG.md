@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.7.25
+
+### Patch Changes
+
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+
+## 0.7.24
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
 ## 0.7.23
 
 ### Patch Changes

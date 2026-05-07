@@ -1,5 +1,15 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.2.36
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/text-document-utils@0.3.4
+    - @sap-ux/odata-annotation-core@0.2.18
+    - @sap-ux/odata-entity-model@0.3.7
+    - @sap-ux/odata-vocabularies@0.4.31
+
 ## 0.2.35
 
 ### Patch Changes
