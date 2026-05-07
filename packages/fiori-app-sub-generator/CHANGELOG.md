@@ -1,5 +1,27 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.13.33
+
+### Patch Changes
+
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/odata-service-inquirer@2.20.21
+    - @sap-ux/telemetry@0.6.104
+    - @sap-ux/ui5-info@0.13.21
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/odata-service-writer@0.31.12
+    - @sap-ux/ui5-application-inquirer@0.17.21
+    - @sap-ux/fiori-elements-writer@2.8.136
+    - @sap-ux/fiori-freestyle-writer@2.5.103
+    - @sap-ux/launch-config@0.10.90
+    - @sap-ux/project-access@1.36.3
+    - @sap-ux/cap-config-writer@0.12.97
+    - @sap-ux/annotation-generator@0.4.55
+
 ## 0.13.32
 
 ### Patch Changes
