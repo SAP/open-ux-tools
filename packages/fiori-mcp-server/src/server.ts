@@ -244,11 +244,14 @@ export class FioriFunctionalityServer {
      * Connects the server to a StdioServerTransport and begins listening for requests.
      */
     async run(): Promise<void> {
-        await this.setupTelemetry();
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         logger.info(
             `SAP Fiori - Model Context Protocol (MCP) server (@sap-ux/fiori-mcp-server@${packageJson.version}) running on stdio`
         );
+        // Telemetry init runs after transport is connected so it never blocks the MCP handshake.
+        // This is required for Claude Desktop's built-in Node runner, where a blocking await here
+        // causes the process to crash before the client receives the initialize response.
+        this.setupTelemetry().catch((error) => logger.error(`Telemetry init error: ${error}`));
     }
 }
