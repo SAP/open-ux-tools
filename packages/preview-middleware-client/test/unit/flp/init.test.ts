@@ -168,7 +168,7 @@ describe('flp/init', () => {
                 {
                     name: 'Valid client',
                     value: '001',
-                    expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib,&sap-client=001'
+                    expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib%2C&sap-client=001'
                 },
                 {
                     name: 'Client contains non number',
