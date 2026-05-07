@@ -470,26 +470,30 @@ function createMetadataElementNodeForType(
     };
     // OData V2: read inline sap:* attributes from Property elements
     if (context.v2annotations) {
-        for (const attribute of element.attributes) {
-            const attrKey = attribute.key;
-            if (typeof attrKey === 'string' && attrKey.startsWith('sap:')) {
-                const attrValue = attribute.value;
-                if (typeof attrValue === 'string') {
-                    const annotation: V2Annotation = {
-                        name: attrKey,
-                        value: attrValue,
-                        target: metadataElement,
-                        valueRange: transformRange(attribute.syntax.value),
-                        nameRange: transformRange(attribute.syntax.key),
-                        range: transformRange(attribute.position)
-                    };
-                    context.v2annotations.push(annotation);
-                }
-            }
-        }
+        collectV2Annotations(context, element, metadataElement);
     }
 
     return metadataElement;
+}
+
+function collectV2Annotations(context: Context, element: XMLElement, target: MetadataElement): void {
+    for (const attribute of element.attributes) {
+        const attrKey = attribute.key;
+        if (typeof attrKey === 'string' && attrKey.startsWith('sap:')) {
+            const attrValue = attribute.value;
+            if (typeof attrValue === 'string') {
+                const annotation: V2Annotation = {
+                    name: attrKey,
+                    value: attrValue,
+                    target,
+                    valueRange: transformRange(attribute.syntax.value),
+                    nameRange: transformRange(attribute.syntax.key),
+                    range: transformRange(attribute.position)
+                };
+                context.v2annotations!.push(annotation);
+            }
+        }
+    }
 }
 
 /**
