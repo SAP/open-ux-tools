@@ -56,6 +56,7 @@
 .newsListItemContainer {
     gap: 0rem;
 }
+
 .newsListItemContainer .sapMTitle {
     display: none;
 }
