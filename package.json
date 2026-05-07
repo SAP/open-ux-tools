@@ -72,7 +72,7 @@
         "knip": "knip --dependencies",
         "knip:production": "knip --production --dependencies",
         "knip:json": "knip --reporter json --dependencies",
-        "dependencyAnalysis": "node ./docs/dependencyManagement/generate-dependency-update-plan.js"
+        "dependencyAnalysis": "node ./docs/dependencyManagement/generate-dependency-update-plan.cjs"
     },
     "engines": {
         "npm": "please-use-pnpm",

@@ -49,7 +49,7 @@ async function main() {
   console.log(`📦 Step 1/${totalSteps}: Collecting dependencies from workspace...`);
   const collectedDepsPath = path.join(OUTPUT_DIR, 'collected-deps.json');
 
-  execSync(`node "${path.join(SCRIPT_DIR, 'collect-dependencies.js')}" > "${collectedDepsPath}"`, {
+  execSync(`node "${path.join(SCRIPT_DIR, 'collect-dependencies.cjs')}" > "${collectedDepsPath}"`, {
     cwd: ROOT_DIR,
     stdio: ['inherit', 'pipe', 'pipe'],
     encoding: 'utf8'
@@ -87,7 +87,7 @@ async function main() {
 
     try {
       const output = execSync(
-        `node "${path.join(SCRIPT_DIR, 'check-dependency-versions.js')}" "${collectedDepsPath}"`,
+        `node "${path.join(SCRIPT_DIR, 'check-dependency-versions.cjs')}" "${collectedDepsPath}"`,
         {
           cwd: ROOT_DIR,
           encoding: 'utf8',
@@ -125,7 +125,7 @@ async function main() {
 
     try {
       const output = execSync(
-        `node "${path.join(SCRIPT_DIR, 'check-unused-dependencies.js')}"`,
+        `node "${path.join(SCRIPT_DIR, 'check-unused-dependencies.cjs')}"`,
         {
           cwd: ROOT_DIR,
           encoding: 'utf8',
@@ -233,7 +233,7 @@ async function main() {
   const markdownPath = path.join(OUTPUT_DIR, 'DEPENDENCY_UPDATE_PLAN.md');
 
   execSync(
-    `node "${path.join(SCRIPT_DIR, 'create-dependency-plan-markdown.js')}" "${versionReportPath}" "${markdownPath}"`,
+    `node "${path.join(SCRIPT_DIR, 'create-dependency-plan-markdown.cjs')}" "${versionReportPath}" "${markdownPath}"`,
     {
       cwd: ROOT_DIR,
       stdio: 'inherit'

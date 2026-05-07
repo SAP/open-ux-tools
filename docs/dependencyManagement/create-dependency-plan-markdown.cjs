@@ -504,7 +504,7 @@ md += `---
 
 \`\`\`bash
 # From repository root
-node ./docs/dependencyManagement/generate-dependency-update-plan.js
+node ./docs/dependencyManagement/generate-dependency-update-plan.cjs
 \`\`\`
 
 ### Success Metrics
