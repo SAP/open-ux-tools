@@ -1,5 +1,74 @@
 # @sap-ux/ui5-application-writer
 
+## 1.8.8
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-config@0.30.4
+
+## 1.8.7
+
+### Patch Changes
+
+- 165a6c2: feat: support ESLint 10
+
+## 1.8.6
+
+### Patch Changes
+
+- 03d3ea1: fix(deps): Update dependency @ui5/manifest to v1.85.0
+
+## 1.8.5
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/ui5-config@0.30.3
+
+## 1.8.4
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- Updated dependencies [f1e4481]
+    - @sap-ux/ui5-config@0.30.2
+
+## 1.8.3
+
+### Patch Changes
+
+- c53a4ba: chore(ui5-application-writer): upgrade shared devDependencies (jest 30, i18next 25)
+    - @sap-ux/ui5-config@0.30.1
+
+## 1.8.2
+
+### Patch Changes
+
+- a41533f: chore(ui5-application-writer): upgrade runtime dependencies (@ui5/manifest 1.84.0, i18next 25.8.20)
+- Updated dependencies [a41533f]
+    - @sap-ux/ui5-config@0.30.1
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+
+## 1.8.0
+
+### Minor Changes
+
+- b5c7d47: The eslint option now accepts both boolean (for backwards compatibility) and object with profile property. ESLint is now enabled by default for all new applications unless explicitly disabled.
+
+## 1.7.20
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+    - @sap-ux/ui5-config@0.29.21
+
 ## 1.7.19
 
 ### Patch Changes

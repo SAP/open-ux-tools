@@ -63,7 +63,7 @@ export class FioriFunctionalityServer {
                         mimeType: 'image/png'
                     }
                 ],
-                title: 'SAP Fiori MCP Server'
+                title: 'MCP Server for SAP Fiori'
             },
             {
                 capabilities: {

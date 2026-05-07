@@ -1,5 +1,101 @@
 # @sap-ux/ui-components
 
+## 2.1.14
+
+### Patch Changes
+
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+
+## 2.1.13
+
+### Patch Changes
+
+- 7f8a712: Adjust toolbar border and separator color variables
+
+## 2.1.12
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
+## 2.1.11
+
+### Patch Changes
+
+- f77f003: fix(deps): update dependency sanitize-html to v2.17.3 [security]
+
+## 2.1.10
+
+### Patch Changes
+
+- 4357b0b: generate opa5 tests from app info
+
+## 2.1.9
+
+### Patch Changes
+
+- 9357457: fix(ui-components): add inline code block styling for VS Code webviews
+
+## 2.1.8
+
+### Patch Changes
+
+- 10f83b6: UIActionButton, UIDefaultButton - adjust `min height` after latest Fluent UI update
+
+## 2.1.7
+
+### Patch Changes
+
+- f101671: Add line-height to UITranslationInput text
+
+## 2.1.6
+
+### Patch Changes
+
+- 6b622e0: error, warning, info boxes have rounded corners
+
+## 2.1.5
+
+### Patch Changes
+
+- c53a4ba: chore(ui-components): upgrade @testing-library/jest-dom 5.17.0 → 6.9.1; upgrade sass-loader 13→16, style-loader 3→4, css-loader 6→7; implement custom jsdom env for writable window.location
+
+## 2.1.4
+
+### Patch Changes
+
+- a41533f: chore(ui-components): upgrade runtime dependencies (@fluentui/react 8.125.5, sanitize-html 2.17.2)
+
+## 2.1.3
+
+### Patch Changes
+
+- 7f2689f: `UITranslationInput` - removed unnecessary <span> elements and left-aligned message content.
+
+## 2.1.2
+
+### Patch Changes
+
+- addfdee: Add `GoToData` icon to `UiIcons` enum and `initIcons()` function
+
+## 2.1.1
+
+### Patch Changes
+
+- 59c6ac3: `UITranslationInput` — new property `invertedCalloutTheme` to toggle between normal and inverted callout styles. Default is `false`. Previously `invertedCalloutTheme` was applied by default.
+
+## 2.1.0
+
+### Minor Changes
+
+- 24bd091: feat(ui-component): add form, form field and mighty pen icons
+
+## 2.0.3
+
+### Patch Changes
+
+- 12b8b2e: Change icon color to use default color variable
+
 ## 2.0.2
 
 ### Patch Changes

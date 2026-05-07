@@ -1,5 +1,25 @@
 # @sap-ux/logger
 
+## 0.8.5
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+
+## 0.8.4
+
+### Patch Changes
+
+- c53a4ba: chore(logger): upgrade shared devDependencies (jest 30)
+
+## 0.8.3
+
+### Patch Changes
+
+- a41533f: fix(logger): upgrade winston dependencies and fix logform type compatibility
+    - Upgrade winston 3.11.0 → 3.19.0 and winston-transport 4.7.0 → 4.9.0
+    - Cast logform TransformableInfo `label` and `labelColor` fields to `string | undefined` for compatibility with logform 2.7.0
+
 ## 0.8.2
 
 ### Patch Changes

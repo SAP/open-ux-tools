@@ -1,3 +1,5 @@
+import type { Editor } from 'mem-fs-editor';
+
 export const SupportedPageTypes: { [id: string]: string } = {
     'sap.fe.templates.ListReport': 'ListReport',
     'sap.fe.templates.ObjectPage': 'ObjectPage',
@@ -25,6 +27,13 @@ export type FEV4OPAConfig = {
     filterBarItems?: string[];
 };
 
+export type JourneyParams = {
+    startPages: string[];
+    startLR: string | undefined;
+    navigatedOP: string | undefined;
+    hideFilterBar: boolean;
+};
+
 export type FEV4ManifestTarget = {
     type?: string;
     name?: string;
@@ -40,6 +49,13 @@ export type FEV4ManifestTarget = {
                         route?: string;
                     };
                 };
+            };
+            views?: {
+                paths?: Array<{
+                    primary?: unknown[];
+                    secondary?: unknown[];
+                    defaultPath?: string;
+                }>;
             };
         };
     };
@@ -73,7 +89,161 @@ export interface FFOPAConfig {
     ui5Theme?: string;
 }
 
-export type FeatureData = {
+export type ObjectPageNavigationParents = {
+    parentLRName?: string;
+    parentOPName?: string;
+    parentOPTableSection?: string;
+};
+
+export type SectionFormField = {
+    property: string;
+};
+
+export type TableColumn = {
+    header?: string;
+};
+
+export type TableColumnFeatureData = Record<string, TableColumn>;
+
+export type BodySubSectionFeatureData = {
+    id: string;
+    navigationProperty?: string;
+    isTable: boolean;
+    custom: boolean;
+    order: number;
+    fields: SectionFormField[];
+    tableColumns: TableColumnFeatureData;
+};
+
+export type BodySectionFeatureData = {
+    id: string;
+    navigationProperty?: string;
+    isTable: boolean;
+    custom: boolean;
+    order: number;
+    fields: SectionFormField[];
+    tableColumns: TableColumnFeatureData;
+    subSections: BodySubSectionFeatureData[];
+};
+
+export type ObjectPageFeatures = {
+    name?: string;
+    navigationParents?: ObjectPageNavigationParents;
+    headerTitle?: string;
+    headerDescription?: string;
+    headerSections?: HeaderSectionFeatureData[];
+    bodySections?: BodySectionFeatureData[];
+};
+
+export type ListReportFeatures = {
+    name?: string;
+    createButton?: {
+        enabled?: boolean | string;
+        visible?: boolean;
+        dynamicPath?: string;
+    };
+    deleteButton?: {
+        enabled?: boolean | string;
+        visible: boolean;
+        dynamicPath?: string;
+    };
+    filterBarItems?: string[];
+    tableColumns?: Record<string, Record<string, string | number | boolean>>;
+    toolBarActions?: ActionButtonState[];
+    isALP?: boolean;
+};
+
+export interface ActionButtonState {
+    label: string;
+    action: string;
+    visible: boolean;
+    /**
+     * Indicates whether the action button is enabled.
+     * - true: Button is enabled and can be invoked
+     * - false: Button is disabled
+     * - 'dynamic': The state is controlled by a dynamic path annotation (e.g., Core.OperationAvailable)
+     */
+    enabled: boolean | 'dynamic';
+    /**
+     * If the enabled state is dynamic, this contains the path to the control property.
+     * For example: "_it/__OperationControl/deductDiscount"
+     */
+    dynamicPath?: string;
+    /**
+     * The invocation grouping type if specified (e.g., "Isolated", "ChangeSet").
+     */
+    invocationGrouping?: string;
+}
+
+export type FPMFeatures = {
+    name?: string;
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
 };
+
+export type AppFeatures = {
+    listReport?: ListReportFeatures;
+    objectPages?: ObjectPageFeatures[];
+    fpm?: FPMFeatures;
+};
+
+export type WriteContext = {
+    config: FEV4OPAConfig;
+    rootV4TemplateDirPath: string;
+    testOutDirPath: string;
+    editor: Editor;
+    journeyParams: JourneyParams;
+};
+
+export type FormField = {
+    fieldGroupQualifier?: string;
+    field?: string;
+    targetAnnotation?: string;
+};
+
+export type HeaderSectionFeatureData = {
+    facetId?: string;
+    title?: string;
+    custom?: boolean;
+    collection?: boolean;
+    microChart?: boolean;
+    form?: boolean;
+    stashed?: boolean | string;
+    fields?: FormField[];
+};
+
+export interface ButtonState {
+    visible: boolean;
+    /**
+     * - true: Button is enabled and can be clicked
+     * - false: Button is disabled
+     * - 'dynamic': The state is controlled by a dynamic path annotation (e.g., Path="__EntityControl/Deletable")
+     */
+    enabled: boolean | 'dynamic';
+    dynamicPath?: string;
+}
+
+export interface ButtonVisibilityResult {
+    /**
+     * State of the Create button based on Capabilities.InsertRestrictions annotation.
+     */
+    create: ButtonState;
+    /**
+     * State of the Delete button based on Capabilities.DeleteRestrictions annotation.
+     */
+    delete: ButtonState;
+}
+
+/**
+ * Result interface for action button checks.
+ */
+export interface ActionButtonsResult {
+    /**
+     * List of action buttons found in the UI.LineItem annotation.
+     */
+    actions: ActionButtonState[];
+    /**
+     * The entity type name that these actions belong to.
+     */
+    entityType: string;
+}

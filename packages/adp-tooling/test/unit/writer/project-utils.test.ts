@@ -73,7 +73,8 @@ const cfData = {
         serviceInfo: {
             serviceKeys: mockServiceKeys,
             serviceInstance: { guid: 'service-guid', name: 'service-name' }
-        }
+        },
+        spaceGuid: 'space-guid'
     },
     project: {
         name: 'my-test-cf-project',

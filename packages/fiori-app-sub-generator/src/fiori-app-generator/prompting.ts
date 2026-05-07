@@ -306,6 +306,10 @@ export async function createUI5ApplicationPromptOptions(
         },
         [ui5AppInquirerPromptNames.enableVirtualEndpoints]: {
             hide: service.capService?.capType === 'Java'
+        },
+        [ui5AppInquirerPromptNames.enableEslint]: {
+            hide: true,
+            default: true
         }
     };
     const promptOptions = merge(preMergedPromptOpts, promptSettings);

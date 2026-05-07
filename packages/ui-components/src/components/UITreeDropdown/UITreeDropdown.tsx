@@ -233,7 +233,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
                         handleTabKey: FocusZoneTabbableElements.none,
                         onFocus: () => {
                             const openerItem = this.defaultSubmenuFocus?.parent;
-                            if (openerItem && openerItem.item.value === item.value && openerItem.level === level) {
+                            if (openerItem?.item.value === item.value && openerItem.level === level) {
                                 this.focusItemWithValue(
                                     this.state.value,
                                     this.defaultSubmenuFocus?.parent?.item.subMenuProps?.items

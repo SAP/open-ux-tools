@@ -35,6 +35,7 @@ export function SystemMain(): ReactElement {
         setName,
         setSystemType,
         setUrl,
+        setServicePath,
         setClient,
         setUsername,
         setPassword,
@@ -52,7 +53,11 @@ export function SystemMain(): ReactElement {
             ) : (
                 <div>
                     {addNewSapSystem && (
-                        <SystemTypes setSystemType={setSystemType} setAuthenticationType={setAuthenticationType} />
+                        <SystemTypes
+                            setSystemType={setSystemType}
+                            setAuthenticationType={setAuthenticationType}
+                            systemType={systemInfo?.systemType}
+                        />
                     )}
 
                     <SystemInfo
@@ -61,6 +66,7 @@ export function SystemMain(): ReactElement {
                         setName={setName}
                         setConnectionType={setConnectionType}
                         setUrl={setUrl}
+                        setServicePath={setServicePath}
                         setClient={setClient}
                         setUsername={setUsername}
                         setPassword={setPassword}

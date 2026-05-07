@@ -233,7 +233,8 @@ export function getCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig {
             serviceInstanceGuid: params.serviceInstanceGuid,
             backendUrls: params.backendUrls,
             oauthPaths: params.oauthPaths,
-            serviceInfo: params.serviceInfo
+            serviceInfo: params.serviceInfo,
+            spaceGuid: params.spaceGuid
         },
         project: {
             name: params.attributeAnswers.projectName,

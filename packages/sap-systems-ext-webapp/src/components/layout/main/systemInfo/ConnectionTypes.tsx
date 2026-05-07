@@ -1,38 +1,42 @@
 import React from 'react';
 import type { ReactElement } from 'react';
 import type { ConnectionType } from '@sap-ux/store';
-import { UIChoiceGroup } from '@sap-ux/ui-components';
+import type { UIDropdownOption } from '@sap-ux/ui-components';
+import { UIDropdown } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
 
 interface ConnectionTypeProps {
+    readonly connectionType?: ConnectionType;
     readonly setConnectionType: (connType: ConnectionType) => void;
 }
 
 /**
- * Renders the connection types radio buttons.
+ * Renders the connection types dropdown.
  *
  * @param props - system types props
+ * @param props.connectionType - the current connection type
  * @param props.setConnectionType - function to set the connection type
  * @returns - the system types JSX element
  */
-export function ConnectionTypes({ setConnectionType }: Readonly<ConnectionTypeProps>): ReactElement {
+export function ConnectionTypes({ connectionType, setConnectionType }: Readonly<ConnectionTypeProps>): ReactElement {
     const { t } = useTranslation();
 
-    const connectionTypeOptions: { key: ConnectionType; text: string }[] = [
+    const connectionTypeOptions: UIDropdownOption[] = [
         { key: 'abap_catalog', text: t('options.abapCatalog') },
-        { key: 'odata_service', text: t('options.serviceUrlEndpoint') }
+        { key: 'odata_service', text: t('options.serviceUrlEndpoint') },
+        { key: 'generic_host', text: t('options.genericHost') }
     ];
 
     return (
         <div className="store-text-field">
-            <label className="store-detail-label">{t('labels.connectionType')}</label>
-            <UIChoiceGroup
-                name="connectionType"
+            <label className="store-detail-label">
+                {t('labels.connectionType')} <span className="mandatory-asterisk">*</span>
+            </label>
+            <UIDropdown
                 id="connType"
                 options={connectionTypeOptions}
-                defaultSelectedKey={'abap_catalog'}
-                inline={true}
-                onChange={(e, option) => {
+                selectedKey={connectionType ?? 'abap_catalog'}
+                onChange={(event, option) => {
                     setConnectionType(option?.key as ConnectionType);
                 }}
             />

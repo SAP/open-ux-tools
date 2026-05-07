@@ -1,5 +1,45 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.17
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/text-document-utils@0.3.4
+    - @sap-ux/odata-annotation-core@0.2.18
+    - @sap-ux/cds-annotation-parser@0.2.36
+    - @sap-ux/odata-vocabularies@0.4.31
+
+## 0.7.16
+
+### Patch Changes
+
+- c53a4ba: chore(cds-odata-annotation-converter): upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/odata-vocabularies@0.4.30
+    - @sap-ux/cds-annotation-parser@0.2.35
+
+## 0.7.15
+
+### Patch Changes
+
+- a41533f: chore(cds-odata-annotation-converter): upgrade i18next 25.8.18 → 25.8.20
+
+## 0.7.14
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
+## 0.7.13
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core@0.2.17
+- @sap-ux/odata-vocabularies@0.4.29
+- @sap-ux/cds-annotation-parser@0.2.34
+
 ## 0.7.12
 
 ### Patch Changes

@@ -58,10 +58,7 @@ export const ProxyEventHandlers = {
         const header = proxyRes?.headers?.['set-cookie'];
         if (header?.length) {
             for (let i = header.length - 1; i >= 0; i--) {
-                const cookie = header[i].replace(
-                    /\s?Domain=[^\s]*\s?|\s?SameSite=[^\s]*\s?|\s?Secure[^\s]*\s?|\s?Partitioned[^\s]*\s?/gi,
-                    ''
-                );
+                const cookie = header[i].replace(/\s?(?:Domain|SameSite|Secure|Partitioned)[^\s]*\s?/gi, '');
                 header[i] = cookie;
             }
         }
@@ -165,6 +162,24 @@ export const PathRewriters = {
     },
 
     /**
+     * Append additional query parameters to every proxied request path.
+     *
+     * @param params map of query parameter key-value pairs
+     * @returns a path rewrite function
+     */
+    appendParams(params: Record<string, string>): (path: string) => string {
+        const queryString = Object.entries(params)
+            .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+            .join('&');
+        return (path: string) => {
+            if (!queryString) {
+                return path;
+            }
+            return path.includes('?') ? `${path}&${queryString}` : `${path}?${queryString}`;
+        };
+    },
+
+    /**
      * Create a chain of rewrite function calls based on the provided configuration.
      *
      * @param config backend configuration
@@ -182,7 +197,16 @@ export const PathRewriters = {
             functions.push(PathRewriters.replacePrefix(config.path, config.pathReplace));
         }
         if (config.client) {
+            if (!/^\d{1,3}$/.test(config.client)) {
+                log.warn(
+                    `Invalid "client" value "${config.client}": expected a 1-3 digit SAP client number. ` +
+                        `Use the "params" property to append additional query parameters.`
+                );
+            }
             functions.push(PathRewriters.replaceClient(config.client));
+        }
+        if (config.params) {
+            functions.push(PathRewriters.appendParams(config.params));
         }
         if (config.bsp) {
             functions.push(PathRewriters.convertAppDescriptorToManifest(config.bsp));
@@ -412,11 +436,18 @@ async function updateProxyConfigFromStore(
     // check if system credentials are stored in the store
     try {
         const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
+        let backendUrl = localBackend.url;
+        if (localBackend.connectPath) {
+            const normalizedPath = localBackend.connectPath.startsWith('/')
+                ? localBackend.connectPath
+                : `/${localBackend.connectPath}`;
+            backendUrl = new URL(normalizedPath, localBackend.url).href;
+        }
         const system =
-            (await systemStore.read(new BackendSystemKey({ url: localBackend.url, client: localBackend.client }))) ??
+            (await systemStore.read(new BackendSystemKey({ url: backendUrl, client: localBackend.client }))) ??
             ({
                 name: '<unknown>',
-                url: localBackend.url,
+                url: backendUrl,
                 authenticationType: validateAuthType(localBackend.authenticationType)
             } as BackendSystem);
         // Auth type is determined from app config as we may have multiple stored systems with the same url/client using different auth types

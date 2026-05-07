@@ -1,5 +1,35 @@
 # @sap-ux/control-property-editor
 
+## 0.7.25
+
+### Patch Changes
+
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+
+## 0.7.24
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
+## 0.7.23
+
+### Patch Changes
+
+- c53a4ba: chore(control-property-editor): upgrade http-proxy-middleware 2.x → 3.x; upgrade shared devDependencies (jest 30)
+
+## 0.7.22
+
+### Patch Changes
+
+- 55417bb: fix(deps): update dependency i18next to v25.8.18
+
+## 0.7.21
+
+### Patch Changes
+
+- 1d8ab37: fix(deps): update dependency body-parser to v2
+
 ## 0.7.20
 
 ### Patch Changes

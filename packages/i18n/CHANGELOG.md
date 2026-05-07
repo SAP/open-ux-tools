@@ -1,5 +1,18 @@
 # @sap-ux/i18n
 
+## 0.3.11
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/text-document-utils@0.3.4
+
+## 0.3.10
+
+### Patch Changes
+
+- a41533f: chore(i18n): upgrade vscode-languageserver-textdocument 1.0.11 → 1.0.12
+
 ## 0.3.9
 
 ### Patch Changes

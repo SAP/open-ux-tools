@@ -16,7 +16,8 @@ export {
     ToolsSuiteTelemetryInitSettings,
     TelemetryHelperProperties,
     TelemetryEvent,
-    ToolsId
+    ToolsId,
+    getIdeType
 } from './tooling-telemetry';
 
 /* Decorator and measurements utils */

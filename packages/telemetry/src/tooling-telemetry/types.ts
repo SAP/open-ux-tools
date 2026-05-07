@@ -41,6 +41,23 @@ export enum DeployTarget {
     NO_DEPLOY_CONFIG = 'NO_DEPLOY_CONFIG'
 }
 
+/**
+ * IDE/editor types that can host the telemetry client.
+ * Used to identify VSCode, its forks (Cursor, Windsurf, etc..), and other environments.
+ */
+export type IdeType =
+    | 'vscode'
+    | 'vscode-insiders'
+    | 'cursor'
+    | 'windsurf'
+    | 'antigravity'
+    | 'trae'
+    | 'kiro'
+    | 'vscodium'
+    | 'code-server'
+    | 'appstudio'
+    | 'unknown';
+
 export enum CommonProperties {
     DevSpace = 'cmn.devspace',
     AppStudio = 'cmn.appstudio',
@@ -55,7 +72,8 @@ export enum CommonProperties {
     AppProgrammingLanguage = 'cmn.appLanguage',
     TemplateId = 'cmn.templateId',
     TemplateVersion = 'cmn.templateVersion',
-    ApplicationType = 'cmn.applicationType'
+    ApplicationType = 'cmn.applicationType',
+    IdeType = 'cmn.ideType'
 }
 
 export type InternalFeature = 'internal' | 'external';
@@ -80,6 +98,7 @@ export interface CommonFioriProjectProperties extends TelemetryProperties {
     [CommonProperties.TemplateId]: string;
     [CommonProperties.TemplateVersion]: string;
     [CommonProperties.ApplicationType]: AppType;
+    [CommonProperties.IdeType]: IdeType;
 }
 
 export type TelemetryEvent = {

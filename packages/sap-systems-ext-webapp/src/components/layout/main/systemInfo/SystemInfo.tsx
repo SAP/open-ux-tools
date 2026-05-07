@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ReactElement } from 'react';
-import type { BackendSystem, ConnectionType, SystemType } from '@sap-ux/store';
+import type { ConnectionType, SystemType } from '@sap-ux/store';
+import type { SystemInfo as ISystemInfo } from '../../../../types';
 import { ConnectionName } from './ConnectionName';
 import { ConnectionTypes } from './ConnectionTypes';
 import { OnPremSystem } from './OnPremSystem';
@@ -9,11 +10,12 @@ import { CloudSystem } from './CloudSystem';
 import '../../../../styles/SystemMain.scss';
 
 interface SystemInfoProps {
-    systemInfo?: BackendSystem;
+    systemInfo?: ISystemInfo;
     addNewSapSystem?: boolean;
     setName: (name: string | undefined) => void;
     setConnectionType: (connType: ConnectionType) => void;
     setUrl: (url: string | undefined) => void;
+    setServicePath: (servicePath: string | undefined) => void;
     setClient: (client: string | undefined) => void;
     setUsername: (username: string) => void;
     setPassword: (password: string) => void;
@@ -30,6 +32,7 @@ interface SystemInfoProps {
  * @param props.setConnectionType - function to set the connection type
  * @param props.setName - function to set the system name
  * @param props.setUrl - function to set the URL
+ * @param props.setServicePath - function to set the service path (only for generic host connection type)
  * @param props.setClient - function to set the client
  * @param props.setUsername - function to set the username
  * @param props.setPassword - function to set the password
@@ -43,6 +46,7 @@ export function SystemInfo({
     setName,
     setConnectionType,
     setUrl,
+    setServicePath,
     setClient,
     setUsername,
     setPassword,
@@ -60,12 +64,15 @@ export function SystemInfo({
                 />
             )}
 
-            {addNewSapSystem && !!systemType && <ConnectionTypes setConnectionType={setConnectionType} />}
+            {addNewSapSystem && !!systemType && (
+                <ConnectionTypes connectionType={systemInfo?.connectionType} setConnectionType={setConnectionType} />
+            )}
 
             {systemType === 'OnPrem' && (
                 <OnPremSystem
                     systemInfo={systemInfo}
                     setUrl={setUrl}
+                    setServicePath={setServicePath}
                     setClient={setClient}
                     setUsername={setUsername}
                     setPassword={setPassword}
@@ -77,6 +84,7 @@ export function SystemInfo({
                 <CloudSystem
                     systemInfo={systemInfo}
                     setUrl={setUrl}
+                    setServicePath={setServicePath}
                     setIsDetailsUpdated={setIsDetailsUpdated}
                     setIsDetailsValid={setIsDetailsValid}
                 />

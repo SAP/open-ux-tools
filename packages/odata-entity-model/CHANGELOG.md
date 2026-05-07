@@ -1,5 +1,11 @@
 # @sap-ux/odata-entity-model
 
+## 0.3.7
+
+### Patch Changes
+
+- dfa433e: feat: Enabled support of referenced external metadata
+
 ## 0.3.6
 
 ### Patch Changes

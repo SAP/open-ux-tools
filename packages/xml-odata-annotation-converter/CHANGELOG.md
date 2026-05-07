@@ -1,5 +1,25 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.4.13
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/odata-annotation-core@0.2.18
+
+## 0.4.12
+
+### Patch Changes
+
+- c53a4ba: chore(xml-odata-annotation-converter): upgrade prettier 2.5.1 → 3.8.1; remove @types/prettier (types now bundled in prettier 3.x)
+
+## 0.4.11
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core@0.2.17
+
 ## 0.4.10
 
 ### Patch Changes

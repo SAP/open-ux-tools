@@ -23,6 +23,7 @@ import { loadDefinitions } from './quick-actions/load';
 import { initDialogs } from './init-dialogs';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
 import { CommunicationService } from '../cpe/communication-service';
+import { initOrphanedChangeDetection } from './change-file-validator';
 
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
@@ -50,8 +51,15 @@ export default async function (rta: RuntimeAuthoring) {
         extPointService.init();
     }
 
-    const applicationType = getApplicationType(rta.getRootControlInstance().getManifest());
+    const manifest = rta.getRootControlInstance().getManifest();
+    const applicationType = getApplicationType(manifest);
     const quickActionRegistries = await loadDefinitions(applicationType);
+
+    // Initialize OVP bridge functions if the application is an OVP app
+    if (manifest['sap.ovp']) {
+        const { initOvpWindowFunctions } = await import('open/ux/preview/client/adp/ovp-window-functions');
+        initOvpWindowFunctions();
+    }
 
     await init(rta, quickActionRegistries);
 
@@ -80,6 +88,10 @@ export default async function (rta: RuntimeAuthoring) {
         CommunicationService.sendAction(toggleAppPreviewVisibility(false));
         return;
     }
+
+    initOrphanedChangeDetection().catch((error) => {
+        log.error('Failed to run orphaned change detection', error);
+    });
 
     log.debug('ADP init executed.');
 }

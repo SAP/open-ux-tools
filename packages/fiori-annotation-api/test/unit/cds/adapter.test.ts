@@ -45,4 +45,25 @@ describe('CDS Adapter', () => {
             });
         });
     });
+
+    describe('external services', () => {
+        test('check stub methods', () => {
+            const adapter = new CDSAnnotationServiceAdapter(
+                {
+                    serviceFiles: [],
+                    serviceName: 'TestService',
+                    type: 'cap-cds'
+                },
+                {} as Project,
+                vocabularyService,
+                '',
+                false,
+                false
+            );
+            const serviceNames = adapter.getExternalServices();
+            expect(serviceNames).toHaveLength(0);
+            const refs = adapter.getValueListReferences();
+            expect(refs.size).toEqual(0);
+        });
+    });
 });

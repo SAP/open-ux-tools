@@ -55,6 +55,19 @@ Array [
 ]
 `;
 
+exports[`createJsonFixer DELETE operation should delete parent object value if fixParent = true 1`] = `
+Array [
+  Object {
+    "range": Array [
+      0,
+      4,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+]
+`;
+
 exports[`createJsonFixer DELETE operation should replace a single property in an object node 1`] = `
 Array [
   Object {
@@ -142,7 +155,8 @@ Array [
     "text": "
    \\"@odata.context\\": {
      \\"value\\": \\"test\\"
-   }",
+   }
+ ",
     "type": "insert",
   },
 ]
@@ -189,6 +203,20 @@ Array [
        }
      }
    },",
+    "type": "insert",
+  },
+]
+`;
+
+exports[`createJsonFixer INSERT operation should insert value on a parent node - fixParent = true 1`] = `
+Array [
+  Object {
+    "range": Array [
+      401,
+      401,
+    ],
+    "text": "
+  \\"newProp\\": false",
     "type": "insert",
   },
 ]
@@ -284,6 +312,19 @@ Array [
   \\"enabled\\": true,
   \\"count\\": 5
 }",
+    "type": "replace",
+  },
+]
+`;
+
+exports[`createJsonFixer UPDATE operation should update the value for a parent node - fixParent = true 1`] = `
+Array [
+  Object {
+    "range": Array [
+      0,
+      3,
+    ],
+    "text": "false",
     "type": "replace",
   },
 ]

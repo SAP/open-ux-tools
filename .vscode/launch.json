@@ -25,6 +25,7 @@
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/abap-deploy-config-sub-generator",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/abap-deploy-config-inquirer",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/deploy-config-sub-generator",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/backend-proxy-middleware-cf",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/ui5-application-inquirer",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/ui5-info",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/ui5-config"
@@ -39,6 +40,7 @@
                 "${workspaceRoot}/packages/abap-deploy-config-sub-generator/generators/**/*.js",
                 "${workspaceRoot}/packages/abap-deploy-config-inquirer/dist/**/*.js",
                 "${workspaceRoot}/packages/deploy-config-sub-generator/generators/**/*.js",
+                "${workspaceRoot}/packages/backend-proxy-middleware-cf/dist/**/*.js",
                 "${workspaceRoot}/packages/ui5-application-inquirer/dist/**/*.js",
                 "${workspaceRoot}/packages/ui5-info/dist/**/*.js",
                 "${workspaceRoot}/packages/ui5-config/dist/**/*.js"

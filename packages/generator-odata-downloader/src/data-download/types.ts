@@ -1,0 +1,75 @@
+import type { ApplicationAccess } from '@sap-ux/project-access';
+import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
+import type { EntityType } from '@sap-ux/vocabularies-types';
+import type { Specification } from '@sap/ux-specification/dist/types/src';
+import type { PageV4 } from '@sap/ux-specification/dist/types/src/v4';
+import type { Answers, CheckboxChoiceOptions } from 'inquirer';
+import type { EntitySetsFlat } from './odata-query';
+import type { Prompts, IPrompt } from '@sap-devx/yeoman-ui-types';
+
+export interface YeomanUiStepConfig {
+    activeSteps: Prompts;
+    dependentMap: { [key: string]: IPrompt[] };
+}
+
+export type SemanticKeyFilter = { name: string; keyName?: string; type: string; value: string | undefined };
+
+export type HierarchyEntity = {
+    entitySetName: string;
+    entityTypeName: string;
+    qualifier: string;
+    nodeProperty: string; // From Aggregation.RecursiveHierarchy.NodeProperty
+    parentProperty: string | undefined; // Resolved from ParentNavigationProperty referential constraint
+    parentPropertyType: string | undefined; // EDM type of the parent property (e.g. Edm.Guid, Edm.String)
+    isDraft: boolean; // Entity has IsActiveEntity key — requires ancestors() wrapper
+    entityTypeKeys: string[]; // Key property names of this hierarchy entity's type
+    entityProperties: string[]; // All non-nav property names of this hierarchy entity's type
+    missingReferentialConstraints?: {
+        // Set when the parent nav prop has no referentialConstraint in metadata
+        navPropName: string;
+        // Array of constraints, only the first one is supported as this is a mock server restriction
+        constraints: { sourceProperty: string; targetProperty: string }[];
+    };
+};
+
+export type ReferencedEntities = {
+    listEntity: Entity & {
+        semanticKeys: SemanticKeyFilter[]; // The query filters for the list entity
+    };
+    pageObjectEntities?: Entity[];
+    navPropEntities?: Map<Entity, Entity[]>;
+    hierarchyEntities?: HierarchyEntity[];
+};
+export type Entity = {
+    entitySetName: string;
+    entityPath: string; // The nav property name (this entity path part)
+    entityType: EntityType | undefined;
+    page?: PageV4; // The page specification
+    navPropEntities?: Entity[];
+};
+
+/**
+ * Type to manage application configuration state.
+ */
+export type AppConfig = {
+    appAccess?: ApplicationAccess;
+    specification?: Specification;
+    referencedEntities?: ReferencedEntities;
+    /**
+     * Main service path
+     */
+    servicePath?: string;
+    backendConfig?: FioriToolsProxyConfigBackend;
+    /**
+     * If the system url + client read from the backend config is available from the system store the matching name will be used to pre-select
+     */
+    systemName?: { value?: string };
+    connectPath?: { value?: string };
+    relatedEntityChoices: {
+        choices: CheckboxChoiceOptions<Answers>[];
+        entitySetsFlat: EntitySetsFlat;
+    };
+};
+
+export const navPropNameExclusions = ['DraftAdministrativeData', 'SiblingEntity'];
+export const entityTypeExclusions = ['I_DraftAdministrativeData'];

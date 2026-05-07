@@ -226,6 +226,7 @@ export default class extends DeploymentGenerator {
         this.answers.destination = this.options.destination || this.answers.destination;
         this.answers.url =
             this.options.url || this.answers.url || (await determineUrlFromDestination(this.answers.destination));
+        this.answers.connectPath = this.options.connectPath || this.answers.connectPath;
         this.answers.client = this.options.client || this.answers.client;
         this.answers.scp =
             this.options.scp ||
@@ -304,6 +305,7 @@ export default class extends DeploymentGenerator {
             {
                 target: {
                     url: this.answers.url,
+                    connectPath: this.answers.connectPath,
                     client: this.answers.client,
                     scp: this.answers.scp,
                     destination: this.answers.destination,

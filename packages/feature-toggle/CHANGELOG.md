@@ -1,5 +1,11 @@
 # @sap-ux/feature-toggle
 
+## 0.3.8
+
+### Patch Changes
+
+- c53a4ba: chore(feature-toggle): upgrade jest-when 3.x → 4.x; upgrade shared devDependencies (jest 30)
+
 ## 0.3.7
 
 ### Patch Changes

@@ -71,6 +71,9 @@ async function validateSystemSelection(
     let connectValResult: ValidationResult = false;
 
     if (systemSelection.type === 'backendSystem') {
+        if ((systemSelection.system as BackendSystem).connectionType === 'odata_service') {
+            connectPath = (systemSelection.system as BackendSystem).url;
+        }
         const backendKey = BackendSystemKey.from(systemSelection.system as BackendSystem) as BackendSystemKey;
         connectValResult = await connectWithBackendSystem(
             backendKey,

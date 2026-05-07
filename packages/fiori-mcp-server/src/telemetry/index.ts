@@ -11,9 +11,9 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { randomUUID } from 'node:crypto';
 import osName from 'os-name';
-import i18next from 'i18next';
 import { version } from '../../package.json';
 import { logger } from '../utils/logger';
+import { t } from '../i18n';
 
 export const mcpServerName = '@sap-ux/fiori-mcp-server';
 export const unknownTool = 'unknown-tool';
@@ -94,7 +94,7 @@ export abstract class TelemetryHelper {
         }
 
         if (!this._telemetryData) {
-            let osVersionName = i18next.t('telemetry.unknownOs');
+            let osVersionName = t('telemetry.unknownOs');
             try {
                 osVersionName = osName();
             } catch {
