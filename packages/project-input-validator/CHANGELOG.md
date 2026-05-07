@@ -1,5 +1,30 @@
 # @sap-ux/project-input-validator
 
+## 0.6.82
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.3
+
+## 0.6.81
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.2
+
+## 0.6.80
+
+### Patch Changes
+
+- a4b90ca: fix: Execute validation for multiple segments in project name for internal Cloud Foundry adaptation projects
+
+## 0.6.79
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+
 ## 0.6.78
 
 ### Patch Changes

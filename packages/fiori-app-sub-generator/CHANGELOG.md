@@ -1,5 +1,93 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.13.33
+
+### Patch Changes
+
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/odata-service-inquirer@2.20.21
+    - @sap-ux/telemetry@0.6.104
+    - @sap-ux/ui5-info@0.13.21
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/odata-service-writer@0.31.12
+    - @sap-ux/ui5-application-inquirer@0.17.21
+    - @sap-ux/fiori-elements-writer@2.8.136
+    - @sap-ux/fiori-freestyle-writer@2.5.103
+    - @sap-ux/launch-config@0.10.90
+    - @sap-ux/project-access@1.36.3
+    - @sap-ux/cap-config-writer@0.12.97
+    - @sap-ux/annotation-generator@0.4.55
+
+## 0.13.32
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.135
+- @sap-ux/fiori-freestyle-writer@2.5.102
+- @sap-ux/odata-service-inquirer@2.20.20
+
+## 0.13.31
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/telemetry@0.6.103
+    - @sap-ux/axios-extension@1.25.34
+    - @sap-ux/annotation-generator@0.4.54
+    - @sap-ux/fiori-elements-writer@2.8.134
+    - @sap-ux/fiori-generator-shared@0.13.104
+    - @sap-ux/odata-service-inquirer@2.20.20
+    - @sap-ux/odata-service-writer@0.31.11
+    - @sap-ux/fiori-freestyle-writer@2.5.101
+    - @sap-ux/project-access@1.36.2
+    - @sap-ux/cap-config-writer@0.12.96
+    - @sap-ux/ui5-application-inquirer@0.17.20
+    - @sap-ux/launch-config@0.10.89
+
+## 0.13.30
+
+### Patch Changes
+
+- @sap-ux/odata-service-inquirer@2.20.19
+- @sap-ux/ui5-application-inquirer@0.17.19
+
+## 0.13.29
+
+### Patch Changes
+
+- Updated dependencies [8b2c55b]
+    - @sap-ux/odata-service-inquirer@2.20.18
+
+## 0.13.28
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/odata-service-writer@0.31.10
+    - @sap-ux/odata-service-inquirer@2.20.17
+    - @sap-ux/fiori-elements-writer@2.8.133
+    - @sap-ux/fiori-freestyle-writer@2.5.100
+    - @sap-ux/fiori-generator-shared@0.13.103
+    - @sap-ux/annotation-generator@0.4.53
+    - @sap-ux/cap-config-writer@0.12.95
+    - @sap-ux/launch-config@0.10.88
+    - @sap-ux/telemetry@0.6.102
+    - @sap-ux/ui5-application-inquirer@0.17.18
+
+## 0.13.27
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.132
+- @sap-ux/odata-service-inquirer@2.20.16
+
 ## 0.13.26
 
 ### Patch Changes
