@@ -1,5 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { NewsItem, NewsArticle } from '../utils/newsAdapter';
+import path from 'node:path';
 
 const SAP_WHATSNEW_URL = 'https://help.sap.com/http.svc/whatsnew';
 const FIORI_TOOLS_LOIO = 'd29596a7d7b040d88a20a73dee29a1ec';
@@ -201,6 +202,7 @@ export class WhatsNewSource {
                 subTitle: `Version ${latestVersion}`,
                 description: `${latestResults.length} updates in SAP Fiori Tools version ${latestVersion}.`,
                 footerText: `SAP Fiori Tools v${latestVersion}`,
+                image: path.join(__dirname, '../images/whats-new.jpg'),
                 articles
             }
         ];

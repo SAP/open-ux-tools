@@ -1,5 +1,18 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.23
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/inquirer-common@0.11.44
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/system-access@0.7.11
+    - @sap-ux/project-input-validator@0.6.82
+
 ## 0.18.22
 
 ### Patch Changes
