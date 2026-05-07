@@ -1506,7 +1506,8 @@ export { MultiSourceDocumentationBuilder };
 
 // Run the builder
 /* istanbul ignore if */
-if (process.argv[1] && import.meta.url === `file://${process.argv[1]}`) {
+const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
     const logger = new ToolsLogger();
     const builder = new MultiSourceDocumentationBuilder();
     try {

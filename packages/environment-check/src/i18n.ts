@@ -36,6 +36,6 @@ export function t(key: string, options?: TOptions): string {
 
 try {
     await initI18n();
-} catch (error) {
-    console.error('Failed to initialize i18n:', error);
+} catch {
+    // Ignore any errors since the checks will still work
 }

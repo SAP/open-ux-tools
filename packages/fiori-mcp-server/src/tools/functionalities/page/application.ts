@@ -620,7 +620,7 @@ export class Application {
      */
     public async createPage(newPage: NewPage): Promise<ExecuteFunctionalityOutput> {
         const { parent, navigation, pageType, entitySet } = newPage;
-        const viewName = 'viewName' in newPage ? newPage.viewName : undefined;
+        const viewName = newPage.pageType === PageTypeV4.CustomPage ? newPage.viewName : undefined;
         const pages = this.getPages();
 
         // Validate input parameters

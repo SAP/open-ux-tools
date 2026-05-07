@@ -239,7 +239,7 @@ export class ApplicationParser {
         const customViews: CustomViews = {};
         const services: FoundODataService[] = [];
         const targets = manifest['sap.ui5']?.routing?.targets;
-        for (const [, target] of Object.entries(targets ?? {}) as [string, Record<string, any>][]) {
+        for (const [, target] of Object.entries((targets ?? {}) as Record<string, RoutingTarget>)) {
             const settings = target.options?.settings;
             if (settings?.entitySet || settings?.contextPath) {
                 if (settings.viewName) {
@@ -334,6 +334,16 @@ export class ApplicationParser {
 type SapApp = Exclude<Manifest['sap.app'], undefined>;
 type DataSources = Exclude<SapApp['dataSources'], undefined>;
 type DataSource = DataSources[keyof DataSources];
+
+interface RoutingTarget {
+    options?: {
+        settings?: {
+            entitySet?: string;
+            contextPath?: string;
+            viewName?: string;
+        };
+    };
+}
 
 /**
  * Retrieves the list of annotation files configured for an OData data source.

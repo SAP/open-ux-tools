@@ -707,6 +707,8 @@ describe('FlpSandbox', () => {
         });
 
         test('resource roots are remapped to editor path depth (editor at root, flp one level deep)', async () => {
+            // FLP is at /test/flp.html (one level deep) → basePath ".."
+            // Editor is at /rta.html (root level)        → newBasePath should be "."
             const flp = new FlpSandbox(
                 {
                     ...mockConfig,
@@ -727,16 +729,22 @@ describe('FlpSandbox', () => {
             const localServer = supertest(app);
 
             const flpResponse = await localServer.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            // The FLP at test/flp.html should still use "../" resource roots
             expect(flpResponse.text).toContain('"open.ux.preview.client":"../preview/client"');
 
             const editorResponse = await localServer.get('/rta.html?fiori-tools-rta-mode=true').expect(200);
+            // The editor at /rta.html should use "./" resource roots, not "../"
             expect(editorResponse.text).toContain('"open.ux.preview.client":"preview/client"');
+            // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
             expect(editorResponse.text).not.toContain('"open.ux.preview.client":"../preview/client"');
+            // App resource root must also be remapped to "."
             expect(editorResponse.text).toContain('"test.fe.v2.app":"."');
             expect(editorResponse.text).not.toContain('"test.fe.v2.app":".."');
         });
 
         test('resource roots are unchanged when editor is at same depth as FLP', async () => {
+            // FLP is at /test/flp.html (one level deep)    → basePath ".."
+            // Editor is at /test/rta.html (same depth)     → newBasePath should still be ".."
             const flp = new FlpSandbox(
                 {
                     ...mockConfig,
@@ -1024,7 +1032,7 @@ describe('FlpSandbox', () => {
 
         beforeEach(() => {
             mockFsPromisesWriteFile = jest.fn();
-            promises.writeFile = mockFsPromisesWriteFile as any;
+            promises.writeFile = mockFsPromisesWriteFile as typeof promises.writeFile;
         });
 
         afterEach(() => {
@@ -1269,7 +1277,7 @@ describe('FlpSandbox', () => {
 
         beforeEach(() => {
             mockFsPromisesWriteFile = jest.fn();
-            promises.writeFile = mockFsPromisesWriteFile as any;
+            promises.writeFile = mockFsPromisesWriteFile as typeof promises.writeFile;
             mockCreatePropertiesI18nEntries.mockClear();
         });
 

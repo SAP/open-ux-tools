@@ -264,7 +264,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
     if (!routingTargets) {
         return linkedApp;
     }
-    for (const [name, target] of Object.entries(routingTargets) as [string, Target][]) {
+    for (const [name, target] of Object.entries(routingTargets as Record<string, Target>)) {
         const settings = target.options?.settings;
         if (!settings) {
             continue;

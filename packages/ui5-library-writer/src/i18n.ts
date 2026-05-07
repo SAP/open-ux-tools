@@ -36,6 +36,6 @@ export function t(key: string, options?: TOptions): string {
 
 try {
     await initI18n();
-} catch (error) {
-    console.error('Failed to initialize i18n:', error);
+} catch {
+    // cannot do anything about it but the write will still work
 }

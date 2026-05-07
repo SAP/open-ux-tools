@@ -39,7 +39,7 @@ export function t(key: string, options?: TOptions): string {
 
 try {
     await initI18nCfDeployConfigInquirer();
-} catch (error) {
+} catch {
     // In case of an error during initialization, we catch it to prevent the application from crashing.
-    console.error('Failed to initialize i18n:', error);
+    // Needed for lint
 }

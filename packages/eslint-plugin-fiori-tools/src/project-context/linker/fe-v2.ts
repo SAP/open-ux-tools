@@ -284,7 +284,7 @@ export function runFeV2Linker(context: LinkerContext): LinkedFeV2App {
         return linkedApp;
     }
     if (config) {
-        for (const [name, target] of Object.entries(config?.pages ?? {}) as [string, ManifestPageSettings][]) {
+        for (const [name, target] of Object.entries((config?.pages ?? {}) as Record<string, ManifestPageSettings>)) {
             linkPage(context, service, linkedApp, ['sap.ui.generic.app', 'pages'], name, target);
         }
     }

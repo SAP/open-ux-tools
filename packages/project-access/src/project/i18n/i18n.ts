@@ -106,6 +106,9 @@ function getI18nModelPaths(manifest: Manifest): { [modelKey: string]: { path: st
             if (i18nModel.settings.bundleName) {
                 // module name is in dot notation
                 const appId = manifest['sap.app']?.id ?? '';
+                if (!appId) {
+                    continue;
+                }
                 const withoutAppId = i18nModel.settings.bundleName.replace(appId, '');
                 const i18nPath = `${join(...withoutAppId.split('.'))}.properties`;
                 result[modelKey] = { path: join(i18nPath) };

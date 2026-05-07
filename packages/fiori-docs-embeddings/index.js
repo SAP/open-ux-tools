@@ -27,8 +27,8 @@ export function getDocsPath() {
 export async function hasEmbeddings() {
     try {
         const embeddingsPath = getEmbeddingsPath();
-        const s = await stat(embeddingsPath);
-        return s.isDirectory();
+        const stats = await stat(embeddingsPath);
+        return stats.isDirectory();
     } catch {
         return false;
     }
