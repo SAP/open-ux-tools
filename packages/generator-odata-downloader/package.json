@@ -62,7 +62,7 @@
         "@sap/ux-specification": "1.144.0",
         "@types/inquirer": "8.2.6",
         "@types/yeoman-generator": "5.2.14",
-        "@vscode-logging/logger": "2.0.8",
+        "@vscode-logging/logger": "2.0.9",
         "deepmerge": "4.3.1",
         "i18next": "25.10.10",
         "inquirer": "8.2.7",

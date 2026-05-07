@@ -1,5 +1,21 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.20.21
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/inquirer-common@0.11.44
+    - @sap-ux/telemetry@0.6.104
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/nodejs-utils@0.2.22
+    - @sap-ux/project-access@1.36.3
+    - @sap-ux/project-input-validator@0.6.82
+
 ## 2.20.20
 
 ### Patch Changes

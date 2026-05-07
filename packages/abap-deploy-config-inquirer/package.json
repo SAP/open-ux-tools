@@ -7,7 +7,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-inquirer"
     },
-    "version": "1.8.18",
+    "version": "1.8.19",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -46,7 +46,7 @@
     },
     "devDependencies": {
         "@jest/globals": "30.3.0",
-        "axios": "1.15.0",
+        "axios": "1.16.0",
         "@types/inquirer": "8.2.6",
         "@types/inquirer-autocomplete-prompt": "2.0.2"
     }

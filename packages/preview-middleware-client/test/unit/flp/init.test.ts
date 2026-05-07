@@ -108,6 +108,7 @@ describe('flp/init', () => {
 
         beforeEach(() => {
             loaderMock.mockReset();
+            fetchMock.mockReset();
         });
 
         test('single app, no reuse libs', async () => {
@@ -171,6 +172,48 @@ describe('flp/init', () => {
             } catch (error) {
                 expect(error).toEqual('Error');
             }
+        });
+
+        describe('test "sap-client" param validation', () => {
+            const sapClientParamTests = [
+                {
+                    name: 'Valid client',
+                    value: '001',
+                    expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib%2C&sap-client=001'
+                },
+                {
+                    name: 'Client contains non number',
+                    value: 'T12',
+                    expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib%2C'
+                },
+                {
+                    name: 'Client more than 3 symbols',
+                    value: '4444',
+                    expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib%2C'
+                },
+                {
+                    name: 'Client less than 3 symbols',
+                    value: '44',
+                    expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib%2C'
+                }
+            ];
+            test.each(sapClientParamTests)('$name', async ({ value, expected }) => {
+                const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+                manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+                fetchMock.mockResolvedValueOnce({ json: () => manifest });
+                fetchMock.mockResolvedValueOnce({
+                    json: () => ({
+                        'test.lib': {
+                            dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
+                        }
+                    })
+                });
+                const params = new URLSearchParams();
+                params.set('sap-client', value);
+                await registerComponentDependencyPaths(['/'], params);
+                expect(loaderMock).toHaveBeenCalledWith({ paths: { 'test/lib/component': '~url' } });
+                expect(fetchMock).toHaveBeenCalledWith(expected);
+            });
         });
     });
 
@@ -399,7 +442,7 @@ describe('flp/init', () => {
                         callback({}); // WorkspaceConnector
                         return;
                     }
-                     
+
                     await callback(() => Promise.reject('Reload triggered'));
                     resolve(undefined);
                 });

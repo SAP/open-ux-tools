@@ -1,5 +1,15 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.105
+
+### Patch Changes
+
+- 678a08e: chore: upgrade runtime dependencies (@sap/cf-tools 3.3.0 → 3.3.1, @vscode-logging/logger 2.0.8 → 2.0.9)
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/telemetry@0.6.104
+    - @sap-ux/project-access@1.36.3
+
 ## 0.13.104
 
 ### Patch Changes
