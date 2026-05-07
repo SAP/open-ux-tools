@@ -1,5 +1,7 @@
 # @sap-ux/preview-middleware
 
+## 0.25.40
+
 ## 0.25.39
 
 ### Patch Changes

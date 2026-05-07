@@ -53,6 +53,23 @@
     border-bottom: 1px solid #e76500;
 }
 
+.newsListItemContainer {
+    gap: 0rem;
+}
+.newsListItemContainer .sapMTitle {
+    display: none;
+}
+
+.newsListItemContainer p:nth-child(1) {
+    margin-top: 0rem;
+}
+
+.newsListItemContainer hr {
+    border: none;
+    border-top: 1px solid var(--sapGroup_ContentBorderColor, #d9d9d9);
+    margin: 1rem 0;
+}
+
 /* Mobile */
 @media (min-width: 320px) and (max-width: 599px) {
     :root {

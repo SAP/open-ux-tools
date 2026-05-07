@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { NewsItem, NewsArticle } from '../utils/newsAdapter';
+import type { NewsItem } from '../utils/newsAdapter';
 import path from 'node:path';
 
 const SAP_WHATSNEW_URL = 'https://help.sap.com/http.svc/whatsnew';
@@ -155,10 +155,10 @@ export class WhatsNewSource {
     /**
      * Maps API results to NewsItem objects.
      * Filters to the latest version, groups changes by category, and returns
-     * a single news feed where each article represents one category.
+     * a single news item with all categories rendered as an HTML document.
      *
      * @param results the raw API result items
-     * @returns array of news items (single item with category-grouped articles)
+     * @returns array of news items (single item with full HTML description)
      */
     private mapToNewsItems(results: WhatsNewResult[]): NewsItem[] {
         const latestVersion = WhatsNewSource.determineLatestVersion(results);
@@ -180,30 +180,31 @@ export class WhatsNewSource {
             byCategory.set(category, existing);
         }
 
-        // Each category becomes one article with an HTML bulleted description
-        const articles: NewsArticle[] = [...byCategory.entries()].map(([category, items]) => {
-            const listItems = items
-                .map((item) => {
-                    const desc = WhatsNewSource.stripHtml(item.Description);
-                    return `<li>${desc}</li>`;
-                })
-                .join('');
+        // Build a single HTML description with intro + all categories
+        const intro =
+            `Learn about changes and new features that are available for SAP Fiori tools ${latestVersion}. ` +
+            'To use all new features, ensure your extensions are up to date. ' +
+            'You can always update your extensions in your preferred Integrated Development Environment (IDE).';
 
-            return {
-                title: category,
-                subTitle: `${items.length} update${items.length === 1 ? '' : 's'}`,
-                description: `<ul>${listItems}</ul>`
-            };
-        });
+        const categorySections = [...byCategory.entries()]
+            .map(([category, items]) => {
+                const listItems = items
+                    .map((item) => `<li>${WhatsNewSource.stripHtml(item.Description)}</li>`)
+                    .join('');
+                return `<h3>${category}</h3><ul>${listItems}</ul>`;
+            })
+            .join('<hr>');
+
+        const description = `<p>${intro}</p>${categorySections}`;
 
         return [
             {
                 title: "What's New for SAP Fiori Tools",
-                subTitle: `Version ${latestVersion}`,
-                description: `${latestResults.length} updates in SAP Fiori Tools version ${latestVersion}.`,
-                footerText: `SAP Fiori Tools v${latestVersion}`,
-                image: path.join(__dirname, '../images/whats-new.jpg'),
-                articles
+                subTitle:
+                    'Learn about features that have been added and changes that have been made to SAP Fiori tools.',
+                description,
+                footerText: `SAP Fiori Tools ${latestVersion}`,
+                image: path.join(__dirname, '../images/whats-new.jpg')
             }
         ];
     }
