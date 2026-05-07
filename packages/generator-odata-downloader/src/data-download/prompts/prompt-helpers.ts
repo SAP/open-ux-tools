@@ -1,24 +1,24 @@
 import type { ODataService } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
-import type { ServiceSpecification, ApplicationAccess } from '@sap-ux/project-access';
+import type { ApplicationAccess, ServiceSpecification } from '@sap-ux/project-access';
 import { FileName, getSpecificationModuleFromCache } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { EntityType } from '@sap-ux/vocabularies-types';
 import type { CollectionFacet } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { readFile } from 'node:fs/promises';
+import type { Specification } from '@sap/ux-specification/dist/types/src';
 import type { CheckboxChoiceOptions } from 'inquirer';
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { TelemetryHelper } from '../../telemetry/index.js';
 import { t } from '../../utils/i18n.js';
-import { fetchData, type EntitySetsFlat } from '../odata-query.js';
 import { ODataDownloadGenerator } from '../odata-download-generator.js';
-import type { SelectedEntityAnswer } from './prompts.js';
+import { fetchData, type EntitySetsFlat } from '../odata-query.js';
+import { PromptState } from '../prompt-state.js';
 import type { AppConfig, Entity } from '../types.js';
 import { getSystemNameFromStore } from '../utils.js';
-import { PromptState } from '../prompt-state.js';
-import type { Specification } from '@sap/ux-specification/dist/types/src';
-import { TelemetryHelper } from '../../telemetry/index.js';
+import type { SelectedEntityAnswer } from './prompts.js';
 
 /**
  * Fetches OData from the backend service.
@@ -44,11 +44,24 @@ export async function getData(
                 const queryStartTime = Date.now();
                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 TelemetryHelper.sendTelemetry('ODATA_DOWNLOAD_SEND_QUERY', { 'time': Date() });
+                // Use TopLevels query when the list entity is itself a hierarchy root
+                const hierarchyEntity = appConfig.referencedEntities.hierarchyEntities?.find(
+                    (h) => h.entitySetName === appConfig.referencedEntities!.listEntity.entitySetName
+                );
+                // Detect hierarchy entities for selected nav-props (not the list entity itself)
+                const navPropHierarchyEntities =
+                    appConfig.referencedEntities.hierarchyEntities?.filter(
+                        (h) =>
+                            h.entitySetName !== appConfig.referencedEntities!.listEntity.entitySetName &&
+                            selectedEntities.some((s) => s.entity.entitySetName === h.entitySetName)
+                    ) ?? [];
                 const { odataResult } = await fetchData(
                     appConfig.referencedEntities.listEntity,
                     odataServiceProvider,
                     selectedEntities,
-                    1
+                    hierarchyEntity ? undefined : 1,
+                    hierarchyEntity,
+                    navPropHierarchyEntities
                 );
                 if (odataResult.entityData) {
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -154,10 +167,14 @@ function getEntitySelectionChoices(
             : [];
         for (const navEntity of navEntities) {
             const expandPath = navEntity.entityPath;
-            // For hierarchies this may be ok but we currently do not detect hierarchies
-            // Dont re-include entities that are referenced on the path already (this will need to change with hiereachy support)
-            if (navEntity.entityType?.name === listPageEntity?.entityType?.name || parentPath.includes(expandPath)) {
+            // Allow self-referential navigation properties when they are the ParentNavigationProperty of a detected hierarchy
+            const effectiveListEntity = listPageEntity ?? currentEntity;
+            if (
+                navEntity.entityType?.name === effectiveListEntity?.entityType?.name ||
+                parentPath.includes(expandPath)
+            ) {
                 // Stop the tree traversal if the current nodes entity type is the same as the list
+                // Hierarchy self-referential nav props are also skipped here; hierarchy data is fetched via a separate descendants query
                 continue;
             }
             const fullPath = parentPath.concat(`${parentPath ? '/' : ''}${expandPath}`);
@@ -193,7 +210,7 @@ function getEntitySelectionChoices(
                 value: entityChoice,
                 checked: entityChoice.entity.defaultSelected
             });
-            entitySetsFlat[expandPath] = navEntity.entitySetName; // Can overwrite since we will only need to know each unique entity set name later
+            entitySetsFlat[fullPath] = navEntity.entitySetName;
         }
     }
     return {
@@ -256,9 +273,16 @@ export async function getServiceDetails(
 
     let systemName;
     if (backendConfig) {
+        let backendUrl = backendConfig.url;
+        if (backendConfig.connectPath) {
+            const normalizedPath = backendConfig.connectPath.startsWith('/')
+                ? backendConfig.connectPath
+                : `/${backendConfig.connectPath}`;
+            backendUrl = new URL(normalizedPath, backendConfig.url).href;
+        }
         systemName = isAppStudio()
             ? backendConfig?.destination
-            : await getSystemNameFromStore(backendConfig.url, backendConfig?.client);
+            : await getSystemNameFromStore(backendUrl, backendConfig?.client);
     }
 
     return {

@@ -1,9 +1,17 @@
-import { join } from 'node:path';
-import type { ReferencedEntities } from '../src/data-download/types';
-import { createEntitySetData } from '../src/data-download/utils';
+import type { HierarchyEntity, ReferencedEntities } from '../src/data-download/types.js';
+import {
+    clearRootHierarchyParentProperty,
+    createEntitySetData,
+    getHierarchyEntities,
+    getSemanticKeyProperties,
+    normalizeHierarchyNodeIds
+} from '../src/data-download/utils.js';
 import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabularies-types';
 
 const __testdir = import.meta.dirname;
+const __dirname = import.meta.dirname;
 
 describe('Test utils', () => {
     describe('createEntitySetData', () => {
@@ -171,6 +179,543 @@ describe('Test utils', () => {
                     { CustomerID: 'C2', CustomerName: 'Jane Smith' }
                 ])
             );
+        });
+    });
+
+    describe('getHierarchyEntities', () => {
+        function createMockEntitySet(
+            name: string,
+            entityType: Partial<EntityType>,
+            hierarchyKey?: string,
+            keys?: { name: string; type: string }[],
+            entityProperties?: { name: string; type: string }[],
+            isDraft?: boolean
+        ): EntitySet {
+            const annotations: Record<string, unknown> = {};
+            if (hierarchyKey) {
+                annotations.Aggregation = {
+                    [hierarchyKey]: {
+                        NodeProperty: {
+                            type: 'PropertyPath',
+                            value: 'ID',
+                            $target: { name: 'ID', type: 'Edm.String' }
+                        },
+                        ParentNavigationProperty: {
+                            type: 'NavigationPropertyPath',
+                            value: 'Superordinate',
+                            $target: {
+                                name: 'Superordinate',
+                                referentialConstraint: [{ sourceProperty: 'Parent', targetProperty: 'ID' }]
+                            }
+                        }
+                    }
+                };
+            }
+
+            const entitySetAnnotations: Record<string, unknown> = {};
+            if (isDraft) {
+                entitySetAnnotations.Common = { DraftRoot: { type: 'Org.OData.Common.V1.DraftRootType' } };
+            }
+
+            return {
+                name,
+                entityTypeName: entityType.fullyQualifiedName ?? name + 'Type',
+                annotations: entitySetAnnotations,
+                entityType: {
+                    ...entityType,
+                    keys: keys ?? [{ name: 'ID', type: 'Edm.String' }],
+                    entityProperties: entityProperties ?? [{ name: 'Parent', type: 'Edm.String' }],
+                    annotations
+                } as EntityType
+            } as EntitySet;
+        }
+
+        test('should return empty array when no hierarchy annotations exist', () => {
+            const metadata = {
+                entitySets: [createMockEntitySet('Travel', { fullyQualifiedName: 'TravelType' })]
+            } as ConvertedMetadata;
+
+            const result = getHierarchyEntities(metadata);
+            expect(result).toEqual([]);
+        });
+
+        test('should detect hierarchy entity with RecursiveHierarchy annotation', () => {
+            const metadata = {
+                entitySets: [
+                    createMockEntitySet('Travel', { fullyQualifiedName: 'TravelType' }),
+                    createMockEntitySet(
+                        'SalesOrganizations',
+                        { fullyQualifiedName: 'SalesOrgType' },
+                        'RecursiveHierarchy#SalesOrgHierarchy'
+                    )
+                ]
+            } as ConvertedMetadata;
+
+            const result = getHierarchyEntities(metadata);
+            expect(result).toHaveLength(1);
+            expect(result[0]).toEqual({
+                entitySetName: 'SalesOrganizations',
+                entityTypeName: 'SalesOrgType',
+                qualifier: 'SalesOrgHierarchy',
+                nodeProperty: 'ID',
+                parentProperty: 'Parent',
+                parentPropertyType: 'Edm.String',
+                isDraft: false,
+                entityTypeKeys: ['ID'],
+                entityProperties: ['Parent']
+            });
+        });
+
+        test('should detect multiple hierarchy entities', () => {
+            const metadata = {
+                entitySets: [
+                    createMockEntitySet('SalesOrgs', { fullyQualifiedName: 'SalesOrgType' }, 'RecursiveHierarchy#H1'),
+                    createMockEntitySet(
+                        'CostCenters',
+                        { fullyQualifiedName: 'CostCenterType' },
+                        'RecursiveHierarchy#H2'
+                    )
+                ]
+            } as ConvertedMetadata;
+
+            const result = getHierarchyEntities(metadata);
+            expect(result).toHaveLength(2);
+        });
+
+        test('should handle unqualified RecursiveHierarchy annotation', () => {
+            const metadata = {
+                entitySets: [
+                    createMockEntitySet('SalesOrgs', { fullyQualifiedName: 'SalesOrgType' }, 'RecursiveHierarchy')
+                ]
+            } as ConvertedMetadata;
+
+            const result = getHierarchyEntities(metadata);
+            expect(result).toHaveLength(1);
+            expect(result[0].qualifier).toBe('');
+            expect(result[0].isDraft).toBe(false);
+        });
+
+        test('should detect draft-enabled hierarchy entities', () => {
+            const draftKeys = [
+                { name: 'ID', type: 'Edm.Guid' },
+                { name: 'IsActiveEntity', type: 'Edm.Boolean' }
+            ];
+            const metadata = {
+                entitySets: [
+                    createMockEntitySet(
+                        'Companies',
+                        { fullyQualifiedName: 'CompanyType' },
+                        'RecursiveHierarchy#CompanyHierarchy',
+                        draftKeys,
+                        [{ name: 'Parent', type: 'Edm.Guid' }],
+                        true
+                    )
+                ]
+            } as ConvertedMetadata;
+
+            const result = getHierarchyEntities(metadata);
+            expect(result).toHaveLength(1);
+            expect(result[0].isDraft).toBe(true);
+            expect(result[0].parentPropertyType).toBe('Edm.Guid');
+        });
+    });
+
+    describe('normalizeHierarchyNodeIds', () => {
+        test('should convert uppercase hex NodeId to GUID format when parent property is Edm.Guid', () => {
+            const entityFileData: { [key: string]: object[] } = {
+                Companies: [
+                    {
+                        Company: 'cb565aac-b20e-1fe1-8ba0-bdc76e7caee9',
+                        OwnerCompany: '',
+                        NodeId: 'CB565AACB20E1FE18BA0BDC76E7CAEE9'
+                    },
+                    {
+                        Company: 'cb565aac-b20e-1fe1-8ba0-be99f8d2cefd',
+                        OwnerCompany: 'cb565aac-b20e-1fe1-8ba0-bdc76e7caee9',
+                        NodeId: 'CB565AACB20E1FE18BA0BE99F8D2CEFD'
+                    }
+                ]
+            };
+            const hierarchies: HierarchyEntity[] = [
+                {
+                    entitySetName: 'Companies',
+                    entityTypeName: 'CompanyType',
+                    qualifier: 'CompanyHierarchy',
+                    nodeProperty: 'NodeId',
+                    parentProperty: 'OwnerCompany',
+                    parentPropertyType: 'Edm.Guid',
+                    isDraft: true,
+                    entityTypeKeys: [],
+                    entityProperties: []
+                }
+            ];
+
+            normalizeHierarchyNodeIds(entityFileData, hierarchies);
+
+            expect((entityFileData.Companies[0] as Record<string, unknown>).NodeId).toBe(
+                'cb565aac-b20e-1fe1-8ba0-bdc76e7caee9'
+            );
+            expect((entityFileData.Companies[1] as Record<string, unknown>).NodeId).toBe(
+                'cb565aac-b20e-1fe1-8ba0-be99f8d2cefd'
+            );
+        });
+
+        test('should handle complex type node property path', () => {
+            const entityFileData: { [key: string]: object[] } = {
+                Companies: [
+                    {
+                        Company: 'cb565aac-b20e-1fe1-8ba0-bdc76e7caee9',
+                        OwnerCompany: '',
+                        __HierProps: { NodeId: 'CB565AACB20E1FE18BA0BDC76E7CAEE9' }
+                    },
+                    {
+                        Company: 'cb565aac-b20e-1fe1-8ba0-be99f8d2cefd',
+                        OwnerCompany: 'cb565aac-b20e-1fe1-8ba0-bdc76e7caee9',
+                        __HierProps: { NodeId: 'CB565AACB20E1FE18BA0BE99F8D2CEFD' }
+                    }
+                ]
+            };
+            const hierarchies: HierarchyEntity[] = [
+                {
+                    entitySetName: 'Companies',
+                    entityTypeName: 'CompanyType',
+                    qualifier: 'CompanyHierarchy',
+                    nodeProperty: '__HierProps/NodeId',
+                    parentProperty: 'OwnerCompany',
+                    parentPropertyType: 'Edm.Guid',
+                    isDraft: true,
+                    entityTypeKeys: [],
+                    entityProperties: []
+                }
+            ];
+
+            normalizeHierarchyNodeIds(entityFileData, hierarchies);
+
+            expect(
+                ((entityFileData.Companies[0] as Record<string, unknown>).__HierProps as Record<string, unknown>).NodeId
+            ).toBe('cb565aac-b20e-1fe1-8ba0-bdc76e7caee9');
+            expect(
+                ((entityFileData.Companies[1] as Record<string, unknown>).__HierProps as Record<string, unknown>).NodeId
+            ).toBe('cb565aac-b20e-1fe1-8ba0-be99f8d2cefd');
+        });
+
+        test('should strip leading zeros from padded numeric NodeId and parent property', () => {
+            const entityFileData: { [key: string]: object[] } = {
+                Employees: [
+                    { HierarchyNode: '0000000001', HierarchyParentNode: '' },
+                    { HierarchyNode: '0000000042', HierarchyParentNode: '0000000001' },
+                    { HierarchyNode: '0000000099', HierarchyParentNode: '0000000042' }
+                ]
+            };
+            const hierarchies: HierarchyEntity[] = [
+                {
+                    entitySetName: 'Employees',
+                    entityTypeName: 'EmployeeType',
+                    qualifier: 'EmployeeHierarchy',
+                    nodeProperty: 'HierarchyNode',
+                    parentProperty: 'HierarchyParentNode',
+                    parentPropertyType: 'Edm.String',
+                    isDraft: false,
+                    entityTypeKeys: ['HierarchyNode'],
+                    entityProperties: []
+                }
+            ];
+
+            normalizeHierarchyNodeIds(entityFileData, hierarchies);
+
+            expect((entityFileData.Employees[0] as Record<string, unknown>).HierarchyNode).toBe('1');
+            expect((entityFileData.Employees[0] as Record<string, unknown>).HierarchyParentNode).toBe('');
+            expect((entityFileData.Employees[1] as Record<string, unknown>).HierarchyNode).toBe('42');
+            expect((entityFileData.Employees[1] as Record<string, unknown>).HierarchyParentNode).toBe('1');
+            expect((entityFileData.Employees[2] as Record<string, unknown>).HierarchyNode).toBe('99');
+            expect((entityFileData.Employees[2] as Record<string, unknown>).HierarchyParentNode).toBe('42');
+        });
+
+        test('should not strip NodeId values that are not padded numbers', () => {
+            const entityFileData: { [key: string]: object[] } = {
+                SalesOrgs: [{ ID: 'ABC123', Parent: 'XYZ', NodeId: 'ABC123' }]
+            };
+            const hierarchies: HierarchyEntity[] = [
+                {
+                    entitySetName: 'SalesOrgs',
+                    entityTypeName: 'SalesOrgType',
+                    qualifier: 'H1',
+                    nodeProperty: 'NodeId',
+                    parentProperty: 'Parent',
+                    parentPropertyType: 'Edm.String',
+                    isDraft: false,
+                    entityTypeKeys: [],
+                    entityProperties: []
+                }
+            ];
+
+            normalizeHierarchyNodeIds(entityFileData, hierarchies);
+
+            expect((entityFileData.SalesOrgs[0] as Record<string, unknown>).NodeId).toBe('ABC123');
+        });
+
+        test('should skip NodeId values that are not 32-char uppercase hex', () => {
+            const entityFileData: { [key: string]: object[] } = {
+                Companies: [
+                    {
+                        Company: 'cb565aac-b20e-1fe1-8ba0-bdc76e7caee9',
+                        OwnerCompany: '',
+                        NodeId: 'cb565aac-b20e-1fe1-8ba0-bdc76e7caee9'
+                    }
+                ]
+            };
+            const hierarchies: HierarchyEntity[] = [
+                {
+                    entitySetName: 'Companies',
+                    entityTypeName: 'CompanyType',
+                    qualifier: 'H1',
+                    nodeProperty: 'NodeId',
+                    parentProperty: 'OwnerCompany',
+                    parentPropertyType: 'Edm.Guid',
+                    isDraft: false,
+                    entityTypeKeys: [],
+                    entityProperties: []
+                }
+            ];
+
+            normalizeHierarchyNodeIds(entityFileData, hierarchies);
+
+            // Already in GUID format, should not be changed
+            expect((entityFileData.Companies[0] as Record<string, unknown>).NodeId).toBe(
+                'cb565aac-b20e-1fe1-8ba0-bdc76e7caee9'
+            );
+        });
+
+        test('should also normalize for Edm.UUID parent property type', () => {
+            const entityFileData: { [key: string]: object[] } = {
+                Items: [
+                    {
+                        ID: '550e8400-e29b-41d4-a716-446655440000',
+                        ParentID: '',
+                        NodeId: '550E8400E29B41D4A716446655440000'
+                    }
+                ]
+            };
+            const hierarchies: HierarchyEntity[] = [
+                {
+                    entitySetName: 'Items',
+                    entityTypeName: 'ItemType',
+                    qualifier: 'H1',
+                    nodeProperty: 'NodeId',
+                    parentProperty: 'ParentID',
+                    parentPropertyType: 'Edm.UUID',
+                    isDraft: false,
+                    entityTypeKeys: [],
+                    entityProperties: []
+                }
+            ];
+
+            normalizeHierarchyNodeIds(entityFileData, hierarchies);
+
+            expect((entityFileData.Items[0] as Record<string, unknown>).NodeId).toBe(
+                '550e8400-e29b-41d4-a716-446655440000'
+            );
+        });
+    });
+
+    describe('clearRootHierarchyParentProperty', () => {
+        test('should clear parent property only on root nodes (DistanceFromRoot === 0)', () => {
+            const entityFileData: { [key: string]: object[] } = {
+                SalesOrganizations: [
+                    { ID: 'Root1', Parent: 'SomeValue', DistanceFromRoot: 0 },
+                    { ID: 'Child1', Parent: 'Root1', DistanceFromRoot: 1 },
+                    { ID: 'Child2', Parent: 'Child1', DistanceFromRoot: 2 }
+                ]
+            };
+            const hierarchies: HierarchyEntity[] = [
+                {
+                    entitySetName: 'SalesOrganizations',
+                    entityTypeName: 'SalesOrgType',
+                    qualifier: 'SalesOrgHierarchy',
+                    nodeProperty: 'ID',
+                    parentProperty: 'Parent',
+                    parentPropertyType: 'Edm.String',
+                    isDraft: false,
+                    entityTypeKeys: [],
+                    entityProperties: []
+                }
+            ];
+
+            clearRootHierarchyParentProperty(entityFileData, hierarchies);
+
+            expect((entityFileData.SalesOrganizations[0] as Record<string, unknown>).Parent).toBe('');
+            expect((entityFileData.SalesOrganizations[1] as Record<string, unknown>).Parent).toBe('Root1');
+            expect((entityFileData.SalesOrganizations[2] as Record<string, unknown>).Parent).toBe('Child1');
+        });
+
+        test('should handle complex type node property path', () => {
+            const entityFileData: { [key: string]: object[] } = {
+                Companies: [
+                    { Company: 'A', OwnerCompany: 'X', __HierProps: { NodeId: 'A', DistanceFromRoot: 0 } },
+                    { Company: 'B', OwnerCompany: 'A', __HierProps: { NodeId: 'B', DistanceFromRoot: 1 } }
+                ]
+            };
+            const hierarchies: HierarchyEntity[] = [
+                {
+                    entitySetName: 'Companies',
+                    entityTypeName: 'CompanyType',
+                    qualifier: 'CompanyHierarchy',
+                    nodeProperty: '__HierProps/NodeId',
+                    parentProperty: 'OwnerCompany',
+                    parentPropertyType: 'Edm.Guid',
+                    isDraft: true,
+                    entityTypeKeys: [],
+                    entityProperties: []
+                }
+            ];
+
+            clearRootHierarchyParentProperty(entityFileData, hierarchies);
+
+            expect((entityFileData.Companies[0] as Record<string, unknown>).OwnerCompany).toBe('');
+            expect((entityFileData.Companies[1] as Record<string, unknown>).OwnerCompany).toBe('A');
+        });
+
+        test('should skip entity sets without the parent property', () => {
+            const entityFileData: { [key: string]: object[] } = {
+                SalesOrganizations: [{ ID: 'Root1', Parent: 'X', DistanceFromRoot: 0 }],
+                Employees: [{ ID: 'E1', Name: 'John' }]
+            };
+            const hierarchies: HierarchyEntity[] = [
+                {
+                    entitySetName: 'SalesOrganizations',
+                    entityTypeName: 'SalesOrgType',
+                    qualifier: 'H1',
+                    nodeProperty: 'ID',
+                    parentProperty: 'Parent',
+                    parentPropertyType: 'Edm.String',
+                    isDraft: false,
+                    entityTypeKeys: [],
+                    entityProperties: []
+                }
+            ];
+
+            clearRootHierarchyParentProperty(entityFileData, hierarchies);
+
+            expect((entityFileData.SalesOrganizations[0] as Record<string, unknown>).Parent).toBe('');
+            expect((entityFileData.Employees[0] as Record<string, unknown>).Name).toBe('John');
+        });
+    });
+
+    describe('getHierarchyEntities (integration)', () => {
+        test('should detect hierarchy entities from real purchase order service metadata', async () => {
+            const metadataXml = await readFile(
+                join(__dirname, './test-data/test-apps/purchaseorder/webapp/localService/mainService/metadata.xml'),
+                'utf-8'
+            );
+            const { convert } = await import('@sap-ux/annotation-converter');
+            const { parse } = await import('@sap-ux/edmx-parser');
+            const convertedMetadata = convert(parse(metadataXml));
+            const mockDataPath = join(__dirname, 'test-data/test-apps/purchaseorder/webapp/localService/mockdata');
+
+            const result = getHierarchyEntities(convertedMetadata, mockDataPath);
+
+            // Real metadata has 8 entity sets with SAP__aggregation.RecursiveHierarchy annotations
+            expect(result.length).toBeGreaterThanOrEqual(7);
+
+            // PPS_PurchaseOrderItem: self-referential hierarchy, no referentialConstraint in EDMX
+            const poItem = result.find((h) => h.entitySetName === 'PPS_PurchaseOrderItem');
+            expect(poItem).toBeDefined();
+            expect(poItem?.qualifier).toBe('I_PPS_PurchaseOrderItemHNRltn');
+            expect(poItem?.nodeProperty).toBe('__HierarchyPropertiesForI_PPS_PurchaseOrderItemHNRltn/NodeId');
+            expect(poItem?.parentProperty).toBe('PurchasingParentItem');
+            expect(poItem?.isDraft).toBe(true);
+
+            // PPS_PurOrdItemHierarchy: companion source entity, same qualifier
+            const hierarchy = result.find((h) => h.entitySetName === 'PPS_PurOrdItemHierarchy');
+            expect(hierarchy).toBeDefined();
+            expect(hierarchy?.qualifier).toBe('I_PPS_PurchaseOrderItemHNRltn');
+            expect(hierarchy?.parentProperty).toBe('PurchasingParentItem');
+            expect(hierarchy?.isDraft).toBe(false);
+            expect(hierarchy?.entityTypeKeys).toContain('PurchaseOrder');
+            expect(hierarchy?.entityTypeKeys).toContain('PurchaseOrderItem');
+        });
+    });
+
+    describe('getSemanticKeyProperties', () => {
+        test('should include draft keys alongside semantic key annotations', () => {
+            const entityType = {
+                keys: [
+                    { name: 'TravelID', type: 'Edm.String' },
+                    { name: 'IsActiveEntity', type: 'Edm.Boolean' }
+                ],
+                annotations: {
+                    Common: {
+                        SemanticKey: [{ value: 'TravelID', $target: { type: 'Edm.String' } }]
+                    }
+                }
+            } as unknown as EntityType;
+
+            const result = getSemanticKeyProperties(entityType);
+
+            expect(result).toEqual([
+                { name: 'TravelID', keyName: undefined, type: 'Edm.String', value: undefined },
+                { name: 'IsActiveEntity', type: 'Edm.Boolean', value: 'true' }
+            ]);
+        });
+
+        test('should include DraftUUID with no value alongside semantic key annotations', () => {
+            const entityType = {
+                keys: [
+                    { name: 'TravelID', type: 'Edm.String' },
+                    { name: 'DraftUUID', type: 'Edm.Guid' },
+                    { name: 'IsActiveEntity', type: 'Edm.Boolean' }
+                ],
+                annotations: {
+                    Common: {
+                        SemanticKey: [{ value: 'TravelID', $target: { type: 'Edm.String' } }]
+                    }
+                }
+            } as unknown as EntityType;
+
+            const result = getSemanticKeyProperties(entityType);
+
+            expect(result).toHaveLength(3);
+            expect(result.find((k) => k.name === 'DraftUUID')).toMatchObject({ name: 'DraftUUID', value: undefined });
+            expect(result.find((k) => k.name === 'IsActiveEntity')).toMatchObject({ value: 'true' });
+        });
+
+        test('should not duplicate draft key when it also appears in semantic key annotation', () => {
+            const entityType = {
+                keys: [
+                    { name: 'TravelID', type: 'Edm.String' },
+                    { name: 'IsActiveEntity', type: 'Edm.Boolean' }
+                ],
+                annotations: {
+                    Common: {
+                        SemanticKey: [
+                            { value: 'TravelID', $target: { type: 'Edm.String' } },
+                            { value: 'IsActiveEntity', $target: { type: 'Edm.Boolean' } }
+                        ]
+                    }
+                }
+            } as unknown as EntityType;
+
+            const result = getSemanticKeyProperties(entityType);
+
+            const isActiveOccurrences = result.filter((k) => k.name === 'IsActiveEntity');
+            expect(isActiveOccurrences).toHaveLength(1);
+        });
+
+        test('should return only entity keys when no semantic key annotations', () => {
+            const entityType = {
+                keys: [
+                    { name: 'TravelID', type: 'Edm.String' },
+                    { name: 'IsActiveEntity', type: 'Edm.Boolean' }
+                ],
+                annotations: { Common: {} }
+            } as unknown as EntityType;
+
+            const result = getSemanticKeyProperties(entityType);
+
+            expect(result).toEqual([
+                { name: 'TravelID', type: 'Edm.String', value: undefined },
+                { name: 'IsActiveEntity', type: 'Edm.Boolean', value: 'true' }
+            ]);
         });
     });
 });

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`Test createEntityChoices - integration should create entity set choices based on app model (from specification) 1`] = `
+exports[`Test createEntityChoices (integration) should create entity set choices based on app model (from specification) 1`] = `
 {
   "choices": [
     {
@@ -162,14 +162,18 @@ exports[`Test createEntityChoices - integration should create entity set choices
   ],
   "entitySetsFlat": {
     "_Agency": "TravelAgency",
-    "_BookSupplement": "BookingSupplement",
+    "_Agency/_Country": "Country",
     "_Booking": "Booking",
-    "_Carrier": "Airline",
-    "_Country": "Country",
+    "_Booking/_BookSupplement": "BookingSupplement",
+    "_Booking/_BookSupplement/_Product": "Supplement",
+    "_Booking/_BookSupplement/_SupplementText": "SupplementText",
+    "_Booking/_Carrier": "Airline",
+    "_Booking/_Carrier/_Currency": "Currency",
+    "_Booking/_Customer": "Passenger",
+    "_Booking/_Customer/_Country": "Country",
     "_Currency": "Currency",
     "_Customer": "Passenger",
-    "_Product": "Supplement",
-    "_SupplementText": "SupplementText",
+    "_Customer/_Country": "Country",
   },
 }
 `;

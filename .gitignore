@@ -187,6 +187,7 @@ nx-cloud.env
 
 # AI Coding Agents
 .claude/settings.local.json
+**/.claude/settings.json
 CLAUDE.local.md
 .cursorignore
 .codeiumignore
