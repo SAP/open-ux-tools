@@ -1,16 +1,9 @@
 import base from '../../eslint.config.mjs';
 import reactPlugin from 'eslint-plugin-react';
 import globals from 'globals';
-import tseslint from 'typescript-eslint';
-const tsParser = tseslint.parser;
 const __dirname = import.meta.dirname;
 
 export default [
-    {
-        languageOptions: {
-            'parser': tsParser
-        }
-    },
     ...base,
     reactPlugin.configs.flat.recommended,
     {
@@ -19,7 +12,6 @@ export default [
         },
         languageOptions: {
             parserOptions: {
-                parser: tsParser,
                 project: 'tsconfig.eslint.json',
                 tsconfigRootDir: __dirname
             },

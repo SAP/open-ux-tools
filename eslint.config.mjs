@@ -8,7 +8,6 @@ import sonarjs from 'eslint-plugin-sonarjs';
 const __dirname = import.meta.dirname;
 
 const isFixMode = process.argv.includes('--fix');
-const tsParser = tseslint.parser;
 
 const compat = new FlatCompat({
     baseDirectory: __dirname, // optional; default: process.cwd()
@@ -268,7 +267,6 @@ export default [
     {
         name: 'typescript-eslint-1',
         languageOptions: {
-            parser: tsParser
         },
         files: ['**/*.ts', '**/*.tsx'],
         // 'extends': ['plugin:@typescript-eslint/recommended'],
@@ -333,7 +331,6 @@ export default [
     {
         name: 'typescript-eslint-2',
         languageOptions: {
-            parser: tsParser
         },
         files: ['**/test/**/*.js', '**/test/**/*.ts', '**/test/**/*.tsx'],
         rules: {

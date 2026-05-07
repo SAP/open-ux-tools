@@ -1,5 +1,4 @@
 import baseConfig from '../../eslint.config.mjs';
-import tseslint from 'typescript-eslint';
 
 const base = baseConfig.filter(
     (config) =>
@@ -10,8 +9,6 @@ const base = baseConfig.filter(
             'typescript-eslint/recommended'
         ].includes(config.name)
 );
-
-const tsParser = tseslint.parser;
 
 export default [
     { ignores: ['src/env/ui5loader.js', 'index.d.ts'] },

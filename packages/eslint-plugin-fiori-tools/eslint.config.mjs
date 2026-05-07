@@ -1,10 +1,8 @@
 import base from '../../eslint.config.mjs';
 import eslintPlugin from 'eslint-plugin-eslint-plugin';
-import tseslint from 'typescript-eslint';
 
 const __dirname = import.meta.dirname;
 
-const tsParser = tseslint.parser;
 
 export default [
     {
@@ -14,7 +12,6 @@ export default [
     {
         languageOptions: {
             parserOptions: {
-                parser: tsParser,
                 tsconfigRootDir: __dirname,
                 project: './tsconfig.eslint.json'
             }

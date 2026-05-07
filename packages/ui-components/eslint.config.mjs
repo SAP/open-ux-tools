@@ -1,8 +1,6 @@
 import base from '../../eslint.config.mjs';
 import reactPlugin from 'eslint-plugin-react';
 import globals from 'globals';
-import tseslint from 'typescript-eslint';
-const tsParser = tseslint.parser;
 const __dirname = import.meta.dirname;
 
 export default [
