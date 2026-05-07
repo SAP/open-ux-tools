@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.40
+
+### Patch Changes
+
+- f2bb2e4: Fix sonar issue 'Ensure that tainted data is validated before being used to construct a client-side request URL.' for method 'registerComponentDependencyPaths'
+
 ## 0.25.39
 
 ## 0.25.38
