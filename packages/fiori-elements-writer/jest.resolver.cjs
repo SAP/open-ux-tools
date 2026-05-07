@@ -1,25 +1,14 @@
-/**
- * Custom Jest resolver to handle ESM workspace packages loaded via require() by CJS node_modules.
- *
- * Problem: @sap/ux-cds-compiler-facade (CJS) calls require() on @sap-ux/odata-annotation-core-types
- * which is ESM ("type": "module"). Jest throws "Must use import to load ES Module".
- *
- * Solution: When a require() condition is detected for known ESM workspace packages,
- * redirect to a CJS proxy file that exports an empty object.
- */
 const path = require('path');
-
-const CJS_PROXY = path.join(__dirname, 'test', '__cjs-proxies', 'empty.cjs');
-
-const ESM_PACKAGES = [
-    '@sap-ux/odata-annotation-core-types',
-    '@sap-ux/odata-annotation-core',
-    '@sap-ux/project-access'
-];
-
+const CJS_PROXY_DIR = path.join(__dirname, 'test', '__cjs-proxies');
+const ESM_TO_CJS = {
+    // project-access has ESM-only code (import.meta) so we need a bundled CJS proxy
+    '@sap-ux/project-access': path.join(CJS_PROXY_DIR, 'empty.cjs')
+    // odata-annotation-core-types and odata-annotation-core now have native CJS exports
+    // via their exports field, so they don't need proxies
+};
 module.exports = (request, options) => {
-    if (options.conditions && options.conditions.includes('require') && ESM_PACKAGES.includes(request)) {
-        return CJS_PROXY;
+    if (options.conditions && options.conditions.includes('require') && ESM_TO_CJS[request]) {
+        return ESM_TO_CJS[request];
     }
     return options.defaultResolver(request, options);
 };

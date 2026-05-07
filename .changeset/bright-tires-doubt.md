@@ -94,7 +94,7 @@
 '@sap-ux/types': minor
 ---
 
-# BREAKING CHANGE: Migration to ECMAScript Modules (ESM)
+# Migration to ECMAScript Modules (ESM)
 
 All packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
 
