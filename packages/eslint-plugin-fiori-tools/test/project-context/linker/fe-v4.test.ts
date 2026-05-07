@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { readFile } from 'node:fs/promises';
-import { pathToFileURL} from 'node:url';
+import { pathToFileURL } from 'node:url';
 import { jest } from '@jest/globals';
 import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';

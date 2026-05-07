@@ -1,5 +1,5 @@
 import { promises } from 'node:fs';
-import { pathToFileURL} from 'node:url';
+import { pathToFileURL } from 'node:url';
 import { join } from 'node:path';
 
 const __dirname = import.meta.dirname;

@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { pathToFileURL} from 'node:url';
+import { pathToFileURL } from 'node:url';
 import { existsSync, readFileSync } from 'node:fs';
 import { jest } from '@jest/globals';
 

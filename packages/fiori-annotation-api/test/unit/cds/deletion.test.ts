@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join, normalize } from 'node:path';
-import { pathToFileURL} from 'node:url';
+import { pathToFileURL } from 'node:url';
 
 const __dirname = import.meta.dirname;
 

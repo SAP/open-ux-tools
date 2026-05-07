@@ -11,7 +11,7 @@ import type {
     TestConfig
 } from '../types/index.js';
 import { render } from 'ejs';
-import { resolve, dirname, join, posix } from 'node:path';
+import { resolve, join, posix } from 'node:path';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
 
 const __dirname = import.meta.dirname;
