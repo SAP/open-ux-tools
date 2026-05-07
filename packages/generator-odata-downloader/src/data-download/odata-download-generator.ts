@@ -1,4 +1,4 @@
-import type { AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
 import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { ExternalService } from '@sap-ux/axios-extension';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
