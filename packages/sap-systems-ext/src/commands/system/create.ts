@@ -6,6 +6,7 @@ import type { BackendSystem } from '@sap-ux/store';
 /**
  * Returns a command handler function that creates or reveals the system panel.
  * An optional BackendSystem can be passed to pre-fill the panel fields.
+ * This command is the public API used by external tools to create systems with pre-filled data.
  *
  * @param context - the system command context
  * @returns - a command handler function
@@ -18,6 +19,21 @@ export const createSystemCommandHandler =
         );
         await panel.reveal();
     };
+
+/**
+ * Returns a command handler function that creates a new empty system panel.
+ * This is an internal command used by the "Add New System" UI button.
+ *
+ * @param context - the system command context
+ * @returns - a command handler function
+ */
+export const createNewSystemCommandHandler = (context: SystemCommandContext) => async (): Promise<void> => {
+    // Always pass undefined to ensure empty form
+    const panel = context.panelManager.getOrCreateNewPanel(NEW_SYSTEM_PANEL_KEY, () =>
+        createNewPanel(context, undefined)
+    );
+    await panel.reveal();
+};
 
 /**
  * Creates a new system panel.

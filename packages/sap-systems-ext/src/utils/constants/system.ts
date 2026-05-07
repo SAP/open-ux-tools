@@ -3,6 +3,7 @@
  */
 export enum SystemCommands {
     Create = 'sap.ux.tools.sapSystems.create',
+    CreateNew = 'sap.ux.tools.sapSystems.createNew', // Internal command for UI button - always empty form
     Show = 'sap.ux.tools.sapSystems.show',
     Delete = 'sap.ux.tools.sapSystems.delete',
     Refresh = 'sap.ux.tools.sapSystems.refresh',

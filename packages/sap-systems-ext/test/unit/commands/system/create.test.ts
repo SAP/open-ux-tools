@@ -1,5 +1,5 @@
 import type { SystemCommandContext } from '../../../../src/types';
-import { createSystemCommandHandler } from '../../../../src/commands/system/create';
+import { createSystemCommandHandler, createNewSystemCommandHandler } from '../../../../src/commands/system/create';
 import { PanelManager, type SystemPanel } from '../../../../src/panel';
 import { BackendSystem } from '@sap-ux/store';
 
@@ -47,6 +47,26 @@ describe('Test the create system command handler', () => {
 
         const handler = createSystemCommandHandler(mockContext);
         await handler(prePopulated);
+
+        expect(getOrCreateNewPanelSpy).toHaveBeenCalledWith('__NEW_SYSTEM_PANEL__', expect.any(Function));
+    });
+});
+describe('Test the createNew system command handler', () => {
+    it('should create and reveal a new empty system panel', async () => {
+        const panelManager = new PanelManager<SystemPanel>();
+        const getOrCreateNewPanelSpy = jest.spyOn(panelManager, 'getOrCreateNewPanel');
+
+        const mockContext = {
+            panelManager,
+            extContext: {
+                vscodeExtContext: {
+                    extensionPath: '/mock/extension/path'
+                }
+            }
+        } as SystemCommandContext;
+
+        const handler = createNewSystemCommandHandler(mockContext);
+        await handler();
 
         expect(getOrCreateNewPanelSpy).toHaveBeenCalledWith('__NEW_SYSTEM_PANEL__', expect.any(Function));
     });
