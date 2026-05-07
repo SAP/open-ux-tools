@@ -39,8 +39,8 @@
         "prebuilds",
         "yeoman.png"
     ],
-    "dependencies": {},
-    "devDependencies": {
+    "devDependencies": {},
+    "dependencies": {
         "@sap-devx/yeoman-ui-types": "1.23.0",
         "@sap-ux/annotation-converter": "0.10.21",
         "@sap-ux/axios-extension": "workspace:*",
@@ -64,7 +64,7 @@
         "deepmerge": "4.3.1",
         "i18next": "25.10.10",
         "inquirer": "8.2.7",
-        "odata-query": "8.0.7",
+        "odata-query": "8.0.5",
         "os-name": "4.0.1",
         "prettify-xml": "1.2.0",
         "rimraf": "6.1.3",
