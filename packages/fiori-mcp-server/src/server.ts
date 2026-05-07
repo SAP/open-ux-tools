@@ -268,7 +268,8 @@ export class FioriFunctionalityServer {
         // Telemetry init runs after transport is connected so it never blocks the MCP handshake.
         // This is required for Claude Desktop's built-in Node runner, where a blocking await here
         // causes the process to crash before the client receives the initialize response.
-        this.setupTelemetry().catch((error) => logger.error(`Telemetry init error: ${error instanceof Error ? error.message : String(error)}`, error));
-
+        this.setupTelemetry().catch((error) =>
+            logger.error(`Telemetry init error: ${error instanceof Error ? error.message : String(error)}`)
+        );
     }
 }
