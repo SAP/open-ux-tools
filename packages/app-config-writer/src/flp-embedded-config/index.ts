@@ -93,7 +93,13 @@ function addStartEmbeddedScript(fs: Editor, basePath: string, flpPath: string, l
  * @param bspApplication - BSP application name (lowercase)
  * @param logger - optional logger
  */
-function addFlpYaml(fs: Editor, basePath: string, yamlPath: string, bspApplication: string, logger?: ToolsLogger): void {
+function addFlpYaml(
+    fs: Editor,
+    basePath: string,
+    yamlPath: string,
+    bspApplication: string,
+    logger?: ToolsLogger
+): void {
     const flpYamlPath = join(basePath, 'flp.yaml');
     const yamlContent = fs.read(yamlPath);
     const flpYaml = YAML.parseDocument(yamlContent).toJSON();
