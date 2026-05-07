@@ -3,9 +3,7 @@ import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
 import { createApplicationAccess, FileName, getSpecificationModuleFromCache } from '@sap-ux/project-access';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import { readFile } from 'node:fs/promises';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
+import { join } from 'node:path';
 const mockExecNpmCommand = jest.fn<(...args: unknown[]) => Promise<string>>();
 const mockWriteFile = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockReadJSON = jest.fn<(...args: unknown[]) => Promise<unknown>>();
@@ -33,7 +31,7 @@ const { getEntityModel } = await import('../../src/data-download/utils');
 
 import type { ReferencedEntities } from '../../src/data-download/types';
 
-const __testdir = dirname(fileURLToPath(import.meta.url));
+const __testdir = import.meta.dirname;
 
 describe('Test createEntityChoices - integration', () => {
     it('should create entity set choices based on app model (from specification)', async () => {

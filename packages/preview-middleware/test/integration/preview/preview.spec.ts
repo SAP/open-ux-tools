@@ -9,13 +9,11 @@ import {
 } from '@sap-ux-private/playwright';
 import type { Page } from '@sap-ux-private/playwright';
 import { writeFile } from 'node:fs/promises';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { SERVER_TIMEOUT, TIMEOUT } from '../utils/constant';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 const buildUrl =
     (port = 3000) =>

@@ -2,12 +2,11 @@ import '@sap-ux/jest-file-matchers';
 
 import { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import type { Project, Service, State } from '../../../src/types';
 import { getTestData, getTestDir } from '../test-utils';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 export const EXPECTED_OUTPUT_DIR_NAME = './expected-output';
 

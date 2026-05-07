@@ -1,5 +1,4 @@
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { UI5Config, getEsmTypesVersion, getPreviewMiddlewareConfig, getTypesPackage } from '@sap-ux/ui5-config';
@@ -11,7 +10,7 @@ import type { Ui5App, App, AppOptions, UI5 } from './types.js';
 import type { Editor } from 'mem-fs-editor';
 import { copyTemplates } from './utils.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 /**
  * Writes the template to the memfs editor instance.

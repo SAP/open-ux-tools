@@ -2,11 +2,7 @@ import base from '../../eslint.config.mjs';
 import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import tseslint from 'typescript-eslint';
 
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = import.meta.dirname;
 
 const tsParser = tseslint.parser;
 

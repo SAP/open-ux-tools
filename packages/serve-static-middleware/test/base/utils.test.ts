@@ -1,8 +1,6 @@
 import { resolveServeStaticOptions, resolveSrcPath } from '../../src/base/utils';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const testDirname = dirname(fileURLToPath(import.meta.url));
+import { join } from 'node:path';
+const testDirname = import.meta.dirname;
 
 describe('utils', () => {
     test('resolveServeStaticOptions: global options', () => {

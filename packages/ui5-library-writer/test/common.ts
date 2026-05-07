@@ -1,5 +1,4 @@
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { exec as execCP } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -7,7 +6,7 @@ import type { UI5LibConfig } from '../src/types';
 import type { Editor } from 'mem-fs-editor';
 import { compareUI5VersionGte, ui5LtsVersion_1_120 } from '../src/utils';
 
-const __testdir = dirname(fileURLToPath(import.meta.url));
+const __testdir = import.meta.dirname;
 const require = createRequire(import.meta.url);
 const exec = promisify(execCP);
 

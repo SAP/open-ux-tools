@@ -1,7 +1,5 @@
 import { expect, jest, describe, test, it, beforeAll, afterAll, beforeEach, afterEach } from '@jest/globals';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
+import { join } from 'node:path';
 globalThis.jest = jest;
 globalThis.expect = expect;
 globalThis.describe = describe;
@@ -15,6 +13,6 @@ globalThis.afterEach = afterEach;
 // Set __dirname to src/ of this package so that source code using
 // __dirname (e.g., getTemplatePath in utils.ts) resolves correctly.
 // Test files that need __dirname must define it locally using import.meta.url.
-const pkgRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
+const pkgRoot = join(import.meta.dirname, '..');
 globalThis.__dirname = join(pkgRoot, 'src');
 globalThis.__filename = join(pkgRoot, 'src', 'index.ts');

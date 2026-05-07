@@ -1,13 +1,11 @@
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Choice } from 'prompts';
 import { getMockserverConfigQuestions } from '../../../src';
 import { t } from '../../..';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 describe('Test function getMockserverConfigQuestions()', () => {
     test('Question without proposals', () => {

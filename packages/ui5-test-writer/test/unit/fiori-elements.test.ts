@@ -6,8 +6,7 @@ import { create } from 'mem-fs-editor';
 import fileSystem from 'node:fs';
 import type { Logger } from '@sap-ux/logger/src/types';
 import * as appModels from '../test-input/constants';
-import { fileURLToPath } from 'node:url';
-const __dirname = join(fileURLToPath(import.meta.url), '..');
+const __dirname = import.meta.dirname;
 
 const readAppMock = jest.fn();
 const realProjectAccess = await import('@sap-ux/project-access');

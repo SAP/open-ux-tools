@@ -1,10 +1,9 @@
 import { jest } from '@jest/globals';
 import { readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 // Read actual package.json for version assertion
 const actualPackageJson = readFileSync(join(__dirname, '../../../package.json'), 'utf-8');

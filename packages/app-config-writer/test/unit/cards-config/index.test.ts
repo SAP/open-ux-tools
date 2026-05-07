@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import { enableCardGeneratorConfig } from '../../../src/cards-config';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
@@ -18,8 +17,7 @@ function createTestFs(basePath: string) {
     return fs;
 }
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 describe('enableCardGenerator', () => {
     test('Valid LROP', async () => {

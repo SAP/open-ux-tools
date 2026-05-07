@@ -1,12 +1,11 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import * as realFs from 'node:fs';
 import * as memfs from 'memfs';
 import { Union } from 'unionfs';
 import type { mta } from '@sap/mta-lib';
 
-const __dirname = join(fileURLToPath(import.meta.url), '..');
+const __dirname = import.meta.dirname;
 
 // Create the union filesystem
 const ufs = new Union();

@@ -1,9 +1,8 @@
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type { AbapCSN, AppGenInfo, ExternalParameters } from './types/index.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 /**
  * Transforms the external abapCSN object (possible multiple services) to the internal abapCSN (single chosen service).

@@ -2,7 +2,6 @@ import type { OdataService } from '../src/types';
 import { OdataVersion, ServiceType } from '../src/types';
 import { generate } from '../src';
 import path, { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -10,7 +9,7 @@ import fsExtra from 'fs-extra';
 const { readFile, removeSync } = fsExtra;
 import { UI5Config } from '@sap-ux/ui5-config';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 describe('ODataService templates', () => {
     const debug = !!process.env['UX_DEBUG'];

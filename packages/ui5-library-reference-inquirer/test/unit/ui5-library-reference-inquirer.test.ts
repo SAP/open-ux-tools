@@ -1,10 +1,8 @@
 import { jest } from '@jest/globals';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import type { UI5LibraryReferencePromptOptions } from '../../src';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 // Mock functions
 const mockFindFioriArtifacts = jest.fn();

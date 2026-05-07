@@ -1,12 +1,11 @@
-import { sep, join, dirname } from 'node:path';
+import { sep, join } from 'node:path';
 import { jest } from '@jest/globals';
 import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
 import * as memfs from 'memfs';
 import type fs from 'node:fs';
 
 const require = createRequire(import.meta.url);
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const hasbinSyncMock = jest.fn();
 const mockIsAppStudio = jest.fn();

@@ -3,10 +3,8 @@ import { LogLevel } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../../../src/types';
 import { mockedUi5RepoService } from '../../__mocks__';
 import { readdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __testdirname = dirname(fileURLToPath(import.meta.url));
+import { join } from 'node:path';
+const __testdirname = import.meta.dirname;
 
 const mockDotenvConfig = jest.fn();
 

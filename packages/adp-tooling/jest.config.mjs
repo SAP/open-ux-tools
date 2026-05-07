@@ -1,8 +1,6 @@
 import baseConfig from '../../jest.base.mjs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { resolve } from 'node:path';
+const __dirname = import.meta.dirname;
 
 // External @sap-ux packages not in workspace — must be excluded from source mapping
 const externalSapUx =

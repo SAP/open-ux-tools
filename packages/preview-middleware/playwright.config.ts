@@ -1,15 +1,13 @@
 import { defineConfig, devices } from '@sap-ux-private/playwright';
 import type { PlaywrightTestConfig } from '@sap-ux-private/playwright';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 
 /**
  * Read environment variables from `.env` file.
  */
 import 'dotenv/config';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 /**
  * See https://playwright.dev/docs/test-configuration.

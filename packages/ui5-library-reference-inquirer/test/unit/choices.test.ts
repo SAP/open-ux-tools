@@ -1,10 +1,8 @@
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { getLibraryChoices, getProjectChoices } from '../../src/choices';
 import { type Manifest, ReuseLibType } from '@sap-ux/project-access';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 describe('choices utils', () => {
     test('should return project choices', async () => {

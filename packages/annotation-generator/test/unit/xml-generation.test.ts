@@ -1,5 +1,4 @@
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { create as createStore } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
@@ -9,7 +8,7 @@ import type { AnnotationServiceParameters, GenerateAnnotationsOptions } from '..
 import { generateAnnotations } from '../../src';
 import { adaptFilePath } from '../../src/utils';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const testDataFolder = 'data';
 const edmxProjectFolder = 'xml-generation';

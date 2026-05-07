@@ -2,9 +2,7 @@ import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { promises as fsPromises } from 'node:fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
+import { join } from 'node:path';
 import type {
     BuildingBlockConfig,
     Chart,
@@ -28,8 +26,7 @@ import { Placement } from '../../src/common/types';
 import type { IdGeneratorFunction } from '../../src/common/file';
 import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 describe('Building Blocks', () => {
     let fs: Editor;

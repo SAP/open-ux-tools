@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import nock from 'nock';
 import type { AbapCloudOptions, AxiosError, AxiosRequestConfig, ProviderConfiguration } from '../../src';
 import type { ArchiveFileNode, SystemInfo } from '../../src/abap/types';
@@ -8,8 +7,7 @@ import fs from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),

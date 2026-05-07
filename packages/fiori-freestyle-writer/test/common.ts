@@ -1,7 +1,6 @@
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { sample } from './sample/metadata';
@@ -14,7 +13,7 @@ import { exec as execCP } from 'node:child_process';
 const exec = promisify(execCP);
 import { compareUI5VersionGte, ui5LtsVersion_1_120 } from '../src/utils';
 
-const testDirname = dirname(fileURLToPath(import.meta.url));
+const testDirname = import.meta.dirname;
 const require = createRequire(import.meta.url);
 export const testOutputDir = join(testDirname, '/test-output');
 

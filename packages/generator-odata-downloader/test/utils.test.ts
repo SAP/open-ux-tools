@@ -1,10 +1,9 @@
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import type { ReferencedEntities } from '../src/data-download/types';
 import { createEntitySetData } from '../src/data-download/utils';
 import { readFile } from 'node:fs/promises';
 
-const __testdir = dirname(fileURLToPath(import.meta.url));
+const __testdir = import.meta.dirname;
 
 describe('Test utils', () => {
     describe('createEntitySetData', () => {

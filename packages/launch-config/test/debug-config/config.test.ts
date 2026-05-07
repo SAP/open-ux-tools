@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import type { DebugOptions, LaunchConfig, LaunchJSON, FioriOptions } from '../../src/types';
-import path, { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import path, { join } from 'node:path';
 import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../../src/types';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
@@ -17,7 +16,7 @@ jest.unstable_mockModule('../../src/debug-config/workspaceManager', () => ({
 const { configureLaunchJsonFile } = await import('../../src/debug-config/config');
 const launchConfig = await import('../../src/launch-config-crud/create');
 
-const configTestDir = dirname(fileURLToPath(import.meta.url));
+const configTestDir = import.meta.dirname;
 
 const projectName = 'project1';
 const cwd = `\${workspaceFolder}`;

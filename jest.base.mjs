@@ -1,7 +1,5 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { resolve } from 'node:path';
+const __dirname = import.meta.dirname;
 
 export default {
     extensionsToTreatAsEsm: ['.ts'],

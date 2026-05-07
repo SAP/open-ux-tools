@@ -1,11 +1,9 @@
 import { jest } from '@jest/globals';
 import path, { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { EffectiveOptions } from '../../../src/types';
 
-const __testdir = dirname(fileURLToPath(import.meta.url));
+const __testdir = import.meta.dirname;
 
 const mockExistsSync = jest.fn();
 const mockReadFileSync = jest.fn();

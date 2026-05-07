@@ -2,7 +2,6 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import yaml from 'yaml';
 
 // Packages that should not have major version bumps
@@ -10,8 +9,7 @@ const BLOCKED_MAJOR_PACKAGES = [
     // '@sap-ux/eslint-plugin-fiori-tools'
 ];
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = import.meta.dirname;
 const CHANGESET_DIR = path.join(__dirname, '..', '.changeset');
 
 function validateChangesets() {

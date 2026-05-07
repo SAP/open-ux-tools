@@ -2,8 +2,7 @@ import { jest } from '@jest/globals';
 import '@sap-ux/jest-file-matchers';
 import { copyFileSync, existsSync, promises as fs, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import 'jest-extended';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import yeomanTest from 'yeoman-test';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import type { FEAppConfig } from '../../../src/types';
@@ -13,7 +12,7 @@ import { EXPECTED_OUTPUT_DIR_NAME } from './test-utils';
 // Disable telemetry for integration tests to avoid Application Insights initialization errors
 process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const testDir: string = getTestDir('headless');
 const fixturesPath = join(__dirname, './fixtures');

@@ -1,9 +1,7 @@
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 import { capPropertiesPath, csvPath, doesExist, jsonPath } from '../../../src/utils';
 import type { CdsEnvironment } from '../../../src';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 describe('path', () => {
     describe('doesExist', () => {
         const DATA_ROOT = join(__dirname, '..', 'data');

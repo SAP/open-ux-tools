@@ -1,13 +1,11 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { rimraf } from 'rimraf';
 import Generator from 'yeoman-generator';
 import yeomanTest from 'yeoman-test';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 import type {
     AttributesAnswers,

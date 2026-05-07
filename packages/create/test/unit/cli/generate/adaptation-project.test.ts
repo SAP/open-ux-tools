@@ -2,10 +2,8 @@ import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { join } from 'node:path';
+const __dirname = import.meta.dirname;
 
 const mockTraceChanges = jest.fn();
 jest.unstable_mockModule('../../../../src/tracing/trace', () => ({

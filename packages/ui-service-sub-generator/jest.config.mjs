@@ -1,9 +1,8 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import baseConfig from '../../jest.base.mjs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 const config = { ...baseConfig };
 
 // Build workspace source map so @sap-ux/* imports resolve to TS source instead of ESM dist

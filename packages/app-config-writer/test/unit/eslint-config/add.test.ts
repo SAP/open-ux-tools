@@ -2,8 +2,7 @@ import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/project-access';
 import chalk from 'chalk';
@@ -27,8 +26,7 @@ jest.unstable_mockModule('prompts', () => ({
 
 const { generateEslintConfig } = await import('../../../src/');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 describe('generateEslintConfig', () => {
     const loggerMock: ToolsLogger = {

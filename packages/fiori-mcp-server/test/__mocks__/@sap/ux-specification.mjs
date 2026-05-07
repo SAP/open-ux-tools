@@ -2,10 +2,8 @@
 // The published package is CJS, but Jest's ESM mode cannot extract named exports from CJS modules.
 // This wrapper uses createRequire to load the CJS bundle and re-exports all properties as named ESM exports.
 import { createRequire } from 'node:module';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { resolve } from 'node:path';
+const __dirname = import.meta.dirname;
 const require = createRequire(import.meta.url);
 const distPath = resolve(__dirname, '..', '..', '..', 'node_modules', '@sap', 'ux-specification', 'dist', 'index-min.js');
 const mod = require(distPath);

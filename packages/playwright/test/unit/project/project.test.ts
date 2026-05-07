@@ -1,5 +1,4 @@
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import {
     removeNodeModules,
     removeProjectContent,
@@ -11,7 +10,7 @@ import { copyProject } from '../../../src/project/copy';
 import type { CopyOptions } from '../../../src/types';
 import { pathExists, ensureDir } from 'fs-extra';
 
-const testDirname = dirname(fileURLToPath(import.meta.url));
+const testDirname = import.meta.dirname;
 const projectRoot = join(testDirname, '..', '..', 'fixtures', 'simple-app');
 const des = getDestinationProjectRoot(projectRoot);
 

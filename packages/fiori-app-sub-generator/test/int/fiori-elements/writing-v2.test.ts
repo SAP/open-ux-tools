@@ -3,7 +3,7 @@ import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { readdirSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 import type { Project, Service, State } from '../../../src/types';
 import { ApiHubType, FloorplanFE } from '../../../src/types';
 import {
@@ -15,9 +15,7 @@ import {
     runWritingPhaseGen
 } from '../test-utils';
 import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 

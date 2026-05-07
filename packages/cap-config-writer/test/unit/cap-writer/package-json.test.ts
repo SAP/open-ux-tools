@@ -3,7 +3,6 @@ import type { CapRuntime, CapServiceCdsInfo } from '../../../src';
 import memFs from 'mem-fs';
 import editor, { type Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type { Package } from '@sap-ux/project-access';
 
 const mockGetCdsVersionInfo = jest.fn();
@@ -68,8 +67,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 
 const { updateRootPackageJson, updateAppPackageJson } = await import('../../../src/cap-writer/package-json');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 describe('Writing/package json files', () => {
     let fs: Editor;

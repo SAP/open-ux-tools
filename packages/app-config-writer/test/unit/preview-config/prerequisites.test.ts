@@ -1,12 +1,10 @@
 import { jest } from '@jest/globals';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { ToolsLogger } from '@sap-ux/logger';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 const basePath = join(__dirname, '../../fixtures/preview-config');
 
 const mockFindCapProjectRoot = jest.fn().mockResolvedValue(basePath);

@@ -1,5 +1,5 @@
-import { join, dirname } from 'node:path';
-import { pathToFileURL, fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { pathToFileURL} from 'node:url';
 import type { ProjectType } from '@sap-ux/project-access';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
@@ -41,7 +41,7 @@ export interface ProjectTestModel<T extends Record<string, string>> {
     files: T;
 }
 
-const DATA_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', 'data');
+const DATA_ROOT = join(import.meta.dirname, '..', 'data');
 const V4_XML_START_ROOT = join(DATA_ROOT, 'v4-xml-start');
 const V2_XML_START_ROOT = join(DATA_ROOT, 'v2-xml-start');
 const V4_CAP_START_ROOT = join(DATA_ROOT, 'cds', 'cap-start');

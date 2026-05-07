@@ -1,12 +1,10 @@
 import { jest } from '@jest/globals';
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 import { toUnifiedUri } from '../helper';
 import type { CdsEnvironment } from '../../../src';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 // Get a reference to the real fs module BEFORE mocking
 const realFs = await import('node:fs');

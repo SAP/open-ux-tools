@@ -1,12 +1,11 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import fsExtra from 'fs-extra';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 
-const __dirname = join(fileURLToPath(import.meta.url), '..');
+const __dirname = import.meta.dirname;
 
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({

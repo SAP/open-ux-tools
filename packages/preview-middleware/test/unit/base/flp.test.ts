@@ -6,7 +6,6 @@ import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
 import { readFileSync, promises } from 'node:fs';
 import path, { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
 import type { EnhancedRequest } from '../../../src/base/flp';
@@ -19,7 +18,7 @@ import { fetchMock } from '../../__mock__/global';
 import connect = require('connect');
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 // Mock node:module to intercept createRequire so that require.resolve works for
 // @sap-ux/control-property-editor-sources (its dist/app.js is not built in test env)

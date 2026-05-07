@@ -1,8 +1,6 @@
 import { jest } from '@jest/globals';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const testDirname = dirname(fileURLToPath(import.meta.url));
+import { join } from 'node:path';
+const testDirname = import.meta.dirname;
 
 const mockSpawn = jest.fn();
 

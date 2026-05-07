@@ -1,11 +1,10 @@
 import { jest } from '@jest/globals';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { promises } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const mockGetLogger = jest.fn();
 

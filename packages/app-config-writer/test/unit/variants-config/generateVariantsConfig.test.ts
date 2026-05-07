@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import chalk from 'chalk';
 
 jest.unstable_mockModule('chalk', () => ({
@@ -23,8 +22,7 @@ jest.unstable_mockModule('prompts', () => ({
 const { generateVariantsConfig } = await import('../../../src');
 const { ToolsLogger } = await import('@sap-ux/logger');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 describe('generateVariantsConfig', () => {
     const basePath = join(__dirname, '../../fixtures/variants-config');

@@ -1,9 +1,8 @@
 import { join, dirname, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { pathExists, remove } from 'fs-extra';
 import { jest } from '@jest/globals';
 
-const testDirname = dirname(fileURLToPath(import.meta.url));
+const testDirname = import.meta.dirname;
 
 const mockRemoveProjectContent = jest.fn<() => Promise<void>>();
 const mockRemoveNodeModules = jest.fn<() => Promise<void>>();

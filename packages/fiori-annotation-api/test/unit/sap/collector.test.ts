@@ -1,9 +1,7 @@
 import { jest } from '@jest/globals';
 import { readFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { join } from 'node:path';
+const __dirname = import.meta.dirname;
 
 import type { AnnotationFile, Target } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, createTarget, Edm, Location, Range } from '@sap-ux/odata-annotation-core-types';

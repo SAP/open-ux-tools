@@ -5,8 +5,7 @@ import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { copyFileSync, promises as fsPromise, mkdirSync, readdirSync } from 'node:fs';
 import 'jest-extended';
 import cloneDeep from 'lodash/cloneDeep';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import type { Project, Service, State } from '../../../src/types';
 import { FloorplanFE } from '../../../src/types';
 import {
@@ -19,7 +18,7 @@ import {
 } from '../test-utils';
 import { baseTestProject, getExpectedOutputPath, v4EntityConfig, v4Service } from './test-utils';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const actualProjectAccess = await import('@sap-ux/project-access');
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');

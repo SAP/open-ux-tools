@@ -1,6 +1,5 @@
 import { promises } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import type { Diagnostic, Element } from '@sap-ux/odata-annotation-core';
 import type { AnnotationGroup, Annotation } from '@sap-ux/cds-annotation-parser';
 import { deserialize } from './deserialize-ast';
@@ -40,8 +39,7 @@ export type TestCaseName =
     | 'expression'
     | 'flattened-nested-record';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 const { readFile } = promises;
 

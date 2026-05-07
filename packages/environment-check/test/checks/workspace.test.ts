@@ -1,9 +1,6 @@
 import { jest } from '@jest/globals';
 import path, { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = import.meta.dirname;
 
 const mockFindAllApps = jest.fn();
 jest.unstable_mockModule('@sap-ux/project-access', () => ({

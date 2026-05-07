@@ -1,11 +1,9 @@
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 import { jest } from '@jest/globals';
 import { cpSync, readdirSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { rimraf } from 'rimraf';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const mockGetService = jest.fn();
 const mockIsAppStudio = jest.fn();

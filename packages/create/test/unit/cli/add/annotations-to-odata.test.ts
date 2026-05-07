@@ -4,12 +4,10 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import { Command } from 'commander';
 import { readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
+import { join } from 'node:path';
 import { createProjectAccessMock } from '../__mocks__/project-access-mock';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const mockGetLogger = jest.fn();
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({

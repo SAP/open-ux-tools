@@ -1,9 +1,8 @@
 import { jest } from '@jest/globals';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getVariant: jest.fn()

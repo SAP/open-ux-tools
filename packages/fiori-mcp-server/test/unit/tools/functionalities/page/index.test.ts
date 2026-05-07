@@ -1,11 +1,10 @@
 import { jest } from '@jest/globals';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { writeFileSync, readFileSync } from 'node:fs';
 import { copyDirectory } from '../../../utils';
 import { npmInstall, removeDirectory } from '../../../../utils';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const TIME_OUT = 5 * 60 * 1000; // 5 min due to npm install.
 

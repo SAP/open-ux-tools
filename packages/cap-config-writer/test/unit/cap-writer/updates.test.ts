@@ -1,8 +1,7 @@
 import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/cap-config/types';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
@@ -86,8 +85,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 
 const { applyCAPUpdates } = await import('../../../src/cap-writer');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 describe('Test applyCAPUpdates updates files correctly', () => {
     let fs: Editor;

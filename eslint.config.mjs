@@ -5,11 +5,7 @@ import pluginJsdoc from 'eslint-plugin-jsdoc';
 import tseslint from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-import';
 import sonarjs from 'eslint-plugin-sonarjs';
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = import.meta.dirname;
 
 const isFixMode = process.argv.includes('--fix');
 const tsParser = tseslint.parser;

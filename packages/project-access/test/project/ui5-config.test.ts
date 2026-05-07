@@ -1,5 +1,4 @@
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import {
@@ -13,8 +12,7 @@ import {
 } from '../../src';
 import { readFile, writeFile } from 'node:fs/promises';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = join(__filename, '..');
+const __dirname = import.meta.dirname;
 
 describe('Test getAllUi5YamlFileNames()', () => {
     const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');

@@ -12,10 +12,9 @@ import type {
 } from '../types/index.js';
 import { render } from 'ejs';
 import { resolve, dirname, join, posix } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test.js';

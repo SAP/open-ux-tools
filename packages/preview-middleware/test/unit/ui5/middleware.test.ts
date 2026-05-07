@@ -3,12 +3,11 @@ import express from 'express';
 import supertest from 'supertest';
 import { dirname, join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import nock from 'nock';
 import type { EnhancedRouter } from '../../../src/base/flp';
 import type { MiddlewareConfig } from '../../../src/types';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 // Mock node:module to intercept createRequire so that require.resolve works for
 // @sap-ux/control-property-editor-sources (its dist/app.js is not built in test env)

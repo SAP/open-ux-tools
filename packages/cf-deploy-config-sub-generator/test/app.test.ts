@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 import path, { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import * as memfs from 'memfs';
@@ -12,7 +11,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 
 const require = createRequire(import.meta.url);
-const __testdirname = path.dirname(fileURLToPath(import.meta.url));
+const __testdirname = import.meta.dirname;
 
 // CJS mock for 'fs' — intercepted by yeoman-generator and other CJS consumers
 jest.mock('fs', () => {

@@ -1,9 +1,8 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import fsExtra from 'fs-extra';
 
-const __dirname = join(fileURLToPath(import.meta.url), '..');
+const __dirname = import.meta.dirname;
 
 const realHasbin = await import('hasbin');
 jest.unstable_mockModule('hasbin', () => ({

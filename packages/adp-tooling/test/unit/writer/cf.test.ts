@@ -1,12 +1,11 @@
 import { jest } from '@jest/globals';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { rimraf } from 'rimraf';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';

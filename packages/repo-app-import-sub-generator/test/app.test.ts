@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { platform } from 'node:os';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
@@ -19,7 +18,7 @@ const { removeSync } = fsExtra;
 import { t } from '../src/utils/i18n';
 import { EventName } from '../src/telemetryEvents';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 // Pre-import actual modules before mocking
 const actualPromptHelpers = await import('../src/prompts/prompt-helpers');

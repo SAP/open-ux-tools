@@ -1,12 +1,11 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import * as realFs from 'node:fs';
 import * as memfs from 'memfs';
 import { Union } from 'unionfs';
 
-const __dirname = join(fileURLToPath(import.meta.url), '..');
-const pkgRoot = join(dirname(fileURLToPath(import.meta.url)), '../..');
+const __dirname = import.meta.dirname;
+const pkgRoot = join(import.meta.dirname, '../..');
 
 // Create the union filesystem
 const ufs = new Union();

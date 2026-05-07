@@ -1,9 +1,7 @@
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type { Manifest, Package } from '../../src';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = join(__filename, '..');
+const __dirname = import.meta.dirname;
 
 import {
     deleteDirectory,

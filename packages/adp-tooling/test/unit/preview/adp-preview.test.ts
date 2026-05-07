@@ -1,15 +1,14 @@
 import { jest } from '@jest/globals';
 import nock from 'nock';
 import * as realFs from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import express from 'express';
 import supertest from 'supertest';
 import type { Editor } from 'mem-fs-editor';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 import { type Logger, ToolsLogger } from '@sap-ux/logger';
 

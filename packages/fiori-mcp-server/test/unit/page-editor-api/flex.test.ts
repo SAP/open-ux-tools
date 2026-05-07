@@ -1,5 +1,4 @@
-import { basename, join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { basename, join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
@@ -8,7 +7,7 @@ import type { FlexChange, FlexChangeFiles } from '../../../src/page-editor-api/f
 import { generateFlexChanges } from '../utils';
 import { readFile } from 'node:fs/promises';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 describe('flex', () => {
     const changesPath = join(__dirname, 'test-data', 'flex-changes');

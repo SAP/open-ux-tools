@@ -3,9 +3,7 @@ import { join, dirname, normalize } from 'node:path';
 import { deserialize } from '../helper/deserialize-ast';
 import type { FileExtension } from './types';
 const { readFile } = promises;
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 /**
  * Get file base path.

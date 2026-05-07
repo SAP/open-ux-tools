@@ -1,9 +1,7 @@
 import { spawnSync } from 'node:child_process';
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 import { platform } from 'node:os';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const fiveMinutes = 5 * 60000;
 const TEST_DATA_ROOT = join(__dirname, 'test', 'data');

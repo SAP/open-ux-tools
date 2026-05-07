@@ -1,10 +1,9 @@
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { getAppDescriptorVariant } from '../../../src/base/archive';
 import AdmZip from 'adm-zip';
 import { readFileSync } from 'node:fs';
 
-const __testdirname = dirname(fileURLToPath(import.meta.url));
+const __testdirname = import.meta.dirname;
 
 describe('base/archive', () => {
     const fixture = join(__testdirname, '../../fixtures/adp/webapp');

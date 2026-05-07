@@ -4,10 +4,9 @@
  */
 
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { stat } from 'fs/promises';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 export function getDataPath() {
     return path.join(__dirname, 'data');

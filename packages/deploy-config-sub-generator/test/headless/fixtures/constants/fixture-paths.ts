@@ -1,7 +1,5 @@
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { join } from 'node:path';
+const __dirname = import.meta.dirname;
 
 export const INPUT_APP_DIR_CF = join(__dirname, '../test-apps/cf');
 export const INPUT_APP_NAME_BASE = 'testappbase';

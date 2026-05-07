@@ -1,8 +1,7 @@
 import { jest } from '@jest/globals';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { PreviewConfigOptions } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
@@ -18,8 +17,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 const { updatePreviewMiddlewareConfigs } = await import('../../../src/preview-config/ui5-yaml');
 const { updatePreviewMiddlewareConfig } = await import('../../../src/common/ui5-yaml');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 describe('update preview middleware config', () => {
     const logger = new ToolsLogger();

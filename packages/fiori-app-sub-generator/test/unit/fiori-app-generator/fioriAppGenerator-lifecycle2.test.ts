@@ -9,13 +9,12 @@ import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types
 import { type CapService, DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { ServiceType } from '@sap-ux/odata-service-writer';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import yeomanTest from 'yeoman-test';
 import type { Project, State } from '../../../src/types';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 // Pre-import actuals
 const actualTransforms = await import('../../../src/fiori-app-generator/transforms');

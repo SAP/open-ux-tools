@@ -1,11 +1,9 @@
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { FileName, updatePackageScript, hasUI5CliV3 } from '../../src';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = join(__filename, '..');
+const __dirname = import.meta.dirname;
 
 describe('Test updatePackageScript()', () => {
     const sampleRoot = join(__dirname, '../test-data/json/package');

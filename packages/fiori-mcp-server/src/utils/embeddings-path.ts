@@ -5,11 +5,9 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { logger } from './logger.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = import.meta.dirname;
 
 /**
  * Attempts to resolve the path to embeddings data. First tries to use @sap-ux/fiori-docs-embeddings package, then falls back to local data.

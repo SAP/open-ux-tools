@@ -1,5 +1,4 @@
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
@@ -10,8 +9,7 @@ import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from 
 import { getApplicationType } from '../source/index.js';
 import { writeKeyUserChanges } from '../base/change-utils.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 const baseTmplPath = join(__dirname, '../../templates');
 
 /**

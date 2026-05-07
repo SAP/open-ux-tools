@@ -1,11 +1,9 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, resolve } from 'node:path';
 import yeomanTest from 'yeoman-test';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';

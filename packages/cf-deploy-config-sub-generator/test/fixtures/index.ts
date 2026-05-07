@@ -1,8 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __testdirname = path.dirname(fileURLToPath(import.meta.url));
+const __testdirname = import.meta.dirname;
 
 /**
  * A simple caching store for test fixtures

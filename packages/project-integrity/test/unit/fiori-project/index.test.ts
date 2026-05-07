@@ -1,9 +1,8 @@
 import { jest } from '@jest/globals';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { createRequire } from 'node:module';
 
-const __testdir = dirname(fileURLToPath(import.meta.url));
+const __testdir = import.meta.dirname;
 const require = createRequire(import.meta.url);
 const lzString = require('lz-string');
 

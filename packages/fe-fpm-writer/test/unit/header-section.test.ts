@@ -2,8 +2,7 @@ import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { generateCustomHeaderSection } from '../../src/section';
 import {
     RequestGroupId,
@@ -17,8 +16,7 @@ import manifestSections from './sample/section/webapp/manifest.json';
 import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 const testDir = join(__dirname, 'sample/headers-ection');
 

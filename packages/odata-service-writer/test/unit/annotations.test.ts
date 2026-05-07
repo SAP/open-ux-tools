@@ -1,7 +1,6 @@
 import fsExtra from 'fs-extra';
 const { readFile } = fsExtra;
 import path, { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import {
     getAnnotationNamespaces,
     removeAnnotationsFromCDSFiles,
@@ -13,7 +12,7 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { CdsAnnotationsInfo } from '../../src';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 describe('metadata parsing', () => {
     let testDataPath,

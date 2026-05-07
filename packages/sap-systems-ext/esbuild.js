@@ -28,7 +28,7 @@ const fixImportMetaPlugin = {
             // Replace createRequire(import.meta.url) with __filename
             contents = contents.replace(/createRequire\(import\.meta\.url\)/g, 'createRequire(__filename)');
 
-            // Replace fileURLToPath(import.meta.url) with __filename
+            // Replace import.meta.filename with __filename
             contents = contents.replace(/fileURLToPath\(import\.meta\.url\)/g, '__filename');
 
             // Replace standalone import.meta.url with __filename (as file:// URL for createRequire)

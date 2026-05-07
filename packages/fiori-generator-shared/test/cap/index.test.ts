@@ -1,9 +1,7 @@
 import { jest } from '@jest/globals';
 import * as actualFs from 'node:fs';
 import path, { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 
 const mockReadFileSync = jest.fn<any>(actualFs.readFileSync);
 

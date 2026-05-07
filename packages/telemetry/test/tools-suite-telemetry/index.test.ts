@@ -4,13 +4,11 @@ import { createRequire } from 'node:module';
 import * as memfs from 'memfs';
 import fs from 'node:fs';
 import path, { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { Union } from 'unionfs';
 
 const require = createRequire(import.meta.url);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = import.meta.dirname;
 
 const unionFs = new Union().use(fs).use(memfs.vol as unknown as typeof fs);
 (unionFs as any).realpath = fs.realpath;
