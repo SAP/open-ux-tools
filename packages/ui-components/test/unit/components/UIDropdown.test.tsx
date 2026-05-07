@@ -170,8 +170,9 @@ describe('<UIDropdown />', () => {
             rerender(<UIDropdown options={originalData as UISelectableOption[]} selectedKey="EE" />);
             await openDropdown(container);
             const buttons = document.querySelectorAll(buttonSelector);
-            expect(buttons.length).toBeGreaterThan(0);
-            expect(buttons[buttons.length - 1].getAttribute('title')).toEqual('Yemen');
+            const lastButton = buttons[buttons.length - 1];
+            expect(lastButton).toBeTruthy();
+            expect(lastButton.getAttribute('title')).toEqual('Yemen');
         });
 
         it('Custom title', async () => {
@@ -181,8 +182,9 @@ describe('<UIDropdown />', () => {
             rerender(<UIDropdown options={dataTemp} selectedKey="EE" />);
             await openDropdown(container);
             const buttons = document.querySelectorAll(buttonSelector);
-            expect(buttons.length).toBeGreaterThan(0);
-            expect(buttons[buttons.length - 1].getAttribute('title')).toEqual(expectTitle);
+            const lastButton = buttons[buttons.length - 1];
+            expect(lastButton).toBeTruthy();
+            expect(lastButton.getAttribute('title')).toEqual(expectTitle);
         });
 
         it('No title', async () => {
@@ -191,8 +193,9 @@ describe('<UIDropdown />', () => {
             rerender(<UIDropdown options={dataTemp} selectedKey="EE" />);
             await openDropdown(container);
             const buttons = document.querySelectorAll(buttonSelector);
-            expect(buttons.length).toBeGreaterThan(0);
-            expect(buttons[buttons.length - 1].getAttribute('title')).toBeNull();
+            const lastButton = buttons[buttons.length - 1];
+            expect(lastButton).toBeTruthy();
+            expect(lastButton.getAttribute('title')).toBeNull();
         });
     });
 
@@ -353,8 +356,8 @@ describe('<UIDropdown />', () => {
         );
         await openDropdown(container);
         // Use document instead of container for portal content
-        expect(document.querySelectorAll('.custom-render-option').length).toBeGreaterThan(0);
-        expect(document.querySelectorAll('.ts-dropdown-item-blocker').length).toBeGreaterThan(0);
+        expect(document.querySelectorAll('.custom-render-option').length).toEqual(data.length);
+        expect(document.querySelectorAll('.ts-dropdown-item-blocker').length).toEqual(data.length);
     });
 
     it('Custom renderers for "onRenderItem"', async () => {
@@ -371,7 +374,7 @@ describe('<UIDropdown />', () => {
             />
         );
         await openDropdown(container);
-        expect(document.querySelectorAll('.custom-render-item').length).toBeGreaterThan(0);
+        expect(document.querySelectorAll('.custom-render-item').length).toEqual(data.length);
     });
 
     it('Test "calloutProps"', async () => {

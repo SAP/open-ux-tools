@@ -1,64 +1,26 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import type { IStyleFunction, ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
-import { TextField } from '@fluentui/react';
+import type { ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
 import type { InputRenderProps, UITextInputProps } from '../../../src/components/UIInput';
 import { UITextInput } from '../../../src/components/UIInput';
+
+class UITextInputTestHelper extends UITextInput {
+    public callGetStyles(styleProps: Partial<ITextFieldStyleProps> = {}): Partial<ITextFieldStyles> {
+        return (this as any).getStyles(styleProps);
+    }
+}
 
 describe('<UITextInput />', () => {
     let renderResult: ReturnType<typeof render>;
     let container: HTMLElement;
 
     const getStyles = (
-        customProps?: Partial<UITextInputProps>,
-        additionalStyleProps?: Partial<ITextFieldStyleProps>
-    ): ITextFieldStyles => {
-        // For RTL, we'll need to mock the styles since we can't directly access React component props
-        // We'll create a test instance to get the styles
-        const testRender = render(<UITextInput {...customProps} />);
-
-        // Since we can't access the internal styles function directly in RTL,
-        // we'll create a mock that returns consistent style objects for snapshot testing
-        const mockStyles: ITextFieldStyles = {
-            root: { height: 'auto' },
-            fieldGroup: [
-                {
-                    backgroundColor: 'var(--vscode-input-background)',
-                    borderWidth: 1,
-                    borderStyle: 'solid',
-                    borderColor: 'var(--vscode-editorWidget-border)',
-                    color: 'var(--vscode-input-foreground)',
-                    borderRadius: 2,
-                    boxSizing: 'initial'
-                }
-            ],
-            field: [
-                {
-                    backgroundColor: 'var(--vscode-input-background)',
-                    color: 'var(--vscode-input-foreground)',
-                    fontSize: '13px',
-                    fontWeight: 'normal',
-                    boxSizing: 'border-box',
-                    borderRadius: 2
-                }
-            ],
-            prefix: {},
-            suffix: {},
-            icon: {},
-            description: {},
-            errorMessage: {},
-            wrapper: {},
-            revealButton: {},
-            revealSpan: {},
-            revealIcon: {},
-            subComponentStyles: {
-                label: {}
-            }
-        };
-
-        testRender.unmount();
-        return mockStyles;
+        componentProps: Partial<UITextInputProps> = {},
+        styleProps: Partial<ITextFieldStyleProps> = {}
+    ): Partial<ITextFieldStyles> => {
+        const helper = new UITextInputTestHelper(componentProps);
+        return helper.callGetStyles(styleProps);
     };
 
     beforeEach(() => {
@@ -158,9 +120,10 @@ describe('<UITextInput />', () => {
     for (const errorMessage of focusTestCases) {
         it(`Focus styles, "errorMessage=${errorMessage.errorMessage}"`, () => {
             expect(
-                getStyles({
-                    errorMessage: errorMessage.errorMessage ? 'dummy' : undefined
-                })
+                getStyles(
+                    { errorMessage: errorMessage.errorMessage ? 'dummy' : undefined },
+                    { focused: true }
+                )
             ).toMatchSnapshot();
         });
     }

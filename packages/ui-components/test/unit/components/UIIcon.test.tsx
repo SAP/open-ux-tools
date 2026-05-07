@@ -14,4 +14,12 @@ describe('<UIIcon />', () => {
         expect(iconElement).toBeTruthy();
         expect(iconElement?.className).toContain(globalClassNames.root);
     });
+
+    it('Property "classname"', () => {
+        const { container } = render(<UIIcon className="dummy" />);
+        const iconElement = container.querySelector(`.${globalClassNames.root}`);
+        expect(iconElement).toBeTruthy();
+        expect(iconElement?.className).toContain(globalClassNames.root);
+        expect(iconElement?.className).toContain('dummy');
+    });
 });
