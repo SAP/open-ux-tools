@@ -46,10 +46,14 @@ describe('generateFlpEmbeddedConfig', () => {
 
             expect(flpYaml.resources?.configuration?.paths?.webapp).toBe('dist');
 
-            const proxyMw = flpYaml.server.customMiddleware.find((mw: { name: string }) => mw.name === 'fiori-tools-proxy');
+            const proxyMw = flpYaml.server.customMiddleware.find(
+                (mw: { name: string }) => mw.name === 'fiori-tools-proxy'
+            );
             expect(proxyMw?.configuration?.bsp).toBe('myapp');
 
-            const staticMw = flpYaml.server.customMiddleware.find((mw: { name: string }) => mw.name === 'fiori-tools-servestatic');
+            const staticMw = flpYaml.server.customMiddleware.find(
+                (mw: { name: string }) => mw.name === 'fiori-tools-servestatic'
+            );
             expect(staticMw).toBeDefined();
             expect(staticMw.configuration.paths).toContainEqual({ path: '/**/myapp', src: 'dist' });
         });
@@ -59,7 +63,9 @@ describe('generateFlpEmbeddedConfig', () => {
             // test-app's metadata.name is 'test-app' (no dots), appModule = 'test-app', bsp = 'otherapp'
             const result = await generateFlpEmbeddedConfig(fixturesPath, 'otherapp', undefined, undefined, fs);
             const flpYaml = YAML.parse(result.read(join(fixturesPath, 'flp.yaml')));
-            const staticMw = flpYaml.server.customMiddleware.find((mw: { name: string }) => mw.name === 'fiori-tools-servestatic');
+            const staticMw = flpYaml.server.customMiddleware.find(
+                (mw: { name: string }) => mw.name === 'fiori-tools-servestatic'
+            );
             expect(staticMw.configuration.paths).toHaveLength(2);
             expect(staticMw.configuration.paths).toContainEqual({ path: '/**/otherapp', src: 'dist' });
             expect(staticMw.configuration.paths).toContainEqual({ path: '/**/test-app', src: 'dist' });
@@ -70,7 +76,9 @@ describe('generateFlpEmbeddedConfig', () => {
             // test-app's metadata.name is 'test-app', bsp matches
             const result = await generateFlpEmbeddedConfig(fixturesPath, 'test-app', undefined, undefined, fs);
             const flpYaml = YAML.parse(result.read(join(fixturesPath, 'flp.yaml')));
-            const staticMw = flpYaml.server.customMiddleware.find((mw: { name: string }) => mw.name === 'fiori-tools-servestatic');
+            const staticMw = flpYaml.server.customMiddleware.find(
+                (mw: { name: string }) => mw.name === 'fiori-tools-servestatic'
+            );
             expect(staticMw.configuration.paths).toHaveLength(1);
         });
 
@@ -79,7 +87,9 @@ describe('generateFlpEmbeddedConfig', () => {
             const fs = getFs();
             const result = await generateFlpEmbeddedConfig(withAppreloadPath, 'myapp', undefined, undefined, fs);
             const flpYaml = YAML.parse(result.read(join(withAppreloadPath, 'flp.yaml')));
-            const appreloadMw = flpYaml.server.customMiddleware.find((mw: { name: string }) => mw.name === 'fiori-tools-appreload');
+            const appreloadMw = flpYaml.server.customMiddleware.find(
+                (mw: { name: string }) => mw.name === 'fiori-tools-appreload'
+            );
             expect(appreloadMw?.configuration?.path).toBe('dist');
         });
     });
@@ -99,9 +109,11 @@ describe('generateFlpEmbeddedConfig', () => {
         });
 
         test('throws for CAP projects', async () => {
-            const { isCapProject } = require('@sap-ux/project-access');
-            (isCapProject as jest.Mock).mockResolvedValueOnce(true);
-            await expect(generateFlpEmbeddedConfig(fixturesPath, 'myapp')).rejects.toThrow('CAP projects are not supported');
+            const projectAccess = jest.mocked(await import('@sap-ux/project-access'));
+            (projectAccess.isCapProject as jest.Mock).mockResolvedValueOnce(true);
+            await expect(generateFlpEmbeddedConfig(fixturesPath, 'myapp')).rejects.toThrow(
+                'CAP projects are not supported'
+            );
         });
     });
 });
