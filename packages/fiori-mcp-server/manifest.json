@@ -1,0 +1,93 @@
+{
+    "manifest_version": "0.3",
+    "name": "ant.dir.gh.sap.fiori-mcp-server",
+    "display_name": "SAP Fiori MCP Server",
+    "version": "0.6.54",
+    "description": "MCP server for SAP Fiori development tools. Build and modify SAP Fiori applications with AI assistance.",
+    "long_description": "The SAP Fiori MCP server enables AI coding assistants to create and modify SAP Fiori Elements applications. It supports generating apps for CAP and OData services, adding and deleting pages, managing controller extensions, and searching SAP Fiori Elements, UI5, and annotation documentation.\n\nFor the best experience, use alongside @cap-js/mcp-server and @ui5/mcp-server.",
+    "author": {
+        "name": "SAP SE",
+        "url": "https://sap.com/"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools"
+    },
+    "homepage": "https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-mcp-server",
+    "documentation": "https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-mcp-server#readme",
+    "support": "https://github.com/SAP/open-ux-tools/issues",
+    "icon": "assets/icon.png",
+    "license": "Apache-2.0",
+    "keywords": [
+        "sap",
+        "fiori",
+        "ui5",
+        "cap",
+        "mcp",
+        "fiori-elements"
+    ],
+    "server": {
+        "type": "node",
+        "entry_point": "dist/index.js",
+        "mcp_config": {
+            "command": "npx",
+            "args": [
+                "--yes",
+                "@sap-ux/fiori-mcp-server@latest",
+                "fiori-mcp"
+            ],
+            "env": {
+                "LOG_LEVEL": "${user_config.log_level}",
+                "SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY": "${user_config.disable_telemetry}"
+            }
+        }
+    },
+    "tools": [
+        {
+            "name": "search_docs",
+            "description": "Search SAP Fiori Elements, Annotations, UI5 and Fiori tools documentation"
+        },
+        {
+            "name": "list_fiori_apps",
+            "description": "Scan a directory to find existing SAP Fiori applications"
+        },
+        {
+            "name": "list_functionality",
+            "description": "Get the list of supported functionalities (step 1 of 3)"
+        },
+        {
+            "name": "get_functionality_details",
+            "description": "Get required parameters for a specific functionality (step 2 of 3)"
+        },
+        {
+            "name": "execute_functionality",
+            "description": "Execute a functionality to create or modify a SAP Fiori application (step 3 of 3)"
+        }
+    ],
+    "compatibility": {
+        "platforms": [
+            "darwin",
+            "win32",
+            "linux"
+        ],
+        "runtimes": {
+            "node": ">=20.0.0"
+        }
+    },
+    "user_config": {
+        "log_level": {
+            "type": "string",
+            "title": "Log level",
+            "description": "Controls logging verbosity. Allowed values: off, error, warn, info, debug, verbose.",
+            "required": false,
+            "default": "error"
+        },
+        "disable_telemetry": {
+            "type": "boolean",
+            "title": "Disable telemetry",
+            "description": "Set to true to opt out of SAP Fiori tools usage analytics.",
+            "required": false,
+            "default": false
+        }
+    }
+}

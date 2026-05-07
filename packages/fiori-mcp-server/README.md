@@ -43,6 +43,14 @@ claude mcp add --timeout 600 fiori-mcp -- npx --yes @sap-ux/fiori-mcp-server@lat
 
 ### Claude Desktop
 
+**Option A — `.dxt` extension (recommended):**
+
+Download the latest `ant.dir.gh.sap.fiori-mcp-server.dxt` from the [releases page](https://github.com/SAP/open-ux-tools/releases), then install it via **Claude Desktop → Settings → Extensions → Install from file**.
+
+> ℹ️ The `.dxt` extension uses `npx` to launch the server, which requires Node.js ≥ 20 to be installed and available on your `PATH`. If you see "Server transport closed unexpectedly" in the logs, confirm that `node --version` returns `v20` or later in your terminal. Claude Desktop's built-in Electron Node runtime is not used.
+
+**Option B — manual config:**
+
 Edit the config file for your OS:
 
 - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
