@@ -6,6 +6,7 @@ import {
     CallToolRequestSchema,
     InitializeRequestSchema,
     ListToolsRequestSchema,
+    SUPPORTED_PROTOCOL_VERSIONS,
     type CallToolResult
 } from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../package.json';
@@ -35,6 +36,18 @@ type ToolArgs =
     | GetFunctionalityDetailsInput
     | ExecuteFunctionalityInput
     | Record<string, unknown>;
+
+const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
+
+function negotiateProtocolVersion(requested: string): string {
+    if (SUPPORTED_PROTOCOL_VERSIONS.includes(requested)) {
+        return requested;
+    }
+    if (SUPPORTED_PROTOCOL_VERSIONS.includes(FALLBACK_PROTOCOL_VERSION)) {
+        return FALLBACK_PROTOCOL_VERSION;
+    }
+    return SUPPORTED_PROTOCOL_VERSIONS[SUPPORTED_PROTOCOL_VERSIONS.length - 1];
+}
 
 /**
  * Sets up and manages an MCP (Model Context Protocol) server that provides Fiori-related tools.
@@ -112,7 +125,10 @@ export class FioriFunctionalityServer {
             await TelemetryHelper.sendTelemetry(TELEMETRY_MCP_SERVER_INITIALIZED, telemetryProperties);
 
             return {
-                protocolVersion: '2024-11-05', // MCP protocol version
+                // Echo back the client's requested version if supported; fall back to 2024-11-05
+                // (the first broadly-adopted version) as the safest baseline for unknown clients.
+                // If that version is ever removed from the SDK, we fall back to the oldest available.
+                protocolVersion: negotiateProtocolVersion(request.params.protocolVersion),
                 capabilities: {
                     tools: {}
                 },
