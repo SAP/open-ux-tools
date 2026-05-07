@@ -179,6 +179,11 @@ describe('flp/init', () => {
                     name: 'Client more than 3 symbols',
                     value: '4444',
                     expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib,'
+                },
+                {
+                    name: 'Client less than 3 symbols',
+                    value: '44',
+                    expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib,'
                 }
             ];
             test.each(sapClientParamTests)('$name', async ({ value, expected }) => {
