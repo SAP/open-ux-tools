@@ -47,3 +47,4 @@ export const confirmationPromptMap = new Map<ConfirmationPromptType, string>([
 export const fioriToolsAppModAppGenLaunchCmd = 'sap.ux.appGenerator.launch';
 export const launchAppGenCmdType = 'SAP_SYSTEMS_DATA';
 export const NEW_SYSTEM_PANEL_KEY = '__NEW_SYSTEM_PANEL__';
+export const EXTERNAL_SYSTEM_PANEL_KEY = '__EXTERNAL_SYSTEM_PANEL__';
