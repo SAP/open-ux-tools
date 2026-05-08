@@ -24,7 +24,7 @@ The server uses `stdio` transport and is launched via `npx` — no global instal
 
 **Option A — CLI (recommended):**
 ```bash
-claude mcp add --timeout 600 fiori-mcp -- npx --yes @sap-ux/fiori-mcp-server@latest fiori-mcp
+claude mcp add fiori-mcp -- npx --yes @sap-ux/fiori-mcp-server@latest fiori-mcp
 ```
 
 **Option B — drop a `.mcp.json` file in your project root:**
