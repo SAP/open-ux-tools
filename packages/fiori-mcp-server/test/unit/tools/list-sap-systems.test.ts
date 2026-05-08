@@ -40,7 +40,9 @@ describe('listSapSystems', () => {
     });
 
     test('should strip sensitive fields like username and password', async () => {
-        const mockSystems = [{ name: 'Sys', url: 'https://example.com', client: '010', username: 'admin', password: 'secret' }];
+        const mockSystems = [
+            { name: 'Sys', url: 'https://example.com', client: '010', username: 'admin', password: 'secret' }
+        ];
         (serviceMetadata.getSapSystems as jest.Mock).mockResolvedValue(mockSystems);
 
         const result = (await listSapSystems()) as { systems: object[] };

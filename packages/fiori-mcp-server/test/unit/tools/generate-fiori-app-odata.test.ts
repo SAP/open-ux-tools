@@ -41,9 +41,7 @@ describe('generateFioriAppOData', () => {
 
         await generateFioriAppOData(args);
 
-        expect(executeOData.default).toHaveBeenCalledWith(
-            expect.objectContaining({ appPath: '' })
-        );
+        expect(executeOData.default).toHaveBeenCalledWith(expect.objectContaining({ appPath: '' }));
     });
 
     test('should propagate errors from execute function', async () => {

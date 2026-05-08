@@ -24,7 +24,10 @@ describe('generateFioriAppCap', () => {
         const args = {
             floorplan: 'FE_LROP',
             project: { name: 'myapp', description: 'Test app', targetFolder: '/cap-project', ui5Version: '1.120.0' },
-            service: { servicePath: '/odata/v4/MyService/', capService: { projectPath: '/cap-project', serviceName: 'MyService', serviceCdsPath: 'srv/service.cds' } }
+            service: {
+                servicePath: '/odata/v4/MyService/',
+                capService: { projectPath: '/cap-project', serviceName: 'MyService', serviceCdsPath: 'srv/service.cds' }
+            }
         };
 
         const result = await generateFioriAppCap(args);
@@ -42,9 +45,7 @@ describe('generateFioriAppCap', () => {
 
         await generateFioriAppCap(args);
 
-        expect(capCommand.command).toHaveBeenCalledWith(
-            expect.objectContaining({ appPath: '' })
-        );
+        expect(capCommand.command).toHaveBeenCalledWith(expect.objectContaining({ appPath: '' }));
     });
 
     test('should propagate errors from command function', async () => {

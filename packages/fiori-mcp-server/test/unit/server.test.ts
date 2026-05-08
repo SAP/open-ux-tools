@@ -414,7 +414,12 @@ describe('FioriFunctionalityServer', () => {
                 status: 'Success',
                 message: 'Fetched systems successfully.',
                 changes: [],
-                parameters: { host: 'https://example.com', servicePath: '/sap/opu/', client: '100', metadataFilePath: '/project/metadata.xml' },
+                parameters: {
+                    host: 'https://example.com',
+                    servicePath: '/sap/opu/',
+                    client: '100',
+                    metadataFilePath: '/project/metadata.xml'
+                },
                 appPath: '/project',
                 timestamp: '2024-01-01T00:00:00.000Z'
             };
@@ -431,7 +436,11 @@ describe('FioriFunctionalityServer', () => {
             expect(result.structuredContent).toEqual(mockResult);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'download_odata_service_metadata',
-                { tool: 'download_odata_service_metadata', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'download_odata_service_metadata',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 '/project'
             );
         });
@@ -452,14 +461,21 @@ describe('FioriFunctionalityServer', () => {
             const result = await onRequestCB({
                 params: {
                     name: 'generate_fiori_app_odata',
-                    arguments: { floorplan: 'FE_LROP', project: { name: 'myapp', description: 'Test', targetFolder: '/project' } }
+                    arguments: {
+                        floorplan: 'FE_LROP',
+                        project: { name: 'myapp', description: 'Test', targetFolder: '/project' }
+                    }
                 }
             });
             expect(generateSpy).toHaveBeenCalledTimes(1);
             expect(result.structuredContent).toEqual(mockResult);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'generate_fiori_app_odata',
-                { tool: 'generate_fiori_app_odata', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'generate_fiori_app_odata',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 undefined
             );
         });
@@ -480,14 +496,21 @@ describe('FioriFunctionalityServer', () => {
             const result = await onRequestCB({
                 params: {
                     name: 'generate_fiori_app_cap',
-                    arguments: { floorplan: 'FE_LROP', project: { name: 'myapp', description: 'Test', targetFolder: '/cap-project' } }
+                    arguments: {
+                        floorplan: 'FE_LROP',
+                        project: { name: 'myapp', description: 'Test', targetFolder: '/cap-project' }
+                    }
                 }
             });
             expect(generateSpy).toHaveBeenCalledTimes(1);
             expect(result.structuredContent).toEqual(mockResult);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'generate_fiori_app_cap',
-                { tool: 'generate_fiori_app_cap', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'generate_fiori_app_cap',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 undefined
             );
         });
