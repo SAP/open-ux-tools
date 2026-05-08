@@ -34,6 +34,7 @@ export default class SampleAppsPanel extends BaseAppPanel {
     }
 
     loadApps(): Promise<void> {
+        this.destroyAggregation('apps', true);
         const apps = this.generateApps(SAMPLE_APPS);
         this.setApps(apps);
         return Promise.resolve();
