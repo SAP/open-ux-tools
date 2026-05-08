@@ -1,6 +1,5 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { MessageType } = yeomanUiTypes;
+import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import type { OdataVersion } from '@sap-ux/fiori-elements-writer';

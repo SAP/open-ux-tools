@@ -1,6 +1,5 @@
 import type { AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { AppWizard, MessageType } = yeomanUiTypes;
+import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
     DeploymentGenerator,
     ERROR_TYPE,

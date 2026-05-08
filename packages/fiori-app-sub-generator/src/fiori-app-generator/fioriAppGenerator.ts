@@ -1,6 +1,5 @@
 import type { AppWizard, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { MessageType } = yeomanUiTypes;
+import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import {

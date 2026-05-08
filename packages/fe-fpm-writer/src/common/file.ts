@@ -1,7 +1,7 @@
 import type { CopyOptions, Editor } from 'mem-fs-editor';
 import type { TabInfo } from '../common/types.js';
 import { sep, normalize } from 'node:path';
-import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
+import { findFilesByExtension } from '@sap-ux/project-access/dist/file/index.js';
 import { isUI5IdUnique } from '@sap-ux/project-access';
 
 /**

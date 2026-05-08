@@ -62,8 +62,7 @@ import { getExtProjectMessage } from './helper/message.js';
 import { validateExtensibilityExtension } from './helper/validators.js';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { Severity } = yeomanUiTypes;
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Answers } from 'inquirer';
 
 /**

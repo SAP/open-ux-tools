@@ -1,47 +1,47 @@
 {
-    "name": "@sap-ux/text-document-utils",
-    "version": "0.3.4",
-    "description": "Library for text document utility functions and types",
-    "type": "module",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/text-document-utils"
-    },
-    "license": "Apache-2.0",
-    "private": false,
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js",
-            "require": "./dist-cjs/index.js",
-            "default": "./dist/index.js"
-        }
-    },
-    "scripts": {
-        "build": "tsc --build && tsc --build tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist-cjs/package.json', '{\\\"type\\\":\\\"commonjs\\\"}')\"",
-        "clean": "rimraf --glob dist dist-cjs coverage *.tsbuildinfo",
-        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint",
-        "lint:fix": "eslint --fix",
-        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-        "watch": "tsc --watch"
-    },
-    "files": [
-        "dist",
-        "dist-cjs",
-        "LICENSE",
-        "!dist/*.map",
-        "!dist/**/*.map",
-        "!dist-cjs/*.map",
-        "!dist-cjs/**/*.map"
-    ],
-    "engines": {
-        "node": ">=20.x"
-    },
-    "dependencies": {
-        "vscode-languageserver-types": "3.17.5"
+  "name": "@sap-ux/text-document-utils",
+  "version": "0.3.7",
+  "description": "Library for text document utility functions and types",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP/open-ux-tools.git",
+    "directory": "packages/text-document-utils"
+  },
+  "license": "Apache-2.0",
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist-cjs/index.js",
+      "default": "./dist/index.js"
     }
+  },
+  "scripts": {
+    "build": "tsc --build && tsc --build tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist-cjs/package.json', '{\\\"type\\\":\\\"commonjs\\\"}')\"",
+    "clean": "rimraf --glob dist dist-cjs coverage *.tsbuildinfo",
+    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+    "watch": "tsc --watch"
+  },
+  "files": [
+    "dist",
+    "dist-cjs",
+    "LICENSE",
+    "!dist/*.map",
+    "!dist/**/*.map",
+    "!dist-cjs/*.map",
+    "!dist-cjs/**/*.map"
+  ],
+  "engines": {
+    "node": ">=20.x"
+  },
+  "dependencies": {
+    "vscode-languageserver-types": "3.17.5"
+  }
 }

@@ -2,8 +2,7 @@ import fs from 'node:fs';
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import { v4 as uuidv4 } from 'uuid';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { AppWizard, MessageType, Prompts: YeomanUiSteps } = yeomanUiTypes;
+import { AppWizard, MessageType, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 import type { IPrompt, AppWizard as AppWizardType, Prompts as YeomanUiStepsType } from '@sap-devx/yeoman-ui-types';
 
 import {

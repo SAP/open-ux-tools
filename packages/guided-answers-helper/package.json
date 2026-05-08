@@ -1,36 +1,36 @@
 {
-    "name": "@sap-ux/guided-answers-helper",
-    "description": "Guided Answers Helper",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/guided-answers-helper"
-    },
-    "version": "0.4.2",
-    "license": "Apache-2.0",
-    "type": "module",
-    "main": "dist/index.js",
-    "scripts": {
-        "build": "tsc --build",
-        "watch": "tsc --watch",
-        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
-        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint",
-        "lint:fix": "eslint --fix",
-        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
-        "link": "pnpm link --global",
-        "unlink": "pnpm unlink --global"
-    },
-    "files": [
-        "LICENSE",
-        "dist",
-        "!dist/*.map",
-        "!dist/**/*.map"
-    ],
-    "engines": {
-        "node": ">=20.x"
-    },
-    "dependencies": {},
-    "devDependencies": {}
+  "name": "@sap-ux/guided-answers-helper",
+  "description": "Guided Answers Helper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP/open-ux-tools.git",
+    "directory": "packages/guided-answers-helper"
+  },
+  "version": "0.4.5",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+    "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
+    "link": "pnpm link --global",
+    "unlink": "pnpm unlink --global"
+  },
+  "files": [
+    "LICENSE",
+    "dist",
+    "!dist/*.map",
+    "!dist/**/*.map"
+  ],
+  "engines": {
+    "node": ">=20.x"
+  },
+  "dependencies": {},
+  "devDependencies": {}
 }

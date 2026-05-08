@@ -38,8 +38,7 @@ import {
     tileActions
 } from '@sap-ux/flp-config-inquirer';
 import type { IPrompt, AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { AppWizard, Prompts, MessageType } = yeomanUiTypes;
+import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
     DefaultLogger,
     TelemetryHelper,

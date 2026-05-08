@@ -18,8 +18,7 @@ import type { ConnectionValidator, SystemAuthType } from '../../../connectionVal
 import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types.js';
 import { suggestSystemName } from '../prompt-helpers.js';
 import { validateSystemName } from '../validators.js';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { Severity } = yeomanUiTypes;
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { SystemSelectionAnswers } from '../system-selection/questions.js';
 import type { AbapOnPremAnswers } from '../abap-on-prem/questions.js';
 import { BasicCredentialsPromptNames } from '../credentials/questions.js';

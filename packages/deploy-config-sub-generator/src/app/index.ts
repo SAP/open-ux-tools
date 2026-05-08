@@ -19,8 +19,7 @@ import {
     generatorTitle,
     promptNames
 } from '../utils/index.js';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { AppWizard, Prompts } = yeomanUiTypes;
+import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
 import { promptDeployConfigQuestions } from './prompting.js';
 import type { Answers } from 'inquirer';

@@ -1,5 +1,4 @@
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { Severity } = yeomanUiTypes;
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 import type { FlexUICapability, SourceApplication } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';

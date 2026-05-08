@@ -1,5 +1,4 @@
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { Severity } = yeomanUiTypes;
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import { validateText } from '@sap-ux/project-input-validator';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 

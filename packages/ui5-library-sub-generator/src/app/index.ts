@@ -1,6 +1,5 @@
 import Generator from 'yeoman-generator';
-import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
+import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { join } from 'node:path';
 import ReuseLibGenLogger from '../utils/logger.js';
 import { t, prompts, runPostLibGenHook, generatorTitle } from '../utils/index.js';
@@ -47,7 +46,7 @@ export default class extends Generator implements Ui5LibGenerator {
     constructor(args: string | string[], opts: Generator.GeneratorOptions) {
         super(args, opts);
 
-        this.appWizard = yeomanUiTypes.AppWizard.create(opts);
+        this.appWizard = AppWizard.create(opts);
         this.vscode = opts.vscode;
         ReuseLibGenLogger.configureLogging(
             this.options.logger,
@@ -59,7 +58,7 @@ export default class extends Generator implements Ui5LibGenerator {
         this.targetFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
 
         this.appWizard.setHeaderTitle(generatorTitle);
-        this.prompts = new yeomanUiTypes.Prompts(prompts);
+        this.prompts = new Prompts(prompts);
         this.setPromptsCallback = (fn): void => {
             if (this.prompts) {
                 this.prompts.setCallback(fn);

@@ -1,7 +1,6 @@
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InboundContent } from '@sap-ux/axios-extension';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { Severity } = yeomanUiTypes;
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { t } from '../../i18n.js';
 import { promptNames } from '../../types.js';

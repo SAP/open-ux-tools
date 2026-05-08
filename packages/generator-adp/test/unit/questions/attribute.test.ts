@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { Prompts: YeomanUiSteps } = yeomanUiTypes;
+import { Prompts: YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
 const mockValidateProjectName = jest.fn();
 const mockValidateNamespaceAdp = jest.fn();
