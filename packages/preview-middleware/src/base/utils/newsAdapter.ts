@@ -1,4 +1,4 @@
-/* eslint-disable camelcase */
+/* eslint-disable camelcase -- OData entity format requires snake_case property names */
 import { readFileSync, existsSync } from 'node:fs';
 import { basename } from 'node:path';
 

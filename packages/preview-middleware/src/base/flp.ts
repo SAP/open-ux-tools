@@ -1406,7 +1406,7 @@ export class FlpSandbox {
      */
     private async fetchStoredCardManifestsHandler(req: Request, res: Response): Promise<void> {
         try {
-            const webappPath = this.utils.getProject().getSourcePath();
+            const webappPath = this.utils.getProject().getSourcePath() as string;
             const cardsDir = join(webappPath, 'cards');
             const manifests = this.collectCardManifestsFromDirectory(cardsDir);
 

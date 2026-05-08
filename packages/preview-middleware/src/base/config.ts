@@ -247,7 +247,7 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger, lo
  *
  * @param deprecatedRtaConfig deprecated RTA configuration
  * @param logger logger instance
- * @param logCollector
+ * @param logCollector optional log collector for the enhanced homepage
  * @returns sanitized RTA configuration
  */
 //prettier-ignore

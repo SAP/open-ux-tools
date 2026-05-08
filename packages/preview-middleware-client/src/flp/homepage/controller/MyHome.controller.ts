@@ -29,14 +29,6 @@ import HBox from 'sap/m/HBox';
 import Icon from 'sap/ui/core/Icon';
 import { Button$PressEvent } from 'sap/m/Button';
 
-const HERO_BANNER_MIN_UI5_VERSION = 149;
-const CARDS_GAP = 16;
-const MIN_CARD_WIDTH = 304;
-const MIN_CARD_WIDTH_NARROW = 285;
-const MAX_CARD_WIDTH = 583;
-const NARROW_BREAKPOINT = 320;
-const MOBILE_CARD_WIDTH_REM = 19;
-
 interface CardConfig {
     containerWidth: number;
     totalCards: number;
@@ -46,47 +38,17 @@ interface CardConfig {
 }
 
 /**
- * Calculate the card width for a card based on the container width.
- *
- * @param {CardConfig} config - Card configuration.
- * @returns {number} The calculated width of a card.
- */
-function calculateCardWidth(config: CardConfig): number {
-    const { containerWidth, totalCards, minWidth, maxWidth, gap } = config;
-
-    const maxColumns = Math.floor((containerWidth + gap) / (minWidth + gap));
-    const columns = Math.min(maxColumns, totalCards);
-
-    if (columns <= 0) {
-        return minWidth;
-    }
-
-    const totalGap = (columns - 1) * gap;
-    const cardWidth = (containerWidth - totalGap) / columns;
-
-    return Math.min(Math.max(cardWidth, minWidth), maxWidth);
-}
-
-/**
- * Fetches the specified CSS properties of a DOM element.
- *
- * @param {Element} element - The DOM element to get properties from.
- * @param {string[]} properties - An array of CSS property names to retrieve.
- * @returns {Record<string, number>} An object mapping each CSS property name to its numeric value (in pixels).
- */
-function fetchElementProperties(element: Element, properties: string[]): Record<string, number> {
-    const style = window.getComputedStyle(element);
-    const result: Record<string, number> = {};
-    properties.forEach((prop) => {
-        result[prop] = parseFloat(style.getPropertyValue(prop)) || 0;
-    });
-    return result;
-}
-
-/**
  * @namespace open.ux.preview.client.flp.homepage.controller.MyHome
  */
 export default class MyHomeController extends Controller {
+    private static readonly HERO_BANNER_MIN_UI5_VERSION = 149;
+    private static readonly CARDS_GAP = 16;
+    private static readonly MIN_CARD_WIDTH = 304;
+    private static readonly MIN_CARD_WIDTH_NARROW = 285;
+    private static readonly MAX_CARD_WIDTH = 583;
+    private static readonly NARROW_BREAKPOINT = 320;
+    private static readonly MOBILE_CARD_WIDTH_REM = 19;
+
     private static readonly DeviceWidth = {
         Mobile: 600,
         Tablet: 1024,
@@ -113,12 +75,37 @@ export default class MyHomeController extends Controller {
         }
     }
 
+    private static calculateCardWidth(config: CardConfig): number {
+        const { containerWidth, totalCards, minWidth, maxWidth, gap } = config;
+
+        const maxColumns = Math.floor((containerWidth + gap) / (minWidth + gap));
+        const columns = Math.min(maxColumns, totalCards);
+
+        if (columns <= 0) {
+            return minWidth;
+        }
+
+        const totalGap = (columns - 1) * gap;
+        const cardWidth = (containerWidth - totalGap) / columns;
+
+        return Math.min(Math.max(cardWidth, minWidth), maxWidth);
+    }
+
+    private static fetchElementProperties(element: Element, properties: string[]): Record<string, number> {
+        const style = window.getComputedStyle(element);
+        const result: Record<string, number> = {};
+        properties.forEach((prop) => {
+            result[prop] = parseFloat(style.getPropertyValue(prop)) || 0;
+        });
+        return result;
+    }
+
     onInit() {
         const view = this.getView();
         if (view) {
             const oViewModel = new JSONModel({
                 deviceType: MyHomeController.calculateDeviceType(Device.resize.width),
-                insightsCardWidth: `${MIN_CARD_WIDTH / 16}rem`,
+                insightsCardWidth: `${MyHomeController.MIN_CARD_WIDTH / 16}rem`,
                 cards: [],
                 hasWarnings: false,
                 warnings: []
@@ -139,7 +126,7 @@ export default class MyHomeController extends Controller {
         void this.initSalutationBar();
         void this.initializeNewsContainer();
         void this.initializeInsightsContainer();
-        void this.initializeWarnings();
+        void this.fetchWarnings();
     }
 
     onBeforeRendering(): void {
@@ -150,6 +137,7 @@ export default class MyHomeController extends Controller {
 
     private setupSystemInfoBar(): void {
         const systemInfoHtml = '<div id="systemInfo-shellArea"></div>';
+        // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access, @sap-ux/fiori-tools/sap-browser-api-warning
         const shellHeaderShellArea = document.getElementById('shell-header');
         shellHeaderShellArea?.insertAdjacentHTML('beforebegin', systemInfoHtml);
 
@@ -188,9 +176,9 @@ export default class MyHomeController extends Controller {
         const date = this.formatDate(Date.now());
         headerDateText?.setText(date);
 
-        const salutationBar = this.byId('salutationBar');
+        const salutationBar = this.byId('salutationBar') as Control | undefined;
         const ui5MinorVersion = parseInt(sap.ui.version.split('.')[1], 10);
-        this.useHeroBanner = ui5MinorVersion >= HERO_BANNER_MIN_UI5_VERSION;
+        this.useHeroBanner = ui5MinorVersion >= MyHomeController.HERO_BANNER_MIN_UI5_VERSION;
 
         if (this.useHeroBanner) {
             salutationBar?.addStyleClass('salutationBar--heroBanner');
@@ -260,24 +248,24 @@ export default class MyHomeController extends Controller {
             return;
         }
 
-        const domProperties = fetchElementProperties(layoutDomRef, ['width', 'padding-left', 'padding-right']);
+        const domProperties = MyHomeController.fetchElementProperties(layoutDomRef, ['width', 'padding-left', 'padding-right']);
         const availableWidth = domProperties.width - domProperties['padding-left'] - domProperties['padding-right'];
 
         const isMobile = Device.system.phone;
         let cardWidthRem: string;
 
         if (isMobile) {
-            cardWidthRem = `${MOBILE_CARD_WIDTH_REM}rem`;
+            cardWidthRem = `${MyHomeController.MOBILE_CARD_WIDTH_REM}rem`;
         } else {
             const cards = (viewModel.getProperty('/cards') as object[]) || [];
             const cardLayoutConfig: CardConfig = {
                 containerWidth: availableWidth,
                 totalCards: cards.length || 1,
-                minWidth: availableWidth <= NARROW_BREAKPOINT ? MIN_CARD_WIDTH_NARROW : MIN_CARD_WIDTH,
-                maxWidth: MAX_CARD_WIDTH,
-                gap: CARDS_GAP
+                minWidth: availableWidth <= MyHomeController.NARROW_BREAKPOINT ? MyHomeController.MIN_CARD_WIDTH_NARROW : MyHomeController.MIN_CARD_WIDTH,
+                maxWidth: MyHomeController.MAX_CARD_WIDTH,
+                gap: MyHomeController.CARDS_GAP
             };
-            const cardWidth = calculateCardWidth(cardLayoutConfig);
+            const cardWidth = MyHomeController.calculateCardWidth(cardLayoutConfig);
             cardWidthRem = `${cardWidth / 16}rem`;
         }
 
@@ -410,10 +398,6 @@ export default class MyHomeController extends Controller {
             content: [actionsList],
             placement: PlacementType.Bottom
         });
-    }
-
-    private async initializeWarnings(): Promise<void> {
-        await this.fetchWarnings();
     }
 
     private async fetchWarnings(): Promise<void> {

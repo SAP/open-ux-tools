@@ -6,6 +6,7 @@ import type { Window } from 'types/global';
  * @returns {void}
  */
 ((): void => {
+    // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access, @sap-ux/fiori-tools/sap-browser-api-warning
     const initScript = document.getElementById('init-cdm');
     const basePath = initScript?.dataset.basePath ?? '';
 
