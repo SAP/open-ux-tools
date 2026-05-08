@@ -44,9 +44,6 @@
         .sections__item--toggle {
             max-width: calc(100% - #{$splitter-size + 10});
         }
-        > .sections__item:first-child {
-            padding-right: calc($splitter-size / 2);
-        }
     }
     &.sections--vertical {
         // Toggle splitter
