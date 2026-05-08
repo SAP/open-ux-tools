@@ -15,6 +15,10 @@ import {
     listFunctionalities,
     getFunctionalityDetails,
     executeFunctionality,
+    listSapSystems,
+    downloadODataServiceMetadata,
+    generateFioriAppOData,
+    generateFioriAppCap,
     tools
 } from './tools';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
@@ -24,7 +28,8 @@ import type {
     GetFunctionalityDetailsInput,
     DocSearchInput,
     ListFioriAppsInput,
-    ListFunctionalitiesInput
+    ListFunctionalitiesInput,
+    DownloadODataServiceMetadataInput
 } from './types';
 import { logger } from './utils/logger';
 
@@ -34,6 +39,7 @@ type ToolArgs =
     | ListFunctionalitiesInput
     | GetFunctionalityDetailsInput
     | ExecuteFunctionalityInput
+    | DownloadODataServiceMetadataInput
     | Record<string, unknown>;
 
 /**
@@ -166,6 +172,18 @@ export class FioriFunctionalityServer {
                     case 'list_fiori_apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
                         break;
+                    case 'list_sap_systems':
+                        result = await listSapSystems();
+                        break;
+                    case 'download_odata_service_metadata':
+                        result = await downloadODataServiceMetadata(args as DownloadODataServiceMetadataInput);
+                        break;
+                    case 'generate_fiori_app_odata':
+                        result = await generateFioriAppOData(args as Record<string, unknown>);
+                        break;
+                    case 'generate_fiori_app_cap':
+                        result = await generateFioriAppCap(args as Record<string, unknown>);
+                        break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
                         break;
@@ -179,7 +197,7 @@ export class FioriFunctionalityServer {
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.`
+                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);

@@ -62,9 +62,22 @@ export const ExecuteFunctionalityInputSchema = zod
             'Do not place any additional fields at the root level.'
     );
 
+export const DownloadODataServiceMetadataInputSchema = zod.object({
+    sapSystemQuery: zod
+        .string()
+        .optional()
+        .describe('The name, host or a URL of the SAP system to fetch service metadata from.'),
+    servicePath: zod.string().describe('The path to the SAP service to fetch metadata for.'),
+    appPath: zod
+        .string()
+        .describe('Absolute path to the folder where metadata.xml will be saved. Typically the project target folder.')
+});
+
 export const DocSearchInputSchema = zod.object({
     query: zod
         .string()
         .min(2)
         .describe('The search query for fiori elements, annotations, sapui5, fiori tools documentation')
 });
+
+export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;

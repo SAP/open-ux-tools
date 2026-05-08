@@ -11,7 +11,7 @@ import { parse as parseEdmx } from '@sap-ux/edmx-parser';
  *
  * @returns A promise that resolves to an array of BackendSystem objects.
  */
-async function getSapSystems(): Promise<BackendSystem[]> {
+export async function getSapSystems(): Promise<BackendSystem[]> {
     const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
     const systemStore = await getService<BackendSystem, BackendSystemKey>({
         logger: logger,

@@ -6,7 +6,8 @@ import type {
     GetFunctionalityDetailsInputSchema,
     ListFioriAppsInputSchema,
     ListFunctionalitiesInputSchema,
-    DocSearchInputSchema
+    DocSearchInputSchema,
+    DownloadODataServiceMetadataInputSchema
 } from './input';
 import type {
     ExecuteFunctionalityOutputSchema,
@@ -33,6 +34,7 @@ export type ExecuteFunctionalityInput = zod.infer<typeof ExecuteFunctionalityInp
 export type ExecuteFunctionalityOutput = zod.infer<typeof ExecuteFunctionalityOutputSchema>;
 
 export type DocSearchInput = zod.infer<typeof DocSearchInputSchema>;
+export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;
 
 /**
  * Interface for functionality handlers

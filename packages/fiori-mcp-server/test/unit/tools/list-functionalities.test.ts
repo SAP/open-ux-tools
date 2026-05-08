@@ -66,11 +66,8 @@ describe('listFunctionalities', () => {
         expect(functionalities.applicationPath).toEqual(appPath);
         expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
-            'generate-fiori-ui-application-cap',
             'delete-page',
-            'create-controller-extension',
-            'generate-fiori-ui-application',
-            'fetch-service-metadata'
+            'create-controller-extension'
         ]);
     });
 
@@ -93,11 +90,8 @@ describe('listFunctionalities', () => {
         expect(functionalities.applicationPath).toEqual(appPath);
         expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
-            'generate-fiori-ui-application-cap',
             'delete-page',
-            'create-controller-extension',
-            'generate-fiori-ui-application',
-            'fetch-service-metadata'
+            'create-controller-extension'
         ]);
     });
 
@@ -106,7 +100,7 @@ describe('listFunctionalities', () => {
         const result = (await listFunctionalities({
             appPath
         })) as ListFunctionalitiesOutput;
-        expect(result.functionalities.length).toEqual(104);
+        expect(result.functionalities.length).toEqual(101);
         expect(result.functionalities).toMatchSnapshot();
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
@@ -130,7 +124,7 @@ describe('listFunctionalities', () => {
             appPath
         })) as ListFunctionalitiesOutput;
         // Check
-        expect(result.functionalities.length).toEqual(104);
+        expect(result.functionalities.length).toEqual(101);
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationModuleFromCacheSpy).toHaveBeenCalledTimes(1);
