@@ -80,6 +80,10 @@
     margin: 1rem 0;
 }
 
+.sapCuxAppsContainer a[aria-label*='Manage News'] {
+    display: none;
+}
+
 /* Mobile */
 @media (min-width: 320px) and (max-width: 599px) {
     :root {
