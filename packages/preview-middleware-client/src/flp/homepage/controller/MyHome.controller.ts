@@ -12,7 +12,6 @@ import type ResourceModel from 'sap/ui/model/resource/ResourceModel';
 import Text from 'sap/m/Text';
 import type NewsContainer from 'sap/cux/home/NewsContainer';
 import type NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
-import { getSalutationBarBackground } from '../utils/salutationBarUtils';
 import Title from 'sap/m/Title';
 import GridContainer from 'sap/f/GridContainer';
 import UI5Element from 'sap/ui/core/Element';
@@ -126,8 +125,6 @@ export default class MyHomeController extends Controller {
             Device.resize.attachHandler((oEvent: { width: number }) => {
                 oViewModel.setProperty('/deviceType', MyHomeController.calculateDeviceType(oEvent.width));
                 this._updateInsightsCardWidth();
-                const salutationBar = this.byId('salutationBar');
-                void this.applySalutationBarBackground(salutationBar?.getDomRef() as HTMLElement);
             });
         }
 
@@ -183,37 +180,12 @@ export default class MyHomeController extends Controller {
         const headerDateText = this.byId('headerDate') as Text;
         const date = this.formatDate(Date.now());
         headerDateText?.setText(date);
-
-        //apply background to salutation bar
-        const salutationBar = this.byId('salutationBar');
-        salutationBar?.addEventDelegate(
-            {
-                onAfterRendering: () => {
-                    void this.applySalutationBarBackground(salutationBar.getDomRef() as HTMLElement);
-                }
-            },
-            this
-        );
     }
 
     private formatDate(date: number): string {
         const locale = new Locale(Formatting.getLanguageTag().language);
         const dateInstance = DateFormat.getDateInstance({ style: 'full' }, locale);
         return dateInstance.format(new Date(date)) || '';
-    }
-
-    private async applySalutationBarBackground(salutationBarElement: HTMLElement) {
-        const deviceType = MyHomeController.calculateDeviceType(Device.resize.width);
-        const isLargeScreen =
-            deviceType === 'Desktop' || deviceType === 'LargeDesktop' || deviceType === 'XLargeDesktop';
-        const background = await getSalutationBarBackground(!isLargeScreen);
-
-        if (salutationBarElement) {
-            salutationBarElement.style.background = background;
-            salutationBarElement.style.backgroundSize = isLargeScreen
-                ? 'auto, cover, auto, cover'
-                : 'cover, auto, cover';
-        }
     }
 
     private async initializeNewsContainer() {
