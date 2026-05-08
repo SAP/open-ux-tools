@@ -55,7 +55,17 @@
             class="sapCuxBaseContainer"
             visible="{= ${view>/cards/length} &gt; 0}"
         >
-            <m:Title id="insightsTitle" level="H4" titleStyle="H4"/>
+            <m:HBox id="insightsTitleBar" alignItems="Center" renderType="Bare">
+                <m:Title id="insightsTitle" level="H4" titleStyle="H4"/>
+                <m:Button
+                    id="insightsActionsBtn"
+                    icon="sap-icon://slim-arrow-down"
+                    type="Transparent"
+                    tooltip="{i18n>more}"
+                    press=".onInsightsActionsButtonPress"
+                    class="sapUiTinyMarginBegin"
+                />
+            </m:HBox>
             <f:GridContainer
                 id="insightsCardContainer"
                 class="sapUiSmallMarginTop"

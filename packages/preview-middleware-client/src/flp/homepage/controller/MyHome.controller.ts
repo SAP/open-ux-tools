@@ -94,6 +94,7 @@ export default class MyHomeController extends Controller {
     };
 
     private terminalWarningsPopover: Popover | undefined;
+    private insightsActionsPopover: Popover | undefined;
 
     private static calculateDeviceType(width: number): string {
         const { DeviceWidth } = MyHomeController;
@@ -347,6 +348,36 @@ export default class MyHomeController extends Controller {
         }
 
         return popover;
+    }
+
+    onInsightsActionsButtonPress(event: Button$PressEvent): void {
+        if (!this.insightsActionsPopover) {
+            this.insightsActionsPopover = this.createInsightsActionsPopover();
+        }
+        const button = event.getSource();
+        this.insightsActionsPopover.openBy(button);
+    }
+
+    private createInsightsActionsPopover(): Popover {
+        const actionsList = new List({
+            items: [
+                new StandardListItem({
+                    title: this.getText('refreshInsightsCards'),
+                    icon: 'sap-icon://refresh',
+                    type: 'Active',
+                    press: () => {
+                        this.insightsActionsPopover?.close();
+                        void this.initializeInsightsContainer();
+                    }
+                })
+            ]
+        });
+
+        return new Popover({
+            showHeader: false,
+            content: [actionsList],
+            placement: PlacementType.Bottom
+        });
     }
 
     private async initializeWarnings(): Promise<void> {
