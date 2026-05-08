@@ -285,17 +285,12 @@ export default class MyHomeController extends Controller {
     onAppsLoaded(event: Event<{ apps: App[], tiles: GenericTile[] }>) {
         const tiles = event.getParameter('tiles');
         tiles.forEach((tile, index) => {
-            if (!tile.getId().includes('groupApp')) {
+            if (!tile.getId().includes('sampleApps')) {
                 // eslint-disable-next-line @sap-ux/fiori-tools/sap-timeout-usage
                 setTimeout(() => {
-                    // apply color to the sample applications group
+                    // apply color to the preview app
                     if (index === 0) {
                         tile.setBackgroundColor('sapLegendColor6');
-                    }
-
-                    // apply color to the preview app
-                    if (index === 1) {
-                        tile.setBackgroundColor('sapLegendColor12');
                     }
                 }, 100);
             }

@@ -56,3 +56,26 @@ declare module "sap/cux/home/App" {
     import Element from "sap/ui/core/Element";
     export default class App extends Element {}
 }
+
+declare module 'sap/cux/home/BaseAppPanel' {
+    import Control from 'sap/ui/core/Control';
+    import App from 'sap/cux/home/App';
+
+    export interface ICustomVisualization {
+        appId?: string;
+        url?: string;
+        title?: string;
+        subtitle?: string;
+        BGColor?: string;
+        icon?: string;
+        vizId?: string;
+        targetURL?: string;
+    }
+
+    export default abstract class BaseAppPanel extends Control {
+        init(): void;
+        abstract loadApps(): Promise<void>;
+        generateApps(visualizationsData: ICustomVisualization[]): App[];
+        setApps(apps: App[]): void;
+    }
+}

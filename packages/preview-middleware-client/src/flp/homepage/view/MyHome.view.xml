@@ -6,6 +6,7 @@
     xmlns:f="sap.f"
     xmlns:w="sap.ui.integration.widgets"
     xmlns:shell="sap.ushell.ui.shell"
+    xmlns:controls="open.ux.preview.client.flp.homepage.controls"
     displayBlock="true"
     controllerName="open.ux.preview.client.flp.homepage.controller.MyHome"
     class="sapUShellFullHeight"
@@ -47,6 +48,7 @@
 
         <AppsContainer id="appsContainer" appsLoaded=".onAppsLoaded">
             <FavAppPanel id="favoriteApps" />
+            <controls:SampleAppsPanel id="sampleApps" />
         </AppsContainer>
 
         <m:VBox
