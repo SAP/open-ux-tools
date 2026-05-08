@@ -31,14 +31,18 @@ class ClientFactory {
         if (client) {
             return client;
         }
+        // No key yet — construct without caching so the real key is picked up once set.
+        // The ApplicationInsightClient constructor guards against creating appInsights clients
+        // when DISABLE_TELEMETRY is set or key is empty.
         const ClientConstructor = clientConstructor;
         client = new ClientConstructor(
             TelemetrySettings.azureInstrumentationKey,
             TelemetrySettings.consumerModuleName,
             TelemetrySettings.consumerModuleVersion
         );
-
-        ClientFactory.clientMap.set(clientConstructor.name, client);
+        if (TelemetrySettings.azureInstrumentationKey) {
+            ClientFactory.clientMap.set(clientConstructor.name, client);
+        }
         return client;
     }
 }

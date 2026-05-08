@@ -25,13 +25,15 @@ class ApplicationInsightClient extends Client {
         this.applicationKey = applicationKey;
         this.extensionVersion = extensionVersion;
         this.extensionName = extensionName;
-        const clientOnePercent = this.createTelemetryClient(SampleRate.OnePercent);
-        const clientTenPercent = this.createTelemetryClient(SampleRate.TenPercent);
-        const clientNoSampling = this.createTelemetryClient(SampleRate.NoSampling);
+        if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true' && applicationKey) {
+            const clientOnePercent = this.createTelemetryClient(SampleRate.OnePercent);
+            const clientTenPercent = this.createTelemetryClient(SampleRate.TenPercent);
+            const clientNoSampling = this.createTelemetryClient(SampleRate.NoSampling);
 
-        this.clients.set(SampleRate.OnePercent, clientOnePercent);
-        this.clients.set(SampleRate.TenPercent, clientTenPercent);
-        this.clients.set(SampleRate.NoSampling, clientNoSampling);
+            this.clients.set(SampleRate.OnePercent, clientOnePercent);
+            this.clients.set(SampleRate.TenPercent, clientTenPercent);
+            this.clients.set(SampleRate.NoSampling, clientNoSampling);
+        }
     }
 
     /**

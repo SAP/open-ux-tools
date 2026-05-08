@@ -47,7 +47,7 @@ const parseErrorStack = (errorStack: string): string[] => {
 let reportingTelemetryClient: appInsights.TelemetryClient;
 
 export const reportRuntimeError = (error: Error): void => {
-    if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY?.trim() !== 'true') {
+    if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY?.trim() !== 'true' && TelemetrySettings.azureInstrumentationKey) {
         reportingTelemetryClient = new appInsights.TelemetryClient(TelemetrySettings.azureInstrumentationKey);
         configAzureTelemetryClient(reportingTelemetryClient);
     }
@@ -81,7 +81,7 @@ export const reportEnableTelemetryOnOff = (
         },
         measurements: {}
     };
-    if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
+    if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true' && reportingTelemetryClient) {
         reportingTelemetryClient.trackEvent(telemetryEvent);
     }
 };
