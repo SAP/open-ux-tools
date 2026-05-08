@@ -285,8 +285,7 @@ describe('FioriFunctionalityServer', () => {
                         clientInfo: { name: 'old-client', version: '0.1.0' }
                     }
                 });
-                const expected =
-                    mcpTypes.SUPPORTED_PROTOCOL_VERSIONS[mcpTypes.SUPPORTED_PROTOCOL_VERSIONS.length - 1];
+                const expected = mcpTypes.SUPPORTED_PROTOCOL_VERSIONS[mcpTypes.SUPPORTED_PROTOCOL_VERSIONS.length - 1];
                 expect(result.protocolVersion).toBe(expected);
             } finally {
                 // Restore the removed version
