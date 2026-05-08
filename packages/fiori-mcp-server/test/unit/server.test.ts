@@ -390,6 +390,108 @@ describe('FioriFunctionalityServer', () => {
             );
         });
 
+        test('list_sap_systems', async () => {
+            const listSapSystemsSpy = jest.spyOn(tools, 'listSapSystems').mockResolvedValue({
+                systems: [{ name: 'SysA', url: 'https://sys-a.example.com', client: '100' }]
+            });
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({ params: { name: 'list_sap_systems', arguments: {} } });
+            expect(listSapSystemsSpy).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual({
+                systems: [{ name: 'SysA', url: 'https://sys-a.example.com', client: '100' }]
+            });
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'list_sap_systems',
+                { tool: 'list_sap_systems', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                undefined
+            );
+        });
+
+        test('download_odata_service_metadata', async () => {
+            const mockResult = {
+                functionalityId: 'fetch-service-metadata',
+                status: 'Success',
+                message: 'Fetched systems successfully.',
+                changes: [],
+                parameters: { host: 'https://example.com', servicePath: '/sap/opu/', client: '100', metadataFilePath: '/project/metadata.xml' },
+                appPath: '/project',
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            const downloadSpy = jest.spyOn(tools, 'downloadODataServiceMetadata').mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'download_odata_service_metadata',
+                    arguments: { sapSystemQuery: 'SysA', servicePath: '/sap/opu/', appPath: '/project' }
+                }
+            });
+            expect(downloadSpy).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'download_odata_service_metadata',
+                { tool: 'download_odata_service_metadata', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                '/project'
+            );
+        });
+
+        test('generate_fiori_app_odata', async () => {
+            const mockResult = {
+                functionalityId: 'generate-fiori-ui-application',
+                status: 'Success',
+                message: 'Generation completed successfully.',
+                parameters: {},
+                appPath: '/project/myapp',
+                changes: [],
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            const generateSpy = jest.spyOn(tools, 'generateFioriAppOData').mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'generate_fiori_app_odata',
+                    arguments: { floorplan: 'FE_LROP', project: { name: 'myapp', description: 'Test', targetFolder: '/project' } }
+                }
+            });
+            expect(generateSpy).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'generate_fiori_app_odata',
+                { tool: 'generate_fiori_app_odata', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                undefined
+            );
+        });
+
+        test('generate_fiori_app_cap', async () => {
+            const mockResult = {
+                functionalityId: 'generate-fiori-ui-application-cap',
+                status: 'Success',
+                message: 'Generation completed successfully.',
+                parameters: {},
+                appPath: '/cap-project/app/myapp',
+                changes: [],
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            const generateSpy = jest.spyOn(tools, 'generateFioriAppCap').mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'generate_fiori_app_cap',
+                    arguments: { floorplan: 'FE_LROP', project: { name: 'myapp', description: 'Test', targetFolder: '/cap-project' } }
+                }
+            });
+            expect(generateSpy).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'generate_fiori_app_cap',
+                { tool: 'generate_fiori_app_cap', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                undefined
+            );
+        });
+
         test('list_functionality', async () => {
             const listFunctionalitiesSpy = jest.spyOn(tools, 'listFunctionalities').mockResolvedValue({
                 applicationPath: 'app1',
