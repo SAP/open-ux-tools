@@ -12,6 +12,7 @@ import type ResourceModel from 'sap/ui/model/resource/ResourceModel';
 import Text from 'sap/m/Text';
 import type NewsContainer from 'sap/cux/home/NewsContainer';
 import type NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
+import { getSalutationBarBackground } from '../utils/salutationBarUtils';
 import Title from 'sap/m/Title';
 import GridContainer from 'sap/f/GridContainer';
 import UI5Element from 'sap/ui/core/Element';
@@ -28,7 +29,7 @@ import HBox from 'sap/m/HBox';
 import Icon from 'sap/ui/core/Icon';
 import { Button$PressEvent } from 'sap/m/Button';
 
-
+const HERO_BANNER_MIN_UI5_VERSION = 149;
 const CARDS_GAP = 16;
 const MIN_CARD_WIDTH = 304;
 const MIN_CARD_WIDTH_NARROW = 285;
@@ -95,6 +96,7 @@ export default class MyHomeController extends Controller {
 
     private terminalWarningsPopover: Popover | undefined;
     private insightsActionsPopover: Popover | undefined;
+    private useHeroBanner: boolean = false;
 
     private static calculateDeviceType(width: number): string {
         const { DeviceWidth } = MyHomeController;
@@ -126,6 +128,10 @@ export default class MyHomeController extends Controller {
             Device.resize.attachHandler((oEvent: { width: number }) => {
                 oViewModel.setProperty('/deviceType', MyHomeController.calculateDeviceType(oEvent.width));
                 this._updateInsightsCardWidth();
+                if (!this.useHeroBanner) {
+                    const salutationBar = this.byId('salutationBar');
+                    void this.applySalutationBarBackground(salutationBar?.getDomRef() as HTMLElement);
+                }
             });
         }
 
@@ -181,12 +187,43 @@ export default class MyHomeController extends Controller {
         const headerDateText = this.byId('headerDate') as Text;
         const date = this.formatDate(Date.now());
         headerDateText?.setText(date);
+
+        const salutationBar = this.byId('salutationBar');
+        const ui5MinorVersion = parseInt(sap.ui.version.split('.')[1], 10);
+        this.useHeroBanner = ui5MinorVersion >= HERO_BANNER_MIN_UI5_VERSION;
+
+        if (this.useHeroBanner) {
+            salutationBar?.addStyleClass('salutationBar--heroBanner');
+        } else {
+            salutationBar?.addEventDelegate(
+                {
+                    onAfterRendering: () => {
+                        void this.applySalutationBarBackground(salutationBar.getDomRef() as HTMLElement);
+                    }
+                },
+                this
+            );
+        }
     }
 
     private formatDate(date: number): string {
         const locale = new Locale(Formatting.getLanguageTag().language);
         const dateInstance = DateFormat.getDateInstance({ style: 'full' }, locale);
         return dateInstance.format(new Date(date)) || '';
+    }
+
+    private async applySalutationBarBackground(salutationBarElement: HTMLElement) {
+        const deviceType = MyHomeController.calculateDeviceType(Device.resize.width);
+        const isLargeScreen =
+            deviceType === 'Desktop' || deviceType === 'LargeDesktop' || deviceType === 'XLargeDesktop';
+        const background = await getSalutationBarBackground(!isLargeScreen);
+
+        if (salutationBarElement) {
+            salutationBarElement.style.background = background;
+            salutationBarElement.style.backgroundSize = isLargeScreen
+                ? 'auto, cover, auto, cover'
+                : 'cover, auto, cover';
+        }
     }
 
     private async initializeNewsContainer() {

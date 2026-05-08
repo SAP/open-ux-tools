@@ -21,12 +21,20 @@
 }
 
 .salutationBar.sapMIBar.sapMHeader-CTX {
+    padding: 0.5rem 1rem;
+    margin: var(--salutationBar-margin-top) var(--salutationBar-margin-right) var(--salutationBar-margin-bottom) var(--salutationBar-margin-left);
+    border-radius: 0.625rem;
+    border: 1px solid var(--sapShell_Category_1_BorderColor);
+}
+
+.salutationBar.salutationBar--heroBanner.sapMIBar.sapMHeader-CTX {
     margin: var(--salutationBar-margin-top) var(--salutationBar-margin-right) var(--salutationBar-margin-bottom) var(--salutationBar-margin-left);
     gap: var(--sapContent_Gap);
     box-sizing: border-box;
     padding: 1rem;
     width: var(--w, auto);
     height: var(--h, auto);
+    border: none;
     background-color: var(--sapShell_HeroBanner_Background);
     background-image: var(--sapShell_HeroBanner_BackgroundImage);
     background-size: cover;
@@ -45,6 +53,11 @@
 
 .salutationBar .sapMTitle,
 .salutationBar .sapMText {
+    color: var(--sapShell_Category_1_TextColor);
+}
+
+.salutationBar.salutationBar--heroBanner .sapMTitle,
+.salutationBar.salutationBar--heroBanner .sapMText {
     color: var(--sapShell_HeroBanner_TextColor);
 }
 
