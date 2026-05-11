@@ -168,10 +168,10 @@ export function setup(name: string, capAppPath?: string) {
 
     beforeEach(() => {
         const key = expect.getState().currentTestName;
-        if (!key) {
+        if (!key || !lookup[key]) {
             return;
         }
-        const { changes = [], filename } = lookup[key] ?? [];
+        const { changes = [], filename } = lookup[key];
         const projectCwdCap = capAppPath && CAP_PROJECT_PATH;
         const projectCwdXml = filename?.includes(V4_PROJECT_PATH) ? V4_PROJECT_PATH : V2_PROJECT_PATH;
         const cwd = projectCwdCap ?? projectCwdXml;

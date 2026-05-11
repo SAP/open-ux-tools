@@ -2,7 +2,15 @@ import { RuleTester } from 'eslint';
 import textArrangementHiddenRule from '../../src/rules/sap-text-arrangement-hidden';
 import { meta, languages } from '../../src/index';
 import { TEXT_ARRANGEMENT_HIDDEN } from '../../src/language/diagnostics';
-import { getAnnotationsAsXmlCode, setup, V4_ANNOTATIONS, V4_ANNOTATIONS_PATH } from '../test-helper';
+import {
+    getAnnotationsAsXmlCode,
+    setup,
+    V4_ANNOTATIONS,
+    V4_ANNOTATIONS_PATH,
+    CAP_ANNOTATIONS,
+    CAP_ANNOTATIONS_PATH,
+    CAP_APP_PATH
+} from '../test-helper';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -10,7 +18,7 @@ const ruleTester = new RuleTester({
 });
 
 const TEST_NAME = 'sap-text-arrangement-hidden';
-const { createValidTest, createInvalidTest } = setup(TEST_NAME);
+const { createValidTest, createInvalidTest } = setup(`${TEST_NAME} - XML`);
 
 // Annotation blocks used by tests
 
@@ -110,14 +118,10 @@ const TEXT_ARRANGEMENT_ENTITY_TYPE_NOT_ON_PAGE = `
         <Annotation Term="UI.Hidden"/>
     </Annotations>`;
 
-ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
+ruleTester.run(`${TEST_NAME} - XML`, textArrangementHiddenRule, {
     valid: [
         createValidTest(
-            {
-                name: 'no text arrangement annotation',
-                filename: V4_ANNOTATIONS_PATH,
-                code: V4_ANNOTATIONS
-            },
+            { name: 'no text arrangement annotation', filename: V4_ANNOTATIONS_PATH, code: V4_ANNOTATIONS },
             []
         ),
         createValidTest(
@@ -185,11 +189,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 name: 'text property referenced via Common.Text is hidden (default true)',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_WITH_HIDDEN_TEXT_PROPERTY),
-                errors: [
-                    {
-                        messageId: TEXT_ARRANGEMENT_HIDDEN
-                    }
-                ]
+                errors: [{ messageId: TEXT_ARRANGEMENT_HIDDEN }]
             },
             []
         ),
@@ -198,11 +198,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 name: 'text property referenced via Common.Text is hidden (Bool=true)',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_WITH_EXPLICITLY_HIDDEN_TEXT_PROPERTY),
-                errors: [
-                    {
-                        messageId: TEXT_ARRANGEMENT_HIDDEN
-                    }
-                ]
+                errors: [{ messageId: TEXT_ARRANGEMENT_HIDDEN }]
             },
             []
         ),
@@ -211,11 +207,135 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 name: 'entity-type level TextArrangement with hidden text property',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_WITH_HIDDEN),
-                errors: [
-                    {
-                        messageId: TEXT_ARRANGEMENT_HIDDEN
-                    }
-                ]
+                errors: [{ messageId: TEXT_ARRANGEMENT_HIDDEN }]
+            },
+            []
+        )
+    ]
+});
+
+// CDS (CAP) format tests
+
+const CDS_TEXT_ARRANGEMENT_FORMAT2_HIDDEN = `
+annotate service.Incidents with {
+    category @(
+        Common.Text                  : category.name,
+        Common.Text.@UI.TextArrangement : #TextOnly,
+    )
+};
+annotate service.Category with {
+    name @UI.Hidden
+};
+`;
+
+const CDS_TEXT_ARRANGEMENT_FORMAT2_NOT_HIDDEN = `
+annotate service.Incidents with {
+    category @(
+        Common.Text                  : category.name,
+        Common.Text.@UI.TextArrangement : #TextOnly,
+    )
+};
+`;
+
+const CDS_TEXT_ARRANGEMENT_FORMAT1_HIDDEN = `
+annotate service.Incidents with {
+    category @Common : {
+        Text            : category.name,
+        TextArrangement : #TextOnly
+    }
+};
+annotate service.Category with {
+    name @UI.Hidden
+};
+`;
+
+const CDS_TEXT_ARRANGEMENT_FORMAT2_NOT_HIDDEN_EXPLICIT_FALSE = `
+annotate service.Incidents with {
+    category @(
+        Common.Text                  : category.name,
+        Common.Text.@UI.TextArrangement : #TextOnly,
+    )
+};
+annotate service.Category with {
+    name @UI.Hidden: false
+};
+`;
+
+// Entity-type level UI.TextArrangement acts as a fallback for all Common.Text properties on that type
+const CDS_TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_HIDDEN = `
+annotate service.Incidents with @UI.TextArrangement: #TextFirst;
+annotate service.Incidents with {
+    title @Common.Text: description
+};
+annotate service.Incidents with {
+    description @UI.Hidden
+};
+`;
+
+const CDS_TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_NOT_HIDDEN = `
+annotate service.Incidents with @UI.TextArrangement: #TextFirst;
+annotate service.Incidents with {
+    title @Common.Text: description
+};
+`;
+
+const { createValidTest: createValidTestCAP, createInvalidTest: createInvalidTestCAP } = setup(
+    `${TEST_NAME} - CAP`,
+    CAP_APP_PATH
+);
+
+ruleTester.run(`${TEST_NAME} - CAP`, textArrangementHiddenRule, {
+    valid: [
+        createValidTestCAP(
+            {
+                name: 'CDS Format 2 inline TextArrangement with text property not hidden',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CDS_TEXT_ARRANGEMENT_FORMAT2_NOT_HIDDEN
+            },
+            []
+        ),
+        createValidTestCAP(
+            {
+                name: 'CDS Format 2 inline TextArrangement with text property explicitly not hidden (Bool=false)',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CDS_TEXT_ARRANGEMENT_FORMAT2_NOT_HIDDEN_EXPLICIT_FALSE
+            },
+            []
+        ),
+        createValidTestCAP(
+            {
+                name: 'CDS entity-type level TextArrangement with text property not hidden',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CDS_TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_NOT_HIDDEN
+            },
+            []
+        )
+    ],
+    invalid: [
+        createInvalidTestCAP(
+            {
+                name: 'CDS Format 2 inline TextArrangement with hidden text property',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CDS_TEXT_ARRANGEMENT_FORMAT2_HIDDEN,
+                errors: [{ messageId: TEXT_ARRANGEMENT_HIDDEN }]
+            },
+            []
+        ),
+        createInvalidTestCAP(
+            {
+                name: 'CDS Format 1 record TextArrangement with hidden text property',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CDS_TEXT_ARRANGEMENT_FORMAT1_HIDDEN,
+                errors: [{ messageId: TEXT_ARRANGEMENT_HIDDEN }]
+            },
+            []
+        ),
+        createInvalidTestCAP(
+            {
+                name: 'CDS entity-type level TextArrangement with hidden text property',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CDS_TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_HIDDEN,
+                errors: [{ messageId: TEXT_ARRANGEMENT_HIDDEN }]
             },
             []
         )

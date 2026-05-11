@@ -12,52 +12,14 @@ import type { FioriRuleDefinition } from '../types';
 import { TEXT_ARRANGEMENT_HIDDEN, type TextArrangementHidden } from '../language/diagnostics';
 import { buildAnnotationIndexKey } from '../project-context/parser';
 import type { IndexedAnnotation, ParsedService } from '../project-context/parser';
-import { COMMON_TEXT, UI_HIDDEN, UI_TEXT_ARRANGEMENT } from '../constants';
-import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4';
-import type { FeV2ListReport, FeV2ObjectPage } from '../project-context/linker/fe-v2';
-
-type AnyPage = FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage;
-
-/**
- * Resolves a path expression relative to an entity type to find the entity type and property of the target.
- *
- * For example, given entity type "IncidentService.Incidents" and path "category/name",
- * it navigates through the "category" navigation property to find "IncidentService.Category",
- * and returns { entityTypeName: "IncidentService.Category", propertyName: "name" }.
- *
- * @param entityTypeName - Fully-qualified name of the starting entity type
- * @param textPath - Path expression (e.g. "category/name" or "name")
- * @param service - The parsed OData service
- * @returns Resolved entity type name and property name, or undefined if resolution fails
- */
-function resolveTextPropertyPath(
-    entityTypeName: string,
-    textPath: string,
-    service: ParsedService
-): { entityTypeName: string; propertyName: string } | undefined {
-    const segments = textPath.split('/');
-    if (segments.length === 0) {
-        return undefined;
-    }
-
-    const propertyName = segments.at(-1)!;
-    let currentEntityTypeName = entityTypeName;
-
-    for (let i = 0; i < segments.length - 1; i++) {
-        const segment = segments[i];
-        const entityTypeElement = service.artifacts.metadataService.getMetadataElement(currentEntityTypeName);
-        if (!entityTypeElement) {
-            return undefined;
-        }
-        const navProp = entityTypeElement.content.find((child) => child.name === segment);
-        if (!navProp?.structuredType) {
-            return undefined;
-        }
-        currentEntityTypeName = navProp.structuredType;
-    }
-
-    return { entityTypeName: currentEntityTypeName, propertyName };
-}
+import { UI_HIDDEN, UI_TEXT_ARRANGEMENT, COMMON_TEXT_ARRANGEMENT } from '../constants';
+import {
+    type AnyPage,
+    resolveTextPropertyPath,
+    collectRelevantEntityTypes,
+    parseCommonTextAnnotationKey,
+    getTextPath
+} from './utils/common-text-helpers';
 
 /**
  * Checks whether a Common.Text annotation element has a nested UI.TextArrangement inline annotation.
@@ -95,71 +57,6 @@ function hasInlineTextArrangement(textElement: Element, aliasInfo: AliasInformat
 }
 
 /**
- * Builds a reverse map from IndexedAnnotation to entity type name,
- * covering only entity-type level annotations (non-property targets).
- *
- * @param parsedService - The parsed OData service
- * @returns Map from annotation object to its entity type name
- */
-function buildAnnotationEntityTypeMap(parsedService: ParsedService): Map<IndexedAnnotation, string> {
-    const map = new Map<IndexedAnnotation, string>();
-    for (const [key, qualifiedAnnotations] of Object.entries(parsedService.index.annotations)) {
-        const atIdx = key.indexOf('/@');
-        if (atIdx === -1) {
-            continue;
-        }
-        const targetPath = key.substring(0, atIdx);
-        if (targetPath.includes('/')) {
-            continue; // property-level annotation, skip
-        }
-        for (const annotation of Object.values(qualifiedAnnotations)) {
-            map.set(annotation, targetPath);
-        }
-    }
-    return map;
-}
-
-/**
- * Collects the entity type names that are actually used on pages in the app,
- * mapped to the list of page target names where each entity type appears.
- * Includes the main entity type of each page and entity types from sub-tables (e.g. via nav props on OPs).
- * Only annotations on these entity types will be checked by the rule.
- *
- * @param pages - Pages from the linked app model
- * @param parsedService - The parsed OData service
- * @returns Map from fully-qualified entity type name to the page target names it appears on
- */
-function collectRelevantEntityTypes(pages: AnyPage[], parsedService: ParsedService): Map<string, string[]> {
-    const entityTypePages = new Map<string, string[]>();
-    const annotationEntityTypeMap = buildAnnotationEntityTypeMap(parsedService);
-
-    const addEntityType = (entityTypeName: string, pageName: string): void => {
-        const pageNames = entityTypePages.get(entityTypeName) ?? [];
-        if (!pageNames.includes(pageName)) {
-            pageNames.push(pageName);
-        }
-        entityTypePages.set(entityTypeName, pageNames);
-    };
-
-    for (const page of pages) {
-        if (page.entity?.structuredType) {
-            addEntityType(page.entity.structuredType, page.targetName);
-        }
-        // Also collect entity types from sub-tables (e.g. navigation-based tables on OPs)
-        for (const table of page.lookup['table'] ?? []) {
-            if (table.type !== 'table' || !table.annotation) {
-                continue;
-            }
-            const entityType = annotationEntityTypeMap.get(table.annotation.annotation);
-            if (entityType) {
-                addEntityType(entityType, page.targetName);
-            }
-        }
-    }
-    return entityTypePages;
-}
-
-/**
  * Collects all entity type names that have UI.TextArrangement applied directly at entity-type level.
  *
  * @param parsedService - The parsed OData service
@@ -179,6 +76,33 @@ function collectEntityTypesWithTextArrangement(parsedService: ParsedService): Se
         }
     }
     return entityTypes;
+}
+
+/**
+ * Reads the Bool value from a UI.Hidden annotation element.
+ * Handles OData XML format (Bool attribute) and CDS compiled format (<Bool> child element).
+ *
+ * @param annotationElement - The UI.Hidden annotation element
+ * @returns The bool string ("true"/"false") or undefined if absent
+ */
+function getHiddenBoolValue(annotationElement: Element): string | undefined {
+    const attrBool = getElementAttributeValue(annotationElement, Edm.Bool);
+    if (attrBool) {
+        return attrBool;
+    }
+    for (const child of annotationElement.content) {
+        if (child.type !== ELEMENT_TYPE) {
+            continue;
+        }
+        const childEl = child as Element;
+        if (childEl.name === Edm.Bool) {
+            const textNode = childEl.content.find((c) => c.type === 'text');
+            if (textNode && 'text' in textNode) {
+                return textNode.text;
+            }
+        }
+    }
+    return undefined;
 }
 
 /**
@@ -203,11 +127,12 @@ function checkHiddenProperty(
         return problems;
     }
     for (const hiddenAnnotation of Object.values(hiddenAnnotations)) {
-        // Skip only when explicitly set to false (Bool="false" means not hidden)
-        // Dynamic path expressions (Path="...") are still warned — presence of
-        // UI.Hidden on the text property is considered problematic regardless
-        const boolVal = getElementAttributeValue(hiddenAnnotation.top.value, Edm.Bool);
-        if (boolVal === 'false') {
+        // Skip only when explicitly set to false.
+        // CDS compiles @UI.Hidden: false as a <Bool>false</Bool> child element (no Bool attribute),
+        // so all layers must be checked for both attribute and child-element forms.
+        // Dynamic path expressions (Path="...") are still warned.
+        const explicitlyFalse = hiddenAnnotation.layers.some((layer) => getHiddenBoolValue(layer.value) === 'false');
+        if (explicitlyFalse) {
             continue;
         }
         problems.push({
@@ -226,6 +151,14 @@ function checkHiddenProperty(
 /**
  * Processes a single Common.Text annotation and returns diagnostics if the referenced text property is hidden.
  *
+ * CDS compiles `@(Common.Text: x, Common.Text.@UI.TextArrangement: y)` into two separate annotation
+ * layers under the same index key. One layer carries the path value, the other carries the inline
+ * UI.TextArrangement child element. Both layers must be inspected to determine whether the full
+ * combination is present.
+ *
+ * Format 1 (`@Common: {Text: x, TextArrangement: y}`) produces a separate
+ * `Common.TextArrangement` annotation entry in the index instead of an inline child element.
+ *
  * @param textAnnotation - The indexed Common.Text annotation to process
  * @param entityTypeName - Fully-qualified name of the entity type that owns the annotated property
  * @param targetPath - The annotation target path (e.g. "Service.Entity/property")
@@ -242,17 +175,31 @@ function processTextAnnotation(
     entityTypesWithTextArrangement: Set<string>,
     parsedService: ParsedService
 ): TextArrangementHidden[] {
-    const textElement = textAnnotation.top.value;
-    const textPath = getElementAttributeValue(textElement, Edm.Path);
+    // Scan all layers: CDS may split path and inline TextArrangement into separate layers
+    let textPath: string | undefined;
+    let hasInlineTA = false;
+    for (const layer of textAnnotation.layers) {
+        textPath ??= getTextPath(layer.value);
+        if (!hasInlineTA) {
+            const aliasInfo = parsedService.artifacts.aliasInfo[layer.uri];
+            hasInlineTA = hasInlineTextArrangement(layer.value, aliasInfo);
+        }
+        if (textPath && hasInlineTA) {
+            break;
+        }
+    }
     if (!textPath) {
         return [];
     }
-    // UI.TextArrangement may be a nested inline annotation inside Common.Text
-    // (property level, takes precedence) or applied directly on the entity type
-    // (entity-type level fallback per vocabulary spec)
-    const aliasInfo = parsedService.artifacts.aliasInfo[textAnnotation.top.uri];
+
+    // Format 1: @Common:{Text:x, TextArrangement:y} produces a separate Common.TextArrangement
+    // annotation entry rather than an inline child element inside Common.Text.
+    const hasPropertyLevelCommonTA =
+        !!parsedService.index.annotations[buildAnnotationIndexKey(targetPath, COMMON_TEXT_ARRANGEMENT)];
+
+    // UI.TextArrangement may also be applied directly on the entity type as a fallback
     const hasTextArrangement =
-        hasInlineTextArrangement(textElement, aliasInfo) || entityTypesWithTextArrangement.has(entityTypeName);
+        hasInlineTA || hasPropertyLevelCommonTA || entityTypesWithTextArrangement.has(entityTypeName);
     if (!hasTextArrangement) {
         return [];
     }
@@ -281,27 +228,11 @@ function processAnnotationEntry(
     parsedService: ParsedService,
     relevantEntityTypes: Map<string, string[]>
 ): TextArrangementHidden[] {
-    const atIdx = annotationKey.indexOf('/@');
-    if (atIdx === -1) {
+    const parsed = parseCommonTextAnnotationKey(annotationKey, relevantEntityTypes);
+    if (!parsed) {
         return [];
     }
-    const targetPath = annotationKey.substring(0, atIdx);
-    const term = annotationKey.substring(atIdx + 2);
-    // Only process Common.Text annotations
-    if (term !== COMMON_TEXT) {
-        return [];
-    }
-    // Only handle property-level annotations (path must contain '/')
-    const slashIdx = targetPath.indexOf('/');
-    if (slashIdx === -1) {
-        return [];
-    }
-    const entityTypeName = targetPath.substring(0, slashIdx);
-    // Only check entity types that are actually used on pages
-    const pageNames = relevantEntityTypes.get(entityTypeName);
-    if (!pageNames) {
-        return [];
-    }
+    const { targetPath, entityTypeName, pageNames } = parsed;
     const problems: TextArrangementHidden[] = [];
     for (const textAnnotation of Object.values(qualifiedAnnotations)) {
         problems.push(
