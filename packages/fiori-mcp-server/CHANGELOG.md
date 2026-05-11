@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.55
+
+### Patch Changes
+
+- 2781f39: fix: add missing apache-arrow runtime dependency required by @lancedb/lancedb
+
 ## 0.6.54
 
 ### Patch Changes
