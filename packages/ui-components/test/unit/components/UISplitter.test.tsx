@@ -204,7 +204,7 @@ describe('<Splitter />', () => {
                 expect: {
                     standard: true,
                     horizontal: true,
-                    icon: UiIcons.VerticalGrip
+                    icon: undefined
                 }
             },
             {
@@ -214,7 +214,7 @@ describe('<Splitter />', () => {
                 expect: {
                     standard: true,
                     vertical: true,
-                    icon: UiIcons.VerticalGrip
+                    icon: undefined
                 }
             },
             {
@@ -224,7 +224,7 @@ describe('<Splitter />', () => {
                 expect: {
                     compact: true,
                     horizontal: true,
-                    icon: UiIcons.Grabber
+                    icon: undefined
                 }
             },
             {
@@ -234,7 +234,7 @@ describe('<Splitter />', () => {
                 expect: {
                     compact: true,
                     vertical: true,
-                    icon: UiIcons.Grabber
+                    icon: undefined
                 }
             }
         ];
@@ -252,9 +252,12 @@ describe('<Splitter />', () => {
                 expect(wrapper.find('.splitter--vertical').length).toEqual(testCase.expect.vertical ? 1 : 0);
                 expect(wrapper.find('.splitter--horizontal').length).toEqual(testCase.expect.horizontal ? 1 : 0);
 
-                const icon = wrapper.find('UIIcon');
                 expect(wrapper.find('.splitter__grip').length).toEqual(1);
-                expect(icon.prop('iconName')).toEqual(testCase.expect.icon);
+                const icon = wrapper.find('UIIcon');
+                expect(icon.length).toEqual(testCase.expect.icon ? 1 : 0);
+                if (testCase.expect.icon) {
+                    expect(icon.prop('iconName')).toEqual(testCase.expect.icon);
+                }
             });
         }
     });

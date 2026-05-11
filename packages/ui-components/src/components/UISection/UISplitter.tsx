@@ -177,16 +177,12 @@ export class UISplitter extends React.Component<UISplitterProps, UISplitterState
     }
 
     /**
-     * Gets icon.
+     * Returns the icon component for the given splitter type.
      *
-     * @param type
-     * @param splitterLayoutType
-     * @returns {string}
+     * @param type - The splitter type.
+     * @returns The corresponding icon element, or an empty fragment if no icon is defined.
      */
-    private getIcon(
-        type: UISplitterType,
-        splitterLayoutType: UISplitterLayoutType = UISplitterLayoutType.Standard
-    ): React.ReactElement {
+    private getIcon(type: UISplitterType): React.ReactElement {
         let icon: UiIcons | undefined;
         if (type === UISplitterType.Toggle) {
             icon = UiIcons.ArrowLeft;
