@@ -1,4 +1,4 @@
-import type { IValidationLink, IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import type { IValidationLink, IMessageSeverity, OutputTabLinkResult, ShowOutputTabLink } from '@sap-devx/yeoman-ui-types';
 import type {
     Answers,
     ConfirmQuestion as BaseConfirmQuestion,
@@ -35,7 +35,7 @@ export interface InquirerAdapter {
 }
 
 /**
- * To be replaced when YUI specific types are available from `"@sap-devx/yeoman-ui-types`.
+ * TODO: Move to `@sap-devx/yeoman-ui-types` once stabilised.
  *
  */
 export interface GuiOptions {
@@ -73,28 +73,6 @@ export interface GuiOptions {
         url?: string;
     };
 }
-
-/**
- * Describes the result of a dynamic `showOutputTabLink` function.
- * - `show` — whether the link should be displayed.
- * - `linkMessage` — optional custom label for the link (e.g. "View logs in odata downloader").
- *   Falls back to the default label when omitted.
- */
-export type OutputTabLinkResult = { show: boolean; linkMessage?: string };
-
-/**
- * Controls visibility of the link below a question that opens the output channel.
- * - `'validationMessageOverflow'` — link appears only when a validation error text overflows 2 lines (clamped).
- * - A function `() => OutputTabLinkResult | boolean | Promise<OutputTabLinkResult | boolean>` —
- *   called at runtime (via RPC) to dynamically determine whether the link should be shown and
- *   what label it should carry. The consumer controls both visibility and the link message.
- *
- * The consumer application (e.g. App Wizard) is responsible for wiring the link click
- * to the appropriate output-channel command.
- */
-export type ShowOutputTabLink =
-    | 'validationMessageOverflow'
-    | (() => OutputTabLinkResult | boolean | Promise<OutputTabLinkResult | boolean>);
 
 export type PromptSeverityMessage = (
     input?: unknown,
