@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 1.1.15
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+
 ## 1.1.14
 
 ### Patch Changes

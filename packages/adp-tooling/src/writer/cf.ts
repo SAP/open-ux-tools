@@ -159,5 +159,8 @@ export async function setupCfPreview(
     }
 
     await writeUi5AppInfo(basePath, ui5AppInfo, logger);
+
+    logger?.log('Starting build');
     await runBuild(basePath, { ADP_BUILDER_MODE: 'preview' });
+    logger?.log('Build completed');
 }

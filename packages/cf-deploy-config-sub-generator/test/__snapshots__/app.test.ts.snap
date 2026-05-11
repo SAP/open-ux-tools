@@ -83,7 +83,7 @@ exports[`Cloud foundry generator tests Validate app is added and configured for 
 {
   "devDependencies": {
     "@ui5/cli": "^4.0.33",
-    "mbt": "^1.2.29",
+    "mbt": "^1.2.49",
     "rimraf": "^5.0.5",
     "ui5-task-zipper": "^3.4.x",
   },

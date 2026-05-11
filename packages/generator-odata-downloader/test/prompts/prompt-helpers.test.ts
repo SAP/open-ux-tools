@@ -336,8 +336,8 @@ describe('Test createEntityChoices', () => {
         // Verify entitySetsFlat contains all entity sets
         expect(result!.entitySetsFlat).toEqual({
             _Booking: 'Booking',
-            _BookSupplement: 'BookingSupplement',
-            _Carrier: 'Airline'
+            '_Booking/_BookSupplement': 'BookingSupplement',
+            '_Booking/_Carrier': 'Airline'
         });
     });
 
@@ -412,6 +412,76 @@ describe('Test createEntityChoices', () => {
 
         expect(result).toBeDefined();
         expect(result!.choices.find((c) => c.name === '_Booking')?.checked).toBe(false);
+    });
+
+    test('should show disabled hierarchy indicator and skip self-referential nav prop when hierarchy entities are provided', () => {
+        const rootEntity: Entity = {
+            entitySetName: 'SalesOrganizations',
+            entityPath: 'SalesOrganizations',
+            entityType: {
+                name: 'SalesOrgType',
+                fullyQualifiedName: 'SalesOrgType'
+            } as EntityType,
+            navPropEntities: [
+                {
+                    entitySetName: 'SalesOrganizations',
+                    entityPath: '_Superordinate',
+                    entityType: {
+                        name: 'SalesOrgType',
+                        fullyQualifiedName: 'SalesOrgType'
+                    } as EntityType,
+                    navPropEntities: []
+                },
+                {
+                    entitySetName: 'Country',
+                    entityPath: '_Country',
+                    entityType: { name: 'CountryType', fullyQualifiedName: 'CountryType' } as EntityType,
+                    navPropEntities: []
+                }
+            ]
+        };
+
+        const result = createEntityChoices(rootEntity);
+
+        expect(result).toBeDefined();
+        // Self-ref nav prop should NOT be a selectable choice; only _Country is selectable
+        expect(result!.choices).toHaveLength(1);
+        expect(result!.choices[0].name).toBe('_Country');
+    });
+
+    test('should skip self-referential nav prop when no hierarchy entities provided', () => {
+        const rootEntity: Entity = {
+            entitySetName: 'SalesOrganizations',
+            entityPath: 'SalesOrganizations',
+            entityType: {
+                name: 'SalesOrgType',
+                fullyQualifiedName: 'SalesOrgType'
+            } as EntityType,
+            navPropEntities: [
+                {
+                    entitySetName: 'SalesOrganizations',
+                    entityPath: '_Superordinate',
+                    entityType: {
+                        name: 'SalesOrgType',
+                        fullyQualifiedName: 'SalesOrgType'
+                    } as EntityType,
+                    navPropEntities: []
+                },
+                {
+                    entitySetName: 'Country',
+                    entityPath: '_Country',
+                    entityType: { name: 'CountryType', fullyQualifiedName: 'CountryType' } as EntityType,
+                    navPropEntities: []
+                }
+            ]
+        };
+
+        const result = createEntityChoices(rootEntity);
+
+        expect(result).toBeDefined();
+        // Self-referential nav prop should be excluded without hierarchy info
+        expect(result!.choices).toHaveLength(1);
+        expect(result!.choices[0].name).toBe('_Country');
     });
 
     it('should create entity set choices based on app model (from specification)', async () => {

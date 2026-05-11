@@ -1,5 +1,82 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.3.32
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/adp-tooling@0.18.129
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/deploy-config-generator-shared@0.1.124
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/abap-deploy-config-inquirer@1.8.19
+    - @sap-ux/abap-deploy-config-writer@0.3.16
+    - @sap-ux/project-access@1.36.3
+
+## 0.3.31
+
+### Patch Changes
+
+- Updated dependencies [b2ffc7e]
+    - @sap-ux/adp-tooling@0.18.128
+
+## 0.3.30
+
+### Patch Changes
+
+- Updated dependencies [fcaa70c]
+    - @sap-ux/adp-tooling@0.18.127
+
+## 0.3.29
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/axios-extension@1.25.34
+    - @sap-ux/abap-deploy-config-inquirer@1.8.18
+    - @sap-ux/abap-deploy-config-writer@0.3.15
+    - @sap-ux/adp-tooling@0.18.126
+    - @sap-ux/fiori-generator-shared@0.13.104
+    - @sap-ux/deploy-config-generator-shared@0.1.123
+    - @sap-ux/project-access@1.36.2
+
+## 0.3.28
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.125
+
+## 0.3.27
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/abap-deploy-config-inquirer@1.8.17
+    - @sap-ux/adp-tooling@0.18.124
+    - @sap-ux/deploy-config-generator-shared@0.1.122
+    - @sap-ux/fiori-generator-shared@0.13.103
+    - @sap-ux/abap-deploy-config-writer@0.3.14
+
+## 0.3.26
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/abap-deploy-config-writer@0.3.13
+    - @sap-ux/adp-tooling@0.18.123
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.102
+    - @sap-ux/abap-deploy-config-inquirer@1.8.16
+    - @sap-ux/deploy-config-generator-shared@0.1.121
+
 ## 0.3.25
 
 ### Patch Changes

@@ -27,7 +27,7 @@ archive.zip
     \\"undeploy\\": \\"cf undeploy appfrontend --delete-services --delete-service-keys --delete-service-brokers\\"
   },
   \\"devDependencies\\": {
-    \\"mbt\\": \\"^1.2.29\\",
+    \\"mbt\\": \\"^1.2.49\\",
     \\"rimraf\\": \\"^6.0.1\\"
   }
 }
@@ -116,7 +116,7 @@ archive.zip
     \\"undeploy\\": \\"cf undeploy managed --delete-services --delete-service-keys --delete-service-brokers\\"
   },
   \\"devDependencies\\": {
-    \\"mbt\\": \\"^1.2.29\\",
+    \\"mbt\\": \\"^1.2.49\\",
     \\"rimraf\\": \\"^6.0.1\\"
   }
 }
@@ -240,7 +240,7 @@ archive.zip
     \\"undeploy\\": \\"cf undeploy standalonewithabapserviceprovider --delete-services --delete-service-keys --delete-service-brokers\\"
   },
   \\"devDependencies\\": {
-    \\"mbt\\": \\"^1.2.29\\",
+    \\"mbt\\": \\"^1.2.49\\",
     \\"rimraf\\": \\"^6.0.1\\"
   }
 }
@@ -399,7 +399,7 @@ archive.zip
     \\"undeploy\\": \\"cf undeploy standalone-with-connectivity-service --delete-services --delete-service-keys --delete-service-brokers\\"
   },
   \\"devDependencies\\": {
-    \\"mbt\\": \\"^1.2.29\\",
+    \\"mbt\\": \\"^1.2.49\\",
     \\"rimraf\\": \\"^6.0.1\\"
   }
 }

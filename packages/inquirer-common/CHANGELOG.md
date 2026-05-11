@@ -1,5 +1,49 @@
 # @sap-ux/inquirer-common
 
+## 0.11.44
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/telemetry@0.6.104
+    - @sap-ux/ui5-info@0.13.21
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/odata-service-writer@0.31.12
+    - @sap-ux/project-access@1.36.3
+
+## 0.11.43
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/telemetry@0.6.103
+    - @sap-ux/fiori-generator-shared@0.13.104
+    - @sap-ux/odata-service-writer@0.31.11
+    - @sap-ux/project-access@1.36.2
+
+## 0.11.42
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/odata-service-writer@0.31.10
+    - @sap-ux/fiori-generator-shared@0.13.103
+    - @sap-ux/telemetry@0.6.102
+
+## 0.11.41
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/fiori-generator-shared@0.13.102
+    - @sap-ux/odata-service-writer@0.31.9
+    - @sap-ux/telemetry@0.6.101
+
 ## 0.11.40
 
 ### Patch Changes

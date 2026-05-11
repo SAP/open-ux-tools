@@ -33,7 +33,7 @@ archive.zip
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"ui5-task-zipper\\": \\"^3.4.x\\",
         \\"rimraf\\": \\"^5.0.5\\",
-        \\"mbt\\": \\"^1.2.29\\"
+        \\"mbt\\": \\"^1.2.49\\"
     },
     \\"scripts\\": {
         \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#basicapp-display\\\\\\"\\",
@@ -375,7 +375,7 @@ archive.zip
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"ui5-task-zipper\\": \\"^3.4.x\\",
         \\"rimraf\\": \\"^5.0.5\\",
-        \\"mbt\\": \\"^1.2.29\\"
+        \\"mbt\\": \\"^1.2.49\\"
     },
     \\"scripts\\": {
         \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop-display\\\\\\"\\",
@@ -769,7 +769,7 @@ archive.zip
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"ui5-task-zipper\\": \\"^3.4.x\\",
         \\"rimraf\\": \\"^5.0.5\\",
-        \\"mbt\\": \\"^1.2.29\\"
+        \\"mbt\\": \\"^1.2.49\\"
     },
     \\"scripts\\": {
         \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop-display\\\\\\"\\",
@@ -1163,7 +1163,7 @@ archive.zip
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"ui5-task-zipper\\": \\"^3.4.x\\",
         \\"rimraf\\": \\"^5.0.5\\",
-        \\"mbt\\": \\"^1.2.29\\"
+        \\"mbt\\": \\"^1.2.49\\"
     },
     \\"scripts\\": {
         \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#basicappnodatasource-display\\\\\\"\\",
@@ -1404,7 +1404,7 @@ archive.zip
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"ui5-task-zipper\\": \\"^3.4.x\\",
         \\"rimraf\\": \\"^5.0.5\\",
-        \\"mbt\\": \\"^1.2.29\\"
+        \\"mbt\\": \\"^1.2.49\\"
     },
     \\"scripts\\": {
         \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#basicapp-display\\\\\\"\\",
@@ -1624,7 +1624,7 @@ exports[`CF Writer App Generate deployment configs - generateSupportingConfig re
     \\"undeploy\\": \\"cf undeploy captestproject --delete-services --delete-service-keys --delete-service-brokers\\"
   },
   \\"devDependencies\\": {
-    \\"mbt\\": \\"^1.2.29\\",
+    \\"mbt\\": \\"^1.2.49\\",
     \\"rimraf\\": \\"^6.0.1\\"
   }
 }
@@ -1666,7 +1666,7 @@ exports[`CF Writer App Generate deployment configs - generateSupportingConfig wi
     \\"undeploy\\": \\"cf undeploy testMtaId --delete-services --delete-service-keys --delete-service-brokers\\"
   },
   \\"devDependencies\\": {
-    \\"mbt\\": \\"^1.2.29\\",
+    \\"mbt\\": \\"^1.2.49\\",
     \\"rimraf\\": \\"^6.0.1\\"
   }
 }

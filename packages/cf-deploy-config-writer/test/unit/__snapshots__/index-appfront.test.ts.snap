@@ -74,7 +74,7 @@ exports[`CF Writer App - Application Frontend Generate deployment configs - Add 
   \\"private\\": true,
   \\"devDependencies\\": {
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   }
 }
 "
@@ -218,7 +218,7 @@ exports[`CF Writer App - Application Frontend Generate deployment configs - Appe
     \\"undeploy\\": \\"cf undeploy rootmta --delete-services --delete-service-keys --delete-service-brokers\\"
   },
   \\"devDependencies\\": {
-    \\"mbt\\": \\"^1.2.29\\",
+    \\"mbt\\": \\"^1.2.49\\",
     \\"rimraf\\": \\"^6.0.1\\"
   }
 }

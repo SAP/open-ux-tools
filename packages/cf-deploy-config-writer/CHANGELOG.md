@@ -1,5 +1,42 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.105
+
+### Patch Changes
+
+- 678a08e: chore: upgrade runtime dependencies (@sap/cf-tools 3.3.0 → 3.3.1, @vscode-logging/logger 2.0.8 → 2.0.9)
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/nodejs-utils@0.2.22
+    - @sap-ux/project-access@1.36.3
+
+## 0.3.104
+
+### Patch Changes
+
+- b2ffc7e: fix(mbt): bump mbt to ^1.2.49 to avoid suspicious 1.2.48 release (#4616)
+
+## 0.3.103
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.2
+
+## 0.3.102
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+
+## 0.3.101
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+
 ## 0.3.100
 
 ### Patch Changes

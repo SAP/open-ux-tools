@@ -175,7 +175,7 @@ exports[`Test headless generator Test: Headless deploy-config - addMTADestinatio
   "repository": "<Add your repository here>",
   "devDependencies": {
     "rimraf": "^5.0.5",
-    "mbt": "^1.2.29"
+    "mbt": "^1.2.49"
   },
   "scripts": {
     "undeploy": "cf undeploy managedAppCAPProjectJava --delete-services --delete-service-keys --delete-service-brokers",
@@ -441,7 +441,7 @@ exports[`Test headless generator Test: Headless deploy-config - addMTADestinatio
     "sqlite3": "^5.0.2",
     "@sap/cds-dk": "^5",
     "rimraf": "^5.0.5",
-    "mbt": "^1.2.29"
+    "mbt": "^1.2.49"
   },
   "scripts": {
     "start": "cds run",
@@ -747,7 +747,7 @@ exports[`Test headless generator Test: Headless deploy-config - addToManagedAppR
     "ui5-task-zipper": "^3.4.x",
     "@ui5/cli": "^4.0.33",
     "rimraf": "^5.0.5",
-    "mbt": "^1.2.29"
+    "mbt": "^1.2.49"
   }
 }
 "
@@ -971,7 +971,7 @@ exports[`Test headless generator Test: Headless deploy-config - addToManagedAppR
     "sqlite3": "^5.0.2",
     "@sap/cds-dk": "^5",
     "rimraf": "^5.0.5",
-    "mbt": "^1.2.29"
+    "mbt": "^1.2.49"
   },
   "scripts": {
     "start": "cds run",
@@ -1227,7 +1227,7 @@ exports[`Test headless generator Test: Headless deploy-config - localAppChanges 
   },
   "devDependencies": {
     "rimraf": "^5.0.5",
-    "mbt": "^1.2.29"
+    "mbt": "^1.2.49"
   }
 }
 "
@@ -1608,7 +1608,7 @@ exports[`Test headless generator Test: Headless deploy-config 5`] = `
     "ui5-task-zipper": "^3.4.x",
     "@ui5/cli": "^4.0.33",
     "rimraf": "^5.0.5",
-    "mbt": "^1.2.29"
+    "mbt": "^1.2.49"
   }
 }
 "
@@ -1965,7 +1965,7 @@ exports[`Test headless generator Test: Headless deploy-config TypeScript - Headl
     "ui5-task-zipper": "^3.4.x",
     "@ui5/cli": "^4.0.33",
     "rimraf": "^5.0.5",
-    "mbt": "^1.2.29"
+    "mbt": "^1.2.49"
   }
 }
 "
