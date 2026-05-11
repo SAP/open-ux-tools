@@ -1,5 +1,26 @@
 # @sap-ux/axios-extension
 
+## 1.25.35
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+
+## 1.25.34
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
+## 1.25.33
+
+### Patch Changes
+
+- 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
+- 3945459: chore: upgrade @xmldom/xmldom 0.8.12 to 0.8.13 (security fix for XML injection vulnerabilities)
+
 ## 1.25.32
 
 ### Patch Changes
