@@ -26,6 +26,11 @@ export interface UISectionsProps {
     splitterTabIndex?: -1 | 0;
     onClose?: () => void;
     splitterTitle?: string;
+    /**
+     * Splitter layout type for resize splitter.
+     *
+     * @default UISplitterLayoutType.Compact
+     */
     splitterLayoutType?: UISplitterLayoutType;
     onResize?: (sizes: Array<UISectionSize | undefined>) => void;
     onToggleFullscreen?: (isFullScreen: boolean) => void;
