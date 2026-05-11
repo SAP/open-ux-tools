@@ -8,9 +8,7 @@ import {
     getFlpConfigWithDefaults,
     getPreviewPaths,
     remapResourcesForPath,
-    parseIntentString,
-    buildIntentHash,
-    resolveIntent
+    buildIntentHash
 } from '../../../src/base/config';
 import { mergeTestConfigDefaults } from '../../../src/base/test';
 import type { MiddlewareConfig } from '../../../src';
@@ -36,17 +34,6 @@ describe('config', () => {
             const intent = { object: 'myapp', action: 'myaction' };
             const flpConfig = getFlpConfigWithDefaults({ path, intent });
             expect(flpConfig).toMatchObject({ path, intent });
-        });
-        test('resolves string intent from yaml', () => {
-            const flpConfig = getFlpConfigWithDefaults({
-                intent: 'SupplierInvoice-displayFactSheet?FiscalYear=2017&/display'
-            });
-            expect(flpConfig.intent).toEqual({
-                object: 'SupplierInvoice',
-                action: 'displayFactSheet',
-                params: { FiscalYear: '2017' },
-                route: '/display'
-            });
         });
         test('resolves structured intent with params from yaml', () => {
             const flpConfig = getFlpConfigWithDefaults({
@@ -168,10 +155,15 @@ describe('config', () => {
             });
         });
 
-        test('preview path includes intent params and route from string config', () => {
+        test('preview path includes intent params and route', () => {
             const config = {
                 flp: {
-                    intent: 'SupplierInvoice-displayFactSheet?FiscalYear=2017&/display'
+                    intent: {
+                        object: 'SupplierInvoice',
+                        action: 'displayFactSheet',
+                        params: { FiscalYear: '2017' },
+                        route: '/display'
+                    }
                 }
             } as unknown as MiddlewareConfig;
             const paths = getPreviewPaths(config);
@@ -389,67 +381,6 @@ describe('config', () => {
         });
     });
 
-    describe('parseIntentString', () => {
-        test('simple intent', () => {
-            expect(parseIntentString('app-preview')).toEqual({
-                object: 'app',
-                action: 'preview'
-            });
-        });
-
-        test('intent with params', () => {
-            expect(
-                parseIntentString('SupplierInvoice-displayFactSheet?FiscalYear=2017&SupplierInvoice=5100000001')
-            ).toEqual({
-                object: 'SupplierInvoice',
-                action: 'displayFactSheet',
-                params: { FiscalYear: '2017', SupplierInvoice: '5100000001' }
-            });
-        });
-
-        test('param value containing equals sign is preserved', () => {
-            expect(parseIntentString('App-action?filter=price=100')).toEqual({
-                object: 'App',
-                action: 'action',
-                params: { filter: 'price=100' }
-            });
-        });
-
-        test('intent with route only', () => {
-            expect(parseIntentString('SupplierInvoice-create&/create/isSharedDraft=false')).toEqual({
-                object: 'SupplierInvoice',
-                action: 'create',
-                route: '/create/isSharedDraft=false'
-            });
-        });
-
-        test('intent with params and route', () => {
-            expect(
-                parseIntentString(
-                    'SupplierInvoice-displayFactSheet?FiscalYear=2017&SupplierInvoice=5100000001&/display'
-                )
-            ).toEqual({
-                object: 'SupplierInvoice',
-                action: 'displayFactSheet',
-                params: { FiscalYear: '2017', SupplierInvoice: '5100000001' },
-                route: '/display'
-            });
-        });
-
-        test('strips leading #', () => {
-            expect(parseIntentString('#app-preview')).toEqual({
-                object: 'app',
-                action: 'preview'
-            });
-        });
-
-        test('throws on invalid format', () => {
-            expect(() => parseIntentString('invalid')).toThrow(
-                'Invalid intent format: "invalid". Expected "Object-action[?params][&/route]".'
-            );
-        });
-    });
-
     describe('buildIntentHash', () => {
         test('basic intent without params', () => {
             expect(buildIntentHash({ object: 'app', action: 'preview' })).toBe('app-preview');
@@ -500,45 +431,6 @@ describe('config', () => {
             expect(buildIntentHash({ object: 'App', action: 'view', params: { filter: 'a&b=c' } })).toBe(
                 'App-view?filter=a%26b%3Dc'
             );
-        });
-
-        test('string passthrough without leading hash', () => {
-            expect(buildIntentHash('SupplierInvoice-displayFactSheet?FiscalYear=2017&/display')).toBe(
-                'SupplierInvoice-displayFactSheet?FiscalYear=2017&/display'
-            );
-        });
-
-        test('string passthrough strips leading hash', () => {
-            expect(buildIntentHash('#app-preview')).toBe('app-preview');
-        });
-    });
-
-    describe('resolveIntent', () => {
-        test('passes through object as-is', () => {
-            const intent = { object: 'app', action: 'preview' };
-            expect(resolveIntent(intent)).toEqual(intent);
-        });
-
-        test('parses string into object', () => {
-            expect(resolveIntent('SupplierInvoice-displayFactSheet?FiscalYear=2017&/display')).toEqual({
-                object: 'SupplierInvoice',
-                action: 'displayFactSheet',
-                params: { FiscalYear: '2017' },
-                route: '/display'
-            });
-        });
-    });
-
-    describe('roundtrip: parse → build', () => {
-        const cases = [
-            'app-preview',
-            'SupplierInvoice-displayFactSheet?FiscalYear=2017&SupplierInvoice=5100000001',
-            'SupplierInvoice-create&/create/isSharedDraft=false',
-            'SupplierInvoice-displayFactSheet?FiscalYear=2017&SupplierInvoice=5100000001&/display'
-        ];
-
-        test.each(cases)('roundtrip: %s', (input) => {
-            expect(buildIntentHash(parseIntentString(input))).toBe(input);
         });
     });
 });

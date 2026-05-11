@@ -59,8 +59,7 @@ import {
     sanitizeRtaConfig,
     CARD_GENERATOR_DEFAULT,
     remapResourcesForPath,
-    buildIntentHash,
-    resolveIntent
+    buildIntentHash
 } from './config';
 import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
@@ -712,11 +711,10 @@ export class FlpSandbox {
             return JSON.parse(readFileSync(join(webappPath, 'manifest.json'), 'utf-8')) as Manifest;
         }
         if (app.componentId) {
-            const resolved = app.intent ? resolveIntent(app.intent) : undefined;
             return {
                 'sap.app': {
                     id: app.componentId,
-                    title: resolved ? `${resolved.object}-${resolved.action}` : app.componentId
+                    title: app.intent ? `${app.intent.object}-${app.intent.action}` : app.componentId
                 }
             } as Manifest;
         }

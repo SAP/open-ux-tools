@@ -60,9 +60,6 @@ export function getIntentFromPreviewConfig(
     if (!intent) {
         return undefined;
     }
-    if (typeof intent === 'string') {
-        return intent.startsWith('#') ? intent : `#${intent}`;
-    }
     return `#${intent.object}-${intent.action}`;
 }
 

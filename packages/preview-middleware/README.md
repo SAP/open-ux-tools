@@ -20,11 +20,11 @@ When this middleware is used together with the `reload-middleware`, then the ord
 | `flp`                   | ---        | optional                                       | ---              | Configuration object for the local SAP Fiori launchpad                                                                                                                                                                                                |
 | `flp.path`              | `string`   | optional                                       | `/test/flp.html` | The mount point of the local SAP Fiori launchpad. In case no file is found at the given path, a virtual endpoint will be instantiated.                                                                                                                |
 | `flp.init`              | `string`   | optional                                       | `undefined`      | UI5 module/script to be executed after the standard initialization                                                                                                                                                                                    |
-| `flp.intent`            | `string` or `object` | optional                              | ---              | Intent for the application. Can be a string (e.g. `"Object-action?param=value&/route"`) or a structured object (see below)                                                                                                                           |
-| `flp.intent.object`     | `string`   | optional                                       | `app`            | Name of the semantic object (when using object format)                                                                                                                                                                                                |
-| `flp.intent.action`     | `string`   | optional                                       | `preview`        | Name of the action (when using object format)                                                                                                                                                                                                         |
-| `flp.intent.params`     | `object`   | optional                                       | `undefined`      | Key-value pairs of intent parameters (when using object format)                                                                                                                                                                                       |
-| `flp.intent.route`      | `string`   | optional                                       | `undefined`      | Inner-app route (when using object format)                                                                                                                                                                                                            |
+| `flp.intent`            | `object`   | optional                                       | ---              | Intent for the application (see below)                                                                                                                                                                                                                |
+| `flp.intent.object`     | `string`   | optional                                       | `app`            | Name of the semantic object                                                                                                                                                                                                                           |
+| `flp.intent.action`     | `string`   | optional                                       | `preview`        | Name of the action                                                                                                                                                                                                                                    |
+| `flp.intent.params`     | `object`   | optional                                       | `undefined`      | Key-value pairs of intent parameters                                                                                                                                                                                                                  |
+| `flp.intent.route`      | `string`   | optional                                       | `undefined`      | Inner-app route                                                                                                                                                                                                                                       |
 | `flp.apps`              | `array`    | optional                                       | `undefined`      | Additional local apps that are available in the local SAP Fiori launchpad                                                                                                                                                                             |
 | `flp.libs`              | `boolean`  | optional                                       | `false`          | Flag to add a generic script fetching the paths of used libraries not available in UI5. To disable it, set it to `false`. If not set, then the project is checked for a `load-reuse-libs` script and, if available, the libraries are fetched as well |
 | `flp.theme`             | `string`   | optional                                       | `(calculated)`   | Name of the UI5 theme to be used (default is `sap_horizon` or the first entry in the sap.ui.supportedThemes list provided in the manifest.json file if `sap_horizon` is not contained in the list)                                                    |
@@ -49,7 +49,7 @@ Array of additional application configurations:
 | ------------------------ |------------|------------------|----------------|-------------------------------------------------------------------------------------------------------------|
 | `target`                 | `string`   | mandatory        | `undefined`    | Target path of the additional application                                                                   |
 | `local` or `componentId` | `string`   | mandatory        | `undefined`    | Either a local path to a folder containing the application or the `componentId` of a remote app is required |
-| `intent`                 | `string` or `object` | optional | ---            | Intent for the application. Can be a string (e.g. `"Object-action?param=value&/route"`) or a structured object |
+| `intent`                 | `object`   | optional         | ---            | Intent for the application                                                                                  |
 | `intent.object`          | `string`   | optional         | `(calculated)` | Name of the semantic object. If not provided, then it will be calculated based on the application ID        |
 | `intent.action`          | `string`   | optional         | `preview`      | Name of the action                                                                                          |
 | `intent.params`          | `object`   | optional         | `undefined`    | Key-value pairs of intent parameters                                                                        |
@@ -105,20 +105,8 @@ server:
 ```
 
 ### [Intent Configuration](#intent-configuration)
-The `flp.intent` can be provided as a string (convenient for copy-pasting from the browser URL bar) or as a structured object (better for tooling).
+The `flp.intent` is a structured object that defines the semantic object, action, and optional parameters and route:
 
-**String format** — copy the intent hash from the FLP URL:
-```Yaml
-server:
-  customMiddleware:
-  - name: preview-middleware
-    afterMiddleware: compression
-    configuration:
-      flp:
-        intent: "SupplierInvoice-displayFactSheet?FiscalYear=2017&SupplierInvoice=5100000001&/display"
-```
-
-**Object format** — structured with explicit params and route:
 ```Yaml
 server:
   customMiddleware:
@@ -135,7 +123,7 @@ server:
           route: "/display"
 ```
 
-Both formats produce the same result: `#SupplierInvoice-displayFactSheet?FiscalYear=2017&SupplierInvoice=5100000001&/display`
+This produces the hash fragment: `#SupplierInvoice-displayFactSheet?FiscalYear=2017&SupplierInvoice=5100000001&/display`
 
 ### [Additional Applications](#additional-applications)
 If you want to test cross application navigation, then you can add additional applications into the local FLP.

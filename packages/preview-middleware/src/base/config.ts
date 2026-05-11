@@ -5,7 +5,6 @@ import type {
     DefaultIntent,
     FlpConfig,
     Intent,
-    IntentConfig,
     CompleteTestConfig,
     MiddlewareConfig,
     RtaConfig,
@@ -121,84 +120,17 @@ export const DEFAULT_INTENT = {
 } as Readonly<DefaultIntent>;
 
 /**
- * Parses a query string into a key-value record, splitting only on the first `=` per pair.
+ * Builds the intent hash fragment from an Intent object.
  *
- * @param queryString the raw query string without leading `?` (e.g. "key1=val1&key2=val2")
- */
-function parseParams(queryString: string): Record<string, string> {
-    const params: Record<string, string> = {};
-    for (const pair of queryString.split('&')) {
-        const eqIdx = pair.indexOf('=');
-        const key = eqIdx >= 0 ? pair.slice(0, eqIdx) : pair;
-        const value = eqIdx >= 0 ? pair.slice(eqIdx + 1) : '';
-        if (key) {
-            params[decodeURIComponent(key)] = decodeURIComponent(value);
-        }
-    }
-    return params;
-}
-
-/**
- * Extracts the route and params from the remainder of an intent string (everything after "Object-action").
- *
- * @param remainder the portion of the intent string after the "Object-action" prefix
- * @returns object with optional params and route
- */
-function parseIntentRemainder(remainder: string): { params?: Record<string, string>; route?: string } {
-    const route = /&(\/.*)/.exec(remainder)?.[1];
-    const paramsMatch = /\?([^&]*(?:&(?!\/)[^&]*)*)/.exec(remainder);
-    const params = paramsMatch ? parseParams(paramsMatch[1]) : undefined;
-    return {
-        ...(params && Object.keys(params).length > 0 ? { params } : {}),
-        ...(route ? { route } : {})
-    };
-}
-
-/**
- * Parses an intent string into a structured Intent object.
- *
- * Supported formats:
- *   "Object-action"
- *   "Object-action?param1=value1&param2=value2"
- *   "Object-action?param1=value1&param2=value2&/innerRoute"
- *   "Object-action&/innerRoute"
- *
- * @param intentString the raw intent string (with or without leading #)
- * @returns parsed Intent object
- */
-export function parseIntentString(intentString: string): Intent {
-    const raw = intentString.startsWith('#') ? intentString.slice(1) : intentString;
-
-    const match = /^([^-?&]+)-([^?&]+)/.exec(raw);
-    if (!match) {
-        throw new Error(`Invalid intent format: "${intentString}". Expected "Object-action[?params][&/route]".`);
-    }
-
-    const remainder = raw.slice(match[0].length);
-    return {
-        object: match[1],
-        action: match[2],
-        ...(remainder ? parseIntentRemainder(remainder) : {})
-    };
-}
-
-/**
- * Builds the intent hash fragment from an IntentConfig.
- *
- * @param intentConfig the intent configuration (string or object)
+ * @param intent the structured intent object
  * @returns hash fragment string (without leading #)
  */
-export function buildIntentHash(intentConfig: IntentConfig): string {
-    if (typeof intentConfig === 'string') {
-        return intentConfig.startsWith('#') ? intentConfig.slice(1) : intentConfig;
-    }
+export function buildIntentHash(intent: Intent): string {
+    let hash = `${intent.object}-${intent.action}`;
 
-    let hash = `${intentConfig.object}-${intentConfig.action}`;
+    const params = intent.params;
+    const route = intent.route;
 
-    const params = intentConfig.params;
-    const route = intentConfig.route;
-
-    // URLSearchParams encodes spaces as '+' (form-urlencoded), but FLP hash fragments require '%20' (percent-encoding).
     if (params && Object.keys(params).length > 0) {
         const paramString = Object.entries(params)
             .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
@@ -212,19 +144,6 @@ export function buildIntentHash(intentConfig: IntentConfig): string {
     }
 
     return hash;
-}
-
-/**
- * Resolves an IntentConfig (string or object from ui5.yaml) into a normalized Intent object.
- *
- * @param input the intent configuration from ui5.yaml
- * @returns normalized Intent object
- */
-export function resolveIntent(input: IntentConfig): Intent {
-    if (typeof input === 'string') {
-        return parseIntentString(input);
-    }
-    return input;
 }
 
 /**
@@ -296,7 +215,7 @@ function getUI5Libs(manifest: Partial<Manifest>): string {
 export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpConfig {
     const flpConfig = {
         path: config.path ?? DEFAULT_PATH,
-        intent: config.intent ? resolveIntent(config.intent) : DEFAULT_INTENT,
+        intent: config.intent ?? DEFAULT_INTENT,
         apps: config.apps ?? [],
         libs: config.libs,
         theme: config.theme,
@@ -418,20 +337,18 @@ export async function addApp(
  * Get the application name based on the manifest and app configuration.
  *
  * @param manifest - The application manifest.
- * @param intentConfig - The app intent configuration (string or object).
+ * @param intent - The app intent configuration.
  * @returns The application name.
  */
-export function getAppName(manifest: Partial<Manifest>, intentConfig?: IntentConfig): string {
+export function getAppName(manifest: Partial<Manifest>, intent?: Intent): string {
     const id = manifest['sap.app']?.id ?? '';
 
-    const intent: Intent = intentConfig
-        ? resolveIntent(intentConfig)
-        : {
-              object: id.replace(/\./g, ''),
-              action: 'preview'
-          };
+    const resolved: Intent = intent ?? {
+        object: id.replace(/\./g, ''),
+        action: 'preview'
+    };
 
-    return `${intent.object}-${intent.action}`;
+    return `${resolved.object}-${resolved.action}`;
 }
 
 /**

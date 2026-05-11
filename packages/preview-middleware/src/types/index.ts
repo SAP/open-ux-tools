@@ -12,13 +12,6 @@ export interface Intent {
 }
 
 /**
- * Intent configuration as provided in ui5.yaml.
- * Either a full intent string (e.g. "Object-action?p1=v1&/route")
- * or a structured Intent object.
- */
-export type IntentConfig = string | Intent;
-
-/**
  * Configuration for additional applications
  */
 export interface App {
@@ -31,7 +24,7 @@ export interface App {
      * Optional component id if it differs from the manifest (e.g. for adaptation projects)
      */
     componentId?: string;
-    intent?: IntentConfig;
+    intent?: Intent;
 }
 
 export interface RtaEditor {
@@ -60,7 +53,7 @@ interface InternalRtaConfig {
  */
 export interface FlpConfig {
     path: string;
-    intent: IntentConfig;
+    intent: Intent;
     /**
      * Optional: if set to true then a locate-reuse-libs script will be attached to the html
      */

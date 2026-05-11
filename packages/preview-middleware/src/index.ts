@@ -10,7 +10,6 @@ export {
 export {
     FlpConfig,
     Intent,
-    IntentConfig,
     RtaConfig,
     TestConfig,
     MiddlewareConfig,

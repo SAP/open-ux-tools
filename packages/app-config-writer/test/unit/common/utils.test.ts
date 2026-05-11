@@ -58,15 +58,5 @@ describe('utils', () => {
             const config = { flp: { intent: { object: 'Order', action: 'manage' } } };
             expect(utils.getIntentFromPreviewConfig(config)).toBe('#Order-manage');
         });
-
-        test('returns hash from string intent without leading hash', () => {
-            const config = { flp: { intent: 'Order-manage?year=2024&/display' } };
-            expect(utils.getIntentFromPreviewConfig(config as any)).toBe('#Order-manage?year=2024&/display');
-        });
-
-        test('returns string intent as-is when it already has leading hash', () => {
-            const config = { flp: { intent: '#Order-manage' } };
-            expect(utils.getIntentFromPreviewConfig(config as any)).toBe('#Order-manage');
-        });
     });
 });
