@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.30.4
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+
 ## 0.30.3
 
 ### Patch Changes
