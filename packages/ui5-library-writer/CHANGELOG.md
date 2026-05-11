@@ -1,5 +1,39 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.84
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/project-access@1.36.3
+
+## 0.6.83
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.2
+
+## 0.6.82
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+
+## 0.6.81
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+
+## 0.6.80
+
+### Patch Changes
+
+- 165a6c2: feat: support ESLint 10
+
 ## 0.6.79
 
 ### Patch Changes

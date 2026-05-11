@@ -1,5 +1,41 @@
 # @sap-ux/environment-check
 
+## 0.18.125
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/project-access@1.36.3
+
+## 0.18.124
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/axios-extension@1.25.34
+    - @sap-ux/project-access@1.36.2
+
+## 0.18.123
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/project-access@1.36.1
+
+## 0.18.122
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/axios-extension@1.25.32
+
 ## 0.18.121
 
 ### Patch Changes

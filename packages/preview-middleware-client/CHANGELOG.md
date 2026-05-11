@@ -1,5 +1,41 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.40
+
+### Patch Changes
+
+- f2bb2e4: Fix sonar issue 'Ensure that tainted data is validated before being used to construct a client-side request URL.' for method 'registerComponentDependencyPaths'
+
+## 0.25.39
+
+## 0.25.38
+
+### Patch Changes
+
+- 600f1b1: feat: Missing fragment or controller extension files errors to be shown in InfoCenter
+
+## 0.25.37
+
+## 0.25.36
+
+## 0.25.35
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
+## 0.25.34
+
+## 0.25.33
+
+## 0.25.32
+
+## 0.25.31
+
+### Patch Changes
+
+- 165a6c2: feat: support ESLint 10
+
 ## 0.25.30
 
 ## 0.25.29
