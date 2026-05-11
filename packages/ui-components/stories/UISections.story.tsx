@@ -54,7 +54,7 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
         splitterTabIndex: 0,
         minSectionSize: props.threeSections ? [100, 100, 100] : [300, 300],
         animation: true,
-        splitterLayoutType: UISplitterLayoutType.Standard,
+        splitterLayoutType: UISplitterLayoutType.Compact,
         sizesAsPercents: false,
         sizes: props.threeSections ? [firstSectionSize, undefined, 200] : [firstSectionSize, undefined]
     });
@@ -91,13 +91,7 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
         propertyChange(id, option?.key);
     };
     const sectionElements = [
-        <UISections.Section
-            key="first"
-            height="100%"
-            cleanPadding={true}
-            hidden={!leftSectionVisible}
-            data-test="test"
-            title="First">
+        <UISections.Section key="first" height="100%" cleanPadding={true} hidden={!leftSectionVisible} data-test="test">
             <div>
                 {text}
                 {text}
@@ -107,7 +101,7 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
     ];
     if (props.threeSections) {
         sectionElements.push(
-            <UISections.Section key="second" height="100%" cleanPadding={true} title="Third">
+            <UISections.Section key="second" height="100%" cleanPadding={true}>
                 <div>
                     {text}
                     {text}
@@ -117,7 +111,7 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
         );
     }
     sectionElements.push(
-        <UISections.Section key="last" height="100%" cleanPadding={true} hidden={!rightSectionVisible} title="Second">
+        <UISections.Section key="last" height="100%" cleanPadding={true} hidden={!rightSectionVisible}>
             <div>
                 {text}
                 {text}

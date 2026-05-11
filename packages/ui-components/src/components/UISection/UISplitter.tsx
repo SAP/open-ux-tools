@@ -51,8 +51,9 @@ export class UISplitter extends React.Component<UISplitterProps, UISplitterState
         y: 0
     };
     private readonly rootRef: React.RefObject<HTMLDivElement>;
-    private readonly size = 4;
+    private readonly size = 8;
     private readonly compactSize = 4;
+    private readonly toggleSize = 14;
     private animationFrame?: number;
     /**
      *
@@ -254,8 +255,11 @@ export class UISplitter extends React.Component<UISplitterProps, UISplitterState
     render(): React.ReactElement {
         const { type, vertical, hidden, title, splitterLayoutType } = this.props;
         const tabIndex = this.props.splitterTabIndex ?? 0;
-        const size = splitterLayoutType === UISplitterLayoutType.Standard ? this.size : this.compactSize;
-        const splitterOffset = type === UISplitterType.Toggle ? -size : -size / 2;
+        let size = splitterLayoutType === UISplitterLayoutType.Standard ? this.size : this.compactSize;
+        if (type === UISplitterType.Toggle) {
+            size = this.toggleSize;
+        }
+        const splitterOffset = -size / 2;
         const role = type === UISplitterType.Toggle ? 'button' : 'separator';
         const orientation = vertical ? 'horizontal' : 'vertical';
         let ariaPressed: boolean | undefined;

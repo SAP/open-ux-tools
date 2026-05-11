@@ -686,7 +686,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             splitterTitle,
             splitterType = UISplitterType.Resize,
             splitterTabIndex,
-            splitterLayoutType = UISplitterLayoutType.Standard
+            splitterLayoutType = UISplitterLayoutType.Compact
         } = this.props;
         let isSplitterVisible = splitter && index > 0;
         const isSingleSection = this.getVisibleChildrenCount() === 1;

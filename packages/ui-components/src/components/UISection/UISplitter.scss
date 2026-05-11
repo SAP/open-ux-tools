@@ -11,10 +11,7 @@
     }
 }
 
-$splitter-contrast-border: 1px solid var(--vscode-contrastBorder);
-$splitter-hover-contrast-border: 1px dashed var(--vscode-contrastActiveBorder);
 $splitter-focus-border: 1px solid var(--vscode-focusBorder);
-
 $splitter-grip-color: var(--vscode-widget-border);
 $splitter-highlight-color: var(--vscode-focusBorder);
 
@@ -26,8 +23,6 @@ $splitter-highlight-color: var(--vscode-focusBorder);
     &__grip {
         position: absolute;
         margin: auto;
-        background-color: $splitter-grip-color;
-        z-index: -1;
     }
 
     // Highligh hover and focus
@@ -49,12 +44,25 @@ $splitter-highlight-color: var(--vscode-focusBorder);
 
         .splitter__grip {
             height: 100%;
-            width: 1px;
+            width: $splitter-resize-size;
             left: 0;
             right: 0;
         }
+        &.splitter--compact {
+            .splitter__grip {
+                width: $splitter-resize-compact-size;
+            }
+        }
+        &.splitter--toggle {
+            .splitter__grip {
+                width: 100%;
+                svg {
+                    transform: rotate(180deg);
+                }
+            }
+        }
 
-        &:after {
+        &.splitter--rezize:after {
             width: 4px;
         }
     }
@@ -66,30 +74,49 @@ $splitter-highlight-color: var(--vscode-focusBorder);
 
         .splitter__grip {
             width: 100%;
-            height: 1px;
+            height: $splitter-resize-size;
             top: 0;
             bottom: 0;
         }
+        &.splitter--compact {
+            .splitter__grip {
+                height: $splitter-resize-compact-size;
+            }
+        }
+        &.splitter--toggle {
+            .splitter__grip {
+                height: 100%;
+                svg {
+                    transform: rotate(270deg);
+                }
+            }
+        }
 
-        &:after {
+        &.splitter--rezize:after {
             height: 4px;
         }
     }
 
     &--toggle {
         cursor: pointer;
+        background-color: $splitter-grip-color;
 
         .splitter__grip {
+            width: 100%;
             position: absolute;
             height: 16px;
             top: 50%;
             transform: translateY(-50%);
             left: 0;
             right: 0;
+            z-index: 0;
         }
     }
 
     &--resize {
+        .splitter__grip {
+            background-color: $splitter-grip-color;
+        }
         &.splitter--horizontal {
             cursor: col-resize;
         }
@@ -102,34 +129,28 @@ $splitter-highlight-color: var(--vscode-focusBorder);
     & + .section {
         .section__header__title,
         .section__body {
-            padding-left: calc($splitter-size / 2);
-        }
-    }
-
-    &--toggle + .section {
-        .section__header__title,
-        .section__body {
-            padding: 0;
-            margin: 0;
+            padding-left: calc($splitter-toggle-size / 2);
         }
     }
 
     // Splitter focus style
     &:hover {
-        &:after {
-            // animation: fadeInAnimation 0.07s ease-in 0.3s forwards;
-            background-color: $splitter-highlight-color;
-            transition: background-color 0.07s ease-in 0.3s;
+        &.splitter--resize {
+            &:after {
+                // animation: fadeInAnimation 0.07s ease-in 0.3s forwards;
+                background-color: $splitter-highlight-color;
+                transition: background-color 0.07s ease-in 0.3s;
+            }
         }
-    }
-    &--horizontal {
-    }
-
-    &--vertical {
+        &.splitter--toggle {
+            background-color: $splitter-highlight-color;
+            svg path {
+                fill: var(--vscode-button-foreground);
+            }
+        }
     }
 
     // Hide with animation for delay
-    // ToDo???
     &--hidden {
         animation: 0.5s delayedFadeOut;
         animation-fill-mode: forwards;
@@ -171,8 +192,22 @@ $splitter-highlight-color: var(--vscode-focusBorder);
 
 .ms-Fabric--isFocusVisible .splitter {
     &:focus {
-        &:after {
-            background-color: $splitter-highlight-color;
+        &.splitter--resize {
+            &:after {
+                background-color: $splitter-highlight-color;
+            }
+        }
+        &.splitter--toggle {
+            &.splitter--horizontal {
+                &:after {
+                    @include splitter-border($splitter-focus-border, true);
+                }
+            }
+            &.splitter--vertical {
+                &:after {
+                    @include splitter-border($splitter-focus-border, false);
+                }
+            }
         }
     }
 }
