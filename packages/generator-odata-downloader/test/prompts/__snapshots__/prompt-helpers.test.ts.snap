@@ -162,14 +162,18 @@ exports[`Test createEntityChoices should create entity set choices based on app 
   ],
   "entitySetsFlat": {
     "_Agency": "TravelAgency",
-    "_BookSupplement": "BookingSupplement",
+    "_Agency/_Country": "Country",
     "_Booking": "Booking",
-    "_Carrier": "Airline",
-    "_Country": "Country",
+    "_Booking/_BookSupplement": "BookingSupplement",
+    "_Booking/_BookSupplement/_Product": "Supplement",
+    "_Booking/_BookSupplement/_SupplementText": "SupplementText",
+    "_Booking/_Carrier": "Airline",
+    "_Booking/_Carrier/_Currency": "Currency",
+    "_Booking/_Customer": "Passenger",
+    "_Booking/_Customer/_Country": "Country",
     "_Currency": "Currency",
     "_Customer": "Passenger",
-    "_Product": "Supplement",
-    "_SupplementText": "SupplementText",
+    "_Customer/_Country": "Country",
   },
 }
 `;

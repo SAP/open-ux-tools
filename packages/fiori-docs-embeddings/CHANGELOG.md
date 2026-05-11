@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.17
+
+### Patch Changes
+
+- e4a2488: feat - docs - how to add extensions to odata v4 fiori elements
+
 ## 0.4.16
 
 ### Patch Changes

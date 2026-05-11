@@ -232,7 +232,8 @@ describe('CF Writer', () => {
     describe('setupCfPreview', () => {
         const mockLogger = {
             info: jest.fn(),
-            error: jest.fn()
+            error: jest.fn(),
+            log: jest.fn()
         } as unknown as ToolsLogger;
 
         const mockCfConfig: CfConfig = {
@@ -287,6 +288,8 @@ describe('CF Writer', () => {
             expect(mockGetBaseAppId).toHaveBeenCalledWith(projectDir);
             expect(mockGetCfUi5AppInfo).toHaveBeenCalledWith('test-app-id', ['host-123'], mockCfConfig, mockLogger);
             expect(mockRunBuild).toHaveBeenCalledWith(projectDir, { ADP_BUILDER_MODE: 'preview' });
+            expect(mockLogger.log).toHaveBeenCalledWith('Starting build');
+            expect(mockLogger.log).toHaveBeenCalledWith('Build completed');
         });
 
         test('should throw error when serviceInstanceName not found', async () => {
