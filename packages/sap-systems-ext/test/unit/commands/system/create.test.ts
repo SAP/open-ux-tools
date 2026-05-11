@@ -152,4 +152,52 @@ describe('Test the createNew system command handler', () => {
         // Verify that undefined was passed (empty form)
         expect(capturedBackendSystem).toBeUndefined();
     });
+
+    it('should dispose existing NEW_SYSTEM panel before creating a new one (bug #38106 fix)', async () => {
+        const panelManager = new PanelManager<SystemPanel>();
+        const deleteAndDisposeSpy = jest.spyOn(panelManager, 'deleteAndDispose');
+        const hasSpy = jest.spyOn(panelManager, 'has');
+
+        // Simulate that a panel already exists (e.g. left over from ADT pre-population)
+        hasSpy.mockReturnValue(true);
+
+        const mockContext = {
+            panelManager,
+            extContext: {
+                vscodeExtContext: {
+                    extensionPath: '/mock/extension/path'
+                }
+            }
+        } as SystemCommandContext;
+
+        const handler = createNewSystemCommandHandler(mockContext);
+        await handler();
+
+        // Must dispose the old panel so the new one starts with empty state
+        expect(hasSpy).toHaveBeenCalledWith('__NEW_SYSTEM_PANEL__');
+        expect(deleteAndDisposeSpy).toHaveBeenCalledWith('__NEW_SYSTEM_PANEL__');
+    });
+
+    it('should not dispose panel when none exists', async () => {
+        const panelManager = new PanelManager<SystemPanel>();
+        const deleteAndDisposeSpy = jest.spyOn(panelManager, 'deleteAndDispose');
+        const hasSpy = jest.spyOn(panelManager, 'has');
+
+        hasSpy.mockReturnValue(false);
+
+        const mockContext = {
+            panelManager,
+            extContext: {
+                vscodeExtContext: {
+                    extensionPath: '/mock/extension/path'
+                }
+            }
+        } as SystemCommandContext;
+
+        const handler = createNewSystemCommandHandler(mockContext);
+        await handler();
+
+        expect(hasSpy).toHaveBeenCalledWith('__NEW_SYSTEM_PANEL__');
+        expect(deleteAndDisposeSpy).not.toHaveBeenCalled();
+    });
 });

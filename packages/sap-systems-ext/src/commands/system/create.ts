@@ -38,6 +38,11 @@ export const createSystemCommandHandler =
  * @returns - a command handler function
  */
 export const createNewSystemCommandHandler = (context: SystemCommandContext) => async (): Promise<void> => {
+    // Always dispose any existing panel to ensure a fresh empty form (not pre-populated with previous system data)
+    if (context.panelManager.has(NEW_SYSTEM_PANEL_KEY)) {
+        context.panelManager.deleteAndDispose(NEW_SYSTEM_PANEL_KEY);
+    }
+
     const panel = context.panelManager.getOrCreateNewPanel(NEW_SYSTEM_PANEL_KEY, () =>
         createNewPanel(context, undefined, NEW_SYSTEM_PANEL_KEY)
     );
