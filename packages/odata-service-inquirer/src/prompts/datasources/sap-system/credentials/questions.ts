@@ -72,8 +72,8 @@ export function getCredentialsPrompts<T extends Answers>(
                 mandatory: true,
                 applyDefaultWhenDirty: true // Reset when the system changes, this avoids automatic reauth with the existing creds if the user changes the system selection
             },
-            showOutputTabLink: 'validationMessageOverflow',
             guiType: 'login',
+            showOutputTabLink: 'validationMessageOverflow',
             name: passwordPromptName,
             message: t('prompts.systemPassword.message'),
             mask: '*',
