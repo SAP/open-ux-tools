@@ -69,6 +69,23 @@ Edit the config file for your OS:
 }
 ```
 
+### Cline
+
+Open the Cline extension settings and add the server under **MCP Servers**:
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
+      "command": "npx",
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
+    }
+  }
+}
+```
+
 ### Cursor
 
 Edit (or create) the MCP config file for your scope:
@@ -106,9 +123,9 @@ Edit `~/.codeium/windsurf/mcp_config.json`:
 }
 ```
 
-### Cline
+### Other clients
 
-Open the Cline extension settings and add the server under **MCP Servers**:
+For any other MCP client, use the following `npx`-based configuration:
 
 ```json
 {
@@ -125,7 +142,7 @@ Open the Cline extension settings and add the server under **MCP Servers**:
 
 ### Global npm install (any client)
 
-If you prefer not to use `npx`, install the package globally first:
+If you prefer **not** to use `npx`, install the package globally first:
 
 ```bash
 npm install -g @sap-ux/fiori-mcp-server
@@ -150,8 +167,8 @@ Then use `fiori-mcp` as the command (no `args` needed):
 The following rules help guide the AI model to use the server correctly. Add them to your system prompt or rules file:
 
 - **Claude Code / Claude Desktop:** `AGENTS.md` or `CLAUDE.md` in your project root
-- **Cursor:** `.cursorrules` in your project root
 - **Cline:** Custom Instructions in the Cline extension settings
+- **Cursor:** `.cursorrules` in your project root
 - **Windsurf:** Global Rules or project-level `.windsurfrules`
 
 ```markdown
