@@ -1,5 +1,11 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.189
+
+### Patch Changes
+
+- 3ca8866: fix: change confirm replace additional message based on environment
+
 ## 0.4.188
 
 ### Patch Changes
