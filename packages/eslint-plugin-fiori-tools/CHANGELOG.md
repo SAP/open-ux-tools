@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.0.5
+
+### Patch Changes
+
+- c520b5e: Add cds annotation code examples to rules documentation.
+
 ## 10.0.4
 
 ### Patch Changes
