@@ -62,12 +62,19 @@ describe('<Splitter />', () => {
                     vertical={orientation}
                 />
             );
+            // Check if there no 'splitter--active' before resizing
+            expect(resizeWrapper.find('.splitter--active').length).toEqual(0);
             resizeWrapper
                 .find('.splitter')
                 .simulate('mousedown', { clientX: mouseStartCoordinate, button: 0, clientY: mouseStartCoordinate });
             simulateMouseEvent('mousemove', mouseMoveCoordinate1, mouseMoveCoordinate1);
             simulateMouseEvent('mousemove', mouseMoveCoordinate2, mouseMoveCoordinate2);
+            // Check if there is 'splitter--active' during resize
+            expect(resizeWrapper.find('.splitter--active').length).toEqual(1);
             simulateMouseEvent('mouseup', mouseMoveCoordinate2, mouseMoveCoordinate2);
+            // Check if there no 'splitter--active' after resizing
+            resizeWrapper.update();
+            expect(resizeWrapper.find('.splitter--active').length).toEqual(0);
             // Another 'simulateMouseEvent' with 'mousemove' to detect is removeEventListener called
             simulateMouseEvent('mousemove', 300, 300);
             expect(onResizeStart).toHaveBeenCalledTimes(1);

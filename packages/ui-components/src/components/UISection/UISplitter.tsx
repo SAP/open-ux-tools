@@ -157,13 +157,11 @@ export class UISplitter extends React.Component<UISplitterProps, UISplitterState
             });
         } else if (!start && this.props.onResizeEnd) {
             this.props.onResizeEnd();
-            // setTimeout(() => {
-            window.requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
                 this.setState({
                     active: false
                 });
             });
-            // }, 0);
         }
     }
 
