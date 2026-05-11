@@ -96,6 +96,18 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             settings: {}
         },
         {
+            name: 'basic_with_tests_virtual_endpoints',
+            config: {
+                ...commonConfig,
+                service: {
+                    ...commonConfig.service,
+                    metadata: '<metadata />'
+                },
+                appOptions: { addTests: true, useVirtualPreviewEndpoints: true }
+            },
+            settings: {}
+        },
+        {
             name: 'basic_with_toolsId',
             config: {
                 ...commonConfig,

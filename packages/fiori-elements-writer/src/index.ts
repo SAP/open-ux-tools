@@ -270,13 +270,9 @@ async function generate<T extends {}>(
 
     // OPA tests must be generated last since they depend on other parts of the app, such as annotations, being in place
     if (addTest) {
-        const opaConfig = getOpaConfig(
-            {
-                useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
-            },
-            feApp.app.flpAppId
-        );
-        await generateOPAFiles(basePath, opaConfig, data.service.metadata, fs, log);
+        const useVirtualPreviewEndpoints = feApp.appOptions?.useVirtualPreviewEndpoints;
+        const opaConfig = getOpaConfig({ useVirtualPreviewEndpoints }, feApp.app.flpAppId);
+        await generateOPAFiles(basePath, { ...opaConfig, useVirtualPreviewEndpoints }, data.service.metadata, fs, log);
     }
     return fs;
 }

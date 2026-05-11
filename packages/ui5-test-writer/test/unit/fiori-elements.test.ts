@@ -322,6 +322,17 @@ describe('ui5-test-writer', () => {
             expect(firstJourneyContent).toContain('iCheckFilterField');
         });
 
+        it('skips testsuite files when useVirtualPreviewEndpoints is enabled', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, { useVirtualPreviewEndpoints: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const testFiles = Object.keys(dumped);
+            expect(testFiles.some((f) => f.includes('testsuite.qunit'))).toBe(false);
+            expect(testFiles.some((f) => f.includes('opaTests.qunit'))).toBe(false);
+        });
+
         it('generates column tests for LROPv4 app', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
             const projectDir = prepareTestFiles('LROPv4');

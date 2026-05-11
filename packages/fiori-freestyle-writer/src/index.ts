@@ -11,6 +11,7 @@ import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-gener
 import { getTemplateVersionPath, processDestinationPath } from './utils';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import { generateOPATests } from './generateOPATests';
+import { addVirtualOPATestConfig } from '@sap-ux/ui5-test-writer';
 import type { Logger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import type { Editor } from 'mem-fs-editor';
@@ -185,6 +186,22 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
         ui5LocalConfig.addFioriToolsProxyMiddleware({});
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    }
+
+    if (addTests && ffApp.appOptions?.useVirtualPreviewEndpoints) {
+        await addVirtualOPATestConfig(
+            basePath,
+            [
+                { framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' },
+                { framework: 'Testsuite' },
+                {
+                    framework: 'QUnit',
+                    path: '/test/unit/unitTests.qunit.html',
+                    pattern: '/test/unit/controller/*.{js,ts}'
+                }
+            ],
+            fs
+        );
     }
 
     if (ffApp.service?.capService) {
