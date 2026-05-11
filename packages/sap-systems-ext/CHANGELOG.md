@@ -1,5 +1,19 @@
 # sap-ux-sap-systems-ext
 
+## 0.5.1
+
+### Patch Changes
+
+- 9661c7b: adds new internal create command to avoid collisions with other registered commands
+
+## 0.5.0
+
+### Minor Changes
+
+- 16d6382: feat(sap-systems-ext): pre-populate connection manager panel when creating a new system (#37892)
+
+    When opening the connection manager to create a new system, the panel can now be pre-populated with system details such as URL, client and system type.
+
 ## 0.4.5
 
 ### Patch Changes

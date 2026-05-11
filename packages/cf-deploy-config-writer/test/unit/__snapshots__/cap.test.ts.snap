@@ -280,7 +280,7 @@ builder:
     \\"cds\\": {},
     \\"devDependencies\\": {
         \\"rimraf\\": \\"^5.0.5\\",
-        \\"mbt\\": \\"^1.2.29\\"
+        \\"mbt\\": \\"^1.2.49\\"
     },
     \\"scripts\\": {
         \\"undeploy\\": \\"cf undeploy cappapp --delete-services --delete-service-keys --delete-service-brokers\\",
@@ -979,7 +979,7 @@ Object {
     \\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
     \\"ui5-task-zipper\\": \\"^3.1.3\\",
     \\"rimraf\\": \\"^6.0.1\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\",
@@ -1193,7 +1193,7 @@ builder:
     \\"@cap-js/sqlite\\": \\"^1\\",
     \\"@sap/cds-dk\\": \\"^8\\",
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"cds-serve\\",
@@ -1236,7 +1236,7 @@ Object {
     \\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
     \\"ui5-task-zipper\\": \\"^3.1.3\\",
     \\"rimraf\\": \\"^6.0.1\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\",
@@ -1325,7 +1325,7 @@ builder:
     \\"@cap-js/sqlite\\": \\"^1\\",
     \\"@sap/cds-dk\\": \\"^8\\",
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"cds-serve\\",
@@ -1368,7 +1368,7 @@ Object {
     \\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
     \\"ui5-task-zipper\\": \\"^3.1.3\\",
     \\"rimraf\\": \\"^6.0.1\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\",
@@ -1583,7 +1583,7 @@ builder:
     \\"@cap-js/sqlite\\": \\"^1\\",
     \\"@sap/cds-dk\\": \\"^8\\",
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"cds-serve\\",
