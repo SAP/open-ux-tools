@@ -1,5 +1,14 @@
 # @sap-ux/odata-annotation-core
 
+## 0.2.18
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/text-document-utils@0.3.4
+    - @sap-ux/odata-annotation-core-types@0.5.8
+
 ## 0.2.17
 
 ### Patch Changes

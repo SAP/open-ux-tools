@@ -1,5 +1,12 @@
 # @sap-ux/i18n
 
+## 0.3.11
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/text-document-utils@0.3.4
+
 ## 0.3.10
 
 ### Patch Changes

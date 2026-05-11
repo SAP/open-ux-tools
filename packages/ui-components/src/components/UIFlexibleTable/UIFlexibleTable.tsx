@@ -367,29 +367,22 @@ function restoreFocus(
     currentFocusedRowIndex: number | undefined,
     tableId: string
 ): void {
-    if (currentFocusedRowAction) {
-        let actionElement = document.getElementById(
-            getRowActionButtonId(tableId, currentFocusedRowIndex, currentFocusedRowAction)
-        );
-        if (actionElement) {
-            if (!actionElement.hasAttribute('disabled')) {
-                actionElement.focus();
-            } else {
-                if (currentFocusedRowAction === 'up') {
-                    actionElement = document.getElementById(
-                        getRowActionButtonId(tableId, currentFocusedRowIndex, 'down')
-                    );
-                } else {
-                    actionElement = document.getElementById(
-                        getRowActionButtonId(tableId, currentFocusedRowIndex, 'up')
-                    );
-                }
-                if (actionElement) {
-                    actionElement.focus();
-                }
-            }
-        }
+    if (!currentFocusedRowAction) {
+        return;
     }
+    let actionElement = document.getElementById(
+        getRowActionButtonId(tableId, currentFocusedRowIndex, currentFocusedRowAction)
+    );
+    if (!actionElement) {
+        return;
+    }
+    if (!actionElement.hasAttribute('disabled')) {
+        actionElement.focus();
+        return;
+    }
+    const fallbackAction = currentFocusedRowAction === 'up' ? 'down' : 'up';
+    actionElement = document.getElementById(getRowActionButtonId(tableId, currentFocusedRowIndex, fallbackAction));
+    actionElement?.focus();
 }
 
 /**

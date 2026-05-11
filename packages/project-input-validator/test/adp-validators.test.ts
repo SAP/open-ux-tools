@@ -103,21 +103,40 @@ describe('project input validators', () => {
             expect(result).toBe(t('adp.projectNameValidationErrorInt'));
         });
 
-        it('returns error if project name is duplicated and CF environment', () => {
-            existsSyncMock.mockReturnValue(true);
-            const result = validateProjectName('validname', path, false, true);
-            expect(result).toBe(t(t('adp.duplicatedProjectName')));
-        });
-
         it('delegates to external validation if customer base', () => {
             const result = validateProjectName('validname', path, true, false);
             expect(result).toBe(true);
         });
 
-        it('returns true if project name is not duplicated and CF environment', () => {
-            existsSyncMock.mockReturnValue(false);
-            const result = validateProjectName('validname', path, true, true);
-            expect(result).toBe(true);
+        describe('CF environment', () => {
+            it('returns format error if internal name has no dot segment', () => {
+                const result = validateProjectName('invalidname', path, false, true);
+                expect(result).toBe(t('adp.projectNameValidationErrorInt'));
+            });
+
+            it('returns true if internal name is valid and not duplicated', () => {
+                existsSyncMock.mockReturnValue(false);
+                const result = validateProjectName('internal.app', path, false, true);
+                expect(result).toBe(true);
+            });
+
+            it('returns duplicate error if internal name is valid but already exists', () => {
+                existsSyncMock.mockReturnValue(true);
+                const result = validateProjectName('internal.app', path, false, true);
+                expect(result).toBe(t('adp.duplicatedProjectName'));
+            });
+
+            it('returns true if customer base name is valid and not duplicated', () => {
+                existsSyncMock.mockReturnValue(false);
+                const result = validateProjectName('validname', path, true, true);
+                expect(result).toBe(true);
+            });
+
+            it('returns duplicate error if customer base name is valid but already exists', () => {
+                existsSyncMock.mockReturnValue(true);
+                const result = validateProjectName('validname', path, true, true);
+                expect(result).toBe(t('adp.duplicatedProjectName'));
+            });
         });
     });
 
