@@ -145,11 +145,8 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
      */
     async buildDialogData(): Promise<void> {
         try {
-            let isCustomColumnFragment = false;
-            if (this.options.type === 'tableColumn') {
-                await this.addFragmentListToModel();
-                isCustomColumnFragment = true;
-            }
+            const isCustomColumnFragment = this.options.type === 'tableColumn';
+            await this.addFragmentListToModel();
             this.model.setProperty('/isCustomColumnFragment', isCustomColumnFragment);
         } catch (e) {
             const error = getError(e);
