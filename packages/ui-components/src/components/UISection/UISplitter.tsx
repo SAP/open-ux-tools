@@ -282,7 +282,7 @@ export class UISplitter extends React.Component<UISplitterProps, UISplitterState
                 }
                 onClick={type === UISplitterType.Toggle ? (): void => this.toggleSplitter() : undefined}
                 className={this.getClassNames()}>
-                <div className="splitter__grip">{this.getIcon(type, splitterLayoutType)}</div>
+                <div className="splitter__grip">{this.getIcon(type)}</div>
             </div>
         );
     }
