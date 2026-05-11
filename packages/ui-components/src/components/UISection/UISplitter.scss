@@ -25,7 +25,7 @@ $splitter-highlight-color: var(--vscode-focusBorder);
         margin: auto;
     }
 
-    // Highligh hover and focus
+    // Highlight hover and focus
     &:after {
         content: '';
         top: 0;
@@ -62,7 +62,7 @@ $splitter-highlight-color: var(--vscode-focusBorder);
             }
         }
 
-        &.splitter--rezize:after {
+        &.splitter--resize:after {
             width: 4px;
         }
     }
@@ -92,7 +92,7 @@ $splitter-highlight-color: var(--vscode-focusBorder);
             }
         }
 
-        &.splitter--rezize:after {
+        &.splitter--resize:after {
             height: 4px;
         }
     }
