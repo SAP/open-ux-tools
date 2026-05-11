@@ -1,5 +1,12 @@
 # @sap-ux/create
 
+## 0.15.93
+
+### Patch Changes
+
+- Updated dependencies [3ca8866]
+    - @sap-ux/flp-config-inquirer@0.4.189
+
 ## 0.15.92
 
 ### Patch Changes
