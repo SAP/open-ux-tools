@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv2
+  name: testNameSpace.lropv2nonvirt
 type: application
 framework:
   name: SAPUI5
@@ -31,7 +31,7 @@ server:
           theme: sap_fiori_3
           path: test/flpSandbox.html
           intent:
-            object: testNameSpacelropv2
+            object: testNameSpacelropv2nonvirt
             action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
