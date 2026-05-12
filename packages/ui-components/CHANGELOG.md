@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.15
+
+### Patch Changes
+
+- 189ad98: UISections/UISplitter: Updated resize splitter UI and set `UISplitterLayoutType.Compact` as the default `splitterLayoutType`.
+
 ## 2.1.14
 
 ### Patch Changes

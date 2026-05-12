@@ -1,10 +1,10 @@
 ---
-name: add-visual-filter
+name: sap-fiori-add-visual-filter
 description: 'Add visual filters with charts to SAP Fiori Elements value help dialogs. Use for: displaying aggregated data in filter fields, adding bar/column/line/donut charts to value help, configuring Analytics.AggregatedProperty with sum/average/min/max, setting up @Aggregation.ApplySupported, configuring manifest.json for visual filters, implementing OData V4 aggregation in CAP projects, enhancing List Report filter bars with visual analytics.'
 argument-hint: 'field name to add visual filter to (e.g., "Category", "Status", "Region")'
 metadata:
-  author: fiori-tools
-  version: "0.0.1"
+  author: sap-fiori-tools
+  version: "0.0.3"
 ---
 
 # Add Visual Filter Bar to SAP Fiori Elements Application
@@ -383,14 +383,14 @@ annotate service.Products with {
    - Use consistent qualifier names across related annotations (e.g., `#visualFilter`)
    - Keep qualifier names synchronized between annotations and manifest
 
-4. **Performance:**
-   - Visual filters trigger additional queries for aggregated data
-   - Consider the performance impact on large datasets
-
-5. **Manifest Configuration:**
+4. **Manifest Configuration:**
    - Always use the full vocabulary path in manifest.json
    - Document the qualifier used to maintain consistency
    - Test after manifest changes by clearing cache
+
+5. **Performance:**
+   - Visual filters trigger additional queries for aggregated data
+   - Consider the performance impact on large datasets
 
 ## Related Annotations
 

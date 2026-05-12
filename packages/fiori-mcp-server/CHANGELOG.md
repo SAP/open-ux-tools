@@ -1,5 +1,24 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.56
+
+### Patch Changes
+
+- Updated dependencies [a5c05a8]
+    - @sap-ux/fiori-docs-embeddings@0.4.18
+
+## 0.6.55
+
+### Patch Changes
+
+- 2781f39: fix: add missing apache-arrow runtime dependency required by @lancedb/lancedb
+
+## 0.6.54
+
+### Patch Changes
+
+- 35f4b68: chore: update plugin.json manifest name to sap-fiori-mcp-server and fix author metadata
+
 ## 0.6.53
 
 ### Patch Changes

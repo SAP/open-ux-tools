@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 0.5.2
+
+### Patch Changes
+
+- ac6381f: remove default selected key for sap systems ext
+
+## 0.5.1
+
+### Patch Changes
+
+- 9661c7b: adds new internal create command to avoid collisions with other registered commands
+
 ## 0.5.0
 
 ### Minor Changes
