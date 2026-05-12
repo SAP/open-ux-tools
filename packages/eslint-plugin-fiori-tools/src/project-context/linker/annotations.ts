@@ -221,7 +221,9 @@ function getReferencedEntityType(
         contextPath = contextPath.slice(0, -1);
     }
     const referencedEntity = service.artifacts.metadataService.getMetadataElement(contextPath.slice(1));
-    return referencedEntity?.kind === 'EntityType' ? referencedEntity.name : referencedEntity?.structuredType;
+    return referencedEntity?.kind === 'EntityType' || referencedEntity?.kind === 'entity'
+        ? referencedEntity.name
+        : referencedEntity?.structuredType;
 }
 
 /**
