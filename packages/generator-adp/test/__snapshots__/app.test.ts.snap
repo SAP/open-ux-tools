@@ -422,7 +422,7 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 		"@ui5/task-adaptation": "^1.6.3",
 		"bestzip": "^2.2.1",
 		"rimraf": "^6.1.2",
-		"mbt": "^1.2.34"
+		"mbt": "^1.2.49"
 	}
 }
 "

@@ -1,5 +1,19 @@
 # @sap-ux/axios-extension
 
+## 1.25.35
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+
+## 1.25.34
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
 ## 1.25.33
 
 ### Patch Changes
