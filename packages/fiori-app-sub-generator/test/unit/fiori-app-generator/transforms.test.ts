@@ -1,5 +1,5 @@
 import type { ServiceProvider } from '@sap-ux/axios-extension';
-import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
+import { DatasourceType, OdataVersion, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import type { BackendSystem } from '@sap-ux/store';
 import { AuthenticationType } from '@sap-ux/store';
 import { transformState } from '../../../src/fiori-app-generator/transforms';
@@ -386,6 +386,34 @@ describe('Test transform state', () => {
                 localVersion: undefined,
                 minUI5Version: '1.84.0',
                 frameworkUrl: 'https://ui5.sap.com'
+            }
+        });
+    });
+
+    test('Should resolve minUI5Version for OdataVersion.v401 the same as v4', async () => {
+        const state: State = {
+            project: {
+                name: 'TestProject1',
+                description: 'An SAP Fiori application.',
+                title: 'App Title',
+                skipAnnotations: false,
+                namespace: 'namespace1',
+                targetFolder: ''
+            } as Project,
+            service: { ...baseState.service, version: OdataVersion.v401 },
+            floorplan: FloorplanFE.FE_LROP,
+            entityRelatedConfig: {
+                mainEntity: {
+                    entitySetName: 'SEPMRA_C_PD_Product',
+                    entitySetType: 'SEPMRA_C_PD_ProductType'
+                }
+            }
+        };
+        const result = await transformState<FioriElementsApp<unknown>>(state);
+        expect(result).toMatchObject({
+            ui5: {
+                version: undefined,
+                minUI5Version: '1.84.0'
             }
         });
     });
