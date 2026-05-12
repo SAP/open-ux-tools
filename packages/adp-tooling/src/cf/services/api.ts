@@ -171,7 +171,7 @@ export async function getCfUi5AppInfo(
         appId
     )}&${appHostIdParams}`;
 
-    logger?.log(`Fetching ui5AppInfo.json from FDC: ${url}`);
+    logger?.log(`Fetching ui5AppInfo.json`);
 
     try {
         const response = await axios.get(url, requestArguments.options);

@@ -1,5 +1,17 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.1.1
+
+### Patch Changes
+
+- 18e298b: Package is self contained, no external dependencies required.
+
+## 0.1.0
+
+### Minor Changes
+
+- 9244c23: Adds recursive hierarchy support
+
 ## 0.0.10
 
 ### Patch Changes

@@ -189,9 +189,9 @@ export async function resetAppState(container: typeof sap.ushell.Container): Pro
 export async function registerComponentDependencyPaths(appUrls: string[], urlParams: URLSearchParams): Promise<void> {
     const libs = await getManifestLibs(appUrls);
     if (libs && libs.length > 0) {
-        let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
+        let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + encodeURIComponent(libs);
         const sapClient = urlParams.get('sap-client');
-        if (sapClient?.length === 3) {
+        if (sapClient?.length === 3 && /^\d+$/.test(sapClient)) {
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);

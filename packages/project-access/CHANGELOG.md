@@ -1,5 +1,24 @@
 # @sap-ux/project-access
 
+## 1.36.3
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-config@0.30.4
+
+## 1.36.2
+
+### Patch Changes
+
+- @sap-ux/i18n@0.3.11
+
+## 1.36.1
+
+### Patch Changes
+
+- 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
+
 ## 1.36.0
 
 ### Minor Changes
