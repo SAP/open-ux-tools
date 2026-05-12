@@ -14,8 +14,10 @@ jobs:
     create-changeset:
         name: Create Dependency Changeset
         runs-on: ubuntu-latest
-        # All Renovate PRs EXCEPT @ui5/manifest (which has custom handling)
+        # All Renovate PRs EXCEPT @ui5/manifest (which has custom handling).
+        # !head.repo.fork guards against pull_request_target pwn-request attacks.
         if: |
+            !github.event.pull_request.head.repo.fork &&
             github.actor == 'renovate[bot]' &&
             !contains(github.event.pull_request.title, '@ui5/manifest')
         steps:
@@ -37,7 +39,9 @@ jobs:
     update-manifest-fixtures:
         name: Update @ui5/manifest Fixtures & Changeset
         runs-on: ubuntu-latest
+        # !head.repo.fork guards against pull_request_target pwn-request attacks.
         if: |
+            !github.event.pull_request.head.repo.fork &&
             github.actor == 'renovate[bot]' &&
             contains(github.event.pull_request.title, '@ui5/manifest')
         steps:
@@ -58,7 +62,7 @@ jobs:
                   cache: 'pnpm'
 
             - name: Install pnpm modules
-              run: pnpm install
+              run: pnpm install --frozen-lockfile --ignore-scripts
 
             - name: Build project
               run: pnpm build
