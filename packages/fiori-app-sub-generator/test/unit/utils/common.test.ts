@@ -125,6 +125,11 @@ describe('Test utils', () => {
         expect(minVerson).toBe('1.84.0');
     });
 
+    test('getMinSupportedUI5Version - LROP v401', () => {
+        const minVerson = getMinSupportedUI5Version(OdataVersion.v401, FloorplanFE.FE_LROP);
+        expect(minVerson).toBe('1.84.0');
+    });
+
     test('getMinSupportedUI5Version - form entry', () => {
         const minVerson = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FEOP);
         expect(minVerson).toBe('1.90.0');
@@ -371,6 +376,43 @@ describe('Test utils', () => {
                 projectRoot: projectPath,
                 debugOptions: expectedDebugOptions,
                 startFile: 'test/flp.html'
+            };
+            expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
+            expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
+        });
+
+        it('should generate correct launch config for OData v401', async () => {
+            isAppStudioMock.mockReturnValue(false);
+            await generateLaunchConfig(
+                {
+                    targetFolder: mockProject.targetFolder,
+                    projectName: mockProject.name,
+                    flpAppId: mockProject.flpAppId,
+                    sapClientParam: buildSapClientParam('001'),
+                    odataVersion: OdataVersion.v401,
+                    datasourceType: 'odataServiceUrl' as DatasourceType
+                },
+                editor,
+                mockVsCode,
+                {} as Logger
+            );
+
+            const expectedDebugOptions: DebugOptions = {
+                vscode: mockVsCode,
+                addStartCmd: true,
+                sapClientParam: 'sap-client=001',
+                flpAppId: mockProject.flpAppId,
+                flpSandboxAvailable: true,
+                isAppStudio: false,
+                odataVersion: '4.0',
+                writeToAppOnly: false
+            };
+
+            const expectedFioriOptions: FioriOptions = {
+                name: mockProject.name,
+                projectRoot: projectPath,
+                debugOptions: expectedDebugOptions,
+                startFile: undefined
             };
             expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
             expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
