@@ -41,14 +41,17 @@ export function parseOdataVersion(metadata: string): {
 } {
     try {
         const convertedMetadata = convert(parse(metadata));
-        const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
+        const rawVersion = convertedMetadata?.version;
 
-        if (Number.isNaN(parsedOdataVersion)) {
+        if (!rawVersion || Number.isNaN(Number.parseInt(rawVersion, 10))) {
             LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
             throw new Error(t('errors.unparseableOdataVersion'));
         }
-        // Note that odata version > `4` e.g. `4.1`, is not currently supported by `@sap-ux/edmx-converter`
-        const odataVersion = parsedOdataVersion === 4 ? OdataVersion.v4 : OdataVersion.v2;
+        const odataVersion = rawVersion.startsWith('4.01')
+            ? OdataVersion.v401
+            : rawVersion.startsWith('4')
+              ? OdataVersion.v4
+              : OdataVersion.v2;
         return {
             odataVersion,
             convertedMetadata

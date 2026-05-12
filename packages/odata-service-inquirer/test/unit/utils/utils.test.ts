@@ -19,6 +19,10 @@ describe('Utils', () => {
         odataVersion = parseOdataVersion(metadata);
         expect(odataVersion.odataVersion).toBe(OdataVersion.v4);
 
+        metadata = await readFile(join(__dirname, 'fixtures/metadata_v401.xml'), 'utf8');
+        odataVersion = parseOdataVersion(metadata);
+        expect(odataVersion.odataVersion).toBe(OdataVersion.v401);
+
         metadata = await readFile(join(__dirname, 'fixtures/invalid_metadata.xml'), 'utf8');
         expect(() => parseOdataVersion(metadata)).toThrow('The service metadata is invalid.');
     });

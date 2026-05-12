@@ -9,7 +9,8 @@ export interface ExternalServiceCollectionOptions {
 
 export enum OdataVersion {
     v2 = '2',
-    v4 = '4'
+    v4 = '4',
+    v401 = '4.01'
 }
 
 export interface NamespaceAlias {

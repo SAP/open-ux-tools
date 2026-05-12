@@ -4,6 +4,7 @@ import { t } from '../i18n';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { DirName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
 import type { DataSources, EdmxAnnotationsInfo, OdataService } from '../types';
+import { OdataVersion } from '../types';
 import semVer from 'semver';
 
 interface DataSourceUpdateSettings {
@@ -62,9 +63,11 @@ function enhanceManifestDatasources(
     if (serviceMetadata) {
         settings['localUri'] = `localService/${serviceName}/metadata.xml`;
     }
-    if (serviceVersion === '4') {
+    if (serviceVersion === OdataVersion.v401) {
         settings['odataVersion'] = minimumUi5Version && semVer.satisfies(minimumUi5Version, '>=1.144') ? '4.01' : '4.0';
-    } else if (serviceVersion === '2') {
+    } else if (serviceVersion === OdataVersion.v4) {
+        settings['odataVersion'] = '4.0';
+    } else if (serviceVersion === OdataVersion.v2) {
         settings['odataVersion'] = '2.0';
     }
 
@@ -96,7 +99,7 @@ function enhanceManifestModels(
 ): void {
     const models = manifest?.['sap.ui5']?.models ?? {};
     let modelSettings: ManifestNamespace.Ui5Setting = {};
-    if (serviceVersion === '4') {
+    if (serviceVersion === OdataVersion.v4 || serviceVersion === OdataVersion.v401) {
         if (includeSynchronizationMode) {
             modelSettings['synchronizationMode'] = 'None';
         }

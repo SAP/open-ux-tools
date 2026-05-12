@@ -32,7 +32,7 @@ describe('manifest', () => {
             ['1.105.0', 'None'],
             [undefined, undefined],
             [['1.120.10', '2.0.0'], undefined],
-            ['1.144.0', undefined, '4.01']
+            ['1.144.0', undefined, '4.0']
         ])(
             'Ensure synchronizationMode is correctly set for minUI5Version %s',
             async (minUI5Version, syncMode, expectedOdataVersion = '4.0') => {
@@ -62,6 +62,42 @@ describe('manifest', () => {
                 await updateManifest('./', service, fs);
                 const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
                 expect(manifestJson['sap.ui5']?.models?.['amodel'].settings?.['synchronizationMode']).toEqual(syncMode);
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual(
+                    expectedOdataVersion
+                );
+            }
+        );
+
+        test.each([
+            ['1.144.0', '4.01'],
+            ['1.150.0', '4.01'],
+            ['1.143.0', '4.0'],
+            [undefined, '4.0']
+        ])(
+            'Ensure odataVersion 4.01 is written only when service is v401 and minUI5Version %s >= 1.144',
+            async (minUI5Version, expectedOdataVersion) => {
+                const testManifest = {
+                    'sap.app': {
+                        id: 'test.update.manifest'
+                    },
+                    'sap.ui5': {
+                        dependencies: {
+                            minUI5Version: minUI5Version
+                        }
+                    }
+                };
+
+                const service: OdataService = {
+                    version: OdataVersion.v401,
+                    client: '123',
+                    model: 'amodel',
+                    name: 'aname',
+                    path: '/a/path'
+                };
+
+                fs.writeJSON('./webapp/manifest.json', testManifest);
+                await updateManifest('./', service, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
                 expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual(
                     expectedOdataVersion
                 );
