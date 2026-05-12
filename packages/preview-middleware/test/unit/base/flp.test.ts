@@ -1989,19 +1989,18 @@ describe('initAdp', () => {
     });
 
     test('initAdp registers lrep flex data filter when serviceProvider is available', async () => {
+        const lrepResponseBody = JSON.stringify({
+            changes: [
+                { fileName: 'localChange', changeType: 'addXML' },
+                { fileName: 'deployedOnly', changeType: 'propertyChange' }
+            ],
+            modules: {
+                'ns/app/changes/fragments/Local.fragment.xml': '<deployed/>',
+                'ns/app/Component.js': 'base-component'
+            }
+        });
         const mockProvider = {
-            get: jest.fn().mockResolvedValue(
-                JSON.stringify({
-                    changes: [
-                        { fileName: 'localChange', changeType: 'addXML' },
-                        { fileName: 'deployedOnly', changeType: 'propertyChange' }
-                    ],
-                    modules: {
-                        'ns/app/changes/fragments/Local.fragment.xml': '<deployed/>',
-                        'ns/app/Component.js': 'base-component'
-                    }
-                })
-            )
+            get: jest.fn().mockResolvedValue({ data: lrepResponseBody })
         };
         jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
             return {

@@ -118,7 +118,7 @@ export class AdpPreview {
     }
 
     /**
-     * @returns {AdaptationProjectType | undefined} The project type.
+     * @returns The project type.
      */
     get projectType(): AdaptationProjectType | undefined {
         return this.projectTypeValue;

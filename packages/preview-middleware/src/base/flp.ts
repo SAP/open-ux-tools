@@ -70,7 +70,7 @@ import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -1275,32 +1275,51 @@ export class FlpSandbox {
             return;
         }
 
-        const lrepFlexDataPath = '/sap/bc/lrep/flex/data/';
+        const lrepFlexDataPath = '/sap/bc/lrep/flex/data/' as const;
         this.router.get(`${lrepFlexDataPath}*`, async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                const localModulePaths = await readLocalModulePaths(this.project, this.logger);
-                if (localModulePaths.size === 0) {
-                    next();
-                    return;
-                }
-
-                const backendPath = req.url;;
-                const response = await provider.get(backendPath);
-                const responseData = typeof response === 'string' ? JSON.parse(response) : response;
-
-                const filtered = stripLocalModulesFromLrepResponse(
-                    responseData as Record<string, unknown>,
-                    localModulePaths,
-                    this.logger
-                );
-
-                res.status(200).json(filtered);
-            } catch (error) {
-                this.logger.warn(`Failed to filter LREP flex data, falling back to unfiltered response: ${error}`);
-                next();
-            }
+            await this.lrepFlexDataFilterHandler(req, res, next, provider);
         });
         this.logger.debug('Registered LREP flex data filter for local workspace priority');
+    }
+
+    /**
+     * Handler for LREP flex data requests. Strips inlined modules that exist locally
+     * so that UI5 fetches them via HTTP from the local workspace instead.
+     *
+     * @param req the request
+     * @param res the response
+     * @param next the next middleware
+     * @param provider the ABAP service provider for backend calls
+     */
+    private async lrepFlexDataFilterHandler(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+        provider: AbapServiceProvider
+    ): Promise<void> {
+        try {
+            const localModulePaths = await readLocalModulePaths(this.project, this.logger);
+            if (localModulePaths.size === 0) {
+                next();
+                return;
+            }
+
+            const response = await provider.get(req.url);
+            const responseData = JSON.parse(response.data as string);
+
+            const filtered = stripLocalModulesFromLrepResponse(
+                responseData as Record<string, unknown>,
+                localModulePaths,
+                this.logger
+            );
+
+            res.status(200).json(filtered);
+        } catch (error) {
+            this.logger.warn(`Failed to filter LREP flex data, falling back to unfiltered response: ${error}`);
+            // Fall through to the next middleware (e.g. backend-proxy-middleware)
+            // so that preview remains functional even if filtering fails.
+            next();
+        }
     }
 
     /**

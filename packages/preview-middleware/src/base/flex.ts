@@ -57,6 +57,8 @@ export async function readLocalModulePaths(project: ReaderCollection, logger: Lo
     const moduleFiles = await project.byGlob('/**/changes/{fragments/**,coding/**}');
     for (const file of moduleFiles) {
         const filePath = file.getPath();
+        // lastIndexOf ensures we anchor on the flex /changes/ segment even if
+        // the virtual path contains an earlier /changes/ component (e.g. a project root named "changes")
         modulePaths.add(filePath.substring(filePath.lastIndexOf('/changes/') + '/changes/'.length));
     }
 
@@ -94,6 +96,7 @@ export function stripLocalModulesFromLrepResponse(
 
     const originalModules = responseData.modules as Record<string, unknown>;
     const filteredEntries = Object.entries(originalModules).filter(([key]) => {
+        // lastIndexOf ensures we anchor on the flex /changes/ segment even if the namespace contains "changes"
         const changesIdx = key.lastIndexOf('/changes/');
         if (changesIdx !== -1) {
             const relativePath = key.substring(changesIdx + '/changes/'.length);
