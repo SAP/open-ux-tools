@@ -8,7 +8,7 @@
 |**Template Used**<br>List Report Page V2|
 |**Service Type**<br>OData URL|
 |**Service URL**<br>https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com/sap/opu/odata/sap/SEPMRA_PROD_MAN|
-|**Module Name**<br>lrop_v2|
+|**Module Name**<br>lrop_v2_non_virt|
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
 |**Namespace**<br>testNameSpace|
 |**UI5 Theme**<br>sap_fiori_3|
@@ -18,7 +18,7 @@
 |**Main Entity**<br>SEPMRA_C_PD_Product|
 |**Navigation Entity**<br>to_ProductSalesData|
 
-## lrop_v2
+## lrop_v2_non_virt
 
 Test &#39;Project&#39; &#34;Description&#34;
 
