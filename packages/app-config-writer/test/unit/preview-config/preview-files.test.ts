@@ -12,6 +12,7 @@ describe('preview-files', () => {
     const logger = new ToolsLogger();
     const debugLogMock = jest.spyOn(ToolsLogger.prototype, 'debug').mockImplementation(() => {});
     const infoLogMock = jest.spyOn(ToolsLogger.prototype, 'info').mockImplementation(() => {});
+    const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
     const basePath = join(__dirname, '../../fixtures/preview-config');
     let fs: Editor;
 
@@ -50,6 +51,13 @@ describe('preview-files', () => {
                 'flpSandboxMockserver_old.html'
             )}'. This file is no longer needed for the virtual endpoints. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`
         );
+    });
+
+    test('does not warn about discovery pattern when no QUnit init script exists', async () => {
+        fs.write(join(basePath, 'webapp', 'test', 'testsuite.qunit.js'), 'dummy content');
+        fs.write(join(basePath, 'webapp', 'test', 'integration', 'opaTests.qunit.js'), 'dummy content');
+        await deleteNoLongerUsedFiles(fs, basePath, true, logger);
+        expect(warnLogMock).not.toHaveBeenCalled();
     });
 
     test('delete no longer used files w/o test files', async () => {

@@ -156,6 +156,7 @@ describe('update preview middleware config', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'integration', 'opaTests.qunit.js'))).toBeFalsy();
         expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'))).toBeFalsy();
+        expect(warnLogMock).toHaveBeenCalledWith(expect.stringContaining("default pattern '/test/**/*Test.{js,ts}'"));
     });
 
     test('deprecated tools preview with theme, tests and ui5-test-runner', async () => {
