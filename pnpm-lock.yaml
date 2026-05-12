@@ -12,7 +12,9 @@ overrides:
   axios-logger>axios: ^1.16.0
   '@sap/subaccount-destination-service-provider>@sap/bas-sdk': ^3.13.6
   esbuild@<=0.24.2: '>=0.25.0'
-  fast-xml-parser: '>=5.7.0'
+  fast-xml-parser: '>=5.8.0'
+  fast-uri: '>=3.1.2'
+  '@babel/plugin-transform-modules-systemjs': '>=7.29.4'
   '@xmldom/xmldom': ~0.8.13
   node-forge: '>=1.4.0'
   express-rate-limit: '>=8.2.2'
@@ -25,7 +27,7 @@ overrides:
   lodash: '>=4.17.24'
   mta-local: 1.0.8
   '@modelcontextprotocol/sdk': '>=1.29.0'
-  hono: '>=4.12.14'
+  hono: '>=4.12.18'
   '@hono/node-server': '>=1.19.13'
   handlebars: '>=4.7.9'
   flatted: '>=3.4.2'
@@ -247,8 +249,8 @@ importers:
         specifier: 17.4.2
         version: 17.4.2
       fast-xml-parser:
-        specifier: '>=5.7.0'
-        version: 5.7.2
+        specifier: '>=5.8.0'
+        version: 5.8.0
 
   examples/simple-generator:
     dependencies:
@@ -943,8 +945,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       fast-xml-parser:
-        specifier: '>=5.7.0'
-        version: 5.7.2
+        specifier: '>=5.8.0'
+        version: 5.8.0
       http-proxy-agent:
         specifier: 7.0.2
         version: 7.0.2
@@ -2297,8 +2299,8 @@ importers:
         specifier: 2.17.2
         version: 2.17.2
       fast-xml-parser:
-        specifier: '>=5.7.0'
-        version: 5.7.2
+        specifier: '>=5.8.0'
+        version: 5.8.0
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -3367,8 +3369,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       fast-xml-parser:
-        specifier: '>=5.7.0'
-        version: 5.7.2
+        specifier: '>=5.8.0'
+        version: 5.8.0
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -3428,8 +3430,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       fast-xml-parser:
-        specifier: '>=5.7.0'
-        version: 5.7.2
+        specifier: '>=5.8.0'
+        version: 5.8.0
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -3672,8 +3674,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       fast-xml-parser:
-        specifier: '>=5.7.0'
-        version: 5.7.2
+        specifier: '>=5.8.0'
+        version: 5.8.0
       findit2:
         specifier: 2.2.3
         version: 2.2.3
@@ -6049,8 +6051,8 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
-  '@babel/plugin-transform-modules-systemjs@7.29.0':
-    resolution: {integrity: sha512-PrujnVFbOdUpw4UHiVwKvKRLMMic8+eC0CuNlxjsyZUiBjhFdPsewdXCkveh2KqBA9/waD0W1b4hXSOBQJezpQ==}
+  '@babel/plugin-transform-modules-systemjs@7.29.4':
+    resolution: {integrity: sha512-N7QmZ0xRZfjHOfZeQLJjwgX2zS9pdGHSVl/cjSGlo4dXMqvurfxXDMKY4RqEKzPozV78VMcd0lxyG13mlbKc4w==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
@@ -7138,7 +7140,7 @@ packages:
     resolution: {integrity: sha512-TsQLe4i2gvoTtrHje625ngThGBySOgSK3Xo2XRYOdqGN1teR8+I7vchQC46uLJi8OF62YTYA3AhSpumtkhsaKQ==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
-      hono: '>=4.12.14'
+      hono: '>=4.12.18'
 
   '@huggingface/jinja@0.2.2':
     resolution: {integrity: sha512-/KPde26khDUIPkTGU82jdtTW9UAuvUTumCAbFs/7giR0SxsvZC4hru51PBvpijH6BVkHcROcvZM/lpy5h1jRRA==}
@@ -12695,17 +12697,17 @@ packages:
   fast-string-width@3.0.2:
     resolution: {integrity: sha512-gX8LrtNEI5hq8DVUfRQMbr5lpaS4nMIWV+7XEbXk2b8kiQIizgnlr12B4dA3ZEx3308ze0O4Q1R+cHts8kyUJg==}
 
-  fast-uri@3.1.0:
-    resolution: {integrity: sha512-iPeeDKJSWf4IEOasVVrknXpaBV0IApz/gp7S2bb7Z4Lljbl2MGJRqInZiUrQwV16cpzw/D3S5j5Julj/gT52AA==}
+  fast-uri@3.1.2:
+    resolution: {integrity: sha512-rVjf7ArG3LTk+FS6Yw81V1DLuZl1bRbNrev6Tmd/9RaroeeRRJhAt7jg/6YFxbvAQXUCavSoZhPPj6oOx+5KjQ==}
 
   fast-wrap-ansi@0.2.0:
     resolution: {integrity: sha512-rLV8JHxTyhVmFYhBJuMujcrHqOT2cnO5Zxj37qROj23CP39GXubJRBUFF0z8KFK77Uc0SukZUf7JZhsVEQ6n8w==}
 
-  fast-xml-builder@1.1.5:
-    resolution: {integrity: sha512-4TJn/8FKLeslLAH3dnohXqE3QSoxkhvaMzepOIZytwJXZO69Bfz0HBdDHzOTOon6G59Zrk6VQ2bEiv1t61rfkA==}
+  fast-xml-builder@1.2.0:
+    resolution: {integrity: sha512-00aAWieqff+ZJhsXA4g1g7M8k+7AYoMUUHF+/zFb5U6Uv/P0Vl4QZo84/IcufzYalLuEj9928bXN9PbbFzMF0Q==}
 
-  fast-xml-parser@5.7.2:
-    resolution: {integrity: sha512-P7oW7tLbYnhOLQk/Gv7cZgzgMPP/XN03K02/Jy6Y/NHzyIAIpxuZIM/YqAkfiXFPxA2CTm7NtCijK9EDu09u2w==}
+  fast-xml-parser@5.8.0:
+    resolution: {integrity: sha512-6bIM7fsJxeo3uXv7OncQYsBAMPJ7V16Slahl/6M98C/i2q+vB1+4a0MtrvYwDFEUrwDSbAmeLDRXsOBwrL7yAg==}
     hasBin: true
 
   fastest-levenshtein@1.0.16:
@@ -13284,8 +13286,8 @@ packages:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
     engines: {node: '>=0.10.0'}
 
-  hono@4.12.16:
-    resolution: {integrity: sha512-jN0ZewiNAWSe5khM3EyCmBb250+b40wWbwNILNfEvq84VREWwOIkuUsFONk/3i3nqkz7Oe1PcpM2mwQEK2L9Kg==}
+  hono@4.12.18:
+    resolution: {integrity: sha512-RWzP96k/yv0PQfyXnWjs6zot20TqfpfsNXhOnev8d1InAxubW93L11/oNUc3tQqn2G0bSdAOBpX+2uDFHV7kdQ==}
     engines: {node: '>=16.9.0'}
 
   hookified@1.15.1:
@@ -17510,8 +17512,8 @@ packages:
     resolution: {integrity: sha512-k55yxKHwaXnpYGsOzg4Vl8+tDrWylxDEpknGjhTiZB8dFRU5rTo9CAzeycivxV3s+zlTKwrs6WxMxR95n26kwg==}
     engines: {node: '>=0.10.0'}
 
-  strnum@2.2.3:
-    resolution: {integrity: sha512-oKx6RUCuHfT3oyVjtnrmn19H1SiCqgJSg+54XqURKp5aCMbrXrhLjRN9TjuwMjiYstZ0MzDrHqkGZ5dFTKd+zg==}
+  strnum@2.3.0:
+    resolution: {integrity: sha512-ums3KNd42PGyx5xaoVTO1mjU1bH3NpY4vsrVlnv9PNGqQj8wd7rJ6nEypLrJ7z5vxK5RP0yMLo6J/Gsm62DI5Q==}
 
   strtok3@10.3.5:
     resolution: {integrity: sha512-ki4hZQfh5rX0QDLLkOCj+h+CVNkqmp/CMf8v8kZpkNVK6jGQooMytqzLZYUVYIZcFZ6yDB70EfD8POcFXiF5oA==}
@@ -18636,6 +18638,10 @@ packages:
     resolution: {integrity: sha512-EvGK8EJ3DhaHfbRlETOWAS5pO9MZITeauHKJyb8wyajUfQUenkIg2MvLDTZ4T/TgIcm3HU0TFBgWWboAZ30UHg==}
     engines: {node: '>=18'}
 
+  xml-naming@0.1.0:
+    resolution: {integrity: sha512-k8KO9hrMyNk6tUWqUfkTEZbezRRpONVOzUTnc97VnCvyj6Tf9lyUR9EDAIeiVLv56jsMcoXEwjW8Kv5yPY52lw==}
+    engines: {node: '>=16.0.0'}
+
   xml-parser-xo@3.2.0:
     resolution: {integrity: sha512-8LRU6cq+d7mVsoDaMhnkkt3CTtAs4153p49fRo+HIB3I1FD1o5CeXRjRH29sQevIfVJIcPjKSsPU/+Ujhq09Rg==}
     engines: {node: '>= 10'}
@@ -19544,7 +19550,7 @@ snapshots:
   '@aws-sdk/xml-builder@3.972.10':
     dependencies:
       '@smithy/types': 4.13.1
-      fast-xml-parser: 5.7.2
+      fast-xml-parser: 5.8.0
       tslib: 2.8.1
     optional: true
 
@@ -19711,7 +19717,7 @@ snapshots:
 
   '@azure/core-xml@1.5.0':
     dependencies:
-      fast-xml-parser: 5.7.2
+      fast-xml-parser: 5.8.0
       tslib: 2.8.1
     optional: true
 
@@ -20300,7 +20306,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/plugin-transform-modules-systemjs@7.29.0(@babel/core@7.29.0)':
+  '@babel/plugin-transform-modules-systemjs@7.29.4(@babel/core@7.29.0)':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/helper-module-transforms': 7.28.6(@babel/core@7.29.0)
@@ -20546,7 +20552,7 @@ snapshots:
       '@babel/plugin-transform-member-expression-literals': 7.27.1(@babel/core@7.29.0)
       '@babel/plugin-transform-modules-amd': 7.27.1(@babel/core@7.29.0)
       '@babel/plugin-transform-modules-commonjs': 7.28.6(@babel/core@7.29.0)
-      '@babel/plugin-transform-modules-systemjs': 7.29.0(@babel/core@7.29.0)
+      '@babel/plugin-transform-modules-systemjs': 7.29.4(@babel/core@7.29.0)
       '@babel/plugin-transform-modules-umd': 7.27.1(@babel/core@7.29.0)
       '@babel/plugin-transform-named-capturing-groups-regex': 7.29.0(@babel/core@7.29.0)
       '@babel/plugin-transform-new-target': 7.27.1(@babel/core@7.29.0)
@@ -21454,9 +21460,9 @@ snapshots:
     dependencies:
       '@hapi/hoek': 11.0.7
 
-  '@hono/node-server@1.19.13(hono@4.12.16)':
+  '@hono/node-server@1.19.13(hono@4.12.18)':
     dependencies:
-      hono: 4.12.16
+      hono: 4.12.18
 
   '@huggingface/jinja@0.2.2': {}
 
@@ -22171,7 +22177,7 @@ snapshots:
 
   '@modelcontextprotocol/sdk@1.29.0(@cfworker/json-schema@4.1.1)(zod@4.3.6)':
     dependencies:
-      '@hono/node-server': 1.19.13(hono@4.12.16)
+      '@hono/node-server': 1.19.13(hono@4.12.18)
       ajv: 8.18.0
       ajv-formats: 3.0.1(ajv@8.18.0)
       content-type: 1.0.5
@@ -22181,7 +22187,7 @@ snapshots:
       eventsource-parser: 3.0.6
       express: 5.2.1
       express-rate-limit: 8.3.2(express@5.2.1)
-      hono: 4.12.16
+      hono: 4.12.18
       jose: 6.1.3
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
@@ -23384,7 +23390,7 @@ snapshots:
     dependencies:
       '@sap-ux/i18n': 0.3.9
       '@sap-ux/ui5-config': 0.29.21
-      fast-xml-parser: 5.7.2
+      fast-xml-parser: 5.8.0
       findit2: 2.2.3
       json-parse-even-better-errors: 4.0.0
       mem-fs: 2.1.0
@@ -25984,7 +25990,7 @@ snapshots:
   ajv@8.18.0:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 3.1.0
+      fast-uri: 3.1.2
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -28697,22 +28703,24 @@ snapshots:
     dependencies:
       fast-string-truncated-width: 3.0.3
 
-  fast-uri@3.1.0: {}
+  fast-uri@3.1.2: {}
 
   fast-wrap-ansi@0.2.0:
     dependencies:
       fast-string-width: 3.0.2
 
-  fast-xml-builder@1.1.5:
+  fast-xml-builder@1.2.0:
     dependencies:
       path-expression-matcher: 1.5.0
+      xml-naming: 0.1.0
 
-  fast-xml-parser@5.7.2:
+  fast-xml-parser@5.8.0:
     dependencies:
       '@nodable/entities': 2.1.0
-      fast-xml-builder: 1.1.5
+      fast-xml-builder: 1.2.0
       path-expression-matcher: 1.5.0
-      strnum: 2.2.3
+      strnum: 2.3.0
+      xml-naming: 0.1.0
 
   fastest-levenshtein@1.0.16: {}
 
@@ -29417,7 +29425,7 @@ snapshots:
     dependencies:
       parse-passwd: 1.0.0
 
-  hono@4.12.16: {}
+  hono@4.12.18: {}
 
   hookified@1.15.1: {}
 
@@ -32955,7 +32963,7 @@ snapshots:
       exsolve: 1.0.8
       fast-deep-equal: 3.1.3
       fast-safe-stringify: 2.1.1
-      fast-xml-parser: 5.7.2
+      fast-xml-parser: 5.8.0
       fastest-levenshtein: 1.0.16
       gcp-metadata: 8.1.2
       glob: 13.0.6
@@ -33022,7 +33030,7 @@ snapshots:
       '@swc/core-linux-x64-musl': 1.15.18
       '@swc/core-win32-x64-msvc': 1.15.18
       google-auth-library: 10.6.2
-      hono: 4.12.16
+      hono: 4.12.18
       ibm-cloud-sdk-core: 5.4.9
       langfuse: 3.38.6
       natural: 8.1.1(gcp-metadata@8.1.2)(socks@2.8.7)
@@ -34910,7 +34918,7 @@ snapshots:
     dependencies:
       escape-string-regexp: 1.0.5
 
-  strnum@2.2.3: {}
+  strnum@2.3.0: {}
 
   strtok3@10.3.5:
     dependencies:
@@ -35535,7 +35543,7 @@ snapshots:
       chokidar: 5.0.0
       comment-json: 4.6.2
       estree-walker: 3.0.3
-      fast-xml-parser: 5.7.2
+      fast-xml-parser: 5.8.0
       handlebars: 4.7.9
       ignore-walk: 8.0.0
       js-yaml: 4.1.1
@@ -36290,6 +36298,8 @@ snapshots:
   xml-name-validator@4.0.0: {}
 
   xml-name-validator@5.0.0: {}
+
+  xml-naming@0.1.0: {}
 
   xml-parser-xo@3.2.0: {}
 
