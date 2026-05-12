@@ -7,7 +7,7 @@ import {
     TEST_CONFIG_DEFAULTS
 } from '../common/ui5-yaml';
 import { ensurePreviewMiddlewareDependency } from './package-json';
-import { FileName, getAllUi5YamlFileNames, readUi5Yaml, getWebappPath } from '@sap-ux/project-access';
+import { FileName, getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
 import { getPreviewMiddleware } from '../common/utils';
 import {
     extractUrlDetails,
@@ -238,14 +238,6 @@ export async function updatePreviewMiddlewareConfigs(
 
         const { path } = extractUrlDetails(scriptValue);
         if (path) {
-            if (path.includes('unitTests.qunit.html')) {
-                const unitTestPath = join(await getWebappPath(basePath), path);
-                if (fs.exists(unitTestPath)) {
-                    logger?.warn(
-                        `Unit test files will be discovered automatically using the default pattern '/test/**/*Test.{js,ts}'. If your unit test files do not match this pattern, add a 'pattern' property to the QUnit test entry in your UI5 YAML configuration (e.g. pattern: '/test/unit/controller/*.{js,ts}').`
-                    );
-                }
-            }
             await renameSandbox(fs, basePath, path, logger);
         }
         ensurePreviewMiddlewareDependency(fs, basePath);
