@@ -144,7 +144,8 @@ export async function generateFreestyleOPAFiles(
     let filteredFiles = filterByTypeScript(templateFilteredFiles, isTypeScript);
     if (useVirtualPreviewEndpoints) {
         filteredFiles = filteredFiles.filter(
-            (filePath) => !filePath.includes('testsuite.qunit') && !filePath.includes('unitTests.qunit')
+            (filePath) =>
+                !['testsuite.qunit', 'unitTests.qunit', 'opaTests.qunit'].some((pattern) => filePath.includes(pattern))
         );
     } else {
         const commonFiles = await getFilePaths(commonTemplateDir);
