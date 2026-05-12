@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv4
+  name: testNameSpace.lropv2
 type: application
 server:
   customMiddleware:
@@ -17,7 +17,8 @@ server:
           url: https://ui5.sap.com
         backend:
           - path: /sap
-            url: https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com
+            url: https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com
+            client: '012'
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -29,13 +30,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/mainService/metadata.xml
-            mockdataPath: ./webapp/localService/mainService/data
-            generateMockData: true
-        annotations: []
+          path: test/flpSandbox.html
+          intent:
+            object: testNameSpacelropv2
+            action: tile

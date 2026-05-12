@@ -132,9 +132,18 @@ describe('Headless generation', () => {
 
     it('LROP v2', async () => {
         testProjectName = 'lrop_v2';
-        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectName);
+        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
 
         await runHeadlessGen('LROP-v2-0.2', 'sepmra_prod_man_v2');
+        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
+        cleanTestDir(join(testDir, testProjectName));
+    });
+
+    it('LROP v2 - virtual endpoints disabled', async () => {
+        testProjectName = 'lrop_v2_non_virt';
+        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectName);
+
+        await runHeadlessGen('LROP-v2-0.2-non-virt', 'sepmra_prod_man_v2');
         expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -153,7 +162,7 @@ describe('Headless generation', () => {
 
     it('ALP v2', async () => {
         testProjectName = 'alp_v2';
-        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectName);
+        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
 
         await runHeadlessGen('ALP-v2-0.2', 'sepmra_so_ana_alp_v2');
         expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
@@ -162,7 +171,7 @@ describe('Headless generation', () => {
 
     it('LROP v4', async () => {
         testProjectName = 'lrop_v4';
-        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectName);
+        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
 
         await runHeadlessGen('LROP-v4-0.2', 'travel_v4');
         expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
@@ -243,7 +252,7 @@ describe('Headless generation', () => {
 
     it('LROP v4 CAP', async () => {
         testProjectName = 'lrop_v4_cap';
-        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectName);
+        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
         const accessSpy = jest.spyOn(fs, 'access').mockResolvedValue();
         // Copy fake package.json to mimic real CAP project
         const testCAPProjectRoot = join(testDir, testProjectName);
