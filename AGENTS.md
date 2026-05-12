@@ -434,6 +434,7 @@ From [CONTRIBUTING.md](CONTRIBUTING.md):
 3. **Code review** - Wait for approval before merging
 4. **Don't resolve conversations** - Let reviewers mark as resolved
 5. **AI-generated code** - Follow [SAP's GenAI guidelines](https://github.com/SAP/.github/blob/main/CONTRIBUTING_USING_GENAI.md)
+6. **Document deviations** - If a change cannot adhere to a guideline in this AGENTS.md (e.g. a breaking refactor is out of scope), document the deviation and the reason in the PR description
 
 ## Package Management
 
@@ -744,6 +745,7 @@ Before submitting changes, verify:
 - [ ] Commit messages follow Conventional Commits
 - [ ] PR is focused on one issue
 - [ ] Documentation updated if needed
+- [ ] Any deviations from this AGENTS.md spec are documented in the PR description
 
 ---
 
