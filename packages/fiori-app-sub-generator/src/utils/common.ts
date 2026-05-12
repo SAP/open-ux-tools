@@ -103,7 +103,7 @@ export function getMinSupportedUI5Version(
         const templateType = FloorplanAttributes[floorplan].templateType as FETemplateType;
         minUI5Version = TemplateTypeAttributes[templateType].minimumUi5Version[version];
     }
-    return minUI5Version ?? (version !== OdataVersion.v2 ? minSupportedUi5VersionV4 : minSupportedUi5Version);
+    return minUI5Version ?? (version === OdataVersion.v2 ? minSupportedUi5Version : minSupportedUi5VersionV4);
 }
 
 /**

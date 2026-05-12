@@ -43,15 +43,18 @@ export function parseOdataVersion(metadata: string): {
         const convertedMetadata = convert(parse(metadata));
         const rawVersion = convertedMetadata?.version;
 
-        if (!rawVersion || Number.isNaN(Number.parseInt(rawVersion, 10))) {
+        if (!rawVersion || !/^[14]/.test(rawVersion)) {
             LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
             throw new Error(t('errors.unparseableOdataVersion'));
         }
-        const odataVersion = rawVersion.startsWith('4.01')
-            ? OdataVersion.v401
-            : rawVersion.startsWith('4')
-              ? OdataVersion.v4
-              : OdataVersion.v2;
+        let odataVersion: OdataVersion;
+        if (rawVersion.startsWith('4.01')) {
+            odataVersion = OdataVersion.v401;
+        } else if (rawVersion.startsWith('4')) {
+            odataVersion = OdataVersion.v4;
+        } else {
+            odataVersion = OdataVersion.v2;
+        }
         return {
             odataVersion,
             convertedMetadata
