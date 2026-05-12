@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.5.2
+
+### Patch Changes
+
+- ac6381f: remove default selected key for sap systems ext
+
 ## 0.5.1
 
 ### Patch Changes
