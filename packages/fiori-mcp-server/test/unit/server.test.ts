@@ -34,6 +34,7 @@ jest.mock('@modelcontextprotocol/sdk/server/stdio.js', () => {
 jest.mock('../../src/telemetry', () => ({
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),
+        initSessionId: jest.fn(),
         markToolStartTime: jest.fn(),
         sendTelemetry: jest.fn()
     }
@@ -840,6 +841,22 @@ describe('FioriFunctionalityServer', () => {
             const server = new FioriFunctionalityServer();
             await server.run();
             expect(connectMock).toHaveBeenCalledTimes(1);
+        });
+
+        test('should call initSessionId before transport.connect', async () => {
+            const callOrder: string[] = [];
+            jest.spyOn(TelemetryHelper, 'initSessionId').mockImplementation(() => {
+                callOrder.push('initSessionId');
+            });
+            connectMock.mockImplementation(() => {
+                callOrder.push('connect');
+                return Promise.resolve();
+            });
+
+            const server = new FioriFunctionalityServer();
+            await server.run();
+
+            expect(callOrder).toEqual(['initSessionId', 'connect']);
         });
 
         test('should log error message when setupTelemetry rejects with an Error instance', async () => {

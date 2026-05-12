@@ -46,6 +46,8 @@ function negotiateProtocolVersion(requested: string): string {
     if (SUPPORTED_PROTOCOL_VERSIONS.includes(FALLBACK_PROTOCOL_VERSION)) {
         return FALLBACK_PROTOCOL_VERSION;
     }
+    // FALLBACK_PROTOCOL_VERSION was removed from the SDK; return the newest available version
+    // (last element, since the SDK lists versions oldest-first) for maximum forward-compatibility.
     return SUPPORTED_PROTOCOL_VERSIONS[SUPPORTED_PROTOCOL_VERSIONS.length - 1];
 }
 
@@ -260,14 +262,18 @@ export class FioriFunctionalityServer {
      * Connects the server to a StdioServerTransport and begins listening for requests.
      */
     async run(): Promise<void> {
+        // Generate the session ID synchronously before connecting so that it is available
+        // when the InitializeRequest handler fires and calls sendTelemetry for the first time.
+        TelemetryHelper.initSessionId();
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         logger.info(
             `SAP Fiori - Model Context Protocol (MCP) server (@sap-ux/fiori-mcp-server@${packageJson.version}) running on stdio`
         );
-        // Telemetry init runs after transport is connected so it never blocks the MCP handshake.
-        // This is required for Claude Desktop's built-in Node runner, where a blocking await here
-        // causes the process to crash before the client receives the initialize response.
+        // The remaining (slow) telemetry init runs fire-and-forget after transport.connect() so it
+        // never blocks the MCP handshake. This is required for Claude Desktop's built-in Node runner,
+        // where a blocking await here causes the process to crash before the client receives the
+        // initialize response.
         this.setupTelemetry().catch((error) =>
             logger.error(`Telemetry init error: ${error instanceof Error ? error.message : String(error)}`)
         );
