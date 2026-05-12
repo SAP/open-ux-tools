@@ -1,6 +1,6 @@
 {
     "name": "sap-ux-sap-systems-ext",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "displayName": "Connection Manager for SAP Systems",
     "description": "Enables you to store connection information for remote SAP systems.",
     "main": "./dist/extension.js",
@@ -121,6 +121,11 @@
             },
             {
                 "command": "sap.ux.tools.sapSystems.create",
+                "title": "Add SAP System (External)",
+                "description": "Add a new SAP system by providing connection details such as host, client, and credentials. This allows you to manage and connect to your SAP systems directly from the Connection Manager."
+            },
+            {
+                "command": "sap.ux.tools.sapSystems.createNew",
                 "title": "Add SAP System",
                 "category": "SAP",
                 "icon": {
@@ -161,6 +166,10 @@
                 {
                     "command": "sap.ux.tools.sapSystems.launchAppGen",
                     "when": "false"
+                },
+                {
+                    "command": "sap.ux.tools.sapSystems.create",
+                    "when": "false"
                 }
             ],
             "view/title": [
@@ -170,7 +179,7 @@
                     "group": "navigation@0"
                 },
                 {
-                    "command": "sap.ux.tools.sapSystems.create",
+                    "command": "sap.ux.tools.sapSystems.createNew",
                     "when": "view == sap.ux.tools.sapSystems",
                     "group": "navigation@1"
                 },
