@@ -101,6 +101,11 @@ describe('manifest', () => {
                 expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual(
                     expectedOdataVersion
                 );
+                expect(manifestJson['sap.ui5']?.models?.['amodel']?.settings).toMatchObject({
+                    operationMode: 'Server',
+                    autoExpandSelect: true,
+                    earlyRequests: true
+                });
             }
         );
         test('Ensure manifest are updated as expected as in edmx projects', async () => {
