@@ -101,7 +101,7 @@ async function addFlpYaml(
     const flpYamlPath = join(basePath, 'flp.yaml');
     const ui5Config = await readUi5Yaml(basePath, yamlFileName, fs);
 
-    const appModule: string = ui5Config.getMetadata().name.replace(/\./g, '/');
+    const appModule: string = ui5Config.getMetadata().name.replaceAll('.', '/');
 
     const DIST = 'dist' as const;
     const paths: { path: string; src: string }[] = [{ path: '/**/' + bspApplication, src: DIST }];
