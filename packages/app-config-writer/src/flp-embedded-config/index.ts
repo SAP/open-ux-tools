@@ -1,11 +1,10 @@
 import { join } from 'node:path';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { isCapProject, FileName } from '@sap-ux/project-access';
+import { isCapProject, FileName, readUi5Yaml } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
-import YAML from 'yaml';
 
 const DEFAULT_FLP_PATH = 'sap/bc/ui5_ui5/ui2/ushell/shells/abap/Fiorilaunchpad.html';
 
@@ -26,7 +25,7 @@ export async function generateFlpEmbeddedConfig(
     basePath: string,
     bspApplication: string,
     flpPath: string = DEFAULT_FLP_PATH,
-    yamlPath?: string,
+    yamlPath: string = FileName.Ui5Yaml,
     fs?: Editor,
     logger?: ToolsLogger
 ): Promise<Editor> {
@@ -43,14 +42,13 @@ export async function generateFlpEmbeddedConfig(
         throw new Error('CAP projects are not supported for FLP Embedded Mode configuration.');
     }
 
-    const resolvedYamlPath = yamlPath ? join(basePath, yamlPath) : join(basePath, FileName.Ui5Yaml);
+    const resolvedYamlPath = join(basePath, yamlPath);
     if (!fs.exists(resolvedYamlPath)) {
         throw new Error(`Configuration file ${resolvedYamlPath} not found. Please provide a valid path`);
     }
 
     addStartEmbeddedScript(fs, basePath, flpPath, logger);
-    addFlpYaml(fs, basePath, resolvedYamlPath, bspApp, logger);
-
+    await addFlpYaml(fs, basePath, yamlPath, bspApp, logger);
     return fs;
 }
 
@@ -89,54 +87,55 @@ function addStartEmbeddedScript(fs: Editor, basePath: string, flpPath: string, l
  *
  * @param fs - mem-fs editor instance
  * @param basePath - project root
- * @param yamlPath - absolute path to the source ui5.yaml
+ * @param yamlFileName - relative path to the source ui5.yaml (e.g. 'ui5.yaml')
  * @param bspApplication - BSP application name (lowercase)
  * @param logger - optional logger
  */
-function addFlpYaml(
+async function addFlpYaml(
     fs: Editor,
     basePath: string,
-    yamlPath: string,
+    yamlFileName: string,
     bspApplication: string,
     logger?: ToolsLogger
-): void {
+): Promise<void> {
     const flpYamlPath = join(basePath, 'flp.yaml');
-    const yamlContent = fs.read(yamlPath);
-    const flpYaml = YAML.parseDocument(yamlContent).toJSON();
+    const ui5Config = await readUi5Yaml(basePath, yamlFileName, fs);
 
-    const appModule: string = flpYaml.metadata.name.replace(/\./g, '/');
-    const paths: { path: string; src: string }[] = [{ path: '/**/' + bspApplication, src: 'dist' }];
+    const appModule: string = ui5Config.getMetadata().name.replace(/\./g, '/');
+
+    const DIST = 'dist' as const;
+    const paths: { path: string; src: string }[] = [{ path: '/**/' + bspApplication, src: DIST }];
 
     if (appModule !== bspApplication) {
-        paths.push({ path: '/**/' + appModule, src: 'dist' });
+        paths.push({ path: '/**/' + appModule, src: DIST });
     }
 
-    flpYaml.resources = { configuration: { paths: { webapp: 'dist' } } };
+    ui5Config.setConfiguration({ paths: { webapp: DIST } });
 
-    const appreloadMiddleware = flpYaml.server?.customMiddleware?.find(
-        (mw: { name: string }) => mw.name === 'fiori-tools-appreload'
-    );
+    const appreloadMiddleware = ui5Config.findCustomMiddleware<{ path?: string }>('fiori-tools-appreload');
     if (appreloadMiddleware) {
-        if (appreloadMiddleware.configuration) {
-            appreloadMiddleware.configuration.path = 'dist';
-        } else {
-            appreloadMiddleware.configuration = { path: 'dist' };
-        }
+        ui5Config.updateCustomMiddleware({
+            ...appreloadMiddleware,
+            configuration: { ...appreloadMiddleware.configuration, path: DIST }
+        });
     }
 
-    const proxyMiddleware = flpYaml.server?.customMiddleware?.find(
-        (mw: { name: string }) => mw.name === 'fiori-tools-proxy'
-    );
+    const proxyMiddleware = ui5Config.findCustomMiddleware<{ bsp?: string }>('fiori-tools-proxy');
     if (proxyMiddleware) {
-        proxyMiddleware.configuration.bsp = bspApplication;
+        ui5Config.updateCustomMiddleware({
+            ...proxyMiddleware,
+            configuration: { ...proxyMiddleware.configuration, bsp: bspApplication }
+        });
     }
 
-    flpYaml.server.customMiddleware.push({
-        name: 'fiori-tools-servestatic',
-        beforeMiddleware: 'fiori-tools-proxy',
-        configuration: { paths }
-    });
+    ui5Config.addCustomMiddleware([
+        {
+            name: 'fiori-tools-servestatic',
+            beforeMiddleware: 'fiori-tools-proxy',
+            configuration: { paths }
+        }
+    ]);
 
-    fs.write(flpYamlPath, YAML.stringify(flpYaml));
+    fs.write(flpYamlPath, ui5Config.toString());
     logger?.debug(`'flp.yaml' written.`);
 }

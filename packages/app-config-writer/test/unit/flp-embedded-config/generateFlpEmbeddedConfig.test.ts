@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import YAML from 'yaml';
+import { readUi5Yaml } from '@sap-ux/project-access';
 import { generateFlpEmbeddedConfig } from '../../../src';
 
 const fixturesPath = join(__dirname, '../../fixtures/flp-embedded-config');
@@ -42,54 +42,50 @@ describe('generateFlpEmbeddedConfig', () => {
         test('generates flp.yaml with servestatic middleware and proxy bsp config', async () => {
             const fs = getFs();
             const result = await generateFlpEmbeddedConfig(fixturesPath, 'myapp', undefined, undefined, fs);
-            const flpYaml = YAML.parse(result.read(join(fixturesPath, 'flp.yaml')));
+            const flpConfig = await readUi5Yaml(fixturesPath, 'flp.yaml', result);
 
-            expect(flpYaml.resources?.configuration?.paths?.webapp).toBe('dist');
+            expect(flpConfig.getConfiguration().paths?.webapp).toBe('dist');
 
-            const proxyMw = flpYaml.server.customMiddleware.find(
-                (mw: { name: string }) => mw.name === 'fiori-tools-proxy'
-            );
+            const proxyMw = flpConfig.findCustomMiddleware<{ bsp?: string }>('fiori-tools-proxy');
             expect(proxyMw?.configuration?.bsp).toBe('myapp');
 
-            const staticMw = flpYaml.server.customMiddleware.find(
-                (mw: { name: string }) => mw.name === 'fiori-tools-servestatic'
+            const staticMw = flpConfig.findCustomMiddleware<{ paths: { path: string; src: string }[] }>(
+                'fiori-tools-servestatic'
             );
             expect(staticMw).toBeDefined();
-            expect(staticMw.configuration.paths).toContainEqual({ path: '/**/myapp', src: 'dist' });
+            expect(staticMw?.configuration.paths).toContainEqual({ path: '/**/myapp', src: 'dist' });
         });
 
         test('adds two servestatic paths when appModule differs from bspApplication', async () => {
             const fs = getFs();
             // test-app's metadata.name is 'test-app' (no dots), appModule = 'test-app', bsp = 'otherapp'
             const result = await generateFlpEmbeddedConfig(fixturesPath, 'otherapp', undefined, undefined, fs);
-            const flpYaml = YAML.parse(result.read(join(fixturesPath, 'flp.yaml')));
-            const staticMw = flpYaml.server.customMiddleware.find(
-                (mw: { name: string }) => mw.name === 'fiori-tools-servestatic'
+            const flpConfig = await readUi5Yaml(fixturesPath, 'flp.yaml', result);
+            const staticMw = flpConfig.findCustomMiddleware<{ paths: { path: string; src: string }[] }>(
+                'fiori-tools-servestatic'
             );
-            expect(staticMw.configuration.paths).toHaveLength(2);
-            expect(staticMw.configuration.paths).toContainEqual({ path: '/**/otherapp', src: 'dist' });
-            expect(staticMw.configuration.paths).toContainEqual({ path: '/**/test-app', src: 'dist' });
+            expect(staticMw?.configuration.paths).toHaveLength(2);
+            expect(staticMw?.configuration.paths).toContainEqual({ path: '/**/otherapp', src: 'dist' });
+            expect(staticMw?.configuration.paths).toContainEqual({ path: '/**/test-app', src: 'dist' });
         });
 
         test('adds single servestatic path when appModule equals bspApplication', async () => {
             const fs = getFs();
             // test-app's metadata.name is 'test-app', bsp matches
             const result = await generateFlpEmbeddedConfig(fixturesPath, 'test-app', undefined, undefined, fs);
-            const flpYaml = YAML.parse(result.read(join(fixturesPath, 'flp.yaml')));
-            const staticMw = flpYaml.server.customMiddleware.find(
-                (mw: { name: string }) => mw.name === 'fiori-tools-servestatic'
+            const flpConfig = await readUi5Yaml(fixturesPath, 'flp.yaml', result);
+            const staticMw = flpConfig.findCustomMiddleware<{ paths: { path: string; src: string }[] }>(
+                'fiori-tools-servestatic'
             );
-            expect(staticMw.configuration.paths).toHaveLength(1);
+            expect(staticMw?.configuration.paths).toHaveLength(1);
         });
 
         test('updates appreload middleware path to dist', async () => {
             const withAppreloadPath = join(fixturesPath, 'with-appreload');
             const fs = getFs();
             const result = await generateFlpEmbeddedConfig(withAppreloadPath, 'myapp', undefined, undefined, fs);
-            const flpYaml = YAML.parse(result.read(join(withAppreloadPath, 'flp.yaml')));
-            const appreloadMw = flpYaml.server.customMiddleware.find(
-                (mw: { name: string }) => mw.name === 'fiori-tools-appreload'
-            );
+            const flpConfig = await readUi5Yaml(withAppreloadPath, 'flp.yaml', result);
+            const appreloadMw = flpConfig.findCustomMiddleware<{ path?: string }>('fiori-tools-appreload');
             expect(appreloadMw?.configuration?.path).toBe('dist');
         });
     });

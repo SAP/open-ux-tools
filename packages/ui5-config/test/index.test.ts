@@ -113,6 +113,22 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('getMetadata', () => {
+        test('returns name and copyright after setMetadata', () => {
+            ui5Config.setMetadata({ name: 'my.app', copyright: '© SAP' });
+            const metadata = ui5Config.getMetadata();
+            expect(metadata.name).toBe('my.app');
+            expect(metadata.copyright).toBe('© SAP');
+        });
+
+        test('returns only name when copyright is not set', () => {
+            ui5Config.setMetadata({ name: 'simple.app' });
+            const metadata = ui5Config.getMetadata();
+            expect(metadata.name).toBe('simple.app');
+            expect(metadata.copyright).toBeUndefined();
+        });
+    });
+
     describe('getType / setType', () => {
         test('set type', () => {
             ui5Config.setType('application');
