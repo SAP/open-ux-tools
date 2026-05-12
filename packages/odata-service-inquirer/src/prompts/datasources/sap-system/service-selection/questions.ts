@@ -22,7 +22,7 @@ import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types';
 import { promptNames } from '../../../../types';
-import { areArraysEquivalent, getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
+import { areArraysEquivalent, convertODataVersionType, getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
@@ -257,8 +257,9 @@ async function createServiceChoicesFromCatalog(
     serviceFilter?: string[]
 ): Promise<ListChoiceOptions<ServiceAnswer>[]> {
     let catalogs: CatalogService[] = [];
-    if (requiredOdataVersion && availableCatalogs[requiredOdataVersion]) {
-        catalogs.push(availableCatalogs[requiredOdataVersion] as CatalogService);
+    const catalogVersion = convertODataVersionType(requiredOdataVersion);
+    if (catalogVersion && availableCatalogs[catalogVersion]) {
+        catalogs.push(availableCatalogs[catalogVersion] as CatalogService);
     } else {
         catalogs = Object.values(availableCatalogs).filter((cat): cat is CatalogService => cat !== undefined);
     }
