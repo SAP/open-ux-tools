@@ -156,6 +156,21 @@ describe('update preview middleware config', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'integration', 'opaTests.qunit.js'))).toBeFalsy();
         expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'))).toBeFalsy();
+    });
+
+    test('warns about QUnit discovery pattern when unitTests.qunit.html exists', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'ui:unit':
+                    'fiori run -o test/unit/unitTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml'
+            },
+            'devDependencies': { '@sap/ux-ui5-tooling': '1.15.1' }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+        fs.write(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.html'), 'dummy content');
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, true, logger);
         expect(warnLogMock).toHaveBeenCalledWith(expect.stringContaining("default pattern '/test/**/*Test.{js,ts}'"));
     });
 
