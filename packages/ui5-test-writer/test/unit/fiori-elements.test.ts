@@ -322,7 +322,7 @@ describe('ui5-test-writer', () => {
             expect(firstJourneyContent).toContain('iCheckFilterField');
         });
 
-        it('skips testsuite files when useVirtualPreviewEndpoints is enabled', async () => {
+        it('skips testsuite and opaTests harness files when useVirtualPreviewEndpoints is enabled', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
             fs = await generateOPAFiles(projectDir, { useVirtualPreviewEndpoints: true }, metadata, fs);

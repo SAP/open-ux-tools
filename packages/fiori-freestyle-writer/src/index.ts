@@ -188,7 +188,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
-    if (addTests && ffApp.appOptions?.useVirtualPreviewEndpoints) {
+    if (isEdmxProjectType && addTests && ffApp.appOptions?.useVirtualPreviewEndpoints) {
         await addVirtualOPATestConfig(
             basePath,
             [

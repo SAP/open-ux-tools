@@ -372,7 +372,7 @@ export async function addVirtualOPATestConfig(
         if (previewMiddleware?.configuration?.flp) {
             previewMiddleware.configuration.flp.path = 'test/flp.html';
             if (yamlFile === FileName.Ui5MockYaml) {
-                previewMiddleware.configuration.test = testFrameworks;
+                previewMiddleware.configuration.test = [...testFrameworks];
             }
             yamlConfig.updateCustomMiddleware(previewMiddleware);
             fs.write(yamlPath, yamlConfig.toString());
