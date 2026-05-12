@@ -52,7 +52,7 @@ function validateEntityChoices(
     if (entityChoiceOptions.length === 0) {
         if (templateType === 'feop' && isCapService) {
             validationMsg = t('prompts.mainEntitySelection.noDraftEnabledEntitiesError');
-        } else if (templateType === 'alp' && odataVersion === OdataVersion.v4) {
+        } else if (templateType === 'alp' && (odataVersion === OdataVersion.v4 || odataVersion === OdataVersion.v401)) {
             validationMsg = t('prompts.mainEntitySelection.noEntitiesAlpV4Error');
         } else {
             validationMsg = t('prompts.mainEntitySelection.noEntitiesError');
@@ -362,7 +362,8 @@ function getTableLayoutQuestions(
 
         tableLayoutQuestions.push({
             when: (prevAnswers: TableConfigAnswers) =>
-                prevAnswers?.tableType === 'TreeTable' && odataVersion === OdataVersion.v4,
+                prevAnswers?.tableType === 'TreeTable' &&
+                (odataVersion === OdataVersion.v4 || odataVersion === OdataVersion.v401),
             type: 'input',
             name: EntityPromptNames.hierarchyQualifier,
             message: t('prompts.hierarchyQualifier.message'),
@@ -444,7 +445,10 @@ function getAddAnnotationQuestions(
         return annotationQuestions;
     }
 
-    if ((templateType === 'lrop' || templateType === 'worklist') && odataVersion === OdataVersion.v4) {
+    if (
+        (templateType === 'lrop' || templateType === 'worklist') &&
+        (odataVersion === OdataVersion.v4 || odataVersion === OdataVersion.v401)
+    ) {
         annotationQuestions.push({
             type: 'confirm',
             name: EntityPromptNames.addLineItemAnnotations,

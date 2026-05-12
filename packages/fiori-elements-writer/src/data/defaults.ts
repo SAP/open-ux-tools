@@ -56,7 +56,7 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
             tableType: alpSettings.tableType ?? TableType.ANALYTICAL // Overrides the UI5 default: ''
         });
 
-        if (odataVersion === OdataVersion.v4) {
+        if (odataVersion === OdataVersion.v4 || odataVersion === OdataVersion.v401) {
             const alpV4Settings: ALPSettingsV4 = template.settings as unknown as ALPSettingsV4;
             Object.assign(templateSettings, {
                 selectionMode: alpV4Settings.selectionMode ?? TableSelectionMode.NONE
@@ -151,7 +151,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     setFioriAppDefaults(feApp.app, feApp.template.type, feApp.service.version);
 
     const customUi5Libs =
-        feApp.service.version === OdataVersion.v4 && feApp.service.metadata
+        (feApp.service.version === OdataVersion.v4 || feApp.service.version === OdataVersion.v401) && feApp.service.metadata
             ? getAnnotationV4Libs(feApp.service.metadata)
             : [];
 

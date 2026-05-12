@@ -64,8 +64,7 @@ function enhanceManifestDatasources(
         settings['localUri'] = `localService/${serviceName}/metadata.xml`;
     }
     if (serviceVersion === OdataVersion.v401) {
-        const coercedUi5Version = minimumUi5Version ? semVer.coerce(minimumUi5Version) : null;
-        settings['odataVersion'] = coercedUi5Version && semVer.satisfies(coercedUi5Version, '>=1.144') ? '4.01' : '4.0';
+        settings['odataVersion'] = '4.01';
     } else if (serviceVersion === OdataVersion.v4) {
         settings['odataVersion'] = '4.0';
     } else if (serviceVersion === OdataVersion.v2) {

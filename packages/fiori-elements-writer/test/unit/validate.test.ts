@@ -154,6 +154,69 @@ describe('Validate', () => {
         );
     });
 
+    test('Valid app config with OData v401 for ListReportObjectPage', () => {
+        const feApp: FioriElementsApp<LROPSettings> = {
+            ...Object.assign(
+                feBaseConfig('felrop1'),
+                { ui5: { version: '1.144.0', minUI5Version: '1.144.0' } },
+                {
+                    template: { type: TemplateType.ListReportObjectPage, settings: {} },
+                    service: { version: OdataVersion.v401 }
+                }
+            )
+        } as FioriElementsApp<LROPSettings>;
+
+        expect(() => validateApp(feApp)).not.toThrow();
+    });
+
+    test('Valid app config with OData v401 for FormEntryObjectPage', () => {
+        const feApp: FioriElementsApp<LROPSettings> = {
+            ...Object.assign(
+                feBaseConfig('fefeop1'),
+                { ui5: { version: '1.144.0', minUI5Version: '1.144.0' } },
+                {
+                    template: { type: TemplateType.FormEntryObjectPage, settings: {} },
+                    service: { version: OdataVersion.v401 }
+                }
+            )
+        } as FioriElementsApp<LROPSettings>;
+
+        expect(() => validateApp(feApp)).not.toThrow();
+    });
+
+    test('Invalid ui5 version for OData v401 template', () => {
+        const feApp: FioriElementsApp<LROPSettings> = {
+            ...Object.assign(
+                feBaseConfig('felrop1'),
+                {
+                    ui5: {
+                        version: '1.100.0',
+                        minUI5Version: '1.100.0'
+                    }
+                },
+                {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: {}
+                    },
+                    service: {
+                        version: OdataVersion.v401
+                    }
+                }
+            )
+        } as FioriElementsApp<LROPSettings>;
+
+        expect(() => validateApp(feApp)).toThrow(
+            t('error.unsupportedUI5Version', {
+                versionProperty: 'version',
+                ui5Version: feApp.ui5?.version,
+                templateType: feApp.template.type,
+                minRequiredUI5Version:
+                    TemplateTypeAttributes[TemplateType.ListReportObjectPage].minimumUi5Version[OdataVersion.v401]
+            })
+        );
+    });
+
     test('Missing required property', () => {
         // Missing property: `FioriElementsApp.service`
         const feApp: FioriElementsApp<ALPSettings> = {

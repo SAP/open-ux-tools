@@ -1,5 +1,5 @@
 import { t } from '../i18n';
-import type { OdataVersion } from '@sap-ux/odata-service-writer';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import LoggerHelper from './logger-helper';
 import { parseOdataVersion } from '../utils';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
@@ -21,6 +21,10 @@ export function validateODataVersion(
         const { convertedMetadata, odataVersion } = parseOdataVersion(edmx);
 
         if (requiredVersion && requiredVersion !== odataVersion) {
+            // v401 is backwards compatible with v4 — a v4 requirement is satisfied by a v401 service
+            if (requiredVersion === OdataVersion.v4 && odataVersion === OdataVersion.v401) {
+                return { version: odataVersion, convertedMetadata };
+            }
             const odataErrorMsg = t('prompts.validationMessages.odataVersionMismatch', {
                 providedOdataVersion: odataVersion,
                 requiredOdataVersion: requiredVersion

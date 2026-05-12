@@ -18,6 +18,7 @@ describe('Test entity helper functions', () => {
     let metadataV2WithDraftRoot: string;
     let metadataV4WithHierarchyRecursiveHierarchy: string;
     let metadataV4WithHierarchyAndCompleteAnalyticalTransformations: string;
+    let metadataV401: string;
 
     beforeAll(async () => {
         metadataV4WithAggregateTransforms = await readFile(
@@ -42,6 +43,7 @@ describe('Test entity helper functions', () => {
             join(__dirname, '../test-data/metadataV4WithHierarchyAndCompleteAnalyticalTransformations.xml'),
             'utf8'
         );
+        metadataV401 = await readFile(join(__dirname, '../../utils/fixtures/metadata_v401.xml'), 'utf8');
     });
 
     describe('Test getNavigationEntityOptions', () => {
@@ -205,6 +207,12 @@ describe('Test entity helper functions', () => {
             expect(typeNameChoices[0].name).toEqual('I_Currency');
             expect(typeNameChoices[0].value.entitySetName).toEqual('I_Currency');
             expect(typeNameChoices[0].value.entitySetType).toEqual('SEPMRA_PROD_MAN.I_CurrencyType');
+        });
+
+        test('should detect OData v401 and return entity choices', () => {
+            const entityOptions = getEntityChoices(metadataV401);
+            expect(entityOptions.odataVersion).toEqual(OdataVersion.v401);
+            expect(entityOptions.choices.length).toBeGreaterThan(0);
         });
 
         test('should set mainEntityParameterName for a single valid parameterised main entity', async () => {

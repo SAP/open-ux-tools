@@ -48,7 +48,7 @@ export function parseOdataVersion(metadata: string): {
             throw new Error(t('errors.unparseableOdataVersion'));
         }
         let odataVersion: OdataVersion;
-        if (rawVersion.startsWith('4.01')) {
+        if (rawVersion === '4.01') {
             odataVersion = OdataVersion.v401;
         } else if (rawVersion.startsWith('4')) {
             odataVersion = OdataVersion.v4;

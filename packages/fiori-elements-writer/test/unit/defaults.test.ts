@@ -35,6 +35,16 @@ describe('Defaults', () => {
             }
         `);
 
+        expect(setDefaultTemplateSettings(cloneDeep(template), OdataVersion.v401)).toMatchInlineSnapshot(`
+            Object {
+              "entityConfig": Object {
+                "mainEntityName": "",
+              },
+              "selectionMode": "None",
+              "tableType": "AnalyticalTable",
+            }
+        `);
+
         expect(setDefaultTemplateSettings(cloneDeep(template), OdataVersion.v2)).toMatchInlineSnapshot(`
             Object {
               "autoHide": undefined,

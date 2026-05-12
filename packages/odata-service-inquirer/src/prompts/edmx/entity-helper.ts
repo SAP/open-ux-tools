@@ -1,5 +1,3 @@
-import { convert } from '@sap-ux/annotation-converter';
-import { parse } from '@sap-ux/edmx-parser';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata, EntitySet, NavigationProperty } from '@sap-ux/vocabularies-types';
 import type { ListChoiceOptions } from 'inquirer';
@@ -8,6 +6,7 @@ import LoggerHelper from '../logger-helper';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import { filterAggregateTransformations, findEntitySetByName, shouldUseAnalyticalTable } from '@sap-ux/inquirer-common';
 import { getTableCapabilitiesByEntitySet } from '@sap-ux/project-access';
+import { parseOdataVersion } from '../../utils';
 
 export type EntityAnswer = {
     entitySetName: string;
@@ -113,20 +112,16 @@ export function getEntityChoices(
     let convertedMetadata: ConvertedMetadata | undefined;
     let odataVersion: OdataVersion | undefined;
     try {
-        convertedMetadata = convert(parse(edmx));
-        const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
-        if (Number.isNaN(parsedOdataVersion)) {
-            LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
-            throw new Error(t('errors.unparseableOdataVersion'));
-        }
-        // Note that odata version > `4` e.g. `4.1`, is not currently supported by `@sap-ux/edmx-converter`
-        odataVersion = parsedOdataVersion === 4 ? OdataVersion.v4 : OdataVersion.v2;
+        ({ convertedMetadata, odataVersion } = parseOdataVersion(edmx));
         let entitySets: EntitySet[] = [];
 
         if (entitySetFilter === 'filterDraftEnabled') {
             entitySets = filterDraftEnabledEntities(convertedMetadata.entitySets) ?? [];
-        } else if (entitySetFilter === 'filterAggregateTransformationsOnly' && odataVersion === OdataVersion.v4) {
-            // Only for v4 odata version, if a v2 metadata is passed, this will be ignored
+        } else if (
+            entitySetFilter === 'filterAggregateTransformationsOnly' &&
+            (odataVersion === OdataVersion.v4 || odataVersion === OdataVersion.v401)
+        ) {
+            // Only for v4/v401 odata version, if a v2 metadata is passed, this will be ignored
             entitySets = filterAggregateTransformations(convertedMetadata.entitySets);
         } else {
             entitySets = convertedMetadata.entitySets;
@@ -200,7 +195,7 @@ export function getNavigationEntityChoices(
     const mainEntitySet = findEntitySetByName(metadata, mainEntityName);
 
     let navProps: NavigationProperty[] = [];
-    if (odataVersion === OdataVersion.v4) {
+    if (odataVersion === OdataVersion.v4 || odataVersion === OdataVersion.v401) {
         navProps = mainEntitySet?.entityType.navigationProperties.filter((navProp) => navProp.isCollection) ?? [];
     } else {
         navProps = mainEntitySet?.entityType.navigationProperties ?? [];

@@ -3,6 +3,7 @@ import { OdataVersion, TemplateType } from '../types';
 // first version with SAP Fiori 3 theme
 export const minSupportedUI5Version = '1.65.0';
 export const minSupportedUI5VersionV4 = '1.84.0';
+const minSupportedUI5VersionV401 = '1.144.0';
 
 export const changesPreviewToVersion = '1.78.0';
 
@@ -185,52 +186,61 @@ type TemplateAttributes = {
 
 export const TemplateTypeAttributes: TemplateAttributes = {
     [TemplateType.Worklist]: {
-        supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
+        supportedODataVersions: [OdataVersion.v2, OdataVersion.v4, OdataVersion.v401],
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
-            [OdataVersion.v4]: '1.99.0'
+            [OdataVersion.v4]: '1.99.0',
+            [OdataVersion.v401]: minSupportedUI5VersionV401
         },
         annotationGenerationSupport: {
-            [OdataVersion.v4]: true
+            [OdataVersion.v4]: true,
+            [OdataVersion.v401]: true
         }
     },
     [TemplateType.ListReportObjectPage]: {
-        supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
+        supportedODataVersions: [OdataVersion.v2, OdataVersion.v4, OdataVersion.v401],
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
-            [OdataVersion.v4]: '1.84.0'
+            [OdataVersion.v4]: '1.84.0',
+            [OdataVersion.v401]: minSupportedUI5VersionV401
         },
         annotationGenerationSupport: {
-            [OdataVersion.v4]: true
+            [OdataVersion.v4]: true,
+            [OdataVersion.v401]: true
         }
     },
     [TemplateType.AnalyticalListPage]: {
-        supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
+        supportedODataVersions: [OdataVersion.v2, OdataVersion.v4, OdataVersion.v401],
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
-            [OdataVersion.v4]: '1.90.0'
+            [OdataVersion.v4]: '1.90.0',
+            [OdataVersion.v401]: minSupportedUI5VersionV401
         }
     },
     [TemplateType.OverviewPage]: {
-        supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
+        supportedODataVersions: [OdataVersion.v2, OdataVersion.v4, OdataVersion.v401],
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
-            [OdataVersion.v4]: '1.96.8'
+            [OdataVersion.v4]: '1.96.8',
+            [OdataVersion.v401]: minSupportedUI5VersionV401
         }
     },
     [TemplateType.FormEntryObjectPage]: {
-        supportedODataVersions: [OdataVersion.v4],
+        supportedODataVersions: [OdataVersion.v4, OdataVersion.v401],
         minimumUi5Version: {
-            [OdataVersion.v4]: '1.90.0'
+            [OdataVersion.v4]: '1.90.0',
+            [OdataVersion.v401]: minSupportedUI5VersionV401
         },
         annotationGenerationSupport: {
-            [OdataVersion.v4]: true
+            [OdataVersion.v4]: true,
+            [OdataVersion.v401]: true
         }
     },
     [TemplateType.FlexibleProgrammingModel]: {
-        supportedODataVersions: [OdataVersion.v4],
+        supportedODataVersions: [OdataVersion.v4, OdataVersion.v401],
         minimumUi5Version: {
-            [OdataVersion.v4]: '1.94.0'
+            [OdataVersion.v4]: '1.94.0',
+            [OdataVersion.v401]: minSupportedUI5VersionV401
         }
     }
 };

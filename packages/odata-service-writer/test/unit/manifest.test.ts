@@ -71,10 +71,10 @@ describe('manifest', () => {
         test.each([
             ['1.144.0', '4.01'],
             ['1.150.0', '4.01'],
-            ['1.143.0', '4.0'],
-            [undefined, '4.0']
+            ['1.143.0', '4.01'],
+            [undefined, '4.01']
         ])(
-            'Ensure odataVersion 4.01 is written only when service is v401 and minUI5Version %s >= 1.144',
+            'Ensure odataVersion 4.01 is always written when service is v401, regardless of minUI5Version %s',
             async (minUI5Version, expectedOdataVersion) => {
                 const testManifest = {
                     'sap.app': {

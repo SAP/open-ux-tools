@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { writeAnnotations } from '../../src/writeAnnotations';
-import { TemplateType } from '../../src/types';
+import { OdataVersion, TemplateType } from '../../src/types';
 import { generateAnnotations } from '@sap-ux/annotation-generator';
 import type { Editor } from 'mem-fs-editor';
 import { applyBaseConfigToFEApp } from '../common';
@@ -56,6 +56,31 @@ describe('writeAnnotations', () => {
     it('should call generateAnnotations with correct parameters for non-CAP service', async () => {
         const appInfo = applyBaseConfigToFEApp('test', TemplateType.ListReportObjectPage);
         appInfo.appOptions.addAnnotations = true;
+        delete appInfo.service.capService;
+
+        await writeAnnotations('test', appInfo, fs);
+
+        expect(generateAnnotations).toHaveBeenCalledWith(
+            fs,
+            {
+                serviceName: 'mainService',
+                appName: 'test',
+                project: join('test')
+            },
+            {
+                entitySetName: 'Travel',
+                annotationFilePath: join('webapp', 'annotations', 'annotation.xml'),
+                addFacets: true,
+                addLineItems: true,
+                addValueHelps: false
+            }
+        );
+    });
+
+    it('should call generateAnnotations for OData v401 service', async () => {
+        const appInfo = applyBaseConfigToFEApp('test', TemplateType.ListReportObjectPage);
+        appInfo.appOptions.addAnnotations = true;
+        appInfo.service.version = OdataVersion.v401;
         delete appInfo.service.capService;
 
         await writeAnnotations('test', appInfo, fs);

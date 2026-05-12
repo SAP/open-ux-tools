@@ -92,7 +92,7 @@ function getOpaConfig(
  */
 function shouldAddTest(service: Partial<OdataService>, addTests?: boolean): boolean {
     return (
-        !!addTests && service?.version === OdataVersion.v4 && (!!service?.metadata || service?.type === ServiceType.CDS)
+        !!addTests && (service?.version === OdataVersion.v4 || service?.version === OdataVersion.v401) && (!!service?.metadata || service?.type === ServiceType.CDS)
     );
 }
 
