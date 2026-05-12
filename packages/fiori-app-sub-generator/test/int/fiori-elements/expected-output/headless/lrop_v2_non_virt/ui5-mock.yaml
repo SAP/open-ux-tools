@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.alpv2
+  name: testNameSpace.lropv2nonvirt
 type: application
 server:
   customMiddleware:
@@ -17,7 +17,8 @@ server:
           url: https://ui5.sap.com
         backend:
           - path: /sap
-            url: https://sap-ux-mock-services-v2-alp.cfapps.us10.hana.ondemand.com
+            url: https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com
+            client: '012'
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -29,15 +30,19 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testNameSpacelropv2nonvirt
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
         mountPath: /
         services:
-          - urlPath: /sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/mainService/SEPMRA_ALP_SO_ANA_SRV.xml
-            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_ALP_SO_ANA_SRV',Version='0001')/$value/
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/

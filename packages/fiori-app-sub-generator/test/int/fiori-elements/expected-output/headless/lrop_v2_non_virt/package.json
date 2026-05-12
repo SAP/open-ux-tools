@@ -1,5 +1,5 @@
 {
-  "name": "alp_v2_no_opts",
+  "name": "lrop_v2_non_virt",
   "version": "0.0.1",
   "description": "Test &#39;Project&#39; &#34;Description&#34;",
   "keywords": [
@@ -15,14 +15,14 @@
     "@sap-ux/ui5-middleware-fe-mockserver": "2"
   },
   "scripts": {
-    "start": "fiori run --open \"test/flp.html#app-preview\"",
-    "start-local": "fiori run --config ./ui5-local.yaml --open \"test/flp.html#app-preview\"",
+    "start": "fiori run --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2nonvirt-tile\"",
+    "start-local": "fiori run --config ./ui5-local.yaml --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2nonvirt-tile\"",
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
-    "start-mock": "fiori run --config ./ui5-mock.yaml --open \"test/flp.html#app-preview\"",
+    "start-mock": "fiori run --config ./ui5-mock.yaml --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2nonvirt-tile\"",
     "deploy": "fiori verify",
     "deploy-config": "fiori add deploy-config",
     "start-noflp": "fiori run --open \"/index.html?sap-ui-xx-viewCache=false\"",
-    "start-variants-management": "fiori run --open \"/preview.html#app-preview\""
+    "start-variants-management": "fiori run --open \"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#testNameSpacelropv2nonvirt-tile\""
   },
   "sapuxLayer": "CUSTOMER_BASE",
   "sapux": true
