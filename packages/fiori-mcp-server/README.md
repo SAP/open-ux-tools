@@ -41,34 +41,6 @@ claude mcp add fiori-mcp -- npx --yes @sap-ux/fiori-mcp-server@latest fiori-mcp
 }
 ```
 
-### Claude Desktop
-
-**Option A — `.dxt` extension (recommended):**
-
-Download the latest `ant.dir.gh.sap.fiori-mcp-server.dxt` from the [releases page](https://github.com/SAP/open-ux-tools/releases), then install it via **Claude Desktop → Settings → Extensions → Install from file**.
-
-> ℹ️ The `.dxt` extension uses `npx` to launch the server, which requires Node.js ≥ 20 to be installed and available on your `PATH`. If you see "Server transport closed unexpectedly" in the logs, confirm that `node --version` returns `v20` or later in your terminal. Claude Desktop's built-in Electron Node runtime is not used.
-
-**Option B — manual config:**
-
-Edit the config file for your OS:
-
-- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "fiori-mcp": {
-      "type": "stdio",
-      "timeout": 600,
-      "command": "npx",
-      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
-    }
-  }
-}
-```
-
 ### Cline
 
 Open the Cline extension settings and add the server under **MCP Servers**:
@@ -166,7 +138,7 @@ Then use `fiori-mcp` as the command (no `args` needed):
 
 The following rules help guide the AI model to use the server correctly. Add them to your system prompt or rules file:
 
-- **Claude Code / Claude Desktop:** `AGENTS.md` or `CLAUDE.md` in your project root
+- **Claude Code:** `AGENTS.md` or `CLAUDE.md` in your project root
 - **Cline:** Custom Instructions in the Cline extension settings
 - **Cursor:** `.cursorrules` in your project root
 - **Windsurf:** Global Rules or project-level `.windsurfrules`
