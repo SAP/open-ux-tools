@@ -298,6 +298,7 @@ chore(package-name): upgrade i18next 25.8.18 → 25.8.20
 ```
 
 **Changeset message conventions:**
+- Keep the message to a **single concise line** — no bullet points, no extended descriptions, no background context
 - Use conventional commit prefixes: `fix`, `feat`, `chore`, etc.
 - For dependency-only upgrades: `chore(package-name): upgrade <dep> <old> → <new>`
 - For multiple dep upgrades: `chore(package-name): upgrade runtime dependencies (<dep1> <ver>, <dep2> <ver>)`
