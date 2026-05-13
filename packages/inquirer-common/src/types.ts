@@ -35,7 +35,7 @@ export interface InquirerAdapter {
 }
 
 /**
- * TODO: Move to `@sap-devx/yeoman-ui-types` once stabilised.
+ * To be replaced when YUI specific types are available from `@sap-devx/yeoman-ui-types`.
  *
  */
 export interface GuiOptions {
