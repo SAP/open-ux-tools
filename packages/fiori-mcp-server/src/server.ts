@@ -48,7 +48,7 @@ function negotiateProtocolVersion(requested: string): string {
     }
     // if FALLBACK_PROTOCOL_VERSION was removed from the SDK; return the newest available version
     // (last element, since the SDK lists versions oldest-first) for maximum forward-compatibility.
-    return SUPPORTED_PROTOCOL_VERSIONS[SUPPORTED_PROTOCOL_VERSIONS.length - 1];
+    return SUPPORTED_PROTOCOL_VERSIONS.at(-1);
 }
 
 /**
