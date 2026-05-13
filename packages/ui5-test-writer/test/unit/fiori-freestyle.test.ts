@@ -679,7 +679,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
         const writtenFiles = Object.keys(dumped);
         expect(writtenFiles.some((f) => f.includes('testsuite.qunit'))).toBe(false);
         expect(writtenFiles.some((f) => f.includes('unitTests.qunit'))).toBe(false);
-        expect(writtenFiles.some((f) => f.includes('opaTests.qunit.html'))).toBe(false);
+        expect(writtenFiles.some((f) => f.includes('opaTests.qunit'))).toBe(false);
     });
 });
 

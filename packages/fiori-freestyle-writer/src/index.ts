@@ -192,7 +192,11 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         await addVirtualOPATestConfig(
             basePath,
             [
-                { framework: 'OPA5', path: '/test/integration/opaTests.qunit.html', pattern: '/test/**/AllJourneys.*' },
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    pattern: isTypeScriptEnabled ? '/test/**/*Journey.*' : '/test/**/AllJourneys.*'
+                },
                 { framework: 'Testsuite' },
                 {
                     framework: 'QUnit',
