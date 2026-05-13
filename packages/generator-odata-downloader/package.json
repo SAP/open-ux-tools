@@ -11,7 +11,6 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-download"
     },
-    "type": "module",
     "license": "Apache-2.0",
     "main": "generators/app/index.js",
     "keywords": [

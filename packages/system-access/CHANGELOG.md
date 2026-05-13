@@ -1,5 +1,12 @@
 # @sap-ux/system-access
 
+## 0.7.12
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+
 ## 0.7.11
 
 ### Patch Changes

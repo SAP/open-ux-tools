@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 interface SystemTypesProps {
     readonly setSystemType: (type: SystemType) => void;
     readonly setAuthenticationType: (authType: AuthenticationType) => void;
-    readonly systemType?: SystemType;
 }
 
 /**
@@ -17,14 +16,9 @@ interface SystemTypesProps {
  * @param props - system types props
  * @param props.setSystemType - function to set the system type
  * @param props.setAuthenticationType - function to set the authentication type
- * @param props.systemType - the pre-selected system type
  * @returns - the system types JSX element
  */
-export function SystemTypes({
-    setSystemType,
-    setAuthenticationType,
-    systemType
-}: Readonly<SystemTypesProps>): ReactElement {
+export function SystemTypes({ setSystemType, setAuthenticationType }: Readonly<SystemTypesProps>): ReactElement {
     const { t } = useTranslation();
 
     const setTypes = (type: SystemType): void => {
@@ -56,7 +50,6 @@ export function SystemTypes({
                 <UIDropdown
                     id="sysType"
                     options={systemTypeOptions}
-                    selectedKey={systemType}
                     placeholder={t('placeholders.typeOptions')}
                     onChange={(event, option) => {
                         setTypes(option?.key as SystemType);

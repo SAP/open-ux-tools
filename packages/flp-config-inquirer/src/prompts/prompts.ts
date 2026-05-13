@@ -57,7 +57,7 @@ export function getQuestions(
         ),
         [promptNames.icon]: getIconPrompt(promptOptions?.[promptNames.icon]),
         [promptNames.additionalParameters]: getParameterStringPrompt(),
-        [promptNames.confirmReplace]: getConfirmReplacePrompt()
+        [promptNames.confirmReplace]: getConfirmReplacePrompt(promptOptions?.[promptNames.confirmReplace])
     };
 
     const questions: FLPConfigQuestion[] = Object.entries(keyedPrompts)

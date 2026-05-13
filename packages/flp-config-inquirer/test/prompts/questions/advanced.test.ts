@@ -227,5 +227,25 @@ describe('advanced prompts', () => {
                 message: t('additionalMessages.confirmReplaceAdditionalMessage')
             });
         });
+
+        it('should return the CF additional message when isCF is true', () => {
+            const prompt = getConfirmReplacePrompt({ isCF: true });
+            const additionalMessage = (prompt.additionalMessages as Function)();
+
+            expect(additionalMessage).toEqual({
+                severity: Severity.information,
+                message: t('additionalMessages.confirmReplaceAdditionalMessageCF')
+            });
+        });
+
+        it('should return the ABAP additional message when isCF is false', () => {
+            const prompt = getConfirmReplacePrompt({ isCF: false });
+            const additionalMessage = (prompt.additionalMessages as Function)();
+
+            expect(additionalMessage).toEqual({
+                severity: Severity.information,
+                message: t('additionalMessages.confirmReplaceAdditionalMessage')
+            });
+        });
     });
 });

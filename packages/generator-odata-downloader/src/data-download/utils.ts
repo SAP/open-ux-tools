@@ -380,16 +380,11 @@ function resolveParentPropertyFromFile(
     navPropName: string,
     mockDataPath?: string
 ): string | undefined {
-    if (!mockDataPath) {
+    const jsFile = mockDataPath ? join(mockDataPath, `${entitySetName}.js`) : undefined;
+    if (!jsFile || !existsSync(jsFile)) {
         return undefined;
     }
-    const resolvedFile = [join(mockDataPath, `${entitySetName}.cjs`), join(mockDataPath, `${entitySetName}.js`)].find(
-        existsSync
-    );
-    if (!resolvedFile) {
-        return undefined;
-    }
-    const existing = createRequire(import.meta.url)(resolvedFile) as {
+    const existing = createRequire(import.meta.url)(jsFile) as {
         getReferentialConstraints?: (nav: {
             name: string;
             referentialConstraint: [];

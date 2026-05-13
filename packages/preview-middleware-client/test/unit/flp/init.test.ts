@@ -20,6 +20,10 @@ jest.unstable_mockModule('sap/cux/home/NewsContainer', () => {
     return { default: NewsContainer, __esModule: true };
 });
 
+jest.unstable_mockModule('open/ux/preview/client/utils/info-center-message', () => ({
+    sendInfoCenterMessage: jest.fn()
+}));
+
 import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller';
 const {
     init,
@@ -29,6 +33,7 @@ const {
     resetAppState,
     setI18nTitle
 } = await import('open/ux/preview/client/flp/init');
+const infoCenterMessage = await import('open/ux/preview/client/utils/info-center-message');
 type ManifestAppdescr = import('../../../src/adp/api-handler').ManifestAppdescr;
 
 describe('flp/init', () => {
@@ -466,13 +471,11 @@ describe('flp/init', () => {
             // Wait for the reload to complete before continue with the test cases.
             await reloadComplete;
 
-            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
-                showInfoCenterMessage({
-                    title: 'Adaptation Initialization Failed',
-                    description: expect.any(String),
-                    type: MessageBarType.error
-                })
-            );
+            expect(infoCenterMessage.sendInfoCenterMessage).toHaveBeenCalledWith({
+                title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
+                description: expect.any(String),
+                type: MessageBarType.error
+            });
             expect(reloadSpy).toHaveBeenCalled();
         });
 
@@ -535,6 +538,94 @@ describe('flp/init', () => {
                 expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
                 done();
             });
+        });
+    });
+    describe('registerForControllerExtensionErrors', () => {
+        let sendInfoCenterMessageSpy: jest.SpyInstance;
+
+        beforeEach(async () => {
+            sendInfoCenterMessageSpy = jest
+                .spyOn(infoCenterMessage, 'sendInfoCenterMessage')
+                .mockResolvedValue(undefined);
+
+            const flexSettings = { layer: 'CUSTOMER_BASE' };
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
+            CommunicationService.sendAction = jest.fn();
+            await init({ flex: JSON.stringify(flexSettings) });
+        });
+
+        afterEach(() => {
+            sendInfoCenterMessageSpy.mockRestore();
+        });
+
+        test('reports error event with controller extension path in stack trace', async () => {
+            const error = new Error('Something went wrong');
+            error.stack = 'Error: Something went wrong\n    at /changes/coding/MyExtension.js:10:5';
+            const errorEvent = new ErrorEvent('error', { error });
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).toHaveBeenCalledWith({
+                title: { key: 'CONTROLLER_EXTENSION_UNHANDLED_ERROR_TITLE' },
+                description: 'Something went wrong',
+                type: MessageBarType.error,
+                details: error.stack
+            });
+        });
+
+        test('reports unhandled rejection with controller extension .ts path in stack trace', async () => {
+            const error = new Error('Async failure');
+            error.stack = 'Error: Async failure\n    at /changes/coding/MyExtension.ts:20:3';
+
+            const rejectionEvent = new Event('unhandledrejection') as any;
+            rejectionEvent.reason = error;
+            globalThis.dispatchEvent(rejectionEvent);
+
+            expect(sendInfoCenterMessageSpy).toHaveBeenCalledWith({
+                title: { key: 'CONTROLLER_EXTENSION_UNHANDLED_ERROR_TITLE' },
+                description: 'Async failure',
+                type: MessageBarType.error,
+                details: error.stack
+            });
+        });
+
+        test('ignores error event without controller extension path in stack trace', async () => {
+            const error = new Error('Unrelated error');
+            error.stack = 'Error: Unrelated error\n    at /some/other/path.js:5:1';
+            const errorEvent = new ErrorEvent('error', { error });
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).not.toHaveBeenCalled();
+        });
+
+        test('ignores error event when error is not an Error instance', async () => {
+            const errorEvent = new ErrorEvent('error', { error: 'string error' } as any);
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).not.toHaveBeenCalled();
+        });
+
+        test('ignores error event when error is undefined', async () => {
+            const errorEvent = new ErrorEvent('error', {});
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).not.toHaveBeenCalled();
+        });
+
+        test('reports error with empty message when error.message is empty', async () => {
+            const error = new Error('');
+            error.stack = 'Error\n    at /changes/coding/Controller.js:1:1';
+            const errorEvent = new ErrorEvent('error', { error });
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    description: '',
+                    type: MessageBarType.error
+                })
+            );
         });
     });
 });

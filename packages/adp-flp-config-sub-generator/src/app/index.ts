@@ -164,7 +164,12 @@ export default class AdpFlpConfigGenerator extends Generator {
 
         const prompts: Question<FLPConfigAnswers>[] = await getPrompts(
             this.inbounds,
-            getAdpFlpConfigPromptOptions(this.tileSettingsAnswers as TileSettingsAnswers, this.inbounds, this.variant)
+            getAdpFlpConfigPromptOptions(
+                this.tileSettingsAnswers as TileSettingsAnswers,
+                this.inbounds,
+                this.variant,
+                this.isCfProject
+            )
         );
         this.answers = await this.prompt(prompts);
     }

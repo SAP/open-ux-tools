@@ -2,7 +2,7 @@ import * as React from 'react';
 import Enzyme from 'enzyme';
 import { UISections } from '../../../src/components/UISection/UISections';
 import { UISectionLayout } from '../../../src/components/UISection/UISection';
-import { UISplitterType } from '../../../src/components/UISection/UISplitter';
+import { UISplitterLayoutType, UISplitterType } from '../../../src/components/UISection/UISplitter';
 import type { UISectionsProps, UISectionsState } from '../../../src/components/UISection/UISections';
 import { mockResizeObserver, mockDomEventListener } from '../../utils/utils';
 import { initIcons } from '../../../src/components/Icons';
@@ -135,6 +135,34 @@ describe('<Sections />', () => {
         });
         const dom: HTMLElement = wrapper.getDOMNode();
         expect(dom.style.height).toEqual(height);
+    });
+
+    describe('Test "splitterLayoutType" property', () => {
+        const testCases = [
+            {
+                name: 'Default value',
+                splitterLayoutType: undefined,
+                isCompact: true
+            },
+            {
+                name: 'splitterLayoutType = Compact',
+                splitterLayoutType: UISplitterLayoutType.Compact,
+                isCompact: true
+            },
+            {
+                name: 'splitterLayoutType = Standard',
+                splitterLayoutType: UISplitterLayoutType.Standard,
+                isCompact: false
+            }
+        ];
+        test.each(testCases)('$name', ({ splitterLayoutType, isCompact }) => {
+            wrapper.setProps({
+                splitter: true,
+                splitterLayoutType
+            });
+            expect(wrapper.find('.splitter--compact').length).toEqual(isCompact ? 1 : 0);
+            expect(wrapper.find('.splitter--standard').length).toEqual(isCompact ? 0 : 1);
+        });
     });
 
     it('Test "hidden" section', () => {

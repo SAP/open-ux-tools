@@ -112,6 +112,11 @@ export interface AppConfig {
         readonly skipAnnotations?: boolean;
         readonly enableEslint?: boolean;
         readonly enableTypeScript?: boolean;
+        /**
+         * If true, virtual endpoints will be used for preview instead of generating flpSandbox.html and related files.
+         * Defaults to true if not specified.
+         */
+        readonly enableVirtualEndpoints?: boolean;
     };
     service?: {
         readonly host?: string;

@@ -1,5 +1,13 @@
 # @sap-ux/odata-cli
 
+## 0.17.63
+
+### Patch Changes
+
+- 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+
 ## 0.17.62
 
 ### Patch Changes
