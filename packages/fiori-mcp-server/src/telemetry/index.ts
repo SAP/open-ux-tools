@@ -52,13 +52,23 @@ export abstract class TelemetryHelper {
     }
 
     /**
+     * Generates a new session ID synchronously. Call this before connecting the transport
+     * so that the ID is available when the first telemetry event fires during the MCP handshake.
+     */
+    public static initSessionId(): void {
+        this._sessionId = randomUUID();
+        logger.info(`Telemetry session initialized with ID: ${this._sessionId}`);
+    }
+
+    /**
      * Load telemetry settings.
      *
      * @param options - tools suite telemetry init settings
      */
     public static async initTelemetrySettings(options?: ToolsSuiteTelemetryInitSettings): Promise<void> {
-        this._sessionId = randomUUID();
-        logger.info(`Telemetry session initialized with ID: ${this._sessionId}`);
+        if (!this._sessionId) {
+            this.initSessionId();
+        }
 
         const telemetryOptions: ToolsSuiteTelemetryInitSettings = {
             consumerModule: {

@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import * as mcpTypes from '@modelcontextprotocol/sdk/types.js';
 import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from '../../src/constant';
 
 const setRequestHandlerMock = jest.fn();
@@ -22,6 +23,7 @@ jest.unstable_mockModule('@modelcontextprotocol/sdk/server/stdio.js', () => ({
 jest.unstable_mockModule('../../src/telemetry', () => ({
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),
+        initSessionId: jest.fn(),
         markToolStartTime: jest.fn(),
         sendTelemetry: jest.fn()
     },
@@ -257,6 +259,56 @@ describe('FioriFunctionalityServer', () => {
             });
 
             sendTelemetryMock.mockRestore();
+        });
+
+        test('should return fallback protocol version when requested version is unsupported', async () => {
+            const server = new FioriFunctionalityServer();
+            const initHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const initCallback = initHandlerCall[1];
+            const result = await initCallback({
+                params: {
+                    protocolVersion: '1999-01-01',
+                    clientInfo: { name: 'old-client', version: '0.1.0' }
+                }
+            });
+            expect(result.protocolVersion).toBe('2024-11-05');
+        });
+
+        test('should return exact requested protocol version when it is supported', async () => {
+            const server = new FioriFunctionalityServer();
+            const initHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const initCallback = initHandlerCall[1];
+            const supportedVersion = mcpTypes.SUPPORTED_PROTOCOL_VERSIONS[0];
+            const result = await initCallback({
+                params: {
+                    protocolVersion: supportedVersion,
+                    clientInfo: { name: 'test-client', version: '1.0.0' }
+                }
+            });
+            expect(result.protocolVersion).toBe(supportedVersion);
+        });
+
+        test('should return last supported version when both requested and fallback versions are unsupported', async () => {
+            // Temporarily remove '2024-11-05' from the supported versions array to test branch C
+            const idx = mcpTypes.SUPPORTED_PROTOCOL_VERSIONS.indexOf('2024-11-05');
+            mcpTypes.SUPPORTED_PROTOCOL_VERSIONS.splice(idx, 1);
+
+            try {
+                const server = new FioriFunctionalityServer();
+                const initHandlerCall = setRequestHandlerMock.mock.calls[0];
+                const initCallback = initHandlerCall[1];
+                const result = await initCallback({
+                    params: {
+                        protocolVersion: '1999-01-01',
+                        clientInfo: { name: 'old-client', version: '0.1.0' }
+                    }
+                });
+                const expected = mcpTypes.SUPPORTED_PROTOCOL_VERSIONS[mcpTypes.SUPPORTED_PROTOCOL_VERSIONS.length - 1];
+                expect(result.protocolVersion).toBe(expected);
+            } finally {
+                // Restore the removed version
+                mcpTypes.SUPPORTED_PROTOCOL_VERSIONS.splice(idx, 0, '2024-11-05');
+            }
         });
     });
 
@@ -806,6 +858,48 @@ describe('FioriFunctionalityServer', () => {
             const server = new FioriFunctionalityServer();
             await server.run();
             expect(connectMock).toHaveBeenCalledTimes(1);
+        });
+
+        test('should call initSessionId before transport.connect', async () => {
+            const callOrder: string[] = [];
+            jest.spyOn(TelemetryHelper, 'initSessionId').mockImplementation(() => {
+                callOrder.push('initSessionId');
+            });
+            connectMock.mockImplementation(() => {
+                callOrder.push('connect');
+                return Promise.resolve();
+            });
+
+            const server = new FioriFunctionalityServer();
+            await server.run();
+
+            expect(callOrder).toEqual(['initSessionId', 'connect']);
+        });
+
+        test('should log error message when setupTelemetry rejects with an Error instance', async () => {
+            const loggerModule = await import('../../src/utils/logger');
+            const loggerErrorSpy = jest.spyOn(loggerModule.logger, 'error').mockImplementation(jest.fn());
+            jest.spyOn(TelemetryHelper, 'initTelemetrySettings').mockRejectedValue(new Error('telemetry failed'));
+
+            const server = new FioriFunctionalityServer();
+            await server.run();
+            await Promise.resolve();
+
+            expect(loggerErrorSpy).toHaveBeenCalledWith('Telemetry init error: telemetry failed');
+            loggerErrorSpy.mockRestore();
+        });
+
+        test('should log error message when setupTelemetry rejects with a non-Error value', async () => {
+            const loggerModule = await import('../../src/utils/logger');
+            const loggerErrorSpy = jest.spyOn(loggerModule.logger, 'error').mockImplementation(jest.fn());
+            jest.spyOn(TelemetryHelper, 'initTelemetrySettings').mockRejectedValue('string error');
+
+            const server = new FioriFunctionalityServer();
+            await server.run();
+            await Promise.resolve();
+
+            expect(loggerErrorSpy).toHaveBeenCalledWith('Telemetry init error: string error');
+            loggerErrorSpy.mockRestore();
         });
     });
 });
