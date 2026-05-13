@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-test-writer",
     "description": "SAP UI5 tests writer",
-    "version": "0.7.115",
+    "version": "0.8.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -41,7 +41,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap/ux-specification": "1.144.0",
+        "@sap/ux-specification": "1.144.2",
         "@sap-ux/edmx-parser": "0.10.0",
         "@sap-ux/annotation-converter": "0.10.21"
     },

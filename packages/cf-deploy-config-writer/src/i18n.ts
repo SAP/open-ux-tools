@@ -38,8 +38,4 @@ export function t(key: string, options?: TOptions): string {
 
 // Initialize i18n on module load
 // Errors are ignored since the writer will still work (fallback strings will be used)
-try {
-    await initI18n();
-} catch {
-    // Ignore any errors since the write will still work
-}
+void initI18n().catch(() => undefined);
