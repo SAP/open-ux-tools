@@ -23,6 +23,8 @@ const appComponentLibFioriElements = 'sap/fe/core/AppComponent';
 
 type FrameworkLibs = Record<OdataVersion, string[]>;
 
+const v4CommonLibs = ['sap.m', 'sap.fe.templates'];
+
 const commonUi5Libs: FrameworkLibs = {
     [OdataVersion.v2]: [
         'sap.m',
@@ -33,8 +35,8 @@ const commonUi5Libs: FrameworkLibs = {
         'sap.ui.generic.app',
         'sap.suite.ui.generic.template'
     ],
-    [OdataVersion.v4]: ['sap.m', 'sap.fe.templates'],
-    [OdataVersion.v401]: ['sap.m', 'sap.fe.templates']
+    [OdataVersion.v4]: v4CommonLibs,
+    [OdataVersion.v401]: v4CommonLibs
 };
 
 type TemplateLibsEntry = {
@@ -47,6 +49,39 @@ type TemplateLibs = {
     [V in OdataVersion]: {
         [T in TemplateType]?: TemplateLibsEntry;
     };
+};
+
+const v4TemplateLibs: { [T in TemplateType]?: TemplateLibsEntry } = {
+    [TemplateType.ListReportObjectPage]: {
+        baseComponent: appComponentLibFioriElements,
+        ui5Libs: [...v4CommonLibs, 'sap.ushell'],
+        manifestLibs: [...v4CommonLibs]
+    },
+    [TemplateType.FormEntryObjectPage]: {
+        baseComponent: appComponentLibFioriElements,
+        ui5Libs: [...v4CommonLibs, 'sap.ushell'],
+        manifestLibs: [...v4CommonLibs]
+    },
+    [TemplateType.AnalyticalListPage]: {
+        baseComponent: appComponentLibFioriElements,
+        ui5Libs: [...v4CommonLibs, 'sap.ushell'],
+        manifestLibs: [...v4CommonLibs]
+    },
+    [TemplateType.Worklist]: {
+        baseComponent: appComponentLibFioriElements,
+        ui5Libs: [...v4CommonLibs, 'sap.ushell'],
+        manifestLibs: [...v4CommonLibs]
+    },
+    [TemplateType.OverviewPage]: {
+        baseComponent: appComponentLibOVP,
+        ui5Libs: [...v4CommonLibs, 'sap.ushell', 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout'],
+        manifestLibs: [...v4CommonLibs, 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
+    },
+    [TemplateType.FlexibleProgrammingModel]: {
+        baseComponent: appComponentLibFioriElements,
+        ui5Libs: [...v4CommonLibs, 'sap.fe.core', 'sap.ushell'],
+        manifestLibs: ['sap.m', 'sap.fe.core']
+    }
 };
 
 const templateLibs: TemplateLibs = {
@@ -68,70 +103,8 @@ const templateLibs: TemplateLibs = {
             ui5Libs: [...commonUi5Libs[OdataVersion.v2], 'sap.collaboration']
         }
     },
-    [OdataVersion.v4]: {
-        [TemplateType.ListReportObjectPage]: {
-            baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ushell'],
-            manifestLibs: [...commonUi5Libs[OdataVersion.v4]]
-        },
-        [TemplateType.FormEntryObjectPage]: {
-            baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ushell'],
-            manifestLibs: [...commonUi5Libs[OdataVersion.v4]]
-        },
-        [TemplateType.AnalyticalListPage]: {
-            baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ushell'],
-            manifestLibs: [...commonUi5Libs[OdataVersion.v4]]
-        },
-        [TemplateType.Worklist]: {
-            baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ushell'],
-            manifestLibs: [...commonUi5Libs[OdataVersion.v4]]
-        },
-        [TemplateType.OverviewPage]: {
-            baseComponent: appComponentLibOVP,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ushell', 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout'],
-            manifestLibs: [...commonUi5Libs[OdataVersion.v4], 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
-        },
-        [TemplateType.FlexibleProgrammingModel]: {
-            baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.core', 'sap.ushell'],
-            manifestLibs: ['sap.m', 'sap.fe.core']
-        }
-    },
-    [OdataVersion.v401]: {
-        [TemplateType.ListReportObjectPage]: {
-            baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v401], 'sap.ushell'],
-            manifestLibs: [...commonUi5Libs[OdataVersion.v401]]
-        },
-        [TemplateType.FormEntryObjectPage]: {
-            baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v401], 'sap.ushell'],
-            manifestLibs: [...commonUi5Libs[OdataVersion.v401]]
-        },
-        [TemplateType.AnalyticalListPage]: {
-            baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v401], 'sap.ushell'],
-            manifestLibs: [...commonUi5Libs[OdataVersion.v401]]
-        },
-        [TemplateType.Worklist]: {
-            baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v401], 'sap.ushell'],
-            manifestLibs: [...commonUi5Libs[OdataVersion.v401]]
-        },
-        [TemplateType.OverviewPage]: {
-            baseComponent: appComponentLibOVP,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v401], 'sap.ushell', 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout'],
-            manifestLibs: [...commonUi5Libs[OdataVersion.v401], 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
-        },
-        [TemplateType.FlexibleProgrammingModel]: {
-            baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v401], 'sap.fe.core', 'sap.ushell'],
-            manifestLibs: ['sap.m', 'sap.fe.core']
-        }
-    }
+    [OdataVersion.v4]: v4TemplateLibs,
+    [OdataVersion.v401]: v4TemplateLibs
 };
 
 /**
