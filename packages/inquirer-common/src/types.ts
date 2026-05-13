@@ -1,4 +1,4 @@
-import type { IValidationLink, IMessageSeverity, OutputTabLinkResult, ShowOutputTabLink } from '@sap-devx/yeoman-ui-types';
+import type { IValidationLink, IMessageSeverity, ShowOutputTabLink } from '@sap-devx/yeoman-ui-types';
 import type {
     Answers,
     ConfirmQuestion as BaseConfirmQuestion,
