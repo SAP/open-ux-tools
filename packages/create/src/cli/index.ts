@@ -7,6 +7,9 @@ import { getRemoveCommands } from './remove';
 import { getGenerateCommands } from './generate';
 import { getChangeCommands } from './change';
 import { getConvertCommands } from './convert';
+import { getListCommands } from './list';
+import { getGetCommands } from './get';
+import { getUpdateCommands } from './update';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -108,6 +111,33 @@ function getCommanderProgram(): Command {
                     The available subcommands are: ${getFeatureSummary(changeCommands.commands)}`
     );
     program.addCommand(changeCommands);
+
+    // Handler for sap-ux list <feature> ..
+    const listCommands = getListCommands();
+    listCommands.description(
+        `Command group for listing SAP Fiori resources. A subcommand is required.
+                    Usage: \`npx --yes @sap-ux/create@latest list [subcommand] [options]\`
+                    The available subcommands are: ${getFeatureSummary(listCommands.commands)}\n`
+    );
+    program.addCommand(listCommands);
+
+    // Handler for sap-ux get <feature> ..
+    const getCommands = getGetCommands();
+    getCommands.description(
+        `Command group for retrieving SAP Fiori resources. A subcommand is required.
+                    Usage: \`npx --yes @sap-ux/create@latest get [subcommand] [options]\`
+                    The available subcommands are: ${getFeatureSummary(getCommands.commands)}\n`
+    );
+    program.addCommand(getCommands);
+
+    // Handler for sap-ux update <feature> ..
+    const updateCommands = getUpdateCommands();
+    updateCommands.description(
+        `Command group for updating SAP Fiori resources. A subcommand is required.
+                    Usage: \`npx --yes @sap-ux/create@latest update [subcommand] [options]\`
+                    The available subcommands are: ${getFeatureSummary(updateCommands.commands)}\n`
+    );
+    program.addCommand(updateCommands);
 
     return program;
 }

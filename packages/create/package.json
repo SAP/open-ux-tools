@@ -45,6 +45,7 @@
         "@sap-ux/preview-middleware": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
+        "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/flp-config-inquirer": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",

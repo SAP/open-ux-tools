@@ -1587,6 +1587,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@sap-ux/system-access':
         specifier: workspace:*
         version: link:../system-access
@@ -1618,9 +1621,6 @@ importers:
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
       '@types/diff':
         specifier: 8.0.0
         version: 8.0.0
