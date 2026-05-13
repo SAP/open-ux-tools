@@ -74,6 +74,7 @@
         "@types/json-schema": "7.0.15",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
+        "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
