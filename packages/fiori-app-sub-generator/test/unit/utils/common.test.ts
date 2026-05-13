@@ -127,7 +127,7 @@ describe('Test utils', () => {
 
     test('getMinSupportedUI5Version - LROP v401', () => {
         const minVerson = getMinSupportedUI5Version(OdataVersion.v401, FloorplanFE.FE_LROP);
-        expect(minVerson).toBe('1.84.0');
+        expect(minVerson).toBe('1.144.0');
     });
 
     test('getMinSupportedUI5Version - form entry', () => {

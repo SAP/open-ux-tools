@@ -39,6 +39,9 @@ import { getBackendSystemType } from '@sap-ux/store';
 export function getODataVersion(edmx: string): OdataVersion {
     try {
         const convertedMetadata = convert(parse(edmx));
+        if (convertedMetadata.version === '4.01') {
+            return OdataVersion.v401;
+        }
         return convertedMetadata.version.startsWith('4') ? OdataVersion.v4 : OdataVersion.v2;
     } catch (error) {
         throw Error(t('error.appConfigUnparseableEdmx'));
@@ -77,7 +80,9 @@ export function buildSapClientParam(sapClient: string): string {
  */
 export function getRequiredOdataVersion(floorplan: Floorplan): OdataVersion | undefined {
     const supportedVers = FloorplanAttributes[floorplan].supportedODataVersion;
-    return supportedVers.length === 1 ? supportedVers[0] : undefined;
+    // Collapse v401 to v4 — they are the same family for version requirement purposes
+    const baseVers = [...new Set(supportedVers.map((v) => (v === OdataVersion.v401 ? OdataVersion.v4 : v)))];
+    return baseVers.length === 1 ? baseVers[0] : undefined;
 }
 
 /**

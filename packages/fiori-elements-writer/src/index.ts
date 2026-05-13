@@ -92,7 +92,9 @@ function getOpaConfig(
  */
 function shouldAddTest(service: Partial<OdataService>, addTests?: boolean): boolean {
     return (
-        !!addTests && (service?.version === OdataVersion.v4 || service?.version === OdataVersion.v401) && (!!service?.metadata || service?.type === ServiceType.CDS)
+        !!addTests &&
+        (service?.version === OdataVersion.v4 || service?.version === OdataVersion.v401) &&
+        (!!service?.metadata || service?.type === ServiceType.CDS)
     );
 }
 
@@ -208,7 +210,8 @@ async function generate<T extends {}>(
         await generateFpmConfig(feApp, basePath, fs);
     } else {
         // Copy odata version specific common templates and version specific, floorplan specific templates
-        const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
+        const templateVersion = feApp.service?.version === OdataVersion.v401 ? OdataVersion.v4 : feApp.service?.version;
+        const templateVersionPath = join(rootTemplatesPath, `v${templateVersion}`);
         [join(templateVersionPath, 'common', 'add'), join(templateVersionPath, feApp.template.type, 'add')].forEach(
             (templatePath) => {
                 fs!.copyTpl(

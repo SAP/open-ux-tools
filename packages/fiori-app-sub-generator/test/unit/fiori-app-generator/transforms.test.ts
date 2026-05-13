@@ -390,7 +390,7 @@ describe('Test transform state', () => {
         });
     });
 
-    test('Should resolve minUI5Version for OdataVersion.v401 the same as v4', async () => {
+    test('Should resolve minUI5Version for OdataVersion.v401', async () => {
         const state: State = {
             project: {
                 name: 'TestProject1',
@@ -413,7 +413,7 @@ describe('Test transform state', () => {
         expect(result).toMatchObject({
             ui5: {
                 version: undefined,
-                minUI5Version: '1.84.0'
+                minUI5Version: '1.144.0'
             }
         });
     });

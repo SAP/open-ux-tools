@@ -89,8 +89,8 @@ export function getAnalyticListPageQuestions(
 
     // Layout prompts
     if (!hideTableLayoutPrompts) {
-        // v4 specific options
-        if (odataVersion === OdataVersion.v4) {
+        // v4/v401 specific options
+        if (odataVersion === OdataVersion.v4 || odataVersion === OdataVersion.v401) {
             alpQuestions.push({
                 when: (prevAnswers: EntitySelectionAnswers) => {
                     return !!prevAnswers.mainEntity;

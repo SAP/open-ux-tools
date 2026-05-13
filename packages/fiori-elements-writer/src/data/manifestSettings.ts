@@ -73,11 +73,12 @@ export function extendManifestJson<T>(
     };
 
     // Manifest paths to be extended
+    const templateVersion = feApp.service.version === OdataVersion.v401 ? OdataVersion.v4 : feApp.service.version;
     const extendTemplatePaths = [
         join(rootTemplatesPath, 'common', 'extend', 'webapp'),
         join(rootTemplatesPath, templatePath, 'extend', 'webapp'),
-        join(rootTemplatesPath, `v${feApp.service.version}`, templatePath, 'extend', 'webapp'),
-        join(rootTemplatesPath, `v${feApp.service.version}`, 'common', 'extend', 'webapp')
+        join(rootTemplatesPath, `v${templateVersion}`, templatePath, 'extend', 'webapp'),
+        join(rootTemplatesPath, `v${templateVersion}`, 'common', 'extend', 'webapp')
     ];
     const manifestPath = join(targetPath, 'webapp', 'manifest.json');
 

@@ -255,8 +255,8 @@ export function getDefaultTableType(
         return 'AnalyticalTable';
     }
 
-    // Handle OData v4 specific logic
-    if (odataVersion === OdataVersion.v4 && entitySet) {
+    // Handle OData v4/v401 specific logic
+    if ((odataVersion === OdataVersion.v4 || odataVersion === OdataVersion.v401) && entitySet) {
         const canUseAnalytical = templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp';
         const { hasRecursiveHierarchyForEntitySet: hasHierarchy, hasAggregateTransformations: hasAnalyticalData } =
             getTableCapabilitiesByEntitySet(entitySet);

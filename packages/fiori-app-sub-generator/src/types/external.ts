@@ -22,27 +22,27 @@ type FloorplanAttributesType = {
 
 export const FloorplanAttributes: FloorplanAttributesType = {
     [FloorplanFE.FE_LROP]: {
-        supportedODataVersion: [OdataVersion.v2, OdataVersion.v4],
+        supportedODataVersion: [OdataVersion.v2, OdataVersion.v4, OdataVersion.v401],
         templateType: FETemplateType.ListReportObjectPage
     },
     [FloorplanFE.FE_ALP]: {
-        supportedODataVersion: [OdataVersion.v2, OdataVersion.v4],
+        supportedODataVersion: [OdataVersion.v2, OdataVersion.v4, OdataVersion.v401],
         templateType: FETemplateType.AnalyticalListPage
     },
     [FloorplanFE.FE_WORKLIST]: {
-        supportedODataVersion: [OdataVersion.v2, OdataVersion.v4],
+        supportedODataVersion: [OdataVersion.v2, OdataVersion.v4, OdataVersion.v401],
         templateType: FETemplateType.Worklist
     },
     [FloorplanFE.FE_FEOP]: {
-        supportedODataVersion: [OdataVersion.v4],
+        supportedODataVersion: [OdataVersion.v4, OdataVersion.v401],
         templateType: FETemplateType.FormEntryObjectPage
     },
     [FloorplanFE.FE_OVP]: {
-        supportedODataVersion: [OdataVersion.v2, OdataVersion.v4],
+        supportedODataVersion: [OdataVersion.v2, OdataVersion.v4, OdataVersion.v401],
         templateType: FETemplateType.OverviewPage
     },
     [FloorplanFE.FE_FPM]: {
-        supportedODataVersion: [OdataVersion.v4],
+        supportedODataVersion: [OdataVersion.v4, OdataVersion.v401],
         templateType: FETemplateType.FlexibleProgrammingModel
     },
     [FloorplanFF.FF_SIMPLE]: {

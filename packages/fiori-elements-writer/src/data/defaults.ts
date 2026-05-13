@@ -151,7 +151,8 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     setFioriAppDefaults(feApp.app, feApp.template.type, feApp.service.version);
 
     const customUi5Libs =
-        (feApp.service.version === OdataVersion.v4 || feApp.service.version === OdataVersion.v401) && feApp.service.metadata
+        (feApp.service.version === OdataVersion.v4 || feApp.service.version === OdataVersion.v401) &&
+        feApp.service.metadata
             ? getAnnotationV4Libs(feApp.service.metadata)
             : [];
 
