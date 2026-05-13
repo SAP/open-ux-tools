@@ -643,7 +643,7 @@ describe('hasVirtualOPA5()', () => {
         expect(mockReadUi5Yaml).toHaveBeenCalledTimes(1);
     });
 
-    describe('addVirtualOPATestConfig', () => {
+    describe('addVirtualTestConfig', () => {
         const { readUi5Yaml: realReadUi5Yaml } = jest.requireActual('@sap-ux/project-access');
 
         const previewYaml = `specVersion: '4.0'

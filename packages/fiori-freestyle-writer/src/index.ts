@@ -188,6 +188,20 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
+    if (ffApp.service?.capService) {
+        const settings: CapProjectSettings = {
+            appRoot: basePath,
+            packageName: ffApp.package.name ?? '',
+            appId: ffApp.app.id,
+            sapux: ffApp.appOptions?.sapux,
+            enableCdsUi5Plugin: ffApp.appOptions?.addCdsUi5Plugin,
+            enableTypescript: ffApp.appOptions?.typescript,
+            disableRootPackageJsonUpdates: ffApp.appOptions?.disableCapRootPkgJsonUpdates
+        };
+        // apply cap updates when service is cap
+        await applyCAPUpdates(fs, ffApp.service.capService, settings);
+    }
+
     if (isEdmxProjectType && addTests && ffApp.appOptions?.useVirtualPreviewEndpoints) {
         await addVirtualTestConfig(
             basePath,
@@ -206,20 +220,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
             ],
             fs
         );
-    }
-
-    if (ffApp.service?.capService) {
-        const settings: CapProjectSettings = {
-            appRoot: basePath,
-            packageName: ffApp.package.name ?? '',
-            appId: ffApp.app.id,
-            sapux: ffApp.appOptions?.sapux,
-            enableCdsUi5Plugin: ffApp.appOptions?.addCdsUi5Plugin,
-            enableTypescript: ffApp.appOptions?.typescript,
-            disableRootPackageJsonUpdates: ffApp.appOptions?.disableCapRootPkgJsonUpdates
-        };
-        // apply cap updates when service is cap
-        await applyCAPUpdates(fs, ffApp.service.capService, settings);
     }
 
     return fs;
