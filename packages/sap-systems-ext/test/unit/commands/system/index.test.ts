@@ -10,8 +10,7 @@ describe('Test registering the systems commands', () => {
         } as ExtensionContext;
 
         const cmds = vscodeMod.commands;
-
-        const vscodeCommandsRegisterSpy = jest.spyOn(cmds, 'registerCommand').mockImplementation(() => {
+        jest.spyOn(cmds, 'registerCommand').mockImplementation(() => {
             return { dispose: () => {} };
         });
 
@@ -19,6 +18,6 @@ describe('Test registering the systems commands', () => {
 
         const subs = mockContext.subscriptions;
 
-        expect(subs.length).toBe(6);
+        expect(subs.length).toBe(7);
     });
 });

@@ -42,10 +42,7 @@
             }
         }
         .sections__item--toggle {
-            max-width: calc(100% - #{$splitter-size + 10});
-        }
-        > .sections__item:first-child {
-            padding-right: calc($splitter-size / 2);
+            max-width: calc(100% - #{$splitter-toggle-size + 10});
         }
     }
     &.sections--vertical {
@@ -56,7 +53,7 @@
             }
         }
         .sections__item--toggle {
-            max-height: calc(100% - #{$splitter-size + 10});
+            max-height: calc(100% - #{$splitter-toggle-size + 10});
         }
     }
 }

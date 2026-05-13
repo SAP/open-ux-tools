@@ -44,10 +44,10 @@
                 }
             },
             applications: {
-                "simpleflightv2-display": {
-                    title: "App Title",
-                    description: "An SAP Fiori application.",
-                    additionalInformation: "SAPUI5.Component=simpleflightv2",
+                "testNameSpacelropv2nonvirt-tile": {
+                    title: "Project's \"Title\"",
+                    description: "Test 'Project' \"Description\"",
+                    additionalInformation: "SAPUI5.Component=testNameSpace.lropv2nonvirt",
                     applicationType: "URL",
                     url: "../"
                 }
@@ -59,15 +59,15 @@
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="../resources/sap-ui-core.js"
-        data-sap-ui-libs="sap.m,sap.ui.core,sap.ushell"
+        data-sap-ui-libs="sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template"
         data-sap-ui-async="true"
         data-sap-ui-preload="async"
         data-sap-ui-theme="sap_fiori_3"
         data-sap-ui-compatVersion="edge"
         data-sap-ui-language="en"
-        data-sap-ui-resourceroots='{"simpleflightv2": "../"}'
+        data-sap-ui-resourceroots='{"testNameSpace.lropv2nonvirt": "../"}'
         data-sap-ui-frameOptions="allow"
-        data-sap-ui-flexibilityServices='[{"connector": "LocalStorageConnector"}]'>
+        data-sap-ui-flexibilityServices='[{"applyConnector":"testNameSpace/lropv2nonvirt/test/changes_loader", "custom":true}, {"connector": "LocalStorageConnector"}]'>
     </script>
     <script id="locate-reuse-libs" src="./locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
     </script>

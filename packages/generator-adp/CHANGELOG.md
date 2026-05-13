@@ -1,5 +1,14 @@
 # @sap-ux/generator-adp
 
+## 0.9.69
+
+### Patch Changes
+
+- Updated dependencies [9360ea5]
+    - @sap-ux/fiori-generator-shared@0.14.0
+    - @sap-ux/inquirer-common@0.11.45
+    - @sap-ux/adp-tooling@0.18.130
+
 ## 0.9.68
 
 ### Patch Changes

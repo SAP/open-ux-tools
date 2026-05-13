@@ -1,5 +1,18 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.57
+
+### Patch Changes
+
+- c4bd625: Improve documentation Claude code, etc...
+
+## 0.6.56
+
+### Patch Changes
+
+- Updated dependencies [a5c05a8]
+    - @sap-ux/fiori-docs-embeddings@0.4.18
+
 ## 0.6.55
 
 ### Patch Changes

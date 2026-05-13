@@ -1,5 +1,19 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.43
+
+## 0.25.42
+
+### Patch Changes
+
+- be5476f: feat: Display unhandled exceptions from the Controller extension inside the Info Center.
+
+## 0.25.41
+
+### Patch Changes
+
+- 17de742: fix: Add fragment list to model for custom fragments
+
 ## 0.25.40
 
 ### Patch Changes
