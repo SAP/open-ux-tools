@@ -53,11 +53,7 @@ export function SystemMain(): ReactElement {
             ) : (
                 <div>
                     {addNewSapSystem && (
-                        <SystemTypes
-                            setSystemType={setSystemType}
-                            setAuthenticationType={setAuthenticationType}
-                            systemType={systemInfo?.systemType}
-                        />
+                        <SystemTypes setSystemType={setSystemType} setAuthenticationType={setAuthenticationType} />
                     )}
 
                     <SystemInfo

@@ -163,7 +163,7 @@ if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78
                                             oResult.changes = aProcessedChanges;
                                             var oLrepChange = {
                                                 changes: oResult,
-                                                componentClassName: "testNameSpace.lropv2nourl"
+                                                componentClassName: "testNameSpace.lropv2nonvirt"
                                             };
                                             resolve(oLrepChange);
                                         });
@@ -174,7 +174,7 @@ if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78
                                         oResult.changes = aProcessedChanges;
                                         var oLrepChange = {
                                             changes: oResult,
-                                            componentClassName: "testNameSpace.lropv2nourl"
+                                            componentClassName: "testNameSpace.lropv2nonvirt"
                                         };
                                         resolve(oLrepChange);
                                     }
