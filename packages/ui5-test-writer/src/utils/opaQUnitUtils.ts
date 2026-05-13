@@ -371,7 +371,7 @@ export async function addVirtualOPATestConfig(
         const previewMiddleware = yamlConfig.findCustomMiddleware<PreviewMiddlewareConfig>('fiori-tools-preview');
         if (previewMiddleware?.configuration?.flp) {
             previewMiddleware.configuration.flp.path = 'test/flp.html';
-            if (yamlFile === FileName.Ui5MockYaml) {
+            if (yamlFile === FileName.Ui5MockYaml && !previewMiddleware.configuration.test?.length) {
                 previewMiddleware.configuration.test = [...testFrameworks];
             }
             yamlConfig.updateCustomMiddleware(previewMiddleware);

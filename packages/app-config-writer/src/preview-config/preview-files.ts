@@ -24,7 +24,7 @@ const renameMessage = (filePath: string): string =>
 export async function renameSandbox(fs: Editor, basePath: string, path: string, logger?: ToolsLogger): Promise<void> {
     const filePath = join(await getWebappPath(basePath), path);
     if (fs.exists(filePath)) {
-        if (path.includes('unitTests.qunit.html')) {
+        if (path.endsWith('unitTests.qunit.html')) {
             logger?.warn(
                 `Unit test files will be discovered automatically using the default pattern '/test/**/*Test.{js,ts}'. If your unit test files do not match this pattern, add a 'pattern' property to the QUnit test entry in your UI5 YAML configuration (e.g. pattern: '/test/unit/controller/*.{js,ts}').`
             );

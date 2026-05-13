@@ -8324,6 +8324,7 @@ server:
         test:
           - framework: OPA5
             path: /test/integration/opaTests.qunit.html
+            pattern: /test/**/AllJourneys.*
           - framework: Testsuite
           - framework: QUnit
             path: /test/unit/unitTests.qunit.html
