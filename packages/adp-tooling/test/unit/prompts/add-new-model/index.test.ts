@@ -520,6 +520,27 @@ describe('getPrompts', () => {
         const logger = { error: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
         await expect(getPrompts(mockPath, 'CUSTOMER_BASE', logger)).resolves.toBeDefined();
     });
+
+    it('should return true when validating destination prompt with a valid Name', async () => {
+        isCFEnvironmentMock.mockResolvedValue(true);
+
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const validation = prompts.find((p) => p.name === 'destination')?.validate;
+
+        expect(typeof validation).toBe('function');
+        expect(validation?.({ Name: 'MY_DEST' } as unknown as string)).toBe(true);
+    });
+
+    it('should return error message when validating destination prompt with empty Name', async () => {
+        isCFEnvironmentMock.mockResolvedValue(true);
+        jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce('general.inputCannotBeEmpty');
+
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const validation = prompts.find((p) => p.name === 'destination')?.validate;
+
+        expect(typeof validation).toBe('function');
+        expect(validation?.({ Name: '' } as unknown as string)).toBe('general.inputCannotBeEmpty');
+    });
 });
 
 describe('createNewModelData', () => {
