@@ -9,11 +9,18 @@ on:
         types: [opened, synchronize, reopened]
         branches: [main]
 
+permissions:
+    contents: read
+    pull-requests: read
+
 jobs:
     # Job 1: Create changeset for general Renovate dependency PRs (NOT @ui5/manifest)
     create-changeset:
         name: Create Dependency Changeset
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            pull-requests: read
         # All Renovate PRs EXCEPT @ui5/manifest (which has custom handling).
         # !head.repo.fork guards against pull_request_target pwn-request attacks.
         if: |
@@ -29,7 +36,7 @@ jobs:
                   token: ${{ secrets.ACCESS_PAT }}
 
             - name: Create changeset
-              uses: mscharley/dependency-changesets-action@v1.2.4
+              uses: mscharley/dependency-changesets-action@f96232368519695969bea8a8cfff7cca32b1e56a # v1.2.4
               with:
                   token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'
@@ -39,6 +46,9 @@ jobs:
     update-manifest-fixtures:
         name: Update @ui5/manifest Fixtures & Changeset
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            pull-requests: read
         # !head.repo.fork guards against pull_request_target pwn-request attacks.
         if: |
             !github.event.pull_request.head.repo.fork &&
@@ -89,7 +99,7 @@ jobs:
                   git push --no-verify
 
             - name: Create changeset
-              uses: mscharley/dependency-changesets-action@v1.2.4
+              uses: mscharley/dependency-changesets-action@f96232368519695969bea8a8cfff7cca32b1e56a # v1.2.4
               with:
                   token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'

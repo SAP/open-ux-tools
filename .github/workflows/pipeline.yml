@@ -26,7 +26,7 @@ jobs:
               uses: pnpm/action-setup@v4.1.0
               with:
                   run_install: |
-                      - args: [--frozen-lockfile]
+                      - args: [--frozen-lockfile, --ignore-scripts]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -91,10 +91,14 @@ jobs:
             - name: Run SonarCloud scan
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
               shell: bash
+              env:
+                  PR_NUMBER: ${{ github.event.pull_request.number }}
+                  PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+                  PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
               run: |
-                  echo ${{ github.event.pull_request.number }} >> pr-event.txt
-                  echo ${{ github.event.pull_request.head.ref }} >> pr-event.txt
-                  echo ${{ github.event.pull_request.base.ref }} >> pr-event.txt
+                  echo "$PR_NUMBER" >> pr-event.txt
+                  echo "$PR_HEAD_REF" >> pr-event.txt
+                  echo "$PR_BASE_REF" >> pr-event.txt
 
             - name: 'Prepare output artifact'
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
@@ -128,7 +132,7 @@ jobs:
               uses: pnpm/action-setup@v4.1.0
               with:
                   run_install: |
-                      - args: [--frozen-lockfile]
+                      - args: [--frozen-lockfile, --ignore-scripts]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -180,7 +184,7 @@ jobs:
               uses: pnpm/action-setup@v4.1.0
               with:
                   run_install: |
-                      - args: [--frozen-lockfile]
+                      - args: [--frozen-lockfile, --ignore-scripts]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
