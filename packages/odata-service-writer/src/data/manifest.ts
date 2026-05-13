@@ -27,7 +27,12 @@ interface DataSourceUpdateSettings {
  * @returns '4.01' when applicable, undefined otherwise
  */
 function getOdataVersionFromMetadata(metadata: string): string | undefined {
-    const match = metadata.match(/<(?:\w+:)?Edmx[^>]+Version="([^"]+)"/);
+    // Scan only the opening tag to avoid ReDoS on large metadata strings.
+    const tagEnd = metadata.indexOf('>');
+    if (tagEnd === -1) {
+        return undefined;
+    }
+    const match = metadata.slice(0, tagEnd).match(/Version="([^"]+)"/);
     return match?.[1] === '4.01' ? '4.01' : undefined;
 }
 

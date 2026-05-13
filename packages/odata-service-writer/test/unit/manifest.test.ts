@@ -104,6 +104,15 @@ describe('manifest', () => {
                 const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
                 expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('2.0');
             });
+
+            test('v4 service with Version attribute after namespace declaration writes 4.01', async () => {
+                const metadata =
+                    '<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.01"></edmx:Edmx>';
+                fs.writeJSON('./webapp/manifest.json', baseManifest);
+                await updateManifest('./', { ...baseService, version: OdataVersion.v4, metadata }, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('4.01');
+            });
         });
         test('Ensure manifest are updated as expected as in edmx projects', async () => {
             const testManifest = {
