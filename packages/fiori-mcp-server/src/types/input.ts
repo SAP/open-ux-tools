@@ -79,3 +79,54 @@ export const DocSearchInputSchema = zod.object({
         .min(2)
         .describe('The search query for fiori elements, annotations, sapui5, fiori tools documentation')
 });
+
+export const GenerateAdaptationProjectInputSchema = zod.object({
+    system: zod.string().describe('The name of the SAP system (obtained from list_sap_systems)'),
+    application: zod.string().describe('The application ID to adapt (e.g., sap.ui.demoapps.rta.fe)'),
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the current working directory or target location. Used as fallback if targetFolder is not provided.'
+        ),
+    targetFolder: zod
+        .string()
+        .optional()
+        .describe(
+            'Optional absolute path to the target folder where the project will be generated. Defaults to appPath if not provided.'
+        ),
+    projectName: zod
+        .string()
+        .optional()
+        .describe('Optional name of the project. Defaults to app.variant if not provided.'),
+    namespace: zod.string().optional().describe('Optional namespace for the project'),
+    applicationTitle: zod.string().optional().describe('Optional title for the application'),
+    client: zod.string().optional().describe('Optional SAP client number'),
+    username: zod.string().optional().describe('Optional username for authentication'),
+    password: zod.string().optional().describe('Optional password for authentication')
+});
+
+export const OpenAdaptationEditorInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe('Absolute path to the adaptation project root directory (where package.json resides).')
+});
+
+export const AdpControllerExtensionInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        ),
+    prompt: zod
+        .string()
+        .optional()
+        .describe('Natural language prompt describing what controller extension or fragment to create'),
+    aiResponse: zod
+        .string()
+        .optional()
+        .describe(
+            'AI-generated response containing code blocks with **Path:** markers preceding each code block. Omit to receive generation rules and project context.'
+        ),
+    controllerName: zod.string().optional().describe('Desired controller extension name (without .js/.ts extension)'),
+    viewId: zod.string().optional().describe('Optional target view identifier for the controller extension')
+});

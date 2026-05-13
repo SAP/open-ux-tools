@@ -14,6 +14,9 @@ export { listSapSystems } from './list-sap-systems.js';
 export { downloadODataServiceMetadata } from './download-odata-service-metadata.js';
 export { generateFioriAppOData } from './generate-fiori-app-odata.js';
 export { generateFioriAppCap } from './generate-fiori-app-cap.js';
+export { generateAdaptationProject } from './generate-adaptation-project.js';
+export { openAdaptationEditor } from './open-adaptation-editor.js';
+export { adpControllerExtension } from './adp-controller-extension.js';
 
 export const tools = [
     {
@@ -62,7 +65,7 @@ export const tools = [
         description: `Lists all SAP systems from the user's environment. This will be SAP Fiori tools system store on VSCode or destinations on Business Application.
                     Also use this tool when the user asks to 'list destinations', 'list systems', 'list backends', or any equivalent phrasing.
                     Use this tool when the user references a SAP system by name or when you need to discover available systems
-                    before calling 'fetch-service-metadata' or generating a Fiori application.`,
+                    before calling 'download_odata_service_metadata', 'generate_adaptation_project', or generating a Fiori application.`,
         annotations: {
             title: 'List SAP Systems',
             readOnlyHint: true,
@@ -130,6 +133,69 @@ export const tools = [
             openWorldHint: false
         },
         inputSchema: generatorConfigCAPJson
+    },
+    {
+        name: 'generate_adaptation_project',
+        description: `Generates a new SAP Fiori adaptation project by calling the @sap-ux/adp generator.
+
+        This tool requires:
+        - system: The name of the SAP system (from list_sap_systems)
+        - application: The application ID to adapt
+
+        Optional parameters: targetFolder, projectName, namespace, applicationTitle, client, username, password.
+
+        Use 'list_sap_systems' first to discover available systems.
+        The generator will be executed with the provided JSON configuration.`,
+        annotations: {
+            title: 'Generate Adaptation Project',
+            readOnlyHint: false,
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.GenerateAdaptationProjectInputSchema)
+    },
+    {
+        name: 'open_adaptation_editor',
+        description: `Starts the adaptation editor server by running 'npx fiori run /test/adaptation-editor.html' in the adaptation project directory.
+
+        This tool:
+        - Spawns the editor server process in the background
+        - Extracts the server URL and editor path from the command output
+        - Returns the full editor URL and process ID
+        - Provides instructions on how to stop the editor process
+
+        The editor server will run independently in the background. Use the returned process ID or port to stop it if needed.`,
+        annotations: {
+            title: 'Open Adaptation Editor',
+            readOnlyHint: false,
+            idempotentHint: false,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.OpenAdaptationEditorInputSchema)
+    },
+    {
+        name: 'adp_controller_extension',
+        description: `Processes AI-generated controller extensions and fragments for SAPUI5 Adaptation Projects.
+
+        This tool:
+        - Validates that the project is an adaptation project (has manifest.appdescr_variant)
+        - Reads manifest.appdescr_variant to determine layer and namespace requirements
+        - Extracts files from the AI response (markdown code blocks with **Path:** markers)
+        - Writes controller extension files, fragments, and other code files
+        - Does NOT write change files (.change) - these are handled separately
+
+        CRITICAL: The 'aiResponse' parameter must contain pre-generated code with markdown code blocks,
+        each preceded by "**Path:** fullFilePath" on its own line.
+        Call this tool first without 'aiResponse' to receive detailed generation rules and project context.`,
+        annotations: {
+            title: 'ADP Controller Extension',
+            readOnlyHint: false,
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.AdpControllerExtensionInputSchema)
     },
     {
         name: 'list_functionality',

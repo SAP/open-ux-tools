@@ -7,7 +7,10 @@ import type {
     ListFioriAppsInputSchema,
     ListFunctionalitiesInputSchema,
     DocSearchInputSchema,
-    DownloadODataServiceMetadataInputSchema
+    DownloadODataServiceMetadataInputSchema,
+    GenerateAdaptationProjectInputSchema,
+    OpenAdaptationEditorInputSchema,
+    AdpControllerExtensionInputSchema
 } from './input.js';
 import type {
     ExecuteFunctionalityOutputSchema,
@@ -35,6 +38,9 @@ export type ExecuteFunctionalityOutput = zod.infer<typeof ExecuteFunctionalityOu
 
 export type DocSearchInput = zod.infer<typeof DocSearchInputSchema>;
 export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;
+export type GenerateAdaptationProjectInput = zod.infer<typeof GenerateAdaptationProjectInputSchema>;
+export type OpenAdaptationEditorInput = zod.infer<typeof OpenAdaptationEditorInputSchema>;
+export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensionInputSchema>;
 
 /**
  * Interface for functionality handlers
