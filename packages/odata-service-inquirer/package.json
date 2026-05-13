@@ -51,7 +51,7 @@
         "i18next": "25.10.10",
         "inquirer-autocomplete-prompt": "2.0.1",
         "os-name": "4.0.1",
-        "@sap-devx/yeoman-ui-types": "1.23.0"
+        "@sap-devx/yeoman-ui-types": "1.25.0"
     },
     "devDependencies": {
         "@sap-ux/fiori-generator-shared": "workspace:*",
