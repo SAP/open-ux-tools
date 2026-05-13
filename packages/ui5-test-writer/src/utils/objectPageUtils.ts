@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
+import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     FormField,
     SectionFormField,
@@ -9,7 +9,7 @@ import type {
     ObjectPageFeatures,
     ObjectPageNavigationParents
 } from '../types.js';
-import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import {
     type AggregationItem,
     type BodySectionItem,
@@ -19,7 +19,7 @@ import {
     getAggregations
 } from './modelUtils.js';
 import { extractTableColumnsFromNode } from './tableUtils.js';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
 
 /**
  * Extracts feature data for object pages from the application model.

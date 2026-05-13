@@ -18,8 +18,7 @@ import {
 import type { InputQuestion, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import type { IValidationLink, IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { Severity } = yeomanUiTypes;
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import { DEFAULT_PACKAGE_ABAP } from '../../../constants.js';
 
 /**

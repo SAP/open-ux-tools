@@ -1,7 +1,6 @@
 import Generator from 'yeoman-generator';
 import type { Prompts, AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { AppWizard } = yeomanUiTypes;
+import { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';

@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { MessageType } = yeomanUiTypes;
+import { MessageType } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';

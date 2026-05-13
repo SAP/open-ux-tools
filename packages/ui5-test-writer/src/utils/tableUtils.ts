@@ -1,4 +1,4 @@
-import type { TreeAggregation, TreeAggregations } from '@sap/ux-specification/dist/types/src/parser';
+import type { TreeAggregation, TreeAggregations } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import { getAggregations } from './modelUtils.js';
 import type { TableColumn, TableColumnFeatureData } from '../types.js';
 

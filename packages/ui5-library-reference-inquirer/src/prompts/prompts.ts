@@ -12,8 +12,7 @@ import {
 import { hidePrompts } from './helpers.js';
 import { SourceType } from './constants.js';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { Severity } = yeomanUiTypes;
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Get the prompts for the UI5 library reference writing.

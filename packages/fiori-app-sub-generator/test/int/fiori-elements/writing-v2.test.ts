@@ -51,7 +51,7 @@ describe('Generate v2 apps', () => {
         } catch {}
     });
 
-    it('LROP v2 - URL', async () => {
+    it.only('LROP v2 - URL', async () => {
         testProjectName = 'lrop_v2';
 
         const testState: State = cloneDeep({

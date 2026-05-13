@@ -380,6 +380,24 @@ export default [
         }
     },
     {
+        // i18n modules are imported at module load time; a top-level await turns the module into
+        // a webpack async module whose asyncness propagates to every importer up to the entry point,
+        // replacing module.exports with an async-module object — yeoman can no longer find generators.
+        // Use `void initI18n().catch(() => undefined)` instead (fire-and-forget, synchronous start).
+        files: ['**/i18n.ts'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: 'AwaitExpression:not(:function AwaitExpression)',
+                    message:
+                        'Top-level await in i18n modules causes webpack async module propagation. Use void initI18n().catch(() => undefined) instead.'
+                }
+            ],
+            'no-void': 'off' // required to allow the `void promise.catch()` fire-and-forget pattern
+        }
+    },
+    {
         settings: {
             jsdoc: {
                 tagNamePreference: {

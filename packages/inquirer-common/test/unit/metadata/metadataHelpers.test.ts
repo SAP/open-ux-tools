@@ -8,6 +8,7 @@ import {
     filterAggregateTransformations,
     convertEdmxToConvertedMetadata
 } from '../../../src/metadata';
+import { initI18nInquirerCommon } from '../../../src/i18n'
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import * as fs from 'node:fs';
@@ -17,12 +18,13 @@ const __testdirname = import.meta.dirname;
 describe('metadata entity helpers', () => {
     let metadata: ReturnType<typeof convert>;
 
-    beforeAll(() => {
+    beforeAll(async () => {
         const edmx = fs.readFileSync(
             path.resolve(__testdirname, '../prompts/fixtures/metadataV4WithAggregateTransforms.xml'),
             'utf-8'
         );
         metadata = convert(parse(edmx));
+        await initI18nInquirerCommon();
     });
 
     describe('aggregate transformation helpers', () => {

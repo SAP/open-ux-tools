@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { Severity } = yeomanUiTypes;
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 // Pre-import real module before mocking to avoid missing export errors
 const realProjectInputValidator = await import('@sap-ux/project-input-validator');

@@ -1,8 +1,7 @@
 import { join } from 'node:path';
 import * as hasbin from 'hasbin';
 import { platform } from 'node:os';
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { AppWizard, Prompts } = yeomanUiTypes;
+import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
 import {
     DeploymentGenerator,

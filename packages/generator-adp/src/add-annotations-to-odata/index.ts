@@ -1,5 +1,4 @@
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { MessageType } = yeomanUiTypes;
+import { MessageType } from '@sap-devx/yeoman-ui-types';
 
 import {
     ChangeType,

@@ -1,5 +1,4 @@
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { MessageType, Prompts } = yeomanUiTypes;
+import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { NewModelAnswers, DescriptorVariant, CfConfig } from '@sap-ux/adp-tooling';
 import {
     generateChange,

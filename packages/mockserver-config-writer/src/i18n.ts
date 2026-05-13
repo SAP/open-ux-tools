@@ -35,8 +35,6 @@ export function t(key: string, options?: TOptions): string {
     return (i18nInstance.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-try {
-    await initI18n();
-} catch {
+initI18n().catch(() => {
     // Ignore any errors since the write will still work
-}
+});

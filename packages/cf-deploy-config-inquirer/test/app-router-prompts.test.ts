@@ -15,10 +15,12 @@ const { RouterModuleType, appRouterPromptNames } = await import('../src');
 const { getAppRouterQuestions } = await import('../src/prompts');
 import type { CfAppRouterDeployConfigQuestions, CfAppRouterDeployConfigPromptOptions } from '../src';
 import { type ListQuestion } from '@sap-ux/inquirer-common';
+import { initI18nCfDeployConfigInquirer } from '../src/i18n.js';
 
 describe('App Router Prompt Generation Tests', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.clearAllMocks();
+        await initI18nCfDeployConfigInquirer();
     });
 
     describe('getMtaPathPrompt', () => {

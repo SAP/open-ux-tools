@@ -1,5 +1,4 @@
-import yeomanUiTypes from '@sap-devx/yeoman-ui-types';
-const { Severity } = yeomanUiTypes;
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { isFullUrlDestination, isPartialUrlDestination, isAppStudio, type Destination } from '@sap-ux/btp-utils';
 import type { InputQuestion, PasswordQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';

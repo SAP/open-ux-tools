@@ -43,8 +43,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-try {
-    await initI18n();
-} catch {
-    // Needed for lint
-}
+void initI18n().catch(() => undefined);

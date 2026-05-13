@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import { initI18nProjectValidators } from '@sap-ux/project-input-validator';
 
 const mockFilterDataSourcesByType = jest.fn().mockImplementation((dataSources: Record<string, any>, type: string) => {
     if (!dataSources) {
@@ -37,6 +38,7 @@ describe('getPrompts', () => {
 
     beforeAll(async () => {
         await i18n.initI18n();
+        await initI18nProjectValidators();
     });
 
     beforeEach(() => {

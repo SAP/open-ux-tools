@@ -41,9 +41,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-try {
-    await initI18nUi5AppInquirer();
-} catch {
-    // In case of an error during initialization, we catch it to prevent the application from crashing.
-    // Needed for lint
-}
+void initI18nUi5AppInquirer().catch(() => undefined);
