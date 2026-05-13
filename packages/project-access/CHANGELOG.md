@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.36.4
+
+### Patch Changes
+
+- 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
+
 ## 1.36.3
 
 ### Patch Changes

@@ -34,6 +34,7 @@ describe('Test headless', () => {
                 description: 'An SAP Fiori application.',
                 enableEslint: true,
                 enableTypeScript: false,
+                enableVirtualEndpoints: true,
                 flpAppId: '',
                 localUI5Version: '1.88.1',
                 name: 'simple',
@@ -86,5 +87,28 @@ describe('Test headless', () => {
                 }
             ]
         });
+    });
+
+    test('enableVirtualEndpoints defaults to true when not specified', () => {
+        const state = transformExtState(appConfigDest as unknown as FFAppConfig);
+        expect(state.project.enableVirtualEndpoints).toBe(true);
+    });
+
+    test('enableVirtualEndpoints is passed through when explicitly set to false', () => {
+        const appConfigWithVirtualEndpointsDisabled = {
+            ...appConfigDest,
+            project: { ...appConfigDest.project, enableVirtualEndpoints: false }
+        };
+        const state = transformExtState(appConfigWithVirtualEndpointsDisabled as unknown as FFAppConfig);
+        expect(state.project.enableVirtualEndpoints).toBe(false);
+    });
+
+    test('enableVirtualEndpoints is passed through when explicitly set to true', () => {
+        const appConfigWithVirtualEndpointsEnabled = {
+            ...appConfigDest,
+            project: { ...appConfigDest.project, enableVirtualEndpoints: true }
+        };
+        const state = transformExtState(appConfigWithVirtualEndpointsEnabled as unknown as FFAppConfig);
+        expect(state.project.enableVirtualEndpoints).toBe(true);
     });
 });
