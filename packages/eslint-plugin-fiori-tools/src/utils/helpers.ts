@@ -812,7 +812,13 @@ export function findDeepestExistingPath(
 export function checkAppTablesConfiguration<DiagnosticType>(
     page: FeV4PageType | FeV2PageType,
     parsedApp: ParsedApp,
-    checkConfiguration: (...args: any[]) => void
+    checkConfiguration: (
+        page: any,
+        table: any,
+        parsedApp: ParsedApp,
+        problems: DiagnosticType[],
+        pageSectionLabel?: string
+    ) => void
 ): DiagnosticType[] {
     const problems: DiagnosticType[] = [];
     if (page.type === 'list-report-page') {
