@@ -8,7 +8,8 @@ import * as validators from '@sap-ux/project-input-validator';
 import { getChangesByType } from '../../../../src/base/change-utils';
 import { listDestinations, isOnPremiseDestination } from '@sap-ux/btp-utils';
 import { getBtpDestinations } from '../../../../src/cf/services/destinations';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import { Severity, MessageType } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { readFileSync } from 'node:fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -497,18 +498,27 @@ describe('getPrompts', () => {
         expect(readFileSyncMock).not.toHaveBeenCalledWith(expect.stringContaining('xs-app.json'), expect.anything());
     });
 
-    it('should log the error and set a generic UI error message when fetching destinations fails in CF', async () => {
+    it('should log the error and show notification via appWizard when fetching destinations fails in CF', async () => {
         isCFEnvironmentMock.mockResolvedValue(true);
         getDestinationsMock.mockRejectedValue(new Error('Network error'));
 
         const logger = { error: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE', logger);
-
-        const destinationPrompt = prompts.find((p) => p.name === 'destination');
-        const validate = destinationPrompt?.validate as Function;
+        const appWizard = { showError: jest.fn() } as unknown as AppWizard;
+        await getPrompts(mockPath, 'CUSTOMER_BASE', logger, appWizard);
 
         expect(logger.error).toHaveBeenCalledWith('Network error');
-        expect(validate?.(undefined)).toBe(i18n.t('error.errorFetchingDestinations'));
+        expect(appWizard.showError).toHaveBeenCalledWith(
+            i18n.t('error.errorFetchingDestinations'),
+            MessageType.notification
+        );
+    });
+
+    it('should not throw when appWizard is not provided and fetching destinations fails in CF', async () => {
+        isCFEnvironmentMock.mockResolvedValue(true);
+        getDestinationsMock.mockRejectedValue(new Error('Network error'));
+
+        const logger = { error: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
+        await expect(getPrompts(mockPath, 'CUSTOMER_BASE', logger)).resolves.toBeDefined();
     });
 });
 

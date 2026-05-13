@@ -11,7 +11,7 @@ import type {
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { Destination } from '@sap-ux/btp-utils';
 import { listDestinations, isOnPremiseDestination } from '@sap-ux/btp-utils';
-import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity, MessageType, type IMessageSeverity, type AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n';
@@ -274,12 +274,14 @@ async function getDestinationChoices(
  * @param {string} projectPath - The root path of the project.
  * @param {UI5FlexLayer} layer - UI5 Flex layer.
  * @param {ToolsLogger} [logger] - Optional logger.
+ * @param {AppWizard} [appWizard] - Optional AppWizard instance for showing notifications.
  * @returns {YUIQuestion<NewModelAnswers>[]} The questions/prompts.
  */
 export async function getPrompts(
     projectPath: string,
     layer: UI5FlexLayer,
-    logger?: ToolsLogger
+    logger?: ToolsLogger,
+    appWizard?: AppWizard
 ): Promise<YUIQuestion<NewModelAnswers>[]> {
     const isCustomerBase = FlexLayer.CUSTOMER_BASE === layer;
     const defaultSeviceName = isCustomerBase ? NamespacePrefix.CUSTOMER : NamespacePrefix.EMPTY;
@@ -295,6 +297,9 @@ export async function getPrompts(
 
     if (isCFEnv) {
         ({ choices: destinationChoices, error: destinationError } = await getDestinationChoices(projectPath, logger));
+        if (destinationError) {
+            appWizard?.showError(destinationError, MessageType.notification);
+        }
     }
 
     const buildResultingUrlMessage = (
@@ -336,7 +341,7 @@ export async function getPrompts(
                 mandatory: true,
                 hint: t('prompts.destinationTooltip')
             },
-            validate: (value: Destination): boolean | string => destinationError ?? validateEmptyString(value?.Name)
+            validate: (value: Destination): boolean | string => validateEmptyString(value?.Name)
         } as ListQuestion<NewModelAnswers>,
         {
             type: 'input',
