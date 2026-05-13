@@ -41,9 +41,19 @@ sap.ui.define([
 
 <% if (headerActions?.length > 0 && !isStandalone) { -%>
         opaTest("Check header actions of the Object Page", function (Given, When, Then) {
+<% if (editButton?.visible) { -%>
+            // Ensure the opened entity is not in Draft state before uncommenting
+            // Then.onThe<%- name%>.onHeader().iCheckEdit({ visible: true });
+            // When.onThe<%- name%>.onHeader().iPressEdit();
+<% } -%>
 <%     headerActions.forEach(function(action) { -%>
 <%     if (action.visible) { -%>
-            Then.onThe<%- name%>.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound ?? false %> }, { enabled: <%- action.enabled === true %> });
+<%         if (action.enabled === 'dynamic') { -%>
+            Then.onThe<%- name%>.onHeader().iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+<%         } else { -%>
+            Then.onThe<%- name%>.onHeader().iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+<%         } -%>
+            // When.onThe<%- name%>.onHeader().iPressAction("<%- action.label %>");
 <%     } -%>
 <%     }); -%>
         });
@@ -84,13 +94,33 @@ sap.ui.define([
 <%      section.actions.forEach(function(action) { -%>
 <%      if (action.visible) { -%>
 <%          if (section.isTable && section.navigationProperty) { -%>
-            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound ?? false %> }, { enabled: <%- action.enabled === true %> });
+<%              if (action.enabled === 'dynamic') { -%>
+            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+<%              } else { -%>
+            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+<%              } -%>
+            // When.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction("<%- action.label %>");
 <%          } else { -%>
-            Then.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound ?? false %> }, { enabled: <%- action.enabled === true %> });
+<%              if (action.enabled === 'dynamic') { -%>
+            Then.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+<%              } else { -%>
+            Then.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+<%              } -%>
+            // When.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iPressAction("<%- action.label %>");
 <%          } -%>
 <%      } -%>
 <%      }); -%>
 <%  } -%>
+<% if (section.isTable && section.navigationProperty) { -%>
+<% if (section.createButton?.visible) { -%>
+            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckCreate({ visible: true });
+            // When.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iPressCreate();
+<% } -%>
+<% if (section.deleteButton?.visible) { -%>
+            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckDelete({ visible: true });
+            // When.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iPressDelete();
+<% } -%>
+<% } -%>
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
             //When.onThe<%- name%>.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });

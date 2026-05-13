@@ -24,7 +24,7 @@ import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { buildActionStateFromSpecModelKey } from './actionUtils';
+import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckEditVisibility } from './actionUtils';
 
 /**
  * Extracts feature data for object pages from the application model.
@@ -62,16 +62,22 @@ export async function getObjectPageFeatures(
         );
         // extract header sections (facets)
         pageFeatureData.headerSections = extractObjectPageHeaderSectionsData(objectPage);
-        // extract body sections (includes section-level actions)
+        // extract body sections (includes section-level actions and standard create/delete buttons)
         pageFeatureData.bodySections = extractObjectPageBodySectionsData(
             objectPage,
             convertedMetadata,
-            schemaNamespace
+            schemaNamespace,
+            metadata,
+            log
         );
         // extract header-level actions
         pageFeatureData.headerActions = convertedMetadata
             ? extractHeaderActions(objectPage, convertedMetadata, schemaNamespace)
             : [];
+        // determine edit button visibility from UpdateRestrictions on the OP entity set
+        if (metadata && objectPage.entitySet) {
+            pageFeatureData.editButton = safeCheckEditVisibility(metadata, objectPage.entitySet, log);
+        }
         objectPageFeatures.push(pageFeatureData);
     }
 
@@ -168,12 +174,16 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
  * @param objectPage - object page from the application model
  * @param convertedMetadata - optional converted OData metadata for action extraction
  * @param schemaNamespace - optional OData schema namespace used as service identifier in action assertions
+ * @param metadata - optional raw metadata XML for resolving standard button visibility (Create/Delete)
+ * @param log - optional logger instance
  * @returns body sections data including sub-sections
  */
 function extractObjectPageBodySectionsData(
     objectPage: PageWithModelV4,
     convertedMetadata?: ConvertedMetadata,
-    schemaNamespace?: string
+    schemaNamespace?: string,
+    metadata?: string,
+    log?: Logger
 ): BodySectionFeatureData[] {
     const bodySections: BodySectionFeatureData[] = [];
     if (objectPage.model) {
@@ -182,12 +192,13 @@ function extractObjectPageBodySectionsData(
         Object.entries(sections).forEach(([sectionKey, section]) => {
             const sectionId = getSectionIdentifier(section) ?? sectionKey;
             const subSections = extractBodySubSectionsData(section, sectionId);
-            bodySections.push({
+            const navigationProperty = getNavigationPropertyFromKey(sectionKey);
+            const sectionData: BodySectionFeatureData = {
                 id: sectionId,
-                navigationProperty: getNavigationPropertyFromKey(sectionKey),
+                navigationProperty,
                 isTable: !!section.isTable,
                 custom: !!section.custom,
-                order: section?.order ?? -1, // put a negative order number to signal that order was not in spec
+                order: section?.order ?? -1,
                 fields: section.custom || section.isTable ? [] : extractFormFields(section),
                 tableColumns: section.custom || !section.isTable ? {} : extractTableColumnsFromNode(section),
                 subSections,
@@ -195,7 +206,21 @@ function extractObjectPageBodySectionsData(
                     !section.custom && convertedMetadata && schemaNamespace
                         ? extractSectionActions(section, convertedMetadata, schemaNamespace)
                         : []
-            });
+            };
+            // For table sections, resolve Create/Delete visibility from target entity set
+            if (section.isTable && navigationProperty && metadata && convertedMetadata) {
+                const targetEntitySet = resolveNavigationTargetEntitySet(
+                    convertedMetadata,
+                    objectPage.entitySet,
+                    navigationProperty
+                );
+                if (targetEntitySet) {
+                    const buttonVisibility = safeCheckButtonVisibility(metadata, targetEntitySet, log);
+                    sectionData.createButton = buttonVisibility?.create;
+                    sectionData.deleteButton = buttonVisibility?.delete;
+                }
+            }
+            bodySections.push(sectionData);
         });
     }
 
@@ -324,6 +349,32 @@ function extractFormFields(subSection: BodySectionItem): SectionFormField[] {
 function getNavigationPropertyFromKey(sectionKey: string): string | undefined {
     const prefix = sectionKey.split('::')[0];
     return prefix.startsWith('_') ? prefix : undefined;
+}
+
+/**
+ * Resolves the target entity set name for a navigation property by looking up navigation
+ * property bindings in the source entity set's metadata.
+ *
+ * @param convertedMetadata - converted OData metadata
+ * @param sourceEntitySetName - the name of the source entity set (the Object Page's entity set)
+ * @param navigationProperty - the navigation property name (e.g. '_Booking')
+ * @returns the target entity set name, or undefined if resolution fails
+ */
+function resolveNavigationTargetEntitySet(
+    convertedMetadata: ConvertedMetadata,
+    sourceEntitySetName: string | undefined,
+    navigationProperty: string
+): string | undefined {
+    if (!sourceEntitySetName) {
+        return undefined;
+    }
+    const sourceEntitySet = convertedMetadata.entitySets.find((es) => es.name === sourceEntitySetName);
+    if (!sourceEntitySet?.navigationPropertyBinding) {
+        return undefined;
+    }
+    const navPropName = navigationProperty.startsWith('_') ? navigationProperty.substring(1) : navigationProperty;
+    const binding = sourceEntitySet.navigationPropertyBinding[navPropName];
+    return binding?.name;
 }
 
 /**

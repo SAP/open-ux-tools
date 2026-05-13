@@ -4,7 +4,6 @@ import type {
     ActionButtonsResult,
     ActionButtonState,
     ButtonState,
-    ButtonVisibilityResult,
     FEV4ManifestTarget,
     ListReportFeatures
 } from '../types';
@@ -18,14 +17,13 @@ import {
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
-import { extractActionMethodName, buildActionButtonState } from './actionUtils';
+import { extractActionMethodName, buildActionButtonState, safeCheckButtonVisibility } from './actionUtils';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Manifest } from '@sap-ux/project-access';
 import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type {
-    DeleteRestrictionsType,
-    InsertRestrictionsType
-} from '@sap-ux/vocabularies-types/vocabularies/Capabilities';
+
+export { checkButtonVisibility, safeCheckEditVisibility } from './actionUtils';
+export { safeCheckButtonVisibility };
 
 /**
  * Builds a button state object from button visibility result.
@@ -43,27 +41,6 @@ export function buildButtonState(buttonState?: ButtonState): {
         enabled: buttonState?.enabled,
         dynamicPath: buttonState?.enabled === 'dynamic' ? buttonState.dynamicPath : undefined
     };
-}
-
-/**
- * Safely checks button visibility with error handling.
- *
- * @param metadata - The OData metadata XML content
- * @param entitySetName - The name of the entity set
- * @param log - Optional logger instance
- * @returns Button visibility result or undefined if error occurs
- */
-export function safeCheckButtonVisibility(
-    metadata: string,
-    entitySetName: string,
-    log?: Logger
-): ButtonVisibilityResult | undefined {
-    try {
-        return checkButtonVisibility(metadata, entitySetName);
-    } catch (error) {
-        log?.debug(`Failed to check button visibility: ${error instanceof Error ? error.message : String(error)}`);
-        return undefined;
-    }
 }
 
 /**
@@ -176,41 +153,6 @@ export function getToolBarActions(pageModel: TreeModel): TreeAggregations {
 }
 
 /**
- * Checks the visibility and enabled state of create and delete buttons for a given entity set
- * by analyzing OData Capabilities annotations in the metadata.
- *
- * @param metadataXml The OData metadata XML content as a string
- * @param entitySetName The name of the entity set to check
- * @returns ButtonVisibilityResult containing the state of create and delete buttons
- * @throws {Error} If metadata cannot be parsed or entity set is not found
- */
-export function checkButtonVisibility(metadataXml: string, entitySetName: string): ButtonVisibilityResult {
-    try {
-        const convertedMetadata: ConvertedMetadata = convert(parse(metadataXml));
-        const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
-
-        if (!entitySet) {
-            throw new Error(`Entity set '${entitySetName}' not found in metadata`);
-        }
-
-        const insertRestrictions = entitySet.annotations?.Capabilities?.InsertRestrictions as
-            | InsertRestrictionsType
-            | undefined;
-        const deleteRestrictions = entitySet.annotations?.Capabilities?.DeleteRestrictions as
-            | DeleteRestrictionsType
-            | undefined;
-
-        return {
-            create: analyzeInsertRestrictions(insertRestrictions),
-            delete: analyzeDeleteRestrictions(deleteRestrictions)
-        };
-    } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        throw new Error(`Failed to analyze button visibility: ${errorMessage}`);
-    }
-}
-
-/**
  * Retrieves filter field names from the page model using ux-specification.
  *
  * @param pageModel - the tree model containing filter bar definitions
@@ -234,68 +176,6 @@ export function getFilterFieldNames(pageModel: TreeModel, log?: Logger): string[
     }
 
     return filterBarItems;
-}
-
-/**
- * Analyzes InsertRestrictions annotation to determine create button visibility and enabled state.
- *
- * @param restriction The InsertRestrictions annotation for the entity set
- * @returns ButtonState indicating visibility and enabled state based on the annotation value
- */
-function analyzeInsertRestrictions(restriction: InsertRestrictionsType | undefined): ButtonState {
-    const value = restriction
-        ? (restriction['Insertable'] as (typeof restriction)['Insertable'] & { $Path?: string; path?: string })
-        : undefined;
-
-    return analyzeRestrictionValue(value);
-}
-
-/**
- * Analyzes DeleteRestrictions annotation to determine delete button visibility and enabled state.
- *
- * @param restriction The DeleteRestrictions annotation for the entity set
- * @returns ButtonState indicating visibility and enabled state based on the annotation value
- */
-function analyzeDeleteRestrictions(restriction: DeleteRestrictionsType | undefined): ButtonState {
-    const value = restriction
-        ? (restriction['Deletable'] as (typeof restriction)['Deletable'] & { $Path?: string; path?: string })
-        : undefined;
-
-    return analyzeRestrictionValue(value);
-}
-
-/**
- * Analyzes a restriction value (Insertable or Deletable) to determine button visibility and enabled state.
- *
- * @param value The value of the Insertable or Deletable annotation, which can be a boolean or an object with a dynamic path
- * @returns ButtonState indicating visibility and enabled state based on the annotation value
- */
-function analyzeRestrictionValue(
-    value:
-        | ((InsertRestrictionsType['Insertable'] | DeleteRestrictionsType['Deletable']) & {
-              $Path?: string;
-              path?: string;
-          })
-        | undefined
-): ButtonState {
-    const defaultState: ButtonState = { visible: true, enabled: true };
-
-    if (!value) {
-        return defaultState;
-    }
-
-    if (typeof value === 'boolean') {
-        return { visible: value, enabled: value };
-    }
-
-    if (typeof value === 'object' && value !== null) {
-        const path = value.$Path ?? value.path;
-        if (path) {
-            return { visible: true, enabled: 'dynamic', dynamicPath: path };
-        }
-    }
-
-    return defaultState;
 }
 
 /**

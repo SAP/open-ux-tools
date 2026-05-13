@@ -125,6 +125,8 @@ export type BodySectionFeatureData = {
     tableColumns: TableColumnFeatureData;
     subSections: BodySubSectionFeatureData[];
     actions?: ActionButtonState[];
+    createButton?: ButtonState;
+    deleteButton?: ButtonState;
 };
 
 export type ObjectPageFeatures = {
@@ -135,6 +137,7 @@ export type ObjectPageFeatures = {
     headerSections?: HeaderSectionFeatureData[];
     bodySections?: BodySectionFeatureData[];
     headerActions?: ActionButtonState[];
+    editButton?: ButtonState;
 };
 
 export type ListReportFeatures = {

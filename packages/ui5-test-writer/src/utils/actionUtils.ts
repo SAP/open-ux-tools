@@ -1,12 +1,21 @@
-import type { Action, ActionParameter, ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import type { ActionButtonState } from '../types';
+import type { Action, ActionParameter, ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
+import type { ActionButtonState, ButtonState, ButtonVisibilityResult } from '../types';
 import type { ActionAnnotations, EntityContainerAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
 import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { OperationAvailable } from '@sap-ux/vocabularies-types/vocabularies/Core';
+import type {
+    DeleteRestrictionsType,
+    InsertRestrictionsType,
+    UpdateRestrictionsType
+} from '@sap-ux/vocabularies-types/vocabularies/Capabilities';
+import type { Logger } from '@sap-ux/logger';
+import { parse } from '@sap-ux/edmx-parser';
+import { convert } from '@sap-ux/annotation-converter';
 
 const DATA_FIELD_FOR_ACTION = 'DataFieldForAction';
 
 type OperationAvailableWithPaths = OperationAvailable & { $Path?: string; path?: string };
+type RestrictionValueWithPaths = (boolean | { $Path?: string; path?: string }) | undefined;
 
 /**
  * Extracts the action method name from a fully qualified action string.
@@ -192,4 +201,175 @@ export function buildActionStateFromSpecModelKey(
         enabled,
         dynamicPath
     };
+}
+
+/**
+ * Analyzes a restriction value (Insertable, Deletable, or Updatable) to determine button state.
+ *
+ * @param value The annotation value — boolean, path object, or undefined
+ * @returns ButtonState indicating visibility and enabled state
+ */
+export function analyzeRestrictionValue(value: RestrictionValueWithPaths): ButtonState {
+    const defaultState: ButtonState = { visible: true, enabled: true };
+
+    if (value === undefined || value === null) {
+        return defaultState;
+    }
+
+    if (typeof value === 'boolean') {
+        return { visible: value, enabled: value };
+    }
+
+    if (typeof value === 'object') {
+        const path = value.$Path ?? value.path;
+        if (path) {
+            return { visible: true, enabled: 'dynamic', dynamicPath: path };
+        }
+    }
+
+    return defaultState;
+}
+
+/**
+ * Analyzes InsertRestrictions annotation to determine create button visibility and enabled state.
+ *
+ * @param restriction The InsertRestrictions annotation for the entity set
+ * @returns ButtonState indicating visibility and enabled state based on the Insertable value
+ */
+export function analyzeInsertRestrictions(restriction: InsertRestrictionsType | undefined): ButtonState {
+    const value = restriction
+        ? (restriction['Insertable'] as (typeof restriction)['Insertable'] & { $Path?: string; path?: string })
+        : undefined;
+    return analyzeRestrictionValue(value);
+}
+
+/**
+ * Analyzes DeleteRestrictions annotation to determine delete button visibility and enabled state.
+ *
+ * @param restriction The DeleteRestrictions annotation for the entity set
+ * @returns ButtonState indicating visibility and enabled state based on the Deletable value
+ */
+export function analyzeDeleteRestrictions(restriction: DeleteRestrictionsType | undefined): ButtonState {
+    const value = restriction
+        ? (restriction['Deletable'] as (typeof restriction)['Deletable'] & { $Path?: string; path?: string })
+        : undefined;
+    return analyzeRestrictionValue(value);
+}
+
+/**
+ * Analyzes UpdateRestrictions annotation to determine edit button visibility and enabled state.
+ *
+ * @param restriction The UpdateRestrictions annotation for the entity set
+ * @returns ButtonState indicating visibility and enabled state based on the Updatable value
+ */
+export function analyzeUpdateRestrictions(restriction: UpdateRestrictionsType | undefined): ButtonState {
+    const value = restriction
+        ? (restriction['Updatable'] as (typeof restriction)['Updatable'] & { $Path?: string; path?: string })
+        : undefined;
+    return analyzeRestrictionValue(value);
+}
+
+/**
+ * Checks the visibility and enabled state of create and delete buttons for a given entity set
+ * by analyzing OData Capabilities annotations in the metadata.
+ *
+ * @param metadataXml The OData metadata XML content as a string
+ * @param entitySetName The name of the entity set to check
+ * @returns ButtonVisibilityResult containing the state of create and delete buttons
+ * @throws {Error} If metadata cannot be parsed or entity set is not found
+ */
+export function checkButtonVisibility(metadataXml: string, entitySetName: string): ButtonVisibilityResult {
+    try {
+        const convertedMetadata: ConvertedMetadata = convert(parse(metadataXml));
+        const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+
+        if (!entitySet) {
+            throw new Error(`Entity set '${entitySetName}' not found in metadata`);
+        }
+
+        const insertRestrictions = entitySet.annotations?.Capabilities?.InsertRestrictions as
+            | InsertRestrictionsType
+            | undefined;
+        const deleteRestrictions = entitySet.annotations?.Capabilities?.DeleteRestrictions as
+            | DeleteRestrictionsType
+            | undefined;
+
+        return {
+            create: analyzeInsertRestrictions(insertRestrictions),
+            delete: analyzeDeleteRestrictions(deleteRestrictions)
+        };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error(`Failed to analyze button visibility: ${errorMessage}`);
+    }
+}
+
+/**
+ * Checks the visibility and enabled state of the edit button for a given entity set
+ * by analyzing UpdateRestrictions in the metadata.
+ *
+ * @param metadataXml The OData metadata XML content as a string
+ * @param entitySetName The name of the entity set to check
+ * @returns ButtonState for the edit button
+ * @throws {Error} If metadata cannot be parsed or entity set is not found
+ */
+export function checkEditVisibility(metadataXml: string, entitySetName: string): ButtonState {
+    try {
+        const convertedMetadata: ConvertedMetadata = convert(parse(metadataXml));
+        const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+
+        if (!entitySet) {
+            throw new Error(`Entity set '${entitySetName}' not found in metadata`);
+        }
+
+        const updateRestrictions = entitySet.annotations?.Capabilities?.UpdateRestrictions as
+            | UpdateRestrictionsType
+            | undefined;
+        return analyzeUpdateRestrictions(updateRestrictions);
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error(`Failed to analyze edit visibility: ${errorMessage}`);
+    }
+}
+
+/**
+ * Safely checks button visibility with error handling.
+ *
+ * @param metadata The OData metadata XML content
+ * @param entitySetName The name of the entity set
+ * @param log Optional logger instance
+ * @returns Button visibility result or undefined if error occurs
+ */
+export function safeCheckButtonVisibility(
+    metadata: string,
+    entitySetName: string,
+    log?: Logger
+): ButtonVisibilityResult | undefined {
+    try {
+        return checkButtonVisibility(metadata, entitySetName);
+    } catch (error) {
+        log?.debug(`Failed to check button visibility: ${error instanceof Error ? error.message : String(error)}`);
+        return undefined;
+    }
+}
+
+/**
+ * Safely checks edit button visibility with error handling.
+ *
+ * @param metadata The OData metadata XML content
+ * @param entitySetName The name of the entity set
+ * @param log Optional logger instance
+ * @returns ButtonState for the edit button, or undefined if error occurs
+ */
+export function safeCheckEditVisibility(
+    metadata: string,
+    entitySetName: string,
+    log?: Logger
+): ButtonState | undefined {
+    try {
+        return checkEditVisibility(metadata, entitySetName);
+    } catch (error) {
+        log?.debug(`Failed to check edit visibility: ${error instanceof Error ? error.message : String(error)}`);
+        return undefined;
+    }
 }
