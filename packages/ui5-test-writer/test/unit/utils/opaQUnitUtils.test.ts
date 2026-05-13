@@ -5,13 +5,17 @@ import {
     splicePageIntoJourneyRunner,
     readHtmlTargetFromQUnitJs,
     addIntegrationOldToGitignore,
-    hasVirtualOPA5
+    hasVirtualOPA5,
+    addVirtualTestConfig
 } from '../../../src/utils/opaQUnitUtils';
 import { join } from 'node:path';
+import { create } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
 
 jest.mock('@sap-ux/project-access', () => ({
+    ...jest.requireActual('@sap-ux/project-access'),
     getAllUi5YamlFileNames: jest.fn(),
     readUi5Yaml: jest.fn()
 }));
@@ -637,5 +641,86 @@ describe('hasVirtualOPA5()', () => {
 
         expect(await hasVirtualOPA5(basePath)).toBe(true);
         expect(mockReadUi5Yaml).toHaveBeenCalledTimes(1);
+    });
+
+    describe('addVirtualOPATestConfig', () => {
+        const { readUi5Yaml: realReadUi5Yaml } = jest.requireActual('@sap-ux/project-access');
+
+        const previewYaml = `specVersion: '4.0'
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
+`;
+        const mockYaml = `specVersion: '4.0'
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+`;
+        const noPreviewYaml = `specVersion: '4.0'
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false
+`;
+
+        beforeEach(() => {
+            (readUi5Yaml as jest.Mock).mockImplementation(
+                (basePath: string, fileName: string, fs: Parameters<typeof realReadUi5Yaml>[2]) =>
+                    realReadUi5Yaml(basePath, fileName, fs)
+            );
+        });
+
+        it('sets flp.path and test entries on all yaml files that have fiori-tools-preview', async () => {
+            const fs = create(createStorage());
+            const basePath = '/test/project';
+            fs.write(join(basePath, 'ui5.yaml'), previewYaml);
+            fs.write(join(basePath, 'ui5-local.yaml'), previewYaml);
+            fs.write(join(basePath, 'ui5-mock.yaml'), mockYaml);
+
+            const testFrameworks = [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }];
+            await addVirtualTestConfig(basePath, testFrameworks, fs);
+
+            expect(fs.read(join(basePath, 'ui5.yaml'))).toContain('path: test/flp.html');
+            expect(fs.read(join(basePath, 'ui5.yaml'))).not.toContain('framework: OPA5');
+            expect(fs.read(join(basePath, 'ui5-local.yaml'))).toContain('path: test/flp.html');
+            expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toContain('path: test/flp.html');
+            expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toContain('framework: OPA5');
+        });
+
+        it('skips yaml files that do not exist', async () => {
+            const fs = create(createStorage());
+            const basePath = '/test/project-no-mock';
+            fs.write(join(basePath, 'ui5.yaml'), previewYaml);
+            fs.write(join(basePath, 'ui5-local.yaml'), previewYaml);
+
+            await expect(addVirtualTestConfig(basePath, [{ framework: 'OPA5' }], fs)).resolves.not.toThrow();
+            expect(fs.read(join(basePath, 'ui5.yaml'))).toContain('path: test/flp.html');
+            expect(fs.exists(join(basePath, 'ui5-mock.yaml'))).toBe(false);
+        });
+
+        it('skips middleware update when fiori-tools-preview is not present', async () => {
+            const fs = create(createStorage());
+            const basePath = '/test/project-no-preview';
+            fs.write(join(basePath, 'ui5.yaml'), noPreviewYaml);
+            fs.write(join(basePath, 'ui5-local.yaml'), noPreviewYaml);
+            fs.write(join(basePath, 'ui5-mock.yaml'), noPreviewYaml);
+
+            await addVirtualTestConfig(basePath, [{ framework: 'OPA5' }], fs);
+            expect(fs.read(join(basePath, 'ui5.yaml'))).not.toContain('path: test/flp.html');
+        });
     });
 });

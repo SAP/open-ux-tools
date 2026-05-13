@@ -7,7 +7,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { readHashFromFlpSandbox } from './flpSandboxUtils';
-import { getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
+import { getAllUi5YamlFileNames, readUi5Yaml, FileName } from '@sap-ux/project-access';
 
 /** Relative path from the test output directory to opaTests.qunit.js */
 const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
@@ -316,10 +316,12 @@ export function addPagesToJourneyRunner(pages: JourneyRunnerPage[], testOutDirPa
 interface PreviewTestEntry {
     framework?: string;
     path?: string;
+    pattern?: string;
 }
 
 /** Shape of the `fiori-tools-preview` middleware configuration relevant to OPA5 detection */
 interface PreviewMiddlewareConfig {
+    flp?: { path?: string };
     test?: PreviewTestEntry[];
 }
 
@@ -345,4 +347,35 @@ export async function hasVirtualOPA5(basePath: string): Promise<boolean> {
         }
     }
     return false;
+}
+
+/**
+ * Updates the fiori-tools-preview middleware in all UI5 yaml config files to support virtual OPA test endpoints.
+ * Sets flp.path on all yaml files and adds test framework entries to ui5-mock.yaml.
+ *
+ * @param basePath - the absolute target path of the application
+ * @param testFrameworks - the test framework entries to add to ui5-mock.yaml
+ * @param fs - the memfs editor instance
+ */
+export async function addVirtualTestConfig(
+    basePath: string,
+    testFrameworks: PreviewTestEntry[],
+    fs: Editor
+): Promise<void> {
+    for (const yamlFile of [FileName.Ui5Yaml, FileName.Ui5LocalYaml, FileName.Ui5MockYaml]) {
+        const yamlPath = join(basePath, yamlFile);
+        if (!fs.exists(yamlPath)) {
+            continue;
+        }
+        const yamlConfig = await readUi5Yaml(basePath, yamlFile, fs);
+        const previewMiddleware = yamlConfig.findCustomMiddleware<PreviewMiddlewareConfig>('fiori-tools-preview');
+        if (previewMiddleware?.configuration?.flp) {
+            previewMiddleware.configuration.flp.path = 'test/flp.html';
+            if (yamlFile === FileName.Ui5MockYaml && !previewMiddleware.configuration.test?.length) {
+                previewMiddleware.configuration.test = [...testFrameworks];
+            }
+            yamlConfig.updateCustomMiddleware(previewMiddleware);
+            fs.write(yamlPath, yamlConfig.toString());
+        }
+    }
 }

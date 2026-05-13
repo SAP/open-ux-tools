@@ -29,3 +29,4 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flp.html
