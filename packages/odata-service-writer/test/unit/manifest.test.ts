@@ -25,17 +25,17 @@ describe('manifest', () => {
         afterEach(() => {
             jest.restoreAllMocks();
         });
-        test.each([
-            ['1.110.0', 'None'],
-            ['1.115.0', undefined],
-            ['', undefined],
-            ['1.105.0', 'None'],
-            [undefined, undefined],
-            [['1.120.10', '2.0.0'], undefined],
-            ['1.144.0', undefined, '4.01']
+        test.each<[string | string[] | undefined, string | undefined, string]>([
+            ['1.110.0', 'None', '4.0'],
+            ['1.115.0', undefined, '4.0'],
+            ['', undefined, '4.0'],
+            ['1.105.0', 'None', '4.0'],
+            [undefined, undefined, '4.0'],
+            [['1.120.10', '2.0.0'], undefined, '4.0'],
+            ['1.144.0', undefined, '4.0']
         ])(
             'Ensure synchronizationMode is correctly set for minUI5Version %s',
-            async (minUI5Version, syncMode, expectedOdataVersion = '4.0') => {
+            async (minUI5Version, syncMode, expectedOdataVersion) => {
                 const testManifest = {
                     'sap.app': {
                         id: 'test.update.manifest'
@@ -67,6 +67,44 @@ describe('manifest', () => {
                 );
             }
         );
+        describe('odataVersion written to manifest.json', () => {
+            const baseManifest = { 'sap.app': { id: 'test.odata.version' } };
+            const baseService = { client: '123', model: 'amodel', name: 'aname', path: '/a/path' };
+
+            test('v4 service with EDMX metadata declaring Version="4.01" writes 4.01', async () => {
+                const metadata =
+                    '<edmx:Edmx Version="4.01" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"></edmx:Edmx>';
+                fs.writeJSON('./webapp/manifest.json', baseManifest);
+                await updateManifest('./', { ...baseService, version: OdataVersion.v4, metadata }, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('4.01');
+            });
+
+            test('v4 service with EDMX metadata not declaring 4.01 writes 4.0', async () => {
+                const metadata =
+                    '<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"></edmx:Edmx>';
+                fs.writeJSON('./webapp/manifest.json', baseManifest);
+                await updateManifest('./', { ...baseService, version: OdataVersion.v4, metadata }, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('4.0');
+            });
+
+            test('v4 service with no metadata writes 4.0', async () => {
+                fs.writeJSON('./webapp/manifest.json', baseManifest);
+                await updateManifest('./', { ...baseService, version: OdataVersion.v4 }, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('4.0');
+            });
+
+            test('v2 service with metadata writes 2.0 regardless of EDMX version', async () => {
+                const metadata =
+                    '<edmx:Edmx Version="4.01" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"></edmx:Edmx>';
+                fs.writeJSON('./webapp/manifest.json', baseManifest);
+                await updateManifest('./', { ...baseService, version: OdataVersion.v2, metadata }, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('2.0');
+            });
+        });
         test('Ensure manifest are updated as expected as in edmx projects', async () => {
             const testManifest = {
                 'sap.app': {
