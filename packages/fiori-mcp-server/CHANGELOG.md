@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.58
+
+### Patch Changes
+
+- 4101c21: fix: connect stdio transport before telemetry init to fix Claude Desktop extension disconnect
+
+## 0.6.57
+
+### Patch Changes
+
+- c4bd625: Improve documentation Claude code, etc...
+
 ## 0.6.56
 
 ### Patch Changes

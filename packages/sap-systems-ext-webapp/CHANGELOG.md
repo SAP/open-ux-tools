@@ -1,5 +1,11 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.3.1
+
+### Patch Changes
+
+- ac6381f: remove default selected key for sap systems ext
+
 ## 0.3.0
 
 ### Minor Changes
